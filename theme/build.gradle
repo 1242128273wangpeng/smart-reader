@@ -1,0 +1,81 @@
+apply plugin: 'com.android.library'
+
+
+android {
+
+    //true use diff flavor
+    publishNonDefault true
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+    }
+
+    sourceSets{
+        main{
+            res.srcDirs = ['src/main/res']
+        }
+        kdzsydq{
+            res.srcDirs = ['src/main/res', 'src/nxh/res']
+        }
+
+        qbzsydq{
+            res.srcDirs = ['src/main/res', 'src/nxh/res']
+        }
+        mfqbxssc{
+            res.srcDirs = ['src/main/res','src/mzh/res']
+        }
+        zsmfqbxs{
+            res.srcDirs = ['src/main/res', 'src/ddl/res']
+        }
+        txtqbmfxs{
+            res.srcDirs = ['src/main/res', 'src/cml/res']
+        }
+        qbmfxsydq{
+            res.srcDirs = ['src/main/res', 'src/bcl/res']
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        kdzsydq{
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        qbzsydq{
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        mfqbxssc{
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        zsmfqbxs{
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        txtqbmfxs{
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        qbmfxsydq{
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile "com.android.support:appcompat-v7:$support_version"
+    compile project(':book_kit')
+}

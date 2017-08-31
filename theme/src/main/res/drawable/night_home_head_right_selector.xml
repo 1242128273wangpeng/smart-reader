@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:state_enabled="false" android:state_pressed="false" android:drawable="@mipmap/night_nbar_icon_more_nig_nor"></item>
+    <item android:state_enabled="true" android:state_pressed="true" android:drawable="@mipmap/night_nbar_icon_more_nig_pre"></item>
+    <item android:drawable="@mipmap/night_nbar_icon_more_nig_nor"/>
+</selector>

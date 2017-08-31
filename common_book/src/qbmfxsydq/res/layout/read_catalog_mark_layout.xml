@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/base_bg">
+    
+    <View
+            android:id="@+id/rl_left_pop_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#99000000"
+            android:visibility="gone"
+            android:focusable="true"
+            android:clickable="true">
+    
+    </View>
+    
+    <RelativeLayout
+            
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:clickable="true">
+        
+        <RelativeLayout
+                android:id="@+id/rl_catalog_novel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true">
+            
+            <TextView
+                    android:id="@+id/catalog_novel_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:singleLine="true"
+                    android:text="@string/app_name"
+                    android:textColor="?attr/read_catalog_mark_title_color"
+                    android:textSize="@dimen/dimen_text_16"
+                    android:layout_toLeftOf="@+id/iv_catalog_novel_sort"
+                    android:layout_toStartOf="@+id/iv_catalog_novel_sort"
+                    android:textStyle="bold"/>
+            
+            <TextView
+                    android:id="@+id/catalog_chapter_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/catalog_novel_name"
+                    android:layout_marginTop="@dimen/dimen_margin_10"
+                    android:layout_marginBottom="15dp"
+                    android:maxLines="1"
+                    android:text="@string/app_name"
+                    android:textColor="?attr/read_catalog_mark_des_color"
+                    android:textSize="@dimen/dimen_text_13"/>
+    
+    
+            <CheckBox
+                    android:id="@+id/tv_catalog_novel_sort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/iv_catalog_novel_sort"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@+id/catalog_chapter_count"
+                    android:text="@string/catalog_negative"
+                    android:textColor="?attr/read_catalog_mark_order_color"
+                    android:background="?attr/read_catalog_mark_order_bg"
+                    android:button="@null"
+                    android:textSize="@dimen/dimen_text_12"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    />
+        </RelativeLayout>
+        
+        <FrameLayout
+                android:id="@+id/catalog_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/rl_catalog_novel"
+                android:layout_above="@+id/read_rg_catlog_mark">
+            
+            <android.support.v7.widget.RecyclerView
+                    android:id="@+id/catalog_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fadingEdge="none"
+                    android:fastScrollEnabled="true"
+                    android:cacheColorHint="@color/color_black_00000000"
+                    android:listSelector="@android:color/transparent"
+                    
+                    android:layerType="software"
+                    android:scrollbars="vertical"
+                    android:scrollbarSize="2dp"
+                    android:scrollbarStyle="insideOverlay"/>
+            
+            <android.support.v7.widget.RecyclerView
+                    android:id="@+id/bookmark_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fadingEdge="none"
+                    android:fastScrollEnabled="true"
+                    android:cacheColorHint="@color/color_black_00000000"
+                    android:listSelector="@android:color/transparent"
+                    android:layerType="software"
+                    android:scrollbars="vertical"
+                    android:scrollbarSize="2dp"
+                    android:scrollbarStyle="insideOverlay"
+                    android:visibility="gone"/>
+    
+    
+            <LinearLayout
+                          android:id="@+id/rl_layout_empty_online"
+                          android:orientation="vertical"
+                          android:visibility="gone"
+                          android:layout_width="match_parent"
+                          android:layout_height="match_parent">
+        
+                <ImageView
+                        android:id="@+id/mask_no_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_marginTop="115dp"
+                        android:src="?attr/read_catalog_mark_empty" />
+        
+                
+    
+            </LinearLayout>
+        
+        </FrameLayout>
+        
+        <RadioGroup
+                android:id="@+id/read_rg_catlog_mark"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:layout_alignParentBottom="true"
+                android:translationZ="2dp">
+            
+            <RadioButton
+                    android:id="@+id/tab_catalog"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_centerVertical="true"
+                    android:button="@null"
+                    android:background="@null"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:text="@string/read_catalog"
+                    android:textColor="?attr/read_catalog_mark_navi_color"/>
+            
+            <RadioButton
+                    android:id="@+id/tab_bookmark"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:background="@null"
+                    android:checked="false"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:text="@string/read_bookmark"
+                    android:textColor="?attr/read_catalog_mark_navi_color"/>
+        
+        </RadioGroup>
+    </RelativeLayout>
+
+</FrameLayout>

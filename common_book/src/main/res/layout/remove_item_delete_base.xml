@@ -1,0 +1,24 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/book_list_item_selector" >
+
+    <RelativeLayout
+        android:id="@+id/rl_anim_item"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+    </RelativeLayout>
+
+    <ImageView
+        android:background="@drawable/icon_delete_checked2"
+        android:layout_gravity="right|top"
+        android:id="@+id/check_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="15dp"
+        android:contentDescription="@string/app_name"
+        android:visibility="visible" />
+</FrameLayout>

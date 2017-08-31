@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dimen_view_height_56"
+    android:background="@color/theme_primary">
+
+    <ImageButton
+        android:id="@+id/bookshelf_setting"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/selector_background_green"
+        android:paddingLeft="@dimen/dimen_padding_12"
+        android:paddingRight="@dimen/dimen_padding_12"
+        android:src="@drawable/icon_setting" />
+
+    <ImageButton
+        android:id="@+id/bookshelf_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/bookshelf_setting"
+        android:layout_centerVertical="true"
+        android:background="@drawable/selector_background_green"
+        android:paddingLeft="@dimen/dimen_padding_12"
+        android:paddingRight="@dimen/dimen_padding_12"
+        android:src="@drawable/icon_search"
+        android:visibility="invisible"/>
+
+    <ImageButton
+        android:id="@+id/bookshelf_search"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/selector_background_green"
+        android:paddingLeft="@dimen/dimen_padding_12"
+        android:paddingRight="@dimen/dimen_padding_12"
+        android:src="@drawable/icon_search" />
+
+    <ImageButton
+        android:id="@+id/bookshelf_download"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/bookshelf_search"
+        android:background="@drawable/selector_background_green"
+        android:paddingLeft="@dimen/dimen_padding_12"
+        android:paddingRight="@dimen/dimen_padding_12"
+        android:src="@drawable/icon_download" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toLeftOf="@id/bookshelf_download"
+        android:layout_toRightOf="@id/bookshelf_hint"
+        android:paddingLeft="@dimen/dimen_padding_15"
+        android:paddingRight="@dimen/dimen_padding_15">
+
+        <TextView
+            android:id="@+id/home_bookshelf"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dimen_padding_5"
+            android:paddingTop="@dimen/dimen_padding_5"
+            android:text="@string/bookshelf"
+            android:textColor="@color/color_black"
+            android:textSize="@dimen/dimen_text_17" />
+
+        <TextView
+            android:id="@+id/home_bookstore"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dimen_padding_5"
+            android:paddingTop="@dimen/dimen_padding_5"
+            android:text="@string/bookstore"
+            android:textColor="@color/color_black"
+            android:textSize="@dimen/dimen_text_17" />
+    </LinearLayout>
+</RelativeLayout>

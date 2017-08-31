@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/color_white"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/change_source_head"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_view_height_40"
+        android:gravity="center"
+        android:text="@string/bookshelf_change_source"
+        android:textColor="@color/color_black_353535"
+        android:textSize="@dimen/dimen_text_17" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_view_height_1"
+        android:background="@color/color_white_e5e5e5" />
+
+    <ListView
+        android:id="@+id/source_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/dimen_view_height_60"
+        android:layout_marginBottom="@dimen/dimen_margin_0"
+        android:cacheColorHint="@color/color_black_00000000"
+        android:divider="@color/color_gray_d9d9d9"
+        android:dividerHeight="@dimen/dimen_view_height_0.5"
+        android:paddingLeft="@dimen/dimen_padding_5"
+        android:paddingRight="@dimen/dimen_padding_5"
+        android:fadingEdge="none"
+        android:scrollbarFadeDuration="0"
+        android:fadeScrollbars="false"
+        android:scrollbars="vertical"
+        android:scrollbarStyle="insideInset"
+        android:verticalScrollbarPosition="right"
+        android:scrollbarThumbVertical="@drawable/background_list_scroll"
+        android:scrollbarSize="@dimen/dimen_view_width_5"
+        android:listSelector="@android:color/transparent">
+    </ListView>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_view_height_1"
+        android:background="@color/color_white_e5e5e5"/>
+    <TextView
+        android:id="@+id/source_list_btn_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_view_height_40"
+        android:background="@color/color_white"
+        android:gravity="center"
+        android:text="@string/cancel"
+        android:textSize="@dimen/dimen_text_16"
+        android:textColor="@color/color_black_6c6b6b"/>
+</LinearLayout>

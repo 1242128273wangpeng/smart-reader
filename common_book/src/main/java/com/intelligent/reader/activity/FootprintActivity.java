@@ -1,0 +1,360 @@
+package com.intelligent.reader.activity;
+
+import com.intelligent.reader.R;
+import com.intelligent.reader.adapter.BookShelfReAdapter;
+import com.intelligent.reader.adapter.paging.BaseAdapter;
+import com.intelligent.reader.adapter.paging.HisAdapter;
+import com.intelligent.reader.adapter.paging.LoadMoreAdapterWrapper;
+import com.intelligent.reader.read.help.BookHelper;
+import com.intelligent.reader.util.EventBookStore;
+
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.book.view.EmptyRecyclerView;
+import net.lzbook.kit.book.view.MyDialog;
+import net.lzbook.kit.data.bean.Book;
+import net.lzbook.kit.data.db.table.HistoryInforTable;
+import net.lzbook.kit.data.ormlite.bean.HistoryInfo;
+import net.lzbook.kit.data.ormlite.dao.DaoUtils;
+import net.lzbook.kit.user.UserManager;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.StatServiceUtils;
+
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.widget.LinearLayoutManager;
+import android.util.TypedValue;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+public class FootprintActivity extends iyouqu.theme.FrameActivity implements BookShelfReAdapter.ShelfItemClickListener, BookShelfReAdapter.ShelfItemLongClickListener, LoadMoreAdapterWrapper.OnLoad, View.OnClickListener, EmptyRecyclerView.OnItemChangeListener {
+
+    private static final String TAG = FootprintActivity.class.getSimpleName();
+    private EmptyRecyclerView mRecyclerView;
+    private BaseAdapter mLoadMoreAdapter;
+    private DaoUtils mDaoUtils;
+    private List<Book> mDataSet;
+    private HisAdapter mHisAdapter;
+    private ImageView mBack;
+    private TextView mClearDataTV;
+    private TextView mEmptyFind;
+    private View mNotLoginView;
+    private View mEmptyView;
+    private TextView mLoginTV;
+    private TextView mLoginInfo;
+    private TextView mTypeInfoTV;
+    private boolean currLoginState;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        StatServiceUtils.statAppBtnClick(this, StatServiceUtils.his_into);
+        setContentView(R.layout.activity_footprint);
+        currLoginState = !UserManager.INSTANCE.isUserLogin();
+        initView();
+        initListener();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        mLoginTV.setClickable(true);
+        checkInit(UserManager.INSTANCE.isUserLogin());
+    }
+
+    private void checkInit(boolean isLogin) {
+        if (isLogin == currLoginState){
+            return;
+        }
+
+        if (isLogin){
+            initData();
+        }else {
+            initNotLoginData();
+        }
+        currLoginState = isLogin;
+    }
+
+    private void initView() {
+        mRecyclerView = (EmptyRecyclerView) findViewById(R.id.recycler_footprint);
+        mBack = (ImageView)findViewById(R.id.book_history_back);
+        mClearDataTV = (TextView)findViewById(R.id.book_history_clear);
+
+        mEmptyView = findViewById(R.id.footprint_empty);
+        mEmptyFind = (TextView) findViewById(R.id.footprint_empty_find);
+
+        mNotLoginView = findViewById(R.id.footprint_not_login);
+        mNotLoginView.setVisibility(View.VISIBLE);
+        mNotLoginView.setClickable(true);
+        mLoginTV = (TextView) findViewById(R.id.footprint_to_login);
+        mLoginInfo = (TextView) findViewById(R.id.footprint_login_hint);
+        mTypeInfoTV = (TextView) findViewById(R.id.footprint_type_tv);
+    }
+
+    private void initNotLoginData() {
+        if (mRecyclerView != null){
+            if (mRecyclerView.getVisibility() == View.VISIBLE){
+                mRecyclerView.setVisibility(View.GONE);
+            }
+        }
+
+        if (mEmptyView != null){
+            if (mEmptyView.getVisibility() == View.VISIBLE){
+                mEmptyView.setVisibility(View.GONE);
+            }
+        }
+
+        initClearBtnState(false);
+
+        if (mNotLoginView != null){
+            mNotLoginView.setVisibility(View.VISIBLE);
+            mNotLoginView.setClickable(true);
+        }
+
+        int dataCount = 0;
+        try {
+            mDaoUtils = new DaoUtils(HistoryInfo.class);
+            dataCount = (int) mDaoUtils.countOf();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        String typeInfo = null;
+        if (mTypeInfoTV != null){
+            typeInfo = (String) mTypeInfoTV.getText();
+        }
+
+        if ("TypeTwo".equals(typeInfo)){
+            TextView loginInfoTwo = (TextView) findViewById(R.id.footprint_login_hint2);
+            if (dataCount > 0){
+                mLoginInfo.setText("您最近浏览了"+dataCount+"本书");
+                loginInfoTwo.setVisibility(View.VISIBLE);
+                loginInfoTwo.setText("请登录后查看");
+            }else {
+                mLoginInfo.setText("登录后可查看浏览过的书");
+                loginInfoTwo.setVisibility(View.GONE);
+            }
+        }else {
+            if (dataCount > 0){
+                mLoginInfo.setText("您最近浏览了"+dataCount+"本书, 请登录后查看");
+            }else {
+                mLoginInfo.setText("登录后可查看浏览过的书");
+            }
+        }
+    }
+
+    private void initData() {
+        if (mNotLoginView != null){
+            if (mNotLoginView.getVisibility() == View.VISIBLE){
+                mNotLoginView.setVisibility(View.GONE);
+            }
+        }
+
+        try {
+            mDaoUtils = new DaoUtils(HistoryInfo.class);
+            mDataSet = mDaoUtils.queryDataForPagingLoad(HistoryInforTable.LAST_BROW_TIME, 0L, (long) LoadMoreAdapterWrapper.PAGE_SIZE);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        if (mDataSet == null || mDataSet.isEmpty()){
+            initClearBtnState(false);
+        }else {
+            initClearBtnState(true);
+        }
+
+        // 创建被装饰者
+        mHisAdapter = new HisAdapter(this, this, this);
+        mHisAdapter.appendData(mDataSet);
+        // 创建装饰者
+        mLoadMoreAdapter = new LoadMoreAdapterWrapper(mHisAdapter, this);
+        mRecyclerView.setEmptyView(mEmptyView);
+        mRecyclerView.setAdapter(mLoadMoreAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+    }
+
+    private void initListener() {
+        if (mBack != null){
+            mBack.setOnClickListener(this);
+        }
+
+        if (mClearDataTV != null){
+            mClearDataTV.setOnClickListener(this);
+        }
+
+        if (mEmptyFind != null){
+            mEmptyFind.setOnClickListener(this);
+        }
+
+        if (mRecyclerView != null){
+            mRecyclerView.setOnItemChangeListener(this);
+        }
+
+        if (mLoginTV != null){
+            mLoginTV.setOnClickListener(this);
+        }
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        HistoryInfo info = null;
+        if (mHisAdapter != null){
+            List<HistoryInfo> dataSet = mHisAdapter.getDataSet();
+            if (dataSet != null && dataSet.size() > position){
+                info = dataSet.get(position);
+            }
+        }
+
+        if (info != null){
+            BookHelper.goToCover(this, info);
+        }
+    }
+
+    @Override
+    public void onItemLongClick(View view, int position) {
+
+    }
+
+    @Override
+    public void load(final int pagePosition, final int pageSize, final LoadMoreAdapterWrapper.ILoadCallback callback) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                AppLog.d(TAG, "pagePosition = " + pagePosition);
+                List<Book> dataSet = mDaoUtils.queryDataForPagingLoad(HistoryInforTable.LAST_BROW_TIME, (long)pagePosition, (long)pageSize);
+
+                mHisAdapter.appendData(dataSet);
+                callback.onSuccess();
+
+                if (dataSet == null || dataSet.isEmpty() || dataSet.size() < pageSize) {
+                    callback.onFailure();
+                }
+            }
+        }, 200);
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        if (v == null){
+            return;
+        }
+        switch (v.getId()){
+            case R.id.book_history_back:
+                Map<String, String> data = new HashMap<>();
+                data.put("type","1");
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
+                finish();
+                break;
+            case R.id.book_history_clear:
+                showDialog();
+                break;
+            case R.id.footprint_to_login:
+                mLoginTV.setClickable(false);
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivityForResult(intent, 1);
+                StartLogClickUtil.upLoadEventLog(this,StartLogClickUtil.PEASONAL_PAGE,StartLogClickUtil.HISTORYLOGIN);
+                break;
+            case R.id.footprint_empty_find:
+                Intent storeIntent = new Intent();
+                storeIntent.setClass(this, HomeActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_BOOKSTORE);
+                storeIntent.putExtras(bundle);
+                startActivity(storeIntent);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void initClearBtnState(boolean isEnable){
+        if (mClearDataTV == null || isEnable == mClearDataTV.isEnabled()){
+            return;
+        }
+
+        Resources.Theme theme = getTheme();
+        Resources resources = getResources();
+        TypedValue clearTvColor = new TypedValue();
+
+        if (isEnable){
+            theme.resolveAttribute(R.attr.footprint_title_clear_color, clearTvColor, true);
+        }else {
+            theme.resolveAttribute(R.attr.footprint_title_clear_unusable_color, clearTvColor, true);
+        }
+
+        mClearDataTV.setTextColor(resources.getColorStateList(clearTvColor.resourceId));
+        mClearDataTV.setEnabled(isEnable);
+
+    }
+
+    @Override
+    public void onItemChange(int itemCount) {
+        if (itemCount > 0){
+            initClearBtnState(true);
+        }else {
+            initClearBtnState(false);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (RESULT_OK == resultCode){
+            checkInit(UserManager.INSTANCE.isUserLogin());
+        }
+    }
+
+    private void showDialog() {
+        if (!this.isFinishing()) {
+            final MyDialog myDialog = new MyDialog(this,R.layout.publish_hint_dialog);
+            myDialog.setCanceledOnTouchOutside(true);
+            TextView dialog_title = (TextView) myDialog.findViewById(R.id.dialog_title);
+            dialog_title.setText(R.string.prompt);
+            TextView dialog_content = (TextView) myDialog.findViewById(R.id.publish_content);
+            dialog_content.setText(R.string.determine_clear_footprint_history);
+            TextView dialog_comfire = (TextView) myDialog.findViewById(R.id.publish_leave);
+
+            dialog_comfire.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mHisAdapter != null && mLoadMoreAdapter != null && mDaoUtils != null ){
+                        mHisAdapter.updateData(null);
+                        mLoadMoreAdapter.notifyDataSetChanged();
+                        mDaoUtils.deleteAll();
+                    }
+                    myDialog.dismiss();
+                }
+            });
+            TextView dialog_cancle = (TextView) myDialog.findViewById(R.id.publish_stay);
+            dialog_cancle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    myDialog.dismiss();
+                }
+            });
+            myDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    myDialog.dismiss();
+                }
+            });
+            if (!myDialog.isShowing()) {
+                try {
+                    myDialog.show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+}

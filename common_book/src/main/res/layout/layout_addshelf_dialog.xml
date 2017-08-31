@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/dimen_view_width_300"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:scrollbars="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/dialog_bg_color"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:id="@+id/dialog_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="标题"
+            android:padding="@dimen/padding_12"
+            android:gravity="center"
+            android:textColor="?attr/dialog_title_color"
+            android:textSize="@dimen/text_size_18"
+            />
+        <include layout="@layout/dialog_divider" />
+
+	<TextView
+        android:id="@+id/tv_update_info_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text_hint_info"
+        android:textColor="?attr/dialog_content_color"
+        android:textSize="@dimen/text_size_16"
+        android:layout_marginBottom="@dimen/dimen_margin_5"
+        android:layout_marginTop="@dimen/dimen_margin_25"
+        android:layout_marginLeft="@dimen/dimen_margin_50"
+        android:layout_marginRight="@dimen/dimen_margin_50"
+        android:lineSpacingExtra="6dp"/>
+    <CheckBox
+        android:id="@+id/cb_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginRight="@dimen/margin_10"
+        android:button="?attr/dialog_checkbox"
+        android:checked="false"
+        android:layout_marginBottom="@dimen/dimen_margin_25"
+        android:text="@string/text_no_hint"
+        android:textColor="?attr/dialog_checkbox_text_color"
+        android:textSize="@dimen/text_size_14" />
+
+        <RelativeLayout
+            android:id="@+id/change_source_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_view_height_50"
+            android:layout_below="@id/change_source_list">
+
+            <View
+                android:id="@+id/change_source_bottom_divider"
+                android:layout_width="@dimen/dimen_view_width_0.5"
+                android:layout_height="@dimen/dimen_view_height_50"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
+                android:background="?attr/color_divider" />
+
+            <Button
+                android:id="@+id/bt_cancel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@id/change_source_bottom_divider"
+                android:background="?attr/dialog_btn_left_selector"
+                android:gravity="center"
+                android:text="@string/reading_original_web"
+                android:textColor="?attr/dialog_cancel_color"
+                android:textSize="@dimen/dimen_text_16" />
+
+            <Button
+                android:id="@+id/bt_ok"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@id/change_source_bottom_divider"
+                android:background="?attr/dialog_btn_right_selector"
+                android:gravity="center"
+                android:text="@string/reading_continue"
+                android:textColor="?attr/dialog_confirm_color"
+                android:textSize="@dimen/dimen_text_16" />
+            <include layout="@layout/dialog_divider" />
+        </RelativeLayout>
+    </LinearLayout>
+
+
+
+
+</RelativeLayout>

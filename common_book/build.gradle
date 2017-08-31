@@ -1,0 +1,861 @@
+@Grab(group = 'com.alibaba', module = 'fastjson', version = '1.2.35')
+import com.alibaba.fastjson.*
+import com.android.builder.model.ProductFlavor
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'maven'
+
+
+def releaseTime() {
+    return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
+}
+
+android {
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    dexOptions {
+        javaMaxHeapSize "2g"
+    }
+    def UMENG_APPKEY_KDZSYDQ = "561e2050e0f55a6106003f03"
+    def UMENG_APPKEY_KDQBXS = "562751de67e58e360e001711"
+    def UMENG_APPKEY_QBZSYDQ = "56274d42e0f55a6cd700077c"
+    def UMENG_APPKEY_TXTQBXSYDQ = "56163c77e0f55a09700007e4"
+    def UMENG_APPKEY_TXTKDXS = "56415dfde0f55aeed9001dd3"
+    def UMENG_APPKEY_KDQBDZS = "56415ddd67e58e7eec0060b1"
+    def UMENG_APPKEY_MFQBXSSC = "5881cc1d2ae85b11740002d9"
+    def UMENG_APPKEY_JRDKQBXS = "5881cc3582b63548be0001af"
+    def UMENG_APPKEY_TXTQBDZS = "5881cb504ad1562170001595"
+    def UMENG_APPKEY_ZSMFQBXS = "5881cbbb4ad1563f860008bd"
+    def UMENG_APPKEY_TXTQBMFXS = "5881cb0ec895762f9f00187f"
+    def UMENG_APPKEY_QBMFXSYDQ = "5881c9ec75ca35097f000a5a"
+    def UMENG_APPKEY_QBMFYDQ = "52e5d39956240ba08305cc0f"
+    def UMENG_APPKEY_QBXSXZQ = "53c3533f56240b83e81012a5"
+    def UMENG_APPKEY_HYCS = "54800fd1fd98c53cb000096c"
+    def UMENG_APPKEY_TXTMFQBYDQ = "5475a099fd98c5e733000c41"
+    def UMENG_APPKEY_TXTMFQBDZS = "539e59d856240b0520057ce7"
+
+
+
+
+
+
+
+    def AMAP_APIKEY_KDZSYDQ = "1785d6e6115cd482d31ac4d8bc7c7c5a"
+    def AMAP_APIKEY_KDQBXS = "4abc3656c3dce890fbd05bfcc2e7a9ae"
+    def AMAP_APIKEY_QBZSYDQ = "1e0227f8d7bf906da1f4384771875bf7"
+    def AMAP_APIKEY_TXTQBXSYDQ = "5343e16a6ae3dbf70e5df020c9eba651"
+    def AMAP_APIKEY_TXTKDXS = "c46cd9e768ba8f053eb1ddcb65397d9f"
+    def AMAP_APIKEY_KDQBDZS = "e23a04ef3807c3020bc6dd0589a06592"
+    def AMAP_APIKEY_MFQBXSSC = "7ebcafd5513dc3cc42264325d6595eae"
+    def AMAP_APIKEY_JRDKQBXS = "7d78055ba72ccf291729432091f50eea"
+    def AMAP_APIKEY_TXTQBDZS = "db397c3ddbefd1890bd4667c381714b2"
+    def AMAP_APIKEY_ZSMFQBXS = "e28120099ca9784d5cf89a50542cb98f"
+    def AMAP_APIKEY_TXTQBMFXS = "b970335d9cde5088522c721b8e78d59d"
+    def AMAP_APIKEY_QBMFXSYDQ = "b2d452f5f2dd75ee39eead928a07cdc4"
+    def AMAP_APIKEY_QBMFYDQ = "7ebaefab2a96f794d86acb566f24b54d"
+    def AMAP_APIKEY_QBXSXZQ = "c32d86220989465ca70826c4bf366fb8"
+    def AMAP_APIKEY_HYCS = "dab5a066b2745ed848d76bf34d9f1038"
+    def AMAP_APIKEY_TXTMFQBYDQ = "df07c4696ee41b5075459b6d9a4d335f"
+    def AMAP_APIKEY_TXTMFQBDZS = "bbae57edf34620794d87545b18798e0e"
+
+
+    def BAIDU_STAT_ID_KDZSYDQ = "542233ee41"
+    def BAIDU_STAT_ID_KDQBXS = "0dd8386415"
+    def BAIDU_STAT_ID_QBZSYDQ = "c2543b8059"
+    def BAIDU_STAT_ID_TXTQBXSYDQ = "05c32565e4"
+    def BAIDU_STAT_ID_TXTKDXS = "c75208f64b"
+    def BAIDU_STAT_ID_KDQBDZS = "1b75898a50"
+    def BAIDU_STAT_ID_MFQBXSSC = "6dc230cbb1"
+    def BAIDU_STAT_ID_JRDKQBXS = "d936085832"
+    def BAIDU_STAT_ID_TXTQBDZS = "7e37d6eced"
+    def BAIDU_STAT_ID_ZSMFQBXS = "e4ed492234"
+    def BAIDU_STAT_ID_TXTQBMFXS = "0aeda7846c"
+    def BAIDU_STAT_ID_QBMFXSYDQ = "9368f00036"
+    def BAIDU_STAT_ID_QBMFYDQ = "881b217bad"
+    def BAIDU_STAT_ID_QBXSXZQ = "586365dae2"
+    def BAIDU_STAT_ID_HYCS = "3eebb5d9e8"
+    def BAIDU_STAT_ID_TXTMFQBYDQ = "a867478598"
+    def BAIDU_STAT_ID_TXTMFQBDZS = "04fe041fcd"
+
+    def appNameConfig = [
+            kdzsydq  : "快读追书阅读器",
+            qbzsydq  : "全本追书阅读器",
+            mfqbxssc : "免费全本小说书城", //快读替
+            zsmfqbxs : "追书免费全本小说", //阅微替
+            txtqbmfxs: "TXT全本免费小说", //鸿雁替
+            qbmfxsydq: "全本免费小说阅读器" //五步替
+    ]
+
+    def appPackageIDConfig = [
+            kdzsydq  : "cn.txtzsydsq.reader",
+            qbzsydq  : "cn.qbzsydsq.reader",
+            mfqbxssc : "cc.kdqbxs.reader",
+            zsmfqbxs : "cc.mianfeinovel",
+            txtqbmfxs: "cc.lianzainovel",
+            qbmfxsydq: "cc.quanben.novel"
+    ]
+
+
+    lintOptions {
+        // true--错误发生后停止gradle构建
+        abortOnError false
+        //  true--所有正式版构建执行规则生成崩溃的lint检查，如果有崩溃问题将停止构建
+        checkReleaseBuilds false
+    }
+    defaultConfig {
+
+        applicationId "cn.txtzsydsq.reader"
+
+//        System.err.println("project.properties = ${project.getProperties()}")
+
+
+        def startParameter = project.getGradle().getStartParameter()
+
+//        throw new RuntimeException("${startParameter.toString()}")
+        /*
+        StartParameter{
+            taskRequests=[
+                DefaultTaskExecutionRequest{
+                    args=[assembleZsmfqbxs],
+                    projectPath='null'
+                }
+            ],
+            excludedTaskNames=[],
+            currentDir=D:\WORKSPACE\dingyue\forTheme,
+            projectProperties={pkg=cc.cc.cc},
+        }
+         */
+
+        if (!startParameter.taskRequests.isEmpty()) {
+            String buildTypeName = null;
+            startParameter.taskRequests.forEach {
+                task ->
+                    task.args.forEach {
+                        arg ->
+                            if (arg.contains("assemble")) {
+                                buildTypeName = arg.replace("assemble", "").toLowerCase().replace(":common_book:", "")
+                            }
+                    }
+            }
+
+            if (buildTypeName != null) {
+                System.err.println("buildTypeName = ${buildTypeName}")
+                if (buildTypeName.contains("blf")) {
+                    buildTypeName = buildTypeName.split("blf")[0]
+                } else {
+                    if(buildTypeName.contains("debug"))
+                        buildTypeName = buildTypeName.split("debug")[0]
+                    else
+                        buildTypeName = buildTypeName.split("release")[0]
+                }
+                System.err.println("buildTypeName = ${buildTypeName}")
+                if (appPackageIDConfig.containsKey(buildTypeName)) {
+                    System.err.println("configPkg = ${appPackageIDConfig.get(buildTypeName)}")
+
+                    applicationId appPackageIDConfig.get(buildTypeName)
+                }
+
+                if (appNameConfig.containsKey(buildTypeName)) {
+                    System.err.println("configAppName = ${appNameConfig.get(buildTypeName)}")
+
+                    resValue "string", "app_name", appNameConfig.get(buildTypeName)
+                }
+            }
+
+        }
+
+
+
+
+        if (project.hasProperty('pkg')) {
+            def pkg = project.getProperties().get('pkg')
+            System.err.println("gradlew params -Ppkg = ${pkg}")
+            applicationId pkg
+        }
+
+
+
+
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+
+        versionCode project.hasProperty("VERSION_CODE") ? java.lang.Integer.parseInt(VERSION_CODE) : VERSION_CODE
+        versionName project.hasProperty('VERSION_NAME') ? VERSION_NAME : "${DEF_VERSION_NAME}"
+
+        System.err.println("applicationId = ${defaultConfig.applicationId} : ${getVersionName()} : ${getVersionCode()}")
+
+        // dex突破65535的限制
+        multiDexEnabled true
+        // 默认渠道和应用名称
+        manifestPlaceholders = [
+                CHANNEL_NAME : 'blf1298_11974_001',
+                APP_NAME     : '全本免费小说阅读器',
+                UMENG_APP_KEY: "${UMENG_APPKEY_KDZSYDQ}",
+                BAIDU_STAT_ID: "${BAIDU_STAT_ID_KDZSYDQ}",
+                AMAP_APIKEY  : "${AMAP_APIKEY_KDZSYDQ}"
+        ]
+
+        if (!getResValues().containsKey("app_name")) {
+
+            //直接运行时的默认名称
+            resValue "string", "app_name", "全本免费小说阅读器"
+        }
+
+        if (project.hasProperty('book_host')) {
+            def book_host = project.getProperties().get('book_host')
+            if (book_host.startsWith("http")) {
+                System.err.println("gradlew params -Pbook_host = ${book_host}")
+                resValue "string", "book_novel_deploy_host", book_host
+            } else {
+                System.err.println("gradlew params -Pbook_host = ${book_host} use default")
+            }
+        }
+
+        if (project.hasProperty('webview_host')) {
+            def webview_host = project.getProperties().get('webview_host')
+            if (webview_host.startsWith("http")) {
+                System.err.println("gradlew params -Pwebview_host = ${webview_host}")
+                resValue "string", "book_webview_host", webview_host
+            } else {
+                System.err.println("gradlew params -Pwebview_host = ${webview_host} use default")
+            }
+        }
+
+    }
+
+    sourceSets {
+        main {
+            java.srcDirs = ['src/main/java']
+            resources.srcDirs = ['src/main/java']
+            aidl.srcDirs = ['src/main/java']
+            jniLibs.srcDirs = ['libs']
+        }
+
+        instrumentTest.setRoot('tests')
+        debug.setRoot('build-types/debug')
+        release.setRoot('build-types/release')
+
+
+    }
+
+    signingConfigs {
+        release {
+            storeFile file(STORE_FILE)
+            storePassword STORE_PASSWORD
+            keyAlias STORE_KEY_ALIAS
+            keyPassword STORE_KEY_PASSWORD
+        }
+
+        release1 {
+            storeFile file(STORE_FILE_1)
+            storePassword STORE_PASSWORD_1
+            keyAlias STORE_KEY_ALIAS_1
+            keyPassword STORE_KEY_PASSWORD_1
+        }
+
+    }
+
+    buildTypes {
+
+/*
+百度应用中心	blp1298_10882_001
+360手机助手	blp1298_10890_001
+腾讯应用中心	blp1298_10891_001
+小米软件商店	blf1298_10928_001
+豌豆荚	blp1298_10269_001
+安卓市场	blp1298_10883_001
+91助手	blp1298_10699_001
+联想乐商店	blp1298_10610_001
+优亿市场	blf1298_10461_001
+华为市场	blf1298_12243_001
+搜狗市场	blf1298_12340_001
+魅族开发者	blf1298_12237_001
+木蚂蚁	blf1298_10887_001
+可可应用商店	blf1298_12242_001
+搜狗手机助手	blf1298_12247_001
+乐视应用中心	blf1298_13316_001
+VIVO应用商店	blf1298_12923_001
+默认升级渠道	blf1298_11974_001
+N多网	blf1298_10885_001
+
+ */
+
+        blp1298_10882_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10882_001'])
+        }
+        blp1298_10890_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10890_001'])
+        }
+        blp1298_10891_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10891_001'])
+        }
+        blf1298_10928_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_10928_001'])
+        }
+        blp1298_10269_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10269_001'])
+        }
+        blp1298_10883_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10883_001'])
+        }
+        blp1298_10699_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10699_001'])
+        }
+        blp1298_10610_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10610_001'])
+        }
+        blf1298_10461_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_10461_001'])
+        }
+        blf1298_12243_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_12243_001'])
+        }
+        blf1298_12340_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_12340_001'])
+        }
+        blf1298_12237_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_12237_001'])
+        }
+        blf1298_10887_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_10887_001'])
+        }
+        blf1298_12242_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_12242_001'])
+        }
+        blf1298_12247_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_12247_001'])
+        }
+        blf1298_13316_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_13316_001'])
+        }
+        blf1298_12923_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_12923_001'])
+        }
+        blf1298_10885_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_10885_001'])
+        }
+        blf1298_13096_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_13096_001'])
+        }
+        blf1298_10930_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_10930_001'])
+        }
+
+        //升级渠道
+        blf1298_11974_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_11974_001'])
+        }
+
+        //调试和开发使用
+        debug {
+            debuggable = true
+            minifyEnabled false
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_11974_001'])
+        }
+
+        //调试和开发使用
+        release {
+            debuggable = false
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_11974_001'])
+        }
+
+    }
+
+//渠道Flavors
+    productFlavors {
+
+        kdzsydq {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+
+            manifestPlaceholders = [
+                    UMENG_APP_KEY: "${UMENG_APPKEY_KDZSYDQ}",
+                    APP_NAME     : '快读追书阅读器',
+                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_KDZSYDQ}",
+                    AMAP_APIKEY  : "${AMAP_APIKEY_KDZSYDQ}",
+                    WECHAT_APPID : "wx13973d52a1bb219b",
+                    QQ_APPID     : "1104916456",
+//                    PACKAGE_NAME : "cn.txtzsydsq.reader"
+                    PACKAGE_NAME : defaultConfig.applicationId
+            ]
+
+            notOverrideResValue getOwner(), "string", "app_path", "/txtzsydsq_book"
+//            notOverrideResValue getOwner(), "string", "app_name", "快读追书阅读器"
+            notOverrideResValue getOwner(), "string", "database_name", "txtzsydsqBook.db"
+            notOverrideResValue getOwner(), "string", "baidu_stat_id", "542233ee41"
+            notOverrideResValue getOwner(), "string", "push_key", "aHSRXNEN6xUTi2QM455gvQC6"
+            notOverrideResValue getOwner(), "string", "alifeedback_key", "23572755"
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://yuedu.dushixiaoshuo.cn"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://scpage.dushixiaoshuo.cn:443"
+        }
+
+
+
+        qbzsydq {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+
+            manifestPlaceholders = [
+                    UMENG_APP_KEY: "${UMENG_APPKEY_QBZSYDQ}",
+                    APP_NAME     : '全本追书阅读器',
+                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_QBZSYDQ}",
+                    AMAP_APIKEY  : "${AMAP_APIKEY_QBZSYDQ}",
+                    WECHAT_APPID : "wx1a93a804b313cef5",
+                    QQ_APPID     : "1104925088",
+//                    PACKAGE_NAME : "cn.qbzsydsq.reader"
+                    PACKAGE_NAME : defaultConfig.applicationId
+
+            ]
+
+            notOverrideResValue getOwner(), "string", "app_path", "/qbzsydsq_book"
+//            notOverrideResValue getOwner(), "string", "app_name", "全本追书阅读器"
+            notOverrideResValue getOwner(), "string", "database_name", "qbzsydsqBook.db"
+            notOverrideResValue getOwner(), "string", "baidu_stat_id", "c2543b8059"
+            notOverrideResValue getOwner(), "string", "push_key", "DPAKieWG5BWSyNrq5ZGBCfUH"
+            notOverrideResValue getOwner(), "string", "alifeedback_key", "23571376"
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://zhuishu.lsread.cn"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://ctbookcity.lsread.cn:443"
+        }
+
+
+
+
+
+
+
+        mfqbxssc {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            manifestPlaceholders = [
+                    UMENG_APP_KEY: "${UMENG_APPKEY_MFQBXSSC}",
+                    APP_NAME     : '免费全本小说书城',
+                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_MFQBXSSC}",
+                    AMAP_APIKEY  : "${AMAP_APIKEY_MFQBXSSC}",
+                    WECHAT_APPID : "wx6a3fdf0169bb5e02",
+                    QQ_APPID     : "1105887983",
+                    PACKAGE_NAME : defaultConfig.applicationId
+            ]
+
+            notOverrideResValue getOwner(), "string", "app_path", "/kdqbmfxs_book"
+//            notOverrideResValue getOwner(), "string", "app_name", "免费全本小说书城"
+            notOverrideResValue getOwner(), "string", "database_name", "kdqbmfxsBook.db"
+            notOverrideResValue getOwner(), "string", "baidu_stat_id", "6dc230cbb1"
+            notOverrideResValue getOwner(), "string", "push_key", "vig504s5U9vGM2Oa0NM7snMW8gbmR4lS"
+            notOverrideResValue getOwner(), "string", "alifeedback_key", "23730467"
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://kuai.0106636.cn"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://kdbc.0106636.cn:443"
+        }
+
+
+        zsmfqbxs {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release1
+            manifestPlaceholders = [
+                    UMENG_APP_KEY: "${UMENG_APPKEY_ZSMFQBXS}",
+//                    APP_NAME     : '追书免费全本小说',
+                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_ZSMFQBXS}",
+                    AMAP_APIKEY  : "${AMAP_APIKEY_ZSMFQBXS}",
+                    WECHAT_APPID : "wxdf1bd911ebe48b00",
+                    QQ_APPID     : "1105964662",
+//                    PACKAGE_NAME : "cc.mianfeinovel"
+                    PACKAGE_NAME : defaultConfig.applicationId
+            ]
+
+            notOverrideResValue getOwner(), "string", "app_path", "/mianfeinovel_new"
+//            notOverrideResValue getOwner(), "string", "app_name", "追书免费全本小说"
+            notOverrideResValue getOwner(), "string", "database_name", "mianfeinovelnew.db"
+            notOverrideResValue getOwner(), "string", "baidu_stat_id", "e4ed492234"
+            notOverrideResValue getOwner(), "string", "push_key", "l1XQOTrS9hzzdTxSh2pMEobvgUhPoNeM"
+            notOverrideResValue getOwner(), "string", "alifeedback_key", "23730466"
+
+
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://novel.caotangteach.com"
+
+
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://shucheng.caotangteach.com:443"
+
+//            System.err.println("zsmfqbxs: app_name => " + getResValues().get("app_name").value)
+//            System.err.println("${defaultConfig.applicationId} defaultConfig.getResValues ${defaultConfig.getResValues()}")
+        }
+//
+        txtqbmfxs {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release1
+            manifestPlaceholders = [
+                    UMENG_APP_KEY: "${UMENG_APPKEY_TXTQBMFXS}",
+                    APP_NAME     : 'TXT全本免费小说',
+                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_TXTQBMFXS}",
+                    AMAP_APIKEY  : "${AMAP_APIKEY_TXTQBMFXS}",
+                    WECHAT_APPID : "wx4dfa750e9f5f9389",
+                    QQ_APPID     : "1105888471",
+//                    PACKAGE_NAME : "cc.lianzainovel"
+                    PACKAGE_NAME : defaultConfig.applicationId
+            ]
+
+            notOverrideResValue getOwner(), "string", "app_path", "/txtqbmfxs_new"
+//            notOverrideResValue getOwner(), "string", "app_name", "TXT全本免费小说"
+            notOverrideResValue getOwner(), "string", "database_name", "txtqbmfxsnew.db"
+            notOverrideResValue getOwner(), "string", "baidu_stat_id", "0aeda7846c"
+            notOverrideResValue getOwner(), "string", "push_key", "5IGK3hQjIasKH9P9thgBtqop5tTzjiuF"
+            notOverrideResValue getOwner(), "string", "alifeedback_key", "23730670"
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://book.lzbook.net"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://boyuelist.lzbook.net:443"
+        }
+
+        qbmfxsydq {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release1
+            manifestPlaceholders = [
+                    UMENG_APP_KEY: "${UMENG_APPKEY_QBMFXSYDQ}",
+                    APP_NAME     : '全本免费小说阅读器',
+                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_QBMFXSYDQ}",
+                    AMAP_APIKEY  : "${AMAP_APIKEY_QBMFXSYDQ}",
+                    WECHAT_APPID : "wx1adbbff037154040",
+                    QQ_APPID     : "1105963470",
+//                    PACKAGE_NAME : "cc.quanben.novel"
+                    PACKAGE_NAME : defaultConfig.applicationId
+//                    QQ_APPID  : "222222"
+            ]
+
+            notOverrideResValue getOwner(), "string", "app_path", "/txtqbmfxs_new"
+//            notOverrideResValue getOwner(), "string", "app_name", "全本免费小说阅读器"
+            notOverrideResValue getOwner(), "string", "database_name", "txtqbmfxsnew.db"
+            notOverrideResValue getOwner(), "string", "baidu_stat_id", "9368f00036"
+            notOverrideResValue getOwner(), "string", "push_key", "wxjKNUKiif2bBS95aBo7E8Gj4Iivtp6c"
+            notOverrideResValue getOwner(), "string", "alifeedback_key", "23731853"
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://n.wubutianxia.com"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://xiaoshuo.wubutianxia.com:443"
+        }
+
+    }
+
+
+    applicationVariants.all { variant ->
+
+        variant.preBuild.doFirst {
+
+//            System.err.println("preBuild ${variant.applicationId}_${variant.buildType.name}_${variant.flavorName}")
+
+        }
+
+        variant.checkManifest.doFirst {
+            System.err.println("checkManifest ${variant.applicationId}_${variant.buildType.name}_${variant.flavorName}")
+//            System.err.println(variant.applicationId)
+
+            //修改微信回到的包名
+//=============================================================
+            def wxentry = new File("common_book/src/main/java/com/intelligent/reader/activity/WXEntryActivity.kt")
+//            System.err.println(wxentry.getAbsolutePath())
+            def lines = wxentry.readLines()
+            lines.set(0, "package ${variant.applicationId}.wxapi")
+            def writer = wxentry.newWriter()
+            lines.forEach {
+                line ->
+                    writer.writeLine(line)
+            }
+            writer.close()
+//=============================================================
+
+//修改app_string.xml 中应用名称
+            def defaultAppName = android.defaultConfig.getResValues().get("app_name").value
+
+
+            ProductFlavor targetFlavor = null
+            variant.getProductFlavors().forEach {
+                flavor ->
+                    if (flavor.name.equalsIgnoreCase(variant.flavorName)) {
+                        targetFlavor = flavor
+                    }
+            }
+
+
+            def targetBuildType = variant.buildType
+
+            String channelAppName = null
+
+            if (targetBuildType != null) {
+                def app_name = targetBuildType.getResValues().get("app_name")
+                if (app_name != null && app_name.value != null) {
+                    channelAppName = app_name.value
+                }
+//                System.err.println("app_name ${app_name.value}")
+            }
+
+            System.err.println("Change App Name : $defaultAppName => $channelAppName")
+
+            def appString = new File("common_book/src/${targetFlavor.name}/res/values/app_strings.xml")
+
+
+            def bakFile = new File("common_book/${defaultAppName}.bak")
+            //上次构建失败，还原状态
+            if (bakFile.exists()) {
+                appString.delete()
+                bakFile.renameTo(appString)
+                bakFile.delete()
+            }
+
+
+            if (channelAppName != null) {
+
+//            System.err.println(wxentry.getAbsolutePath())
+                def appStringLines = appString.readLines()
+
+                boolean flagContains = false
+
+                appStringLines.forEach {
+                    line ->
+                        flagContains |= line.contains(defaultAppName)
+                        System.err.println(line)
+                }
+
+                if (flagContains) {
+                    def newAppStringLines = new ArrayList()
+                    appStringLines.forEach {
+                        line ->
+                            newAppStringLines.add(line.replace(defaultAppName, channelAppName))
+                    }
+
+                    if (!newAppStringLines.isEmpty()) {
+
+                        appString.renameTo(bakFile)
+                        def printWriter = appString.newPrintWriter("UTF-8")
+                        newAppStringLines.forEach {
+                            line ->
+                                printWriter.println(line)
+                                System.err.println(line)
+                        }
+                        printWriter.flush()
+                        printWriter.close()
+                    }
+                } else {
+                    throw new RuntimeException("app_strings.xml not contains $defaultAppName are you sure appres is right ?")
+                }
+
+            }
+        }
+
+        variant.assemble.doFirst {
+            System.err.println("assemble.doFirst ${variant.applicationId}_${variant.buildType.name}_${variant.flavorName}")
+        }
+
+        //还原app_strings.xml
+        variant.assemble.doLast {
+
+            ProductFlavor targetFlavor = null
+            variant.getProductFlavors().forEach {
+                flavor ->
+                    if (flavor.name.equalsIgnoreCase(variant.flavorName)) {
+                        targetFlavor = flavor
+                    }
+            }
+
+            def defaultAppName = android.defaultConfig.getResValues().get("app_name").value
+            System.err.println("assemble.doLast ${variant.applicationId}_${variant.buildType.name}_${variant.flavorName}")
+            def bakFile = new File("common_book/${defaultAppName}.bak")
+            if (bakFile.exists()) {
+                def file = new File("common_book/src/${targetFlavor.name}/res/values/app_strings.xml")
+                file.delete()
+                bakFile.renameTo(file)
+            }
+        }
+
+        variant.outputs.each { output ->
+            if (variant.buildType.debuggable || variant.flavorName.contains("Release")) {
+                return
+            }
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                def fileName
+                if (variant.flavorName == "kdzsydq") {
+                    fileName = "txtzsydsq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                } else if (variant.flavorName == "kdqbxs") {
+                    fileName = "kdqbxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                } else if (variant.flavorName == "qbzsydq") {
+                    fileName = "qbzsydsq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                } else if (variant.flavorName == "txtqbxsydq") {
+                    fileName = "zsqbydq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                } else if (variant.flavorName == "txtkdxs") {
+                    fileName = "txtkdxsdq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                } else if (variant.flavorName == "kdqbdzs") {
+                    fileName = "kkqbtxtxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                } else if (variant.flavorName == "mfqbxssc") {
+                    fileName = "mfqbxssc_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                } else if (variant.flavorName == "jrdkqbxs") {
+                    fileName = "jrdkqbxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                } else if (variant.flavorName == "txtqbdzs") {
+                    fileName = "txtqbdzs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                } else if (variant.flavorName == "zsmfqbxs") {
+                    fileName = "zsmfqbxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                } else if (variant.flavorName == "txtqbmfxs") {
+                    fileName = "txtqbmfxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                } else if (variant.flavorName == "qbmfxsydq") {
+                    fileName = "qbmfxsydq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                } else if (variant.flavorName == "qbmfydq") {
+                    fileName = "qbmfydq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                } else if (variant.flavorName == "qbxsxzq") {
+                    fileName = "quanbennovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                } else if (variant.flavorName == "hycs") {
+                    fileName = "lianzainovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                } else if (variant.flavorName == "txtmfqbydq") {
+                    fileName = "mianfeinovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                } else {
+                    fileName = "remennovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                }
+
+                output.outputFile = new File(outputFile.parent, fileName)
+            }
+
+
+        }
+
+    }
+
+
+}
+
+//配置特殊渠道的应用名称
+private void fixChannelAppName(def flavor) {
+    JSONObject appChannelName = JSON.parse(new File("common_book/AppChannelName.json").text);
+    JSONObject config = appChannelName.getJSONObject(android.defaultConfig.applicationId)
+    if (config != null) {
+
+        if (config != null && config.containsKey(flavor.name)) {
+            def app_name = config.getString(flavor.name)
+//            System.err.println("${android.defaultConfig.applicationId} Flavor: " + flavor.name + " => " + app_name)
+            flavor.resValue "string", "app_name", app_name
+            flavor.addManifestPlaceholders([APP_NAME: app_name])
+        }
+
+        def appNameFeild = flavor.getResValues().get("app_name")
+        if (appNameFeild != null) {
+            System.err.println("${android.defaultConfig.applicationId} flavor = ${flavor.name} => ${appNameFeild.value}")
+        }
+    }
+}
+
+//不重写默认配置
+private void notOverrideResValue(def buildType, String type,
+                                 String name,
+                                 String value) {
+    if (!android.defaultConfig.getResValues().containsKey(name)) {
+        buildType.resValue type, name, value
+    } else {
+        System.err.println("${buildType.name} \t\t use defaultConfig resValue ${name} \t\t\t ${android.defaultConfig.getResValues().get(name).value}")
+    }
+}
+
+
+dependencies {
+    compile fileTree(include: '*.jar', dir: 'libs')
+//    compile project(path: ':theme')
+    kdzsydqCompile project(path: ':theme', configuration: "kdzsydq")
+    qbzsydqCompile project(path: ':theme', configuration: "qbzsydq")
+    mfqbxsscCompile project(path: ':theme', configuration: "mfqbxssc")
+    zsmfqbxsCompile project(path: ':theme', configuration: "zsmfqbxs")
+    txtqbmfxsCompile project(path: ':theme', configuration: "txtqbmfxs")
+    qbmfxsydqCompile project(path: ':theme', configuration: "qbmfxsydq")
+    //    compile project(':cml')
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile 'com.squareup.leakcanary:leakcanary-android:1.5'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+    compile "com.android.support:cardview-v7:$support_version"
+    compile 'de.hdodenhof:circleimageview:2.1.0'
+    debugCompile 'com.amitshekhar.android:debug-db:1.0.1'
+}
+

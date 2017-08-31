@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="promotion" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/extension_small_item</item>
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:thumb">@null</item>
+        <item name="android:indeterminateDrawable">@drawable/extension_small_item</item>
+        <item name="android:minHeight">@dimen/dimen_view_height_16</item>
+        <item name="android:maxHeight">@dimen/dimen_view_height_16</item>
+    </style>
+
+    <style name="CircleProgressBar">
+        <item name="android:indeterminateOnly">true</item>
+        <item name="android:indeterminateDrawable">@drawable/progress_circle</item>
+        <item name="android:indeterminateBehavior">repeat</item>
+        <item name="android:indeterminateDuration">1500</item>
+        <item name="android:minWidth">@dimen/dimen_view_width_48</item>
+        <item name="android:maxWidth">@dimen/dimen_view_width_48</item>
+        <item name="android:minHeight">@dimen/dimen_view_height_48</item>
+        <item name="android:maxHeight">@dimen/dimen_view_height_48</item>
+    </style>
+
+    <style name="biz_offline_title_style">
+        <item name="android:textSize">17.0sp</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:textColor">#ff8e8e8e</item>
+    </style>
+
+    <style name="biz_offline_desc_style">
+        <item name="android:textSize">13.0sp</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:textColor">#ff8e8e8e</item>
+    </style>
+
+    <style name="update_dialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="CustomDialog" parent="android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowBackground">@color/color_black_00000000</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <style name="custom_refresh_loading">
+        <item name="android:indeterminateDuration">800</item>
+        <item name="android:indeterminateDrawable">@drawable/prl_refresh_loading</item>
+        <item name="android:minWidth">16dip</item>
+        <item name="android:maxWidth">16dip</item>
+        <item name="android:minHeight">16dip</item>
+        <item name="android:maxHeight">16dip</item>
+    </style>
+
+    <style name="custom_pop_loading">
+        <item name="android:indeterminateDuration">800</item>
+        <item name="android:indeterminateDrawable">@drawable/pb_pop_loading</item>
+        <item name="android:minWidth">16dip</item>
+        <item name="android:maxWidth">16dip</item>
+        <item name="android:minHeight">16dip</item>
+        <item name="android:maxHeight">16dip</item>
+    </style>
+
+    <!-- 自定义loading dialog -->
+    <style name="loading_dialog" parent="android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@drawable/shape_view_loading</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <style name="remove_menu_anim_style">
+        <item name="android:windowEnterAnimation">@anim/remove_menu_in</item>
+        <item name="android:windowExitAnimation">@anim/remove_menu_out</item>
+    </style>
+</resources>

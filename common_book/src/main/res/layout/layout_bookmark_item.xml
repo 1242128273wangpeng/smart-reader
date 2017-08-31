@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/dimen_padding_10"
+    android:paddingRight="@dimen/dimen_padding_10"
+    android:paddingTop="@dimen/dimen_padding_10"
+    android:orientation="vertical">
+    
+    <TextView
+            android:id="@+id/item_bookmark_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:textColor="?attr/cover_profile_title_color"
+            android:text="@string/app_name"
+            android:textSize="@dimen/dimen_text_15"/>
+    
+    <TextView
+        android:id="@+id/item_bookmark_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_margin_10"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:text="@string/app_name"
+        android:textSize="@dimen/dimen_text_14"
+        android:textColor="?attr/cover_profile_des_color"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_padding_5">
+
+        <TextView
+            android:id="@+id/item_bookmark_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:singleLine="true"
+            android:text="@string/app_name"
+            android:textSize="@dimen/dimen_text_12"
+            android:textColor="?attr/cover_profile_des_color"/>
+
+        <ImageView
+            android:id="@+id/item_bookmark_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:padding="@dimen/dimen_padding_5"
+            android:src="?attr/directory_delete" />
+
+    </RelativeLayout>
+
+    <include
+        android:id="@+id/bookmark_divider"
+        layout="@layout/layout_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_view_height_0.5"
+        android:layout_marginTop="@dimen/dimen_margin_5" />
+
+</LinearLayout>

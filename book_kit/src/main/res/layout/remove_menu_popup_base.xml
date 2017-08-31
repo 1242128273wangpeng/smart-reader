@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/remove_menu_base"
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal">
+    <Button
+        android:id="@+id/bookrack_popup_delete"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/dimen_view_height_50"
+        android:background="@drawable/selector_remove_menu_delete"
+        android:gravity="center"
+        android:text="删除"
+        android:textColor="#fefefe"
+        android:textSize="20sp"/>
+</LinearLayout>

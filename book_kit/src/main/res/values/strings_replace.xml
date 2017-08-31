@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--提取自strings的资源-->
+    <string name="app_name">鸿雁传书</string>
+
+    <!--提取自Constants的资源-->
+    <string name="app_path">/quanben</string>
+    <string name="app_path_book">/book/</string>
+    <string name="app_path_cache">/cache/</string>
+    <string name="app_path_download">/download/</string>
+    <string name="app_path_image">/image/</string>
+    <string name="app_path_log">/log/</string>
+    <string name="default_image_url">http://image.book.easou.com/i/default/cover.jpg</string>
+
+    <string name="book_novel_deploy_host">http://mWXApi.wubutianxia.com:8090</string>
+    <string name="book_webview_host">http://bookwebview.wubutianxia.com:8090</string>
+    <string name="database_name">novel.db</string>
+
+    <string name="baidu_stat_id">542233ee41</string>
+    <string name="push_key">aHSRXNEN6xUTi2QM455gvQC6</string>
+    <string name="alifeedback_key">23572755</string>
+</resources>

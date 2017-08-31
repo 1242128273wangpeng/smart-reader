@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/base_bg"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <RadioGroup
+        android:id="@+id/rg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/btn_recent"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="?attr/base_bg"
+            android:button="@null"
+
+            android:layout_margin="15dp"
+            android:text="按最近阅读"
+            android:textColor="?attr/home_paixu_checked"
+            android:textSize="14sp" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?attr/color_divider"/>
+
+        <RadioButton
+            android:id="@+id/btn_time"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="?attr/base_bg"
+            android:button="@null"
+            android:layout_margin="15dp"
+            android:text="按最近更新"
+            android:textColor="?attr/home_paixu_checked"
+            android:textSize="14sp" />
+
+
+    </RadioGroup>
+
+
+</LinearLayout>

@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        package="com.intelligent.reader"
+        android:installLocation="auto"
+        android:largeHeap="true"
+        android:versionCode="17"
+        android:versionName="1.5.4">
+    
+    <uses-sdk
+            android:minSdkVersion="14"
+            android:targetSdkVersion="22"
+            tools:overrideLibrary="comm.umeng.com.umeng_community_library_project"/>
+    
+    <!-- 百度推送权限 -->
+    <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER"/>
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION"/>
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
+    
+    <!-- 用于在屏幕关闭时维持下载网络 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <!-- 用于连接Internet -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- 用于识别网络接入点等信息 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!-- 用于精确统计用户手机的系统信息 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_LOGS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <!-- <uses-permission android:name="android.permission.SET_WALLPAPER" /> -->
+    <!-- 用于识别WIFI网络等信息 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <!-- 离线下载 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.REORDER_TASKS"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <!-- 广告sdk权限 -->
+    <!-- 有助于获取投放地域广告，提高广告与用户的相关性，提高广告点击率 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_UPDATES"/>
+    
+    <!-- 芒果广告权限 -->
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.GET_TASKS"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <!-- 百度统计3.7.1新增权限 -->
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <!-- WeChat -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <!-- WeChat -->
+    
+    <!--qq-->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- SDK2.1新增获取用户位置信息 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    
+    <uses-permission android:name="android.permission.GET_TASKS"/>
+    <!--qq-->
+    <supports-screens
+            android:anyDensity="true"
+            android:largeScreens="true"
+            android:normalScreens="true"
+            android:smallScreens="true"
+            android:xlargeScreens="true"/>
+    
+    <application
+            android:name=".app.BookApplication"
+            android:allowBackup="true"
+            android:icon="@drawable/icon"
+            android:label="@string/app_name"
+            android:largeHeap="true"
+            tools:replace="android:allowBackup">
+        
+        <!-- start for GaoDe Map -->
+        <service android:name="com.amap.api.location.APSService"/>
+        
+        <meta-data
+                android:name="com.amap.api.v2.apikey"
+                android:value="${AMAP_APIKEY}"/>
+        <!-- end for GaoDe Map -->
+        
+        <meta-data
+                android:name="UMENG_APPKEY"
+                android:value="${UMENG_APP_KEY}"/>
+        
+        
+        <!-- 您从百度网站获取的APP KEY -->
+        <meta-data
+                android:name="BaiduMobAd_STAT_ID"
+                android:value="${BAIDU_STAT_ID}"/>
+        <!-- 应用程序的分发渠道 -->
+        <meta-data
+                android:name="BaiduMobAd_CHANNEL"
+                android:value="${CHANNEL_NAME}"/>
+        <!-- baidu channel -->
+        
+        <meta-data
+                android:name="WECHAT_APPID"
+                android:value="${WECHAT_APPID}"
+                />
+        <meta-data
+                android:name="QQ_APPID"
+                android:value="${QQ_APPID}"
+                />
+        <!-- 声明Mogo的Activity -->
+        <activity
+                android:name="com.adsmogo.adview.AdsMogoWebView"
+                android:configChanges="orientation|keyboardHidden|screenSize|keyboard|keyboardHidden"
+                android:label="@string/app_name"
+                android:theme="@android:style/Theme.Translucent"/>
+
+        <!-- 360广告依赖的activity -->
+        <activity
+                android:name="com.ak.android.bridge.AKActivity"
+                android:configChanges="orientation|screenSize|keyboardHidden"
+                android:theme="@android:style/Theme.Black.NoTitleBar"/>
+
+        <!-- baidu 信息流广告必须添加 -->
+        <activity
+                android:name="com.baidu.mobad.feeds.BaiduActivity"
+                android:configChanges="keyboard|keyboardHidden|orientation"/>
+        
+        <!-- 注册Service，应用下载所需 -->
+        <service
+                android:name="com.adsmogo.controller.service.UpdateService"
+                android:exported="true"
+                android:process=":remote"/>
+        <!-- 注册Service，应用被安装所用 -->
+        <service
+                android:name="com.adsmogo.controller.service.CountService"
+                android:exported="true"
+                android:process=":remote"/>
+        
+        <activity
+                android:name="com.qq.e.ads.InterstitialAd"
+                android:configChanges="keyboard|keyboardHidden|orientation"
+                android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        <activity
+                android:name="com.qq.e.ads.ADActivity"
+                android:configChanges="keyboard|keyboardHidden|orientation|screenSize"/>
+        
+        <!-- 百度广告Activity声明 -->
+        <activity
+                android:name="com.baidu.mobads.AppActivity"
+                android:configChanges="keyboard|keyboardHidden|orientation"/>
+        
+        <service
+                android:name="com.qq.e.comm.DownloadService"
+                android:exported="false"/>
+        <!-- <activity android:name="com.qq.e.ads.AdActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenSize" /> -->
+        
+        <activity
+                android:name=".activity.SplashActivity"
+                android:label="@string/app_name"
+                android:launchMode="singleTop"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Start">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+        
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity
+                android:name="${PACKAGE_NAME}.wxapi.WXEntryActivity"
+                android:theme="@android:style/Theme.Translucent.NoTitleBar"
+                android:exported="true">
+        </activity>
+        <!-- 书架页 发现页 -->
+        <activity
+                android:name=".activity.HomeActivity"
+                android:clearTaskOnLaunch="true"
+                android:configChanges="keyboard"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme1">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN2"/>
+                
+                <category android:name="android.intent.category.main"/>
+            </intent-filter>
+        </activity>
+        
+        <activity
+                android:name=".activity.LoginActivity"
+                android:launchMode="singleTop"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme1">
+    
+        </activity>
+        <activity
+                android:name=".activity.ReadingActivity"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:hardwareAccelerated="false"
+                android:screenOrientation="nosensor"
+                android:theme="@style/Theme.DesignDemo"/>
+        <activity
+                android:name=".activity.CataloguesActivity"
+                android:theme="@style/Theme1"/>
+        <!-- 关于 -->
+        
+        
+        <!-- 阅读设置页面 -->
+        <activity
+                android:name=".activity.ReadingSettingActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme1"/>
+        
+        <!-- 更多设置 -->
+        <activity
+                android:name=".activity.SettingMoreActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme1"/>
+        
+        <!-- 设置页 -->
+        <activity
+                android:name=".activity.SettingActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme1"/>
+        
+        <!-- 免责声明页 -->
+        <activity
+                android:name=".activity.DisclaimerActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme1"/>
+        
+        <!-- 下载apk失败页面 -->
+        <activity
+                android:name=".activity.DownloadErrorActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme1"/>
+        
+        <!-- 找书页面 -->
+        <activity
+                android:name=".activity.SearchBookActivity"
+                android:configChanges="keyboard"
+                android:launchMode="singleTop"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme1"/>
+        <activity
+                android:name=".activity.StyleChangeActivity"
+                android:configChanges="keyboard"
+                android:launchMode="singleTop"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme1"/>
+        
+        
+        <!-- 推送 -->
+        <receiver android:name=".receiver.PushClickReceiver">
+            <intent-filter>
+                <action android:name="cn.txtzsydsq.reader.receiver.CLICK_BOOK_UPDATE"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".receiver.DownBookClickReceiver">
+            <intent-filter>
+                <action android:name="cn.txtzsydsq.reader.receiver.CLICK_DOWN_BOOK"/>
+            </intent-filter>
+        </receiver>
+        <!-- push应用定义消息receiver声明 -->
+        <receiver android:name=".receiver.BaiduPushReceiver">
+            <intent-filter>
+                
+                <!-- 接收push消息 -->
+                <action android:name="com.baidu.android.pushservice.action.MESSAGE"/>
+                <!-- 接收bind,unbind,fetch,delete等反馈消息 -->
+                <action android:name="com.baidu.android.pushservice.action.RECEIVE"/>
+                <action android:name="com.baidu.android.pushservice.action.notification.CLICK"/>
+            </intent-filter>
+        </receiver>
+        <!-- 百度推送 push必须的receviver和service声明 -->
+        <receiver
+                android:name="com.baidu.android.pushservice.PushServiceReceiver"
+                android:process=":bdservice_v1">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="com.baidu.android.pushservice.action.notification.SHOW"/>
+                <action android:name="com.baidu.android.pushservice.action.media.CLICK"/>
+                <!-- 以下四项为可选的action声明，可大大提高service存活率和消息到达速度 -->
+                <action android:name="android.intent.action.MEDIA_MOUNTED"/>
+                <action android:name="android.intent.action.USER_PRESENT"/>
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
+            </intent-filter>
+        </receiver>
+        <receiver
+                android:name="com.baidu.android.pushservice.RegistrationReceiver"
+                android:process=":bdservice_v1">
+            <intent-filter>
+                <action android:name="com.baidu.android.pushservice.action.METHOD"/>
+                <action android:name="com.baidu.android.pushservice.action.BIND_SYNC"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+                
+                <data android:scheme="package"/>
+            </intent-filter>
+        </receiver>
+        
+        <service
+                android:name="com.baidu.android.pushservice.PushService"
+                android:exported="true"
+                android:process=":bdservice_v1">
+            <intent-filter>
+                <action android:name="com.baidu.android.pushservice.action.PUSH_SERVICE"/>
+            </intent-filter>
+        </service>
+        <service
+                android:name="com.baidu.android.pushservice.CommandService"
+                android:exported="true"/>
+        
+        <!-- 百度推送push结束 -->
+        
+        <activity
+                android:name=".activity.CoverPageActivity"
+                android:label="@string/title_activity_act_book_cover"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme1"/>
+        <activity
+                android:name=".activity.FootprintActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme1"/>
+        <activity
+                android:name=".activity.BookEndActivity"
+                android:label="@string/title_activity_act_book_over"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme1"/>
+        <activity
+                android:name=".activity.DownloadManagerActivity"
+                android:launchMode="singleTop"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme1"/>
+        <activity
+                android:name=".activity.GuideActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme1"/>
+        <activity
+                android:name=".activity.FindBookDetail"
+                android:configChanges="keyboard"
+                android:launchMode="singleTop"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme1"/>
+        <activity
+                android:name=".activity.SwitchModeActivity"
+                android:launchMode="singleTop"
+                android:screenOrientation="nosensor"
+                android:theme="@style/Theme1"/>
+        
+        <activity
+                android:name=".activity.GoToCoverOrReadActivity"
+                android:taskAffinity=".gotocoverorreadactivity"
+                android:launchMode="singleInstance"
+                android:noHistory="true">
+            <!--<intent-filter>-->
+            <!--<action android:name="${applicationId}.GoToCoverOrReadActivity"/>-->
+            <!--<category android:name="android.intent.category.DEFAULT"/>-->
+            <!--</intent-filter>-->
+        </activity>
+        <!-- 腾讯SSO授权的Activity注册 -->
+        <activity
+                android:name="com.tencent.tauth.AuthActivity"
+                android:launchMode="singleTask"
+                android:noHistory="true"
+                android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                
+                <data android:scheme="tencent${QQ_APPID}"/>
+            </intent-filter>
+        </activity>
+        <activity
+                android:name="com.tencent.connect.common.AssistActivity"
+                android:screenOrientation="portrait"
+                android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        
+        <!-- 微信回调activity -->
+        
+        
+        <!--&lt;!&ndash; 自定义登录 &ndash;&gt;-->
+        <!--<activity-->
+        <!--android:name="com.dingyue.bbs.activity.CustomLoginActivity"-->
+        <!--android:screenOrientation="portrait"-->
+        <!--android:theme="@style/Theme.UMDefault" />-->
+        
+        <!--&lt;!&ndash; 自定义社区 &ndash;&gt;-->
+        <!--<activity-->
+        <!--android:name="com.dingyue.bbs.activity.CustomCommunityMainActivity"-->
+        <!--android:screenOrientation="portrait"-->
+        <!--android:theme="@style/Theme.UMDefault" />-->
+        
+        
+        <!-- 新浪微博 -->
+        <activity
+                android:name=".WBShareActivity"
+                android:configChanges="keyboardHidden|orientation"
+                android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY"/>
+                
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+                android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
+                android:configChanges="keyboardHidden|orientation"
+                android:exported="false"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="adjustResize"/>
+        
+        <service
+                android:name="com.sina.weibo.sdk.net.DownloadService"
+                android:exported="false"/>
+        
+        <receiver android:name=".receiver.ConnectionChangeReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".receiver.BootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+        
+        <service
+                android:name="net.lzbook.kit.utils.update.DownloadIntentService"
+                android:enabled="true"
+                android:exported="true"/>
+    
+    
+    </application>
+
+</manifest>

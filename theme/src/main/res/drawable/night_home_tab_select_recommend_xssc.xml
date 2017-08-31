@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@mipmap/night_tab_icon_bookstore_selected_nig" android:state_selected="true" />
+    <item android:drawable="@mipmap/night_tab_icon_bookstore_unselected_nig" />
+</selector>

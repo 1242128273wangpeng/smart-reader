@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/read_settting_jump_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/novel_txtOverlay_linear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:background="@drawable/light_reading_chapter_shape"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingBottom="10dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:paddingTop="10dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/novel_txtOverlay_chapter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/novel_test_chapter_num"
+            android:textColor="@color/color_gray_b3b3b3"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/novel_txtOverlay_sequence"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_gray_b3b3b3"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/novel_jump_linear"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:background="@color/color_black_alpha_101010"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/novel_jump_previous"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/read_press_settings_selector"
+            android:gravity="center"
+            android:paddingLeft="@dimen/padding_12"
+            android:paddingRight="5dp"
+            android:text="@string/novel_previous_chapter"
+            android:textColor="@color/color_gray_b0b5b9"
+            android:textSize="14sp" />
+
+        <SeekBar
+            android:id="@+id/jump_progressbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="60dp"
+            android:layout_marginRight="60dp"
+            android:maxHeight="2dp"
+            android:minHeight="2dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:progressDrawable="@drawable/light_novel_progress_brightness"
+            android:splitTrack="false"
+            android:thumb="@drawable/light_reading_seekbar_gray" />
+
+        <TextView
+            android:id="@+id/novel_jump_next"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/read_press_settings_selector"
+            android:gravity="center"
+            android:paddingLeft="@dimen/padding_5"
+            android:paddingRight="@dimen/padding_12"
+            android:text="@string/novel_next_chapter"
+            android:textColor="@color/color_gray_b0b5b9"
+            android:textSize="14sp" />
+    </RelativeLayout>
+</LinearLayout>

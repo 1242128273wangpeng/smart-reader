@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--夜间模式-->
+    <style name="Night" parent="AppTheme">
+        <item name="theme_name">@string/theme_night</item>
+        <item name="colorPrimary">@color/color_gray_333333</item>
+        <item name="colorAccent">@color/color_brown_91826D</item>
+        <item name="color_primary">@color/color_gray_333333</item>
+        <item name="base_bg">@color/color_gray_333333</item>
+        <item name="base_bg1">@color/color_gray_333333</item>
+        <item name="title_shadow">@mipmap/top_shadow</item>
+        <item name="title_back">@mipmap/night_cover_top_back</item>
+        <item name="title_back1">@drawable/night_top_back_selector</item>
+        <item name="color_divider">@color/color_gray_4a4a4a</item>
+        <item name="color_lv_gap">@color/color_black_222222</item>
+        <item name="color_divider_item">@color/color_black_222222</item>
+        <item name="color_text_content">@color/color_gray_9b9b9b</item>
+        <item name="color_text_content1">@color/color_gray_4a4a4a</item>
+        <item name="color_text_most">@color/color_white_CCFFFFFF</item>
+        <item name="color_red_point">@color/color_red_ce3d3e</item>
+        <item name="color_red_point_1">@color/color_red_ce3d3e</item>
+
+        <!--透明状态栏-->
+        <item name="color_statusBar">@color/color_gray_333333</item>
+        <item name="colorPrimaryDark">@android:color/white</item>
+
+        <!--更多设置和设置页的切换按钮-->
+        <item name="switchbutton_checked_color">@color/color_gray_acacac</item>
+        <item name="switchbutton_unchecked_color">@color/color_black_3b3b3b</item>
+        <item name="switchbutton_bg_checked_color">@color/color_gray_565656</item>
+        <item name="switchbutton_bg_unchecked_color">@color/color_gray_474747</item>
+
+        <!--顶部导航栏-->
+        <item name="top_navigation_text_color">@color/color_gray_9b9b9b</item>
+        <item name="top_navigation_text_selector">@drawable/night_top_navigation_text_selector</item>
+        <item name="top_navigation_bg_color">@color/color_gray_333333</item>
+        <item name="top_navigation_divider_color">@color/color_gray_676665</item>
+
+        <!--封面页-->
+        <item name="cover_bg">@color/color_gray_333333</item>
+        <item name="cover_profile_title_color">@color/color_gray_9b9b9b</item>
+        <item name="cover_profile_des_color">@color/color_gray_777777</item>
+        <item name="cover_profile_bg_color">@color/color_gray_4a4a4a</item>
+        <item name="cover_top_back">@mipmap/night_cover_top_back</item>
+        <item name="cover_profile_bg_pic">@mipmap/night_cover_profile_bg_pic</item>
+        <item name="cover_checkdir_bg_color">@drawable/night_cover_checkdir_bg</item>
+        <item name="cover_checkdir_text_color">@color/color_gray_bebebe</item>
+        <item name="cover_profile_icon">@mipmap/night_cover_profile_icon</item>
+        <item name="cover_bottom_btn_text_color">@color/color_white_eaeaea</item>
+        <item name="cover_bottom_btn_bg">@drawable/night_cover_bottom_btn_bg</item>
+        <item name="cover_bottom_btn_selector">@drawable/night_cover_bottom_btn_selector</item>
+        <item name="cover_bottom_btn_text_selector">@drawable/night_cover_bottom_btn_text_selector</item>
+        <item name="cover_bottom_bg_color">@color/color_gray_333333</item>
+        <item name="cover_bottom_btn_remove_bg">@drawable/night_cover_bottom_btn_remove_bg</item>
+        <item name="cover_bottom_btn_add_bg">@drawable/night_cover_bottom_btn_add_bg</item>
+        <item name="cover_bottom_btn_remove_text_color">@color/color_gray_908f8f</item>
+        <item name="cover_bottom_btn_add_text_color">@color/color_brown_90826b</item>
+        <item name="cover_bottom_directory_text_color">@color/color_brown_90826b</item>
+        <item name="cover_profile_bg2_pic">@color/color_gray_2d2d2d</item>
+        <item name="cover_profile_introduction">@mipmap/night_cover_introduction</item>
+
+
+        <!--目录页-->
+        <item name="directory_back">@mipmap/night_directory_back</item>
+        <item name="directory_bookmark_unadd">@mipmap/night_directory_bookmark_unadd</item>
+        <item name="directory_bookmark_added">@mipmap/night_directory_bookmark_added</item>
+        <item name="directory_current_chapter_text_color">@color/color_brown_90826b</item>
+        <item name="directory_chapter_text_color">@color/color_gray_9b9b9b</item>
+        <item name="directory_uncached_chapter_text_color">@color/color_gray_737373</item>
+
+        <item name="directory_top_selector">@drawable/night_directory_top_selector</item>
+        <item name="directory_top_text_selector">@drawable/night_directory_top_text_selector</item>
+        <item name="directory_delete">@mipmap/night_directory_delete_icon</item>
+        <item name="directory_sort_negative">@mipmap/night_dir_sort_negative</item>
+        <item name="directory_sort_positive">@mipmap/night_dir_sort_positive</item>
+        <item name="directory_default_page">@mipmap/night_bookmark_default_page</item>
+
+        <!--书架页顶部-->
+        <item name="home_head_setting">@mipmap/night_home_head_setting</item>
+        <item name="home_head_download">@mipmap/night_home_head_download</item>
+        <item name="home_head_search">@mipmap/night_home_head_search</item>
+        <item name="home_head_four_indicator">@drawable/night_home_top_tab_indicator_selector</item>
+        <item name="home_head_four_tabs_selector">@drawable/night_home_top_tab_selector</item>
+
+
+        <!--免费小说书城UI优化-->
+
+        <item name="home_head_one_tabs_right">@drawable/night_home_head_right_selector</item>
+        <item name="home_head_one_tabs_person">@drawable/night_home_head_person_selector</item>
+        <item name="home_paixu_checked">@drawable/night_bookshelf_paixu</item>
+        <item name="home_no_shelfbook">@drawable/night_bookshelf_empty_find_bg</item>
+        <item name="home_title_background">@color/color_gray_333333</item>
+        <item name="home_title_search_btn_back">@drawable/night_bookshelf_title_shaper</item>
+        <item name="home_title_search_icon">@mipmap/bookshelf_icon_search_nig</item>
+        <item name="home_title_search_text">@color/color_gray_6f6f6f</item>
+        <item name="bookshelf_delete_checked2">@mipmap/night_edit_bookshelf_selected</item>
+        <item name="bookshelf_delete_unchecked2">@mipmap/night_edit_bookshelf_unselected</item>
+        <item name="bookshelf_paixu_select">@drawable/night_bookshelf_title_right_select</item>
+        <item name="bookshelf_pop_huancun_icon">@mipmap/night_more_icon_down_nig</item>
+        <item name="bookshelf_pop_paicu_icon">@mipmap/night_more_icon_sort_nig</item>
+        <item name="bookshelf_pop_9patch">@drawable/more_pop_nig</item>
+        <item name="home_bottom_text_color">@drawable/night_home_bottom_text_color_selector</item>
+        <item name="bookshelf_paixu_top_select">@drawable/night_bookshelf_title_right_top_select</item>
+        <item name="bottom_shadow">@mipmap/bottom_shadow</item>
+
+        <!--缓存管理UI优化-->
+        <item name="download_pause2">@mipmap/night_cache_icon_down_nig</item>
+        <item name="download_downloading2">@mipmap/night_cache_icon_watting_nig</item>
+        <item name="download_waiting2">@mipmap/night_cache_icon_wait_nig</item>
+
+
+
+
+        <!--书架页内容-->
+        <item name="bookshelf_delete_checked">@mipmap/night_bookshelf_delete_checked</item>
+        <item name="bookshelf_delete_unchecked">@mipmap/night_bookshelf_delete_unchecked</item>
+        <item name="bookshelf_item_press_bg">@drawable/night_bookshelf__item_press_bg</item>
+        <item name="bookshelf_book_name_text_color">@color/color_gray_9b9b9b</item>
+        <item name="bookshelf_book_name_text_color_1">@color/color_gray_9b9b9b</item>
+        <item name="bookshelf_author_text_color">@color/color_gray_8f8f8f</item>
+        <item name="bookshelf_status_finish_text_color">@color/color_blue_8095ae</item>
+        <item name="bookshelf_status_update_text_color">@color/color_red_ec7f7f</item>
+        <item name="bookshelf_grid_book_name_text_color">@color/color_gray_bbbbbb</item>
+        <item name="bookshelf_grid_book_name_text_color_2">@color/color_gray_aeadad</item>
+        <item name="book_shelf_image_mark">@color/color_gray_333333</item>
+        <item name="bookshelf_last_chapter_text_color">@color/color_gray_6f6f6f</item>
+        <item name="bookshelf_last_chapter_text_color_1">@color/color_gray_6f6f6f</item>
+        <item name="bookshelf_book_unread_text_color">@color/color_brown_90826b</item>
+        <item name="bookshelf_book_unread_tip">@mipmap/night_bookshelf_mark_unread</item>
+        <item name="bookshelf_update_time_text_color">@color/color_gray_777777</item>
+        <item name="bookshelf_update_time_grid_text_color">@color/color_gray_5e5e5e</item>
+        <item name="bookshelf_update_time_grid_text_color_2">@color/color_gray_747474</item>
+        <item name="bookshelf_book_status_finish">@mipmap/night_bookshelf_book_status_finish</item>
+        <item name="bookshelf_book_status_update">@mipmap/night_bookshelf_book_status_update</item>
+        <item name="bookshelf_book_status_update_2">@mipmap/night_bookshelf_book_status_update_2</item>
+        <item name="bookshelf_delete_cancel_text_color">@drawable/night_bookshelf_delete_cancel_text_color</item>
+        <item name="bookshelf_delete_cancel_bg">@drawable/night_bookshelf_delete_cancel_bg</item>
+        <item name="bookshelf_delete_submit_text_color">@drawable/night_bookshelf_delete_submit_text_color</item>
+        <item name="bookshelf_delete_submit_bg">@drawable/night_bookshelf_delete_submit_bg</item>
+        <item name="bookshelf_divider">@color/color_gray_4a4a4a</item>
+        <item name="bookshelf_divider_1">@color/color_gray_333333</item>
+        <item name="bookshelf_book_cover_default">@mipmap/night_bookshelf_book_cover_default</item>
+        <item name="bookshelf_search_bg">@drawable/night_bookshelf_search_bg</item>
+        <item name="bookshelf_search_pic">@mipmap/night_bookshelf_search</item>
+        <item name="home_head_two_tabs_left">@drawable/night_home_tabs_left_selector</item>
+        <item name="home_head_two_tabs_right">@drawable/night_home_tabs_right_selector</item>
+        <item name="bookshelf_download_floating_btn">@mipmap/night_bookshelf_downlaod_floating_btn</item>
+        <item name="home_head_two_tabs_text">@drawable/night_home_top_text_selector</item>
+
+        <!--书架页底部-->
+        <item name="home_bottom_tab_bg">@color/color_gray_333333</item>
+        <item name="home_bottom_tab_divider">@color/color_gray_e8e8e8</item>
+        <item name="home_bottom_tab_text_size">@dimen/dimen_text_10</item>
+        <item name="home_bottom_tab_text_color">@drawable/night_home_bottom_tab_text_color_selector</item>
+        <item name="home_bottom_tab_select_bookshelf">@drawable/night_home_tab_select_bookshelf</item>
+        <item name="home_bottom_tab_select_recommend">@drawable/night_home_tab_select_recommend</item>
+        <item name="home_bottom_tab_select_ranking">@drawable/night_home_tab_select_ranking</item>
+        <item name="home_bottom_tab_select_category">@drawable/night_home_tab_select_category</item>
+        <item name="home_head_search2">@mipmap/search_icon_search_nig</item>
+
+        <!--免费小说书城UI优化夜间底部Icon-->
+
+        <item name="home_bottom_tab_select_bookshelf_xssc">@drawable/night_home_tab_select_bookshelf_xssc</item>
+        <item name="home_bottom_tab_select_recommend_xssc">@drawable/night_home_tab_select_recommend_xssc</item>
+        <item name="home_bottom_tab_select_ranking_xssc">@drawable/night_home_tab_select_ranking_xssc</item>
+        <item name="home_bottom_tab_select_category_xssc">@drawable/night_home_tab_select_category_xssc</item>
+
+        <!--浏览足迹页-->
+        <item name="footprint_name_text_color">@color/color_black_9c9c9c</item>
+        <item name="footprint_author_text_color">@color/color_gray_727272</item>
+        <item name="footprint_brow_time_text_color">@color/color_gray_989797</item>
+        <item name="footprint_item_divider_color">@color/color_gray_474747</item>
+        <item name="footprint_item_divider1_color">@color/color_black_222222</item>
+        <item name="footprint_empty_hint_color">@color/color_gray_9b9b9b</item>
+        <item name="footprint_empty_hint_color1">@color/color_gray_9a9a9a</item>
+        <item name="footprint_empty_find_color">@color/color_gray_e1e1e1</item>
+        <item name="footprint_empty_find_color1">@color/color_white_ffffff</item>
+        <item name="footprint_title_clear_color">@color/color_brown_91826D</item>
+        <item name="footprint_title_clear_unusable_color">@color/color_brown_91826D_alp</item>
+
+        <item name="footprint_into_icon">@mipmap/night_footprint_into</item>
+        <item name="footprint_empty_find_bg">@drawable/night_footprint_empty_find_bg</item>
+        <item name="footprint_empty_find_bg1">@drawable/night_footprint_empty_find_bg1</item>
+
+        <!--搜索页-->
+        <item name="search_input_bg">@drawable/night_search_input_bg</item>
+        <item name="search_input_text_color">@color/color_gray_d0d0d0</item>
+        <item name="search_input_text_color_hint">@color/color_gray_818181</item>
+        <item name="search_submit_btn">@mipmap/night_search_submit_btn</item>
+        <item name="search_history_text_color">@color/color_gray_9b9b9b</item>
+        <item name="search_hot_word_title_text_color">@color/color_gray_777777</item>
+        <item name="search_hot_word_text_color_1">@color/color_gray_9b9b9b</item>
+        <item name="search_hot_word_text_color_2">@color/color_gray_9b9b9b</item>
+        <item name="search_hot_word_text_color_3">@color/color_brown_90826b</item>
+        <item name="search_hot_word_text_color_4">@color/color_blue_7186a5</item>
+        <item name="search_hot_word_text_bg_1">@drawable/night_search_hot_word_bg_1</item>
+        <item name="search_hot_word_text_bg_2">@drawable/night_search_hot_word_bg_2</item>
+        <item name="search_hot_word_text_bg_3">@drawable/night_search_hot_word_bg_3</item>
+        <item name="search_hot_word_text_bg_4">@drawable/night_search_hot_word_bg_4</item>
+        <item name="search_history_clear_text_color">@color/color_brown_90826b</item>
+        <item name="search_suggest_item_text_color_1">@color/color_brown_90826b</item>
+        <item name="search_suggest_item_text_color_2">@color/color_gray_777777</item>
+        <item name="search_edit_text_cursor">@drawable/night_search_edit_text_cursor</item>
+        <item name="search_edit_clear">@drawable/night_search_edit_clear</item>
+
+        <!--搜索页书城改版-->
+        <item name="search_submit_btn1">@mipmap/night_search_submit_btn1</item>
+        <item name="search_input_bg1">@drawable/night_search_input_bg</item>
+        <item name="search_input_text_color1">@color/color_white_E6FFFFFF</item>
+        <item name="search_input_text_color_hint1">@color/color_white_33FFFFFF</item>
+        <item name="search_hot_text_color">@drawable/night_search_hot_text_color_selector</item>
+        <item name="search_his_text_color">@color/color_white_8CFFFFFF</item>
+        <item name="search_divider">@color/color_white_0DFFFFFF</item>
+        <item name="search_clear_his">@mipmap/night_search_his_clear</item>
+        <item name="search_his_time_mark">@mipmap/night_search_his_time_mark</item>
+        <item name="search_hot_word_title_text_color1">@color/color_brown_90826b</item>
+        <item name="search_suggest_item_text_color_2_1">@color/color_white_E6FFFFFF</item>
+        <item name="search_edit_clear1">@mipmap/night_search_edit_content_clear</item>
+
+        <!--对话框-->
+        <item name="dialog_bg_color">@drawable/night_dialog_bg</item>
+        <item name="dialog_title_color">@color/color_gray_9b9b9b</item>
+        <item name="dialog_content_color">@color/color_gray_9b9b9b</item>
+        <item name="dialog_checkbox_text_color">@color/color_gray_777777</item>
+        <item name="dialog_checkbox">@drawable/night_dialog_checkbox_selector</item>
+        <item name="dialog_recommend">@color/color_brown_90826b</item>
+        <item name="dialog_download_bg">@color/color_gray_333333</item>
+        <item name="dialog_download_confirm_bg">@drawable/night_dialog_download_confirm_bg</item>
+        <item name="dialog_download_confirm_text_color">@color/color_brown_90826b</item>
+        <item name="dialog_download_cancel_bg">@drawable/night_dialog_download_cancel_bg</item>
+        <item name="dialog_download_cancel_color">@color/color_white_fffefe</item>
+        <item name="dialog_cancel_color">@color/color_gray_9b9b9b</item>
+        <item name="dialog_confirm_color">@color/color_brown_90826b</item>
+        <item name="dialog_feedback_submit">@drawable/night_dialog_feedback_submit</item>
+        <item name="dialog_feedback_text_selector">@drawable/night_dialog_feedback_text_selector</item>
+        <item name="dialog_btn_left_selector">@drawable/night_dialog_btn_left_selector</item>
+        <item name="dialog_btn_right_selector">@drawable/night_dialog_btn_right_selector</item>
+
+
+        <!--我的页面-->
+        <item name="my_bg_color">@color/color_gray_333333</item>
+        <item name="my_top_bg">@mipmap/night_my_top_bg</item>
+        <item name="my_top_login_bg">@drawable/night_my_top_login_bg</item>
+        <item name="my_top_login_text">@color/color_white_eaeaea</item>
+        <item name="my_top_pic">@mipmap/night_my_top_pic</item>
+        <item name="my_item_bbs_icon">@mipmap/night_setting_bbs_icon</item>
+        <item name="my_item_skin_icon">@mipmap/night_setting_skin_icon</item>
+        <item name="my_item_nightshift_icon">@mipmap/night_setting_nightshift_icon</item>
+        <item name="my_item_readingsetting_icon">@mipmap/night_setting_readsetting_icon</item>
+        <item name="my_item_footprint_icon">@mipmap/night_setting_footprint_icon</item>
+        <item name="my_item_moresetting_icon">@mipmap/night_setting_moresetting_icon</item>
+        <item name="my_item_feedback_icon">@mipmap/night_setting_feedback_icon</item>
+        <item name="my_item_comment_icon">@mipmap/night_setting_comment_icon</item>
+        <item name="my_item_update_icon">@mipmap/night_setting_update_icon</item>
+        <item name="my_item_clearcache_icon">@mipmap/night_setting_clearcache_icon</item>
+        <item name="my_item_protocol_icon">@mipmap/night_setting_protocol_icon</item>
+        <item name="my_item_history_icon">@mipmap/night_item_history_icon</item>
+        <item name="my_item_more_icon">@mipmap/night_my_more</item>
+        <item name="my_item_small_text_color">@color/color_white_8CFFFFFF</item>
+        <item name="my_nightshift_button_checked_color">@color/color_gray_acacac</item>
+        <item name="my_nightshift_button_unchecked_color">@color/color_white_ffffff</item>
+        <item name="my_nightshift_bg_checked_color">@color/color_gray_565656</item>
+        <item name="my_nightshift_bg_unchecked_color">@color/color_gray_e3e1e1</item>
+        <item name="setting_img_user_head_background">@mipmap/night_head_background</item>
+        <item name="setting_img_user_head_default">@mipmap/night_default_head</item>
+        <item name="setting_img_user_head_default_qbmf">@mipmap/night_default_head_qbmf</item>
+        <item name="setting_login_background">@drawable/night_setting_login_background</item>
+        <item name="setting_login_font_color">@color/color_white</item>
+        <item name="setting_nickname_font_color">@color/color_white</item>
+        <item name="setting_userid_font_color">@color/color_gray_9b9b9b</item>
+        <item name="setting_logout_font_color">@color/color_brown_91826D</item>
+        <item name="setting_logout_background">@drawable/night_setting_logout_background</item>
+        <item name="setting_dialog_login_qq">@drawable/night_setting_login_qq_selector</item>
+        <item name="setting_dialog_login_wx">@drawable/night_setting_login_wx_selector</item>
+
+        <item name="setting_userid_font_color1">@color/color_white_4DFFFFFF</item>
+        <item name="setting_logout_font_color1">@color/color_white_8CFFFFFF</item>
+
+        <!--我的页面免费全本小说书城改版-->
+        <item name="my_nightshift_button_checked_color1">@color/color_brown_91826D</item>
+        <item name="my_nightshift_button_unchecked_color1">@color/color_red_882f46</item>
+        <item name="my_nightshift_bg_checked_color1">@color/color_gray_d8d8d8</item>
+        <item name="my_nightshift_bg_unchecked_color1">@color/color_gray_d8d8d8</item>
+        
+        <!--login-->
+        <item name="login_layout_background">@color/color_gray_333333</item>
+        <item name="login_btn_qq">@mipmap/night_login_btn_qq</item>
+        <item name="login_btn_qq1">@mipmap/night_login_btn_qq1</item>
+        <item name="login_btn_wechat">@mipmap/night_login_btn_wechat</item>
+        <item name="login_btn_wechat1">@mipmap/night_login_btn_wechat1</item>
+
+        <!--换源列表-->
+        <item name="changesource_text_color">@color/color_gray_9b9b9b</item>
+        <item name="changesource_item_bg_color">@color/color_white_ffffff</item>
+        <item name="changesource_solid_divider_color">@color/color_white_f5f5f5</item>
+        <item name="changesource_content_color">@color/color_gray_777777</item>
+
+        <!--阅读页-->
+        <item name="readsetting_selector">@drawable/night_readsetting_selector</item>
+        <item name="read_liner_space_0_2_selector">@drawable/night_read_liner_space_0_2_selector</item>
+        <item name="read_liner_space_default_selector">@drawable/night_read_liner_space_default_selector</item>
+        <item name="read_liner_space_1_0_selector">@drawable/night_read_liner_space_1_0_selector</item>
+        <item name="read_liner_space_1_5_selector">@drawable/night_read_liner_space_1_5_selector</item>
+        <item name="read_light_check">@mipmap/night_readsetting_check</item>
+        <item name="read_light_uncheck">@mipmap/night_readsetting_uncheck</item>
+        <item name="read_bg_default_selector">@drawable/night_read_bg_default_selector</item>
+        <item name="read_bg_eye_selector">@drawable/night_read_bg_eye_selector</item>
+        <item name="read_bg_3_selector">@drawable/night_read_bg_3_selector</item>
+        <item name="read_bg_4_selector">@drawable/night_read_bg_4_selector</item>
+        <item name="read_bg_night1_selector">@drawable/night_read_bg_night1_selector</item>
+        <item name="read_bg_night2_selector">@drawable/night_read_bg_night2_selector</item>
+        <item name="read_bg_night3_selector">@drawable/night_read_bg_night3_selector</item>
+        <item name="read_bg_powersave_selector">@drawable/night_read_bg_powersave_selector</item>
+        <item name="read_bg_night_selector">@drawable/night_read_bg_night_selector</item>
+        <item name="read_bg_kraft_selector">@drawable/night_read_bg_kraft_selector</item>
+        <item name="read_bg_soft">@drawable/night_read_bg_soft</item>
+        <item name="read_land">@mipmap/night_reading_land</item>
+        <item name="read_portrait">@mipmap/night_reading_portrait</item>
+        <item name="read_bookmark">@drawable/night_light_bookmark_selector</item>
+        <item name="read_bookmark_drawable">@mipmap/night_read_bookmarked</item>
+        <item name="read_light">@mipmap/night_btn_autoreading_light</item>
+        <item name="read_setting_catalog">@mipmap/night_read_catalog</item>
+        <item name="read_setting_changesource">@mipmap/night_read_changesource</item>
+        <item name="read_setting_download">@mipmap/night_read_setting_download</item>
+        <item name="read_setting_feedback">@mipmap/night_read_setting_feedback</item>
+        <item name="read_setting_font">@mipmap/night_read_setting_font</item>
+        <item name="read_seekbar">@mipmap/night_read_seekbar</item>
+        <item name="read_set_brightnessbar">@drawable/night_novel_progress_brightness</item>
+        <item name="read_autoread">@mipmap/night_read_autoread</item>
+    
+        <item name="bg_read_catalog_mark_pop">@drawable/night_bg_read_catalog_mark_pop</item>
+        <item name="color_read_catalog_mark_pop_txt"  >@color/color_gray_cc9b9b9b</item>
+        <item name="bg_read_catalog_mark_pop_divider"  >@color/color_gray_19777777</item>
+    
+        <item name="read_catalog_mark_order_color" >@drawable/night_read_catalog_mark_order_color_selector</item>
+        <item name="read_catalog_mark_order_bg" >@drawable/night_read_catalog_mark_order_bg_selector</item>
+        <item name="read_catalog_mark_navi_color">@drawable/night_read_catalog_mark_navi_color_selector</item>
+        <item name="frag_catalog_mark_divider">#0cffffff</item>
+        <item name="read_catalog_mark_des_color">@color/color_gray_CC858C96</item>
+        <item name="read_catalog_mark_title_color">@color/color_gray_959CA5</item>
+        <item name="read_item_catalog_current_chapter_text_color">@color/color_brown_ccc2b282</item>
+        <item name="read_item_catalog_chapter_text_color">@color/color_gray_959CA5</item>
+        <item name="read_item_catalog_uncached_chapter_text_color">@color/color_gray_61656A</item>
+        <item name="read_item_mark_title_color">#9B9B9B</item>
+        <item name="read_item_mark_des_color">#717172</item>
+        <item name="read_catalog_mark_empty">@mipmap/night_read_catalog_mark_empty</item>
+        
+        
+        
+        <!--更多设置-->
+        <item name="moresetting_push_text_color">@color/color_brown_90826b</item>
+
+        <!--加载页-->
+        <item name="loadingpage_progress_circle">@drawable/night_loadingpage_progress_circle</item>
+
+        <!--缓存页-->
+        <item name="download_manager_bottom_menu_bg">@color/color_gray_333333</item>
+        <item name="download_manager_lv_bg_color">@color/color_gray_333333</item>
+        <item name="download_manager_progress_main">@drawable/night_down_manager_progressbar_main</item>
+        <item name="download_manager_progress_second">@drawable/night_down_manager_progressbar_second</item>
+        <item name="download_manager_book_name_color">@color/color_gray_9b9b9b</item>
+        <item name="download_manager_other_tag_color">@color/color_gray_9b9b9b</item>
+        <item name="download_pause">@mipmap/night_icon_download_nostart</item>
+        <item name="downloade_downloading">@mipmap/night_icon_downloading</item>
+        <item name="downloade_waiting">@mipmap/night_icon_download_watting</item>
+
+        <!--阅读设置页-->
+        <item name="my_readsetting_portarit">@drawable/night_read_pagemode_portrait_selector</item>
+        <item name="my_readsetting_land">@drawable/night_read_pagemode_land_selector</item>
+
+        <!--主題切换页-->
+        <item name="stylechange_bg">@color/color_gray_4a4a4a</item>
+        <item name="stylechange_bottom_bg">@color/color_gray_333333</item>
+
+        <!--书末页-->
+        <item name="book_end_btn_bg_bookshelf">@drawable/night_book_end_btn_selector_bookshelf</item>
+        <!--<item name="book_end_btn_text_bookshelf">@drawable/night_book_end_text_selector_bookshelf</item>-->
+        <item name="book_end_btn_text_bookshelf">#9B9B9B</item>
+        <item name="book_end_btn_bg_bookstore">@drawable/night_book_end_btn_selector_bookstore</item>
+        <!--<item name="book_end_btn_text_bookstore">@drawable/night_book_end_text_selector_bookstore</item>-->
+        <item name="book_end_btn_text_bookstore">#C2B282</item>
+        <item name="book_end_card_bg">#555555</item>
+        <item name="book_end_item_title" >#9B9B9B</item>
+        <item name="book_end_item_des" >#717172</item>
+    </style>
+</resources>

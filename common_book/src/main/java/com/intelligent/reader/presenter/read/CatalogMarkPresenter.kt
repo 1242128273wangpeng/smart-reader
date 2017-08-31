@@ -1,0 +1,187 @@
+package com.intelligent.reader.presenter.read
+
+import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
+import com.intelligent.reader.R
+import com.intelligent.reader.activity.ReadingActivity
+import com.intelligent.reader.net.NetOwnBook
+import com.intelligent.reader.read.help.BookHelper
+import com.quduquxie.network.DataCache
+import com.quduquxie.network.DataService
+import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.data.bean.*
+import net.lzbook.kit.data.db.BookChapterDao
+import net.lzbook.kit.data.db.BookDaoHelper
+import net.lzbook.kit.request.RequestExecutorDefault
+import net.lzbook.kit.utils.*
+import java.lang.Exception
+import java.util.*
+
+/**
+ * Created by xian on 2017/8/17.
+ */
+class CatalogMarkPresenter(val readStatus: ReadStatus) : CatalogMark.Presenter {
+    override var view: CatalogMark.View? = null
+
+    private var mBookDaoHelper = BookDaoHelper.getInstance(BaseBookApplication.getGlobalContext())
+    val requestItem: RequestItem
+
+    init {
+        requestItem = RequestItem.fromBook(readStatus.book)
+    }
+
+    override fun getBook(): Book{
+        return readStatus.book
+    }
+
+    override fun loadCatalog(reverse: Boolean) {
+
+        view?.onLoading()
+
+        Observable.create<List<Chapter>> { emitter: ObservableEmitter<List<Chapter>>? ->
+
+            val chapterDao = BookChapterDao(BaseBookApplication.getGlobalContext(), readStatus.book.book_id)
+            val chapterList = chapterDao.queryBookChapter()
+            if (chapterList != null && chapterList.size > 0) {
+                emitter?.onNext(chapterList)
+            } else {
+                if (Constants.SG_SOURCE.equals(requestItem.host)) {
+                    emitter?.onError(Exception("error"))
+                } else {
+                    if(Constants.QG_SOURCE.equals(requestItem.host)){
+                        var chapters: ArrayList<com.quduquxie.bean.Chapter>? = null
+                        try {
+                            val udid = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())
+                            chapters = DataService.getChapterList(RequestExecutorDefault.mContext, requestItem.book_id, 1, Integer.MAX_VALUE - 1, udid)
+                            val list = BeanParser.buildOWNChapterList(chapters, 0, chapters!!.size)
+                            if (list != null && list.size > 0) {
+                               emitter?.onNext(list)
+                            } else {
+                                emitter?.onError(Exception("error"))
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+
+                    }else {
+                        NetOwnBook.requestOwnCatalogList(readStatus.book).subscribekt(
+                                onNext = { t ->
+                                    emitter?.onNext(t)
+                                },
+                                onError = { err ->
+                                    emitter?.onError(err)
+                                }
+                        )
+                    }
+                }
+            }
+        }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribekt(
+                onNext = { ret ->
+                    if (!ret.isEmpty()) {
+                        if (reverse) {
+                            Collections.reverse(ret)
+                            view?.showCatalog(ret, 0)
+                        } else {
+                            view?.showCatalog(ret, readStatus.sequence)
+                        }
+                    } else {
+                        view?.onNetError()
+                    }
+                }, onError = { e ->
+            e.printStackTrace()
+            view?.onNetError()
+        })
+
+
+    }
+
+    override fun loadBookMark() {
+        Observable.create<List<Bookmark>> { emitter: ObservableEmitter<List<Bookmark>>? ->
+
+            val list = mBookDaoHelper.getBookMarks(readStatus.book_id)
+
+            emitter?.onNext(list)
+        }.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribekt(onNext = { ret ->
+                    view?.showMark(ret)
+                })
+
+    }
+
+    override fun gotoChapter(activity: Activity, chapter: Chapter) {
+        var isChapterExist = false
+        if (requestItem.host == Constants.QG_SOURCE) {
+            isChapterExist = DataCache.isChapterExists(chapter.chapter_id, chapter.book_id)
+        } else {
+            isChapterExist = BookHelper.isChapterExist(chapter.sequence, readStatus.book_id)
+        }
+        if (!isChapterExist && NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
+            BaseBookApplication.getGlobalContext().toastShort(R.string.no_net)
+            return
+        }
+        var bundle = Bundle()
+        bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
+        bundle.putInt("sequence", chapter.sequence)
+        bundle.putSerializable("book", readStatus.book)
+        val intent = Intent()
+        intent.putExtras(bundle)
+
+        intent.setClass(activity, ReadingActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        activity.startActivity(intent)
+
+    }
+
+    override fun gotoBookMark(activity:Activity, mark: Bookmark) {
+        var bundle = Bundle()
+        bundle.putInt("sequence", mark.sequence)
+        bundle.putInt("offset", mark.offset)
+        bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
+        bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
+        bundle.putInt("sequence", mark.sequence)
+        bundle.putSerializable("book", readStatus.book)
+        val intent = Intent()
+        intent.putExtras(bundle)
+
+        intent.setClass(activity, ReadingActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        activity.startActivity(intent)
+
+    }
+
+
+    override fun deleteBookMark(mark: Bookmark) {
+
+        Observable.create<Boolean> { e: ObservableEmitter<Boolean>? ->
+
+            mBookDaoHelper.deleteBookMark(mark.book_id, mark.sequence, mark.offset, 0)
+
+            e?.onNext(true)
+        }.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribekt(onNext = {
+                    loadBookMark()
+                })
+    }
+
+    override fun deleteAllBookMark() {
+        Observable.create<Boolean> { e: ObservableEmitter<Boolean>? ->
+
+            mBookDaoHelper.deleteBookMark(readStatus.book_id)
+
+            e?.onNext(true)
+        }.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribekt(onNext = {
+                    loadBookMark()
+                })
+
+    }
+}

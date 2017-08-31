@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_view_height_30"
+        android:text="@string/help_of_use"
+        android:gravity="center"
+        android:background="@color/color_green_e5f0ec"
+        android:textSize="@dimen/dimen_text_13"
+        android:textColor="@color/color_black_2e2e2e"/>
+
+    <RelativeLayout
+        android:id="@+id/help_first_problem"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_view_height_40">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="@dimen/dimen_margin_14"
+            android:gravity="center_vertical"
+            android:text="@string/help_first_problem"
+            android:textColor="@color/color_black_2e2e2e"
+            android:textSize="@dimen/dimen_text_14"/>
+
+        <ImageView
+            android:id="@+id/help_first_problem_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingTop="@dimen/dimen_padding_10"
+            android:paddingBottom="@dimen/dimen_padding_10"
+            android:paddingLeft="@dimen/dimen_padding_10"
+            android:paddingRight="@dimen/dimen_padding_14"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/icon_open_answer"/>
+
+    </RelativeLayout>
+
+    <include layout="@layout/layout_divider" />
+
+    <TextView
+        android:id="@+id/help_first_answer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_padding_15"
+        android:paddingBottom="@dimen/dimen_padding_15"
+        android:layout_marginLeft="@dimen/dimen_margin_14"
+        android:layout_marginRight="@dimen/dimen_margin_14"
+        android:gravity="center_vertical"
+        android:text="@string/help_first_answer"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/dimen_text_14"
+        android:visibility="gone"/>
+
+    <include layout="@layout/layout_divider" />
+
+    <RelativeLayout
+        android:id="@+id/help_second_problem"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_view_height_40">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="@dimen/dimen_margin_14"
+            android:gravity="center_vertical"
+            android:text="@string/help_second_problem"
+            android:textColor="@color/color_black_2e2e2e"
+            android:textSize="@dimen/dimen_text_14"/>
+
+        <ImageView
+            android:id="@+id/help_second_problem_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingTop="@dimen/dimen_padding_10"
+            android:paddingBottom="@dimen/dimen_padding_10"
+            android:paddingLeft="@dimen/dimen_padding_10"
+            android:paddingRight="@dimen/dimen_padding_14"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/icon_open_answer"/>
+    </RelativeLayout>
+
+    <include layout="@layout/layout_divider" />
+
+    <TextView
+        android:id="@+id/help_second_answer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_padding_15"
+        android:paddingBottom="@dimen/dimen_padding_15"
+        android:layout_marginLeft="@dimen/dimen_margin_14"
+        android:layout_marginRight="@dimen/dimen_margin_14"
+        android:gravity="center_vertical"
+        android:text="@string/help_second_answer"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/dimen_text_14"
+        android:visibility="gone"/>
+
+    <include layout="@layout/layout_divider" />
+
+    <RelativeLayout
+        android:id="@+id/help_third_problem"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_view_height_40">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="@dimen/dimen_margin_14"
+            android:gravity="center_vertical"
+            android:text="@string/help_third_problem"
+            android:textColor="@color/color_black_2e2e2e"
+            android:textSize="@dimen/dimen_text_14"/>
+
+        <ImageView
+            android:id="@+id/help_third_problem_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingTop="@dimen/dimen_padding_10"
+            android:paddingBottom="@dimen/dimen_padding_10"
+            android:paddingLeft="@dimen/dimen_padding_10"
+            android:paddingRight="@dimen/dimen_padding_14"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/icon_open_answer"/>
+    </RelativeLayout>
+
+    <include layout="@layout/layout_divider" />
+
+    <TextView
+        android:id="@+id/help_third_answer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_padding_15"
+        android:paddingBottom="@dimen/dimen_padding_15"
+        android:layout_marginLeft="@dimen/dimen_margin_14"
+        android:layout_marginRight="@dimen/dimen_margin_14"
+        android:gravity="center_vertical"
+        android:text="@string/help_third_answer"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/dimen_text_14"
+        android:visibility="gone"/>
+
+    <include layout="@layout/layout_divider" />
+
+    <RelativeLayout
+        android:id="@+id/help_fourth_problem"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_view_height_40">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="@dimen/dimen_margin_14"
+            android:gravity="center_vertical"
+            android:text="@string/help_fourth_problem"
+            android:textColor="@color/color_black_2e2e2e"
+            android:textSize="@dimen/dimen_text_14"/>
+
+        <ImageView
+            android:id="@+id/help_fourth_problem_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingTop="@dimen/dimen_padding_10"
+            android:paddingBottom="@dimen/dimen_padding_10"
+            android:paddingLeft="@dimen/dimen_padding_10"
+            android:paddingRight="@dimen/dimen_padding_14"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/icon_open_answer"/>
+    </RelativeLayout>
+
+    <include layout="@layout/layout_divider" />
+
+    <TextView
+        android:id="@+id/help_fourth_answer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_padding_15"
+        android:paddingBottom="@dimen/dimen_padding_15"
+        android:layout_marginLeft="@dimen/dimen_margin_14"
+        android:layout_marginRight="@dimen/dimen_margin_14"
+        android:gravity="center_vertical"
+        android:text="@string/help_fourth_answer"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/dimen_text_14"
+        android:visibility="gone"/>
+
+    <include layout="@layout/layout_divider" />
+
+    <RelativeLayout
+        android:id="@+id/help_fifth_problem"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_view_height_40">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="@dimen/dimen_margin_14"
+            android:gravity="center_vertical"
+            android:text="@string/help_fifth_problem"
+            android:textColor="@color/color_black_2e2e2e"
+            android:textSize="@dimen/dimen_text_14"/>
+
+        <ImageView
+            android:id="@+id/help_fifth_problem_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingTop="@dimen/dimen_padding_10"
+            android:paddingBottom="@dimen/dimen_padding_10"
+            android:paddingLeft="@dimen/dimen_padding_10"
+            android:paddingRight="@dimen/dimen_padding_14"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/icon_open_answer"/>
+    </RelativeLayout>
+
+    <include layout="@layout/layout_divider" />
+
+    <TextView
+        android:id="@+id/help_fifth_answer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_padding_15"
+        android:paddingBottom="@dimen/dimen_padding_15"
+        android:layout_marginLeft="@dimen/dimen_margin_14"
+        android:layout_marginRight="@dimen/dimen_margin_14"
+        android:gravity="center_vertical"
+        android:text="@string/help_fifth_answer"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/dimen_text_14"
+        android:visibility="gone"/>
+
+    <include layout="@layout/layout_divider" />
+
+    <RelativeLayout
+        android:id="@+id/help_sixth_problem"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_view_height_40">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="@dimen/dimen_margin_14"
+            android:gravity="center_vertical"
+            android:text="@string/help_sixth_problem"
+            android:textColor="@color/color_black_2e2e2e"
+            android:textSize="@dimen/dimen_text_14"/>
+
+        <ImageView
+            android:id="@+id/help_sixth_problem_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingTop="@dimen/dimen_padding_10"
+            android:paddingBottom="@dimen/dimen_padding_10"
+            android:paddingLeft="@dimen/dimen_padding_10"
+            android:paddingRight="@dimen/dimen_padding_14"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/icon_open_answer"/>
+    </RelativeLayout>
+
+    <include layout="@layout/layout_divider" />
+
+    <TextView
+        android:id="@+id/help_sixth_answer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_padding_15"
+        android:paddingBottom="@dimen/dimen_padding_15"
+        android:layout_marginLeft="@dimen/dimen_margin_14"
+        android:layout_marginRight="@dimen/dimen_margin_14"
+        android:gravity="center_vertical"
+        android:text="@string/help_sixth_answer"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/dimen_text_14"
+        android:visibility="gone"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_view_height_30"
+        android:text="@string/feedback"
+        android:gravity="center"
+        android:background="@color/color_green_e5f0ec"
+        android:textSize="@dimen/dimen_text_13"
+        android:textColor="@color/color_black_2e2e2e"/>
+
+    <TextView
+        android:id="@+id/feedback_problem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/feedback_problem"
+        android:textColor="@color/color_black_2e2e2e"
+        android:textSize="@dimen/dimen_text_15"
+        android:layout_marginLeft="@dimen/dimen_margin_14"
+        android:layout_marginRight="@dimen/dimen_margin_14"
+        android:layout_marginTop="@dimen/dimen_margin_14"
+        android:layout_marginBottom="@dimen/dimen_margin_10"/>
+
+    <LinearLayout
+        android:id="@+id/feedback_problem_first_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_padding_8"
+        android:paddingBottom="@dimen/dimen_padding_8"
+        android:layout_marginLeft="@dimen/dimen_margin_14"
+        android:layout_marginRight="@dimen/dimen_margin_14"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/feedback_first_problem"
+            android:layout_width="@dimen/dimen_view_width_0"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingTop="@dimen/dimen_padding_5"
+            android:paddingBottom="@dimen/dimen_padding_5"
+            android:background="@drawable/selector_background_white">
+
+            <ImageView
+                android:id="@+id/feedback_first_problem_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/feedback_check"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/feedback_first_problem_check"
+                android:layout_marginLeft="@dimen/dimen_margin_5"
+                android:text="@string/feedback_first_problem"
+                android:textColor="@color/color_black_2e2e2e"
+                android:textSize="@dimen/dimen_text_14"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/feedback_second_problem"
+            android:layout_width="@dimen/dimen_view_width_0"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingTop="@dimen/dimen_padding_5"
+            android:paddingBottom="@dimen/dimen_padding_5"
+            android:background="@drawable/selector_background_white">
+
+            <ImageView
+                android:id="@+id/feedback_second_problem_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/feedback_check"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/feedback_second_problem_check"
+                android:layout_marginLeft="@dimen/dimen_margin_5"
+                android:text="@string/feedback_second_problem"
+                android:textColor="@color/color_black_2e2e2e"
+                android:textSize="@dimen/dimen_text_14"/>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/feedback_problem_second_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_padding_8"
+        android:paddingBottom="@dimen/dimen_padding_8"
+        android:layout_marginLeft="@dimen/dimen_margin_14"
+        android:layout_marginRight="@dimen/dimen_margin_14"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/feedback_third_problem"
+            android:layout_width="@dimen/dimen_view_width_0"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingTop="@dimen/dimen_padding_5"
+            android:paddingBottom="@dimen/dimen_padding_5"
+            android:background="@drawable/selector_background_white">
+
+            <ImageView
+                android:id="@+id/feedback_third_problem_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/feedback_check"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/feedback_third_problem_check"
+                android:layout_marginLeft="@dimen/dimen_margin_5"
+                android:text="@string/feedback_third_problem"
+                android:textColor="@color/color_black_2e2e2e"
+                android:textSize="@dimen/dimen_text_14"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/feedback_fourth_problem"
+            android:layout_width="@dimen/dimen_view_width_0"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingTop="@dimen/dimen_padding_5"
+            android:paddingBottom="@dimen/dimen_padding_5"
+            android:background="@drawable/selector_background_white">
+
+            <ImageView
+                android:id="@+id/feedback_fourth_problem_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/feedback_check"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/feedback_fourth_problem_check"
+                android:layout_marginLeft="@dimen/dimen_margin_5"
+                android:text="@string/feedback_fourth_problem"
+                android:textColor="@color/color_black_2e2e2e"
+                android:textSize="@dimen/dimen_text_14"/>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:paddingTop="@dimen/dimen_padding_10"
+        android:paddingBottom="@dimen/dimen_padding_8"
+        android:layout_marginLeft="@dimen/dimen_margin_14"
+        android:layout_marginRight="@dimen/dimen_margin_14"
+        android:text="@string/feedback_contact"
+        android:textColor="@color/color_black_2e2e2e"
+        android:textSize="@dimen/dimen_text_15"/>
+
+    <EditText
+        android:id="@+id/feedback_contact"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dimen_padding_10"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="@dimen/dimen_margin_14"
+        android:layout_marginRight="@dimen/dimen_margin_14"
+        android:layout_marginBottom="@dimen/dimen_margin_19"
+        android:background="@drawable/background_feedback_message"
+        android:hint="@string/feedback_contact_hint"
+        android:textColorHint="@color/color_gray_a6a6a6"
+        android:textColor="@color/color_black_2e2e2e"
+        android:textSize="@dimen/dimen_text_12"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_view_height_0"
+        android:background="@color/color_white_dadada"/>
+</LinearLayout>

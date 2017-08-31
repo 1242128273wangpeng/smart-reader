@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/listheader_searchhelper_history_tagstitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dimen_margin_8"
+        android:layout_marginBottom="@dimen/dimen_margin_8"
+        android:text="@string/search_of_everyone"
+        android:textColor="@color/theme_primary"
+        android:textSize="@dimen/dimen_text_16" />
+
+
+    <ListView
+        android:id="@+id/hotword_container_search_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_view_height_105" />
+
+</LinearLayout>

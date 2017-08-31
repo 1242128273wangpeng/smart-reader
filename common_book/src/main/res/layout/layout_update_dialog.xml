@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="280dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@drawable/reading_cache_shape"
+    android:orientation="vertical"
+    android:scrollbars="vertical" >
+    <TextView
+        android:id="@+id/tv_update_title_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:text="检测到更新"
+        android:textColor="@color/color_black_353535"
+        android:layout_marginLeft="16dp"
+        android:gravity="center_vertical"
+        android:textSize="18sp"/>
+
+	<TextView
+        android:id="@+id/tv_update_info_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="更新内容"
+        android:textColor="@color/color_black_353535"
+        android:textSize="14sp" 
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="10dp"
+        android:lineSpacingExtra="6dp"/>
+	<RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/btn_cancle_update_dialog"
+            android:layout_width="42dp"
+            android:layout_height="24dp"
+            android:padding="2dp"
+            android:gravity="center"
+            android:layout_toLeftOf="@+id/btn_confirm_update_dialog"
+            android:layout_marginRight="32dp"
+            android:background="@drawable/btn_dialog_background"
+            android:text="取消"
+            android:textColor="@color/color_gray_9c9c9c"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/btn_confirm_update_dialog"
+            android:layout_width="42dp"
+            android:layout_height="24dp"
+            android:padding="2dp"
+            android:gravity="center"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/btn_dialog_background"
+            android:text="更新"
+            android:textColor="@color/color_yellow_d4a625"
+            android:textSize="18sp" />
+    </RelativeLayout>
+</LinearLayout>

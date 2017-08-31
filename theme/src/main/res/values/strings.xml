@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Theme</string>
+    <!-- 主题名 -->
+    <string name="theme_nxh">暖心红</string>
+    <string name="theme_jmh">静默黑</string>
+    <string name="theme_msh">末世灰</string>
+    <string name="theme_hyl">海洋蓝</string>
+    <string name="theme_hlc">活力橙</string>
+    <string name="theme_ydh">有点黄</string>
+    <string name="theme_zzh">至尊红</string>
+    <string name="theme_gqh">钢琴黑</string>
+    <string name="theme_xxl">修仙蓝</string>
+    <string name="theme_jwh">绝望灰</string>
+	<string name="style_change_1">主题1</string>
+    <string name="style_change_2">主题2</string>
+    <string name="style_change_3">主题3</string>
+    <string name="style_change_4">主题4</string>
+    <string name="theme_night"></string>
+    <string name="mode_day">日间模式</string>
+    <string name="mode_night">夜间模式</string>
+</resources>

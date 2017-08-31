@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dimen_view_height_135"
+    android:background="@color/color_white_f7f7f7">
+
+    <TextView
+        android:id="@+id/book_shelf_change_information"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="@dimen/dimen_margin_15"
+        android:layout_marginRight="@dimen/dimen_margin_15"
+        android:layout_marginTop="@dimen/dimen_margin_12"
+        android:layout_marginBottom="@dimen/dimen_margin_12"
+        android:drawableLeft="@drawable/icon_information"
+        android:drawablePadding="@dimen/dimen_padding_10"
+        android:text="@string/bookshelf_change_information"
+        android:textSize="@dimen/dimen_text_16"
+        android:textColor="@color/color_red_f54247"/>
+
+    <TextView
+        android:id="@+id/book_shelf_change_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_margin_15"
+        android:layout_marginRight="@dimen/dimen_margin_15"
+        android:layout_below="@id/book_shelf_change_information"
+        android:text="@string/bookshelf_change_message"
+        android:textSize="@dimen/dimen_text_14"
+        android:textColor="@color/color_gray_4f4f4f"/>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/book_shelf_change_message"
+        android:layout_marginTop="@dimen/dimen_margin_12"
+        android:layout_marginBottom="@dimen/dimen_margin_12">
+
+        <TextView
+            android:id="@+id/book_shelf_remove_book_all"
+            android:layout_width="@dimen/dimen_view_width_90"
+            android:layout_height="@dimen/dimen_view_height_45"
+            android:background="@drawable/bookshelf_remove_text_bg"
+            android:gravity="center"
+            android:layout_toLeftOf="@+id/book_shelf_change_source_all"
+            android:layout_marginRight="@dimen/dimen_margin_35"
+            android:text="@string/bookshelf_remove_book_all"
+            android:textSize="@dimen/dimen_text_14"
+            android:textColor="@color/color_white"/>
+        <TextView
+            android:id="@+id/book_shelf_change_source_all"
+            android:layout_width="@dimen/dimen_view_width_90"
+            android:layout_height="@dimen/dimen_view_height_45"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dimen_margin_15"
+            android:gravity="center"
+            android:background="@drawable/bookshelf_remove_button_bg"
+            android:text="@string/bookshelf_change_source_all"
+            android:textSize="@dimen/dimen_text_14"
+            android:textColor="@color/color_white"/>
+    </RelativeLayout>
+</RelativeLayout>

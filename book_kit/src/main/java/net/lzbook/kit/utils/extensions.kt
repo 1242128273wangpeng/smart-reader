@@ -1,0 +1,225 @@
+package net.lzbook.kit.utils
+
+import android.content.Context
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
+import android.os.Handler
+import android.os.Looper
+import android.support.annotation.AttrRes
+import android.support.annotation.IdRes
+import android.util.Log
+import android.util.TypedValue
+import android.view.View
+import android.view.animation.Animation
+import android.widget.TextView
+import de.greenrobot.event.EventBus
+import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
+
+/**
+ * Created by xian on 2017/6/21.
+ */
+
+@JvmField var msDebuggAble = false
+
+@JvmField  val msMainLooperHandler = Handler(Looper.getMainLooper())
+
+fun Any.runOnMain(run: () -> Unit) {
+    msMainLooperHandler.post {
+        run.invoke()
+    }
+}
+
+enum class LOG_LEVEL {
+    DEBUG, INFO, ERR;
+}
+
+fun Any.log(str: String, vararg param: Any?) {
+    if (msDebuggAble) {
+        var builder = StringBuilder()
+        builder.append(str)
+        param.forEach {
+            builder.append(" | " + it.toString())
+        }
+
+        Log.d(this.javaClass.simpleName, builder.toString())
+    }
+}
+
+fun logWithLevel(obj: Any, level: LOG_LEVEL, param: List<Any?>) {
+    if (msDebuggAble || level == LOG_LEVEL.ERR) {
+        var builder = StringBuilder()
+        param?.forEach {
+            builder.append(it.toString() + " | ")
+        }
+
+        when(level){
+            LOG_LEVEL.DEBUG ->{
+                Log.d(obj.javaClass.name, builder.toString())
+            }
+            LOG_LEVEL.INFO ->{
+                Log.i(obj.javaClass.name, builder.toString())
+            }
+            LOG_LEVEL.ERR ->{
+                Log.e(obj.javaClass.name, builder.toString())
+            }
+        }
+
+    }
+}
+
+fun Any.logd(vararg param: Any) {
+    logWithLevel(this, LOG_LEVEL.DEBUG, param.asList())
+}
+fun Any.logi(vararg param: Any) {
+    logWithLevel(this, LOG_LEVEL.INFO, param.asList())
+}
+fun Any.loge(vararg param: Any) {
+    logWithLevel(this, LOG_LEVEL.ERR, param.asList())
+}
+
+
+fun Context.toastShort(msg: String?, debug: Boolean = true) {
+    if (debug && !msDebuggAble) {
+        return
+    }
+    runOnMain {
+        android.widget.Toast.makeText(this, "$msg", android.widget.Toast.LENGTH_SHORT).show()
+    }
+
+}
+
+fun Context.toastShort(@IdRes id: Int, debug: Boolean = true) {
+    if (debug && !msDebuggAble) {
+        return
+    }
+    runOnMain {
+        android.widget.Toast.makeText(this, id, android.widget.Toast.LENGTH_SHORT).show()
+    }
+
+}
+
+fun Context.toastLong(msg: String?, debug: Boolean = true) {
+    if (debug && !msDebuggAble) {
+        return
+    }
+    runOnMain {
+        android.widget.Toast.makeText(this, "$msg", android.widget.Toast.LENGTH_LONG).show()
+    }
+}
+
+fun Context.toastLong(@IdRes id: Int, debug: Boolean = true) {
+    if (debug && !msDebuggAble) {
+        return
+    }
+    runOnMain {
+        android.widget.Toast.makeText(this, id, android.widget.Toast.LENGTH_LONG).show()
+    }
+
+}
+
+fun Any?.toMap(): Map<String, String> {
+    val map = mutableMapOf<String, String>()
+    if (this != null) {
+        val fields = this.javaClass.declaredFields
+        fields.forEach {
+            if (!it.name.equals("Companion")) {
+                it.isAccessible = true
+                map.put(it.name, it.get(this)?.toString() ?: "")
+            }
+        }
+    }
+    return map
+}
+
+fun <T> Observable<T>.subscribekt(onNext: ((t: T) -> Unit)? = null, onError: ((t: Throwable) -> Unit)? = null): Disposable {
+    return this.subscribe(io.reactivex.functions.Consumer {
+        t ->
+        onNext?.invoke(t)
+    }, io.reactivex.functions.Consumer {
+        t ->
+        onError?.invoke(t)
+    })
+}
+
+fun EventBus.safeRegist(obj: Any) {
+    if (!isRegistered(obj))
+        register(obj)
+}
+
+fun EventBus.safeUnregist(obj: Any) {
+    if (isRegistered(obj))
+        unregister(obj)
+}
+
+fun Any.registToEventBus(obj: Any) {
+    EventBus.getDefault().safeRegist(obj)
+}
+
+fun Any.unregistFromEventBus(obj: Any) {
+    EventBus.getDefault().safeUnregist(obj)
+}
+
+fun Any.postEventToBus(obj: Any) {
+    EventBus.getDefault().post(obj)
+}
+
+fun View.idName(): String {
+    return context.resources.getResourceEntryName(id)
+}
+
+fun Animation.onEnd(callback: ()->Unit){
+    this.setAnimationListener(object: Animation.AnimationListener{
+        override fun onAnimationRepeat(animation: Animation?) {
+
+        }
+
+        override fun onAnimationEnd(animation: Animation?) {
+            callback.invoke()
+        }
+
+        override fun onAnimationStart(animation: Animation?) {
+
+        }
+
+    })
+}
+
+/**
+ * theme 中未找到返回 -1
+ */
+fun Context.attrColor(@AttrRes attr:Int):Int{
+    val typeValue = TypedValue()
+    val b = this.theme.resolveAttribute(attr, typeValue, true)
+    if(b){
+        if(typeValue.type == TypedValue.TYPE_REFERENCE){
+            return resources.getColor(typeValue.resourceId)
+        }else{
+            return typeValue.data
+        }
+    }else{
+        return -1
+    }
+}
+
+fun Context.attrDrawable(@AttrRes attr:Int): Drawable? {
+    val typeValue = TypedValue()
+    val b = this.theme.resolveAttribute(attr, typeValue, true)
+
+    if(b){
+        if(typeValue.type == TypedValue.TYPE_REFERENCE){
+            return resources.getDrawable(typeValue.resourceId)
+        }else if (typeValue.type >= TypedValue.TYPE_FIRST_COLOR_INT && typeValue.type <= TypedValue.TYPE_LAST_COLOR_INT){
+            return ColorDrawable(typeValue.data)
+        }
+    }
+
+    return null
+}
+
+fun TextView.resolveTextColor(@AttrRes attr:Int){
+    val attrColor = this.context.attrColor(attr)
+    if(attrColor != -1){ this.setTextColor(attrColor)
+
+    }
+}

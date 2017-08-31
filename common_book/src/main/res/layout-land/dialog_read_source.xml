@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/dimen_margin_80"
+    android:layout_marginRight="@dimen/dimen_margin_80"
+    android:scrollbars="vertical"
+    android:layout_gravity="center"
+    android:focusable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="?attr/dialog_bg_color"
+        android:layout_marginTop="35dp"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:id="@+id/dialog_top_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/change_source"
+            android:layout_marginLeft="@dimen/dimen_margin_20"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/dimen_margin_20"
+            android:layout_marginBottom="@dimen/dimen_margin_10"
+            android:textColor="?attr/dialog_title_color"
+            android:textSize="@dimen/text_size_18"
+            />
+
+        <include layout="@layout/dialog_divider"
+            android:id="@+id/change_source_divider"
+            />
+        <RelativeLayout
+            android:id="@+id/change_source_statement"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/change_source_divider">
+
+            <TextView
+                android:id="@+id/change_source_disclaimer_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_margin_18"
+                android:layout_marginRight="@dimen/dimen_margin_18"
+                android:padding="@dimen/padding_4"
+                android:ellipsize="end"
+                android:layout_marginTop="@dimen/margin_5"
+                android:lineSpacingMultiplier="1.5"
+                android:gravity="left|center"
+                android:maxLines="4"
+                android:text="@string/translate_code_read"
+                android:textColor="?attr/dialog_content_color"
+                android:textSize="@dimen/dimen_text_14"/>
+
+            <View
+                android:id="@+id/listview_divider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_view_height_0.5"
+                android:background="?attr/color_divider"
+                android:layout_below="@id/change_source_disclaimer_message" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/dialog_lv_gap"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+
+            <ListView
+                android:id="@+id/change_source_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/change_source_statement"
+                android:minHeight="@dimen/dimen_view_height_60"
+                android:cacheColorHint="@color/color_black_00000000"
+                android:divider="?attr/color_divider"
+                android:dividerHeight="@dimen/dimen_view_height_0.5"
+                android:paddingLeft="@dimen/dimen_padding_5"
+                android:paddingRight="@dimen/dimen_padding_5"
+                android:fadingEdge="none"
+                android:scrollbarFadeDuration="0"
+                android:fadeScrollbars="false"
+                android:scrollbars="vertical"
+                android:scrollbarStyle="insideInset"
+                android:verticalScrollbarPosition="right"
+                android:scrollbarThumbVertical="?attr/color_primary"
+                android:scrollbarSize="@dimen/dimen_view_width_5"
+                android:listSelector="@android:color/transparent"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/change_source_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_view_height_50"
+            android:layout_below="@id/change_source_list">
+
+            <View
+                android:id="@+id/change_source_bottom_divider"
+                android:layout_width="@dimen/dimen_view_width_0.5"
+                android:layout_height="@dimen/dimen_view_height_50"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
+                android:background="?attr/color_divider" />
+
+            <TextView
+                android:id="@+id/change_source_original_web"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@id/change_source_bottom_divider"
+                android:gravity="center"
+                android:text="@string/cancel"
+                android:background="?attr/dialog_btn_left_selector"
+                android:textColor="?attr/dialog_cancel_color"
+                android:textSize="@dimen/dimen_text_16" />
+
+            <TextView
+                android:id="@+id/change_source_continue"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@id/change_source_bottom_divider"
+                android:gravity="center"
+                android:text="@string/reading_continue"
+                android:background="?attr/dialog_btn_right_selector"
+                android:textColor="?attr/dialog_confirm_color"
+                android:textSize="@dimen/dimen_text_16" />
+
+            <include layout="@layout/dialog_divider" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,42 @@
+package net.lzbook.kit.book.adapter;
+
+import android.content.Context;
+import android.content.res.Resources;
+import android.view.LayoutInflater;
+import android.widget.BaseAdapter;
+
+import java.util.List;
+
+/**
+ * AdapterBase.java
+ * 适配器基类
+ */
+public abstract class AdapterBase extends BaseAdapter {
+
+    private List mList;
+    private LayoutInflater mLayoutInflater;
+
+    protected Context mContext;
+
+    public AdapterBase(Context context, List list) {
+        mContext = context;
+        mList = list;
+        mLayoutInflater = LayoutInflater.from(mContext);
+    }
+
+    public int getCount() {
+        return mList.size();
+    }
+
+    public Object getItem(int pPosition) {
+        return mList.get(pPosition);
+    }
+
+    public long getItemId(int pPosition) {
+        return pPosition;
+    }
+
+    public LayoutInflater getLayoutInflater() {
+        return mLayoutInflater;
+    }
+}

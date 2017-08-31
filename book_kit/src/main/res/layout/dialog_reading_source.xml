@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/dimen_margin_20"
+    android:layout_marginRight="@dimen/dimen_margin_20"
+    android:background="@drawable/background_base_dialog"
+    android:scrollbars="vertical"
+    android:layout_gravity="center"
+    android:focusable="true">
+
+    <TextView
+        android:id="@+id/change_source_head"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_view_height_38"
+        android:paddingLeft="@dimen/dimen_padding_15"
+        android:gravity="center"
+        android:text="@string/change_source"
+        android:textColor="@color/color_black_353535"
+        android:textSize="@dimen/dimen_text_17" />
+
+    <View
+        android:id="@+id/change_source_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_view_height_1"
+        android:background="@color/color_white_f1f1f1"
+        android:layout_below="@id/change_source_head" />
+
+    <RelativeLayout
+        android:id="@+id/change_source_statement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/change_source_divider">
+
+        <TextView
+            android:id="@+id/change_source_disclaimer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dimen_padding_18"
+            android:layout_marginTop="@dimen/dimen_margin_10"
+            android:layout_marginBottom="@dimen/dimen_margin_5"
+            android:gravity="center_vertical"
+            android:text="@string/disclaimer"
+            android:textColor="@color/color_black_595858"
+            android:textSize="@dimen/dimen_text_14" />
+
+        <TextView
+            android:id="@+id/change_source_disclaimer_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_margin_18"
+            android:layout_marginRight="@dimen/dimen_margin_18"
+            android:gravity="left|center"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:layout_below="@id/change_source_disclaimer"
+            android:text="@string/translate_code_description"
+            android:textColor="@color/color_black_595858"
+            android:textSize="@dimen/dimen_text_12"/>
+
+        <TextView
+            android:id="@+id/change_source_disclaimer_jump"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dimen_margin_18"
+            android:paddingTop="@dimen/dimen_padding_5"
+            android:paddingBottom="@dimen/dimen_padding_5"
+            android:layout_below="@id/change_source_disclaimer_message"
+            android:text="@string/change_source_view_all"
+            android:textColor="@color/theme_primary"
+            android:textSize="@dimen/dimen_text_12" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_view_height_0.5"
+            android:background="@color/color_white_f1f1f1"
+            android:layout_below="@id/change_source_disclaimer_jump" />
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/change_source_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/change_source_statement"
+        android:minHeight="@dimen/dimen_view_height_60"
+        android:layout_marginBottom="@dimen/dimen_margin_0"
+        android:cacheColorHint="@color/color_black_00000000"
+        android:divider="@color/color_gray_d9d9d9"
+        android:dividerHeight="@dimen/dimen_view_height_0.5"
+        android:paddingLeft="@dimen/dimen_padding_5"
+        android:paddingRight="@dimen/dimen_padding_5"
+        android:fadingEdge="none"
+        android:scrollbarFadeDuration="0"
+        android:fadeScrollbars="false"
+        android:scrollbars="vertical"
+        android:scrollbarStyle="insideInset"
+        android:verticalScrollbarPosition="right"
+        android:scrollbarThumbVertical="@drawable/background_list_scroll"
+        android:scrollbarSize="@dimen/dimen_view_width_5"
+        android:listSelector="@android:color/transparent"/>
+
+    <RelativeLayout
+        android:id="@+id/change_source_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_view_height_45"
+        android:layout_below="@id/change_source_list">
+
+        <View
+            android:id="@+id/change_source_bottom_divider"
+            android:layout_width="@dimen/dimen_view_width_0.5"
+            android:layout_height="@dimen/dimen_view_height_30"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:background="@color/color_gray_d9d9d9" />
+
+        <TextView
+            android:id="@+id/change_source_original_web"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@id/change_source_bottom_divider"
+            android:background="@drawable/background_dialog_button"
+            android:gravity="center"
+            android:text="@string/reading_original_web"
+            android:textColor="@color/color_black_414040"
+            android:textSize="@dimen/dimen_text_16" />
+
+        <TextView
+            android:id="@+id/change_source_continue"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@id/change_source_bottom_divider"
+            android:background="@drawable/background_dialog_button"
+            android:gravity="center"
+            android:text="@string/reading_continue"
+            android:textColor="@color/theme_primary"
+            android:textSize="@dimen/dimen_text_16" />
+
+        <include layout="@layout/layout_divider" />
+    </RelativeLayout>
+
+</RelativeLayout>

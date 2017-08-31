@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/bookstore_bottom"
+        layout="@layout/layout_bookstore_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_view_height_50"
+        android:layout_alignParentBottom="true" />
+
+    <net.lzbook.kit.book.view.NonSwipeViewPager
+        android:id="@+id/bookstore_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bookstore_bottom"
+        android:flipInterval="30"
+        android:persistentDrawingCache="animation" />
+
+    <RelativeLayout
+        android:id="@+id/bookstore_guide"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/bookstore_guide_ranking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:scaleType="fitXY" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

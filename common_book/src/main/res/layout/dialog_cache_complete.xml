@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/dimen_view_width_300"
+    android:layout_height="wrap_content"
+    android:scrollbars="vertical"
+    android:layout_gravity="center"
+    android:focusable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="?attr/dialog_bg_color"
+        android:layout_marginTop="35dp"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:id="@+id/dialog_top_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/dialog_cache_complete"
+            android:padding="12dp"
+            android:gravity="center"
+            android:textColor="?attr/dialog_title_color"
+            android:textSize="18sp"
+            />
+    
+        <View android:layout_width="match_parent"
+              android:background="?attr/color_divider"
+              android:layout_height="1dp"
+        />
+        
+
+        
+        <RelativeLayout
+            android:id="@+id/change_source_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_view_height_50">
+
+            <View
+                android:id="@+id/change_source_bottom_divider"
+                android:layout_width="@dimen/dimen_view_width_0.5"
+                android:layout_height="@dimen/dimen_view_height_50"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
+                android:background="?attr/color_divider" />
+
+            <TextView
+                android:id="@+id/cache_cancel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@id/change_source_bottom_divider"
+                android:gravity="center"
+                android:text="@string/cancel"
+                android:background="?attr/dialog_btn_left_selector"
+                android:textColor="?attr/dialog_cancel_color"
+                android:textSize="@dimen/dimen_text_16" />
+
+            <TextView
+                android:id="@+id/cache_gotosee"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@id/change_source_bottom_divider"
+                android:gravity="center"
+                android:text="@string/dialog_cache_gotosee"
+                android:background="?attr/dialog_btn_right_selector"
+                android:textColor="?attr/dialog_confirm_color"
+                android:textSize="@dimen/dimen_text_16" />
+    
+            <View android:layout_width="match_parent"
+                  android:background="?attr/color_divider"
+                  android:layout_height="1dp"
+            />
+        </RelativeLayout>
+    </LinearLayout>
+
+
+</RelativeLayout>

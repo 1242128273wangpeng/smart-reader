@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/dimen_padding_10"
+    android:paddingLeft="@dimen/dimen_padding_10"
+    android:paddingRight="@dimen/dimen_padding_10"
+    android:background="@drawable/selector_background_gray">
+
+    <FrameLayout
+        android:id="@+id/ff_image_cover"
+        android:layout_width="57dp"
+        android:layout_height="76dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true" >
+
+        <ImageView
+            android:id="@+id/layout_recommend_item_cover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/app_name"
+            android:scaleType="fitXY" />
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="76dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:layout_marginRight="14dp"
+        android:layout_marginLeft="24dp"
+        android:layout_toRightOf="@id/ff_image_cover" >
+
+        <TextView
+            android:id="@+id/layout_recommend_item_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:ellipsize="end"
+            android:gravity="left|center"
+            android:singleLine="true"
+            android:text="书名"
+            android:textColor="@color/color_black_353535"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/layout_recommend_item_fans"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:singleLine="true"
+            android:text="追看"
+            android:textColor="@color/color_gray_9c9c9c"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/layout_recommend_item_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:singleLine="true"
+            android:text="作者"
+            android:textColor="@color/color_gray_9c9c9c"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="true"
+        android:layout_marginRight="10dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/more"
+        android:visibility="gone" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@id/ff_image_cover"
+        android:layout_marginTop="12dp"
+        android:background="@color/color_gray_d9d9d9" />
+</RelativeLayout>
