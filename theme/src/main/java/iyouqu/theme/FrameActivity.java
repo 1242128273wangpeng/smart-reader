@@ -92,11 +92,6 @@ public abstract class FrameActivity extends AppCompatActivity {
      */
     private void initTheme() {
         if(mThemeHelper.isNight()){
-            setTheme(R.style.Night);
-        }else if (mThemeHelper.isTheme1()){
-            setTheme(R.style.Theme1);
-        }else {
-            setTheme(R.style.Theme1);
             mThemeHelper.setMode(ThemeMode.THEME1);
         }
     }

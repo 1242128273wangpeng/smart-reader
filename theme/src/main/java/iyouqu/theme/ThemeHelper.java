@@ -13,7 +13,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -129,30 +128,7 @@ public class ThemeHelper {
         return mSharedPreferences.getInt(MODE_DEFAULT, ThemeMode.THEME1.getCode());
     }
 
-    private void loadTheme(int themeNum , Activity act){
-        switch (themeNum) {
-            case 1 :
-                act.setTheme(R.style.Theme1);
-                setMode(ThemeMode.THEME1);
-                break;
-            case 2 :
-                act.setTheme(R.style.Theme2);
-                setMode(ThemeMode.THEME2);
-                break;
-            case 3 :
-                setMode(ThemeMode.THEME3);
-                act.setTheme(R.style.Theme3);
-                break;
-            case 4 :
-                setMode(ThemeMode.THEME4);
-                act.setTheme(R.style.Theme4);
-                break;
-            default:
-                setMode(ThemeMode.THEME1);
-                act.setTheme(R.style.Theme1);
-                break;
-        }
-    }
+
 
     /**
      * 设置Textview左上右下的图片
@@ -166,12 +142,7 @@ public class ThemeHelper {
      * @return
      */
     public void toggleThemeSetting(Activity act) {
-        if (isNight()) {
-           loadTheme(getModeDefault(),act);
-        } else {
-            setMode(ThemeMode.NIGHT);
-            act.setTheme(R.style.Night);
-        }
+
     }
 
     private Bitmap getCacheBitmapFromView(View view) {

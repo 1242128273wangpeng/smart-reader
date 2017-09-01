@@ -28,7 +28,7 @@ android {
             res.srcDirs = ['src/main/res', 'src/nxh/res']
         }
         mfqbxssc{
-            res.srcDirs = ['src/main/res','src/mzh/res']
+            res.srcDirs = ['src/main/res']
         }
         zsmfqbxs{
             res.srcDirs = ['src/main/res', 'src/ddl/res']
