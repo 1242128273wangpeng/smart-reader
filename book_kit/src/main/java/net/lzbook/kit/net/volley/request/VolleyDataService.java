@@ -1,8 +1,5 @@
 package net.lzbook.kit.net.volley.request;
 
-import android.os.Handler;
-import android.os.Message;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response.ErrorListener;
@@ -12,6 +9,9 @@ import com.android.volley.VolleyError;
 import net.lzbook.kit.net.UtilStringRequest;
 import net.lzbook.kit.net.volley.VolleyRequestManager;
 import net.lzbook.kit.utils.AppLog;
+
+import android.os.Handler;
+import android.os.Message;
 
 import java.util.Map;
 
@@ -79,15 +79,6 @@ public class VolleyDataService {
             requestQueue.cancelAll(url);
         }
         requestQueue.add(request);
-    }
-
-    /**
-     * 默认的回调方式
-     **/
-    public interface DataServiceCallBack {
-        void onSuccess(Object result);
-
-        void onError(Exception error);
     }
 
     public static void publicCode(String url, Map<String, String> params, final DataServiceCallBack callBack, boolean isEZip, final Parser parser) {
@@ -183,15 +174,6 @@ public class VolleyDataService {
         requestQueue.add(request);
     }
 
-    /**
-     * Tag方式的回调，Tag主要用于检测是否是对应的返回结果
-     **/
-    public interface DataServiceTagCallBack {
-        void onSuccess(Object result, Object tag);
-
-        void onError(Exception error, Object tag);
-    }
-
     public static void publicCode(String url, Map<String, String> parameter, final DataServiceTagCallBack callBack, final Parser parser, final Object tag) {
 
         RequestQueue requestQueue = VolleyRequestManager.getRequestQueue();
@@ -228,5 +210,23 @@ public class VolleyDataService {
             requestQueue.cancelAll(url);
         }
         requestQueue.add(request);
+    }
+
+    /**
+     * 默认的回调方式
+     **/
+    public interface DataServiceCallBack {
+        void onSuccess(Object result);
+
+        void onError(Exception error);
+    }
+
+    /**
+     * Tag方式的回调，Tag主要用于检测是否是对应的返回结果
+     **/
+    public interface DataServiceTagCallBack {
+        void onSuccess(Object result, Object tag);
+
+        void onError(Exception error, Object tag);
     }
 }

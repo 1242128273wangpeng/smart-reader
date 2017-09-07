@@ -27,11 +27,8 @@ import java.util.ArrayList;
 
 public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveModeAdapter.RemoveAdapterChild {
     private static final String TAG = "DownloadManagerAdapter";
-    private DownloadManagerActivity downloadManagerActivity;
     public BookDaoHelper mBookDaoHelper;
-    private Resources mResources;
     protected ArrayList<Book> book_data;
-    private Context mContext;
     FrameLayout frameLayout;
     Resources.Theme theme;
     Resources resources;
@@ -40,6 +37,9 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
     TypedValue downBtnNoStart;//次要进度条
     TypedValue downBtnDowning;//次要进度条
     TypedValue downBtnWaitting;//次要进度条
+    private DownloadManagerActivity downloadManagerActivity;
+    private Resources mResources;
+    private Context mContext;
 
     public DownloadManagerAdapter(Activity context, ArrayList<Book> list, FrameLayout frameLayout) {
         super(context, list);
@@ -64,16 +64,6 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
         theme.resolveAttribute(R.attr.download_pause, downBtnNoStart, true);
         theme.resolveAttribute(R.attr.downloade_downloading, downBtnDowning, true);
         theme.resolveAttribute(R.attr.downloade_waiting, downBtnWaitting, true);
-
-    }
-
-    class ViewCache extends ViewHolder {
-
-        private TextView book_name;
-        private TextView download_count;
-        private ProgressBar download_progress;
-        private TextView download_state;
-        private ImageView download_btn;
 
     }
 
@@ -137,11 +127,11 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
                 }
                 int start = task.startSequence == task.endSequence ? task.startSequence : task.startSequence;
 
-                if (start > task.endSequence ) {
+                if (start > task.endSequence) {
                     start = task.endSequence;
                 }
                 if (cache.download_count != null) {
-                    cache.download_count.setText(start + "/" + (task.endSequence ) + mResources.getString(R.string.chapter));
+                    cache.download_count.setText(start + "/" + (task.endSequence) + mResources.getString(R.string.chapter));
                 }
                 int num = task.endSequence == 0 ? task.book.chapter_count : task.endSequence;
                 int progress = task.progress;
@@ -177,35 +167,35 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
                     cache.download_btn.setImageResource(downBtnDowning.resourceId);
                 } else if ((state == DownloadState.WAITTING)) {
                     cache.download_state.setText("等待缓存");
-                   
+
                     cache.download_btn.setImageResource(downBtnWaitting.resourceId);
                 } else if ((state == DownloadState.PAUSEED)) {
                     cache.download_state.setText("已暂停");
-                   
+
                 } else if ((state == DownloadState.NONE_NETWORK)) {
                     cache.download_state.setText("已暂停");
-                   
+
                 } else if ((state == DownloadState.REFRESH)) {
                     cache.download_state.setText("已暂停");
-                   
+
                 } else if (state == null || (state == DownloadState.NOSTART)) {
                     cache.download_state.setText("无缓存");
-                   
+
                     cache.download_progress.setProgress(0);
-                   
+
                 } else if (state == DownloadState.FINISH) {
                     cache.download_state.setText("缓存完成");
                     cache.download_btn.setImageResource(R.drawable.icon_download_complete);
                     cache.download_progress.setProgress(100);
                 } else if (state == DownloadState.LOCKED) {
                     cache.download_state.setText("已暂停");
-                   
+
                 } else {
                     task.state = DownloadState.NOSTART;
                     cache.download_state.setText("无缓存");
-                   
+
                     cache.download_progress.setProgress(0);
-                   
+
                 }
 
                 TypedValue typeColor = new TypedValue();
@@ -236,7 +226,7 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
                             BookHelper.startDownBookTask(mContext, book.book_id);
                         } else if (state == DownloadState.PAUSEED || state == DownloadState.REFRESH) {
                             BookHelper.startDownBookTask(mContext, book.book_id);
-                        }else if(state == DownloadState.FINISH){
+                        } else if (state == DownloadState.FINISH) {
                             Toast.makeText(mContext, "缓存已完成", Toast.LENGTH_SHORT).show();
                         }
                         notifyDataSetChanged();
@@ -263,6 +253,16 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
             this.book_data.clear();
             this.book_data = null;
         }
+    }
+
+    class ViewCache extends ViewHolder {
+
+        private TextView book_name;
+        private TextView download_count;
+        private ProgressBar download_progress;
+        private TextView download_state;
+        private ImageView download_btn;
+
     }
 
 }

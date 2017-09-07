@@ -4,6 +4,11 @@ import java.io.Serializable;
 import java.util.List;
 
 public class SensitiveWords implements Serializable {
+    //不同的敏感词分类
+    private static SensitiveWords readSensitiveWords;
+    private static SensitiveWords bookSensitiveWords;
+    private static SensitiveWords locationSensitiveWords;
+    private static SensitiveWords adcodeSensitiveWords;
     //敏感词操作是否成功
     public boolean sucess;
     //敏感词类型
@@ -12,12 +17,6 @@ public class SensitiveWords implements Serializable {
     public String digest;
     //敏感词内容
     public List<String> list;
-
-    //不同的敏感词分类
-    private static SensitiveWords readSensitiveWords;
-    private static SensitiveWords bookSensitiveWords;
-    private static SensitiveWords locationSensitiveWords;
-    private static SensitiveWords adcodeSensitiveWords;
 
     public static SensitiveWords getBookSensitiveWords() {
         return bookSensitiveWords;

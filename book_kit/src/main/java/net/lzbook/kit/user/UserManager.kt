@@ -185,8 +185,7 @@ object UserManager : IWXAPIEventHandler {
                         observable.subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribekt(
-                                        onNext = {
-                                            ret ->
+                                        onNext = { ret ->
                                             log("getSimpleUserInfo", ret)
 
                                             var figureurl: String = ret.figureurl_qq_2 ?: ret.figureurl_qq_1 ?: ""
@@ -213,15 +212,13 @@ object UserManager : IWXAPIEventHandler {
                                                                     mFailureCallback?.invoke("${resp?.msg}")
                                                                 }
                                                             },
-                                                            onError = {
-                                                                t ->
+                                                            onError = { t ->
                                                                 t.printStackTrace()
                                                                 mFailureCallback?.invoke("${t.message}")
                                                             }
                                                     )
                                         },
-                                        onError = {
-                                            ret ->
+                                        onError = { ret ->
                                             log("getSimpleUserInfo", ret)
                                             ret.printStackTrace()
                                             mFailureCallback?.invoke("${ret.message}")
@@ -260,8 +257,7 @@ object UserManager : IWXAPIEventHandler {
      */
     fun logout(callback: ((Boolean) -> Unit)? = null) {
         if (mUserState.get()) {
-            mLogoutCallback = {
-                ret ->
+            mLogoutCallback = { ret ->
                 callback?.invoke(ret)
                 mLogoutCallback = null
             }
@@ -270,15 +266,13 @@ object UserManager : IWXAPIEventHandler {
             val logout = NetService.userService.logout(mutableMapOf(Pair("loginToken", mUserInfo!!.login_token), Pair("uid", mUserInfo!!.uid), Pair("uidThird", mUserInfo!!.uid_third)))
             logout.subscribeOn(Schedulers.io())
                     .subscribekt(
-                            onNext = {
-                                ret ->
+                            onNext = { ret ->
                                 log("logout", "${ret.toString()}")
                                 if (ret["state"]?.asString?.equals("success", true) ?: false) {
                                     callback?.invoke(true)
                                 }
                             },
-                            onError = {
-                                t ->
+                            onError = { t ->
                                 t.printStackTrace()
                                 callback?.invoke(false)
                             }
@@ -292,8 +286,7 @@ object UserManager : IWXAPIEventHandler {
         val refreshToken = NetService.userService.refreshToken(mutableMapOf(Pair("loginToken", mUserInfo!!.login_token), Pair("uid", mUserInfo!!.uid), Pair("uidThird", mUserInfo!!.uid_third)))
         refreshToken.subscribeOn(Schedulers.io())
                 .subscribekt(
-                        onNext = {
-                            ret ->
+                        onNext = { ret ->
                             log("refreshToken", "${ret.toString()}")
                             if (ret != null && ret.state.equals("success", true)) {
                                 mUserInfo!!.login_token = ret.login_token!!
@@ -306,8 +299,7 @@ object UserManager : IWXAPIEventHandler {
                             mInitCallback?.invoke(true)
 
                         },
-                        onError = {
-                            t ->
+                        onError = { t ->
                             t.printStackTrace()
                             log("refreshToken", t)
                             mInitCallback?.invoke(true)
@@ -348,8 +340,7 @@ object UserManager : IWXAPIEventHandler {
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
                             .subscribekt(
-                                    onNext = {
-                                        resp: LoginResp? ->
+                                    onNext = { resp: LoginResp? ->
                                         log("onNext", resp)
                                         if (resp != null && resp.state.equals("success", true)) {
                                             mUserState.set(true)
@@ -361,14 +352,13 @@ object UserManager : IWXAPIEventHandler {
                                             mFailureCallback?.invoke("${resp?.msg}")
                                         }
                                     },
-                                    onError = {
-                                        t: Throwable ->
+                                    onError = { t: Throwable ->
                                         log("onError", t)
                                         t.printStackTrace()
                                         mFailureCallback?.invoke("${t.message}")
                                     }
                             )
-                }else{
+                } else {
                     mFailureCallback?.invoke("unknown")
                 }
             }

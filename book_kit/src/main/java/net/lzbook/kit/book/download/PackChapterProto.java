@@ -18,11 +18,53 @@ import java.io.InputStream;
 
 
 public final class PackChapterProto {
+    private static Descriptors.Descriptor
+            internal_static_PackChapter_descriptor;
+    private static
+    GeneratedMessage.FieldAccessorTable
+            internal_static_PackChapter_fieldAccessorTable;
+    private static Descriptors.FileDescriptor
+            descriptor;
+
+    static {
+        String[] descriptorData = {
+                "\n\021packChapter.proto\"j\n\013PackChapter\022\021\n\tch" +
+                        "apterId\030\001 \002(\t\022\024\n\014serialNumber\030\002 \002(\003\022\023\n\013c" +
+                        "hapterName\030\003 \002(\t\022\017\n\007content\030\004 \001(\t\022\014\n\004hos" +
+                        "t\030\005 \002(\tB\022B\020PackChapterProto"
+        };
+        Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
+                new Descriptors.FileDescriptor.InternalDescriptorAssigner() {
+                    public ExtensionRegistry assignDescriptors(
+                            Descriptors.FileDescriptor root) {
+                        descriptor = root;
+                        internal_static_PackChapter_descriptor =
+                                getDescriptor().getMessageTypes().get(0);
+                        internal_static_PackChapter_fieldAccessorTable = new
+                                GeneratedMessage.FieldAccessorTable(
+                                internal_static_PackChapter_descriptor,
+                                new String[]{"ChapterId", "SerialNumber", "ChapterName", "Content", "Host",},
+                                PackChapter.class,
+                                PackChapter.Builder.class);
+                        return null;
+                    }
+                };
+        Descriptors.FileDescriptor
+                .internalBuildGeneratedFileFrom(descriptorData,
+                        new Descriptors.FileDescriptor[]{
+                        }, assigner);
+    }
+
     private PackChapterProto() {
     }
 
     public static void registerAllExtensions(
             ExtensionRegistry registry) {
+    }
+
+    public static Descriptors.FileDescriptor
+    getDescriptor() {
+        return descriptor;
     }
 
     public interface PackChapterOrBuilder
@@ -55,6 +97,33 @@ public final class PackChapterProto {
     }
 
     public static final class PackChapter extends GeneratedMessage implements PackChapterOrBuilder {
+        // required string chapterId = 1;
+        public static final int CHAPTERID_FIELD_NUMBER = 1;
+        // required int64 serialNumber = 2;
+        public static final int SERIALNUMBER_FIELD_NUMBER = 2;
+        // required string chapterName = 3;
+        public static final int CHAPTERNAME_FIELD_NUMBER = 3;
+        // optional string content = 4;
+        public static final int CONTENT_FIELD_NUMBER = 4;
+        // required string host = 5;
+        public static final int HOST_FIELD_NUMBER = 5;
+        private static final PackChapter defaultInstance;
+        private static final long serialVersionUID = 0L;
+
+        static {
+            defaultInstance = new PackChapter(true);
+            defaultInstance.initFields();
+        }
+
+        private int bitField0_;
+        private Object chapterId_;
+        private long serialNumber_;
+        private Object chapterName_;
+        private Object content_;
+        private Object host_;
+        private byte memoizedIsInitialized = -1;
+        private int memoizedSerializedSize = -1;
+
         // Use PackChapter.newBuilder() to construct.
         private PackChapter(Builder builder) {
             super(builder);
@@ -63,256 +132,12 @@ public final class PackChapterProto {
         private PackChapter(boolean noInit) {
         }
 
-        private static final PackChapter defaultInstance;
-
         public static PackChapter getDefaultInstance() {
-            return defaultInstance;
-        }
-
-        public PackChapter getDefaultInstanceForType() {
             return defaultInstance;
         }
 
         public static final Descriptors.Descriptor getDescriptor() {
             return PackChapterProto.internal_static_PackChapter_descriptor;
-        }
-
-        protected GeneratedMessage.FieldAccessorTable internalGetFieldAccessorTable() {
-            return PackChapterProto.internal_static_PackChapter_fieldAccessorTable;
-        }
-
-        private int bitField0_;
-        // required string chapterId = 1;
-        public static final int CHAPTERID_FIELD_NUMBER = 1;
-        private Object chapterId_;
-
-        public boolean hasChapterId() {
-            return ((bitField0_ & 0x00000001) == 0x00000001);
-        }
-
-        public String getChapterId() {
-            Object ref = chapterId_;
-            if (ref instanceof String) {
-                return (String) ref;
-            } else {
-                ByteString bs = (ByteString) ref;
-                String s = bs.toStringUtf8();
-                if (Internal.isValidUtf8(bs)) {
-                    chapterId_ = s;
-                }
-                return s;
-            }
-        }
-
-        private ByteString getChapterIdBytes() {
-            Object ref = chapterId_;
-            if (ref instanceof String) {
-                ByteString b = ByteString.copyFromUtf8((String) ref);
-                chapterId_ = b;
-                return b;
-            } else {
-                return (ByteString) ref;
-            }
-        }
-
-        // required int64 serialNumber = 2;
-        public static final int SERIALNUMBER_FIELD_NUMBER = 2;
-        private long serialNumber_;
-
-        public boolean hasSerialNumber() {
-            return ((bitField0_ & 0x00000002) == 0x00000002);
-        }
-
-        public long getSerialNumber() {
-            return serialNumber_;
-        }
-
-        // required string chapterName = 3;
-        public static final int CHAPTERNAME_FIELD_NUMBER = 3;
-        private Object chapterName_;
-
-        public boolean hasChapterName() {
-            return ((bitField0_ & 0x00000004) == 0x00000004);
-        }
-
-        public String getChapterName() {
-            Object ref = chapterName_;
-            if (ref instanceof String) {
-                return (String) ref;
-            } else {
-                ByteString bs = (ByteString) ref;
-                String s = bs.toStringUtf8();
-                if (Internal.isValidUtf8(bs)) {
-                    chapterName_ = s;
-                }
-                return s;
-            }
-        }
-
-        private ByteString getChapterNameBytes() {
-            Object ref = chapterName_;
-            if (ref instanceof String) {
-                ByteString b = ByteString.copyFromUtf8((String) ref);
-                chapterName_ = b;
-                return b;
-            } else {
-                return (ByteString) ref;
-            }
-        }
-
-        // optional string content = 4;
-        public static final int CONTENT_FIELD_NUMBER = 4;
-        private Object content_;
-
-        public boolean hasContent() {
-            return ((bitField0_ & 0x00000008) == 0x00000008);
-        }
-
-        public String getContent() {
-            Object ref = content_;
-            if (ref instanceof String) {
-                return (String) ref;
-            } else {
-                ByteString bs = (ByteString) ref;
-                String s = bs.toStringUtf8();
-                if (Internal.isValidUtf8(bs)) {
-                    content_ = s;
-                }
-                return s;
-            }
-        }
-
-        private ByteString getContentBytes() {
-            Object ref = content_;
-            if (ref instanceof String) {
-                ByteString b = ByteString.copyFromUtf8((String) ref);
-                content_ = b;
-                return b;
-            } else {
-                return (ByteString) ref;
-            }
-        }
-
-        // required string host = 5;
-        public static final int HOST_FIELD_NUMBER = 5;
-        private Object host_;
-
-        public boolean hasHost() {
-            return ((bitField0_ & 0x00000010) == 0x00000010);
-        }
-
-        public String getHost() {
-            Object ref = host_;
-            if (ref instanceof String) {
-                return (String) ref;
-            } else {
-                ByteString bs = (ByteString) ref;
-                String s = bs.toStringUtf8();
-                if (Internal.isValidUtf8(bs)) {
-                    host_ = s;
-                }
-                return s;
-            }
-        }
-
-        private ByteString getHostBytes() {
-            Object ref = host_;
-            if (ref instanceof String) {
-                ByteString b = ByteString.copyFromUtf8((String) ref);
-                host_ = b;
-                return b;
-            } else {
-                return (ByteString) ref;
-            }
-        }
-
-        private void initFields() {
-            chapterId_ = "";
-            serialNumber_ = 0L;
-            chapterName_ = "";
-            content_ = "";
-            host_ = "";
-        }
-
-        private byte memoizedIsInitialized = -1;
-
-        public final boolean isInitialized() {
-            byte isInitialized = memoizedIsInitialized;
-            if (isInitialized != -1) return isInitialized == 1;
-
-            if (!hasChapterId()) {
-                memoizedIsInitialized = 0;
-                return false;
-            }
-            if (!hasSerialNumber()) {
-                memoizedIsInitialized = 0;
-                return false;
-            }
-            if (!hasChapterName()) {
-                memoizedIsInitialized = 0;
-                return false;
-            }
-            if (!hasHost()) {
-                memoizedIsInitialized = 0;
-                return false;
-            }
-            memoizedIsInitialized = 1;
-            return true;
-        }
-
-        public void writeTo(CodedOutputStream output)
-                throws java.io.IOException {
-            getSerializedSize();
-            if (((bitField0_ & 0x00000001) == 0x00000001)) {
-                output.writeBytes(1, getChapterIdBytes());
-            }
-            if (((bitField0_ & 0x00000002) == 0x00000002)) {
-                output.writeInt64(2, serialNumber_);
-            }
-            if (((bitField0_ & 0x00000004) == 0x00000004)) {
-                output.writeBytes(3, getChapterNameBytes());
-            }
-            if (((bitField0_ & 0x00000008) == 0x00000008)) {
-                output.writeBytes(4, getContentBytes());
-            }
-            if (((bitField0_ & 0x00000010) == 0x00000010)) {
-                output.writeBytes(5, getHostBytes());
-            }
-            getUnknownFields().writeTo(output);
-        }
-
-        private int memoizedSerializedSize = -1;
-
-        public int getSerializedSize() {
-            int size = memoizedSerializedSize;
-            if (size != -1) return size;
-
-            size = 0;
-            if (((bitField0_ & 0x00000001) == 0x00000001)) {
-                size += CodedOutputStream.computeBytesSize(1, getChapterIdBytes());
-            }
-            if (((bitField0_ & 0x00000002) == 0x00000002)) {
-                size += CodedOutputStream.computeInt64Size(2, serialNumber_);
-            }
-            if (((bitField0_ & 0x00000004) == 0x00000004)) {
-                size += CodedOutputStream.computeBytesSize(3, getChapterNameBytes());
-            }
-            if (((bitField0_ & 0x00000008) == 0x00000008)) {
-                size += CodedOutputStream.computeBytesSize(4, getContentBytes());
-            }
-            if (((bitField0_ & 0x00000010) == 0x00000010)) {
-                size += CodedOutputStream.computeBytesSize(5, getHostBytes());
-            }
-            size += getUnknownFields().getSerializedSize();
-            memoizedSerializedSize = size;
-            return size;
-        }
-
-        private static final long serialVersionUID = 0L;
-
-        @Override
-        protected Object writeReplace() throws java.io.ObjectStreamException {
-            return super.writeReplace();
         }
 
         public static PackChapter parseFrom(ByteString data) throws InvalidProtocolBufferException {
@@ -381,12 +206,227 @@ public final class PackChapterProto {
             return Builder.create();
         }
 
-        public Builder newBuilderForType() {
-            return newBuilder();
-        }
-
         public static Builder newBuilder(PackChapter prototype) {
             return newBuilder().mergeFrom(prototype);
+        }
+
+        public PackChapter getDefaultInstanceForType() {
+            return defaultInstance;
+        }
+
+        protected GeneratedMessage.FieldAccessorTable internalGetFieldAccessorTable() {
+            return PackChapterProto.internal_static_PackChapter_fieldAccessorTable;
+        }
+
+        public boolean hasChapterId() {
+            return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+
+        public String getChapterId() {
+            Object ref = chapterId_;
+            if (ref instanceof String) {
+                return (String) ref;
+            } else {
+                ByteString bs = (ByteString) ref;
+                String s = bs.toStringUtf8();
+                if (Internal.isValidUtf8(bs)) {
+                    chapterId_ = s;
+                }
+                return s;
+            }
+        }
+
+        private ByteString getChapterIdBytes() {
+            Object ref = chapterId_;
+            if (ref instanceof String) {
+                ByteString b = ByteString.copyFromUtf8((String) ref);
+                chapterId_ = b;
+                return b;
+            } else {
+                return (ByteString) ref;
+            }
+        }
+
+        public boolean hasSerialNumber() {
+            return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+
+        public long getSerialNumber() {
+            return serialNumber_;
+        }
+
+        public boolean hasChapterName() {
+            return ((bitField0_ & 0x00000004) == 0x00000004);
+        }
+
+        public String getChapterName() {
+            Object ref = chapterName_;
+            if (ref instanceof String) {
+                return (String) ref;
+            } else {
+                ByteString bs = (ByteString) ref;
+                String s = bs.toStringUtf8();
+                if (Internal.isValidUtf8(bs)) {
+                    chapterName_ = s;
+                }
+                return s;
+            }
+        }
+
+        private ByteString getChapterNameBytes() {
+            Object ref = chapterName_;
+            if (ref instanceof String) {
+                ByteString b = ByteString.copyFromUtf8((String) ref);
+                chapterName_ = b;
+                return b;
+            } else {
+                return (ByteString) ref;
+            }
+        }
+
+        public boolean hasContent() {
+            return ((bitField0_ & 0x00000008) == 0x00000008);
+        }
+
+        public String getContent() {
+            Object ref = content_;
+            if (ref instanceof String) {
+                return (String) ref;
+            } else {
+                ByteString bs = (ByteString) ref;
+                String s = bs.toStringUtf8();
+                if (Internal.isValidUtf8(bs)) {
+                    content_ = s;
+                }
+                return s;
+            }
+        }
+
+        private ByteString getContentBytes() {
+            Object ref = content_;
+            if (ref instanceof String) {
+                ByteString b = ByteString.copyFromUtf8((String) ref);
+                content_ = b;
+                return b;
+            } else {
+                return (ByteString) ref;
+            }
+        }
+
+        public boolean hasHost() {
+            return ((bitField0_ & 0x00000010) == 0x00000010);
+        }
+
+        public String getHost() {
+            Object ref = host_;
+            if (ref instanceof String) {
+                return (String) ref;
+            } else {
+                ByteString bs = (ByteString) ref;
+                String s = bs.toStringUtf8();
+                if (Internal.isValidUtf8(bs)) {
+                    host_ = s;
+                }
+                return s;
+            }
+        }
+
+        private ByteString getHostBytes() {
+            Object ref = host_;
+            if (ref instanceof String) {
+                ByteString b = ByteString.copyFromUtf8((String) ref);
+                host_ = b;
+                return b;
+            } else {
+                return (ByteString) ref;
+            }
+        }
+
+        private void initFields() {
+            chapterId_ = "";
+            serialNumber_ = 0L;
+            chapterName_ = "";
+            content_ = "";
+            host_ = "";
+        }
+
+        public final boolean isInitialized() {
+            byte isInitialized = memoizedIsInitialized;
+            if (isInitialized != -1) return isInitialized == 1;
+
+            if (!hasChapterId()) {
+                memoizedIsInitialized = 0;
+                return false;
+            }
+            if (!hasSerialNumber()) {
+                memoizedIsInitialized = 0;
+                return false;
+            }
+            if (!hasChapterName()) {
+                memoizedIsInitialized = 0;
+                return false;
+            }
+            if (!hasHost()) {
+                memoizedIsInitialized = 0;
+                return false;
+            }
+            memoizedIsInitialized = 1;
+            return true;
+        }
+
+        public void writeTo(CodedOutputStream output)
+                throws java.io.IOException {
+            getSerializedSize();
+            if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                output.writeBytes(1, getChapterIdBytes());
+            }
+            if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                output.writeInt64(2, serialNumber_);
+            }
+            if (((bitField0_ & 0x00000004) == 0x00000004)) {
+                output.writeBytes(3, getChapterNameBytes());
+            }
+            if (((bitField0_ & 0x00000008) == 0x00000008)) {
+                output.writeBytes(4, getContentBytes());
+            }
+            if (((bitField0_ & 0x00000010) == 0x00000010)) {
+                output.writeBytes(5, getHostBytes());
+            }
+            getUnknownFields().writeTo(output);
+        }
+
+        public int getSerializedSize() {
+            int size = memoizedSerializedSize;
+            if (size != -1) return size;
+
+            size = 0;
+            if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                size += CodedOutputStream.computeBytesSize(1, getChapterIdBytes());
+            }
+            if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                size += CodedOutputStream.computeInt64Size(2, serialNumber_);
+            }
+            if (((bitField0_ & 0x00000004) == 0x00000004)) {
+                size += CodedOutputStream.computeBytesSize(3, getChapterNameBytes());
+            }
+            if (((bitField0_ & 0x00000008) == 0x00000008)) {
+                size += CodedOutputStream.computeBytesSize(4, getContentBytes());
+            }
+            if (((bitField0_ & 0x00000010) == 0x00000010)) {
+                size += CodedOutputStream.computeBytesSize(5, getHostBytes());
+            }
+            size += getUnknownFields().getSerializedSize();
+            memoizedSerializedSize = size;
+            return size;
+        }
+
+        @Override
+        protected Object writeReplace() throws java.io.ObjectStreamException {
+            return super.writeReplace();
+        }
+
+        public Builder newBuilderForType() {
+            return newBuilder();
         }
 
         public Builder toBuilder() {
@@ -403,15 +443,17 @@ public final class PackChapterProto {
         public static final class Builder extends
                 GeneratedMessage.Builder<Builder>
                 implements PackChapterOrBuilder {
-            public static final Descriptors.Descriptor
-            getDescriptor() {
-                return PackChapterProto.internal_static_PackChapter_descriptor;
-            }
-
-            protected GeneratedMessage.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-                return PackChapterProto.internal_static_PackChapter_fieldAccessorTable;
-            }
+            private int bitField0_;
+            // required string chapterId = 1;
+            private Object chapterId_ = "";
+            // required int64 serialNumber = 2;
+            private long serialNumber_;
+            // required string chapterName = 3;
+            private Object chapterName_ = "";
+            // optional string content = 4;
+            private Object content_ = "";
+            // required string host = 5;
+            private Object host_ = "";
 
             // Construct using PackChapterProto.PackChapter.newBuilder()
             private Builder() {
@@ -423,13 +465,23 @@ public final class PackChapterProto {
                 maybeForceBuilderInitialization();
             }
 
-            private void maybeForceBuilderInitialization() {
-                if (GeneratedMessage.alwaysUseFieldBuilders) {
-                }
+            public static final Descriptors.Descriptor
+            getDescriptor() {
+                return PackChapterProto.internal_static_PackChapter_descriptor;
             }
 
             private static Builder create() {
                 return new Builder();
+            }
+
+            protected GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+                return PackChapterProto.internal_static_PackChapter_fieldAccessorTable;
+            }
+
+            private void maybeForceBuilderInitialization() {
+                if (GeneratedMessage.alwaysUseFieldBuilders) {
+                }
             }
 
             public Builder clear() {
@@ -609,11 +661,6 @@ public final class PackChapterProto {
                 }
             }
 
-            private int bitField0_;
-
-            // required string chapterId = 1;
-            private Object chapterId_ = "";
-
             public boolean hasChapterId() {
                 return ((bitField0_ & 0x00000001) == 0x00000001);
             }
@@ -639,21 +686,18 @@ public final class PackChapterProto {
                 return this;
             }
 
-            public Builder clearChapterId() {
-                bitField0_ = (bitField0_ & ~0x00000001);
-                chapterId_ = getDefaultInstance().getChapterId();
-                onChanged();
-                return this;
-            }
-
             void setChapterId(ByteString value) {
                 bitField0_ |= 0x00000001;
                 chapterId_ = value;
                 onChanged();
             }
 
-            // required int64 serialNumber = 2;
-            private long serialNumber_;
+            public Builder clearChapterId() {
+                bitField0_ = (bitField0_ & ~0x00000001);
+                chapterId_ = getDefaultInstance().getChapterId();
+                onChanged();
+                return this;
+            }
 
             public boolean hasSerialNumber() {
                 return ((bitField0_ & 0x00000002) == 0x00000002);
@@ -676,9 +720,6 @@ public final class PackChapterProto {
                 onChanged();
                 return this;
             }
-
-            // required string chapterName = 3;
-            private Object chapterName_ = "";
 
             public boolean hasChapterName() {
                 return ((bitField0_ & 0x00000004) == 0x00000004);
@@ -705,21 +746,18 @@ public final class PackChapterProto {
                 return this;
             }
 
-            public Builder clearChapterName() {
-                bitField0_ = (bitField0_ & ~0x00000004);
-                chapterName_ = getDefaultInstance().getChapterName();
-                onChanged();
-                return this;
-            }
-
             void setChapterName(ByteString value) {
                 bitField0_ |= 0x00000004;
                 chapterName_ = value;
                 onChanged();
             }
 
-            // optional string content = 4;
-            private Object content_ = "";
+            public Builder clearChapterName() {
+                bitField0_ = (bitField0_ & ~0x00000004);
+                chapterName_ = getDefaultInstance().getChapterName();
+                onChanged();
+                return this;
+            }
 
             public boolean hasContent() {
                 return ((bitField0_ & 0x00000008) == 0x00000008);
@@ -746,21 +784,18 @@ public final class PackChapterProto {
                 return this;
             }
 
-            public Builder clearContent() {
-                bitField0_ = (bitField0_ & ~0x00000008);
-                content_ = getDefaultInstance().getContent();
-                onChanged();
-                return this;
-            }
-
             void setContent(ByteString value) {
                 bitField0_ |= 0x00000008;
                 content_ = value;
                 onChanged();
             }
 
-            // required string host = 5;
-            private Object host_ = "";
+            public Builder clearContent() {
+                bitField0_ = (bitField0_ & ~0x00000008);
+                content_ = getDefaultInstance().getContent();
+                onChanged();
+                return this;
+            }
 
             public boolean hasHost() {
                 return ((bitField0_ & 0x00000010) == 0x00000010);
@@ -787,6 +822,12 @@ public final class PackChapterProto {
                 return this;
             }
 
+            void setHost(ByteString value) {
+                bitField0_ |= 0x00000010;
+                host_ = value;
+                onChanged();
+            }
+
             public Builder clearHost() {
                 bitField0_ = (bitField0_ & ~0x00000010);
                 host_ = getDefaultInstance().getHost();
@@ -794,64 +835,10 @@ public final class PackChapterProto {
                 return this;
             }
 
-            void setHost(ByteString value) {
-                bitField0_ |= 0x00000010;
-                host_ = value;
-                onChanged();
-            }
-
             // @@protoc_insertion_point(builder_scope:PackChapter)
         }
 
-        static {
-            defaultInstance = new PackChapter(true);
-            defaultInstance.initFields();
-        }
-
         // @@protoc_insertion_point(class_scope:PackChapter)
-    }
-
-    private static Descriptors.Descriptor
-            internal_static_PackChapter_descriptor;
-    private static
-    GeneratedMessage.FieldAccessorTable
-            internal_static_PackChapter_fieldAccessorTable;
-
-    public static Descriptors.FileDescriptor
-    getDescriptor() {
-        return descriptor;
-    }
-
-    private static Descriptors.FileDescriptor
-            descriptor;
-
-    static {
-        String[] descriptorData = {
-                "\n\021packChapter.proto\"j\n\013PackChapter\022\021\n\tch" +
-                        "apterId\030\001 \002(\t\022\024\n\014serialNumber\030\002 \002(\003\022\023\n\013c" +
-                        "hapterName\030\003 \002(\t\022\017\n\007content\030\004 \001(\t\022\014\n\004hos" +
-                        "t\030\005 \002(\tB\022B\020PackChapterProto"
-        };
-        Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
-                new Descriptors.FileDescriptor.InternalDescriptorAssigner() {
-                    public ExtensionRegistry assignDescriptors(
-                            Descriptors.FileDescriptor root) {
-                        descriptor = root;
-                        internal_static_PackChapter_descriptor =
-                                getDescriptor().getMessageTypes().get(0);
-                        internal_static_PackChapter_fieldAccessorTable = new
-                                GeneratedMessage.FieldAccessorTable(
-                                internal_static_PackChapter_descriptor,
-                                new String[]{"ChapterId", "SerialNumber", "ChapterName", "Content", "Host",},
-                                PackChapter.class,
-                                PackChapter.Builder.class);
-                        return null;
-                    }
-                };
-        Descriptors.FileDescriptor
-                .internalBuildGeneratedFileFrom(descriptorData,
-                        new Descriptors.FileDescriptor[]{
-                        }, assigner);
     }
 
     // @@protoc_insertion_point(outer_class_scope)

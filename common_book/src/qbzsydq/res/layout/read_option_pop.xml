@@ -17,7 +17,7 @@
             android:background="@drawable/read_option_pop_bg_selector"
             android:clickable="true"
             android:soundEffectsEnabled="true"
-            />
+    />
     
     <TextView
             android:id="@+id/read_option_pop_mark"
@@ -30,7 +30,7 @@
             android:background="@drawable/read_option_pop_bg_selector"
             android:clickable="true"
             android:soundEffectsEnabled="true"
-            />
+    />
     
     <TextView
             android:id="@+id/read_option_pop_info"
@@ -43,5 +43,5 @@
             android:background="@drawable/read_option_pop_bg_selector"
             android:clickable="true"
             android:soundEffectsEnabled="true"
-            />
+    />
 </LinearLayout>

@@ -1,14 +1,14 @@
 package net.lzbook.kit.cache.imagecache;
 
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory;
-
 import com.android.volley.toolbox.ImageLoader.ImageCache;
 
 import net.lzbook.kit.cache.FileCache;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.utils.FileUtils;
+
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
@@ -17,8 +17,8 @@ import java.io.OutputStream;
 
 public class DiskCache implements ImageCache {
 
-    private FileCache.CacheType cacheType = FileCache.CacheType.IMAGE_COVER;
     private static CompressFormat DISK_IMAGECACHE_COMPRESS_FORMAT = CompressFormat.JPEG;
+    private FileCache.CacheType cacheType = FileCache.CacheType.IMAGE_COVER;
     private String cachePath = ReplaceConstants.getReplaceConstants().APP_PATH_IMAGE;
 
     public DiskCache(String path) {

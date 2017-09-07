@@ -4,20 +4,12 @@ package net.lzbook.kit.data.bean;
  * 书签事件
  */
 public class EventBookmark {
-    //书签事件类型
-    private int type = 0;
     //删除书签
     public static int type_delete = 1;
+    //书签事件类型
+    private int type = 0;
     //书签实体
     private Bookmark bookmark;
-
-    public Bookmark getBookmark() {
-        return bookmark;
-    }
-
-    public int getType() {
-        return type;
-    }
 
     public EventBookmark(int type) {
         this.type = type;
@@ -26,6 +18,14 @@ public class EventBookmark {
     public EventBookmark(int type, Bookmark bookmark) {
         this.type = type;
         this.bookmark = bookmark;
+    }
+
+    public Bookmark getBookmark() {
+        return bookmark;
+    }
+
+    public int getType() {
+        return type;
     }
 
     public boolean equals(Object object) {

@@ -67,6 +67,22 @@ public class LOGClient {
         mAccessToken = "";
     }
 
+    public static String GetMGTTime() {
+        Calendar cd = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT")); // 设置时区为GMT
+        String str = sdf.format(cd.getTime());
+        return str;
+    }
+
+    public static String hmac_sha1(String encryptText, String encryptKey) throws Exception {
+        byte[] keyBytes = encryptKey.getBytes("UTF-8");
+        byte[] dataBytes = encryptText.getBytes("UTF-8");
+        Mac mac = Mac.getInstance("HmacSHA1");
+        mac.init(new SecretKeySpec(keyBytes, "HmacSHA1"));
+        return new String(Base64Kit.encode(mac.doFinal(dataBytes)));
+    }
+
     public void SetToken(String token) {
         mAccessToken = token;
     }
@@ -218,24 +234,6 @@ public class LOGClient {
         }
         return headers;
     }
-
-
-    public static String GetMGTTime() {
-        Calendar cd = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT")); // 设置时区为GMT
-        String str = sdf.format(cd.getTime());
-        return str;
-    }
-
-    public static String hmac_sha1(String encryptText, String encryptKey) throws Exception {
-        byte[] keyBytes = encryptKey.getBytes("UTF-8");
-        byte[] dataBytes = encryptText.getBytes("UTF-8");
-        Mac mac = Mac.getInstance("HmacSHA1");
-        mac.init(new SecretKeySpec(keyBytes, "HmacSHA1"));
-        return new String(Base64Kit.encode(mac.doFinal(dataBytes)));
-    }
-
 
     private String ParseToMd5U32From(byte[] bytes) throws LogException {
         try {

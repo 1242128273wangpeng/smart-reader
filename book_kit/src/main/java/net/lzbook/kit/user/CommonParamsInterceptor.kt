@@ -66,7 +66,7 @@ class CommonParamsInterceptor : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
-        if(request.url().host().equals(URL(MAIN_HOST).host)) {
+        if (request.url().host().equals(URL(MAIN_HOST).host)) {
             when (request.method().toUpperCase()) {
                 "GET" -> {
                     request = buildGetRequest(request)
@@ -102,7 +102,7 @@ class CommonParamsInterceptor : Interceptor {
 
                 }
             }
-        }else{
+        } else {
             log("intercept", "other host, not add token")
         }
 

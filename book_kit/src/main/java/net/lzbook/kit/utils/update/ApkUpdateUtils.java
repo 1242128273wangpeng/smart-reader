@@ -44,7 +44,7 @@ public class ApkUpdateUtils {
         Map<String, String> params = new HashMap<>();
         String versionName = AppUtils.getVersionName();
 //        versionName = versionName.substring(0,3);
-        params.put("versionName",versionName);
+        params.put("versionName", versionName);
 
         String url = UrlUtils.buildUrl(URLBuilderIntterface.APP_CHECK, params);
         VolleyDataService.publicCode(url, null, new VolleyDataService.DataServiceCallBack() {
@@ -56,7 +56,7 @@ public class ApkUpdateUtils {
                     public void run() {
                         if ("SettingActivity".equals(from)) {
                             doUpdateFromSettingACT(apkUpdateInfo);
-                        }else if ("HomeActivity".equals(from)){
+                        } else if ("HomeActivity".equals(from)) {
                             doUpdate(apkUpdateInfo);
                         }
                     }
@@ -65,7 +65,7 @@ public class ApkUpdateUtils {
 
             @Override
             public void onError(Exception error) {
-                Toast.makeText(context,"网络不给力哦",Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "网络不给力哦", Toast.LENGTH_LONG).show();
             }
         }, new Parser() {
             @Override
@@ -81,12 +81,12 @@ public class ApkUpdateUtils {
         if (apkUpdateInfo.isUpdate.equals("1")) {
             if (apkUpdateInfo.isForceUpdate.equals("1")) {
                 Toast.makeText(BaseBookApplication.getGlobalContext(), "有新版本，需更新", Toast.LENGTH_SHORT).show();
-                doForcedUpdate(apkUpdateInfo.downloadLink, apkUpdateInfo.updateContent, apkUpdateInfo.md5 ,fileName);
+                doForcedUpdate(apkUpdateInfo.downloadLink, apkUpdateInfo.updateContent, apkUpdateInfo.md5, fileName);
             } else {
                 if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_WIFI) {
-                    doSilentUpdate(apkUpdateInfo.downloadLink, apkUpdateInfo.md5 ,fileName);
+                    doSilentUpdate(apkUpdateInfo.downloadLink, apkUpdateInfo.md5, fileName);
                 } else {
-                    doNormalUpdate(apkUpdateInfo.downloadLink, apkUpdateInfo.updateContent, apkUpdateInfo.md5,fileName);
+                    doNormalUpdate(apkUpdateInfo.downloadLink, apkUpdateInfo.updateContent, apkUpdateInfo.md5, fileName);
                 }
             }
         }
@@ -96,9 +96,9 @@ public class ApkUpdateUtils {
         String fileName = AppUtils.getPackageName() + "_" + apkUpdateInfo.updateVersion + ".apk";
         if (apkUpdateInfo.isUpdate.equals("1")) {
             if (apkUpdateInfo.isForceUpdate.equals("1")) {
-                doForcedUpdate(apkUpdateInfo.downloadLink, apkUpdateInfo.updateContent, apkUpdateInfo.md5 ,fileName);
+                doForcedUpdate(apkUpdateInfo.downloadLink, apkUpdateInfo.updateContent, apkUpdateInfo.md5, fileName);
             } else {
-                doNormalUpdate(apkUpdateInfo.downloadLink, apkUpdateInfo.updateContent, apkUpdateInfo.md5,fileName);
+                doNormalUpdate(apkUpdateInfo.downloadLink, apkUpdateInfo.updateContent, apkUpdateInfo.md5, fileName);
             }
         } else {
             Toast.makeText(BaseBookApplication.getGlobalContext(), "已是最新版本，暂无更新", Toast.LENGTH_SHORT).show();
@@ -109,8 +109,8 @@ public class ApkUpdateUtils {
     /**
      * 静默下载
      */
-    public void doSilentUpdate(String downloadLink, String md5,String fileName) {
-        downloadService(downloadLink, md5,fileName);
+    public void doSilentUpdate(String downloadLink, String md5, String fileName) {
+        downloadService(downloadLink, md5, fileName);
     }
 
 
@@ -124,7 +124,7 @@ public class ApkUpdateUtils {
         final MyDialog updateDialog = new MyDialog(reference.get(), R.layout.own_update_dialog, Gravity.CENTER);
         updateDialog.setCanceledOnTouchOutside(true);
         TextView umeng_update_content = (TextView) updateDialog.findViewById(R.id.umeng_update_content);
-        String content = updateContent.replace("\\r\\n","\n");
+        String content = updateContent.replace("\\r\\n", "\n");
         umeng_update_content.setText(content);
 
         Button umeng_update_id_ok = (Button) updateDialog.findViewById(R.id.umeng_update_id_ok);
@@ -133,9 +133,9 @@ public class ApkUpdateUtils {
         umeng_update_id_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                downloadService(downloadLink, md5,fileName);
+                downloadService(downloadLink, md5, fileName);
                 updateDialog.dismiss();
-                StartLogClickUtil.upLoadEventLog(reference.get(),StartLogClickUtil.PEASONAL_PAGE,StartLogClickUtil.VERSIONUPDATE);
+                StartLogClickUtil.upLoadEventLog(reference.get(), StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.VERSIONUPDATE);
             }
         });
 
@@ -160,9 +160,6 @@ public class ApkUpdateUtils {
      * 强制更新逻辑
      * <p>
      * 只显示一个按钮，点击后弹出进度框
-     *
-     * @param downloadLink
-     * @param updateContent
      */
     public void doForcedUpdate(final String downloadLink, String updateContent, final String md5, final String fileName) {
         final MyDialog doForcedUpdateDialog = new MyDialog(reference.get(), R.layout.own_update_dialog, Gravity.CENTER);
@@ -176,7 +173,7 @@ public class ApkUpdateUtils {
         umeng_update_id_ok2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                downloadService(downloadLink, md5,fileName);
+                downloadService(downloadLink, md5, fileName);
                 doForcedUpdateDialog.dismiss();
 
                 MyDialog myDialog = new MyDialog(reference.get(), R.layout.own_update_progress);
@@ -230,13 +227,13 @@ public class ApkUpdateUtils {
      * @param md5          MD5
      */
     public void downloadService(String downloadLink, String md5, String fileName) {
-        if (DownloadIntentService.isDownloading){
+        if (DownloadIntentService.isDownloading) {
             return;
         }
         Intent intent = new Intent();
         intent.putExtra("downloadLink", downloadLink);
         intent.putExtra("md5", md5);
-        intent.putExtra("fileName",fileName);
+        intent.putExtra("fileName", fileName);
         intent.setClass(reference.get().getApplicationContext(), DownloadIntentService.class);
         reference.get().startService(intent);
     }

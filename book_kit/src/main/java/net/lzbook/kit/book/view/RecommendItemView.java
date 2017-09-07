@@ -1,5 +1,12 @@
 package net.lzbook.kit.book.view;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
+import net.lzbook.kit.R;
+import net.lzbook.kit.constants.ReplaceConstants;
+import net.lzbook.kit.utils.BookCoverUtil;
+
 import android.content.Context;
 import android.text.Html;
 import android.text.TextUtils;
@@ -9,13 +16,6 @@ import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-
-import net.lzbook.kit.R;
-import net.lzbook.kit.constants.ReplaceConstants;
-import net.lzbook.kit.utils.BookCoverUtil;
 
 public class RecommendItemView extends RelativeLayout {
     private String mTitle;

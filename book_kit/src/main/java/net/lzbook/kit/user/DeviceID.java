@@ -17,16 +17,14 @@ import java.util.UUID;
 
 public class DeviceID {
 
-    private static String TAG = DeviceID.class.getSimpleName();
-
-    private static String _openUdid;
-    private static long _time;
-
     // 用户唯一标志
     public final static String PREF_KEY = "openudid";
     public final static String TIME = "time";
     public static final String COMMON_PREFS = "common_prefs";
     public static final String GENERATE_UDID = "generate_udid";
+    private static String TAG = DeviceID.class.getSimpleName();
+    private static String _openUdid;
+    private static long _time;
 
     public static void syncContext(Context mContext) {
         if (_openUdid == null) {

@@ -1,16 +1,13 @@
 package net.lzbook.kit.request.own;
 
-import android.text.TextUtils;
-
 import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.db.BookChapterDao;
 import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.request.UrlUtils;
-import net.lzbook.kit.utils.BaseBookHelper;
 import net.lzbook.kit.utils.NetWorkUtils;
-import net.lzbook.kit.utils.UpdateJarUtil;
+
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -55,16 +52,16 @@ public class OtherRequestChapterExecutorTerminal extends OtherRequestChapterExec
         ArrayList<Chapter> chapters = new ArrayList<>();
         int index = 0;
         while (iterator.hasNext()) {
-            if (NetWorkUtils.getNetWorkType(mContext) == NetWorkUtils.NETWORK_NONE){
-                mRquestChaptersListener.requestFailed(RequestChaptersListener.ERROR_TYPE_NETWORK_NONE,"没有网络连接",index);
+            if (NetWorkUtils.getNetWorkType(mContext) == NetWorkUtils.NETWORK_NONE) {
+                mRquestChaptersListener.requestFailed(RequestChaptersListener.ERROR_TYPE_NETWORK_NONE, "没有网络连接", index);
                 return;
-            }else {
+            } else {
                 Map.Entry entry = (Map.Entry) iterator.next();
                 Chapter chapter = (Chapter) entry.getValue();
                 Chapter result = singleChapter(dex, chapter);
                 chapters.add(result);
             }
-            index ++;
+            index++;
         }
         mRquestChaptersListener.requestSuccess(chapters);
     }

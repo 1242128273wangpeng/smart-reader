@@ -1,11 +1,5 @@
 package net.lzbook.kit.utils;
 
-import android.app.Fragment;
-import android.content.Context;
-import android.os.Handler;
-import android.view.View;
-import android.widget.ListView;
-
 import net.lzbook.kit.R;
 import net.lzbook.kit.book.adapter.RemoveModeAdapter;
 import net.lzbook.kit.utils.popup.PopupBase;
@@ -16,12 +10,23 @@ import net.lzbook.kit.utils.popup.PopupFactory;
 import net.lzbook.kit.utils.popup.PopupWindowInterface;
 import net.lzbook.kit.utils.popup.PopupWindowManager;
 
+import android.content.Context;
+import android.os.Handler;
+import android.view.View;
+import android.widget.ListView;
+
 import java.util.HashSet;
 
 /**
  * RemoveMode Helper
  */
 public class RemoveAdapterHelper implements PopupBase.PopupWindowDeleteClickListener, PopupWindowManager.PopupWindowOnShowingListener, PopupBookCollect.PopupCollectClickListener, PopupDeleteCancle.PopupCancleclickListener, PopupDownloadManager.PopupSelectALLClickListener {
+    public static final int popup_type_base = 0;
+    public static final int popup_type_collect = popup_type_base + 1;
+    public static final int popup_type_addBook = popup_type_collect + 1;
+    public static final int popup_type_cancle = popup_type_addBook + 1;
+    public static final int popup_type_download = popup_type_cancle + 1;
+    private final static long DELAY_TIME = 500;
     // ====================================
     // fields
     // =====================================
@@ -35,16 +40,8 @@ public class RemoveAdapterHelper implements PopupBase.PopupWindowDeleteClickList
     protected ListView listview;
     protected View clickAllView, clickCancleView;
     String TAG = "RemoveAdapterHelper";
-
-    public static final int popup_type_base = 0;
-    public static final int popup_type_collect = popup_type_base + 1;
-    public static final int popup_type_addBook = popup_type_collect + 1;
-    public static final int popup_type_cancle = popup_type_addBook + 1;
-    public static final int popup_type_download = popup_type_cancle + 1;
-
     boolean isAllChecked;
     Handler handler = new Handler();
-    private final static long DELAY_TIME = 500;
 
     public RemoveAdapterHelper(Context context, RemoveModeAdapter adapter, int type) {//显示指定菜单类别
 
@@ -147,43 +144,6 @@ public class RemoveAdapterHelper implements PopupBase.PopupWindowDeleteClickList
         selectAllListener.onSelectAll();
     }
 
-
-    // ====================================================
-    // callback
-    // ===================================================
-    public interface OnMenuStateListener {//菜单状态监听
-
-        public void getMenuShownState(boolean isShown);//菜单开启状态
-        public void getAllCheckedState(boolean isAll);//菜单全选状态
-
-    }
-
-
-    public interface OnMenuSelectAllListener {
-        void onSelectAll();
-    }
-
-    public interface OnMenuDeleteClickListener {//菜单删除按钮监听
-
-        /**
-         * delete button
-         *
-         * @param checked_state position which the list checkbox is selected
-         */
-        public void onMenuDelete(HashSet<Integer> checked_state);//删除按钮回调，得到被选中的position
-    }
-
-
-    public interface OnMenuAddBookClickListener {//菜单加入书架监听
-
-        public void onMenuAddBook(HashSet<Integer> checked_state);//加入数据按钮回调，得到被选中的position
-    }
-
-    public interface OnMenuCollectClickListener {//菜单收藏监听
-
-        public void onMenuColleck(View baseView, HashSet<Integer> checked_state);//加入收藏回调
-    }
-
     // =================================================================
     // menu method
     // do not touch
@@ -268,7 +228,6 @@ public class RemoveAdapterHelper implements PopupBase.PopupWindowDeleteClickList
         }
     }
 
-
     @Override
     public void clickDeleteBtn() {//删除
         if (deleteClickListener != null) {
@@ -304,6 +263,42 @@ public class RemoveAdapterHelper implements PopupBase.PopupWindowDeleteClickList
             AppLog.d(TAG, "setSelectNum " + num);
             popupWindowManager.changeText(String.valueOf(num));
         }
+    }
+
+    // ====================================================
+    // callback
+    // ===================================================
+    public interface OnMenuStateListener {//菜单状态监听
+
+        public void getMenuShownState(boolean isShown);//菜单开启状态
+
+        public void getAllCheckedState(boolean isAll);//菜单全选状态
+
+    }
+
+
+    public interface OnMenuSelectAllListener {
+        void onSelectAll();
+    }
+
+    public interface OnMenuDeleteClickListener {//菜单删除按钮监听
+
+        /**
+         * delete button
+         *
+         * @param checked_state position which the list checkbox is selected
+         */
+        public void onMenuDelete(HashSet<Integer> checked_state);//删除按钮回调，得到被选中的position
+    }
+
+    public interface OnMenuAddBookClickListener {//菜单加入书架监听
+
+        public void onMenuAddBook(HashSet<Integer> checked_state);//加入数据按钮回调，得到被选中的position
+    }
+
+    public interface OnMenuCollectClickListener {//菜单收藏监听
+
+        public void onMenuColleck(View baseView, HashSet<Integer> checked_state);//加入收藏回调
     }
 
 }

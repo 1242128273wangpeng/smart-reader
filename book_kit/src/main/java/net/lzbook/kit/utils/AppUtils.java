@@ -45,16 +45,19 @@ import static android.content.Context.TELEPHONY_SERVICE;
 public class AppUtils {
     public static final int LOG_TYPE_BAIDUPUSH = 0;
     public static final int LOG_TYPE_ESCARD_PAY = LOG_TYPE_BAIDUPUSH + 1;
-    public static int density;
-    public static int width = 0;
     public static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     public static final SimpleDateFormat min_formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-
     public static final SimpleDateFormat log_formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-    final static String TAG = "AppUtils";
-
     public final static String PERMISSION_GPS = "gps";
+    final static String TAG = "AppUtils";
+    private static final String text_discard = "（该网页已经技术转换）";
+    /**
+     * 获取版本信息
+     */
+    private static final String sLock = "LOCK";
+    public static int density;
+    public static int width = 0;
+    public static long lastClickTime;
     private static Context mContext;
     private static PackageInfo packageInfo;
     private static ApplicationInfo appInfo;
@@ -93,9 +96,6 @@ public class AppUtils {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
-
-
-    private static final String text_discard = "（该网页已经技术转换）";
 
     public static String deleteTextPoint(String text) {
         text = text.trim();
@@ -320,7 +320,6 @@ public class AppUtils {
         return dir;
     }
 
-
     /**
      * 系统版本号
      */
@@ -408,11 +407,6 @@ public class AppUtils {
         }
         return versionName;
     }
-
-    /**
-     * 获取版本信息
-     */
-    private static final String sLock = "LOCK";
 
     public static PackageInfo getPackageInfo()
             throws NameNotFoundException {
@@ -507,8 +501,6 @@ public class AppUtils {
         word = m1.replaceAll("").trim();
         return word;
     }
-
-    public static long lastClickTime;
 
     public static boolean isDoubleClick(long timeMills) {
         if (timeMills - lastClickTime < 800) {

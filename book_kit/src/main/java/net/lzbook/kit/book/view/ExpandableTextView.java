@@ -18,6 +18,10 @@
 package net.lzbook.kit.book.view;
 
 
+import net.lzbook.kit.R;
+import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.utils.AppUtils;
+
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
@@ -36,10 +40,6 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import net.lzbook.kit.R;
-import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.utils.AppUtils;
 
 
 public class ExpandableTextView extends LinearLayout implements View.OnClickListener {
@@ -94,6 +94,29 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         init(attrs);
     }
 
+    private static boolean isPostHoneycomb() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private static void applyAlphaAnimation(View view, float alpha) {
+        if (isPostHoneycomb()) {
+            view.setAlpha(alpha);
+        } else {
+            AlphaAnimation alphaAnimation = new AlphaAnimation(alpha, alpha);
+            // make it instant
+            alphaAnimation.setDuration(0);
+            alphaAnimation.setFillAfter(true);
+            view.startAnimation(alphaAnimation);
+        }
+    }
+
+    private static int getRealTextViewHeight(TextView textView) {
+        int textHeight = textView.getLayout().getLineTop(textView.getLineCount());
+        int padding = textView.getCompoundPaddingTop() + textView.getCompoundPaddingBottom();
+        return textHeight + padding;
+    }
+
     @Override
     public void onClick(View view) {
         if (mButton.getVisibility() != View.VISIBLE) {
@@ -125,13 +148,16 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
             public void onAnimationStart(Animation animation) {
                 applyAlphaAnimation(mTv, mAnimAlphaStart);
             }
+
             @Override
             public void onAnimationEnd(Animation animation) {
                 clearAnimation();
                 mAnimating = false;
             }
+
             @Override
-            public void onAnimationRepeat(Animation animation) { }
+            public void onAnimationRepeat(Animation animation) {
+            }
         });
 
         clearAnimation();
@@ -194,21 +220,17 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         mExpandDrawable = typedArray.getDrawable(R.styleable.ExpandableTextView_expandDrawable);
         mCollapseDrawable = typedArray.getDrawable(R.styleable.ExpandableTextView_collapseDrawable);
 
-        Resources resources= BaseBookApplication.getGlobalContext().getResources();
+        Resources resources = BaseBookApplication.getGlobalContext().getResources();
         if (mExpandDrawable == null) {
-            int img_Id=resources.getIdentifier("icon_close_text","drawable", AppUtils.getPackageName());
+            int img_Id = resources.getIdentifier("icon_close_text", "drawable", AppUtils.getPackageName());
             mExpandDrawable = getResources().getDrawable(img_Id);
         }
         if (mCollapseDrawable == null) {
-            int img_Id=resources.getIdentifier("icon_open_text","drawable", AppUtils.getPackageName());
+            int img_Id = resources.getIdentifier("icon_open_text", "drawable", AppUtils.getPackageName());
             mCollapseDrawable = getResources().getDrawable(img_Id);
         }
 
         typedArray.recycle();
-    }
-
-    private static boolean isPostHoneycomb() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
     }
 
     private void findViews() {
@@ -220,25 +242,6 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         mButton.setTextColor(Color.GRAY);
         mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
         mButton.setOnClickListener(this);
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private static void applyAlphaAnimation(View view, float alpha) {
-        if (isPostHoneycomb()) {
-            view.setAlpha(alpha);
-        } else {
-            AlphaAnimation alphaAnimation = new AlphaAnimation(alpha, alpha);
-            // make it instant
-            alphaAnimation.setDuration(0);
-            alphaAnimation.setFillAfter(true);
-            view.startAnimation(alphaAnimation);
-        }
-    }
-
-    public void setText(CharSequence text) {
-        mRelayout = true;
-        mTv.setText(text);
-        setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
     }
 
     public void setText(CharSequence text, SparseBooleanArray collapsedStatus, int position) {
@@ -262,10 +265,10 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         return mTv.getText();
     }
 
-    private static int getRealTextViewHeight(TextView textView) {
-        int textHeight = textView.getLayout().getLineTop(textView.getLineCount());
-        int padding = textView.getCompoundPaddingTop() + textView.getCompoundPaddingBottom();
-        return textHeight + padding;
+    public void setText(CharSequence text) {
+        mRelayout = true;
+        mTv.setText(text);
+        setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
     }
 
     protected class ExpandCollapseAnimation extends Animation {
@@ -282,7 +285,7 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
 
         @Override
         protected void applyTransformation(float interpolatedTime, Transformation t) {
-            final int newHeight = (int)((mEndHeight - mStartHeight) * interpolatedTime + mStartHeight);
+            final int newHeight = (int) ((mEndHeight - mStartHeight) * interpolatedTime + mStartHeight);
             mTv.setMaxHeight(newHeight - mMarginBetweenTxtAndBottom);
             if (Float.compare(mAnimAlphaStart, 1.0f) != 0) {
                 applyAlphaAnimation(mTv, mAnimAlphaStart + interpolatedTime * (1.0f - mAnimAlphaStart));
@@ -292,13 +295,15 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         }
 
         @Override
-        public void initialize( int width, int height, int parentWidth, int parentHeight ) {
+        public void initialize(int width, int height, int parentWidth, int parentHeight) {
             super.initialize(width, height, parentWidth, parentHeight);
         }
 
         @Override
-        public boolean willChangeBounds( ) {
+        public boolean willChangeBounds() {
             return true;
         }
-    };
+    }
+
+    ;
 }

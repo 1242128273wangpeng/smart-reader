@@ -62,19 +62,6 @@ public class Chapter implements Serializable {
     public String book_source_id;
     public String chapter_status;
 
-    public enum Status {
-        SOURCE_ERROR("源网站转换失败，请您更换来源或稍候重试！"),
-        CONTENT_EMPTY("源网站内容为空，请您更换来源阅读！"),
-        CONTENT_ERROR("源网站内容错误，请您更换来源阅读！"),
-        CONTENT_NORMAL("内容正常");
-
-        public String tips;
-
-        private Status(String tips) {
-            this.tips = tips;
-        }
-    }
-
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
@@ -171,5 +158,18 @@ public class Chapter implements Serializable {
                 ", chapter_form=" + chapter_form +
                 ", update_time='" + update_time + '\'' +
                 '}';
+    }
+
+    public enum Status {
+        SOURCE_ERROR("源网站转换失败，请您更换来源或稍候重试！"),
+        CONTENT_EMPTY("源网站内容为空，请您更换来源阅读！"),
+        CONTENT_ERROR("源网站内容错误，请您更换来源阅读！"),
+        CONTENT_NORMAL("内容正常");
+
+        public String tips;
+
+        private Status(String tips) {
+            this.tips = tips;
+        }
     }
 }

@@ -26,6 +26,12 @@ import java.util.concurrent.Callable;
 
 public class LoadingPage extends FrameLayout {
 
+    public static final int setting_result = 0x55;
+    public int settingCode = 0;
+    public boolean isCategory = false;
+    String TAG = "LoadingPage";
+    reloadCallback reload;
+    boolean isCustomLoading = false;
     private ProgressBar loading_progressbar;
     private Runnable settingAction;
     private Callable<Void> reLoadAction;
@@ -40,19 +46,8 @@ public class LoadingPage extends FrameLayout {
     private Runnable successAction;
     private TextView tv_loading_progress;
     private TextView tv_novel_source;
-    public int settingCode = 0;
     private boolean isFromReadingPage = false;//标识来自于阅读页的加载页
-    public boolean isCategory = false;
     private String novelSource = "";
-    String TAG = "LoadingPage";
-    reloadCallback reload;
-
-    public static final int setting_result = 0x55;
-
-    public void setNovelSource(String novelSource) {
-        this.novelSource = novelSource;
-        setLoadUrl();
-    }
 
     public LoadingPage(Activity activity) {
         super(activity);
@@ -109,6 +104,21 @@ public class LoadingPage extends FrameLayout {
         }
     }
 
+    public LoadingPage(Activity activity, AttributeSet attrs) {
+        super(activity, attrs);
+        actReference = new WeakReference<>(activity);
+        Activity act = actReference.get();
+        if (act != null) {
+            root = ((ViewGroup) act.getWindow().getDecorView().findViewById(android.R.id.content));
+            initView();
+        }
+    }
+
+    public void setNovelSource(String novelSource) {
+        this.novelSource = novelSource;
+        setLoadUrl();
+    }
+
     public void loading(final Callable<Void> task) {
         final Activity act = actReference.get();
         if (act == null) {
@@ -154,18 +164,6 @@ public class LoadingPage extends FrameLayout {
         });
     }
 
-    public LoadingPage(Activity activity, AttributeSet attrs) {
-        super(activity, attrs);
-        actReference = new WeakReference<>(activity);
-        Activity act = actReference.get();
-        if (act != null) {
-            root = ((ViewGroup) act.getWindow().getDecorView().findViewById(android.R.id.content));
-            initView();
-        }
-    }
-
-    boolean isCustomLoading = false;
-
     /**
      * 根据不同阅读模式设置loading背景
      */
@@ -205,7 +203,7 @@ public class LoadingPage extends FrameLayout {
         } else if (Constants.MODE == 61) {
             setLoadingBg(R.color.reading_backdrop_night);
             setLoadingTextColor(R.color.reading_text_color_night);
-        }else{
+        } else {
             setLoadingBg(R.color.reading_backdrop_first);
             setLoadingTextColor(R.color.reading_text_color_first);
         }
@@ -342,7 +340,7 @@ public class LoadingPage extends FrameLayout {
         }
     }
 
-    private void addRootView(){
+    private void addRootView() {
         if (root != null) {
             if (this.getParent() == null) {
                 root.addView(this, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
@@ -528,15 +526,15 @@ public class LoadingPage extends FrameLayout {
         }
     }
 
-    public interface reloadCallback {
-        void doReload();
-    }
-
     public void setReloadAction(reloadCallback reload) {
         this.reload = reload;
     }
 
     public boolean isLoadingVisible() {
         return loadView.getVisibility() == View.VISIBLE && this.getVisibility() == View.VISIBLE;
+    }
+
+    public interface reloadCallback {
+        void doReload();
     }
 }

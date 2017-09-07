@@ -14,11 +14,11 @@ import java.sql.SQLException;
 public class FootprintUtils {
 
 
-    public static boolean saveHistoryData(HistoryInfo info){
+    public static boolean saveHistoryData(HistoryInfo info) {
         try {
             DaoUtils daoUtils = new DaoUtils(HistoryInfo.class);
-            if (daoUtils.countOf() >= 200){
-                    daoUtils.deleteMiniData(HistoryInforTable.TABLE_NAME, HistoryInforTable.LAST_BROW_TIME);
+            if (daoUtils.countOf() >= 200) {
+                daoUtils.deleteMiniData(HistoryInforTable.TABLE_NAME, HistoryInforTable.LAST_BROW_TIME);
             }
             daoUtils.createOrUpdate(info);
 //            if (daoUtils.isBookExist(info.getBook_id())){
@@ -36,7 +36,7 @@ public class FootprintUtils {
         return true;
     }
 
-    public static boolean saveHistoryShelf(Book book){
+    public static boolean saveHistoryShelf(Book book) {
         HistoryInfo info = new HistoryInfo();
         info.setName(book.name);
         info.setBook_id(book.book_id);

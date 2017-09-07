@@ -64,18 +64,6 @@ public final class HttpDateTime {
     private static final Pattern HTTP_DATE_RFC_PATTERN = Pattern.compile(HTTP_DATE_RFC_REGEXP);
     private static final Pattern HTTP_DATE_ANSIC_PATTERN = Pattern.compile(HTTP_DATE_ANSIC_REGEXP);
 
-    private static class TimeOfDay {
-        TimeOfDay(int hour, int minute, int second) {
-            this.hour = hour;
-            this.minute = minute;
-            this.second = second;
-        }
-
-        int hour;
-        int minute;
-        int second;
-    }
-
     public static long parse(String timeString) throws IllegalArgumentException {
 
         int date = 1;
@@ -204,5 +192,16 @@ public final class HttpDateTime {
         int second = (timeString.charAt(i++) - '0') * 10 + (timeString.charAt(i++) - '0');
 
         return new TimeOfDay(hour, minute, second);
+    }
+
+    private static class TimeOfDay {
+        int hour;
+        int minute;
+        int second;
+        TimeOfDay(int hour, int minute, int second) {
+            this.hour = hour;
+            this.minute = minute;
+            this.second = second;
+        }
     }
 }

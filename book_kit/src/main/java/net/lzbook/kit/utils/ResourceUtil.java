@@ -1,12 +1,12 @@
 package net.lzbook.kit.utils;
 
+import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.constants.Constants;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-
-import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.constants.Constants;
 
 /**
  * 动态获取资源id

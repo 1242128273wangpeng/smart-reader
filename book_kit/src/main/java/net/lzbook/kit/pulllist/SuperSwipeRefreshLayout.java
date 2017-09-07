@@ -56,14 +56,16 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
     private static final int ANIMATE_TO_TRIGGER_DURATION = 200;
     private static final int ANIMATE_TO_START_DURATION = 200;
     private static final int DEFAULT_CIRCLE_TARGET = 64;
-
+    private static final int[] LAYOUT_ATTRS = new int[]{android.R.attr.enabled};
+    private final DecelerateInterpolator mDecelerateInterpolator;
+    private final Handler handler = new Handler();
+    protected int mFrom;
+    protected int mOriginalOffsetTop;
     // SuperSwipeRefreshLayout内的目标View，比如RecyclerView,ListView,ScrollView,GridView
     // etc.
     private View mTarget;
-
     private OnPullRefreshListener mListener;// 下拉刷新listener
     private OnPushLoadMoreListener mOnPushLoadMoreListener;// 上拉加载更多
-
     private boolean mRefreshing = false;
     private boolean mLoadMore = false;
     private int mTouchSlop;
@@ -71,62 +73,60 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
     private int mMediumAnimationDuration;
     private int mCurrentTargetOffsetTop;
     private boolean mOriginalOffsetCalculated = false;
-
     private float mInitialMotionY;
     private boolean mIsBeingDragged;
     private int mActivePointerId = INVALID_POINTER;
     private boolean mScale;
-
     private boolean mReturningToStart;
-    private final DecelerateInterpolator mDecelerateInterpolator;
-    private static final int[] LAYOUT_ATTRS = new int[]{android.R.attr.enabled};
-
     private HeadViewContainer mHeadViewContainer;
     private RelativeLayout mFooterViewContainer;
     private int mHeaderViewIndex = -1;
     private int mFooterViewIndex = -1;
-
-    protected int mFrom;
-
     private float mStartingScale;
-
-    protected int mOriginalOffsetTop;
-
     private Animation mScaleAnimation;
-
     private Animation mScaleDownAnimation;
-
     private Animation mScaleDownToStartAnimation;
-
     // 最后停顿时的偏移量px，与DEFAULT_CIRCLE_TARGET正比
     private float mSpinnerFinalOffset;
-
     private boolean mNotify;
-
     private int mHeaderViewWidth;// headerView的宽度
-
     private int mFooterViewWidth;
-
     private int mHeaderViewHeight;
-
     private int mFooterViewHeight;
-
     private boolean mUsingCustomStart;
-
     private boolean targetScrollWithLayout = true;
-
     private int pushDistance = 0;
-
     private CircleProgressView defaultProgressView = null;
-
     private boolean usingDefaultHeader = true;
-
     private float density = 1.0f;
-
     private boolean isProgressEnable = true;
+    private final Animation mAnimateToCorrectPosition = new Animation() {
+        @Override
+        public void applyTransformation(float interpolatedTime, Transformation t) {
+            int targetTop = 0;
+            int endTarget = 0;
+            if (!mUsingCustomStart) {
+                endTarget = (int) (mSpinnerFinalOffset - Math
+                        .abs(mOriginalOffsetTop));
+            } else {
+                endTarget = (int) mSpinnerFinalOffset;
+            }
+            targetTop = (mFrom + (int) ((endTarget - mFrom) * interpolatedTime));
+            int offset = targetTop - mHeadViewContainer.getTop();
+            setTargetOffsetTopAndBottom(offset, false /* requires update */);
+        }
 
-    private final Handler handler = new Handler();
-
+        @Override
+        public void setAnimationListener(AnimationListener listener) {
+            super.setAnimationListener(listener);
+        }
+    };
+    private final Animation mAnimateToStartPosition = new Animation() {
+        @Override
+        public void applyTransformation(float interpolatedTime, Transformation t) {
+            moveToStart(interpolatedTime);
+        }
+    };
     /**
      * 下拉时，超过距离之后，弹回来的动画监听器
      */
@@ -170,52 +170,14 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
     private long REFRSH_LOADING_MIN_TIME = 1500;
     private long complete_loading_time = -1;
     private long start_loading_time = -1;
-
-    /**
-     * 更新回调
-     */
-    private void updateListenerCallBack() {
-        int distance = mCurrentTargetOffsetTop + mHeadViewContainer.getHeight();
-        if (mListener != null) {
-            mListener.onPullDistance(distance);
+    Runnable refreshCompleteTask = new Runnable() {
+        @Override
+        public void run() {
+            if (isRefreshing())
+                setRefreshing(false);
         }
-        if (usingDefaultHeader && isProgressEnable) {
-            defaultProgressView.setPullDistance(distance);
-        }
-    }
-
-    /**
-     * 添加头布局
-     *
-     * @param child
-     */
-    public void setHeaderView(View child) {
-        if (child == null) {
-            return;
-        }
-        if (mHeadViewContainer == null) {
-            return;
-        }
-        usingDefaultHeader = false;
-        mHeadViewContainer.removeAllViews();
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-                mHeaderViewWidth, mHeaderViewHeight);
-        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        mHeadViewContainer.addView(child, layoutParams);
-    }
-
-    public void setFooterView(View child) {
-        if (child == null) {
-            return;
-        }
-        if (mFooterViewContainer == null) {
-            return;
-        }
-        mFooterViewContainer.removeAllViews();
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-                mFooterViewWidth, mFooterViewHeight);
-        mFooterViewContainer.addView(child, layoutParams);
-    }
+    };
+    private boolean isPullToRefreshEnabled = true;
 
     public SuperSwipeRefreshLayout(Context context) {
         this(context, null);
@@ -260,11 +222,51 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
     }
 
     /**
+     * 更新回调
+     */
+    private void updateListenerCallBack() {
+        int distance = mCurrentTargetOffsetTop + mHeadViewContainer.getHeight();
+        if (mListener != null) {
+            mListener.onPullDistance(distance);
+        }
+        if (usingDefaultHeader && isProgressEnable) {
+            defaultProgressView.setPullDistance(distance);
+        }
+    }
+
+    /**
+     * 添加头布局
+     */
+    public void setHeaderView(View child) {
+        if (child == null) {
+            return;
+        }
+        if (mHeadViewContainer == null) {
+            return;
+        }
+        usingDefaultHeader = false;
+        mHeadViewContainer.removeAllViews();
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                mHeaderViewWidth, mHeaderViewHeight);
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        mHeadViewContainer.addView(child, layoutParams);
+    }
+
+    public void setFooterView(View child) {
+        if (child == null) {
+            return;
+        }
+        if (mFooterViewContainer == null) {
+            return;
+        }
+        mFooterViewContainer.removeAllViews();
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                mFooterViewWidth, mFooterViewHeight);
+        mFooterViewContainer.addView(child, layoutParams);
+    }
+
+    /**
      * 孩子节点绘制的顺序
-     *
-     * @param childCount
-     * @param i
-     * @return
      */
     @Override
     protected int getChildDrawingOrder(int childCount, int i) {
@@ -319,8 +321,6 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
 
     /**
      * 设置
-     *
-     * @param listener
      */
     public void setOnPullRefreshListener(OnPullRefreshListener listener) {
         mListener = listener;
@@ -332,41 +332,10 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
 
     /**
      * 设置上拉加载更多的接口
-     *
-     * @param onPushLoadMoreListener
      */
     public void setOnPushLoadMoreListener(
             OnPushLoadMoreListener onPushLoadMoreListener) {
         this.mOnPushLoadMoreListener = onPushLoadMoreListener;
-    }
-
-    /**
-     * Notify the widget that refresh state has changed. Do not call this when
-     * refresh is triggered by a swipe gesture.
-     *
-     * @param refreshing Whether or not the view should show refresh progress.
-     */
-    public void setRefreshing(boolean refreshing) {
-        if (refreshing && mRefreshing != refreshing) {
-            // scale and show
-            start_loading_time = System.currentTimeMillis();
-            mRefreshing = refreshing;
-            int endTarget = 0;
-            if (!mUsingCustomStart) {
-                endTarget = (int) (mSpinnerFinalOffset + mOriginalOffsetTop);
-            } else {
-                endTarget = (int) mSpinnerFinalOffset;
-            }
-            setTargetOffsetTopAndBottom(endTarget - mCurrentTargetOffsetTop,
-                    true /* requires update */);
-            mNotify = false;
-            startScaleUpAnimation(mRefreshListener);
-        } else {
-            setRefreshing(refreshing, false /* notify */);
-            if (usingDefaultHeader) {
-                defaultProgressView.setOnDraw(false);
-            }
-        }
     }
 
     private void startScaleUpAnimation(AnimationListener listener) {
@@ -429,6 +398,35 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
     }
 
     /**
+     * Notify the widget that refresh state has changed. Do not call this when
+     * refresh is triggered by a swipe gesture.
+     *
+     * @param refreshing Whether or not the view should show refresh progress.
+     */
+    public void setRefreshing(boolean refreshing) {
+        if (refreshing && mRefreshing != refreshing) {
+            // scale and show
+            start_loading_time = System.currentTimeMillis();
+            mRefreshing = refreshing;
+            int endTarget = 0;
+            if (!mUsingCustomStart) {
+                endTarget = (int) (mSpinnerFinalOffset + mOriginalOffsetTop);
+            } else {
+                endTarget = (int) mSpinnerFinalOffset;
+            }
+            setTargetOffsetTopAndBottom(endTarget - mCurrentTargetOffsetTop,
+                    true /* requires update */);
+            mNotify = false;
+            startScaleUpAnimation(mRefreshListener);
+        } else {
+            setRefreshing(refreshing, false /* notify */);
+            if (usingDefaultHeader) {
+                defaultProgressView.setOnDraw(false);
+            }
+        }
+    }
+
+    /**
      * 确保mTarget不为空<br>
      * mTarget一般是可滑动的ScrollView,ListView,RecyclerView等
      */
@@ -447,8 +445,6 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
 
     /**
      * Set the distance to trigger a sync in dips
-     *
-     * @param distance
      */
     public void setDistanceToTriggerSync(int distance) {
         mTotalDragDistance = distance;
@@ -537,8 +533,6 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
 
     /**
      * 判断目标View是否滑动到顶部-还能否继续滑动
-     *
-     * @return
      */
     public boolean isChildScrollToTop() {
         if (Build.VERSION.SDK_INT < 14) {
@@ -557,8 +551,6 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
 
     /**
      * 是否滑动到底部
-     *
-     * @return
      */
     public boolean isChildScrollToBottom() {
 //        if (isChildScrollToTop()) {
@@ -864,10 +856,6 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
 
     /**
      * 处理上拉加载更多的Touch事件
-     *
-     * @param ev
-     * @param action
-     * @return
      */
     private boolean handlerPushTouchEvent(MotionEvent ev, int action) {
         switch (action) {
@@ -945,9 +933,6 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
 
     /**
      * 松手之后，使用动画将Footer从距离start变化到end
-     *
-     * @param start
-     * @param end
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void animatorFooterToBottom(int start, final int end) {
@@ -981,8 +966,6 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
 
     /**
      * 设置停止加载
-     *
-     * @param loadMore
      */
     public void setLoadMore(boolean loadMore) {
         if (!loadMore && mLoadMore) {// 停止加载
@@ -1029,8 +1012,6 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
 
     /**
      * 重置Target位置
-     *
-     * @param delay
      */
     public void resetTargetLayoutDelay(int delay) {
         new Handler().postDelayed(new Runnable() {
@@ -1068,41 +1049,12 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
                 (width / 2 + footViewWidth / 2), height + footViewHeight);
     }
 
-    private final Animation mAnimateToCorrectPosition = new Animation() {
-        @Override
-        public void applyTransformation(float interpolatedTime, Transformation t) {
-            int targetTop = 0;
-            int endTarget = 0;
-            if (!mUsingCustomStart) {
-                endTarget = (int) (mSpinnerFinalOffset - Math
-                        .abs(mOriginalOffsetTop));
-            } else {
-                endTarget = (int) mSpinnerFinalOffset;
-            }
-            targetTop = (mFrom + (int) ((endTarget - mFrom) * interpolatedTime));
-            int offset = targetTop - mHeadViewContainer.getTop();
-            setTargetOffsetTopAndBottom(offset, false /* requires update */);
-        }
-
-        @Override
-        public void setAnimationListener(AnimationListener listener) {
-            super.setAnimationListener(listener);
-        }
-    };
-
     private void moveToStart(float interpolatedTime) {
         int targetTop = 0;
         targetTop = (mFrom + (int) ((mOriginalOffsetTop - mFrom) * interpolatedTime));
         int offset = targetTop - mHeadViewContainer.getTop();
         setTargetOffsetTopAndBottom(offset, false /* requires update */);
     }
-
-    private final Animation mAnimateToStartPosition = new Animation() {
-        @Override
-        public void applyTransformation(float interpolatedTime, Transformation t) {
-            moveToStart(interpolatedTime);
-        }
-    };
 
     private void startScaleDownReturnToStartAnimation(int from,
                                                       AnimationListener listener) {
@@ -1166,6 +1118,93 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
     }
 
     /**
+     * 判断子View是否跟随手指的滑动而滑动，默认跟随
+     */
+    public boolean isTargetScrollWithLayout() {
+        return targetScrollWithLayout;
+    }
+
+    /**
+     * 设置子View是否跟谁手指的滑动而滑动
+     */
+    public void setTargetScrollWithLayout(boolean targetScrollWithLayout) {
+        this.targetScrollWithLayout = targetScrollWithLayout;
+    }
+
+    /**
+     * 设置默认下拉刷新进度条的颜色
+     */
+    public void setDefaultCircleProgressColor(int color) {
+        if (usingDefaultHeader) {
+            defaultProgressView.setProgressColor(color);
+        }
+    }
+
+    /**
+     * 设置圆圈的背景色
+     */
+    public void setDefaultCircleBackgroundColor(int color) {
+        if (usingDefaultHeader) {
+            defaultProgressView.setCircleBackgroundColor(color);
+        }
+    }
+
+    public void setDefaultCircleShadowColor(int color) {
+        if (usingDefaultHeader) {
+            defaultProgressView.setShadowColor(color);
+        }
+    }
+
+    /**
+     * A mutator to enable/disable Pull-to-Refresh for the current View
+     *
+     * @param enable Whether Pull-To-Refresh should be used
+     */
+    public final void setPullToRefreshEnabled(boolean enable) {
+        this.isPullToRefreshEnabled = enable;
+    }
+
+    /**
+     * Mark the current Refresh as complete. Will Reset the UI and hide the
+     * Refreshing View
+     */
+    public final void onRefreshComplete() {
+        complete_loading_time = System.currentTimeMillis();
+        if (isRefreshing()) {
+
+            // 刷新时间1.5s
+            if (complete_loading_time - start_loading_time <= REFRSH_LOADING_MIN_TIME) {
+
+                handler.postDelayed(refreshCompleteTask, REFRSH_LOADING_MIN_TIME);
+            } else {
+                setRefreshing(false);
+            }
+        }
+    }
+
+    /**
+     * 下拉刷新回调
+     */
+    public interface OnPullRefreshListener {
+        public void onRefresh();
+
+        public void onPullDistance(int distance);
+
+        public void onPullEnable(boolean enable);
+    }
+
+    /**
+     * 上拉加载更多
+     */
+    public interface OnPushLoadMoreListener {
+        public void onLoadMore();
+
+        public void onPushDistance(int distance);
+
+        public void onPushEnable(boolean enable);
+    }
+
+    /**
      * @Description 下拉刷新布局头部的容器
      */
     private class HeadViewContainer extends RelativeLayout {
@@ -1195,46 +1234,6 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
                 mListener.onAnimationEnd(getAnimation());
             }
         }
-    }
-
-    /**
-     * 判断子View是否跟随手指的滑动而滑动，默认跟随
-     *
-     * @return
-     */
-    public boolean isTargetScrollWithLayout() {
-        return targetScrollWithLayout;
-    }
-
-    /**
-     * 设置子View是否跟谁手指的滑动而滑动
-     *
-     * @param targetScrollWithLayout
-     */
-    public void setTargetScrollWithLayout(boolean targetScrollWithLayout) {
-        this.targetScrollWithLayout = targetScrollWithLayout;
-    }
-
-    /**
-     * 下拉刷新回调
-     */
-    public interface OnPullRefreshListener {
-        public void onRefresh();
-
-        public void onPullDistance(int distance);
-
-        public void onPullEnable(boolean enable);
-    }
-
-    /**
-     * 上拉加载更多
-     */
-    public interface OnPushLoadMoreListener {
-        public void onLoadMore();
-
-        public void onPushDistance(int distance);
-
-        public void onPushEnable(boolean enable);
     }
 
     /**
@@ -1277,34 +1276,6 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
 
         }
 
-    }
-
-    /**
-     * 设置默认下拉刷新进度条的颜色
-     *
-     * @param color
-     */
-    public void setDefaultCircleProgressColor(int color) {
-        if (usingDefaultHeader) {
-            defaultProgressView.setProgressColor(color);
-        }
-    }
-
-    /**
-     * 设置圆圈的背景色
-     *
-     * @param color
-     */
-    public void setDefaultCircleBackgroundColor(int color) {
-        if (usingDefaultHeader) {
-            defaultProgressView.setCircleBackgroundColor(color);
-        }
-    }
-
-    public void setDefaultCircleShadowColor(int color) {
-        if (usingDefaultHeader) {
-            defaultProgressView.setShadowColor(color);
-        }
     }
 
     /**
@@ -1392,8 +1363,6 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
 
         /**
          * 根据画笔的颜色，创建画笔
-         *
-         * @return
          */
         private Paint createPaint() {
             if (this.progressPaint == null) {
@@ -1467,42 +1436,5 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
         }
 
     }
-
-    private boolean isPullToRefreshEnabled = true;
-    /**
-     * A mutator to enable/disable Pull-to-Refresh for the current View
-     *
-     * @param enable
-     *            Whether Pull-To-Refresh should be used
-     */
-    public final void setPullToRefreshEnabled(boolean enable) {
-        this.isPullToRefreshEnabled = enable;
-    }
-
-    /**
-     * Mark the current Refresh as complete. Will Reset the UI and hide the
-     * Refreshing View
-     */
-    public final void onRefreshComplete() {
-        complete_loading_time = System.currentTimeMillis();
-        if (isRefreshing()) {
-
-            // 刷新时间1.5s
-            if (complete_loading_time - start_loading_time <= REFRSH_LOADING_MIN_TIME) {
-
-                handler.postDelayed(refreshCompleteTask, REFRSH_LOADING_MIN_TIME);
-            } else {
-                setRefreshing(false);
-            }
-        }
-    }
-
-    Runnable refreshCompleteTask = new Runnable() {
-        @Override
-        public void run() {
-            if (isRefreshing())
-            setRefreshing(false);
-        }
-    };
 
 }

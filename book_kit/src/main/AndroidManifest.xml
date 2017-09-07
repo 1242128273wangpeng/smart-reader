@@ -1,39 +1,42 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="net.lzbook.kit">
+<manifest
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        package="net.lzbook.kit">
     <!-- 用于精确统计用户手机的系统信息 -->
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.READ_LOGS" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_LOGS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
     <!-- 离线下载 -->
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.REORDER_TASKS" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.REORDER_TASKS"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    
     <application
-        android:allowBackup="true"
-        tools:replace="android:allowBackup"
-        android:label="@string/app_name"
-        android:supportsRtl="true">
+            android:allowBackup="true"
+            tools:replace="android:allowBackup"
+            android:label="@string/app_name"
+            android:supportsRtl="true">
         <service
-            android:name=".book.component.service.DownloadService"
-            android:label="离线缓存服务" />
-
+                android:name=".book.component.service.DownloadService"
+                android:label="离线缓存服务"/>
+        
         <service
-            android:name=".book.component.service.CheckNovelUpdateService"
-            android:label="bookupdate" />
-
+                android:name=".book.component.service.CheckNovelUpdateService"
+                android:label="bookupdate"/>
+        
         <service
-            android:name=".book.component.service.DeleteBookIntentService"
-            android:label="缓存文件服务" />
-        <activity android:name=".ad.SwitchSplashAdActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            ></activity>
+                android:name=".book.component.service.DeleteBookIntentService"
+                android:label="缓存文件服务"/>
+        
+        <activity
+                android:name=".ad.SwitchSplashAdActivity"
+                android:theme="@android:style/Theme.Translucent.NoTitleBar"
+                ></activity>
     </application>
 
 </manifest>

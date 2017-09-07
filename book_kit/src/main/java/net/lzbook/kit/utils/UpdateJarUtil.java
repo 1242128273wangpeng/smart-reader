@@ -1,11 +1,5 @@
 package net.lzbook.kit.utils;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-
-import net.xxx.yyy.go.spider.MainExtractorInterface;
-import net.xxx.yyy.go.spider.URLBuilderIntterface;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.ParseJarBean;
@@ -13,8 +7,14 @@ import net.lzbook.kit.net.volley.request.Parser;
 import net.lzbook.kit.net.volley.request.VolleyDataService;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.request.own.OWNParser;
+import net.xxx.yyy.go.spider.MainExtractorInterface;
+import net.xxx.yyy.go.spider.URLBuilderIntterface;
 
 import org.json.JSONException;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import java.io.File;
 import java.io.IOException;

@@ -94,8 +94,8 @@ class ShapeItemDecoration
         }
 
         val childCount = parent.childCount
-        for (i in 0..childCount - 1){
-            if(i == parent.childCount - 1)
+        for (i in 0..childCount - 1) {
+            if (i == parent.childCount - 1)
                 break
             val child = parent.getChildAt(i)
             parent.getDecoratedBoundsWithMargins(child, mBounds)
@@ -124,7 +124,7 @@ class ShapeItemDecoration
 
         val childCount = parent.childCount
         for (i in 0..childCount - 1) {
-            if(i == parent.childCount - 1)
+            if (i == parent.childCount - 1)
                 break
             val child = parent.getChildAt(i)
             parent.layoutManager.getDecoratedBoundsWithMargins(child, mBounds)

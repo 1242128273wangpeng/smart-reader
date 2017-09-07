@@ -39,11 +39,16 @@ public class ApkUpdateInfo {
 
         ApkUpdateInfo that = (ApkUpdateInfo) o;
 
-        if (isUpdate != null ? !isUpdate.equals(that.isUpdate) : that.isUpdate != null) return false;
-        if (isForceUpdate != null ? !isForceUpdate.equals(that.isForceUpdate) : that.isForceUpdate != null) return false;
-        if (updateVersion != null ? !updateVersion.equals(that.updateVersion) : that.updateVersion != null) return false;
-        if (updateContent != null ? !updateContent.equals(that.updateContent) : that.updateContent != null) return false;
-        if (downloadLink != null ? !downloadLink.equals(that.downloadLink) : that.downloadLink != null) return false;
+        if (isUpdate != null ? !isUpdate.equals(that.isUpdate) : that.isUpdate != null)
+            return false;
+        if (isForceUpdate != null ? !isForceUpdate.equals(that.isForceUpdate) : that.isForceUpdate != null)
+            return false;
+        if (updateVersion != null ? !updateVersion.equals(that.updateVersion) : that.updateVersion != null)
+            return false;
+        if (updateContent != null ? !updateContent.equals(that.updateContent) : that.updateContent != null)
+            return false;
+        if (downloadLink != null ? !downloadLink.equals(that.downloadLink) : that.downloadLink != null)
+            return false;
         return md5 != null ? md5.equals(that.md5) : that.md5 == null;
 
     }

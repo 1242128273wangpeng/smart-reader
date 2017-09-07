@@ -11,11 +11,11 @@ public enum DownloadState {
     LOCKED("LOCKED"),
     NONE_NETWORK("NONE_NETWORK");
 
+    private String tag;
+
     DownloadState(String t) {
         tag = t;
     }
-
-    private String tag;
 
     public String getTag() {
         return tag;

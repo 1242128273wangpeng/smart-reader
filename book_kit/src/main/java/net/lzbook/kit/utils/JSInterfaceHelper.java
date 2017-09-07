@@ -1,12 +1,12 @@
 package net.lzbook.kit.utils;
 
+import net.lzbook.kit.request.UrlUtils;
+
 import android.content.Context;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
-
-import net.lzbook.kit.request.UrlUtils;
 
 public class JSInterfaceHelper implements WebViewJsInterface {
 
@@ -26,6 +26,7 @@ public class JSInterfaceHelper implements WebViewJsInterface {
     OnInsertBook insertBook;
     OnDeleteBook deleteBook;
     String strings;
+    private boolean isLogin = false;
 
     public JSInterfaceHelper(Context context, WebView webView) {
         super();
@@ -39,33 +40,12 @@ public class JSInterfaceHelper implements WebViewJsInterface {
         this.strings = strings;
     }
 
-    public interface OnInsertBook {
-        void doInsertBook(final String host, final String book_id, final String book_source_id, final String name, final String author, final String status, final String category, final String imgUrl, final String last_chapter, final String chapter_count, final long updateTime, final String parameter, final String extra_parameter, final int dex);
-    }
-
-    public interface OnDeleteBook {
-        void doDeleteBook(String gid);
-    }
-
     public void setOnInsertBook(OnInsertBook insertBook) {
         this.insertBook = insertBook;
     }
 
     public void setOnDeleteBook(OnDeleteBook deleteBook) {
         this.deleteBook = deleteBook;
-    }
-
-
-    public interface onEnterAppClick {
-        void doEnterApp(final String name);
-    }
-
-    public interface onAnotherWebClick {
-        void doAnotherWeb(String url, String name);
-    }
-
-    public interface onSearchClick {
-        void doSearch(final String keyWord, final String search_type, final String filter_type, final String filter_word, final String sort_type);
     }
 
     public void setOnEnterAppClick(onEnterAppClick enterApp) {
@@ -80,53 +60,21 @@ public class JSInterfaceHelper implements WebViewJsInterface {
         this.search = search;
     }
 
-    public interface onEnterCover {
-        void doCover(String host, String book_id, String book_source_id, String name, String author, String parameter, String extra_parameter);
-    }
-
     public void setOnEnterCover(onEnterCover cover) {
         this.cover = cover;
-    }
-
-    public interface onEnterRead {
-        void doRead(String host, String book_id, String book_source_id, String name, String author, String status, String category, String imgUrl, String last_chapter, String chapter_count, long updateTime, String parameter, String extra_parameter, int dex);
     }
 
     public void setOnEnterRead(onEnterRead read) {
         this.read = read;
     }
 
-    public interface onEnterCategory {
-        void doCategory(final int gid, final int nid, final String name,
-                        final int lastSort);
-    }
-
     public void setOnEnterCategory(onEnterCategory category) {
         this.mCategory = category;
-    }
-
-
-    public interface onOpenAd {
-        void doOpenAd(String url);
     }
 
     public void setOnOpenAd(onOpenAd ad) {
         this.ad = ad;
     }
-
-    public interface OnShowToastListener {
-        void onShowToast(String str);
-    }
-
-    public interface OnCloseWebviewListener {
-        void onCloseWebview();
-
-    }
-
-
-    // ========================================================
-    // js调用 java 方法 并传参 ; js-->java :tell what to do
-    // ======================================================
 
     @Override
     @JavascriptInterface
@@ -260,11 +208,6 @@ public class JSInterfaceHelper implements WebViewJsInterface {
 
     }
 
-
-    // ========================================================
-    // 预留
-    // ======================================================
-
     @Override
     @JavascriptInterface
     public void enterCover(final String host, final String book_id, final String book_source_id, final String name, final String author, final String parameter, final String extra_parameter) {
@@ -306,6 +249,11 @@ public class JSInterfaceHelper implements WebViewJsInterface {
         });
     }
 
+
+    // ========================================================
+    // js调用 java 方法 并传参 ; js-->java :tell what to do
+    // ======================================================
+
     @Override
     @JavascriptInterface
     public void enterCategory(final String gid, final String nid,
@@ -327,7 +275,6 @@ public class JSInterfaceHelper implements WebViewJsInterface {
         });
 
     }
-
 
     @Override
     @JavascriptInterface
@@ -361,7 +308,57 @@ public class JSInterfaceHelper implements WebViewJsInterface {
         });
     }
 
-    private boolean isLogin = false;
+    public interface OnInsertBook {
+        void doInsertBook(final String host, final String book_id, final String book_source_id, final String name, final String author, final String status, final String category, final String imgUrl, final String last_chapter, final String chapter_count, final long updateTime, final String parameter, final String extra_parameter, final int dex);
+    }
+
+    public interface OnDeleteBook {
+        void doDeleteBook(String gid);
+    }
+
+    public interface onEnterAppClick {
+        void doEnterApp(final String name);
+    }
+
+    public interface onAnotherWebClick {
+        void doAnotherWeb(String url, String name);
+    }
+
+    public interface onSearchClick {
+        void doSearch(final String keyWord, final String search_type, final String filter_type, final String filter_word, final String sort_type);
+    }
+
+
+    // ========================================================
+    // 预留
+    // ======================================================
+
+    public interface onEnterCover {
+        void doCover(String host, String book_id, String book_source_id, String name, String author, String parameter, String extra_parameter);
+    }
+
+    public interface onEnterRead {
+        void doRead(String host, String book_id, String book_source_id, String name, String author, String status, String category, String imgUrl, String last_chapter, String chapter_count, long updateTime, String parameter, String extra_parameter, int dex);
+    }
+
+    public interface onEnterCategory {
+        void doCategory(final int gid, final int nid, final String name,
+                        final int lastSort);
+    }
+
+
+    public interface onOpenAd {
+        void doOpenAd(String url);
+    }
+
+    public interface OnShowToastListener {
+        void onShowToast(String str);
+    }
+
+    public interface OnCloseWebviewListener {
+        void onCloseWebview();
+
+    }
 
 
 }

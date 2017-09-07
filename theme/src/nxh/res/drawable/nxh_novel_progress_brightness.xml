@@ -8,6 +8,6 @@
     </item>
     <item android:id="@android:id/progress">
         <clip
-            android:drawable="@drawable/nxh_set_brightnessbar"/>
+                android:drawable="@drawable/nxh_set_brightnessbar"/>
     </item>
 </layer-list>

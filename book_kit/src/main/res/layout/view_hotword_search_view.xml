@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<TextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/tv_hot_word_search_item"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_view_height_35"
         android:singleLine="true"
         android:gravity="center"
         android:textColor="@color/color_black_2e2e2e"
-        android:textSize="@dimen/dimen_text_15" >
+        android:textSize="@dimen/dimen_text_15">
 </TextView>

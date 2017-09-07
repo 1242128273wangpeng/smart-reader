@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2016/11/1.
  */
-public class CoverPage implements Serializable{
+public class CoverPage implements Serializable {
     public boolean success;
     public Object error_log;
     public Object params;
@@ -15,6 +15,44 @@ public class CoverPage implements Serializable{
     public BookVoBean bookVo;
     public List<SourcesBean> sources;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CoverPage coverPage = (CoverPage) o;
+
+        if (success != coverPage.success) return false;
+        if (error_log != null ? !error_log.equals(coverPage.error_log) : coverPage.error_log != null)
+            return false;
+        if (params != null ? !params.equals(coverPage.params) : coverPage.params != null)
+            return false;
+        if (bookVo != null ? !bookVo.equals(coverPage.bookVo) : coverPage.bookVo != null)
+            return false;
+        return sources != null ? sources.equals(coverPage.sources) : coverPage.sources == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (success ? 1 : 0);
+        result = 31 * result + (error_log != null ? error_log.hashCode() : 0);
+        result = 31 * result + (params != null ? params.hashCode() : 0);
+        result = 31 * result + (bookVo != null ? bookVo.hashCode() : 0);
+        result = 31 * result + (sources != null ? sources.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "CoverPage{" +
+                "success=" + success +
+                ", error_log=" + error_log +
+                ", params=" + params +
+                ", bookVo=" + bookVo +
+                ", sources=" + sources +
+                '}';
+    }
 
     public static class BookVoBean {
         //小说名
@@ -62,13 +100,18 @@ public class CoverPage implements Serializable{
             if (author != null ? !author.equals(that.author) : that.author != null) return false;
             if (desc != null ? !desc.equals(that.desc) : that.desc != null) return false;
             if (labels != null ? !labels.equals(that.labels) : that.labels != null) return false;
-            if (img_url != null ? !img_url.equals(that.img_url) : that.img_url != null) return false;
+            if (img_url != null ? !img_url.equals(that.img_url) : that.img_url != null)
+                return false;
             if (url != null ? !url.equals(that.url) : that.url != null) return false;
-            if (book_id != null ? !book_id.equals(that.book_id) : that.book_id != null) return false;
-            if (book_source_id != null ? !book_source_id.equals(that.book_source_id) : that.book_source_id != null) return false;
+            if (book_id != null ? !book_id.equals(that.book_id) : that.book_id != null)
+                return false;
+            if (book_source_id != null ? !book_source_id.equals(that.book_source_id) : that.book_source_id != null)
+                return false;
             if (host != null ? !host.equals(that.host) : that.host != null) return false;
-            if (parameter != null ? !parameter.equals(that.parameter) : that.parameter != null) return false;
-            if (extra_parameter != null ? !extra_parameter.equals(that.extra_parameter) : that.extra_parameter != null) return false;
+            if (parameter != null ? !parameter.equals(that.parameter) : that.parameter != null)
+                return false;
+            if (extra_parameter != null ? !extra_parameter.equals(that.extra_parameter) : that.extra_parameter != null)
+                return false;
             return last_chapter_name != null ? last_chapter_name.equals(that.last_chapter_name) : that.last_chapter_name == null;
 
         }
@@ -140,13 +183,17 @@ public class CoverPage implements Serializable{
 
             if (update_time != that.update_time) return false;
             if (dex != that.dex) return false;
-            if (book_id != null ? !book_id.equals(that.book_id) : that.book_id != null) return false;
-            if (book_source_id != null ? !book_source_id.equals(that.book_source_id) : that.book_source_id != null) return false;
+            if (book_id != null ? !book_id.equals(that.book_id) : that.book_id != null)
+                return false;
+            if (book_source_id != null ? !book_source_id.equals(that.book_source_id) : that.book_source_id != null)
+                return false;
             if (host != null ? !host.equals(that.host) : that.host != null) return false;
             if (url != null ? !url.equals(that.url) : that.url != null) return false;
-            if (terminal != null ? !terminal.equals(that.terminal) : that.terminal != null) return false;
+            if (terminal != null ? !terminal.equals(that.terminal) : that.terminal != null)
+                return false;
             if (source != null ? !source.equals(that.source) : that.source != null) return false;
-            if (last_chapter_name != null ? !last_chapter_name.equals(that.last_chapter_name) : that.last_chapter_name != null) return false;
+            if (last_chapter_name != null ? !last_chapter_name.equals(that.last_chapter_name) : that.last_chapter_name != null)
+                return false;
             return wordCount != null ? wordCount.equals(that.wordCount) : that.wordCount == null;
 
         }
@@ -181,41 +228,5 @@ public class CoverPage implements Serializable{
                     ", dex=" + dex +
                     '}';
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        CoverPage coverPage = (CoverPage) o;
-
-        if (success != coverPage.success) return false;
-        if (error_log != null ? !error_log.equals(coverPage.error_log) : coverPage.error_log != null) return false;
-        if (params != null ? !params.equals(coverPage.params) : coverPage.params != null) return false;
-        if (bookVo != null ? !bookVo.equals(coverPage.bookVo) : coverPage.bookVo != null) return false;
-        return sources != null ? sources.equals(coverPage.sources) : coverPage.sources == null;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = (success ? 1 : 0);
-        result = 31 * result + (error_log != null ? error_log.hashCode() : 0);
-        result = 31 * result + (params != null ? params.hashCode() : 0);
-        result = 31 * result + (bookVo != null ? bookVo.hashCode() : 0);
-        result = 31 * result + (sources != null ? sources.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "CoverPage{" +
-                "success=" + success +
-                ", error_log=" + error_log +
-                ", params=" + params +
-                ", bookVo=" + bookVo +
-                ", sources=" + sources +
-                '}';
     }
 }

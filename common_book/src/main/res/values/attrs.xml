@@ -15,13 +15,13 @@
     </declare-styleable>
     
     <declare-styleable name="Switch_Style">
-    
+        
         <!-- Default style for the Switch widget. -->
         <attr name="switchStyle2"
               format="reference"/>
     </declare-styleable>
     <declare-styleable name="Switch">
-    
+        
         <!-- Drawable to use as the "thumb" that switches back and forth. -->
         <attr name="thumb2"
               format="reference"/>
@@ -48,7 +48,7 @@
               format="dimension"/>
     </declare-styleable>
     <declare-styleable name="TextAppearance">
-    
+        
         <!-- Text color. -->
         <attr name="textColor_"
               format="reference|color"/>

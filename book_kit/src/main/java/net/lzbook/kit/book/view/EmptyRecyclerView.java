@@ -52,7 +52,7 @@ public class EmptyRecyclerView extends RecyclerView {
             mEmptyView.setVisibility(emptyViewVisible ? VISIBLE : GONE);
             setVisibility(emptyViewVisible ? GONE : VISIBLE);
 
-            if (mDataChangeListener != null){
+            if (mDataChangeListener != null) {
                 mDataChangeListener.onItemChange(adapter.getItemCount());
             }
         }
@@ -77,7 +77,7 @@ public class EmptyRecyclerView extends RecyclerView {
         checkIfDataChange();
     }
 
-    public void setOnItemChangeListener(OnItemChangeListener l){
+    public void setOnItemChangeListener(OnItemChangeListener l) {
         this.mDataChangeListener = l;
     }
 

@@ -1,15 +1,15 @@
 package net.lzbook.kit.data.bean;
 
-import android.text.TextUtils;
-
 import com.dingyueads.sdk.Native.YQNativeAdInfo;
+
+import android.text.TextUtils;
 
 import java.io.Serializable;
 
 public class Book implements Serializable, Comparable<Book> {
-    private static final long serialVersionUID = -6628109520747996395L;
     //0:线上书籍
     public static final int TYPE_ONLINE = 0;
+    private static final long serialVersionUID = -6628109520747996395L;
     //区分小说在书架上的位置是否要放置广告
     public int book_type;
     //原先小说组ID，保留用于替换book_id
@@ -89,6 +89,10 @@ public class Book implements Serializable, Comparable<Book> {
     //上一次更新到的章节序号，为了和青果适配而新增的字段
     public int chapters_update_index;
 
+    public static boolean isOnlineType(int type) {
+        return type == TYPE_ONLINE;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this) {
@@ -113,10 +117,6 @@ public class Book implements Serializable, Comparable<Book> {
     @Override
     public int compareTo(Book another) {
         return this.sequence_time == another.sequence_time ? 0 : (this.sequence_time < another.sequence_time ? 1 : -1);
-    }
-
-    public static boolean isOnlineType(int type) {
-        return type == TYPE_ONLINE;
     }
 
     @Override

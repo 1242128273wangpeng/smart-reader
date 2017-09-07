@@ -1,5 +1,16 @@
 package com.intelligent.reader.activity;
 
+import com.intelligent.reader.R;
+
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.book.view.CustomDialog;
+import net.lzbook.kit.book.view.SwitchButton;
+import net.lzbook.kit.book.view.TimePicker;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.bean.SettingItems;
+import net.lzbook.kit.utils.SettingItemsHelper;
+import net.lzbook.kit.utils.StatServiceUtils;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,27 +25,15 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.intelligent.reader.R;
-
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.view.CustomDialog;
-import net.lzbook.kit.book.view.SwitchButton;
-import net.lzbook.kit.book.view.TimePicker;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.SettingItems;
-import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.SettingItemsHelper;
-import net.lzbook.kit.utils.StatServiceUtils;
-
 import java.util.HashMap;
 import java.util.Map;
 
-public class SettingMoreActivity extends BaseCacheableActivity implements View.OnClickListener, SwitchButton.OnCheckedChangeListener{
+public class SettingMoreActivity extends BaseCacheableActivity implements View.OnClickListener, SwitchButton.OnCheckedChangeListener {
 
+    private final static int PUSH_TIME_SETTING = 1;
     public String TAG = SettingMoreActivity.class.getSimpleName();
     private ImageView btnBack;
     private TextView title;
-
     private TextView setting_more_back;
     private RelativeLayout push;
     private SwitchButton push_checkbox;
@@ -43,22 +42,16 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
     private RelativeLayout push_time;
     private SwitchButton push_time_checkbox;
     private TextView push_time_setting_text;
-
     private RelativeLayout bookshelf_sort_time;
     private ImageView bookshelf_sort_time_checkbox;
     private RelativeLayout bookshelf_sort_update_time;
     private ImageView bookshelf_sort_update_time_checkbox;
     private LinearLayout linear_book_sort;
-
     //设置帮助类
     private SettingItemsHelper settingItemsHelper;
     private SettingItems settingItems;
-
-
     private View time_dialog;
     private TimePicker time_picker;
-    private final static int PUSH_TIME_SETTING = 1;
-
     private Context mContext;
 
     @Override
@@ -97,7 +90,6 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
         time_dialog = LayoutInflater.from(this).inflate(R.layout.view_custom_dialog_push_time_setting, null);
         time_picker = (TimePicker) time_dialog.findViewById(R.id.timepicker);
         linear_book_sort = (LinearLayout) findViewById(R.id.linear_book_sort);
-
 
 
     }
@@ -221,19 +213,19 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
         push_checkbox.setChecked(status);
 
         push_sound.setEnabled(status);
-        if(status){
+        if (status) {
             push_sound_checkbox.setEnabled(status);
             push_sound_checkbox.setChecked(status);
-        }else {
+        } else {
             push_sound_checkbox.setChecked(status);
             push_sound_checkbox.setEnabled(status);
         }
 
         push_time.setEnabled(status);
-        if(status){
+        if (status) {
             push_time_checkbox.setEnabled(status);
             push_time_checkbox.setChecked(status);
-        }else {
+        } else {
             push_time_checkbox.setChecked(status);
             push_time_checkbox.setEnabled(status);
         }
@@ -248,7 +240,7 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
     }
 
     private void changePushTimeStatus(boolean status) {
-            push_time_checkbox.setChecked(status);
+        push_time_checkbox.setChecked(status);
     }
 
     private void setPushSound(boolean isChecked, boolean isStartPush) {
@@ -480,20 +472,22 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
 
     @Override
     public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-        if (view == null){return;}
-        switch (view.getId()){
+        if (view == null) {
+            return;
+        }
+        switch (view.getId()) {
             case R.id.push_message_checkbox:
                 StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.me_set_click_more_push);
                 changePushStatus(push_checkbox.isChecked());
-                Map<String,String> params1 = new HashMap<>();
-                params1.put("type",push_checkbox.isChecked()?"1":"2");
-                StartLogClickUtil.upLoadEventLog(this,StartLogClickUtil.MORESET_PAGE,StartLogClickUtil.PUSHSET,params1);
+                Map<String, String> params1 = new HashMap<>();
+                params1.put("type", push_checkbox.isChecked() ? "1" : "2");
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.MORESET_PAGE, StartLogClickUtil.PUSHSET, params1);
                 break;
 
             case R.id.push_sound_checkbox:
-                Map<String,String> params = new HashMap<>();
-                params.put("type",push_sound_checkbox.isChecked()?"1":"2");
-                StartLogClickUtil.upLoadEventLog(this,StartLogClickUtil.MORESET_PAGE,StartLogClickUtil.PUSHAUDIO,params);
+                Map<String, String> params = new HashMap<>();
+                params.put("type", push_sound_checkbox.isChecked() ? "1" : "2");
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.MORESET_PAGE, StartLogClickUtil.PUSHAUDIO, params);
                 StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.me_set_cli_more_push_voi);
                 changePushSoundStatus(push_sound_checkbox.isChecked());
                 setPushSound(push_checkbox.isChecked(), push_sound_checkbox.isChecked());

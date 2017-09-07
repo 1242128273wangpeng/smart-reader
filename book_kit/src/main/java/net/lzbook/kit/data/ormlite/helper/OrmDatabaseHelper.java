@@ -1,12 +1,12 @@
 package net.lzbook.kit.data.ormlite.helper;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public abstract class OrmDatabaseHelper<T> extends OrmLiteSqliteOpenHelper {
                             TableUtils.dropTable(connectionSource, table, true);
                             TableUtils.createTable(connectionSource, table);
                         }
-                    }catch (SQLException e){
+                    } catch (SQLException e) {
                         return false;
                     }
                     return true;

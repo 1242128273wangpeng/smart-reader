@@ -1,12 +1,12 @@
 package net.lzbook.kit.book.view;
 
+import net.lzbook.kit.R;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import net.lzbook.kit.R;
 
 import java.lang.reflect.Field;
 
@@ -17,23 +17,23 @@ import java.lang.reflect.Field;
 public class HWEditText extends EditText {
 
     public HWEditText(Context context) {
-        this(context,null);
+        this(context, null);
     }
 
     public HWEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
-        modifyCursorDrawable(context,attrs);
+        modifyCursorDrawable(context, attrs);
     }
 
     public HWEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        modifyCursorDrawable(context,attrs);
+        modifyCursorDrawable(context, attrs);
     }
 
-    private void modifyCursorDrawable(Context context, AttributeSet attrs){
+    private void modifyCursorDrawable(Context context, AttributeSet attrs) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.HWEditText);
-        int drawable = a.getResourceId(R.styleable.HWEditText_HWEditText_textCursorDrawable,0);
-        if(drawable != 0) {
+        int drawable = a.getResourceId(R.styleable.HWEditText_HWEditText_textCursorDrawable, 0);
+        if (drawable != 0) {
             try {
 
                 Field setCursor = TextView.class.getDeclaredField("mCursorDrawableRes");

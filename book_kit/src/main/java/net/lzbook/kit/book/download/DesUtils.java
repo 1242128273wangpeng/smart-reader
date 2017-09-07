@@ -23,6 +23,47 @@ public class DesUtils {
     private Cipher decryptCipher = null;
 
     /**
+     * 默认构造方法，使用默认密钥
+     */
+    public DesUtils() {
+        this(strDefaultKey);
+    }
+
+    /**
+     * 指定密钥构造方法
+     *
+     * @param strKey 指定的密钥
+     */
+    public DesUtils(String strKey) {
+        try {
+            Security.addProvider(new com.sun.crypto.provider.SunJCE());
+            Key key = getKey(strKey.getBytes("UTF-8"));
+
+            encryptCipher = Cipher.getInstance("DES");
+            encryptCipher.init(Cipher.ENCRYPT_MODE, key);
+
+            decryptCipher = Cipher.getInstance("DES");
+            decryptCipher.init(Cipher.DECRYPT_MODE, key);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void main(String[] args) {
+        try {
+            String test = "123456789";
+            DesUtils des = new DesUtils();//自定义密钥
+            System.out.println("加密前的字符：" + test);
+            System.out.println("加密后的字符：" + des.encrypt(test.getBytes()));
+            System.out.println("解密后的字符：" + des.decrypt(des.encrypt(test)));
+//    System.out.println("解密后的字符：" + des.decrypt("202cb962ac59075b964b07152d234b70"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * 将byte数组转换为表示16进制值的字符串， 如：byte[]{8,18}转换为：0813， 和public static byte[]
      * hexStr2ByteArr(String strIn) 互为可逆的转换过程
      *
@@ -72,42 +113,10 @@ public class DesUtils {
     }
 
     /**
-     * 默认构造方法，使用默认密钥
-     *
-     * @throws Exception
-     */
-    public DesUtils() {
-        this(strDefaultKey);
-    }
-
-    /**
-     * 指定密钥构造方法
-     *
-     * @param strKey 指定的密钥
-     * @throws Exception
-     */
-    public DesUtils(String strKey) {
-        try {
-            Security.addProvider(new com.sun.crypto.provider.SunJCE());
-            Key key = getKey(strKey.getBytes("UTF-8"));
-
-            encryptCipher = Cipher.getInstance("DES");
-            encryptCipher.init(Cipher.ENCRYPT_MODE, key);
-
-            decryptCipher = Cipher.getInstance("DES");
-            decryptCipher.init(Cipher.DECRYPT_MODE, key);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    /**
      * 加密字节数组
      *
      * @param arrB 需加密的字节数组
      * @return 加密后的字节数组
-     * @throws Exception
      */
     public byte[] encrypt(byte[] arrB) throws Exception {
         return encryptCipher.doFinal(arrB);
@@ -118,7 +127,6 @@ public class DesUtils {
      *
      * @param strIn 需加密的字符串
      * @return 加密后的字符串
-     * @throws Exception
      */
     public String encrypt(String strIn) throws Exception {
         return byteArr2HexStr(encrypt(strIn.getBytes("utf-8")));
@@ -129,7 +137,6 @@ public class DesUtils {
      *
      * @param arrB 需解密的字节数组
      * @return 解密后的字节数组
-     * @throws Exception
      */
     public byte[] decrypt(byte[] arrB) throws Exception {
         return decryptCipher.doFinal(arrB);
@@ -140,7 +147,6 @@ public class DesUtils {
      *
      * @param strIn 需解密的字符串
      * @return 解密后的字符串
-     * @throws Exception
      */
     public String decrypt(String strIn) throws Exception {
         return new String(decrypt(hexStr2ByteArr(strIn)), "UTF-8");
@@ -151,7 +157,6 @@ public class DesUtils {
      *
      * @param arrBTmp 构成该字符串的字节数组
      * @return 生成的密钥
-     * @throws Exception
      */
     private Key getKey(byte[] arrBTmp) throws Exception {
         // 创建一个空的8位字节数组（默认值为0）
@@ -166,18 +171,5 @@ public class DesUtils {
         Key key = new javax.crypto.spec.SecretKeySpec(arrB, "DES");
 
         return key;
-    }
-
-    public static void main(String[] args) {
-        try {
-            String test = "123456789";
-            DesUtils des = new DesUtils();//自定义密钥
-            System.out.println("加密前的字符：" + test);
-            System.out.println("加密后的字符：" + des.encrypt(test.getBytes()));
-            System.out.println("解密后的字符：" + des.decrypt(des.encrypt(test)));
-//    System.out.println("解密后的字符：" + des.decrypt("202cb962ac59075b964b07152d234b70"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

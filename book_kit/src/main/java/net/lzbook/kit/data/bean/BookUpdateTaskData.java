@@ -6,28 +6,14 @@ import java.util.ArrayList;
 
 public class BookUpdateTaskData {
 
-    public enum UpdateTaskFrom {
-        FROM_SELF(0), FROM_BOOK_SHELF(1);
-        private int from;
-
-        public int from() {
-            return from;
-        }
-
-        UpdateTaskFrom(int f) {
-            from = f;
-        }
-    }
-
+    private static BookUpdateTaskData data;
     //小说更新来源
     public UpdateTaskFrom from = null;
     //更新的小说
     public ArrayList<Book> books;
-    private int hash;
     //更新结构的回调接口
     public UpdateCallBack mCallBack;
-
-    private static BookUpdateTaskData data;
+    private int hash;
 
     public static BookUpdateTaskData getData() {
         return data;
@@ -64,5 +50,18 @@ public class BookUpdateTaskData {
                 ", hash=" + hash +
                 ", mCallBack=" + mCallBack +
                 '}';
+    }
+
+    public enum UpdateTaskFrom {
+        FROM_SELF(0), FROM_BOOK_SHELF(1);
+        private int from;
+
+        UpdateTaskFrom(int f) {
+            from = f;
+        }
+
+        public int from() {
+            return from;
+        }
     }
 }

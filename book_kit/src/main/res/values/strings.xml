@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    
     <string name="setting_offline_download_config_key">offline_download_config_key</string>
     <string name="setting_offline_download_updateapk_key">offline_download_updateapk_key</string>
     <string name="setting_offline_download_advise_key">offline_download_advise_key</string>
@@ -9,16 +9,16 @@
     <string name="setting_offline_download_select_all_key">offline_download_select_all_key</string>
     <string name="setting_offline_sns_bind">offline_sns_bind</string>
     <string name="setting_share_client">setting_share_client</string>
-
+    
     <string name="network_fail">网络不给力</string>
     <string name="user_center_loaddata_error">加载数据失败，请稍后重试</string>
     <string name="id_push_bd_click">推送_百度_点击</string>
     <string name="user_center_no_more_data">没有更多数据了</string>
-
+    
     <string name="action_settings">Settings</string>
     <string name="title_activity_act_book_cover">ActBookCover</string>
     <string name="title_activity_act_book_over">ActBookOver</string>
-
+    
     <string name="net_error">网络异常，请检查网络</string>
     <!-- cover -->
     <string name="state_writting">-连载中</string>
@@ -47,7 +47,7 @@
     <string name="reading_cache">缓存方式</string>
     <string name="reading_all_down">开始缓存</string>
     <string name="reading_current_down">从当前章节缓存</string>
-
+    
     <string name="err_book_cant_read">抱歉，本书原网站存在问题，无法阅读</string>
     <string name="change_source_tips">当前章节内容存在问题，已为您进行智能切源操作</string>
     <string name="jump_next_chapter">跳过此章</string>
@@ -77,20 +77,20 @@
     <string name="state_paused">已暂停：</string>
     <string name="state_download_failed">缓存失败：</string>
     <string name="state_locked">锁定：</string>
-
+    
     <!-- setting -->
     <string name="setting_loading_update">版本检验中</string>
     <string name="setting_checkupdate_error">检测版本失败，请检查您的网络</string>
     <string name="setting_checkupdate_result_isnew">已是最新版本</string>
-
+    
     <!-- 书架页 -->
     <string name="main_nftmgr_id">小说离线缓存</string>
     <string name="main_update_no_new">您追看的小说暂无更新</string>
     <string name="mian_update_version_dialog_title">新版本:</string>
     <string name="main_notification_ticker">有新版本:</string>
     <string name="mian_click_tiwce_exit">再按一次退出 全本免费阅读器</string>
-
-
+    
+    
     <string name="mian_delete_cache_no_choose">您没有选择书籍</string>
     <!-- 找书页 -->
     <string name="is_first_chapter">当前已经是第一章</string>
@@ -105,39 +105,39 @@
     <string name="update_notify_zhang">章!</string>
     <string name="update_notify_and">等</string>
     <string name="update_book_count_new">本书更新了</string>
-
-
+    
+    
     <string name="app_update">更新</string>
     <string name="game_network_none">网络不给力，请检查网络连接</string>
-
+    
     <string name="over_index_text2">接下来要不要看看其他有意思的...</string>
-
+    
     <string name="title_name_setting">设置</string>
-
+    
     <string name="basic_setting">基本设置</string>
     <string name="search_sorry_no_result">抱歉，暂无搜索结果</string>
     <string name="search_guess_favorite">也许你还喜欢这些</string>
     <string name="search_click_check_isright">请看看输入文字是否有误</string>
     <string name="search_sub_success">成功添加到书架！</string>
     <string name="search_sub_remove_success">成功从书架中移除！</string>
-
+    
     <string name="book_last_chapter_nama_local_no">该书籍还未智能分章</string>
     <string name="auto_download_wifi">wifi下自动缓存</string>
-
+    
     <string name="book_item_text">&lt;font color=\"#AEAEAE\">%1$d&lt;/font>/%2$d</string>
-
+    
     <string name="download_app_nofify_ticker">版本更新中</string>
     <string name="download_app_nofify_title">正在缓存...</string>
     <string name="download_app_nofify_finish_title">点击安装</string>
     <string name="download_app_nofify_finish_content">版本更新</string>
     <string name="download_app_nofify_ticker_error">版本更新失败</string>
     <string name="download_app_nofify_info_error">缓存出错</string>
-
-
+    
+    
     <string name="book_end_info">当前章节已全部看完，去看看其它是否有更新吧!</string>
     <string name="book_end_return_bookstore"> 去书城看看 </string>
-
-
+    
+    
     <!--新的资源定义-->
     <string name="loading_read_page">精彩内容即将呈现...</string>
     <string name="add_bookshelf">加入书架</string>
@@ -147,10 +147,10 @@
     <string name="cache_clean_success">缓存清除成功</string>
     <string name="cache_clean_fail">缓存清除失败</string>
     <string name="cover_book_category">其他</string>
-
+    
     <string name="reading_setting_message">检测到您的网络出现问题，为了保证您能够及时获取最新章节，请检查您的网络设置。</string>
-
-
+    
+    
     <!--Notification-->
     <string name="notification_update_book">更新了</string>
     <string name="notification_update_catalog_list">目录已更新！</string>
@@ -159,25 +159,25 @@
     <string name="notification_update_end">等</string>
     <string name="notification_update_book_count">本书更新了</string>
     <string name="notification_update_book_catalog">本书目录已更新！</string>
-
+    
     <string name="reading_add_succeed">已添入书架</string>
     <string name="reading_add_fail">抱歉,添加书架失败,请重试</string>
     <string name="change_source_view_all">查看全文</string>
-
+    
     <string name="source_off_line_title">来源下线</string>
     <string name="source_off_line">呃,当前来源出错了，点击下面来源试试</string>
-
+    
     <!-- 搜索 -->
     <string name="search_hint_text">搜索书名或作者</string>
     <string name="bookshelf_insert_success">成功添加到书架！</string>
     <string name="bookshelf_delete_success">成功从书架中移除！</string>
     <string name="search_of_everyone">大家都在搜</string>
-
+    
     <string name="download_status_complete">缓存完成</string>
     <string name="download_status_underway">缓存中...</string>
     <string name="download_status_total">全本缓存</string>
     <string name="download_status_paused">缓存已暂停</string>
-
+    
     <string name="change_source">换源</string>
     <string name="current_source">当前来源</string>
     <string name="translate_code_reading">转码阅读</string>
@@ -187,13 +187,13 @@
     <string name="other_source">其他来源</string>
     <string name="load_original_url_fail">查看原文链接失败</string>
     <string name="not_check_original_url">查看原文链接失败</string>
-
+    
     <string name="shelf">书架</string>
     <string name="store">书城</string>
     <string name="recommend">精选</string>
     <string name="ranking">排行榜</string>
     <string name="category">分类</string>
-
+    
     <!-- 书架 -->
     <string name="bookshelf_empty_prompt">书架空空如也~去书城看看吧</string>
     <string name="bookshelf_refresh_network_problem">网络不给力</string>
@@ -212,7 +212,7 @@
     <string name="unread_chapter_count">未读</string>
     <string name="bookshelf_change_information">紧急通知</string>
     <string name="bookshelf_change_message">您书架上的书当前来源有问题，点击下方按钮切源之后即可正常阅读。</string>
-
+    
     <!-- 封面页 -->
     <string name="book_cover">书籍详情</string>
     <string name="book_cover_connect">-</string>
@@ -235,7 +235,7 @@
     <string name="book_cover_confirm_change_source">确认换源</string>
     <string name="book_cover_change_source_prompt">在新的来源下阅读会丢失已经缓存的内容，确认换源？</string>
     <string name="book_cover_add_shelf">检测到您阅读的书暂时未加入书架，这样不能预加载书籍内容，并且不保存阅读进度。您是否要把它加入书架？</string>
-
+    
     <!-- 帮助与反馈 -->
     <string name="help_width_feedback">帮助与反馈</string>
     <string name="help_of_use">使用帮助</string>
@@ -262,7 +262,7 @@
     <string name="feedback_contact">留下您的联系方式，便于我们联系到您（可选）</string>
     <string name="feedback_contact_hint">QQ/手机任选其一</string>
     <string name="feedback_send">发送</string>
-
+    
     <!-- 转码声明 -->
     <string name="disclaimer">转码声明</string>
     <string name="disclaimer_statement">服务声明</string>
@@ -279,23 +279,23 @@
         "      "5.签署：通知书应由权利人签字或盖章。\n
         "      "注：通知书格式可参考：http://www.ncac.gov.cn/chinacopyright/contents/574/20880.html \n
     </string>
-
+    
     <string name="translate_code_description">
         <!--转码声明 \n-->
         "      "鉴于目前手机端的适配性，通过手机端直接阅读WEB端的内容时会出现加载速度缓慢、页面布局失调、流量耗费严重等影响阅读体验的情形，故需要转码技术支持。当然您也可以不选择使用此技术而仍通过直接访问来源WEB端以获取相应的信息内容。\n
         "      "转码技术会根据移动终端的展示特点自动对WEB端的内容进行有效的调整、过滤或压缩，但不会对内容进行任何修改或编辑。\n
         "      "本转码技术尊重WEB端为禁止转码而设置的保护性措施，故在此情形下将无法正常提供本服务。\n
     </string>
-
+    
     <!-- 原网页阅读 -->
     <string name="reading_resource_space">原网页阅读</string>
     <string name="resource_space_error">原网站加载失败 \n无法阅读</string>
     <string name="resource_space_loading">加载中，请稍等...</string>
-
+    
     <!-- 书签 -->
     <string name="add_mark_fail">书签添加失败</string>
     <string name="bookmark_empty">暂时没有书签</string>
-
+    
     <!-- dialog -->
     <string name="prompt">提示</string>
     <string name="determine_clear_cache">确定清除缓存吗？</string>
@@ -308,7 +308,7 @@
     <string name="cancel">取消</string>
     <string name="confirm">确定</string>
     <string name="delete">删除</string>
-
+    
     <!-- 设置 -->
     <string name="setting">设置</string>
     <string name="read_setting">阅读页设置</string>
@@ -327,7 +327,7 @@
     <string name="bookshelf_sort_time">书架按阅读时间排序</string>
     <string name="bookshelf_sort_update_time">书架按更新时间排序</string>
     <string name="not_find_application_market">未找到本地应用市场</string>
-
+    
     <!-- 阅读页设置 -->
     <string name="reading_text_size">字号 :</string>
     <string name="reading_text_size_14">14</string>
@@ -343,7 +343,7 @@
     <string name="reading_portrait">竖屏</string>
     <string name="volume_change_page">音量键翻页</string>
     <string name="read_save_power">省电模式</string>
-
+    
     <string name="UMBreak_Network">未联网</string>
     <string name="UMUpdateTitle">发现新版本</string>
     <string name="UMNewVersion">最新版本: </string>
@@ -357,7 +357,7 @@
     <string name="UMIgnore">忽略该版</string>
     <string name="UMToast_IsUpdating">正在更新中....</string>
     <string name="UMDialog_InstallAPK">最新版本已下载，是否安装？</string>
-
+    
     <string-array name="hot_word_list">
         <item>武  逆</item>
         <item>绝世武神</item>
@@ -475,13 +475,15 @@
         <item>火  影</item>
         <item>耽  美</item>
         <item>电子竞技</item>
-
+    
     </string-array>
-
-
+    
+    
     <string name="switch_on"></string>
     <string name="switch_off"></string>
-
-    <item name="tag_bitmap" type="id"></item>
-    <item name="tag_canvas" type="id"></item>
+    
+    <item name="tag_bitmap"
+          type="id"></item>
+    <item name="tag_canvas"
+          type="id"></item>
 </resources>

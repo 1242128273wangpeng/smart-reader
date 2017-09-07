@@ -1,44 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    android:id="@+id/remove_delete_layout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="@dimen/dimen_margin_10">
-
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/remove_delete_layout"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dimen_margin_10">
+    
     <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:id="@+id/btn_left"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_view_height_35"
-            android:layout_marginLeft="@dimen/dimen_margin_10"
-            android:layout_marginRight="@dimen/dimen_margin_54"
-            android:background="@drawable/selector_button_gray_green"
-            android:layout_centerInParent="true"
-            android:gravity="center"
+            android:layout_width="0dp"
             android:layout_weight="1"
-            android:text="全选"/>
+            android:layout_height="wrap_content">
+        
+        <Button
+                android:id="@+id/btn_left"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_view_height_35"
+                android:layout_marginLeft="@dimen/dimen_margin_10"
+                android:layout_marginRight="@dimen/dimen_margin_54"
+                android:background="@drawable/selector_button_gray_green"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:text="全选"/>
     </RelativeLayout>
-
+    
     <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content">
-        <Button
-            android:id="@+id/btn_right"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_view_height_35"
-            android:layout_marginLeft="@dimen/dimen_margin_10"
-            android:layout_marginRight="@dimen/dimen_margin_54"
-            android:background="@drawable/selector_button_gray_green"
-            android:gravity="center"
+            android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_centerInParent="true"
-            android:text="删除"/>
+            android:layout_height="wrap_content">
+        
+        <Button
+                android:id="@+id/btn_right"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_view_height_35"
+                android:layout_marginLeft="@dimen/dimen_margin_10"
+                android:layout_marginRight="@dimen/dimen_margin_54"
+                android:background="@drawable/selector_button_gray_green"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_centerInParent="true"
+                android:text="删除"/>
     </RelativeLayout>
 
 </LinearLayout>

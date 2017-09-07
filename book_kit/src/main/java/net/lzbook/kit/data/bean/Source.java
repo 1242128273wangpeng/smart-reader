@@ -31,12 +31,16 @@ public class Source implements Serializable {
 
         if (update_time != source1.update_time) return false;
         if (dex != source1.dex) return false;
-        if (book_id != null ? !book_id.equals(source1.book_id) : source1.book_id != null) return false;
-        if (book_source_id != null ? !book_source_id.equals(source1.book_source_id) : source1.book_source_id != null) return false;
+        if (book_id != null ? !book_id.equals(source1.book_id) : source1.book_id != null)
+            return false;
+        if (book_source_id != null ? !book_source_id.equals(source1.book_source_id) : source1.book_source_id != null)
+            return false;
         if (host != null ? !host.equals(source1.host) : source1.host != null) return false;
         if (url != null ? !url.equals(source1.url) : source1.url != null) return false;
-        if (terminal != null ? !terminal.equals(source1.terminal) : source1.terminal != null) return false;
-        if (last_chapter_name != null ? !last_chapter_name.equals(source1.last_chapter_name) : source1.last_chapter_name != null) return false;
+        if (terminal != null ? !terminal.equals(source1.terminal) : source1.terminal != null)
+            return false;
+        if (last_chapter_name != null ? !last_chapter_name.equals(source1.last_chapter_name) : source1.last_chapter_name != null)
+            return false;
         return source != null ? source.equals(source1.source) : source1.source == null;
 
     }

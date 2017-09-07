@@ -20,8 +20,6 @@ public class Tools {
 
     /**
      * return int 4 or 5
-     *
-     * @return
      */
     public static int getIntRandom() {
         return count_rating[random.nextInt(2)];
@@ -82,7 +80,7 @@ public class Tools {
      * list
      */
     public static ArrayList<String> getHistoryWord(Context mContext) {
-        if (mContext == null){
+        if (mContext == null) {
             return null;
         }
         ArrayList<String> list = new ArrayList<String>();
@@ -117,7 +115,7 @@ public class Tools {
             sb.append("|");
         }
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
-        sp.edit().putString("search_history", sb.toString().replaceAll(" ","")).apply();
+        sp.edit().putString("search_history", sb.toString().replaceAll(" ", "")).apply();
     }
 
     /**

@@ -1,64 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginBottom="@dimen/dimen_margin_40"
-    android:layout_marginLeft="@dimen/dimen_margin_20"
-    android:layout_marginRight="@dimen/dimen_margin_20"
-    android:layout_marginTop="@dimen/dimen_margin_40"
-    android:background="@drawable/background_base_dialog"
-    android:scrollbars="vertical"
-    android:focusable="true">
-
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/dimen_margin_40"
+        android:layout_marginLeft="@dimen/dimen_margin_20"
+        android:layout_marginRight="@dimen/dimen_margin_20"
+        android:layout_marginTop="@dimen/dimen_margin_40"
+        android:background="@drawable/background_base_dialog"
+        android:scrollbars="vertical"
+        android:focusable="true">
+    
     <TextView
-        android:id="@+id/source_off_line_title"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_view_height_45"
-        android:paddingLeft="@dimen/dimen_padding_15"
-        android:gravity="center_vertical"
-        android:text="@string/source_off_line_title"
-        android:textColor="@color/color_black_353535"
-        android:textSize="@dimen/dimen_text_18" />
-
+            android:id="@+id/source_off_line_title"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_view_height_45"
+            android:paddingLeft="@dimen/dimen_padding_15"
+            android:gravity="center_vertical"
+            android:text="@string/source_off_line_title"
+            android:textColor="@color/color_black_353535"
+            android:textSize="@dimen/dimen_text_18"/>
+    
     <View
-        android:id="@+id/source_off_line_divider"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_view_height_2"
-        android:background="@color/theme_primary"
-        android:layout_below="@id/source_off_line_title" />
-
+            android:id="@+id/source_off_line_divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_view_height_2"
+            android:background="@color/theme_primary"
+            android:layout_below="@id/source_off_line_title"/>
+    
     <RelativeLayout
-        android:id="@+id/source_off_line_message"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dimen_padding_5"
-        android:layout_below="@id/source_off_line_divider">
-
-        <TextView
-            android:id="@+id/change_source_disclaimer_message"
+            android:id="@+id/source_off_line_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/dimen_padding_15"
-            android:paddingRight="@dimen/dimen_padding_15"
-            android:gravity="left|center"
-            android:maxLines="3"
-            android:ellipsize="end"
-            android:text="@string/source_off_line"
-            android:textColor="@color/color_black_595858"
-            android:textSize="@dimen/dimen_text_14"/>
+            android:paddingBottom="@dimen/dimen_padding_5"
+            android:layout_below="@id/source_off_line_divider">
+        
+        <TextView
+                android:id="@+id/change_source_disclaimer_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dimen_padding_15"
+                android:paddingRight="@dimen/dimen_padding_15"
+                android:gravity="left|center"
+                android:maxLines="3"
+                android:ellipsize="end"
+                android:text="@string/source_off_line"
+                android:textColor="@color/color_black_595858"
+                android:textSize="@dimen/dimen_text_14"/>
     </RelativeLayout>
-
+    
     <ListView
-        android:id="@+id/source_off_line_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/source_off_line_message"
-        android:minHeight="@dimen/dimen_view_height_45"
-        android:layout_marginBottom="@dimen/dimen_margin_0"
-        android:cacheColorHint="@color/color_black_00000000"
-        android:scrollbars="none"
-        android:divider="@null"
-        android:dividerHeight="@dimen/dimen_view_height_0"
-        android:fadingEdge="none"
-        android:listSelector="@android:color/transparent"/>
+            android:id="@+id/source_off_line_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/source_off_line_message"
+            android:minHeight="@dimen/dimen_view_height_45"
+            android:layout_marginBottom="@dimen/dimen_margin_0"
+            android:cacheColorHint="@color/color_black_00000000"
+            android:scrollbars="none"
+            android:divider="@null"
+            android:dividerHeight="@dimen/dimen_view_height_0"
+            android:fadingEdge="none"
+            android:listSelector="@android:color/transparent"/>
 </RelativeLayout>

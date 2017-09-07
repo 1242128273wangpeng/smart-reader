@@ -1,5 +1,13 @@
 package net.lzbook.kit.utils;
 
+import net.lzbook.kit.R;
+import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
+import net.lzbook.kit.book.component.service.DownloadService;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.bean.Book;
+import net.lzbook.kit.data.db.BookDaoHelper;
+
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
@@ -14,15 +22,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.preference.PreferenceManager;
 
-
-import net.lzbook.kit.R;
-import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
-import net.lzbook.kit.book.component.service.DownloadService;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.Book;
-import net.lzbook.kit.data.db.BookDaoHelper;
-
 import java.io.Serializable;
 import java.util.Comparator;
 
@@ -30,31 +29,100 @@ import java.util.Comparator;
  * <书架页工具类>
  */
 public class FrameBookHelper {
-    String TAG = "FrameBookHelper";
-    private Context context;
-    private Activity activity;
-
-    private DownloadService downloadService;
-    private CheckNovelUpdateService updateService;
-
-    private boolean isActivityPause = false;
-
+    public final static String ACTION_SEARCH_UPDATE_BOOK = AppUtils.getPackageName() + ".action.search_update_book";
     static DownLoadNotify downLoadNotify;
     static DownLoadStateCallback downLoadState;
+    public SharedPreferencesUtils su;
+    public SharedPreferences preferences;
+    String TAG = "FrameBookHelper";
     CancleUpdateCallback cancleUpdate;
     BookUpdateService updateBookService;
-
     NotificationCallback notification;
     SearchUpdateBook searchUpdateBook;
     BookChanged bookChanged;
-
+    private Context context;
+    private Activity activity;
+    private DownloadService downloadService;
+    private CheckNovelUpdateService updateService;
+    private boolean isActivityPause = false;
     private BookDaoHelper bookHelper;
-    public SharedPreferencesUtils su;
-    public SharedPreferences preferences;
-    public final static String ACTION_SEARCH_UPDATE_BOOK = AppUtils.getPackageName()+".action.search_update_book";
-
     private DownloadFinishReceiver downloadFinishReceiver;
-   private SearchUpdateBookReceiver searchUpdateReceiver;
+    private SearchUpdateBookReceiver searchUpdateReceiver;
+    private ServiceConnection downLoadConnection = new ServiceConnection() {
+
+        private Handler handler = new Handler() {
+
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (downloadService.isOffLineDowning()) {
+                    if (downLoadState != null) {
+                        downLoadState.changeDownLoadBtn(true);
+                    }
+                } else {
+                    if (downLoadState != null) {
+                        downLoadState.changeDownLoadBtn(false);
+                    }
+                }
+            }
+
+        };
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            try {
+                downloadService = ((DownloadService.MyBinder) service).getService();
+                if (downloadService != null) {
+                    if (Constants.is_wifi_auto_download && NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_WIFI) {
+                        new Thread(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                downloadService.autoStartDownLoad();
+                                handler.sendEmptyMessage(0);
+                            }
+                        }).start();
+
+                    }
+
+                }
+                BaseBookApplication.setDownloadService(downloadService);
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    // =======================================================
+    // 服务
+    // ======================================================
+    // 我的消息服务
+    private ServiceConnection updateConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            try {
+                updateService = ((CheckNovelUpdateService.CheckUpdateBinder) service).getService();
+                AppLog.d(TAG, "auto-updateService" + updateService);
+                if (updateService != null && updateBookService != null) {
+                    AppLog.d(TAG, "updateData " + updateBookService);
+                    updateBookService.doUpdateBook(updateService);
+                }
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
 
     public FrameBookHelper(Context context, Activity activity) {
@@ -78,11 +146,6 @@ public class FrameBookHelper {
             su = new SharedPreferencesUtils(preferences);
         }
     }
-
-    // =======================================================
-    // 服务
-    // ======================================================
-    // 我的消息服务
 
     /**
      * 初始化service
@@ -115,126 +178,9 @@ public class FrameBookHelper {
     }
 
 
-    private ServiceConnection downLoadConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-        }
-
-        private Handler handler = new Handler() {
-
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                if (downloadService.isOffLineDowning()) {
-                    if (downLoadState != null) {
-                        downLoadState.changeDownLoadBtn(true);
-                    }
-                } else {
-                    if (downLoadState != null) {
-                        downLoadState.changeDownLoadBtn(false);
-                    }
-                }
-            }
-
-        };
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            try {
-                downloadService = ((DownloadService.MyBinder) service).getService();
-                if (downloadService != null) {
-                    if (Constants.is_wifi_auto_download && NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_WIFI) {
-                        new Thread(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                downloadService.autoStartDownLoad();
-                                handler.sendEmptyMessage(0);
-                            }
-                        }).start();
-
-                    }
-
-                }
-                BaseBookApplication.setDownloadService(downloadService);
-            } catch (ClassCastException e) {
-                e.printStackTrace();
-            }
-        }
-    };
-    private ServiceConnection updateConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-        }
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            try {
-                updateService = ((CheckNovelUpdateService.CheckUpdateBinder) service).getService();
-                AppLog.d(TAG, "auto-updateService" + updateService);
-                if (updateService != null && updateBookService != null) {
-                    AppLog.d(TAG, "updateData " + updateBookService);
-                    updateBookService.doUpdateBook(updateService);
-                }
-            } catch (ClassCastException e) {
-                e.printStackTrace();
-            }
-        }
-    };
-
-
     // =========================================================
     // interface
     // ==================================================
-
-
-    public interface BookUpdateService {
-        void doUpdateBook(CheckNovelUpdateService updateService);
-    }
-
-    public interface DownLoadNotify {
-        /**
-         * <更新数据>
-         * <p>
-         * void
-         */
-        void doNotifyDownload();
-    }
-
-    public interface DownLoadStateCallback {
-        /**
-         * <修改下载按钮状态>
-         * <p>
-         * isDownLoading
-         * void
-         */
-        void changeDownLoadBtn(boolean isDownLoading);
-    }
-
-    public interface CancleUpdateCallback {
-        /**
-         * <还原系统显示>
-         * <p>
-         * void
-         */
-        void restoreSystemState();
-    }
-
-    public interface NotificationCallback {
-        void notification(String gid);
-    }
-
-    public interface BookChanged {
-        void updateBook();
-    }
-
-    public interface SearchUpdateBook {
-        void searchUpdateBook();
-    }
 
     public void setNotification(NotificationCallback notify) {
         this.notification = notify;
@@ -254,14 +200,13 @@ public class FrameBookHelper {
         this.downLoadState = btnstate;
     }
 
-    public void   setCancleUpdate(CancleUpdateCallback exitapp) {
+    public void setCancleUpdate(CancleUpdateCallback exitapp) {
         this.cancleUpdate = exitapp;
     }
 
     public void setBookUpdate(BookUpdateService update) {
         this.updateBookService = update;
     }
-
 
     public void setSearchUpdateUI(SearchUpdateBook searchUpdate) {
         this.searchUpdateBook = searchUpdate;
@@ -279,10 +224,6 @@ public class FrameBookHelper {
     public CheckNovelUpdateService getUpdateService() {
         return updateService;
     }
-
-    // =============================================
-    // activity相关
-    // ==========================================
 
     /**
      * <从通知栏点击进来后执行>
@@ -370,50 +311,6 @@ public class FrameBookHelper {
     }
 
     /**
-     * 全部下载完成和检查更新监听器
-     */
-    public static class DownloadFinishReceiver extends BroadcastReceiver {
-        public static final String ACTION_PACKAGENAME = AppUtils.getPackageName();
-        public static final String ACTION_DOWN_ALL_FINISH = ACTION_PACKAGENAME + ".download_all_finish";
-        public static final String ACTION_UPDATE_NOTIFY = ACTION_PACKAGENAME +".update_notify";
-        public static final String ACTION_DOWNLOAD_FINISH = ACTION_PACKAGENAME + ".download_finish";
-        public static final String ACTION_DOWNLOAD_LOCKED = ACTION_PACKAGENAME + ".download_locked";
-        private String TAG ="FrameBookHelper";
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            AppLog.d(TAG, "DownloadFinishReceiver action : " + intent.getAction());
-            if (intent.getAction().equals(ACTION_DOWN_ALL_FINISH)) {
-                if (downLoadState != null) {
-                    downLoadState.changeDownLoadBtn(false);
-                }
-            } else if (intent.getAction().equals(ACTION_UPDATE_NOTIFY) || intent.getAction().equals
-                    (ACTION_DOWNLOAD_FINISH)) {
-
-                if (downLoadNotify != null) {
-                    downLoadNotify.doNotifyDownload();
-                }
-            }
-        }
-    }
-
-    private class SearchUpdateBookReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            AppLog.d(TAG, "SearchUpdateBookReceiver action : " + intent.getAction());
-            if (intent.getAction() != null) {
-                if (intent.getAction().equals(ACTION_SEARCH_UPDATE_BOOK) && searchUpdateBook != null) {
-                    searchUpdateBook.searchUpdateBook();
-                }
-
-            }
-        }
-    }
-
-    /**
      * <接收搜索订阅及刷新数据的广播>
      * <p>
      * void
@@ -430,6 +327,10 @@ public class FrameBookHelper {
         }
     }
 
+    // =============================================
+    // activity相关
+    // ==========================================
+
     public void unregistSearchUpdateReceiver() {
         if (searchUpdateReceiver != null && context != null) {
             AppLog.d(TAG, "unregistSearchUpdateReceiver");
@@ -440,6 +341,101 @@ public class FrameBookHelper {
                 e.printStackTrace();
             }
 
+        }
+    }
+
+    public void recycleCallback() {
+        if (downLoadState != null) {
+            downLoadState = null;
+        }
+
+        if (updateBookService != null) {
+            updateBookService = null;
+        }
+
+        if (downLoadNotify != null) {
+            downLoadNotify = null;
+        }
+
+        if (notification != null) {
+            notification = null;
+        }
+
+        if (bookChanged != null) {
+            bookChanged = null;
+        }
+    }
+
+    public interface BookUpdateService {
+        void doUpdateBook(CheckNovelUpdateService updateService);
+    }
+
+    public interface DownLoadNotify {
+        /**
+         * <更新数据>
+         * <p>
+         * void
+         */
+        void doNotifyDownload();
+    }
+
+    public interface DownLoadStateCallback {
+        /**
+         * <修改下载按钮状态>
+         * <p>
+         * isDownLoading
+         * void
+         */
+        void changeDownLoadBtn(boolean isDownLoading);
+    }
+
+    public interface CancleUpdateCallback {
+        /**
+         * <还原系统显示>
+         * <p>
+         * void
+         */
+        void restoreSystemState();
+    }
+
+    public interface NotificationCallback {
+        void notification(String gid);
+    }
+
+    public interface BookChanged {
+        void updateBook();
+    }
+
+    public interface SearchUpdateBook {
+        void searchUpdateBook();
+    }
+
+    /**
+     * 全部下载完成和检查更新监听器
+     */
+    public static class DownloadFinishReceiver extends BroadcastReceiver {
+        public static final String ACTION_PACKAGENAME = AppUtils.getPackageName();
+        public static final String ACTION_DOWN_ALL_FINISH = ACTION_PACKAGENAME + ".download_all_finish";
+        public static final String ACTION_UPDATE_NOTIFY = ACTION_PACKAGENAME + ".update_notify";
+        public static final String ACTION_DOWNLOAD_FINISH = ACTION_PACKAGENAME + ".download_finish";
+        public static final String ACTION_DOWNLOAD_LOCKED = ACTION_PACKAGENAME + ".download_locked";
+        private String TAG = "FrameBookHelper";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            AppLog.d(TAG, "DownloadFinishReceiver action : " + intent.getAction());
+            if (intent.getAction().equals(ACTION_DOWN_ALL_FINISH)) {
+                if (downLoadState != null) {
+                    downLoadState.changeDownLoadBtn(false);
+                }
+            } else if (intent.getAction().equals(ACTION_UPDATE_NOTIFY) || intent.getAction().equals
+                    (ACTION_DOWNLOAD_FINISH)) {
+
+                if (downLoadNotify != null) {
+                    downLoadNotify.doNotifyDownload();
+                }
+            }
         }
     }
 
@@ -473,25 +469,19 @@ public class FrameBookHelper {
             return ((Book) o1).sequence_time == ((Book) o2).sequence_time ? 0 : (((Book) o1).sequence_time < ((Book) o2).sequence_time ? 1 : -1);
         }
     }
-    public void recycleCallback(){
-        if(downLoadState!=null){
-            downLoadState=null;
-        }
 
-        if(updateBookService!=null){
-            updateBookService = null;
-        }
+    private class SearchUpdateBookReceiver extends BroadcastReceiver {
 
-        if(downLoadNotify!=null){
-            downLoadNotify = null;
-        }
+        @Override
+        public void onReceive(Context context, Intent intent) {
 
-        if(notification!=null){
-            notification = null;
-        }
+            AppLog.d(TAG, "SearchUpdateBookReceiver action : " + intent.getAction());
+            if (intent.getAction() != null) {
+                if (intent.getAction().equals(ACTION_SEARCH_UPDATE_BOOK) && searchUpdateBook != null) {
+                    searchUpdateBook.searchUpdateBook();
+                }
 
-        if(bookChanged!=null){
-            bookChanged = null;
+            }
         }
     }
 }

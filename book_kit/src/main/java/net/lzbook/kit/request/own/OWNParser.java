@@ -1,19 +1,5 @@
 package net.lzbook.kit.request.own;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.text.TextUtils;
-
-import com.dingyueads.sdk.Bean.AdSceneData;
-import com.dingyueads.sdk.Bean.UserBaseData;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
-import com.google.gson.stream.JsonWriter;
-
-import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.BookUpdate;
@@ -25,17 +11,15 @@ import net.lzbook.kit.data.bean.RequestItem;
 import net.lzbook.kit.data.bean.Source;
 import net.lzbook.kit.data.bean.SourceItem;
 import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.NetWorkUtils;
-import net.lzbook.kit.utils.OpenUDID;
-import net.lzbook.kit.utils.Tools;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.IOException;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.text.TextUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -482,9 +466,9 @@ public class OWNParser {
                 continue;
             }
 
-            if (!bookObject.isNull("last_update")){
+            if (!bookObject.isNull("last_update")) {
                 book.last_updateSucessTime = bookObject.getLong("last_update");
-            }else {
+            } else {
                 book.last_updateSucessTime = System.currentTimeMillis();
             }
             ArrayList<Chapter> chapterList = new ArrayList<>();
@@ -532,7 +516,7 @@ public class OWNParser {
         return parseJarBean;
     }
 
-    public static LogData logDataEncap(String type , Book book) {
+    public static LogData logDataEncap(String type, Book book) {
         LogData logData = new LogData();
         logData.type = type;
         logData.bookName = book.name;

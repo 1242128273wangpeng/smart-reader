@@ -1,5 +1,10 @@
 package net.lzbook.kit.data.db;
 
+import net.lzbook.kit.data.bean.Chapter;
+import net.lzbook.kit.data.db.table.ChapterTable;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.Tools;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -7,24 +12,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 
-import net.lzbook.kit.data.bean.Chapter;
-import net.lzbook.kit.data.db.table.ChapterTable;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.Tools;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class BookChapterDao {
-    // version 6 add SPEED
-    private SqliteHelper mHelper = null;
     private static final int version = 7; // 数据库版本
-    private String DATABASE_NAME;
-    // 升级书架书籍
-    private String _book_id;
     private static final String TAB_CHAPTER = "chapter";
-
     private static final String SQL_CREATE_CHAPTER = "" +
             "create table IF NOT EXISTS " + TAB_CHAPTER
             + "(" +
@@ -54,11 +48,35 @@ public class BookChapterDao {
             ChapterTable.CHAPTER_STATUS + " VARCHAR(250) ," +
             ChapterTable.CHAPTER_UPDATE_TIME + " long " +
             ")";
+    // version 6 add SPEED
+    private SqliteHelper mHelper = null;
+    private String DATABASE_NAME;
+    // 升级书架书籍
+    private String _book_id;
 
     public BookChapterDao(Context context, String book_id) {
         this._book_id = book_id;
         DATABASE_NAME = "book_chapter_" + book_id;
         this.mHelper = new SqliteHelper(context.getApplicationContext());
+    }
+
+    private static boolean checkColumnExist1(SQLiteDatabase db, String tableName, String columnName) {
+        boolean result = false;
+        Cursor cursor = null;
+        try {
+            //查询一行
+            cursor = db.rawQuery("SELECT * FROM " + tableName + " LIMIT 0"
+                    , null);
+            result = cursor != null && cursor.getColumnIndex(columnName) != -1;
+        } catch (Exception e) {
+//	         Log.e(TAG,"checkColumnExists1..." + e.getMessage()) ;
+        } finally {
+            if (null != cursor && !cursor.isClosed()) {
+                cursor.close();
+            }
+        }
+
+        return result;
     }
 
     public int getCount() {
@@ -88,7 +106,7 @@ public class BookChapterDao {
 
     public synchronized boolean insertBookChapter(ArrayList<Chapter> chapterList) {
         SQLiteDatabase db = mHelper.getWritableDatabase();
-        Cursor cur =null;
+        Cursor cur = null;
         try {
             db.beginTransaction();
             if (chapterList != null && chapterList.size() != 0) {
@@ -133,7 +151,7 @@ public class BookChapterDao {
             e.printStackTrace();
             return false;
         } finally {
-            if(cur != null){
+            if (cur != null) {
                 cur.close();
             }
             db.endTransaction();
@@ -247,7 +265,7 @@ public class BookChapterDao {
             db = mHelper.getReadableDatabase();
             c = db.query(TAB_CHAPTER, null, null, null, null, null, null, null);
             Chapter chapter = null;
-            while(c.moveToNext()){
+            while (c.moveToNext()) {
                 chapter = new Chapter();
                 chapter.chapter_name = c.getString(ChapterTable.CHAPTER_NAME_INDEX);
                 map.put(Tools.getPatterName(chapter.chapter_name), null);
@@ -318,7 +336,7 @@ public class BookChapterDao {
             db = mHelper.getReadableDatabase();
             int m = sequence - count + 1;
             int n = count;
-            c = db.query(TAB_CHAPTER, null, null, null, null, null, null,m+","+n);
+            c = db.query(TAB_CHAPTER, null, null, null, null, null, null, m + "," + n);
             Chapter chapter = null;
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
                 chapter = new Chapter();
@@ -614,24 +632,5 @@ public class BookChapterDao {
             }
         }
 
-    }
-
-    private static boolean checkColumnExist1(SQLiteDatabase db, String tableName, String columnName) {
-        boolean result = false;
-        Cursor cursor = null;
-        try {
-            //查询一行
-            cursor = db.rawQuery("SELECT * FROM " + tableName + " LIMIT 0"
-                    , null);
-            result = cursor != null && cursor.getColumnIndex(columnName) != -1;
-        } catch (Exception e) {
-//	         Log.e(TAG,"checkColumnExists1..." + e.getMessage()) ;
-        } finally {
-            if (null != cursor && !cursor.isClosed()) {
-                cursor.close();
-            }
-        }
-
-        return result;
     }
 }

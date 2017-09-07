@@ -47,16 +47,16 @@ class LRadioGroup : LinearLayout {
     fun clearCheck() {
         for (i in 0..mCheckables.size - 1) {
             val view = mCheckables[i] as Checkable
-                view.isChecked = false
+            view.isChecked = false
         }
     }
 
     fun check(@IdRes id: Int) {
         for (i in 0..mCheckables.size - 1) {
             val view = mCheckables[i]
-            if(view.id == id) {
+            if (view.id == id) {
                 (view as Checkable).isChecked = true
-            }else{
+            } else {
                 (view as Checkable).isChecked = false
             }
         }

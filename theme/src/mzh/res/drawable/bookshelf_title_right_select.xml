@@ -5,7 +5,7 @@
         <shape>
             <solid android:color="@color/color_white_ffffff"/>
             <corners
-                android:radius="5dp" />
+                    android:radius="5dp"/>
 
         </shape>
     </item>
@@ -13,8 +13,8 @@
         <shape>
             <solid android:color="@color/color_home_title_pop"/>
             <corners
-                android:bottomLeftRadius="5dp"
-                android:bottomRightRadius="5dp"/>
+                    android:bottomLeftRadius="5dp"
+                    android:bottomRightRadius="5dp"/>
         </shape>
     </item>
 

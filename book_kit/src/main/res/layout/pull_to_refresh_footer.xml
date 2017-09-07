@@ -1,70 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/color_black_00000000"
-  android:paddingTop="30dp"
-    android:paddingBottom="30dp"
-
-    >
-
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_black_00000000"
+        android:paddingTop="30dp"
+        android:paddingBottom="30dp"
+        
+        >
+    
     <LinearLayout
-          android:paddingTop="1dp"
-        android:id="@+id/indicator_area_footer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerInParent="true"
-        android:layout_marginLeft="7dp"
-        android:gravity="center"
-        android:orientation="vertical" >
-
-        <TextView
-            android:id="@+id/pull_to_refresh_text_list_footer"
+            android:paddingTop="1dp"
+            android:id="@+id/indicator_area_footer"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="7dp"
+            android:gravity="center"
+            android:orientation="vertical">
+        
+        <TextView
+                android:id="@+id/pull_to_refresh_text_list_footer"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:maxEms="10"
-            android:minEms="6"
-            android:singleLine="true"
-            android:text="加载中，请稍候..."
-            android:textColor="@color/color_gray_999c9e"
-            android:textSize="@dimen/dimen_text_12" />
-
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:maxEms="10"
+                android:minEms="6"
+                android:singleLine="true"
+                android:text="加载中，请稍候..."
+                android:textColor="@color/color_gray_999c9e"
+                android:textSize="@dimen/dimen_text_12"/>
+        
         <TextView
-            android:id="@+id/pull_to_refresh_time_list_footer"
-            android:layout_width="wrap_content"
-            android:layout_height="18dp"
-            android:gravity="center"
-            android:singleLine="true"
-         android:textColor="@color/color_gray_999c9e"
-           android:textSize="@dimen/dimen_text_12"
-            android:visibility="gone" />
+                android:id="@+id/pull_to_refresh_time_list_footer"
+                android:layout_width="wrap_content"
+                android:layout_height="18dp"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@color/color_gray_999c9e"
+                android:textSize="@dimen/dimen_text_12"
+                android:visibility="gone"/>
     </LinearLayout>
-
+    
     <FrameLayout
-        android:id="@+id/indicator_img"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerInParent="true"
-        android:layout_toLeftOf="@id/indicator_area_footer" >
-
+            android:id="@+id/indicator_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:layout_toLeftOf="@id/indicator_area_footer">
+        
         <ProgressBar
-            android:id="@+id/pull_to_refresh_progress_list_footer"
-            style="@style/custom_refresh_loading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="gone" />
-
+                android:id="@+id/pull_to_refresh_progress_list_footer"
+                style="@style/custom_refresh_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
+        
         <ImageView
-            android:id="@+id/pull_to_refresh_image_list_footer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/pulltorefresh_down_arrow" />
+                android:id="@+id/pull_to_refresh_image_list_footer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/pulltorefresh_down_arrow"/>
     </FrameLayout>
 
 

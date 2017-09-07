@@ -1,12 +1,8 @@
 package net.lzbook.kit.request;
 
 
-import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
-
-import com.quduquxie.network.*;
 import com.quduquxie.network.DataCache;
+import com.quduquxie.network.DataService;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.data.bean.Book;
@@ -18,6 +14,10 @@ import net.lzbook.kit.net.volley.request.VolleyDataService;
 import net.lzbook.kit.utils.BeanParser;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.OpenUDID;
+
+import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -38,11 +38,11 @@ public class QGRequestExecutor extends RequestExecutorDefault {
                 ArrayList<com.quduquxie.bean.Chapter> chapters = null;
                 try {
                     String udid = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext());
-                    chapters = DataService.getChapterList(mContext,requestItem.book_id,1,Integer.MAX_VALUE-1,udid);
-                    ArrayList<Chapter> list = BeanParser.buildOWNChapterList(chapters,0,chapters.size());
-                    if (list != null && list.size()>0) {
+                    chapters = DataService.getChapterList(mContext, requestItem.book_id, 1, Integer.MAX_VALUE - 1, udid);
+                    ArrayList<Chapter> list = BeanParser.buildOWNChapterList(chapters, 0, chapters.size());
+                    if (list != null && list.size() > 0) {
                         Message.obtain(handler, RequestExecutor.REQUEST_QG_CATALOG_SUCCESS, list).sendToTarget();
-                    }else {
+                    } else {
                         Message.obtain(handler, RequestExecutor.REQUEST_QG_CATALOG_ERROR, list).sendToTarget();
                     }
                 } catch (Exception e) {
@@ -56,14 +56,14 @@ public class QGRequestExecutor extends RequestExecutorDefault {
     @Override
     public void requestChapterList(final Context context, final RequestItem requestItem, final VolleyDataService.DataServiceCallBack requestChaptersCallBack) throws Exception {
         mContext = context;
-        if (NetWorkUtils.getNetWorkType(mContext) == NetWorkUtils.NETWORK_NONE){
-            BookChapterDao bookChapterDao = new BookChapterDao(context,requestItem.book_id);
+        if (NetWorkUtils.getNetWorkType(mContext) == NetWorkUtils.NETWORK_NONE) {
+            BookChapterDao bookChapterDao = new BookChapterDao(context, requestItem.book_id);
             ArrayList<Chapter> chapterList = bookChapterDao.queryBookChapter();
-            if (chapterList.size() != 0){
+            if (chapterList.size() != 0) {
                 requestChaptersCallBack.onSuccess(chapterList);
                 return;
-            }else {
-                mRquestChaptersListener.requestFailed(RequestChaptersListener.ERROR_TYPE_NETWORK_NONE,"拉取章节时无网络",0);
+            } else {
+                mRquestChaptersListener.requestFailed(RequestChaptersListener.ERROR_TYPE_NETWORK_NONE, "拉取章节时无网络", 0);
                 return;
             }
         }
@@ -74,7 +74,7 @@ public class QGRequestExecutor extends RequestExecutorDefault {
             public void run() {
                 ArrayList<Chapter> list = chapterDao.queryBookChapter();
                 if (list == null || list.size() == 0) {
-                ArrayList<com.quduquxie.bean.Chapter> chapters = null;
+                    ArrayList<com.quduquxie.bean.Chapter> chapters = null;
                     try {
                         String udid = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext());
                         chapters = DataService.getChapterList(context, requestItem.book_id, 1, Integer.MAX_VALUE - 1, udid);
@@ -103,7 +103,7 @@ public class QGRequestExecutor extends RequestExecutorDefault {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }else {
+                } else {
                     requestChaptersCallBack.onSuccess(list);
                 }
             }
@@ -119,21 +119,15 @@ public class QGRequestExecutor extends RequestExecutorDefault {
 
     /**
      * 获取单章节内容
-     * @param dex
-     * @param bookDaoHelper
-     * @param bookChapterDao
-     * @param chapter
-     * @return
-     * @throws Exception
      */
     @Override
     public Chapter requestSingleChapter(int dex, BookDaoHelper bookDaoHelper, BookChapterDao bookChapterDao, Chapter chapter) throws Exception {
-        boolean isChapterExist = com.quduquxie.network.DataCache.isChapterExists(chapter.chapter_id,chapter.book_id);
-        if (isChapterExist){
-            chapter.content = DataCache.getChapterFromCache(chapter.chapter_id,chapter.book_id);
+        boolean isChapterExist = com.quduquxie.network.DataCache.isChapterExists(chapter.chapter_id, chapter.book_id);
+        if (isChapterExist) {
+            chapter.content = DataCache.getChapterFromCache(chapter.chapter_id, chapter.book_id);
             chapter.isSuccess = true;
             return chapter;
-        }else {
+        } else {
             String udid = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext());
             com.quduquxie.bean.Chapter qgChapter = DataService.getChapterFromNet(mContext, BeanParser.parseToQGBean(chapter), udid);
             return BeanParser.parseToOWNBean(qgChapter);

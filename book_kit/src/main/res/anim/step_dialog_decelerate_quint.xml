@@ -17,6 +17,7 @@
 */
 -->
 <!-- 加速动画变化速率 android:factor -->
-<decelerateInterpolator xmlns:android="http://schemas.android.com/apk/res/android"
-        android:factor="2.5" />
+<decelerateInterpolator
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:factor="2.5"/>
 

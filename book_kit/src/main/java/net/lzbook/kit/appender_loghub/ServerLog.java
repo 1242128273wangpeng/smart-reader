@@ -36,7 +36,7 @@ public class ServerLog {
                 mContent.put("project", PLItemKey.ZN_APP_EVENT.getProject());
             }
             if (!mContent.containsKey("logstore")) {
-                mContent.put("logstore",  PLItemKey.ZN_APP_EVENT.getLogstore());
+                mContent.put("logstore", PLItemKey.ZN_APP_EVENT.getLogstore());
             }
 
             if (!mContent.containsKey("app_package")) {

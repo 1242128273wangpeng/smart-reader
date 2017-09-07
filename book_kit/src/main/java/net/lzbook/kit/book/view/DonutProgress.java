@@ -1,5 +1,8 @@
 package net.lzbook.kit.book.view;
 
+import net.lzbook.kit.R;
+import net.lzbook.kit.utils.AppUtils;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -13,51 +16,11 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
-import net.lzbook.kit.R;
-import net.lzbook.kit.utils.AppUtils;
-
 
 public class DonutProgress extends View {
-    private Paint finishedPaint;
-    private Paint unfinishedPaint;
-    private Paint innerCirclePaint;
-    protected Paint textPaint;
-    protected Paint innerBottomTextPaint;
-
-    private RectF finishedOuterRect = new RectF();
-    private RectF unfinishedOuterRect = new RectF();
-
-    private float textSize;
-    private int textColor;
-    private int innerBottomTextColor;
-    private int progress = 0;
-    private int max;
-    private int finishedStrokeColor;
-    private int unfinishedStrokeColor;
-    private int startingDegree;
-    private float finishedStrokeWidth;
-    private float unfinishedStrokeWidth;
-    private int innerBackgroundColor;
-    private String prefixText = "";
-    private String suffixText = "%";
-    private String text = null;
-    private float innerBottomTextSize;
-    private String innerBottomText;
-    private float innerBottomTextHeight;
-
-    private final float default_stroke_width;
-    private final int default_finished_color = Color.rgb(0, 195, 178);
-    private final int default_unfinished_color = Color.rgb(219, 219, 219);
-    private final int default_text_color = Color.rgb(0, 195, 178);
-    private final int default_inner_bottom_text_color = Color.rgb(0, 195, 178);
     private final static int default_inner_background_color = Color.TRANSPARENT;
     private final static int default_max = 100;
     private final static int default_startingDegree = 0;
-    private final float default_text_size;
-    private final float default_inner_bottom_text_size;
-    private final int min_size;
-
-
     private static final String INSTANCE_STATE = "saved_instance";
     private static final String INSTANCE_TEXT_COLOR = "text_color";
     private static final String INSTANCE_TEXT_SIZE = "text_size";
@@ -75,6 +38,38 @@ public class DonutProgress extends View {
     private static final String INSTANCE_UNFINISHED_STROKE_WIDTH = "unfinished_stroke_width";
     private static final String INSTANCE_BACKGROUND_COLOR = "inner_background_color";
     private static final String INSTANCE_STARTING_DEGREE = "starting_degree";
+    private final float default_stroke_width;
+    private final int default_finished_color = Color.rgb(0, 195, 178);
+    private final int default_unfinished_color = Color.rgb(219, 219, 219);
+    private final int default_text_color = Color.rgb(0, 195, 178);
+    private final int default_inner_bottom_text_color = Color.rgb(0, 195, 178);
+    private final float default_text_size;
+    private final float default_inner_bottom_text_size;
+    private final int min_size;
+    protected Paint textPaint;
+    protected Paint innerBottomTextPaint;
+    private Paint finishedPaint;
+    private Paint unfinishedPaint;
+    private Paint innerCirclePaint;
+    private RectF finishedOuterRect = new RectF();
+    private RectF unfinishedOuterRect = new RectF();
+    private float textSize;
+    private int textColor;
+    private int innerBottomTextColor;
+    private int progress = 0;
+    private int max;
+    private int finishedStrokeColor;
+    private int unfinishedStrokeColor;
+    private int startingDegree;
+    private float finishedStrokeWidth;
+    private float unfinishedStrokeWidth;
+    private int innerBackgroundColor;
+    private String prefixText = "";
+    private String suffixText = "%";
+    private String text = null;
+    private float innerBottomTextSize;
+    private String innerBottomText;
+    private float innerBottomTextHeight;
 
     public DonutProgress(Context context) {
         this(context, null);

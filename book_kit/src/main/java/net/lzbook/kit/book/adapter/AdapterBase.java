@@ -1,7 +1,6 @@
 package net.lzbook.kit.book.adapter;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.widget.BaseAdapter;
 
@@ -13,10 +12,9 @@ import java.util.List;
  */
 public abstract class AdapterBase extends BaseAdapter {
 
+    protected Context mContext;
     private List mList;
     private LayoutInflater mLayoutInflater;
-
-    protected Context mContext;
 
     public AdapterBase(Context context, List list) {
         mContext = context;

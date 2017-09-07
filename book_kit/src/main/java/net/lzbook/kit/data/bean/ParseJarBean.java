@@ -2,7 +2,7 @@ package net.lzbook.kit.data.bean;
 
 import java.io.Serializable;
 
-public class ParseJarBean implements Serializable{
+public class ParseJarBean implements Serializable {
 
     public boolean success;
     //返回的错误信息

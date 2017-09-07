@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-       <!--暖心红-->
-       <style name="Theme2" parent="AppTheme">
-              <item name="theme_name">@string/style_change_1</item>
+    <!--暖心红-->
+    <style name="Theme2"
+           parent="AppTheme">
+        <item name="theme_name">@string/style_change_1</item>
         <item name="colorPrimary">@color/warm_heart_red</item>
         <item name="colorAccent">@color/warm_heart_red</item>
         <item name="color_primary">@color/warm_heart_red</item>
         <item name="base_bg">@color/color_white_ffffff</item>
-		<item name="base_bg1">@color/color_white_ffffff</item>
+        <item name="base_bg1">@color/color_white_ffffff</item>
         <item name="title_shadow">@mipmap/nxh_top_shadow</item>
         <item name="title_back">@mipmap/nxh_cover_top_back</item>
         <item name="color_divider">@color/color_gray_e8e8e8</item>
@@ -17,8 +18,8 @@
         <item name="color_text_most">@color/color_black_323232</item>
         <item name="color_red_point">@color/color_white_ffffff</item>
         <item name="color_red_point_1">@color/color_red_ff0000</item>
-		
-		<!--状态栏颜色-->
+
+        <!--状态栏颜色-->
         <item name="color_statusBar">@color/warm_heart_red</item>
         <item name="color_statusBar_read">@color/color_black_1d1d1c</item>
 
@@ -47,7 +48,8 @@
         <item name="cover_bottom_btn_text_color">@color/color_white_ffffff</item>
         <item name="cover_bottom_btn_bg">@drawable/nxh_cover_bottom_btn_bg</item>
         <item name="cover_bottom_btn_selector">@drawable/nxh_cover_bottom_btn_selector</item>
-        <item name="cover_bottom_btn_text_selector">@drawable/nxh_cover_bottom_btn_text_selector</item>
+        <item name="cover_bottom_btn_text_selector">@drawable/nxh_cover_bottom_btn_text_selector
+        </item>
         <item name="cover_bottom_bg_color">@color/color_white_ffffff</item>
         <item name="cover_bottom_btn_remove_bg">@drawable/nxh_cover_bottom_btn_remove_bg</item>
         <item name="cover_bottom_btn_add_bg">@drawable/nxh_cover_bottom_btn_add_bg</item>
@@ -74,15 +76,20 @@
         <item name="bookshelf_last_chapter_text_color">@color/color_gray_777777</item>
         <item name="bookshelf_last_chapter_text_color_1">@color/color_gray_aeaeae</item>
         <item name="bookshelf_book_unread_text_color">@color/warm_heart_red</item>
-         <item name="bookshelf_divider_1">@color/color_gray_e8e8e8</item>
+        <item name="bookshelf_divider_1">@color/color_gray_e8e8e8</item>
         <item name="bookshelf_book_unread_tip">@mipmap/nxh_bookshelf_mark_unread</item>
         <item name="bookshelf_update_time_text_color">@color/color_gray_959595</item>
         <item name="bookshelf_book_status_finish">@mipmap/nxh_bookshelf_book_status_finish</item>
-        <item name="bookshelf_book_status_update_2">@mipmap/night_bookshelf_book_status_update_2</item>
+        <item name="bookshelf_book_status_update_2">@mipmap/night_bookshelf_book_status_update_2
+        </item>
         <item name="bookshelf_book_status_update">@mipmap/nxh_bookshelf_book_status_update</item>
-        <item name="bookshelf_delete_cancel_text_color">@drawable/nxh_bookshelf_delete_cancel_text_color</item>
+        <item name="bookshelf_delete_cancel_text_color">
+            @drawable/nxh_bookshelf_delete_cancel_text_color
+        </item>
         <item name="bookshelf_delete_cancel_bg">@drawable/nxh_bookshelf_delete_cancel_bg</item>
-        <item name="bookshelf_delete_submit_text_color">@drawable/nxh_bookshelf_delete_submit_text_color</item>
+        <item name="bookshelf_delete_submit_text_color">
+            @drawable/nxh_bookshelf_delete_submit_text_color
+        </item>
         <item name="bookshelf_delete_submit_bg">@drawable/nxh_bookshelf_delete_submit_bg</item>
         <item name="bookshelf_divider">@color/color_gray_e8e8e8</item>
         <item name="bookshelf_book_cover_default">@mipmap/bookshelf_book_cover_default</item>
@@ -95,12 +102,14 @@
         <item name="bookshelf_status_update_text_color">@color/color_red_f13435</item>
         <item name="bookshelf_status_finish_text_color">@color/color_blue_1f83ff</item>
 
-        <item name="bookshelf_download_floating_btn">@mipmap/night_bookshelf_downlaod_floating_btn</item>
+        <item name="bookshelf_download_floating_btn">@mipmap/night_bookshelf_downlaod_floating_btn
+        </item>
         <!--书架页底部-->
         <item name="home_bottom_tab_bg">@color/color_gray_fafafa</item>
         <item name="home_bottom_tab_divider">@color/color_gray_e8e8e8</item>
         <item name="home_bottom_tab_text_size">@dimen/dimen_text_10</item>
-        <item name="home_bottom_tab_text_color">@drawable/nxh_home_bottom_tab_text_color_selector</item>
+        <item name="home_bottom_tab_text_color">@drawable/nxh_home_bottom_tab_text_color_selector
+        </item>
         <item name="home_bottom_tab_select_bookshelf">@drawable/nxh_home_tab_select_bookshelf</item>
         <item name="home_bottom_tab_select_recommend">@drawable/nxh_home_tab_select_recommend</item>
         <item name="home_bottom_tab_select_ranking">@drawable/nxh_home_tab_select_ranking</item>
@@ -158,7 +167,8 @@
         <item name="dialog_cancel_color">@drawable/nxh_dialog_cancel_selector</item>
         <item name="dialog_confirm_color">@drawable/nxh_dialog_confirm_selector</item>
         <item name="dialog_feedback_submit">@drawable/nxh_dialog_feedback_submit</item>
-        <item name="dialog_feedback_text_selector">@drawable/nxh_dialog_feedback_text_selector</item>
+        <item name="dialog_feedback_text_selector">@drawable/nxh_dialog_feedback_text_selector
+        </item>
         <item name="dialog_btn_left_selector">@drawable/nxh_dialog_btn_left_selector</item>
         <item name="dialog_download_confirm_text_color">@color/warm_heart_red</item>
         <item name="dialog_btn_right_selector">@drawable/nxh_dialog_btn_right_selector</item>
@@ -209,7 +219,7 @@
         <item name="setting_userid_font_color">@color/color_white</item>
         <item name="setting_logout_font_color">@color/warm_heart_red</item>
         <item name="setting_logout_background">@drawable/nxh_setting_logout_background</item>
-    
+
         <!--login-->
         <item name="login_layout_background">@color/color_white_ffffff</item>
         <item name="login_btn_qq">@mipmap/nxh_login_btn_qq</item>
@@ -223,10 +233,15 @@
 
         <!--阅读页-->
         <item name="readsetting_selector">@drawable/nxh_readsetting_selector</item>
-        <item name="read_liner_space_0_2_selector">@drawable/nxh_read_liner_space_0_2_selector</item>
-        <item name="read_liner_space_default_selector">@drawable/nxh_read_liner_space_default_selector</item>
-        <item name="read_liner_space_1_0_selector">@drawable/nxh_read_liner_space_1_0_selector</item>
-        <item name="read_liner_space_1_5_selector">@drawable/nxh_read_liner_space_1_5_selector</item>
+        <item name="read_liner_space_0_2_selector">@drawable/nxh_read_liner_space_0_2_selector
+        </item>
+        <item name="read_liner_space_default_selector">
+            @drawable/nxh_read_liner_space_default_selector
+        </item>
+        <item name="read_liner_space_1_0_selector">@drawable/nxh_read_liner_space_1_0_selector
+        </item>
+        <item name="read_liner_space_1_5_selector">@drawable/nxh_read_liner_space_1_5_selector
+        </item>
         <item name="read_light_check">@mipmap/nxh_readsetting_check</item>
         <item name="read_light_uncheck">@mipmap/nxh_readsetting_uncheck</item>
         <item name="read_bg_default_selector">@drawable/nxh_read_bg_default_selector</item>
@@ -263,8 +278,11 @@
         <!--缓存页-->
         <item name="download_manager_bottom_menu_bg">@color/color_gray_fafafa</item>
         <item name="download_manager_lv_bg_color">@color/color_white_fafafa</item>
-        <item name="download_manager_progress_main">@drawable/nxh_down_manager_progressbar_main</item>
-        <item name="download_manager_progress_second">@drawable/nxh_down_manager_progressbar_second</item>
+        <item name="download_manager_progress_main">@drawable/nxh_down_manager_progressbar_main
+        </item>
+        <item name="download_manager_progress_second">
+            @drawable/nxh_down_manager_progressbar_second
+        </item>
         <item name="download_manager_book_name_color">@color/color_gray_323232</item>
         <item name="download_manager_other_tag_color">@color/color_gray_838181</item>
         <item name="download_pause">@mipmap/nxh_icon_download_nostart</item>
@@ -281,9 +299,11 @@
 
         <!--书末页-->
         <item name="book_end_btn_bg_bookshelf">@drawable/nxh_book_end_btn_selector_bookshelf</item>
-        <item name="book_end_btn_text_bookshelf">@drawable/nxh_book_end_text_selector_bookshelf</item>
+        <item name="book_end_btn_text_bookshelf">@drawable/nxh_book_end_text_selector_bookshelf
+        </item>
         <item name="book_end_btn_bg_bookstore">@drawable/nxh_book_end_btn_selector_bookstore</item>
-        <item name="book_end_btn_text_bookstore">@drawable/nxh_book_end_text_selector_bookstore</item>
+        <item name="book_end_btn_text_bookstore">@drawable/nxh_book_end_text_selector_bookstore
+        </item>
 
-       </style>
+    </style>
 </resources>

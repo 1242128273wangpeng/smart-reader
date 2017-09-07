@@ -50,7 +50,7 @@
             android:layout_above="@+id/reading_foot_options"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true">
-    
+
         <TextView
                 android:id="@+id/novel_jump_previous"
                 android:layout_width="wrap_content"
@@ -63,7 +63,7 @@
                 android:text="@string/novel_previous_chapter"
                 android:textColor="@drawable/read_option_txt_alpha_click_color"
                 android:textSize="@dimen/text_small"/>
-    
+
         <SeekBar
                 android:id="@+id/novel_jump_progress"
                 android:layout_width="match_parent"
@@ -78,7 +78,7 @@
                 android:progressDrawable="@drawable/read_option_progress_brightness"
                 android:splitTrack="false"
                 android:thumb="@drawable/read_option_seekbar_slider"/>
-    
+
         <TextView
                 android:id="@+id/novel_jump_next"
                 android:layout_width="wrap_content"
@@ -110,7 +110,7 @@
             android:gravity="center_vertical"
             android:background="@color/read_option_bg"
             tools:ignore="DisableBaselineAlignment,UselessParent">
-    
+
         <RelativeLayout
                 android:id="@+id/novel_catalog"
                 android:layout_width="wrap_content"
@@ -137,7 +137,7 @@
                     android:textSize="@dimen/text_small"
                     android:clickable="false"
                     android:focusable="false"/>
-    
+
             <ImageButton
                     android:id="@+id/ibtn_catalog"
                     android:layout_above="@+id/txt_catalog"
@@ -152,7 +152,7 @@
                     android:duplicateParentState="true"
                     android:src="@drawable/read_option_catalog_selector"/>
         </RelativeLayout>
-    
+
         <RelativeLayout
                 android:id="@+id/novel_night"
                 android:layout_width="wrap_content"
@@ -162,7 +162,7 @@
                 android:orientation="vertical"
                 android:layout_centerHorizontal="true"
                 android:layout_marginRight="20dp">
-        
+
             <TextView
                     android:id="@+id/txt_night"
                     android:layout_width="wrap_content"
@@ -178,7 +178,7 @@
                     android:textSize="@dimen/text_small"
                     android:clickable="false"
                     android:focusable="false"/>
-        
+
             <ImageButton
                     android:id="@+id/ibtn_night"
                     android:layout_above="@+id/txt_night"
@@ -219,7 +219,7 @@
                     android:textSize="@dimen/text_small"
                     android:clickable="false"
                     android:focusable="false"/>
-    
+
             <ImageButton
                     android:id="@+id/ibtn_settting"
                     android:layout_above="@+id/txt_setting"
@@ -235,5 +235,5 @@
                     android:src="@drawable/read_option_setting_selector"/>
         </RelativeLayout>
     </RelativeLayout>
-    
+
 </RelativeLayout>

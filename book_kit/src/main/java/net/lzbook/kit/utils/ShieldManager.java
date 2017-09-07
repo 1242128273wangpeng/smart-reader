@@ -1,7 +1,5 @@
 package net.lzbook.kit.utils;
 
-import android.content.Context;
-
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
@@ -10,22 +8,21 @@ import com.amap.api.location.AMapLocationListener;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 
+import android.content.Context;
+
 /**
  * 屏蔽管理类
  */
 public class ShieldManager {
 
     private static final String TAG = ShieldManager.class.getSimpleName();
-
-    private Context context;
     //声明mLocationOption对象
     public AMapLocationClientOption mLocationOption = null;
-
     //声明AMapLocationClient类对象
     public AMapLocationClient mLocationClient = null;
-    //声明定位回调监听器
-
     public SharedPreferencesUtils sharedPreferencesUtils;
+    //声明定位回调监听器
+    private Context context;
     public AMapLocationListener mLocationListener = new AMapLocationListener() {
         @Override
         public void onLocationChanged(AMapLocation aMapLocation) {
@@ -46,7 +43,7 @@ public class ShieldManager {
                     stopAchieveUserLocation();
                 } else {
                     //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
-                    AppLog.e("AmapError","location Error, ErrCode:" + aMapLocation.getErrorCode() + ", errInfo:" + aMapLocation.getErrorInfo());
+                    AppLog.e("AmapError", "location Error, ErrCode:" + aMapLocation.getErrorCode() + ", errInfo:" + aMapLocation.getErrorInfo());
                 }
             }
             try {
@@ -58,16 +55,18 @@ public class ShieldManager {
             }
         }
     };
+
+    public ShieldManager(Context context, SharedPreferencesUtils sharedPreferencesUtils) {
+        this.context = context;
+        this.sharedPreferencesUtils = sharedPreferencesUtils;
+    }
+
     private void initBook() {
         LoadDataManager loadDataManager = new LoadDataManager(context);
         if (!sharedPreferencesUtils.getBoolean(Constants.ADD_DEFAULT_BOOKS)) {
             // 首次安装新用户添加默认书籍
             loadDataManager.addDefaultBooks();
         }
-    }
-    public ShieldManager(Context context,SharedPreferencesUtils sharedPreferencesUtils) {
-        this.context = context;
-        this.sharedPreferencesUtils = sharedPreferencesUtils;
     }
 
 //    //获取书籍屏蔽、阅读页屏蔽

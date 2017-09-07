@@ -91,42 +91,58 @@ public class DownloadService extends Service {
 
     private static final String BOOK_ID_PARAM = "{book_id}";
     private static final String BOOK_SOURCE_ID_PARAM = "{book_source_id}";
+    private static final int ntfId = "小说离线缓存".hashCode();
+    // 单次章节下载量
+    private static final int DOWN_SIZE = 10;
+    private static final int MAX_SIZE = 1000;
+    private static BlockingLinkedHashMap<String, BookTask> mTaskQueue;
+    boolean isShown = false;
+    Handler uiHandler = new Handler() {
 
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 0:
+                    Toast.makeText(getApplicationContext(), "空间不足", Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+    Context uiContext;
     private String TAG = "DownloadService";
     private ExecutorService executor;
     private Handler handler = new Handler();
     private MyBinder binder;
     private NotificationManager nftmgr = null;
     private NotificationManager notificationManager;
-    private static final int ntfId = "小说离线缓存".hashCode();
     private BookTask curTask;
-    private static BlockingLinkedHashMap<String, BookTask> mTaskQueue;
-
-    // 单次章节下载量
-    private static final int DOWN_SIZE = 10;
-    private static final int MAX_SIZE = 1000;
     private int progress = 0;
     private int down_num = 0;
     private long notifyTime = 0;
     private String curBookName;
     private BookDaoHelper mBookDaoHelper;
-
     private RequestFactory requestFactory;
     private HashMap<String, RequestItem> downloadRequestItem = new HashMap<>();
     private WeakReference<OnDownloadListener> downloadListenerRef;
     private RequestExecutorDefault.RequestChaptersListener onRequestChaptersListener;
+    private int downPosition = 0;
 
-    private class BackgroundThreadFactory implements ThreadFactory {
-        public Thread newThread(Runnable r) {
-            Thread t = new Thread(r);
-            t.setPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
-            return t;
-        }
-    }
-
-    public class MyBinder extends Binder {
-        public DownloadService getService() {
-            return DownloadService.this;
+    /**
+     * 清除缓存之后，将下载任务的状态置为未启动。
+     */
+    public static void clearTask(String book_id) {
+        //        BaseBookHelper.delDownIndex(this,book_id);
+        BookTask bookTask = mTaskQueue.get(book_id);
+        if (bookTask != null) {
+            bookTask.state = DownloadState.NOSTART;
+            bookTask.isAutoState = false;
+            bookTask.startSequence = 0;
+            if (bookTask != null && bookTask.cacheLoader != null) {
+                bookTask.cacheLoader.delete();
+            }
         }
     }
 
@@ -227,8 +243,6 @@ public class DownloadService extends Service {
             }
         }
     }
-
-    boolean isShown = false;
 
     public void showAlert() {
         if (isShown || !isOffLineDowning()) {
@@ -370,22 +384,6 @@ public class DownloadService extends Service {
             }
         }
         updateTask();
-    }
-
-    /**
-     * 清除缓存之后，将下载任务的状态置为未启动。
-     */
-    public static void clearTask(String book_id) {
-        //        BaseBookHelper.delDownIndex(this,book_id);
-        BookTask bookTask = mTaskQueue.get(book_id);
-        if (bookTask != null) {
-            bookTask.state = DownloadState.NOSTART;
-            bookTask.isAutoState = false;
-            bookTask.startSequence = 0;
-            if (bookTask != null && bookTask.cacheLoader != null) {
-                bookTask.cacheLoader.delete();
-            }
-        }
     }
 
     /*
@@ -762,9 +760,6 @@ public class DownloadService extends Service {
         return chapterMap;
     }
 
-
-    private int downPosition = 0;
-
     private void downChapter(final ArrayList<Chapter> chapterList, final BookTask task, final BookChapterDao bookChapterDao) {
         // 如果目录下载失败，直接return
         if (chapterList != null && chapterList.size() > 0) {
@@ -882,7 +877,7 @@ public class DownloadService extends Service {
                                             .book_source_id);
                                     String url = UrlUtils.buildUrl(uri, new HashMap<String, String>());
 
-                                    if(task.state != DownloadState.DOWNLOADING){
+                                    if (task.state != DownloadState.DOWNLOADING) {
                                         notificationManager.cancel(ntfId);
                                         curTask = null;
                                         return null;
@@ -890,7 +885,7 @@ public class DownloadService extends Service {
 
                                     String response = getHttpDataString(url);
 
-                                    if(task.state != DownloadState.DOWNLOADING){
+                                    if (task.state != DownloadState.DOWNLOADING) {
                                         notificationManager.cancel(ntfId);
                                         curTask = null;
                                         return null;
@@ -1187,21 +1182,6 @@ public class DownloadService extends Service {
         updateTask();
     }
 
-    Handler uiHandler = new Handler() {
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case 0:
-                    Toast.makeText(getApplicationContext(), "空间不足", Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
-
     /**
      * 下载某本小说
      * <p/>
@@ -1275,18 +1255,12 @@ public class DownloadService extends Service {
 
     }
 
-    Context uiContext;
-
     public void setUiContext(Context context) {
         uiContext = context;
     }
 
     public void setOnDownloadListener(OnDownloadListener downloadListener) {
         downloadListenerRef = new WeakReference<>(downloadListener);
-    }
-
-    public interface OnDownloadListener {
-        void notificationCallBack(Notification preNTF, String book_id);
     }
 
     private void showNotification(String bookName, int progress, int index, int total, String book_id) {
@@ -1439,6 +1413,24 @@ public class DownloadService extends Service {
                     break;
                 }
             }
+        }
+    }
+
+    public interface OnDownloadListener {
+        void notificationCallBack(Notification preNTF, String book_id);
+    }
+
+    private class BackgroundThreadFactory implements ThreadFactory {
+        public Thread newThread(Runnable r) {
+            Thread t = new Thread(r);
+            t.setPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
+            return t;
+        }
+    }
+
+    public class MyBinder extends Binder {
+        public DownloadService getService() {
+            return DownloadService.this;
         }
     }
 

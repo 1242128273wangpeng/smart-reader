@@ -7,18 +7,17 @@ import net.lzbook.kit.utils.NotProguard
  * Created by xian on 2017/7/3.
  */
 @NotProguard
-class Search :IAliLogModel(){
+class Search : IAliLogModel() {
     /*CANCEL取消  RETURN返回   COVER进入封面  BOOKSHELF加入书架*/
     enum class OP {
         CANCEL, RETURN, COVER, BOOKSHELF
     }
 
     override val key = "ZN_APP_ANROID_SEARCH"
-    @JSONField(serialize=false, deserialize = false)
+    @JSONField(serialize = false, deserialize = false)
     override val project = "datastatistics"
-    @JSONField(serialize=false, deserialize = false)
+    @JSONField(serialize = false, deserialize = false)
     override val logStore = "statistics_search"
-
 
 
     /*	青果数据,book_id book_source_id 相同*/
@@ -39,7 +38,6 @@ class Search :IAliLogModel(){
     override fun toString(): String {
         return "Search(key='$key', project='$project', logStore='$logStore', device_id=$device_id, udid=$udid, uid=$uid, app_package='$app_package', app_version=$app_version, app_version_code=$app_version_code, app_channel_id=$app_channel_id, book_id=$book_id, book_source_id=$book_source_id, book_code=$book_code, op=$op, s_order=$s_order, cost_time=$cost_time, timestamp=$timestamp, keyword=$keyword)"
     }
-
 
 
 }

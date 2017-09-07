@@ -1,5 +1,7 @@
 package net.lzbook.kit.utils.popup;
 
+import net.lzbook.kit.R;
+
 import android.content.Context;
 import android.view.KeyEvent;
 import android.view.View;
@@ -7,8 +9,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-
-import net.lzbook.kit.R;
 
 
 /**
@@ -90,10 +90,6 @@ public class PopupDeleteCancle extends PopupBase implements View.OnClickListener
         }
     }
 
-    public interface PopupCancleclickListener {
-        void clickCancle(View collectView);
-    }
-
     public void setPopupCancleClickListener(PopupCancleclickListener l) {
         this.cancleclickListener = l;
     }
@@ -102,5 +98,9 @@ public class PopupDeleteCancle extends PopupBase implements View.OnClickListener
     @Override
     public void changeText(String text) {
         super.changeText(text);
+    }
+
+    public interface PopupCancleclickListener {
+        void clickCancle(View collectView);
     }
 }

@@ -324,9 +324,9 @@ public class StatServiceUtils {
             StatService.onEvent(mContext, "bs_down_m_click_down_from_now", "缓存管理从当前章节缓存点击", 1);
         } else if (type_place == rb_click_add_book_mark_btn) {
             StatService.onEvent(mContext, "rb_click_add_book_mark_btn", "阅读页添加标签点击", 1);
-        } else if(type_place == rb_click_read_head_bookinfo){
+        } else if (type_place == rb_click_read_head_bookinfo) {
             StatService.onEvent(mContext, "rb_click_read_head_bookinfo", "阅读页书籍信息点击", 1);
-        }else if (type_place == rb_click_auto_read_btn) {
+        } else if (type_place == rb_click_auto_read_btn) {
             StatService.onEvent(mContext, "rb_click_auto_read_btn", "阅读页自动阅读点击", 1);
         } else if (type_place == rb_click_fullscreen_read_btn) {
             StatService.onEvent(mContext, "rb_click_fullscreen_read_btn", "阅读页全屏阅读点击", 1);
@@ -342,9 +342,9 @@ public class StatServiceUtils {
             StatService.onEvent(mContext, "rb_click_change_source_btn", "阅读页换源点击", 1);
         } else if (type_place == rb_click_download_btn) {
             StatService.onEvent(mContext, "rb_click_download_btn", "阅读页缓存点击", 1);
-        } else if (type_place == rb_click_read_head_more){
+        } else if (type_place == rb_click_read_head_more) {
             StatService.onEvent(mContext, "rb_click_read_head_more", "阅读更多设置点击", 1);
-        }else if (type_place == rb_click_download_all) {
+        } else if (type_place == rb_click_download_all) {
             StatService.onEvent(mContext, "rb_click_download_all", "阅读页全部缓存点击", 1);
         } else if (type_place == rb_click_download_from_now) {
             StatService.onEvent(mContext, "rb_click_download_from_now", "阅读页从当前章节缓存点击", 1);
@@ -402,7 +402,7 @@ public class StatServiceUtils {
             StatService.onEvent(mContext, "rb_click_flip_page_02", "阅读页翻页模式02点击", 1);
         } else if (type_place == rb_click_flip_page_03) {
             StatService.onEvent(mContext, "rb_click_flip_page_03", "阅读页翻页模式03点击", 1);
-        }else if (type_place == rb_click_flip_page_04) {
+        } else if (type_place == rb_click_flip_page_04) {
             StatService.onEvent(mContext, "rb_click_flip_page_04", "阅读页翻页模式04点击", 1);
         } else if (type_place == rb_click_font_size_bigger) {
             StatService.onEvent(mContext, "rb_click_font_size_bigger", "阅读页加大字号点击", 1);

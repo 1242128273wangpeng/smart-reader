@@ -9,11 +9,11 @@ import net.lzbook.kit.statistic.model.Search
  * Created by xian on 2017/7/3.
  */
 
-fun buildSearch(book: RequestItem, keyword:String, op:Search.OP, useTime:Long):Search{
+fun buildSearch(book: RequestItem, keyword: String, op: Search.OP, useTime: Long): Search {
     val search = Search()
 
     search.book_id = book.book_id
-    search.book_code = if(Constants.QG_SOURCE.equals(book.host)) "1" else "0"
+    search.book_code = if (Constants.QG_SOURCE.equals(book.host)) "1" else "0"
     search.book_source_id = book.book_source_id
 
     search.cost_time = useTime
@@ -23,11 +23,11 @@ fun buildSearch(book: RequestItem, keyword:String, op:Search.OP, useTime:Long):S
     return search
 }
 
-fun buildSearch(book: Book, keyword:String, op:Search.OP,useTime:Long):Search{
+fun buildSearch(book: Book, keyword: String, op: Search.OP, useTime: Long): Search {
     val search = Search()
 
     search.book_id = book.book_id
-    search.book_code = if(Constants.QG_SOURCE.equals(book.site)) "1" else "0"
+    search.book_code = if (Constants.QG_SOURCE.equals(book.site)) "1" else "0"
     search.book_source_id = book.book_source_id
 
     search.cost_time = useTime
@@ -37,7 +37,7 @@ fun buildSearch(book: Book, keyword:String, op:Search.OP,useTime:Long):Search{
     return search
 }
 
-fun buildSearch(keyword:String, op:Search.OP,useTime:Long):Search{
+fun buildSearch(keyword: String, op: Search.OP, useTime: Long): Search {
     val search = Search()
 
 //    search.book_id = book.book_id

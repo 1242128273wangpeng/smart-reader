@@ -45,34 +45,6 @@ public class LoadDataManager {
 
     }
 
-    private class AddDefaultBooksTask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                OtherRequestService.getDefaultBook(context, new VolleyDataService.DataServiceCallBack() {
-
-                    @Override
-                    public void onSuccess(Object result) {
-                        ArrayList<Book> iBooks = (ArrayList<Book>) result;
-                        if (iBooks != null && iBooks.size() > 0) {
-                            sharedPreferencesUtils.putBoolean(Constants.ADD_DEFAULT_BOOKS, true);
-                            EventBus.getDefault().postSticky(new BookEvent(BookEvent.DEFAULTBOOK_UPDATED));
-                        }
-                    }
-
-                    @Override
-                    public void onError(Exception error) {
-
-                    }
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
-
     public void updateShelfBooks() {
 
         UpdateBooksTask updateBooksTask = new UpdateBooksTask();
@@ -99,22 +71,22 @@ public class LoadDataManager {
         builder.append(DataUtil.BOOK_BATCH_URL).append("?" + idBuffer.toString());
 
         String udid = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext());
-        String url = DataUtil.QGBuildUrl(context,builder.toString(), udid, true);
+        String url = DataUtil.QGBuildUrl(context, builder.toString(), udid, true);
         DataService.checkBookUpdate(url, new DataServiceNew.DataServiceCallBack() {
             @Override
             public void onSuccess(Object result) {
-                if (result != null){
+                if (result != null) {
                     BookListMode bookListMode = (BookListMode) result;
-                    AppLog.e("LoadDataManager.checkBookUpdate","booklistMode.success"+bookListMode.success);
-                    for (com.quduquxie.bean.Book book : bookListMode.bookList){
-                        AppLog.e("LoadDataManager.checkBookUpdate","book信息："+book.id_book+"/"+book.name+"/"+book.attribute_book);
-                        for (int i = 0; i < qgBooks.size(); i ++){
+                    AppLog.e("LoadDataManager.checkBookUpdate", "booklistMode.success" + bookListMode.success);
+                    for (com.quduquxie.bean.Book book : bookListMode.bookList) {
+                        AppLog.e("LoadDataManager.checkBookUpdate", "book信息：" + book.id_book + "/" + book.name + "/" + book.attribute_book);
+                        for (int i = 0; i < qgBooks.size(); i++) {
 
                             Book qgBook = qgBooks.get(i);
-                            if (qgBook.book_id.equals(book.id_book)){
-                                if ("finish".equals(book.attribute_book)){
+                            if (qgBook.book_id.equals(book.id_book)) {
+                                if ("finish".equals(book.attribute_book)) {
                                     qgBook.status = 2;
-                                }else if ("serialize".equals(book.attribute_book)){
+                                } else if ("serialize".equals(book.attribute_book)) {
                                     qgBook.status = 1;
                                 }
                                 if (bookDaoHelper.updateBook(qgBook)) {
@@ -134,6 +106,66 @@ public class LoadDataManager {
                 error.printStackTrace();
             }
         });
+    }
+
+    public void startRequestDynamic(DynamicServiceCallBack cb) {
+
+        UpdateDynamicParTask addDefaultBooksTask = new UpdateDynamicParTask();
+        addDefaultBooksTask.execute(cb);
+
+    }
+
+    public void submitBookError(ChapterErrorBean chapterErrorBean) {
+
+        ErrorSubmitTask errorSubmitTask = new ErrorSubmitTask();
+        errorSubmitTask.execute(chapterErrorBean);
+
+    }
+
+    /**
+     * 动态参数请求的回调
+     **/
+    public interface DynamicServiceCallBack {
+        /**
+         * 成功的回调
+         */
+        void onDynamicReceived(JSONObject result);
+
+        /**
+         * 失败的回调,包含以下情况
+         * 1.请求超时
+         * 2.返回空数据
+         * 3.返回数据中success为false
+         */
+        void onError(Exception error);
+    }
+
+    private class AddDefaultBooksTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                OtherRequestService.getDefaultBook(context, new VolleyDataService.DataServiceCallBack() {
+
+                    @Override
+                    public void onSuccess(Object result) {
+                        ArrayList<Book> iBooks = (ArrayList<Book>) result;
+                        if (iBooks != null && iBooks.size() > 0) {
+                            sharedPreferencesUtils.putBoolean(Constants.ADD_DEFAULT_BOOKS, true);
+                            EventBus.getDefault().postSticky(new BookEvent(BookEvent.DEFAULTBOOK_UPDATED));
+                        }
+                    }
+
+                    @Override
+                    public void onError(Exception error) {
+
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 
     private class UpdateBooksTask extends AsyncTask<Void, Void, Void> {
@@ -163,35 +195,6 @@ public class LoadDataManager {
         }
     }
 
-    public void startRequestDynamic(DynamicServiceCallBack cb) {
-
-        UpdateDynamicParTask addDefaultBooksTask = new UpdateDynamicParTask();
-        addDefaultBooksTask.execute(cb);
-
-    }
-
-    /**
-     * 动态参数请求的回调
-     **/
-    public interface DynamicServiceCallBack {
-        /**
-         * 成功的回调
-         *
-         * @param result
-         */
-        void onDynamicReceived(JSONObject result);
-
-        /**
-         * 失败的回调,包含以下情况
-         * 1.请求超时
-         * 2.返回空数据
-         * 3.返回数据中success为false
-         *
-         * @param error
-         */
-        void onError(Exception error);
-    }
-
     private class UpdateDynamicParTask extends AsyncTask<DynamicServiceCallBack, Void, Void> {
 
         @Override
@@ -201,8 +204,8 @@ public class LoadDataManager {
 
                     @Override
                     public void onSuccess(final Object result) {
-                        if (result != null){
-                            if (params[0] != null){
+                        if (result != null) {
+                            if (params[0] != null) {
                                 new Thread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -210,8 +213,8 @@ public class LoadDataManager {
                                     }
                                 }).start();
                             }
-                        }else {
-                            if (params[0] != null){
+                        } else {
+                            if (params[0] != null) {
                                 params[0].onError(null);
                             }
                         }
@@ -220,26 +223,19 @@ public class LoadDataManager {
 
                     @Override
                     public void onError(Exception error) {
-                        if (params[0] != null){
+                        if (params[0] != null) {
                             params[0].onError(error);
                         }
                     }
                 });
             } catch (Exception e) {
-                if (params[0] != null){
+                if (params[0] != null) {
                     params[0].onError(null);
                 }
                 e.printStackTrace();
             }
             return null;
         }
-    }
-
-    public void submitBookError(ChapterErrorBean chapterErrorBean) {
-
-        ErrorSubmitTask errorSubmitTask = new ErrorSubmitTask();
-        errorSubmitTask.execute(chapterErrorBean);
-
     }
 
     private class ErrorSubmitTask extends AsyncTask<ChapterErrorBean, Void, Void> {

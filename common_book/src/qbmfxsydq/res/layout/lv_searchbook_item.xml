@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:background="?attr/bookshelf_item_press_bg">
+              android:layout_width="match_parent"
+              android:layout_height="50dp"
+              android:gravity="center_vertical"
+              android:orientation="horizontal"
+              android:paddingLeft="16dp"
+              android:paddingRight="16dp"
+              android:background="?attr/bookshelf_item_press_bg">
     <TextView
-        android:id="@+id/tv_search_item_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="?attr/search_suggest_item_text_color_1"
-        android:textSize="16sp"/>
+            android:id="@+id/tv_search_item_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/search_suggest_item_text_color_1"
+            android:textSize="16sp"/>
     <TextView
-        android:id="@+id/tv_search_item_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="?attr/search_suggest_item_text_color_2"
-        android:textSize="16sp"/>
+            android:id="@+id/tv_search_item_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/search_suggest_item_text_color_2"
+            android:textSize="16sp"/>
 
 </LinearLayout>

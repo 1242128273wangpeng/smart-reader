@@ -1,15 +1,10 @@
 package net.lzbook.kit.request.own;
 
-import android.content.Context;
-import android.os.Handler;
-import android.text.TextUtils;
-
-import net.lzbook.kit.data.bean.ChapterErrorBean;
-import net.xxx.yyy.go.spider.URLBuilderIntterface;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.BookUpdate;
 import net.lzbook.kit.data.bean.Chapter;
+import net.lzbook.kit.data.bean.ChapterErrorBean;
 import net.lzbook.kit.data.bean.RequestItem;
 import net.lzbook.kit.data.db.BookChapterDao;
 import net.lzbook.kit.data.db.BookDaoHelper;
@@ -21,8 +16,13 @@ import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.MurmurHash;
 import net.lzbook.kit.utils.Tools;
+import net.xxx.yyy.go.spider.URLBuilderIntterface;
 
 import org.json.JSONException;
+
+import android.content.Context;
+import android.os.Handler;
+import android.text.TextUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -373,15 +373,15 @@ public class OtherRequestService extends VolleyDataService {
      */
     public static void sendChapterErrorData(ChapterErrorBean chapterErrorBean) {
         HashMap<String, String> data = new HashMap<>();
-        data.put("bookSourceId",chapterErrorBean.bookSourceId);
-        data.put("bookName",chapterErrorBean.bookName);
-        data.put("author",chapterErrorBean.author);
-        data.put("bookChapterId",chapterErrorBean.bookChapterId);
-        data.put("chapterId",chapterErrorBean.chapterId);
-        data.put("chapterName",chapterErrorBean.chapterName);
-        data.put("serial",String.valueOf(chapterErrorBean.serial));
-        data.put("host",chapterErrorBean.host);
-        data.put("type",String.valueOf(chapterErrorBean.type));
+        data.put("bookSourceId", chapterErrorBean.bookSourceId);
+        data.put("bookName", chapterErrorBean.bookName);
+        data.put("author", chapterErrorBean.author);
+        data.put("bookChapterId", chapterErrorBean.bookChapterId);
+        data.put("chapterId", chapterErrorBean.chapterId);
+        data.put("chapterName", chapterErrorBean.chapterName);
+        data.put("serial", String.valueOf(chapterErrorBean.serial));
+        data.put("host", chapterErrorBean.host);
+        data.put("type", String.valueOf(chapterErrorBean.type));
 
         String uri = URLBuilderIntterface.CHAPTER_ERROR_FEEDBACK;
         String url = UrlUtils.buildUrl(uri, data);
@@ -391,7 +391,6 @@ public class OtherRequestService extends VolleyDataService {
 
     /**
      * 发送用户基础数据
-     * @param jsonData
      */
     public static void sendUserBaseData(String jsonData) {
         if (Constants.dy_ad_new_request_switch) {
@@ -403,7 +402,6 @@ public class OtherRequestService extends VolleyDataService {
 
     /**
      * 发送用户广告场景数据
-     * @param jsonData
      */
     public static void sendAdScentData(String jsonData) {
         if (Constants.dy_ad_new_request_switch) {

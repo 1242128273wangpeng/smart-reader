@@ -1,9 +1,9 @@
 package net.lzbook.kit.data.ormlite.helper;
 
-import android.content.Context;
-
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.ormlite.bean.HistoryInfo;
+
+import android.content.Context;
 
 import java.util.List;
 

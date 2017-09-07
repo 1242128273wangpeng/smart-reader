@@ -14,14 +14,14 @@ import android.view.animation.Interpolator;
 /**
  */
 public class AnimationHelper {
-   static int width = 0;
-    static  int height = 0;
-
-    static private SmoothScrollRunnable currentSmoothScrollRunnable;
-    static  private final Handler handler = new Handler();
+    static private final Handler handler = new Handler();
     private static final long DELAY_TIME = 200;
+    static int width = 0;
+    static int height = 0;
+    static private SmoothScrollRunnable currentSmoothScrollRunnable;
+
     @SuppressLint("NewApi")
-    public static void init(Context context){
+    public static void init(Context context) {
 
         WindowManager wm = (WindowManager) context
                 .getSystemService(Context.WINDOW_SERVICE);
@@ -39,17 +39,24 @@ public class AnimationHelper {
 
     }
 
-    public  static final void smoothScrollTo(View view,int y) {
+    public static final void smoothScrollTo(View view, int y) {
         if (null != currentSmoothScrollRunnable) {
             currentSmoothScrollRunnable.stop();
         }
 
         if (view.getScrollY() != y) {
-            currentSmoothScrollRunnable = new SmoothScrollRunnable(view,handler, view.getScrollY(), y);
+            currentSmoothScrollRunnable = new SmoothScrollRunnable(view, handler, view.getScrollY(), y);
             handler.post(currentSmoothScrollRunnable);
         }
     }
-    static  final class SmoothScrollRunnable implements Runnable {
+
+    protected static final void setHeaderScroll(View view, int y) {
+        view.scrollTo(0, y);
+    }
+
+    ;
+
+    static final class SmoothScrollRunnable implements Runnable {
 
         static final int ANIMATION_DURATION_MS = 230;// FIXME
         static final int ANIMATION_FPS = 1000 / 60;
@@ -64,7 +71,7 @@ public class AnimationHelper {
         private int currentY = -1;
         private View view;
 
-        public SmoothScrollRunnable(View view,Handler handler, int fromY, int toY) {
+        public SmoothScrollRunnable(View view, Handler handler, int fromY, int toY) {
             this.view = view;
             this.handler = handler;
             this.scrollFromY = fromY;
@@ -94,7 +101,7 @@ public class AnimationHelper {
                 final int deltaY = Math.round((scrollFromY - scrollToY)
                         * interpolator.getInterpolation(normalizedTime / 1000f));
                 this.currentY = scrollFromY - deltaY;
-                setHeaderScroll(view,currentY);
+                setHeaderScroll(view, currentY);
             }
 
             // If we're not at the target Y, keep going...
@@ -107,9 +114,6 @@ public class AnimationHelper {
             this.continueRunning = false;
             this.handler.removeCallbacks(this);
         }
-    };
-    protected  static final void setHeaderScroll(View view,int y) {
-        view.scrollTo(0, y);
     }
 
 }

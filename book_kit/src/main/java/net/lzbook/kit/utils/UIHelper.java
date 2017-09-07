@@ -25,18 +25,17 @@ public class UIHelper {
 //        new Thread() {
 //            @Override
 //            public void run() {
-                Message msg = new Message();
-                try {
-                    BookDaoHelper.getInstance(BaseBookApplication.getGlobalContext()).deleteAllBook();
-                    DataCleanManager.cleanInternalCache(BaseBookApplication.getGlobalContext());
+        Message msg = new Message();
+        try {
+            BookDaoHelper.getInstance(BaseBookApplication.getGlobalContext()).deleteAllBook();
+            DataCleanManager.cleanInternalCache(BaseBookApplication.getGlobalContext());
 
 
-
-                    msg.what = 1;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    msg.what = -1;
-                }
+            msg.what = 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            msg.what = -1;
+        }
 //                handler.sendMessage(msg);
 //            }
 //        }.start();

@@ -83,71 +83,51 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
                 .NotificationCallback, BookShelfRemoveHelper.OnMenuDeleteClickListener, BookShelfRemoveHelper.OnMenuStateListener, FrameBookHelper
                 .BookChanged, BookShelfReAdapter.ShelfItemClickListener, BookShelfReAdapter.ShelfItemLongClickListener {
 
-    private static String TAG = BookShelfFragment.class.getSimpleName();
     public static final String ACTION_CHKHIDE = AppUtils.getPackageName();
-
-    private WeakReference<Activity> weakReference;
-    private Context mContext;
-    private BaseFragment.FragmentCallback fragmentCallback;
-    private int versionCode;
-
-    //书籍屏蔽相关字段
-    protected SensitiveWords bookSensitiveWord;
-    private List<String> bookSensitiveWords;
-    private boolean noBookSensitive = false;
-
-    //自有广告管理类
-    private OwnNativeAdManager ownNativeAdManager;
-    ImageView download_bookshelf;
-
-    public View bookshelf_content;
-    public RelativeLayout bookshelf_main;
-    private LinearLayout bookshelf_empty;
-
-    public BookShelfRemoveHelper bookShelfRemoveHelper;
-    public BookShelfReAdapter bookShelfReAdapter;
-    private ArrayList<Book> bookOnLines;
-
-    private ArrayList<String> update_table;
-
-    private FrameBookHelper frameBookHelper;
-    private BookDaoHelper bookDaoHelper;
-
-    private boolean isShowAD = false;
-
     private static final int NO_BOOK_DATA_VIEW_SHOW = 0x14;
     private final static int NO_BOOK_DATA_VIEW_GONE = NO_BOOK_DATA_VIEW_SHOW + 1;
     private static final int LONG_PRESS_EDIT = NO_BOOK_DATA_VIEW_GONE + 1;
     private final static int REFRESH_DATA_AFTER_DELETE = LONG_PRESS_EDIT + 1;
-
     private static final int PULL_REFRESH_DELAY = 30 * 1000;
-
-
-    private boolean isGetAdEvent;
-    private long bookrack_update_time;
-
-    private long load_data_finish_time;
-
-    public ArrayList<Book> iBookList = new ArrayList<>();
-    private MyDialog deleteDialog;
-
-    boolean isUpdateFinish = false;
-
-    ArrayList<Book> bookCollect_checked;
-
-
+    private static String TAG = BookShelfFragment.class.getSimpleName();
     private final UiHandler handler = new UiHandler(this);
-    private MyDialog mDialog;
-    private SharedPreferences sharedPreferences;
-
-    private ArrayList<Book> esBookOnlineList = new ArrayList<>();
-
+    public View bookshelf_content;
+    public RelativeLayout bookshelf_main;
+    public BookShelfRemoveHelper bookShelfRemoveHelper;
+    public BookShelfReAdapter bookShelfReAdapter;
+    public ArrayList<Book> iBookList = new ArrayList<>();
     public RelativeLayout book_shelf_loading;
     public ProgressBar loading_progress;
     public ProgressBar loading_progress_bar;
     public TextView loading_message;
-    private ImageView bookshelf_empty_btn;
     public SuperSwipeRefreshLayout swipeRefreshLayout;
+    //书籍屏蔽相关字段
+    protected SensitiveWords bookSensitiveWord;
+    ImageView download_bookshelf;
+    boolean isUpdateFinish = false;
+    ArrayList<Book> bookCollect_checked;
+    private WeakReference<Activity> weakReference;
+    private Context mContext;
+    private BaseFragment.FragmentCallback fragmentCallback;
+    private int versionCode;
+    private List<String> bookSensitiveWords;
+    private boolean noBookSensitive = false;
+    //自有广告管理类
+    private OwnNativeAdManager ownNativeAdManager;
+    private LinearLayout bookshelf_empty;
+    private ArrayList<Book> bookOnLines;
+    private ArrayList<String> update_table;
+    private FrameBookHelper frameBookHelper;
+    private BookDaoHelper bookDaoHelper;
+    private boolean isShowAD = false;
+    private boolean isGetAdEvent;
+    private long bookrack_update_time;
+    private long load_data_finish_time;
+    private MyDialog deleteDialog;
+    private MyDialog mDialog;
+    private SharedPreferences sharedPreferences;
+    private ArrayList<Book> esBookOnlineList = new ArrayList<>();
+    private ImageView bookshelf_empty_btn;
     private ProgressBar head_pb_view;
     private TextView head_text_view;
     private ImageView head_image_view;
@@ -169,15 +149,15 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //九宫格：quanbennovel 或 mianfeinovel
-        if ("cc.quanbennovel".equals(ACTION_CHKHIDE) || "cc.mianfeinovel".equals(ACTION_CHKHIDE)||"cc.kdqbxs.reader".equals(ACTION_CHKHIDE)){
+        if ("cc.quanbennovel".equals(ACTION_CHKHIDE) || "cc.mianfeinovel".equals(ACTION_CHKHIDE) || "cc.kdqbxs.reader".equals(ACTION_CHKHIDE)) {
             isList = false;
-        }else {
+        } else {
             isList = true;
         }
         mContext = getActivity();
         versionCode = AppUtils.getVersionCode();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        if(!Constants.isHideAD){
+        if (!Constants.isHideAD) {
             ownNativeAdManager = OwnNativeAdManager.getInstance(getActivity());
         }
         initData();
@@ -214,8 +194,8 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             book_shelf_loading.setVisibility(View.GONE);
             loading_progress_bar = (ProgressBar) bookshelf_content.findViewById(R.id.loading_progressbar);
             download_bookshelf = (ImageView) bookshelf_content.findViewById(R.id.fab_goto_down_act);
-           if(download_bookshelf.getVisibility()==View.VISIBLE){
-               isShowDownloadBtn = true;
+            if (download_bookshelf.getVisibility() == View.VISIBLE) {
+                isShowDownloadBtn = true;
                 download_bookshelf.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -335,7 +315,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
                         if (eventBookshelfAd.yqNativeAdInfo != null) {
                             eventBookshelfAd.yqNativeAdInfo.setAvailableTime(System.currentTimeMillis());
                         }
-						adInfoHashMap.put(eventBookshelfAd.position, eventBookshelfAd.yqNativeAdInfo);																				  
+                        adInfoHashMap.put(eventBookshelfAd.position, eventBookshelfAd.yqNativeAdInfo);
                         getBookListData();
                         bookShelfReAdapter.notifyDataSetChanged();
                         AppLog.e(TAG, "notifyDataSetChanged");
@@ -356,7 +336,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         AppLog.e("wyhad1-1", adInfoHashMap.toString());
 
         //长按删除状态下不请求广告
-        if (!isShowAD||bookShelfRemoveHelper.isRemoveMode()) {
+        if (!isShowAD || bookShelfRemoveHelper.isRemoveMode()) {
             return;
         }
         AppLog.e("wyhad1-1", this.isResumed() + "");
@@ -394,14 +374,14 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
 
         for (int i = 0; i < distance; i++) {
             YQNativeAdInfo info;
-            if (adInfoHashMap.containsKey(i+1) && adInfoHashMap.get(i+1) != null && adInfoHashMap.get(i+1).getAdvertisement() != null
-                    && (System.currentTimeMillis() - adInfoHashMap.get(i+1).getAvailableTime() < 3000 || !adInfoHashMap.get(i+1).getAdvertisement().isShowed)) {
-                info = adInfoHashMap.get(i+1);
+            if (adInfoHashMap.containsKey(i + 1) && adInfoHashMap.get(i + 1) != null && adInfoHashMap.get(i + 1).getAdvertisement() != null
+                    && (System.currentTimeMillis() - adInfoHashMap.get(i + 1).getAvailableTime() < 3000 || !adInfoHashMap.get(i + 1).getAdvertisement().isShowed)) {
+                info = adInfoHashMap.get(i + 1);
             } else {
-                info = ownNativeAdManager.getSingleADInfoNew(i+1, NativeInit.CustomPositionName.SHELF_POSITION);
+                info = ownNativeAdManager.getSingleADInfoNew(i + 1, NativeInit.CustomPositionName.SHELF_POSITION);
                 if (info != null) {
                     info.setAvailableTime(System.currentTimeMillis());
-                    adInfoHashMap.put(i+1, info);
+                    adInfoHashMap.put(i + 1, info);
                 }
             }
 
@@ -460,18 +440,18 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     public void onDestroy() {
         super.onDestroy();
 
-        if(BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             BookApplication.getRefWatcher().watch(this);
         }
 
-        if(frameBookHelper!=null){
+        if (frameBookHelper != null) {
             frameBookHelper.recycleCallback();
         }
 
         if (bookOnLines != null) {
             bookOnLines.clear();
         }
-		if (adInfoHashMap != null) {
+        if (adInfoHashMap != null) {
             adInfoHashMap.clear();
         }
     }
@@ -537,29 +517,29 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         if (swipeRefreshLayout != null) {
             swipeRefreshLayout.setOnPullRefreshListener(new SuperSwipeRefreshLayout.OnPullRefreshListener() {
 
-                        @Override
-                        public void onRefresh() {
-                            head_text_view.setText("正在刷新");
-                            head_image_view.setVisibility(View.GONE);
-                            head_pb_view.setVisibility(View.VISIBLE);
-                            checkBookUpdate();
-                        }
+                @Override
+                public void onRefresh() {
+                    head_text_view.setText("正在刷新");
+                    head_image_view.setVisibility(View.GONE);
+                    head_pb_view.setVisibility(View.VISIBLE);
+                    checkBookUpdate();
+                }
 
-                        @Override
-                        public void onPullDistance(int distance) {
-                            // pull distance
-                        }
+                @Override
+                public void onPullDistance(int distance) {
+                    // pull distance
+                }
 
-                        @Override
-                        public void onPullEnable(boolean enable) {
-                            head_pb_view.setVisibility(View.GONE);
-                            head_text_view.setText(enable ? "松开刷新" : "下拉刷新");
-                            head_image_view.setVisibility(View.VISIBLE);
-                            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB ){
-                                head_image_view.setRotation(enable ? 180 : 0);
-                            }
-                        }
-                    });
+                @Override
+                public void onPullEnable(boolean enable) {
+                    head_pb_view.setVisibility(View.GONE);
+                    head_text_view.setText(enable ? "松开刷新" : "下拉刷新");
+                    head_image_view.setVisibility(View.VISIBLE);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                        head_image_view.setRotation(enable ? 180 : 0);
+                    }
+                }
+            });
         }
         if (bookshelf_empty_btn != null) {
             bookshelf_empty_btn.setOnClickListener(new OnClickListener() {
@@ -583,23 +563,23 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             bookShelfReAdapter = new BookShelfReAdapter(getActivity(), iBookList, this, this, isList);
         }
 
-        swipeRefreshLayout = (SuperSwipeRefreshLayout)bookshelf_content.findViewById(R.id.bookshelf_refresh_view);
+        swipeRefreshLayout = (SuperSwipeRefreshLayout) bookshelf_content.findViewById(R.id.bookshelf_refresh_view);
         swipeRefreshLayout.setHeaderViewBackgroundColor(0x00000000);
         swipeRefreshLayout.setHeaderView(createHeaderView());
         swipeRefreshLayout.setTargetScrollWithLayout(true);
 
-        recyclerView = (RecyclerView)bookshelf_content.findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) bookshelf_content.findViewById(R.id.recycler_view);
         recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 12);
-        if (isList){
-            layoutManager = new ShelfGridLayoutManager(mContext,1);
-        }else {
-            layoutManager = new ShelfGridLayoutManager(mContext,3);
+        if (isList) {
+            layoutManager = new ShelfGridLayoutManager(mContext, 1);
+        } else {
+            layoutManager = new ShelfGridLayoutManager(mContext, 3);
             //有分割线的九宫格
-            if (!"cc.quanbennovel".equals(ACTION_CHKHIDE)){
+            if (!"cc.quanbennovel".equals(ACTION_CHKHIDE)) {
                 TypedValue typeColor = new TypedValue();
                 Resources.Theme theme = getActivity().getTheme();
                 theme.resolveAttribute(R.attr.bookshelf_divider, typeColor, true);
-                recyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.BOTH_SET,2, mContext.getResources().getColor(typeColor.resourceId)));
+                recyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.BOTH_SET, 2, mContext.getResources().getColor(typeColor.resourceId)));
             }
         }
         recyclerView.setLayoutManager(layoutManager);
@@ -608,7 +588,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         recyclerView.getItemAnimator().setChangeDuration(0);
         recyclerView.getItemAnimator().setMoveDuration(0);
         recyclerView.getItemAnimator().setRemoveDuration(0);
-        ((SimpleItemAnimator)recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+        ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
         recyclerView.setAdapter(bookShelfReAdapter);
 
     }
@@ -633,7 +613,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             if (!booksOnLine.isEmpty()) {
                 Collections.sort(booksOnLine, new FrameBookHelper.MultiComparator());
                 iBookList.addAll(booksOnLine);
-                if(Constants.dy_shelf_ad_switch && !Constants.isHideAD && ownNativeAdManager != null){
+                if (Constants.dy_shelf_ad_switch && !Constants.isHideAD && ownNativeAdManager != null) {
                     setAdBook(booksOnLine);
                 }
             }
@@ -650,7 +630,6 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             handler.obtainMessage(NO_BOOK_DATA_VIEW_GONE).sendToTarget();
         }
     }
-
 
 
     private void setUpdateState(Book book) {
@@ -770,37 +749,6 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         return "";
     }
 
-    public static class UiHandler extends Handler {
-        private WeakReference<BookShelfFragment> reference;
-
-        UiHandler(BookShelfFragment vpBook) {
-            reference = new WeakReference<>(vpBook);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            BookShelfFragment bookShelfFragment = reference.get();
-            if (bookShelfFragment == null) {
-                return;
-            }
-            switch (msg.what) {
-
-                case NO_BOOK_DATA_VIEW_SHOW:
-                    bookShelfFragment.emptyViewShow();
-                    break;
-                case NO_BOOK_DATA_VIEW_GONE:
-                    bookShelfFragment.emptyViewGone();
-                    break;
-                case LONG_PRESS_EDIT:
-                    bookShelfFragment.longPressEdit();
-                    break;
-                case REFRESH_DATA_AFTER_DELETE:
-                    bookShelfFragment.refreshDataAfterDelete();
-                    break;
-            }
-        }
-    }
-
     private void emptyViewShow() {
         bookshelf_empty.setVisibility(View.VISIBLE);
     }
@@ -826,11 +774,11 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
 
     //打开长按编辑模式时，过滤掉广告
     private void filterAd() {
-            for (int i = 0; i < iBookList.size(); i++) {
-                //若当前的书籍是广告，则长按状态删除广告
-                if(iBookList.get(i).book_type==-2){
-                    iBookList.remove(i);
-                }
+        for (int i = 0; i < iBookList.size(); i++) {
+            //若当前的书籍是广告，则长按状态删除广告
+            if (iBookList.get(i).book_type == -2) {
+                iBookList.remove(i);
+            }
         }
     }
 
@@ -864,7 +812,6 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             BookHelper.goToCoverOrRead(weakReference.get().getApplicationContext(), weakReference.get(), book);
         }
     }
-
 
     /**
      * 消除数据库中更新状态
@@ -910,7 +857,6 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         if (!isUpdateFinish)
             isUpdateFinish = true;
     }
-
 
     protected void onUpdateSuccessToast(BookUpdateResult result) {
         int newsCount = 0;
@@ -959,7 +905,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     @Override
     public void doUpdateBook(CheckNovelUpdateService updateService) {
         Activity activity = weakReference.get();
-        if (updateService != null){
+        if (updateService != null) {
             updateService.setBookUpdateListener((CheckNovelUpdateService.OnBookUpdateListener) activity);
         }
 
@@ -1009,7 +955,6 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             }
         }).start();
     }
-
 
     @Override
     public void onMenuDelete(HashSet<Integer> checked_state) {
@@ -1066,14 +1011,14 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     public void getMenuShownState(boolean state) {
         if (state) {
             swipeRefreshLayout.setPullToRefreshEnabled(false);
-            if (isShowDownloadBtn){
+            if (isShowDownloadBtn) {
                 download_bookshelf.setVisibility(View.GONE);
             }
         } else {
             if (bookOnLines.size() != 0) {
                 swipeRefreshLayout.setPullToRefreshEnabled(true);
             }
-            if (isShowDownloadBtn){
+            if (isShowDownloadBtn) {
                 download_bookshelf.setVisibility(View.VISIBLE);
             }
             updateUI();
@@ -1092,7 +1037,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
 
     @Override
     public void doHideAd() {
-        if(isShowAD){
+        if (isShowAD) {
             filterAd();
         }
     }
@@ -1146,5 +1091,36 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         head_image_view.setImageResource(R.drawable.pulltorefresh_down_arrow);
         head_pb_view.setVisibility(View.GONE);
         return headerView;
+    }
+
+    public static class UiHandler extends Handler {
+        private WeakReference<BookShelfFragment> reference;
+
+        UiHandler(BookShelfFragment vpBook) {
+            reference = new WeakReference<>(vpBook);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            BookShelfFragment bookShelfFragment = reference.get();
+            if (bookShelfFragment == null) {
+                return;
+            }
+            switch (msg.what) {
+
+                case NO_BOOK_DATA_VIEW_SHOW:
+                    bookShelfFragment.emptyViewShow();
+                    break;
+                case NO_BOOK_DATA_VIEW_GONE:
+                    bookShelfFragment.emptyViewGone();
+                    break;
+                case LONG_PRESS_EDIT:
+                    bookShelfFragment.longPressEdit();
+                    break;
+                case REFRESH_DATA_AFTER_DELETE:
+                    bookShelfFragment.refreshDataAfterDelete();
+                    break;
+            }
+        }
     }
 }

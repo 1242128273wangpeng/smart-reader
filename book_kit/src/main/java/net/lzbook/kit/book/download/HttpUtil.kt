@@ -16,7 +16,7 @@ fun <T> getHttpData(url: String, t: Class<T>): T? {
         try {
             val ret = GsonBuilder().create().fromJson<T>(httpDataString, t)
             return ret
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
 
@@ -25,7 +25,7 @@ fun <T> getHttpData(url: String, t: Class<T>): T? {
 }
 
 fun getHttpDataString(url: String): String? {
-    var connection:HttpURLConnection? = null
+    var connection: HttpURLConnection? = null
     try {
         connection = URL(url).openConnection() as HttpURLConnection
         connection.connectTimeout = HTTP_CONNECTION_TIMEOUT
@@ -37,10 +37,10 @@ fun getHttpDataString(url: String): String? {
             val readText = connection.inputStream.reader().readText()
             return readText
         }
-    }catch (e:Exception){
+    } catch (e: Exception) {
         e.printStackTrace()
 
-    }finally {
+    } finally {
         connection?.disconnect()
     }
 

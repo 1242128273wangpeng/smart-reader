@@ -25,24 +25,22 @@ import net.lzbook.kit.utils.onEnd
 import net.lzbook.kit.utils.toastShort
 
 
-
 /**
  * Created by xian on 2017/8/8.
  */
 class ReadOptionHeader : FrameLayout, ReadOption.View {
 
 
-
     override var presenter: ReadOption.Presenter? = null
 
     override fun show(flag: Boolean) {
-        if(flag) {
-            if(this.visibility != View.VISIBLE) {
+        if (flag) {
+            if (this.visibility != View.VISIBLE) {
                 this.visibility = View.VISIBLE
                 this.startAnimation(menuDownInAnimation)
             }
-        }else{
-            if(this.visibility == View.VISIBLE) {
+        } else {
+            if (this.visibility == View.VISIBLE) {
                 menuUpOutAnimation.onEnd {
                     this.visibility = View.GONE
                 }
@@ -90,7 +88,7 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
             popupWindow.isOutsideTouchable = false
             popupWindow.showAsDropDown(header_ibtn_more)
 
-            if(isMarkPage){
+            if (isMarkPage) {
                 inflate.read_option_pop_mark.text = "删除书签"
             }
 
@@ -100,8 +98,7 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
                 popupWindow.dismiss()
             }
 
-            inflate.read_option_pop_mark.setOnClickListener {
-                 v ->
+            inflate.read_option_pop_mark.setOnClickListener { v ->
 
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_add_book_mark_btn)
                 val result = presenter?.bookMark()
@@ -153,9 +150,9 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
         val typeChangeMark = TypedValue()
         val theme = context.getTheme()
         if (bookDaoHelper != null && bookDaoHelper.isBookMarkExist(readStatus.book_id, readStatus.sequence,
-                readStatus.offset, readStatus.book.book_type)){
+                readStatus.offset, readStatus.book.book_type)) {
             isMarkPage = true
-        }else{
+        } else {
             isMarkPage = false
         }
 

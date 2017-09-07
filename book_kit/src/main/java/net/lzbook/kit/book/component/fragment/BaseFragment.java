@@ -1,5 +1,7 @@
 package net.lzbook.kit.book.component.fragment;
 
+import net.lzbook.kit.utils.RemoveAdapterHelper;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -8,8 +10,6 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import net.lzbook.kit.utils.RemoveAdapterHelper;
 
 import java.lang.ref.WeakReference;
 
@@ -48,6 +48,17 @@ public abstract class BaseFragment extends Fragment {
 
     protected abstract void setOnActivityCreate();
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (!(activity instanceof FragmentCallback)) {
+            throw new IllegalStateException("Activity must implement fragment's callbacks.");
+        }
+        frameCallback = (FragmentCallback) activity;
+        context = activity.getApplicationContext();
+        this.actReference = new WeakReference<>(activity);
+    }
+
     public interface FragmentCallback {
 
         //应该是NoeSwpieViewPager
@@ -65,16 +76,5 @@ public abstract class BaseFragment extends Fragment {
         void getMenuShownState(boolean state);
 
         void setSelectTab(int index);
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (!(activity instanceof FragmentCallback)) {
-            throw new IllegalStateException("Activity must implement fragment's callbacks.");
-        }
-        frameCallback = (FragmentCallback) activity;
-        context = activity.getApplicationContext();
-        this.actReference = new WeakReference<>(activity);
     }
 }

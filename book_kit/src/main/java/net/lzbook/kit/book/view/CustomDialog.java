@@ -1,5 +1,7 @@
 package net.lzbook.kit.book.view;
 
+import net.lzbook.kit.R;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -10,8 +12,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import net.lzbook.kit.R;
 
 public class CustomDialog extends Dialog {
 

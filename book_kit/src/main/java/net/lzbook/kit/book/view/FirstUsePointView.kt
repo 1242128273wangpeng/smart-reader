@@ -26,7 +26,7 @@ class FirstUsePointView : TextView {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     fun onEvent(event: ConsumeEvent) {
-        if(event.id == id){
+        if (event.id == id) {
             setBackgroundColor(Color.TRANSPARENT)
         }
     }
@@ -54,7 +54,7 @@ class FirstUsePointView : TextView {
 
                 setBackgroundDrawable(gd)
             }
-        }else{
+        } else {
             setBackgroundColor(Color.TRANSPARENT)
         }
         return super.onPreDraw()
@@ -68,24 +68,24 @@ class FirstUsePointView : TextView {
 class FirstUseManager(val context: Context) {
     private val preferences: SharedPreferences
 
-    init  {
-            preferences = context.getSharedPreferences("first_use_preferences", Context.MODE_PRIVATE)
-            val version = preferences!!.getString("VERSION", "")
-            val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
-            if (!version.equals(versionName, true)) {
-                val editor = preferences!!.edit()
-                editor.clear()
+    init {
+        preferences = context.getSharedPreferences("first_use_preferences", Context.MODE_PRIVATE)
+        val version = preferences!!.getString("VERSION", "")
+        val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
+        if (!version.equals(versionName, true)) {
+            val editor = preferences!!.edit()
+            editor.clear()
 
-                editor.putString("VERSION", versionName)
-                val properties = Properties()
-                properties.load(context.assets.open("config/first_use.properties"))
-                val propertyNames = properties.propertyNames() as Enumeration<String>
-                propertyNames
-                        .toList().forEach {
-                    editor.putBoolean(it, properties[it].toString().toBoolean())
-                }
-                editor.apply()
+            editor.putString("VERSION", versionName)
+            val properties = Properties()
+            properties.load(context.assets.open("config/first_use.properties"))
+            val propertyNames = properties.propertyNames() as Enumeration<String>
+            propertyNames
+                    .toList().forEach {
+                editor.putBoolean(it, properties[it].toString().toBoolean())
             }
+            editor.apply()
+        }
     }
 
     fun isFirstUse(@IdRes id: Int): Boolean {
@@ -116,7 +116,7 @@ class FirstUseManager(val context: Context) {
 
     fun consumeFirstUse(key: String) {
         log("consumeFirstUse", key)
-        if(preferences.getBoolean(key, false)) {
+        if (preferences.getBoolean(key, false)) {
             val editor = preferences.edit()
             editor.putBoolean(key, false)
             editor.apply()
@@ -126,7 +126,8 @@ class FirstUseManager(val context: Context) {
 
     companion object {
         @JvmStatic private var msFirstUserManager: FirstUseManager? = null
-        @JvmStatic fun getInstance(context: Context): FirstUseManager {
+        @JvmStatic
+        fun getInstance(context: Context): FirstUseManager {
             if (msFirstUserManager == null) {
                 msFirstUserManager = FirstUseManager(context.applicationContext)
                 registToEventBus(msFirstUserManager!!)

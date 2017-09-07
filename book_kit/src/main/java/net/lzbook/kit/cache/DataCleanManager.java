@@ -19,8 +19,6 @@ public class DataCleanManager {
     /**
      * 清除本应用内部缓存
      * (/data/data/com.xxx.xxx/cache)
-     *
-     * @param context
      */
     public static void cleanInternalCache(Context context) {
         deleteFilesByDirectory(context.getCacheDir());
@@ -29,8 +27,6 @@ public class DataCleanManager {
 
     /**
      * 删除方法 这里只会删除某个文件夹下的文件，如果传入的directory是个文件，将不做处理
-     *
-     * @param directory
      */
     private static void deleteFilesByDirectory(File directory) {
         if (directory != null && directory.exists() && directory.isDirectory()) {
@@ -67,17 +63,17 @@ public class DataCleanManager {
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {
-                File cache;
+        File cache;
 
-                cache = new File(ReplaceConstants.getReplaceConstants().APP_PATH);
-                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) && cache.exists()) {
-                    deleteDir(cache);
-                } else {
-                    cache = new File(context.getCacheDir(), ReplaceConstants.getReplaceConstants().APP_PATH);
-                    if (cache.exists()) {
-                        deleteDir(cache);
-                    }
-                }
+        cache = new File(ReplaceConstants.getReplaceConstants().APP_PATH);
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) && cache.exists()) {
+            deleteDir(cache);
+        } else {
+            cache = new File(context.getCacheDir(), ReplaceConstants.getReplaceConstants().APP_PATH);
+            if (cache.exists()) {
+                deleteDir(cache);
+            }
+        }
 //            }
 //        }).start();
 
@@ -117,9 +113,6 @@ public class DataCleanManager {
 
     /**
      * 格式化单位
-     *
-     * @param size
-     * @return
      */
     public static String getFormatSize(double size) {
         double kiloByte = size / 1024;

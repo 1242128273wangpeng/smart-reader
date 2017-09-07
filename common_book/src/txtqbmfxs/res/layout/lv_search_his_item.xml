@@ -11,7 +11,7 @@
             android:layout_marginLeft="15dp"
             android:layout_centerVertical="true"
             android:src="?attr/search_his_time_mark"
-            />
+    />
 
     <TextView
             android:id="@+id/tv_search_his_content"
@@ -25,7 +25,7 @@
             android:layout_toLeftOf="@+id/iv_search_his_clear"
             android:textColor="?attr/search_his_text_color"
             android:textSize="14sp"
-            />
+    />
 
     <ImageView
             android:id="@+id/iv_search_his_clear"
@@ -38,7 +38,7 @@
             android:layout_centerVertical="true"
             android:scaleType="fitCenter"
             android:src="?attr/search_clear_his"
-            />
+    />
 
     <View
             android:layout_width="match_parent"

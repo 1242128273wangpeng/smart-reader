@@ -1,44 +1,13 @@
 package net.lzbook.kit.utils;
 
+import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
+
 import android.app.NotificationManager;
 import android.content.Context;
-
-
-
-import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
 
 import java.util.ArrayList;
 
 public class CheckNovelUpdHelper {
-
-    public static class MyBook {
-        public String name;
-        public String book_id;
-        public int num;
-
-        public MyBook(String name, String book_id, int num) {
-            super();
-            this.name = name;
-            this.book_id = book_id;
-            this.num = num;
-        }
-
-
-        @Override
-        public boolean equals(Object o) {
-            if (o instanceof MyBook && o != null) {
-                MyBook b = (MyBook) o;
-                return name.equals(b.name) && book_id.equals(b.book_id);
-            }
-            return super.equals(o);
-        }
-
-        @Override
-        public int hashCode() {
-            return book_id.hashCode() + name.hashCode();
-        }
-    }
-
 
     public static void delLocalNotify(Context ctt) {
         CheckNovelUpdateService.cache_list = null;
@@ -79,6 +48,34 @@ public class CheckNovelUpdHelper {
         list.addAll(other);
         return list;
 
+    }
+
+    public static class MyBook {
+        public String name;
+        public String book_id;
+        public int num;
+
+        public MyBook(String name, String book_id, int num) {
+            super();
+            this.name = name;
+            this.book_id = book_id;
+            this.num = num;
+        }
+
+
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof MyBook && o != null) {
+                MyBook b = (MyBook) o;
+                return name.equals(b.name) && book_id.equals(b.book_id);
+            }
+            return super.equals(o);
+        }
+
+        @Override
+        public int hashCode() {
+            return book_id.hashCode() + name.hashCode();
+        }
     }
 
 }

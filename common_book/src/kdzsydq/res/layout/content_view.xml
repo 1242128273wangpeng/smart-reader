@@ -1,105 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:id="@+id/content_main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/content_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+>
 
     <!--双tab的头布局，不再用include是方便svn打包只用更改一个文件-->
     <RelativeLayout
-        android:id="@+id/home_fragment_head"
-        android:layout_width="match_parent"
-        android:layout_alignParentTop="true"
-        android:visibility="gone"
-        android:layout_height="@dimen/dimen_view_height_48"
-        android:background="?attr/top_navigation_bg_color">
-
-        <ImageView
-            android:id="@+id/bookshelf_setting"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:paddingLeft="@dimen/dimen_padding_12"
-            android:paddingRight="@dimen/dimen_padding_12"
-            android:src="?attr/home_head_setting" />
-
-        <ImageView
-            android:id="@+id/bookshelf_search"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:paddingLeft="@dimen/dimen_padding_12"
-            android:paddingRight="@dimen/dimen_padding_12"
-            android:src="?attr/home_head_search" />
-
-        <ImageView
-            android:id="@+id/bookshelf_download"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/bookshelf_search"
+            android:id="@+id/home_fragment_head"
+            android:layout_width="match_parent"
+            android:layout_alignParentTop="true"
             android:visibility="gone"
-            android:paddingLeft="@dimen/dimen_padding_12"
-            android:paddingRight="@dimen/dimen_padding_12"
-            android:src="?attr/home_head_download" />
+            android:layout_height="@dimen/dimen_view_height_48"
+            android:background="?attr/top_navigation_bg_color">
+
+        <ImageView
+                android:id="@+id/bookshelf_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:paddingLeft="@dimen/dimen_padding_12"
+                android:paddingRight="@dimen/dimen_padding_12"
+                android:src="?attr/home_head_setting"/>
+
+        <ImageView
+                android:id="@+id/bookshelf_search"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingLeft="@dimen/dimen_padding_12"
+                android:paddingRight="@dimen/dimen_padding_12"
+                android:src="?attr/home_head_search"/>
+
+        <ImageView
+                android:id="@+id/bookshelf_download"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/bookshelf_search"
+                android:visibility="gone"
+                android:paddingLeft="@dimen/dimen_padding_12"
+                android:paddingRight="@dimen/dimen_padding_12"
+                android:src="?attr/home_head_download"/>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_toLeftOf="@id/bookshelf_download"
-            android:layout_toRightOf="@id/bookshelf_setting"
-            android:layout_marginLeft="@dimen/dimen_padding_35"
-            android:layout_marginRight="@dimen/dimen_padding_35"
-            android:paddingLeft="@dimen/dimen_padding_35"
-            android:paddingRight="@dimen/dimen_padding_35">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toLeftOf="@id/bookshelf_download"
+                android:layout_toRightOf="@id/bookshelf_setting"
+                android:layout_marginLeft="@dimen/dimen_padding_35"
+                android:layout_marginRight="@dimen/dimen_padding_35"
+                android:paddingLeft="@dimen/dimen_padding_35"
+                android:paddingRight="@dimen/dimen_padding_35">
 
             <TextView
-                android:id="@+id/home_bookshelf"
-                android:layout_width="0dip"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:paddingBottom="@dimen/dimen_padding_5"
-                android:paddingTop="@dimen/dimen_padding_5"
-                android:text="@string/bookshelf"
-                android:textColor="?attr/top_navigation_text_selector"
-                android:textSize="@dimen/dimen_text_17" />
+                    android:id="@+id/home_bookshelf"
+                    android:layout_width="0dip"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/dimen_padding_5"
+                    android:paddingTop="@dimen/dimen_padding_5"
+                    android:text="@string/bookshelf"
+                    android:textColor="?attr/top_navigation_text_selector"
+                    android:textSize="@dimen/dimen_text_17"/>
 
             <TextView
-                android:id="@+id/home_bookstore"
-                android:layout_width="0dip"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:paddingBottom="@dimen/dimen_padding_5"
-                android:paddingTop="@dimen/dimen_padding_5"
-                android:text="@string/bookstore"
-                android:textColor="?attr/top_navigation_text_selector"
-                android:textSize="@dimen/dimen_text_17" />
+                    android:id="@+id/home_bookstore"
+                    android:layout_width="0dip"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/dimen_padding_5"
+                    android:paddingTop="@dimen/dimen_padding_5"
+                    android:text="@string/bookstore"
+                    android:textColor="?attr/top_navigation_text_selector"
+                    android:textSize="@dimen/dimen_text_17"/>
         </LinearLayout>
     </RelativeLayout>
 
     <!--单独的头布局，不再用include是方便svn打包只用更改一个文件-->
     <RelativeLayout
-        android:layout_alignParentTop="true"
-        android:id="@+id/content_head"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="?attr/top_navigation_bg_color"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+            android:layout_alignParentTop="true"
+            android:id="@+id/content_head"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="?attr/top_navigation_bg_color"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
 
         <ImageView
-            android:id="@+id/content_head_setting"
-            android:layout_width="23dp"
-            android:layout_height="23dp"
-            android:layout_centerVertical="true"
-            android:scaleType="fitXY"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="14dp"
-            android:src="?attr/home_head_setting" />
+                android:id="@+id/content_head_setting"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_centerVertical="true"
+                android:scaleType="fitXY"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="14dp"
+                android:src="?attr/home_head_setting"/>
         
         <net.lzbook.kit.book.view.FirstUsePointView
                 android:layout_width="7dp"
@@ -108,500 +108,500 @@
                 android:layout_alignTop="@+id/content_head_setting"
                 android:layout_alignRight="@+id/content_head_setting"
                 android:id="@+id/redpoint_home_setting"
-                />
+        />
 
         <TextView
-            android:id="@+id/content_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:gravity="center_vertical"
-            android:layout_centerInParent="true"
-            android:text="书架"
-            android:textSize="18sp"
-            android:textColor="?attr/top_navigation_text_color" />
+                android:id="@+id/content_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:layout_centerInParent="true"
+                android:text="书架"
+                android:textSize="18sp"
+                android:textColor="?attr/top_navigation_text_color"/>
 
         <ImageView
-            android:id="@+id/content_head_search"
-            android:layout_width="23dp"
-            android:layout_height="23dp"
-            android:layout_centerVertical="true"
-            android:scaleType="fitXY"
-            android:layout_toLeftOf="@+id/content_download_manage"
-            android:layout_marginRight="21dp"
-            android:src="?attr/home_head_search"/>
+                android:id="@+id/content_head_search"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_centerVertical="true"
+                android:scaleType="fitXY"
+                android:layout_toLeftOf="@+id/content_download_manage"
+                android:layout_marginRight="21dp"
+                android:src="?attr/home_head_search"/>
 
         <ImageView
-            android:id="@+id/content_download_manage"
-            android:layout_width="23dp"
-            android:layout_height="23dp"
-            android:layout_centerVertical="true"
-            android:scaleType="fitXY"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="13.5dp"
-            android:src="?attr/home_head_download" />
+                android:id="@+id/content_download_manage"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_centerVertical="true"
+                android:scaleType="fitXY"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="13.5dp"
+                android:src="?attr/home_head_download"/>
     </RelativeLayout>
 
     <!--头布局4个tab的布局，不再用include是方便svn打包只用更改一个文件-->
     <RelativeLayout
-        android:visibility="gone"
-        android:id="@+id/content_head_four_tabs"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_height_48"
-        android:layout_alignParentTop="true"
-        android:background="@color/color_white_f7f7f7">
+            android:visibility="gone"
+            android:id="@+id/content_head_four_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_height_48"
+            android:layout_alignParentTop="true"
+            android:background="@color/color_white_f7f7f7">
 
         <ImageView
-            android:id="@+id/content_head_user"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:paddingLeft="@dimen/padding_14"
-            android:paddingRight="@dimen/padding_14"
-            android:src="?attr/home_head_setting"
-            android:layout_gravity="right|left" />
+                android:id="@+id/content_head_user"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:paddingLeft="@dimen/padding_14"
+                android:paddingRight="@dimen/padding_14"
+                android:src="?attr/home_head_setting"
+                android:layout_gravity="right|left"/>
 
         <ImageView
-            android:id="@+id/content_download_manage_four_tabs"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:paddingRight="@dimen/padding_14"
-            android:paddingLeft="@dimen/padding_14"
-            android:src="?attr/home_head_download"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentTop="true" />
+                android:id="@+id/content_download_manage_four_tabs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:paddingRight="@dimen/padding_14"
+                android:paddingLeft="@dimen/padding_14"
+                android:src="?attr/home_head_download"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentTop="true"/>
 
         <LinearLayout
-            android:id="@+id/content_tab_selection_four_tabs"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_toRightOf="@id/content_head_user"
-            android:layout_toLeftOf="@id/content_download_manage_four_tabs"
-            android:paddingLeft="@dimen/padding_5"
-            android:paddingRight="@dimen/padding_5"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+                android:id="@+id/content_tab_selection_four_tabs"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/content_head_user"
+                android:layout_toLeftOf="@id/content_download_manage_four_tabs"
+                android:paddingLeft="@dimen/padding_5"
+                android:paddingRight="@dimen/padding_5"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
 
             <RelativeLayout
-                android:id="@+id/content_tab_bookshelf_four_tabs"
-                android:layout_width="@dimen/dimen_width_0"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center">
+                    android:id="@+id/content_tab_bookshelf_four_tabs"
+                    android:layout_width="@dimen/dimen_width_0"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center">
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="@string/bookshelf"
-                    android:textStyle="bold"
-                    android:textColor="?attr/dialog_recommend"
-                    android:textSize="@dimen/text_size_18" />
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="@string/bookshelf"
+                        android:textStyle="bold"
+                        android:textColor="?attr/dialog_recommend"
+                        android:textSize="@dimen/text_size_18"/>
 
                 <View
-                    android:layout_width="20dp"
-                    android:layout_height="2dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:background="@drawable/selector_view_bg"/>
+                        android:layout_width="20dp"
+                        android:layout_height="2dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/selector_view_bg"/>
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/content_tab_recommend_four_tabs"
-                android:layout_width="@dimen/dimen_width_0"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center">
+                    android:id="@+id/content_tab_recommend_four_tabs"
+                    android:layout_width="@dimen/dimen_width_0"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center">
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="@string/recommend"
-                    android:textStyle="bold"
-                    android:textColor="?attr/dialog_recommend"
-                    android:textSize="@dimen/text_size_18" />
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="@string/recommend"
+                        android:textStyle="bold"
+                        android:textColor="?attr/dialog_recommend"
+                        android:textSize="@dimen/text_size_18"/>
 
                 <View
-                    android:layout_width="20dp"
-                    android:layout_height="2dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:background="@drawable/selector_view_bg"/>
+                        android:layout_width="20dp"
+                        android:layout_height="2dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/selector_view_bg"/>
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/content_tab_ranking_four_tabs"
-                android:layout_width="@dimen/dimen_width_0"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center">
+                    android:id="@+id/content_tab_ranking_four_tabs"
+                    android:layout_width="@dimen/dimen_width_0"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center">
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="@string/ranking"
-                    android:textStyle="bold"
-                    android:textColor="?attr/dialog_recommend"
-                    android:textSize="@dimen/text_size_18" />
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="@string/ranking"
+                        android:textStyle="bold"
+                        android:textColor="?attr/dialog_recommend"
+                        android:textSize="@dimen/text_size_18"/>
 
                 <View
-                    android:layout_width="20dp"
-                    android:layout_height="2dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:background="@drawable/selector_view_bg"/>
+                        android:layout_width="20dp"
+                        android:layout_height="2dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/selector_view_bg"/>
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/content_tab_category_four_tabs"
-                android:layout_width="@dimen/dimen_width_0"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center">
+                    android:id="@+id/content_tab_category_four_tabs"
+                    android:layout_width="@dimen/dimen_width_0"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center">
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="@string/category"
-                    android:textStyle="bold"
-                    android:textColor="?attr/dialog_recommend"
-                    android:textSize="@dimen/text_size_18" />
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="@string/category"
+                        android:textStyle="bold"
+                        android:textColor="?attr/dialog_recommend"
+                        android:textSize="@dimen/text_size_18"/>
 
                 <View
-                    android:layout_width="20dp"
-                    android:layout_height="2dp"
-                    android:layout_alignParentBottom="true"
-                    android:paddingBottom="@dimen/padding_0"
-                    android:layout_centerHorizontal="true"
-                    android:background="@drawable/selector_view_bg"/>
+                        android:layout_width="20dp"
+                        android:layout_height="2dp"
+                        android:layout_alignParentBottom="true"
+                        android:paddingBottom="@dimen/padding_0"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/selector_view_bg"/>
             </RelativeLayout>
         </LinearLayout>
     </RelativeLayout>
 
     <RelativeLayout
-        android:visibility="gone"
-        android:id="@+id/bookshelf_search_view"
-        android:layout_width="match_parent"
-        android:layout_below="@id/content_head_four_tabs"
-        android:layout_height="@dimen/dimen_height_50"
-        android:background="@color/color_white_f7f7f7">
+            android:visibility="gone"
+            android:id="@+id/bookshelf_search_view"
+            android:layout_width="match_parent"
+            android:layout_below="@id/content_head_four_tabs"
+            android:layout_height="@dimen/dimen_height_50"
+            android:background="@color/color_white_f7f7f7">
 
         <TextView
-            android:id="@+id/bookshelf_search_four_tabs"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_height_35"
-            android:layout_centerInParent="true"
-            android:layout_marginLeft="@dimen/dimen_margin_15"
-            android:layout_marginRight="@dimen/dimen_margin_15"
-            android:background="?attr/bookshelf_search_bg"
-            android:drawableLeft="?attr/home_head_search"
-            android:drawablePadding="@dimen/padding_8"
-            android:gravity="center_vertical"
-            android:hint="搜索自己喜欢的小说和作者"
-            android:paddingLeft="@dimen/padding_10"
-            android:textSize="@dimen/text_size_14"
-            android:textColorHint="@color/color_gray_9b9b9b" />
+                android:id="@+id/bookshelf_search_four_tabs"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_height_35"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="@dimen/dimen_margin_15"
+                android:layout_marginRight="@dimen/dimen_margin_15"
+                android:background="?attr/bookshelf_search_bg"
+                android:drawableLeft="?attr/home_head_search"
+                android:drawablePadding="@dimen/padding_8"
+                android:gravity="center_vertical"
+                android:hint="搜索自己喜欢的小说和作者"
+                android:paddingLeft="@dimen/padding_10"
+                android:textSize="@dimen/text_size_14"
+                android:textColorHint="@color/color_gray_9b9b9b"/>
 
     </RelativeLayout>
 
     <!--双tab的头布局含有边框，不再用include是方便svn打包只用更改一个文件-->
 
     <RelativeLayout
-        android:id="@+id/home_fragment_head_two_tabs"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:visibility="gone"
-        android:background="?attr/top_navigation_bg_color"
-        android:elevation="@dimen/padding_4"
-        >
+            android:id="@+id/home_fragment_head_two_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:visibility="gone"
+            android:background="?attr/top_navigation_bg_color"
+            android:elevation="@dimen/padding_4"
+    >
 
         <ImageView
-            android:id="@+id/book_button_left"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:paddingLeft="16dp"
-            android:paddingRight="@dimen/padding_12"
-            android:src="?attr/home_head_setting"
-            android:visibility="visible"
-            />
+                android:id="@+id/book_button_left"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:paddingLeft="16dp"
+                android:paddingRight="@dimen/padding_12"
+                android:src="?attr/home_head_setting"
+                android:visibility="visible"
+        />
 
         <RadioGroup
-            android:id="@+id/home_radiogroup"
-            android:layout_width="203dp"
-            android:layout_height="33dp"
-            android:layout_centerInParent="true"
-            android:layout_centerVertical="true"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingBottom="0dp"
-            android:paddingLeft="0dp"
-            android:paddingRight="0dp"
-            android:paddingTop="0dp">
+                android:id="@+id/home_radiogroup"
+                android:layout_width="203dp"
+                android:layout_height="33dp"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="0dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:paddingTop="0dp">
 
             <RadioButton
-                android:id="@+id/radiobutton_bookshelf"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:background="?attr/home_head_two_tabs_left"
-                android:button="@null"
-                android:checked="true"
-                android:gravity="center"
-                android:text="@string/bookshelf"
-                android:textColor="?attr/home_head_two_tabs_text"
-                android:textSize="@dimen/large_size_18"
-                />
+                    android:id="@+id/radiobutton_bookshelf"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:background="?attr/home_head_two_tabs_left"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:text="@string/bookshelf"
+                    android:textColor="?attr/home_head_two_tabs_text"
+                    android:textSize="@dimen/large_size_18"
+            />
 
             <RadioButton
-                android:id="@+id/radiobutton_bookstore"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:background="?attr/home_head_two_tabs_right"
-                android:button="@null"
-                android:checked="false"
-                android:gravity="center"
-                android:text="@string/bookstore"
-                android:textColor="?attr/home_head_two_tabs_text"
-                android:textSize="@dimen/large_size_18"
-                />
+                    android:id="@+id/radiobutton_bookstore"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:background="?attr/home_head_two_tabs_right"
+                    android:button="@null"
+                    android:checked="false"
+                    android:gravity="center"
+                    android:text="@string/bookstore"
+                    android:textColor="?attr/home_head_two_tabs_text"
+                    android:textSize="@dimen/large_size_18"
+            />
         </RadioGroup>
 
         <ImageView
-            android:id="@+id/book_button_right"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:paddingRight="16dp"
-            android:paddingLeft="@dimen/padding_12"
-            android:src="?attr/home_head_search"
-            android:visibility="visible"
-            />
+                android:id="@+id/book_button_right"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingRight="16dp"
+                android:paddingLeft="@dimen/padding_12"
+                android:src="?attr/home_head_search"
+                android:visibility="visible"
+        />
 
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/content_head_editor"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_alignParentTop="true"
-        android:background="?attr/top_navigation_bg_color"
-        android:clickable="true"
-        android:visibility="gone">
+            android:id="@+id/content_head_editor"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_alignParentTop="true"
+            android:background="?attr/top_navigation_bg_color"
+            android:clickable="true"
+            android:visibility="gone">
         <ImageView
-            android:id="@+id/home_edit_back"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:paddingLeft="@dimen/dimen_padding_12"
-            android:paddingRight="@dimen/dimen_padding_12"
-            android:src="?attr/title_back" />
+                android:id="@+id/home_edit_back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:paddingLeft="@dimen/dimen_padding_12"
+                android:paddingRight="@dimen/dimen_padding_12"
+                android:src="?attr/title_back"/>
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:gravity="center_vertical"
-            android:layout_centerInParent="true"
-            android:text="编辑书架"
-            android:textSize="18sp"
-            android:textColor="?attr/top_navigation_text_color" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:layout_centerInParent="true"
+                android:text="编辑书架"
+                android:textSize="18sp"
+                android:textColor="?attr/top_navigation_text_color"/>
 
         <TextView
-            android:id="@+id/home_edit_cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingLeft="@dimen/dimen_padding_12"
-            android:paddingRight="@dimen/dimen_padding_12"
-            android:layout_alignParentRight="true"
-            android:gravity="center_vertical"
-            android:text="取消"
-            android:textColor="?attr/top_navigation_text_color"
-            android:textSize="@dimen/text_size_16" />
+                android:id="@+id/home_edit_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/dimen_padding_12"
+                android:paddingRight="@dimen/dimen_padding_12"
+                android:layout_alignParentRight="true"
+                android:gravity="center_vertical"
+                android:text="取消"
+                android:textColor="?attr/top_navigation_text_color"
+                android:textSize="@dimen/text_size_16"/>
 
     </RelativeLayout>
 
     <net.lzbook.kit.book.view.NonSwipeViewPager
-        android:id="@+id/content_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/content_head"
-        android:layout_above="@+id/content_tab_selection"
-        android:background="@color/color_white_fafafa"
-        android:flipInterval="30"
-        android:persistentDrawingCache="animation" />
+            android:id="@+id/content_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/content_head"
+            android:layout_above="@+id/content_tab_selection"
+            android:background="@color/color_white_fafafa"
+            android:flipInterval="30"
+            android:persistentDrawingCache="animation"/>
 
     <ImageView
-        android:id="@+id/title_shadow"
-        android:layout_below="@+id/content_head"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="fitXY"
-        android:src="?attr/title_shadow"/>
+            android:id="@+id/title_shadow"
+            android:layout_below="@+id/content_head"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="?attr/title_shadow"/>
     <View
-        android:id="@+id/content_tab_selection_devider"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_above="@+id/content_tab_selection"
-        android:background="?attr/color_divider"/>
+            android:id="@+id/content_tab_selection_devider"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_above="@+id/content_tab_selection"
+            android:background="?attr/color_divider"/>
 
     <LinearLayout
-        android:id="@+id/content_tab_selection"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:background="?attr/home_bottom_tab_bg"
-        android:baselineAligned="false"
-        android:orientation="horizontal">
+            android:id="@+id/content_tab_selection"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:background="?attr/home_bottom_tab_bg"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
         <LinearLayout
-            android:id="@+id/content_tab_bookshelf"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
+                android:id="@+id/content_tab_bookshelf"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/content_tab_bookshelf_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/app_name"
-                android:focusable="false"
-                android:padding="1dp"
-                android:src="?attr/home_bottom_tab_select_bookshelf"/>
+                    android:id="@+id/content_tab_bookshelf_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/app_name"
+                    android:focusable="false"
+                    android:padding="1dp"
+                    android:src="?attr/home_bottom_tab_select_bookshelf"/>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/bookshelf"
-                android:textColor="?attr/home_bottom_tab_text_color"
-                android:textSize="?attr/home_bottom_tab_text_size"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/bookshelf"
+                    android:textColor="?attr/home_bottom_tab_text_color"
+                    android:textSize="?attr/home_bottom_tab_text_size"/>
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/content_tab_recommend"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
+                android:id="@+id/content_tab_recommend"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/content_tab_recommend_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/app_name"
-                android:focusable="false"
-                android:padding="1dp"
-                android:src="?attr/home_bottom_tab_select_recommend"/>
+                    android:id="@+id/content_tab_recommend_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/app_name"
+                    android:focusable="false"
+                    android:padding="1dp"
+                    android:src="?attr/home_bottom_tab_select_recommend"/>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/recommend"
-                android:textColor="?attr/home_bottom_tab_text_color"
-                android:textSize="?attr/home_bottom_tab_text_size"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/recommend"
+                    android:textColor="?attr/home_bottom_tab_text_color"
+                    android:textSize="?attr/home_bottom_tab_text_size"/>
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/content_tab_ranking"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
+                android:id="@+id/content_tab_ranking"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/content_tab_ranking_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/app_name"
-                android:focusable="false"
-                android:padding="1dp"
-                android:src="?attr/home_bottom_tab_select_ranking"/>
+                    android:id="@+id/content_tab_ranking_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/app_name"
+                    android:focusable="false"
+                    android:padding="1dp"
+                    android:src="?attr/home_bottom_tab_select_ranking"/>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/ranking"
-                android:textColor="?attr/home_bottom_tab_text_color"
-                android:textSize="?attr/home_bottom_tab_text_size"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ranking"
+                    android:textColor="?attr/home_bottom_tab_text_color"
+                    android:textSize="?attr/home_bottom_tab_text_size"/>
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/content_tab_category"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
+                android:id="@+id/content_tab_category"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/content_tab_category_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/app_name"
-                android:focusable="false"
-                android:padding="1dp"
-                android:src="?attr/home_bottom_tab_select_category"/>
+                    android:id="@+id/content_tab_category_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/app_name"
+                    android:focusable="false"
+                    android:padding="1dp"
+                    android:src="?attr/home_bottom_tab_select_category"/>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/category"
-                android:textColor="?attr/home_bottom_tab_text_color"
-                android:textSize="?attr/home_bottom_tab_text_size"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/category"
+                    android:textColor="?attr/home_bottom_tab_text_color"
+                    android:textSize="?attr/home_bottom_tab_text_size"/>
 
         </LinearLayout>
     </LinearLayout>
     <FrameLayout
-        android:id="@+id/ll_guide_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone">
+            android:id="@+id/ll_guide_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
         <ImageView
-            android:id="@+id/iv_guide_download"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginRight="@dimen/padding_10"
-            android:layout_marginTop="@dimen/padding_10"
-            android:scaleType="fitXY"
-            android:src="@drawable/icon_bookshelf_guide_download"
-            android:visibility="gone"/>
+                android:id="@+id/iv_guide_download"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginRight="@dimen/padding_10"
+                android:layout_marginTop="@dimen/padding_10"
+                android:scaleType="fitXY"
+                android:src="@drawable/icon_bookshelf_guide_download"
+                android:visibility="gone"/>
         <ImageView
-            android:id="@+id/iv_guide_setting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginLeft="@dimen/padding_10"
-            android:layout_marginTop="@dimen/padding_10"
-            android:scaleType="fitXY"
-            android:src="@drawable/icon_bookshelf_guide_setting"
-            android:visibility="gone"/>
+                android:id="@+id/iv_guide_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginLeft="@dimen/padding_10"
+                android:layout_marginTop="@dimen/padding_10"
+                android:scaleType="fitXY"
+                android:src="@drawable/icon_bookshelf_guide_setting"
+                android:visibility="gone"/>
 
         <ImageView
-            android:id="@+id/iv_guide_remove"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:scaleType="fitXY"
-            android:src= "@drawable/bookshelf_guide_remove"
-            android:visibility="gone"/>
+                android:id="@+id/iv_guide_remove"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:scaleType="fitXY"
+                android:src="@drawable/bookshelf_guide_remove"
+                android:visibility="gone"/>
     </FrameLayout>
 </RelativeLayout>

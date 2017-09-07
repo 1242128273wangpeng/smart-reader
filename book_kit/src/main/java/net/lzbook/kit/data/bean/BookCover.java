@@ -10,7 +10,7 @@ public class BookCover implements Serializable {
     public String desc;
     //小说更新状态
     public int status;
-//    //宜搜来源小说组id
+    //    //宜搜来源小说组id
 //    public String gid;
 //    //宜搜来源小说id
 //    public String nid;
@@ -66,8 +66,10 @@ public class BookCover implements Serializable {
 //        if (nid != null ? !nid.equals(bookCover.nid) : bookCover.nid != null) return false;
 //        if (md != null ? !md.equals(bookCover.md) : bookCover.md != null) return false;
 //        if (id != null ? !id.equals(bookCover.id) : bookCover.id != null) return false;
-        if (parameter != null ? !parameter.equals(bookCover.parameter) : bookCover.parameter != null) return false;
-        if (extra_parameter != null ? !extra_parameter.equals(bookCover.extra_parameter) : bookCover.extra_parameter != null) return false;
+        if (parameter != null ? !parameter.equals(bookCover.parameter) : bookCover.parameter != null)
+            return false;
+        if (extra_parameter != null ? !extra_parameter.equals(bookCover.extra_parameter) : bookCover.extra_parameter != null)
+            return false;
         if (category != null ? !category.equals(bookCover.category) : bookCover.category != null)
             return false;
         if (author != null ? !author.equals(bookCover.author) : bookCover.author != null)

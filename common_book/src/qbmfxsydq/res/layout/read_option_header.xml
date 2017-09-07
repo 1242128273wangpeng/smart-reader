@@ -6,46 +6,46 @@
                 android:background="@color/read_option_bg"
                 android:clickable="true"
                 android:paddingTop="@dimen/dimen_padding_20">
-
+    
     <RelativeLayout
-        android:id="@+id/reading_head_content"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_view_height_50">
-
+            android:id="@+id/reading_head_content"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_view_height_50">
+        
         <ImageView
-            android:id="@+id/novel_read_back"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/dimen_padding_5"
-            android:paddingLeft="@dimen/dimen_padding_10"
-            android:paddingRight="@dimen/dimen_padding_10"
-            android:paddingTop="@dimen/dimen_padding_5"
-            android:src="@drawable/read_option_back_selector" />
-
+                android:id="@+id/novel_read_back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:paddingBottom="@dimen/dimen_padding_5"
+                android:paddingLeft="@dimen/dimen_padding_10"
+                android:paddingRight="@dimen/dimen_padding_10"
+                android:paddingTop="@dimen/dimen_padding_5"
+                android:src="@drawable/read_option_back_selector"/>
+        
         <ImageView
-            android:id="@+id/novel_automatic_reading"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:paddingLeft="@dimen/dimen_padding_10"
-            android:paddingRight="@dimen/dimen_padding_10"
-            android:src="@drawable/icon_automatic_reading"
-            android:visibility="gone" />
-
+                android:id="@+id/novel_automatic_reading"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingLeft="@dimen/dimen_padding_10"
+                android:paddingRight="@dimen/dimen_padding_10"
+                android:src="@drawable/icon_automatic_reading"
+                android:visibility="gone"/>
+        
         <ImageView
-            android:id="@+id/novel_bookmark"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:paddingLeft="@dimen/dimen_padding_10"
-            android:paddingRight="@dimen/dimen_padding_10"
-            android:src="?attr/read_bookmark"
-            android:visibility="gone" />
-    
-    
+                android:id="@+id/novel_bookmark"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:paddingLeft="@dimen/dimen_padding_10"
+                android:paddingRight="@dimen/dimen_padding_10"
+                android:src="?attr/read_bookmark"
+                android:visibility="gone"/>
+        
+        
         <TextView
                 android:id="@+id/novel_name"
                 android:layout_width="match_parent"
@@ -84,19 +84,19 @@
                 android:src="@drawable/read_option_more_selector"
                 android:layout_alignParentRight="true"/>
     </RelativeLayout>
-
-
+    
+    
     <TextView
-        android:id="@+id/novel_source_url"
-        android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:layout_below="@id/reading_head_content"
-        android:ellipsize="end"
-        android:gravity="center"
-        android:paddingLeft="@dimen/dimen_padding_12"
-        android:paddingRight="@dimen/dimen_padding_12"
-        android:singleLine="true"
-        android:text="@string/app_name"
-        android:textColor="#6D6D6D"
-        android:textSize="12sp" />
+            android:id="@+id/novel_source_url"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:layout_below="@id/reading_head_content"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dimen_padding_12"
+            android:paddingRight="@dimen/dimen_padding_12"
+            android:singleLine="true"
+            android:text="@string/app_name"
+            android:textColor="#6D6D6D"
+            android:textSize="12sp"/>
 </RelativeLayout>

@@ -1,9 +1,5 @@
 package net.lzbook.kit.utils;
 
-import android.app.Activity;
-import android.os.Build;
-import android.view.View;
-
 import com.dingyueads.sdk.Bean.AdSceneData;
 import com.dingyueads.sdk.Bean.Novel;
 import com.dingyueads.sdk.Bean.Ration;
@@ -15,18 +11,19 @@ import com.logcat.sdk.LogEncapManager;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 
+import android.app.Activity;
+import android.os.Build;
+import android.view.View;
+
 import java.util.HashMap;
 
 public class StatisticManager {
 
     public static final String TAG = StatisticManager.class.getSimpleName();
-
-    private static volatile StatisticManager statisticManager = null;
-
     public static final int TYPE_SHOW = 0x20;
     public static final int TYPE_CLICK = 0x21;
     public static final int TYPE_END = 0x22;
-
+    private static volatile StatisticManager statisticManager = null;
     private HashMap<String, YQNativeAdInfo> nativeAD = new HashMap<>();
 
     public static StatisticManager getStatisticManager() {
@@ -50,7 +47,7 @@ public class StatisticManager {
         //广告位置判断
         if (NativeInit.ad_position[0].equals(position) || NativeInit.ad_position[7].equals(position) || NativeInit.ad_position[8].equals(position)
                 || NativeInit.ad_position[1].equals(position)
-			    || (nativeAdInfo != null && nativeAdInfo.getAdvertisement() != null && nativeAdInfo.getAdvertisement().platformId == com.dingyueads.sdk.Constants.AD_TYPE_YINCHENG)
+                || (nativeAdInfo != null && nativeAdInfo.getAdvertisement() != null && nativeAdInfo.getAdvertisement().platformId == com.dingyueads.sdk.Constants.AD_TYPE_YINCHENG)
                 || (nativeAdInfo != null && nativeAdInfo.getAdvertisement() != null && nativeAdInfo.getAdvertisement().platformId == com.dingyueads.sdk.Constants.AD_TYPE_OWNAD)) {
             switch (type) {
                 //书架展现
@@ -100,9 +97,9 @@ public class StatisticManager {
                         if (nativeAdInfo != null && nativeAdInfo.getAdvertisement() != null && !nativeAdInfo.getAdvertisement().isShowed && !nativeAdInfo.getAdvertisement().isClicked) {
                             nativeAD.put(position, nativeAdInfo);
                             AdSceneData adSceneData = nativeAdInfo.getAdSceneData();
-                            
+
                             if (adSceneData != null && novel != null) {
-								adSceneData.ad_show = 1;						
+                                adSceneData.ad_show = 1;
                                 adSceneData.ad_showSuccessTime = String.valueOf(System.currentTimeMillis() / 1000L);
                                 adSceneData.ad_author = novel.author;
                                 adSceneData.book_id = novel.novelId;
@@ -179,7 +176,7 @@ public class StatisticManager {
         parameters.put("os", Constants.APP_SYSTEM_PLATFORM + android.os.Build.VERSION.RELEASE);
         parameters.put("operator", AppUtils.getProvidersName(BaseBookApplication.getGlobalContext()));
         parameters.put("network", NetWorkUtils.getNetWorkTypeNew(BaseBookApplication.getGlobalContext()));
-        if(null != BaseBookApplication.getDisplayMetrics()){
+        if (null != BaseBookApplication.getDisplayMetrics()) {
             String resolution_ratio = BaseBookApplication.getDisplayMetrics().widthPixels + "*" +
                     BaseBookApplication.getDisplayMetrics().heightPixels;
             parameters.put("resolution_ratio", resolution_ratio);
@@ -224,8 +221,8 @@ public class StatisticManager {
         params.put("click_location", adSceneData.ad_clickLocation);
         params.put("click_num", String.valueOf(adSceneData.ad_click));
         params.put("book_id", adSceneData.book_id);
-        params.put("book_source_id",adSceneData.book_source_id);
-        params.put("chapter_id",adSceneData.ad_chapterId);
+        params.put("book_source_id", adSceneData.book_source_id);
+        params.put("chapter_id", adSceneData.ad_chapterId);
         if ("A001".equals(adSceneData.channel_code)) {
             params.put("channel_code", String.valueOf(1));
         } else if ("A002".equals(adSceneData.channel_code)) {

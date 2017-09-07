@@ -1,27 +1,24 @@
 package net.lzbook.kit.utils;
 
+import net.lzbook.kit.constants.ReplaceConstants;
+import net.lzbook.kit.input.MultiInputStreamHelper;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-
-import net.lzbook.kit.constants.ReplaceConstants;
-import net.lzbook.kit.input.MultiInputStreamHelper;
 
 import java.io.File;
 import java.util.UUID;
 
 public class OpenUDID {
 
-    private static String TAG = OpenUDID.class.getSimpleName();
-
-    private static String _openUdid;
-    private static long _time;
-
     // 用户唯一标志
     public final static String PREF_KEY = "openuuid";
     public final static String TIME = "time";
     public static final String COMMON_PREFS = "common_prefs";
-
+    private static String TAG = OpenUDID.class.getSimpleName();
+    private static String _openUdid;
+    private static long _time;
 
     public static void syncContext(Context mContext) {
         if (_openUdid == null) {

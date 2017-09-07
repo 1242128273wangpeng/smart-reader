@@ -5,6 +5,13 @@ import net.lzbook.kit.utils.MD5Utils;
 
 public class FileCache {
 
+    public static String decodeKey(String url) {
+        if (url != null) {
+            return MD5Utils.encodeMD5String(url);
+        }
+        return null;
+    }
+
     public enum CacheType {
         NO_EXPIRED(""), DEFAULT(".cache"), IMAGE_COVER(".image_cover");
 
@@ -14,12 +21,5 @@ public class FileCache {
             this.extension = extension;
         }
 
-    }
-
-    public static String decodeKey(String url) {
-        if (url != null) {
-            return MD5Utils.encodeMD5String(url);
-        }
-        return null;
     }
 }

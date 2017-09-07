@@ -6,36 +6,33 @@ import java.io.PushbackInputStream;
 import java.util.zip.GZIPInputStream;
 
 public class MultiMemberGZIPInputStream extends GZIPInputStream {
+    private MultiMemberGZIPInputStream parent;
+    private MultiMemberGZIPInputStream child;
+    private int size;
+    private boolean eos;
+
     public MultiMemberGZIPInputStream(InputStream in, int size) throws IOException {
         // Wrap the stream in a PushbackInputStream…
         super(new PushbackInputStream(in, size), size);
         this.size = size;
     }
-
     public MultiMemberGZIPInputStream(InputStream in) throws IOException {
         // Wrap the stream in a PushbackInputStream…
         super(new PushbackInputStream(in, 1024));
         this.size = -1;
     }
-
     private MultiMemberGZIPInputStream(MultiMemberGZIPInputStream parent) throws IOException {
         super(parent.in);
         this.size = -1;
         this.parent = parent.parent == null ? parent : parent.parent;
         this.parent.child = this;
     }
-
     private MultiMemberGZIPInputStream(MultiMemberGZIPInputStream parent, int size) throws IOException {
         super(parent.in, size);
         this.size = size;
         this.parent = parent.parent == null ? parent : parent.parent;
         this.parent.child = this;
     }
-
-    private MultiMemberGZIPInputStream parent;
-    private MultiMemberGZIPInputStream child;
-    private int size;
-    private boolean eos;
 
     public int read(byte[] inputBuffer, int inputBufferOffset, int inputBufferLen) throws IOException {
 

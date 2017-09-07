@@ -1,14 +1,12 @@
 package net.lzbook.kit.utils.popup;
 
+import net.lzbook.kit.R;
+
 import android.content.Context;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-
-import net.lzbook.kit.R;
 
 /**
  * Created by Administrator on 2016/12/15 0015.
@@ -16,9 +14,9 @@ import net.lzbook.kit.R;
 public class PopupDownloadManager extends PopupBase implements View.OnClickListener {
 
     public Button btn_selectAll;
+    public boolean hasSelectedAll;
     protected PopupSelectALLClickListener selectAlllickListener;
     View baseView;
-    public boolean hasSelectedAll;
 
     public PopupDownloadManager(Context context) {
         super(context);
@@ -47,7 +45,7 @@ public class PopupDownloadManager extends PopupBase implements View.OnClickListe
         popupWindow.setAnimationStyle(R.style.remove_menu_anim_style);
 //        LinearLayout layout = (LinearLayout) baseView.findViewById(R.id.remove_delete_layout);
 
-        btn_selectAll= (Button) baseView.findViewById(R.id.btn_left);
+        btn_selectAll = (Button) baseView.findViewById(R.id.btn_left);
         delete_btn = (Button) baseView.findViewById(R.id.btn_right);
 
 //        layout.setOnKeyListener(new View.OnKeyListener() {
@@ -85,7 +83,7 @@ public class PopupDownloadManager extends PopupBase implements View.OnClickListe
                     btn_selectAll.setText("全选");
                     selectAlllickListener.selectAll(false);
                     hasSelectedAll = false;
-                }else {
+                } else {
                     btn_selectAll.setText("取消全选");
                     selectAlllickListener.selectAll(true);
                     hasSelectedAll = true;
@@ -100,10 +98,6 @@ public class PopupDownloadManager extends PopupBase implements View.OnClickListe
 
     }
 
-    public interface PopupSelectALLClickListener {
-        void selectAll(boolean checkedAll);
-    }
-
     public void setPopupSelectALLClickListener(PopupSelectALLClickListener l) {
         this.selectAlllickListener = l;
     }
@@ -111,6 +105,10 @@ public class PopupDownloadManager extends PopupBase implements View.OnClickListe
     @Override
     public void changeText(String num) {
         super.changeText(num);
+    }
+
+    public interface PopupSelectALLClickListener {
+        void selectAll(boolean checkedAll);
     }
 
 }

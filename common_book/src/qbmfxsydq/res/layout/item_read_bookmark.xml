@@ -39,5 +39,5 @@
             android:textSize="12sp"
             android:textColor="?attr/read_item_mark_des_color"
             android:text="更新"/>
-    
+
 </LinearLayout>

@@ -1,17 +1,15 @@
 package net.lzbook.kit.data.bean;
 
+import com.dingyueads.sdk.Native.YQNativeAdInfo;
+
+import net.lzbook.kit.utils.AppLog;
+
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
 import android.view.ViewGroup;
-
-import com.dingyueads.sdk.Native.YQNativeAdInfo;
-import android.content.SharedPreferences.Editor;
-
-import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.utils.AppLog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +17,14 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class ReadStatus {
+    //最小阅读速度
+    public static final int kMinAutoReadSpeed = 1;
+    //最大自动阅读速度
+    public static final int kMaxAutoReadSpeed = 20;
+    //默认自动阅读速度
+    private static final int kDefaultAutoReadSpeed = 16;
+    //常量，用于在SP中保存阅读速度时使用
+    private static final String kKeyAutoReadSpeed = "ars";
     //请求的数据信息
     public RequestItem requestItem;
     //后台配置config信息
@@ -53,20 +59,16 @@ public class ReadStatus {
     public String bookSource;
     //当前章节数量
     public ArrayList<ArrayList<String>> mLineList;
-
     //统计打点用，,获取当前页面的字符数，每次翻页会先至0
     public int currentPageConentLength;
-
     //统计打点用，书籍源，中间有切换源则多个源使用分隔符"`"进行连接
     public String source_ids;
     //保存开始阅读时间，方便当用户退出阅读时 打点统计
     public long startReadTime;
-
     //统计打点用  如果是从上一章节跳转到下一章节 记录上一章节的最后一页的数据
     public int lastSequenceRemark;
     public int lastCurrentPageRemark;
     public int lastPageCount;
-
     public ArrayList<String> bookNameList;
     //章节名称列表
     public ArrayList<String> chapterNameList;
@@ -105,18 +107,19 @@ public class ReadStatus {
     //当前广告信息，章末上
     public YQNativeAdInfo currentAdInfo;
     //当前广告信息，章末下
-    public YQNativeAdInfo currentAdInfoDown;		
+    public YQNativeAdInfo currentAdInfoDown;
     //当前广告图片
     public YQNativeAdInfo currentAdInfo_image;
     //当前章节内广告信息
     public YQNativeAdInfo currentAdInfo_in_chapter;
     //储存5-2广告位信息的容器
     public ArrayList<HashMap<YQNativeAdInfo, Bitmap>> containerInChapter = new ArrayList<>();
-
     //广告布局
     public ViewGroup novel_basePageView;
     //章节内大图广告Bitmap
     public Bitmap ad_bimap_big_inChapter;
+    //封面页curl
+    public String firstChapterCurl = "";
     //大图广告Bitmap
     private Bitmap ad_bitmap_big;
     //小图广告Bitmap
@@ -127,17 +130,7 @@ public class ReadStatus {
     private Bitmap ad_bitmap_middle_down;
     //自动阅读速度
     private int _autoReadSpeed;
-    //默认自动阅读速度
-    private static final int kDefaultAutoReadSpeed = 16;
-    //常量，用于在SP中保存阅读速度时使用
-    private static final String kKeyAutoReadSpeed = "ars";
-    //最小阅读速度
-    public static final int kMinAutoReadSpeed = 1;
-    //最大自动阅读速度
-    public static final int kMaxAutoReadSpeed = 20;
     private SharedPreferences preferences;
-    //封面页curl
-    public String firstChapterCurl = "";
 
     public ReadStatus(Context context) {
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -220,6 +213,7 @@ public class ReadStatus {
         }
         this.ad_bitmap_middle_down = ad_bitmap_middle_down;
     }
+
     public Bitmap getAd_bitmap_big() {
         return ad_bitmap_big;
     }
@@ -405,7 +399,7 @@ public class ReadStatus {
         if (currentAdInfo != null ? !currentAdInfo.equals(that.currentAdInfo) : that.currentAdInfo != null)
             return false;
         if (currentAdInfoDown != null ? !currentAdInfoDown.equals(that.currentAdInfoDown) : that.currentAdInfoDown != null)
-            return false; 
+            return false;
         if (currentAdInfo_image != null ? !currentAdInfo_image.equals(that.currentAdInfo_image) : that.currentAdInfo_image != null)
             return false;
         if (currentAdInfo_in_chapter != null ? !currentAdInfo_in_chapter.equals(that.currentAdInfo_in_chapter) : that.currentAdInfo_in_chapter != null)
@@ -468,7 +462,7 @@ public class ReadStatus {
         result = 31 * result + width_nativead_big;
         result = 31 * result + height_nativead_big;
         result = 31 * result + (currentAdInfo != null ? currentAdInfo.hashCode() : 0);
-        result = 31 * result + (currentAdInfoDown != null ? currentAdInfoDown.hashCode() : 0);												  
+        result = 31 * result + (currentAdInfoDown != null ? currentAdInfoDown.hashCode() : 0);
         result = 31 * result + (currentAdInfo_image != null ? currentAdInfo_image.hashCode() : 0);
         result = 31 * result + (currentAdInfo_in_chapter != null ? currentAdInfo_in_chapter.hashCode() : 0);
         result = 31 * result + (novel_basePageView != null ? novel_basePageView.hashCode() : 0);

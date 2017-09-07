@@ -1,42 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_white_fafafa">
-
-    <TextView
-        android:id="@+id/tv_loading_progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="14dp"
-        android:shadowColor="@color/color_white"
-        android:shadowDx="1"
-        android:shadowDy="1"
-        android:text="精彩内容正在加载..."
-        android:shadowRadius="1"
-        android:textColor="@color/color_gray_868686"
-        android:textSize="16sp" />
-
-    <RelativeLayout
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/tv_loading_progress"
-        android:layout_centerInParent="true" >
-
-        <ProgressBar
-            android:id="@+id/loading_progressbar"
-            style="@style/CircleProgressBar"
+        android:layout_height="match_parent"
+        android:background="@color/color_white_fafafa">
+    
+    <TextView
+            android:id="@+id/tv_loading_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_width="wrap_content"
+            android:layout_marginTop="14dp"
+            android:shadowColor="@color/color_white"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:text="精彩内容正在加载..."
+            android:shadowRadius="1"
+            android:textColor="@color/color_gray_868686"
+            android:textSize="16sp"/>
+    
+    <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:indeterminateDuration="1000" />
-
+            android:layout_above="@id/tv_loading_progress"
+            android:layout_centerInParent="true">
+        
+        <ProgressBar
+                android:id="@+id/loading_progressbar"
+                style="@style/CircleProgressBar"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminateDuration="1000"/>
+        
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/loading_progressbar"
-            android:paddingTop="@dimen/dimen_padding_10"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/loading_progressbar"
+                android:paddingTop="@dimen/dimen_padding_10"/>
     </RelativeLayout>
 
 </RelativeLayout>

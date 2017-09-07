@@ -12,8 +12,9 @@ import java.util.ArrayList;
 /**
  * Created by iyouqu on 2016/11/16.
  */
-public class YSRequestService extends VolleyDataService{
+public class YSRequestService extends VolleyDataService {
     public static String TAG = YSRequestService.class.getSimpleName();
+
     public static void getSearchSuggestData(VolleyDataService.DataServiceTagCallBack dataServiceTagCallBack, String url) {
         publicCode(url, null, dataServiceTagCallBack, new Parser() {
             @Override
@@ -25,10 +26,6 @@ public class YSRequestService extends VolleyDataService{
 
     /**
      * 获取搜索建议
-     *
-     * @param json
-     * @return
-     * @throws JSONException
      */
     public static ArrayList<String> getSearchSuggest(String json) throws JSONException {
         JSONObject jsonRoot = new JSONObject(json);
@@ -44,7 +41,7 @@ public class YSRequestService extends VolleyDataService{
                     String item = (String) items.get(i);
                     if (item != null) {
                         item = item.trim();
-                        if (!result.contains(item)){
+                        if (!result.contains(item)) {
                             result.add(item);
                         }
                     }

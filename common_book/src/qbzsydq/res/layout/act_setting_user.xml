@@ -274,7 +274,7 @@
                     android:layout_width="match_parent"
                     android:visibility="gone"
                     android:layout_height="@dimen/dimen_height_45"
-                    >
+            >
                 
                 <View
                         android:id="@+id/v_divider1"
@@ -687,25 +687,25 @@
                         android:layout_height="@dimen/dimen_height_0.5"
                         android:layout_alignParentBottom="true"
                         android:background="?attr/color_divider"
-                        />
+                />
             </RelativeLayout>
             <RelativeLayout
-                android:id="@+id/rl_logout"
-                android:layout_width="match_parent"
-                android:layout_height="90dp">
-            <Button
-                    android:id="@+id/btn_logout"
-                    android:layout_width="154dp"
-                    android:layout_height="40dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:padding="7.5dp"
-                    android:textSize="18sp"
-                    android:text="@string/logout"
-                    android:textColor="?attr/setting_logout_font_color"
-                    android:background="?attr/setting_logout_background"
-                    />
-        </RelativeLayout>
+                    android:id="@+id/rl_logout"
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp">
+                <Button
+                        android:id="@+id/btn_logout"
+                        android:layout_width="154dp"
+                        android:layout_height="40dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:padding="7.5dp"
+                        android:textSize="18sp"
+                        android:text="@string/logout"
+                        android:textColor="?attr/setting_logout_font_color"
+                        android:background="?attr/setting_logout_background"
+                />
+            </RelativeLayout>
         </LinearLayout>
     </ScrollView>
 

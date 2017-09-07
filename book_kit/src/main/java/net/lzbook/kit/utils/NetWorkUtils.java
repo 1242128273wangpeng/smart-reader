@@ -10,13 +10,12 @@ public class NetWorkUtils {
     public static final int NETWORK_NONE = 0x50;
     public static final int NETWORK_WIFI = 0x51;
     public static final int NETWORK_MOBILE = 0x52;
-    public static int NETWORK_TYPE = NETWORK_MOBILE;
-
     /**
      * for native ad
      **/
     public static final int NATIVE_AD_READY = 1;//加载广告成功
     public static final int NATIVE_AD_ERROR = 2;//加载广告失败
+    public static int NETWORK_TYPE = NETWORK_MOBILE;
     public static int NATIVE_AD_TYPE = NATIVE_AD_ERROR;
 
     public static void initNetWorkType(Context context) {

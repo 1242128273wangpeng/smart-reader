@@ -1,76 +1,32 @@
 package net.lzbook.kit.utils;
 
-import android.content.Context;
-import android.os.Handler;
-import android.os.HandlerThread;
-
-import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.db.BookDaoHelper;
+
+import android.content.Context;
+import android.os.Handler;
+import android.os.HandlerThread;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FileViewer {
+    public final static String FILE_EXTENSION_SEPARATOR = ".";
+    public final static String FILE_EXTENSION_SUFFIX = "delete";
     static String TAG = "FileViewer";
     // ==================================================================
     // fields
     // ====================================================================
     final long maxSize = 100 * 1024 * 1024; // TODO 100MB
     String rootPath = ReplaceConstants.getReplaceConstants().APP_PATH_BOOK;
-    private List<String> delFailPath = new ArrayList<>();// 删除失败的目录
-    private List<String> delSuccessPath = new ArrayList<>();// 删除失败的目录
-
-    public final static String FILE_EXTENSION_SEPARATOR = ".";
-    public final static String FILE_EXTENSION_SUFFIX = "delete";
     Context context;
     Handler mHandler = null;
-
     FileDeleteFailedCallback deleteFailedCallback;
     FileDeleteSuccessCallback deleteSuccessCallback;
-
-    public FileViewer(Context context) {
-        this.context = context;
-    }
-
-    /**
-     * 删除
-     */
-    public void doDelete() {
-        HandlerThread thread = new HandlerThread("doDelete");
-        // thread.setPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
-        AppLog.d(TAG, "doDeleteThread.start " + thread.getName());
-        thread.start();
-
-        if (mHandler != null) {
-            mHandler.post(deleteFileTask);
-        } else {
-            mHandler = new Handler(thread.getLooper());
-            mHandler.post(deleteFileTask);
-        }
-    }
-
-    public void setDeleteFailedCallback(FileDeleteFailedCallback callback) {
-        this.deleteFailedCallback = callback;
-    }
-
-    public void removeDeleteCall() {
-        if (mHandler != null && null != deleteFileTask) {
-            mHandler.removeCallbacks(deleteFileTask);
-        }
-    }
-
-    public interface FileDeleteFailedCallback {
-        public void getDeleteFailedPath(ArrayList<String> pathList);
-
-    }
-
-    public interface FileDeleteSuccessCallback {
-        public void getDeleteSuccessPath(ArrayList<String> pathList);
-    }
-
+    private List<String> delFailPath = new ArrayList<>();// 删除失败的目录
+    private List<String> delSuccessPath = new ArrayList<>();// 删除失败的目录
     Runnable deleteFileTask = new Runnable() {
 
         @Override
@@ -107,6 +63,59 @@ public class FileViewer {
 
         }
     };
+
+    public FileViewer(Context context) {
+        this.context = context;
+    }
+
+    /**
+     * get file name extension from path, not include suffix
+     * <p/>
+     * filePath
+     */
+    public static String getFileExtension(String filePath) {
+        if (isBlank(filePath)) {
+            return filePath;
+        }
+
+        int extenPosi = filePath.lastIndexOf(FILE_EXTENSION_SEPARATOR);
+        int filePosi = filePath.lastIndexOf(File.separator);
+        if (extenPosi == -1) {
+            return "";
+        }
+        return (filePosi >= extenPosi) ? "" : filePath.substring(extenPosi + 1);
+    }
+
+    public static boolean isBlank(String str) {
+        return (str == null || str.trim().length() == 0);
+    }
+
+    /**
+     * 删除
+     */
+    public void doDelete() {
+        HandlerThread thread = new HandlerThread("doDelete");
+        // thread.setPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
+        AppLog.d(TAG, "doDeleteThread.start " + thread.getName());
+        thread.start();
+
+        if (mHandler != null) {
+            mHandler.post(deleteFileTask);
+        } else {
+            mHandler = new Handler(thread.getLooper());
+            mHandler.post(deleteFileTask);
+        }
+    }
+
+    public void setDeleteFailedCallback(FileDeleteFailedCallback callback) {
+        this.deleteFailedCallback = callback;
+    }
+
+    public void removeDeleteCall() {
+        if (mHandler != null && null != deleteFileTask) {
+            mHandler.removeCallbacks(deleteFileTask);
+        }
+    }
 
     private void doDeleteFile(String root) {
         File f = new File(root);// 一级目录
@@ -195,27 +204,12 @@ public class FileViewer {
         }
     }
 
-    /**
-     * get file name extension from path, not include suffix
-     * <p/>
-     * filePath
-     *
-     * @return
-     */
-    public static String getFileExtension(String filePath) {
-        if (isBlank(filePath)) {
-            return filePath;
-        }
+    public interface FileDeleteFailedCallback {
+        public void getDeleteFailedPath(ArrayList<String> pathList);
 
-        int extenPosi = filePath.lastIndexOf(FILE_EXTENSION_SEPARATOR);
-        int filePosi = filePath.lastIndexOf(File.separator);
-        if (extenPosi == -1) {
-            return "";
-        }
-        return (filePosi >= extenPosi) ? "" : filePath.substring(extenPosi + 1);
     }
 
-    public static boolean isBlank(String str) {
-        return (str == null || str.trim().length() == 0);
+    public interface FileDeleteSuccessCallback {
+        public void getDeleteSuccessPath(ArrayList<String> pathList);
     }
 }

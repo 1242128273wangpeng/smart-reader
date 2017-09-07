@@ -1,5 +1,8 @@
 package net.lzbook.kit.book.adapter;
 
+import net.lzbook.kit.R;
+import net.lzbook.kit.utils.AppLog;
+
 import android.content.Context;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -9,31 +12,24 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-import net.lzbook.kit.R;
-import net.lzbook.kit.utils.AppLog;
-
 import java.util.HashSet;
 import java.util.List;
 
 public abstract class RemoveModeAdapter extends BaseAdapter {
 
-    protected String TAG = "RemoveModeAdapter";
-    private boolean isRemoveMode = false;//
-    public HashSet<Integer> remove_checked_states;
-    private List<?> listData;
-    int distanceY = -1;
-    RemoveAdapterChild adapter_child;
     public final static int MODE_LEFT = 0x10;
     public final static int MODE_EXCEPT_FIRST = 0x30;
     public final static int MODE_EXCEPT_FIRST_DOWNLOAD = 0x40;
     public final static int MODE_DEFAULT = MODE_LEFT;
-    private int mode_default = MODE_DEFAULT;
-    ViewHolder holder = null;
+    public HashSet<Integer> remove_checked_states;
+    protected String TAG = "RemoveModeAdapter";
     protected Context mContext;
-
-    public List<?> getList() {
-        return listData;
-    }
+    int distanceY = -1;
+    RemoveAdapterChild adapter_child;
+    ViewHolder holder = null;
+    private boolean isRemoveMode = false;//
+    private List<?> listData;
+    private int mode_default = MODE_DEFAULT;
 
     public RemoveModeAdapter(Context context, List<?> list) {
         listData = list;
@@ -41,6 +37,10 @@ public abstract class RemoveModeAdapter extends BaseAdapter {
         remove_checked_states = new HashSet<>();
         resetRemovedState();
         distanceY = (int) mContext.getResources().getDimension(R.dimen.dimen_view_height_50);
+    }
+
+    public List<?> getList() {
+        return listData;
     }
 
     @Override
@@ -106,26 +106,12 @@ public abstract class RemoveModeAdapter extends BaseAdapter {
         this.mode_default = mode;
     }
 
-    public interface RemoveAdapterChild {
-
-        View setChildView(int position, View convertView, ViewHolder holder);
-
-        ViewHolder wholeHolder();
-
-        void setChildAdapterData(int position, ViewHolder holder, View childView);
-    }
-
-    public static class ViewHolder {
-        public ImageView check;
-        public ViewGroup childView;
+    public boolean isRemoveMode() {
+        return isRemoveMode;
     }
 
     public void setRemoveMode(boolean isRemoveMode) {
         this.isRemoveMode = isRemoveMode;
-    }
-
-    public boolean isRemoveMode() {
-        return isRemoveMode;
     }
 
     public void setChecked(int position) {
@@ -137,7 +123,7 @@ public abstract class RemoveModeAdapter extends BaseAdapter {
         }
     }
 
-    public void setAllChecked(boolean checkedAll){
+    public void setAllChecked(boolean checkedAll) {
         AppLog.d(TAG, "setAllChecked");
         if (checkedAll) {
             for (int position = 0; position < listData.size(); position++) {
@@ -145,7 +131,7 @@ public abstract class RemoveModeAdapter extends BaseAdapter {
                     remove_checked_states.add(position);
                 }
             }
-        }else {
+        } else {
             for (int position = 0; position < listData.size(); position++) {
                 if (remove_checked_states.contains(position)) {
                     remove_checked_states.remove(position);
@@ -211,5 +197,19 @@ public abstract class RemoveModeAdapter extends BaseAdapter {
     public int getCheckedSize() {
         AppLog.d(TAG, "remove_checked_states.size() " + remove_checked_states.size());
         return remove_checked_states.size();
+    }
+
+    public interface RemoveAdapterChild {
+
+        View setChildView(int position, View convertView, ViewHolder holder);
+
+        ViewHolder wholeHolder();
+
+        void setChildAdapterData(int position, ViewHolder holder, View childView);
+    }
+
+    public static class ViewHolder {
+        public ImageView check;
+        public ViewGroup childView;
     }
 }

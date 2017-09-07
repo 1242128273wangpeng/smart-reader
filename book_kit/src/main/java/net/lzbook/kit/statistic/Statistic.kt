@@ -29,8 +29,7 @@ private fun getLOGClient(log: IAliLogModel): LOGClient {
 
 
 fun alilog(log: IAliLogModel) {
-    Observable.create<Boolean> {
-        subcribe ->
+    Observable.create<Boolean> { subcribe ->
         try {
             val logGroup = LogGroup()
             logGroup.PutLog(log.toLog())
@@ -44,8 +43,7 @@ fun alilog(log: IAliLogModel) {
                 println("alilog complete")
             }
             .subscribekt(
-                    onError = {
-                        e ->
+                    onError = { e ->
                         e.printStackTrace()
                     }
             )

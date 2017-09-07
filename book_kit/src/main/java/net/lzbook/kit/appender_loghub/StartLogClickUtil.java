@@ -1,8 +1,5 @@
 package net.lzbook.kit.appender_loghub;
 
-import android.content.Context;
-
-
 import net.lzbook.kit.appender_loghub.appender.AndroidLogClient;
 import net.lzbook.kit.appender_loghub.common.PLItemKey;
 import net.lzbook.kit.appender_loghub.util.FormatUtil;
@@ -11,9 +8,10 @@ import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 
+import android.content.Context;
+
 import java.util.LinkedList;
 import java.util.List;
-
 import java.util.Map;
 
 /**
@@ -106,15 +104,11 @@ public class StartLogClickUtil {
     public static final String LOGOUT = "LOGOUT";//点击退出登录
 
 
-
     //阅读页更多
     public static final String READ_SOURCECHANGE = "SOURCECHANGE";//换源
     public static final String READ_SOURCECHANGECONFIRM = "SOURCECHANGECONFIRM";//确认换源
     public static final String BOOKMARKEDIT = "BOOKMARKEDIT";//添加书签
     public static final String BOOKDETAIL = "BOOKDETAIL";//书籍详情
-
-
-
 
 
     private static List<ServerLog> linkList = new LinkedList<ServerLog>();
@@ -150,7 +144,7 @@ public class StartLogClickUtil {
 //        data.put("start_time", System.currentTimeMillis()+"");
 //        data.put("end_time", System.currentTimeMillis()+1000+"");
 //        log.PutContent("data", FormatUtil.forMatMap(data));
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 AppLog.e("log", log.GetContent().toString());
@@ -194,7 +188,7 @@ public class StartLogClickUtil {
         }
 
 
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 AppLog.e("log", log.GetContent().toString());
@@ -219,7 +213,7 @@ public class StartLogClickUtil {
         log.PutContent("apps", applist);
         log.PutContent("time", System.currentTimeMillis() + "");
 
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 AppLog.e("log", log.GetContent().toString());
@@ -262,7 +256,7 @@ public class StartLogClickUtil {
         linkList.add(log);
         AppLog.e("log", log.GetContent().toString());
         if (linkList != null && linkList.size() > 10) {
-            new Thread(){
+            new Thread() {
                 @Override
                 public void run() {
                     for (int i = 0; i < linkList.size(); i++) {

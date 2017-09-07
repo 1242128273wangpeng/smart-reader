@@ -16,22 +16,10 @@ import iyouqu.theme.statusbar.impl.MIUIHelper;
  * Created by yuchao on 2017/8/10
  */
 public class StatusBarFontHelper {
-    @IntDef({
-            OTHER,
-            MIUI,
-            FLYME,
-            ANDROID_M
-    })
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface SystemType {
-
-    }
-
     public static final int OTHER = -1;
     public static final int MIUI = 1;
     public static final int FLYME = 2;
     public static final int ANDROID_M = 3;
-
 
     /**
      * 设置状态栏黑色字体图标，
@@ -49,7 +37,7 @@ public class StatusBarFontHelper {
             } else if (new AndroidMHelper().setStatusBarLightMode(activity, isFontColorDark)) {
                 result = ANDROID_M;
             }
-            if (isFontColorDark && (result == MIUI ||result == FLYME ||result == ANDROID_M)){
+            if (isFontColorDark && (result == MIUI || result == FLYME || result == ANDROID_M)) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     activity.getWindow().setStatusBarColor(activity.getResources().getColor(R.color.color_white));
                 }
@@ -84,6 +72,17 @@ public class StatusBarFontHelper {
         } else if (type == ANDROID_M) {
             new AndroidMHelper().setStatusBarLightMode(activity, isFontColorDark);
         }
+    }
+
+    @IntDef({
+            OTHER,
+            MIUI,
+            FLYME,
+            ANDROID_M
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface SystemType {
+
     }
 
 }

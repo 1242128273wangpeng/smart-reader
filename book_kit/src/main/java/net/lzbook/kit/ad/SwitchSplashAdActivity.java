@@ -1,5 +1,11 @@
 package net.lzbook.kit.ad;
 
+import com.dingyueads.sdk.NativeInit;
+
+import net.lzbook.kit.R;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.utils.ResourceUtil;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,21 +17,16 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.dingyueads.sdk.NativeInit;
-
-import net.lzbook.kit.R;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.utils.ResourceUtil;
-
 import java.lang.ref.WeakReference;
 
 import static android.view.KeyEvent.KEYCODE_BACK;
 
 public class SwitchSplashAdActivity extends Activity {
-    private static String TAG = "SwitchSplashAdActivity";
     private static final int SHOW_CLOSE_BT = 1;
+    private static String TAG = "SwitchSplashAdActivity";
     SwitchHandler mHandler;
     private ImageView mCloseBt;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +46,7 @@ public class SwitchSplashAdActivity extends Activity {
         if (mHandler == null) {
             mHandler = new SwitchHandler(this);
         }
-        mHandler.sendEmptyMessageDelayed(SHOW_CLOSE_BT, Constants.show_switchSplash_ad_close*1000);
+        mHandler.sendEmptyMessageDelayed(SHOW_CLOSE_BT, Constants.show_switchSplash_ad_close * 1000);
 
         mCloseBt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,7 +65,7 @@ public class SwitchSplashAdActivity extends Activity {
     }
 
 
-     class SwitchHandler extends Handler{
+    class SwitchHandler extends Handler {
 
         private WeakReference<SwitchSplashAdActivity> weakReference;
 
@@ -73,9 +74,9 @@ public class SwitchSplashAdActivity extends Activity {
         }
 
         @Override
-        public void handleMessage(Message msg){
-            SwitchSplashAdActivity activity =  weakReference.get();
-            if (activity== null) {
+        public void handleMessage(Message msg) {
+            SwitchSplashAdActivity activity = weakReference.get();
+            if (activity == null) {
                 return;
             }
             switch (msg.what) {

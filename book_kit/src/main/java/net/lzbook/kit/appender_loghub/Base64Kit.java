@@ -2,6 +2,7 @@ package net.lzbook.kit.appender_loghub;
 /**
  * Created by wangjwchn on 16/8/2.
  */
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -20,14 +21,48 @@ import java.io.Reader;
 import java.io.Writer;
 
 public class Base64Kit {
+    //
+    // code characters for values 0..63
+    //
+    private static char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".toCharArray();
+    //
+    // lookup table for converting base64 characters to value in range 0..63
+    //
+    private static byte[] codes = new byte[256];
+
+    static {
+        for (int i = 0; i < 256; i++) {
+            codes[i] = -1;
+            // LoggerUtil.debug(i + "&" + codes[i] + " ");
+        }
+        for (int i = 'A'; i <= 'Z'; i++) {
+            codes[i] = (byte) (i - 'A');
+            // LoggerUtil.debug(i + "&" + codes[i] + " ");
+        }
+
+        for (int i = 'a'; i <= 'z'; i++) {
+            codes[i] = (byte) (26 + i - 'a');
+            // LoggerUtil.debug(i + "&" + codes[i] + " ");
+        }
+        for (int i = '0'; i <= '9'; i++) {
+            codes[i] = (byte) (52 + i - '0');
+            // LoggerUtil.debug(i + "&" + codes[i] + " ");
+        }
+        codes['+'] = 62;
+        codes['/'] = 63;
+    }
+
     public Base64Kit() {
     }
+
     public static String encode(String data) {
         return new String(encode(data.getBytes()));
     }
+
     public static String decode(String data) {
         return new String(decode(data.toCharArray()));
     }
+
     public static char[] encode(byte[] data) {
         char[] out = new char[((data.length + 2) / 3) * 4];
         for (int i = 0, index = 0; i < data.length; i += 3, index += 4) {
@@ -55,6 +90,7 @@ public class Base64Kit {
         }
         return out;
     }
+
     public static byte[] decode(char[] data) {
 
         int tempLen = data.length;
@@ -105,12 +141,11 @@ public class Base64Kit {
 
         return out;
     }
+
     public static void encode(File file) throws IOException {
         if (!file.exists()) {
             System.exit(0);
-        }
-
-        else {
+        } else {
             byte[] decoded = readBytes(file);
             char[] encoded = encode(decoded);
             writeChars(file, encoded);
@@ -127,37 +162,6 @@ public class Base64Kit {
             writeBytes(file, decoded);
         }
         file = null;
-    }
-
-    //
-    // code characters for values 0..63
-    //
-    private static char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".toCharArray();
-
-    //
-    // lookup table for converting base64 characters to value in range 0..63
-    //
-    private static byte[] codes = new byte[256];
-    static {
-        for (int i = 0; i < 256; i++) {
-            codes[i] = -1;
-            // LoggerUtil.debug(i + "&" + codes[i] + " ");
-        }
-        for (int i = 'A'; i <= 'Z'; i++) {
-            codes[i] = (byte) (i - 'A');
-            // LoggerUtil.debug(i + "&" + codes[i] + " ");
-        }
-
-        for (int i = 'a'; i <= 'z'; i++) {
-            codes[i] = (byte) (26 + i - 'a');
-            // LoggerUtil.debug(i + "&" + codes[i] + " ");
-        }
-        for (int i = '0'; i <= '9'; i++) {
-            codes[i] = (byte) (52 + i - '0');
-            // LoggerUtil.debug(i + "&" + codes[i] + " ");
-        }
-        codes['+'] = 62;
-        codes['/'] = 63;
     }
 
     private static byte[] readBytes(File file) throws IOException {

@@ -80,43 +80,63 @@ public class Constants {
     public static final String LAST_READ = "LAST_READ";
     public static final String NONET_READ = "NONET_READ";
     public static final String NONET_READTIME = "NONET_READHOUR";
-    public static int NONET_READHOUR = 24;
     public static final int NOPACKAGE = 100;
+    //根据包名、版本号、渠道号对广告进行限制
+    public static final String LIMIT_VERSIONCODE = "limit_versioncode";
+    public static final String LIMIT_CHANNELID = "limit_channelid";
+    public static final String AD_HUAJIAO_SWITCH = "ad_huajiao_switch";
+    public static final String AD_HUAJIAO_ACCESS_ADDRESS = "ad_huajiao_access_address";
+    public static final String CHANNEL_LIMIT = "channel_limit";
+    public static final String DAY_LIMIT = "day_limit";
+    public static final String REQUEST_ITEM = "request_item";
+    public static final String NOTIFY_ID = "notify_id";
+    /**
+     * 用于解析的jar包 新
+     */
+    public static final String DEX_NAME = "extractor-encryption-v16.dex";
+    public static final String PARSER_PACKAGE_VERSION = "parser_package_version";
+    public static final String JAR_UPDATE_TIME = "jar_update_time";
+    public static final int jarUpdateTime = 5 * 60 * 1000;
+    public static final int CURRENT_DEX_VERSION = 24;
+    public static final String CLAZZ_NAME_EXTRACTOR_VALUE = "net.xxx.yyy.go.spider.v16.MainExtractor";
+    public static final String CLAZZ_NAME_URL_BUILDER_VALUE = "net.xxx.yyy.go.spider.v16.URLBuilder";
+    public static final String CLAZZ_NAME_EXTRACTOR_KEY = "CLAZZ_NAME_EXTRACTOR";
+    public static final String CLAZZ_NAME_URL_BUILDER_KEY = "CLAZZ_NAME_URL_BUILDER";
+    public static final String DEX_NAME_UPDATE_KEY = "DEX_NAME_UPDATE";
+    public static final String user_new_index = "user_new_index";
+    public static final String user_new_ad_limit_day = "user_new_ad_limit_day";
+    //用户是否进行过源迁移
+    public static final String USER_TRANSFER_KEY = "user_transfer";
+    //用户当日首次打开app的时间
+    public static final String TODAY_FIRST_OPEN_APP = "today_first_open_app";
+    //用户当天是否上传了用户信息
+    public static final String IS_UPLOAD = "IS_UPLOAD";
+    //用户平台系统
+    public static final String APP_SYSTEM_PLATFORM = "android";
+    public static final String UPDATE_CHAPTER_SOURCE_ID = "update_chapter_source_id";
+    public static final int CONTENT_ERROR_COUNT = 50;
+    public static int NONET_READHOUR = 24;
     public static int DOWNLOAD = 400;
-
     // FIXME 上线要改成false
     public static boolean SHOW_LOG = false;
     public static boolean DEVELOPER_MODE = false;
     public static boolean isSdCard = false;
     public static boolean isHideAD = false;//全局广告开关
-
-    //根据包名、版本号、渠道号对广告进行限制
-    public static final String LIMIT_VERSIONCODE = "limit_versioncode";
-    public static final String LIMIT_CHANNELID = "limit_channelid";
     public static int limit_versionCode = 0;
     public static String limit_channelIds = "";
-
     public static boolean ad_huajiao_switch = false;
-    public static final String AD_HUAJIAO_SWITCH = "ad_huajiao_switch";
-    public static final String AD_HUAJIAO_ACCESS_ADDRESS = "ad_huajiao_access_address";
     public static String ad_huajiao_access_address = "http://h.open.huajiao.com?channelid=quanbenzhuishu";
-
     public static String SDCARD_PATH = Environment.getExternalStorageDirectory().getAbsolutePath();
-
     public static String CHARSET = HTTP.UTF_8;
-
     public static boolean isNetWorkError = false;
-
     public static int manualReadedCount = 0;
     public static int manualTip = 50;
     // 阅读模式
     public static int MODE = 51;//day
     //翻页模式
     public static int PAGE_MODE = 0;
-
     //全屏阅读
     public static boolean FULL_SCREEN_READ = false;
-
     // 阅读页默认字体大小
     public static int FONT_SIZE = 18;
     // 阅读页章节首页提示 默认字体大小
@@ -176,19 +196,12 @@ public class Constants {
     public static boolean dy_is_new_reading_end = false;
     //新壳广告开关
     public static boolean new_app_ad_switch = false;
-
     public static int ad_limit_time_day = 2;//新用户前三天不显示ad
-
     public static boolean isBaiduExamine = false;
     public static boolean isHuaweiExamine = false;
     public static int versionCode = 0;
-
     public static boolean is_user_transfer_first = true;
     public static boolean is_user_transfer_second = false;
-
-    public static final String CHANNEL_LIMIT = "channel_limit";
-    public static final String DAY_LIMIT = "day_limit";
-
     //是否开启屏蔽
     public static boolean isShielding = false;
     //经度信息
@@ -203,61 +216,25 @@ public class Constants {
     public static String cityCode = "";
     //详细地址
     public static String adLocationDetail = "";
-
-    public static final String REQUEST_ITEM = "request_item";
-    public static final String NOTIFY_ID = "notify_id";
     public static boolean is_reading_network_limit = false;
-    /**
-     * 用于解析的jar包 新
-     */
-    public static final String DEX_NAME = "extractor-encryption-v16.dex";
-    public static final String PARSER_PACKAGE_VERSION = "parser_package_version";
-
-    public static final String JAR_UPDATE_TIME = "jar_update_time";
-    public static final int jarUpdateTime = 5 * 60 * 1000;
-    public static final int CURRENT_DEX_VERSION = 24;
-    public static final String CLAZZ_NAME_EXTRACTOR_VALUE = "net.xxx.yyy.go.spider.v16.MainExtractor";
-    public static final String CLAZZ_NAME_URL_BUILDER_VALUE = "net.xxx.yyy.go.spider.v16.URLBuilder";
-    public static final String CLAZZ_NAME_EXTRACTOR_KEY = "CLAZZ_NAME_EXTRACTOR";
-    public static final String CLAZZ_NAME_URL_BUILDER_KEY = "CLAZZ_NAME_URL_BUILDER";
-    public static final String DEX_NAME_UPDATE_KEY = "DEX_NAME_UPDATE";
-
-    public static final String user_new_index = "user_new_index";
-    public static final String user_new_ad_limit_day = "user_new_ad_limit_day";
-
-    //用户是否进行过源迁移
-    public static final String USER_TRANSFER_KEY = "user_transfer";
     public static boolean USER_TRANSFER_VALUE = false;
-    //用户当日首次打开app的时间
-    public static final String TODAY_FIRST_OPEN_APP = "today_first_open_app";
     //用户是否是当日首次打开app
     public static boolean is_user_today_first = false;
-
-    //用户当天是否上传了用户信息
-    public static final String IS_UPLOAD = "IS_UPLOAD";
     public static boolean upload_userinformation = false;
     public static int preVersionCode = 0;
-    //用户平台系统
-    public static final String APP_SYSTEM_PLATFORM = "android";
     //用户迁移目标源（域名更替）
     public static String USER_TRANFER_DESTINATION = "www.dushixiaoshuo.cn";
-
     //新的用户广告数据搜集接口
     public static String AD_DATA_Collect = "http://ad.dingyueads.com:8010/insertData";
     //新的用户广告数据搜集接口域名获取key
     public static String DY_AD_NEW_REQUEST_DOMAIN_NAME = "DY_ad_new_request_domain_name";
-
     //源相关字段
     public static String QG_SOURCE = "api.qingoo.cn";
     public static String YS_SOURCE = "b.easou.com";
     public static String SG_SOURCE = "k.sogou.com";
-    public static String FILTER_WORD = "easou";
-
-    public static final String UPDATE_CHAPTER_SOURCE_ID = "update_chapter_source_id";
 
     //public static final String CONTENT_ERROR = "文章内容较短,可能非正文,正在抓紧修复中";
-
-    public static final int CONTENT_ERROR_COUNT = 50;
+    public static String FILTER_WORD = "easou";
     public static String STYLE_CHANGE = "style1";
 
     public static String NOVEL_HOST = "novel_host";

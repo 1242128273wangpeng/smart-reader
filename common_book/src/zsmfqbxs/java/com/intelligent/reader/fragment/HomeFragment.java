@@ -1,5 +1,27 @@
 package com.intelligent.reader.fragment;
 
+import com.baidu.mobstat.StatService;
+import com.intelligent.reader.BuildConfig;
+import com.intelligent.reader.R;
+import com.intelligent.reader.activity.DownloadManagerActivity;
+import com.intelligent.reader.activity.HomeActivity;
+import com.intelligent.reader.activity.SearchBookActivity;
+import com.intelligent.reader.activity.SettingActivity;
+import com.intelligent.reader.activity.SplashActivity;
+import com.intelligent.reader.app.BookApplication;
+
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.book.view.ConsumeEvent;
+import net.lzbook.kit.book.view.NonSwipeViewPager;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.request.UrlUtils;
+import net.lzbook.kit.utils.AnimationHelper;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.FrameBookHelper;
+import net.lzbook.kit.utils.SharedPreferencesUtils;
+import net.xxx.yyy.go.spider.URLBuilderIntterface;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -28,28 +50,6 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.baidu.mobstat.StatService;
-import com.intelligent.reader.BuildConfig;
-import com.intelligent.reader.R;
-import com.intelligent.reader.activity.DownloadManagerActivity;
-import com.intelligent.reader.activity.HomeActivity;
-import com.intelligent.reader.activity.SearchBookActivity;
-import com.intelligent.reader.activity.SettingActivity;
-import com.intelligent.reader.activity.SplashActivity;
-import com.intelligent.reader.app.BookApplication;
-
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.view.ConsumeEvent;
-import net.lzbook.kit.book.view.NonSwipeViewPager;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.request.UrlUtils;
-import net.lzbook.kit.utils.AnimationHelper;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.FrameBookHelper;
-import net.lzbook.kit.utils.SharedPreferencesUtils;
-import net.xxx.yyy.go.spider.URLBuilderIntterface;
-
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -60,15 +60,19 @@ import de.greenrobot.event.EventBus;
  * 主页面
  */
 public class HomeFragment extends BaseFragment implements OnPageChangeListener, FrameBookHelper.SearchUpdateBook, OnClickListener {
+    private final static int TOP_TWO_TABS = 1;
+    private final static int BOTTOM_FOUR_TABS = 2;
+    private final static int TOP_FOUR_TABS = 3;
+    private final static int TOP_TWO_FRAME = 4;
     private static String TAG = HomeFragment.class.getSimpleName();
-
+    private final MHandler handler = new MHandler(this);
+    public NonSwipeViewPager viewPager;
     //头部两个TAB的布局
     private ImageView bookshelf_setting_two_tab;
     private ImageView bookshelf_search_two_tab;
     private ImageView bookshelf_download_two_tab;
     private TextView home_bookshelf_two_tab;
     private TextView home_bookstore_two_tab;
-
     //头部四个TAB的布局
     private RelativeLayout content_head_four_tabs;
     private ImageView content_head_user;
@@ -78,23 +82,14 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
     private RelativeLayout content_tab_ranking_four_tabs;
     private RelativeLayout content_tab_category_four_tabs;
     private RelativeLayout bookshelf_search_view;
-
     //头部两个TAB带边框的布局
     private RelativeLayout home_fragment_head_two_tabs;
     private ImageView content_head_user_with_frame;
     private ImageView content_download_with_frame;
     private RadioButton radiobutton_bookshelf;
     private RadioButton radiobutton_bookstore;
-
     private BookStoreFragment bookStoreFragment;
-
     private int STYLE_CASE = 0;
-    private final static int TOP_TWO_TABS = 1;
-    private final static int BOTTOM_FOUR_TABS = 2;
-    private final static int TOP_FOUR_TABS = 3;
-    private final static int TOP_TWO_FRAME = 4;
-
-
     private ImageView content_head_setting;
     private TextView content_title;
     private ImageView content_head_search, content_download_manage;
@@ -102,12 +97,9 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
     private WebViewFragment recommendFragment;
     private WebViewFragment rankingFragment;
     private WebViewFragment categoryFragment;
-
     private FragmentManager fragmentManager;
     private MainAdapter adapter;
-    public NonSwipeViewPager viewPager;
     private FrameBookHelper frameHelper;
-
     private LinearLayout content_tab_selection;
     private RelativeLayout content_head_editor;
     private RelativeLayout content_head;
@@ -116,10 +108,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
     private View content_tab_ranking;
     private View content_tab_category;
     private Context mContext;
-
     private int current_tab = 0;
-    private final MHandler handler = new MHandler(this);
-
     private int versionCode;
     private SharedPreferences sharedPreferences;
 
@@ -150,7 +139,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
             //need restart app
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 getActivity().finishAffinity();
-            }else{
+            } else {
                 getActivity().finish();
             }
             Intent intent = new Intent(getActivity(), SplashActivity.class);
@@ -168,9 +157,10 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                 @Override
                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 }
+
                 @Override
                 public void onPageSelected(int position) {
-                    switch (STYLE_CASE){
+                    switch (STYLE_CASE) {
                         case BOTTOM_FOUR_TABS:
                             changeStatus(position);
                             break;
@@ -215,10 +205,10 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                 content_head_setting = (ImageView) mFrameView.findViewById(R.id.content_head_setting);
                 mFrameView.findViewById(R.id.content_head).setOnClickListener(this);
                 content_head_search = (ImageView) mFrameView.findViewById(R.id.content_head_search);
-            content_head_setting = (ImageView) mFrameView.findViewById(R.id.content_head_setting);
-            content_head_setting = (ImageView) mFrameView.findViewById(R.id.content_head_setting);
-            mFrameView.findViewById(R.id.content_head).setOnClickListener(this);
-            content_head_search = (ImageView) mFrameView.findViewById(R.id.content_head_search);
+                content_head_setting = (ImageView) mFrameView.findViewById(R.id.content_head_setting);
+                content_head_setting = (ImageView) mFrameView.findViewById(R.id.content_head_setting);
+                mFrameView.findViewById(R.id.content_head).setOnClickListener(this);
+                content_head_search = (ImageView) mFrameView.findViewById(R.id.content_head_search);
 //            content_community = (ImageView) mFrameView.findViewById(R.id.content_community);
                 content_download_manage = (ImageView) mFrameView.findViewById(R.id.content_download_manage);
                 content_title = (TextView) mFrameView.findViewById(R.id.content_title);
@@ -236,7 +226,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
 
             //头部四个tab类型的书架
             content_head_four_tabs = (RelativeLayout) mFrameView.findViewById(R.id.content_head_four_tabs);
-            if(content_head_four_tabs.getVisibility() == View.VISIBLE){
+            if (content_head_four_tabs.getVisibility() == View.VISIBLE) {
                 content_head_user = (ImageView) mFrameView.findViewById(R.id.content_head_user);
                 content_download_manage_four_tabs = (ImageView) mFrameView.findViewById(R.id.content_download_manage_four_tabs);
                 //四个tab
@@ -253,11 +243,11 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
 
             //头部两个tab并带边框类型的书架
             home_fragment_head_two_tabs = (RelativeLayout) mFrameView.findViewById(R.id.home_fragment_head_two_tabs);
-            if(home_fragment_head_two_tabs.getVisibility() == View.VISIBLE){
+            if (home_fragment_head_two_tabs.getVisibility() == View.VISIBLE) {
                 content_head_user_with_frame = (ImageView) mFrameView.findViewById(R.id.book_button_left);
                 content_download_with_frame = (ImageView) mFrameView.findViewById(R.id.book_button_right);
                 //两个带边框的tab
-                radiobutton_bookshelf =(RadioButton) mFrameView.findViewById(R.id.radiobutton_bookshelf);
+                radiobutton_bookshelf = (RadioButton) mFrameView.findViewById(R.id.radiobutton_bookshelf);
                 radiobutton_bookstore = (RadioButton) mFrameView.findViewById(R.id.radiobutton_bookstore);
                 viewPager.setOffscreenPageLimit(1);
                 STYLE_CASE = TOP_TWO_FRAME;
@@ -333,7 +323,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
     }
 
     //头部4tab的切换状态
-    private void changeStatusTopFour(int position){
+    private void changeStatusTopFour(int position) {
         current_tab = position;
 
         if (current_tab != 0) {
@@ -360,7 +350,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
 
 
     //头部两个top
-    private void changeStatusTopTwo(int position){
+    private void changeStatusTopTwo(int position) {
         current_tab = position;
         switch (position) {
             case 0:
@@ -376,7 +366,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
     }
 
     //头部两个top（带边框）
-    private void changeStatusTopTwoFrame(int position){
+    private void changeStatusTopTwoFrame(int position) {
         current_tab = position;
         switch (position) {
             case 0:
@@ -397,54 +387,6 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
 
     }
 
-    /**
-     * ViewPager 的Adapter
-     */
-    protected class MainAdapter extends FragmentPagerAdapter {
-
-        /**
-         * <默认构造函数>
-         */
-        public MainAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public int getCount() {
-            return (STYLE_CASE == TOP_TWO_TABS ||STYLE_CASE==TOP_TWO_FRAME ? 2 : 4);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            AppLog.e(TAG, "position: " + position);
-            return initView(position);
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            switch (position) {
-                case 0:
-                    BookShelfFragment bookShelfFragment = (BookShelfFragment) super.instantiateItem(container, position);
-                    bookShelfFragment.doUpdateBook();
-                    setFBData(bookShelfFragment);
-                    return bookShelfFragment;
-                default:
-                    return super.instantiateItem(container, position);
-            }
-        }
-
-        @Override
-        public int getItemPosition(Object object) {
-            return PagerAdapter.POSITION_NONE;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            super.destroyItem(container, position, object);
-        }
-    }
-
-
     protected Fragment initView(int position) {
         Fragment frame = null;
         switch (position) {
@@ -456,7 +398,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                 break;
             case 1:
                 if (bookStoreFragment == null) {
-                    if (STYLE_CASE == TOP_TWO_TABS||STYLE_CASE == TOP_TWO_FRAME) {
+                    if (STYLE_CASE == TOP_TWO_TABS || STYLE_CASE == TOP_TWO_FRAME) {
                         bookStoreFragment = BookStoreFragment.newInstance();
                         frame = bookStoreFragment;
                     } else {
@@ -569,7 +511,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
             case R.id.content_head_user:
             case R.id.book_button_left:
             case R.id.content_head_setting:
-                StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.MAIN_PAGE,StartLogClickUtil.PERSONAL);
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.PERSONAL);
                 EventBus.getDefault().post(new ConsumeEvent(R.id.redpoint_home_setting));
                 startActivity(new Intent(context, SettingActivity.class));
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_mine_menu);
@@ -577,13 +519,13 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
             case R.id.book_button_right:
             case R.id.bookshelf_search_view:
             case R.id.content_head_search:
-StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.MAIN_PAGE,StartLogClickUtil.MORE);
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.MORE);
                 Intent searchInter = new Intent();
                 searchInter.setClass(context, SearchBookActivity.class);
                 AppLog.e(TAG, "SearchBookActivity -----> Start");
                 startActivity(searchInter);
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_search_btn);
-                StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.MAIN_PAGE,StartLogClickUtil.SEARCH);
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.SEARCH);
                 break;
             case R.id.content_download_manage_four_tabs:
             case R.id.content_download_manage:
@@ -597,17 +539,17 @@ StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.MAIN_PAGE,StartLogCl
             case R.id.content_tab_bookshelf:
                 AppLog.e(TAG, "BookShelf Selected");
                 setTabSelected(0);
-                if(STYLE_CASE==BOTTOM_FOUR_TABS){
+                if (STYLE_CASE == BOTTOM_FOUR_TABS) {
                     content_title.setText("书架");
                 }
-                StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.MAIN_PAGE,StartLogClickUtil.BOOKSHELF);
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.BOOKSHELF);
                 break;
             case R.id.radiobutton_bookstore:
             case R.id.content_tab_recommend_four_tabs:
             case R.id.content_tab_recommend:
                 AppLog.e(TAG, "Selection Selected");
                 setTabSelected(1);
-                if(STYLE_CASE==BOTTOM_FOUR_TABS) {
+                if (STYLE_CASE == BOTTOM_FOUR_TABS) {
                     content_title.setText("推荐");
                     //双击回到顶部
                     if (AppUtils.isDoubleClick(System.currentTimeMillis())) {
@@ -617,28 +559,28 @@ StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.MAIN_PAGE,StartLogCl
                     }
                 }
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_recommend_menu);
-                StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.MAIN_PAGE,StartLogClickUtil.RECOMMEND);
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.RECOMMEND);
                 break;
             case R.id.content_tab_ranking_four_tabs:
             case R.id.content_tab_ranking:
                 AppLog.e(TAG, "Ranking Selected");
                 setTabSelected(2);
-                if(STYLE_CASE==BOTTOM_FOUR_TABS) {
+                if (STYLE_CASE == BOTTOM_FOUR_TABS) {
                     content_title.setText("榜单");
                 }
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_rank_menu);
-                StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.MAIN_PAGE,StartLogClickUtil.TOP);
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.TOP);
                 break;
 
             case R.id.content_tab_category_four_tabs:
             case R.id.content_tab_category:
                 AppLog.e(TAG, "Classify Selected");
                 setTabSelected(3);
-                if(STYLE_CASE==BOTTOM_FOUR_TABS) {
-                content_title.setText("分类");
+                if (STYLE_CASE == BOTTOM_FOUR_TABS) {
+                    content_title.setText("分类");
                 }
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_category_menu);
-                StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.MAIN_PAGE,StartLogClickUtil.CLASS);
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.CLASS);
                 break;
 
             case R.id.home_edit_back:
@@ -826,11 +768,11 @@ StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.MAIN_PAGE,StartLogCl
             content_tab_category.setOnClickListener(this);
         }
 
-        if (home_edit_back != null){
+        if (home_edit_back != null) {
             home_edit_back.setOnClickListener(this);
         }
 
-        if (home_edit_cancel != null){
+        if (home_edit_cancel != null) {
             home_edit_cancel.setOnClickListener(this);
         }
 
@@ -859,7 +801,6 @@ StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.MAIN_PAGE,StartLogCl
         }
 
 
-
         //顶部2TABS（边框）的点击注册
         if (content_head_user_with_frame != null) {
             content_head_user_with_frame.setOnClickListener(this);
@@ -881,33 +822,6 @@ StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.MAIN_PAGE,StartLogCl
 
     private void sendBroadCast() {
 
-    }
-
-    private static class MHandler extends Handler {
-        private WeakReference<HomeFragment> reference;
-
-        MHandler(HomeFragment content) {
-            reference = new WeakReference<>(content);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            HomeFragment content = reference.get();
-            if (content == null) {
-                return;
-            }
-            switch (msg.what) {
-                case 0:
-                    content.sendBroadCastWithRemainTime();
-                    break;
-                case 1:
-                    content.sendBroadCast();
-                    break;
-                default:
-                    break;
-            }
-        }
     }
 
     protected void setFBData(BookShelfFragment fb) {
@@ -934,9 +848,8 @@ StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.MAIN_PAGE,StartLogCl
 //        }
     }
 
-
     public void onMenuShownState(boolean state) {
-        if(STYLE_CASE==BOTTOM_FOUR_TABS){
+        if (STYLE_CASE == BOTTOM_FOUR_TABS) {
             if (state) {
                 content_tab_selection.setVisibility(View.GONE);
                 content_tab_selection_divider.setVisibility(View.GONE);
@@ -945,7 +858,7 @@ StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.MAIN_PAGE,StartLogCl
                     showAnimation.setDuration(200);
                     content_head_editor.startAnimation(showAnimation);
                     content_head_editor.setVisibility(View.VISIBLE);
-                    if(bookshelf_search_view!=null){
+                    if (bookshelf_search_view != null) {
                         bookshelf_search_view.setVisibility(View.GONE);
                     }
                 }
@@ -953,7 +866,7 @@ StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.MAIN_PAGE,StartLogCl
             } else {
                 if (content_head_editor.isShown()) {
                     content_head_editor.setVisibility(View.GONE);
-                    if(bookshelf_search_view!=null){
+                    if (bookshelf_search_view != null) {
                         bookshelf_search_view.setVisibility(View.VISIBLE);
                     }
                 }
@@ -961,14 +874,14 @@ StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.MAIN_PAGE,StartLogCl
                 content_tab_selection_divider.setVisibility(View.VISIBLE);
                 AnimationHelper.smoothScrollTo(viewPager, 0);
             }
-        }else{
+        } else {
             if (state) {
                 if (!content_head_editor.isShown()) {
                     Animation showAnimation = new AlphaAnimation(0.0f, 1.0f);
                     showAnimation.setDuration(200);
                     content_head_editor.startAnimation(showAnimation);
                     content_head_editor.setVisibility(View.VISIBLE);
-                    if(bookshelf_search_view!=null){
+                    if (bookshelf_search_view != null) {
                         bookshelf_search_view.setVisibility(View.GONE);
                     }
                 }
@@ -976,7 +889,7 @@ StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.MAIN_PAGE,StartLogCl
             } else {
                 if (content_head_editor.isShown()) {
                     content_head_editor.setVisibility(View.GONE);
-                    if(bookshelf_search_view!=null){
+                    if (bookshelf_search_view != null) {
                         bookshelf_search_view.setVisibility(View.VISIBLE);
                     }
                 }
@@ -1015,8 +928,82 @@ StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.MAIN_PAGE,StartLogCl
         }
     }
 
-    public int getCurrentTab(){
+    public int getCurrentTab() {
         return current_tab;
+    }
+
+    private static class MHandler extends Handler {
+        private WeakReference<HomeFragment> reference;
+
+        MHandler(HomeFragment content) {
+            reference = new WeakReference<>(content);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            HomeFragment content = reference.get();
+            if (content == null) {
+                return;
+            }
+            switch (msg.what) {
+                case 0:
+                    content.sendBroadCastWithRemainTime();
+                    break;
+                case 1:
+                    content.sendBroadCast();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    /**
+     * ViewPager 的Adapter
+     */
+    protected class MainAdapter extends FragmentPagerAdapter {
+
+        /**
+         * <默认构造函数>
+         */
+        public MainAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public int getCount() {
+            return (STYLE_CASE == TOP_TWO_TABS || STYLE_CASE == TOP_TWO_FRAME ? 2 : 4);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            AppLog.e(TAG, "position: " + position);
+            return initView(position);
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            switch (position) {
+                case 0:
+                    BookShelfFragment bookShelfFragment = (BookShelfFragment) super.instantiateItem(container, position);
+                    bookShelfFragment.doUpdateBook();
+                    setFBData(bookShelfFragment);
+                    return bookShelfFragment;
+                default:
+                    return super.instantiateItem(container, position);
+            }
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            return PagerAdapter.POSITION_NONE;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            super.destroyItem(container, position, object);
+        }
     }
 
 //    public void showGuideView(){

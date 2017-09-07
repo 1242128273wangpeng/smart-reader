@@ -16,16 +16,16 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 public class CustomWebClient extends WebViewClient {
+    private final static String TAG = "CustomWebClient";
+    public WebSettings webSetting;
+    public int ERROR_CODE = 0;
+    public int pageStartCount = 0;
     Context context;
     WebView webview;
-    public WebSettings webSetting;
-    private final static String TAG = "CustomWebClient";
     onErrorCallback onError;
     onStartedCallback onLoad;
     onFinishedCallback onFinished;
     onOverrideCallback override;
-    public int ERROR_CODE = 0;
-    public int pageStartCount = 0;
     int pageFinishCount = 0;
 
     public CustomWebClient(Context context, WebView webview) {
@@ -64,7 +64,7 @@ public class CustomWebClient extends WebViewClient {
             }
             onError.onErrorReceived();
         }
-        AppLog.e(TAG, "onPageStarted view " + " ERROR_CODE : " + ERROR_CODE + " onError : " + onError + view+" webview "+webview);//初始化webview与加载webview要一致
+        AppLog.e(TAG, "onPageStarted view " + " ERROR_CODE : " + ERROR_CODE + " onError : " + onError + view + " webview " + webview);//初始化webview与加载webview要一致
         super.onPageStarted(view, url, favicon);
     }
 
@@ -90,7 +90,7 @@ public class CustomWebClient extends WebViewClient {
             }
             onError.onErrorReceived();
         }
-        AppLog.d(TAG, "onPageFinished view" + view+" webview "+webview + " ERROR_CODE : " + ERROR_CODE + " onError : " + onError);
+        AppLog.d(TAG, "onPageFinished view" + view + " webview " + webview + " ERROR_CODE : " + ERROR_CODE + " onError : " + onError);
         super.onPageFinished(view, url);
     }
 
@@ -127,32 +127,16 @@ public class CustomWebClient extends WebViewClient {
         AppLog.d(TAG, "doClear ERROR_CODE" + ERROR_CODE);
     }
 
-    public interface onErrorCallback {
-        public void onErrorReceived();
-    }
-
     public void setErrorAction(onErrorCallback onError) {
         this.onError = onError;
-    }
-
-    public interface onStartedCallback {
-        public void onLoadStarted(String url);
     }
 
     public void setStartedAction(onStartedCallback onStarted) {
         this.onLoad = onStarted;
     }
 
-    public interface onFinishedCallback {
-        public void onLoadFinished();
-    }
-
     public void setFinishedAction(onFinishedCallback onFinished) {
         this.onFinished = onFinished;
-    }
-
-    public interface onOverrideCallback {
-        public boolean onOverride(WebView view, String url);
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -222,5 +206,21 @@ public class CustomWebClient extends WebViewClient {
             webSetting.setUseWideViewPort(true);//FIXME
         }
 
+    }
+
+    public interface onErrorCallback {
+        public void onErrorReceived();
+    }
+
+    public interface onStartedCallback {
+        public void onLoadStarted(String url);
+    }
+
+    public interface onFinishedCallback {
+        public void onLoadFinished();
+    }
+
+    public interface onOverrideCallback {
+        public boolean onOverride(WebView view, String url);
     }
 }

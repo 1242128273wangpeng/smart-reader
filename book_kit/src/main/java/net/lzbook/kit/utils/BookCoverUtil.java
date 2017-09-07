@@ -11,7 +11,6 @@ import net.lzbook.kit.data.bean.CoverPage;
 import net.lzbook.kit.data.bean.RecommendItem;
 import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.data.ormlite.bean.HistoryInfo;
-import net.lzbook.kit.data.ormlite.dao.DaoUtils;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -23,24 +22,21 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
  */
 public class BookCoverUtil {
+    public static final int TYPE_CATEGORY = 0;
+    public static final int TYPE_AUTHOR = 1;
+    final int LABEL_EACH_ROW_UNIT = 4;//标签分行基数（单行最多数量）
     Activity activity;
     Context context;
     Context applicationContext;
-    final int LABEL_EACH_ROW_UNIT = 4;//标签分行基数（单行最多数量）
     View.OnClickListener onClickListener;
-
     StateReceiver stateReceiver;
     OnDownloadState onDownloadState;
     OnDownLoadService onDownLoadService;
-
-    public static final int TYPE_CATEGORY = 0;
-    public static final int TYPE_AUTHOR = 1;
 
     public BookCoverUtil(Context context, View.OnClickListener onClickListener) {
         this.context = context;
@@ -116,34 +112,12 @@ public class BookCoverUtil {
         }
     }
 
-    public interface OnDownloadState {
-        void changeState();
-    }
-
     public void setOnDownloadState(OnDownloadState onDownloadState) {
         this.onDownloadState = onDownloadState;
     }
 
-    public interface OnDownLoadService {
-        void downLoadService();
-    }
-
     public void setOnDownLoadService(OnDownLoadService onDownLoadService) {
         this.onDownLoadService = onDownLoadService;
-    }
-
-    class StateReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            AppLog.d("BookCoverUtil", "DownloadFinishReceiver action : " + intent.getAction());
-            if (intent.getAction().equals(FrameBookHelper.DownloadFinishReceiver.ACTION_DOWNLOAD_FINISH)
-                    || intent.getAction().equals(FrameBookHelper.DownloadFinishReceiver.ACTION_DOWNLOAD_LOCKED)) {
-
-                if (onDownloadState != null) {
-                    onDownloadState.changeState();
-                }
-            }
-        }
     }
 
     public void registReceiver() {
@@ -162,7 +136,6 @@ public class BookCoverUtil {
             context.unregisterReceiver(stateReceiver);
         }
     }
-
 
     //新的获取封面书籍的方法
     public Book getCoverBook(BookDaoHelper bookDaoHelper, CoverPage.BookVoBean coverResult) {
@@ -195,9 +168,7 @@ public class BookCoverUtil {
     /**
      * 保存浏览足迹
      *
-     * @param book
      * @return 保存是否成功
-     * @throws SQLException
      */
     public boolean saveHistory(CoverPage.BookVoBean book) {
 
@@ -243,6 +214,29 @@ public class BookCoverUtil {
                 onDownLoadService.downLoadService();
             }
 
+        }
+    }
+
+
+    public interface OnDownloadState {
+        void changeState();
+    }
+
+    public interface OnDownLoadService {
+        void downLoadService();
+    }
+
+    class StateReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            AppLog.d("BookCoverUtil", "DownloadFinishReceiver action : " + intent.getAction());
+            if (intent.getAction().equals(FrameBookHelper.DownloadFinishReceiver.ACTION_DOWNLOAD_FINISH)
+                    || intent.getAction().equals(FrameBookHelper.DownloadFinishReceiver.ACTION_DOWNLOAD_LOCKED)) {
+
+                if (onDownloadState != null) {
+                    onDownloadState.changeState();
+                }
+            }
         }
     }
 }

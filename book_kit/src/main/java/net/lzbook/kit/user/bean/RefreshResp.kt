@@ -7,11 +7,11 @@ import net.lzbook.kit.utils.NotProguard
  */
 @NotProguard
 class RefreshResp {
-    var state:String? = null
-    var uid:String? = null
-    var uid_third:String? = null
-    var login_token:String? = null
-    var msg:String? = null
+    var state: String? = null
+    var uid: String? = null
+    var uid_third: String? = null
+    var login_token: String? = null
+    var msg: String? = null
 
     override fun toString(): String {
         return "RefreshResp(state=$state, uid=$uid, uid_third=$uid_third, login_token=$login_token, msg=$msg)"

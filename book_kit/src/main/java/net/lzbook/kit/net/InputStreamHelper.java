@@ -1,10 +1,10 @@
 package net.lzbook.kit.net;
 
-import android.text.TextUtils;
-
 import net.lzbook.kit.net.volley.input.CustomBufferedInputStream;
 import net.lzbook.kit.net.volley.input.CustomGZIPInputStream;
 import net.lzbook.kit.net.volley.input.MixedInputStream;
+
+import android.text.TextUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,75 +15,74 @@ import java.util.Map;
 
 public class InputStreamHelper {
 
-	public enum IEncoding {
-		NONE(""), ESENC("esenc"), GZIP("gzip"), ESENCGZIP("gzip,esenc");
+    public static byte[] encrypt(byte[] bytes) {
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = (byte) ~bytes[i];
+        }
+        return bytes;
+    }
 
-		public final String encoding;
+    private static String getEncoding(Map<String, String> responseHeaders) {
+        String accept = responseHeaders.get("Accept-Encoding");
+        String content = responseHeaders.get("Content-Encoding");
+        StringBuilder encoding = new StringBuilder();
+        if (accept != null) {
+            encoding.append(accept);
+        }
 
-		IEncoding(String encoding) {
-			this.encoding = encoding;
-		}
-	}
+        if (content != null) {
+            encoding.append(content);
+        }
+        return encoding.toString();
+    }
 
-	public static byte[] encrypt(byte[] bytes) {
-		for (int i = 0; i < bytes.length; i++) {
-			bytes[i] = (byte) ~bytes[i];
-		}
-		return bytes;
-	}
+    public static InputStream getInputStream(Map<String, String> responseHeaders, InputStream inputStream) throws IOException {
+        return getInputStream(getEncoding(responseHeaders), inputStream);
+    }
 
-	private static String getEncoding(Map<String, String> responseHeaders) {
-		String accept = responseHeaders.get("Accept-Encoding");
-		String content = responseHeaders.get("Content-Encoding");
-		StringBuilder encoding = new StringBuilder();
-		if (accept != null) {
-			encoding.append(accept);
-		}
+    public static InputStream getInputStream(String encoding, InputStream inputStream) throws IOException {
 
-		if (content != null) {
-			encoding.append(content);
-		}
-		return encoding.toString();
-	}
+        if (TextUtils.isEmpty(encoding)) {
+            return inputStream;
+        }
 
+        if (encoding.contains(IEncoding.GZIP.encoding) && encoding.contains(IEncoding.ESENC.encoding)) {
+            return new MixedInputStream(inputStream);
+        }
 
-	public static InputStream getInputStream(Map<String, String> responseHeaders, InputStream inputStream) throws IOException {
-		return getInputStream(getEncoding(responseHeaders), inputStream);
-	}
+        if (encoding.contains(IEncoding.GZIP.encoding)) {
+            return new CustomGZIPInputStream(inputStream);
+        }
 
-	public static InputStream getInputStream(String encoding, InputStream inputStream) throws IOException {
+        if (encoding.contains(IEncoding.ESENC.encoding)) {
+            return new CustomBufferedInputStream(inputStream);
+        }
 
-		if (TextUtils.isEmpty(encoding)) {
-			return inputStream;
-		}
+        return inputStream;
+    }
 
-		if (encoding.contains(IEncoding.GZIP.encoding) && encoding.contains(IEncoding.ESENC.encoding)) {
-			return new MixedInputStream(inputStream);
-		}
+    public static String getString(InputStream stream, String charsetName) throws UnsupportedEncodingException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream, charsetName));
 
-		if (encoding.contains(IEncoding.GZIP.encoding)) {
-			return new CustomGZIPInputStream(inputStream);
-		}
+        StringBuffer stringBuffer = new StringBuffer();
+        String line;
+        try {
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuffer.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return stringBuffer.toString();
+    }
 
-		if (encoding.contains(IEncoding.ESENC.encoding)) {
-			return new CustomBufferedInputStream(inputStream);
-		}
+    public enum IEncoding {
+        NONE(""), ESENC("esenc"), GZIP("gzip"), ESENCGZIP("gzip,esenc");
 
-		return inputStream;
-	}
+        public final String encoding;
 
-	public static String getString(InputStream stream, String charsetName) throws UnsupportedEncodingException {
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream, charsetName));
-
-		StringBuffer stringBuffer = new StringBuffer();
-		String line;
-		try {
-			while ((line = bufferedReader.readLine()) != null) {
-				stringBuffer.append(line);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return stringBuffer.toString();
-	}
+        IEncoding(String encoding) {
+            this.encoding = encoding;
+        }
+    }
 }

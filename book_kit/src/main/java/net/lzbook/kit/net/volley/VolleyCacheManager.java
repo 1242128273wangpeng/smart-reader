@@ -10,12 +10,7 @@ import net.lzbook.kit.net.volley.cache.MemoryCache;
  * 自定义的Volley的三级缓存
  **/
 public class VolleyCacheManager {
-    public enum ImageCacheType {
-        DISK, MEMORY, COMPLEX
-    }
-
     private static VolleyCacheManager volleyCacheManager;
-
     private ImageLoader imageLoader;
 
     public static VolleyCacheManager getInstance() {
@@ -48,6 +43,10 @@ public class VolleyCacheManager {
 
     public ImageLoader getImageLoader() {
         return imageLoader;
+    }
+
+    public enum ImageCacheType {
+        DISK, MEMORY, COMPLEX
     }
 
 }

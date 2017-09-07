@@ -5,6 +5,7 @@ import net.lzbook.kit.utils.ResourceUtil;
 
 public class ReplaceConstants {
 
+    public static ReplaceConstants replaceConstants = null;
     public String APP_PATH;
     public String APP_PATH_BOOK;
     public String APP_PATH_CACHE;
@@ -12,16 +13,12 @@ public class ReplaceConstants {
     public String APP_PATH_IMAGE;
     public String APP_PATH_LOG;
     public String DEFAULT_IMAGE_URL;
-
     public String BOOK_NOVEL_DEPLOY_HOST;
     public String BOOK_WEBVIEW_HOST;
-
     public String DATABASE_NAME;
-
     public String BAIDU_STAT_ID;
     public String PUSH_KEY;
     public String ALIFEEDBACK_KEY;
-    public static ReplaceConstants replaceConstants = null;
 
     private ReplaceConstants() {
         APP_PATH = Constants.SDCARD_PATH + ResourceUtil.getStringById(R.string.app_path);

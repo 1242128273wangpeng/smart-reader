@@ -89,15 +89,15 @@ public class BookDaoHelper {
 //
 //            @Override
 //            public void run() {
-                for (int i = 0; i < delete_gids.length; i++) {
-                    if (downloadService != null) {
-                        downloadService.dellTask(delete_gids[i]);
-                    }
+        for (int i = 0; i < delete_gids.length; i++) {
+            if (downloadService != null) {
+                downloadService.dellTask(delete_gids[i]);
+            }
 
-                    BaseBookHelper.delDownIndex(mContext, delete_gids[i]);//删除偏好文件的记录
+            BaseBookHelper.delDownIndex(mContext, delete_gids[i]);//删除偏好文件的记录
 //                    BaseBookHelper.removeChapterCacheFile(delete_gids[i]);//删除这本书本地缓存的章节文件
 
-                }
+        }
 //            }
 //        }).start();
         return delete_gids.length > 0;
@@ -115,27 +115,28 @@ public class BookDaoHelper {
         Collections.sort(extendsBooks);
         return extendsBooks;
     }
+
     /**
      * 获取书架线上青果源的所有已完结的书籍
-     * @return
      */
     public synchronized ArrayList<Book> getBooksNotFinishQG() {
         ArrayList<Book> extendsBooks = new ArrayList<>();
-        for (Book book: books) {
-            if (Constants.QG_SOURCE.equals(book.site) && book.status != 2){
+        for (Book book : books) {
+            if (Constants.QG_SOURCE.equals(book.site) && book.status != 2) {
                 extendsBooks.add(book);
             }
         }
         Collections.sort(extendsBooks);
         return extendsBooks;
     }
+
     /**
      * 获取书架上自有书籍
      */
     public synchronized ArrayList<Book> getOwnBooksList() {
         ArrayList<Book> extendsBooks = new ArrayList<>();
-        for (Book book: books) {
-            if (!Constants.QG_SOURCE.equals(book.site) && !Constants.SG_SOURCE.equals(book.site)){
+        for (Book book : books) {
+            if (!Constants.QG_SOURCE.equals(book.site) && !Constants.SG_SOURCE.equals(book.site)) {
                 extendsBooks.add(book);
             }
         }
@@ -145,7 +146,6 @@ public class BookDaoHelper {
 
     /**
      * 获取书架线上宜搜源的所有书籍
-     * @return
      */
     public synchronized ArrayList<Book> getBooksOnLineListYS() {
         ArrayList<Book> extendsBooks = new ArrayList<>();
@@ -232,7 +232,7 @@ public class BookDaoHelper {
                     if (AppUtils.isChapterDBexist(mContext, book.book_id)) {
                         mContext.deleteDatabase("localbook_chapter_" + book.book_id);
                     }
-                    if (tempBook.dex == -1){
+                    if (tempBook.dex == -1) {
                         tempBook.dex = 1;
                     }
                     if (mDao.insertBook(tempBook)) {
@@ -317,7 +317,7 @@ public class BookDaoHelper {
      * 根据book_id取book对象
      */
     public synchronized Book getBook(String book_id, int type) {
-        if(book_id == null)
+        if (book_id == null)
             return new Book();
         switch (type) {
             case 0:
@@ -474,9 +474,9 @@ public class BookDaoHelper {
                     }
                     mContext.deleteDatabase("book_chapter_" + delete_ids[i]);
                     BaseBookHelper.delDownIndex(mContext, delete_ids[i]);
-                    if (Constants.QG_SOURCE.equals(bookHost)){
+                    if (Constants.QG_SOURCE.equals(bookHost)) {
                         BaseBookHelper.removeQGChaptersCacheFile(delete_ids[i]);
-                    }else {
+                    } else {
                         BaseBookHelper.removeChapterCacheFile(delete_ids[i]);
                     }
                 }

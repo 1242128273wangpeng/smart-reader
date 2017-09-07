@@ -33,27 +33,25 @@ public class ThemeHelper {
 
     /**
      * 保存主题模式；在设置非夜间模式的时候会把选中的主题存储到默认主题SP中
-     * @param mode
+     *
      * @return boolean
      */
     public boolean setMode(ThemeMode mode) {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putString(MODE, mode.getName());
-        if(!ThemeMode.NIGHT.getName().equals(mode.getName())){
+        if (!ThemeMode.NIGHT.getName().equals(mode.getName())) {
             editor.putInt(MODE_DEFAULT, mode.getCode());
         }
         return editor.commit();
     }
 
 
-
     /**
      * 是否主题一
-     * @return
      */
     public boolean isTheme1() {
         String mode = mSharedPreferences.getString(MODE, ThemeMode.THEME1.getName());
-        if (! ThemeMode.NIGHT.getName().equals(mode)) {
+        if (!ThemeMode.NIGHT.getName().equals(mode)) {
             return true;
         } else {
             return false;
@@ -63,7 +61,6 @@ public class ThemeHelper {
 
     /**
      * 是否主题四
-     * @return
      */
     public boolean isNight() {
         String mode = mSharedPreferences.getString(MODE, ThemeMode.THEME1.getName());
@@ -76,6 +73,7 @@ public class ThemeHelper {
 
     /**
      * 获取当前主题
+     *
      * @return String
      */
     public String getMode() {
@@ -84,6 +82,7 @@ public class ThemeHelper {
 
     /**
      * 获取上次用户选取的主题
+     *
      * @return String
      */
     public int getModeDefault() {
@@ -91,12 +90,11 @@ public class ThemeHelper {
     }
 
 
-
     /**
      * 设置Textview左上右下的图片
      */
     public void setTextviewDrawable(@NonNull Activity act, TypedValue left, TypedValue top, TypedValue right, TypedValue bottom, TextView tv) {
-        tv.setCompoundDrawables(setDrawableBounds(act,left),setDrawableBounds(act,top), setDrawableBounds(act,right), setDrawableBounds(act,bottom));
+        tv.setCompoundDrawables(setDrawableBounds(act, left), setDrawableBounds(act, top), setDrawableBounds(act, right), setDrawableBounds(act, bottom));
     }
 
     private Bitmap getCacheBitmapFromView(View view) {
@@ -137,12 +135,12 @@ public class ThemeHelper {
         }
     }
 
-    private Drawable setDrawableBounds(Activity act, TypedValue typedValue){
-      Drawable pic = null;
-           if(typedValue !=null){
-               pic = act.getResources().getDrawable(typedValue.resourceId);
-               pic.setBounds(0,0,pic.getMinimumWidth(),pic.getMinimumHeight());
-           }
-        return pic ;
+    private Drawable setDrawableBounds(Activity act, TypedValue typedValue) {
+        Drawable pic = null;
+        if (typedValue != null) {
+            pic = act.getResources().getDrawable(typedValue.resourceId);
+            pic.setBounds(0, 0, pic.getMinimumWidth(), pic.getMinimumHeight());
+        }
+        return pic;
     }
 }

@@ -147,7 +147,7 @@ android {
                 if (buildTypeName.contains("blf")) {
                     buildTypeName = buildTypeName.split("blf")[0]
                 } else {
-                    if(buildTypeName.contains("debug"))
+                    if (buildTypeName.contains("debug"))
                         buildTypeName = buildTypeName.split("debug")[0]
                     else
                         buildTypeName = buildTypeName.split("release")[0]

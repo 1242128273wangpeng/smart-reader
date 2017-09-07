@@ -16,6 +16,9 @@
 
 package net.lzbook.kit.book.view;
 
+import net.lzbook.kit.R;
+import net.lzbook.kit.utils.AppLog;
+
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -37,9 +40,6 @@ import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.CompoundButton;
 
-import net.lzbook.kit.R;
-import net.lzbook.kit.utils.AppLog;
-
 public class Switch extends CompoundButton {
     private static final int TOUCH_MODE_IDLE = 0;
     private static final int TOUCH_MODE_DOWN = 1;
@@ -48,43 +48,35 @@ public class Switch extends CompoundButton {
     private static final int SANS = 1;
     private static final int SERIF = 2;
     private static final int MONOSPACE = 3;
-
+    private static final int[] CHECKED_STATE_SET = {
+            android.R.attr.state_checked
+    };
+    private final Rect mTempRect = new Rect();
     private Drawable mTrackDrawable;
     private int mThumbTextPadding;
     private int mSwitchMinWidth;
     private int mSwitchPadding;
     private CharSequence mTextOn;
     private CharSequence mTextOff;
-
     private int mTouchMode;
     private int mTouchSlop;
     private float mTouchX;
     private float mTouchY;
     private VelocityTracker mVelocityTracker = VelocityTracker.obtain();
     private int mMinFlingVelocity;
-
     private float mThumbPosition;
     private int mSwitchWidth;
     private int mSwitchHeight;
     private int mThumbWidth; // Does not include padding
-
     private int mSwitchLeft;
     private int mSwitchTop;
     private int mSwitchRight;
     private int mSwitchBottom;
-
     private TextPaint mTextPaint;
     private ColorStateList mTextColors;
     private Layout mOnLayout;
     private Layout mOffLayout;
-
     private Context mContext;
-
-    private final Rect mTempRect = new Rect();
-
-    private static final int[] CHECKED_STATE_SET = {
-            android.R.attr.state_checked
-    };
 
     public Switch(Context context) {
         this(context, null);

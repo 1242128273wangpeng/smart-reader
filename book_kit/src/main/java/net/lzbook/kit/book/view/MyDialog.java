@@ -1,5 +1,7 @@
 package net.lzbook.kit.book.view;
 
+import net.lzbook.kit.R;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.view.Gravity;
@@ -8,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-
-import net.lzbook.kit.R;
 
 
 public class MyDialog extends Dialog {

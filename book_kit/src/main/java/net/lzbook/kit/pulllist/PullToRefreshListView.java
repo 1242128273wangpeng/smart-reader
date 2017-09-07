@@ -10,74 +10,66 @@ import android.widget.ListView;
 public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView> {
 
 
-	class InternalListView extends ListView implements EmptyViewMethodAccessor {
-		
-		public InternalListView(Context context, AttributeSet attrs, int defStyle) {
-			super(context, attrs, defStyle);
-			// TODO Auto-generated constructor stub
-		}
+    public PullToRefreshListView(Context context) {
+        super(context);
+        this.setDisableScrollingWhileRefreshing(false);
+    }
 
-		public InternalListView(Context context) {
-			super(context);
-			// TODO Auto-generated constructor stub
-		}
+    public PullToRefreshListView(Context context, int mode) {
+        super(context, mode);
+        this.setDisableScrollingWhileRefreshing(false);
+    }
 
-		public InternalListView(Context context, AttributeSet attrs) {
-			super(context, attrs);
-		}
+    public PullToRefreshListView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        this.setDisableScrollingWhileRefreshing(false);
+    }
 
-		@Override
-		public void setEmptyView(View emptyView) {
-			PullToRefreshListView.this.setEmptyView(emptyView);
-		}
-		
-		@Override
-		public void setEmptyViewInternal(View emptyView) {
-			super.setEmptyView(emptyView);
-		}
+    @Override
+    public ContextMenuInfo getContextMenuInfo() {
+        return ((InternalListView) getRefreshableView()).getContextMenuInfo();
+    }
 
-		public ContextMenuInfo getContextMenuInfo() {
-			return super.getContextMenuInfo();
-		}
-	}
+    @Override
+    protected final ListView createRefreshableView(Context context, AttributeSet attrs) {
 
-	public PullToRefreshListView(Context context) {
-		super(context);
-		this.setDisableScrollingWhileRefreshing(false);
-	}
-	
-	public PullToRefreshListView(Context context, int mode) {
-		super(context, mode);
-		this.setDisableScrollingWhileRefreshing(false);
-	}
-
-	public PullToRefreshListView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		this.setDisableScrollingWhileRefreshing(false);
-	}
-
-	@Override
-	public ContextMenuInfo getContextMenuInfo() {
-		return ((InternalListView) getRefreshableView()).getContextMenuInfo();
-	}
+        ListView lv = new InternalListView(context, attrs);
 
 
+        lv.setId(android.R.id.list);
+        return lv;
+    }
 
+    class InternalListView extends ListView implements EmptyViewMethodAccessor {
 
-	@Override
-	protected final ListView createRefreshableView(Context context, AttributeSet attrs) {
+        public InternalListView(Context context, AttributeSet attrs, int defStyle) {
+            super(context, attrs, defStyle);
+            // TODO Auto-generated constructor stub
+        }
 
-		ListView lv = new InternalListView(context, attrs);
-		
-		
-		
+        public InternalListView(Context context) {
+            super(context);
+            // TODO Auto-generated constructor stub
+        }
 
-		lv.setId(android.R.id.list);
-		return lv;
-	}
-	
+        public InternalListView(Context context, AttributeSet attrs) {
+            super(context, attrs);
+        }
 
+        @Override
+        public void setEmptyView(View emptyView) {
+            PullToRefreshListView.this.setEmptyView(emptyView);
+        }
 
+        @Override
+        public void setEmptyViewInternal(View emptyView) {
+            super.setEmptyView(emptyView);
+        }
+
+        public ContextMenuInfo getContextMenuInfo() {
+            return super.getContextMenuInfo();
+        }
+    }
 
 
 }

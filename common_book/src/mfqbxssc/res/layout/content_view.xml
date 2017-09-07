@@ -15,7 +15,7 @@
             android:layout_height="48dp"
             android:background="@color/home_title_background"
             android:layout_alignParentTop="true">
-    
+        
         <ImageView
                 android:id="@+id/content_head_setting"
                 android:layout_width="25dp"
@@ -25,7 +25,7 @@
                 android:layout_marginLeft="18dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/home_head_person_selector"/>
-    
+        
         <net.lzbook.kit.book.view.FirstUsePointView
                 android:id="@+id/redpoint_home_setting"
                 android:layout_width="7dp"
@@ -33,7 +33,7 @@
                 android:layout_alignRight="@+id/content_head_setting"
                 android:layout_alignTop="@+id/content_head_setting"
                 android:background="@color/color_red_point"/>
-    
+        
         <RelativeLayout
                 android:id="@+id/content_search"
                 android:layout_width="match_parent"
@@ -48,14 +48,14 @@
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:paddingLeft="10dp">
-        
+            
             <ImageView
                     android:id="@+id/iv"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:layout_centerVertical="true"
                     android:background="@mipmap/bookshelf_icon_search_copy"/>
-        
+            
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -79,14 +79,14 @@
                 android:focusableInTouchMode="false"
                 android:paddingLeft="10dp"
                 android:visibility="gone">
-    
+            
             <ImageView
                     android:id="@+id/iv_tuijian"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:layout_centerVertical="true"
                     android:background="@mipmap/bookshelf_icon_search_copy"/>
-    
+            
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
                     android:textColor="@color/home_title_search_text"
                     android:textSize="13sp"/>
         </RelativeLayout>
-    
+        
         <TextView
                 android:id="@+id/content_title"
                 android:layout_width="wrap_content"
@@ -109,7 +109,7 @@
                 android:textColor="@color/setting_login_font_color"
                 android:textSize="18sp"
                 android:visibility="gone"/>
-    
+        
         <ImageView
                 android:id="@+id/content_head_search"
                 android:layout_width="25dp"
@@ -119,7 +119,7 @@
                 android:layout_marginRight="18dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/home_head_right_selector"/>
-    
+        
         <ImageView
                 android:id="@+id/content_head_search2"
                 android:layout_width="25dp"
@@ -130,7 +130,7 @@
                 android:scaleType="fitXY"
                 android:background="@drawable/home_head_search_selector"
                 android:visibility="gone"/>
-    
+        
         <ImageView
                 android:id="@+id/content_download_manage"
                 android:layout_width="23dp"
@@ -242,7 +242,7 @@
             android:background="@color/home_title_background"
             android:baselineAligned="false"
             android:orientation="horizontal">
-    
+        
         <LinearLayout
                 android:id="@+id/content_tab_bookshelf"
                 android:layout_width="0dp"
@@ -251,7 +251,7 @@
                 android:layout_gravity="bottom"
                 android:gravity="center"
                 android:orientation="vertical">
-        
+            
             <ImageView
                     android:id="@+id/content_tab_bookshelf_icon"
                     android:layout_width="wrap_content"
@@ -260,7 +260,7 @@
                     android:focusable="false"
                     android:padding="1dp"
                     android:src="@drawable/home_tab_select_bookshelf"/>
-        
+            
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -268,7 +268,7 @@
                     android:textColor="@drawable/home_bottom_tab_text_color_selector"
                     android:textSize="@dimen/dimen_text_10"/>
         </LinearLayout>
-    
+        
         <LinearLayout
                 android:id="@+id/content_tab_recommend"
                 android:layout_width="0dp"
@@ -277,7 +277,7 @@
                 android:layout_gravity="bottom"
                 android:gravity="center"
                 android:orientation="vertical">
-        
+            
             <ImageView
                     android:id="@+id/content_tab_recommend_icon"
                     android:layout_width="wrap_content"
@@ -286,7 +286,7 @@
                     android:focusable="false"
                     android:padding="1dp"
                     android:src="@drawable/home_tab_select_recommend"/>
-        
+            
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -294,7 +294,7 @@
                     android:textColor="@drawable/home_bottom_tab_text_color_selector"
                     android:textSize="@dimen/dimen_text_10"/>
         </LinearLayout>
-    
+        
         <LinearLayout
                 android:id="@+id/content_tab_ranking"
                 android:layout_width="0dp"
@@ -303,7 +303,7 @@
                 android:layout_gravity="bottom"
                 android:gravity="center"
                 android:orientation="vertical">
-        
+            
             <ImageView
                     android:id="@+id/content_tab_ranking_icon"
                     android:layout_width="wrap_content"
@@ -312,7 +312,7 @@
                     android:focusable="false"
                     android:padding="1dp"
                     android:src="@drawable/home_tab_select_ranking"/>
-        
+            
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -320,7 +320,7 @@
                     android:textColor="@drawable/home_bottom_tab_text_color_selector"
                     android:textSize="@dimen/dimen_text_10"/>
         </LinearLayout>
-    
+        
         <LinearLayout
                 android:id="@+id/content_tab_category"
                 android:layout_width="0dp"
@@ -329,7 +329,7 @@
                 android:gravity="center"
                 android:layout_gravity="bottom"
                 android:orientation="vertical">
-        
+            
             <ImageView
                     android:id="@+id/content_tab_category_icon"
                     android:layout_width="wrap_content"
@@ -338,7 +338,7 @@
                     android:focusable="false"
                     android:padding="1dp"
                     android:src="@drawable/home_tab_select_category"/>
-        
+            
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

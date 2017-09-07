@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     
-
     
     <style
             name="NotificationInfo"
-            parent="android:TextAppearance.Material.Notification.Line2" />
+            parent="android:TextAppearance.Material.Notification.Line2"/>
+    
     <style
             name="NotificationTitle"
-            parent="android:TextAppearance.Material.Notification.Title" />
+            parent="android:TextAppearance.Material.Notification.Title"/>
 </resources>

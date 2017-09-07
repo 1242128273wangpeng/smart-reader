@@ -19,14 +19,16 @@ data class LoginReq(var facilityId: String,
                     var loginPlatform: Int
 ) {
     companion object {
-        @JvmStatic fun createWeChatReq(context: android.content.Context, code: String): LoginReq {
+        @JvmStatic
+        fun createWeChatReq(context: android.content.Context, code: String): LoginReq {
             return LoginReq(DeviceID.getOpenUDIDInContext(context), OpenUDID.getOpenUDIDInContext(context), context.packageName, "", "", "", "", code, 1)
         }
 
-        @JvmStatic fun createQQReq(context: android.content.Context, nickname: String,
-                                   headPortrait: String,
-                                   sex: String,
-                                   uidThird: String): LoginReq {
+        @JvmStatic
+        fun createQQReq(context: android.content.Context, nickname: String,
+                        headPortrait: String,
+                        sex: String,
+                        uidThird: String): LoginReq {
             return LoginReq(DeviceID.getOpenUDIDInContext(context), OpenUDID.getOpenUDIDInContext(context), context.packageName, nickname, headPortrait, sex, uidThird, "", 0)
         }
     }

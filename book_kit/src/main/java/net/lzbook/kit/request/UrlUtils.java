@@ -27,13 +27,12 @@ public class UrlUtils {
     }
 
 
-
     public static String buildUrl(String uriTag, Map<String, String> params) {
         if (uriTag == null) {
             return null;
         }
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext());
-        String novel_host = sp.getString(Constants.NOVEL_HOST,BOOK_NOVEL_DEPLOY_HOST);
+        String novel_host = sp.getString(Constants.NOVEL_HOST, BOOK_NOVEL_DEPLOY_HOST);
 
         String channelId = AppUtils.getChannelId();
         String version = String.valueOf(AppUtils.getVersionCode());
@@ -54,9 +53,9 @@ public class UrlUtils {
         params.put("latitude", latitude);
         params.put("cityCode", cityCode);
         BaseBookApplication globalContext = BaseBookApplication.getGlobalContext();
-        if(globalContext!=null){
+        if (globalContext != null) {
             URLBuilderIntterface urlBuilderIntterface = globalContext.getUrlBuilderIntterface();
-            if(urlBuilderIntterface!=null){
+            if (urlBuilderIntterface != null) {
                 String url = urlBuilderIntterface.buildUrl(novel_host, uriTag, params);
                 return url;
             }
@@ -64,12 +63,12 @@ public class UrlUtils {
         return null;
     }
 
-    public static String buildWebUrl(String uriTag,Map<String,String> params){
+    public static String buildWebUrl(String uriTag, Map<String, String> params) {
         if (uriTag == null) {
             return null;
         }
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext());
-        String webView_host = sp.getString(Constants.WEBVIEW_HOST,BOOK_WEBVIEW_HOST);
+        String webView_host = sp.getString(Constants.WEBVIEW_HOST, BOOK_WEBVIEW_HOST);
 
         String channelId = AppUtils.getChannelId();
         String version = String.valueOf(AppUtils.getVersionCode());
@@ -90,9 +89,9 @@ public class UrlUtils {
         params.put("cityCode", cityCode);
 
         BaseBookApplication globalContext = BaseBookApplication.getGlobalContext();
-        if(globalContext!=null){
+        if (globalContext != null) {
             URLBuilderIntterface urlBuilderIntterface = globalContext.getUrlBuilderIntterface();
-            if(urlBuilderIntterface!=null){
+            if (urlBuilderIntterface != null) {
                 String url = urlBuilderIntterface.buildUrl(webView_host, uriTag, params);
                 return url;
             }
@@ -101,12 +100,12 @@ public class UrlUtils {
     }
 
 
-    public static String buildDynamicParamasUrl(String uriTag,Map<String,String> params){
+    public static String buildDynamicParamasUrl(String uriTag, Map<String, String> params) {
         if (uriTag == null) {
             return null;
         }
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext());
-        String dynamicHost = sp.getString(Constants.NOVEL_HOST,BOOK_NOVEL_DEPLOY_HOST);
+        String dynamicHost = sp.getString(Constants.NOVEL_HOST, BOOK_NOVEL_DEPLOY_HOST);
 
         String channelId = AppUtils.getChannelId();
         String version = String.valueOf(AppUtils.getVersionCode());
@@ -120,9 +119,9 @@ public class UrlUtils {
         params.put("os", os);
         params.put("version", version);
         BaseBookApplication globalContext = BaseBookApplication.getGlobalContext();
-        if(globalContext!=null){
+        if (globalContext != null) {
             URLBuilderIntterface urlBuilderIntterface = globalContext.getUrlBuilderIntterface();
-            if(urlBuilderIntterface!=null){
+            if (urlBuilderIntterface != null) {
                 String url = urlBuilderIntterface.buildUrl(dynamicHost, uriTag, params);
                 Log.e("updateUrl", url);
                 return url;
@@ -151,10 +150,10 @@ public class UrlUtils {
         params.put("udid", udid);
 
         BaseBookApplication globalContext = BaseBookApplication.getGlobalContext();
-        if(globalContext!=null){
+        if (globalContext != null) {
             URLBuilderIntterface urlBuilderIntterface = globalContext.getUrlBuilderIntterface();
-            if(urlBuilderIntterface!=null){
-                String urls = urlBuilderIntterface.buildContentUrl(url ,params);
+            if (urlBuilderIntterface != null) {
+                String urls = urlBuilderIntterface.buildContentUrl(url, params);
                 return urls;
             }
         }

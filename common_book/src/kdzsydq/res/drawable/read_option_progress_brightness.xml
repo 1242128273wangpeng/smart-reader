@@ -8,6 +8,6 @@
     </item>
     <item android:id="@android:id/progress">
         <clip
-            android:drawable="@color/read_option_main"/>
+                android:drawable="@color/read_option_main"/>
     </item>
 </layer-list>

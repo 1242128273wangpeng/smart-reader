@@ -26,7 +26,7 @@ public class BugFeedback {
 
     /**
      * 发送异常日志
-     * */
+     */
     public void doPost(String url, Map<String, String> params, boolean isCachedData) {
         HttpClient httpClient = null;
         HttpPost httpPost;

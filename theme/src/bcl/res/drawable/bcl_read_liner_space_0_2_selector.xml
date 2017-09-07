@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:state_checked="false" android:drawable="@mipmap/liner_space_0_2"/>
-    <item android:state_checked="true" android:drawable="@mipmap/bcl_liner_space_0_2_checked"/>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="false"
+          android:drawable="@mipmap/liner_space_0_2"/>
+    <item android:state_checked="true"
+          android:drawable="@mipmap/bcl_liner_space_0_2_checked"/>
     <item android:drawable="@mipmap/liner_space_0_2"/>
 </selector>

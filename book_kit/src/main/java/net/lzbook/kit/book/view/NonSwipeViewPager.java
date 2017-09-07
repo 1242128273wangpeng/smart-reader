@@ -20,9 +20,9 @@ public class NonSwipeViewPager extends ViewPager {
     public boolean onTouchEvent(MotionEvent ev) {
         //return false;// 可行,不消费,传给父控件
         //return true;// 可行,消费,拦截事件
-        if (mScrollable){
+        if (mScrollable) {
             return super.onTouchEvent(ev);
-        }else {
+        } else {
             return true;// 可行,消费,拦截事件
         }
     }
@@ -32,9 +32,9 @@ public class NonSwipeViewPager extends ViewPager {
         // return false;//可行,不拦截事件,
         // return true;//不行,孩子无法处理事件
         //return super.onInterceptTouchEvent(ev);//不行,会有细微移动
-        if (mScrollable){
+        if (mScrollable) {
             return super.onInterceptTouchEvent(ev);
-        }else{
+        } else {
             return false;
         }
     }

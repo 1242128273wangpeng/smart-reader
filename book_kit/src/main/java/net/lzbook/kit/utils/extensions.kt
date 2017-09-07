@@ -20,9 +20,11 @@ import io.reactivex.disposables.Disposable
  * Created by xian on 2017/6/21.
  */
 
-@JvmField var msDebuggAble = false
+@JvmField
+var msDebuggAble = false
 
-@JvmField  val msMainLooperHandler = Handler(Looper.getMainLooper())
+@JvmField
+val msMainLooperHandler = Handler(Looper.getMainLooper())
 
 fun Any.runOnMain(run: () -> Unit) {
     msMainLooperHandler.post {
@@ -53,14 +55,14 @@ fun logWithLevel(obj: Any, level: LOG_LEVEL, param: List<Any?>) {
             builder.append(it.toString() + " | ")
         }
 
-        when(level){
-            LOG_LEVEL.DEBUG ->{
+        when (level) {
+            LOG_LEVEL.DEBUG -> {
                 Log.d(obj.javaClass.name, builder.toString())
             }
-            LOG_LEVEL.INFO ->{
+            LOG_LEVEL.INFO -> {
                 Log.i(obj.javaClass.name, builder.toString())
             }
-            LOG_LEVEL.ERR ->{
+            LOG_LEVEL.ERR -> {
                 Log.e(obj.javaClass.name, builder.toString())
             }
         }
@@ -71,9 +73,11 @@ fun logWithLevel(obj: Any, level: LOG_LEVEL, param: List<Any?>) {
 fun Any.logd(vararg param: Any) {
     logWithLevel(this, LOG_LEVEL.DEBUG, param.asList())
 }
+
 fun Any.logi(vararg param: Any) {
     logWithLevel(this, LOG_LEVEL.INFO, param.asList())
 }
+
 fun Any.loge(vararg param: Any) {
     logWithLevel(this, LOG_LEVEL.ERR, param.asList())
 }
@@ -133,11 +137,9 @@ fun Any?.toMap(): Map<String, String> {
 }
 
 fun <T> Observable<T>.subscribekt(onNext: ((t: T) -> Unit)? = null, onError: ((t: Throwable) -> Unit)? = null): Disposable {
-    return this.subscribe(io.reactivex.functions.Consumer {
-        t ->
+    return this.subscribe(io.reactivex.functions.Consumer { t ->
         onNext?.invoke(t)
-    }, io.reactivex.functions.Consumer {
-        t ->
+    }, io.reactivex.functions.Consumer { t ->
         onError?.invoke(t)
     })
 }
@@ -168,8 +170,8 @@ fun View.idName(): String {
     return context.resources.getResourceEntryName(id)
 }
 
-fun Animation.onEnd(callback: ()->Unit){
-    this.setAnimationListener(object: Animation.AnimationListener{
+fun Animation.onEnd(callback: () -> Unit) {
+    this.setAnimationListener(object : Animation.AnimationListener {
         override fun onAnimationRepeat(animation: Animation?) {
 
         }
@@ -188,28 +190,28 @@ fun Animation.onEnd(callback: ()->Unit){
 /**
  * theme 中未找到返回 -1
  */
-fun Context.attrColor(@AttrRes attr:Int):Int{
+fun Context.attrColor(@AttrRes attr: Int): Int {
     val typeValue = TypedValue()
     val b = this.theme.resolveAttribute(attr, typeValue, true)
-    if(b){
-        if(typeValue.type == TypedValue.TYPE_REFERENCE){
+    if (b) {
+        if (typeValue.type == TypedValue.TYPE_REFERENCE) {
             return resources.getColor(typeValue.resourceId)
-        }else{
+        } else {
             return typeValue.data
         }
-    }else{
+    } else {
         return -1
     }
 }
 
-fun Context.attrDrawable(@AttrRes attr:Int): Drawable? {
+fun Context.attrDrawable(@AttrRes attr: Int): Drawable? {
     val typeValue = TypedValue()
     val b = this.theme.resolveAttribute(attr, typeValue, true)
 
-    if(b){
-        if(typeValue.type == TypedValue.TYPE_REFERENCE){
+    if (b) {
+        if (typeValue.type == TypedValue.TYPE_REFERENCE) {
             return resources.getDrawable(typeValue.resourceId)
-        }else if (typeValue.type >= TypedValue.TYPE_FIRST_COLOR_INT && typeValue.type <= TypedValue.TYPE_LAST_COLOR_INT){
+        } else if (typeValue.type >= TypedValue.TYPE_FIRST_COLOR_INT && typeValue.type <= TypedValue.TYPE_LAST_COLOR_INT) {
             return ColorDrawable(typeValue.data)
         }
     }
@@ -217,9 +219,10 @@ fun Context.attrDrawable(@AttrRes attr:Int): Drawable? {
     return null
 }
 
-fun TextView.resolveTextColor(@AttrRes attr:Int){
+fun TextView.resolveTextColor(@AttrRes attr: Int) {
     val attrColor = this.context.attrColor(attr)
-    if(attrColor != -1){ this.setTextColor(attrColor)
+    if (attrColor != -1) {
+        this.setTextColor(attrColor)
 
     }
 }

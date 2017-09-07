@@ -53,23 +53,32 @@ import iyouqu.theme.StatusBarCompat;
 public class SettingActivity extends BaseCacheableActivity implements View.OnClickListener, SwitchButton.OnCheckedChangeListener {
 
     private static final int CODE_REQ_LOGIN = 100;
+    private final static int PUSH_TIME_SETTING = 1;
+    private static final int LOGIN_SUCCESS = 0x20;
+    public static SettingActivity sInstance;
+    public static long cacheSize;
     public String TAG = SettingActivity.class.getSimpleName();
+    public Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message message) {
+            super.handleMessage(message);
+            switch (message.what) {
+
+            }
+        }
+    };
+    protected String currentThemeMode; //是否切换了主题
+    ApkUpdateUtils apkUpdateUtils = new ApkUpdateUtils(this);
+    TypedValue themeName = new TypedValue();//分割块颜色
     private ImageView btnBack;
     private ImageView top_setting_back;
-
-    protected String currentThemeMode; //是否切换了主题
-
     private MyDialog myDialog;//清除缓存对话框
     private RelativeLayout user_login_layout;
     private View is_show_drawable;
-
     private List<RelativeLayout> mRelativeLayoutList;
     private List<TextView> mTextViewList;
     private List<View> mDivider;
     private List<View> mGap;
-
-    public static SettingActivity sInstance;
-
     private TextView tv_readpage_bbs;
     private TextView tv_style_change;
     private TextView tv_night_shift;
@@ -80,7 +89,6 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     private TextView text_check_update;
     private TextView text_clear_cache;
     private TextView text_disclaimer_statement;
-
     //第二种布局 登录在左侧
     private RelativeLayout top_navigation_bg;
     private ImageView icon_more_left;
@@ -89,7 +97,6 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     private TextView top_navigation_title;
     private ImageView iv_mine_image_left;
     private RelativeLayout user_login_layout_left;
-
     private LinearLayout rl_setting_layout;//背景
     private RelativeLayout rl_readpage_bbs;//论坛
     private RelativeLayout rl_style_change;//主题切换
@@ -106,31 +113,15 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     private TextView check_update_message; //版本号
     private TextView clear_cache_size;//缓存
     private TextView theme_name;//主题名
-    private final static int PUSH_TIME_SETTING = 1;
-
-    public static long cacheSize;
-    ApkUpdateUtils apkUpdateUtils = new ApkUpdateUtils(this);
     private CacheAsyncTask cacheAsyncTask;
-
     private boolean isActivityPause = false;
     private boolean isStyleChanged = false;
-    private static final int LOGIN_SUCCESS = 0x20;
-    public Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message message) {
-            super.handleMessage(message);
-            switch (message.what) {
-
-            }
-        }
-    };
     private Runnable feedbackRunnable = new Runnable() {
         @Override
         public void run() {
             FeedbackAPI.openFeedbackActivity();
         }
     };
-    TypedValue themeName = new TypedValue();//分割块颜色
     private RelativeLayout rl_history_setting;
     private TextView tv_history_setting;
     private TextView txt_nickname;
@@ -217,7 +208,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         img_head_background = (ImageView) findViewById(R.id.img_head_background);
         int desid = getResources().getIdentifier("txt_login_des", "id", getPackageName());
 
-        if(desid != 0){
+        if (desid != 0) {
             txt_login_des = (TextView) findViewById(desid);
         }
 
@@ -230,7 +221,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             mTextViewList.add(textView);
         }
 
-        if(txt_login_des != null)
+        if (txt_login_des != null)
             mTextViewList.add(txt_login_des);
 
 
@@ -275,7 +266,6 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         theme_name.setText(getResources().getText(themeName.resourceId));
 
 
-
     }
 
 
@@ -291,7 +281,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             Glide.with(this).load(userInfo.getHead_portrait()).into(img_head);
             findViewById(R.id.rl_logout).setVisibility(View.VISIBLE);
 
-            if( txt_login_des != null){
+            if (txt_login_des != null) {
                 txt_login_des.setVisibility(View.GONE);
             }
         }
@@ -311,7 +301,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             img_head.setImageResource(typedValue.resourceId);
             findViewById(R.id.rl_logout).setVisibility(View.GONE);
 
-            if( txt_login_des != null){
+            if (txt_login_des != null) {
                 txt_login_des.setVisibility(View.VISIBLE);
             }
         }
@@ -398,7 +388,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         isActivityPause = false;
         if (UserManager.INSTANCE.isUserLogin()) {
             showUserInfo();
-        }else{
+        } else {
             hideUserInfo();
         }
     }
@@ -512,8 +502,8 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         }
     }
 
-    private void logoutDialog(){
-        if(myDialog != null && myDialog.isShowing()){
+    private void logoutDialog() {
+        if (myDialog != null && myDialog.isShowing()) {
             myDialog.dismiss();
         }
         myDialog = new MyDialog(this, R.layout.publish_hint_dialog);
@@ -625,7 +615,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     }
 
     public void goBackToHome() {
-        if (!currentThemeMode.equals(mThemeHelper.getMode())||isStyleChanged) {
+        if (!currentThemeMode.equals(mThemeHelper.getMode()) || isStyleChanged) {
             Intent themIntent = new Intent(SettingActivity.this, HomeActivity.class);
             Bundle bundle = new Bundle();
             bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_SWITCH_THEME);
@@ -670,35 +660,12 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         nightShift();
     }
 
-    private class CacheAsyncTask extends AsyncTask<Void, Void, String> {
-
-        @Override
-        protected String doInBackground(Void... params) {
-            String result = "0B";
-            try {
-                result = DataCleanManager.getTotalCacheSize(getApplicationContext());
-                SettingActivity.cacheSize = DataCleanManager.internalCacheSize;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            clear_cache_size.setText(result);
-        }
-
-    }
-
     private void CancelTask() {
         if (cacheAsyncTask != null) {
             cacheAsyncTask.cancel(true);
             cacheAsyncTask = null;
         }
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -718,7 +685,6 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 break;
         }
     }
-
 
     private void refreshUI() {
         Resources.Theme theme = getTheme();
@@ -830,7 +796,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         //第二套布局的资源
         theme.resolveAttribute(R.attr.color_primary, navigationColor, true);
         theme.resolveAttribute(R.attr.top_navigation_text_color, navigationTextColor, true);
-        if(top_navigation_bg.getBackground().getOpacity() != PixelFormat.TRANSPARENT) {
+        if (top_navigation_bg.getBackground().getOpacity() != PixelFormat.TRANSPARENT) {
             top_navigation_bg.setBackgroundResource(navigationColor.resourceId);//顶部导航的颜色
         }
         top_setting_back.setImageDrawable(resources.getDrawable(iconBack.resourceId));//返回键颜色
@@ -842,7 +808,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         if (btn_login != null) {
 
             //xml总没有图就不设置了
-            if(img_head_background.getDrawable() != null) {
+            if (img_head_background.getDrawable() != null) {
                 resetImageResource(img_head_background, R.attr.setting_img_user_head_background);
             }
 
@@ -850,19 +816,19 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             resetTextColor(btn_login, R.attr.setting_login_font_color);
             resetTextColor(btn_logout, R.attr.setting_logout_font_color);
             Drawable login_background = btn_login.getBackground();
-            if(! (login_background instanceof ColorDrawable)) {
+            if (!(login_background instanceof ColorDrawable)) {
                 resetBackground(btn_login, R.attr.setting_login_background);
             }
             resetBackground(btn_logout, R.attr.setting_logout_background);
 
             resetBackground(img_head_background, R.attr.color_primary);
 
-            if(!UserManager.INSTANCE.isUserLogin()) {
+            if (!UserManager.INSTANCE.isUserLogin()) {
                 resetImageResource(img_head, R.attr.setting_img_user_head_default);
             }
             resetTextColor(txt_nickname, R.attr.setting_nickname_font_color, resources.getColor(textColor.resourceId));
             resetTextColor(txt_userid, R.attr.setting_userid_font_color, resources.getColor(textColor.resourceId));
-            if(txt_login_des != null){
+            if (txt_login_des != null) {
                 resetTextColor(txt_login_des, R.attr.setting_userid_font_color, resources.getColor(textColor.resourceId));
             }
 
@@ -886,9 +852,9 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     private boolean resetTextColor(TextView view, @AttrRes int attr) {
         TypedValue typedValue = new TypedValue();
         if (getTheme().resolveAttribute(attr, typedValue, true)) {
-            if(typedValue.type == TypedValue.TYPE_REFERENCE) {
+            if (typedValue.type == TypedValue.TYPE_REFERENCE) {
                 view.setTextColor(getResources().getColor(typedValue.resourceId));
-            }else{
+            } else {
                 view.setTextColor(typedValue.data);
             }
             return true;
@@ -900,5 +866,27 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         if (!resetTextColor(view, attr)) {
             view.setTextColor(defaultColor);
         }
+    }
+
+    private class CacheAsyncTask extends AsyncTask<Void, Void, String> {
+
+        @Override
+        protected String doInBackground(Void... params) {
+            String result = "0B";
+            try {
+                result = DataCleanManager.getTotalCacheSize(getApplicationContext());
+                SettingActivity.cacheSize = DataCleanManager.internalCacheSize;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            clear_cache_size.setText(result);
+        }
+
     }
 }

@@ -2,20 +2,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-<TextView
-        android:id="@+id/btn_login"
-        android:layout_width="280dp"
-        android:layout_height="35dp"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@+id/ll_login_ignore"
-        android:layout_marginBottom="11.5dp"
-        android:text="登 录"
-        android:gravity="center"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:background="@drawable/cml_guide_login_selector"
-        />
+    <TextView
+            android:id="@+id/btn_login"
+            android:layout_width="280dp"
+            android:layout_height="35dp"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/ll_login_ignore"
+            android:layout_marginBottom="11.5dp"
+            android:text="登 录"
+            android:gravity="center"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:background="@drawable/cml_guide_login_selector"
+    />
     <LinearLayout
             android:id="@+id/ll_login_ignore"
             android:layout_width="wrap_content"
@@ -38,7 +38,7 @@
                 android:textSize="16sp"
                 android:textColor="#c9c9c9"
                 android:text="以后再说"
-                />
+        />
 
     </LinearLayout>
 

@@ -8,7 +8,7 @@ import net.lzbook.kit.utils.AppUtils;
 public class ActionConstants {
 
     public static final String PackageName = AppUtils.getPackageName();
-    public static final String DOWN_APP_SUCCESS_ACTION = PackageName+"_"+"DownloadIntentService";
+    public static final String DOWN_APP_SUCCESS_ACTION = PackageName + "_" + "DownloadIntentService";
 
     public static final String ACTION_CACHE_COMPLETE = "ACTION_CACHE_COMPLETE";
 

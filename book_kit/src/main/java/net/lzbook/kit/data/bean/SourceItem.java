@@ -2,8 +2,6 @@ package net.lzbook.kit.data.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class SourceItem implements Serializable {
     //获取源操作是否成功
@@ -33,7 +31,8 @@ public class SourceItem implements Serializable {
 
         if (success != that.success) return false;
         if (total != that.total) return false;
-        if (error_log != null ? !error_log.equals(that.error_log) : that.error_log != null) return false;
+        if (error_log != null ? !error_log.equals(that.error_log) : that.error_log != null)
+            return false;
         if (params != null ? !params.equals(that.params) : that.params != null) return false;
         if (book_id != null ? !book_id.equals(that.book_id) : that.book_id != null) return false;
         return sourceList != null ? sourceList.equals(that.sourceList) : that.sourceList == null;

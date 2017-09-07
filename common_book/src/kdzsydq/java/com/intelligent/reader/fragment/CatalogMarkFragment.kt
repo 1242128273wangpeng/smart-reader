@@ -269,7 +269,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
         loadingPage?.onSuccess()
         if (marks.isEmpty()) {
             view!!.rl_layout_empty_online.visibility = View.VISIBLE
-        }else{
+        } else {
             view!!.rl_layout_empty_online.visibility = View.GONE
         }
         bookMarkList.clear()

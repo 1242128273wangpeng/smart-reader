@@ -1,7 +1,8 @@
 package net.lzbook.kit.utils.popup;
 
+import net.lzbook.kit.R;
+
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -9,8 +10,6 @@ import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-
-import net.lzbook.kit.R;
 
 
 /**
@@ -102,21 +101,15 @@ public class PopupBase extends PopupWindowManager implements View.OnClickListene
         this.clickListener = l;
     }
 
-    public interface PopupWindowDeleteClickListener {
-
-        void clickDeleteBtn();
-    }
-
-
     @Override
     public void changeText(String text) {
         if (text != null) {
-            if ("0".equals(text)){
+            if ("0".equals(text)) {
                 delete_btn.setText("删除");
 //                ColorStateList csl =  mContext.getResources().getColorStateList(R.color.color_gray_babfc1);
 //                delete_btn.setTextColor(csl);
 //                delete_btn.setBackgroundResource(R.drawable.remove_bottom_delete_unclick);
-            }else {
+            } else {
                 delete_btn.setText("删除 (" + text + ")");
 //                ColorStateList draw = mContext.getResources().getColorStateList(R.color.selector_text_default);
 //                delete_btn.setTextColor(draw);
@@ -132,6 +125,11 @@ public class PopupBase extends PopupWindowManager implements View.OnClickListene
         if (popupWindow != null) {
             popupWindow.dismiss();
         }
+    }
+
+    public interface PopupWindowDeleteClickListener {
+
+        void clickDeleteBtn();
     }
 
 }

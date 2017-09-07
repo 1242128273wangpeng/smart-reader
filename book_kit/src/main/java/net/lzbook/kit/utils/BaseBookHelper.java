@@ -38,32 +38,6 @@ public abstract class BaseBookHelper {
     private static final String DOWN_INDEX = "down_index";
 
     static String TAG = "BaseBookHelper";
-
-    public static RequestItem getRequestItem(Book iBook) {
-        RequestItem requestItem = new RequestItem();
-        requestItem.book_id = iBook.book_id;
-        requestItem.book_source_id = iBook.book_source_id;
-        requestItem.name = iBook.name;
-        requestItem.author = iBook.author;
-        requestItem.host = iBook.site;
-        requestItem.parameter = iBook.parameter;
-        requestItem.extra_parameter = iBook.extra_parameter;
-        return requestItem;
-    }
-
-
-    public static void reStartDownloadService() {
-        try {
-            Context context = BaseBookApplication.getGlobalContext().getApplicationContext();
-            Intent intent = new Intent();
-            intent.setClass(context, DownloadService.class);
-            context.startService(intent);
-            context.bindService(intent, sc, Context.BIND_AUTO_CREATE);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     private static ServiceConnection sc = new ServiceConnection() {
 
         @Override
@@ -77,6 +51,30 @@ public abstract class BaseBookHelper {
             BaseBookApplication.setDownloadService(downloadService);
         }
     };
+
+    public static RequestItem getRequestItem(Book iBook) {
+        RequestItem requestItem = new RequestItem();
+        requestItem.book_id = iBook.book_id;
+        requestItem.book_source_id = iBook.book_source_id;
+        requestItem.name = iBook.name;
+        requestItem.author = iBook.author;
+        requestItem.host = iBook.site;
+        requestItem.parameter = iBook.parameter;
+        requestItem.extra_parameter = iBook.extra_parameter;
+        return requestItem;
+    }
+
+    public static void reStartDownloadService() {
+        try {
+            Context context = BaseBookApplication.getGlobalContext().getApplicationContext();
+            Intent intent = new Intent();
+            intent.setClass(context, DownloadService.class);
+            context.startService(intent);
+            context.bindService(intent, sc, Context.BIND_AUTO_CREATE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 判断章节状态
@@ -280,7 +278,7 @@ public abstract class BaseBookHelper {
         DownloadService downloadService = BaseBookApplication.getDownloadService();
         if (downloadService != null) {
             BookTask bookTask = downloadService.getDownBookTask(book.book_id);
-            if(bookTask != null) {
+            if (bookTask != null) {
                 return bookTask.state;
             }
         }

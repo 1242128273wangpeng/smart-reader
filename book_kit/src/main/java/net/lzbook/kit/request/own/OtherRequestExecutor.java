@@ -1,8 +1,5 @@
 package net.lzbook.kit.request.own;
 
-import android.content.Context;
-import android.os.Handler;
-
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.RequestItem;
 import net.lzbook.kit.data.db.BookChapterDao;
@@ -10,6 +7,9 @@ import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.net.volley.request.VolleyDataService;
 import net.lzbook.kit.request.RequestExecutorDefault;
 import net.lzbook.kit.utils.NetWorkUtils;
+
+import android.content.Context;
+import android.os.Handler;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -28,20 +28,20 @@ public class OtherRequestExecutor extends RequestExecutorDefault {
     }
 
     @Override
-    public void requestChapterList(Context context, RequestItem requestItem,VolleyDataService.DataServiceCallBack requestChaptersCallBack) throws Exception {
+    public void requestChapterList(Context context, RequestItem requestItem, VolleyDataService.DataServiceCallBack requestChaptersCallBack) throws Exception {
         mContext = context;
-        if (NetWorkUtils.getNetWorkType(mContext) == NetWorkUtils.NETWORK_NONE){
-            BookChapterDao bookChapterDao = new BookChapterDao(context,requestItem.book_id);
+        if (NetWorkUtils.getNetWorkType(mContext) == NetWorkUtils.NETWORK_NONE) {
+            BookChapterDao bookChapterDao = new BookChapterDao(context, requestItem.book_id);
             ArrayList<Chapter> chapterList = bookChapterDao.queryBookChapter();
-            if (chapterList.size() != 0){
+            if (chapterList.size() != 0) {
                 requestChaptersCallBack.onSuccess(chapterList);
                 return;
-            }else {
-                mRquestChaptersListener.requestFailed(RequestChaptersListener.ERROR_TYPE_NETWORK_NONE,"拉取章节时无网络",0);
+            } else {
+                mRquestChaptersListener.requestFailed(RequestChaptersListener.ERROR_TYPE_NETWORK_NONE, "拉取章节时无网络", 0);
                 return;
             }
         }
-        OtherRequestService.requestOwnChapterList(context, requestItem,requestChaptersCallBack);
+        OtherRequestService.requestOwnChapterList(context, requestItem, requestChaptersCallBack);
     }
 
     /*@Override
@@ -51,14 +51,14 @@ public class OtherRequestExecutor extends RequestExecutorDefault {
     }*/
 
     @Override
-    public Chapter requestSingleChapter(int dex,BookDaoHelper bookDaoHelper, BookChapterDao bookChapterDao, Chapter chapter)
+    public Chapter requestSingleChapter(int dex, BookDaoHelper bookDaoHelper, BookChapterDao bookChapterDao, Chapter chapter)
             throws Exception {
-        return new OtherRequestChapterExecutor(bookDaoHelper, bookChapterDao).requestSingleChapter(dex,chapter);
+        return new OtherRequestChapterExecutor(bookDaoHelper, bookChapterDao).requestSingleChapter(dex, chapter);
     }
 
     @Override
-    public void requestBatchChapter(int dex,BookDaoHelper bookDaoHelper, BookChapterDao bookChapterDao, boolean downloadFlag,
+    public void requestBatchChapter(int dex, BookDaoHelper bookDaoHelper, BookChapterDao bookChapterDao, boolean downloadFlag,
                                     Map<String, Chapter> chapterMap) throws Exception {
-        new OtherRequestChapterExecutor(bookDaoHelper, bookChapterDao).requestBatchChapter(dex,downloadFlag, chapterMap);
+        new OtherRequestChapterExecutor(bookDaoHelper, bookChapterDao).requestBatchChapter(dex, downloadFlag, chapterMap);
     }
 }

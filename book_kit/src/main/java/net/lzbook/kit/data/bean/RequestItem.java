@@ -36,7 +36,7 @@ public class RequestItem implements Serializable {
     public long last_checkupdatetime;
     public long last_updateSucessTime;
 
-    public static RequestItem fromBook(Book book){
+    public static RequestItem fromBook(Book book) {
         RequestItem requestItem = new RequestItem();
 
         requestItem.host = book.site;
@@ -50,7 +50,7 @@ public class RequestItem implements Serializable {
         requestItem.last_checkupdatetime = book.last_checkupdatetime;
         requestItem.last_updateSucessTime = book.last_updateSucessTime;
 
-        return  requestItem;
+        return requestItem;
     }
 
 

@@ -23,7 +23,7 @@ var HTTP_READ_TIMEOUT = 30000
 var RETRY_TIMES = 3
 
 private fun log(str: String, vararg param: Any?) {
-    if(msDebuggAble) {
+    if (msDebuggAble) {
         var builder = StringBuilder()
         builder.append(str)
         param.forEach {
@@ -96,12 +96,12 @@ class BreakPointFileLoader(val id: String, val url: String, val file: File, val 
         isDownloading.set(true)
         try {
             if (index > 0 && checkEtag()) {
-                if(index == fileLength) {
+                if (index == fileLength) {
                     log("load", "文件上次已经下载完成了")
                     isDownloading.set(false)
                     finish?.invoke(id)
                     return
-                }else{
+                } else {
                     loadPartial()
                 }
             } else {
@@ -200,14 +200,14 @@ class BreakPointFileLoader(val id: String, val url: String, val file: File, val 
                         status.setProperty("index", "$index")
 
                         var ret = progress?.invoke(id, (index.toFloat() / fileLength * 100).toInt()) ?: true
-                        if(!ret){
+                        if (!ret) {
                             stoped = true
                             break
                         }
 
                         flag = connection.inputStream.read(buf)
 
-                        if(System.currentTimeMillis() - startTime > 200){
+                        if (System.currentTimeMillis() - startTime > 200) {
                             storeStatus()
                             startTime = System.currentTimeMillis()
                         }
@@ -282,14 +282,14 @@ class BreakPointFileLoader(val id: String, val url: String, val file: File, val 
                     status.setProperty("index", "$index")
 
                     var ret = progress?.invoke(id, (index.toFloat() / fileLength * 100).toInt()) ?: true
-                    if(!ret){
+                    if (!ret) {
                         stoped = true
                         break
                     }
 
                     flag = connection.inputStream.read(buf)
 
-                    if(System.currentTimeMillis() - startTime > 200){
+                    if (System.currentTimeMillis() - startTime > 200) {
                         storeStatus()
                         startTime = System.currentTimeMillis()
                     }

@@ -1,5 +1,22 @@
 package com.intelligent.reader.view;
 
+import com.intelligent.reader.R;
+import com.intelligent.reader.activity.DownloadManagerActivity;
+import com.intelligent.reader.adapter.DownloadManagerAdapter;
+import com.intelligent.reader.read.help.BookHelper;
+
+import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.book.component.service.DownloadService;
+import net.lzbook.kit.book.download.CallBackDownload;
+import net.lzbook.kit.book.download.DownloadState;
+import net.lzbook.kit.book.view.MyDialog;
+import net.lzbook.kit.data.bean.Book;
+import net.lzbook.kit.data.db.BookChapterDao;
+import net.lzbook.kit.data.db.BookDaoHelper;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.RemoveAdapterHelper;
+import net.lzbook.kit.utils.StatServiceUtils;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
@@ -15,73 +32,55 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.intelligent.reader.R;
-import com.intelligent.reader.activity.DownloadManagerActivity;
-import com.intelligent.reader.adapter.DownloadManagerAdapter;
-import com.intelligent.reader.read.help.BookHelper;
-
-import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.book.component.service.DownloadService;
-import net.lzbook.kit.book.download.CallBackDownload;
-import net.lzbook.kit.book.download.DownloadState;
-import net.lzbook.kit.book.view.MyDialog;
-import net.lzbook.kit.data.bean.Book;
-import net.lzbook.kit.data.db.BookChapterDao;
-import net.lzbook.kit.data.db.BookDaoHelper;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.RemoveAdapterHelper;
-import net.lzbook.kit.utils.StatServiceUtils;
-
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
-
-import de.greenrobot.event.EventBus;
 
 
 public class DownloadPager extends LinearLayout implements CallBackDownload, RemoveAdapterHelper
         .OnMenuDeleteClickListener,
         RemoveAdapterHelper.OnMenuStateListener, RemoveAdapterHelper.OnMenuSelectAllListener {
 
-	private final String TAG = "DownloadPager";
-
-    private DownloadManagerAdapter downloadAdapter;
+    private static boolean isDeleteBookrack = false;
+    private final String TAG = "DownloadPager";
+    private final Handler handler = new MHandler(this);
     public ArrayList<Book> booksData;
     public RemoveAdapterHelper removehelper;
-
-	private static boolean isDeleteBookrack = false;
-	private ArrayList<Book> deleteBooks;
-
-	private Context mContext;
-	private Activity activity;
-	private ListView listView;
-    private RelativeLayout bookshelf_empty;
-	private BookDaoHelper mBookDaoHelper;
-    private TextView btnEmpty;
-
+    public DeleteItemListener deleteItemListener;
+    public boolean isShowing = false;
+    protected DownloadService downService;
     long lastShowTime;
-
-	public DownloadPager(Context context, Activity activity, ArrayList<Book> books) {
-		super(context);
-		this.booksData = books;
-		initView(context,activity);
-	}
-
     DownloadManagerActivity downloadManagerActivity;
+    long time = System.currentTimeMillis();
+    BookChapterDao bookChapterDao;
+    private DownloadManagerAdapter downloadAdapter;
+    private ArrayList<Book> deleteBooks;
+    private Context mContext;
+    private Activity activity;
+    private ListView listView;
+    private RelativeLayout bookshelf_empty;
+    private BookDaoHelper mBookDaoHelper;
+    private TextView btnEmpty;
+    private FrameLayout frameLayout;
+
+    public DownloadPager(Context context, Activity activity, ArrayList<Book> books) {
+        super(context);
+        this.booksData = books;
+        initView(context, activity);
+    }
 
     private void initView(Context context, final Activity activity) {
         mBookDaoHelper = BookDaoHelper.getInstance(context);
 
-		mContext = context;
-		this.activity = activity;
+        mContext = context;
+        this.activity = activity;
 
         LayoutInflater inflater = LayoutInflater.from(activity);
         frameLayout = (FrameLayout) inflater.inflate(R.layout.download_manager_pager, null);
 
-		this.addView(frameLayout);
-		
-		listView = (ListView) findViewById(R.id.download_manager_list);
+        this.addView(frameLayout);
+
+        listView = (ListView) findViewById(R.id.download_manager_list);
         bookshelf_empty = (RelativeLayout) findViewById(R.id.empty_bookshelf);
         btnEmpty = (TextView) findViewById(R.id.download_empty_btn);
 //		listView.setDivider(null);
@@ -96,9 +95,7 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
         downloadManagerActivity = (DownloadManagerActivity) activity;
 
 
-
     }
-    public DeleteItemListener deleteItemListener;
 
     public void setDeleteItemListener(DeleteItemListener deleteItemListener) {
         this.deleteItemListener = deleteItemListener;
@@ -109,22 +106,16 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
         StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.bs_down_m_click_select_all);
     }
 
-    public interface DeleteItemListener {
-        void onSuccess();
-
-        void onFailed();
+    public ListView getListView() {
+        return listView;
     }
 
-	public ListView getListView() {
-		return listView;
-	}
-
-	/**
-	 * 刷新书籍列表
-	 * 
-	 * books
-	 */
-	public void freshBookList(ArrayList<Book> books) {
+    /**
+     * 刷新书籍列表
+     *
+     * books
+     */
+    public void freshBookList(ArrayList<Book> books) {
         if (booksData != null && books != null) {
             if (books.size() == 0) {
                 listView.setVisibility(GONE);
@@ -137,7 +128,7 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
                 downloadAdapter.notifyDataSetChanged();
             }
         }
-	}
+    }
 
     public DownloadManagerAdapter getAdapter() {
         return downloadAdapter;
@@ -149,31 +140,33 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
         }
     }
 
-	@Override
-	public void onMenuDelete(HashSet<Integer> checked_state) {
+    @Override
+    public void onMenuDelete(HashSet<Integer> checked_state) {
         StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.bs_down_m_click_delete);
-		deleteItems(checked_state);
-	}
+        deleteItems(checked_state);
+    }
 
     public void showRemoveMenu(View parent) {
-		removehelper.showRemoveMenu(parent);
-	}
+        removehelper.showRemoveMenu(parent);
+    }
 
-	public void dissmissremoveMenu() {
-		removehelper.dismissRemoveMenu();
-	}
+    public void dissmissremoveMenu() {
+        removehelper.dismissRemoveMenu();
+    }
 
-	public boolean isRemoveMode() {
-		return removehelper.isRemoveMode();
-	}
-	public void setRemoveChecked(int postion){
-		removehelper.setCheckPosition(postion);
-	}
-	/**
-	 * 点击删除事件
-	 * 
-	 * checked_state
-	 */
+    public boolean isRemoveMode() {
+        return removehelper.isRemoveMode();
+    }
+
+    public void setRemoveChecked(int postion) {
+        removehelper.setCheckPosition(postion);
+    }
+
+    /**
+     * 点击删除事件
+     *
+     * checked_state
+     */
     public void deleteItems(HashSet<Integer> checked_state) {
         deleteBooks = new ArrayList<Book>();
         deleteBooks.clear();
@@ -191,9 +184,9 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
                 deleteBooks.add(book);
             }
         }
-        if (deleteBooks.size() == 0){
-            Toast.makeText(mContext, net.lzbook.kit.R.string.mian_delete_cache_no_choose,Toast.LENGTH_SHORT).show();
-        }else if (deleteBooks.size() > 0) {
+        if (deleteBooks.size() == 0) {
+            Toast.makeText(mContext, net.lzbook.kit.R.string.mian_delete_cache_no_choose, Toast.LENGTH_SHORT).show();
+        } else if (deleteBooks.size() > 0) {
 
             final MyDialog myDialog = new MyDialog(activity, R.layout.layout_addshelf_dialog);
             TextView dialog_title = (TextView) myDialog.findViewById(R.id.dialog_title);
@@ -294,33 +287,6 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
         }
     }
 
-    private final Handler handler = new MHandler(this);
-
-    private static class MHandler extends Handler {
-        private WeakReference<DownloadPager> reference;
-
-        MHandler(DownloadPager pager) {
-            reference = new WeakReference<DownloadPager>(pager);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            DownloadPager downloadPager = reference.get();
-            if (downloadPager == null) {
-                return;
-            }
-
-            switch (msg.what) {
-                case 0:
-                    downloadPager.dealHandler();
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    }
-
     private void dealHandler() {
         if (isDeleteBookrack) {
             ((DownloadManagerActivity) activity).freshBooks(true);// FIXME
@@ -344,8 +310,6 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
     public void onChapterDownStart(String book_id, int sequence) {
 //		AppLog.d(TAG, "onChapterDownStart =");
     }
-
-    long time = System.currentTimeMillis();
 
     @Override
     public void onChapterDownFinish(String book_id, int sequence) {
@@ -412,12 +376,10 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
         }
     }
 
-	@Override
-	public void onOffLineFinish() {
-		AppLog.d(TAG, "onOffLineFinish =");
-	}
-
-	protected  DownloadService downService;
+    @Override
+    public void onOffLineFinish() {
+        AppLog.d(TAG, "onOffLineFinish =");
+    }
 
     public DownloadService getService() {
         if (downService == null) {
@@ -426,59 +388,86 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
         return downService;
     }
 
-	public void replaceCallBack() {
-		if (getService() != null) {
-			getService().replaceOffLineCallBack(this);// TODO 替换初始化时的空回调
-		}
-	}
-	public boolean isShowing = false;
-	@Override
-	public void getMenuShownState(boolean isShown) {
-		isShowing = isShown;
-	}
+    public void replaceCallBack() {
+        if (getService() != null) {
+            getService().replaceOffLineCallBack(this);// TODO 替换初始化时的空回调
+        }
+    }
 
-	@Override
-	public void getAllCheckedState(boolean isAll) {
-	}
+    @Override
+    public void getMenuShownState(boolean isShown) {
+        isShowing = isShown;
+    }
 
-	@Override
-	public void onChapterDownFailedNeedLogin() {
-	}
+    @Override
+    public void getAllCheckedState(boolean isAll) {
+    }
+
+    @Override
+    public void onChapterDownFailedNeedLogin() {
+    }
 
     @Override
     public void onChapterDownFailedNeedPay(String book_id, int nid, int sequence) {
 
     }
 
-    BookChapterDao bookChapterDao;
-	private FrameLayout frameLayout;
+    public void recycleResource() {
 
-	public void recycleResource() {
+        if (booksData != null) {
+            booksData.clear();
+            booksData = null;
+        }
 
-		if (booksData != null) {
-			booksData.clear();
-			booksData = null;
-		}
+        if (downloadAdapter != null) {
+            downloadAdapter.recycleResource();
+            downloadAdapter = null;
+        }
 
-		if (downloadAdapter != null) {
-			downloadAdapter.recycleResource();
-			downloadAdapter = null;
-		}
+        if (mBookDaoHelper != null) {
+            mBookDaoHelper = null;
+        }
 
-		if (mBookDaoHelper != null) {
-			mBookDaoHelper = null;
-		}
+        if (this.downloadManagerActivity != null) {
+            this.downloadManagerActivity = null;
+        }
 
-		if (this.downloadManagerActivity != null) {
-			this.downloadManagerActivity = null;
-		}
+        if (this.mContext != null) {
+            this.mContext = null;
+        }
 
-		if (this.mContext != null) {
-			this.mContext = null;
-		}
+        if (this.activity != null) {
+            this.activity = null;
+        }
+    }
+    public interface DeleteItemListener {
+        void onSuccess();
 
-		if (this.activity != null) {
-			this.activity = null;
-		}
-	}
+        void onFailed();
+    }
+
+    private static class MHandler extends Handler {
+        private WeakReference<DownloadPager> reference;
+
+        MHandler(DownloadPager pager) {
+            reference = new WeakReference<DownloadPager>(pager);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            DownloadPager downloadPager = reference.get();
+            if (downloadPager == null) {
+                return;
+            }
+
+            switch (msg.what) {
+                case 0:
+                    downloadPager.dealHandler();
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
 }

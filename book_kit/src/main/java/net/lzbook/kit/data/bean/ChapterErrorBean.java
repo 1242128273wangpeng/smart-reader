@@ -1,11 +1,5 @@
 package net.lzbook.kit.data.bean;
 
-import android.text.TextUtils;
-
-import com.dingyueads.sdk.Native.YQNativeAdInfo;
-
-import java.io.Serializable;
-
 public class ChapterErrorBean {
     public String bookSourceId;
     public String bookName;

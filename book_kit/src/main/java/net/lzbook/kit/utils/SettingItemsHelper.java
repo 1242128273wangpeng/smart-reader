@@ -1,17 +1,17 @@
 package net.lzbook.kit.utils;
 
+import net.lzbook.kit.data.bean.SettingItems;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import net.lzbook.kit.data.bean.SettingItems;
-
 /**
  * <设置选项数据通过文件方式操作>
  */
-public class SettingItemsHelper{
+public class SettingItemsHelper {
+    public static SettingItemsHelper settingHelper;
     public SettingItems settings;
-
     public String openPush = "settings_push";
     public String openPushSound = "push_sound";
     public String setPushTime = "push_time";
@@ -27,9 +27,6 @@ public class SettingItemsHelper{
     public String autoDownLoad = "auto_download_wifi";
     public String booklistSortType = "booklist_sort_type";
     Context context;
-
-
-    public static SettingItemsHelper settingHelper;
     SharedPreferences preferences;
 
     private SettingItemsHelper(Context context) {

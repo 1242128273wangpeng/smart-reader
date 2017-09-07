@@ -6,6 +6,6 @@ import java.io.File
  * Created by xian on 17-6-7.
  */
 
-fun delFile(file: File?){
+fun delFile(file: File?) {
     file?.deleteRecursively()
 }

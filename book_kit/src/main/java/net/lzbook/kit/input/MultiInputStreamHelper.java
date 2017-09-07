@@ -8,61 +8,61 @@ import java.util.Map;
 
 public class MultiInputStreamHelper {
 
-	private static String getEncoding(Map<String, String> responseHeaders) {
-		String header1 = responseHeaders.get("Accept-Encoding");
-		String header2 = responseHeaders.get("Content-Encoding");
-		StringBuilder encoding = new StringBuilder();
-		if (header1 != null) {
-			encoding.append(header1);
-		}
+    private static String getEncoding(Map<String, String> responseHeaders) {
+        String header1 = responseHeaders.get("Accept-Encoding");
+        String header2 = responseHeaders.get("Content-Encoding");
+        StringBuilder encoding = new StringBuilder();
+        if (header1 != null) {
+            encoding.append(header1);
+        }
 
-		if (header2 != null) {
-			encoding.append(header2);
-		}
+        if (header2 != null) {
+            encoding.append(header2);
+        }
 
-		return encoding.toString();
-	}
+        return encoding.toString();
+    }
 
-	public enum IEncoding {
-		NONE(""), ESENC("esenc"), GZIP("gzip"), ESENCGZIP("gzip,esenc");
+    public static byte[] encrypt(byte[] old) {
+        for (int i = 0; i < old.length; i++) {
+            old[i] = (byte) ~old[i];
+        }
+        return old;
+    }
 
-		public final String encoding;
+    public static InputStream getInputStream(Map<String, String> responseHeaders, InputStream in) throws IOException {
+        return getInputStream(getEncoding(responseHeaders), in);
+    }
 
-		IEncoding(String encoding) {
-			this.encoding = encoding;
-		}
-	}
+    public static InputStream getInputStream(String encoding, InputStream in) throws IOException {
 
-	public static byte[] encrypt(byte[] old) {
-		for (int i = 0; i < old.length; i++) {
-			old[i] = (byte) ~old[i];
-		}
-		return old;
-	}
+        if (TextUtils.isEmpty(encoding)) {
+            return in;
+        }
 
-	public static InputStream getInputStream(Map<String, String> responseHeaders, InputStream in) throws IOException {
-		return getInputStream(getEncoding(responseHeaders), in);
-	}
+        if (encoding.contains(IEncoding.GZIP.encoding) && encoding.contains(IEncoding.ESENC.encoding)) {
+            return new MultiGzipInputStream(in);
+        }
 
-	public static InputStream getInputStream(String encoding, InputStream in) throws IOException {
+        if (encoding.contains(IEncoding.GZIP.encoding)) {
+            return new MultiMemberGZIPInputStream(in);
+        }
 
-		if (TextUtils.isEmpty(encoding)) {
-			return in;
-		}
+        if (encoding.contains(IEncoding.ESENC.encoding)) {
+            return new UtilInputStream(in);
+        }
 
-		if (encoding.contains(IEncoding.GZIP.encoding) && encoding.contains(IEncoding.ESENC.encoding)) {
-			return new MultiGzipInputStream(in);
-		}
+        return in;
+    }
 
-		if (encoding.contains(IEncoding.GZIP.encoding)) {
-			return new MultiMemberGZIPInputStream(in);
-		}
+    public enum IEncoding {
+        NONE(""), ESENC("esenc"), GZIP("gzip"), ESENCGZIP("gzip,esenc");
 
-		if (encoding.contains(IEncoding.ESENC.encoding)) {
-			return new UtilInputStream(in);
-		}
+        public final String encoding;
 
-		return in;
-	}
+        IEncoding(String encoding) {
+            this.encoding = encoding;
+        }
+    }
 
 }

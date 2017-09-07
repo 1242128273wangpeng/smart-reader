@@ -17,7 +17,8 @@ public class BookEvent {
     public BookEvent(String msg) {
         mMsg = msg;
     }
-    public String getMsg(){
+
+    public String getMsg() {
         return mMsg;
     }
 }

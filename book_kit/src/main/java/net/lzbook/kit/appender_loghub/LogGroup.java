@@ -12,29 +12,29 @@ import java.util.Map;
  */
 
 public class LogGroup {
+    protected List<ServerLog> mContent = new ArrayList<ServerLog>();
     private String mTopic = "";
     private String mSource = "";
     private String project;
     private String logstore;
-    
-    protected List<ServerLog> mContent = new ArrayList<ServerLog>();
 
     public LogGroup() {
     }
-    public List<ServerLog> getLogs(){
-    	return mContent;
-    }
-    
-    public LogGroup(String topic, String source,String project,String logstore) {
+
+    public LogGroup(String topic, String source, String project, String logstore) {
         mTopic = topic;
         mSource = source;
         this.project = project;
         this.logstore = logstore;
     }
-    
+
     public LogGroup(String topic, String source) {
         mTopic = topic;
         mSource = source;
+    }
+
+    public List<ServerLog> getLogs() {
+        return mContent;
     }
 
     public void PutTopic(String topic) {
@@ -50,21 +50,22 @@ public class LogGroup {
     }
 
     public String getProject() {
-		return project;
-	}
+        return project;
+    }
 
-	public void setProject(String project) {
-		this.project = project;
-	}
+    public void setProject(String project) {
+        this.project = project;
+    }
 
-	public void setLogstore(String logstore) {
-		this.logstore = logstore;
-	}
+    public String getLogstore() {
+        return logstore;
+    }
 
-	public String getLogstore() {
-		return logstore;
-	}
-	public String LogGroupToJsonString() {
+    public void setLogstore(String logstore) {
+        this.logstore = logstore;
+    }
+
+    public String LogGroupToJsonString() {
         JSONObject json_log_group = new JSONObject();
         json_log_group.put("__source__", mSource);
         json_log_group.put("__topic__", mTopic);

@@ -6,26 +6,25 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Created by megrez on 2016/12/25.
  */
 public class CachedLogGroup extends LogGroup {
-    private static final String TAG = CachedLogGroup.class.getSimpleName();
     public static final int DefaultCounterThreshold = 10;
-
+    private static final String TAG = CachedLogGroup.class.getSimpleName();
     private String topic;
     private String source;
     private LinkedBlockingQueue<Log> logs;
 
-    public CachedLogGroup(String topic,String source) {
+    public CachedLogGroup(String topic, String source) {
         logs = new LinkedBlockingQueue<Log>();
         this.topic = topic;
         this.source = source;
     }
 
     @Override
-    public void PutTopic(String topic){
+    public void PutTopic(String topic) {
         this.topic = topic;
     }
 
     @Override
-    public void PutSource(String source){
+    public void PutSource(String source) {
         this.source = source;
     }
 
@@ -33,7 +32,7 @@ public class CachedLogGroup extends LogGroup {
         if (logs.size() == 0) {
             return null;
         }
-        LogGroup group = new LogGroup(this.topic,this.source);
+        LogGroup group = new LogGroup(this.topic, this.source);
         if (threshold == 0) {
             Log log;
             while ((log = logs.poll()) != null) {
@@ -41,7 +40,7 @@ public class CachedLogGroup extends LogGroup {
             }
             return group;
         }
-        for (int i = 0;i < threshold;i++) {
+        for (int i = 0; i < threshold; i++) {
             Log log = logs.poll();
             if (log == null) {
                 break;

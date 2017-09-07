@@ -1,16 +1,16 @@
 package net.lzbook.kit.book.component.service;
 
-import android.app.IntentService;
-import android.content.Intent;
-
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.DeletebookHelper;
 
+import android.app.IntentService;
+import android.content.Intent;
+
 public class DeleteBookIntentService extends IntentService {
 
-    String TAG = "DeleteBookIntentService";
     public static final String ACTION_DO_DELETE = AppUtils.getPackageName() + ".book.action_delete_book";
+    String TAG = "DeleteBookIntentService";
     private DeletebookHelper helper;
 
     public DeleteBookIntentService() {

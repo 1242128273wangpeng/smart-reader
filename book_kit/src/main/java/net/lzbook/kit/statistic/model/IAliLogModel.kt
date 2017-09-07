@@ -13,19 +13,19 @@ import net.lzbook.kit.utils.OpenUDID
  * Created by xian on 2017/7/3.
  */
 abstract class IAliLogModel {
-    open abstract val key:String
-    open abstract val project:String
-    open abstract val logStore:String
+    open abstract val key: String
+    open abstract val project: String
+    open abstract val logStore: String
 
     /*设备id*/
     val device_id: String? = DeviceID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())
     /*针对设备为用户生成id*/
-    val udid: String? =  OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())
+    val udid: String? = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())
 
     /*用户id*/
     var uid: String? = null
-        get (){
-            return if(UserManager.isUserLogin) UserManager.mUserInfo?.uid else ""
+        get () {
+            return if (UserManager.isUserLogin) UserManager.mUserInfo?.uid else ""
         }
 
     /*app包名*/

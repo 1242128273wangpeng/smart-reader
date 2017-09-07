@@ -1,6 +1,11 @@
 package net.lzbook.kit.utils.update;
 
-import android.app.Dialog;
+import net.lzbook.kit.R;
+import net.lzbook.kit.app.ActionConstants;
+import net.lzbook.kit.constants.ReplaceConstants;
+import net.lzbook.kit.utils.MD5Utils;
+import net.lzbook.kit.utils.ResourceUtil;
+
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -8,23 +13,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import net.lzbook.kit.R;
-import net.lzbook.kit.app.ActionConstants;
-import net.lzbook.kit.constants.ReplaceConstants;
-import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.MD5Utils;
-import net.lzbook.kit.utils.NetWorkUtils;
-import net.lzbook.kit.utils.ResourceUtil;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -38,6 +26,7 @@ public class DownloadIntentService extends IntentService {
     private static final String TAG = "DownloadIntentService";
 
     public static boolean isDownloading;
+
     public DownloadIntentService() {
         super("");
     }
@@ -113,7 +102,7 @@ public class DownloadIntentService extends IntentService {
                             .setContentTitle("点击安装！")
                             .setContentIntent(pIntent);
                     manager.notify(0, builder.build());
-                }else {
+                } else {
                     //下载完毕后，修改通知上的图标以及提示文字，并且设置PendingIntent
                     builder.setSmallIcon(android.R.drawable.stat_sys_download_done)
                             .setContentTitle("下载完成！");

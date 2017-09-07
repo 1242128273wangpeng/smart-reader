@@ -26,7 +26,7 @@ private fun buildChapterMap(chapterList: ArrayList<Chapter>): LinkedHashMap<Stri
 }
 
 @Throws(Exception::class)
-fun getChapterFromPackage(chapterIdList:ArrayList<String>, chapterList: ArrayList<Chapter> ,bookChapterDao: BookChapterDao, bookDaoHelper: BookDaoHelper, p2: PackChapterProto.PackChapter): Chapter? {
+fun getChapterFromPackage(chapterIdList: ArrayList<String>, chapterList: ArrayList<Chapter>, bookChapterDao: BookChapterDao, bookDaoHelper: BookDaoHelper, p2: PackChapterProto.PackChapter): Chapter? {
 
     val retChapter = parseSingleChapter(chapterIdList, chapterList, p2)
     if (retChapter != null && !TextUtils.isEmpty(retChapter.content)) {
@@ -66,12 +66,12 @@ private fun writeChapterFromPackage(bookDaoHelper: BookDaoHelper, chapter: Chapt
             writeFileFailException.printStackTrace()
             throw writeFileFailException
         }
-    }else{
+    } else {
         println(" ! bookDaoHelper.isBookSubed(chapter.book_id)")
     }
 }
 
-private fun parseSingleChapter(chapterIdList:ArrayList<String>, chapterList: ArrayList<Chapter> , p2: PackChapterProto.PackChapter?): Chapter? {
+private fun parseSingleChapter(chapterIdList: ArrayList<String>, chapterList: ArrayList<Chapter>, p2: PackChapterProto.PackChapter?): Chapter? {
     if (chapterIdList.contains(p2!!.getChapterId())) {
         val chapter = chapterList.get(chapterIdList.indexOf(p2!!.getChapterId()))
         if (chapter != null && p2 != null) {
@@ -92,7 +92,7 @@ private fun parseSingleChapter(chapterIdList:ArrayList<String>, chapterList: Arr
                 chapter.content = chapter.content.replace("\\n \\n", "\n")
                 chapter.content = chapter.content.replace("\\", "")
             }
-        }else{
+        } else {
             println(" ! chapterIdList not contains ${p2!!.getChapterId()}")
         }
         return chapter

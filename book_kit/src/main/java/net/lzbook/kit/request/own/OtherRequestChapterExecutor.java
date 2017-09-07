@@ -19,13 +19,10 @@ import java.util.Map;
  */
 public class OtherRequestChapterExecutor extends RequestExecutorDefault {
 
+    public static final String CACHE_EXIST = "isChapterExists";
     protected boolean downloadFlag;
-
     protected BookDaoHelper bookDaoHelper;
     protected BookChapterDao bookChapterDao;
-
-    public static final String CACHE_EXIST = "isChapterExists";
-
     private OtherRequestChapter requestChapter;
 
     public OtherRequestChapterExecutor(BookDaoHelper bookDaoHelper, BookChapterDao bookChapterDao) {

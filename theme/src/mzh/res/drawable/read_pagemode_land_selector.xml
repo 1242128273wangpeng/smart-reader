@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_checked="false" android:drawable="@mipmap/mzh_myreadsetting_land_uncheck"></item>
-    <item android:state_checked="true" android:drawable="@mipmap/mzh_myreadsetting_land_check"></item>
+    <item android:state_checked="false"
+          android:drawable="@mipmap/mzh_myreadsetting_land_uncheck"></item>
+    <item android:state_checked="true"
+          android:drawable="@mipmap/mzh_myreadsetting_land_check"></item>
     <item android:drawable="@mipmap/mzh_myreadsetting_land_uncheck"/>
 </selector>

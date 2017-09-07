@@ -35,33 +35,17 @@ import static net.lzbook.kit.utils.ExtensionsKt.loge;
 
 
 public abstract class BaseBookApplication extends Application {
+    public static Context sCtx;
     private static DownloadService downloadService;
     private static BaseBookApplication g_context;
-    private WeakReference<ReadStatus> readStatusWeakReference;
     private static DisplayMetrics dm;
-    protected SharedPreferences sp;
-    private MainExtractorInterface mainExtractorInterface;
     private static URLBuilderIntterface urlBuilderIntterface;
-    public static Context sCtx;
-
-    public ReadStatus getReadStatus() {
-        return readStatusWeakReference.get();
-    }
-
-    public void setReadStatus(ReadStatus readStatus) {
-        readStatusWeakReference = new WeakReference<>(readStatus);
-    }
+    protected SharedPreferences sp;
+    private WeakReference<ReadStatus> readStatusWeakReference;
+    private MainExtractorInterface mainExtractorInterface;
 
     public static BaseBookApplication getGlobalContext() {
         return g_context;
-    }
-
-    public void setMainExtractorInterface(MainExtractorInterface mainExtractorInterface) {
-        this.mainExtractorInterface = mainExtractorInterface;
-    }
-
-    public MainExtractorInterface getMainExtractorInterface() {
-        return mainExtractorInterface;
     }
 
     public static URLBuilderIntterface getUrlBuilderIntterface() {
@@ -99,6 +83,26 @@ public abstract class BaseBookApplication extends Application {
         BaseBookApplication.downloadService = downloadService;
     }
 
+    public static DisplayMetrics getDisplayMetrics() {
+        return dm;
+    }
+
+    public ReadStatus getReadStatus() {
+        return readStatusWeakReference.get();
+    }
+
+    public void setReadStatus(ReadStatus readStatus) {
+        readStatusWeakReference = new WeakReference<>(readStatus);
+    }
+
+    public MainExtractorInterface getMainExtractorInterface() {
+        return mainExtractorInterface;
+    }
+
+    public void setMainExtractorInterface(MainExtractorInterface mainExtractorInterface) {
+        this.mainExtractorInterface = mainExtractorInterface;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -111,7 +115,7 @@ public abstract class BaseBookApplication extends Application {
         super.attachBaseContext(base);
         loge(this, "attachBaseContext");
 
-        ExtensionsKt.msDebuggAble =(getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)!= 0;
+        ExtensionsKt.msDebuggAble = (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
         Log.e("BaseBookApplication", "ExtensionsKt.logable = " + ExtensionsKt.msDebuggAble);
         //分割dex防止方法数过多
         MultiDex.install(this);
@@ -148,10 +152,6 @@ public abstract class BaseBookApplication extends Application {
         QuInitialization.init(this);
 
         StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.APPINIT);
-    }
-
-    public static DisplayMetrics getDisplayMetrics() {
-        return dm;
     }
 
     private void initCache() {

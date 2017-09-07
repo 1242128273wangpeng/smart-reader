@@ -1,8 +1,8 @@
 package net.lzbook.kit.utils;
 
-import android.widget.Toast;
-
 import net.lzbook.kit.app.BaseBookApplication;
+
+import android.widget.Toast;
 
 public class ToastUtils {
     private static Toast mToast;

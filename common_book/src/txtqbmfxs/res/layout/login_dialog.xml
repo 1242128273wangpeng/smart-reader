@@ -5,7 +5,7 @@
         android:layout_height="wrap_content"
         android:background="?attr/dialog_bg_color"
         android:orientation="vertical"
-        >
+>
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -14,7 +14,7 @@
             android:textSize="16sp"
             android:textColor="?attr/setting_nickname_font_color"
             android:text="登录"
-            />
+    />
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
