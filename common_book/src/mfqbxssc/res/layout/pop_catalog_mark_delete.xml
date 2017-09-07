@@ -6,7 +6,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:orientation="vertical"
-        android:background="?attr/bg_read_catalog_mark_pop">
+        android:background="@drawable/bg_read_catalog_mark_pop">
     
     <TextView
             android:id="@+id/txt_delete_mark"
@@ -15,14 +15,14 @@
             android:paddingLeft="72dp"
             android:paddingRight="72dp"
             android:gravity="center"
-            android:textColor="?attr/color_read_catalog_mark_pop_txt"
+            android:textColor="@color/color_read_catalog_mark_pop_txt"
             android:textSize="14sp"
             android:text="删除书签"/>
     
     <View
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="?attr/bg_read_catalog_mark_pop_divider"/>
+            android:background="@color/bg_read_catalog_mark_pop_divider"/>
     
     <TextView
             android:id="@+id/txt_clear_mark"
@@ -31,8 +31,7 @@
             android:paddingLeft="72dp"
             android:paddingRight="72dp"
             android:gravity="center"
-            android:textColor="?attr/color_read_catalog_mark_pop_txt"
+            android:textColor="@color/color_read_catalog_mark_pop_txt"
             android:textSize="14sp"
             android:text="清空书签"/>
-
 </LinearLayout>

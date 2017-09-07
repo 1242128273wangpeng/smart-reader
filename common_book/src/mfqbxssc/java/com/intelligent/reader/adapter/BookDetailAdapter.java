@@ -1,16 +1,5 @@
 package com.intelligent.reader.adapter;
 
-import android.content.Context;
-import android.support.v4.view.PagerAdapter;
-import android.support.v7.widget.CardView;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.intelligent.reader.R;
@@ -20,9 +9,16 @@ import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.Tools;
 
-import java.util.List;
+import android.content.Context;
+import android.support.v4.view.PagerAdapter;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017\8\2 0002.
@@ -41,7 +37,7 @@ public class BookDetailAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        if(lists!=null){
+        if (lists != null) {
             return lists.size();
         }
         return 0;
@@ -66,17 +62,17 @@ public class BookDetailAdapter extends PagerAdapter {
         TextView mUpdateTime = (TextView) view.findViewById(R.id.book_shelf_update_time);
 
         Book book = lists.get(position);
-        mAuthor.setText("作者："+book.author);
+        mAuthor.setText("作者：" + book.author);
         mBookName.setText(book.name);
         mUpdateTime.setText(Tools.compareTime(AppUtils.formatter, book
                 .last_updatetime_native));
 
-        AppLog.e("uuu",book.last_chapter_name+"===");
-        mNewChapter.setText("最新章节："+book.last_chapter_name);
-        if(!TextUtils.isEmpty(book.img_url)){
+        AppLog.e("uuu", book.last_chapter_name + "===");
+        mNewChapter.setText("最新章节：" + book.last_chapter_name);
+        if (!TextUtils.isEmpty(book.img_url)) {
             Glide.with(context).load(book.img_url).placeholder(R.drawable.icon_book_cover_default)
                     .error((R.drawable.icon_book_cover_default)).diskCacheStrategy(DiskCacheStrategy.ALL).into(mIv);
-        }else{
+        } else {
             Glide.with(context).load(R.drawable.icon_book_cover_default).into(mIv);
         }
 

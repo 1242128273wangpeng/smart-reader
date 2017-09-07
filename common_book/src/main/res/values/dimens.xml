@@ -170,4 +170,8 @@
     <dimen name="dimen_view_height_default">60.5dip</dimen>
     <dimen name="dimen_margin_230">230dp</dimen>
     <dimen name="dimen_margin_115">115dp</dimen>
+    
+    <dimen name="dimen_text_10">10sp</dimen>
+    <dimen name="dimen_text_14">14sp</dimen>
+    <dimen name="dimen_text_18">18sp</dimen>
 </resources>

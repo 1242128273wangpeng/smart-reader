@@ -24,26 +24,26 @@ import iyouqu.theme.FrameActivity;
 /**
  * guide 页面
  */
-public class GuideActivity extends FrameActivity implements GuideFragment.FragmentActivityCallback{
+public class GuideActivity extends FrameActivity implements GuideFragment.FragmentActivityCallback {
     public static final String ACTION_CHKNUM = AppUtils.getPackageName();
     ViewPager viewPager;
     GuideAdapter guideAdapter;
     boolean isFromApp = false;
     boolean isLoop = true;
-    private BookDaoHelper bookDaoHelper;
     ImageView /*imageController,*/ imageCenter;
-    private String[] PACKAGE_1 = {"cn.zsqbydq.reader","cn.kkqbtxtxs.reader","cn.qbzsydsq.reader","cc.remennovel","cc.quanbennovel","cc.kdqbxs.reader","cc.mianfeinovel","cc.quanben.novel"};
+    private BookDaoHelper bookDaoHelper;
+    private String[] PACKAGE_1 = {"cn.zsqbydq.reader", "cn.kkqbtxtxs.reader", "cn.qbzsydsq.reader", "cc.remennovel", "cc.quanbennovel", "cc.kdqbxs.reader", "cc.mianfeinovel", "cc.quanben.novel"};
     private String[] PACKAGE_2 = {"com.mianfeinovel"};
-    private String[] PACKAGE_3 = {"com.lianzainovel","cn.txtkdxsdq.reader","cn.kdqbxs.reader","com.quanben.novel","cn.txtzsydsq.reader","com.remennovel","com.quanbennovel","cc.lianzainovel"};
+    private String[] PACKAGE_3 = {"com.lianzainovel", "cn.txtkdxsdq.reader", "cn.kdqbxs.reader", "com.quanben.novel", "cn.txtzsydsq.reader", "com.remennovel", "com.quanbennovel", "cc.lianzainovel"};
 
     @Override
     public void onCreate(Bundle paramBundle) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(paramBundle);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.act_guide_new);
         viewPager = (ViewPager) findViewById(R.id.vp_guide_pager);
-        guideAdapter = new GuideAdapter( getSupportFragmentManager());
+        guideAdapter = new GuideAdapter(getSupportFragmentManager());
         guideAdapter.setPager(viewPager);
 
         Bundle guide_first = new Bundle();
@@ -53,14 +53,14 @@ public class GuideActivity extends FrameActivity implements GuideFragment.Fragme
 
         guideAdapter.add(guideFragmentFirst);
 
-        if(Arrays.asList(PACKAGE_2).contains(ACTION_CHKNUM)){
+        if (Arrays.asList(PACKAGE_2).contains(ACTION_CHKNUM)) {
             Bundle guide_second = new Bundle();
             guide_second.putInt("image_center", R.drawable.splash_icon2);
             GuideFragment guideFragmentSecond = new GuideFragment();
             guideFragmentSecond.setArguments(guide_second);
 
             guideAdapter.add(guideFragmentSecond);
-        }else if(Arrays.asList(PACKAGE_3).contains(ACTION_CHKNUM)){
+        } else if (Arrays.asList(PACKAGE_3).contains(ACTION_CHKNUM)) {
             Bundle guide_second = new Bundle();
             guide_second.putInt("image_center", R.drawable.splash_icon2);
             GuideFragment guideFragmentSecond = new GuideFragment();

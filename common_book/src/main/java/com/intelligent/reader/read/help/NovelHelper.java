@@ -15,10 +15,8 @@ import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.NullCallBack;
 import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.BookTask;
-import net.lzbook.kit.data.bean.Bookmark;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.ReadStatus;
-import net.lzbook.kit.data.bean.RequestItem;
 import net.lzbook.kit.data.bean.Source;
 import net.lzbook.kit.data.db.BookChapterDao;
 import net.lzbook.kit.data.db.BookDaoHelper;
@@ -31,12 +29,10 @@ import net.lzbook.kit.utils.Tools;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Paint.FontMetrics;
 import android.os.Handler;
 import android.text.TextPaint;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -44,7 +40,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,15 +54,16 @@ import java.util.Map;
  * 阅读页工具类
  */
 public class NovelHelper {
+    public static final String empty_page_ad = "empty_page_ad";
+    public static final String empty_page_ad_inChapter = "empty_inChapter_ad";
     private static final String TAG = "NovelHelper";
+    public boolean isShown = false;
     private OnHelperCallBack helperCallBack;
     private boolean checked;
     private boolean showDialog;
     private int lineNum;
-    public boolean isShown = false;
     private WeakReference<Activity> actReference;
     private Handler handler;
-
     private MyDialog myDialog;
     private ReadStatus readStatus;
     private PageInterface pageView;
@@ -249,9 +245,9 @@ public class NovelHelper {
                     helperCallBack.showCatalogActivity(source);
                 }
 
-                Map<String,String> map1 = new HashMap<String, String>();
-                map1.put("type","2");
-                StartLogClickUtil.upLoadEventLog(actReference.get(),StartLogClickUtil.READPAGEMORE_PAGE,StartLogClickUtil.READ_SOURCECHANGE,map1);
+                Map<String, String> map1 = new HashMap<String, String>();
+                map1.put("type", "2");
+                StartLogClickUtil.upLoadEventLog(actReference.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
                 dismissDialog(sourceDialog);
             }
         });
@@ -260,18 +256,18 @@ public class NovelHelper {
         change_source_original_web.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Map<String,String> map1 = new HashMap<String, String>();
-                map1.put("type","1");
-                StartLogClickUtil.upLoadEventLog(actReference.get(),StartLogClickUtil.READPAGEMORE_PAGE,StartLogClickUtil.READ_SOURCECHANGE,map1);
+                Map<String, String> map1 = new HashMap<String, String>();
+                map1.put("type", "1");
+                StartLogClickUtil.upLoadEventLog(actReference.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
                 dismissDialog(sourceDialog);
             }
         });
         change_source_continue.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Map<String,String> map1 = new HashMap<String, String>();
-                map1.put("type","1");
-                StartLogClickUtil.upLoadEventLog(actReference.get(),StartLogClickUtil.READPAGEMORE_PAGE,StartLogClickUtil.READ_SOURCECHANGE,map1);
+                Map<String, String> map1 = new HashMap<String, String>();
+                map1.put("type", "1");
+                StartLogClickUtil.upLoadEventLog(actReference.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
                 dismissDialog(sourceDialog);
                 if (dataFactory.currentChapter.status != Chapter.Status.CONTENT_NORMAL) {
                     if (helperCallBack != null) {
@@ -289,124 +285,9 @@ public class NovelHelper {
         }
     }
 
-    public void showOffLineDialog() {
-        if (actReference == null || actReference.get() == null || actReference.get().isFinishing()) {
-            return;
-        }
-
-        final Activity activity = actReference.get();
-
-        final MyDialog offlineDialog = new MyDialog(activity, R.layout.dialog_base_layout);
-        offlineDialog.setCanceledOnTouchOutside(false);
-        TextView base_dialog_title = (TextView) offlineDialog.findViewById(R.id.base_dialog_title);
-        base_dialog_title.setText(R.string.prompt);
-        TextView base_dialog_content = (TextView) offlineDialog.findViewById(R.id.base_dialog_content);
-        base_dialog_content.setText(R.string.source_off_line);
-        Button base_dialog_confirm = (Button) offlineDialog.findViewById(R.id.base_dialog_confirm);
-        base_dialog_confirm.setText(R.string.yep);
-        Button base_dialog_abrogate = (Button) offlineDialog.findViewById(R.id.base_dialog_abrogate);
-        base_dialog_abrogate.setVisibility(View.GONE);
-
-        base_dialog_confirm.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                helperCallBack.deleteBook();
-                offlineDialog.dismiss();
-            }
-        });
-        if (!offlineDialog.isShowing()) {
-            try {
-                offlineDialog.show();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     private void dismissDialog(MyDialog sourceDialog) {
         if (sourceDialog != null && sourceDialog.isShowing()) {
             sourceDialog.dismiss();
-        }
-    }
-
-
-    /**
-     * 添加手动书签
-     */
-    public int addOptionMark(BookDaoHelper mBookDaoHelper, IReadDataFactory dataFactory, ImageView novel_option_mark,
-                             int font_count, Resources resources, int type) {
-        if(actReference.get()==null){
-            return 0;
-        }
-        TypedValue typeChangeMark = new TypedValue();
-        Resources.Theme theme = actReference.get().getTheme();
-
-        if (mBookDaoHelper == null || dataFactory == null || readStatus == null) {
-            return 0;
-        }
-        if (!mBookDaoHelper.isBookMarkExist(readStatus.book_id, readStatus.sequence, readStatus.offset, type)) {
-
-            if (!mBookDaoHelper.isBookSubed(readStatus.book_id)) {
-                if (!mBookDaoHelper.insertBook(readStatus.book)) {
-                    return 0;
-                }
-            }
-            if (dataFactory.currentChapter == null || getPageContent() == null) {
-                return 0;
-            }
-            theme.resolveAttribute(R.attr.read_bookmark_drawable, typeChangeMark, true);
-            novel_option_mark.setImageResource(typeChangeMark.resourceId);
-            Bookmark bookMark = new Bookmark();
-            RequestItem requestItem = readStatus.getRequestItem();
-
-            bookMark.book_id = requestItem.book_id;
-            bookMark.book_source_id = requestItem.book_source_id;
-            bookMark.parameter = requestItem.parameter;
-            bookMark.extra_parameter = requestItem.extra_parameter;
-            bookMark.sequence = readStatus.sequence + 1 > readStatus.chapterCount ? readStatus.chapterCount : readStatus.sequence;
-            bookMark.offset = readStatus.offset;
-            bookMark.sort = dataFactory.currentChapter.sort;
-            bookMark.last_time = System.currentTimeMillis();
-            //if (readStatus.book.dex == 1) {
-            bookMark.book_url = dataFactory.currentChapter.curl;
-            /*} else if (readStatus.book.dex == 0) {
-                bookMark.book_url = dataFactory.currentChapter.curl1;
-            }*/
-            bookMark.chapter_name = dataFactory.currentChapter.chapter_name;
-            List<String> content = getPageContent();
-            StringBuilder sb = new StringBuilder();
-            if (readStatus.sequence == -1) {
-                bookMark.chapter_name = "《" + readStatus.book.name + "》书籍封面页";
-            } else if (readStatus.currentPage == 1 && content.size() - 3 >= 0) {
-                for (int i = 3; i < content.size(); i++) {
-                    sb.append(content.get(i));
-                }
-            } else {
-                for (int i = 0; i < content.size(); i++) {
-                    sb.append(content.get(i));
-                }
-            }
-
-            // 去除第一个字符为标点符号的情况
-            String content_text = sb.toString().trim();
-            content_text = content_text.trim();
-
-            content_text = AppUtils.deleteTextPoint(content_text);
-            // 控制字数
-            if (content_text.length() > font_count) {
-                content_text = content_text.substring(0, font_count);
-            }
-            bookMark.chapter_content = content_text;
-            mBookDaoHelper.insertBookMark(bookMark, type);
-
-            return 1;
-        } else {
-            theme.resolveAttribute(R.attr.read_bookmark, typeChangeMark, true);
-            novel_option_mark.setImageResource(typeChangeMark.resourceId);
-            mBookDaoHelper.deleteBookMark(readStatus.book_id, readStatus.sequence, readStatus.offset, type);
-
-            return 2;
-
         }
     }
 
@@ -558,12 +439,12 @@ public class NovelHelper {
 
         }
 
-        if(readStatus != null && readStatus.book != null && Constants.QG_SOURCE.equals(readStatus.book.site)){
+        if (readStatus != null && readStatus.book != null && Constants.QG_SOURCE.equals(readStatus.book.site)) {
             String[] contents = content.split("\n");
             for (String temp : contents) {
                 sb.append("\u3000\u3000" + temp + "\n");
             }
-        }else {
+        } else {
             sb.append(content);
         }
         String text = "";
@@ -694,9 +575,6 @@ public class NovelHelper {
         AppLog.e(TAG, "isAvailable:" + isAvailable);
         return isAvailable;
     }
-
-    public static final String empty_page_ad = "empty_page_ad";
-    public static final String empty_page_ad_inChapter = "empty_inChapter_ad";
 //	private static final ArrayList<String> emptyList = new ArrayList<String>() {{
 //		add(empty_page_ad);
 //	}};
@@ -768,7 +646,7 @@ public class NovelHelper {
      */
     public void saveBookmark(ArrayList<Chapter> chapterList, String book_id, int sequence, int offset,
                              BookDaoHelper mBookDaoHelper) {
-        if (chapterList == null||actReference.get()==null) {
+        if (chapterList == null || actReference.get() == null) {
             return;
         }
 
@@ -823,12 +701,12 @@ public class NovelHelper {
                 }
             }
         }
-        readStatus.currentPageConentLength  = 0;
-        for(int i=0;i<pageContent.size();i++){
-            readStatus.currentPageConentLength +=pageContent.get(i).length();
+        readStatus.currentPageConentLength = 0;
+        for (int i = 0; i < pageContent.size(); i++) {
+            readStatus.currentPageConentLength += pageContent.get(i).length();
 
         }
-        AppLog.e("总字数","==="+readStatus.currentPage+"++"+ readStatus.currentPageConentLength);
+        AppLog.e("总字数", "===" + readStatus.currentPage + "++" + readStatus.currentPageConentLength);
         readStatus.offset++;
         return pageContent;
 
@@ -916,21 +794,6 @@ public class NovelHelper {
         this.helperCallBack = callBack;
     }
 
-    public interface OnHelperCallBack {
-
-        void jumpNextChapter();
-
-        void showDisclaimerActivity();
-
-        void addBookShelf(boolean isAddShelf);
-
-        void showCatalogActivity(Source source);
-
-        void deleteBook();
-
-        void openAutoReading(boolean open);
-    }
-
     public void clear() {
         if (readStatus.bookNameList != null) {
             readStatus.bookNameList.clear();
@@ -947,8 +810,6 @@ public class NovelHelper {
 
     /**
      * loading 页面显示原网页地址
-     *
-     * @throws InterruptedException
      */
     private void setLoadingCurl(int time, Chapter currentChapter, LoadingPage loadingPage) throws InterruptedException {
         if (currentChapter != null && !TextUtils.isEmpty(currentChapter.curl)) {
@@ -973,5 +834,20 @@ public class NovelHelper {
         loadingPage.setCustomBackgroud();
 
         return loadingPage;
+    }
+
+    public interface OnHelperCallBack {
+
+        void jumpNextChapter();
+
+        void showDisclaimerActivity();
+
+        void addBookShelf(boolean isAddShelf);
+
+        void showCatalogActivity(Source source);
+
+        void deleteBook();
+
+        void openAutoReading(boolean open);
     }
 }

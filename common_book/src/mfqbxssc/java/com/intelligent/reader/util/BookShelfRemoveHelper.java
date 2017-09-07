@@ -1,12 +1,21 @@
 package com.intelligent.reader.util;
 
+import com.intelligent.reader.R;
+import com.intelligent.reader.adapter.BookDetailAdapter;
+import com.intelligent.reader.adapter.BookShelfReAdapter;
+import com.intelligent.reader.event.ChangeHomeSelectEvent;
+
+import net.lzbook.kit.data.bean.Book;
+import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.popup.PopupWindowInterface;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -18,23 +27,9 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.intelligent.reader.R;
-import com.intelligent.reader.adapter.BookShelfReAdapter;
-import com.intelligent.reader.adapter.BookDetailAdapter;
-import com.intelligent.reader.event.ChangeHomeSelectEvent;
-import com.intelligent.reader.event.DownLoaderToHome;
-import com.intelligent.reader.read.help.NovelHelper;
-
-import net.lzbook.kit.data.bean.Book;
-import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.popup.PopupWindowInterface;
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
@@ -42,21 +37,20 @@ import de.greenrobot.event.EventBus;
 /**
  * BookShelfRemoveHelper
  */
-public class BookShelfRemoveHelper implements View.OnClickListener{
+public class BookShelfRemoveHelper implements View.OnClickListener {
 
-    String TAG = "BookShelfRemoveHelper";
-    private Activity mContext;
+    private final static long DELAY_TIME = 500;
+    public PopupWindow popupWindowDetail;
     protected PopupWindowInterface popupWindowManager;
     protected OnMenuStateListener menuStateListener;
     protected OnMenuDeleteClickListener deleteClickListener;
     protected OnMenuSelectAllListener selectAllListener;
     protected BookShelfReAdapter bookShelfReAdapter;
     protected SuperSwipeRefreshLayout Layout;
-
+    String TAG = "BookShelfRemoveHelper";
     Handler handler = new Handler();
-    private final static long DELAY_TIME = 500;
+    private Activity mContext;
     private PopupWindow popupWindow;
-    public  PopupWindow popupWindowDetail;
     private Button delete_btn;
     private Button selectAll_btn;
     private Button btnDetail;
@@ -69,7 +63,7 @@ public class BookShelfRemoveHelper implements View.OnClickListener{
     private TextView tvTotalNum;
 
 
-    private List<Book> mlist=new ArrayList<>();
+    private List<Book> mlist = new ArrayList<>();
 
     public BookShelfRemoveHelper(Activity context, BookShelfReAdapter adapter) {//显示指定菜单类别
         mContext = context;
@@ -140,21 +134,21 @@ public class BookShelfRemoveHelper implements View.OnClickListener{
      */
     public void showRemoveMenu(View parent) {//显示菜单
         showView = parent;
-        if (popupWindow != null && popupWindow.isShowing()){
+        if (popupWindow != null && popupWindow.isShowing()) {
             onShowing(false);
             popupWindow.dismiss();
-        }else if (parent != null && popupWindow != null){
+        } else if (parent != null && popupWindow != null) {
             onShowing(true);
             popupWindow.showAtLocation(parent, Gravity.BOTTOM, 0, 0);
         }
     }
 
-    public void showRemoveMenu2(View parent,int position) {//显示菜单
+    public void showRemoveMenu2(View parent, int position) {//显示菜单
         showView = parent;
-        if (popupWindow != null && popupWindow.isShowing()){
+        if (popupWindow != null && popupWindow.isShowing()) {
             onShowing(false);
             popupWindow.dismiss();
-        }else if (parent != null && popupWindow != null){
+        } else if (parent != null && popupWindow != null) {
             onShowing(true);
             bookShelfReAdapter.setChecked(position);
             setDeleteNum();
@@ -168,15 +162,17 @@ public class BookShelfRemoveHelper implements View.OnClickListener{
             bookShelfReAdapter.notifyDataSetChanged();
             setDeleteNum();
         }
-        if (selectAllListener != null){
+        if (selectAllListener != null) {
             selectAllListener.onSelectAll();
         }
     }
 
     @Override
     public void onClick(View v) {
-        if (v == null){return;}
-        switch (v.getId()){
+        if (v == null) {
+            return;
+        }
+        switch (v.getId()) {
             case R.id.btn_right:
                 if (deleteClickListener != null) {
                     deleteClickListener.onMenuDelete(bookShelfReAdapter.remove_checked_states);
@@ -188,22 +184,21 @@ public class BookShelfRemoveHelper implements View.OnClickListener{
             case R.id.btn_detail:
                 mlist.clear();
 
-                if(bookShelfReAdapter.remove_checked_states!=null&&bookShelfReAdapter.remove_checked_states.size()!=0){
+                if (bookShelfReAdapter.remove_checked_states != null && bookShelfReAdapter.remove_checked_states.size() != 0) {
                     List<Integer> list = new ArrayList(bookShelfReAdapter.remove_checked_states);
                     Collections.sort(list);
-                    for(int i=0;i<list.size();i++){
-                        mlist.add(bookShelfReAdapter.book_list.get(Integer.parseInt(list.get(i)+"")));
+                    for (int i = 0; i < list.size(); i++) {
+                        mlist.add(bookShelfReAdapter.book_list.get(Integer.parseInt(list.get(i) + "")));
                     }
                 }
-                if(mlist.size()>0){
+                if (mlist.size() > 0) {
                     showBookDetailPop(showView);
-                }else{
+                } else {
                     Toast.makeText(mContext, "请先选择书籍", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
     }
-
 
 
     public void showBookDetailPop(View view) {
@@ -218,7 +213,7 @@ public class BookShelfRemoveHelper implements View.OnClickListener{
         popupWindowDetail.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
-                AppLog.e("kkk","kkk");
+                AppLog.e("kkk", "kkk");
                 setBackgroundAlpha(1.0f);
             }
         });
@@ -230,11 +225,11 @@ public class BookShelfRemoveHelper implements View.OnClickListener{
         tvTotalNum = (TextView) contentView.findViewById(R.id.total_num);
 
         tvCurrentNum.setText("1");
-        if(mlist.size()!=0){
-            tvTotalNum.setText(mlist.size()+"");
+        if (mlist.size() != 0) {
+            tvTotalNum.setText(mlist.size() + "");
         }
 
-        viewPager.setAdapter(new BookDetailAdapter(mlist,mContext));
+        viewPager.setAdapter(new BookDetailAdapter(mlist, mContext));
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -243,8 +238,8 @@ public class BookShelfRemoveHelper implements View.OnClickListener{
 
             @Override
             public void onPageSelected(int position) {
-                tvCurrentNum.setText(position+1+"");
-                tvTotalNum.setText(mlist.size()+"");
+                tvCurrentNum.setText(position + 1 + "");
+                tvTotalNum.setText(mlist.size() + "");
             }
 
             @Override
@@ -267,32 +262,6 @@ public class BookShelfRemoveHelper implements View.OnClickListener{
         lp.alpha = bgAlpha;
 
         mContext.getWindow().setAttributes(lp);
-    }
-
-    // ====================================================
-    // callback
-    // ===================================================
-    public interface OnMenuStateListener {//菜单状态监听
-
-        void getMenuShownState(boolean isShown);//菜单开启状态
-        void getAllCheckedState(boolean isAll);//菜单全选状态
-        void doHideAd();//编辑状态删除广告数据
-
-    }
-
-
-    public interface OnMenuSelectAllListener {
-        void onSelectAll();
-    }
-
-    public interface OnMenuDeleteClickListener {//菜单删除按钮监听
-
-        /**
-         * delete button
-         *
-         * @param checked_state position which the list checkbox is selected
-         */
-        public void onMenuDelete(HashSet<Integer> checked_state);//删除按钮回调，得到被选中的position
     }
 
     private void setRemoveWindow(Context context) {//实例化菜单对象
@@ -328,7 +297,6 @@ public class BookShelfRemoveHelper implements View.OnClickListener{
         selectAll_btn.setOnClickListener(this);
         btnDetail.setOnClickListener(this);
     }
-
 
     public void onShowing(final boolean isShowing) {//菜单打开及关闭状态
         if (bookShelfReAdapter != null) {
@@ -383,24 +351,51 @@ public class BookShelfRemoveHelper implements View.OnClickListener{
             int num = bookShelfReAdapter.getCheckedSize();
             EventBus.getDefault().post(new ChangeHomeSelectEvent(isAllChecked()));
 
-            if (num == 0){
+            if (num == 0) {
 
                 delete_btn.setText("删除");
-                TypedValue textColor = new TypedValue();
+                int textColor = 0;
                 Resources.Theme theme = mContext.getTheme();
-                theme.resolveAttribute(R.attr.bookshelf_last_chapter_text_color_1, textColor, true);
-                delete_btn.setTextColor(mContext.getResources().getColor(textColor.resourceId));
-            }else {
+                textColor = R.color.bookshelf_last_chapter_text_color_1;
+                delete_btn.setTextColor(mContext.getResources().getColor(textColor));
+            } else {
                 delete_btn.setText("删除 (" + num + ")");
-                TypedValue textColor = new TypedValue();
-                Resources.Theme theme = mContext.getTheme();
-                theme.resolveAttribute(R.attr.setting_login_font_color, textColor, true);
-                delete_btn.setTextColor(mContext.getResources().getColor(textColor.resourceId));
+                int textColor = 0;
+
+                textColor = R.color.setting_login_font_color;
+                delete_btn.setTextColor(mContext.getResources().getColor(textColor));
 
             }
         }
     }
 
+    // ====================================================
+    // callback
+    // ===================================================
+    public interface OnMenuStateListener {//菜单状态监听
+
+        void getMenuShownState(boolean isShown);//菜单开启状态
+
+        void getAllCheckedState(boolean isAll);//菜单全选状态
+
+        void doHideAd();//编辑状态删除广告数据
+
+    }
+
+
+    public interface OnMenuSelectAllListener {
+        void onSelectAll();
+    }
+
+    public interface OnMenuDeleteClickListener {//菜单删除按钮监听
+
+        /**
+         * delete button
+         *
+         * @param checked_state position which the list checkbox is selected
+         */
+        public void onMenuDelete(HashSet<Integer> checked_state);//删除按钮回调，得到被选中的position
+    }
 
 
 }

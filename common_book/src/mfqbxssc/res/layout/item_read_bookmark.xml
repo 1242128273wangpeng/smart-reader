@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -16,8 +15,9 @@
             android:ellipsize="end"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="?attr/read_item_mark_title_color"
+            android:textColor="@color/read_item_mark_title_color"
             android:text="name"/>
+    
     <TextView
             android:id="@+id/item_bookmark_desc"
             android:layout_width="match_parent"
@@ -27,8 +27,9 @@
             android:maxLines="1"
             android:ellipsize="end"
             android:textSize="14sp"
-            android:textColor="?attr/read_item_mark_des_color"
+            android:textColor="@color/read_item_mark_des_color"
             android:text="说明"/>
+    
     <TextView
             android:id="@+id/item_bookmark_time"
             android:layout_width="match_parent"
@@ -37,7 +38,6 @@
             android:maxLines="1"
             android:ellipsize="end"
             android:textSize="12sp"
-            android:textColor="?attr/read_item_mark_des_color"
+            android:textColor="@color/read_item_mark_des_color"
             android:text="更新"/>
-    
 </LinearLayout>

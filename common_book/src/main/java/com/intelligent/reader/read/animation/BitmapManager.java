@@ -10,16 +10,15 @@ import java.util.ArrayList;
 
 public class BitmapManager {
 
-    private static final int SIZE = 5;
-    private final Bitmap[] myBitmaps = new Bitmap[SIZE];
-
-    private int myWidth;
-    private int myHeight;
-    private int mFootHeight;
-
     public static final int CURRENT = 0;
     public static final int NEXT = 1;
     public static final int BG = 2;
+    private static final int SIZE = 5;
+    private final Bitmap[] myBitmaps = new Bitmap[SIZE];
+    ArrayList<Bitmap> bitmaps = new ArrayList<>();
+    private int myWidth;
+    private int myHeight;
+    private int mFootHeight;
     private int navigetionHeight;
     private int spaceHeight;
 
@@ -40,8 +39,6 @@ public class BitmapManager {
         }
 
     }
-
-    ArrayList<Bitmap> bitmaps = new ArrayList<>();
 
     public Bitmap getBitmap() {
         Bitmap bitmap;

@@ -18,7 +18,7 @@ public class GoToCoverOrReadActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getIntent() == null) {
+        if (getIntent() == null) {
             this.finish();
             return;
         }

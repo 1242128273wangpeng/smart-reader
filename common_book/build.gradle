@@ -108,7 +108,7 @@ android {
     }
     defaultConfig {
 
-        applicationId "cn.txtzsydsq.reader"
+        applicationId "cc.kdqbxs.reader"
 
 //        System.err.println("project.properties = ${project.getProperties()}")
 
@@ -842,14 +842,8 @@ private void notOverrideResValue(def buildType, String type,
 
 dependencies {
     compile fileTree(include: '*.jar', dir: 'libs')
-//    compile project(path: ':theme')
-    kdzsydqCompile project(path: ':theme', configuration: "kdzsydq")
-    qbzsydqCompile project(path: ':theme', configuration: "qbzsydq")
-    mfqbxsscCompile project(path: ':theme', configuration: "mfqbxssc")
-    zsmfqbxsCompile project(path: ':theme', configuration: "zsmfqbxs")
-    txtqbmfxsCompile project(path: ':theme', configuration: "txtqbmfxs")
-    qbmfxsydqCompile project(path: ':theme', configuration: "qbmfxsydq")
-    //    compile project(':cml')
+    compile "com.android.support:appcompat-v7:$support_version"
+    compile project(path: ':book_kit')
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile 'com.squareup.leakcanary:leakcanary-android:1.5'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'

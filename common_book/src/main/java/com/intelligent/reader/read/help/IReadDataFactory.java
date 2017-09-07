@@ -30,17 +30,16 @@ import java.util.HashMap;
 
 public abstract class IReadDataFactory {
 
-    protected Context mContext;
-    protected PageInterface pageView;
-    protected ReadStatus readStatus;
-    private BookDaoHelper bookDaoHelper;
+    public static LoadingPage loadingPage;
     public ArrayList<Chapter> chapterList;
     public boolean toChapterStart;
-
     public Chapter nextChapter;
     public Chapter preChapter;
     public Chapter currentChapter;
-
+    public ReadHandler mHandler = new ReadHandler(this);
+    protected Context mContext;
+    protected PageInterface pageView;
+    protected ReadStatus readStatus;
     protected int tempCurrentPage;
     protected int tempPageCount;
     protected int tempSequence;
@@ -54,13 +53,12 @@ public abstract class IReadDataFactory {
     protected ArrayList<ArrayList<String>> tempLineList;
     protected NovelHelper myNovelHelper;
     protected WeakReference<ReadingActivity> actNovelReference;
-
     protected ReadDataListener dataListener;
     protected int g_what;
     protected int g_sequence;
     protected ReadingActivity readingActivity;
-
     protected ArrayList<Chapter> readedChapter;
+    private BookDaoHelper bookDaoHelper;
     private StatisticManager statisticManager;
 
     public IReadDataFactory(Context context, ReadingActivity readingActivity, ReadStatus readStatus, NovelHelper
@@ -73,7 +71,6 @@ public abstract class IReadDataFactory {
 
         readedChapter = new ArrayList<Chapter>();
     }
-
 
     public void setPageView(PageInterface pageView) {
         this.pageView = pageView;
@@ -137,8 +134,6 @@ public abstract class IReadDataFactory {
         });
     }
 
-    public static LoadingPage loadingPage;
-
     public LoadingPage getCustomLoadingPage() {
         String curl = "";
         if (readStatus.sequence == -1) {
@@ -156,8 +151,6 @@ public abstract class IReadDataFactory {
         loadingPage.setCustomBackgroud();
         return loadingPage;
     }
-
-    public ReadHandler mHandler = new ReadHandler(this);
 
     private void loadCurrentChapter(Message msg) {
         currentChapter = (Chapter) msg.obj;
@@ -222,54 +215,6 @@ public abstract class IReadDataFactory {
     private void loadNeedLogin(Message msg) {
     }
 
-    public static class ReadHandler extends Handler {
-        private WeakReference<IReadDataFactory> reference;
-
-        ReadHandler(IReadDataFactory instance) {
-            reference = new WeakReference<IReadDataFactory>(instance);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            IReadDataFactory dataFactory = reference.get();
-            if (dataFactory == null) {
-                return;
-            }
-            if (loadingPage != null) {
-                loadingPage.onSuccess();
-            }
-            switch (msg.what) {
-                case ReadingActivity.MSG_LOAD_CUR_CHAPTER:
-                    dataFactory.loadCurrentChapter(msg);
-                    break;
-                case ReadingActivity.MSG_LOAD_NEXT_CHAPTER:
-                    dataFactory.loadNextChapter(msg);
-                    break;
-                case ReadingActivity.MSG_LOAD_PRE_CHAPTER:
-                    dataFactory.loadPreChapter(msg);
-                    break;
-                case ReadingActivity.MSG_SEARCH_CHAPTER:
-                    dataFactory.loadSearchChapter(msg);
-                    break;
-                case ReadingActivity.MSG_CHANGE_SOURCE:
-                    dataFactory.loadChangeSource(msg);
-                    break;
-                case ReadingActivity.MSG_JUMP_CHAPTER:
-                    dataFactory.loadJumpChapter(msg);
-                    break;
-                case ReadingActivity.ERROR:
-                    dataFactory.loadError(msg);
-                    break;
-                case ReadingActivity.NEED_LOGIN:
-                    dataFactory.loadNeedLogin(msg);
-                    break;
-                default:
-
-                    break;
-            }
-        }
-    }
-
     /**
      * 打开书籍取得书签章节内容后的处理
      */
@@ -286,7 +231,7 @@ public abstract class IReadDataFactory {
                 Chapter firstChapter = chapterList.get(0);
                 if (firstChapter != null) {
                     //if (readStatus.book.dex == 1) {
-                        readStatus.firstChapterCurl = firstChapter.curl;
+                    readStatus.firstChapterCurl = firstChapter.curl;
                     /*} else if (readStatus.book.dex == 0) {
                         readStatus.firstChapterCurl = firstChapter.curl1;
                     }*/
@@ -372,7 +317,7 @@ public abstract class IReadDataFactory {
             Novel novel = transformation();
 
             if (readStatus.currentAdInfo_image != null) {
-                statisticManager.schedulingRequest(readingActivity ,readStatus.novel_basePageView, readStatus.currentAdInfo_image,
+                statisticManager.schedulingRequest(readingActivity, readStatus.novel_basePageView, readStatus.currentAdInfo_image,
                         novel, StatisticManager.TYPE_END, NativeInit.ad_position[2]);
             }
 
@@ -413,11 +358,11 @@ public abstract class IReadDataFactory {
             novel.adChapterId = tempCurrentChapter.chapter_id;
         }
 
-        if (readStatus != null && readStatus.book != null && Constants.QG_SOURCE.equals(readStatus.book.site)){
+        if (readStatus != null && readStatus.book != null && Constants.QG_SOURCE.equals(readStatus.book.site)) {
             novel.channelCode = "A001";
 //            novel.ad_QG_bookCategory = readStatus.book.category;
 //            novel.ad_QG_bookFenpin = "";
-        }else {
+        } else {
             novel.channelCode = "A002";
 //            novel.ad_YQ_bookLabel = readStatus.book.category;
         }
@@ -491,7 +436,7 @@ public abstract class IReadDataFactory {
             }
 
             params.put("book_source_id", book_source_id);
-            if(currentChapter != null){
+            if (currentChapter != null) {
                 params.put("chapter_id", currentChapter.chapter_id);
             }
             String channelCode;
@@ -627,22 +572,6 @@ public abstract class IReadDataFactory {
 
     protected abstract Chapter getChapter(int what, int sequence);
 
-    public interface ReadDataListener {
-        void freshPage();
-
-        void gotoOver();
-
-        void showToast(int str);
-
-        void downLoadNovelMore();
-
-        void initBookStateDeal();
-
-        void changeChapter();
-
-        void showChangeNetDialog();
-    }
-
     public void recycleResource() {
 
         if (this.mContext != null) {
@@ -693,6 +622,70 @@ public abstract class IReadDataFactory {
 
         if (this.tempCurrentChapter != null) {
             this.tempCurrentChapter = null;
+        }
+    }
+
+    public interface ReadDataListener {
+        void freshPage();
+
+        void gotoOver();
+
+        void showToast(int str);
+
+        void downLoadNovelMore();
+
+        void initBookStateDeal();
+
+        void changeChapter();
+
+        void showChangeNetDialog();
+    }
+
+    public static class ReadHandler extends Handler {
+        private WeakReference<IReadDataFactory> reference;
+
+        ReadHandler(IReadDataFactory instance) {
+            reference = new WeakReference<IReadDataFactory>(instance);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            IReadDataFactory dataFactory = reference.get();
+            if (dataFactory == null) {
+                return;
+            }
+            if (loadingPage != null) {
+                loadingPage.onSuccess();
+            }
+            switch (msg.what) {
+                case ReadingActivity.MSG_LOAD_CUR_CHAPTER:
+                    dataFactory.loadCurrentChapter(msg);
+                    break;
+                case ReadingActivity.MSG_LOAD_NEXT_CHAPTER:
+                    dataFactory.loadNextChapter(msg);
+                    break;
+                case ReadingActivity.MSG_LOAD_PRE_CHAPTER:
+                    dataFactory.loadPreChapter(msg);
+                    break;
+                case ReadingActivity.MSG_SEARCH_CHAPTER:
+                    dataFactory.loadSearchChapter(msg);
+                    break;
+                case ReadingActivity.MSG_CHANGE_SOURCE:
+                    dataFactory.loadChangeSource(msg);
+                    break;
+                case ReadingActivity.MSG_JUMP_CHAPTER:
+                    dataFactory.loadJumpChapter(msg);
+                    break;
+                case ReadingActivity.ERROR:
+                    dataFactory.loadError(msg);
+                    break;
+                case ReadingActivity.NEED_LOGIN:
+                    dataFactory.loadNeedLogin(msg);
+                    break;
+                default:
+
+                    break;
+            }
         }
     }
 }

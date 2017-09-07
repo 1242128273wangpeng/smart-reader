@@ -10,5 +10,5 @@ import retrofit2.http.Path
  */
 interface OwnBookService {
     @GET(URLBuilderIntterface.CHAPTER_LIST)
-    fun requestOwnCatalogList(@Path("book_id") book_id:String, @Path("book_source_id") book_source_id:String):Observable<String>
+    fun requestOwnCatalogList(@Path("book_id") book_id: String, @Path("book_source_id") book_source_id: String): Observable<String>
 }

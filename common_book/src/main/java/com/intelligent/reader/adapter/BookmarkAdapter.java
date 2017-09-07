@@ -3,6 +3,13 @@
  */
 package com.intelligent.reader.adapter;
 
+import com.intelligent.reader.R;
+
+import net.lzbook.kit.book.adapter.AdapterBase;
+import net.lzbook.kit.data.bean.Bookmark;
+import net.lzbook.kit.data.bean.EventBookmark;
+import net.lzbook.kit.utils.ResourceUtil;
+
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
@@ -10,17 +17,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.lzbook.kit.book.adapter.AdapterBase;
-import net.lzbook.kit.data.bean.Bookmark;
-import net.lzbook.kit.data.bean.EventBookmark;
-import net.lzbook.kit.utils.ResourceUtil;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-
-import com.intelligent.reader.R;
 
 import de.greenrobot.event.EventBus;
 
@@ -44,7 +43,7 @@ public class BookmarkAdapter extends AdapterBase {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewCache viewCache;
         if (convertView == null) {
-            convertView = getLayoutInflater().inflate(R.layout.layout_bookmark_item, parent ,false);
+            convertView = getLayoutInflater().inflate(R.layout.layout_bookmark_item, parent, false);
             viewCache = new ViewCache(convertView);
             viewCache.bookmark_divider = convertView.findViewById(R.id.bookmark_divider);
             viewCache.getImageViewDelete().setOnClickListener(new View.OnClickListener() {
@@ -52,7 +51,7 @@ public class BookmarkAdapter extends AdapterBase {
                 public void onClick(View v) {
                     Bookmark bookmark = (Bookmark) v.getTag(R.id.tag_first);
                     if (bookmark != null) {
-                        EventBus.getDefault().post(new EventBookmark(EventBookmark.type_delete,bookmark));
+                        EventBus.getDefault().post(new EventBookmark(EventBookmark.type_delete, bookmark));
                     }
                 }
             });
@@ -69,7 +68,7 @@ public class BookmarkAdapter extends AdapterBase {
         if (bookmark == null) {
             return convertView;
         }
-        viewCache.getImageViewDelete().setTag(R.id.tag_first,bookmark);
+        viewCache.getImageViewDelete().setTag(R.id.tag_first, bookmark);
 
         viewCache.getChapterName().setText(TextUtils.isEmpty(bookmark.chapter_name) ? "未知" : bookmark.chapter_name);
         if ("night".equals(ResourceUtil.mode)) {

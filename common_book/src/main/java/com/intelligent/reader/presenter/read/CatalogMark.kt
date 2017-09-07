@@ -12,19 +12,19 @@ import net.lzbook.kit.data.bean.Chapter
  */
 interface CatalogMark {
 
-    interface Presenter: IPresenter<View> {
-        fun getBook():Book
-        fun loadCatalog(reverse:Boolean)
+    interface Presenter : IPresenter<View> {
+        fun getBook(): Book
+        fun loadCatalog(reverse: Boolean)
         fun loadBookMark()
-        fun gotoChapter(activity:Activity, chapter:Chapter)
-        fun gotoBookMark(activity:Activity, mark:Bookmark)
-        fun deleteBookMark(mark:Bookmark)
+        fun gotoChapter(activity: Activity, chapter: Chapter)
+        fun gotoBookMark(activity: Activity, mark: Bookmark)
+        fun deleteBookMark(mark: Bookmark)
         fun deleteAllBookMark()
     }
 
     interface View : IBaseView<Presenter> {
-        fun showCatalog(chapters :List<Chapter>, sequence:Int)
-        fun showMark(marks :List<Bookmark>)
+        fun showCatalog(chapters: List<Chapter>, sequence: Int)
+        fun showMark(marks: List<Bookmark>)
         fun onLoading()
         fun onNetError()
     }

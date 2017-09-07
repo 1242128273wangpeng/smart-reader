@@ -185,7 +185,7 @@ public class ReadDataFactory extends IReadDataFactory {
         int nonet_readhour = sharedPreferences.getInt(Constants.NONET_READTIME, 1);
         sharedPreferences.edit().putLong(Constants.LAST_READ, currentTime).apply();
 
-        if(readStatus.requestItem == null || readStatus.requestItem.host == null || chapterList == null){
+        if (readStatus.requestItem == null || readStatus.requestItem.host == null || chapterList == null) {
             return null;
         }
 

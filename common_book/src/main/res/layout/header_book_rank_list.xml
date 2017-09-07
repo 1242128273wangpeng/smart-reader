@@ -1,45 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" >
-
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    
     <RelativeLayout
-        android:background="@color/whole_bg"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:id="@+id/book_rack_lin"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/bookrack_topiew_height" >
-
+            android:background="@color/whole_bg"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:id="@+id/book_rack_lin"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bookrack_topiew_height">
+        
         <TextView
-            android:text="1"
-            android:id="@+id/bookrack_top_left"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:gravity="center"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:textColor="@color/bookrack_chapter"
-            android:textSize="14sp" />
-
+                android:text="1"
+                android:id="@+id/bookrack_top_left"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:gravity="center"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:textColor="@color/bookrack_chapter"
+                android:textSize="14sp"/>
+        
         <TextView
-             android:text="1"
-            android:id="@+id/bookrack_top_right"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:gravity="center"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:textColor="@color/bookrack_chapter"
-            android:textSize="14sp" />
-
+                android:text="1"
+                android:id="@+id/bookrack_top_right"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:textColor="@color/bookrack_chapter"
+                android:textSize="14sp"/>
+    
     </RelativeLayout>
-        <View
+    
+    <View
             android:layout_below="@id/book_rack_lin"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@drawable/dividingline_pic" />
+            android:background="@drawable/dividingline_pic"/>
 
 </RelativeLayout>

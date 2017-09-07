@@ -36,62 +36,6 @@ public class BaseCacheableActivity extends FrameActivity {
 
 
     public static final String NEED_SPLASH = "NEED_SPLASH";
-
-    class CacheUpdateReceiver extends BroadcastReceiver {
-
-        private final WeakReference<Activity> mActivityWeakReference;
-        MyDialog myDialog = null;
-
-        public CacheUpdateReceiver(Activity activity) {
-            mActivityWeakReference = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void onReceive(Context context, final Intent intent) {
-            AppLog.e("CacheUpdateReceiver", "onReceive");
-            if (mActivityWeakReference.get() != null) {
-
-                final Book book = (Book) intent.getSerializableExtra(Constants.REQUEST_ITEM);
-
-                if (intent.getAction().equalsIgnoreCase(ACTION_CACHE_COMPLETE)) {
-                    if (myDialog != null && myDialog.isShowing()) {
-                        myDialog.dismiss();
-                    }
-
-                    myDialog = new MyDialog(mActivityWeakReference.get(), R.layout.dialog_cache_complete, Gravity.CENTER);
-                    TextView txt_cancel = (TextView) myDialog.findViewById(R.id.cache_cancel);
-                    TextView txt_go = (TextView) myDialog.findViewById(R.id.cache_gotosee);
-                    TextView txt_title = (TextView) myDialog.findViewById(R.id.dialog_top_title);
-
-                    CharSequence text = mActivityWeakReference.get().getResources().getText(R.string.dialog_cache_complete);
-
-                    txt_title.setText(book.name + " " + text);
-
-                    txt_cancel.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            myDialog.dismiss();
-                        }
-                    });
-                    txt_go.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            myDialog.dismiss();
-                            System.err.println("requestItem : " + book);
-                            BookHelper.goToCatalogOrRead(v.getContext(), mActivityWeakReference.get(), book);
-
-                        }
-                    });
-                    myDialog.setCanceledOnTouchOutside(true);
-                    myDialog.show();
-
-                }
-            }
-        }
-
-    }
-
-
     protected BroadcastReceiver mCacheUpdateReceiver;
 
     @Override
@@ -155,7 +99,7 @@ public class BaseCacheableActivity extends FrameActivity {
                             startActivity(intent);
                         }
                     }
-            ,500);
+                    , 500);
         }
     }
 
@@ -163,5 +107,59 @@ public class BaseCacheableActivity extends FrameActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(NEED_SPLASH, true);
+    }
+
+    class CacheUpdateReceiver extends BroadcastReceiver {
+
+        private final WeakReference<Activity> mActivityWeakReference;
+        MyDialog myDialog = null;
+
+        public CacheUpdateReceiver(Activity activity) {
+            mActivityWeakReference = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void onReceive(Context context, final Intent intent) {
+            AppLog.e("CacheUpdateReceiver", "onReceive");
+            if (mActivityWeakReference.get() != null) {
+
+                final Book book = (Book) intent.getSerializableExtra(Constants.REQUEST_ITEM);
+
+                if (intent.getAction().equalsIgnoreCase(ACTION_CACHE_COMPLETE)) {
+                    if (myDialog != null && myDialog.isShowing()) {
+                        myDialog.dismiss();
+                    }
+
+                    myDialog = new MyDialog(mActivityWeakReference.get(), R.layout.dialog_cache_complete, Gravity.CENTER);
+                    TextView txt_cancel = (TextView) myDialog.findViewById(R.id.cache_cancel);
+                    TextView txt_go = (TextView) myDialog.findViewById(R.id.cache_gotosee);
+                    TextView txt_title = (TextView) myDialog.findViewById(R.id.dialog_top_title);
+
+                    CharSequence text = mActivityWeakReference.get().getResources().getText(R.string.dialog_cache_complete);
+
+                    txt_title.setText(book.name + " " + text);
+
+                    txt_cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            myDialog.dismiss();
+                        }
+                    });
+                    txt_go.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            myDialog.dismiss();
+                            System.err.println("requestItem : " + book);
+                            BookHelper.goToCatalogOrRead(v.getContext(), mActivityWeakReference.get(), book);
+
+                        }
+                    });
+                    myDialog.setCanceledOnTouchOutside(true);
+                    myDialog.show();
+
+                }
+            }
+        }
+
     }
 }

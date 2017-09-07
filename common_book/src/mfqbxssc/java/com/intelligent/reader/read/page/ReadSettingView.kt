@@ -62,7 +62,7 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
     private var dataFactory: IReadDataFactory? = null
     private var readStatus: ReadStatus? = null
     private var themeHelper: ThemeHelper? = null
-    var currentThemeMode:String? = null
+    var currentThemeMode: String? = null
 
     private var time: Long = 0
 
@@ -140,18 +140,18 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
         initPageMode()
         setFontSize()
 
-        if(context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
+        if (context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             read_landscape.isChecked = true
-        }else{
+        } else {
             read_landscape.isChecked = false
         }
         read_full.isChecked = sharedPreferences!!.getBoolean("full_screen_read", false)
 
-        if(Constants.PAGE_MODE == 3){
+        if (Constants.PAGE_MODE == 3) {
             read_full.isEnabled = false
             read_full.isClickable = false
             read_full.alpha = 0.3f
-        }else{
+        } else {
             read_full.isEnabled = true
             read_full.isClickable = true
         }
@@ -219,7 +219,7 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
             read_setting_animation_group!!.check(R.id.read_animation_simulation)
         } else if (Constants.PAGE_MODE == 2) {
             read_setting_animation_group!!.check(R.id.read_animation_translation)
-        }else if (Constants.PAGE_MODE == 3) {
+        } else if (Constants.PAGE_MODE == 3) {
             read_setting_animation_group!!.check(R.id.read_animation_updown)
         }
     }
@@ -253,11 +253,11 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
             novel_bottom_options.startAnimation(popUpInAnimation)
             novel_bottom_options.visibility = View.VISIBLE
 
-            if(readStatus!!.sequence <= 0){
+            if (readStatus!!.sequence <= 0) {
                 novel_jump_previous.isClickable = false
                 novel_jump_previous.isEnabled = false
                 novel_jump_previous.alpha = 0.3f
-            }else{
+            } else {
                 novel_jump_previous.isClickable = true
                 novel_jump_previous.isEnabled = true
                 novel_jump_previous.alpha = 1f
@@ -274,10 +274,10 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
             }
 
 
-            if( themeHelper!!.isNight()){
+            if (themeHelper!!.isNight()) {
                 txt_night.text = "白天"
                 ibtn_night.setImageResource(R.drawable.read_option_day_selector)
-            }else{
+            } else {
                 txt_night.text = "夜间"
                 ibtn_night.setImageResource(R.drawable.read_option_night_selector)
             }
@@ -321,9 +321,8 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
 
         read_setting_backdrop_group?.setOnCheckedChangeListener(this)
 
-        read_setting_row_spacing_group?.setOnCheckedChangeListener {
-            id ->
-            when(id) {
+        read_setting_row_spacing_group?.setOnCheckedChangeListener { id ->
+            when (id) {
                 R.id.read_spacing_0_2 -> {
                     StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_hangju_01)
                     if (read_spacing_0_2!!.isChecked) {
@@ -564,12 +563,12 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
         }
     }
 
-    fun changePageBackgroundWrapper(index: Int){
-        if(Constants.MODE == 61){
+    fun changePageBackgroundWrapper(index: Int) {
+        if (Constants.MODE == 61) {
             readSettingHelper!!.setReadMode(index)
             sharedPreferences?.edit()?.putInt("current_light_mode", index)?.apply()
             listener?.onChageNightMode()
-        }else{
+        } else {
             setNovelMode(index)
         }
     }
@@ -617,7 +616,7 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
                 changeMode(56)
                 read_setting_backdrop_group!!.check(R.id.read_backdrop_sixth)
             }
-            61 ->{
+            61 -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_08)
                 readSettingHelper!!.setReadMode(index)
                 changeMode(61)
@@ -794,7 +793,8 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
 
     }
 
-    @Volatile var  anim: ViewPropertyAnimator? = null
+    @Volatile
+    var anim: ViewPropertyAnimator? = null
 
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
         if (fromUser && seekBar.id == R.id.novel_jump_progress) {

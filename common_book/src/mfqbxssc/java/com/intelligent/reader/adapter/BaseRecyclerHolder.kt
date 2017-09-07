@@ -8,8 +8,8 @@ import android.view.View
  */
 abstract open class BaseRecyclerHolder<T>(itemView: View?) : RecyclerView.ViewHolder(itemView) {
 
-    var onItemClick:View.OnClickListener? = null
-    var onItemLongClick:View.OnLongClickListener? = null
+    var onItemClick: View.OnClickListener? = null
+    var onItemLongClick: View.OnLongClickListener? = null
 
-    abstract open fun onBindData(position: Int, data:T, editMode:Boolean)
+    abstract open fun onBindData(position: Int, data: T, editMode: Boolean)
 }

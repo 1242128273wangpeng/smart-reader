@@ -77,18 +77,15 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
         }
     });
     public FrameBookHelper frameHelper;
+    IntentFilter filter;
     private HomeFragment mHomeFragment;
     private NonSwipeViewPager viewPager;
     private BookShelfRemoveHelper removeMenuHelper;
     private BookShelfFragment bookView;
     private boolean isClosed = false;
     private boolean isFirstIn = true;
-
     private ApkUpdateUtils apkUpdateUtils;
-
-
     private MyReceiver receiver;
-    IntentFilter filter;
     private LoadDataManager mLoadDataManager;
 
     @Override
@@ -120,8 +117,8 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
         EventBus.getDefault().register(this);
     }
 
-    private void checckUrlIsTest(){
-        if(UrlUtils.BOOK_NOVEL_DEPLOY_HOST.contains("test")||UrlUtils.BOOK_WEBVIEW_HOST.contains("test")){
+    private void checckUrlIsTest() {
+        if (UrlUtils.BOOK_NOVEL_DEPLOY_HOST.contains("test") || UrlUtils.BOOK_WEBVIEW_HOST.contains("test")) {
             ToastUtils.showToastNoRepeat("请注意！！请求的是测试地址！！！");
         }
     }
@@ -137,54 +134,24 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
                     mHomeFragment.setTabSelected(position);
                 }
             } else {
-                    int intExtra = intent.getIntExtra(EventBookStore.BOOKSTORE, EventBookStore
-                            .TYPE_ERROR);
-                    if (intExtra != EventBookStore.TYPE_ERROR) {
-                        if (!isFinishing()) {
-                            if (mHomeFragment != null) {
-                                mHomeFragment.setTabSelected(intExtra);
-                            }
+                int intExtra = intent.getIntExtra(EventBookStore.BOOKSTORE, EventBookStore
+                        .TYPE_ERROR);
+                if (intExtra != EventBookStore.TYPE_ERROR) {
+                    if (!isFinishing()) {
+                        if (mHomeFragment != null) {
+                            mHomeFragment.setTabSelected(intExtra);
                         }
                     }
+                }
             }
         }
     }
+
     @Override
     public void receiveUpdateCallBack(Notification preNTF) {
         Intent intent = new Intent(this, HomeActivity.class);
         PendingIntent pending = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         preNTF.contentIntent = pending;
-    }
-
-    /**
-     * 获取广播数据
-     *
-     * @author jiqinlin
-     */
-    public class MyReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle bundle = intent.getExtras();
-            int count = bundle.getInt("count");
-            String filePath = bundle.getString("filePath");
-            String downloadLink = bundle.getString("downloadLink");
-            String md5 = bundle.getString("md5");
-            String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
-            if (count == 100) {
-                AppLog.e("--------------->", MD5Utils.getFileMD5(new File(filePath)));
-                if (MD5Utils.getFileMD5(new File(filePath)).equalsIgnoreCase(md5)) {
-                    setup(filePath);
-                } else {
-                    Intent errorIntent = new Intent();
-                    errorIntent.setClass(context, DownloadErrorActivity.class);
-                    errorIntent.putExtra("downloadLink", downloadLink);
-                    errorIntent.putExtra("md5", md5);
-                    errorIntent.putExtra("fileName", fileName);
-                    errorIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(errorIntent);
-                }
-            }
-        }
     }
 
     /**
@@ -273,26 +240,26 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
             //用户首次打开，记录当前时间
             Constants.is_user_today_first = true;
             sharedPreferences.edit().putLong(Constants.TODAY_FIRST_OPEN_APP, currentTime).apply();
-            sharedPreferences.edit().putBoolean(Constants.IS_UPLOAD,false).apply();
+            sharedPreferences.edit().putBoolean(Constants.IS_UPLOAD, false).apply();
             new GetAppList().execute();
         }
         AppLog.e("BaseBookApplication", "Constants.is_user_today_first=" + Constants.is_user_today_first);
 
         mLoadDataManager = new LoadDataManager(this);
-        Constants.upload_userinformation = sharedPreferences.getBoolean(Constants.IS_UPLOAD,false);
+        Constants.upload_userinformation = sharedPreferences.getBoolean(Constants.IS_UPLOAD, false);
 
         final int premVersionCode = Constants.preVersionCode;
         final int currentVersionCode = AppUtils.getVersionCode();
 
-        if(NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE){
+        if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
             //
-            if(!Constants.upload_userinformation || premVersionCode != currentVersionCode){
+            if (!Constants.upload_userinformation || premVersionCode != currentVersionCode) {
                 // 获取用户基础数据
                 StatisticManager.getStatisticManager().sendUserData();
 
                 Constants.upload_userinformation = true;
                 Constants.preVersionCode = currentVersionCode;
-                sharedPreferences.edit().putBoolean(Constants.IS_UPLOAD,Constants.upload_userinformation).apply();
+                sharedPreferences.edit().putBoolean(Constants.IS_UPLOAD, Constants.upload_userinformation).apply();
             }
         }
 
@@ -315,23 +282,6 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
         }
     }
 
-
-    // 获取用户app列表
-    class GetAppList extends AsyncTask<Void, Integer, String> {
-
-
-        @Override
-        protected String doInBackground(Void... params) {
-            String appListInfo = AppUtils.scanLocalInstallAppList(HomeActivity.this.getPackageManager());
-            return appListInfo;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-
-            StartLogClickUtil.upLoadApps(HomeActivity.this,s);
-        }
-    }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -364,11 +314,11 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
      * 接收默认书籍的加载完成刷新
      */
     public void onEvent(BookEvent event) {
-        if(event.getMsg().equals(BookEvent.DEFAULTBOOK_UPDATED)){
-            if(mLoadDataManager != null)
+        if (event.getMsg().equals(BookEvent.DEFAULTBOOK_UPDATED)) {
+            if (mLoadDataManager != null)
                 mLoadDataManager.updateShelfBooks();
-        }else if(event.getMsg().equals(BookEvent.PULL_BOOK_STATUS)){
-            if(bookView!=null){
+        } else if (event.getMsg().equals(BookEvent.PULL_BOOK_STATUS)) {
+            if (bookView != null) {
                 bookView.updateBook();
             }
         }
@@ -391,7 +341,6 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
         message.what = BACK;
         handler.sendMessageDelayed(message, 2000);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -461,7 +410,7 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
         } catch (Resources.NotFoundException e) {
             e.printStackTrace();
         }
-        if(BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             BookApplication.getRefWatcher().watch(this);
         }
         EventBus.getDefault().unregister(this);
@@ -563,5 +512,53 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
     @Override
     public String startLoad(WebView webView, String url) {
         return url;
+    }
+
+    /**
+     * 获取广播数据
+     *
+     * @author jiqinlin
+     */
+    public class MyReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle bundle = intent.getExtras();
+            int count = bundle.getInt("count");
+            String filePath = bundle.getString("filePath");
+            String downloadLink = bundle.getString("downloadLink");
+            String md5 = bundle.getString("md5");
+            String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
+            if (count == 100) {
+                AppLog.e("--------------->", MD5Utils.getFileMD5(new File(filePath)));
+                if (MD5Utils.getFileMD5(new File(filePath)).equalsIgnoreCase(md5)) {
+                    setup(filePath);
+                } else {
+                    Intent errorIntent = new Intent();
+                    errorIntent.setClass(context, DownloadErrorActivity.class);
+                    errorIntent.putExtra("downloadLink", downloadLink);
+                    errorIntent.putExtra("md5", md5);
+                    errorIntent.putExtra("fileName", fileName);
+                    errorIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(errorIntent);
+                }
+            }
+        }
+    }
+
+    // 获取用户app列表
+    class GetAppList extends AsyncTask<Void, Integer, String> {
+
+
+        @Override
+        protected String doInBackground(Void... params) {
+            String appListInfo = AppUtils.scanLocalInstallAppList(HomeActivity.this.getPackageManager());
+            return appListInfo;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+
+            StartLogClickUtil.upLoadApps(HomeActivity.this, s);
+        }
     }
 }

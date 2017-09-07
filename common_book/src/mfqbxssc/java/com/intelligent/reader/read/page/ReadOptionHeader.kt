@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
@@ -25,25 +24,22 @@ import net.lzbook.kit.utils.onEnd
 import net.lzbook.kit.utils.toastShort
 
 
-
-
 /**
  * Created by xian on 2017/8/8.
  */
 class ReadOptionHeader : FrameLayout, ReadOption.View {
 
 
-
     override var presenter: ReadOption.Presenter? = null
 
     override fun show(flag: Boolean) {
-        if(flag) {
-            if(this.visibility != View.VISIBLE) {
+        if (flag) {
+            if (this.visibility != View.VISIBLE) {
                 this.visibility = View.VISIBLE
                 this.startAnimation(menuDownInAnimation)
             }
-        }else{
-            if(this.visibility == View.VISIBLE) {
+        } else {
+            if (this.visibility == View.VISIBLE) {
                 menuUpOutAnimation.onEnd {
                     this.visibility = View.GONE
                 }
@@ -91,7 +87,7 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
             popupWindow.isOutsideTouchable = false
             popupWindow.showAsDropDown(header_ibtn_more)
 
-            if(isMarkPage){
+            if (isMarkPage) {
                 inflate.read_option_pop_mark.text = "删除书签"
             }
 
@@ -101,8 +97,7 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
                 popupWindow.dismiss()
             }
 
-            inflate.read_option_pop_mark.setOnClickListener {
-                 v ->
+            inflate.read_option_pop_mark.setOnClickListener { v ->
 
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_add_book_mark_btn)
                 val result = presenter?.bookMark()
@@ -151,12 +146,11 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
     }
 
     override fun updateStatus(readStatus: ReadStatus, dataFactory: IReadDataFactory, bookDaoHelper: BookDaoHelper) {
-        val typeChangeMark = TypedValue()
-        val theme = context.getTheme()
+        var typeChangeMark = 0
         if (bookDaoHelper != null && bookDaoHelper.isBookMarkExist(readStatus.book_id, readStatus.sequence,
-                readStatus.offset, readStatus.book.book_type)){
+                readStatus.offset, readStatus.book.book_type)) {
             isMarkPage = true
-        }else{
+        } else {
             isMarkPage = false
         }
 
@@ -164,13 +158,14 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
         if (novel_bookmark != null && novel_bookmark.visibility == View.VISIBLE) {
             if (isMarkPage) {
                 /*novel_bookmark.setImageResource(R.drawable.read_bookmarked);*/
-                theme.resolveAttribute(R.attr.read_bookmark_drawable, typeChangeMark, true)
+                typeChangeMark = R.mipmap.read_bookmarked
             } else {
                 /*novel_bookmark.setImageDrawable(resources.getDrawable(ResourceUtil.getResourceId(this, Constants
                         .DRAWABLE, "_bookmark_selector")));*/
-                theme.resolveAttribute(R.attr.read_bookmark, typeChangeMark, true)
+                typeChangeMark = R.mipmap.read_bookmark
+
             }
-            novel_bookmark.setImageResource(typeChangeMark.resourceId)
+            novel_bookmark.setImageResource(typeChangeMark)
         }
 
         if (novel_name != null) {

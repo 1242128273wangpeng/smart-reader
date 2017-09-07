@@ -1,6 +1,7 @@
 package com.intelligent.reader.fragment
 
 import android.app.Activity
+import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -29,8 +30,6 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Bookmark
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.utils.StatServiceUtils
-import net.lzbook.kit.utils.attrDrawable
-import net.lzbook.kit.utils.resolveTextColor
 import java.text.SimpleDateFormat
 import java.util.concurrent.Callable
 
@@ -80,14 +79,14 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
                 }
 
                 if (chapterExist) {
-                    txt.resolveTextColor(R.attr.read_item_catalog_chapter_text_color)
+                    txt.setTextColor(R.color.read_item_catalog_chapter_text_color)
 
                 } else {
-                    txt.resolveTextColor(R.attr.read_item_catalog_uncached_chapter_text_color)
+                    txt.setTextColor(R.color.read_item_catalog_uncached_chapter_text_color)
                 }
 
                 if (chapter.chapter_name?.equals(BaseBookApplication.getGlobalContext().readStatus?.chapterName) ?: false) {
-                    txt.resolveTextColor(R.attr.read_item_catalog_current_chapter_text_color)
+                    txt.setTextColor(R.color.read_item_catalog_current_chapter_text_color)
                 }
 
             }
@@ -148,10 +147,9 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
         val view = inflater?.inflate(R.layout.read_catalog_mark_layout, container, false)
         val dividerCatalog = ShapeItemDecoration(activity, DividerItemDecoration.VERTICAL)
         val dividerBookmark = ShapeItemDecoration(activity, DividerItemDecoration.VERTICAL)
-        val drawablCatalog = context.attrDrawable(R.attr.frag_catalog_mark_divider)
-        val drawableMark = context.attrDrawable(R.attr.frag_catalog_mark_divider)
-        dividerCatalog.setDrawable(drawablCatalog)
-        dividerBookmark.setDrawable(drawableMark)
+
+        dividerCatalog.setDrawable(ColorDrawable(Color.parseColor("#0c000000")))
+        dividerBookmark.setDrawable(ColorDrawable(Color.parseColor("#0c000000")))
 
         view!!.catalog_main.layoutManager = LinearLayoutManager(activity)
         view!!.catalog_main.addItemDecoration(dividerCatalog)
@@ -219,10 +217,10 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
             reverse = !reverse
 //            var sortIcon = TypedValue()//背景色
             if (reverse) {
-//                activity.theme.resolveAttribute(R.attr.directory_sort_positive, sortIcon, true)
+//                activity.iyouqu.theme.resolveAttribute(R.attr.directory_sort_positive, sortIcon, true)
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_catalog_click_dx_btn)
             } else {
-//                activity.theme.resolveAttribute(R.attr.directory_sort_negative, sortIcon, true)
+//                activity.iyouqu.theme.resolveAttribute(R.attr.directory_sort_negative, sortIcon, true)
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_catalog_click_zx_btn)
             }
 //            view.iv_catalog_novel_sort.setImageResource(sortIcon.resourceId)
@@ -269,7 +267,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
         loadingPage?.onSuccess()
         if (marks.isEmpty()) {
             view!!.rl_layout_empty_online.visibility = View.VISIBLE
-        }else{
+        } else {
             view!!.rl_layout_empty_online.visibility = View.GONE
         }
         bookMarkList.clear()

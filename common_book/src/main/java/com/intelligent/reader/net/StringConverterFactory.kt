@@ -42,12 +42,12 @@ class StringResponseBodyConverter : Converter<ResponseBody, String> {
 class StringConverterFactory private constructor() : Converter.Factory() {
 
     override fun responseBodyConverter(type: Type, annotations: Array<Annotation>,
-                              retrofit: Retrofit): Converter<ResponseBody, *> {
+                                       retrofit: Retrofit): Converter<ResponseBody, *> {
         return StringResponseBodyConverter()
     }
 
     override fun requestBodyConverter(type: Type,
-                             parameterAnnotations: Array<Annotation>, methodAnnotations: Array<Annotation>, retrofit: Retrofit): Converter<*, RequestBody> {
+                                      parameterAnnotations: Array<Annotation>, methodAnnotations: Array<Annotation>, retrofit: Retrofit): Converter<*, RequestBody> {
         return StringRequestBodyConverter()
     }
 

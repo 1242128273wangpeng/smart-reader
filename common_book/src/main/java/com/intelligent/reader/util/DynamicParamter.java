@@ -81,18 +81,15 @@ public class DynamicParamter {
     public String switchSplashAdCloseSec;
     public String channel_limit;
     public String day_limit;
-    private ArrayList<String> channelLimit = new ArrayList<>();
-    private ArrayList<Integer> dayLimit = new ArrayList<>();
-
     public String network_limit;
     public String dy_ad_new_request_domain_name;
-
     public String novel_host;
     public String webView_host;
-
     public String download_limit;
     public String nonet_readhour;
     public String noNetReadNumber;
+    private ArrayList<String> channelLimit = new ArrayList<>();
+    private ArrayList<Integer> dayLimit = new ArrayList<>();
     private SharedPreferences sp;
     private Context context;
 

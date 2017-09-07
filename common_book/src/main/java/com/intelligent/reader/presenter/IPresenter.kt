@@ -5,6 +5,6 @@ package com.intelligent.reader.presenter
  */
 interface IPresenter<T> {
 
-    var view:T?
+    var view: T?
 
 }

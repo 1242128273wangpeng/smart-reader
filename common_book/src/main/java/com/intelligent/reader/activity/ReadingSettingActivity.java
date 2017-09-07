@@ -33,11 +33,11 @@ import iyouqu.theme.FrameActivity;
  * 阅读页设置
  */
 public class ReadingSettingActivity extends FrameActivity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener, SwitchButton.OnCheckedChangeListener {
+    public boolean isCustomReadingSpace;
+    public Context context;
     private SharedPreferences sharedPreferences;
-
     //预览界面
     private FrameLayout reading_setting_preview;
-
     private ImageView reading_setting_back;
     private ImageView reading_setting_reduce_text;
     private ImageView reading_setting_increase_text;
@@ -52,14 +52,9 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
     private RadioGroup reading_setting_direction_group;
     private SwitchButton reading_brightness_width_system;
     private SwitchButton reading_setting_volume_flip;
-
     private SettingItemsHelper settingsHelper;
     private SettingItems settings;
     private boolean autoBrightness;
-
-    public boolean isCustomReadingSpace;
-
-    public Context context;
     private int previewHeight = 400;
     private PreviewPageView previewPageView;
 
@@ -607,7 +602,7 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
             if (previewPageView != null) {
                 previewPageView.setTextColor(getResources().getColor(R.color.reading_text_color_night));
             }
-        }else{
+        } else {
             if (previewPageView != null) {
                 previewPageView.setTextColor(getResources().getColor(R.color.reading_text_color_first));
             }
@@ -666,8 +661,10 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
 
     @Override
     public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-        if (view == null){return;}
-        switch (view.getId()){
+        if (view == null) {
+            return;
+        }
+        switch (view.getId()) {
             case R.id.reading_brightness_width_system:
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.me_set_click_read_Bri_sys);
                 changeSystemLight();

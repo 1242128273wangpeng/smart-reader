@@ -1,5 +1,16 @@
 package com.intelligent.reader.activity;
 
+import com.intelligent.reader.R;
+import com.intelligent.reader.adapter.FeedBackAdapter;
+import com.umeng.fb.FeedbackAgent;
+import com.umeng.fb.SyncListener;
+import com.umeng.fb.model.Conversation;
+import com.umeng.fb.model.Reply;
+import com.umeng.fb.model.UserInfo;
+
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.utils.AppLog;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
@@ -15,17 +26,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.intelligent.reader.R;
-import com.intelligent.reader.adapter.FeedBackAdapter;
-import com.umeng.fb.FeedbackAgent;
-import com.umeng.fb.SyncListener;
-import com.umeng.fb.model.Conversation;
-import com.umeng.fb.model.Reply;
-import com.umeng.fb.model.UserInfo;
-
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.utils.AppLog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -100,7 +100,7 @@ public class FeedBackActivity extends Activity implements View.OnClickListener, 
             replies.clear();
         }
         replies.addAll(conversation.getReplyList());
-        Reply reply = new Reply("","","feedback_head", 0);
+        Reply reply = new Reply("", "", "feedback_head", 0);
         replies.add(0, reply);
 
         layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
@@ -143,9 +143,9 @@ public class FeedBackActivity extends Activity implements View.OnClickListener, 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.feedback_head_back :
+            case R.id.feedback_head_back:
                 Map<String, String> data = new HashMap<>();
-                data.put("type","1");
+                data.put("type", "1");
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
                 finish();
                 break;
@@ -201,7 +201,7 @@ public class FeedBackActivity extends Activity implements View.OnClickListener, 
                 replies.clear();
             }
             replies.addAll(conversation.getReplyList());
-            Reply reply = new Reply("","","feedback_head", 0);
+            Reply reply = new Reply("", "", "feedback_head", 0);
             replies.add(0, reply);
 
             if (adapter != null) {
@@ -253,7 +253,7 @@ public class FeedBackActivity extends Activity implements View.OnClickListener, 
 
     private void hideInputMethodManager() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(feedback_sent_edit,InputMethodManager.SHOW_FORCED);
+        imm.showSoftInput(feedback_sent_edit, InputMethodManager.SHOW_FORCED);
         imm.hideSoftInputFromWindow(feedback_sent_edit.getWindowToken(), 0);
     }
 }

@@ -50,12 +50,12 @@ public class BookHelper extends BaseBookHelper {
                 requestItem.parameter = book.parameter;
                 requestItem.extra_parameter = book.extra_parameter;
 
-                if ((book.sequence > -1 || book.readed == 1 || isDownFnish(ctx , book)) && BookDaoHelper.getInstance(ctx).isBookSubed(book.book_id)) {
-                    AppLog.i("DownloadState---","goToCoverOrRead "+isDownFnish(ctx , book));
+                if ((book.sequence > -1 || book.readed == 1 || isDownFnish(ctx, book)) && BookDaoHelper.getInstance(ctx).isBookSubed(book.book_id)) {
+                    AppLog.i("DownloadState---", "goToCoverOrRead " + isDownFnish(ctx, book));
                     requestItem.fromType = 0;
-                    if(Constants.QG_SOURCE.equals(book.site)){
+                    if (Constants.QG_SOURCE.equals(book.site)) {
                         requestItem.channel_code = 1;
-                    }else{
+                    } else {
                         requestItem.channel_code = 2;
                     }
                     Intent intent = new Intent(ctx, ReadingActivity.class);
@@ -135,8 +135,8 @@ public class BookHelper extends BaseBookHelper {
                     intent.setClass(ctx, CataloguesActivity.class);
                     intent.putExtras(bundle);
                     activity.startActivity(intent);
-                } else if ((book.sequence > -1 || book.readed == 1 || isDownFnish(ctx , book)) && BookDaoHelper.getInstance(ctx).isBookSubed(book.book_id)) {
-                    AppLog.i("DownloadState---","goToCoverOrRead "+isDownFnish(ctx , book));
+                } else if ((book.sequence > -1 || book.readed == 1 || isDownFnish(ctx, book)) && BookDaoHelper.getInstance(ctx).isBookSubed(book.book_id)) {
+                    AppLog.i("DownloadState---", "goToCoverOrRead " + isDownFnish(ctx, book));
 
                     requestItem.fromType = 0;
                     FootprintUtils.saveHistoryShelf(book);
@@ -148,9 +148,9 @@ public class BookHelper extends BaseBookHelper {
                     bundle.putSerializable(Constants.REQUEST_ITEM, requestItem);
                     intent.putExtras(bundle);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    if(Constants.QG_SOURCE.equals(book.site)){
+                    if (Constants.QG_SOURCE.equals(book.site)) {
                         requestItem.channel_code = 1;
-                    }else{
+                    } else {
                         requestItem.channel_code = 2;
                     }
                     activity.startActivity(intent);
@@ -173,7 +173,7 @@ public class BookHelper extends BaseBookHelper {
 
         DownloadState state = BookHelper.getInitDownstate(ctx, book, BookHelper.getStartDownIndex(ctx, book));
         boolean isNoNet = NetWorkUtils.getNetWorkType(ctx) == NetWorkUtils.NETWORK_NONE;
-        return (state == DownloadState.FINISH)&&isNoNet ? true : false;
+        return (state == DownloadState.FINISH) && isNoNet ? true : false;
     }
 
     /**

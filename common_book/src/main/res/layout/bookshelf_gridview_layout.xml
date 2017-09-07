@@ -1,55 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout android:id="@+id/ff_book_topic_layout"
-             xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:background="@color/whole_bg">
-
+<FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/ff_book_topic_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/whole_bg">
+    
     <net.lzbook.kit.pulllist.PullToRefreshListView
-        android:id="@+id/pl_frame_book_topic"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/pull_refresh_bg_header_footer"
-        android:cacheColorHint="@color/transparent"
-        android:numColumns="3"
-        android:fadingEdge="none"
-        android:scrollbars="none">
+            android:id="@+id/pl_frame_book_topic"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/pull_refresh_bg_header_footer"
+            android:cacheColorHint="@color/transparent"
+            android:numColumns="3"
+            android:fadingEdge="none"
+            android:scrollbars="none">
     </net.lzbook.kit.pulllist.PullToRefreshListView>
-
+    
     <RelativeLayout
-        android:visibility="gone"
-        android:id="@+id/rl_nobook_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center">
-
+            android:visibility="gone"
+            android:id="@+id/rl_nobook_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center">
+        
         <TextView
-            android:id="@+id/tv_nobook"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:drawablePadding="@dimen/padding_16"
-            android:drawableTop="@drawable/icon_bookshelf_add"
-            android:textColor="@color/color_gray_9C9C9C"
-            android:textSize="@dimen/no_book_topic_data_tips"/>
-
+                android:id="@+id/tv_nobook"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:drawablePadding="@dimen/padding_16"
+                android:drawableTop="@drawable/icon_bookshelf_add"
+                android:textColor="@color/color_gray_9C9C9C"
+                android:textSize="@dimen/no_book_topic_data_tips"/>
+    
     </RelativeLayout>
-
+    
     <RelativeLayout
-        android:id="@+id/rl_edit_tip"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical|top"
-        android:paddingTop="90dp"
-        android:visibility="gone">
-
+            android:id="@+id/rl_edit_tip"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|top"
+            android:paddingTop="90dp"
+            android:visibility="gone">
+        
         <ImageView
-            android:id="@+id/iv_edit_tip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:scaleType="fitXY">
+                android:id="@+id/iv_edit_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:scaleType="fitXY">
         </ImageView>
     </RelativeLayout>
 

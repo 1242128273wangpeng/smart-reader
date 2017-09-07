@@ -42,10 +42,13 @@ import java.util.Map;
 import iyouqu.theme.FrameActivity;
 
 
-
 public class SearchBookActivity extends FrameActivity implements OnClickListener, OnFocusChangeListener, SearchViewHelper.OnHistoryClickListener,
         TextWatcher, OnEditorActionListener, SearchHelper.JsCallSearchCall, SearchHelper.StartLoadCall {
 
+    boolean isSearch = false;
+    //记录是否退出当前界面,for:修复退出界面时出现闪影
+    boolean isBackPressed = false;
+    boolean ziyougb;
     private ImageView search_result_back;
     private ImageView search_result_button;
     private RelativeLayout search_result_outcome;
@@ -56,27 +59,19 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
     private RelativeLayout search_result_main;
     private WebView search_result_content;
     private FrameLayout search_result_hint;
-
     private SearchViewHelper searchViewHelper;
     private BookDaoHelper bookDaoHelper;
     private Handler handler = new Handler();
-
     private CustomWebClient customWebClient;
     private JSInterfaceHelper jsInterfaceHelper;
-
-    boolean isSearch = false;
-    //记录是否退出当前界面,for:修复退出界面时出现闪影
-    boolean isBackPressed = false;
-
     private LoadingPage loadingPage;
-
     private SearchHelper mSearchHelper;
 
     @Override
     public void onJsSearch() {
         if (search_result_content != null) {
             search_result_content.clearView();
-            if (loadingPage == null){
+            if (loadingPage == null) {
                 loadingPage = new LoadingPage(this, search_result_main, LoadingPage.setting_result);
             }
         }
@@ -100,7 +95,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
         }
         initData();
         initView();
-        if (mSearchHelper != null && !TextUtils.isEmpty(mSearchHelper.getWord())){
+        if (mSearchHelper != null && !TextUtils.isEmpty(mSearchHelper.getWord())) {
             loadDataFromNet();
         }
     }
@@ -120,17 +115,17 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
         }
         search_result_input = (HWEditText) findViewById(R.id.search_result_input);
         search_result_main = (RelativeLayout) findViewById(R.id.search_result_main);
-        View view_night_show =  findViewById(R.id.view_night_show);
-        if (mThemeHelper.isNight()){
+        View view_night_show = findViewById(R.id.view_night_show);
+        if (mThemeHelper.isNight()) {
             view_night_show.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             view_night_show.setVisibility(View.GONE);
         }
         search_result_content = (WebView) findViewById(R.id.search_result_content);
 
         search_result_hint = (FrameLayout) findViewById(R.id.search_result_hint);
 
-        if (mSearchHelper == null){
+        if (mSearchHelper == null) {
             mSearchHelper = new SearchHelper(this);
         }
 
@@ -167,9 +162,8 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
 
     }
 
-
     private void initListener() {
-        if (mSearchHelper != null){
+        if (mSearchHelper != null) {
             mSearchHelper.setJsCallSearchCall(this);
             mSearchHelper.setStartLoadCall(this);
         }
@@ -205,7 +199,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
             searchViewHelper.onHotWordClickListener = new SearchViewHelper.OnHotWordClickListener() {
                 @Override
                 public void hotWordClick(String tag) {
-                    if (mSearchHelper != null){
+                    if (mSearchHelper != null) {
                         mSearchHelper.setHotWordType(tag);
                     }
                     loadDataFromNet();
@@ -216,7 +210,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
     }
 
     private void initData() {
-        if (mSearchHelper == null){
+        if (mSearchHelper == null) {
             mSearchHelper = new SearchHelper(this);
         }
         Intent intent = getIntent();
@@ -234,7 +228,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
 
     private void loadDataFromNet() {
 
-        if (mSearchHelper == null){
+        if (mSearchHelper == null) {
             mSearchHelper = new SearchHelper(this);
         }
 
@@ -253,7 +247,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
 
             hideSearchView();
 
-            if (loadingPage == null){
+            if (loadingPage == null) {
                 loadingPage = new LoadingPage(this, search_result_main, LoadingPage.setting_result);
             }
             mSearchHelper.startLoadData();
@@ -262,7 +256,6 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
             showSearchViews();
         }
     }
-
 
     private void startLoading(Handler handler, final String url) {
         if (search_result_content == null) {
@@ -307,7 +300,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                 @Override
                 public void onLoadStarted(String url) {
                     AppLog.e(TAG, "onLoadStarted: " + url);
-                    if (mSearchHelper == null){
+                    if (mSearchHelper == null) {
                         mSearchHelper = new SearchHelper(SearchBookActivity.this);
                     }
                     mSearchHelper.setStartedAction();
@@ -329,12 +322,12 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                 @Override
                 public void onLoadFinished() {
                     AppLog.e(TAG, "onLoadFinished");
-                    if (mSearchHelper == null){
+                    if (mSearchHelper == null) {
                         mSearchHelper = new SearchHelper(SearchBookActivity.this);
                     }
                     mSearchHelper.onLoadFinished();
                     if (loadingPage != null) {
-                        if(isSearch){
+                        if (isSearch) {
                             hideSearchView();
                         }
                         loadingPage.onSuccessGone();
@@ -357,14 +350,13 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
         }
     }
 
-
     /**
      * 重载方法
      */
     @Override
     protected void onDestroy() {
 
-        if (mSearchHelper == null){
+        if (mSearchHelper == null) {
             mSearchHelper = new SearchHelper(this);
         }
         mSearchHelper.onDestroy();
@@ -379,7 +371,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                 search_result_content.stopLoading();
                 search_result_content.removeAllViews();
                 //search_result_content.destroy();
-            }else {
+            } else {
                 search_result_content.stopLoading();
                 search_result_content.removeAllViews();
                 //search_result_content.destroy();
@@ -412,11 +404,10 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
     @Override
     public void onBackPressed() {
         Map<String, String> data = new HashMap<>();
-        data.put("type","2");
+        data.put("type", "2");
         StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
         backAction();
     }
-
 
     private void showSearchViews() {
         if (NetWorkUtils.getNetWorkType(this) == NetWorkUtils.NETWORK_NONE) {
@@ -435,7 +426,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
             search_result_content.setVisibility(View.GONE);
         }
 
-        if (mSearchHelper == null){
+        if (mSearchHelper == null) {
             mSearchHelper = new SearchHelper(this);
         }
         mSearchHelper.setWord(search_result_input.getText().toString());
@@ -532,7 +523,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
         switch (view.getId()) {
             case R.id.search_result_back:
                 Map<String, String> data1 = new HashMap<>();
-                data1.put("type","1");
+                data1.put("type", "1");
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data1);
                 backAction();
                 break;
@@ -544,11 +535,11 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                     search_result_clear.setVisibility(View.GONE);
 
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCHRESULT_PAGE, StartLogClickUtil.CLEAR);
-                StartLogClickUtil.upLoadEventLog(this,StartLogClickUtil.SEARCH_PAGE,StartLogClickUtil.BARCLEAR);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.BARCLEAR);
                 break;
 
             case R.id.search_result_outcome:
-                if (searchViewHelper != null){
+                if (searchViewHelper != null) {
                     searchViewHelper.setFromEditClick(true);
                 }
                 showSearchViews();
@@ -568,16 +559,16 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                     hideInputMethod(search_result_input);
                     if (keyword != null && !TextUtils.isEmpty(keyword.trim()) && searchViewHelper != null) {
                         searchViewHelper.addHistoryWord(keyword);
-                        if (mSearchHelper == null){
+                        if (mSearchHelper == null) {
                             mSearchHelper = new SearchHelper(this);
                         }
                         mSearchHelper.setHotWordType(keyword);
                         loadDataFromNet();
 
                         Map<String, String> data = new HashMap<>();
-                        data.put("type","0");
+                        data.put("type", "0");
                         data.put("keyword", keyword);
-                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE,StartLogClickUtil.SEARCHBUTTON, data);
+                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.SEARCHBUTTON, data);
                     } else {
                         showSearchViews();
                     }
@@ -589,18 +580,16 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
         }
     }
 
-    boolean ziyougb;
-
     @Override
     public void onFocusChange(View view, boolean hasFocus) {
         if (search_result_input == null)
             return;
         if (hasFocus) {
-            StartLogClickUtil.upLoadEventLog(this,StartLogClickUtil.SEARCH_PAGE,StartLogClickUtil.BAR);
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.BAR);
             dealSoftKeyboard(search_result_input);
             if (searchViewHelper != null && search_result_input != null) {
                 searchViewHelper.setShowHintEnabled(true);
-                if (mSearchHelper == null){
+                if (mSearchHelper == null) {
                     mSearchHelper = new SearchHelper(this);
                 }
                 if (TextUtils.isEmpty(mSearchHelper.getWord())) {
@@ -655,7 +644,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
 
     @Override
     public void OnHistoryClick(String history) {
-        if (mSearchHelper == null){
+        if (mSearchHelper == null) {
             mSearchHelper = new SearchHelper(this);
         }
         mSearchHelper.setHotWordType(history);
@@ -682,7 +671,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                     loadDataFromNet();
 
                     Map<String, String> data = new HashMap<>();
-                    data.put("type","1");
+                    data.put("type", "1");
                     data.put("keyword", keyword);
                     StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.SEARCHBUTTON, data);
                 }

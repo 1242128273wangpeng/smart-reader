@@ -7,26 +7,26 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
-public class Page extends View{
+public class Page extends View {
 
-	private Bitmap mCurPageBitmap;
-	private Paint paint;
-	
-	public Page(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		
-		paint = new Paint();
-	}
-	
-	public void drawPage(Bitmap mCurPageBitmap) {
-		this.mCurPageBitmap = mCurPageBitmap;
-		postInvalidate();
-	}
-	
-	@Override
-	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
-		canvas.drawBitmap(mCurPageBitmap, 0, 0, paint);
-	}
+    private Bitmap mCurPageBitmap;
+    private Paint paint;
+
+    public Page(Context context, AttributeSet attrs) {
+        super(context, attrs);
+
+        paint = new Paint();
+    }
+
+    public void drawPage(Bitmap mCurPageBitmap) {
+        this.mCurPageBitmap = mCurPageBitmap;
+        postInvalidate();
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        canvas.drawBitmap(mCurPageBitmap, 0, 0, paint);
+    }
 
 }

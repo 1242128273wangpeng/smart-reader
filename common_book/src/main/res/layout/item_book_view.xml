@@ -1,87 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rl_child_rack_item"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@drawable/book_list_item_selector"
-    android:paddingTop="15dp" >
-
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/rl_child_rack_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/book_list_item_selector"
+        android:paddingTop="15dp">
+    
     <FrameLayout
-        android:id="@+id/image_frame"
-        android:layout_width="92dp"
-        android:layout_height="121dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp" >
-
-        <ImageView
-            android:id="@+id/bookrack_image"
+            android:id="@+id/image_frame"
             android:layout_width="92dp"
             android:layout_height="121dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/cover_image_margn_top"
-            android:adjustViewBounds="true"
-            android:background="@drawable/bg_default_cover"
-            android:contentDescription="@string/app_name"
-            android:scaleType="fitXY"
-            android:src="@drawable/bg_default_cover" />
-
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp">
+        
         <ImageView
-            android:visibility="gone"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:contentDescription="@string/app_name"
-            android:scaleType="fitXY"
-            android:src="@drawable/book_mask" />
+                android:id="@+id/bookrack_image"
+                android:layout_width="92dp"
+                android:layout_height="121dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/cover_image_margn_top"
+                android:adjustViewBounds="true"
+                android:background="@drawable/bg_default_cover"
+                android:contentDescription="@string/app_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/bg_default_cover"/>
+        
         <ImageView
-            android:id="@+id/bookrack_state_finish"
-            android:layout_width="@dimen/padding_30"
-            android:layout_height="@dimen/padding_30"
-            android:layout_gravity="bottom|right"
-            android:layout_marginBottom="0dp"
-            android:contentDescription="@string/app_name"
-            android:scaleType="fitCenter"
-            android:visibility="invisible"
-            android:src="@drawable/book_status_end" />
-
+                android:visibility="gone"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:contentDescription="@string/app_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/book_mask"/>
+        
         <ImageView
-            android:id="@+id/bookrack_state_update"
-            android:layout_width="@dimen/padding_30"
-            android:layout_height="@dimen/padding_30"
-            android:layout_gravity="bottom|right"
-            android:layout_marginBottom="0dp"
-            android:contentDescription="@string/app_name"
-            android:scaleType="fitCenter"
-            android:src="@drawable/book_status_update"
-            android:visibility="gone" />
+                android:id="@+id/bookrack_state_finish"
+                android:layout_width="@dimen/padding_30"
+                android:layout_height="@dimen/padding_30"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="0dp"
+                android:contentDescription="@string/app_name"
+                android:scaleType="fitCenter"
+                android:visibility="invisible"
+                android:src="@drawable/book_status_end"/>
+        
+        <ImageView
+                android:id="@+id/bookrack_state_update"
+                android:layout_width="@dimen/padding_30"
+                android:layout_height="@dimen/padding_30"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="0dp"
+                android:contentDescription="@string/app_name"
+                android:scaleType="fitCenter"
+                android:src="@drawable/book_status_update"
+                android:visibility="gone"/>
     </FrameLayout>
+    
     <TextView
-        android:id="@+id/bookrack_name"
-        android:layout_width="92dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/image_frame"
-        android:paddingTop="@dimen/padding_8"
-        android:ellipsize="end"
-        android:gravity="left|center"
-        android:singleLine="true"
-        android:layout_centerHorizontal="true"
-        android:text="很长很长很长很长很长的书名"
-        android:textColor="@color/color_black_353535"
-        android:textSize="@dimen/medium_size_14" />
+            android:id="@+id/bookrack_name"
+            android:layout_width="92dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/image_frame"
+            android:paddingTop="@dimen/padding_8"
+            android:ellipsize="end"
+            android:gravity="left|center"
+            android:singleLine="true"
+            android:layout_centerHorizontal="true"
+            android:text="很长很长很长很长很长的书名"
+            android:textColor="@color/color_black_353535"
+            android:textSize="@dimen/medium_size_14"/>
+    
     <TextView
-        android:id="@+id/bookrack_lastest"
-        android:layout_width="92dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/bookrack_name"
-        android:paddingTop="@dimen/padding_8"
-        android:ellipsize="end"
-        android:gravity="left|center"
-        android:layout_centerHorizontal="true"
-        android:singleLine="true"
-        android:text="最新章节"
-        android:textColor="@color/color_black_727272"
-        android:textSize="@dimen/small_size_12" />
+            android:id="@+id/bookrack_lastest"
+            android:layout_width="92dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/bookrack_name"
+            android:paddingTop="@dimen/padding_8"
+            android:ellipsize="end"
+            android:gravity="left|center"
+            android:layout_centerHorizontal="true"
+            android:singleLine="true"
+            android:text="最新章节"
+            android:textColor="@color/color_black_727272"
+            android:textSize="@dimen/small_size_12"/>
     <!--
     <RelativeLayout
         android:id="@+id/bookrack_linear"

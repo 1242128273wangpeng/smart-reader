@@ -9,9 +9,9 @@ import android.view.ViewGroup
 /**
  * Created by xian on 2017/8/17.
  */
-class ListRecyclerAdapter<T, C : BaseRecyclerHolder<T>>  (val datas:List<T>, @LayoutRes val itemLayout:Int, val clazz:Class<C>, var itemClick:View.OnClickListener? = null, var itemLongClick:View.OnLongClickListener? = null) : RecyclerView.Adapter<C>() {
+class ListRecyclerAdapter<T, C : BaseRecyclerHolder<T>>(val datas: List<T>, @LayoutRes val itemLayout: Int, val clazz: Class<C>, var itemClick: View.OnClickListener? = null, var itemLongClick: View.OnLongClickListener? = null) : RecyclerView.Adapter<C>() {
 
-    private var inflater:LayoutInflater? = null
+    private var inflater: LayoutInflater? = null
 
     var isEditMode = false
 
@@ -19,7 +19,7 @@ class ListRecyclerAdapter<T, C : BaseRecyclerHolder<T>>  (val datas:List<T>, @La
         try {
             if (datas.size > position)
                 holder?.onBindData(position, datas[position], isEditMode)
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -29,12 +29,12 @@ class ListRecyclerAdapter<T, C : BaseRecyclerHolder<T>>  (val datas:List<T>, @La
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): C {
-        if(inflater == null)
+        if (inflater == null)
             inflater = LayoutInflater.from(parent!!.context)
-        var view :View? = null
+        var view: View? = null
         try {
             view = inflater!!.inflate(itemLayout, parent, false)
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
         val holder = clazz.getConstructor(View::class.java).newInstance(view)

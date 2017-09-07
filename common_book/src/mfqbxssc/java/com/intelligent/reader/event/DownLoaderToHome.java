@@ -6,7 +6,8 @@ package com.intelligent.reader.event;
 
 public class DownLoaderToHome {
     private int tabPosition;
-    public DownLoaderToHome(int tabPosition){
+
+    public DownLoaderToHome(int tabPosition) {
         this.tabPosition = tabPosition;
     }
 

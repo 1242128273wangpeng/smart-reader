@@ -21,11 +21,9 @@ import net.lzbook.kit.utils.StatServiceUtils;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -73,13 +71,13 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Boo
     }
 
     private void checkInit(boolean isLogin) {
-        if (isLogin == currLoginState){
+        if (isLogin == currLoginState) {
             return;
         }
 
-        if (isLogin){
+        if (isLogin) {
             initData();
-        }else {
+        } else {
             initNotLoginData();
         }
         currLoginState = isLogin;
@@ -87,8 +85,8 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Boo
 
     private void initView() {
         mRecyclerView = (EmptyRecyclerView) findViewById(R.id.recycler_footprint);
-        mBack = (ImageView)findViewById(R.id.book_history_back);
-        mClearDataTV = (TextView)findViewById(R.id.book_history_clear);
+        mBack = (ImageView) findViewById(R.id.book_history_back);
+        mClearDataTV = (TextView) findViewById(R.id.book_history_clear);
 
         mEmptyView = findViewById(R.id.footprint_empty);
         mEmptyFind = (TextView) findViewById(R.id.footprint_empty_find);
@@ -102,21 +100,21 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Boo
     }
 
     private void initNotLoginData() {
-        if (mRecyclerView != null){
-            if (mRecyclerView.getVisibility() == View.VISIBLE){
+        if (mRecyclerView != null) {
+            if (mRecyclerView.getVisibility() == View.VISIBLE) {
                 mRecyclerView.setVisibility(View.GONE);
             }
         }
 
-        if (mEmptyView != null){
-            if (mEmptyView.getVisibility() == View.VISIBLE){
+        if (mEmptyView != null) {
+            if (mEmptyView.getVisibility() == View.VISIBLE) {
                 mEmptyView.setVisibility(View.GONE);
             }
         }
 
         initClearBtnState(false);
 
-        if (mNotLoginView != null){
+        if (mNotLoginView != null) {
             mNotLoginView.setVisibility(View.VISIBLE);
             mNotLoginView.setClickable(true);
         }
@@ -129,32 +127,32 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Boo
             e.printStackTrace();
         }
         String typeInfo = null;
-        if (mTypeInfoTV != null){
+        if (mTypeInfoTV != null) {
             typeInfo = (String) mTypeInfoTV.getText();
         }
 
-        if ("TypeTwo".equals(typeInfo)){
+        if ("TypeTwo".equals(typeInfo)) {
             TextView loginInfoTwo = (TextView) findViewById(R.id.footprint_login_hint2);
-            if (dataCount > 0){
-                mLoginInfo.setText("您最近浏览了"+dataCount+"本书");
+            if (dataCount > 0) {
+                mLoginInfo.setText("您最近浏览了" + dataCount + "本书");
                 loginInfoTwo.setVisibility(View.VISIBLE);
                 loginInfoTwo.setText("请登录后查看");
-            }else {
+            } else {
                 mLoginInfo.setText("登录后可查看浏览过的书");
                 loginInfoTwo.setVisibility(View.GONE);
             }
-        }else {
-            if (dataCount > 0){
-                mLoginInfo.setText("您最近浏览了"+dataCount+"本书, 请登录后查看");
-            }else {
+        } else {
+            if (dataCount > 0) {
+                mLoginInfo.setText("您最近浏览了" + dataCount + "本书, 请登录后查看");
+            } else {
                 mLoginInfo.setText("登录后可查看浏览过的书");
             }
         }
     }
 
     private void initData() {
-        if (mNotLoginView != null){
-            if (mNotLoginView.getVisibility() == View.VISIBLE){
+        if (mNotLoginView != null) {
+            if (mNotLoginView.getVisibility() == View.VISIBLE) {
                 mNotLoginView.setVisibility(View.GONE);
             }
         }
@@ -166,9 +164,9 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Boo
             e.printStackTrace();
         }
 
-        if (mDataSet == null || mDataSet.isEmpty()){
+        if (mDataSet == null || mDataSet.isEmpty()) {
             initClearBtnState(false);
-        }else {
+        } else {
             initClearBtnState(true);
         }
 
@@ -183,23 +181,23 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Boo
     }
 
     private void initListener() {
-        if (mBack != null){
+        if (mBack != null) {
             mBack.setOnClickListener(this);
         }
 
-        if (mClearDataTV != null){
+        if (mClearDataTV != null) {
             mClearDataTV.setOnClickListener(this);
         }
 
-        if (mEmptyFind != null){
+        if (mEmptyFind != null) {
             mEmptyFind.setOnClickListener(this);
         }
 
-        if (mRecyclerView != null){
+        if (mRecyclerView != null) {
             mRecyclerView.setOnItemChangeListener(this);
         }
 
-        if (mLoginTV != null){
+        if (mLoginTV != null) {
             mLoginTV.setOnClickListener(this);
         }
     }
@@ -207,14 +205,14 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Boo
     @Override
     public void onItemClick(View view, int position) {
         HistoryInfo info = null;
-        if (mHisAdapter != null){
+        if (mHisAdapter != null) {
             List<HistoryInfo> dataSet = mHisAdapter.getDataSet();
-            if (dataSet != null && dataSet.size() > position){
+            if (dataSet != null && dataSet.size() > position) {
                 info = dataSet.get(position);
             }
         }
 
-        if (info != null){
+        if (info != null) {
             BookHelper.goToCover(this, info);
         }
     }
@@ -231,7 +229,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Boo
             public void run() {
 
                 AppLog.d(TAG, "pagePosition = " + pagePosition);
-                List<Book> dataSet = mDaoUtils.queryDataForPagingLoad(HistoryInforTable.LAST_BROW_TIME, (long)pagePosition, (long)pageSize);
+                List<Book> dataSet = mDaoUtils.queryDataForPagingLoad(HistoryInforTable.LAST_BROW_TIME, (long) pagePosition, (long) pageSize);
 
                 mHisAdapter.appendData(dataSet);
                 callback.onSuccess();
@@ -246,13 +244,13 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Boo
 
     @Override
     public void onClick(View v) {
-        if (v == null){
+        if (v == null) {
             return;
         }
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.book_history_back:
                 Map<String, String> data = new HashMap<>();
-                data.put("type","1");
+                data.put("type", "1");
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
                 finish();
                 break;
@@ -263,7 +261,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Boo
                 mLoginTV.setClickable(false);
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivityForResult(intent, 1);
-                StartLogClickUtil.upLoadEventLog(this,StartLogClickUtil.PEASONAL_PAGE,StartLogClickUtil.HISTORYLOGIN);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.HISTORYLOGIN);
                 break;
             case R.id.footprint_empty_find:
                 Intent storeIntent = new Intent();
@@ -278,45 +276,43 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Boo
         }
     }
 
-    private void initClearBtnState(boolean isEnable){
-        if (mClearDataTV == null || isEnable == mClearDataTV.isEnabled()){
+    private void initClearBtnState(boolean isEnable) {
+        if (mClearDataTV == null || isEnable == mClearDataTV.isEnabled()) {
             return;
         }
 
-        Resources.Theme theme = getTheme();
-        Resources resources = getResources();
-        TypedValue clearTvColor = new TypedValue();
+        int clearTvColor = 0;
 
-        if (isEnable){
-            theme.resolveAttribute(R.attr.footprint_title_clear_color, clearTvColor, true);
-        }else {
-            theme.resolveAttribute(R.attr.footprint_title_clear_unusable_color, clearTvColor, true);
+        if (isEnable) {
+            clearTvColor = R.color.footprint_title_clear_color;
+        } else {
+            clearTvColor = R.color.footprint_title_clear_unusable_color;
         }
 
-        mClearDataTV.setTextColor(resources.getColorStateList(clearTvColor.resourceId));
+        mClearDataTV.setTextColor(getResources().getColorStateList(clearTvColor));
         mClearDataTV.setEnabled(isEnable);
 
     }
 
     @Override
     public void onItemChange(int itemCount) {
-        if (itemCount > 0){
+        if (itemCount > 0) {
             initClearBtnState(true);
-        }else {
+        } else {
             initClearBtnState(false);
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (RESULT_OK == resultCode){
+        if (RESULT_OK == resultCode) {
             checkInit(UserManager.INSTANCE.isUserLogin());
         }
     }
 
     private void showDialog() {
         if (!this.isFinishing()) {
-            final MyDialog myDialog = new MyDialog(this,R.layout.publish_hint_dialog);
+            final MyDialog myDialog = new MyDialog(this, R.layout.publish_hint_dialog);
             myDialog.setCanceledOnTouchOutside(true);
             TextView dialog_title = (TextView) myDialog.findViewById(R.id.dialog_title);
             dialog_title.setText(R.string.prompt);
@@ -327,7 +323,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Boo
             dialog_comfire.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mHisAdapter != null && mLoadMoreAdapter != null && mDaoUtils != null ){
+                    if (mHisAdapter != null && mLoadMoreAdapter != null && mDaoUtils != null) {
                         mHisAdapter.updateData(null);
                         mLoadMoreAdapter.notifyDataSetChanged();
                         mDaoUtils.deleteAll();

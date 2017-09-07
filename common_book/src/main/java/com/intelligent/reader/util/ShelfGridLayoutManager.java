@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 /**
  * 捕捉IndexOutOfBoundsException,该异常为后台崩溃日志发现,偶现,需要google从底层代码修复,这里仅捕捉该异常.
  */
-public class ShelfGridLayoutManager extends GridLayoutManager{
+public class ShelfGridLayoutManager extends GridLayoutManager {
     public ShelfGridLayoutManager(Context context, int spanCount) {
         super(context, spanCount);
     }

@@ -18,14 +18,20 @@
 <resources>
     <declare-styleable name="ViewPagerIndicator">
         <!-- Style of the icon indicator's views. -->
-        <attr name="vpiIconPageIndicatorStyle" format="reference"/>
+        <attr name="vpiIconPageIndicatorStyle"
+              format="reference"/>
         <!-- Style of the tab indicator's tabs. -->
-        <attr name="vpiTabPageIndicatorStyle" format="reference"/>
+        <attr name="vpiTabPageIndicatorStyle"
+              format="reference"/>
     </declare-styleable>
-
-    <attr name="centered" format="boolean" />
-    <attr name="selectedColor" format="color" />
-    <attr name="strokeWidth" format="dimension" />
-    <attr name="unselectedColor" format="color" />
     
+    <attr name="centered"
+          format="boolean"/>
+    <attr name="selectedColor"
+          format="color"/>
+    <attr name="strokeWidth"
+          format="dimension"/>
+    <attr name="unselectedColor"
+          format="color"/>
+
 </resources>

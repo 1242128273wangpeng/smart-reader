@@ -197,7 +197,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
             }
 
             //先这样实现吧...
-            if(activity.get() is ReadingActivity){
+            if (activity.get() is ReadingActivity) {
                 (activity.get() as ReadingActivity).showMenu(false)
             }
 
@@ -228,9 +228,9 @@ class ReadOptionPresenter : ReadOption.Presenter {
             return 0
         }
         if (!mBookDaoHelper.isBookMarkExist(readStatus.book_id, readStatus.sequence, readStatus.offset, type)) {
-            var logMap = HashMap<String,String>()
-            logMap.put("type","1")
-            StartLogClickUtil.upLoadEventLog(activity.get(),StartLogClickUtil.READPAGEMORE_PAGE,StartLogClickUtil.BOOKMARKEDIT,logMap)
+            var logMap = HashMap<String, String>()
+            logMap.put("type", "1")
+            StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.BOOKMARKEDIT, logMap)
 
             if (!mBookDaoHelper.isBookSubed(readStatus.book_id)) {
                 if (!mBookDaoHelper.insertBook(readStatus.book)) {
@@ -286,9 +286,9 @@ class ReadOptionPresenter : ReadOption.Presenter {
 
             return 1
         } else {
-            var logMap = HashMap<String,String>()
-            logMap.put("type","2")
-            StartLogClickUtil.upLoadEventLog(activity.get(),StartLogClickUtil.READPAGEMORE_PAGE,StartLogClickUtil.BOOKMARKEDIT,logMap)
+            var logMap = HashMap<String, String>()
+            logMap.put("type", "2")
+            StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.BOOKMARKEDIT, logMap)
             mBookDaoHelper.deleteBookMark(readStatus.book_id, readStatus.sequence, readStatus.offset, type)
 
             return 2
@@ -296,7 +296,8 @@ class ReadOptionPresenter : ReadOption.Presenter {
         }
     }
 
-    @Synchronized fun getPageContent(): List<String> {
+    @Synchronized
+    fun getPageContent(): List<String> {
         if (readStatus.mLineList == null) {
             return listOf()
         }
@@ -335,9 +336,9 @@ class ReadOptionPresenter : ReadOption.Presenter {
     }
 
     override fun bookInfo() {
-        StartLogClickUtil.upLoadEventLog(activity.get(),StartLogClickUtil.READPAGEMORE_PAGE,StartLogClickUtil.BOOKDETAIL)
+        StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.BOOKDETAIL)
         //先这样实现吧...
-        if(activity.get() is ReadingActivity){
+        if (activity.get() is ReadingActivity) {
             (activity.get() as ReadingActivity).showMenu(false)
         }
         val intent = Intent(activity.get(), CoverPageActivity::class.java)
@@ -382,7 +383,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
     override fun back() {
 
         //先这样实现吧...
-        if(activity.get() is ReadingActivity){
+        if (activity.get() is ReadingActivity) {
             (activity.get() as ReadingActivity).goBackToHome()
         }
 

@@ -36,7 +36,7 @@ class CatalogMarkPresenter(val readStatus: ReadStatus) : CatalogMark.Presenter {
         requestItem = RequestItem.fromBook(readStatus.book)
     }
 
-    override fun getBook(): Book{
+    override fun getBook(): Book {
         return readStatus.book
     }
 
@@ -54,14 +54,14 @@ class CatalogMarkPresenter(val readStatus: ReadStatus) : CatalogMark.Presenter {
                 if (Constants.SG_SOURCE.equals(requestItem.host)) {
                     emitter?.onError(Exception("error"))
                 } else {
-                    if(Constants.QG_SOURCE.equals(requestItem.host)){
+                    if (Constants.QG_SOURCE.equals(requestItem.host)) {
                         var chapters: ArrayList<com.quduquxie.bean.Chapter>? = null
                         try {
                             val udid = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())
                             chapters = DataService.getChapterList(RequestExecutorDefault.mContext, requestItem.book_id, 1, Integer.MAX_VALUE - 1, udid)
                             val list = BeanParser.buildOWNChapterList(chapters, 0, chapters!!.size)
                             if (list != null && list.size > 0) {
-                               emitter?.onNext(list)
+                                emitter?.onNext(list)
                             } else {
                                 emitter?.onError(Exception("error"))
                             }
@@ -69,7 +69,7 @@ class CatalogMarkPresenter(val readStatus: ReadStatus) : CatalogMark.Presenter {
                             e.printStackTrace()
                         }
 
-                    }else {
+                    } else {
                         NetOwnBook.requestOwnCatalogList(readStatus.book).subscribekt(
                                 onNext = { t ->
                                     emitter?.onNext(t)
@@ -139,7 +139,7 @@ class CatalogMarkPresenter(val readStatus: ReadStatus) : CatalogMark.Presenter {
 
     }
 
-    override fun gotoBookMark(activity:Activity, mark: Bookmark) {
+    override fun gotoBookMark(activity: Activity, mark: Bookmark) {
         var bundle = Bundle()
         bundle.putInt("sequence", mark.sequence)
         bundle.putInt("offset", mark.offset)

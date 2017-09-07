@@ -46,6 +46,8 @@ import java.util.List;
  */
 public class PageView extends View implements PageInterface {
     private static final String TAG = "PageView";
+    private static final int kMoveThresholdDP = 5;
+    private static final int kTurnThresholdDP = 10;
     private Context mContext;
     private Activity mActivity;
     private CallBack callBack;
@@ -53,10 +55,6 @@ public class PageView extends View implements PageInterface {
     private BitmapManager myBitmapManager;
     private Canvas mCurPageCanvas;
     private Canvas mNextPageCanvas;
-
-    private static final int kMoveThresholdDP = 5;
-    private static final int kTurnThresholdDP = 10;
-
     private int pageWidth, pageHeight;
 
     private int moveThreshold;
@@ -78,6 +76,28 @@ public class PageView extends View implements PageInterface {
 
     private StatisticManager statisticManager;
     private int count;//用户首次进入后进行标识（打点用）  会执行两次的drawCurrentPage 和 drawNextPage（原因待查）
+
+    //动画为执行完时, 不接受触摸
+    private boolean mTouchable = true;
+    private String timeText;
+    private List<String> currentPageContent;
+    private List<String> nextPageContent;
+    private long endTime;
+    private int touchStartX;
+    private int touchStartY;
+    private MotionState motionState = MotionState.kNone;
+    private MotionState initMoveState = MotionState.kNone;
+    private MotionState validMoveState = MotionState.kNone;
+    private int currentMoveStateStartX;
+    private int currentMoveStateLastX;
+    private boolean isMoveing = false;
+    private Rect rect = new Rect();
+    private Rect rectDown = new Rect();
+    private boolean cancelState = false;
+    private boolean canRestore = false;
+    private AutoReadImpl autoReadImpl;
+    private int tempPageMode = AnimationProvider.SHIFT_MODE;
+    private PowerManager.WakeLock mWakeLock;
 
     public PageView(Context context) {
         super(context);
@@ -104,7 +124,7 @@ public class PageView extends View implements PageInterface {
         PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "auto read");
         readStatus.startReadTime = System.currentTimeMillis();
-        AppLog.e("jjj",readStatus.toString());
+        AppLog.e("jjj", readStatus.toString());
         this.readStatus = readStatus;
         this.novelHelper = novelHelper;
 
@@ -169,8 +189,6 @@ public class PageView extends View implements PageInterface {
 
     }
 
-    private String timeText;
-
     public void freshTime(CharSequence time) {
         if (time != null && time.length() > 0) {
             drawTextHelper.setTimeText(time.toString());
@@ -201,8 +219,8 @@ public class PageView extends View implements PageInterface {
     public void drawNextPage() {
         nextPageContent = pageLines = novelHelper.getPageContent();
         drawTextHelper.drawText(mNextPageCanvas, pageLines, mActivity);
-        if(count==1){
-            readStatus.lastSequenceRemark = readStatus.sequence+1;
+        if (count == 1) {
+            readStatus.lastSequenceRemark = readStatus.sequence + 1;
             readStatus.lastCurrentPageRemark = readStatus.currentPage;
             readStatus.lastPageCount = readStatus.pageCount;
             isFirstCome = false;
@@ -210,10 +228,6 @@ public class PageView extends View implements PageInterface {
         count++;
         postInvalidate();
     }
-
-    private List<String> currentPageContent;
-    private List<String> nextPageContent;
-    private long endTime;
 
     /**
      * 画当前页内容
@@ -275,6 +289,9 @@ public class PageView extends View implements PageInterface {
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
+        if (!mTouchable)
+            return false;
+
         if (callBack != null && readStatus != null && readStatus.isMenuShow) {
             callBack.onShowMenu(false);
             return false;
@@ -286,18 +303,9 @@ public class PageView extends View implements PageInterface {
 
     }
 
-    private enum MotionState {
-        kWaiting, kMoveToLeft, kMoveToRight, kNone,
+    public void setTouchable(boolean b) {
+        mTouchable = b;
     }
-
-    private int touchStartX;
-    private int touchStartY;
-    private MotionState motionState = MotionState.kNone;
-    private MotionState initMoveState = MotionState.kNone;
-    private MotionState validMoveState = MotionState.kNone;
-    private int currentMoveStateStartX;
-    private int currentMoveStateLastX;
-    private boolean isMoveing = false;
 
     private boolean onTouchEventSlide(MotionEvent event) {
         int tmpX = getStartPoint(event);
@@ -405,8 +413,12 @@ public class PageView extends View implements PageInterface {
         } else {
             if (initMoveState == validMoveState && provider != null) {
                 if (MotionState.kMoveToRight == validMoveState) {
+//                    float v = (event.getX() - touchStartX) / getWidth();
+//                    provider.startTurnAnimation(v < 0.3F);
                     provider.startTurnAnimation(false);
                 } else {
+//                    float v = (touchStartX - event.getX()) / getWidth();
+//                    provider.startTurnAnimation(v > 0.3F);
                     provider.startTurnAnimation(true);
                 }
             } else if (provider != null) {
@@ -416,9 +428,6 @@ public class PageView extends View implements PageInterface {
         motionState = MotionState.kNone;
         return true;
     }
-
-    private Rect rect = new Rect();
-    private Rect rectDown = new Rect();
 
     private void onClick(MotionEvent event) {
         int x = (int) event.getX();
@@ -431,7 +440,7 @@ public class PageView extends View implements PageInterface {
                 ToastUtils.showToastNoRepeat("AdOnclick");
             }
         } else {
-            if(!Constants.FULL_SCREEN_READ) {
+            if (!Constants.FULL_SCREEN_READ) {
                 if (x <= w3) {
                     tryTurnPrePage();
                 } else if (x >= pageWidth - w3 || (y >= pageHeight - h4 && x >= w3)) {
@@ -442,10 +451,10 @@ public class PageView extends View implements PageInterface {
                         callBack.onShowMenu(true);
                     }
                 }
-            }else{
-                if(x<=w3 || x >= pageWidth - w3 || (y >= pageHeight - h4 && x >= w3)){
+            } else {
+                if (x <= w3 || x >= pageWidth - w3 || (y >= pageHeight - h4 && x >= w3)) {
                     tryTurnNextPage(event);
-                }else{
+                } else {
                     if (callBack != null) {
                         callBack.onShowMenu(true);
                     }
@@ -669,30 +678,27 @@ public class PageView extends View implements PageInterface {
         }
     }
 
-
-    public void addLog(long endTime){
+    public void addLog(long endTime) {
         //判断章节的最后一页
-        if(readStatus.sequence+1>readStatus.lastSequenceRemark&&!isFirstCome){
+        if (readStatus.sequence + 1 > readStatus.lastSequenceRemark && !isFirstCome) {
             //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
-            StartLogClickUtil.upLoadReadContent(readStatus.book_id,readStatus.lastSequenceRemark+"",readStatus.source_ids,readStatus.lastPageCount+"",
-                    readStatus.lastCurrentPageRemark+"",readStatus.currentPageConentLength+"",readStatus.requestItem.fromType+"",
-                    readStatus.startReadTime+"",endTime+"",endTime-readStatus.startReadTime+"","false",readStatus.requestItem.channel_code+"");
-        }else{
+            StartLogClickUtil.upLoadReadContent(readStatus.book_id, readStatus.lastSequenceRemark + "", readStatus.source_ids, readStatus.lastPageCount + "",
+                    readStatus.lastCurrentPageRemark + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
+                    readStatus.startReadTime + "", endTime + "", endTime - readStatus.startReadTime + "", "false", readStatus.requestItem.channel_code + "");
+        } else {
             //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
-            StartLogClickUtil.upLoadReadContent(readStatus.book_id,readStatus.sequence+1+"",readStatus.source_ids,readStatus.pageCount+"",
-                    readStatus.currentPage-1+"",readStatus.currentPageConentLength+"",readStatus.requestItem.fromType+"",
-                    readStatus.startReadTime+"",endTime+"",endTime-readStatus.startReadTime+"","false",readStatus.requestItem.channel_code+"");
+            StartLogClickUtil.upLoadReadContent(readStatus.book_id, readStatus.sequence + 1 + "", readStatus.source_ids, readStatus.pageCount + "",
+                    readStatus.currentPage - 1 + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
+                    readStatus.startReadTime + "", endTime + "", endTime - readStatus.startReadTime + "", "false", readStatus.requestItem.channel_code + "");
         }
 
         readStatus.startReadTime = endTime;
-        readStatus.requestItem.fromType =2;
-        readStatus.lastSequenceRemark = readStatus.sequence+1;
+        readStatus.requestItem.fromType = 2;
+        readStatus.lastSequenceRemark = readStatus.sequence + 1;
         readStatus.lastCurrentPageRemark = readStatus.currentPage;
         readStatus.lastPageCount = readStatus.pageCount;
         isFirstCome = false;
     }
-    private boolean cancelState = false;
-    private boolean canRestore = false;
 
     private void updateMoveState(int currentX) {
         if (MotionState.kMoveToRight == motionState) {
@@ -781,6 +787,7 @@ public class PageView extends View implements PageInterface {
     }
 
     public void onAnimationFinish() {
+        mTouchable = true;
         if (cancelState && callBack != null) {
             callBack.onCancelPage();
         }
@@ -845,10 +852,6 @@ public class PageView extends View implements PageInterface {
         }
         System.gc();
     }
-
-    private AutoReadImpl autoReadImpl;
-    private int tempPageMode = AnimationProvider.SHIFT_MODE;
-    private PowerManager.WakeLock mWakeLock;
 
     public boolean isAutoReadMode() {
         return autoReadImpl != null;
@@ -936,6 +939,73 @@ public class PageView extends View implements PageInterface {
         if (null != autoReadImpl) {
             autoReadImpl.pause();
         }
+    }
+
+    @Override
+    public void getChapter(boolean needSavePage) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void getPreChapter() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void getNextChapter() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void setFirstPage(boolean firstPage) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void setisAutoMenuShowing(boolean isShowing) {
+        isAutoMenuShowing = isShowing;
+
+    }
+
+    @Override
+    public boolean setKeyEvent(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP) {
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            } else if (event.getAction() == KeyEvent.ACTION_UP) {
+                tryTurnPrePage();
+            }
+            return true;
+        }
+        if (event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            } else if (event.getAction() == KeyEvent.ACTION_UP) {
+                tryTurnNextPage(null);
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void loadNatvieAd() {
+        drawTextHelper.loadNatvieAd();
+    }
+
+    @Override
+    public Novel getCurrentNovel() {
+        if (dataFactory != null) {
+            return dataFactory.transformation();
+        }
+        return null;
+    }
+
+    private enum MotionState {
+        kWaiting, kMoveToLeft, kMoveToRight, kNone,
     }
 
     private class AutoReadImpl {
@@ -1114,69 +1184,5 @@ public class PageView extends View implements PageInterface {
 
             return true;
         }
-    }
-
-
-    @Override
-    public void getChapter(boolean needSavePage) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void getPreChapter() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void getNextChapter() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setFirstPage(boolean firstPage) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setisAutoMenuShowing(boolean isShowing) {
-        isAutoMenuShowing = isShowing;
-
-    }
-
-    @Override
-    public boolean setKeyEvent(KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP) {
-            if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            } else if (event.getAction() == KeyEvent.ACTION_UP) {
-                tryTurnPrePage();
-            }
-            return true;
-        }
-        if (event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_DOWN) {
-            if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            } else if (event.getAction() == KeyEvent.ACTION_UP) {
-                tryTurnNextPage(null);
-            }
-            return true;
-        }
-
-        return false;
-    }
-
-    @Override
-    public void loadNatvieAd() {
-        drawTextHelper.loadNatvieAd();
-    }
-
-    @Override
-    public Novel getCurrentNovel() {
-        if (dataFactory != null) {
-            return dataFactory.transformation();
-        }
-        return null;
     }
 }

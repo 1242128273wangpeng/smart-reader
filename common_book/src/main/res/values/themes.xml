@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-
+    
     <style name="AppTheme"
            parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/theme_primary</item>
@@ -11,11 +11,13 @@
         <!--<item name="colorAccent">@color/md_red_400</item>-->
         <item name="android:windowBackground">@color/window_background</item>
     </style>
-
-    <style name="Theme.DesignDemo" parent="Base.Theme.DesignDemo">
+    
+    <style name="Theme.DesignDemo"
+           parent="Base.Theme.DesignDemo">
     </style>
-
-    <style name="Base.Theme.DesignDemo" parent="Theme.AppCompat.Light.NoActionBar">
+    
+    <style name="Base.Theme.DesignDemo"
+           parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/theme_primary</item>
         <item name="colorPrimaryDark">@color/theme_primary_dark</item>
         <item name="colorAccent">@color/theme_primary</item>
@@ -25,10 +27,12 @@
         <!--<item name="windowNoTitle">true</item>-->
     </style>
     <!-- reading activity -->
-    <style name="Theme.DesignDemo.Read" parent="Base.Theme.DesignDemo">
+    <style name="Theme.DesignDemo.Read"
+           parent="Base.Theme.DesignDemo">
         <item name="colorPrimary">@color/color_black_101010</item>
         <item name="colorPrimaryDark">@color/color_black_101010</item>
     </style>
-
-    <style name="Read.Theme" parent="android:Theme.NoTitleBar"/>
+    
+    <style name="Read.Theme"
+           parent="android:Theme.NoTitleBar"/>
 </resources>

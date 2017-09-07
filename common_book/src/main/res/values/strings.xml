@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    
     <string name="setting_offline_download_config_key">offline_download_config_key</string>
     <string name="setting_offline_download_updateapk_key">offline_download_updateapk_key</string>
     <string name="setting_offline_download_advise_key">offline_download_advise_key</string>
@@ -17,20 +17,20 @@
     <string name="check_update">当前版本</string>
     <string name="market_go">去评分</string>
     <string name="about">关于</string>
-
-
+    
+    
     <string name="search_title_text">输入书名、作者或关键词</string>
     <string name="publish_confirm_hint">提示</string>
     <string name="publish_leave_detail">离开将丢失已输入的内容,您是否确定要离开?</string>
     <string name="title_book_cover">书籍封面</string>
     <string name="book_no_data_tips">书架空空如也~去书城看看吧</string>
-
+    
     <string name="switch_on"/>
     <string name="switch_off"/>
     <string name="action_settings">Settings</string>
     <string name="title_activity_act_book_cover">ActBookCover</string>
     <string name="title_activity_act_book_over">ActBookOver</string>
-
+    
     <string name="net_error">网络异常，请检查网络</string>
     <!-- cover -->
     <string name="state_writting">-连载中</string>
@@ -56,7 +56,7 @@
     <string name="reading_cache">缓存方式</string>
     <string name="reading_all_down">全部缓存</string>
     <string name="reading_current_down">从当前章缓存</string>
-
+    
     <string name="err_book_cant_read">抱歉，本书原网站存在问题，无法阅读</string>
     <string name="change_source_tips">当前章节内容存在问题，已为您进行智能切源操作</string>
     <string name="jump_next_chapter">跳过此章</string>
@@ -85,10 +85,10 @@
     <string name="state_paused">已暂停：</string>
     <string name="state_download_failed">缓存失败：</string>
     <string name="state_locked">锁定：</string>
-
+    
     <!-- setting -->
     <string name="setting_push_sound">推送声音</string>
-
+    
     <!-- 书架页 -->
     <string name="main_nftmgr_id">小说离线缓存</string>
     <string name="main_update_no_new">您追看的小说暂无更新</string>
@@ -119,19 +119,19 @@
     <string name="update_notify_and">等</string>
     <string name="update_book_count_new">本书更新了</string>
     <string name="no_resource">暂时找不到此本书的资源</string>
-
-
+    
+    
     <string name="menu_feedback">帮助与反馈</string>
     <string name="menu_no_market">未找到本地应用市场</string>
-
+    
     <string name="app_update">更新</string>
     <string name="game_network_none">网络不给力，请检查网络连接</string>
-
-
+    
+    
     <string name="over_index_text1">你已经全部读完啦！\n接下来要不要看看其他有意思的...</string>
     <string name="over_index_text2">接下来要不要看看其他有意思的...</string>
     <string name="book_end_info"><Data><![CDATA[当前章节已全部看完，去看看其它是否有<font color="#ed5b47"><b>更新</b></font>吧!]]></Data></string>
-
+    
     <string name="title_name_setting">设置</string>
     <string name="tv_push_time_tips_setting">分时间段推送</string>
     <string name="tv_push_time_default_setting">全天推送</string>
@@ -141,23 +141,23 @@
     <string name="search_click_check_isright">请看看输入文字是否有误</string>
     <string name="search_sub_success">成功添加到书架！</string>
     <string name="search_sub_remove_success">成功从书架中移除！</string>
-
+    
     <string name="book_last_chapter_nama_local_no">该书籍还未智能分章</string>
     <string name="auto_download_wifi">wifi下自动缓存</string>
-
+    
     <string name="bookshelf_sort_sequence">书架排序</string>
     <string name="tv_sort_sequence_time">书架按阅读时间排序</string>
     <string name="tv_sort_update_time">书架按更新时间排序</string>
     <!--<string name="book_item_text">&lt;font color=\"#FF6633\">未读%1$d&lt;/font>/%2$d</string>-->
     <string name="book_item_text">&lt;font>未读%1$d&lt;/font>/%2$d</string>
-
+    
     <string name="download_app_nofify_ticker">版本更新中</string>
     <string name="download_app_nofify_title">正在缓存...</string>
     <string name="download_app_nofify_finish_title">点击安装</string>
     <string name="download_app_nofify_finish_content">版本更新</string>
     <string name="download_app_nofify_ticker_error">版本更新失败</string>
     <string name="download_app_nofify_info_error">缓存出错</string>
-
+    
     <string name="search_finish_book">全部书籍</string>
     <string name="search_finish_select_book">筛选完结</string>
     <string name="text_mine">我的</string>
@@ -177,8 +177,8 @@
     <string name="determine_delete_book_cache">删除后，缓存内容将被清空。\n你确定要继续吗？</string>
     <string name="determine_clear_serach_history">你确定要清除所有搜索历史吗？</string>
     <string name="determine_clear_footprint_history">确定要清空你的浏览足迹吗？</string>
-
-
+    
+    
     <string name="feedback_problem">我遇到的问题（可选）</string>
     <string name="feedback_first_problem">书籍无法阅读</string>
     <string name="feedback_second_problem">内容章节出错</string>
@@ -191,25 +191,25 @@
     <string name="feedback_sending">发送中...</string>
     <string name="feedback_send">发送成功</string>
     <string name="feedback_send_fail">发送失败</string>
-
+    
     <string name="umeng_comm_send">发送</string>
     <string name="umeng_comm_desc">contentDescription</string>
-
+    
     <string name="read_auto">自动阅读</string>
      <string name="download_manage">缓存管理</string> 
     <string name="bookshelf_manage">书架管理</string>
-
+    
     <string name="translate_code_description">
         <!--转码声明 \n-->
         "      "由于目前绝大多数WAP网页不能被智能移动终端正常浏览，因此，为提升用户体验，本软件有必要对WAP网页进行格式转换。\n
         "      "转码后您浏览的页面内容仍系来源于第三方，本软件不保证被链接内容的安全性、合法性，同时在转码过程中本软件不会对第三方网站内容做任何实质性修改或编辑。\n
         "      "如您希望以传统方式查看网页内容或转码页面存在问题，请您直接点击本软件提示的来源地址访问原网站。本软件不保证被链接内容的安全性、合法性，您可以直接访问第三方网页获取相应的信息内容。\n
     </string>
-
+    
     <string name="translate_code_read">
         您将查看的本小说内容由第三方网站提供，本软件仅提供技术转码服务，以便给您更好的阅读体验，您也可根据页面指引直接浏览原网页。
     </string>
-
+    
     <string name="notice_user_letter">致用户的一封信</string>
     <string name="notice_user_content"
             formatted="false">
@@ -238,4 +238,22 @@
     <item name="tag_canvas"
           type="id"/>
     <!--<string name="enter_community">讨论区升级中，敬请期待！</string>-->
+    <!-- 主题名 -->
+    <string name="theme_nxh">暖心红</string>
+    <string name="theme_jmh">静默黑</string>
+    <string name="theme_msh">末世灰</string>
+    <string name="theme_hyl">海洋蓝</string>
+    <string name="theme_hlc">活力橙</string>
+    <string name="theme_ydh">有点黄</string>
+    <string name="theme_zzh">至尊红</string>
+    <string name="theme_gqh">钢琴黑</string>
+    <string name="theme_xxl">修仙蓝</string>
+    <string name="theme_jwh">绝望灰</string>
+    <string name="style_change_1">主题1</string>
+    <string name="style_change_2">主题2</string>
+    <string name="style_change_3">主题3</string>
+    <string name="style_change_4">主题4</string>
+    <string name="theme_night"></string>
+    <string name="mode_day">日间模式</string>
+    <string name="mode_night">夜间模式</string>
 </resources>

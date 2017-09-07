@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <style name="Theme.Start" parent="@style/Theme1">
+    
+    <style name="Theme.Start"
+           parent="@style/AppTheme">
         <item name="android:windowBackground">@drawable/splash_icons</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowNoTitle">true</item>
     </style>
-    
+
 </resources>

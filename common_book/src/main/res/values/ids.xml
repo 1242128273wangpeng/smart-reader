@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- PullToRefreshGridview-->
-    <item type="id" name="gridview" />
-
-    <item name="tag_first" type="id"/>
-    <item name="tag_second" type="id"/>
-    <item name="selected_view" type="id"/>
-    <item type="id" name="expandable_text"/>
-    <item type="id" name="expand_collapse"/>
-    <item type="id" name="footprint_login_hint2"/>
-    <item type="id" name="footprint_item_desc"/>
+    <item type="id"
+          name="gridview"/>
+    
+    <item name="tag_first"
+          type="id"/>
+    <item name="tag_second"
+          type="id"/>
+    <item name="selected_view"
+          type="id"/>
+    <item type="id"
+          name="expandable_text"/>
+    <item type="id"
+          name="expand_collapse"/>
+    <item type="id"
+          name="footprint_login_hint2"/>
+    <item type="id"
+          name="footprint_item_desc"/>
 
 </resources>

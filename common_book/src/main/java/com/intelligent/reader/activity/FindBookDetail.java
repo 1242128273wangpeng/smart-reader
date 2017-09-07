@@ -37,6 +37,7 @@ import iyouqu.theme.FrameActivity;
 public class FindBookDetail extends FrameActivity implements View.OnClickListener {
 
     private static String TAG = FindBookDetail.class.getSimpleName();
+    String rankType;
     private RelativeLayout find_book_detail_main;
     private ImageView find_book_detail_back;
     //    private ImageView bangdan_pull;
@@ -55,7 +56,6 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     private WebView find_detail_content;
     private String currentUrl;
     private String currentTitle;
-    String rankType;
     private ArrayList<String> urls;
     private ArrayList<String> names;
     private int backClickCount;
@@ -155,7 +155,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         switch (view.getId()) {
             case R.id.find_book_detail_back:
                 Map<String, String> data = new HashMap<>();
-                data.put("type","1");
+                data.put("type", "1");
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
                 clickBackBtn();
                 break;

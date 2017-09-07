@@ -1,15 +1,14 @@
 package com.intelligent.reader.read.page;
 
-import android.app.Activity;
-import android.view.KeyEvent;
-
 import com.dingyueads.sdk.Bean.Novel;
-
-import net.lzbook.kit.data.bean.ReadStatus;
-
 import com.intelligent.reader.read.help.CallBack;
 import com.intelligent.reader.read.help.IReadDataFactory;
 import com.intelligent.reader.read.help.NovelHelper;
+
+import net.lzbook.kit.data.bean.ReadStatus;
+
+import android.app.Activity;
+import android.view.KeyEvent;
 
 public interface PageInterface {
 

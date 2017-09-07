@@ -15,7 +15,7 @@ interface ReadOption {
 
         fun cache()
         fun changeSource()
-        fun bookMark():Int
+        fun bookMark(): Int
         fun bookInfo()
         fun back()
 
@@ -27,9 +27,9 @@ interface ReadOption {
 
     interface View : IBaseView<Presenter> {
 
-        fun setBookSource(source:String)
-        fun setBookMarkImg(@IdRes id:Int)
+        fun setBookSource(source: String)
+        fun setBookMarkImg(@IdRes id: Int)
         fun updateStatus(readStatus: ReadStatus, dataFactory: IReadDataFactory, bookDaoHelper: BookDaoHelper)
-        fun show(flag:Boolean)
+        fun show(flag: Boolean)
     }
 }

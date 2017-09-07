@@ -1,154 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_notify_cache"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/dimen_margin_7"
-    android:paddingTop="@dimen/dimen_view_width_13">
-
-    <LinearLayout
-        android:layout_width="match_parent"
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layout_notify_cache"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-
-        android:orientation="horizontal"
-        android:paddingBottom="5dp">
-
-        <ImageView
-            android:id="@+id/notify_icon_iv"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentLeft="true"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
-            android:background="@drawable/icon"
-            android:contentDescription="@string/app_name"
-            android:scaleType="center" />
-
-        <RelativeLayout
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/dimen_margin_7"
+        android:paddingTop="@dimen/dimen_view_width_13">
+    
+    <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp">
-
-            <TextView
-
-                android:id="@+id/notify_txt_gotolook"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="21dp"
-                android:layout_marginRight="21dp"
-                android:background="@drawable/notify_white_circle_bg"
-                android:padding="7dp"
-                android:text="去看书"
-                android:textSize="14sp"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/notify_button_reset"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="21dp"
-                android:layout_marginRight="21dp"
-                android:background="@drawable/notify_white_circle_bg"
-                android:padding="7dp"
-                android:text="重试"
-                android:textSize="14sp"
-                android:visibility="gone" />
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            
+            android:orientation="horizontal"
+            android:paddingBottom="5dp">
+        
+        <ImageView
+                android:id="@+id/notify_icon_iv"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_alignParentLeft="true"
-                android:layout_toLeftOf="@+id/notify_txt_gotolook">
-
-                <TextView
-                    android:id="@+id/notify_title_tv"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/icon"
+                android:contentDescription="@string/app_name"
+                android:scaleType="center"/>
+        
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+            
+            <TextView
+                    
+                    android:id="@+id/notify_txt_gotolook"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginLeft="10.0dip"
-                    android:gravity="center"
-                    android:text="大主宰"
-                    android:textSize="14sp" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="21dp"
+                    android:layout_marginRight="21dp"
+                    android:background="@drawable/notify_white_circle_bg"
+                    android:padding="7dp"
+                    android:text="去看书"
+                    android:textSize="14sp"
+                    android:visibility="gone"/>
+            
+            <TextView
+                    android:id="@+id/notify_button_reset"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_below="@+id/notify_title_tv">
-
-                    <TextView
-                        android:id="@+id/notify_txt_complete"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentLeft="true"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginLeft="10dp"
-                        android:gravity="bottom"
-                        android:text="缓存完成"
-                        android:textSize="12sp"
-                        android:visibility="gone" />
-
-                    <TextView
-                        android:id="@+id/notify_txt_reset"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentLeft="true"
-                        android:layout_marginLeft="10dp"
-                        android:gravity="bottom"
-                        android:text="网络中断，请重试"
-                        android:textSize="12sp"
-                        android:visibility="gone" />
-
-                    <TextView
-                        android:id="@+id/notify_text_progress"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="21dp"
+                    android:layout_marginRight="21dp"
+                    android:background="@drawable/notify_white_circle_bg"
+                    android:padding="7dp"
+                    android:text="重试"
+                    android:textSize="14sp"
+                    android:visibility="gone"/>
+            
+            <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/notify_txt_gotolook">
+                
+                <TextView
+                        android:id="@+id/notify_title_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginRight="10.0dip"
-                        android:ellipsize="end"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="10.0dip"
                         android:gravity="center"
-                        android:text=""
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/notify_text_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/notify_title_tv"
-                        android:layout_marginLeft="10dp"
-                        android:text="文件解析中..."
-                        android:textSize="12sp" />
-
-                    <ProgressBar
-                        android:id="@+id/notify_progress"
-                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                        android:text="大主宰"
+                        android:textSize="14sp"/>
+                
+                <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_toLeftOf="@+id/notify_text_progress"
-                        android:visibility="visible" />
-
+                        android:layout_below="@+id/notify_title_tv">
+                    
+                    <TextView
+                            android:id="@+id/notify_txt_complete"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginLeft="10dp"
+                            android:gravity="bottom"
+                            android:text="缓存完成"
+                            android:textSize="12sp"
+                            android:visibility="gone"/>
+                    
+                    <TextView
+                            android:id="@+id/notify_txt_reset"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginLeft="10dp"
+                            android:gravity="bottom"
+                            android:text="网络中断，请重试"
+                            android:textSize="12sp"
+                            android:visibility="gone"/>
+                    
+                    <TextView
+                            android:id="@+id/notify_text_progress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginRight="10.0dip"
+                            android:ellipsize="end"
+                            android:gravity="center"
+                            android:text=""
+                            android:textSize="14sp"/>
+                    
+                    <TextView
+                            android:id="@+id/notify_text_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/notify_title_tv"
+                            android:layout_marginLeft="10dp"
+                            android:text="文件解析中..."
+                            android:textSize="12sp"/>
+                    
+                    <ProgressBar
+                            android:id="@+id/notify_progress"
+                            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_toLeftOf="@+id/notify_text_progress"
+                            android:visibility="visible"/>
+                
                 </RelativeLayout>
-
+            
             </RelativeLayout>
         </RelativeLayout>
     </LinearLayout>
-
+    
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:background="@color/color_gray_616161" />
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@color/color_gray_616161"/>
 </LinearLayout>

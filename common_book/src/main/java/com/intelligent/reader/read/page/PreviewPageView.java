@@ -73,6 +73,22 @@ public class PreviewPageView extends SurfaceView implements SurfaceHolder.Callba
         super(context, attrs);
     }
 
+    private static Bitmap resizeBitmap(Bitmap bitmap, int w, int h) {
+        if (bitmap != null) {
+            float scaleWidth = ((float) w) / bitmap.getWidth();
+            float scaleHeight = ((float) h) / bitmap.getHeight();
+            Matrix matrix = new Matrix();
+            matrix.postScale(scaleWidth, scaleHeight);
+            Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            if (resizedBitmap != bitmap) {
+                bitmap.recycle();
+            }
+            return resizedBitmap;
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         drawPreview();
@@ -234,22 +250,6 @@ public class PreviewPageView extends SurfaceView implements SurfaceHolder.Callba
 
     }
 
-    private static Bitmap resizeBitmap(Bitmap bitmap, int w, int h) {
-        if (bitmap != null) {
-            float scaleWidth = ((float) w) / bitmap.getWidth();
-            float scaleHeight = ((float) h) / bitmap.getHeight();
-            Matrix matrix = new Matrix();
-            matrix.postScale(scaleWidth, scaleHeight);
-            Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-            if (resizedBitmap != bitmap) {
-                bitmap.recycle();
-            }
-            return resizedBitmap;
-        } else {
-            return null;
-        }
-    }
-
     public Paint setPaintColor(Paint paint, int type) {
 
         int color_int = R.color.reading_bg_day_other;
@@ -295,7 +295,7 @@ public class PreviewPageView extends SurfaceView implements SurfaceHolder.Callba
             } else {
                 color_int = R.color.reading_text_color_night;
             }
-        }else{
+        } else {
             if (type == 0) {
                 color_int = R.color.reading_backdrop_first;
             } else {

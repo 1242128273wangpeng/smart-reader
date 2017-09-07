@@ -1,4 +1,4 @@
-package cn.txtzsydsq.reader.wxapi
+package cc.kdqbxs.reader.wxapi
 
 import android.app.Activity
 import android.content.Intent
@@ -8,7 +8,7 @@ import net.lzbook.kit.user.UserManager
 /**
  * Created by xian on 2017/6/20.
  */
-class WXEntryActivity:Activity() {
+class WXEntryActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         println("WXEntryActivity onCreate")

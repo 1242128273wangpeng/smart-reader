@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_switch_mode"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.intelligent.reader.activity.SwitchModeActivity">
-
-    <ImageView
-        android:id="@+id/switch_mode_night"
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_switch_mode"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitXY"
-        android:src="@drawable/switch_mode_night"
-        android:visibility="gone"/>
+        tools:context="com.intelligent.reader.activity.SwitchModeActivity">
+    
     <ImageView
-        android:id="@+id/switch_mode_light"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="fitXY"
-        android:src="@drawable/switch_mode_light"
-        android:visibility="gone"/>
+            android:id="@+id/switch_mode_night"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/switch_mode_night"
+            android:visibility="gone"/>
+    
+    <ImageView
+            android:id="@+id/switch_mode_light"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/switch_mode_light"
+            android:visibility="gone"/>
 </RelativeLayout>

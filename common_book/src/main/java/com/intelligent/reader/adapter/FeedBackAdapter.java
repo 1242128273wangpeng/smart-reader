@@ -1,5 +1,8 @@
 package com.intelligent.reader.adapter;
 
+import com.intelligent.reader.R;
+import com.umeng.fb.model.Reply;
+
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
@@ -14,8 +17,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.umeng.fb.model.Reply;
-
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,11 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.intelligent.reader.R;
 
-
-
-public class FeedBackAdapter extends RecyclerView.Adapter<FeedBackAdapter.ViewHolder>{
+public class FeedBackAdapter extends RecyclerView.Adapter<FeedBackAdapter.ViewHolder> {
 
     private static final String TAG = FeedBackAdapter.class.getSimpleName();
 
@@ -49,7 +47,7 @@ public class FeedBackAdapter extends RecyclerView.Adapter<FeedBackAdapter.ViewHo
     private Drawable icon_close_answer;
 
     public FeedBackAdapter(Context context, List<Reply> replies) {
-        this.weakReference  = new WeakReference<>(context);
+        this.weakReference = new WeakReference<>(context);
         this.replies = replies;
         icon_open_answer = weakReference.get().getResources().getDrawable(R.drawable.icon_open_answer);
         icon_close_answer = weakReference.get().getResources().getDrawable(R.drawable.icon_close_answer);
@@ -75,7 +73,7 @@ public class FeedBackAdapter extends RecyclerView.Adapter<FeedBackAdapter.ViewHo
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         Reply reply = replies.get(position);
-        if(reply == null) {
+        if (reply == null) {
             return;
         }
 
@@ -348,30 +346,28 @@ public class FeedBackAdapter extends RecyclerView.Adapter<FeedBackAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        public ImageView reply_image;
+        public TextView reply_content;
+        public ImageView reply_failed;
+        public TextView reply_data;
         private RelativeLayout help_first_problem;
         private ImageView help_first_problem_more;
         private TextView help_first_answer;
-
         private RelativeLayout help_second_problem;
         private ImageView help_second_problem_more;
         private TextView help_second_answer;
-
         private RelativeLayout help_third_problem;
         private ImageView help_third_problem_more;
         private TextView help_third_answer;
-
         private RelativeLayout help_fourth_problem;
         private ImageView help_fourth_problem_more;
         private TextView help_fourth_answer;
-
         private RelativeLayout help_fifth_problem;
         private ImageView help_fifth_problem_more;
         private TextView help_fifth_answer;
-
         private RelativeLayout help_sixth_problem;
         private ImageView help_sixth_problem_more;
         private TextView help_sixth_answer;
-
         private RelativeLayout feedback_first_problem;
         private ImageView feedback_first_problem_check;
         private RelativeLayout feedback_second_problem;
@@ -381,11 +377,6 @@ public class FeedBackAdapter extends RecyclerView.Adapter<FeedBackAdapter.ViewHo
         private RelativeLayout feedback_fourth_problem;
         private ImageView feedback_fourth_problem_check;
         private EditText feedback_contact;
-
-        public ImageView reply_image;
-        public TextView reply_content;
-        public ImageView reply_failed;
-        public TextView reply_data;
 
         public ViewHolder(View view, int type) {
             super(view);

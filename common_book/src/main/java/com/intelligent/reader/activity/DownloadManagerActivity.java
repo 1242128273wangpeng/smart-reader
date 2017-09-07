@@ -51,6 +51,7 @@ public class DownloadManagerActivity extends BaseCacheableActivity implements On
     private static final String TAG = "DownloadManagerActivity";
     public DownloadPager views;
     public FrameBookHelper.MultiComparator multiComparator;
+    public long lastClickTime;
     private ImageView back_btn;
     private TextView title_name_btn;
     private TextView editBtn;
@@ -78,7 +79,7 @@ public class DownloadManagerActivity extends BaseCacheableActivity implements On
             downloadService.setOnDownloadListener(DownloadManagerActivity.this);
 //            if (dialog != null) {
 //                dialog.dismiss();
-                getDownLoadBookList(false);
+            getDownLoadBookList(false);
 //            }
 
         }
@@ -229,9 +230,9 @@ public class DownloadManagerActivity extends BaseCacheableActivity implements On
                 if (downloadingBooks.size() == 0) {
                     editBtn.setVisibility(View.GONE);
                 } else {
-                    if(AppUtils.getPackageName().equals("cc.kdqbxs.reader")){
+                    if (AppUtils.getPackageName().equals("cc.kdqbxs.reader")) {
                         editBtn.setVisibility(View.GONE);
-                    }else{
+                    } else {
                         editBtn.setVisibility(View.VISIBLE);
                         if (hasDeleted) {
                             editBtn.setText("编辑");
@@ -240,7 +241,7 @@ public class DownloadManagerActivity extends BaseCacheableActivity implements On
                 }
                 views.freshBookList(downloadingBooks);
             }
-        }else{
+        } else {
             Log.e(TAG, "downloadService == null");
         }
     }
@@ -266,7 +267,7 @@ public class DownloadManagerActivity extends BaseCacheableActivity implements On
         switch (v.getId()) {
             case R.id.title_back_btn:
                 Map<String, String> data = new HashMap<>();
-                data.put("type","1");
+                data.put("type", "1");
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
                 finish();
                 break;
@@ -319,7 +320,7 @@ public class DownloadManagerActivity extends BaseCacheableActivity implements On
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        if(!AppUtils.getPackageName().equals("cc.kdqbxs.reader")){
+        if (!AppUtils.getPackageName().equals("cc.kdqbxs.reader")) {
             if (!views.isRemoveMode()) {
                 views.showRemoveMenu(findViewById(R.id.root));
                 editBtn.setText("取消");
@@ -353,7 +354,7 @@ public class DownloadManagerActivity extends BaseCacheableActivity implements On
             editBtn.setText("编辑");
         } else {
             //如果是从通知栏过来, 且已经退出到home了, 要回到应用中
-            if(isTaskRoot()){
+            if (isTaskRoot()) {
                 Intent intent = new Intent(this, SplashActivity.class);
                 startActivity(intent);
             }
@@ -376,8 +377,6 @@ public class DownloadManagerActivity extends BaseCacheableActivity implements On
         }
         preNTF.contentIntent = pending;
     }
-
-    public long lastClickTime;
 
     public boolean isDoubleClick(long time) {
         long length = time - lastClickTime;

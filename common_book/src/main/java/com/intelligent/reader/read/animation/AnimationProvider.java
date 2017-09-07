@@ -1,5 +1,11 @@
 package com.intelligent.reader.read.animation;
 
+import com.intelligent.reader.read.help.CallBack;
+import com.intelligent.reader.read.page.PageView;
+
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.bean.ReadStatus;
+
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,15 +14,15 @@ import android.graphics.PointF;
 import android.view.MotionEvent;
 import android.widget.Scroller;
 
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.ReadStatus;
-
-import com.intelligent.reader.read.help.CallBack;
-import com.intelligent.reader.read.page.PageView;
-
 
 public abstract class AnimationProvider {
 
+    public static final int SHIFT_MODE = 0;
+    public static final int CURL_MODE = 1;
+    public static final int SLIDE_MODE = 2;
+    public static final int SLIDE_UP_MODE = 3;
+    public int backColor = 0xFFAAAAAA;
+    public int pageMode;
     protected BitmapManager bitmapManager;
     protected ReadStatus readStatus;
     protected PointF mTouch = new PointF(); // 拖拽点
@@ -24,23 +30,14 @@ public abstract class AnimationProvider {
     protected Bitmap mNextPageBitmap = null;
     protected int mWidth = 480;
     protected int mHeight = 800;
-
     protected float startX, startY;
-
     protected Scroller mScroller;
     protected CallBack callBack;
     protected PageView pageView;
-    public int backColor = 0xFFAAAAAA;
-
-    public int pageMode;
-    public static final int SHIFT_MODE = 0;
-    public static final int CURL_MODE = 1;
-    public static final int SLIDE_MODE = 2;
-    public static final int SLIDE_UP_MODE = 3;
-
     protected int readPosition;
     protected int footTop;
     protected int footHeight;
+    Bitmap sDividerBmpDay, sDividerBmpNight, dividerBmp;
 
     public AnimationProvider(BitmapManager manager, ReadStatus readStatus) {
         this.bitmapManager = manager;
@@ -83,8 +80,6 @@ public abstract class AnimationProvider {
     public void setScroller(Scroller scroller) {
         this.mScroller = scroller;
     }
-
-    Bitmap sDividerBmpDay, sDividerBmpNight, dividerBmp;
 
     public void getDivider(Resources res) {
         if (Constants.MODE == 55 || Constants.MODE == 58) {

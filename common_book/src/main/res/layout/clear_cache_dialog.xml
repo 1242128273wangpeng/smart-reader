@@ -1,33 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="304dp"
-    android:layout_height="201dp"
-    android:layout_gravity="center"
-    android:background="@drawable/reading_cache_shape"
-    android:orientation="vertical"
-    android:scrollbars="vertical" >
-
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="304dp"
+        android:layout_height="201dp"
+        android:layout_gravity="center"
+        android:background="@drawable/reading_cache_shape"
+        android:orientation="vertical"
+        android:scrollbars="vertical">
+    
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="64dp">
+            android:layout_width="match_parent"
+            android:layout_height="64dp">
+        
         <TextView
-            android:id="@+id/tv_tip"
-            android:layout_width="fill_parent"
-            android:layout_height="64dp"
-            android:text="@string/publish_confirm_hint"
-            android:textColor="@color/theme_primary"
-            android:layout_marginLeft="19dp"
-            android:gravity="center_vertical"
-            android:textSize="24sp"
-            />
-
+                android:id="@+id/tv_tip"
+                android:layout_width="fill_parent"
+                android:layout_height="64dp"
+                android:text="@string/publish_confirm_hint"
+                android:textColor="@color/theme_primary"
+                android:layout_marginLeft="19dp"
+                android:gravity="center_vertical"
+                android:textSize="24sp"
+                />
+    
     </RelativeLayout>
-
-   <!-- <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="85dp">-->
-
-        <TextView
+    
+    <!-- <RelativeLayout
+         android:layout_width="match_parent"
+         android:layout_height="85dp">-->
+    
+    <TextView
             android:id="@+id/publish_content"
             android:layout_width="match_parent"
             android:layout_height="85dp"
@@ -38,59 +40,59 @@
             android:textSize="@dimen/text_big16_size"
             android:lineSpacingExtra="6dp"
             />
-       <!-- <TextView
-            android:visibility="gone"
-            android:id="@+id/iv_ifselected"
-            android:layout_below="@id/publish_content"
-            android:layout_centerVertical="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="不在接收此提示"
-            android:drawablePadding="4dp"
-            android:drawableLeft="@drawable/icon_isSelected_selector"/>-->
-   <!-- </RelativeLayout>-->
-
+    <!-- <TextView
+         android:visibility="gone"
+         android:id="@+id/iv_ifselected"
+         android:layout_below="@id/publish_content"
+         android:layout_centerVertical="true"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="不在接收此提示"
+         android:drawablePadding="4dp"
+         android:drawableLeft="@drawable/icon_isSelected_selector"/>-->
+    <!-- </RelativeLayout>-->
+    
     <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/color_gray_d9d9d9"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="49dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btn_cancle_clear_cache"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="49dp"
-            android:background="@drawable/btn_dialog_background"
-            android:gravity="center"
-            android:singleLine="true"
-            android:minWidth="24dp"
-            android:text="@string/cancel"
-            android:textColor="@color/choose_btn_selector"
-            android:textSize="@dimen/text_big18_size" />
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="31dp"
-            android:layout_gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
             android:background="@color/color_gray_d9d9d9"/>
-
-        <Button
-            android:id="@+id/btn_confirm_clear_cache"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+    
+    <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="49dp"
-            android:background="@drawable/btn_dialog_background"
-            android:gravity="center"
-            android:singleLine="true"
-            android:minWidth="24dp"
-            android:text="@string/change_source_p"
-            android:textColor="@color/choose_btn_selector"
-            android:textSize="@dimen/text_big18_size" />
+            android:orientation="horizontal">
+        
+        <Button
+                android:id="@+id/btn_cancle_clear_cache"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="49dp"
+                android:background="@drawable/btn_dialog_background"
+                android:gravity="center"
+                android:singleLine="true"
+                android:minWidth="24dp"
+                android:text="@string/cancel"
+                android:textColor="@color/choose_btn_selector"
+                android:textSize="@dimen/text_big18_size"/>
+        
+        <View
+                android:layout_width="1dp"
+                android:layout_height="31dp"
+                android:layout_gravity="center_vertical"
+                android:background="@color/color_gray_d9d9d9"/>
+        
+        <Button
+                android:id="@+id/btn_confirm_clear_cache"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="49dp"
+                android:background="@drawable/btn_dialog_background"
+                android:gravity="center"
+                android:singleLine="true"
+                android:minWidth="24dp"
+                android:text="@string/change_source_p"
+                android:textColor="@color/choose_btn_selector"
+                android:textSize="@dimen/text_big18_size"/>
     </LinearLayout>
 
 </LinearLayout>

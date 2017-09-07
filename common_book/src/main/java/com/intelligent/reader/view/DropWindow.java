@@ -1,5 +1,7 @@
 package com.intelligent.reader.view;
 
+import com.intelligent.reader.R;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Point;
@@ -14,38 +16,64 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 
-import com.intelligent.reader.R;
-
 
 /**
  * 向下弹窗
  */
 public class DropWindow extends PopupWindow {
-    Context context;
-    private  View contentView;
     private static DropWindow window = null;
     private final float width_roate = 0.45f;
     private final float height_roate = 0.6f;
     private final int bg_color = R.color.transparent_color;
+    Context context;
+    private View contentView;
+
+    private DropWindow(Context context, int menuViewID) {
+        super(context);
+        this.context = context;
+        initSelectPopUpMenu(menuViewID);
+    }
+
+    public DropWindow(Context context, View menu) {
+//       super( context, null,R.style.labels_sort_pop_style);
+        super(context);
+        if (menu != null)// 外部传参菜单对象
+        {
+            contentView = menu;
+        }
+        this.context = context;
+        initSelectPopUpMenu(-1);
+    }
 
     /**
      * 实例化菜单对象，显示该View
-     *
-     * @param context
      */
     public static DropWindow DroupMenu(Context context, View menu) {
-        window = DropWindow.getInst(context, -1,menu);
+        window = DropWindow.getInst(context, -1, menu);
         return window;
     }
 
     /**
      * 实例化菜单对象，显示该View
-     *
-     * @param context
      */
     public static DropWindow DroupMenu(Context context, int menuid) {
-        window = DropWindow.getInst(context, menuid,null);
+        window = DropWindow.getInst(context, menuid, null);
         return window;
+    }
+
+    private static DropWindow getInst(Context c, int menuViewID, View view) {
+        DropWindow inst = null;
+        synchronized (DropWindow.class) {
+            if (inst == null) {
+                if (menuViewID != -1 && view == null) {
+
+                    inst = new DropWindow(c, menuViewID);
+                } else {
+                    inst = new DropWindow(c, view);
+                }
+            }
+        }
+        return inst;
     }
 
     public void showPopupWindow(View root) {
@@ -70,39 +98,6 @@ public class DropWindow extends PopupWindow {
             window.dismiss();
         }
     }
-
-
-    private static DropWindow getInst(Context c, int menuViewID,View view ) {
-        DropWindow inst = null;
-            synchronized (DropWindow.class) {
-                if (inst == null) {
-                    if(menuViewID!=-1&&view==null){
-
-                        inst = new DropWindow(c, menuViewID);
-                    }else{
-                        inst = new DropWindow(c,view);
-                    }
-                }
-            }
-        return inst;
-    }
-
-    private DropWindow(Context context, int menuViewID) {
-        super(context);
-        this.context = context;
-        initSelectPopUpMenu(menuViewID);
-    }
-   public DropWindow(Context context, View menu){
-//       super( context, null,R.style.labels_sort_pop_style);
-       super(context);
-       if (menu != null)// 外部传参菜单对象
-       {
-           contentView = menu;
-       }
-       this.context = context;
-       initSelectPopUpMenu(-1);
-   }
-
 
     private void initSelectPopUpMenu(int menuViewID) {
         LayoutInflater mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

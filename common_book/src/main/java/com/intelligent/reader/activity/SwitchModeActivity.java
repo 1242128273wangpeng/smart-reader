@@ -1,18 +1,18 @@
 package com.intelligent.reader.activity;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.ImageView;
-
 import com.intelligent.reader.R;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.RequestItem;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.ImageView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,10 +49,10 @@ public class SwitchModeActivity extends FrameActivity {
     private void initView() {
         imageView_night = (ImageView) findViewById(R.id.switch_mode_night);
         imageView_light = (ImageView) findViewById(R.id.switch_mode_light);
-        if(mThemeHelper.isNight()){
+        if (mThemeHelper.isNight()) {
             imageView_night.setVisibility(View.VISIBLE);
             imageView_light.setVisibility(View.GONE);
-        }else {
+        } else {
             imageView_light.setVisibility(View.VISIBLE);
             imageView_night.setVisibility(View.GONE);
         }
@@ -75,7 +75,7 @@ public class SwitchModeActivity extends FrameActivity {
             bundle.putInt("offset", offset);
             bundle.putSerializable("book", book);
             bundle.putSerializable(Constants.REQUEST_ITEM, requestItem);
-            bundle.putString("thememode",thememode);
+            bundle.putString("thememode", thememode);
             intent.putExtras(bundle);
             startActivity(intent);
             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
@@ -88,7 +88,7 @@ public class SwitchModeActivity extends FrameActivity {
     @Override
     public void onBackPressed() {
         Map<String, String> data = new HashMap<>();
-        data.put("type","2");
+        data.put("type", "2");
         StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
         back(null);
     }

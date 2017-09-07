@@ -87,7 +87,6 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.support.annotation.AttrRes;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -131,7 +130,6 @@ import java.util.concurrent.Callable;
 public class ReadingActivity extends BaseCacheableActivity implements OnClickListener, NovelHelper
         .OnHelperCallBack, CallBack, IReadDataFactory.ReadDataListener, AutoReadMenu.OnAutoMemuListener, ReadSettingView.OnReadSettingListener,
         DownloadService.OnDownloadListener {
-    private Context mContext;
     public static final int MSG_LOAD_CUR_CHAPTER = 0;
     public static final int MSG_LOAD_PRE_CHAPTER = 1;
     public static final int MSG_LOAD_NEXT_CHAPTER = 2;
@@ -141,16 +139,18 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     public static final int ERROR = 7;
     public static final int NEED_LOGIN = 8;
     public static final int MSG_SOURCE_CHANGE = 9;
-
     private static final String TAG = ReadingActivity.class.getSimpleName();
     // 时间
     private final static String mFormat = "k:mm";
+    // 手动书签内容限制
+    private static final int font_count = 50;
+    private static ReadStatus readStatus;
+    public DownloadService downloadService;
     long stampTime = 0;
     int readLength = 0;
+    private Context mContext;
     private PageInterface pageView;
-
     private ArrayList<Source> sourcesList;
-
     private boolean isSourceListShow;
     // 系统存储设置
     private SharedPreferences sp;
@@ -166,17 +166,12 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private boolean isFromCover = true;
     private NovelHelper myNovelHelper;
     private IReadDataFactory dataFactory;
-    private static ReadStatus readStatus;
-
     private int autoSpeed;
     private AutoReadMenu auto_menu;
     private LayoutInflater inflater;
     private int vipSort;
     private float batteryPercent;
     private ReadSettingView readSettingView;
-
-
-
     private View ll_guide_layout;
     private MyDialog mDialog;
     private boolean is_dot_orientation = false;// 横竖屏打点
@@ -184,7 +179,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private CharSequence time_text;
     private SharedPreferencesUtils sharedPreferencesUtils;
     private int versionCode;
-
     private RelativeLayout reading_content;
     private OwnNativeAdManager ownNativeAdManager;
     private boolean isAcvNovelActive = true;
@@ -193,50 +187,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private boolean isRestPress = false;
     private boolean actNovelRunForeground = true;
     private Handler handler = new UiHandler(this);
-
-    private StatisticManager statisticManager;
-    private boolean isSlideToAuto = false;
-
-    private FrameLayout novel_basePageView;
-
-    //转码声明
-    private TransCodingView novel_option_encode;
-
-    //原网页
-    private SourcePageView novel_option_source;
-
-    private Resources resources;
-
-    // 手动书签内容限制
-    private static final int font_count = 50;
-
-    private int isFirstGuide = 0;
-    private MyDialog myDialog;
-
-    private RequestFactory requestFactory;
-    public DownloadService downloadService;
-
-    private int type = -1;
-
-    private String currentThemeMode;
-    /**
-     * 接受电量改变广播
-     */
-    private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Intent.ACTION_BATTERY_CHANGED)) {
-                if (pageView != null) {
-                    int level = intent.getIntExtra("level", 0);
-                    int scale = intent.getIntExtra("scale", 100);
-                    batteryPercent = (float) level / (float) scale;
-                    pageView.freshBattery(batteryPercent);
-                }
-            }
-        }
-    };
-
     /**
      * 接受按下电源键的广播
      */
@@ -252,6 +202,36 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                     isAcvNovelActive = false;
                     handler.removeCallbacks(rest_tips_runnable);
                     rest_tips_runnable = null;
+                }
+            }
+        }
+    };
+    private StatisticManager statisticManager;
+    private boolean isSlideToAuto = false;
+    private FrameLayout novel_basePageView;
+    //转码声明
+    private TransCodingView novel_option_encode;
+    //原网页
+    private SourcePageView novel_option_source;
+    private Resources resources;
+    private int isFirstGuide = 0;
+    private MyDialog myDialog;
+    private RequestFactory requestFactory;
+    private int type = -1;
+    private String currentThemeMode;
+    /**
+     * 接受电量改变广播
+     */
+    private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Intent.ACTION_BATTERY_CHANGED)) {
+                if (pageView != null) {
+                    int level = intent.getIntExtra("level", 0);
+                    int scale = intent.getIntExtra("scale", 100);
+                    batteryPercent = (float) level / (float) scale;
+                    pageView.freshBattery(batteryPercent);
                 }
             }
         }
@@ -272,7 +252,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         @Override
         public void onDrawerOpened(View drawerView) {
             //解锁， 可滑动关闭
-            if(mCatlogMarkDrawer != null){
+            if (mCatlogMarkDrawer != null) {
                 mCatlogMarkDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED);
             }
         }
@@ -280,7 +260,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         @Override
         public void onDrawerClosed(View drawerView) {
             //锁定不可滑出
-            if(mCatlogMarkDrawer != null) {
+            if (mCatlogMarkDrawer != null) {
                 mCatlogMarkDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             }
         }
@@ -288,6 +268,19 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         @Override
         public void onDrawerStateChanged(int newState) {
 
+        }
+    };
+    private ServiceConnection sc = new ServiceConnection() {
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            downloadService = ((DownloadService.MyBinder) service).getService();
+            BaseBookApplication.setDownloadService(downloadService);
+            downloadService.setOnDownloadListener(ReadingActivity.this);
         }
     };
 
@@ -423,8 +416,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         if (BaseBookApplication.getDownloadService() == null) {
             BookHelper.reStartDownloadService();
         }
-
-
 
 
     }
@@ -649,7 +640,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             pageView.clear();
         }
         initWindow();
-        if(mCatlogMarkDrawer == null) {
+        if (mCatlogMarkDrawer == null) {
             setContentView(R.layout.act_read);
         }
         AppLog.e(TAG, "onConfigurationChanged");
@@ -972,20 +963,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         novel_option_source.setOnClickListener(this);
     }
 
-    private ServiceConnection sc = new ServiceConnection() {
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-        }
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            downloadService = ((DownloadService.MyBinder) service).getService();
-            BaseBookApplication.setDownloadService(downloadService);
-            downloadService.setOnDownloadListener(ReadingActivity.this);
-        }
-    };
-
     private void reStartDownloadService(Activity context) {
         Intent intent = new Intent();
         intent.setClass(context, DownloadService.class);
@@ -1003,37 +980,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         }
         mTicker = new TimerRunnable(this);
         mTicker.run();
-    }
-
-    private static class TimerRunnable implements Runnable {
-        private WeakReference<ReadingActivity> actReference;
-
-        TimerRunnable(ReadingActivity act) {
-            actReference = new WeakReference<>(act);
-        }
-
-        @Override
-        public void run() {
-            ReadingActivity readingActivity = actReference.get();
-            if (readingActivity == null) {
-                return;
-            }
-            if (readingActivity.mTimerStopped || readingActivity.pageView == null) {
-                return;
-            }
-            readingActivity.mCalendar.setTimeInMillis(System.currentTimeMillis());
-            try {
-                if (readingActivity.pageView != null) {
-                    readingActivity.time_text = DateFormat.format(mFormat, readingActivity.mCalendar);
-                    readingActivity.pageView.freshTime(readingActivity.time_text);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            long now = SystemClock.uptimeMillis();
-            long next = now + (30000 - now % 1000);
-            readingActivity.handler.postAtTime(readingActivity.mTicker, next);
-        }
     }
 
     /**
@@ -1118,8 +1064,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             case R.id.novel_read_back:
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_click_back_btn);
                 Map<String, String> data2 = new HashMap<>();
-                data2.put("type","1");
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE,StartLogClickUtil.SHELFEDIT, data2);
+                data2.put("type", "1");
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFEDIT, data2);
                 goBackToHome();
                 break;
 
@@ -1190,9 +1136,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 @Override
                 public void onClick(View v) {
                     StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_change_source_read);
-                    Map<String,String> map1 = new HashMap<String, String>();
-                    map1.put("type","2");
-                    StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.READPAGEMORE_PAGE,StartLogClickUtil.READ_SOURCECHANGECONFIRM,map1);
+                    Map<String, String> map1 = new HashMap<String, String>();
+                    map1.put("type", "2");
+                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGECONFIRM, map1);
 
                     dismissDialog();
                 }
@@ -1201,9 +1147,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 @Override
                 public void onClick(View view) {
                     StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_change_source_ok);
-                    Map<String,String> map2 = new HashMap<String, String>();
-                    map2.put("type","1");
-                    StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.READPAGEMORE_PAGE,StartLogClickUtil.READ_SOURCECHANGECONFIRM,map2);
+                    Map<String, String> map2 = new HashMap<String, String>();
+                    map2.put("type", "1");
+                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGECONFIRM, map2);
                     dismissDialog();
                     intoCatalogActivity(source, true);
                 }
@@ -1479,7 +1425,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
      * 隐藏topmenu
      */
     public void dismissTopMenu() {
-        if(mReadOptionPresenter != null)
+        if (mReadOptionPresenter != null)
             mReadOptionPresenter.getView().show(false);
         full(true);
     }
@@ -1551,8 +1497,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 //                            iv_guide_setting_bookmark.setVisibility(View.VISIBLE);
 //                        }
 //                    }else{
-                        sharedPreferencesUtils.putBoolean(versionCode + Constants.READING_SETING_GUIDE_TAG, true);
-                        ll_guide_layout.setVisibility(View.GONE);
+                    sharedPreferencesUtils.putBoolean(versionCode + Constants.READING_SETING_GUIDE_TAG, true);
+                    ll_guide_layout.setVisibility(View.GONE);
 //                    }
                     isFirstGuide++;
                 }
@@ -1566,7 +1512,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
      * 切换夜间模式
      */
     private void changeMode(int mode) {
-        if(this.current_mode == mode){
+        if (this.current_mode == mode) {
             return;
         }
         this.current_mode = mode;
@@ -1733,7 +1679,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     @Override
     public void onBackPressed() {
 
-        if(mCatlogMarkDrawer!= null && mCatlogMarkDrawer.isDrawerOpen(GravityCompat.START)){
+        if (mCatlogMarkDrawer != null && mCatlogMarkDrawer.isDrawerOpen(GravityCompat.START)) {
             mCatlogMarkDrawer.closeDrawers();
             return;
         }
@@ -1841,39 +1787,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         }
     }
 
-    static class CacheUpdateReceiver extends BroadcastReceiver {
-
-        private final WeakReference<Activity> mActivityWeakReference;
-
-        public CacheUpdateReceiver(Activity activity) {
-            mActivityWeakReference = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            LogUtils.e("CacheUpdateReceiver", "onReceive");
-            final Book book = (Book) intent.getSerializableExtra(Constants.REQUEST_ITEM);
-            if (book == null)
-                return;
-
-            if (!Constants.QG_SOURCE.equals(book.site)) {
-
-                if (mActivityWeakReference.get() != null && readStatus.book.book_id.equals(book.book_id)) {
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("sequence", readStatus.sequence);
-                    bundle.putInt("offset", readStatus.offset);
-                    bundle.putSerializable("book", readStatus.book);
-                    bundle.putSerializable(Constants.REQUEST_ITEM, readStatus.requestItem);
-                    Intent fresh = new Intent(mActivityWeakReference.get(), ReadingActivity.class);
-                    fresh.putExtras(bundle);
-                    fresh.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    mActivityWeakReference.get().startActivity(fresh);
-                }
-            }
-        }
-    }
-
-
     @Override
     public boolean shouldReceiveCacheEvent() {
         return false;
@@ -1930,21 +1843,21 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     @Override
     protected void onDestroy() {
 
-        if(mCatlogMarkDrawer != null){
+        if (mCatlogMarkDrawer != null) {
             mCatlogMarkDrawer.removeDrawerListener(mDrawerListener);
-            if( mCatalogMarkFragment != null)
+            if (mCatalogMarkFragment != null)
                 mCatlogMarkDrawer.removeDrawerListener(mCatalogMarkFragment);
         }
 
         if (IReadDataFactory.loadingPage != null) {
             IReadDataFactory.loadingPage = null;
         }
-        if(readStatus!=null){
+        if (readStatus != null) {
 
-                //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
-                StartLogClickUtil.upLoadReadContent(readStatus.book_id,readStatus.sequence+1+"",readStatus.source_ids,readStatus.pageCount+"",
-                        readStatus.currentPage+"",readStatus.currentPageConentLength+"",readStatus.requestItem.fromType+"",
-                        readStatus.startReadTime+"",System.currentTimeMillis()+"",System.currentTimeMillis()-readStatus.startReadTime+"","false",readStatus.requestItem.channel_code+"");
+            //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
+            StartLogClickUtil.upLoadReadContent(readStatus.book_id, readStatus.sequence + 1 + "", readStatus.source_ids, readStatus.pageCount + "",
+                    readStatus.currentPage + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
+                    readStatus.startReadTime + "", System.currentTimeMillis() + "", System.currentTimeMillis() - readStatus.startReadTime + "", "false", readStatus.requestItem.channel_code + "");
 
         }
         AppLog.e(TAG, "onDestroy");
@@ -2097,11 +2010,11 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 readStatus.book = (Book) bundle.getSerializable("book");
                 RequestItem requestItem = (RequestItem) bundle.getSerializable(Constants.REQUEST_ITEM);
                 AppLog.e(TAG, "onActivityResult: " + requestItem.toString());
-               if(!readStatus.source_ids.contains(readStatus.book.site)){
-                   readStatus.source_ids+="`"+readStatus.book.site;
-               }
+                if (!readStatus.source_ids.contains(readStatus.book.site)) {
+                    readStatus.source_ids += "`" + readStatus.book.site;
+                }
 
-                AppLog.e(TAG, "from"+readStatus.requestItem.fromType+"===");
+                AppLog.e(TAG, "from" + readStatus.requestItem.fromType + "===");
                 if (requestItem != null) {
                     readStatus.setRequestItem(requestItem);
                     //readStatus.requestConfig = BookApplication.getGlobalContext().getSourceConfig(requestItem.host);
@@ -2113,10 +2026,10 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 readStatus.currentPage = 1;
                 dataFactory.nextChapter = null;
                 dataFactory.preChapter = null;
-                readStatus.requestItem.fromType =1;//打点 书籍封面（0）/书架（1）/上一页翻页（2）
-                if(Constants.QG_SOURCE.equals(readStatus.book.site)){
+                readStatus.requestItem.fromType = 1;//打点 书籍封面（0）/书架（1）/上一页翻页（2）
+                if (Constants.QG_SOURCE.equals(readStatus.book.site)) {
                     requestItem.channel_code = 1;
-                }else{
+                } else {
                     requestItem.channel_code = 2;
                 }
                 getBookContent();
@@ -2139,7 +2052,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         }
         preNTF.contentIntent = pending;
     }
-
 
     @Override
     public void jumpNextChapter() {
@@ -2510,7 +2422,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         }
     }
 
-
     @Override
     public void onChageNightMode() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -2527,7 +2438,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         }
         edit.putInt("content_mode", Constants.MODE);
         edit.apply();
-        mThemeHelper.toggleThemeSetting(this);
+
         Intent intent = new Intent(this, ReadingActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt("sequence", readStatus.sequence);
@@ -2541,7 +2452,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
         finish();
     }
-
 
     private void submitFeedback(int type) {
         if (NetWorkUtils.getNetWorkType(this) == NetWorkUtils.NETWORK_NONE) {
@@ -2605,6 +2515,95 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         return "";
     }
 
+    private void changeMarkState() {
+        mReadOptionPresenter.updateStatus();
+    }
+
+    public void goBackToHome() {
+        if (!currentThemeMode.equals(mThemeHelper.getMode())) {
+            Intent themIntent = new Intent(ReadingActivity.this, HomeActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_SWITCH_THEME);
+            themIntent.putExtras(bundle);
+            startActivity(themIntent);
+            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+        } else {
+            if (isTaskRoot()) {
+                Intent intent = new Intent(this, SplashActivity.class);
+                startActivity(intent);
+            }
+            finish();
+        }
+    }
+
+    @Override
+    public int getStatusBarColorId() {
+        return R.color.color_statusBar_read;
+    }
+
+    private static class TimerRunnable implements Runnable {
+        private WeakReference<ReadingActivity> actReference;
+
+        TimerRunnable(ReadingActivity act) {
+            actReference = new WeakReference<>(act);
+        }
+
+        @Override
+        public void run() {
+            ReadingActivity readingActivity = actReference.get();
+            if (readingActivity == null) {
+                return;
+            }
+            if (readingActivity.mTimerStopped || readingActivity.pageView == null) {
+                return;
+            }
+            readingActivity.mCalendar.setTimeInMillis(System.currentTimeMillis());
+            try {
+                if (readingActivity.pageView != null) {
+                    readingActivity.time_text = DateFormat.format(mFormat, readingActivity.mCalendar);
+                    readingActivity.pageView.freshTime(readingActivity.time_text);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            long now = SystemClock.uptimeMillis();
+            long next = now + (30000 - now % 1000);
+            readingActivity.handler.postAtTime(readingActivity.mTicker, next);
+        }
+    }
+
+    static class CacheUpdateReceiver extends BroadcastReceiver {
+
+        private final WeakReference<Activity> mActivityWeakReference;
+
+        public CacheUpdateReceiver(Activity activity) {
+            mActivityWeakReference = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            LogUtils.e("CacheUpdateReceiver", "onReceive");
+            final Book book = (Book) intent.getSerializableExtra(Constants.REQUEST_ITEM);
+            if (book == null)
+                return;
+
+            if (!Constants.QG_SOURCE.equals(book.site)) {
+
+                if (mActivityWeakReference.get() != null && readStatus.book.book_id.equals(book.book_id)) {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("sequence", readStatus.sequence);
+                    bundle.putInt("offset", readStatus.offset);
+                    bundle.putSerializable("book", readStatus.book);
+                    bundle.putSerializable(Constants.REQUEST_ITEM, readStatus.requestItem);
+                    Intent fresh = new Intent(mActivityWeakReference.get(), ReadingActivity.class);
+                    fresh.putExtras(bundle);
+                    fresh.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    mActivityWeakReference.get().startActivity(fresh);
+                }
+            }
+        }
+    }
+
     static class UiHandler extends Handler {
         private WeakReference<ReadingActivity> actReference;
 
@@ -2646,10 +2645,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         }
     }
 
-    private void changeMarkState() {
-        mReadOptionPresenter.updateStatus();
-    }
-
     private class NovelDownloader extends BaseAsyncTask<Integer, Void, Void> {
 
         @Override
@@ -2688,28 +2683,5 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             }
             return null;
         }
-    }
-
-    public void goBackToHome() {
-        if (!currentThemeMode.equals(mThemeHelper.getMode())) {
-            Intent themIntent = new Intent(ReadingActivity.this, HomeActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_SWITCH_THEME);
-            themIntent.putExtras(bundle);
-            startActivity(themIntent);
-            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-        } else {
-            if (isTaskRoot()) {
-                Intent intent = new Intent(this, SplashActivity.class);
-                startActivity(intent);
-            }
-            finish();
-        }
-    }
-
-    @Override
-    public @AttrRes
-    int getStatusBarColorId() {
-        return R.attr.color_statusBar_read;
     }
 }

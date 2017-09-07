@@ -34,7 +34,6 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -68,9 +67,17 @@ import de.greenrobot.event.EventBus;
  */
 public class CataloguesActivity extends BaseCacheableActivity implements OnClickListener, OnScrollListener, OnItemClickListener {
 
+    protected static final int MESSAGE_FETCH_CATALOG = 0;
+    protected static final int MESSAGE_FETCH_BOOKMARK = MESSAGE_FETCH_CATALOG + 1;
+    protected static final int MESSAGE_FETCH_ERROR = MESSAGE_FETCH_BOOKMARK + 1;
+    private static final int DELAY_OVERLAY = MESSAGE_FETCH_ERROR + 1;
+    private final MyHandler myHandler = new MyHandler(this);
+    public int type = 2;
+    int colorSelected;
+    int colorNormal;
+    int sortIcon = 0;//背景色
     private FrameLayout catalog_root;
     private RelativeLayout rl_catalog_novel;
-
     private TextView catalog_novel_name;
     private ImageView catalog_novel_close;
     private RadioButton tab_catalog;
@@ -95,7 +102,6 @@ public class CataloguesActivity extends BaseCacheableActivity implements OnClick
     private boolean fromEnd;
     //加载页
     private LoadingPage loadingPage;
-
     private int sequence;
     //小说ID
     private int nid;
@@ -103,37 +109,19 @@ public class CataloguesActivity extends BaseCacheableActivity implements OnClick
     private Book book;
     //小说帮助类
     private BookDaoHelper mBookDaoHelper;
-
     private CatalogAdapter mCatalogAdapter;
     private BookmarkAdapter mBookmarkAdapter;
-
     private ArrayList<Chapter> chapterList = new ArrayList<>();
     private ArrayList<Bookmark> bookmarkList = new ArrayList<>();
-
     private boolean isPositive = true;
-
     /**
      * 标识List的滚动状态。
      */
     private int scrollState;
-
     private OffLineDownLoadReceiver downLoadReceiver;
-
-    protected static final int MESSAGE_FETCH_CATALOG = 0;
-    protected static final int MESSAGE_FETCH_BOOKMARK = MESSAGE_FETCH_CATALOG + 1;
-    protected static final int MESSAGE_FETCH_ERROR = MESSAGE_FETCH_BOOKMARK + 1;
-    private static final int DELAY_OVERLAY = MESSAGE_FETCH_ERROR + 1;
-
-    private final MyHandler myHandler = new MyHandler(this);
-
     private RequestFactory requestFactory;
-    public int type = 2;
-
-
     private RequestItem requestItem;
 
-    int colorSelected;
-    int colorNormal;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -233,7 +221,7 @@ public class CataloguesActivity extends BaseCacheableActivity implements OnClick
 
         requestItem = (RequestItem) bundle.getSerializable(Constants.REQUEST_ITEM);
 
-        if(requestItem == null || requestItem.book_id == null || requestItem.host == null){
+        if (requestItem == null || requestItem.book_id == null || requestItem.host == null) {
             exitAndUpdate();
             return;
         }
@@ -370,9 +358,8 @@ public class CataloguesActivity extends BaseCacheableActivity implements OnClick
         StatService.onPause(this);
     }
 
-
     private void initCatalogAndBookmark() {
-        mCatalogAdapter = new CatalogAdapter(this, chapterList,requestItem.host);
+        mCatalogAdapter = new CatalogAdapter(this, chapterList, requestItem.host);
         catalog_main.setAdapter(mCatalogAdapter);
         if (is_last_chapter) {
             mCatalogAdapter.setSelectedItem(chapterList.size());
@@ -459,7 +446,6 @@ public class CataloguesActivity extends BaseCacheableActivity implements OnClick
         super.onStop();
     }
 
-
     @Override
     protected void onDestroy() {
         if (downLoadReceiver != null) {
@@ -514,7 +500,7 @@ public class CataloguesActivity extends BaseCacheableActivity implements OnClick
         switch (v.getId()) {
             case R.id.catalog_novel_close:
                 Map<String, String> data = new HashMap<>();
-                data.put("type","1");
+                data.put("type", "1");
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
                 if (!fromCover) {
                     Intent intent = new Intent();
@@ -593,16 +579,16 @@ public class CataloguesActivity extends BaseCacheableActivity implements OnClick
                 break;
         }
     }
-    TypedValue sortIcon = new TypedValue();//背景色
+
     private void changeSortState(boolean b) {
         if (tv_catalog_novel_sort != null && iv_catalog_novel_sort != null) {
             if (b) {
                 tv_catalog_novel_sort.setText(R.string.catalog_negative);
-                getTheme().resolveAttribute(R.attr.directory_sort_negative,sortIcon,true);
+                sortIcon = R.mipmap.dir_sort_negative;
                 //正序的统计
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_zx_btn);
 
-                    iv_catalog_novel_sort.setImageResource(sortIcon.resourceId);
+                iv_catalog_novel_sort.setImageResource(sortIcon);
 
 //                if ("night".equals(ResourceUtil.mode)) {
 //                    iv_catalog_novel_sort.setImageResource(R.drawable.icon_sort_negative_night);
@@ -611,8 +597,8 @@ public class CataloguesActivity extends BaseCacheableActivity implements OnClick
 //                }
             } else {
                 tv_catalog_novel_sort.setText(R.string.catalog_positive);
-                getTheme().resolveAttribute(R.attr.directory_sort_positive,sortIcon,true);
-                iv_catalog_novel_sort.setImageResource(sortIcon.resourceId);
+                sortIcon = R.mipmap.dir_sort_positive;
+                iv_catalog_novel_sort.setImageResource(sortIcon);
                 //倒序的统计
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_dx_btn);
 //                if ("night".equals(ResourceUtil.mode)) {
@@ -697,7 +683,7 @@ public class CataloguesActivity extends BaseCacheableActivity implements OnClick
 
     private void exitAndUpdate() {
         //如果是从通知栏过来, 且已经退出到home了, 要回到应用中
-        if(isTaskRoot()){
+        if (isTaskRoot()) {
             Intent intent = new Intent(this, SplashActivity.class);
             startActivity(intent);
         }
@@ -717,10 +703,10 @@ public class CataloguesActivity extends BaseCacheableActivity implements OnClick
             if (chapterList != null && !chapterList.isEmpty()) {
                 boolean isChapterExist;
                 Chapter tempChapter = chapterList.get(position);
-                if (requestItem.host.equals(Constants.QG_SOURCE)){
+                if (requestItem.host.equals(Constants.QG_SOURCE)) {
                     requestItem.channel_code = 1;
-                    isChapterExist = DataCache.isChapterExists(tempChapter.chapter_id,tempChapter.book_id);
-                }else {
+                    isChapterExist = DataCache.isChapterExists(tempChapter.chapter_id, tempChapter.book_id);
+                } else {
                     requestItem.channel_code = 2;
                     isChapterExist = BookHelper.isChapterExist(tempChapter.sequence, book.book_id);
                 }
@@ -745,7 +731,7 @@ public class CataloguesActivity extends BaseCacheableActivity implements OnClick
         }
 
         bundle.putSerializable("book", book);
-        bundle.putString("thememode",mThemeHelper.getMode());
+        bundle.putString("thememode", mThemeHelper.getMode());
         intent.putExtras(bundle);
         if (fromCover) {
             intent.setClass(CataloguesActivity.this, ReadingActivity.class);

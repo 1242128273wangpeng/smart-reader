@@ -1,13 +1,13 @@
 package com.intelligent.reader.activity;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import com.intelligent.reader.R;
 
 import net.lzbook.kit.utils.update.ApkUpdateUtils;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 
 public class DownloadErrorActivity extends AppCompatActivity {

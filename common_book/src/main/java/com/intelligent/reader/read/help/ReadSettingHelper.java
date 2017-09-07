@@ -1,13 +1,13 @@
 package com.intelligent.reader.read.help;
 
+import net.lzbook.kit.constants.Constants;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.view.Window;
 import android.view.WindowManager;
-
-import net.lzbook.kit.constants.Constants;
 
 /**
  * 阅读页设置实现类

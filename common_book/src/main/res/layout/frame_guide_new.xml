@@ -49,6 +49,7 @@
     
     
     </RelativeLayout>
+    
     <ViewStub
             android:id="@+id/stub_login"
             android:layout_width="match_parent"

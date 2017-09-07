@@ -1,35 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/head_container"
-	android:layout_width="match_parent"
-	android:layout_height="500dp" >
-
-	<TextView
-		android:id="@+id/head_text_view"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_centerInParent="true"
-		android:gravity="center"
-		android:padding="10dp"
-		android:textColor="@color/color_gray_999c9e"
-		android:text="Loading" />
-
-	<ProgressBar
-		android:id="@+id/head_pb_view"
-		android:layout_width="20dp"
-		android:layout_height="20dp"
-		android:layout_centerVertical="true"
-		android:layout_toLeftOf="@id/head_text_view"
-		android:layout_toStartOf="@id/head_text_view" />
-
-	<ImageView
-		android:id="@+id/head_image_view"
-		android:layout_width="20dp"
-		android:layout_height="20dp"
-		android:layout_centerVertical="true"
-		android:textColor="@color/color_gray_999c9e"
-		android:layout_toLeftOf="@id/head_text_view"
-		android:layout_toStartOf="@id/head_text_view"
-		android:contentDescription="@null" />
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/head_container"
+        android:layout_width="match_parent"
+        android:layout_height="500dp">
+    
+    <TextView
+            android:id="@+id/head_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:padding="10dp"
+            android:textColor="@color/color_gray_999c9e"
+            android:text="Loading"/>
+    
+    <ProgressBar
+            android:id="@+id/head_pb_view"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/head_text_view"
+            android:layout_toStartOf="@id/head_text_view"/>
+    
+    <ImageView
+            android:id="@+id/head_image_view"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:textColor="@color/color_gray_999c9e"
+            android:layout_toLeftOf="@id/head_text_view"
+            android:layout_toStartOf="@id/head_text_view"
+            android:contentDescription="@null"/>
 
 </RelativeLayout>

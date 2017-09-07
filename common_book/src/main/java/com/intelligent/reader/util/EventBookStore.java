@@ -11,11 +11,11 @@ public class EventBookStore {
     public static final int TYPE_TO_SWITCH_THEME = 0;
     private int type;
 
-    public int getType() {
-        return type;
-    }
-
     public EventBookStore(int type) {
         this.type = type;
+    }
+
+    public int getType() {
+        return type;
     }
 }

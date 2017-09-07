@@ -1,18 +1,18 @@
 package com.intelligent.reader.adapter.paging;
 
+import com.intelligent.reader.R;
+
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.intelligent.reader.R;
-
 /**
  * Created by yuchao on 2017/6/17 0017.
  */
 public class LoadMoreAdapterWrapper extends BaseAdapter<String> {
-    private BaseAdapter mAdapter;
     public static final int PAGE_SIZE = 20;
+    private BaseAdapter mAdapter;
     private boolean hasMoreData = true;
     private OnLoad mOnLoad;
 
@@ -80,8 +80,8 @@ public class LoadMoreAdapterWrapper extends BaseAdapter<String> {
         }
     }
 
-    private int getDataCount(){
-        if (mAdapter != null && mAdapter.mDataSet != null){
+    private int getDataCount() {
+        if (mAdapter != null && mAdapter.mDataSet != null) {
             return mAdapter.mDataSet.size();
         }
         return 0;
@@ -89,11 +89,21 @@ public class LoadMoreAdapterWrapper extends BaseAdapter<String> {
 
     @Override
     public int getItemCount() {
-        if (mAdapter.mDataSet.size() < 10){
+        if (mAdapter.mDataSet.size() < 10) {
             return mAdapter.getItemCount();
-        }else {
+        } else {
             return mAdapter.getItemCount() + 1;
         }
+    }
+
+    public interface OnLoad {
+        void load(int pagePosition, int pageSize, ILoadCallback callback);
+    }
+
+    public interface ILoadCallback {
+        void onSuccess();
+
+        void onFailure();
     }
 
     static class LoadingItemVH extends RecyclerView.ViewHolder {
@@ -109,17 +119,6 @@ public class LoadMoreAdapterWrapper extends BaseAdapter<String> {
         public NoMoreItemVH(View itemView) {
             super(itemView);
         }
-    }
-
-    public interface OnLoad {
-        void load(int pagePosition, int pageSize, ILoadCallback callback);
-    }
-
-
-    public interface ILoadCallback {
-        void onSuccess();
-
-        void onFailure();
     }
 
 }

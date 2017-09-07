@@ -19,14 +19,17 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
-import android.support.annotation.AttrRes;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewPropertyAnimator;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -56,18 +59,21 @@ public abstract class FrameActivity extends AppCompatActivity {
     private static long inTime;
 
     public ThemeHelper mThemeHelper;
+    protected View mNightShadowView;
 
     @SuppressLint("NewApi")
     public void onCreate(Bundle paramBundle) {
         super.onCreate(paramBundle);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+
         initThemeHelper();
         initTheme();
         ATManager.addActivity(this);
         StatusBarCompat.compat(this, getStatusBarColorId());
     }
 
-    public @AttrRes int getStatusBarColorId(){
-        return R.attr.color_statusBar;
+    public int getStatusBarColorId() {
+        return getResources().getColor(R.color.color_statusBar);
     }
 
     @Override
@@ -92,7 +98,7 @@ public abstract class FrameActivity extends AppCompatActivity {
      */
     private void initTheme() {
         if(mThemeHelper.isNight()){
-            mThemeHelper.setMode(ThemeMode.THEME1);
+            mThemeHelper.setMode(ThemeMode.NIGHT);
         }
     }
 
@@ -113,9 +119,43 @@ public abstract class FrameActivity extends AppCompatActivity {
     protected void setMode() {
     }
 
+
+    protected void nightShift(boolean flag, boolean animate) {
+//        mThemeHelper.showAnimation(this);
+//        mThemeHelper.toggleThemeSetting(this);
+//        StatusBarCompat.compat(this);
+        ViewGroup decorView = (ViewGroup) getWindow().getDecorView();
+        if (flag) {
+            if (mNightShadowView == null) {
+                mNightShadowView = new View(this);
+                mNightShadowView.setBackgroundColor(Color.BLACK);
+                mNightShadowView.setAlpha(0.55f);
+            }
+
+            if (mNightShadowView.getParent() == null) {
+                if (animate)
+                    mNightShadowView.setAlpha(0f);
+                decorView.addView(mNightShadowView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+                if (animate) {
+                    ViewPropertyAnimator animator = mNightShadowView.animate();
+                    animator.alpha(0.55f);
+                    animator.setDuration(300);
+                    animator.start();
+                }
+            }
+
+        } else if (mNightShadowView != null) {
+            decorView.removeView(mNightShadowView);
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+
+        nightShift(mThemeHelper.isNight(), false);
+
         StatService.onResume(getApplicationContext());
         if (!isActive) {
             isActive = true;
@@ -172,9 +212,11 @@ public abstract class FrameActivity extends AppCompatActivity {
     }
 
 
+
     @Override
     protected void onStart() {
         super.onStart();
+
         if (!isCurrentRunningForeground) {
             inTime =System.currentTimeMillis();
             Map<String, String> data = new HashMap<>();

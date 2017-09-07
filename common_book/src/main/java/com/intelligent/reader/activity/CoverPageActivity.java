@@ -50,7 +50,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -76,47 +75,6 @@ import java.util.concurrent.Callable;
 public class CoverPageActivity extends BaseCacheableActivity implements OnClickListener, BookCoverUtil
         .OnDownloadState, BookCoverUtil.OnDownLoadService, DownloadService.OnDownloadListener {
 
-    private ImageView book_cover_back;
-    private ScrollView book_cover_content;
-    private ImageView book_cover_image;
-    private TextView book_cover_title;
-    private TextView book_cover_author;
-    private TextView book_cover_category;
-    private TextView book_cover_category2;
-    private TextView book_cover_status;
-    private TextView book_cover_update_time;
-
-    private LinearLayout book_cover_source_view;
-    private TextView book_cover_source_form;
-
-    private ViewGroup book_cover_chapter_view;
-    private TextView book_cover_last_chapter;
-
-    //private RelativeLayout book_cover_bookshelf_view;
-    private TextView book_cover_bookshelf;
-
-    private TextView book_cover_reading;
-    //private RelativeLayout book_cover_reading_view;
-
-    //private RelativeLayout book_cover_download_view;
-    private TextView book_cover_download;
-
-    private TypedValue mBackground = new TypedValue();
-    private TypedValue mTextColor = new TypedValue();
-
-    private ExpandableTextView book_cover_description;
-
-    private RelativeLayout book_cover_catalog_view;
-
-
-    private RelativeLayout book_cover_catalog_view_nobg;
-
-    //private BookCover bookCover;
-    private BookDaoHelper bookDaoHelper;
-
-    private BookCoverUtil bookCoverUtil;
-    private LoadingPage loadingPage;
-
     final static int DOWNLOADING = 0x10;
     final static int NO_DOWNLOAD = DOWNLOADING + 1;
     final static int DOWNLOAD_FINISH = NO_DOWNLOAD + 1;
@@ -131,9 +89,35 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
     final static int HAD_COLLECT_DATA_ERROR = HAD_COLLECT_DATA_OK + 1;
     final static int GET_CATEGORY_OK = HAD_COLLECT_DATA_ERROR + 1;
     final static int GET_CATEGORY_ERROR = GET_CATEGORY_OK + 1;
-
     UIHandler uiHandler = new UIHandler(this);
-
+    //private RelativeLayout book_cover_reading_view;
+    private ImageView book_cover_back;
+    private ScrollView book_cover_content;
+    private ImageView book_cover_image;
+    private TextView book_cover_title;
+    private TextView book_cover_author;
+    private TextView book_cover_category;
+    private TextView book_cover_category2;
+    private TextView book_cover_status;
+    private TextView book_cover_update_time;
+    private LinearLayout book_cover_source_view;
+    private TextView book_cover_source_form;
+    private ViewGroup book_cover_chapter_view;
+    private TextView book_cover_last_chapter;
+    //private RelativeLayout book_cover_bookshelf_view;
+    private TextView book_cover_bookshelf;
+    private TextView book_cover_reading;
+    //private RelativeLayout book_cover_download_view;
+    private TextView book_cover_download;
+    private int mBackground = 0;
+    private int mTextColor = 0;
+    private ExpandableTextView book_cover_description;
+    private RelativeLayout book_cover_catalog_view;
+    private RelativeLayout book_cover_catalog_view_nobg;
+    //private BookCover bookCover;
+    private BookDaoHelper bookDaoHelper;
+    private BookCoverUtil bookCoverUtil;
+    private LoadingPage loadingPage;
     private RequestFactory requestFactory;
 
     private List<CoverPage.SourcesBean> bookSourceList = new ArrayList<>();
@@ -149,6 +133,20 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
 
 
     private CoverPage.BookVoBean bookVo;
+    private ServiceConnection sc = new ServiceConnection() {
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            downloadService = ((DownloadService.MyBinder) service).getService();
+            BaseBookApplication.setDownloadService(downloadService);
+            downloadService.setUiContext(getApplicationContext());
+            downloadService.setOnDownloadListener(CoverPageActivity.this);
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -251,21 +249,6 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
 
     }
 
-    private ServiceConnection sc = new ServiceConnection() {
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-        }
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            downloadService = ((DownloadService.MyBinder) service).getService();
-            BaseBookApplication.setDownloadService(downloadService);
-            downloadService.setUiContext(getApplicationContext());
-            downloadService.setOnDownloadListener(CoverPageActivity.this);
-        }
-    };
-
     private void reStartDownloadService(Context context) {
         Intent intent = new Intent();
         intent.setClass(context, DownloadService.class);
@@ -356,20 +339,20 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
     }
 
     private void setRemoveBtn() {
-        getTheme().resolveAttribute(R.attr.cover_bottom_btn_remove_bg, mBackground, true);
-        getTheme().resolveAttribute(R.attr.cover_bottom_btn_remove_text_color, mTextColor, true);
-        book_cover_bookshelf.setTextColor(getResources().getColor(mTextColor.resourceId));
+        mBackground = R.drawable.cover_bottom_btn_remove_bg;
+        mTextColor = R.color.cover_bottom_btn_remove_text_color;
+        book_cover_bookshelf.setTextColor(getResources().getColor(mTextColor));
         if (book_cover_category2.getVisibility() != View.VISIBLE) {
-            book_cover_bookshelf.setBackgroundResource(mBackground.resourceId);
+            book_cover_bookshelf.setBackgroundResource(mBackground);
         }
     }
 
     private void setAddShelfBtn() {
-        getTheme().resolveAttribute(R.attr.cover_bottom_btn_add_bg, mBackground, true);
-        getTheme().resolveAttribute(R.attr.cover_bottom_btn_add_text_color, mTextColor, true);
-        book_cover_bookshelf.setTextColor(getResources().getColor(mTextColor.resourceId));
+        mBackground = R.drawable.cover_bottom_btn_add_bg;
+        mTextColor = R.color.cover_bottom_btn_add_text_color;
+        book_cover_bookshelf.setTextColor(getResources().getColor(mTextColor));
         if (book_cover_category2.getVisibility() != View.VISIBLE) {
-            book_cover_bookshelf.setBackgroundResource(mBackground.resourceId);
+            book_cover_bookshelf.setBackgroundResource(mBackground);
         }
     }
 
@@ -428,45 +411,6 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
             pending = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         }
         preNTF.contentIntent = pending;
-    }
-
-    private static class UIHandler extends Handler {
-
-        private WeakReference<CoverPageActivity> weakReference;
-
-        UIHandler(CoverPageActivity coverPageActivity) {
-            weakReference = new WeakReference<>(coverPageActivity);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            CoverPageActivity coverPageActivity = weakReference.get();
-            if (coverPageActivity == null) {
-                return;
-            }
-            switch (msg.what) {
-                case RequestExecutor.REQUEST_COVER_SUCCESS:
-                    coverPageActivity.handleOK(msg.obj, false);
-                    break;
-                case RequestExecutor.REQUEST_COVER_ERROR:
-                    coverPageActivity.handleError();
-                    break;
-                case RequestExecutor.REQUEST_COVER_QG_SUCCESS:
-                    coverPageActivity.handleOK(msg.obj, true);
-                    break;
-                case RequestExecutor.REQUEST_COVER_QG_ERROR:
-                    coverPageActivity.handleError();
-                    break;
-                case GET_CATEGORY_OK:
-                    coverPageActivity.handCategoryOk();
-                    break;
-                case GET_CATEGORY_ERROR:
-                    coverPageActivity.handCategoryError();
-                    break;
-                default:
-                    break;
-            }
-        }
     }
 
     private void handCategoryError() {
@@ -703,7 +647,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
         switch (view.getId()) {
             case R.id.book_cover_back:
                 Map<String, String> data = new HashMap<>();
-                data.put("type","1");
+                data.put("type", "1");
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
                 finish();
                 finish();
@@ -714,7 +658,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_ch_source);
                 showCoverSourceDialog();
 
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE,StartLogClickUtil.SOURCECHANGE);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SOURCECHANGE);
                 break;
 
             case R.id.book_cover_bookshelf:
@@ -738,8 +682,8 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                         setRemoveBtn();
                         showToastShort(R.string.succeed_add);
                         Map<String, String> data1 = new HashMap<>();
-                        data1.put("type","1");
-                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE,StartLogClickUtil.SHELFEDIT, data1);
+                        data1.put("type", "1");
+                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFEDIT, data1);
                     }
 
                 } else {
@@ -755,8 +699,8 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                     StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_book_remove);
                     showToastShort(getString(R.string.succeed_remove));
                     Map<String, String> data2 = new HashMap<>();
-                    data2.put("type","2");
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE,StartLogClickUtil.SHELFEDIT, data2);
+                    data2.put("type", "2");
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFEDIT, data2);
                     DownloadService downloadService = BaseBookApplication.getDownloadService();
                     if (downloadService != null) {
                         downloadService.cancelTask(requestItem.book_id);
@@ -768,7 +712,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
             case R.id.book_cover_reading:
                 //转码阅读点击的统计
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_trans_read);
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE,StartLogClickUtil.TRANSCODEREAD);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEREAD);
                 if (bookSourceList != null && bookSourceList.size() == 0) {
                     if (Constants.QG_SOURCE.equals(requestItem.host)) {
                         showReadingSourceDialog();
@@ -791,8 +735,8 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                 //全本缓存的点击统计
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_all_load);
                 Map<String, String> data3 = new HashMap<>();
-                data3.put("bookId",requestItem.book_id);
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE,StartLogClickUtil.CASHEALL, data3);
+                data3.put("bookId", requestItem.book_id);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CASHEALL, data3);
                 if (Constants.QG_SOURCE.equals(requestItem.host)) {
                     if (bookDaoHelper == null) {
                         bookDaoHelper = BookDaoHelper.getInstance(this);
@@ -847,7 +791,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
             case R.id.book_cover_catalog_view:
                 //书籍详情页查看目录点击
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_to_catalogue);
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE,StartLogClickUtil.CATALOG);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CATALOG);
                 if (Constants.QG_SOURCE.equals(requestItem.host)) {
                     goToCataloguesAct(intent, 0, false);
                 } else {
@@ -869,7 +813,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                         goToCataloguesAct(intent, bookVo.serial_number - 1, true);
                     }
                 }
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE,StartLogClickUtil.LATESTCHAPTER);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.LATESTCHAPTER);
                 break;
         }
     }
@@ -1194,7 +1138,6 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
         }
 
 
-
         if (requestItem != null) {
             requestItem.book_id = source.book_id;
             requestItem.book_source_id = source.book_source_id;
@@ -1282,7 +1225,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
     @Override
     public void onBackPressed() {
         Map<String, String> data = new HashMap<>();
-        data.put("type","2");
+        data.put("type", "2");
         StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
         finish();
     }
@@ -1359,5 +1302,44 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
         DownloadService.clearTask(source.book_id);
         BaseBookHelper.delDownIndex(this, source.book_id);
         return book;
+    }
+
+    private static class UIHandler extends Handler {
+
+        private WeakReference<CoverPageActivity> weakReference;
+
+        UIHandler(CoverPageActivity coverPageActivity) {
+            weakReference = new WeakReference<>(coverPageActivity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            CoverPageActivity coverPageActivity = weakReference.get();
+            if (coverPageActivity == null) {
+                return;
+            }
+            switch (msg.what) {
+                case RequestExecutor.REQUEST_COVER_SUCCESS:
+                    coverPageActivity.handleOK(msg.obj, false);
+                    break;
+                case RequestExecutor.REQUEST_COVER_ERROR:
+                    coverPageActivity.handleError();
+                    break;
+                case RequestExecutor.REQUEST_COVER_QG_SUCCESS:
+                    coverPageActivity.handleOK(msg.obj, true);
+                    break;
+                case RequestExecutor.REQUEST_COVER_QG_ERROR:
+                    coverPageActivity.handleError();
+                    break;
+                case GET_CATEGORY_OK:
+                    coverPageActivity.handCategoryOk();
+                    break;
+                case GET_CATEGORY_ERROR:
+                    coverPageActivity.handCategoryError();
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }

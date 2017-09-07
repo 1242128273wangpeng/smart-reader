@@ -137,7 +137,7 @@
                     android:textSize="@dimen/text_small"
                     android:clickable="false"
                     android:focusable="false"/>
-    
+        
             <ImageButton
                     android:id="@+id/ibtn_catalog"
                     android:layout_above="@+id/txt_catalog"
@@ -235,5 +235,5 @@
                     android:src="@drawable/read_option_setting_selector"/>
         </RelativeLayout>
     </RelativeLayout>
-    
+
 </RelativeLayout>

@@ -5,19 +5,17 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="vertical"
-        android:scrollbars="vertical"
-        >
-
+        android:scrollbars="vertical">
+    
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:background="?attr/dialog_bg_color"
+            android:background="@drawable/dialog_bg"
             android:layout_marginTop="35dp"
-            android:orientation="vertical"
-            >
-
+            android:orientation="vertical">
+        
         <TextView
                 android:id="@+id/dialog_title"
                 android:layout_width="match_parent"
@@ -25,27 +23,24 @@
                 android:text="提示"
                 android:padding="@dimen/padding_12"
                 android:gravity="center"
-                android:textColor="?attr/dialog_title_color"
-                android:textSize="@dimen/text_size_18"
-                />
-
-
+                android:textColor="@color/color_black_323232"
+                android:textSize="@dimen/text_size_18"/>
+        
         <include layout="@layout/dialog_divider"/>
-
+        
         <TextView
                 android:id="@+id/publish_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@string/publish_leave_detail"
-                android:textColor="?attr/dialog_content_color"
+                android:textColor="@color/color_black_323232"
                 android:gravity="center"
                 android:textSize="@dimen/text_size_16"
                 android:layout_marginTop="@dimen/dimen_margin_10"
                 android:layout_marginBottom="@dimen/dimen_margin_10"
                 android:padding="@dimen/dimen_margin_30"
-                android:lineSpacingExtra="6dp"
-                />
-
+                android:lineSpacingExtra="6dp"/>
+        
         <ProgressBar
                 android:id="@+id/progress_del"
                 android:layout_width="match_parent"
@@ -53,50 +48,46 @@
                 android:layout_marginTop="@dimen/dimen_margin_10"
                 android:layout_marginBottom="@dimen/dimen_margin_10"
                 android:visibility="gone"
-                style="@style/Widget.AppCompat.ProgressBar"
-                />
+                style="@style/Widget.AppCompat.ProgressBar"/>
+        
         <RelativeLayout
                 android:id="@+id/change_source_bottom"
                 android:layout_width="match_parent"
                 android:background="@drawable/background_foot_dialog"
-                android:layout_height="@dimen/dimen_view_height_50"
-                >
-
+                android:layout_height="@dimen/dimen_view_height_50">
+            
             <View
                     android:id="@+id/change_source_bottom_divider"
                     android:layout_width="@dimen/dimen_view_width_0.5"
                     android:layout_height="@dimen/dimen_view_height_50"
                     android:layout_centerHorizontal="true"
                     android:layout_centerInParent="true"
-                    android:background="?attr/color_divider"
-                    />
-
+                    android:background="@color/color_gray_e8e8e8"/>
+            
             <Button
                     android:id="@+id/publish_stay"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_alignParentLeft="true"
                     android:layout_toLeftOf="@id/change_source_bottom_divider"
-                    android:background="?attr/dialog_btn_left_selector"
-                    android:textColor="?attr/dialog_cancel_color"
+                    android:background="@drawable/dialog_btn_left_selector"
+                    android:textColor="@drawable/dialog_cancel_selector"
                     android:gravity="center"
                     android:text="@string/cancel"
-                    android:textSize="@dimen/dimen_text_16"
-                    />
-
+                    android:textSize="@dimen/dimen_text_16"/>
+            
             <Button
                     android:id="@+id/publish_leave"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
                     android:layout_toRightOf="@id/change_source_bottom_divider"
-                    android:background="?attr/dialog_btn_right_selector"
-                    android:textColor="?attr/dialog_confirm_color"
+                    android:background="@drawable/dialog_btn_right_selector"
+                    android:textColor="@drawable/dialog_confirm_selector"
                     android:gravity="center"
                     android:text="@string/confirm"
-                    android:textSize="@dimen/dimen_text_16"
-                    />
-
+                    android:textSize="@dimen/dimen_text_16"/>
+            
             <include layout="@layout/dialog_divider"/>
         </RelativeLayout>
     </LinearLayout>

@@ -36,16 +36,14 @@ class LoginActivity : FrameActivity() {
 
                 UserManager.login(this,
                         Platform.WECHAT,
-                        onSuccess = {
-                            ret ->
+                        onSuccess = { ret ->
                             dismissProgressDialog()
                             flagLoginEnd = true
                             toastShort(ret.toString())
                             setLoginResult()
                             finish()
                         },
-                        onFailure = {
-                            t ->
+                        onFailure = { t ->
                             dismissProgressDialog()
                             flagLoginEnd = true
                             toastShort(t)
@@ -61,16 +59,14 @@ class LoginActivity : FrameActivity() {
 
                 UserManager.login(this,
                         Platform.QQ,
-                        onSuccess = {
-                            ret ->
+                        onSuccess = { ret ->
                             dismissProgressDialog()
                             flagLoginEnd = true
                             toastShort(ret.toString())
                             setLoginResult()
                             finish()
                         },
-                        onFailure = {
-                            t ->
+                        onFailure = { t ->
                             dismissProgressDialog()
                             flagLoginEnd = true
                             toastShort(t)

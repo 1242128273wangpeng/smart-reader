@@ -1,1 +1,1 @@
-include ':common_book', ':theme',':book_kit'
+include ':common_book', ':book_kit'

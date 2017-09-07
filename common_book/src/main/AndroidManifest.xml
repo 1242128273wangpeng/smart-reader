@@ -65,17 +65,17 @@
     <!-- WeChat -->
     
     <!--qq-->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <!-- SDK2.1新增获取用户位置信息 -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     
     <uses-permission android:name="android.permission.GET_TASKS"/>
     <!--qq-->
@@ -131,13 +131,13 @@
                 android:configChanges="orientation|keyboardHidden|screenSize|keyboard|keyboardHidden"
                 android:label="@string/app_name"
                 android:theme="@android:style/Theme.Translucent"/>
-
+    
         <!-- 360广告依赖的activity -->
         <activity
                 android:name="com.ak.android.bridge.AKActivity"
                 android:configChanges="orientation|screenSize|keyboardHidden"
                 android:theme="@android:style/Theme.Black.NoTitleBar"/>
-
+    
         <!-- baidu 信息流广告必须添加 -->
         <activity
                 android:name="com.baidu.mobad.feeds.BaiduActivity"
@@ -180,7 +180,7 @@
                 android:theme="@style/Theme.Start">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-        
+    
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -192,10 +192,11 @@
         <!-- 书架页 发现页 -->
         <activity
                 android:name=".activity.HomeActivity"
+                android:launchMode="singleTask"
                 android:clearTaskOnLaunch="true"
                 android:configChanges="keyboard"
                 android:screenOrientation="portrait"
-                android:theme="@style/Theme1">
+                android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN2"/>
                 
@@ -207,8 +208,8 @@
                 android:name=".activity.LoginActivity"
                 android:launchMode="singleTop"
                 android:screenOrientation="portrait"
-                android:theme="@style/Theme1">
-    
+                android:theme="@style/AppTheme">
+
         </activity>
         <activity
                 android:name=".activity.ReadingActivity"
@@ -218,7 +219,7 @@
                 android:theme="@style/Theme.DesignDemo"/>
         <activity
                 android:name=".activity.CataloguesActivity"
-                android:theme="@style/Theme1"/>
+                android:theme="@style/AppTheme"/>
         <!-- 关于 -->
         
         
@@ -226,31 +227,31 @@
         <activity
                 android:name=".activity.ReadingSettingActivity"
                 android:screenOrientation="portrait"
-                android:theme="@style/Theme1"/>
+                android:theme="@style/AppTheme"/>
         
         <!-- 更多设置 -->
         <activity
                 android:name=".activity.SettingMoreActivity"
                 android:screenOrientation="portrait"
-                android:theme="@style/Theme1"/>
+                android:theme="@style/AppTheme"/>
         
         <!-- 设置页 -->
         <activity
                 android:name=".activity.SettingActivity"
                 android:screenOrientation="portrait"
-                android:theme="@style/Theme1"/>
+                android:theme="@style/AppTheme"/>
         
         <!-- 免责声明页 -->
         <activity
                 android:name=".activity.DisclaimerActivity"
                 android:screenOrientation="portrait"
-                android:theme="@style/Theme1"/>
+                android:theme="@style/AppTheme"/>
         
         <!-- 下载apk失败页面 -->
         <activity
                 android:name=".activity.DownloadErrorActivity"
                 android:screenOrientation="portrait"
-                android:theme="@style/Theme1"/>
+                android:theme="@style/AppTheme"/>
         
         <!-- 找书页面 -->
         <activity
@@ -258,13 +259,13 @@
                 android:configChanges="keyboard"
                 android:launchMode="singleTop"
                 android:screenOrientation="portrait"
-                android:theme="@style/Theme1"/>
+                android:theme="@style/AppTheme"/>
         <activity
                 android:name=".activity.StyleChangeActivity"
                 android:configChanges="keyboard"
                 android:launchMode="singleTop"
                 android:screenOrientation="portrait"
-                android:theme="@style/Theme1"/>
+                android:theme="@style/AppTheme"/>
         
         
         <!-- 推送 -->
@@ -337,36 +338,36 @@
                 android:name=".activity.CoverPageActivity"
                 android:label="@string/title_activity_act_book_cover"
                 android:screenOrientation="portrait"
-                android:theme="@style/Theme1"/>
+                android:theme="@style/AppTheme"/>
         <activity
                 android:name=".activity.FootprintActivity"
                 android:screenOrientation="portrait"
-                android:theme="@style/Theme1"/>
+                android:theme="@style/AppTheme"/>
         <activity
                 android:name=".activity.BookEndActivity"
                 android:label="@string/title_activity_act_book_over"
                 android:screenOrientation="portrait"
-                android:theme="@style/Theme1"/>
+                android:theme="@style/AppTheme"/>
         <activity
                 android:name=".activity.DownloadManagerActivity"
                 android:launchMode="singleTop"
                 android:screenOrientation="portrait"
-                android:theme="@style/Theme1"/>
+                android:theme="@style/AppTheme"/>
         <activity
                 android:name=".activity.GuideActivity"
                 android:screenOrientation="portrait"
-                android:theme="@style/Theme1"/>
+                android:theme="@style/AppTheme"/>
         <activity
                 android:name=".activity.FindBookDetail"
                 android:configChanges="keyboard"
                 android:launchMode="singleTop"
                 android:screenOrientation="portrait"
-                android:theme="@style/Theme1"/>
+                android:theme="@style/AppTheme"/>
         <activity
                 android:name=".activity.SwitchModeActivity"
                 android:launchMode="singleTop"
                 android:screenOrientation="nosensor"
-                android:theme="@style/Theme1"/>
+                android:theme="@style/AppTheme"/>
         
         <activity
                 android:name=".activity.GoToCoverOrReadActivity"
@@ -405,13 +406,13 @@
         <!--<activity-->
         <!--android:name="com.dingyue.bbs.activity.CustomLoginActivity"-->
         <!--android:screenOrientation="portrait"-->
-        <!--android:theme="@style/Theme.UMDefault" />-->
+        <!--android:iyouqu.theme="@style/Theme.UMDefault" />-->
         
         <!--&lt;!&ndash; 自定义社区 &ndash;&gt;-->
         <!--<activity-->
         <!--android:name="com.dingyue.bbs.activity.CustomCommunityMainActivity"-->
         <!--android:screenOrientation="portrait"-->
-        <!--android:theme="@style/Theme.UMDefault" />-->
+        <!--android:iyouqu.theme="@style/Theme.UMDefault" />-->
         
         
         <!-- 新浪微博 -->

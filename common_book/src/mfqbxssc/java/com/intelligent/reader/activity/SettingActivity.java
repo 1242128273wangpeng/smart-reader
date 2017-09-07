@@ -32,8 +32,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.support.annotation.AttrRes;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -47,7 +45,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.greenrobot.event.EventBus;
-import iyouqu.theme.StatusBarCompat;
+import iyouqu.theme.ThemeMode;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
@@ -55,20 +53,27 @@ import kotlin.jvm.functions.Function1;
 public class SettingActivity extends BaseCacheableActivity implements View.OnClickListener, SwitchButton.OnCheckedChangeListener {
 
     private static final int CODE_REQ_LOGIN = 100;
+    private final static int PUSH_TIME_SETTING = 1;
+    public static SettingActivity sInstance;
+    public static long cacheSize;
     public String TAG = SettingActivity.class.getSimpleName();
-    private ImageView top_setting_back;
+    public Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message message) {
+            super.handleMessage(message);
+            switch (message.what) {
 
+            }
+        }
+    };
     protected String currentThemeMode; //是否切换了主题
-
+    ApkUpdateUtils apkUpdateUtils = new ApkUpdateUtils(this);
+    private ImageView top_setting_back;
     private MyDialog myDialog;
-
     private List<RelativeLayout> mRelativeLayoutList;
     private List<TextView> mTextViewList;
     private List<View> mDivider;
     private List<View> mGap;
-
-    public static SettingActivity sInstance;
-
     private TextView tv_style_change;
     private TextView tv_night_shift;
     private TextView tv_readpage_setting;
@@ -78,10 +83,8 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     private TextView text_check_update;
     private TextView text_clear_cache;
     private TextView text_disclaimer_statement;
-
     //第二种布局 登录在左侧
     private TextView top_navigation_title;
-
     private LinearLayout rl_setting_layout;//背景
     private RelativeLayout rl_style_change;//主题切换
     private SwitchButton bt_night_shift;//夜间模式切换按钮
@@ -95,23 +98,8 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     private TextView check_update_message; //版本号
     private TextView clear_cache_size;//缓存
     private TextView theme_name;//主题名
-    private final static int PUSH_TIME_SETTING = 1;
-
-    public static long cacheSize;
-    ApkUpdateUtils apkUpdateUtils = new ApkUpdateUtils(this);
     private CacheAsyncTask cacheAsyncTask;
-
     private boolean isStyleChanged = false;
-    public Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message message) {
-            super.handleMessage(message);
-            switch (message.what) {
-
-            }
-        }
-    };
-
     private Runnable feedbackRunnable = new Runnable() {
         @Override
         public void run() {
@@ -119,7 +107,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         }
     };
 
-    TypedValue themeName = new TypedValue();//分割块颜色
+
     private RelativeLayout rl_history_setting;
     private TextView tv_history_setting;
     private TextView txt_nickname;
@@ -129,6 +117,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     private ImageView img_head_background;
     private TextView txt_login_des;
     private boolean flagLoginEnd = true;
+    private View mNightShadowView;
 
     @Override
     public void onCreate(Bundle paramBundle) {
@@ -146,7 +135,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         initListener();
         initData();
         sInstance = this;
-        UserManager.INSTANCE.initPlatform(this,null);
+        UserManager.INSTANCE.initPlatform(this, null);
     }
 
     protected void initView() {
@@ -190,7 +179,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         img_head_background = (ImageView) findViewById(R.id.img_head_background);
         int desid = getResources().getIdentifier("txt_login_des", "id", getPackageName());
 
-        if(desid != 0){
+        if (desid != 0) {
             txt_login_des = (TextView) findViewById(desid);
         }
 
@@ -203,7 +192,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             mTextViewList.add(textView);
         }
 
-        if(txt_login_des != null)
+        if (txt_login_des != null)
             mTextViewList.add(txt_login_des);
 
 
@@ -242,11 +231,6 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             tv_night_shift.setText(R.string.mode_night);
             bt_night_shift.setChecked(false);
         }
-        //初始化主题名
-        getTheme().resolveAttribute(R.attr.theme_name, themeName, true);
-        theme_name.setText(getResources().getText(themeName.resourceId));
-
-
 
     }
 
@@ -261,7 +245,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         Glide.with(this).load(userInfo.getHead_portrait()).into(img_head);
         findViewById(R.id.rl_logout).setVisibility(View.VISIBLE);
 
-        if( txt_login_des != null){
+        if (txt_login_des != null) {
             txt_login_des.setVisibility(View.GONE);
         }
     }
@@ -273,12 +257,11 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
 
         txt_nickname.setText("点击登录");
         txt_userid.setText("登录使用更多功能");
-        TypedValue typedValue = new TypedValue();
-        getTheme().resolveAttribute(R.attr.setting_img_user_head_default, typedValue, true);
-        img_head.setImageResource(typedValue.resourceId);
+
+
         findViewById(R.id.rl_logout).setVisibility(View.GONE);
 
-        if( txt_login_des != null){
+        if (txt_login_des != null) {
             txt_login_des.setVisibility(View.VISIBLE);
         }
     }
@@ -345,7 +328,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         super.onResume();
         if (UserManager.INSTANCE.isUserLogin()) {
             showUserInfo();
-        }else{
+        } else {
             hideUserInfo();
         }
     }
@@ -372,7 +355,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
 
         switch (paramView.getId()) {
             case R.id.rl_setting_more:
-                StartLogClickUtil.upLoadEventLog(this,StartLogClickUtil.PEASONAL_PAGE,StartLogClickUtil.MORESET);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.MORESET);
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_more);
                 startActivity(new Intent(SettingActivity.this, SettingMoreActivity.class));
                 break;
@@ -382,18 +365,18 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
 //                finish();
                 break;
             case R.id.check_update_rl:
-                StartLogClickUtil.upLoadEventLog(this,StartLogClickUtil.PEASONAL_PAGE,StartLogClickUtil.VERSION);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.VERSION);
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_ver);
                 checkUpdate();
                 break;
             case R.id.rl_feedback:
-                StartLogClickUtil.upLoadEventLog(this,StartLogClickUtil.PEASONAL_PAGE,StartLogClickUtil.HELP);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.HELP);
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_help);
                 handler.removeCallbacks(feedbackRunnable);
                 handler.postDelayed(feedbackRunnable, 500);
                 break;
             case R.id.rl_mark:
-                StartLogClickUtil.upLoadEventLog(this,StartLogClickUtil.PEASONAL_PAGE,StartLogClickUtil.COMMENT);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.COMMENT);
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_help);
                 try {
                     Uri uri = Uri.parse("market://details?id=" + getPackageName());
@@ -406,12 +389,12 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 break;
 
             case R.id.disclaimer_statement_rl:
-                StartLogClickUtil.upLoadEventLog(this,StartLogClickUtil.PEASONAL_PAGE,StartLogClickUtil.PROCTCOL);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.PROCTCOL);
                 Intent intent = new Intent(this, DisclaimerActivity.class);
                 startActivity(intent);
                 break;
             case R.id.rl_history_setting:
-                StartLogClickUtil.upLoadEventLog(this,StartLogClickUtil.PEASONAL_PAGE,StartLogClickUtil.PERSON_HISTORY);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.PERSON_HISTORY);
                 EventBus.getDefault().post(new ConsumeEvent(R.id.redpoint_setting_history));
                 startActivity(new Intent(SettingActivity.this, FootprintActivity.class));
                 break;
@@ -421,14 +404,14 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 startActivity(new Intent(SettingActivity.this, ReadingSettingActivity.class));
                 break;
             case R.id.clear_cache_rl://清除缓存的处理
-                StartLogClickUtil.upLoadEventLog(this,StartLogClickUtil.PEASONAL_PAGE,StartLogClickUtil.CACHECLEAR);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.CACHECLEAR);
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_clear_cache);
                 clearCacheDialog();
                 break;
 
             case R.id.top_setting_back:
                 Map<String, String> data = new HashMap<>();
-                data.put("type","1");
+                data.put("type", "1");
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
                 goBackToHome();
                 break;
@@ -436,12 +419,12 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             case R.id.txt_nickname:
             case R.id.txt_userid:
                 loginDialog();
-                StartLogClickUtil.upLoadEventLog(this,StartLogClickUtil.PEASONAL_PAGE,StartLogClickUtil.LOGIN);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.LOGIN);
                 break;
             case R.id.btn_logout:
             case R.id.rl_logout:
                 logoutDialog();
-                StartLogClickUtil.upLoadEventLog(this,StartLogClickUtil.PEASONAL_PAGE,StartLogClickUtil.LOGOUT);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.LOGOUT);
                 break;
             default:
                 break;
@@ -456,8 +439,8 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         }
     }
 
-    private void logoutDialog(){
-        if(myDialog != null && myDialog.isShowing()){
+    private void logoutDialog() {
+        if (myDialog != null && myDialog.isShowing()) {
             myDialog.dismiss();
         }
         myDialog = new MyDialog(this, R.layout.publish_hint_dialog);
@@ -489,8 +472,8 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         myDialog.show();
     }
 
-    private void loginDialog(){
-        if(myDialog != null && myDialog.isShowing()){
+    private void loginDialog() {
+        if (myDialog != null && myDialog.isShowing()) {
             myDialog.dismiss();
         }
         myDialog = new MyDialog(this, R.layout.login_dialog);
@@ -529,11 +512,11 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             @Override
             public void onClick(View v) {
                 dismissDialog();
-                if (!UserManager.INSTANCE.isPlatformEnable(Platform.WECHAT)){
+                if (!UserManager.INSTANCE.isPlatformEnable(Platform.WECHAT)) {
                     showToastShort("请安装微信后重试");
                     return;
                 }
-                if (flagLoginEnd){
+                if (flagLoginEnd) {
                     flagLoginEnd = false;
                     showProgressDialog();
                     UserManager.INSTANCE.login(SettingActivity.this, Platform.WECHAT, new Function1<LoginResp, Unit>() {
@@ -568,7 +551,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         myDialog.setCanceledOnTouchOutside(true);
 
         myDialog.findViewById(R.id.publish_content).setVisibility(View.GONE);
-        ((TextView)(myDialog.findViewById(R.id.dialog_title))).setText(R.string.tips_login);
+        ((TextView) (myDialog.findViewById(R.id.dialog_title))).setText(R.string.tips_login);
         myDialog.findViewById(R.id.change_source_bottom).setVisibility(View.GONE);
         myDialog.findViewById(R.id.progress_del).setVisibility(View.VISIBLE);
         myDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -660,7 +643,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     }
 
     public void goBackToHome() {
-        if (!currentThemeMode.equals(mThemeHelper.getMode())||isStyleChanged) {
+        if (!currentThemeMode.equals(mThemeHelper.getMode()) || isStyleChanged) {
             Intent themIntent = new Intent(SettingActivity.this, HomeActivity.class);
             Bundle bundle = new Bundle();
             bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_SWITCH_THEME);
@@ -679,31 +662,45 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     }
 
 
-    private void nightShift() {
-        mThemeHelper.showAnimation(this);
-        mThemeHelper.toggleThemeSetting(this);
-        refreshUI();
-        StatusBarCompat.compat(this);
-    }
-
     //夜间模式切换按钮的回调
     @Override
     public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-        StartLogClickUtil.upLoadEventLog(this,StartLogClickUtil.PEASONAL_PAGE,StartLogClickUtil.NIGHTMODE);
+        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.NIGHTMODE);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor edit = sharedPreferences.edit();
         if (isChecked) {
             tv_night_shift.setText(R.string.mode_day);
             edit.putInt("current_light_mode", Constants.MODE);
-            Constants.MODE = sharedPreferences.getInt("current_night_mode", 61);
+            Constants.MODE = 61;
+            mThemeHelper.setMode(ThemeMode.NIGHT);
         } else {
             tv_night_shift.setText(R.string.mode_night);
             edit.putInt("current_night_mode", Constants.MODE);
             Constants.MODE = sharedPreferences.getInt("current_light_mode", 51);
+            mThemeHelper.setMode(ThemeMode.THEME1);
         }
         edit.putInt("content_mode", Constants.MODE);
         edit.apply();
-        nightShift();
+        nightShift(isChecked, true);
+    }
+
+    private void CancelTask() {
+        if (cacheAsyncTask != null) {
+            cacheAsyncTask.cancel(true);
+            cacheAsyncTask = null;
+        }
+    }
+
+    private void onLoginSucess() {
+        if (UserManager.INSTANCE.isUserLogin()) {
+            showUserInfo();
+            StatServiceUtils.statAppBtnClick(this, StatServiceUtils.user_login_succeed);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        UserManager.INSTANCE.onActivityResult(requestCode, resultCode, data);
     }
 
     private class CacheAsyncTask extends AsyncTask<Void, Void, String> {
@@ -728,177 +725,4 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
 
     }
 
-    private void CancelTask() {
-        if (cacheAsyncTask != null) {
-            cacheAsyncTask.cancel(true);
-            cacheAsyncTask = null;
-        }
-    }
-
-
-    private void onLoginSucess(){
-        if (UserManager.INSTANCE.isUserLogin()) {
-            showUserInfo();
-            StatServiceUtils.statAppBtnClick(this, StatServiceUtils.user_login_succeed);
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        UserManager.INSTANCE.onActivityResult(requestCode, resultCode, data);
-    }
-
-    private void refreshUI() {
-        Resources.Theme theme = getTheme();
-        Resources resources = getResources();
-
-        TypedValue myBackgroundPic = new TypedValue();//顶部背景
-        TypedValue textColor = new TypedValue();//字体颜色
-        TypedValue iconBack = new TypedValue();//分割块颜色
-        TypedValue smallTextColor = new TypedValue();//字体颜色
-        TypedValue loginBackgroundPic = new TypedValue();//登录讨论区图片背景
-        TypedValue loginTextColor = new TypedValue();//登录讨论区字体颜色
-        TypedValue loginDefaultPic = new TypedValue();//登录讨论区头像
-        TypedValue itemBackground = new TypedValue();//背景色
-        TypedValue bbsIcon = new TypedValue();//讨论区
-        TypedValue skinIcon = new TypedValue();//主题换肤
-        TypedValue nightShiftIcon = new TypedValue();//夜间模式
-        TypedValue readingSettingIcon = new TypedValue();//阅读页设置
-        TypedValue historyIcon = new TypedValue();//阅读页设置
-        TypedValue moreSettingIcon = new TypedValue();//更多设置
-        TypedValue feedbackIcon = new TypedValue();//帮助与回馈
-        TypedValue commentIcon = new TypedValue();//去评分
-        TypedValue updatingIcon = new TypedValue();//当前版本
-        TypedValue clearCacheIcon = new TypedValue();//清除缓存
-        TypedValue protocalIcon = new TypedValue();//使用协议
-        TypedValue moreIcon = new TypedValue();//更多符号
-        TypedValue dividerColor = new TypedValue();//分割线颜色
-        TypedValue gapColor = new TypedValue();//分割块颜色
-
-        TypedValue navigationColor = new TypedValue();//头部导航的颜色
-        TypedValue navigationTextColor = new TypedValue();//头部导航的字体颜色
-
-        //icon资源
-        theme.resolveAttribute(R.attr.my_item_bbs_icon, bbsIcon, true);
-        theme.resolveAttribute(R.attr.my_item_skin_icon, skinIcon, true);
-        theme.resolveAttribute(R.attr.my_item_nightshift_icon, nightShiftIcon, true);
-        theme.resolveAttribute(R.attr.my_item_readingsetting_icon, readingSettingIcon, true);
-        theme.resolveAttribute(R.attr.my_item_history_icon, historyIcon, true);
-        theme.resolveAttribute(R.attr.my_item_moresetting_icon, moreSettingIcon, true);
-        theme.resolveAttribute(R.attr.my_item_feedback_icon, feedbackIcon, true);
-        theme.resolveAttribute(R.attr.my_item_comment_icon, commentIcon, true);
-        theme.resolveAttribute(R.attr.my_item_update_icon, updatingIcon, true);
-        theme.resolveAttribute(R.attr.my_item_clearcache_icon, clearCacheIcon, true);
-        theme.resolveAttribute(R.attr.my_item_protocol_icon, protocalIcon, true);
-        theme.resolveAttribute(R.attr.my_item_more_icon, moreIcon, true);
-        theme.resolveAttribute(R.attr.theme_name, themeName, true);
-
-        mThemeHelper.setTextviewDrawable(this, null, null, null, null, tv_style_change);
-        mThemeHelper.setTextviewDrawable(this, null, null, null, null, tv_night_shift);
-        mThemeHelper.setTextviewDrawable(this, null, null, moreIcon, null, tv_readpage_setting);
-        mThemeHelper.setTextviewDrawable(this, null, null, moreIcon, null, tv_history_setting);
-        mThemeHelper.setTextviewDrawable(this, null, null, moreIcon, null, tv_setting_more);
-        mThemeHelper.setTextviewDrawable(this, null, null, moreIcon, null, tv_feedback);
-        mThemeHelper.setTextviewDrawable(this, null, null, moreIcon, null, tv_mark);
-        mThemeHelper.setTextviewDrawable(this, null, null, null, null, text_check_update);
-        mThemeHelper.setTextviewDrawable(this, null, null, null, null, text_clear_cache);
-        mThemeHelper.setTextviewDrawable(this, null, null, moreIcon, null, text_disclaimer_statement);
-
-        // 分割线
-        theme.resolveAttribute(R.attr.color_divider, dividerColor, true);
-        for (View divider : mDivider) {
-            divider.setBackgroundResource(dividerColor.resourceId);
-        }
-
-        //分割块
-        theme.resolveAttribute(R.attr.color_lv_gap, gapColor, true);
-        for (View gapr : mGap) {
-            gapr.setBackgroundResource(gapColor.resourceId);
-        }
-
-        //题目字体颜色 更多符号
-        theme.resolveAttribute(R.attr.color_text_most, textColor, true);
-        for (TextView textView : mTextViewList) {
-            textView.setTextColor(resources.getColor(textColor.resourceId));
-        }
-
-        //顶部背景
-        theme.resolveAttribute(R.attr.my_top_bg, myBackgroundPic, true);
-        theme.resolveAttribute(R.attr.my_bg_color, itemBackground, true);
-        theme.resolveAttribute(R.attr.my_top_pic, loginDefaultPic, true);
-        theme.resolveAttribute(R.attr.my_top_login_bg, loginBackgroundPic, true);
-        theme.resolveAttribute(R.attr.my_top_login_text, loginTextColor, true);
-        theme.resolveAttribute(R.attr.my_item_small_text_color, smallTextColor, true);
-        theme.resolveAttribute(R.attr.title_back1, iconBack, true);
-
-
-        //主题名
-        theme_name.setText(resources.getText(themeName.resourceId));
-
-        //颜色背景
-        rl_setting_layout.setBackgroundResource(itemBackground.resourceId);//设置页面背景
-        theme_name.setTextColor(resources.getColor(smallTextColor.resourceId));//主题名
-        check_update_message.setTextColor(resources.getColor(smallTextColor.resourceId));//版本号
-        clear_cache_size.setTextColor(resources.getColor(smallTextColor.resourceId));//缓存
-
-
-        //第二套布局的资源
-        theme.resolveAttribute(R.attr.color_primary, navigationColor, true);
-        theme.resolveAttribute(R.attr.top_navigation_text_color, navigationTextColor, true);
-        top_setting_back.setImageDrawable(resources.getDrawable(iconBack.resourceId));//返回键颜色
-        top_navigation_title.setTextColor(resources.getColor(navigationTextColor.resourceId));
-
-        //xml总没有图就不设置了
-        if(img_head_background.getDrawable() != null) {
-            resetImageResource(img_head_background, R.attr.setting_img_user_head_background);
-        }
-
-        resetTextColor(btn_logout, R.attr.setting_logout_font_color1);
-        resetBackground(btn_logout, R.attr.setting_logout_background);
-
-        resetBackground(img_head_background, R.attr.color_primary);
-
-        if(!UserManager.INSTANCE.isUserLogin()) {
-            resetImageResource(img_head, R.attr.setting_img_user_head_default);
-        }
-        resetTextColor(txt_nickname, R.attr.setting_nickname_font_color, resources.getColor(textColor.resourceId));
-        resetTextColor(txt_userid, R.attr.setting_userid_font_color1, resources.getColor(textColor.resourceId));
-        if(txt_login_des != null){
-            resetTextColor(txt_login_des, R.attr.setting_userid_font_color1, resources.getColor(textColor.resourceId));
-        }
-
-    }
-
-    private void resetImageResource(ImageView view, @AttrRes int attr) {
-        TypedValue typedValue = new TypedValue();
-        if (getTheme().resolveAttribute(attr, typedValue, true)) {
-            view.setImageResource(typedValue.resourceId);
-        }
-    }
-
-    private void resetBackground(View view, @AttrRes int attr) {
-        TypedValue typedValue = new TypedValue();
-        if (getTheme().resolveAttribute(attr, typedValue, true)) {
-            view.setBackgroundResource(typedValue.resourceId);
-        }
-    }
-
-    private boolean resetTextColor(TextView view, @AttrRes int attr) {
-        TypedValue typedValue = new TypedValue();
-        if (getTheme().resolveAttribute(attr, typedValue, true)) {
-            if(typedValue.type == TypedValue.TYPE_REFERENCE) {
-                view.setTextColor(getResources().getColor(typedValue.resourceId));
-            }else{
-                view.setTextColor(typedValue.data);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private void resetTextColor(TextView view, @AttrRes int attr, int defaultColor) {
-        if (!resetTextColor(view, attr)) {
-            view.setTextColor(defaultColor);
-        }
-    }
 }

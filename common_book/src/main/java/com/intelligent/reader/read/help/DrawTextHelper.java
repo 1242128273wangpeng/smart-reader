@@ -37,6 +37,14 @@ import java.util.Map;
 
 public class DrawTextHelper {
     private static final String TAG = "DrawTextHelper";
+    Bitmap mBitmap;
+    int mBitmapWidth;
+    int mBitmapHeight;
+    int left1;
+    int right1;
+    int top1;
+    int bottom1;
+    Canvas canvas;
     private Paint mPaint;
     private Paint duanPaint;
     private Paint backgroundPaint;
@@ -45,10 +53,8 @@ public class DrawTextHelper {
     private Paint headPaint;
     private Paint footPaint;
     private TextPaint mchapterPaint;
-
     private ReadStatus readStatus;
     private Resources resources;
-
     private Bitmap mBackground; // 背景Bitmap
     private Bitmap mKraftBackground; // 牛皮纸模式 底部背景
     private Bitmap mSoftBackground;
@@ -59,58 +65,14 @@ public class DrawTextHelper {
     private int translateColor;
     private float percent;
     private String timeText;
-
     private PageInterface pageView;
     private OwnNativeAdManager nativeAdManager;
-
     private Paint nightPaint;
-
     private StatisticManager statisticManager;
-
     private SensitiveWords readSensitiveWord;
     private List<String> readSensitiveWords;
     private boolean noReadSensitive = false;
-
-    public void setTextColor(int textColor) {
-        this.textColor = textColor;
-        mPaint.setColor(textColor);
-    }
-
-    public void setPercent(float percent, Canvas canvas) {
-        this.percent = percent;
-        if (readStatus.sequence != -1) {
-            drawBattery(canvas);
-        }
-    }
-
-    public void setTimeText(String time) {
-        this.timeText = time;
-    }
-
-    public void changeBattyBitmp(int res) {
-        try {
-            mBitmap = BitmapFactory.decodeResource(resources, res);
-        } catch (OutOfMemoryError e) {
-            System.gc();
-            System.gc();
-            mBitmap = BitmapFactory.decodeResource(resources, res);
-        }
-    }
-
-    public void resetBackBitmap() {
-        if (mBackground != null && !mBackground.isRecycled()) {
-            mBackground.recycle();
-            mBackground = null;
-        }
-        if (mKraftBackground != null && !mKraftBackground.isRecycled()) {
-            mKraftBackground.recycle();
-            mKraftBackground = null;
-        }
-        if (mSoftBackground != null && !mSoftBackground.isRecycled()) {
-            mSoftBackground.recycle();
-            mSoftBackground = null;
-        }
-    }
+    private float firstchapterHeight;
 
     public DrawTextHelper(Resources res, PageInterface pageView, Activity mActivity) {
         this.resources = res;
@@ -183,6 +145,65 @@ public class DrawTextHelper {
         nightPaint.setAlpha(80);
     }
 
+    private static Bitmap resizeBitmap(Bitmap bitmap, int w, int h) {
+        if (bitmap != null) {
+            Bitmap copyBitmap = bitmap.copy(Bitmap.Config.RGB_565, true);
+            float scaleWidth = ((float) w) / copyBitmap.getWidth();
+            float scaleHeight = ((float) h) / copyBitmap.getHeight();
+            Matrix matrix = new Matrix();
+            matrix.postScale(scaleWidth, scaleHeight);
+            Bitmap resizedBitmap = Bitmap.createBitmap(copyBitmap, 0, 0, copyBitmap.getWidth(), copyBitmap.getHeight(), matrix, true);
+            bitmap.recycle();
+            copyBitmap.recycle();
+            bitmap = null;
+            copyBitmap = null;
+            return resizedBitmap;
+        } else {
+            return null;
+        }
+    }
+
+    public void setTextColor(int textColor) {
+        this.textColor = textColor;
+        mPaint.setColor(textColor);
+    }
+
+    public void setPercent(float percent, Canvas canvas) {
+        this.percent = percent;
+        if (readStatus.sequence != -1) {
+            drawBattery(canvas);
+        }
+    }
+
+    public void setTimeText(String time) {
+        this.timeText = time;
+    }
+
+    public void changeBattyBitmp(int res) {
+        try {
+            mBitmap = BitmapFactory.decodeResource(resources, res);
+        } catch (OutOfMemoryError e) {
+            System.gc();
+            System.gc();
+            mBitmap = BitmapFactory.decodeResource(resources, res);
+        }
+    }
+
+    public void resetBackBitmap() {
+        if (mBackground != null && !mBackground.isRecycled()) {
+            mBackground.recycle();
+            mBackground = null;
+        }
+        if (mKraftBackground != null && !mKraftBackground.isRecycled()) {
+            mKraftBackground.recycle();
+            mKraftBackground = null;
+        }
+        if (mSoftBackground != null && !mSoftBackground.isRecycled()) {
+            mSoftBackground.recycle();
+            mSoftBackground = null;
+        }
+    }
+
     /**
      * paint
      * type  0: 画背景
@@ -226,13 +247,13 @@ public class DrawTextHelper {
             } else {
                 color_int = R.color.reading_text_color_sixth;
             }
-        }else if (Constants.MODE == 61) {
+        } else if (Constants.MODE == 61) {
             if (type == 0) {
                 color_int = R.color.reading_backdrop_night;
             } else {
                 color_int = R.color.reading_text_color_night;
             }
-        }else{
+        } else {
             if (type == 0) {
                 color_int = R.color.reading_backdrop_first;
             } else {
@@ -607,8 +628,8 @@ public class DrawTextHelper {
                 }
                 /*if (readStatus.currentAdInfo != null && (readStatus.native_type == 1 || readStatus.native_type == 3 || readStatus.native_type == 4)) {
 
-																				  
-					 
+
+
                     statisticManager.schedulingRequest(activity, readStatus.novel_basePageView, readStatus.currentAdInfo, pageView.getCurrentNovel(), StatisticManager.TYPE_SHOW, NativeInit.ad_position[1]);
                 } else */
                 if (readStatus.currentAdInfo_image != null && readStatus.native_type == 2) {
@@ -637,7 +658,6 @@ public class DrawTextHelper {
             }
         }
     }
-
 
     public void loadNatvieAd() {
         if (nativeAdManager != null) {
@@ -772,8 +792,6 @@ public class DrawTextHelper {
             }
         }
     }
-
-    private float firstchapterHeight;
 
     /*
      * 章节首页提示效果
@@ -937,13 +955,13 @@ public class DrawTextHelper {
         drawChapterName(canvas);
     }
 
-    private void drawChapterName(Canvas canvas){
-        if(readStatus.chapterName == null)
+    private void drawChapterName(Canvas canvas) {
+        if (readStatus.chapterName == null)
             return;
         float position;
         position = 15 * readStatus.screenScaledDensity;
         String name = readStatus.chapterName;
-        if(readStatus.chapterName.length() > 17){
+        if (readStatus.chapterName.length() > 17) {
             name = name.substring(0, 16) + "...";
         }
 
@@ -952,7 +970,6 @@ public class DrawTextHelper {
         canvas.drawText(name, readStatus.screenWidth / 2 - strwid / 2,
                 position, footPaint);
     }
-
 
     private void drawChapterNumNew(Canvas canvas) {
         int chapter = readStatus.sequence + 1;
@@ -1039,16 +1056,6 @@ public class DrawTextHelper {
                 top1 + 7 * readStatus.screenScaledDensity, footPaint);
     }
 
-    Bitmap mBitmap;
-    int mBitmapWidth;
-    int mBitmapHeight;
-    int left1;
-    int right1;
-    int top1;
-    int bottom1;
-
-    Canvas canvas;
-
     public void getRect() {
         mBitmap = BitmapFactory.decodeResource(resources, R.drawable.daymode_marks_power);
         mBitmapWidth = mBitmap.getWidth();
@@ -1132,24 +1139,6 @@ public class DrawTextHelper {
         textPaint.setTextAlign(Paint.Align.LEFT);
     }
 
-    private static Bitmap resizeBitmap(Bitmap bitmap, int w, int h) {
-        if (bitmap != null) {
-            Bitmap copyBitmap = bitmap.copy(Bitmap.Config.RGB_565, true);
-            float scaleWidth = ((float) w) / copyBitmap.getWidth();
-            float scaleHeight = ((float) h) / copyBitmap.getHeight();
-            Matrix matrix = new Matrix();
-            matrix.postScale(scaleWidth, scaleHeight);
-            Bitmap resizedBitmap = Bitmap.createBitmap(copyBitmap, 0, 0, copyBitmap.getWidth(), copyBitmap.getHeight(), matrix, true);
-            bitmap.recycle();
-            copyBitmap.recycle();
-            bitmap = null;
-            copyBitmap = null;
-            return resizedBitmap;
-        } else {
-            return null;
-        }
-    }
-
     /**
      * 画背景图
      * <p/>
@@ -1217,6 +1206,7 @@ public class DrawTextHelper {
 
 
     }
+
     private void drawHeadBackground(Canvas canvas) {
         // 通过新的画布，将矩形画新的bitmap上去
         canvas.drawRect(0, 0, readStatus.screenWidth, footHeight, setPaintColor(backgroundPaint, 0));

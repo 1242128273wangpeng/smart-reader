@@ -16,7 +16,7 @@
     <string name="read_pagemode_fangzhen">仿真</string>
     <string name="read_pagemode_translation">平移</string>
     <string name="read_pagemode_updown">上下</string>
-
+    
     <string name="read_bookmark_no">暂时没有书签</string>
     <string name="read_event_yellow">_fryellow</string>
     <string name="read_event_eye">_freye</string>
@@ -32,7 +32,7 @@
     <string name="read_event_0_5"> _fr0.5</string>
     <string name="read_event_1_0"> _fr1</string>
     <string name="read_event_1_5"> _fr1.5</string>
-
+    
     <string name="remove_mark_title">确定删除该书签吗？</string>
     <string name="add_mark_fail">书签添加失败</string>
     <string name="bbs">社区</string>
@@ -43,14 +43,14 @@
     <string name="read_speedless">减速-</string>
     <string name="read_auto_speed">自动翻页速度:</string>
     <string name="network_error_retry">刷新</string>
-
+    
     <string name="like_other_book">还有这些书也值得一看</string>
     <string name="end_to_bbs">去讨论区</string>
     <string name="end_to_bookstore">去书城看看</string>
     <string name="end_to_bookshelf">我的书架</string>
     <string name="read_end_detail">恭喜您读完了 &#171; %1$s &#187;,去书评区和书友们讨论并吐槽一下吧!</string>
     <string name="read_end_tip">客官请留步...</string>
-
+    
     <string name="reading_web">原网页阅读</string>
     <string name="text_web_error">原网站加载失败 \n无法阅读</string>
     <string name="no_chapter_logining">加载中，请稍等...</string>

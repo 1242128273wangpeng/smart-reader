@@ -1,19 +1,15 @@
 package com.intelligent.reader.fragment;
 
 import com.intelligent.reader.R;
-import com.intelligent.reader.activity.HomeActivity;
-import com.intelligent.reader.activity.LoginActivity;
 import com.intelligent.reader.adapter.GuideAdapter;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewStub;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -58,6 +54,11 @@ public class GuideFragment extends Fragment {
         guideAdapter = catsAdapter;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
     public interface FragmentActivityCallback {
 
         void getImageController(ImageView imageController);
@@ -65,10 +66,5 @@ public class GuideFragment extends Fragment {
         void getGuideBtn(TextView guide_btn);
 
         void getImageCenter(ImageView imageCenter);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
     }
 }

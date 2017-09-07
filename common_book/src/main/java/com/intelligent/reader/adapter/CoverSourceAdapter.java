@@ -1,5 +1,11 @@
 package com.intelligent.reader.adapter;
 
+import com.intelligent.reader.R;
+
+import net.lzbook.kit.data.bean.CoverPage;
+import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.Tools;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,14 +13,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-
-import net.lzbook.kit.data.bean.CoverPage;
-import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.Tools;
-
 import java.util.List;
-
-import com.intelligent.reader.R;
 
 /**
  * Created by Administrator on 2016/11/5.

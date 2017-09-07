@@ -20,7 +20,6 @@ import net.xxx.yyy.go.spider.URLBuilderIntterface;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -53,30 +52,38 @@ public class SearchHelper {
 
     private Context mContext;
     private String url_tag;
+    private SearchSuggestCallBack searchSuggestCallBack;
+    private JsCallSearchCall mJsCallSearchCall;
+    private StartLoadCall mStartLoadCall;
 
-
-    public SearchHelper(Context context){
+    public SearchHelper(Context context) {
         mContext = context;
         if (bookDaoHelper == null) {
             bookDaoHelper = BookDaoHelper.getInstance(mContext.getApplicationContext());
         }
     }
 
-    private class WordInfo{
-        boolean actioned = false;
-        private long startTime = System.currentTimeMillis();
-        private long useTime = 0;
+    // 生成 [0-n) 个不重复的随机数
+    public static ArrayList<Integer> getRandomInt(int range, int count) {
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        Random rand = new Random();
+        boolean[] bool = new boolean[range];
+        int num = 0;
 
-        public long computeUseTime(){
-            if(useTime == 0) {
-                useTime = System.currentTimeMillis() - startTime;
-            }
-            return useTime;
+        for (int i = 0; i < count; i++) {
+            do {
+                // 如果产生的数相同继续循环
+                num = rand.nextInt(range);
+            } while (bool[num]);
+
+            bool[num] = true;
+            list.add(num);
         }
 
+        return list;
     }
 
-    public void startSearchSuggestData(String searchWord){
+    public void startSearchSuggestData(String searchWord) {
         try {
             if (searchWord != null && !TextUtils.isEmpty(searchWord)) {
                 searchWord = URLEncoder.encode(searchWord, "utf-8");
@@ -92,7 +99,7 @@ public class SearchHelper {
                 public void onSuccess(Object result, Object tag) {
                     if (result != null && url_tag.equals(tag)) {
                         ArrayList<String> resultSuggest = (ArrayList<String>) result;
-                        if (searchSuggestCallBack != null){
+                        if (searchSuggestCallBack != null) {
                             searchSuggestCallBack.onSearchResult(resultSuggest);
                         }
                     }
@@ -106,35 +113,29 @@ public class SearchHelper {
         }
     }
 
-    private SearchSuggestCallBack searchSuggestCallBack;
-
-    public void setSearchSuggestCallBack(SearchSuggestCallBack ssb){
+    public void setSearchSuggestCallBack(SearchSuggestCallBack ssb) {
         searchSuggestCallBack = ssb;
     }
 
-    public interface SearchSuggestCallBack{
-        void onSearchResult(ArrayList<String> suggestList);
-    }
-
-    public void setStartedAction(){
+    public void setStartedAction() {
         wordInfoMap.put(word, new WordInfo());
     }
 
-    public void onLoadFinished(){
+    public void onLoadFinished() {
         WordInfo wordInfo = wordInfoMap.get(word);
-        if(wordInfo != null)
+        if (wordInfo != null)
             wordInfo.computeUseTime();
     }
 
-    public String getWord(){
+    public String getWord() {
         return word;
     }
 
-    public void setWord(String word){
+    public void setWord(String word) {
         this.word = word;
     }
 
-    public void setHotWordType(String word){
+    public void setHotWordType(String word) {
         this.word = word;
         searchType = "0";
         filterType = "0";
@@ -142,7 +143,7 @@ public class SearchHelper {
         sortType = "0";
     }
 
-    public void setInitType(Intent intent){
+    public void setInitType(Intent intent) {
         word = intent.getStringExtra("word");
         searchType = intent.getStringExtra("search_type");
         filterType = intent.getStringExtra("filter_type");
@@ -152,7 +153,7 @@ public class SearchHelper {
 
     public void initJSHelp(JSInterfaceHelper jsInterfaceHelper) {
 
-        if (jsInterfaceHelper == null){
+        if (jsInterfaceHelper == null) {
             return;
         }
 
@@ -169,7 +170,7 @@ public class SearchHelper {
 
                 startLoadData();
 
-                if (mJsCallSearchCall != null){
+                if (mJsCallSearchCall != null) {
                     mJsCallSearchCall.onJsSearch();
                 }
             }
@@ -192,7 +193,7 @@ public class SearchHelper {
                 requestItem.extra_parameter = extra_parameter;
 
                 SearchHelper.WordInfo wordInfo = wordInfoMap.get(word);
-                if(wordInfo!= null) {
+                if (wordInfo != null) {
                     wordInfo.actioned = true;
                     alilog(buildSearch(requestItem, word, Search.OP.COVER, wordInfo.computeUseTime()));
                 }
@@ -244,7 +245,7 @@ public class SearchHelper {
                 Book book = genCoverBook(host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count,
                         updateTime, parameter, extra_parameter, dex);
                 SearchHelper.WordInfo wordInfo = wordInfoMap.get(word);
-                if(wordInfo != null) {
+                if (wordInfo != null) {
                     wordInfo.actioned = true;
                     alilog(buildSearch(book, word, Search.OP.BOOKSHELF, wordInfo.computeUseTime()));
                 }
@@ -253,7 +254,7 @@ public class SearchHelper {
                     Toast.makeText(mContext.getApplicationContext(), R.string.bookshelf_insert_success, Toast.LENGTH_SHORT).show();
 
                     Map<String, String> data = new HashMap<>();
-                    data.put("type","1");
+                    data.put("type", "1");
                     StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SEARCHRESULT_PAGE, StartLogClickUtil.SHELFADD, data);
                 }
             }
@@ -267,8 +268,8 @@ public class SearchHelper {
                 Toast.makeText(mContext.getApplicationContext(), R.string.bookshelf_delete_success, Toast.LENGTH_SHORT).show();
 
                 Map<String, String> data = new HashMap<>();
-                data.put("type","2");
-                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SEARCHRESULT_PAGE,StartLogClickUtil.SHELFADD, data);
+                data.put("type", "2");
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SEARCHRESULT_PAGE, StartLogClickUtil.SHELFADD, data);
             }
         });
     }
@@ -323,30 +324,10 @@ public class SearchHelper {
             mUrl = UrlUtils.buildWebUrl(URLBuilderIntterface.SEARCH, params);
         }
 
-        if (mStartLoadCall != null){
+        if (mStartLoadCall != null) {
             mStartLoadCall.onStartLoad(mUrl);
         }
 
-    }
-
-    // 生成 [0-n) 个不重复的随机数
-    public static ArrayList<Integer> getRandomInt(int range, int count) {
-        ArrayList<Integer> list = new ArrayList<Integer>();
-        Random rand = new Random();
-        boolean[] bool = new boolean[range];
-        int num = 0;
-
-        for (int i = 0; i < count; i++) {
-            do {
-                // 如果产生的数相同继续循环
-                num = rand.nextInt(range);
-            } while (bool[num]);
-
-            bool[num] = true;
-            list.add(num);
-        }
-
-        return list;
     }
 
     public String getReplaceWord() {
@@ -356,36 +337,49 @@ public class SearchHelper {
         return words[index];
     }
 
-    public void onDestroy(){
+    public void onDestroy() {
         Set<String> strings = wordInfoMap.keySet();
-        for (String key: strings){
+        for (String key : strings) {
             WordInfo wordInfo = wordInfoMap.get(key);
-            if(wordInfo != null && !wordInfo.actioned) {
+            if (wordInfo != null && !wordInfo.actioned) {
                 alilog(buildSearch(key, Search.OP.CANCEL, wordInfo.computeUseTime()));
             }
         }
         wordInfoMap.clear();
     }
 
-
-    private JsCallSearchCall mJsCallSearchCall;
-
-    public void setJsCallSearchCall(JsCallSearchCall jsCallSearchCall){
+    public void setJsCallSearchCall(JsCallSearchCall jsCallSearchCall) {
         mJsCallSearchCall = jsCallSearchCall;
     }
 
-    public interface JsCallSearchCall{
-        void onJsSearch();
-    }
-
-    private StartLoadCall mStartLoadCall;
-
-    public void setStartLoadCall(StartLoadCall startLoadCall){
+    public void setStartLoadCall(StartLoadCall startLoadCall) {
         mStartLoadCall = startLoadCall;
     }
 
-    public interface StartLoadCall{
+    public interface SearchSuggestCallBack {
+        void onSearchResult(ArrayList<String> suggestList);
+    }
+
+    public interface JsCallSearchCall {
+        void onJsSearch();
+    }
+
+    public interface StartLoadCall {
         void onStartLoad(String url);
+    }
+
+    private class WordInfo {
+        boolean actioned = false;
+        private long startTime = System.currentTimeMillis();
+        private long useTime = 0;
+
+        public long computeUseTime() {
+            if (useTime == 0) {
+                useTime = System.currentTimeMillis() - startTime;
+            }
+            return useTime;
+        }
+
     }
 
 

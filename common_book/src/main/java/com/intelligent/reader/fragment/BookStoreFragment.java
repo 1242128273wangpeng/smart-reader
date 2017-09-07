@@ -1,5 +1,12 @@
 package com.intelligent.reader.fragment;
 
+import com.intelligent.reader.R;
+
+import net.lzbook.kit.book.view.NonSwipeViewPager;
+import net.lzbook.kit.request.UrlUtils;
+import net.lzbook.kit.utils.AppUtils;
+import net.xxx.yyy.go.spider.URLBuilderIntterface;
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,14 +18,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-
-
-import com.intelligent.reader.R;
-
-import net.lzbook.kit.book.view.NonSwipeViewPager;
-import net.lzbook.kit.request.UrlUtils;
-import net.lzbook.kit.utils.AppUtils;
-import net.xxx.yyy.go.spider.URLBuilderIntterface;
 
 import java.util.HashMap;
 
@@ -168,41 +167,6 @@ public class BookStoreFragment extends Fragment {
         switchState(current_tab);
     }
 
-    /**
-     * ViewPager 的Adapter
-     */
-    protected class BookStoreAdapter extends FragmentPagerAdapter {
-
-        public BookStoreAdapter(FragmentManager fragmentManager) {
-            super(fragmentManager);
-        }
-
-        @Override
-        public int getCount() {
-            return 3;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return initView(position);
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            return super.instantiateItem(container, position);
-        }
-
-        @Override
-        public int getItemPosition(Object object) {
-            return PagerAdapter.POSITION_NONE;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            super.destroyItem(container, position, object);
-        }
-    }
-
     protected Fragment initView(int position) {
         Fragment fragment = null;
         switch (position) {
@@ -247,5 +211,40 @@ public class BookStoreFragment extends Fragment {
     public void onResume() {
         super.onResume();
         switchState(current_tab);
+    }
+
+    /**
+     * ViewPager 的Adapter
+     */
+    protected class BookStoreAdapter extends FragmentPagerAdapter {
+
+        public BookStoreAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
+        }
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return initView(position);
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            return super.instantiateItem(container, position);
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            return PagerAdapter.POSITION_NONE;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            super.destroyItem(container, position, object);
+        }
     }
 }

@@ -1,14 +1,14 @@
 package com.intelligent.reader.adapter;
 
+import com.intelligent.reader.fragment.GuideFragment;
+
+import net.lzbook.kit.utils.AppLog;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.ViewGroup;
-
-import net.lzbook.kit.utils.AppLog;
-
-import com.intelligent.reader.fragment.GuideFragment;
 
 import java.util.ArrayList;
 

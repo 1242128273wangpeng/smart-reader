@@ -10,7 +10,6 @@ import com.squareup.leakcanary.RefWatcher;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.ReplaceConstants;
-import net.lzbook.kit.utils.AppLog;
 
 import android.content.Context;
 import android.util.Log;
@@ -22,6 +21,10 @@ import java.util.concurrent.Callable;
 public class BookApplication extends BaseBookApplication {
 
     private static RefWatcher sRefWatcher;
+
+    public static RefWatcher getRefWatcher() {
+        return sRefWatcher;
+    }
 
     @Override
     public void onCreate() {
@@ -57,9 +60,5 @@ public class BookApplication extends BaseBookApplication {
         // 打印DebugLog开关,上线前建议改成false
         // 请求测试广告开关,上线前务必改成false
         AKAD.initSdk(this, false, false);
-    }
-
-    public static RefWatcher getRefWatcher() {
-        return sRefWatcher;
     }
 }

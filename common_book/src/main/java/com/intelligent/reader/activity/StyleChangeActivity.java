@@ -22,11 +22,11 @@ import java.util.Map;
 import iyouqu.theme.ThemeMode;
 
 public class StyleChangeActivity extends BaseCacheableActivity implements RadioGroup.OnCheckedChangeListener, View.OnClickListener {
+    protected String currentThemeMode; //是否切换了主题
     private ImageView imageView_styleChange;
     private TextView textView_congfirm;
     private RadioGroup radioGroup_styleChange;
     private ImageView imageView_back_styleChange;
-    protected String currentThemeMode; //是否切换了主题
     private ThemeMode themeMode;
 
     @Override
@@ -51,18 +51,6 @@ public class StyleChangeActivity extends BaseCacheableActivity implements RadioG
             radioGroup_styleChange.check(R.id.radioButton_styleChange_1);
             imageView_styleChange.setImageResource(R.drawable.theme_pic_1);
             themeMode = ThemeMode.THEME1;
-        } else if (mThemeHelper.isTheme2()) {
-            radioGroup_styleChange.check(R.id.radioButton_styleChange_2);
-            imageView_styleChange.setImageResource(R.drawable.theme_pic_2);
-            themeMode = ThemeMode.THEME2;
-        } else if (mThemeHelper.isTheme3()) {
-            radioGroup_styleChange.check(R.id.radioButton_styleChange_3);
-            imageView_styleChange.setImageResource(R.drawable.theme_pic_3);
-            themeMode = ThemeMode.THEME3;
-        } else if (mThemeHelper.isTheme4()) {
-            radioGroup_styleChange.check(R.id.radioButton_styleChange_4);
-            imageView_styleChange.setImageResource(R.drawable.theme_pic_4);
-            themeMode = ThemeMode.THEME4;
         } else {
             themeMode = ThemeMode.NIGHT;
             imageView_styleChange.setImageResource(R.drawable.switch_mode_night);
@@ -90,24 +78,6 @@ public class StyleChangeActivity extends BaseCacheableActivity implements RadioG
                 themeMode = ThemeMode.THEME1;
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_theme1);
                 break;
-            case R.id.radioButton_styleChange_2:
-                imageView_styleChange.setImageResource(R.drawable.theme_pic_2);
-                radioGroup_styleChange.check(R.id.radioButton_styleChange_2);
-                themeMode = ThemeMode.THEME2;
-                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_theme2);
-                break;
-              case R.id.radioButton_styleChange_3:
-                imageView_styleChange.setImageResource(R.drawable.theme_pic_3);
-                radioGroup_styleChange.check(R.id.radioButton_styleChange_3);
-                themeMode = ThemeMode.THEME3;
-                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_theme3);
-                break;
-            case R.id.radioButton_styleChange_4:
-                imageView_styleChange.setImageResource(R.drawable.theme_pic_4);
-                radioGroup_styleChange.check(R.id.radioButton_styleChange_4);
-                themeMode = ThemeMode.THEME4;
-                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_theme4);
-                break;
         }
     }
 
@@ -122,7 +92,7 @@ public class StyleChangeActivity extends BaseCacheableActivity implements RadioG
                 break;
             case R.id.imageView_back_styleChange:
                 Map<String, String> data = new HashMap<>();
-                data.put("type","1");
+                data.put("type", "1");
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
                 finish();
                 break;
@@ -133,7 +103,7 @@ public class StyleChangeActivity extends BaseCacheableActivity implements RadioG
         if (!currentThemeMode.equals(mThemeHelper.getMode())) {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             SharedPreferences.Editor edit = sharedPreferences.edit();
-            if (ThemeMode.NIGHT.equals(currentThemeMode)){
+            if (ThemeMode.NIGHT.equals(currentThemeMode)) {
                 edit.putInt("current_night_mode", Constants.MODE);
             }
             if (mThemeHelper.isNight()) {
@@ -144,13 +114,13 @@ public class StyleChangeActivity extends BaseCacheableActivity implements RadioG
             edit.putInt("content_mode", Constants.MODE);
             edit.apply();
             //通过Intent传递是否切换了主题的信息给设置页面
-            Intent intent =  new Intent(StyleChangeActivity.this, SettingActivity.class);
-            intent.putExtra("isStyleChanged",true);
+            Intent intent = new Intent(StyleChangeActivity.this, SettingActivity.class);
+            intent.putExtra("isStyleChanged", true);
             startActivity(intent);
-            if(SettingActivity.sInstance != null && ! SettingActivity.sInstance.isFinishing()) {
+            if (SettingActivity.sInstance != null && !SettingActivity.sInstance.isFinishing()) {
                 SettingActivity.sInstance.finish();
             }
         }
-          finish();
+        finish();
     }
 }

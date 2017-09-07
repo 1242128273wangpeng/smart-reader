@@ -4,8 +4,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.AttrRes;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -43,16 +41,15 @@ public class StatusBarCompat
 
     public static void compat(Activity activity)
 {
-    compat(activity, R.attr.color_statusBar);
+    compat(activity, R.color.color_statusBar);
 }
 
-    public static void compat(Activity activity, @AttrRes int resid)
+    public static void compat(Activity activity, int resid)
     {
-        TypedValue outValue = new TypedValue();
-        activity.getTheme().resolveAttribute(resid, outValue, true);
+
         int whiteColor = activity.getResources().getColor(R.color.color_white);
-        setStatuColor(activity, outValue.data);
-        if (outValue.data == whiteColor){
+        setStatuColor(activity, resid);
+        if (resid == whiteColor){
             if (StatusBarFontHelper.setStatusBarMode(activity, true) == 0){
                 int grayColor = activity.getResources().getColor(R.color.color_gray_070707);
                 setStatuColor(activity, grayColor);

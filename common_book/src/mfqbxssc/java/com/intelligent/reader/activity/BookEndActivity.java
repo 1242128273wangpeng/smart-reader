@@ -59,22 +59,22 @@ import de.greenrobot.event.EventBus;
 
 public class BookEndActivity extends BaseCacheableActivity implements View.OnClickListener {
     private static final String TAG = "BookEndActivity";
-    private View iv_back_bookstore ,iv_back, iv_title_right;
+    private View iv_back_bookstore, iv_back, iv_title_right;
     private ImageView ad_view;
     private ImageView ad_view_logo;
-//    private ImageView item_ad_image ;
+    //    private ImageView item_ad_image ;
 //    private TextView item_ad_title ;
 //    private RatingBar item_ad_extension ;
 //    private TextView item_ad_desc ;
     private TextView textView_endInfo;
-//    private ImageView item_ad_right_down ;
+    //    private ImageView item_ad_right_down ;
 //    private RelativeLayout bookend_ad_layout;
     private Book book;
     private String bookName;
     private OwnNativeAdManager nativeAdManager;
     private LoadingPage loadingPage;
-//	private boolean isGetEvent;
-	private TextView name_bookend;
+    //	private boolean isGetEvent;
+    private TextView name_bookend;
 
     private StatisticManager statisticManager;
     private YQNativeAdInfo nativeAdInfo;
@@ -135,7 +135,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
         initView();
         readStatus = new ReadStatus(getApplicationContext());
         initData();
-        if(!Constants.isHideAD){
+        if (!Constants.isHideAD) {
             initAD();
         }
         loadingPage = new LoadingPage(this, LoadingPage.setting_result);
@@ -178,7 +178,6 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
 //        bookend_ad_layout.setOnClickListener(this);
 
 
-
     }
 
     private void initData() {
@@ -207,7 +206,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Source source = sourceList.get(position);
-                    if(mBookDaoHelper.isBookSubed(readStatus.book_id)){
+                    if (mBookDaoHelper.isBookSubed(readStatus.book_id)) {
                         if (!source.book_source_id.equals(book.book_source_id)) {
                             //弹出切源提示
                             showChangeSourceNoticeDialog(source);
@@ -314,7 +313,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
                     BookHelper.deleteAllChapterCache(source.book_id, 0, bookChapterDao.getCount());
                     bookChapterDao.deleteBookChapters(0);
                     DownloadService.clearTask(source.book_id);
-                    BaseBookHelper.delDownIndex(this,source.book_id);
+                    BaseBookHelper.delDownIndex(this, source.book_id);
                 }
             } else {
                 Book iBook = readStatus.book;
@@ -362,7 +361,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
             public void run() {
                 try {
                     if (!Constants.QG_SOURCE.equals(requestItem.host) && !Constants.SG_SOURCE.equals(requestItem.host)) {
-                        OtherRequestService.requestBookSourceChange(handler,1,-144,book_id);
+                        OtherRequestService.requestBookSourceChange(handler, 1, -144, book_id);
                     } else {
                         handler.sendEmptyMessage(0);
                     }
@@ -383,7 +382,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
         if (NativeInit.CustomPositionName.BOOK_END_POSITION.toString().equals(eventNativeType.type_ad)) {
             if (!isFinishing()) {
 //                if (isGetEvent) {
-                    setADItem();
+                setADItem();
 //                    isGetEvent = false;
 //                }
             }
@@ -393,7 +392,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
     private void setADItem() {
 
         //开关
-        if(!Constants.dy_book_end_ad_switch||Constants.isHideAD){
+        if (!Constants.dy_book_end_ad_switch || Constants.isHideAD) {
             return;
         }
 
@@ -648,11 +647,11 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
         novel.label = category;
         novel.adBookName = requestItem.name;
         novel.book_source_id = requestItem.book_source_id;
-        if (Constants.QG_SOURCE.equals(requestItem.host)){
+        if (Constants.QG_SOURCE.equals(requestItem.host)) {
             novel.channelCode = "A001";
 //            novel.ad_QG_bookCategory = category;
 //            novel.ad_QG_bookFenpin = "";
-        }else {
+        } else {
             novel.channelCode = "A002";
 //            novel.ad_YQ_bookLabel = category;
         }

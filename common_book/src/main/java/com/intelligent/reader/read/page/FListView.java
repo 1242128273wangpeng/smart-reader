@@ -9,43 +9,45 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-public class FListView extends ListView{
 
-	private View footView, headView;
-	
-	public FListView(Context context) {
-		super(context);
-		
-		initView(context);
-	}
+public class FListView extends ListView {
 
-	
-	public FListView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		initView(context);
-	}
-	
-	private void initView(Context context){
-		LayoutInflater inflater = LayoutInflater.from(context);
-		footView = inflater.inflate(com.intelligent.reader.R.layout.footview, null);
+    private View footView, headView;
+
+    public FListView(Context context) {
+        super(context);
+
+        initView(context);
+    }
+
+
+    public FListView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        initView(context);
+    }
+
+    private void initView(Context context) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        footView = inflater.inflate(com.intelligent.reader.R.layout.footview, null);
 //		headView = inflater.inflate(R.layout.footview, null);
 //		addHeaderView(headView);
 //		super.setOnScrollListener(this);
 
-	}
-	
-	@Override
-	public void setAdapter(ListAdapter adapter) {
-		// make sure XListViewFooter is the last footer view, and only add once.
-		addFooterView(footView);
-		super.setAdapter(adapter);
-	}
+    }
 
-	public void setFootViewBackground(@DrawableRes int id){
+    @Override
+    public void setAdapter(ListAdapter adapter) {
+        // make sure XListViewFooter is the last footer view, and only add once.
+        addFooterView(footView);
+        super.setAdapter(adapter);
+    }
+
+    public void setFootViewBackground(@DrawableRes int id) {
         footView.findViewById(com.intelligent.reader.R.id.foot).setBackgroundResource(id);
 
-	}
-    public void setFootViewBackgroundColor(@ColorInt int id){
+    }
+
+    public void setFootViewBackgroundColor(@ColorInt int id) {
         footView.findViewById(com.intelligent.reader.R.id.foot).setBackgroundColor(id);
     }
 

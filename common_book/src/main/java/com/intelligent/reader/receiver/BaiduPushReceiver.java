@@ -1,19 +1,18 @@
 package com.intelligent.reader.receiver;
 
+import com.baidu.android.pushservice.PushMessageReceiver;
+import com.intelligent.reader.app.BookApplication;
+
+import net.lzbook.kit.data.bean.ReadStatus;
+import net.lzbook.kit.utils.AppLog;
+
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.baidu.android.pushservice.PushMessageReceiver;
-
-import net.lzbook.kit.data.bean.ReadStatus;
-import net.lzbook.kit.utils.AppLog;
-
 import java.util.List;
-
-import com.intelligent.reader.app.BookApplication;
 
 /*
  * Push消息处理receiver。请编写您需要的回调函数， 一般来说： onBind是必须的，用来处理startWork返回值；

@@ -3,7 +3,7 @@ package com.intelligent.reader.adapter.paging;
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.BookShelfReAdapter;
 import com.intelligent.reader.adapter.holder.AbsRecyclerViewHolder;
-import com.intelligent.reader.adapter.holder.HolderFactory;
+import com.intelligent.reader.adapter.holder.HistoryHolder;
 
 import net.lzbook.kit.data.ormlite.bean.HistoryInfo;
 
@@ -30,9 +30,9 @@ public class HisAdapter extends BaseAdapter<HistoryInfo> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout
-                            .layout_history_item_list,
+                        .layout_history_item_list,
                 parent, false);
-        return HolderFactory.createHolder(view, shelfItemClickListener,
+        return new HistoryHolder(view, shelfItemClickListener,
                 shelfItemLongClickListener);
     }
 

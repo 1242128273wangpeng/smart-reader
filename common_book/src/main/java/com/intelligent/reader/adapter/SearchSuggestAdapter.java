@@ -1,5 +1,10 @@
 package com.intelligent.reader.adapter;
 
+import com.intelligent.reader.R;
+
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
+
 import android.content.Context;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -8,12 +13,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.AppUtils;
-
 import java.util.ArrayList;
-
-import com.intelligent.reader.R;
 
 /**
  * Created by Administrator on 2016/12/16 0016.
@@ -49,28 +49,28 @@ public class SearchSuggestAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder hodler = null;
         if (convertView == null) {
-                try {
-                    LayoutInflater inflater = LayoutInflater.from(mContext);
-                    convertView = inflater.inflate(R.layout.lv_searchbook_item, parent, false);
-                } catch (InflateException e) {
-                    e.printStackTrace();
-                }
-                if (convertView != null) {
-                    hodler = new ViewHolder();
-                    hodler.tv_1 = (TextView) convertView.findViewById(R.id.tv_search_item_1);
-                    hodler.tv_2 = (TextView) convertView.findViewById(R.id.tv_search_item_2);
-                    convertView.setTag(hodler);
-                }
+            try {
+                LayoutInflater inflater = LayoutInflater.from(mContext);
+                convertView = inflater.inflate(R.layout.lv_searchbook_item, parent, false);
+            } catch (InflateException e) {
+                e.printStackTrace();
+            }
+            if (convertView != null) {
+                hodler = new ViewHolder();
+                hodler.tv_1 = (TextView) convertView.findViewById(R.id.tv_search_item_1);
+                hodler.tv_2 = (TextView) convertView.findViewById(R.id.tv_search_item_2);
+                convertView.setTag(hodler);
+            }
         } else {
             hodler = (ViewHolder) convertView.getTag();
         }
         String content = mData.get(position);
-        if (editInput != null){
+        if (editInput != null) {
             editInput = AppUtils.deleteAllIllegalChar(editInput);
             AppLog.i("getView", "editInput = " + editInput);
             hodler.tv_1.setText(editInput);
             hodler.tv_2.setText(content.replaceFirst(editInput, ""));
-        }else {
+        } else {
             hodler.tv_1.setText("");
             hodler.tv_2.setText(content);
         }
@@ -83,13 +83,13 @@ public class SearchSuggestAdapter extends BaseAdapter {
         }
     }
 
+    public void setEditInput(String editInput) {
+        this.editInput = editInput;
+    }
+
     private static class ViewHolder {
         TextView tv_1;
         TextView tv_2;
-    }
-
-    public void setEditInput(String editInput) {
-        this.editInput = editInput;
     }
 
 }

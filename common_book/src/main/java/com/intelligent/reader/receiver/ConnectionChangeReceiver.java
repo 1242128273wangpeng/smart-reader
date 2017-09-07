@@ -1,12 +1,5 @@
 package com.intelligent.reader.receiver;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.telephony.TelephonyManager;
-
 import com.intelligent.reader.util.DynamicParamter;
 
 import net.lzbook.kit.app.BaseBookApplication;
@@ -15,17 +8,23 @@ import net.lzbook.kit.book.component.service.DownloadService;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.NetWorkUtils;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.telephony.TelephonyManager;
+
 public class ConnectionChangeReceiver extends BroadcastReceiver {
     private static final String TAG = "ConnectionChangeReceiver";
-    private static boolean canReload = true;
-    private static boolean canShowAlert = true;
     private static final int G0 = 0;
     private static final int G2 = 2;
     private static final int G3 = 3;
     private static final int G4 = 4;
     private static final int WIFI = 5;
     public static int mobileType;
-
+    private static boolean canReload = true;
+    private static boolean canShowAlert = true;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -67,7 +66,7 @@ public class ConnectionChangeReceiver extends BroadcastReceiver {
                 //当连接网络时，重新加载动态参数，如果成功过一次后续网络发生变化时不再加载
                 if (nType == ConnectivityManager.TYPE_WIFI || nType == ConnectivityManager.TYPE_MOBILE) {
                     if (DynamicParamter.isReloadDynamic) {
-                        DynamicParamter.isReloadDynamic =false;
+                        DynamicParamter.isReloadDynamic = false;
                         DynamicParamter dynamicParameter = new DynamicParamter(context);
                         dynamicParameter.setDynamicParamter();
                     }

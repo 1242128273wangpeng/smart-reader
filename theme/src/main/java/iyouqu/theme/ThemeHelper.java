@@ -53,51 +53,13 @@ public class ThemeHelper {
      */
     public boolean isTheme1() {
         String mode = mSharedPreferences.getString(MODE, ThemeMode.THEME1.getName());
-        if (ThemeMode.THEME1.getName().equals(mode)) {
+        if (! ThemeMode.NIGHT.getName().equals(mode)) {
             return true;
         } else {
             return false;
         }
     }
 
-    /**
-     * 是否主题二
-     * @return
-     */
-    public boolean isTheme2() {
-        String mode = mSharedPreferences.getString(MODE, ThemeMode.THEME1.getName());
-        if (ThemeMode.THEME2.getName().equals(mode)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * 是否主题三
-     * @return
-     */
-    public boolean isTheme3() {
-        String mode = mSharedPreferences.getString(MODE, ThemeMode.THEME1.getName());
-        if (ThemeMode.THEME3.getName().equals(mode)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * 是否主题四
-     * @return
-     */
-    public boolean isTheme4() {
-        String mode = mSharedPreferences.getString(MODE, ThemeMode.THEME1.getName());
-        if (ThemeMode.THEME4.getName().equals(mode)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     /**
      * 是否主题四
@@ -135,14 +97,6 @@ public class ThemeHelper {
      */
     public void setTextviewDrawable(@NonNull Activity act, TypedValue left, TypedValue top, TypedValue right, TypedValue bottom, TextView tv) {
         tv.setCompoundDrawables(setDrawableBounds(act,left),setDrawableBounds(act,top), setDrawableBounds(act,right), setDrawableBounds(act,bottom));
-    }
-
-    /**
-     * 夜间模式开关
-     * @return
-     */
-    public void toggleThemeSetting(Activity act) {
-
     }
 
     private Bitmap getCacheBitmapFromView(View view) {

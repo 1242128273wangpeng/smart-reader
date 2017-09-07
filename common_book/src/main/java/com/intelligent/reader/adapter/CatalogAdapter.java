@@ -3,26 +3,24 @@
  */
 package com.intelligent.reader.adapter;
 
+import com.intelligent.reader.R;
+import com.intelligent.reader.activity.CataloguesActivity;
+import com.intelligent.reader.read.help.BookHelper;
+import com.quduquxie.network.DataCache;
+
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.bean.Chapter;
+
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.quduquxie.network.DataCache;
-
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.Chapter;
-
 import java.lang.ref.WeakReference;
 import java.util.List;
-
-import com.intelligent.reader.R;
-import com.intelligent.reader.activity.CataloguesActivity;
-import com.intelligent.reader.read.help.BookHelper;
 
 /**
  * 目录页面适配器
@@ -34,25 +32,18 @@ public class CatalogAdapter extends BaseAdapter {
     private String book_site;//书籍的来源站
     private CataloguesActivity context;
     private List<Chapter> list;
-    private TypedValue textColor;
-    private Resources.Theme theme;
+    private int textColor;
 
     private WeakReference<CataloguesActivity> activityWeakReference;
 
 
-
-    public CatalogAdapter(CataloguesActivity activity, List list,String book_site) {
+    public CatalogAdapter(CataloguesActivity activity, List list, String book_site) {
         activityWeakReference = new WeakReference<>(activity);
-        if(activityWeakReference!=null){
+        if (activityWeakReference != null) {
             context = activityWeakReference.get();
         }
         this.list = list;
         this.book_site = book_site;
-        resources = context.getResources();
-        if(textColor==null){
-            textColor = new TypedValue();//字体颜色
-        }
-        theme = context.getTheme();
         already_cached = resources.getString(R.string.already_cached);
     }
 
@@ -87,7 +78,7 @@ public class CatalogAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewCache viewCache;
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.content_catalog_item, parent ,false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.content_catalog_item, parent, false);
             viewCache = new ViewCache(convertView);
             viewCache.catalog_chapter_divider = convertView.findViewById(R.id.catalog_chapter_divider);
             convertView.setTag(viewCache);
@@ -101,9 +92,9 @@ public class CatalogAdapter extends BaseAdapter {
         String text = (chapter.sequence + 1) + " " + chapter.chapter_name;
         viewCache.getChapterName().setText(text);
         boolean chapterExist;
-        if (book_site.equals(Constants.QG_SOURCE)){
+        if (book_site.equals(Constants.QG_SOURCE)) {
             chapterExist = DataCache.isChapterExists(chapter.chapter_id, chapter.book_id);
-        }else {
+        } else {
             chapterExist = BookHelper.isChapterExist(chapter.sequence, chapter.book_id);
         }
         if (chapterExist) {
@@ -115,15 +106,15 @@ public class CatalogAdapter extends BaseAdapter {
         }
 
         if (chapter.sequence == selectedItem) {
-            theme.resolveAttribute(R.attr.directory_current_chapter_text_color, textColor, true);
-            viewCache.getChapterName().setTextColor(resources.getColor(textColor.resourceId));
-        }else{
-            if(chapterExist){
-                theme.resolveAttribute(R.attr.directory_chapter_text_color, textColor, true);
-                viewCache.getChapterName().setTextColor(resources.getColor(textColor.resourceId));
-            }else{
-                theme.resolveAttribute(R.attr.directory_uncached_chapter_text_color, textColor, true);
-                viewCache.getChapterName().setTextColor(resources.getColor(textColor.resourceId));
+            textColor = R.color.directory_current_chapter_text_color;
+            viewCache.getChapterName().setTextColor(resources.getColor(textColor));
+        } else {
+            if (chapterExist) {
+                textColor = R.color.directory_chapter_text_color;
+                viewCache.getChapterName().setTextColor(resources.getColor(textColor));
+            } else {
+                textColor = R.color.directory_uncached_chapter_text_color;
+                viewCache.getChapterName().setTextColor(resources.getColor(textColor));
             }
         }
         return convertView;
@@ -134,6 +125,17 @@ public class CatalogAdapter extends BaseAdapter {
             position = list.size() - 1;
         }
         selectedItem = position;
+    }
+
+    public void recycleResource() {
+
+        if (this.resources != null) {
+            this.resources = null;
+        }
+
+        if (this.context != null) {
+            this.context = null;
+        }
     }
 
     class ViewCache {
@@ -159,16 +161,6 @@ public class CatalogAdapter extends BaseAdapter {
             }
 
             return has_cache;
-        }
-    }
-    public void recycleResource() {
-
-        if (this.resources != null) {
-            this.resources = null;
-        }
-
-        if (this.context != null) {
-            this.context = null;
         }
     }
 }

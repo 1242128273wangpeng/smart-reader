@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<layer-list
+        xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <item android:id="@android:id/progress">
+        <clip
+                android:gravity="left"
+                android:drawable="@color/check_read_setting"/>
+    </item>
 
-   <item android:id="@android:id/progress">
-       <clip 
-           android:gravity="left"
-           android:drawable="@color/check_read_setting"/>
-   </item>
-   
-  
+
 </layer-list>  

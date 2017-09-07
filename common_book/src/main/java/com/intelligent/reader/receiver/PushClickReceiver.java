@@ -1,13 +1,13 @@
 package com.intelligent.reader.receiver;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
+import com.intelligent.reader.activity.HomeActivity;
 
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.CheckNovelUpdHelper;
 
-import com.intelligent.reader.activity.HomeActivity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 
 public class PushClickReceiver extends BroadcastReceiver {
     private String TAG = "PushClickReceiver";
