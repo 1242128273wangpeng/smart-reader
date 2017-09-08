@@ -17,6 +17,8 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
+    //88888
+
     dexOptions {
         javaMaxHeapSize "2g"
     }
