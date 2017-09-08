@@ -1,5 +1,6 @@
 package com.intelligent.reader.activity;
 
+import com.dingyueads.sdk.Bean.App;
 import com.intelligent.reader.R;
 import com.intelligent.reader.search.SearchHelper;
 import com.intelligent.reader.util.SearchViewHelper;
@@ -159,6 +160,8 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
             search_result_content.addJavascriptInterface(jsInterfaceHelper, "J_search");
             mSearchHelper.initJSHelp(jsInterfaceHelper);
         }
+        AppLog.e("kkk","kkkk");
+        AppLog.e("kkk","test");
 
     }
 
