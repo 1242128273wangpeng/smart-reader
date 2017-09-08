@@ -3,3 +3,8 @@
 build/
 gradle/
 *.iml
+captures
+gradle.properties
+gradlew.bat
+gradlew
+local.properties
