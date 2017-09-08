@@ -1,35 +1,44 @@
 package com.intelligent.reader.search;
 
-import com.intelligent.reader.R;
-import com.intelligent.reader.activity.CoverPageActivity;
-import com.intelligent.reader.read.help.BookHelper;
-
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.Book;
-import net.lzbook.kit.data.bean.RequestItem;
-import net.lzbook.kit.data.db.BookDaoHelper;
-import net.lzbook.kit.request.UrlUtils;
-import net.lzbook.kit.request.YSRequestService;
-import net.lzbook.kit.statistic.model.Search;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.JSInterfaceHelper;
-import net.lzbook.kit.encrypt.URLBuilderIntterface;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.intelligent.reader.R;
+import com.intelligent.reader.activity.CoverPageActivity;
+import com.intelligent.reader.net.NetOwnSearch;
+import com.intelligent.reader.net.OwnSearchService;
+import com.intelligent.reader.read.help.BookHelper;
+
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.bean.Book;
+import net.lzbook.kit.data.bean.RequestItem;
+import net.lzbook.kit.data.bean.SearchAutoCompleteBean;
+import net.lzbook.kit.data.bean.SearchCommonBean;
+import net.lzbook.kit.data.db.BookDaoHelper;
+import net.lzbook.kit.encrypt.URLBuilderIntterface;
+import net.lzbook.kit.request.UrlUtils;
+import net.lzbook.kit.statistic.model.Search;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.JSInterfaceHelper;
+
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 import static net.lzbook.kit.statistic.StatisticKt.alilog;
 import static net.lzbook.kit.statistic.StatisticUtilKt.buildSearch;
@@ -41,7 +50,7 @@ import static net.lzbook.kit.statistic.StatisticUtilKt.buildSearch;
 public class SearchHelper {
     private static final String TAG = SearchHelper.class.getSimpleName();
     private BookDaoHelper bookDaoHelper;
-    private Map<String, SearchHelper.WordInfo> wordInfoMap = new HashMap<>();
+    private Map<String, WordInfo> wordInfoMap = new HashMap<>();
 
     private String word;
     private String searchType = "0";
@@ -52,98 +61,158 @@ public class SearchHelper {
 
     private Context mContext;
     private String url_tag;
-    private SearchSuggestCallBack searchSuggestCallBack;
-    private JsCallSearchCall mJsCallSearchCall;
-    private StartLoadCall mStartLoadCall;
 
-    public SearchHelper(Context context) {
+
+    public SearchHelper(Context context){
         mContext = context;
         if (bookDaoHelper == null) {
             bookDaoHelper = BookDaoHelper.getInstance(mContext.getApplicationContext());
         }
     }
 
-    // 生成 [0-n) 个不重复的随机数
-    public static ArrayList<Integer> getRandomInt(int range, int count) {
-        ArrayList<Integer> list = new ArrayList<Integer>();
-        Random rand = new Random();
-        boolean[] bool = new boolean[range];
-        int num = 0;
+    private class WordInfo{
+        boolean actioned = false;
+        private long startTime = System.currentTimeMillis();
+        private long useTime = 0;
 
-        for (int i = 0; i < count; i++) {
-            do {
-                // 如果产生的数相同继续循环
-                num = rand.nextInt(range);
-            } while (bool[num]);
-
-            bool[num] = true;
-            list.add(num);
+        public long computeUseTime(){
+            if(useTime == 0) {
+                useTime = System.currentTimeMillis() - startTime;
+            }
+            return useTime;
         }
 
-        return list;
     }
 
-    public void startSearchSuggestData(String searchWord) {
+    public void startSearchSuggestData(String searchWord){
+        AppLog.e("word11",searchWord);
         try {
             if (searchWord != null && !TextUtils.isEmpty(searchWord)) {
-                searchWord = URLEncoder.encode(searchWord, "utf-8");
+                searchWord = URLDecoder.decode(searchWord, "utf-8");
+                AppLog.e("word22",searchWord);
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        AppLog.e("word",searchWord);
         if (searchWord != null && !TextUtils.isEmpty(searchWord)) {
-            String url = URLBuilderIntterface.YS_SEARCH_SUGGEST.replace("{word}", searchWord);
-            url_tag = url;
-            YSRequestService.getSearchSuggestData(new YSRequestService.DataServiceTagCallBack() {
-                @Override
-                public void onSuccess(Object result, Object tag) {
-                    if (result != null && url_tag.equals(tag)) {
-                        ArrayList<String> resultSuggest = (ArrayList<String>) result;
-                        if (searchSuggestCallBack != null) {
-                            searchSuggestCallBack.onSearchResult(resultSuggest);
+            OwnSearchService searchService = NetOwnSearch.INSTANCE.getOwnSearchService();
+            searchService .searchAutoComplete(searchWord)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<SearchAutoCompleteBean>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
                         }
-                    }
-                }
 
-                @Override
-                public void onError(Exception error, Object tag) {
+                        @Override
+                        public void onNext(SearchAutoCompleteBean bean) {
+                            List<SearchCommonBean> resultSuggest = new ArrayList<SearchCommonBean>();
+                            resultSuggest.clear();
 
-                }
-            }, url);
+                            AppLog.e("bean",bean.toString());
+                            if(bean.getSuc().equals("200")&&bean.getData()!=null){
+                                for(int i=0;i<bean.getData().getAuthors().size();i++){
+                                    SearchCommonBean searchCommonBean = new SearchCommonBean();
+                                    searchCommonBean.setSuggest(bean.getData().getAuthors().get(i).getSuggest());
+                                    searchCommonBean.setWordtype(bean.getData().getAuthors().get(i).getWordtype());
+                                    resultSuggest.add(searchCommonBean);
+                                }
+                                for(int i=0;i<bean.getData().getLabel().size();i++){
+                                    SearchCommonBean searchCommonBean = new SearchCommonBean();
+                                    searchCommonBean.setSuggest(bean.getData().getLabel().get(i).getSuggest());
+                                    searchCommonBean.setWordtype(bean.getData().getLabel().get(i).getWordtype());
+                                    resultSuggest.add(searchCommonBean);
+                                }
+                                for(int i=0;i<bean.getData().getName().size();i++){
+                                    SearchCommonBean searchCommonBean = new SearchCommonBean();
+                                    searchCommonBean.setSuggest(bean.getData().getName().get(i).getSuggest());
+                                    searchCommonBean.setWordtype(bean.getData().getName().get(i).getWordtype());
+                                    resultSuggest.add(searchCommonBean);
+                                }
+
+                                for(SearchCommonBean bean1:resultSuggest){
+                                    AppLog.e("uuu",bean1.toString());
+                                }
+                                if (searchSuggestCallBack != null){
+                                    searchSuggestCallBack.onSearchResult(resultSuggest);
+                                }
+                            }
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                            AppLog.e("result",e.toString());
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            AppLog.e("result22","onComplete");
+                        }
+                    });
+
+
+//            String url = URLBuilderIntterface.YS_SEARCH_SUGGEST.replace("{word}", searchWord);
+//            url_tag = url;
+//            YSRequestService.getSearchSuggestData(new YSRequestService.DataServiceTagCallBack() {
+//                @Override
+//                public void onSuccess(Object result, Object tag) {
+//                    if (result != null && url_tag.equals(tag)) {
+//                        ArrayList<String> resultSuggest = (ArrayList<String>) result;
+//                        if (searchSuggestCallBack != null){
+//                            searchSuggestCallBack.onSearchResult(resultSuggest);
+//                        }
+//                    }
+//                }
+//
+//                @Override
+//                public void onError(Exception error, Object tag) {
+//
+//                }
+//            }, url);
         }
     }
 
-    public void setSearchSuggestCallBack(SearchSuggestCallBack ssb) {
+    private SearchSuggestCallBack searchSuggestCallBack;
+
+    public void setSearchSuggestCallBack(SearchSuggestCallBack ssb){
         searchSuggestCallBack = ssb;
     }
 
-    public void setStartedAction() {
+    public interface SearchSuggestCallBack{
+        void onSearchResult(List<SearchCommonBean> suggestList);
+    }
+
+    public void setStartedAction(){
         wordInfoMap.put(word, new WordInfo());
     }
 
-    public void onLoadFinished() {
+    public void onLoadFinished(){
         WordInfo wordInfo = wordInfoMap.get(word);
-        if (wordInfo != null)
+        if(wordInfo != null)
             wordInfo.computeUseTime();
     }
 
-    public String getWord() {
+    public String getWord(){
         return word;
     }
 
-    public void setWord(String word) {
+    public void setWord(String word){
         this.word = word;
     }
 
-    public void setHotWordType(String word) {
+    public void setHotWordType(String word,String type){
         this.word = word;
-        searchType = "0";
+        searchType = type;
         filterType = "0";
         filterWord = "ALL";
         sortType = "0";
     }
 
-    public void setInitType(Intent intent) {
+    public void setInitType(Intent intent){
         word = intent.getStringExtra("word");
         searchType = intent.getStringExtra("search_type");
         filterType = intent.getStringExtra("filter_type");
@@ -153,7 +222,7 @@ public class SearchHelper {
 
     public void initJSHelp(JSInterfaceHelper jsInterfaceHelper) {
 
-        if (jsInterfaceHelper == null) {
+        if (jsInterfaceHelper == null){
             return;
         }
 
@@ -170,7 +239,7 @@ public class SearchHelper {
 
                 startLoadData();
 
-                if (mJsCallSearchCall != null) {
+                if (mJsCallSearchCall != null){
                     mJsCallSearchCall.onJsSearch();
                 }
             }
@@ -193,7 +262,7 @@ public class SearchHelper {
                 requestItem.extra_parameter = extra_parameter;
 
                 SearchHelper.WordInfo wordInfo = wordInfoMap.get(word);
-                if (wordInfo != null) {
+                if(wordInfo!= null) {
                     wordInfo.actioned = true;
                     alilog(buildSearch(requestItem, word, Search.OP.COVER, wordInfo.computeUseTime()));
                 }
@@ -245,7 +314,7 @@ public class SearchHelper {
                 Book book = genCoverBook(host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count,
                         updateTime, parameter, extra_parameter, dex);
                 SearchHelper.WordInfo wordInfo = wordInfoMap.get(word);
-                if (wordInfo != null) {
+                if(wordInfo != null) {
                     wordInfo.actioned = true;
                     alilog(buildSearch(book, word, Search.OP.BOOKSHELF, wordInfo.computeUseTime()));
                 }
@@ -254,7 +323,7 @@ public class SearchHelper {
                     Toast.makeText(mContext.getApplicationContext(), R.string.bookshelf_insert_success, Toast.LENGTH_SHORT).show();
 
                     Map<String, String> data = new HashMap<>();
-                    data.put("type", "1");
+                    data.put("type","1");
                     StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SEARCHRESULT_PAGE, StartLogClickUtil.SHELFADD, data);
                 }
             }
@@ -268,7 +337,7 @@ public class SearchHelper {
                 Toast.makeText(mContext.getApplicationContext(), R.string.bookshelf_delete_success, Toast.LENGTH_SHORT).show();
 
                 Map<String, String> data = new HashMap<>();
-                data.put("type", "2");
+                data.put("type","2");
                 StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SEARCHRESULT_PAGE, StartLogClickUtil.SHELFADD, data);
             }
         });
@@ -321,13 +390,34 @@ public class SearchHelper {
             params.put("filter_type", filterType);
             params.put("filter_word", filterWord);
             params.put("sort_type", sortType);
+            AppLog.e("kk",searchWord+"=="+searchType+"=="+filterType+"=="+filterWord+"==="+sortType);
             mUrl = UrlUtils.buildWebUrl(URLBuilderIntterface.SEARCH, params);
         }
 
-        if (mStartLoadCall != null) {
+        if (mStartLoadCall != null){
             mStartLoadCall.onStartLoad(mUrl);
         }
 
+    }
+
+    // 生成 [0-n) 个不重复的随机数
+    public static ArrayList<Integer> getRandomInt(int range, int count) {
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        Random rand = new Random();
+        boolean[] bool = new boolean[range];
+        int num = 0;
+
+        for (int i = 0; i < count; i++) {
+            do {
+                // 如果产生的数相同继续循环
+                num = rand.nextInt(range);
+            } while (bool[num]);
+
+            bool[num] = true;
+            list.add(num);
+        }
+
+        return list;
     }
 
     public String getReplaceWord() {
@@ -337,49 +427,36 @@ public class SearchHelper {
         return words[index];
     }
 
-    public void onDestroy() {
+    public void onDestroy(){
         Set<String> strings = wordInfoMap.keySet();
-        for (String key : strings) {
+        for (String key: strings){
             WordInfo wordInfo = wordInfoMap.get(key);
-            if (wordInfo != null && !wordInfo.actioned) {
+            if(wordInfo != null && !wordInfo.actioned) {
                 alilog(buildSearch(key, Search.OP.CANCEL, wordInfo.computeUseTime()));
             }
         }
         wordInfoMap.clear();
     }
 
-    public void setJsCallSearchCall(JsCallSearchCall jsCallSearchCall) {
+
+    private JsCallSearchCall mJsCallSearchCall;
+
+    public void setJsCallSearchCall(JsCallSearchCall jsCallSearchCall){
         mJsCallSearchCall = jsCallSearchCall;
     }
 
-    public void setStartLoadCall(StartLoadCall startLoadCall) {
-        mStartLoadCall = startLoadCall;
-    }
-
-    public interface SearchSuggestCallBack {
-        void onSearchResult(ArrayList<String> suggestList);
-    }
-
-    public interface JsCallSearchCall {
+    public interface JsCallSearchCall{
         void onJsSearch();
     }
 
-    public interface StartLoadCall {
-        void onStartLoad(String url);
+    private StartLoadCall mStartLoadCall;
+
+    public void setStartLoadCall(StartLoadCall startLoadCall){
+        mStartLoadCall = startLoadCall;
     }
 
-    private class WordInfo {
-        boolean actioned = false;
-        private long startTime = System.currentTimeMillis();
-        private long useTime = 0;
-
-        public long computeUseTime() {
-            if (useTime == 0) {
-                useTime = System.currentTimeMillis() - startTime;
-            }
-            return useTime;
-        }
-
+    public interface StartLoadCall{
+        void onStartLoad(String url);
     }
 
 

@@ -258,6 +258,9 @@ public class Constants {
     public static int isNoNetRead = 0;
     public static String noNetReadNumber = "noNetReadNumber";
 
+    public static final String SERARCH_HOT_WORD = "search_hot_word";//搜索热词
+
+
     /*
          * 初始化
          */

@@ -1,39 +1,59 @@
 package com.intelligent.reader.util;
 
-import com.intelligent.reader.R;
-import com.intelligent.reader.adapter.SearchHisAdapter;
-import com.intelligent.reader.adapter.SearchSuggestAdapter;
-import com.intelligent.reader.search.SearchHelper;
-
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.utils.StatServiceUtils;
-import net.lzbook.kit.utils.Tools;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+
+import com.google.gson.Gson;
+import com.intelligent.reader.R;
+import com.intelligent.reader.adapter.SearchHisAdapter;
+import com.intelligent.reader.adapter.SearchSuggestAdapter;
+import com.intelligent.reader.net.NetOwnSearch;
+import com.intelligent.reader.net.OwnSearchService;
+import com.intelligent.reader.search.SearchHelper;
+
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.bean.SearchCommonBean;
+import net.lzbook.kit.data.bean.SearchHotBean;
+import net.lzbook.kit.request.UrlUtils;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.NetWorkUtils;
+import net.lzbook.kit.utils.SharedPreferencesUtils;
+import net.lzbook.kit.utils.StatServiceUtils;
+import net.lzbook.kit.utils.ToastUtils;
+import net.lzbook.kit.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack, SearchHisAdapter.SearchClearCallBack {
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
+
+public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,SearchHisAdapter.SearchClearCallBack{
     private static String TAG = SearchViewHelper.class.getSimpleName();
-    private static ArrayList<String> hotDatas = new ArrayList<String>();
-    private static ArrayList<String> hisDatas = new ArrayList<String>();
-    public OnHotWordClickListener onHotWordClickListener;
     private Context mContext;
     private Activity activity;
     private ViewGroup mRootLayout;
@@ -41,16 +61,28 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack, Sea
     private ListView mHotListView;
     private ListView mHisListView;
     private ListView mSuggestListView;
+
     private ArrayAdapter<String> mHotAdapter;
     private SearchSuggestAdapter mSuggestAdapter;
     private SearchHisAdapter mHisAdapter;
-    private ArrayList<String> mSuggestList = new ArrayList<String>();
+    private static ArrayList<String> hotDatas = new ArrayList<String>();
+    private static ArrayList<String> hisDatas = new ArrayList<String>();
+    private List<SearchCommonBean> mSuggestList = new ArrayList<SearchCommonBean>();
+
     private Resources mResources;
+
     private boolean mShouldShowHint = true;
+
+    public OnHotWordClickListener onHotWordClickListener;
     private OnHistoryClickListener mOnHistoryClickListener;
-    private String[] hotWords;
     private SearchHelper mSearchHelper;
     private boolean isFromEditClick = false;
+    private Gson gson;
+    private List<SearchHotBean.DataBean> hotWords = new ArrayList<>();
+    private SharedPreferencesUtils sharedPreferencesUtils;
+    private RelativeLayout relative_parent;
+    private String searchType;
+    private String suggest;
 
     public SearchViewHelper(Context context, Activity activity, ViewGroup rootLayout, EditText
             searchEditText, SearchHelper searchHelper) {
@@ -61,6 +93,8 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack, Sea
 
     private void init(Context context, Activity activity, ViewGroup rootLayout, EditText
             searchEditText) {
+        gson = new Gson();
+        sharedPreferencesUtils = new SharedPreferencesUtils(PreferenceManager.getDefaultSharedPreferences(context));
         mContext = context;
         this.activity = activity;
         mRootLayout = rootLayout;
@@ -118,7 +152,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack, Sea
             mSuggestAdapter.notifyDataSetChanged();
         }
 
-        if (mSearchHelper != null) {
+        if (mSearchHelper != null){
             mSearchHelper.startSearchSuggestData(searchWord);
         }
 
@@ -135,10 +169,10 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack, Sea
         if (hisDatas != null && mContext != null)
             hisDatas.clear();
         ArrayList<String> historyWord = Tools.getHistoryWord(mContext);
-        if (historyWord != null) {
+        if (historyWord != null){
             hisDatas.addAll(historyWord);
         }
-        if (mHisAdapter != null) {
+        if (mHisAdapter != null){
             mHisAdapter.notifyDataSetChanged();
         }
     }
@@ -153,43 +187,113 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack, Sea
 
         setHotHeader();
 
-        hotWords = mContext.getResources().getStringArray(R.array.hot_word_list);
+        if (NetWorkUtils.getNetWorkTypeNew(mContext).equals("无")) {
+            getCacheDataFromShare(false);
+        } else {
+            AppLog.e("url", UrlUtils.BOOK_NOVEL_DEPLOY_HOST + "===" + NetWorkUtils.getNetWorkTypeNew(mContext));
+            OwnSearchService searchService = NetOwnSearch.INSTANCE.getOwnSearchService();
+            searchService.getHotWord()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<SearchHotBean>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-        // 确定随机七个热词下标
-        ArrayList<Integer> indexes = SearchHelper.getRandomInt(hotWords.length, 7);
-        hotDatas = new ArrayList<>();
-        for (Integer i : indexes) {
-            hotDatas.add(hotWords[i].replaceAll(" ", ""));
-        }
-
-        mHotAdapter = new ArrayAdapter<String>(activity, R.layout.item_hot_search_view,
-                hotDatas);
-        if (mHotListView != null) {
-
-            mHotListView.setAdapter(mHotAdapter);
-            mHotListView.setOnItemClickListener(new OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long position) {
-                    StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.b_search_click_his_word);
-                    if (hotDatas != null && !hotDatas.isEmpty() && position > -1 &&
-                            position < hotDatas.size()) {
-                        String hotWord = hotDatas.get((int) position);
-                        if (hotWord != null && mSearchEditText != null) {
-                            mShouldShowHint = false;
-                            mSearchEditText.setText(hotWord);
-                            startSearch(hotWord);
-
-                            Map<String, String> data = new HashMap<>();
-                            data.put("topicword", hotWord);
-                            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TOPIC, data);
                         }
-                    }
-                }
-            });
+                        @Override
+                        public void onNext(SearchHotBean value) {
+                            AppLog.e("result", value.toString());
+
+                            parseResult(value,true);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            getCacheDataFromShare(true);
+                            AppLog.e("error", e.toString());
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            AppLog.e("complete", "complete");
+                        }
+                    });
+
+            AppLog.e("url", UrlUtils.BOOK_NOVEL_DEPLOY_HOST + "===" + NetWorkUtils.getNetWorkTypeNew(mContext));
         }
+
 
         if (mRootLayout != null) {
             mRootLayout.addView(mHotListView);
+        }
+    }
+
+    /**
+     * if hasn't net getData from sharepreferenecs cache
+     */
+    public void getCacheDataFromShare(boolean hasNet){
+        if (!TextUtils.isEmpty(sharedPreferencesUtils.getString(Constants.SERARCH_HOT_WORD))) {
+            relative_parent.setVisibility(View.VISIBLE);
+            hotWords.clear();
+            String cacheHotWords = sharedPreferencesUtils.getString(Constants.SERARCH_HOT_WORD);
+            SearchHotBean searchHotBean = gson.fromJson(cacheHotWords, SearchHotBean.class);
+            parseResult(searchHotBean,false);
+            AppLog.e("urlbean", cacheHotWords);
+        } else {
+            if(!hasNet){
+                ToastUtils.showToastNoRepeat("网络不给力哦");
+            }
+            relative_parent.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * parse result data
+     */
+    public void parseResult(SearchHotBean value, boolean hasNet) {
+        hotWords.clear();
+        if (value != null && value.getData() != null) {
+            hotWords = value.getData();
+            if (hotWords != null && hotWords.size() >= 0) {
+                relative_parent.setVisibility(View.VISIBLE);
+                if(hasNet){
+                    sharedPreferencesUtils.putString(Constants.SERARCH_HOT_WORD, gson.toJson(value, SearchHotBean.class));
+                }
+
+                hotDatas = new ArrayList<>();
+
+               for(SearchHotBean.DataBean bean:hotWords){
+                   hotDatas.add(bean.getWord());
+               }
+                mHotAdapter = new ArrayAdapter<String>(activity, R.layout.item_hot_search_view,
+                        hotDatas);
+                if (mHotListView != null) {
+
+                    mHotListView.setAdapter(mHotAdapter);
+                    mHotListView.setOnItemClickListener(new OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long position) {
+                            StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.b_search_click_his_word);
+                            if (hotDatas != null && !hotDatas.isEmpty() && position > -1 &&
+                                    position < hotDatas.size()) {
+                                String hotWord = hotDatas.get((int) position);
+                                if (hotWord != null && mSearchEditText != null) {
+                                    mShouldShowHint = false;
+                                    mSearchEditText.setText(hotWord);
+                                    startSearch(hotWord,hotWords.get(arg2).getWordType()+"");
+
+                                    Map<String, String> data = new HashMap<>();
+                                    data.put("topicword", hotWord);
+                                    StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TOPIC, data);
+                                }
+                            }
+                        }
+                    });
+                }
+            } else {
+                sharedPreferencesUtils.putString(Constants.SERARCH_HOT_WORD, "");
+                relative_parent.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -217,7 +321,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack, Sea
                         if (history != null && mSearchEditText != null) {
                             mShouldShowHint = false;
                             mSearchEditText.setText(history);
-                            startSearch(history);
+                            startSearch(history,"0");
 
                             Map<String, String> data = new HashMap<>();
                             data.put("keyword", history);
@@ -249,7 +353,8 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack, Sea
         View listHeader = null;
         try {
             listHeader = LayoutInflater.from(activity).inflate(R.layout
-                    .layout_hotword_search_view, null);
+                    .search_hotword_view, null);
+            relative_parent = (RelativeLayout) listHeader.findViewById(R.id.relative_parent);
         } catch (InflateException e) {
             e.printStackTrace();
         }
@@ -257,7 +362,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack, Sea
     }
 
     private void initSuggestListView() {
-        if (mSearchHelper != null) {
+        if (mSearchHelper != null){
             mSearchHelper.setSearchSuggestCallBack(this);
         }
 
@@ -276,9 +381,9 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack, Sea
         }
         if (mSuggestAdapter == null) {
             String inputString = null;
-            if (mSearchEditText != null) {
+            if (mSearchEditText != null){
                 Editable editable = mSearchEditText.getText();
-                if (editable != null && editable.length() > 0) {
+                if (editable != null && editable.length() > 0){
                     inputString = editable.toString();
                 }
             }
@@ -288,16 +393,39 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack, Sea
         mSuggestListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                String suggest = mSuggestList.get(arg2);
+                suggest = mSuggestList.get(arg2).getSuggest();
+                searchType = "0";
+                if (mSuggestList.get(arg2).getWordtype().equals("label")) {
+                    searchType = "1";
+                } else if (mSuggestList.get(arg2).getWordtype().equals("author")) {
+                    searchType = "2";
+                } else if (mSuggestList.get(arg2).getWordtype().equals("name")) {
+                    searchType = "3";
+                } else {
+                    searchType = "0";
+                }
                 if (!TextUtils.isEmpty(suggest) && mSearchEditText != null) {
                     mShouldShowHint = false;
                     mSearchEditText.setText(suggest);
-                    startSearch(suggest);
+
+//                    mSearchEditText.setSelection(suggest.length());
+                    startSearch(suggest, searchType);
 
                     Map<String, String> data = new HashMap<>();
                     data.put("keyword", suggest);
                     StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TIPLISTCLICK, data);
                 }
+            }
+        });
+        mSuggestListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                hideInputMethod(view);
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
             }
         });
     }
@@ -325,12 +453,12 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack, Sea
         addHistoryWord(word);
     }
 
-    private void startSearch(String searchWord) {
+    private void startSearch(String searchWord,String searchType) {
         if (searchWord != null && !searchWord.equals("")) {
             addHistoryWord(searchWord);
 
             if (mOnHistoryClickListener != null) {
-                mOnHistoryClickListener.OnHistoryClick(searchWord);
+                mOnHistoryClickListener.OnHistoryClick(searchWord,searchType);
             }
 
         }
@@ -372,31 +500,27 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack, Sea
     }
 
     @Override
-    public void onSearchResult(ArrayList<String> suggestList) {
-        if (mSuggestList == null) {
+    public void onSearchResult(List<SearchCommonBean>  suggestList) {
+        if (mSuggestList == null){
             return;
         }
         mSuggestList.clear();
-        int index = 0;
-        for (String item : suggestList) {
-            if (index > 9) // 只显示10个
-                break;
+        for (SearchCommonBean item : suggestList) {
 
             mSuggestList.add(item);
-            index++;
         }
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-                if (mSuggestAdapter != null) {
+                if (mSuggestAdapter != null){
                     String inputString = null;
-                    if (mSearchEditText != null) {
+                    if (mSearchEditText != null){
                         Editable editable = mSearchEditText.getText();
-                        if (editable != null && editable.length() > 0) {
+                        if (editable != null && editable.length() > 0){
                             inputString = editable.toString();
                         }
                     }
-                    if (inputString != null) {
+                    if (inputString != null){
                         mSuggestAdapter.setEditInput(inputString);
                     }
                     mSuggestAdapter.notifyDataSetChanged();
@@ -406,16 +530,26 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack, Sea
         });
     }
 
-    public boolean isFromEditClick() {
-        return isFromEditClick;
-    }
-
     public void setFromEditClick(boolean fromEditClick) {
         isFromEditClick = fromEditClick;
     }
 
+    public boolean isFromEditClick() {
+        return isFromEditClick;
+    }
+
     public void setOnHistoryClickListener(OnHistoryClickListener listener) {
         mOnHistoryClickListener = listener;
+    }
+
+
+
+    public interface OnHotWordClickListener {
+        void hotWordClick(String tag, String searchType);
+    }
+
+    public interface OnHistoryClickListener {
+        void OnHistoryClick(String history, String searchType);
     }
 
     public void onDestroy() {
@@ -460,12 +594,12 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack, Sea
             mSuggestList = null;
         }
     }
-
-    public interface OnHotWordClickListener {
-        void hotWordClick(String tag);
-    }
-
-    public interface OnHistoryClickListener {
-        void OnHistoryClick(String history);
+    public void hideInputMethod(final View paramView) {
+        if (paramView == null || paramView.getContext() == null)
+            return;
+        InputMethodManager imm = (InputMethodManager) paramView.getContext().getSystemService(INPUT_METHOD_SERVICE);
+        if (imm.isActive()) {
+            imm.hideSoftInputFromWindow(paramView.getApplicationWindowToken(), 0);
+        }
     }
 }

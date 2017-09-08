@@ -70,6 +70,7 @@ public class ReadStatus {
     public int lastCurrentPageRemark;
     public int lastPageCount;
     public ArrayList<String> bookNameList;
+    public String lastChapterId;//记录翻页前一页的章节ID
     //章节名称列表
     public ArrayList<String> chapterNameList;
     //小说bean
