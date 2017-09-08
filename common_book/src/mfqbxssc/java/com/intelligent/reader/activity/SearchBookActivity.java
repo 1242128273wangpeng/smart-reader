@@ -161,6 +161,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
             mSearchHelper.initJSHelp(jsInterfaceHelper);
         }
         AppLog.e("kkk","kkkk");
+        AppLog.e("kkk","test");
 
     }
 
