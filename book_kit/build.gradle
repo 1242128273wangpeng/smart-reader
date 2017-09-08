@@ -7,6 +7,8 @@ dependencies {
     compile 'net.iyouqu.android.common:iyouqu_adsdk:1.2.7'
     compile 'net.iyouqu.android.common:iyouqu_logencap:1.0.5'
     compile 'net.iyouqu.android.common:QG_SDK:1.0.1'
+    compile 'net.youqu:ibook-token:2.0.0'
+    compile 'net.iyouqu:novel-extractor:1.0.1-SNAPSHOT'
     compile 'com.amap:AMap_Location:2.4.1'
     compile 'com.baidu:mobstat:3.7.4.2'
     //    compile 'org.mozilla.intl:chardet:1.0.0'

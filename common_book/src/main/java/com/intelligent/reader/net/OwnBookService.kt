@@ -1,7 +1,7 @@
 package com.intelligent.reader.net
 
 import io.reactivex.Observable
-import net.xxx.yyy.go.spider.URLBuilderIntterface
+import net.lzbook.kit.encrypt.URLBuilderIntterface
 import retrofit2.http.GET
 import retrofit2.http.Path
 

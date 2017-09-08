@@ -16,7 +16,7 @@ import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.MurmurHash;
 import net.lzbook.kit.utils.Tools;
-import net.xxx.yyy.go.spider.URLBuilderIntterface;
+import net.lzbook.kit.encrypt.URLBuilderIntterface;
 
 import org.json.JSONException;
 

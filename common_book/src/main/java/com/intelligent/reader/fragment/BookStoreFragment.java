@@ -5,7 +5,7 @@ import com.intelligent.reader.R;
 import net.lzbook.kit.book.view.NonSwipeViewPager;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppUtils;
-import net.xxx.yyy.go.spider.URLBuilderIntterface;
+import net.lzbook.kit.encrypt.URLBuilderIntterface;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

@@ -1,4 +1,4 @@
-package net.xxx.yyy.go.spider;
+package net.lzbook.kit.encrypt;
 
 import java.util.Map;
 

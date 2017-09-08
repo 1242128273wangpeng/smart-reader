@@ -15,7 +15,7 @@ import net.lzbook.kit.statistic.model.Search;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.JSInterfaceHelper;
-import net.xxx.yyy.go.spider.URLBuilderIntterface;
+import net.lzbook.kit.encrypt.URLBuilderIntterface;
 
 import android.content.Context;
 import android.content.Intent;

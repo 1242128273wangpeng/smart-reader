@@ -26,7 +26,7 @@ import net.lzbook.kit.utils.FrameBookHelper;
 import net.lzbook.kit.utils.SettingItemsHelper;
 import net.lzbook.kit.utils.SharedPreferencesUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
-import net.xxx.yyy.go.spider.URLBuilderIntterface;
+import net.lzbook.kit.encrypt.URLBuilderIntterface;
 
 import android.app.Activity;
 import android.content.Context;

@@ -5,7 +5,7 @@ import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.OpenUDID;
-import net.xxx.yyy.go.spider.URLBuilderIntterface;
+import net.lzbook.kit.encrypt.URLBuilderIntterface;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;

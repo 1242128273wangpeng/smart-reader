@@ -9,7 +9,7 @@ import net.lzbook.kit.net.volley.request.VolleyDataService;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
-import net.xxx.yyy.go.spider.URLBuilderIntterface;
+import net.lzbook.kit.encrypt.URLBuilderIntterface;
 
 import org.json.JSONException;
 

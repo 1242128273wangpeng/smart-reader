@@ -38,7 +38,7 @@ import net.lzbook.kit.utils.MD5Utils;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.OpenUDID;
 import net.lzbook.kit.utils.StatServiceUtils;
-import net.xxx.yyy.go.spider.URLBuilderIntterface;
+import net.lzbook.kit.encrypt.URLBuilderIntterface;
 
 import org.json.JSONException;
 

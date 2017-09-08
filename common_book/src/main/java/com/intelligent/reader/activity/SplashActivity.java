@@ -20,8 +20,6 @@ import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.SharedPreferencesUtils;
 import net.lzbook.kit.utils.ShieldManager;
 import net.lzbook.kit.utils.StatServiceUtils;
-import net.lzbook.kit.utils.UpdateJarUtil;
-import net.xxx.yyy.go.spider.URLBuilderIntterface;
 
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
@@ -391,27 +389,6 @@ public class SplashActivity extends FrameActivity {
                 dynamicParameter.setDynamicParamter();
             } catch (Exception e) {
                 e.printStackTrace();
-            }
-
-            // 1 初始化dex
-            URLBuilderIntterface urlBuilderIntterface = BaseBookApplication.getUrlBuilderIntterface();
-            if (urlBuilderIntterface == null) {
-                try {
-                    UpdateJarUtil.initJar(BookApplication.getGlobalContext());
-                    if (BookApplication.getGlobalContext().getUrlBuilderIntterface() != null) {
-                        AppLog.e(TAG, "DEX init success !!!!!!!!!!");
-                    } else {
-                        AppLog.e(TAG, "DEX init failure !!!!!!!!!!");
-                        UpdateJarUtil.resetJar(BookApplication.getGlobalContext());
-                    }
-                } catch (Exception e) {
-                    UpdateJarUtil.resetJar(BookApplication.getGlobalContext());
-                    AppLog.e(TAG, "DEX init failure !!!!!!!!!!");
-                    e.printStackTrace();
-                }
-            }
-            if (NetWorkUtils.getNetWorkType(BaseBookApplication.getGlobalContext()) != NetWorkUtils.NETWORK_NONE) {
-                UpdateJarUtil.chekcJarUpNew(BaseBookApplication.getGlobalContext());
             }
 
             // 6 初始化广告

@@ -20,7 +20,7 @@ import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.FrameBookHelper;
 import net.lzbook.kit.utils.SharedPreferencesUtils;
-import net.xxx.yyy.go.spider.URLBuilderIntterface;
+import net.lzbook.kit.encrypt.URLBuilderIntterface;
 
 import android.app.Activity;
 import android.content.Context;
