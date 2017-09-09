@@ -23,7 +23,7 @@
                 android:paddingRight="10dp"
                 android:gravity="left"
                 android:text="搜索历史"
-                android:textColor="@color/color_red_882f46"
+                android:textColor="@color/search_hot_word_title_text_color"
                 android:textSize="16sp"/>
         
         <TextView
@@ -38,7 +38,7 @@
                 android:gravity="left"
                 android:text="清空"
                 android:paddingRight="16dp"
-                android:textColor="@color/color_red_882f46"
+                android:textColor="@color/search_history_clear_text_color"
                 android:textSize="14sp"/>
     </RelativeLayout>
 </RelativeLayout>
