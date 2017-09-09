@@ -12,11 +12,5 @@
             android:layout_height="match_parent"
             android:scrollbars="none"/>
     
-    <View
-            android:id="@+id/view_night_show"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            android:background="#77000000"/>
 
 </RelativeLayout>
