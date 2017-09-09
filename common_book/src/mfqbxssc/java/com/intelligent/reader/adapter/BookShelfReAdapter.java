@@ -8,7 +8,6 @@ import com.dingyueads.sdk.Native.YQNativeAdInfo;
 import com.dingyueads.sdk.NativeInit;
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.holder.AbsRecyclerViewHolder;
-import com.intelligent.reader.adapter.holder.BookShelfItemHolder;
 
 import net.lzbook.kit.cache.imagecache.ImageCacheManager;
 import net.lzbook.kit.constants.Constants;
