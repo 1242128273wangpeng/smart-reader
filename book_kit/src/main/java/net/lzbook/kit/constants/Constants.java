@@ -90,23 +90,8 @@ public class Constants {
     public static final String DAY_LIMIT = "day_limit";
     public static final String REQUEST_ITEM = "request_item";
     public static final String NOTIFY_ID = "notify_id";
-    /**
-     * 用于解析的jar包 新
-     */
-    public static final String DEX_NAME = "extractor-encryption-v16.dex";
-    public static final String PARSER_PACKAGE_VERSION = "parser_package_version";
-    public static final String JAR_UPDATE_TIME = "jar_update_time";
-    public static final int jarUpdateTime = 5 * 60 * 1000;
-    public static final int CURRENT_DEX_VERSION = 24;
-    public static final String CLAZZ_NAME_EXTRACTOR_VALUE = "net.xxx.yyy.go.spider.v16.MainExtractor";
-    public static final String CLAZZ_NAME_URL_BUILDER_VALUE = "net.xxx.yyy.go.spider.v16.URLBuilder";
-    public static final String CLAZZ_NAME_EXTRACTOR_KEY = "CLAZZ_NAME_EXTRACTOR";
-    public static final String CLAZZ_NAME_URL_BUILDER_KEY = "CLAZZ_NAME_URL_BUILDER";
-    public static final String DEX_NAME_UPDATE_KEY = "DEX_NAME_UPDATE";
     public static final String user_new_index = "user_new_index";
     public static final String user_new_ad_limit_day = "user_new_ad_limit_day";
-    //用户是否进行过源迁移
-    public static final String USER_TRANSFER_KEY = "user_transfer";
     //用户当日首次打开app的时间
     public static final String TODAY_FIRST_OPEN_APP = "today_first_open_app";
     //用户当天是否上传了用户信息

@@ -172,8 +172,7 @@ public class BookHelper extends BaseBookHelper {
     private static boolean isDownFnish(Context ctx, Book book) {
 
         DownloadState state = BookHelper.getInitDownstate(ctx, book, BookHelper.getStartDownIndex(ctx, book));
-        boolean isNoNet = NetWorkUtils.getNetWorkType(ctx) == NetWorkUtils.NETWORK_NONE;
-        return (state == DownloadState.FINISH) && isNoNet ? true : false;
+        return state == DownloadState.FINISH;
     }
 
     /**

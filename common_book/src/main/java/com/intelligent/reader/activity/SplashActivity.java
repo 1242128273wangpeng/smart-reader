@@ -55,7 +55,6 @@ public class SplashActivity extends FrameActivity {
     public int initialization_count = 0;
     public int complete_count = 0;
     public ViewGroup ad_view;
-    private BookDaoHelper bookDaoHelper;
     private Context context;
     private SharedPreferencesUtils sharePreferenceUtils;
 
@@ -201,7 +200,6 @@ public class SplashActivity extends FrameActivity {
         context = this;
         AppLog.e("oncreat", "oncreat go");
         sharePreferenceUtils = new SharedPreferencesUtils(PreferenceManager.getDefaultSharedPreferences(this));
-        bookDaoHelper = BookDaoHelper.getInstance(getApplicationContext());
 
         // 初始化任务
         InitTask initTask = new InitTask();

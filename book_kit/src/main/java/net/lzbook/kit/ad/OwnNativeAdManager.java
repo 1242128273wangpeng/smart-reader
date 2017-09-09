@@ -152,6 +152,9 @@ public class OwnNativeAdManager implements AdListener {
             mInstance = new OwnNativeAdManager(mActivity, viewGroup, splashHandler, handlerMsgCode, defaultPostionId, PlatformAppId);
             AppLog.e(TAG, "OwnNativeAdManager mInstance new instance");
         } else {
+            if (mActivityRef == null || mActivityRef.get() == null) {
+                mActivityRef = new WeakReference<>(mActivity);
+            }
             //对象存在时 不初始化网络直接加载开屏广告 设置开屏界面的handler对象
             AppLog.e(TAG, "OwnNativeAdManager mInstance already exist");
             mInstance.loadSplashAd(SplashPostion, viewGroup, false);

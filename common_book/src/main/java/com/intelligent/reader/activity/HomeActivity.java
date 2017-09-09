@@ -221,13 +221,6 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
             Constants.MODE = sharedPreferences.getInt("content_mode", 51);
         }
 
-        if (sharedPreferences.getInt("content_mode", 51) < 50) {
-            edit.putInt("content_mode", Constants.MODE);
-            edit.putInt("current_light_mode", Constants.MODE);
-            edit.apply();
-        }
-
-
         //判断用户是否是当日首次打开应用
         long first_time = sharedPreferences.getLong(Constants.TODAY_FIRST_OPEN_APP, 0);
         AppLog.e("BaseBookApplication", "first_time=" + first_time);
