@@ -44,6 +44,7 @@ public class CatalogAdapter extends BaseAdapter {
         }
         this.list = list;
         this.book_site = book_site;
+        resources = context.getResources();
         already_cached = resources.getString(R.string.already_cached);
     }
 
