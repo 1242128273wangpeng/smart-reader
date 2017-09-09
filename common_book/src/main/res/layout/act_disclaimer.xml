@@ -10,7 +10,7 @@
             android:id="@+id/rl_disclaimer_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:background="@color/color_red_882f46"
+            android:background="@color/top_navigation_bg_color"
             android:focusableInTouchMode="true">
         
         <ImageView
