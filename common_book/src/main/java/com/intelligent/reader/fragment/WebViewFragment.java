@@ -85,12 +85,6 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
         if (rootView != null) {
             contentLayout = (RelativeLayout) rootView.findViewById(R.id.web_content_layout);
             contentView = (WebView) rootView.findViewById(R.id.web_content_view);
-            View view_night_show = rootView.findViewById(R.id.view_night_show);
-            if (((HomeActivity) getActivity()).mThemeHelper.isNight()) {
-                view_night_show.setVisibility(View.VISIBLE);
-            } else {
-                view_night_show.setVisibility(View.GONE);
-            }
             if (Build.VERSION.SDK_INT >= 11) {
                 contentView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             }
