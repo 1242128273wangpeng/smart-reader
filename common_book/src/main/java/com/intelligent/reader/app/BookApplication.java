@@ -29,7 +29,6 @@ public class BookApplication extends BaseBookApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        //微信
 
         // 自定义ErrorCallback
         FeedbackAPI.addErrorCallback(new FeedbackErrorCallback() {

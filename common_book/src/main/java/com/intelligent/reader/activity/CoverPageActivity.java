@@ -518,7 +518,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
         bookVoBean.name = bookMode.model.name;
         bookVoBean.author = bookMode.model.penname;
         if (!TextUtils.isEmpty(bookMode.model.attribute_book)) {
-            bookVoBean.status = bookMode.model.attribute_book.equals("serialize") ? 1 : 0;
+            bookVoBean.status = bookMode.model.attribute_book.equals("serialize") ? 1 : 2;
         }
         bookVoBean.last_chapter_name = bookMode.model.id_last_chapter_name;
         bookVoBean.serial_number = bookMode.model.id_last_chapter_serial_number;//总章数
@@ -630,7 +630,6 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
     @Override
     public void onClick(View view) {
         Intent intent = new Intent();
-        Bundle bundle = new Bundle();
 
         if (view instanceof RecommendItemView) {
             RecommendItemView item = (RecommendItemView) view;
@@ -649,7 +648,6 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                 Map<String, String> data = new HashMap<>();
                 data.put("type", "1");
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
-                finish();
                 finish();
                 break;
 
