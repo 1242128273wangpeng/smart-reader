@@ -1,9 +1,9 @@
-package com.intelligent.reader.adapter.holder;
+package com.intelligent.reader.adapter;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.intelligent.reader.R;
-import com.intelligent.reader.adapter.BookShelfReAdapter;
+import com.intelligent.reader.adapter.holder.AbsRecyclerViewHolder;
 
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.bean.Book;
