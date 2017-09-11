@@ -3,7 +3,7 @@
                 android:id="@+id/book_shelf_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/bookshelf_item_press_bg">
+                android:background="@drawable/bookshelf__item_press_bg">
 
     <TextView
             android:id="@+id/bookshelf_item_layout_type"
@@ -65,9 +65,8 @@
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/app_name"
                     android:scaleType="fitXY"
-                    android:background="?attr/bookshelf_book_cover_default"
-                    android:src="?attr/bookshelf_book_cover_default"/>
-
+                    android:background="@mipmap/bookshelf_book_cover_default"
+                    android:src="@mipmap/bookshelf_book_cover_default"/>
         </FrameLayout>
 
         <ImageView
@@ -77,7 +76,7 @@
                 android:contentDescription="@string/app_name"
                 android:layout_marginLeft="54dp"
                 android:layout_marginTop="6dp"
-                android:src="?attr/bookshelf_book_status_finish"
+                android:src="@mipmap/bookshelf_book_status_finish"
                 android:visibility="gone"/>
 
         <ImageView
@@ -87,7 +86,7 @@
                 android:contentDescription="@string/app_name"
                 android:layout_marginLeft="54dp"
                 android:layout_marginTop="6dp"
-                android:src="?attr/bookshelf_book_status_update"
+                android:src="@mipmap/bookshelf_book_status_update"
                 android:visibility="gone"/>
 
         <LinearLayout
@@ -110,7 +109,7 @@
                     android:layout_gravity="center_vertical"
                     android:singleLine="true"
                     android:text="@string/app_name"
-                    android:textColor="?attr/bookshelf_book_name_text_color"
+                    android:textColor="@color/bookshelf_book_name_text_color"
                     android:textSize="@dimen/dimen_text_16"/>
 
             <LinearLayout
@@ -119,6 +118,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:orientation="horizontal">
+
                 <TextView
                         android:id="@+id/book_shelf_unread"
                         android:layout_width="wrap_content"
@@ -128,7 +128,7 @@
                         android:layout_marginRight="@dimen/dimen_margin_5"
                         android:layout_marginBottom="@dimen/padding_1"
                         android:text="100章"
-                        android:textColor="?attr/bookshelf_book_unread_text_color"
+                        android:textColor="@color/bookshelf_book_unread_text_color"
                         android:textSize="@dimen/dimen_text_14"/>
 
                 <ImageView
@@ -136,7 +136,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:src="?attr/bookshelf_book_unread_tip"/>
+                        android:src="@mipmap/bookshelf_mark_unread"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -152,7 +152,7 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="@string/app_name"
-                android:textColor="?attr/bookshelf_last_chapter_text_color"
+                android:textColor="@color/bookshelf_last_chapter_text_color"
                 android:textSize="@dimen/dimen_text_12"/>
 
         <RelativeLayout
@@ -171,18 +171,14 @@
                     android:layout_alignParentLeft="true"
                     android:singleLine="true"
                     android:text="2014-08-14更新"
-                    android:textColor="?attr/bookshelf_update_time_text_color"
+                    android:textColor="@color/bookshelf_update_time_text_color"
                     android:textSize="@dimen/dimen_text_12"/>
-
         </RelativeLayout>
-
     </RelativeLayout>
 
     <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_view_height_0.5"
             android:layout_below="@+id/bookshelf_information"
-            android:background="?attr/bookshelf_divider"/>
-
+            android:background="@color/bookshelf_divider"/>
 </RelativeLayout>
-

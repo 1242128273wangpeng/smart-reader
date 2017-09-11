@@ -264,11 +264,6 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             tv_night_shift.setText(R.string.mode_night);
             bt_night_shift.setChecked(false);
         }
-        //初始化主题名
-        getTheme().resolveAttribute(R.attr.theme_name, themeName, true);
-        theme_name.setText(getResources().getText(themeName.resourceId));
-
-
     }
 
 
@@ -299,9 +294,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             btn_login.setVisibility(View.VISIBLE);
             txt_nickname.setVisibility(View.GONE);
             txt_userid.setVisibility(View.GONE);
-            TypedValue typedValue = new TypedValue();
-            getTheme().resolveAttribute(R.attr.setting_img_user_head_default, typedValue, true);
-            img_head.setImageResource(typedValue.resourceId);
+            img_head.setImageResource(R.mipmap.my_top_pic);
             findViewById(R.id.rl_logout).setVisibility(View.GONE);
 
             if (txt_login_des != null) {
@@ -647,14 +640,6 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         }
     }
 
-
-    private void nightShift() {
-        mThemeHelper.showAnimation(this);
-        mThemeHelper.toggleThemeSetting(this);
-        refreshUI();
-        StatusBarCompat.compat(this);
-    }
-
     //夜间模式切换按钮的回调
     @Override
     public void onCheckedChanged(SwitchButton view, boolean isChecked) {
@@ -672,7 +657,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         }
         edit.putInt("content_mode", Constants.MODE);
         edit.apply();
-        nightShift();
+        nightShift(isChecked, true);
     }
 
     private void CancelTask() {
@@ -701,187 +686,6 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         }
     }
 
-    private void refreshUI() {
-        Resources.Theme theme = getTheme();
-        Resources resources = getResources();
-
-        TypedValue myBackgroundPic = new TypedValue();//顶部背景
-        TypedValue textColor = new TypedValue();//字体颜色
-        TypedValue iconBack = new TypedValue();//分割块颜色
-        TypedValue smallTextColor = new TypedValue();//字体颜色
-        TypedValue loginBackgroundPic = new TypedValue();//登录讨论区图片背景
-        TypedValue loginTextColor = new TypedValue();//登录讨论区字体颜色
-        TypedValue loginDefaultPic = new TypedValue();//登录讨论区头像
-        TypedValue itemBackground = new TypedValue();//背景色
-        TypedValue bbsIcon = new TypedValue();//讨论区
-        TypedValue skinIcon = new TypedValue();//主题换肤
-        TypedValue nightShiftIcon = new TypedValue();//夜间模式
-        TypedValue readingSettingIcon = new TypedValue();//阅读页设置
-        TypedValue historyIcon = new TypedValue();//阅读页设置
-        TypedValue moreSettingIcon = new TypedValue();//更多设置
-        TypedValue feedbackIcon = new TypedValue();//帮助与回馈
-        TypedValue commentIcon = new TypedValue();//去评分
-        TypedValue updatingIcon = new TypedValue();//当前版本
-        TypedValue clearCacheIcon = new TypedValue();//清除缓存
-        TypedValue protocalIcon = new TypedValue();//使用协议
-        TypedValue moreIcon = new TypedValue();//更多符号
-        TypedValue dividerColor = new TypedValue();//分割线颜色
-        TypedValue gapColor = new TypedValue();//分割块颜色
-
-        TypedValue navigationColor = new TypedValue();//头部导航的颜色
-        TypedValue navigationTextColor = new TypedValue();//头部导航的字体颜色
-
-        //icon资源
-        theme.resolveAttribute(R.attr.my_item_bbs_icon, bbsIcon, true);
-        theme.resolveAttribute(R.attr.my_item_skin_icon, skinIcon, true);
-        theme.resolveAttribute(R.attr.my_item_nightshift_icon, nightShiftIcon, true);
-        theme.resolveAttribute(R.attr.my_item_readingsetting_icon, readingSettingIcon, true);
-        theme.resolveAttribute(R.attr.my_item_history_icon, historyIcon, true);
-        theme.resolveAttribute(R.attr.my_item_moresetting_icon, moreSettingIcon, true);
-        theme.resolveAttribute(R.attr.my_item_feedback_icon, feedbackIcon, true);
-        theme.resolveAttribute(R.attr.my_item_comment_icon, commentIcon, true);
-        theme.resolveAttribute(R.attr.my_item_update_icon, updatingIcon, true);
-        theme.resolveAttribute(R.attr.my_item_clearcache_icon, clearCacheIcon, true);
-        theme.resolveAttribute(R.attr.my_item_protocol_icon, protocalIcon, true);
-        theme.resolveAttribute(R.attr.my_item_more_icon, moreIcon, true);
-        theme.resolveAttribute(R.attr.theme_name, themeName, true);
-
-        if (is_show_drawable.getVisibility() == View.VISIBLE) {
-            mThemeHelper.setTextviewDrawable(this, bbsIcon, null, moreIcon, null, tv_readpage_bbs);
-            mThemeHelper.setTextviewDrawable(this, skinIcon, null, null, null, tv_style_change);
-            mThemeHelper.setTextviewDrawable(this, nightShiftIcon, null, null, null, tv_night_shift);
-            mThemeHelper.setTextviewDrawable(this, readingSettingIcon, null, moreIcon, null, tv_readpage_setting);
-            mThemeHelper.setTextviewDrawable(this, historyIcon, null, moreIcon, null, tv_history_setting);
-            mThemeHelper.setTextviewDrawable(this, moreSettingIcon, null, moreIcon, null, tv_setting_more);
-            mThemeHelper.setTextviewDrawable(this, feedbackIcon, null, moreIcon, null, tv_feedback);
-            mThemeHelper.setTextviewDrawable(this, commentIcon, null, moreIcon, null, tv_mark);
-            mThemeHelper.setTextviewDrawable(this, updatingIcon, null, null, null, text_check_update);
-            mThemeHelper.setTextviewDrawable(this, clearCacheIcon, null, null, null, text_clear_cache);
-            mThemeHelper.setTextviewDrawable(this, protocalIcon, null, moreIcon, null, text_disclaimer_statement);
-//            mThemeHelper.setTextviewDrawable(this, null, null, null, null, txt_userid);
-//            mThemeHelper.setTextviewDrawable(this, null, null, moreIcon, null, txt_nickname);
-
-
-        }
-
-
-        // 分割线
-        theme.resolveAttribute(R.attr.color_divider, dividerColor, true);
-        for (View divider : mDivider) {
-            divider.setBackgroundResource(dividerColor.resourceId);
-        }
-
-        //分割块
-        theme.resolveAttribute(R.attr.color_lv_gap, gapColor, true);
-        for (View gapr : mGap) {
-            gapr.setBackgroundResource(gapColor.resourceId);
-        }
-
-        //题目字体颜色 更多符号
-        theme.resolveAttribute(R.attr.color_text_most, textColor, true);
-        for (TextView textView : mTextViewList) {
-            textView.setTextColor(resources.getColor(textColor.resourceId));
-        }
-
-        //顶部背景
-        theme.resolveAttribute(R.attr.my_top_bg, myBackgroundPic, true);
-        theme.resolveAttribute(R.attr.my_bg_color, itemBackground, true);
-        theme.resolveAttribute(R.attr.my_top_pic, loginDefaultPic, true);
-        theme.resolveAttribute(R.attr.my_top_login_bg, loginBackgroundPic, true);
-        theme.resolveAttribute(R.attr.my_top_login_text, loginTextColor, true);
-        theme.resolveAttribute(R.attr.my_item_small_text_color, smallTextColor, true);
-        theme.resolveAttribute(R.attr.title_back, iconBack, true);
-
-
-        //主题名
-        theme_name.setText(resources.getText(themeName.resourceId));
-
-        //颜色背景
-        iv_mine_image.setBackgroundResource(loginDefaultPic.resourceId);//登录讨论区头像
-        tv_login_info.setBackgroundResource(loginBackgroundPic.resourceId);//顶部登录讨论区背景
-        tv_login_info.setTextColor(resources.getColor(loginTextColor.resourceId));//顶部登录讨论区字体颜色
-        user_login_layout.setBackgroundResource(myBackgroundPic.resourceId);//顶部整个背景
-        rl_setting_layout.setBackgroundResource(itemBackground.resourceId);//设置页面背景
-        theme_name.setTextColor(resources.getColor(smallTextColor.resourceId));//主题名
-        check_update_message.setTextColor(resources.getColor(smallTextColor.resourceId));//版本号
-        clear_cache_size.setTextColor(resources.getColor(smallTextColor.resourceId));//缓存
-        btnBack.setImageDrawable(resources.getDrawable(iconBack.resourceId));
-
-
-        //第二套布局的资源
-        theme.resolveAttribute(R.attr.color_primary, navigationColor, true);
-        theme.resolveAttribute(R.attr.top_navigation_text_color, navigationTextColor, true);
-        if (top_navigation_bg.getBackground().getOpacity() != PixelFormat.TRANSPARENT) {
-            top_navigation_bg.setBackgroundResource(navigationColor.resourceId);//顶部导航的颜色
-        }
-        top_setting_back.setImageDrawable(resources.getDrawable(iconBack.resourceId));//返回键颜色
-        icon_more_left.setBackgroundResource(moreIcon.resourceId);//更多
-        tv_login_info_detail_left.setTextColor(resources.getColor(smallTextColor.resourceId));
-        top_navigation_title.setTextColor(resources.getColor(navigationTextColor.resourceId));
-        iv_mine_image_left.setBackgroundResource(loginDefaultPic.resourceId);
-
-        if (btn_login != null) {
-
-            //xml总没有图就不设置了
-            if (img_head_background.getDrawable() != null) {
-                resetImageResource(img_head_background, R.attr.setting_img_user_head_background);
-            }
-
-
-            resetTextColor(btn_login, R.attr.setting_login_font_color);
-            resetTextColor(btn_logout, R.attr.setting_logout_font_color);
-            Drawable login_background = btn_login.getBackground();
-            if (!(login_background instanceof ColorDrawable)) {
-                resetBackground(btn_login, R.attr.setting_login_background);
-            }
-            resetBackground(btn_logout, R.attr.setting_logout_background);
-
-            resetBackground(img_head_background, R.attr.color_primary);
-
-            if (!UserManager.INSTANCE.isUserLogin()) {
-                resetImageResource(img_head, R.attr.setting_img_user_head_default);
-            }
-            resetTextColor(txt_nickname, R.attr.setting_nickname_font_color, resources.getColor(textColor.resourceId));
-            resetTextColor(txt_userid, R.attr.setting_userid_font_color, resources.getColor(textColor.resourceId));
-            if (txt_login_des != null) {
-                resetTextColor(txt_login_des, R.attr.setting_userid_font_color, resources.getColor(textColor.resourceId));
-            }
-
-        }
-    }
-
-    private void resetImageResource(ImageView view, @AttrRes int attr) {
-        TypedValue typedValue = new TypedValue();
-        if (getTheme().resolveAttribute(attr, typedValue, true)) {
-            view.setImageResource(typedValue.resourceId);
-        }
-    }
-
-    private void resetBackground(View view, @AttrRes int attr) {
-        TypedValue typedValue = new TypedValue();
-        if (getTheme().resolveAttribute(attr, typedValue, true)) {
-            view.setBackgroundResource(typedValue.resourceId);
-        }
-    }
-
-    private boolean resetTextColor(TextView view, @AttrRes int attr) {
-        TypedValue typedValue = new TypedValue();
-        if (getTheme().resolveAttribute(attr, typedValue, true)) {
-            if (typedValue.type == TypedValue.TYPE_REFERENCE) {
-                view.setTextColor(getResources().getColor(typedValue.resourceId));
-            } else {
-                view.setTextColor(typedValue.data);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private void resetTextColor(TextView view, @AttrRes int attr, int defaultColor) {
-        if (!resetTextColor(view, attr)) {
-            view.setTextColor(defaultColor);
-        }
-    }
 
     private class CacheAsyncTask extends AsyncTask<Void, Void, String> {
 

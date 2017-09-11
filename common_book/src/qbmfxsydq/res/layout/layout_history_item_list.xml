@@ -2,29 +2,29 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/bookshelf_item_press_bg">
-    
+                android:background="@drawable/bookshelf__item_press_bg">
+
     <TextView
             android:id="@+id/bookshelf_item_layout_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="HistoryOne"
             android:visibility="gone"/>
-    
+
     <RelativeLayout
             android:id="@+id/book_shelf_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp">
-        
+
         <FrameLayout
                 android:id="@+id/book_shelf_image_view"
                 android:layout_width="75dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="@dimen/dimen_margin_5">
-            
+
             <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -33,7 +33,7 @@
                     android:scaleType="fitXY"
                     android:src="@drawable/book_mask"
                     android:visibility="gone"/>
-            
+
             <ImageView
                     android:id="@+id/book_shelf_image"
                     android:layout_width="65dp"
@@ -47,15 +47,14 @@
                     android:paddingRight="3dp"
                     android:paddingTop="2dp"
                     android:scaleType="fitXY"/>
-        
         </FrameLayout>
-        
+
         <RelativeLayout
                 android:id="@+id/bookshelf_information"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/book_shelf_image_view">
-            
+
             <LinearLayout
                     android:id="@+id/ll_book_shelf_title"
                     android:layout_width="match_parent"
@@ -63,7 +62,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="@dimen/dimen_margin_12"
                     android:orientation="horizontal">
-                
+
                 <TextView
                         android:id="@+id/book_shelf_name"
                         android:layout_width="0dip"
@@ -73,11 +72,10 @@
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:text="name"
-                        android:textColor="?attr/footprint_name_text_color"
+                        android:textColor="@color/footprint_name_text_color"
                         android:textSize="@dimen/dimen_text_16"/>
-            
             </LinearLayout>
-            
+
             <RelativeLayout
                     android:id="@+id/book_shelf_author_unread_container"
                     android:layout_width="wrap_content"
@@ -86,7 +84,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="13dp"
                     android:layout_marginTop="10dp">
-                
+
                 <TextView
                         android:id="@+id/book_shelf_author"
                         android:layout_width="wrap_content"
@@ -94,11 +92,10 @@
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:text="author"
-                        android:textColor="?attr/footprint_author_text_color"
+                        android:textColor="@color/footprint_author_text_color"
                         android:textSize="@dimen/dimen_text_12"/>
-            
             </RelativeLayout>
-            
+
             <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -107,7 +104,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="13dp"
                     android:layout_marginTop="8dp">
-                
+
                 <TextView
                         android:id="@+id/book_shelf_update_time"
                         android:layout_width="wrap_content"
@@ -115,26 +112,23 @@
                         android:layout_alignParentLeft="true"
                         android:maxLines="1"
                         android:text="2017-08-14 00:00"
-                        android:textColor="?attr/footprint_brow_time_text_color"
+                        android:textColor="@color/footprint_brow_time_text_color"
                         android:textSize="@dimen/dimen_text_12"/>
-            
             </RelativeLayout>
         </RelativeLayout>
-        
+
         <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
-                android:src="?attr/footprint_into_icon"/>
+                android:src="@mipmap/footprint_into"/>
     </RelativeLayout>
-    
+
     <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_view_height_0.5"
             android:layout_below="@+id/book_shelf_item"
-            android:background="?attr/footprint_item_divider_color"/>
-
+            android:background="@color/footprint_item_divider_color"/>
 </RelativeLayout>
-

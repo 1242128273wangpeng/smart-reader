@@ -285,13 +285,8 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
 
     private void initBookShelfSort(int type) {
 
-        TypedValue checkedColor = new TypedValue();
-        TypedValue uncheckedColor = new TypedValue();
-        Resources.Theme theme = mContext.getTheme();
-        theme.resolveAttribute(R.attr.bookshelf_delete_checked, checkedColor, true);
-        theme.resolveAttribute(R.attr.bookshelf_delete_unchecked, uncheckedColor, true);
-        bookshelf_sort_time_checkbox.setImageResource(type != 1 ? checkedColor.resourceId : uncheckedColor.resourceId);
-        bookshelf_sort_update_time_checkbox.setImageResource(type == 1 ? checkedColor.resourceId : uncheckedColor.resourceId);
+        bookshelf_sort_time_checkbox.setImageResource(type != 1 ? R.mipmap.readsetting_check : R.mipmap.readsetting_uncheck);
+        bookshelf_sort_update_time_checkbox.setImageResource(type == 1 ? R.mipmap.readsetting_check : R.mipmap.readsetting_uncheck);
     }
 
     private void initPushTime() {

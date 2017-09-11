@@ -46,7 +46,7 @@
                 android:background="@drawable/bookshelf_delete_submit_bg"
                 android:layout_gravity="center_vertical"
                 android:text="删除"
-                android:textColor="@drawable/bookshelf_delete_submit_text_color"
+                android:textColor="@color/bookshelf_delete_submit_text_color"
                 android:textSize="@dimen/large_size_16"/>
         
         <View

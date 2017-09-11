@@ -171,10 +171,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
         mHistoryListView = new ListView(context);
         if (mHistoryListView != null && mResources != null) {
             mHistoryListView.setCacheColorHint(mResources.getColor(R.color.transparent));
-            TypedValue typeColor = new TypedValue();
-            Resources.Theme theme = activity.getTheme();
-            theme.resolveAttribute(R.attr.color_divider, typeColor, true);
-            mHistoryListView.setDivider(mResources.getDrawable(typeColor.resourceId));
+            mHistoryListView.setDivider(mResources.getDrawable(R.color.color_divider));
             mHistoryListView.setDividerHeight(AppUtils.dip2px(mContext, 0.5f));
             mHistoryListView.setHeaderDividersEnabled(false);
             mHistoryListView.setSelector(R.drawable.item_selector_white);
@@ -274,10 +271,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
         if (mSuggestListView == null)
             return;
         mSuggestListView.setCacheColorHint(mResources.getColor(R.color.transparent));
-        TypedValue typeColor = new TypedValue();
-        Resources.Theme theme = activity.getTheme();
-        theme.resolveAttribute(R.attr.color_divider, typeColor, true);
-        mSuggestListView.setDivider(mResources.getDrawable(typeColor.resourceId));
+        mSuggestListView.setDivider(mResources.getDrawable(R.color.color_divider));
         mSuggestListView.setDividerHeight(AppUtils.dip2px(mContext, 0.5f));
         mSuggestListView.setSelector(R.drawable.item_selector_white);
         mSuggestListView.setVisibility(View.GONE);

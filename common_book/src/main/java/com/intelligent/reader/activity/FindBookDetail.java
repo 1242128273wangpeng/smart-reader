@@ -103,12 +103,6 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         find_book_detail_title = (TextView) findViewById(R.id.find_book_detail_title);
         find_book_detail_search = (ImageView) findViewById(R.id.find_book_detail_search);
         find_detail_content = (WebView) findViewById(R.id.rank_content);
-        View view_night_show = findViewById(R.id.view_night_show);
-        if (mThemeHelper.isNight()) {
-            view_night_show.setVisibility(View.VISIBLE);
-        } else {
-            view_night_show.setVisibility(View.GONE);
-        }
         initListener();
 
         if (Build.VERSION.SDK_INT >= 11) {
