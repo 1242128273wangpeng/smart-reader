@@ -1,7 +1,7 @@
 package com.intelligent.reader.net;
 
-import net.lzbook.kit.data.bean.SearchAutoCompleteBean;
-import net.lzbook.kit.data.bean.SearchHotBean;
+import net.lzbook.kit.data.search.SearchAutoCompleteBean;
+import net.lzbook.kit.data.search.SearchHotBean;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
