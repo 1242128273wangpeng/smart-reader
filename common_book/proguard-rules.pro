@@ -33,6 +33,8 @@
 # Application classes that will be serialized/deserialized over Gson
 -keep class com.quduquxie.bean.** { *; }
 
+-keep class net.lzbook.kit.data.search.**{*;}
+
 ##---------------End: proguard configuration for Gson  ----------
 
 ##---------------Begin: proguard configuration for ALiFeedBack  ----------

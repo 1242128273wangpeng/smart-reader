@@ -1,4 +1,4 @@
-package net.lzbook.kit.data.bean;
+package net.lzbook.kit.data.search;
 
 /**
  * Created by Administrator on 2017\9\5 0005.

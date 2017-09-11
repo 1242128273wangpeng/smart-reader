@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.SearchCommonBean;
+import net.lzbook.kit.data.search.SearchCommonBean;
 
 import java.util.List;
 

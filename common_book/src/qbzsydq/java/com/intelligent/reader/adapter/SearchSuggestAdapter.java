@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.SearchCommonBean;
+import net.lzbook.kit.data.search.SearchCommonBean;
 
 import java.util.List;
 
@@ -80,7 +80,7 @@ public class SearchSuggestAdapter extends BaseAdapter {
         }
         String content = bean.getSuggest();
 
-        content = content.replaceAll(editInput, "<font color='#1fb7c3'>" + editInput + "</font>");
+        content = content.replaceAll(editInput, "<font color='#ce3d3e'>" + editInput + "</font>");
 
         hodler.tv_2.setText(Html.fromHtml(content));
         return convertView;

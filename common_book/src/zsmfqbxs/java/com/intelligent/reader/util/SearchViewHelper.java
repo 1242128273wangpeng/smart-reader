@@ -29,8 +29,8 @@ import android.widget.TextView;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.SearchCommonBean;
-import net.lzbook.kit.data.bean.SearchHotBean;
+import net.lzbook.kit.data.search.SearchCommonBean;
+import net.lzbook.kit.data.search.SearchHotBean;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.*;
 import net.lzbook.kit.utils.StatServiceUtils;
@@ -171,10 +171,8 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
         mHistoryListView = new ListView(context);
         if (mHistoryListView != null && mResources != null) {
             mHistoryListView.setCacheColorHint(mResources.getColor(R.color.transparent));
-            TypedValue typeColor = new TypedValue();
-            Resources.Theme theme = activity.getTheme();
-            theme.resolveAttribute(R.attr.color_divider, typeColor, true);
-            mHistoryListView.setDivider(mResources.getDrawable(typeColor.resourceId));
+            int typeColor = R.color.color_gray_e8e8e8;
+            mHistoryListView.setDivider(mResources.getDrawable(typeColor));
             mHistoryListView.setDividerHeight(AppUtils.dip2px(mContext, 0.5f));
             mHistoryListView.setHeaderDividersEnabled(false);
             mHistoryListView.setSelector(R.drawable.item_selector_white);
@@ -274,10 +272,8 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
         if (mSuggestListView == null)
             return;
         mSuggestListView.setCacheColorHint(mResources.getColor(R.color.transparent));
-        TypedValue typeColor = new TypedValue();
-        Resources.Theme theme = activity.getTheme();
-        theme.resolveAttribute(R.attr.color_divider, typeColor, true);
-        mSuggestListView.setDivider(mResources.getDrawable(typeColor.resourceId));
+        int typeColor =R.color.color_gray_e8e8e8;
+        mSuggestListView.setDivider(mResources.getDrawable(typeColor));
         mSuggestListView.setDividerHeight(AppUtils.dip2px(mContext, 0.5f));
         mSuggestListView.setSelector(R.drawable.item_selector_white);
         mSuggestListView.setVisibility(View.GONE);

@@ -13,7 +13,8 @@ import android.widget.TextView;
 
 import com.intelligent.reader.R;
 
-import net.lzbook.kit.data.bean.SearchHotBean;
+
+import net.lzbook.kit.data.search.SearchHotBean;
 
 import java.util.List;
 import java.util.Random;

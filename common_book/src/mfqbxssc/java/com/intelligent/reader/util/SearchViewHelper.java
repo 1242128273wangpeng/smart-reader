@@ -30,8 +30,8 @@ import com.intelligent.reader.search.SearchHelper;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.SearchCommonBean;
-import net.lzbook.kit.data.bean.SearchHotBean;
+import net.lzbook.kit.data.search.SearchCommonBean;
+import net.lzbook.kit.data.search.SearchHotBean;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.NetWorkUtils;

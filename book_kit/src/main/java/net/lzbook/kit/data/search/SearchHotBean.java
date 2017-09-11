@@ -1,4 +1,4 @@
-package net.lzbook.kit.data.bean;
+package net.lzbook.kit.data.search;
 
 import java.io.Serializable;
 import java.util.List;
