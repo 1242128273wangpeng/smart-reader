@@ -457,7 +457,7 @@ public class SplashActivity extends FrameActivity {
 
             // 初始化结束后 如果没有网络或者不展示广告直接跳转
             if (Constants.isHideAD || NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
-                handler.sendEmptyMessage(0);
+                handler.sendEmptyMessageDelayed(0, 500);
             }
 
             // handler.sendEmptyMessage(0);
