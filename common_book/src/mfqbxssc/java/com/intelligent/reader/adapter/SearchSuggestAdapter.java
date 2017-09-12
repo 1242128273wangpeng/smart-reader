@@ -82,7 +82,6 @@ public class SearchSuggestAdapter extends BaseAdapter {
         String content = bean.getSuggest();
 
         String finalInput = AppUtils.deleteAllIllegalChar(editInput);
-        AppLog.e("kkk",finalInput+"==="+editInput);
 
         content = content.replaceAll(finalInput, "<font color='#882f46'>" + finalInput + "</font>");
 

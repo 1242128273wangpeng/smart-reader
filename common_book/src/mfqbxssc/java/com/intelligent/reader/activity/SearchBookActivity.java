@@ -634,7 +634,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
         if (searchViewHelper != null) {
 
             String searchContent = AppUtils.deleteAllIllegalChar(s.toString());
-            searchViewHelper.showHintList(s.toString());
+            searchViewHelper.showHintList(searchContent);
         }
 
         if (search_result_clear == null) {
