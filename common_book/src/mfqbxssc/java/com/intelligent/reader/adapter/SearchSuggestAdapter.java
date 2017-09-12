@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import net.lzbook.kit.data.search.SearchCommonBean;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
 
 import java.util.List;
 
@@ -78,7 +80,11 @@ public class SearchSuggestAdapter extends BaseAdapter {
             hodler.iv_type.setImageResource(R.drawable.search_transparent);
         }
         String content = bean.getSuggest();
-        content = content.replaceAll(editInput, "<font color='#882f46'>" + editInput + "</font>");
+
+        String finalInput = AppUtils.deleteAllIllegalChar(editInput);
+        AppLog.e("kkk",finalInput+"==="+editInput);
+
+        content = content.replaceAll(finalInput, "<font color='#882f46'>" + finalInput + "</font>");
 
         hodler.tv_2.setText(Html.fromHtml(content));
         return convertView;

@@ -34,6 +34,7 @@ import net.lzbook.kit.data.search.SearchCommonBean;
 import net.lzbook.kit.data.search.SearchHotBean;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.SharedPreferencesUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
@@ -127,6 +128,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
             showHisList();
             isFromEditClick = false;
         } else {
+
             showSuggestList(searchWord);
         }
     }
@@ -261,9 +263,11 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
                 }
 
                 hotDatas = new ArrayList<>();
-
+                hotDatas.clear();
                for(SearchHotBean.DataBean bean:hotWords){
-                   hotDatas.add(bean.getWord());
+                   if(hotDatas.size()<9){
+                       hotDatas.add(bean.getWord());
+                   }
                }
                 mHotAdapter = new ArrayAdapter<String>(activity, R.layout.item_hot_search_view,
                         hotDatas);
@@ -274,13 +278,12 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
                         @Override
                         public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long position) {
                             StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.b_search_click_his_word);
-                            if (hotDatas != null && !hotDatas.isEmpty() && position > -1 &&
-                                    position < hotDatas.size()) {
-                                String hotWord = hotDatas.get((int) position);
+                            if (hotDatas != null && !hotDatas.isEmpty() && position > -1 &&position < hotDatas.size()) {
+                                String hotWord = hotDatas.get(arg2-1);
                                 if (hotWord != null && mSearchEditText != null) {
                                     mShouldShowHint = false;
                                     mSearchEditText.setText(hotWord);
-                                    startSearch(hotWord,hotWords.get(arg2).getWordType()+"");
+                                    startSearch(hotWord,hotWords.get(arg2-1).getWordType()+"");
 
                                     Map<String, String> data = new HashMap<>();
                                     data.put("topicword", hotWord);
