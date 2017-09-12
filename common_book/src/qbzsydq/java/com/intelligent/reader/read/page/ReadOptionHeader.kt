@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
@@ -14,8 +13,8 @@ import android.widget.PopupWindow
 import com.intelligent.reader.R
 import com.intelligent.reader.presenter.read.ReadOption
 import com.intelligent.reader.read.help.IReadDataFactory
-import kotlinx.android.synthetic.mfqbxssc.read_option_header.view.*
-import kotlinx.android.synthetic.mfqbxssc.read_option_pop.view.*
+import kotlinx.android.synthetic.qbzsydq.read_option_header.view.*
+import kotlinx.android.synthetic.qbzsydq.read_option_pop.view.*
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ReadStatus
 import net.lzbook.kit.data.db.BookDaoHelper
@@ -147,8 +146,7 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
     }
 
     override fun updateStatus(readStatus: ReadStatus, dataFactory: IReadDataFactory, bookDaoHelper: BookDaoHelper) {
-        val typeChangeMark = TypedValue()
-        val theme = context.getTheme()
+        var typeChangeMark = 0
         if (bookDaoHelper != null && bookDaoHelper.isBookMarkExist(readStatus.book_id, readStatus.sequence,
                 readStatus.offset, readStatus.book.book_type)) {
             isMarkPage = true
@@ -160,13 +158,14 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
         if (novel_bookmark != null && novel_bookmark.visibility == View.VISIBLE) {
             if (isMarkPage) {
                 /*novel_bookmark.setImageResource(R.drawable.read_bookmarked);*/
-                theme.resolveAttribute(R.attr.read_bookmark_drawable, typeChangeMark, true)
+                typeChangeMark = R.mipmap.read_bookmarked
             } else {
                 /*novel_bookmark.setImageDrawable(resources.getDrawable(ResourceUtil.getResourceId(this, Constants
                         .DRAWABLE, "_bookmark_selector")));*/
-                theme.resolveAttribute(R.attr.read_bookmark, typeChangeMark, true)
+                typeChangeMark = R.mipmap.read_bookmark
+
             }
-            novel_bookmark.setImageResource(typeChangeMark.resourceId)
+            novel_bookmark.setImageResource(typeChangeMark)
         }
 
         if (novel_name != null) {

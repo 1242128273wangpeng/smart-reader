@@ -150,12 +150,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //九宫格：quanbennovel 或 mianfeinovel
-        if ("cc.quanbennovel".equals(ACTION_CHKHIDE) || "cc.mianfeinovel".equals(ACTION_CHKHIDE) || "cc.kdqbxs.reader".equals(ACTION_CHKHIDE)) {
-            isList = false;
-        } else {
-            isList = true;
-        }
+        isList = true;
         mContext = getActivity();
         versionCode = AppUtils.getVersionCode();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
@@ -581,18 +576,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
 
         recyclerView = (RecyclerView) bookshelf_content.findViewById(R.id.recycler_view);
         recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 12);
-        if (isList) {
-            layoutManager = new ShelfGridLayoutManager(mContext, 1);
-        } else {
-            layoutManager = new ShelfGridLayoutManager(mContext, 3);
-            //有分割线的九宫格
-            if (!"cc.quanbennovel".equals(ACTION_CHKHIDE)) {
-                TypedValue typeColor = new TypedValue();
-                Resources.Theme theme = getActivity().getTheme();
-                theme.resolveAttribute(R.attr.bookshelf_divider, typeColor, true);
-                recyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.BOTH_SET, 2, mContext.getResources().getColor(typeColor.resourceId)));
-            }
-        }
+        layoutManager = new ShelfGridLayoutManager(mContext, 1);
         recyclerView.setLayoutManager(layoutManager);
 //        recyclerView.getItemAnimator().setSupportsChangeAnimations(false);
         recyclerView.getItemAnimator().setAddDuration(0);

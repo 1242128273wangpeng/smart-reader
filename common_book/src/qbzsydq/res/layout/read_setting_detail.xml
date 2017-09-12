@@ -29,9 +29,9 @@
                 android:layout_toLeftOf="@+id/read_setting_up"
                 android:maxHeight="@dimen/dimen_view_height_2"
                 android:minHeight="@dimen/dimen_view_height_2"
-                android:progressDrawable="?attr/read_set_brightnessbar"
+                android:progressDrawable="@drawable/novel_progress_brightness"
                 android:splitTrack="false"
-                android:thumb="?attr/read_seekbar"/>
+                android:thumb="@mipmap/read_seekbar"/>
 
         <ImageView
                 android:id="@+id/read_setting_up"
@@ -102,7 +102,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="0dp"
-                        android:background="?attr/read_bg_default_selector"
+                        android:background="@drawable/read_bg_default_selector"
                         android:button="@null"
                         android:checked="false"/>
 
@@ -111,7 +111,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="21dp"
-                        android:background="?attr/read_bg_eye_selector"
+                        android:background="@drawable/read_bg_eye_selector"
                         android:button="@null"/>
 
                 <RadioButton
@@ -119,7 +119,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="21dp"
-                        android:background="?attr/read_bg_3_selector"
+                        android:background="@drawable/read_bg_3_selector"
                         android:button="@null"/>
 
                 <RadioButton
@@ -127,7 +127,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="21dp"
-                        android:background="?attr/read_bg_4_selector"
+                        android:background="@drawable/read_bg_4_selector"
                         android:button="@null"/>
 
                 <RadioButton
@@ -135,7 +135,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="21dp"
-                        android:background="?attr/read_bg_night1_selector"
+                        android:background="@drawable/read_bg_night1_selector"
                         android:button="@null"/>
 
                 <RadioButton
@@ -143,7 +143,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="21dp"
-                        android:background="?attr/read_bg_night2_selector"
+                        android:background="@drawable/read_bg_night2_selector"
                         android:button="@null"/>
 
                 <RadioButton
@@ -151,7 +151,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="21dp"
-                        android:background="?attr/read_bg_night3_selector"
+                        android:background="@drawable/read_bg_night3_selector"
                         android:button="@null"/>
 
                 <RadioButton
@@ -159,21 +159,23 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="21dp"
-                        android:background="?attr/read_bg_powersave_selector"
+                        android:background="@drawable/read_bg_powersave_selector"
                         android:button="@null"/>
+
                 <RadioButton
                         android:id="@+id/read_backdrop_night"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="21dp"
-                        android:background="?attr/read_bg_night_selector"
+                        android:background="@drawable/read_bg_night_selector"
                         android:button="@null"/>
+
                 <RadioButton
                         android:id="@+id/read_backdrop_ninth"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="21dp"
-                        android:background="?attr/read_bg_kraft_selector"
+                        android:background="@drawable/read_bg_kraft_selector"
                         android:button="@null"/>
 
                 <RadioButton
@@ -181,7 +183,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="21dp"
-                        android:background="?attr/read_bg_soft"
+                        android:background="@drawable/read_bg_soft"
                         android:button="@null"
                         android:checked="false"/>
             </RadioGroup>
@@ -214,7 +216,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:button="@null"
-                    android:drawableLeft="?attr/read_liner_space_0_2_selector"/>
+                    android:drawableLeft="@drawable/read_liner_space_0_2_selector"/>
 
             <RadioButton
                     android:id="@+id/read_spacing_0_5"
@@ -223,7 +225,7 @@
                     android:layout_marginLeft="0dp"
                     android:layout_weight="1"
                     android:button="@null"
-                    android:drawableLeft="?attr/read_liner_space_default_selector"/>
+                    android:drawableLeft="@drawable/read_liner_space_default_selector"/>
 
             <RadioButton
                     android:id="@+id/read_spacing_1_0"
@@ -232,7 +234,7 @@
                     android:layout_marginLeft="0dp"
                     android:layout_weight="1"
                     android:button="@null"
-                    android:drawableLeft="?attr/read_liner_space_1_0_selector"/>
+                    android:drawableLeft="@drawable/read_liner_space_1_0_selector"/>
 
             <RadioButton
                     android:id="@+id/read_spacing_1_5"
@@ -241,7 +243,7 @@
                     android:layout_marginLeft="0dp"
                     android:layout_weight="1"
                     android:button="@null"
-                    android:drawableLeft="?attr/read_liner_space_1_5_selector"/>
+                    android:drawableLeft="@drawable/read_liner_space_1_5_selector"/>
         </RadioGroup>
     </LinearLayout>
 
@@ -271,7 +273,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:button="@null"
-                    android:drawableLeft="?attr/readsetting_selector"
+                    android:drawableLeft="@drawable/readsetting_selector"
                     android:drawablePadding="4dp"
                     android:text="@string/read_pagemode_slide"
                     android:textColor="@color/color_gray_b5b5b5"/>
@@ -282,7 +284,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:button="@null"
-                    android:drawableLeft="?attr/readsetting_selector"
+                    android:drawableLeft="@drawable/readsetting_selector"
                     android:drawablePadding="4dp"
                     android:text="@string/read_pagemode_fangzhen"
                     android:textColor="@color/color_gray_b5b5b5"/>
@@ -293,7 +295,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:button="@null"
-                    android:drawableLeft="?attr/readsetting_selector"
+                    android:drawableLeft="@drawable/readsetting_selector"
                     android:drawablePadding="4dp"
                     android:text="@string/read_pagemode_translation"
                     android:textColor="@color/color_gray_b5b5b5"/>
@@ -334,8 +336,7 @@
                 android:layout_marginRight="@dimen/dimen_margin_5"
                 android:text="16"
                 android:textColor="@color/color_gray_b5b5b5"
-                android:textSize="@dimen/dimen_text_16"
-        />
+                android:textSize="@dimen/dimen_text_16"/>
 
         <ImageView
                 android:id="@+id/read_setting_increase_text"
@@ -375,7 +376,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:button="@null"
-                    android:drawableTop="?attr/read_portrait"
+                    android:drawableTop="@mipmap/reading_portrait"
                     android:paddingTop="@dimen/dimen_padding_8"/>
 
             <View
@@ -392,7 +393,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:button="@null"
-                    android:drawableTop="?attr/read_autoread"
+                    android:drawableTop="@mipmap/read_autoread"
                     android:gravity="center"
                     android:paddingTop="@dimen/dimen_padding_8"/>
         </RadioGroup>

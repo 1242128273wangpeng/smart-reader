@@ -3,12 +3,13 @@
                 android:id="@+id/bookshelf_main"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="?attr/base_bg">
-    
+                android:background="@color/base_bg">
+
     <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
             android:id="@+id/bookshelf_refresh_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
         <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:paddingTop="10dp"
@@ -17,7 +18,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
     </net.lzbook.kit.pulllist.SuperSwipeRefreshLayout>
-    
+
     <ImageView
             android:id="@+id/fab_goto_down_act"
             android:layout_width="wrap_content"
@@ -27,8 +28,8 @@
             android:layout_marginBottom="@dimen/dimen_margin_30"
             android:layout_marginRight="@dimen/dimen_margin_10"
             android:visibility="gone"
-            android:src="?attr/bookshelf_download_floating_btn"/>
-    
+            android:src="@mipmap/bookshelf_downlaod_floating_btn"/>
+
     <LinearLayout
             android:id="@+id/bookshelf_empty"
             android:layout_width="match_parent"
@@ -36,11 +37,12 @@
             android:orientation="vertical"
             android:gravity="center"
             android:visibility="gone">
+
         <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/bookshelf_empty_icon"/>
-        
+
         <TextView
                 android:id="@+id/bookshelf_empty_prompt"
                 android:layout_width="wrap_content"
@@ -50,7 +52,7 @@
                 android:textColor="@color/color_black_282828"
                 android:text="@string/mian_bookshelf_empty_hint"
                 android:textSize="@dimen/dimen_text_16"/>
-        
+
         <ImageView
                 android:id="@+id/bookshelf_empty_btn"
                 android:layout_width="wrap_content"
@@ -58,14 +60,14 @@
                 android:layout_marginTop="16dp"
                 android:src="@drawable/bookshelf_empty_btn"/>
     </LinearLayout>
-    
+
     <RelativeLayout
             android:id="@+id/book_shelf_loading"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/color_white"
             android:visibility="gone">
-        
+
         <ProgressBar
                 android:id="@+id/loading_progress"
                 style="?android:attr/progressBarStyleHorizontal"
@@ -76,7 +78,7 @@
                 android:layout_marginBottom="@dimen/dimen_margin_10"
                 android:layout_marginTop="@dimen/dimen_margin_30"
                 android:progressDrawable="@drawable/background_splash_progress"/>
-        
+
         <ProgressBar
                 android:id="@+id/loading_progressbar"
                 style="@style/CircleProgressBar"
@@ -86,7 +88,7 @@
                 android:layout_centerHorizontal="true"
                 android:indeterminateDuration="1000"
                 android:progressDrawable="@drawable/background_splash_progress"/>
-        
+
         <TextView
                 android:id="@+id/loading_message_first"
                 android:layout_width="wrap_content"
@@ -97,6 +99,7 @@
                 android:textColor="@color/color_black_353535"
                 android:textSize="@dimen/dimen_text_15"
                 android:textStyle="bold"/>
+
         <TextView
                 android:id="@+id/loading_message_second"
                 android:layout_width="wrap_content"
@@ -107,6 +110,5 @@
                 android:textColor="@color/color_black_353535"
                 android:textSize="@dimen/dimen_text_15"
                 android:textStyle="bold"/>
-    
     </RelativeLayout>
 </RelativeLayout>

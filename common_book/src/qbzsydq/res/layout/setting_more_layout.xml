@@ -3,14 +3,15 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="?attr/base_bg"
+                android:fitsSystemWindows="true"
+                android:background="@color/base_bg"
                 android:orientation="vertical">
 
     <RelativeLayout
             android:id="@+id/rl_setting_title"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:background="?attr/color_primary"
+            android:background="@color/color_primary"
             android:focusableInTouchMode="true">
 
         <ImageView
@@ -21,7 +22,7 @@
                 android:layout_centerVertical="true"
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
-                android:src="?attr/title_back"/>
+                android:src="@mipmap/cover_top_back"/>
 
         <TextView
                 android:id="@+id/tv_title_name"
@@ -31,7 +32,7 @@
                 android:layout_marginLeft="0dp"
                 android:gravity="center"
                 android:text="@string/setting_more"
-                android:textColor="?attr/top_navigation_text_color"
+                android:textColor="@color/top_navigation_text_color"
                 android:textSize="18sp"/>
 
         <TextView
@@ -45,7 +46,6 @@
                 android:textColor="@color/color_gray_9a9a9a"
                 android:textSize="14sp"
                 android:visibility="gone"/>
-
     </RelativeLayout>
 
     <ScrollView
@@ -91,7 +91,7 @@
                 <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
-                        android:background="?attr/color_divider"/>
+                        android:background="@color/color_divider"/>
 
                 <RelativeLayout
                         android:id="@+id/push"
@@ -114,21 +114,20 @@
                             android:layout_width="50dp"
                             android:layout_height="30dp"
                             app:sb_show_indicator="false"
-                            app:sb_checked_color="?attr/switchbutton_bg_checked_color"
-                            app:sb_uncheck_color="?attr/switchbutton_bg_unchecked_color"
-                            app:sb_uncheckedbtn_color="?attr/switchbutton_unchecked_color"
-                            app:sb_checkedbtn_color="?attr/switchbutton_checked_color"
+                            app:sb_checked_color="@color/switchbutton_bg_checked_color"
+                            app:sb_uncheck_color="@color/switchbutton_bg_unchecked_color"
+                            app:sb_uncheckedbtn_color="@color/switchbutton_unchecked_color"
+                            app:sb_checkedbtn_color="@color/switchbutton_checked_color"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:layout_marginRight="16dp"
                             android:contentDescription="@string/app_name"/>
-
                 </RelativeLayout>
 
                 <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
-                        android:background="?attr/color_divider"/>
+                        android:background="@color/color_divider"/>
 
                 <RelativeLayout
                         android:id="@+id/push_sound"
@@ -151,22 +150,20 @@
                             android:layout_width="50dp"
                             android:layout_height="30dp"
                             app:sb_show_indicator="false"
-                            app:sb_checked_color="?attr/switchbutton_bg_checked_color"
-                            app:sb_uncheck_color="?attr/switchbutton_bg_unchecked_color"
-                            app:sb_uncheckedbtn_color="?attr/switchbutton_unchecked_color"
-                            app:sb_checkedbtn_color="?attr/switchbutton_checked_color"
+                            app:sb_checked_color="@color/switchbutton_bg_checked_color"
+                            app:sb_uncheck_color="@color/switchbutton_bg_unchecked_color"
+                            app:sb_uncheckedbtn_color="@color/switchbutton_unchecked_color"
+                            app:sb_checkedbtn_color="@color/switchbutton_checked_color"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:layout_marginRight="16dp"
                             android:contentDescription="@string/app_name"/>
-
                 </RelativeLayout>
 
                 <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
-                        android:background="?attr/color_divider"/>
-
+                        android:background="@color/color_divider"/>
 
                 <RelativeLayout
                         android:id="@+id/push_time"
@@ -183,6 +180,7 @@
                             android:paddingLeft="20dp"
                             android:paddingTop="12dp"
                             android:text="@string/tv_push_time_tips_setting"/>
+
                     <TextView
                             android:id="@+id/push_time_setting_text"
                             android:layout_width="wrap_content"
@@ -192,7 +190,7 @@
                             android:paddingLeft="20dp"
                             android:paddingRight="16dp"
                             android:text="@string/tv_push_time_default_setting"
-                            android:textColor="?attr/moresetting_push_text_color"
+                            android:textColor="@color/moresetting_push_text_color"
                             android:textSize="10.0sp"/>
 
                     <net.lzbook.kit.book.view.SwitchButton
@@ -200,31 +198,31 @@
                             android:layout_width="50dp"
                             android:layout_height="30dp"
                             app:sb_show_indicator="false"
-                            app:sb_checked_color="?attr/switchbutton_bg_checked_color"
-                            app:sb_uncheck_color="?attr/switchbutton_bg_unchecked_color"
-                            app:sb_uncheckedbtn_color="?attr/switchbutton_unchecked_color"
-                            app:sb_checkedbtn_color="?attr/switchbutton_checked_color"
+                            app:sb_checked_color="@color/switchbutton_bg_checked_color"
+                            app:sb_uncheck_color="@color/switchbutton_bg_unchecked_color"
+                            app:sb_uncheckedbtn_color="@color/switchbutton_unchecked_color"
+                            app:sb_checkedbtn_color="@color/switchbutton_checked_color"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:layout_marginRight="16dp"
                             android:contentDescription="@string/app_name"/>
-
                 </RelativeLayout>
-
             </LinearLayout>
 
             <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimen_height_0.5"
-                    android:background="?attr/color_divider"/>
+                    android:background="@color/color_divider"/>
+
             <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/margin_12"
-                    android:background="?attr/color_divider_item"/>
+                    android:background="@color/color_divider_item"/>
+
             <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimen_height_0.5"
-                    android:background="?attr/color_divider"/>
+                    android:background="@color/color_divider"/>
 
             <LinearLayout
                     android:id="@+id/linear_book_sort"
@@ -255,7 +253,7 @@
                 <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
-                        android:background="?attr/color_divider"/>
+                        android:background="@color/color_divider"/>
 
                 <RelativeLayout
                         android:id="@+id/bookshelf_sort_time"
@@ -270,7 +268,7 @@
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:paddingLeft="17dp"
-                            android:src="?attr/bookshelf_delete_checked"
+                            android:src="@mipmap/bookshelf_delete_checked"
                             android:visibility="visible"/>
 
                     <TextView
@@ -283,13 +281,12 @@
                             android:gravity="center_vertical"
                             android:paddingLeft="9dp"
                             android:text="@string/tv_sort_sequence_time"/>
-
                 </RelativeLayout>
 
                 <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
-                        android:background="?attr/color_divider"/>
+                        android:background="@color/color_divider"/>
 
                 <RelativeLayout
                         android:id="@+id/bookshelf_sort_update_time"
@@ -298,14 +295,13 @@
                         android:gravity="center_vertical">
 
                     <ImageView
-
                             android:id="@+id/bookshelf_sort_update_time_checkbox"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:paddingLeft="17dp"
-                            android:src="?attr/bookshelf_delete_unchecked"
+                            android:src="@mipmap/bookshelf_delete_unchecked"
                             android:visibility="visible"/>
 
                     <TextView
@@ -318,24 +314,21 @@
                             android:gravity="center_vertical"
                             android:paddingLeft="9dp"
                             android:text="@string/tv_sort_update_time"/>
-
                 </RelativeLayout>
-
             </LinearLayout>
 
             <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
-                    android:background="?attr/color_divider"/>
-
-
+                    android:background="@color/color_divider"/>
         </LinearLayout>
     </ScrollView>
+
     <ImageView
             android:id="@+id/title_shadow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/rl_setting_title"
             android:scaleType="fitXY"
-            android:src="?attr/title_shadow"/>
+            android:src="@mipmap/top_shadow"/>
 </RelativeLayout>

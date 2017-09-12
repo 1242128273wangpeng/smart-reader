@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/bookshelf_item_press_bg">
+                android:background="@drawable/bookshelf__item_press_bg">
 
     <TextView
             android:id="@+id/bookshelf_item_layout_type"
@@ -47,7 +47,6 @@
                     android:paddingRight="3dp"
                     android:paddingTop="2dp"
                     android:scaleType="fitXY"/>
-
         </FrameLayout>
 
         <RelativeLayout
@@ -55,7 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/book_shelf_image_view">
-    
+
             <LinearLayout
                     android:id="@+id/ll_book_shelf_title"
                     android:layout_width="match_parent"
@@ -73,9 +72,9 @@
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:text="name"
-                        android:textColor="?attr/footprint_name_text_color"
+                        android:textColor="@color/footprint_name_text_color"
                         android:textSize="@dimen/dimen_text_14"/>
-        
+
                 <TextView
                         android:id="@+id/book_shelf_update_time"
                         android:layout_width="wrap_content"
@@ -83,9 +82,8 @@
                         android:layout_alignParentLeft="true"
                         android:maxLines="1"
                         android:text="2017-08-14 00:00"
-                        android:textColor="?attr/footprint_brow_time_text_color"
+                        android:textColor="@color/footprint_brow_time_text_color"
                         android:textSize="@dimen/dimen_text_10"/>
-    
             </LinearLayout>
 
             <RelativeLayout
@@ -96,7 +94,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="17dp"
                     android:layout_marginTop="8dp">
-    
+
                 <TextView
                         android:id="@+id/book_shelf_author"
                         android:layout_width="wrap_content"
@@ -104,9 +102,8 @@
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:text="author"
-                        android:textColor="?attr/footprint_author_text_color"
+                        android:textColor="@color/footprint_author_text_color"
                         android:textSize="@dimen/dimen_text_10"/>
-
             </RelativeLayout>
 
             <RelativeLayout
@@ -127,12 +124,10 @@
                         android:ellipsize="end"
                         android:lineSpacingMultiplier="1.1"
                         android:text="暂无简介"
-                        android:textColor="?attr/footprint_author_text_color"
+                        android:textColor="@color/footprint_author_text_color"
                         android:textSize="@dimen/dimen_text_10"/>
-
             </RelativeLayout>
         </RelativeLayout>
-
     </RelativeLayout>
 
     <View
@@ -140,19 +135,19 @@
             android:layout_width="match_parent"
             android:layout_height="0.2dp"
             android:layout_below="@+id/book_shelf_item"
-            android:background="?attr/footprint_item_divider_color"/>
+            android:background="@color/footprint_item_divider_color"/>
+
     <View
             android:id="@+id/v_2"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_view_height_10"
             android:layout_below="@+id/v_1"
-            android:background="?attr/footprint_item_divider1_color"/>
+            android:background="@color/footprint_item_divider1_color"/>
+
     <View
             android:id="@+id/v_3"
             android:layout_width="match_parent"
             android:layout_height="0.2dp"
             android:layout_below="@+id/v_2"
-            android:background="?attr/footprint_item_divider_color"/>
-
+            android:background="@color/footprint_item_divider_color"/>
 </RelativeLayout>
-

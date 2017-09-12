@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/find_book_detail_main"
+                android:fitsSystemWindows="true"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -8,7 +9,7 @@
             android:id="@+id/find_book_detail_head"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_view_height_48"
-            android:background="?attr/top_navigation_bg_color">
+            android:background="@color/top_navigation_bg_color">
 
         <ImageView
                 android:id="@+id/find_book_detail_back"
@@ -18,7 +19,7 @@
                 android:layout_centerVertical="true"
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
-                android:src="?attr/title_back"/>
+                android:src="@mipmap/cover_top_back"/>
 
         <TextView
                 android:id="@+id/find_book_detail_title"
@@ -26,8 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:textSize="18sp"
-                android:textColor="?attr/top_navigation_text_color"/>
-
+                android:textColor="@color/top_navigation_text_color"/>
 
         <ImageView
                 android:id="@+id/find_book_detail_search"
@@ -36,8 +36,7 @@
                 android:layout_alignParentRight="true"
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
-                android:src="?attr/search_submit_btn"/>
-
+                android:src="@mipmap/search_submit_btn"/>
     </RelativeLayout>
 
     <WebView
@@ -45,18 +44,12 @@
             android:layout_below="@+id/find_book_detail_head"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
-    <View
-            android:id="@+id/view_night_show"
-            android:layout_below="@+id/find_book_detail_head"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            android:background="#77000000"/>
+
     <ImageView
             android:id="@+id/title_shadow"
             android:layout_below="@+id/find_book_detail_head"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
-            android:src="?attr/title_shadow"/>
+            android:src="@mipmap/top_shadow"/>
 </RelativeLayout>
