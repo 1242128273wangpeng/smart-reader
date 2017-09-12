@@ -17,7 +17,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -175,6 +174,9 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
         switch (paramView.getId()) {
 
             case R.id.btn_left_setting:
+                Map<String, String> data = new HashMap<>();
+                data.put("type", "1");
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
                 finish();
                 break;
 
@@ -282,13 +284,13 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
 
     private void initBookShelfSort(int type) {
 
-        TypedValue checkedColor = new TypedValue();
-        TypedValue uncheckedColor = new TypedValue();
+        int checkedColor = 0;
+        int uncheckedColor = 0;
         Resources.Theme theme = mContext.getTheme();
-        theme.resolveAttribute(R.attr.bookshelf_delete_checked, checkedColor, true);
-        theme.resolveAttribute(R.attr.bookshelf_delete_unchecked, uncheckedColor, true);
-        bookshelf_sort_time_checkbox.setImageResource(type != 1 ? checkedColor.resourceId : uncheckedColor.resourceId);
-        bookshelf_sort_update_time_checkbox.setImageResource(type == 1 ? checkedColor.resourceId : uncheckedColor.resourceId);
+        checkedColor = R.mipmap.bookshelf_delete_checked;
+        uncheckedColor = R.mipmap.bookshelf_delete_unchecked;
+        bookshelf_sort_time_checkbox.setImageResource(type != 1 ? checkedColor : uncheckedColor);
+        bookshelf_sort_update_time_checkbox.setImageResource(type == 1 ? checkedColor : uncheckedColor);
     }
 
     private void initPushTime() {

@@ -42,9 +42,8 @@
                 android:layout_alignParentRight="true"
                 android:paddingLeft="@dimen/dimen_padding_10"
                 android:paddingRight="@dimen/dimen_padding_10"
-                android:src="?attr/read_bookmark"
+                android:src="@drawable/light_bookmark_selector"
                 android:visibility="gone"/>
-
 
         <TextView
                 android:id="@+id/novel_name"
@@ -64,6 +63,7 @@
                 android:textColor="@color/color_gray_cbcbcb"
                 android:textSize="@dimen/dimen_text_16"
                 android:visibility="gone"/>
+
         <ImageButton
                 android:id="@+id/header_ibtn_download"
                 android:layout_width="44dp"
@@ -74,6 +74,7 @@
                 android:scaleType="fitCenter"
                 android:padding="10dp"
                 android:src="@drawable/read_option_download_selector"/>
+
         <ImageButton
                 android:id="@+id/header_ibtn_more"
                 android:layout_width="44dp"
@@ -84,7 +85,6 @@
                 android:src="@drawable/read_option_more_selector"
                 android:layout_alignParentRight="true"/>
     </RelativeLayout>
-
 
     <TextView
             android:id="@+id/novel_source_url"

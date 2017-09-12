@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -235,14 +236,8 @@ public class BookShelfRemoveHelper implements View.OnClickListener {
                 delete_btn.setBackgroundResource(com.intelligent.reader.R.drawable.bookshelf_delete_submit_default_bg);
             } else {
                 delete_btn.setText("删除 (" + num + ")");
-                TypedValue textColor = new TypedValue();
-                TypedValue bgColor = new TypedValue();
-                Resources.Theme theme = mContext.getTheme();
-                theme.resolveAttribute(com.intelligent.reader.R.attr.bookshelf_delete_submit_text_color, textColor, true);
-                theme.resolveAttribute(com.intelligent.reader.R.attr.bookshelf_delete_submit_bg, bgColor, true);
-                ColorStateList draw = mContext.getResources().getColorStateList(textColor.resourceId);
-                delete_btn.setTextColor(draw);
-                delete_btn.setBackgroundResource(bgColor.resourceId);
+                delete_btn.setTextColor(mContext.getResources().getColorStateList(com.intelligent.reader.R.color.bookshelf_delete_submit_text_color));
+                delete_btn.setBackgroundResource(com.intelligent.reader.R.drawable.bookshelf_delete_submit_bg);
             }
         }
     }

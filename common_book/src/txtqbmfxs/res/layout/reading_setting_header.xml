@@ -42,9 +42,8 @@
                 android:layout_alignParentRight="true"
                 android:paddingLeft="@dimen/dimen_padding_10"
                 android:paddingRight="@dimen/dimen_padding_10"
-                android:src="?attr/read_bookmark"
+                android:src="@drawable/light_bookmark_selector"
                 android:visibility="visible"/>
-
 
         <TextView
                 android:id="@+id/novel_name"

@@ -7,9 +7,9 @@
             android:id="@+id/download_manager_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/download_manager_lv_bg_color"
+            android:background="@color/download_manager_lv_bg_color"
             android:cacheColorHint="@color/transparent"
-            android:divider="?attr/color_divider"
+            android:divider="@color/color_divider"
             android:dividerHeight="0dp"
             android:fadingEdge="none"
             android:paddingBottom="9dp"
@@ -20,7 +20,7 @@
             android:id="@+id/empty_bookshelf"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?attr/download_manager_lv_bg_color"
+            android:background="@color/download_manager_lv_bg_color"
             android:visibility="visible">
 
         <ImageView

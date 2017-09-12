@@ -2,15 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/content_main"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
->
-
+                android:fitsSystemWindows="true"
+                android:layout_height="match_parent">
     <!--双tab的头布局，不再用include是方便svn打包只用更改一个文件-->
     <RelativeLayout
             android:id="@+id/home_fragment_head"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_view_height_48"
-            android:background="?attr/top_navigation_bg_color"
+            android:background="@color/top_navigation_bg_color"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true">
@@ -23,18 +22,18 @@
                 android:layout_centerVertical="true"
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
-                android:src="?attr/home_head_setting"/>
-        
+                android:src="@mipmap/home_head_setting"/>
+
         <net.lzbook.kit.book.view.FirstUsePointView
                 android:layout_width="7dp"
                 android:layout_height="7dp"
-                android:background="?attr/color_red_point"
+                android:background="@color/color_red_point"
                 android:layout_alignTop="@+id/bookshelf_setting"
                 android:layout_alignRight="@+id/bookshelf_setting"
                 android:layout_marginTop="@dimen/dimen_padding_12"
                 android:layout_marginRight="@dimen/dimen_padding_12"
-                android:id="@+id/redpoint_home_setting"
-        />
+                android:id="@+id/redpoint_home_setting"/>
+
         <ImageView
                 android:id="@+id/bookshelf_search"
                 android:layout_width="wrap_content"
@@ -43,7 +42,7 @@
                 android:layout_centerVertical="true"
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
-                android:src="?attr/home_head_search"/>
+                android:src="@mipmap/home_head_search"/>
 
         <ImageView
                 android:id="@+id/bookshelf_download"
@@ -54,7 +53,7 @@
                 android:visibility="gone"
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
-                android:src="?attr/home_head_download"/>
+                android:src="@mipmap/home_head_download"/>
 
         <LinearLayout
                 android:layout_width="match_parent"
@@ -75,15 +74,14 @@
                     android:paddingBottom="@dimen/dimen_padding_5"
                     android:paddingTop="@dimen/dimen_padding_5"
                     android:text="@string/bookshelf"
-                    android:textColor="?attr/top_navigation_text_selector"
+                    android:textColor="@drawable/top_navigation_text_selector"
                     android:textSize="@dimen/dimen_text_17"/>
 
             <View
                     android:layout_width="1dip"
                     android:layout_height="20dp"
                     android:layout_gravity="center_vertical"
-                    android:background="?attr/top_navigation_divider_color"
-            />
+                    android:background="@color/top_navigation_divider_color"/>
 
             <TextView
                     android:id="@+id/home_bookstore"
@@ -94,18 +92,17 @@
                     android:paddingBottom="@dimen/dimen_padding_5"
                     android:paddingTop="@dimen/dimen_padding_5"
                     android:text="@string/bookstore"
-                    android:textColor="?attr/top_navigation_text_selector"
+                    android:textColor="@drawable/top_navigation_text_selector"
                     android:textSize="@dimen/dimen_text_17"/>
         </LinearLayout>
     </RelativeLayout>
-
     <!--单独的头布局，不再用include是方便svn打包只用更改一个文件-->
     <RelativeLayout
             android:visibility="gone"
             android:id="@+id/content_head"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="?attr/top_navigation_bg_color"
+            android:background="@color/top_navigation_bg_color"
             android:layout_below="@+id/home_fragment_head"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true">
@@ -117,7 +114,7 @@
                 android:layout_alignParentLeft="true"
                 android:paddingLeft="8dp"
                 android:paddingRight="15dp"
-                android:src="?attr/home_head_setting"/>
+                android:src="@mipmap/home_head_setting"/>
 
         <TextView
                 android:id="@+id/content_title"
@@ -128,7 +125,7 @@
                 android:layout_centerInParent="true"
                 android:text="书架"
                 android:textSize="18sp"
-                android:textColor="?attr/top_navigation_text_color"/>
+                android:textColor="@color/top_navigation_text_color"/>
 
         <ImageView
                 android:id="@+id/content_head_search"
@@ -138,7 +135,7 @@
                 android:paddingRight="@dimen/padding_10"
                 android:paddingLeft="@dimen/padding_10"
                 android:layout_marginRight="10dp"
-                android:src="?attr/home_head_search"/>
+                android:src="@mipmap/home_head_search"/>
 
         <ImageView
                 android:id="@+id/content_download_manage"
@@ -147,9 +144,8 @@
                 android:layout_alignParentRight="true"
                 android:paddingRight="@dimen/padding_10"
                 android:paddingLeft="@dimen/padding_10"
-                android:src="?attr/home_head_download"/>
+                android:src="@mipmap/home_head_download"/>
     </RelativeLayout>
-
     <!--头布局4个tab的布局，不再用include是方便svn打包只用更改一个文件-->
     <RelativeLayout
             android:visibility="gone"
@@ -166,7 +162,7 @@
                 android:layout_alignParentLeft="true"
                 android:paddingLeft="@dimen/padding_14"
                 android:paddingRight="@dimen/padding_14"
-                android:src="?attr/home_head_setting"
+                android:src="@mipmap/home_head_setting"
                 android:layout_gravity="right|left"/>
 
         <ImageView
@@ -176,7 +172,7 @@
                 android:layout_alignParentRight="true"
                 android:paddingRight="@dimen/padding_14"
                 android:paddingLeft="@dimen/padding_14"
-                android:src="?attr/home_head_download"
+                android:src="@mipmap/home_head_download"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentTop="true"/>
 
@@ -204,7 +200,7 @@
                         android:gravity="center"
                         android:text="@string/bookshelf"
                         android:textStyle="bold"
-                        android:textColor="?attr/dialog_recommend"
+                        android:textColor="@color/dialog_recommend"
                         android:textSize="@dimen/text_size_18"/>
 
                 <View
@@ -228,7 +224,7 @@
                         android:gravity="center"
                         android:text="@string/recommend"
                         android:textStyle="bold"
-                        android:textColor="?attr/dialog_recommend"
+                        android:textColor="@color/dialog_recommend"
                         android:textSize="@dimen/text_size_18"/>
 
                 <View
@@ -252,7 +248,7 @@
                         android:gravity="center"
                         android:text="@string/ranking"
                         android:textStyle="bold"
-                        android:textColor="?attr/dialog_recommend"
+                        android:textColor="@color/dialog_recommend"
                         android:textSize="@dimen/text_size_18"/>
 
                 <View
@@ -276,7 +272,7 @@
                         android:gravity="center"
                         android:text="@string/category"
                         android:textStyle="bold"
-                        android:textColor="?attr/dialog_recommend"
+                        android:textColor="@color/dialog_recommend"
                         android:textSize="@dimen/text_size_18"/>
 
                 <View
@@ -305,27 +301,23 @@
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="@dimen/dimen_margin_15"
                 android:layout_marginRight="@dimen/dimen_margin_15"
-                android:background="?attr/bookshelf_search_bg"
-                android:drawableLeft="?attr/home_head_search"
+                android:background="@drawable/bookshelf_search_bg"
+                android:drawableLeft="@mipmap/home_head_search"
                 android:drawablePadding="@dimen/padding_8"
                 android:gravity="center_vertical"
                 android:hint="搜索自己喜欢的小说和作者"
                 android:paddingLeft="@dimen/padding_10"
                 android:textSize="@dimen/text_size_14"
                 android:textColorHint="@color/color_gray_9b9b9b"/>
-
     </RelativeLayout>
-
     <!--双tab的头布局含有边框，不再用include是方便svn打包只用更改一个文件-->
-
     <RelativeLayout
             android:id="@+id/home_fragment_head_two_tabs"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:visibility="gone"
-            android:background="?attr/top_navigation_bg_color"
-            android:elevation="@dimen/padding_4"
-    >
+            android:background="@color/top_navigation_bg_color"
+            android:elevation="@dimen/padding_4">
 
         <ImageView
                 android:id="@+id/book_button_left"
@@ -335,9 +327,8 @@
                 android:layout_centerVertical="true"
                 android:paddingLeft="16dp"
                 android:paddingRight="@dimen/padding_12"
-                android:src="?attr/home_head_setting"
-                android:visibility="visible"
-        />
+                android:src="@mipmap/home_head_setting"
+                android:visibility="visible"/>
 
         <RadioGroup
                 android:id="@+id/home_radiogroup"
@@ -358,14 +349,13 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:background="?attr/home_head_two_tabs_left"
+                    android:background="@drawable/home_tabs_left_selector"
                     android:button="@null"
                     android:checked="true"
                     android:gravity="center"
                     android:text="@string/bookshelf"
-                    android:textColor="?attr/home_head_two_tabs_text"
-                    android:textSize="@dimen/large_size_18"
-            />
+                    android:textColor="@drawable/home_top_text_selector"
+                    android:textSize="@dimen/large_size_18"/>
 
             <RadioButton
                     android:id="@+id/radiobutton_bookstore"
@@ -373,14 +363,13 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:background="?attr/home_head_two_tabs_right"
+                    android:background="@drawable/home_tabs_right_selector"
                     android:button="@null"
                     android:checked="false"
                     android:gravity="center"
                     android:text="@string/bookstore"
-                    android:textColor="?attr/home_head_two_tabs_text"
-                    android:textSize="@dimen/large_size_18"
-            />
+                    android:textColor="@drawable/home_top_text_selector"
+                    android:textSize="@dimen/large_size_18"/>
         </RadioGroup>
 
         <ImageView
@@ -391,10 +380,8 @@
                 android:layout_centerVertical="true"
                 android:paddingRight="16dp"
                 android:paddingLeft="@dimen/padding_12"
-                android:src="?attr/home_head_search"
-                android:visibility="visible"
-        />
-
+                android:src="@mipmap/home_head_search"
+                android:visibility="visible"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -402,9 +389,10 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_alignParentTop="true"
-            android:background="?attr/top_navigation_bg_color"
+            android:background="@color/top_navigation_bg_color"
             android:clickable="true"
             android:visibility="gone">
+
         <ImageView
                 android:id="@+id/home_edit_back"
                 android:layout_width="wrap_content"
@@ -413,7 +401,7 @@
                 android:layout_centerVertical="true"
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
-                android:src="?attr/title_back"/>
+                android:src="@mipmap/top_back"/>
 
         <TextView
                 android:layout_width="wrap_content"
@@ -423,7 +411,7 @@
                 android:layout_centerInParent="true"
                 android:text="编辑书架"
                 android:textSize="18sp"
-                android:textColor="?attr/top_navigation_text_color"/>
+                android:textColor="@color/top_navigation_text_color"/>
 
         <TextView
                 android:id="@+id/home_edit_cancel"
@@ -434,9 +422,8 @@
                 android:layout_alignParentRight="true"
                 android:gravity="center_vertical"
                 android:text="取消"
-                android:textColor="?attr/top_navigation_text_color"
+                android:textColor="@color/top_navigation_text_color"
                 android:textSize="@dimen/text_size_16"/>
-
     </RelativeLayout>
 
     <net.lzbook.kit.book.view.NonSwipeViewPager
@@ -456,14 +443,15 @@
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
             android:visibility="gone"
-            android:src="?attr/title_shadow"/>
+            android:src="@mipmap/top_shadow"/>
+
     <View
             android:id="@+id/content_tab_selection_devider"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:visibility="gone"
             android:layout_above="@+id/content_tab_selection"
-            android:background="?attr/color_divider"/>
+            android:background="@color/color_divider"/>
 
     <LinearLayout
             android:id="@+id/content_tab_selection"
@@ -471,7 +459,7 @@
             android:layout_height="50dp"
             android:visibility="gone"
             android:layout_alignParentBottom="true"
-            android:background="?attr/home_bottom_tab_bg"
+            android:background="@color/home_bottom_tab_bg"
             android:baselineAligned="false"
             android:orientation="horizontal">
 
@@ -490,15 +478,14 @@
                     android:contentDescription="@string/app_name"
                     android:focusable="false"
                     android:padding="1dp"
-                    android:src="?attr/home_bottom_tab_select_bookshelf"/>
+                    android:src="@drawable/home_tab_select_bookshelf"/>
 
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/bookshelf"
-                    android:textColor="?attr/home_bottom_tab_text_color"
-                    android:textSize="?attr/home_bottom_tab_text_size"/>
-
+                    android:textColor="@drawable/home_bottom_tab_text_color_selector"
+                    android:textSize="@dimen/dimen_text_10"/>
         </LinearLayout>
 
         <LinearLayout
@@ -516,15 +503,14 @@
                     android:contentDescription="@string/app_name"
                     android:focusable="false"
                     android:padding="1dp"
-                    android:src="?attr/home_bottom_tab_select_recommend"/>
+                    android:src="@drawable/home_tab_select_recommend"/>
 
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/recommend"
-                    android:textColor="?attr/home_bottom_tab_text_color"
-                    android:textSize="?attr/home_bottom_tab_text_size"/>
-
+                    android:textColor="@drawable/home_bottom_tab_text_color_selector"
+                    android:textSize="@dimen/dimen_text_10"/>
         </LinearLayout>
 
         <LinearLayout
@@ -542,15 +528,14 @@
                     android:contentDescription="@string/app_name"
                     android:focusable="false"
                     android:padding="1dp"
-                    android:src="?attr/home_bottom_tab_select_ranking"/>
+                    android:src="@drawable/home_tab_select_ranking"/>
 
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/ranking"
-                    android:textColor="?attr/home_bottom_tab_text_color"
-                    android:textSize="?attr/home_bottom_tab_text_size"/>
-
+                    android:textColor="@drawable/home_bottom_tab_text_color_selector"
+                    android:textSize="@dimen/dimen_text_10"/>
         </LinearLayout>
 
         <LinearLayout
@@ -568,23 +553,24 @@
                     android:contentDescription="@string/app_name"
                     android:focusable="false"
                     android:padding="1dp"
-                    android:src="?attr/home_bottom_tab_select_category"/>
+                    android:src="@drawable/home_tab_select_category"/>
 
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/category"
-                    android:textColor="?attr/home_bottom_tab_text_color"
-                    android:textSize="?attr/home_bottom_tab_text_size"/>
-
+                    android:textColor="@drawable/home_bottom_tab_text_color_selector"
+                    android:textSize="@dimen/dimen_text_10"/>
         </LinearLayout>
     </LinearLayout>
+
     <FrameLayout
             android:id="@+id/ll_guide_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:visibility="gone">
+
         <ImageView
                 android:id="@+id/iv_guide_download"
                 android:layout_width="wrap_content"
@@ -595,6 +581,7 @@
                 android:scaleType="fitXY"
                 android:src="@drawable/icon_bookshelf_guide_download"
                 android:visibility="gone"/>
+
         <ImageView
                 android:id="@+id/iv_guide_setting"
                 android:layout_width="wrap_content"

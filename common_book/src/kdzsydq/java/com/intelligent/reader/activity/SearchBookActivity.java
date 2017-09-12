@@ -9,6 +9,7 @@ import net.lzbook.kit.book.view.HWEditText;
 import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.CustomWebClient;
 import net.lzbook.kit.utils.JSInterfaceHelper;
 import net.lzbook.kit.utils.NetWorkUtils;
@@ -693,7 +694,8 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
     @Override
     public void afterTextChanged(Editable s) {
         if (searchViewHelper != null) {
-            searchViewHelper.showHintList(s.toString());
+            String finalContent = AppUtils.deleteAllIllegalChar(s.toString());
+            searchViewHelper.showHintList(finalContent);
             searchViewHelper.notifyListChanged();
         }
 

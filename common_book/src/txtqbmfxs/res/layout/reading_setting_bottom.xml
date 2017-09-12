@@ -3,7 +3,7 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-    
+
     <LinearLayout
             android:id="@+id/novel_hint_layout"
             android:layout_width="match_parent"
@@ -19,7 +19,7 @@
             android:paddingLeft="@dimen/dimen_padding_30"
             android:paddingRight="@dimen/dimen_padding_30"
             android:paddingTop="@dimen/dimen_padding_10">
-        
+
         <TextView
                 android:id="@+id/novel_hint_chapter"
                 android:layout_width="match_parent"
@@ -28,7 +28,7 @@
                 android:text="@string/novel_test_chapter_num"
                 android:textColor="@color/color_gray_b0b5b9"
                 android:textSize="@dimen/dimen_text_14"/>
-        
+
         <TextView
                 android:id="@+id/novel_hint_sequence"
                 android:layout_width="wrap_content"
@@ -36,7 +36,7 @@
                 android:textColor="@color/color_gray_b0b5b9"
                 android:textSize="@dimen/dimen_text_14"/>
     </LinearLayout>
-    
+
     <RelativeLayout
             android:id="@+id/novel_jump_layout"
             android:layout_width="match_parent"
@@ -45,7 +45,7 @@
             android:background="@color/color_black_1d1d1c"
             android:clickable="true"
             android:gravity="center_vertical">
-        
+
         <TextView
                 android:id="@+id/novel_jump_previous"
                 android:layout_width="wrap_content"
@@ -59,7 +59,7 @@
                 android:text="@string/novel_previous_chapter"
                 android:textColor="@color/color_gray_b0b5b9"
                 android:textSize="@dimen/dimen_text_14"/>
-        
+
         <SeekBar
                 android:id="@+id/novel_jump_progress"
                 android:layout_width="match_parent"
@@ -71,10 +71,10 @@
                 android:minHeight="@dimen/dimen_view_height_2"
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
-                android:progressDrawable="?attr/read_set_brightnessbar"
+                android:progressDrawable="@drawable/novel_progress_brightness"
                 android:splitTrack="false"
-                android:thumb="?attr/read_seekbar"/>
-        
+                android:thumb="@mipmap/read_seekbar"/>
+
         <TextView
                 android:id="@+id/novel_jump_next"
                 android:layout_width="wrap_content"
@@ -89,14 +89,14 @@
                 android:textColor="@color/color_gray_b0b5b9"
                 android:textSize="@dimen/dimen_text_14"/>
     </RelativeLayout>
-    
+
     <View
             android:id="@+id/reading_foot_options_dividing"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_view_height_1"
             android:layout_above="@+id/reading_foot_options"
             android:background="@color/color_gray_707070"/>
-    
+
     <LinearLayout
             android:id="@+id/reading_foot_options"
             android:layout_width="match_parent"
@@ -107,7 +107,7 @@
             android:orientation="horizontal"
             android:clickable="true"
             tools:ignore="DisableBaselineAlignment,UselessParent">
-        
+
         <TextView
                 android:id="@+id/novel_catalog"
                 android:layout_width="0dp"
@@ -116,7 +116,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/read_press_settings_selector"
                 android:drawablePadding="@dimen/dimen_padding_5"
-                android:drawableTop="?attr/read_setting_catalog"
+                android:drawableTop="@mipmap/read_catalog"
                 android:gravity="center"
                 android:paddingTop="@dimen/dimen_padding_10"
                 android:singleLine="true"
@@ -124,7 +124,7 @@
                 android:textColor="@color/color_gray_bebebe"
                 android:textSize="@dimen/dimen_text_12"
                 tools:ignore="SmallSp"/>
-        
+
         <TextView
                 android:id="@+id/novel_change_source"
                 android:layout_width="0dp"
@@ -133,14 +133,14 @@
                 android:layout_weight="1"
                 android:background="@drawable/read_press_settings_selector"
                 android:drawablePadding="@dimen/dimen_padding_5"
-                android:drawableTop="?attr/read_setting_changesource"
+                android:drawableTop="@mipmap/read_changesource"
                 android:gravity="center"
                 android:paddingTop="@dimen/dimen_padding_10"
                 android:singleLine="true"
                 android:text="@string/read_changesource"
                 android:textColor="@color/color_gray_bebebe"
                 android:textSize="@dimen/dimen_text_12"/>
-        
+
         <TextView
                 android:id="@+id/novel_download"
                 android:layout_width="0dp"
@@ -149,14 +149,14 @@
                 android:layout_weight="1"
                 android:background="@drawable/read_press_settings_selector"
                 android:drawablePadding="@dimen/dimen_padding_5"
-                android:drawableTop="?attr/read_setting_download"
+                android:drawableTop="@mipmap/read_setting_download"
                 android:gravity="center"
                 android:paddingTop="@dimen/dimen_padding_10"
                 android:singleLine="true"
                 android:text="@string/read_cache"
                 android:textColor="@color/color_gray_bebebe"
                 android:textSize="@dimen/dimen_text_12"/>
-        
+
         <TextView
                 android:id="@+id/novel_feedback"
                 android:layout_width="0dp"
@@ -165,14 +165,14 @@
                 android:layout_weight="1"
                 android:background="@drawable/read_press_settings_selector"
                 android:drawablePadding="@dimen/dimen_padding_5"
-                android:drawableTop="?attr/read_setting_feedback"
+                android:drawableTop="@mipmap/read_setting_feedback"
                 android:gravity="center"
                 android:paddingTop="@dimen/dimen_padding_10"
                 android:singleLine="true"
                 android:text="@string/read_feedback"
                 android:textColor="@color/color_gray_bebebe"
                 android:textSize="@dimen/dimen_text_12"/>
-        
+
         <TextView
                 android:id="@+id/novel_setting"
                 android:layout_width="0dp"
@@ -181,16 +181,15 @@
                 android:layout_weight="1"
                 android:background="@drawable/read_press_settings_selector"
                 android:drawablePadding="@dimen/dimen_padding_5"
-                android:drawableTop="?attr/read_setting_font"
+                android:drawableTop="@mipmap/read_setting_font"
                 android:gravity="center"
                 android:paddingTop="@dimen/dimen_padding_10"
                 android:singleLine="true"
                 android:text="@string/read_setting_more"
                 android:textColor="@color/color_gray_bebebe"
                 android:textSize="@dimen/dimen_text_12"/>
-    
     </LinearLayout>
-    
+
     <ImageView
             android:id="@+id/novel_auto_read"
             android:layout_width="wrap_content"
@@ -198,5 +197,5 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/dimen_margin_20"
-            android:background="?attr/read_light"/>
+            android:background="@mipmap/btn_autoreading_night"/>
 </RelativeLayout>

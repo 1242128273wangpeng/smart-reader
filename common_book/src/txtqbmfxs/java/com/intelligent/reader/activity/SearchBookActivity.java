@@ -9,6 +9,7 @@ import net.lzbook.kit.book.view.HWEditText;
 import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.CustomWebClient;
 import net.lzbook.kit.utils.JSInterfaceHelper;
 import net.lzbook.kit.utils.NetWorkUtils;
@@ -121,12 +122,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
         }
         search_result_input = (HWEditText) findViewById(R.id.search_result_input);
         search_result_main = (RelativeLayout) findViewById(R.id.search_result_main);
-        View view_night_show =  findViewById(R.id.view_night_show);
-        if (mThemeHelper.isNight()){
-            view_night_show.setVisibility(View.VISIBLE);
-        }else {
-            view_night_show.setVisibility(View.GONE);
-        }
+
         search_result_content = (WebView) findViewById(R.id.search_result_content);
 
         search_result_hint = (FrameLayout) findViewById(R.id.search_result_hint);
@@ -693,7 +689,9 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
     @Override
     public void afterTextChanged(Editable s) {
         if (searchViewHelper != null) {
-            searchViewHelper.showHintList(s.toString());
+
+            String finalContent = AppUtils.deleteAllIllegalChar(s.toString());
+            searchViewHelper.showHintList(finalContent);
             searchViewHelper.notifyListChanged();
         }
 

@@ -12,6 +12,9 @@
             android:id="@+id/tv_search_item_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:maxEms="15"
+            android:ellipsize="end"
             android:textColor="@color/search_suggest_item_text_color_2"
             android:textSize="16sp"/>
 
@@ -20,4 +23,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_margin_6"/>
+
+
 </LinearLayout>

@@ -3,8 +3,10 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                android:clipToPadding="true"
                 tools:context="com.intelligent.reader.activity.FootprintActivity"
-                android:background="?attr/base_bg">
+                android:background="@color/base_bg">
 
     <TextView
             android:id="@+id/footprint_type_tv"
@@ -18,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
             android:layout_alignParentTop="true"
-            android:background="?attr/top_navigation_bg_color">
+            android:background="@color/top_navigation_bg_color">
 
         <ImageView
                 android:id="@+id/book_history_back"
@@ -27,7 +29,7 @@
                 android:gravity="center"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
-                android:src="?attr/title_back"/>
+                android:src="@mipmap/cover_top_back"/>
 
         <TextView
                 android:layout_width="wrap_content"
@@ -35,7 +37,7 @@
                 android:layout_centerInParent="true"
                 android:gravity="center_vertical"
                 android:text="足迹"
-                android:textColor="?attr/top_navigation_text_color"
+                android:textColor="@color/top_navigation_text_color"
                 android:textSize="18sp"/>
 
         <TextView
@@ -47,9 +49,8 @@
                 android:text="清空"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
-                android:textColor="?attr/footprint_title_clear_color"
+                android:textColor="@color/footprint_title_clear_color"
                 android:textSize="14sp"/>
-
     </RelativeLayout>
 
     <net.lzbook.kit.book.view.EmptyRecyclerView
@@ -75,7 +76,7 @@
                 android:layout_marginTop="130dp"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="?attr/footprint_empty_hint_color1"
+                android:textColor="@color/footprint_empty_hint_color1"
                 android:text="浏览过的书会出现在这里"/>
 
         <TextView
@@ -87,13 +88,12 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_alignParentBottom="true"
-                android:textColor="?attr/footprint_empty_find_color1"
-                android:background="?attr/footprint_empty_find_bg1"
+                android:textColor="@color/footprint_empty_find_color1"
+                android:background="@drawable/footprint_empty_find_bg1"
                 android:layout_marginBottom="70dp"
                 android:layout_marginRight="45dp"
                 android:layout_marginLeft="45dp"
                 android:text="去逛逛"/>
-
     </RelativeLayout>
 
     <RelativeLayout
@@ -112,8 +112,9 @@
                 android:layout_marginTop="125dp"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="?attr/footprint_empty_hint_color1"
+                android:textColor="@color/footprint_empty_hint_color1"
                 android:text="登录后可查看浏览过的书"/>
+
         <TextView
                 android:id="@+id/footprint_login_hint2"
                 android:layout_width="wrap_content"
@@ -122,9 +123,10 @@
                 android:layout_below="@+id/footprint_login_hint"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="?attr/footprint_empty_hint_color1"
+                android:textColor="@color/footprint_empty_hint_color1"
                 android:visibility="gone"
                 android:text="请登录后查看"/>
+
         <TextView
                 android:id="@+id/footprint_to_login"
                 android:layout_width="match_parent"
@@ -134,14 +136,13 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_alignParentBottom="true"
-                android:textColor="?attr/footprint_empty_find_color1"
-                android:background="?attr/footprint_empty_find_bg1"
+                android:textColor="@color/footprint_empty_find_color1"
+                android:background="@drawable/footprint_empty_find_bg1"
                 android:layout_marginTop="17dp"
                 android:layout_marginBottom="70dp"
                 android:layout_marginRight="45dp"
                 android:layout_marginLeft="45dp"
                 android:text="登录"/>
-
     </RelativeLayout>
 
     <ImageView
@@ -150,6 +151,5 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/rl_title_footprint"
             android:scaleType="fitXY"
-            android:src="?attr/title_shadow"/>
-
+            android:src="@mipmap/top_shadow"/>
 </RelativeLayout>

@@ -2,15 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
+                android:fitsSystemWindows="true"
                 android:layout_height="fill_parent"
-                android:background="?attr/cover_bg">
+                android:background="@color/cover_bg">
 
     <RelativeLayout
             android:id="@+id/rl_title_book_cover"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
             android:layout_alignParentTop="true"
-            android:background="?attr/top_navigation_bg_color">
+            android:background="@color/top_navigation_bg_color">
 
         <ImageView
                 android:id="@+id/book_cover_back"
@@ -19,7 +20,7 @@
                 android:gravity="center"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
-                android:src="?attr/title_back"/>
+                android:src="@mipmap/top_back"/>
 
         <TextView
                 android:layout_width="wrap_content"
@@ -27,11 +28,9 @@
                 android:layout_centerInParent="true"
                 android:gravity="center_vertical"
                 android:text="书籍封面"
-                android:textColor="?attr/top_navigation_text_color"
+                android:textColor="@color/top_navigation_text_color"
                 android:textSize="18sp"/>
-
     </RelativeLayout>
-
 
     <RelativeLayout
             android:id="@+id/book_cover_main"
@@ -43,15 +42,14 @@
                 android:id="@+id/layout_bottom_view"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_alignParentBottom="true"
-        >
+                android:layout_alignParentBottom="true">
 
             <View
                     android:id="@+id/id_dividing"
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
                     android:layout_alignParentTop="true"
-                    android:background="?attr/color_divider"/>
+                    android:background="@color/color_divider"/>
 
             <LinearLayout
                     android:layout_width="match_parent"
@@ -69,10 +67,10 @@
                         android:layout_centerInParent="true"
                         android:layout_marginLeft="@dimen/dimen_margin_5"
                         android:layout_weight="1"
-                        android:background="?attr/cover_bottom_btn_selector"
+                        android:background="@drawable/cover_bottom_btn_selector"
                         android:gravity="center"
                         android:text="全本缓存"
-                        android:textColor="?attr/cover_bottom_btn_text_selector"
+                        android:textColor="@drawable/cover_bottom_btn_text_selector"
                         android:textSize="14sp"/>
 
                 <TextView
@@ -83,10 +81,10 @@
                         android:layout_marginRight="@dimen/dimen_margin_7"
                         android:layout_marginLeft="@dimen/dimen_margin_7"
                         android:layout_weight="1"
-                        android:background="?attr/cover_bottom_btn_selector"
+                        android:background="@drawable/cover_bottom_btn_selector"
                         android:gravity="center"
                         android:text="转码阅读"
-                        android:textColor="?attr/cover_bottom_btn_text_selector"
+                        android:textColor="@drawable/cover_bottom_btn_text_selector"
                         android:textSize="14sp"/>
 
                 <TextView
@@ -101,24 +99,23 @@
             </LinearLayout>
         </RelativeLayout>
 
-
         <ScrollView
                 android:id="@+id/book_cover_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_above="@id/layout_bottom_view"
                 android:scrollbars="none">
-    
+
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
-        
+
                 <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical">
-            
+
                     <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -127,7 +124,7 @@
                             android:orientation="horizontal"
                             android:paddingBottom="@dimen/padding_10"
                             android:paddingTop="@dimen/padding_23">
-                
+
                         <FrameLayout
                                 android:layout_width="74dp"
                                 android:layout_height="98dp">
@@ -149,9 +146,8 @@
                                     android:layout_marginLeft="2dp"
                                     android:layout_marginBottom="3dp"
                                     android:scaleType="fitXY"
-                                    android:background="?attr/bookshelf_book_cover_default"
-                                    android:src="?attr/bookshelf_book_cover_default"
-                            />
+                                    android:background="@mipmap/bookshelf_book_cover_default"
+                                    android:src="@mipmap/bookshelf_book_cover_default"/>
                         </FrameLayout>
 
                         <LinearLayout
@@ -173,7 +169,7 @@
                                     android:includeFontPadding="false"
                                     android:singleLine="true"
                                     android:text="@string/app_name"
-                                    android:textColor="?attr/cover_profile_title_color"
+                                    android:textColor="@color/cover_profile_title_color"
                                     android:textSize="@dimen/text_size_16"/>
 
                             <LinearLayout
@@ -189,15 +185,16 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="玄幻"
-                                        android:textColor="?attr/cover_profile_des_color"
+                                        android:textColor="@color/cover_profile_des_color"
                                         android:textSize="12sp"/>
+
                                 <TextView
                                         android:id="@+id/book_cover_category2"
                                         android:layout_width="@dimen/dimen_height_50"
                                         android:layout_height="@dimen/dimen_height_20"
                                         android:text="玄幻"
                                         android:gravity="center"
-                                        android:textColor="?attr/base_bg"
+                                        android:textColor="@color/base_bg"
                                         android:visibility="gone"
                                         android:textSize="@dimen/dimen_text_10"/>
 
@@ -207,7 +204,7 @@
                                         android:layout_height="wrap_content"
                                         android:includeFontPadding="false"
                                         android:text="-连载中"
-                                        android:textColor="?attr/cover_profile_des_color"
+                                        android:textColor="@color/cover_profile_des_color"
                                         android:textSize="@dimen/cover_page_author_text"/>
                             </LinearLayout>
 
@@ -223,7 +220,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="作者："
-                                        android:textColor="?attr/cover_profile_des_color"
+                                        android:textColor="@color/cover_profile_des_color"
                                         android:textSize="@dimen/cover_page_author_text"/>
 
                                 <TextView
@@ -231,7 +228,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="望语"
-                                        android:textColor="?attr/cover_profile_des_color"
+                                        android:textColor="@color/cover_profile_des_color"
                                         android:textSize="@dimen/cover_page_author_text"/>
                             </LinearLayout>
 
@@ -249,7 +246,7 @@
                                         android:layout_height="match_parent"
                                         android:gravity="center_vertical"
                                         android:text="@string/book_cover_source"
-                                        android:textColor="?attr/cover_profile_des_color"
+                                        android:textColor="@color/cover_profile_des_color"
                                         android:textSize="@dimen/dimen_text_12"/>
 
                                 <TextView
@@ -261,8 +258,8 @@
                                         android:paddingLeft="@dimen/dimen_padding_5"
                                         android:paddingRight="@dimen/dimen_padding_5"
                                         android:text="@string/book_cover_no_source"
-                                        android:background="?attr/cover_profile_bg_color"
-                                        android:textColor="?attr/cover_profile_des_color"
+                                        android:background="@color/cover_profile_bg_color"
+                                        android:textColor="@color/cover_profile_des_color"
                                         android:textSize="@dimen/dimen_text_12"/>
                             </LinearLayout>
                         </LinearLayout>
@@ -272,7 +269,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="0.5dp"
                             android:layout_marginTop="10dp"
-                            android:background="?attr/color_divider"/>
+                            android:background="@color/color_divider"/>
                 </LinearLayout>
 
                 <RelativeLayout
@@ -280,7 +277,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingTop="15dp">
-    
+
                     <LinearLayout
                             android:id="@+id/cover_latest_section"
                             android:layout_width="match_parent"
@@ -291,12 +288,12 @@
                         <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:drawableLeft="?attr/cover_profile_icon"
+                                android:drawableLeft="@mipmap/cover_profile_icon"
                                 android:drawablePadding="@dimen/padding_6"
                                 android:text="最新："
-                                android:textColor="?attr/cover_profile_title_color"
+                                android:textColor="@color/cover_profile_title_color"
                                 android:textSize="14sp"/>
-        
+
                         <TextView
                                 android:id="@+id/book_cover_last_chapter"
                                 android:layout_width="match_parent"
@@ -305,7 +302,7 @@
                                 android:ellipsize="end"
                                 android:singleLine="true"
                                 android:text="第145章 - 大结局"
-                                android:textColor="?attr/cover_profile_title_color"
+                                android:textColor="@color/cover_profile_title_color"
                                 android:textSize="14sp"/>
                     </LinearLayout>
 
@@ -322,7 +319,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="更新："
                                 android:layout_marginLeft="@dimen/margin_4"
-                                android:textColor="?attr/cover_profile_des_color"
+                                android:textColor="@color/cover_profile_des_color"
                                 android:textSize="@dimen/cover_page_author_text"/>
 
                         <TextView
@@ -330,7 +327,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="2 天前"
-                                android:textColor="?attr/cover_profile_des_color"
+                                android:textColor="@color/cover_profile_des_color"
                                 android:textSize="@dimen/cover_page_author_text"/>
                     </LinearLayout>
 
@@ -340,24 +337,26 @@
                             android:layout_height="0.5dp"
                             android:layout_below="@id/ff_source_site"
                             android:layout_marginTop="12dp"
-                            android:background="?attr/color_divider"/>
+                            android:background="@color/color_divider"/>
                 </RelativeLayout>
 
                 <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
+
                     <TextView
                             android:id="@+id/cover_book_introduction"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:drawableLeft="?attr/cover_profile_icon"
+                            android:drawableLeft="@mipmap/cover_profile_icon"
                             android:drawablePadding="@dimen/padding_6"
                             android:paddingLeft="@dimen/padding_8"
                             android:layout_marginBottom="@dimen/dimen_margin_5"
                             android:layout_marginTop="@dimen/dimen_margin_18"
                             android:text="内容简介"
-                            android:textColor="?attr/cover_profile_title_color"
+                            android:textColor="@color/cover_profile_title_color"
                             android:textSize="14sp"/>
+
                     <net.lzbook.kit.book.view.ExpandableTextView
                             android:id="@+id/book_cover_description"
                             android:layout_width="match_parent"
@@ -379,7 +378,7 @@
                                 android:gravity="center_vertical"
                                 android:textColor="@color/color_gray_9c9c9c"
                                 android:textSize="12sp"/>
-    
+
                         <TextView
                                 android:id="@+id/expand_collapse"
                                 android:layout_width="wrap_content"
@@ -392,7 +391,6 @@
                                 android:text="展开"
                                 android:background="@android:color/transparent"/>
                     </net.lzbook.kit.book.view.ExpandableTextView>
-
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -401,9 +399,8 @@
                         android:layout_marginRight="@dimen/dimen_margin_10"
                         android:layout_marginLeft="@dimen/dimen_margin_10"
                         android:layout_height="40dp"
-                        android:background="?attr/cover_checkdir_bg_color"
-                        android:layout_marginTop="@dimen/dimen_margin_5"
-                >
+                        android:background="@drawable/cover_checkdir_bg"
+                        android:layout_marginTop="@dimen/dimen_margin_5">
 
                     <TextView
                             android:id="@+id/tv_catalog_book_cover"
@@ -413,7 +410,7 @@
                             android:gravity="center"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
-                            android:textColor="?attr/cover_checkdir_text_color"
+                            android:textColor="@color/cover_checkdir_text_color"
                             android:text="查看目录"
                             android:textSize="@dimen/text_size_14"/>
                 </RelativeLayout>
@@ -422,18 +419,17 @@
                         android:id="@+id/book_cover_catalog_view_nobg"
                         android:layout_width="match_parent"
                         android:visibility="gone"
-                        android:layout_height="@dimen/dimen_view_height_45"
-                >
+                        android:layout_height="@dimen/dimen_view_height_45">
+
                     <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:gravity="center"
                             android:text="查看目录"
-                            android:textColor="?attr/dialog_recommend"
+                            android:textColor="@color/dialog_recommend"
                             android:textSize="@dimen/text_size_16"/>
                 </RelativeLayout>
-
             </LinearLayout>
         </ScrollView>
     </RelativeLayout>
@@ -461,5 +457,5 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
-            android:src="?attr/title_shadow"/>
+            android:src="@mipmap/top_shadow"/>
 </RelativeLayout>

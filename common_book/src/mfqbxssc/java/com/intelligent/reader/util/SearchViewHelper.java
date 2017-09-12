@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import com.google.gson.Gson;
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.SearchHisAdapter;
+import com.intelligent.reader.adapter.SearchHotWordAdapter;
 import com.intelligent.reader.adapter.SearchSuggestAdapter;
 import com.intelligent.reader.net.NetOwnSearch;
 import com.intelligent.reader.net.OwnSearchService;
@@ -63,7 +64,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
     private ListView mHisListView;
     private ListView mSuggestListView;
 
-    private ArrayAdapter<String> mHotAdapter;
+    private SearchHotWordAdapter mHotAdapter;
     private SearchSuggestAdapter mSuggestAdapter;
     private SearchHisAdapter mHisAdapter;
     private static ArrayList<String> hotDatas = new ArrayList<String>();
@@ -261,16 +262,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
                 if(hasNet){
                     sharedPreferencesUtils.putString(Constants.SERARCH_HOT_WORD, gson.toJson(value, SearchHotBean.class));
                 }
-
-                hotDatas = new ArrayList<>();
-                hotDatas.clear();
-               for(SearchHotBean.DataBean bean:hotWords){
-                   if(hotDatas.size()<9){
-                       hotDatas.add(bean.getWord());
-                   }
-               }
-                mHotAdapter = new ArrayAdapter<String>(activity, R.layout.item_hot_search_view,
-                        hotDatas);
+                mHotAdapter = new SearchHotWordAdapter(activity, hotWords);
                 if (mHotListView != null) {
 
                     mHotListView.setAdapter(mHotAdapter);
@@ -278,15 +270,14 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
                         @Override
                         public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long position) {
                             StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.b_search_click_his_word);
-                            if (hotDatas != null && !hotDatas.isEmpty() && position > -1 &&position < hotDatas.size()) {
-                                String hotWord = hotDatas.get(arg2-1);
+                            if (hotWords != null && !hotWords.isEmpty() && position > -1 && position < hotWords.size()) {
+                                String hotWord = hotWords.get(arg2 - 1).getWord();
                                 if (hotWord != null && mSearchEditText != null) {
                                     mShouldShowHint = false;
                                     mSearchEditText.setText(hotWord);
                                     startSearch(hotWord,hotWords.get(arg2-1).getWordType()+"");
 
                                     Map<String, String> data = new HashMap<>();
-                                    data.put("topicword", hotWord);
                                     StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TOPIC, data);
                                 }
                             }
@@ -575,11 +566,6 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
 
         if (onHotWordClickListener != null) {
             onHotWordClickListener = null;
-        }
-
-        if (mHotAdapter != null) {
-            mHotAdapter.clear();
-            mHotAdapter = null;
         }
 
         if (mSuggestAdapter != null) {

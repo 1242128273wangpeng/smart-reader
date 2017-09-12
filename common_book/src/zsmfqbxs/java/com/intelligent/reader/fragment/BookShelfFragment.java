@@ -586,10 +586,8 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             layoutManager = new ShelfGridLayoutManager(mContext, 3);
             //有分割线的九宫格
             if (!"cc.quanbennovel".equals(ACTION_CHKHIDE)) {
-                TypedValue typeColor = new TypedValue();
-                Resources.Theme theme = getActivity().getTheme();
-                theme.resolveAttribute(R.attr.bookshelf_divider, typeColor, true);
-                recyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.BOTH_SET, 2, mContext.getResources().getColor(typeColor.resourceId)));
+                int typeColor = R.color.color_gray_e8e8e8;
+                recyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.BOTH_SET, 2, mContext.getResources().getColor(typeColor)));
             }
         }
         recyclerView.setLayoutManager(layoutManager);
