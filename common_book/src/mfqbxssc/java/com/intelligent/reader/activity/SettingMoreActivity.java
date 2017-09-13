@@ -57,7 +57,7 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
     @Override
     public void onCreate(Bundle paramBundle) {
         super.onCreate(paramBundle);
-        setContentView(R.layout.setting_more_layout);
+        setContentView(R.layout.act_setting_more);
         mContext = this;
         initView();
         initData();

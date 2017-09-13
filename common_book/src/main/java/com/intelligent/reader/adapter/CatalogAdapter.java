@@ -38,10 +38,12 @@ public class CatalogAdapter extends BaseAdapter {
 
 
     public CatalogAdapter(CataloguesActivity activity, List list, String book_site) {
+        resources = activity.getResources();
         activityWeakReference = new WeakReference<>(activity);
         if (activityWeakReference != null) {
             context = activityWeakReference.get();
         }
+
         this.list = list;
         this.book_site = book_site;
         resources = context.getResources();

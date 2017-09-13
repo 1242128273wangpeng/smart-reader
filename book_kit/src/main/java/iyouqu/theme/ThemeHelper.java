@@ -18,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import de.greenrobot.event.EventBus;
+
 
 /**
  * 主题助手：负责从SP中存取主题偏好.
@@ -25,10 +27,22 @@ import android.widget.TextView;
 public class ThemeHelper {
     private final static String MODE = "theme_mode";
     private final static String MODE_DEFAULT = "theme_default";
+    private static volatile ThemeHelper mThemeHelper;
     private SharedPreferences mSharedPreferences;
 
-    public ThemeHelper(Context context) {
+    private ThemeHelper(Context context) {
         this.mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+    }
+
+    public static ThemeHelper getInstance(Context context) {
+        if (mThemeHelper == null) {
+            synchronized (ThemeHelper.class) {
+                if (mThemeHelper == null) {
+                    mThemeHelper = new ThemeHelper(context);
+                }
+            }
+        }
+        return mThemeHelper;
     }
 
     /**
@@ -42,6 +56,9 @@ public class ThemeHelper {
         if (!ThemeMode.NIGHT.getName().equals(mode.getName())) {
             editor.putInt(MODE_DEFAULT, mode.getCode());
         }
+
+        EventBus.getDefault().post(new EventThemeModeChange(mode));
+
         return editor.commit();
     }
 

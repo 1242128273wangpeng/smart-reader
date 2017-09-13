@@ -1,7 +1,6 @@
 package iyouqu.theme;
 
 import com.baidu.mobstat.StatService;
-import com.intelligent.reader.R;
 
 import net.lzbook.kit.ad.OwnNativeAdManager;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
@@ -59,6 +58,7 @@ public abstract class FrameActivity extends AppCompatActivity {
     //检测自身是不是前台运行app
     private boolean isCurrentRunningForeground = true;
 
+
     @SuppressLint("NewApi")
     public void onCreate(Bundle paramBundle) {
         super.onCreate(paramBundle);
@@ -68,10 +68,6 @@ public abstract class FrameActivity extends AppCompatActivity {
         initTheme();
         ATManager.addActivity(this);
 //        StatusBarCompat.compat(this, getStatusBarColorId());
-    }
-
-    public int getStatusBarColorId() {
-        return getResources().getColor(R.color.color_statusBar);
     }
 
     @Override
@@ -87,7 +83,7 @@ public abstract class FrameActivity extends AppCompatActivity {
      */
     private void initThemeHelper() {
         if (mThemeHelper == null) {
-            mThemeHelper = new ThemeHelper(this);
+            mThemeHelper = ThemeHelper.getInstance(this);
         }
     }
 
@@ -122,12 +118,16 @@ public abstract class FrameActivity extends AppCompatActivity {
 //        mThemeHelper.showAnimation(this);
 //        mThemeHelper.toggleThemeSetting(this);
 //        StatusBarCompat.compat(this);
+
         ViewGroup decorView = (ViewGroup) getWindow().getDecorView();
         if (flag) {
             if (mNightShadowView == null) {
                 mNightShadowView = new View(this);
                 mNightShadowView.setBackgroundColor(Color.BLACK);
-                mNightShadowView.setAlpha(0.55f);
+                mNightShadowView.setAlpha(Constants.NIGHT_SHADOW_ALPHA);
+                mNightShadowView.setClickable(false);
+                mNightShadowView.setFocusable(false);
+
             }
 
             if (mNightShadowView.getParent() == null) {
@@ -146,13 +146,20 @@ public abstract class FrameActivity extends AppCompatActivity {
         } else if (mNightShadowView != null) {
             decorView.removeView(mNightShadowView);
         }
+
+
+    }
+
+    public boolean shouldShowNightShadow() {
+        return true;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        nightShift(mThemeHelper.isNight(), false);
+        if (shouldShowNightShadow())
+            nightShift(mThemeHelper.isNight(), false);
 
         StatService.onResume(getApplicationContext());
         if (!isActive) {

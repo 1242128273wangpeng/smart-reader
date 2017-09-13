@@ -1,10 +1,12 @@
 package com.intelligent.reader.read.animation;
 
+import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.data.bean.ReadStatus;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
+import android.widget.Scroller;
 
 public class ShiftAnimationProvider extends SlideAnimationProvider {
 
@@ -14,6 +16,8 @@ public class ShiftAnimationProvider extends SlideAnimationProvider {
 
     public ShiftAnimationProvider(BitmapManager manager, ReadStatus readStatus) {
         super(manager, readStatus);
+
+        mScroller = new Scroller(BaseBookApplication.getGlobalContext(), new EaseCubicInterpolator(.58f, .2f, .04f, .76f));
     }
 
     @Override

@@ -1,68 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="90dp"
-        android:gravity="center"
-        android:background="@drawable/more_pop"
-        android:orientation="vertical">
-    <!--android:background="?attr/bookshelf_pop_9patch"-->
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+        android:layout_height="wrap_content">
+    
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="90dp"
+            android:gravity="center"
+            android:background="@drawable/more_pop"
             android:orientation="vertical">
-        
+        <!--android:background="?attr/bookshelf_pop_9patch"-->
         <LinearLayout
-                android:id="@+id/linear_huancun"
-                android:layout_width="fill_parent"
-                android:layout_height="45dp"
-                android:background="@drawable/bookshelf_title_right_top_select"
-                android:gravity="center"
-                android:paddingRight="21dp"
-                android:paddingLeft="15dp"
-                android:orientation="horizontal">
-            
-            <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:background="@mipmap/more_icon_down"/>
-            
-            <TextView
-                    android:id="@+id/tv_car_empty"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:layout_marginLeft="10dp"
+                android:id="@id/container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+    
+            <LinearLayout
+                    android:id="@+id/linear_huancun"
+                    android:layout_width="fill_parent"
+                    android:layout_height="45dp"
+                    android:background="@drawable/bookshelf_title_right_top_select"
                     android:gravity="center"
-                    android:text="缓存管理"
-                    android:textColor="@color/setting_login_font_color"
-                    android:textSize="14sp"/>
+                    android:paddingRight="21dp"
+                    android:paddingLeft="15dp"
+                    android:orientation="horizontal">
+        
+                <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:background="@mipmap/more_icon_down"/>
+        
+                <TextView
+                        android:id="@+id/tv_car_empty"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:text="缓存管理"
+                        android:textColor="@color/setting_login_font_color"
+                        android:textSize="14sp"/>
+            </LinearLayout>
+    
+            <LinearLayout
+                    android:id="@+id/linear_paixu"
+                    android:layout_width="fill_parent"
+                    android:layout_height="45dp"
+                    android:background="@drawable/bookshelf_title_right_select"
+                    android:gravity="center"
+                    android:paddingRight="21dp"
+                    android:paddingLeft="15dp"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+        
+                <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:background="@mipmap/more_icon_sort"/>
+        
+                <TextView
+                        android:id="@+id/tv_car_half"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:textColor="@color/setting_login_font_color"
+                        android:text="书籍排序"
+                        android:textSize="14sp"/>
+            </LinearLayout>
         </LinearLayout>
         
-        <LinearLayout
-                android:id="@+id/linear_paixu"
-                android:layout_width="fill_parent"
-                android:layout_height="45dp"
-                android:background="@drawable/bookshelf_title_right_select"
-                android:gravity="center"
-                android:paddingRight="21dp"
-                android:paddingLeft="15dp"
-                android:orientation="horizontal"
-                android:padding="8dp">
-            
-            <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:background="@mipmap/more_icon_sort"/>
-            
-            <TextView
-                    android:id="@+id/tv_car_half"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:layout_marginLeft="10dp"
-                    android:gravity="center"
-                    android:textColor="@color/setting_login_font_color"
-                    android:text="书籍排序"
-                    android:textSize="14sp"/>
-        </LinearLayout>
-    </LinearLayout>
-</LinearLayout>
+        <net.lzbook.kit.book.view.NightShadowView
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/container"
+                android:layout_alignRight="@+id/container"
+                android:layout_alignBottom="@+id/container"
+                android:layout_alignLeft="@+id/container"
+                />
+    </RelativeLayout>
+
+</FrameLayout>

@@ -100,6 +100,9 @@ public class Constants {
     public static final String APP_SYSTEM_PLATFORM = "android";
     public static final String UPDATE_CHAPTER_SOURCE_ID = "update_chapter_source_id";
     public static final int CONTENT_ERROR_COUNT = 50;
+    //夜间模式蒙板透明度
+    public static final float NIGHT_SHADOW_ALPHA = 0.55f;
+    public static final String SERARCH_HOT_WORD = "search_hot_word";//搜索热词
     public static int NONET_READHOUR = 24;
     public static int DOWNLOAD = 400;
     // FIXME 上线要改成false
@@ -217,34 +220,24 @@ public class Constants {
     public static String QG_SOURCE = "api.qingoo.cn";
     public static String YS_SOURCE = "b.easou.com";
     public static String SG_SOURCE = "k.sogou.com";
-
     //public static final String CONTENT_ERROR = "文章内容较短,可能非正文,正在抓紧修复中";
     public static String FILTER_WORD = "easou";
     public static String STYLE_CHANGE = "style1";
-
     public static String NOVEL_HOST = "novel_host";
     public static String WEBVIEW_HOST = "httpsWebView_host";
-
     public static long startReadTime = 0;
     public static long endReadTime = 0;
     public static String FILE_PATH = "";
     public static boolean is_today_first_read = false;
-
     public static boolean IS_DOWNLOADING = false;
-
     public static String DOWNLOAD_LIMIT = "download_limit";
     public static int DOWNLOAD_LIMIT_NUMBER = 20;
     public static String ONE_DOWNLOAD = "oneday_download";
     public static boolean REMOVE_BOOK = false;
-
     public static String PACKAGE_MD5 = "";
-
     //1是开启  0是关闭
     public static int isNoNetRead = 0;
     public static String noNetReadNumber = "noNetReadNumber";
-
-    public static final String SERARCH_HOT_WORD = "search_hot_word";//搜索热词
-
 
     /*
          * 初始化

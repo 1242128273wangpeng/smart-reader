@@ -1,6 +1,7 @@
 package iyouqu.theme.statusbar;
 
-import com.intelligent.reader.R;
+
+import net.lzbook.kit.R;
 
 import android.app.Activity;
 import android.os.Build;

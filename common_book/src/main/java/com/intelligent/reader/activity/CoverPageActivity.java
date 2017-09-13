@@ -837,7 +837,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
     }
 
     private void showCoverSourceDialog() {
-        if (Constants.QG_SOURCE.equals(requestItem.host)) {//青果
+        if (Constants.QG_SOURCE.equals(requestItem.host) || bookSourceList.size() == 1) {//青果
             Toast.makeText(this, "该小说暂无其他来源！", Toast.LENGTH_LONG).show();
             return;
         }

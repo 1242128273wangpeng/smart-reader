@@ -9,9 +9,10 @@ import android.graphics.drawable.GradientDrawable
 import android.support.annotation.IdRes
 import android.util.AttributeSet
 import android.widget.TextView
+import de.greenrobot.event.EventBus
 import net.lzbook.kit.utils.log
-import net.lzbook.kit.utils.registToEventBus
-import net.lzbook.kit.utils.unregistFromEventBus
+import net.lzbook.kit.utils.safeRegist
+import net.lzbook.kit.utils.safeUnregist
 import java.util.*
 
 
@@ -33,12 +34,12 @@ class FirstUsePointView : TextView {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        registToEventBus(this)
+        EventBus.getDefault().safeRegist(this)
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        unregistFromEventBus(this)
+        EventBus.getDefault().safeUnregist(this)
     }
 
     override fun onPreDraw(): Boolean {
@@ -130,7 +131,7 @@ class FirstUseManager(val context: Context) {
         fun getInstance(context: Context): FirstUseManager {
             if (msFirstUserManager == null) {
                 msFirstUserManager = FirstUseManager(context.applicationContext)
-                registToEventBus(msFirstUserManager!!)
+                EventBus.getDefault().safeRegist(msFirstUserManager!!)
             }
             return msFirstUserManager!!
         }

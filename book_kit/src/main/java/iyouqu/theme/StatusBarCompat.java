@@ -1,6 +1,7 @@
 package iyouqu.theme;
 
-import com.intelligent.reader.R;
+
+import net.lzbook.kit.R;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
