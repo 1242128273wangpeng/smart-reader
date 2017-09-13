@@ -42,6 +42,15 @@
                 android:indeterminateDuration="1000"
                 />
     </LinearLayout>
-
+    
+    <net.lzbook.kit.book.view.NightShadowView
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/umeng_update_frame"
+            android:layout_alignRight="@+id/umeng_update_frame"
+            android:layout_alignBottom="@+id/umeng_update_frame"
+            android:layout_alignLeft="@+id/umeng_update_frame"
+            />
 
 </RelativeLayout>

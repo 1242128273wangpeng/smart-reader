@@ -1,16 +1,14 @@
 package com.intelligent.reader.util;
 
+import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.BookShelfReAdapter;
 
-import net.lzbook.kit.R;
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
 import net.lzbook.kit.utils.popup.PopupWindowInterface;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.os.Handler;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -235,14 +233,12 @@ public class BookShelfRemoveHelper implements View.OnClickListener {
                 delete_btn.setBackgroundResource(com.intelligent.reader.R.drawable.bookshelf_delete_submit_default_bg);
             } else {
                 delete_btn.setText("删除 (" + num + ")");
-                TypedValue textColor = new TypedValue();
-                TypedValue bgColor = new TypedValue();
-                Resources.Theme theme = mContext.getTheme();
-                theme.resolveAttribute(com.intelligent.reader.R.attr.bookshelf_delete_submit_text_color, textColor, true);
-                theme.resolveAttribute(com.intelligent.reader.R.attr.bookshelf_delete_submit_bg, bgColor, true);
-                ColorStateList draw = mContext.getResources().getColorStateList(textColor.resourceId);
+                int textColor = R.drawable.bookshelf_delete_submit_text_color;
+                int bgColor = R.drawable.bookshelf_delete_submit_bg;
+
+                ColorStateList draw = mContext.getResources().getColorStateList(textColor);
                 delete_btn.setTextColor(draw);
-                delete_btn.setBackgroundResource(bgColor.resourceId);
+                delete_btn.setBackgroundResource(bgColor);
             }
         }
     }

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     
     <RelativeLayout
             android:id="@+id/rl_item_content"
@@ -9,7 +10,7 @@
             android:layout_height="85dp"
             android:paddingLeft="14dp"
             android:paddingTop="16dp"
-            android:background="?attr/download_manager_lv_bg_color">
+            android:background="@color/download_manager_lv_bg_color">
         
         <ImageView
                 android:id="@+id/download_manager_download_btn"
@@ -36,7 +37,7 @@
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:text="凡人修仙传"
-                    android:textColor="?attr/download_manager_book_name_color"
+                    android:textColor="@color/download_manager_book_name_color"
                     android:textSize="@dimen/text_big16_size"/>
             
             <ProgressBar
@@ -58,7 +59,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:text="正在缓存"
-                        android:textColor="?attr/download_manager_other_tag_color"
+                        android:textColor="@color/download_manager_other_tag_color"
                         android:textSize="@dimen/dimen_text_12"/>
                 
                 <TextView
@@ -67,10 +68,9 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:text="111/2334章"
-                        android:textColor="?attr/download_manager_other_tag_color"
+                        android:textColor="@color/download_manager_other_tag_color"
                         android:textSize="@dimen/dimen_text_12"/>
             </RelativeLayout>
-        
         </LinearLayout>
     </RelativeLayout>
     
@@ -78,5 +78,5 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_height_0.5"
             android:layout_below="@+id/rl_item_content"
-            android:background="?attr/color_divider"/>
+            android:background="@color/color_divider"/>
 </RelativeLayout>

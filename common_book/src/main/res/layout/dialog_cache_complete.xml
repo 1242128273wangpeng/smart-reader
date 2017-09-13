@@ -8,6 +8,7 @@
         android:focusable="true">
     
     <LinearLayout
+            android:id="@id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
@@ -74,4 +75,14 @@
                     android:layout_height="1dp"/>
         </RelativeLayout>
     </LinearLayout>
+    
+    <net.lzbook.kit.book.view.NightShadowView
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/container"
+            android:layout_alignRight="@+id/container"
+            android:layout_alignBottom="@+id/container"
+            android:layout_alignLeft="@+id/container"
+            />
 </RelativeLayout>

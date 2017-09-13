@@ -814,8 +814,8 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         book.update_status = 0;
         if (update_table.contains(book.book_id)) {
             update_table.remove(book_id);
+            bookDaoHelper.updateBook(book);
         }
-        bookDaoHelper.updateBook(book);
     }
 
     public void setResultRefresh() {

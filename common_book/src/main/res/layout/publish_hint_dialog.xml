@@ -8,6 +8,7 @@
         android:scrollbars="vertical">
     
     <LinearLayout
+            android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
@@ -91,4 +92,14 @@
             <include layout="@layout/dialog_divider"/>
         </RelativeLayout>
     </LinearLayout>
+    
+    <net.lzbook.kit.book.view.NightShadowView
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/container"
+            android:layout_alignRight="@+id/container"
+            android:layout_alignBottom="@+id/container"
+            android:layout_alignLeft="@+id/container"
+            />
 </RelativeLayout>

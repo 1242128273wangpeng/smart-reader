@@ -154,14 +154,6 @@ fun EventBus.safeUnregist(obj: Any) {
         unregister(obj)
 }
 
-fun Any.registToEventBus(obj: Any) {
-    EventBus.getDefault().safeRegist(obj)
-}
-
-fun Any.unregistFromEventBus(obj: Any) {
-    EventBus.getDefault().safeUnregist(obj)
-}
-
 fun Any.postEventToBus(obj: Any) {
     EventBus.getDefault().post(obj)
 }

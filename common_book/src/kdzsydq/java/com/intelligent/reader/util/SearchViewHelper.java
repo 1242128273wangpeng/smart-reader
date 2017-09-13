@@ -1,5 +1,29 @@
 package com.intelligent.reader.util;
 
+import com.google.gson.Gson;
+
+import com.intelligent.reader.R;
+import com.intelligent.reader.adapter.SearchHotWordAdapter;
+import com.intelligent.reader.adapter.SearchSuggestAdapter;
+import com.intelligent.reader.net.NetOwnSearch;
+import com.intelligent.reader.net.OwnSearchService;
+import com.intelligent.reader.search.SearchHelper;
+import com.intelligent.reader.view.ScrollForGridView;
+
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.book.view.MyDialog;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.search.SearchCommonBean;
+import net.lzbook.kit.data.search.SearchHotBean;
+import net.lzbook.kit.request.UrlUtils;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.NetWorkUtils;
+import net.lzbook.kit.utils.SharedPreferencesUtils;
+import net.lzbook.kit.utils.StatServiceUtils;
+import net.lzbook.kit.utils.ToastUtils;
+import net.lzbook.kit.utils.Tools;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,7 +33,6 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,26 +49,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.view.MyDialog;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.search.SearchCommonBean;
-import net.lzbook.kit.data.search.SearchHotBean;
-import net.lzbook.kit.request.UrlUtils;
-import net.lzbook.kit.utils.*;
-import net.lzbook.kit.utils.StatServiceUtils;
-import net.lzbook.kit.encrypt.URLBuilderIntterface;
-
-import com.google.gson.Gson;
-import com.intelligent.reader.R;
-import com.intelligent.reader.adapter.SearchHotWordAdapter;
-import com.intelligent.reader.adapter.SearchSuggestAdapter;
-import com.intelligent.reader.net.NetOwnSearch;
-import com.intelligent.reader.net.OwnSearchService;
-import com.intelligent.reader.search.SearchHelper;
-import com.intelligent.reader.view.ScrollForGridView;
-
-
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,6 +64,13 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
     private static String TAG = SearchViewHelper.class.getSimpleName();
+    private static RelativeLayout mHistoryHeadersTitle;
+    private static ArrayAdapter<String> mHistoryAdapter;
+    private static ArrayList<String> historyDatas = new ArrayList<String>();
+    private final Handler mSearchHandler = new SearchHandler(this);
+    public OnHotWordClickListener onHotWordClickListener;
+    public Context context;
+    TextView tv_clear_history_search_view;
     private Context mContext;
     private Activity activity;
     private ViewGroup mRootLayout;
@@ -69,23 +79,12 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
     private ListView mSuggestListView;
     private ScrollForGridView mGridView;
     private LinearLayout linear_parent;
-
-    private static RelativeLayout mHistoryHeadersTitle;
-    TextView tv_clear_history_search_view;
-
-    private static ArrayAdapter<String> mHistoryAdapter;
     private SearchSuggestAdapter mSuggestAdapter;
-    private static ArrayList<String> historyDatas = new ArrayList<String>();
     private List<SearchCommonBean> mSuggestList = new ArrayList<SearchCommonBean>();
-
     private Resources mResources;
-
     private boolean mShouldShowHint = true;
-
-    public OnHotWordClickListener onHotWordClickListener;
     private OnHistoryClickListener mOnHistoryClickListener;
     private List<SearchHotBean.DataBean> hotWords = new ArrayList<>();
-    public Context context;
     private SearchHelper mSearchHelper;
     private SearchHotWordAdapter searchHotWordAdapter;
     private String suggest;
@@ -98,6 +97,17 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
         context = activity;
         mSearchHelper = searchHelper;
         init(context, activity, rootLayout, searchEditText);
+    }
+
+    private static void setHistoryHeadersTitleView() {
+        if (mHistoryHeadersTitle == null) {
+            return;
+        }
+        if (historyDatas != null && historyDatas.size() != 0) {
+            mHistoryHeadersTitle.setVisibility(View.VISIBLE);
+        } else {
+            mHistoryHeadersTitle.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void init(Context context, Activity activity, ViewGroup rootLayout, EditText
@@ -114,7 +124,6 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
         initHistoryView();
         initSuggestListView();
     }
-
 
     public void setShowHintEnabled(boolean showHint) {
         mShouldShowHint = showHint;
@@ -171,10 +180,9 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
         mHistoryListView = new ListView(context);
         if (mHistoryListView != null && mResources != null) {
             mHistoryListView.setCacheColorHint(mResources.getColor(R.color.transparent));
-            TypedValue typeColor = new TypedValue();
-            Resources.Theme theme = activity.getTheme();
-            theme.resolveAttribute(R.attr.color_divider, typeColor, true);
-            mHistoryListView.setDivider(mResources.getDrawable(typeColor.resourceId));
+            int typeColor = R.color.color_divider;
+
+            mHistoryListView.setDivider(mResources.getDrawable(typeColor));
             mHistoryListView.setDividerHeight(AppUtils.dip2px(mContext, 0.5f));
             mHistoryListView.setHeaderDividersEnabled(false);
             mHistoryListView.setSelector(R.drawable.item_selector_white);
@@ -274,10 +282,8 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
         if (mSuggestListView == null)
             return;
         mSuggestListView.setCacheColorHint(mResources.getColor(R.color.transparent));
-        TypedValue typeColor = new TypedValue();
-        Resources.Theme theme = activity.getTheme();
-        theme.resolveAttribute(R.attr.color_divider, typeColor, true);
-        mSuggestListView.setDivider(mResources.getDrawable(typeColor.resourceId));
+        int typeColor = R.color.color_divider;
+        mSuggestListView.setDivider(mResources.getDrawable(typeColor));
         mSuggestListView.setDividerHeight(AppUtils.dip2px(mContext, 0.5f));
         mSuggestListView.setSelector(R.drawable.item_selector_white);
         mSuggestListView.setVisibility(View.GONE);
@@ -338,7 +344,6 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
         });
     }
 
-
     private void showHistoryList() {
         if (mHistoryListView != null)
             mHistoryListView.setVisibility(View.VISIBLE);
@@ -349,17 +354,6 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
     public void notifyListChanged() {
         if (mHistoryAdapter != null)
             mHistoryAdapter.notifyDataSetChanged();
-    }
-
-    private static void setHistoryHeadersTitleView() {
-        if (mHistoryHeadersTitle == null) {
-            return;
-        }
-        if (historyDatas != null && historyDatas.size() != 0) {
-            mHistoryHeadersTitle.setVisibility(View.VISIBLE);
-        } else {
-            mHistoryHeadersTitle.setVisibility(View.INVISIBLE);
-        }
     }
 
     private void initHistoryHeadersTitleView() {
@@ -494,6 +488,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
             linear_parent.setVisibility(View.GONE);
         }
     }
+
     /**
      * parse result data
      */
@@ -519,7 +514,6 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
             }
         }
     }
-
 
     private void showDialog() {
         if (activity != null && !activity.isFinishing()) {
@@ -630,45 +624,8 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
         });
     }
 
-    static class SearchHandler extends Handler {
-        private WeakReference<SearchViewHelper> reference;
-
-        SearchHandler(SearchViewHelper helper) {
-            reference = new WeakReference<SearchViewHelper>(helper);
-        }
-
-        public void handleMessage(Message msg) {
-            SearchViewHelper helper = reference.get();
-            if (helper == null) {
-                return;
-            }
-            switch (msg.what) {
-                case 10:
-                    helper.clearHistory();
-                    break;
-
-                case 20:
-                    helper.result((ArrayList<SearchCommonBean>) msg.obj);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    }
-
-    private final Handler mSearchHandler = new SearchHandler(this);
-
     public void setOnHistoryClickListener(OnHistoryClickListener listener) {
         mOnHistoryClickListener = listener;
-    }
-
-    public interface OnHotWordClickListener {
-        void hotWordClick(String tag, String searchType);
-    }
-
-    public interface OnHistoryClickListener {
-        void OnHistoryClick(String history, String searchType);
     }
 
     public void clear() {
@@ -742,6 +699,41 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
         InputMethodManager imm = (InputMethodManager) paramView.getContext().getSystemService(INPUT_METHOD_SERVICE);
         if (imm.isActive()) {
             imm.hideSoftInputFromWindow(paramView.getApplicationWindowToken(), 0);
+        }
+    }
+
+    public interface OnHotWordClickListener {
+        void hotWordClick(String tag, String searchType);
+    }
+
+    public interface OnHistoryClickListener {
+        void OnHistoryClick(String history, String searchType);
+    }
+
+    static class SearchHandler extends Handler {
+        private WeakReference<SearchViewHelper> reference;
+
+        SearchHandler(SearchViewHelper helper) {
+            reference = new WeakReference<SearchViewHelper>(helper);
+        }
+
+        public void handleMessage(Message msg) {
+            SearchViewHelper helper = reference.get();
+            if (helper == null) {
+                return;
+            }
+            switch (msg.what) {
+                case 10:
+                    helper.clearHistory();
+                    break;
+
+                case 20:
+                    helper.result((ArrayList<SearchCommonBean>) msg.obj);
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
 }

@@ -52,7 +52,7 @@
                     android:background="@drawable/bookshelf_delete_submit_bg"
                     android:gravity="center"
                     android:text="删除"
-                    android:textColor="@color/bookshelf_delete_submit_text_color"
+                    android:textColor="@drawable/bookshelf_delete_submit_text_color"
                     android:textSize="@dimen/text_size_16"/>
         </RelativeLayout>
     </LinearLayout>

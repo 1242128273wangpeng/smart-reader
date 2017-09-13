@@ -29,6 +29,7 @@ public class ReadDataFactory extends IReadDataFactory {
     private BookDaoHelper mBookDaoHelper;
 
     private RequestFactory requestFactory;
+    private SharedPreferences mSharedPreferences;
 
     public ReadDataFactory(Context context, ReadingActivity readingActivity, ReadStatus readStatus, NovelHelper novelHelper) {
         super(context, readingActivity, readStatus, novelHelper);
@@ -178,12 +179,13 @@ public class ReadDataFactory extends IReadDataFactory {
 
     @Override
     public Chapter getNextChapter() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext());
-        long last_read = sharedPreferences.getLong(Constants.LAST_READ, 0);
+        if (mSharedPreferences == null)
+            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext());
+        long last_read = mSharedPreferences.getLong(Constants.LAST_READ, 0);
         long currentTime = System.currentTimeMillis();
-        long noNetRead = sharedPreferences.getLong(Constants.NONET_READ, 0);
-        int nonet_readhour = sharedPreferences.getInt(Constants.NONET_READTIME, 1);
-        sharedPreferences.edit().putLong(Constants.LAST_READ, currentTime).apply();
+        long noNetRead = mSharedPreferences.getLong(Constants.NONET_READ, 0);
+        int nonet_readhour = mSharedPreferences.getInt(Constants.NONET_READTIME, 1);
+        mSharedPreferences.edit().putLong(Constants.LAST_READ, currentTime).apply();
 
         if (readStatus.requestItem == null || readStatus.requestItem.host == null || chapterList == null) {
             return null;
@@ -215,7 +217,7 @@ public class ReadDataFactory extends IReadDataFactory {
                             nextChapter = tempChapter;
                             noNetRead += currentTime - last_read;
                         }
-                        sharedPreferences.edit().putLong(Constants.NONET_READ, noNetRead).apply();
+                        mSharedPreferences.edit().putLong(Constants.NONET_READ, noNetRead).apply();
                     } else {
                         tempChapter.content = com.quduquxie.network.DataCache.getChapterFromCache(tempChapter.chapter_id, tempChapter.book_id);
                         tempChapter.isSuccess = true;
@@ -256,7 +258,7 @@ public class ReadDataFactory extends IReadDataFactory {
                                 nextChapter = chapter;
                                 noNetRead += currentTime - last_read;
                             }
-                            sharedPreferences.edit().putLong(Constants.NONET_READ, noNetRead).apply();
+                            mSharedPreferences.edit().putLong(Constants.NONET_READ, noNetRead).apply();
                         } else {
                             nextChapter = chapter;
                         }
