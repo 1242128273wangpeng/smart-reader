@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/base_bg">
+        android:background="@color/base_bg">
     
     <View
             android:id="@+id/rl_left_pop_bg"
@@ -14,11 +13,9 @@
             android:visibility="gone"
             android:focusable="true"
             android:clickable="true">
-    
     </View>
     
     <RelativeLayout
-            
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -43,7 +40,7 @@
                     android:layout_alignParentLeft="true"
                     android:singleLine="true"
                     android:text="@string/app_name"
-                    android:textColor="?attr/read_catalog_mark_title_color"
+                    android:textColor="@color/read_catalog_mark_title_color"
                     android:textSize="@dimen/dimen_text_16"
                     android:layout_toLeftOf="@+id/iv_catalog_novel_sort"
                     android:layout_toStartOf="@+id/iv_catalog_novel_sort"
@@ -59,9 +56,8 @@
                     android:layout_marginBottom="15dp"
                     android:maxLines="1"
                     android:text="@string/app_name"
-                    android:textColor="?attr/read_catalog_mark_des_color"
+                    android:textColor="@color/read_catalog_mark_des_color"
                     android:textSize="@dimen/dimen_text_13"/>
-            
             
             <CheckBox
                     android:id="@+id/tv_catalog_novel_sort"
@@ -71,13 +67,12 @@
                     android:layout_alignParentRight="true"
                     android:layout_alignTop="@+id/catalog_chapter_count"
                     android:text="@string/catalog_negative"
-                    android:textColor="?attr/read_catalog_mark_order_color"
-                    android:background="?attr/read_catalog_mark_order_bg"
+                    android:textColor="@drawable/read_catalog_mark_order_color_selector"
+                    android:background="@drawable/read_catalog_mark_order_bg_selector"
                     android:button="@null"
                     android:textSize="@dimen/dimen_text_12"
                     android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-            />
+                    android:paddingRight="5dp"/>
         </RelativeLayout>
         
         <FrameLayout
@@ -95,7 +90,6 @@
                     android:fastScrollEnabled="true"
                     android:cacheColorHint="@color/color_black_00000000"
                     android:listSelector="@android:color/transparent"
-                    
                     android:layerType="software"
                     android:scrollbars="vertical"
                     android:scrollbarSize="2dp"
@@ -115,7 +109,6 @@
                     android:scrollbarStyle="insideOverlay"
                     android:visibility="gone"/>
             
-            
             <LinearLayout
                     android:id="@+id/rl_layout_empty_online"
                     android:orientation="vertical"
@@ -130,11 +123,8 @@
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:layout_marginTop="115dp"
-                        android:src="?attr/read_catalog_mark_empty"/>
-            
-            
+                        android:src="@mipmap/read_catalog_mark_empty"/>
             </LinearLayout>
-        
         </FrameLayout>
         
         <RadioGroup
@@ -157,7 +147,7 @@
                     android:checked="true"
                     android:gravity="center"
                     android:text="@string/read_catalog"
-                    android:textColor="?attr/read_catalog_mark_navi_color"/>
+                    android:textColor="@drawable/read_catalog_mark_navi_color_selector"/>
             
             <RadioButton
                     android:id="@+id/tab_bookmark"
@@ -170,9 +160,7 @@
                     android:layout_centerVertical="true"
                     android:gravity="center"
                     android:text="@string/read_bookmark"
-                    android:textColor="?attr/read_catalog_mark_navi_color"/>
-        
+                    android:textColor="@drawable/read_catalog_mark_navi_color_selector"/>
         </RadioGroup>
     </RelativeLayout>
-
 </FrameLayout>

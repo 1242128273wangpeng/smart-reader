@@ -17,7 +17,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -282,13 +281,11 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
 
     private void initBookShelfSort(int type) {
 
-        TypedValue checkedColor = new TypedValue();
-        TypedValue uncheckedColor = new TypedValue();
-        Resources.Theme theme = mContext.getTheme();
-        theme.resolveAttribute(R.attr.bookshelf_delete_checked, checkedColor, true);
-        theme.resolveAttribute(R.attr.bookshelf_delete_unchecked, uncheckedColor, true);
-        bookshelf_sort_time_checkbox.setImageResource(type != 1 ? checkedColor.resourceId : uncheckedColor.resourceId);
-        bookshelf_sort_update_time_checkbox.setImageResource(type == 1 ? checkedColor.resourceId : uncheckedColor.resourceId);
+        int checkedColor = R.mipmap.bookshelf_delete_checked;
+        int uncheckedColor = R.mipmap.bookshelf_delete_unchecked;
+
+        bookshelf_sort_time_checkbox.setImageResource(type != 1 ? checkedColor : uncheckedColor);
+        bookshelf_sort_update_time_checkbox.setImageResource(type == 1 ? checkedColor : uncheckedColor);
     }
 
     private void initPushTime() {

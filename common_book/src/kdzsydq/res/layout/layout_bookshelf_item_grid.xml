@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/book_shelf_item"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/book_shelf_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     
     <TextView
             android:id="@+id/bookshelf_item_layout_type"
@@ -15,7 +16,7 @@
             android:id="@+id/bookshelf_information"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/bookshelf_item_press_bg">
+            android:background="@drawable/bookshelf__item_press_bg">
         
         <RelativeLayout
                 android:id="@+id/book_shelf_image_view"
@@ -34,8 +35,9 @@
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/app_name"
                     android:scaleType="fitXY"
-                    android:background="?attr/bookshelf_book_cover_default"
-                    android:src="?attr/bookshelf_book_cover_default"/>
+                    android:background="@mipmap/bookshelf_book_cover_default"
+                    android:src="@mipmap/bookshelf_book_cover_default"/>
+            
             <TextView
                     android:id="@+id/book_shelf_unread"
                     android:layout_width="match_parent"
@@ -89,11 +91,9 @@
                     android:layout_gravity="center_vertical"
                     android:singleLine="true"
                     android:text="@string/app_name"
-                    android:textColor="?attr/bookshelf_grid_book_name_text_color"
+                    android:textColor="@color/bookshelf_grid_book_name_text_color"
                     android:textSize="@dimen/dimen_text_12"/>
-        
         </LinearLayout>
-        
         
         <RelativeLayout
                 android:layout_width="match_parent"
@@ -110,11 +110,9 @@
                     android:layout_height="wrap_content"
                     android:singleLine="true"
                     android:text="2014-08-14更新"
-                    android:textColor="?attr/bookshelf_update_time_grid_text_color"
+                    android:textColor="@color/bookshelf_update_time_grid_text_color"
                     android:textSize="@dimen/dimen_text_9"/>
-        
         </RelativeLayout>
-    
     </RelativeLayout>
     
     <ImageView
@@ -127,6 +125,4 @@
             android:layout_marginTop="18dp"
             android:contentDescription="@string/app_name"
             android:visibility="visible"/>
-
 </RelativeLayout>
-

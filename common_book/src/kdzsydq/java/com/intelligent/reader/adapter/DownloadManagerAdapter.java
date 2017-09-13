@@ -14,7 +14,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -32,11 +31,11 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
     FrameLayout frameLayout;
     Resources.Theme theme;
     Resources resources;
-    TypedValue progressbarMain;//点亮的进度条
-    TypedValue progressbarSecond;//次要进度条
-    TypedValue downBtnNoStart;//次要进度条
-    TypedValue downBtnDowning;//次要进度条
-    TypedValue downBtnWaitting;//次要进度条
+    int progressbarMain;//点亮的进度条
+    int progressbarSecond;//次要进度条
+    int downBtnNoStart;//次要进度条
+    int downBtnDowning;//次要进度条
+    int downBtnWaitting;//次要进度条
     private DownloadManagerActivity downloadManagerActivity;
     private Resources mResources;
     private Context mContext;
@@ -53,17 +52,14 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
 
         theme = mContext.getTheme();
         resources = mContext.getResources();
-        progressbarMain = new TypedValue();
-        progressbarSecond = new TypedValue();
-        downBtnNoStart = new TypedValue();
-        downBtnDowning = new TypedValue();
-        downBtnWaitting = new TypedValue();
 
-        theme.resolveAttribute(R.attr.download_manager_progress_main, progressbarMain, true);
-        theme.resolveAttribute(R.attr.download_manager_progress_second, progressbarSecond, true);
-        theme.resolveAttribute(R.attr.download_pause, downBtnNoStart, true);
-        theme.resolveAttribute(R.attr.downloade_downloading, downBtnDowning, true);
-        theme.resolveAttribute(R.attr.downloade_waiting, downBtnWaitting, true);
+        progressbarMain = R.drawable.down_manager_progressbar_main;
+
+        progressbarSecond = R.drawable.down_manager_progressbar_second;
+        downBtnNoStart = R.mipmap.cache_icon_downing;
+        downBtnDowning = R.mipmap.cache_icon_pause;
+        downBtnWaitting = R.mipmap.cache_icon_wait;
+
 
     }
 
@@ -150,10 +146,6 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
                 cache.download_progress.setMax(100);
                 cache.download_progress.setProgress(progress);
                 DownloadState state = task.state;
-
-                cache.download_progress.setProgressDrawable(mResources.getDrawable(progressbarSecond.resourceId));
-                cache.download_btn.setImageResource(downBtnNoStart.resourceId);
-
                 if ((state == DownloadState.DOWNLOADING)) {
                     String stateText = "";
                     if (task.startSequence > 0) {
@@ -163,49 +155,54 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
                     }
 
                     cache.download_state.setText(stateText);
-                    cache.download_progress.setProgressDrawable(mResources.getDrawable(progressbarMain.resourceId));
-                    cache.download_btn.setImageResource(downBtnDowning.resourceId);
+                    cache.download_progress.setProgressDrawable(mResources.getDrawable(progressbarMain));
+                    cache.download_btn.setImageResource(downBtnDowning);
                 } else if ((state == DownloadState.WAITTING)) {
                     cache.download_state.setText("等待缓存");
-
-                    cache.download_btn.setImageResource(downBtnWaitting.resourceId);
+                    cache.download_progress.setProgressDrawable(mResources.getDrawable(progressbarSecond));
+                    cache.download_btn.setImageResource(downBtnWaitting);
                 } else if ((state == DownloadState.PAUSEED)) {
                     cache.download_state.setText("已暂停");
-
+                    cache.download_progress.setProgressDrawable(mResources.getDrawable(progressbarSecond));
+                    cache.download_btn.setImageResource(downBtnNoStart);
                 } else if ((state == DownloadState.NONE_NETWORK)) {
                     cache.download_state.setText("已暂停");
-
+                    cache.download_progress.setProgressDrawable(mResources.getDrawable(progressbarSecond));
+                    cache.download_btn.setImageResource(downBtnNoStart);
                 } else if ((state == DownloadState.REFRESH)) {
                     cache.download_state.setText("已暂停");
-
+                    cache.download_progress.setProgressDrawable(mResources.getDrawable(progressbarSecond));
+                    cache.download_btn.setImageResource(downBtnNoStart);
                 } else if (state == null || (state == DownloadState.NOSTART)) {
                     cache.download_state.setText("无缓存");
-
+                    cache.download_progress.setProgressDrawable(mResources.getDrawable(progressbarSecond));
                     cache.download_progress.setProgress(0);
-
+                    cache.download_btn.setImageResource(downBtnNoStart);
                 } else if (state == DownloadState.FINISH) {
                     cache.download_state.setText("缓存完成");
-                    cache.download_btn.setImageResource(R.drawable.icon_download_complete);
+                    cache.download_btn.setImageResource(R.mipmap.cache_icon_complete);
+                    cache.download_progress.setProgressDrawable(mResources.getDrawable(progressbarSecond));
                     cache.download_progress.setProgress(100);
                 } else if (state == DownloadState.LOCKED) {
                     cache.download_state.setText("已暂停");
-
+                    cache.download_progress.setProgressDrawable(mResources.getDrawable(progressbarSecond));
+                    cache.download_btn.setImageResource(downBtnNoStart);
                 } else {
                     task.state = DownloadState.NOSTART;
                     cache.download_state.setText("无缓存");
-
+                    cache.download_progress.setProgressDrawable(mResources.getDrawable(progressbarSecond));
                     cache.download_progress.setProgress(0);
-
+                    cache.download_btn.setImageResource(downBtnNoStart);
                 }
 
-                TypedValue typeColor = new TypedValue();
-                Resources.Theme theme = mContext.getTheme();
+                int typeColor = 0;
+
                 if (remove_checked_states.contains(position)) {
-                    theme.resolveAttribute(R.attr.bookshelf_delete_checked, typeColor, true);
+                    typeColor = R.mipmap.bookshelf_delete_checked;
                 } else {
-                    theme.resolveAttribute(R.attr.bookshelf_delete_unchecked, typeColor, true);
+                    typeColor = R.mipmap.bookshelf_delete_unchecked;
                 }
-                cache.check.setBackgroundResource(typeColor.resourceId);
+                cache.check.setBackgroundResource(typeColor);
 
                 cache.download_btn.setOnClickListener(new View.OnClickListener() {
 
