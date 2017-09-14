@@ -36,10 +36,7 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ReadStatus
 import net.lzbook.kit.request.DataCache
-import net.lzbook.kit.utils.AppLog
-import net.lzbook.kit.utils.NetWorkUtils
-import net.lzbook.kit.utils.ResourceUtil
-import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.*
 import java.text.NumberFormat
 
 
@@ -286,7 +283,11 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
             if (novel_bottom_options != null && novel_bottom_options!!.isShown) {
                 novel_bottom_options!!.startAnimation(popDownOutAnimation)
             }
-            changeBottomSettingView(-1)
+            popDownOutAnimation!!.onEnd {
+                novel_bottom_options!!.visibility = View.GONE
+            }
+            read_setting_detail!!.visibility = View.GONE
+            //dismissNovelHintLayout();
             //dismissNovelHintLayout();
         }
     }

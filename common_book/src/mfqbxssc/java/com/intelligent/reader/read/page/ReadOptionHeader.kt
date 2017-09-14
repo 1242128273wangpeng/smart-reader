@@ -19,6 +19,7 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ReadStatus
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.onEnd
 import net.lzbook.kit.utils.toastShort
@@ -34,10 +35,8 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
 
     override fun show(flag: Boolean) {
         if (flag) {
-            if (this.visibility != View.VISIBLE) {
-                this.visibility = View.VISIBLE
-                this.startAnimation(menuDownInAnimation)
-            }
+            this.visibility = View.VISIBLE
+            this.startAnimation(menuDownInAnimation)
         } else {
             if (this.visibility == View.VISIBLE) {
                 menuUpOutAnimation.onEnd {

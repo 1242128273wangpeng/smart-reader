@@ -78,7 +78,7 @@
                     android:scrollbars="vertical"
                     android:scrollbarStyle="insideInset"
                     android:verticalScrollbarPosition="right"
-                    android:scrollbarThumbVertical="@color/color_red_882f46"
+                    android:scrollbarThumbVertical="@color/top_navigation_bg_color"
                     android:scrollbarSize="@dimen/dimen_view_width_5"
                     android:listSelector="@android:color/transparent"/>
         </LinearLayout>

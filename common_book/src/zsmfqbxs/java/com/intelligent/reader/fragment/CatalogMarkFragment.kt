@@ -78,16 +78,19 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
                     chapterExist = BookHelper.isChapterExist(chapter.sequence, chapter.book_id)
                 }
 
+                var txtColor = 0
                 if (chapterExist) {
-                    txt.setTextColor(R.color.read_item_catalog_chapter_text_color)
+                    txtColor = R.color.read_item_catalog_chapter_text_color
 
                 } else {
-                    txt.setTextColor(R.color.read_item_catalog_uncached_chapter_text_color)
+                    txtColor = R.color.read_item_catalog_uncached_chapter_text_color
                 }
 
                 if (chapter.chapter_name?.equals(BaseBookApplication.getGlobalContext().readStatus?.chapterName) ?: false) {
-                    txt.setTextColor(R.color.read_item_catalog_current_chapter_text_color)
+                    txtColor = R.color.read_item_catalog_current_chapter_text_color
                 }
+
+                txt.setTextColor(itemView.context.resources.getColor(txtColor))
 
             }
 
@@ -217,10 +220,10 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
             reverse = !reverse
 //            var sortIcon = TypedValue()//背景色
             if (reverse) {
-//                activity.theme.resolveAttribute(R.attr.directory_sort_positive, sortIcon, true)
+//                activity.iyouqu.theme.resolveAttribute(R.attr.directory_sort_positive, sortIcon, true)
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_catalog_click_dx_btn)
             } else {
-//                activity.theme.resolveAttribute(R.attr.directory_sort_negative, sortIcon, true)
+//                activity.iyouqu.theme.resolveAttribute(R.attr.directory_sort_negative, sortIcon, true)
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_catalog_click_zx_btn)
             }
 //            view.iv_catalog_novel_sort.setImageResource(sortIcon.resourceId)

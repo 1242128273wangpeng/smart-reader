@@ -34,10 +34,8 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
 
     override fun show(flag: Boolean) {
         if (flag) {
-            if (this.visibility != View.VISIBLE) {
-                this.visibility = View.VISIBLE
-                this.startAnimation(menuDownInAnimation)
-            }
+            this.visibility = View.VISIBLE
+            this.startAnimation(menuDownInAnimation)
         } else {
             if (this.visibility == View.VISIBLE) {
                 menuUpOutAnimation.onEnd {
