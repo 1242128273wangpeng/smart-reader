@@ -79,19 +79,19 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
                     chapterExist = BookHelper.isChapterExist(chapter.sequence, chapter.book_id)
                 }
 
+                var txtColor = 0
                 if (chapterExist) {
-                    AppLog.e("color", "kkk1");
-                    txt.setTextColor(R.color.read_item_catalog_chapter_text_color)
+                    txtColor = R.color.read_item_catalog_chapter_text_color
 
                 } else {
-                    AppLog.e("color2", "kkk2");
-                    txt.setTextColor(R.color.read_item_catalog_uncached_chapter_text_color)
+                    txtColor = R.color.read_item_catalog_uncached_chapter_text_color
                 }
 
                 if (chapter.chapter_name?.equals(BaseBookApplication.getGlobalContext().readStatus?.chapterName) ?: false) {
-                    AppLog.e("color3", "kkk33");
-                    txt.setTextColor(R.color.read_item_catalog_current_chapter_text_color)
+                    txtColor = R.color.read_item_catalog_current_chapter_text_color
                 }
+
+                txt.setTextColor(itemView.context.resources.getColor(txtColor))
 
             }
 

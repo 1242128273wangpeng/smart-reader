@@ -1446,23 +1446,18 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         }
         clearOtherPanel();
         if (isShow) {
-            readSettingView.showSetMenu(true);
-            changeMarkState();
-
-            mReadOptionPresenter.getView().show(true);
-
-            readStatus.isMenuShow = true;
             full(false);
+            changeMarkState();
+            mReadOptionPresenter.getView().show(true);
+            readSettingView.showSetMenu(true);
+            readStatus.isMenuShow = true;
             initSettingGuide();
         } else {
+            full(true);
+            readStatus.isMenuShow = false;
+            mReadOptionPresenter.getView().show(false);
             readSettingView.showSetMenu(false);
             readStatus.isMenuShow = false;
-
-            mReadOptionPresenter.getView().show(false);
-
-            readStatus.isMenuShow = false;
-            full(true);
-
         }
     }
 

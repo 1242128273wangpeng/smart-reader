@@ -150,12 +150,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //九宫格：quanbennovel 或 mianfeinovel
-        if ("cc.quanbennovel".equals(ACTION_CHKHIDE) || "cc.mianfeinovel".equals(ACTION_CHKHIDE) || "cc.kdqbxs.reader".equals(ACTION_CHKHIDE)) {
-            isList = false;
-        } else {
-            isList = true;
-        }
+        isList = false;
         mContext = getActivity();
         versionCode = AppUtils.getVersionCode();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());

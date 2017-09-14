@@ -70,14 +70,7 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         RecyclerView.ViewHolder holder = null;
         switch (viewType) {
             case 0:
-                if (isList) {
-                    view = LayoutInflater.from(mContext).inflate(R.layout
-                                    .layout_bookshelf_item_list,
-                            parent, false);
-                } else {
-                    view = LayoutInflater.from(mContext).inflate(R.layout.layout_bookshelf_item_grid, parent, false);
-                }
-
+                view = LayoutInflater.from(mContext).inflate(R.layout.layout_bookshelf_item_list, parent, false);
                 holder = new BookShelfItemHolder(view, shelfItemClickListener,
                         shelfItemLongClickListener);
                 break;

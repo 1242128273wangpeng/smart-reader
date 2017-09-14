@@ -81,7 +81,7 @@ public class SearchSuggestAdapter extends BaseAdapter {
         }
         String content = bean.getSuggest();
         String finalInput = AppUtils.deleteAllIllegalChar(editInput);
-        content = content.replaceAll(finalInput, "<font color='#1fb7c3'>" + finalInput + "</font>");
+        content = content.replaceAll(finalInput, "<font color='#ce3d3e'>" + finalInput + "</font>");
 
         hodler.tv_2.setText(Html.fromHtml(content));
         return convertView;
