@@ -23,6 +23,7 @@ class CommonParamsInterceptor : Interceptor {
     val MAIN_HOST by lazy {
         val sp = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext())
         sp.getString(Constants.NOVEL_HOST, UrlUtils.BOOK_NOVEL_DEPLOY_HOST)
+
     }
 
     val commonParams = mutableMapOf<String, String>()

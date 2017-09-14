@@ -21,6 +21,9 @@ public abstract class AnimationProvider {
     public static final int CURL_MODE = 1;
     public static final int SLIDE_MODE = 2;
     public static final int SLIDE_UP_MODE = 3;
+
+    public static final int DURATION = 300;
+
     public int backColor = 0xFFAAAAAA;
     public int pageMode;
     protected BitmapManager bitmapManager;
@@ -113,6 +116,10 @@ public abstract class AnimationProvider {
     public abstract void setTouchStartPosition(int x, int y, boolean moveToLeft);
 
     public abstract void startTurnAnimation(boolean moveToLeft);
+
+    public void startFlingAnimation(boolean moveToLeft, float velocityX) {
+        startTurnAnimation(moveToLeft);
+    }
 
     public abstract void finishAnimation();
 

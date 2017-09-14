@@ -18,7 +18,7 @@ import android.view.MotionEvent;
 
 public class CurlAnimationProvider extends AnimationProvider {
 
-    private static final int kDefaultAniDuration = 800;
+    private static final int kDefaultAniDuration = 300;
     private static final int kMinScrollInvalidateInterval = 10;
     private static final int kCheckAnimationInterval = kMinScrollInvalidateInterval * 2;
     private static int scrollRemainWidth = 0;

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_checked="false"
-          android:drawable="@mipmap/reading_bg_default3"/>
-    <item android:state_checked="true"
-          android:drawable="@mipmap/ddl_reading_bg_default3_select"/>
-    <item android:drawable="@mipmap/reading_bg_default3"/>
-</selector>

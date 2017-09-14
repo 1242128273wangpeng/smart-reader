@@ -126,7 +126,7 @@ public class CataloguesActivity extends BaseCacheableActivity implements OnClick
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
-            setContentView(R.layout.novel_content_catalog_panel);
+            setContentView(R.layout.act_catalog);
         } catch (Resources.NotFoundException e) {
             e.printStackTrace();
         }

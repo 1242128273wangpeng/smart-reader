@@ -491,7 +491,7 @@ public class AppUtils {
      * @param word 需要进行除非法字符的文本
      */
     public static String deleteAllIllegalChar(String word) {
-        String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+        String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？￣]";
         Pattern p = Pattern.compile(regEx);
         Matcher m = p.matcher(word);
         word = m.replaceAll("").trim();

@@ -14,6 +14,7 @@ import com.intelligent.reader.R;
 
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.search.SearchCommonBean;
+import net.lzbook.kit.utils.AppUtils;
 
 import java.util.List;
 
@@ -79,8 +80,9 @@ public class SearchSuggestAdapter extends BaseAdapter {
             hodler.iv_type.setImageResource(R.drawable.search_transparent);
         }
         String content = bean.getSuggest();
+        String finalInput = AppUtils.deleteAllIllegalChar(editInput);
 
-        content = content.replaceAll(editInput, "<font color='#87af4c'>" + editInput + "</font>");
+        content = content.replaceAll(finalInput, "<font color='#87af4c'>" + finalInput + "</font>");
 
         hodler.tv_2.setText(Html.fromHtml(content));
         return convertView;

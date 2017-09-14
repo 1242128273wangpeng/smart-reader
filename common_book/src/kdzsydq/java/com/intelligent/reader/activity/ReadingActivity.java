@@ -87,7 +87,6 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.support.annotation.AttrRes;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -2438,7 +2437,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         }
         edit.putInt("content_mode", Constants.MODE);
         edit.apply();
-        mThemeHelper.toggleThemeSetting(this);
+//        mThemeHelper.toggleThemeSetting(this);
         Intent intent = new Intent(this, ReadingActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt("sequence", readStatus.sequence);
@@ -2536,12 +2535,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         }
     }
 
-    @Override
-    public
-    @AttrRes
-    int getStatusBarColorId() {
-        return R.attr.color_statusBar_read;
-    }
 
     private static class TimerRunnable implements Runnable {
         private WeakReference<ReadingActivity> actReference;

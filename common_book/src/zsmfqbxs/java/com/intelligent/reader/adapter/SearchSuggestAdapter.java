@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.search.SearchCommonBean;
+import net.lzbook.kit.utils.AppUtils;
 
 import java.util.List;
 
@@ -80,7 +81,8 @@ public class SearchSuggestAdapter extends BaseAdapter {
         }
         String content = bean.getSuggest();
 
-        content = content.replaceAll(editInput, "<font color='#1fb7c3'>" + editInput + "</font>");
+        String finalInput = AppUtils.deleteAllIllegalChar(editInput);
+        content = content.replaceAll(finalInput, "<font color='#1fb7c3'>" + finalInput + "</font>");
 
         hodler.tv_2.setText(Html.fromHtml(content));
         return convertView;

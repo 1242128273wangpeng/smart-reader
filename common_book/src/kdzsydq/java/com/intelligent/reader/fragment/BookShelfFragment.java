@@ -48,7 +48,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -576,10 +575,9 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             layoutManager = new ShelfGridLayoutManager(mContext, 3);
             //有分割线的九宫格
             if (!"cc.quanbennovel".equals(ACTION_CHKHIDE)) {
-                TypedValue typeColor = new TypedValue();
-                Resources.Theme theme = getActivity().getTheme();
-                theme.resolveAttribute(R.attr.bookshelf_divider, typeColor, true);
-                recyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.BOTH_SET, 2, mContext.getResources().getColor(typeColor.resourceId)));
+                int typeColor = R.color.bookshelf_divider;
+
+                recyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.BOTH_SET, 2, mContext.getResources().getColor(typeColor)));
             }
         }
         recyclerView.setLayoutManager(layoutManager);

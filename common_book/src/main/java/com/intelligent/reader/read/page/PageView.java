@@ -35,7 +35,9 @@ import android.os.PowerManager;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.Scroller;
 import android.widget.Toast;
 
@@ -98,6 +100,7 @@ public class PageView extends View implements PageInterface {
     private AutoReadImpl autoReadImpl;
     private int tempPageMode = AnimationProvider.SHIFT_MODE;
     private PowerManager.WakeLock mWakeLock;
+    private VelocityTracker mVelocityTracker;
 
     public PageView(Context context) {
         super(context);
@@ -128,7 +131,8 @@ public class PageView extends View implements PageInterface {
         this.readStatus = readStatus;
         this.novelHelper = novelHelper;
 
-        mScroller = new Scroller(mContext);
+
+        mScroller = new Scroller(mContext, new AccelerateInterpolator());
 
         myBitmapManager = new BitmapManager(readStatus.screenWidth, readStatus.screenHeight);
 
@@ -317,16 +321,23 @@ public class PageView extends View implements PageInterface {
                 initMoveState = MotionState.kNone;
                 validMoveState = MotionState.kNone;
                 provider = getAnimationProvider();
+
+                mVelocityTracker = VelocityTracker.obtain();
+                mVelocityTracker.addMovement(event);
                 return true;
             case MotionEvent.ACTION_CANCEL:
                 isMoveing = false;
                 motionState = MotionState.kNone;
+                mVelocityTracker.recycle();
                 return true;
             case MotionEvent.ACTION_MOVE:
                 isMoveing = true;
+                mVelocityTracker.addMovement(event);
                 return handleTouchEventMove(event);
             case MotionEvent.ACTION_UP:
                 isMoveing = false;
+                mVelocityTracker.addMovement(event);
+                mVelocityTracker.computeCurrentVelocity(1000);
                 return handleTouchEventUp(event);
         }
         return super.onTouchEvent(event);
@@ -403,6 +414,11 @@ public class PageView extends View implements PageInterface {
     }
 
     private boolean handleTouchEventUp(MotionEvent event) {
+
+        float xVelocity = mVelocityTracker.getXVelocity();
+
+        mVelocityTracker.recycle();
+
         if (provider != null) {
             provider.upEvent();
         }
@@ -411,19 +427,21 @@ public class PageView extends View implements PageInterface {
         if (motionState == MotionState.kWaiting) {
             onClick(event);
         } else {
+
             if (initMoveState == validMoveState && provider != null) {
                 if (MotionState.kMoveToRight == validMoveState) {
 //                    float v = (event.getX() - touchStartX) / getWidth();
 //                    provider.startTurnAnimation(v < 0.3F);
-                    provider.startTurnAnimation(false);
+                    provider.startFlingAnimation(false, xVelocity);
                 } else {
 //                    float v = (touchStartX - event.getX()) / getWidth();
 //                    provider.startTurnAnimation(v > 0.3F);
-                    provider.startTurnAnimation(true);
+                    provider.startFlingAnimation(true, xVelocity);
                 }
             } else if (provider != null) {
-                provider.startTurnAnimation(MotionState.kMoveToRight == initMoveState);
+                provider.startFlingAnimation(MotionState.kMoveToRight == initMoveState, xVelocity);
             }
+
         }
         motionState = MotionState.kNone;
         return true;
@@ -658,11 +676,13 @@ public class PageView extends View implements PageInterface {
     }
 
     private void tryTurnNextPage(MotionEvent event) {
-        drawCurrentPage();
+
+//        drawCurrentPage();
+
         if (prepareTurnNextPage()) {
-            int pix = AppUtils.dip2px(getContext(), 50);
             if (provider != null) {
                 if (null == event) {
+                    int pix = AppUtils.dip2px(getContext(), 50);
                     provider.setTouchStartPosition(pageWidth - pix, pageHeight - pix, true);
                 } else {
                     provider.setTouchStartPosition((int) event.getX(), (int) event.getY(), true);

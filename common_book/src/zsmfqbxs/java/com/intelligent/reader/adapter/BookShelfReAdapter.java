@@ -8,7 +8,6 @@ import com.dingyueads.sdk.Native.YQNativeAdInfo;
 import com.dingyueads.sdk.NativeInit;
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.holder.AbsRecyclerViewHolder;
-import com.intelligent.reader.adapter.holder.HolderFactory;
 
 import net.lzbook.kit.cache.imagecache.ImageCacheManager;
 import net.lzbook.kit.constants.Constants;
@@ -79,7 +78,7 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     view = LayoutInflater.from(mContext).inflate(R.layout.layout_bookshelf_item_grid, parent, false);
                 }
 
-                holder = HolderFactory.createHolder(view, shelfItemClickListener,
+                holder = new BookShelfItemHolder(view, shelfItemClickListener,
                         shelfItemLongClickListener);
                 break;
             case 1:

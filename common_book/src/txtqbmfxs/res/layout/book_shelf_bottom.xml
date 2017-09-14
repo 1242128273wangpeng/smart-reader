@@ -3,13 +3,13 @@
               android:id="@+id/remove_delete_layout"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="?attr/home_title_background"
+              android:background="@color/color_gray_333333"
               android:orientation="vertical">
 
     <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_view_height_0.5"
-            android:background="?attr/color_divider"/>
+            android:background="@color/color_divider"/>
 
     <LinearLayout
             android:layout_width="match_parent"
@@ -29,13 +29,12 @@
                     android:layout_height="38dp"
                     android:layout_centerInParent="true"
                     android:layout_weight="1"
-                    android:background="?attr/bookshelf_delete_cancel_bg"
+                    android:background="@drawable/bookshelf_delete_cancel_bg"
                     android:gravity="center"
                     android:text="全选"
-                    android:textColor="?attr/bookshelf_delete_cancel_text_color"
+                    android:textColor="@drawable/bookshelf_delete_cancel_text_color"
                     android:textSize="@dimen/text_size_16"/>
         </RelativeLayout>
-
 
         <RelativeLayout
                 android:layout_width="0dp"
@@ -51,17 +50,18 @@
                     android:layout_weight="1"
                     android:background="@null"
                     android:gravity="center"
-
                     android:text="删除"
-                    android:textColor="?attr/setting_login_font_color"
+                    android:textColor="@color/setting_login_font_color"
                     android:textSize="@dimen/text_size_16"/>
         </RelativeLayout>
+
         <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="15dp"
                 android:layout_marginTop="15dp"
-                android:background="?attr/color_divider"/>
+                android:background="@color/color_divider"/>
+
         <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dimen_margin_60"
@@ -77,7 +77,7 @@
                     android:background="@null"
                     android:gravity="center"
                     android:text="查看更新详情"
-                    android:textColor="?attr/setting_login_font_color"
+                    android:textColor="@color/setting_login_font_color"
                     android:textSize="@dimen/text_size_16"/>
         </RelativeLayout>
     </LinearLayout>

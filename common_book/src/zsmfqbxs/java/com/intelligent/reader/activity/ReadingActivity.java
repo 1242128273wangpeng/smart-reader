@@ -2438,7 +2438,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         }
         edit.putInt("content_mode", Constants.MODE);
         edit.apply();
-        mThemeHelper.toggleThemeSetting(this);
+
         Intent intent = new Intent(this, ReadingActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt("sequence", readStatus.sequence);
@@ -2537,10 +2537,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     }
 
     @Override
-    public
-    @AttrRes
-    int getStatusBarColorId() {
-        return R.attr.color_statusBar_read;
+    public int getStatusBarColorId() {
+        return R.color.color_statusBar_read;
     }
 
     private static class TimerRunnable implements Runnable {
@@ -2682,6 +2680,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 if (isCancelled()) {
                     break;
                 }
+
             }
             return null;
         }

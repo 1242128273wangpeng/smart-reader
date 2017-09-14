@@ -13,12 +13,14 @@ public class SlideAnimationProvider extends AnimationProvider {
 
     protected float moveX, moveY;
     protected Paint paint;
+    //	private int v;
+    protected Scroller mScroller;
     boolean moveToLeft;
     boolean moveToLeftUp;
     private int speed = 10;
     private boolean isCanDoStep = false;
-    //	private int v;
-    private Scroller mScroller;
+    private int mMinFlingVelocity = 4000;
+
 
     public SlideAnimationProvider(BitmapManager manager, ReadStatus readStatus) {
         super(manager, readStatus);
@@ -47,11 +49,16 @@ public class SlideAnimationProvider extends AnimationProvider {
         paint.setFilterBitmap(true);
         paint.setDither(true);
 //		paint.setAntiAlias(true);
+//        .4,.06,.04,.76
+//        mScroller = new Scroller(BaseBookApplication.getGlobalContext(), new EaseCubicInterpolator(.58f, .2f, .04f, .76f));
         mScroller = new Scroller(BaseBookApplication.getGlobalContext(), new DecelerateInterpolator());
     }
 
     @Override
     public boolean moveEvent(MotionEvent event) {
+        if (!mScroller.isFinished()) {
+            mScroller.abortAnimation();
+        }
         moveX = event.getX() - mTouch.x;
         moveY = event.getY() - mTouch.y;
         // mTouch.x = event.getX();
@@ -65,16 +72,35 @@ public class SlideAnimationProvider extends AnimationProvider {
             return;
         }
 
-        if (mScroller.computeScrollOffset()) {
+        synchronized (mScroller) {
+            if (mScroller.computeScrollOffset()) {
 
-            moveX = mScroller.getCurrX();
+                if (mScroller.timePassed() > DURATION * 3 / 4) {
+                    pageView.setTouchable(true);
+                }
 
-            pageView.postInvalidate();
-        } else {
+                moveX = mScroller.getCurrX();
 
-            isCanDoStep = false;
-            moveX = 0;// currentbitmap归位
-            finishAnimation();
+                System.out.println("moveX : " + moveX);
+
+                if (moveX > mWidth) {
+                    isCanDoStep = false;
+                    moveX = 0;// currentbitmap归位
+                    finishAnimation();
+                    return;
+                }
+
+                if (moveToLeft) {
+                    moveX *= -1;
+                }
+
+                pageView.postInvalidate();
+            } else {
+
+                isCanDoStep = false;
+                moveX = 0;// currentbitmap归位
+                finishAnimation();
+            }
         }
 
 //		if (moveToLeftUp) {
@@ -111,6 +137,10 @@ public class SlideAnimationProvider extends AnimationProvider {
 
     @Override
     public void setTouchStartPosition(int startX, int startY, boolean moveToLeft) {
+//        isCanDoStep = false;
+//        if(!mScroller.isFinished()){
+//            mScroller.abortAnimation();
+//        }
         mTouch.x = this.startX = startX;
         mTouch.y = this.startY = startY;
         this.moveToLeft = moveToLeft;
@@ -118,22 +148,65 @@ public class SlideAnimationProvider extends AnimationProvider {
 
     @Override
     public void startTurnAnimation(boolean moveToLeft) {
+        synchronized (mScroller) {
+            if (!mScroller.isFinished()) {
+                mScroller.abortAnimation();
+            }
+
+            this.moveToLeftUp = moveToLeft;
+            moveX = 0;
+
+            pageView.setTouchable(false);
+
+
+//        int d = DURATION;
+//        if (moveX != 0)
+//            d = (int) ((1 - Math.abs(moveX) / mWidth) * DURATION);
+
+            mScroller.startScroll((int) Math.abs(moveX), 0, mWidth - (int) Math.abs(moveX), 0, DURATION);
+
+            isCanDoStep = true;
+            pageView.postInvalidate();
+        }
+    }
+
+    @Override
+    public void startFlingAnimation(boolean moveToLeft, float velocityX) {
+//        if (mMinFlingVelocity == -1) {
+//            mMinFlingVelocity = ViewConfiguration.get(BaseBookApplication.getGlobalContext()).getScaledMinimumFlingVelocity();
+//
+//        }
+        if (Math.abs(velocityX) < mMinFlingVelocity) {
+            velocityX = mMinFlingVelocity;
+        }
+
         this.moveToLeftUp = moveToLeft;
         isCanDoStep = true;
-        pageView.setTouchable(false);
-        if (moveToLeft)
-            mScroller.startScroll((int) moveX, 0, -mWidth - (int) moveX, 0, 600);
-        else
-            mScroller.startScroll((int) moveX, 0, mWidth - (int) moveX, 0, 600);
+//        pageView.setTouchable(false);
+
+//        if(!mScroller.isFinished()) {
+//            mScroller.abortAnimation();
+//            return;
+//        }
+
+
         pageView.invalidate();
+
+
+//                mScroller.startScroll((int) moveX, 0, mWidth - (int) moveX, 0, DURATION);
+
+        mScroller.fling((int) Math.abs(moveX), 0, (int) Math.abs(velocityX), 0, 0, Integer.MAX_VALUE, 0, 0);
+        System.out.println("velocity : " + velocityX + " getFinalX : " + mScroller.getFinalX() + " getDuration " + mScroller.getDuration());
+
+
     }
 
     @Override
     public void finishAnimation() {
         if (!mScroller.isFinished()) {
             mScroller.abortAnimation();
-            moveX = mScroller.getFinalX();
-            pageView.postInvalidate();
+//            moveX = mScroller.getFinalX();
+//            pageView.postInvalidate();
         }
         if (pageView != null) {
             pageView.onAnimationFinish();
