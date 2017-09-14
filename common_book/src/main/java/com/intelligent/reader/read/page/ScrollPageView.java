@@ -22,6 +22,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -168,7 +169,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
 //					Log.e("onScroll", "getLastVisiblePosition:" + lastVisible);
 //					Log.e("onScroll", "totalItemCount:" + totalItemCount);
 //					AppLog.e("onScroll", "firstVisibleItem:"+firstVisibleItem);
-                    ScrollPageView.this.readStatus.currentPage = getCurrentPage(lastVisible);
+                    ScrollPageView.this.readStatus.currentPage = getCurrentPage(lastVisible + 1);
 //					AppLog.e("onScroll", "readStatus.currentPage:" + ScrollPageView.this.readStatus.currentPage);
 //					AppLog.e("onScroll", "readStatus.sequence:" + ScrollPageView.this.readStatus.sequence);
 //					if (ScrollPageView.this.readStatus.currentPage == 1 && adapter != null) {
@@ -198,7 +199,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
                 break;
             case MotionEvent.ACTION_MOVE:
 //			AppLog.e("onScroll", "sequence:"+readStatus.sequence);
-                if (!loadingData && lastY - event.getY() > 20 && totalItemCount == lastVisible + 1
+                if (!loadingData && lastY - event.getY() > 20 && totalItemCount == lastVisible + 2
                         && readStatus.currentPage == readStatus.pageCount) {
                     loadingData = true;
 //				AppLog.e("onScroll", "next:");
@@ -211,9 +212,6 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
                 } else if (!loadingData && lastY - event.getY() < -20 &&
                         firstVisibleItem == 0 && readStatus.currentPage <= 1) {
                     loadingData = true;
-
-//				AppLog.e("onScroll", "getTop:"+page_list.getChildAt(1).getTop());
-//				AppLog.e("onScroll", "height:"+height);
                     if (currentChaperConent != null && currentChaperConent.size() > 0) {
                         ArrayList<String> arrayList = currentChaperConent.get(0);
                         if (arrayList != null && arrayList.size() > 0 &&
@@ -242,9 +240,6 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
 
                         }
                     }
-
-//				AppLog.e("onScroll", "pre:");
-//				AppLog.e("onScroll", "sequence:"+readStatus.sequence);
                     boolean result = dataFactory.previous();
                     if (!result) {
                         handler.sendEmptyMessageDelayed(0, 1000);
@@ -338,6 +333,21 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
         }
 
         return position;
+    }
+
+    private void getChapterSize() {
+
+        if (preChaperConent != null) {
+            preSize = preChaperConent.size();
+        } else {
+            preSize = 0;
+        }
+        if (currentChaperConent != null) {
+            currentSize = currentChaperConent.size();
+        }
+        if (nextChaperContent != null) {
+            nextSize = nextChaperContent.size();
+        }
     }
 
     private int getCurrentPage(int position) {
@@ -446,21 +456,6 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
         return position;
     }
 
-    private void getChapterSize() {
-
-        if (preChaperConent != null) {
-            preSize = preChaperConent.size();
-        } else {
-            preSize = 0;
-        }
-        if (currentChaperConent != null) {
-            currentSize = currentChaperConent.size();
-        }
-        if (nextChaperContent != null) {
-            nextSize = nextChaperContent.size();
-        }
-    }
-
     @Override
     public void setReadFactory(IReadDataFactory factory) {
         this.dataFactory = factory;
@@ -529,6 +524,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
 
     @Override
     public void getPreChapter() {
+        Log.e("getNextChapter", "getPreChapter()");
         boolean canRemove = false;
         ArrayList<ArrayList<String>> temp = nextChaperContent;
         if (preChaperConent != null) {
@@ -571,7 +567,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
 
     @Override
     public void getNextChapter() {
-
+        Log.e("getNextChapter", "getNextChapter()");
         ArrayList<ArrayList<String>> temp = preChaperConent;
         boolean canRemove = false;
         if (nextChaperContent != null) {
