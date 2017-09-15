@@ -17,6 +17,12 @@
     <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER"/>
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION"/>
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
+    <!-- 适配Android N系统必需的ContentProvider写权限声明，写权限包含应用包名-->
+    <uses-permission android:name="baidu.push.permission.WRITE_PUSHINFOPROVIDER.${PACKAGE_NAME}"/>
+    <permission
+            android:name="baidu.push.permission.WRITE_PUSHINFOPROVIDER.${PACKAGE_NAME}"
+            android:protectionLevel="signature">
+    </permission>
     
     <!-- 用于在屏幕关闭时维持下载网络 -->
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
@@ -125,6 +131,8 @@
                 android:name="QQ_APPID"
                 android:value="${QQ_APPID}"
                 />
+
+
         <!-- 声明Mogo的Activity -->
         <activity
                 android:name="com.adsmogo.adview.AdsMogoWebView"
@@ -271,12 +279,12 @@
         <!-- 推送 -->
         <receiver android:name=".receiver.PushClickReceiver">
             <intent-filter>
-                <action android:name="cn.txtzsydsq.reader.receiver.CLICK_BOOK_UPDATE"/>
+                <action android:name="${PACKAGE_NAME}.CLICK_BOOK_UPDATE"/>
             </intent-filter>
         </receiver>
         <receiver android:name=".receiver.DownBookClickReceiver">
             <intent-filter>
-                <action android:name="cn.txtzsydsq.reader.receiver.CLICK_DOWN_BOOK"/>
+                <action android:name="${PACKAGE_NAME}.receiver.CLICK_DOWN_BOOK"/>
             </intent-filter>
         </receiver>
         <!-- push应用定义消息receiver声明 -->
@@ -315,11 +323,11 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_REMOVED"/>
-                
+
                 <data android:scheme="package"/>
             </intent-filter>
         </receiver>
-        
+
         <service
                 android:name="com.baidu.android.pushservice.PushService"
                 android:exported="true"
@@ -331,7 +339,14 @@
         <service
                 android:name="com.baidu.android.pushservice.CommandService"
                 android:exported="true"/>
-        
+
+        <!-- 适配Android N系统必需的ContentProvider声明，写权限包含应用包名-->
+        <provider
+                android:name="com.baidu.android.pushservice.PushInfoProvider"
+                android:authorities="${PACKAGE_NAME}.bdpush"
+                android:writePermission="baidu.push.permission.WRITE_PUSHINFOPROVIDER.${PACKAGE_NAME}"
+                android:protectionLevel="signature"
+                android:exported="true"/>
         <!-- 百度推送push结束 -->
         
         <activity
