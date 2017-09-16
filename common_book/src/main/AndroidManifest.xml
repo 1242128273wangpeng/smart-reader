@@ -186,6 +186,7 @@
         </activity>
         <activity
                 android:name="${PACKAGE_NAME}.wxapi.WXEntryActivity"
+                android:screenOrientation="portrait"
                 android:theme="@android:style/Theme.Translucent.NoTitleBar"
                 android:exported="true">
         </activity>
@@ -219,6 +220,7 @@
                 android:theme="@style/Theme.DesignDemo"/>
         <activity
                 android:name=".activity.CataloguesActivity"
+                android:screenOrientation="nosensor"
                 android:theme="@style/AppTheme"/>
         <!-- 关于 -->
         
@@ -257,6 +259,7 @@
         <activity
                 android:name=".activity.SearchBookActivity"
                 android:configChanges="keyboard"
+                android:windowSoftInputMode="adjustNothing"
                 android:launchMode="singleTop"
                 android:screenOrientation="portrait"
                 android:theme="@style/AppTheme"/>

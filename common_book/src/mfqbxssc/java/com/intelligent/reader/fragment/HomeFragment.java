@@ -827,7 +827,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
         //设置PopupWindow进入和退出动画
 //        popupWindow.setAnimationStyle(R.style.bookshelf_title_right_style);
         //设置PopupWindow显示的位置
-        popupWindow.showAsDropDown(view, 0, 0);
+        popupWindow.showAtLocation(view, Gravity.TOP | Gravity.RIGHT, 0, 0);
     }
 
 //    public void showGuideView(){
@@ -839,7 +839,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
         //自定义PopupWindow的布局
         View contentView = LayoutInflater.from(mContext).inflate(R.layout.popwindow_paixu, null);
         final PopupWindow popupWindow = new PopupWindow(contentView);
-        popupWindow.setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
+        popupWindow.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
         popupWindow.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
         popupWindow.setFocusable(true);
         popupWindow.setBackgroundDrawable(new ColorDrawable(0xb0000000));   //为PopupWindow设置半透明背景.

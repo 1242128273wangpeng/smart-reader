@@ -84,59 +84,63 @@
             android:layout_alignParentTop="true"
             android:id="@+id/content_head"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@color/top_navigation_bg_color"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true">
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            android:background="@color/top_navigation_bg_color">
+    
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/top_bar_height">
         
-        <ImageView
-                android:id="@+id/content_head_setting"
-                android:layout_width="23dp"
-                android:layout_height="23dp"
-                android:layout_centerVertical="true"
-                android:scaleType="fitXY"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="14dp"
-                android:src="@mipmap/home_head_setting"/>
+            <ImageView
+                    android:id="@+id/content_head_setting"
+                    android:layout_width="23dp"
+                    android:layout_height="23dp"
+                    android:layout_centerVertical="true"
+                    android:scaleType="fitXY"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="14dp"
+                    android:src="@mipmap/home_head_setting"/>
         
-        <net.lzbook.kit.book.view.FirstUsePointView
-                android:layout_width="7dp"
-                android:layout_height="7dp"
-                android:background="@color/color_red_point"
-                android:layout_alignTop="@+id/content_head_setting"
-                android:layout_alignRight="@+id/content_head_setting"
-                android:id="@+id/redpoint_home_setting"/>
+            <net.lzbook.kit.book.view.FirstUsePointView
+                    android:layout_width="7dp"
+                    android:layout_height="7dp"
+                    android:background="@color/color_red_point"
+                    android:layout_alignTop="@+id/content_head_setting"
+                    android:layout_alignRight="@+id/content_head_setting"
+                    android:id="@+id/redpoint_home_setting"/>
         
-        <TextView
-                android:id="@+id/content_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:gravity="center_vertical"
-                android:layout_centerInParent="true"
-                android:text="书架"
-                android:textSize="18sp"
-                android:textColor="@color/top_navigation_text_color"/>
+            <TextView
+                    android:id="@+id/content_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
+                    android:layout_centerInParent="true"
+                    android:text="书架"
+                    android:textSize="18sp"
+                    android:textColor="@color/top_navigation_text_color"/>
         
-        <ImageView
-                android:id="@+id/content_head_search"
-                android:layout_width="23dp"
-                android:layout_height="23dp"
-                android:layout_centerVertical="true"
-                android:scaleType="fitXY"
-                android:layout_toLeftOf="@+id/content_download_manage"
-                android:layout_marginRight="21dp"
-                android:src="@mipmap/home_head_search"/>
+            <ImageView
+                    android:id="@+id/content_head_search"
+                    android:layout_width="23dp"
+                    android:layout_height="23dp"
+                    android:layout_centerVertical="true"
+                    android:scaleType="fitXY"
+                    android:layout_toLeftOf="@+id/content_download_manage"
+                    android:layout_marginRight="21dp"
+                    android:src="@mipmap/home_head_search"/>
         
-        <ImageView
-                android:id="@+id/content_download_manage"
-                android:layout_width="23dp"
-                android:layout_height="23dp"
-                android:layout_centerVertical="true"
-                android:scaleType="fitXY"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="13.5dp"
-                android:src="@mipmap/home_head_download"/>
+            <ImageView
+                    android:id="@+id/content_download_manage"
+                    android:layout_width="23dp"
+                    android:layout_height="23dp"
+                    android:layout_centerVertical="true"
+                    android:scaleType="fitXY"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="13.5dp"
+                    android:src="@mipmap/home_head_download"/>
+        </RelativeLayout>
     </RelativeLayout>
     <!--头布局4个tab的布局，不再用include是方便svn打包只用更改一个文件-->
     <RelativeLayout
@@ -379,43 +383,52 @@
     <RelativeLayout
             android:id="@+id/content_head_editor"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/content_head"
+            android:layout_alignBottom="@+id/content_head"
+            android:fitsSystemWindows="true"
             android:layout_alignParentTop="true"
             android:background="@color/top_navigation_bg_color"
             android:clickable="true"
             android:visibility="gone">
+    
+        <RelativeLayout
+                android:layout_alignParentBottom="true"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/top_bar_height">
         
-        <ImageView
-                android:id="@+id/home_edit_back"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:paddingLeft="@dimen/dimen_padding_12"
-                android:paddingRight="@dimen/dimen_padding_12"
-                android:src="@mipmap/cover_top_back"/>
+            <ImageView
+                    android:id="@+id/home_edit_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:paddingLeft="@dimen/dimen_padding_12"
+                    android:paddingRight="@dimen/dimen_padding_12"
+                    android:src="@mipmap/cover_top_back"/>
         
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:gravity="center_vertical"
-                android:layout_centerInParent="true"
-                android:text="编辑书架"
-                android:textSize="18sp"
-                android:textColor="@color/top_navigation_text_color"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
+                    android:layout_centerInParent="true"
+                    android:text="编辑书架"
+                    android:textSize="18sp"
+                    android:textColor="@color/top_navigation_text_color"/>
         
-        <TextView
-                android:id="@+id/home_edit_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:paddingLeft="@dimen/dimen_padding_12"
-                android:paddingRight="@dimen/dimen_padding_12"
-                android:layout_alignParentRight="true"
-                android:gravity="center_vertical"
-                android:text="取消"
-                android:textColor="@color/top_navigation_text_color"
-                android:textSize="@dimen/text_size_16"/>
+            <TextView
+                    android:id="@+id/home_edit_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="@dimen/dimen_padding_12"
+                    android:paddingRight="@dimen/dimen_padding_12"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center_vertical"
+                    android:text="取消"
+                    android:textColor="@color/top_navigation_text_color"
+                    android:textSize="@dimen/text_size_16"/>
+        </RelativeLayout>
     </RelativeLayout>
     
     <net.lzbook.kit.book.view.NonSwipeViewPager

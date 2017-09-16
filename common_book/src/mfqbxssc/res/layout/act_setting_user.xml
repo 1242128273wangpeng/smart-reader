@@ -4,7 +4,6 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/rl_setting_layout"
         android:layout_width="match_parent"
-        android:fitsSystemWindows="true"
         android:layout_height="match_parent"
         android:background="@color/base_bg"
         android:orientation="vertical">
@@ -12,35 +11,41 @@
     <RelativeLayout
             android:id="@+id/top_navigation_bg"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_view_height_48"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
             android:focusableInTouchMode="true">
-        <!--通过Visiblie和gong来控制是否展现Textview的drawable展现-->
-        <View
-                android:id="@+id/is_show_drawable"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"/>
+    
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/top_bar_height">
+            <!--通过Visiblie和gong来控制是否展现Textview的drawable展现-->
+            <View
+                    android:id="@+id/is_show_drawable"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
         
-        <ImageView
-                android:id="@+id/top_setting_back"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:gravity="center_vertical"
-                android:paddingLeft="15dp"
-                android:paddingRight="@dimen/dimen_padding_12"
-                android:src="@drawable/top_back_selector"/>
+            <ImageView
+                    android:id="@+id/top_setting_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="@dimen/dimen_padding_12"
+                    android:src="@drawable/top_back_selector"/>
         
-        <TextView
-                android:id="@+id/top_navigation_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:gravity="center_vertical"
-                android:text="个人中心"
-                android:textColor="@color/top_navigation_text_color"
-                android:textSize="@dimen/dimen_text_17"
-                android:visibility="gone"/>
+            <TextView
+                    android:id="@+id/top_navigation_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center_vertical"
+                    android:text="个人中心"
+                    android:textColor="@color/top_navigation_text_color"
+                    android:textSize="@dimen/dimen_text_17"
+                    android:visibility="gone"/>
+        </RelativeLayout>
     </RelativeLayout>
     <!--android:src="?attr/setting_img_user_head_background"  src-->
     <!--?attr/color_primary  back-->

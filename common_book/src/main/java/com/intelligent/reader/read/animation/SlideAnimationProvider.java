@@ -182,7 +182,9 @@ public class SlideAnimationProvider extends AnimationProvider {
 
         this.moveToLeftUp = moveToLeft;
         isCanDoStep = true;
-//        pageView.setTouchable(false);
+
+        if (readStatus.currentPage == 1)
+            pageView.setTouchable(false);
 
 //        if(!mScroller.isFinished()) {
 //            mScroller.abortAnimation();
@@ -196,7 +198,6 @@ public class SlideAnimationProvider extends AnimationProvider {
 //                mScroller.startScroll((int) moveX, 0, mWidth - (int) moveX, 0, DURATION);
 
         mScroller.fling((int) Math.abs(moveX), 0, (int) Math.abs(velocityX), 0, 0, Integer.MAX_VALUE, 0, 0);
-        System.out.println("velocity : " + velocityX + " getFinalX : " + mScroller.getFinalX() + " getDuration " + mScroller.getDuration());
 
 
     }

@@ -545,6 +545,8 @@ public class CurlAnimationProvider extends AnimationProvider {
 
     @Override
     public void startTurnAnimation(boolean moveToLeft) {
+        if (readStatus.currentPage == readStatus.pageCount)
+            pageView.setTouchable(false);
         startAnimation(moveToLeft);
     }
 

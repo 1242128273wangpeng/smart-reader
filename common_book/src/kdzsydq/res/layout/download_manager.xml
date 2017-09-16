@@ -10,11 +10,15 @@
     <RelativeLayout
             android:id="@+id/top_layout"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:background="@color/top_navigation_bg_color"
+            android:fitsSystemWindows="true"
             android:orientation="vertical"
             android:paddingBottom="5dp">
-        
+    
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/top_bar_height">
         <ImageView
                 android:id="@+id/title_back_btn"
                 android:layout_width="wrap_content"
@@ -51,6 +55,7 @@
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="@dimen/dimen_height_30"-->
         <!--android:background="@color/color_gray_939191"/>-->
+        </RelativeLayout>
     </RelativeLayout>
     
     <FrameLayout

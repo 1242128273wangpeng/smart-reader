@@ -122,6 +122,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import iyouqu.theme.ThemeMode;
+
 /**
  * ReadingActivity
  * 小说阅读页
@@ -417,7 +419,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             BookHelper.reStartDownloadService();
         }
 
-
+        changeMode(Constants.MODE);
     }
 
     /**
@@ -678,6 +680,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         if (pageView != null) {
             pageView.freshBattery(batteryPercent);
         }
+
+        changeMode(Constants.MODE);
     }
 
     private void getSavedState(Bundle savedInstanceState) {
@@ -1507,9 +1511,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
      * 切换夜间模式
      */
     private void changeMode(int mode) {
-        if (this.current_mode == mode) {
-            return;
-        }
+
         this.current_mode = mode;
         AppLog.e(TAG, "ChangeMode : " + mode);
         Editor editor = modeSp.edit();
@@ -1784,6 +1786,11 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
     @Override
     public boolean shouldReceiveCacheEvent() {
+        return false;
+    }
+
+    @Override
+    public boolean shouldShowNightShadow() {
         return false;
     }
 
@@ -2424,15 +2431,17 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             //夜间模式只有一种背景， 不能存储
 //            edit.putInt("current_night_mode", Constants.MODE);
             Constants.MODE = sharedPreferences.getInt("current_light_mode", 51);
+            mThemeHelper.setMode(ThemeMode.THEME1);
         } else {
             edit.putInt("current_light_mode", Constants.MODE);
 //            Constants.MODE = sharedPreferences.getInt("current_night_mode", 61);
             //夜间模式只有一种背景
             Constants.MODE = 61;
+            mThemeHelper.setMode(ThemeMode.NIGHT);
         }
         edit.putInt("content_mode", Constants.MODE);
         edit.apply();
-//        mThemeHelper.toggleThemeSetting(this);
+
         Intent intent = new Intent(this, ReadingActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt("sequence", readStatus.sequence);
@@ -2529,7 +2538,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             finish();
         }
     }
-
 
     private static class TimerRunnable implements Runnable {
         private WeakReference<ReadingActivity> actReference;
