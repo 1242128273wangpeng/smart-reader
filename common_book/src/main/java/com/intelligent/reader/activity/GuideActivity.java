@@ -77,7 +77,7 @@ public class GuideActivity extends FrameActivity implements GuideFragment.Fragme
 
         viewPager.setAdapter(guideAdapter);
 
-        bookDaoHelper = BookDaoHelper.getInstance(this);
+        bookDaoHelper = BookDaoHelper.getInstance();
         if (getIntent() != null) {
             isFromApp = getIntent().getBooleanExtra("isFromApp", false);
         }
@@ -86,7 +86,7 @@ public class GuideActivity extends FrameActivity implements GuideFragment.Fragme
 
     private void intoApp() {
         if (bookDaoHelper == null)
-            bookDaoHelper = BookDaoHelper.getInstance(this);
+            bookDaoHelper = BookDaoHelper.getInstance();
         if (!isFromApp && bookDaoHelper != null) {
             Intent intent = new Intent();
             Bundle bundle = new Bundle();

@@ -3,6 +3,8 @@ package net.lzbook.kit.cache.imagecache;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageLoader.ImageCache;
 
+import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.net.volley.VolleyRequestManager;
 
 import android.content.Context;
@@ -24,8 +26,12 @@ public class ImageCacheManager {
      * @return instance of the cache manager
      */
     public static ImageCacheManager getInstance() {
-        if (mInstance == null)
+        if (mInstance == null) {
             mInstance = new ImageCacheManager();
+            int DISK_IMAGECACHE_SIZE = 1024 * 1024;
+            mInstance.init(BaseBookApplication.getGlobalContext(), ReplaceConstants.getReplaceConstants().APP_PATH_IMAGE, DISK_IMAGECACHE_SIZE, ImageCacheManager
+                    .ImageCacheType.COMPLEX);
+        }
 
         return mInstance;
     }

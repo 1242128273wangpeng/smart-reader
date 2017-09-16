@@ -19,7 +19,8 @@ public class SlideAnimationProvider extends AnimationProvider {
     boolean moveToLeftUp;
     private int speed = 10;
     private boolean isCanDoStep = false;
-    private int mMinFlingVelocity = 4000;
+    private int mMinFlingVelocity = 4500;
+    private int mMinFlingVelocity2 = 6000;
 
 
     public SlideAnimationProvider(BitmapManager manager, ReadStatus readStatus) {
@@ -176,28 +177,42 @@ public class SlideAnimationProvider extends AnimationProvider {
 //            mMinFlingVelocity = ViewConfiguration.get(BaseBookApplication.getGlobalContext()).getScaledMinimumFlingVelocity();
 //
 //        }
-        if (Math.abs(velocityX) < mMinFlingVelocity) {
-            velocityX = mMinFlingVelocity;
+
+        float velocity = Math.abs(velocityX);
+
+        if (velocity < mMinFlingVelocity) {
+            velocity = mMinFlingVelocity;
         }
 
         this.moveToLeftUp = moveToLeft;
         isCanDoStep = true;
 
-        if (readStatus.currentPage == 1)
+        if (readStatus.currentPage == readStatus.pageCount || readStatus.currentPage == 1) {
             pageView.setTouchable(false);
+            if (velocity < mMinFlingVelocity2) {
+                velocity = mMinFlingVelocity2;
+            }
+        }
 
 //        if(!mScroller.isFinished()) {
 //            mScroller.abortAnimation();
 //            return;
 //        }
 
+        float distance = mWidth - Math.abs(moveX);
+
+        while (FlingHelper.INSTANCE.getTargetDistance(velocity) < distance) {
+            velocity += 500;
+        }
 
         pageView.invalidate();
+//        int d = DURATION;
+//        if (moveX != 0)
+//            d = (int) ((1 - Math.abs(moveX) / mWidth) * DURATION);
+//
+//        mScroller.startScroll((int) Math.abs(moveX), 0, mWidth - (int) Math.abs(moveX), 0, DURATION);
 
-
-//                mScroller.startScroll((int) moveX, 0, mWidth - (int) moveX, 0, DURATION);
-
-        mScroller.fling((int) Math.abs(moveX), 0, (int) Math.abs(velocityX), 0, 0, Integer.MAX_VALUE, 0, 0);
+        mScroller.fling((int) Math.abs(moveX), 0, (int) velocity, 0, 0, Integer.MAX_VALUE, 0, 0);
 
 
     }

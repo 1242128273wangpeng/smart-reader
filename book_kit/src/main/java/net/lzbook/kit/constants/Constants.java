@@ -79,7 +79,7 @@ public class Constants {
 
     public static final String LAST_READ = "LAST_READ";
     public static final String NONET_READ = "NONET_READ";
-    public static final String NONET_READTIME = "NONET_READHOUR";
+    //    public static final String NONET_READTIME = "NONET_READHOUR";
     public static final int NOPACKAGE = 100;
     //根据包名、版本号、渠道号对广告进行限制
     public static final String LIMIT_VERSIONCODE = "limit_versioncode";

@@ -137,7 +137,7 @@ public class FrameBookHelper {
         helper.startPendingService();
 
         if (bookHelper == null) {
-            bookHelper = BookDaoHelper.getInstance(context);
+            bookHelper = BookDaoHelper.getInstance();
         }
         if (preferences == null) {
             preferences = PreferenceManager.getDefaultSharedPreferences(context);

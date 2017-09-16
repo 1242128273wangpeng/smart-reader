@@ -80,7 +80,7 @@ public class QGRequestExecutor extends RequestExecutorDefault {
                         chapters = DataService.getChapterList(context, requestItem.book_id, 1, Integer.MAX_VALUE - 1, udid);
                         ArrayList<Chapter> chapterList = BeanParser.buildOWNChapterList(chapters, 0, chapters.size());
                         //数据库操作
-                        if (chapterList != null && !chapterList.isEmpty() && BookDaoHelper.getInstance(context).isBookSubed
+                        if (chapterList != null && !chapterList.isEmpty() && BookDaoHelper.getInstance().isBookSubed
                                 (requestItem.book_id)) {
                             chapterDao.insertBookChapter(chapterList);
                             Chapter lastChapter = chapterList.get(chapterList.size() - 1);
@@ -96,7 +96,7 @@ public class QGRequestExecutor extends RequestExecutorDefault {
                             book.last_sort = lastChapter.sort;
                             book.gsort = lastChapter.gsort;
                             book.last_chapter_md5 = lastChapter.book_chapter_md5;
-                            BookDaoHelper.getInstance(context).updateBook(book);
+                            BookDaoHelper.getInstance().updateBook(book);
 
                         }
                         requestChaptersCallBack.onSuccess(chapterList);

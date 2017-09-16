@@ -67,7 +67,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
         readStatus = rs
         dataFactory = factory
 
-        bookDaoHelper = BookDaoHelper.getInstance(act.getApplicationContext())
+        bookDaoHelper = BookDaoHelper.getInstance()
         isSubed = bookDaoHelper.isBookSubed(readStatus.book_id)
     }
 

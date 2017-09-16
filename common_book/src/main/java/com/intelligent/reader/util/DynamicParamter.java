@@ -86,7 +86,7 @@ public class DynamicParamter {
     public String novel_host;
     public String webView_host;
     public String download_limit;
-    public String nonet_readhour;
+    //    public String nonet_readhour;
     public String noNetReadNumber;
     private ArrayList<String> channelLimit = new ArrayList<>();
     private ArrayList<Integer> dayLimit = new ArrayList<>();
@@ -185,7 +185,7 @@ public class DynamicParamter {
         download_limit = getConfigParams(Constants.DOWNLOAD_LIMIT);
 
         //每日无网络阅读限制
-        nonet_readhour = getConfigParams(Constants.NONET_READTIME);
+//        nonet_readhour = getConfigParams(Constants.NONET_READTIME);
 
 
         //无网限制开关
@@ -296,7 +296,7 @@ public class DynamicParamter {
         download_limit = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DOWNLOAD_LIMIT);
 
         //每日无网络阅读限制
-        nonet_readhour = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.NONET_READTIME);
+//        nonet_readhour = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.NONET_READTIME);
         //无网络限制开关
         noNetReadNumber = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.noNetReadNumber);
 
@@ -551,12 +551,12 @@ public class DynamicParamter {
                     putConfigParams(Constants.DOWNLOAD_LIMIT, download_limit);
                 }
             }
-            if (!data.isNull(Constants.NONET_READTIME)) {
-                nonet_readhour = data.getString(Constants.NONET_READTIME);
-                if (isOwn) {
-                    putConfigParams(Constants.NONET_READTIME, nonet_readhour);
-                }
-            }
+//            if (!data.isNull(Constants.NONET_READTIME)) {
+//                nonet_readhour = data.getString(Constants.NONET_READTIME);
+//                if (isOwn) {
+//                    putConfigParams(Constants.NONET_READTIME, nonet_readhour);
+//                }
+//            }
             //新壳的广告开关
             if (!data.isNull(Constants.NEW_APP_AD_SWITCH)) {
                 new_app_ad_switch = data.getString(Constants.NEW_APP_AD_SWITCH);
@@ -601,14 +601,14 @@ public class DynamicParamter {
     private void setNoNetReadTime() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         Editor editor = sp.edit();
-        if (!TextUtils.isEmpty(nonet_readhour)) {
-            int nonet_read = Integer.parseInt(nonet_readhour);
-            Constants.NONET_READHOUR = nonet_read;
-            editor.putInt(Constants.NONET_READTIME, nonet_read).apply();
-        }
-        if (!TextUtils.isEmpty(noNetReadNumber)) {
-            Constants.isNoNetRead = Integer.parseInt(noNetReadNumber);
-        }
+//        if (!TextUtils.isEmpty(nonet_readhour)) {
+//            int nonet_read = Integer.parseInt(nonet_readhour);
+//            Constants.NONET_READHOUR = nonet_read;
+//            editor.putInt(Constants.NONET_READTIME, nonet_read).apply();
+//        }
+//        if (!TextUtils.isEmpty(noNetReadNumber)) {
+//            Constants.isNoNetRead = Integer.parseInt(noNetReadNumber);
+//        }
     }
 
     private void setDownLoadLimitNumber() {

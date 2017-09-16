@@ -51,7 +51,7 @@ public class LoadDataManager {
         updateBooksTask.execute();
 
         //青果书籍完结和连载状态的更新
-        final BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance(context);
+        final BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
         final ArrayList<Book> qgBooks = bookDaoHelper.getBooksNotFinishQG();
         if (qgBooks == null || qgBooks.isEmpty()) {
             return;

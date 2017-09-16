@@ -40,7 +40,7 @@ public class GoToCoverOrReadActivity extends Activity {
         System.err.println("GoToCoverOrReadActivity onNewIntent");
 
         StatServiceUtils.statAppBtnClick(GoToCoverOrReadActivity.this, StatServiceUtils.download_read);
-        BookDaoHelper helper = BookDaoHelper.getInstance(this);
+        BookDaoHelper helper = BookDaoHelper.getInstance();
 
         Book book = (Book) intent.getSerializableExtra(Constants.REQUEST_ITEM);
         book = helper.getBook(book.book_id, 0);
@@ -56,7 +56,7 @@ public class GoToCoverOrReadActivity extends Activity {
     protected void onDestroy() {
         System.err.println("GoToCoverOrReadActivity onDestroy");
         StatServiceUtils.statAppBtnClick(GoToCoverOrReadActivity.this, StatServiceUtils.download_read);
-        BookDaoHelper helper = BookDaoHelper.getInstance(this);
+        BookDaoHelper helper = BookDaoHelper.getInstance();
 
         Book book = (Book) getIntent().getSerializableExtra(Constants.REQUEST_ITEM);
         book = helper.getBook(book.book_id, 0);

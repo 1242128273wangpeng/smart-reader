@@ -207,7 +207,7 @@ public abstract class IReadDataFactory {
                 }
             }
             if (bookDaoHelper == null) {
-                bookDaoHelper = BookDaoHelper.getInstance(mContext);
+                bookDaoHelper = BookDaoHelper.getInstance();
             }
         }
     }
@@ -423,38 +423,11 @@ public abstract class IReadDataFactory {
             }
             isPrepared = true;
             if (readStatus.currentPage == readStatus.pageCount) {
+
             }
         } else {
-            Constants.endReadTime = System.currentTimeMillis() / 1000L;
-            HashMap<String, String> params = new HashMap<>();
-            params.put("book_id", readStatus.book_id);
-            String book_source_id;
-            if (Constants.QG_SOURCE.equals(readStatus.book.site)) {
-                book_source_id = readStatus.book.book_id;
-            } else {
-                book_source_id = readStatus.book.book_source_id;
-            }
 
-            params.put("book_source_id", book_source_id);
-            if (currentChapter != null) {
-                params.put("chapter_id", currentChapter.chapter_id);
-            }
-            String channelCode;
-
-            if (Constants.QG_SOURCE.equals(readStatus.book.site)) {
-                channelCode = "1";
-            } else {
-                channelCode = "2";
-            }
-            params.put("channel_code", channelCode);
-            params.put("chapter_read", "1");
-            params.put("chapter_pages", String.valueOf(readStatus.pageCount));
-            params.put("start_time", String.valueOf(Constants.startReadTime));
-            params.put("end_time", String.valueOf(Constants.endReadTime));
-            if (statisticManager == null) {
-                statisticManager = StatisticManager.getStatisticManager();
-            }
-            statisticManager.sendReadPvData(params);
+            sendPVData();
 
             if (readStatus.sequence == readStatus.chapterCount - 1) {
                 if (readStatus.book.book_type != 0 && dataListener != null) {
@@ -477,6 +450,39 @@ public abstract class IReadDataFactory {
         }
 
         return isPrepared;
+    }
+
+    private void sendPVData() {
+        Constants.endReadTime = System.currentTimeMillis() / 1000L;
+        HashMap<String, String> params = new HashMap<>();
+        params.put("book_id", readStatus.book_id);
+        String book_source_id;
+        if (Constants.QG_SOURCE.equals(readStatus.book.site)) {
+            book_source_id = readStatus.book.book_id;
+        } else {
+            book_source_id = readStatus.book.book_source_id;
+        }
+
+        params.put("book_source_id", book_source_id);
+        if (currentChapter != null) {
+            params.put("chapter_id", currentChapter.chapter_id);
+        }
+        String channelCode;
+
+        if (Constants.QG_SOURCE.equals(readStatus.book.site)) {
+            channelCode = "1";
+        } else {
+            channelCode = "2";
+        }
+        params.put("channel_code", channelCode);
+        params.put("chapter_read", "1");
+        params.put("chapter_pages", String.valueOf(readStatus.pageCount));
+        params.put("start_time", String.valueOf(Constants.startReadTime));
+        params.put("end_time", String.valueOf(Constants.endReadTime));
+        if (statisticManager == null) {
+            statisticManager = StatisticManager.getStatisticManager();
+        }
+        statisticManager.sendReadPvData(params);
     }
 
     public boolean nextByAutoRead() {

@@ -268,7 +268,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
         //      AppLog.e(TAG, "RequestItem: " + requestItem.toString());
 
         if (bookDaoHelper == null) {
-            bookDaoHelper = BookDaoHelper.getInstance(this);
+            bookDaoHelper = BookDaoHelper.getInstance();
         }
 
         if (BaseBookApplication.getDownloadService() == null) {
@@ -737,7 +737,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CASHEALL, data3);
                 if (Constants.QG_SOURCE.equals(requestItem.host)) {
                     if (bookDaoHelper == null) {
-                        bookDaoHelper = BookDaoHelper.getInstance(this);
+                        bookDaoHelper = BookDaoHelper.getInstance();
                     }
                     if (bookDaoHelper != null && bookCoverUtil != null) {
                         if (!bookDaoHelper.isBookSubed(requestItem.book_id)) {
@@ -761,7 +761,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                         Toast.makeText(getApplicationContext(), "当前书籍不能缓存，先去看看其他书吧", Toast.LENGTH_SHORT).show();
                     } else {
                         if (bookDaoHelper == null) {
-                            bookDaoHelper = BookDaoHelper.getInstance(this);
+                            bookDaoHelper = BookDaoHelper.getInstance();
                         }
                         if (bookDaoHelper != null && bookCoverUtil != null) {
                             if (!bookDaoHelper.isBookSubed(requestItem.book_id)) {
@@ -1264,7 +1264,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
     }
 
     private Book changeBookInformation(CoverPage.SourcesBean source, Book book) {
-        BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance(CoverPageActivity.this);
+        BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
         book.book_source_id = source.book_source_id;
         book.site = source.host;
         book.last_updatetime_native = source.update_time;

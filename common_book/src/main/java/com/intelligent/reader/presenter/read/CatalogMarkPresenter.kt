@@ -29,7 +29,7 @@ import java.util.*
 class CatalogMarkPresenter(val readStatus: ReadStatus) : CatalogMark.Presenter {
     override var view: CatalogMark.View? = null
 
-    private var mBookDaoHelper = BookDaoHelper.getInstance(BaseBookApplication.getGlobalContext())
+    private var mBookDaoHelper = BookDaoHelper.getInstance()
     val requestItem: RequestItem
 
     init {

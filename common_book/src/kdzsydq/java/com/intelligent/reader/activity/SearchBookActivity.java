@@ -229,7 +229,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
         }
 
         if (bookDaoHelper == null) {
-            bookDaoHelper = BookDaoHelper.getInstance(getApplicationContext());
+            bookDaoHelper = BookDaoHelper.getInstance();
         }
     }
 

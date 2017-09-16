@@ -27,7 +27,7 @@ public class UIHelper {
 //            public void run() {
         Message msg = new Message();
         try {
-            BookDaoHelper.getInstance(BaseBookApplication.getGlobalContext()).deleteAllBook();
+            BookDaoHelper.getInstance().deleteAllBook();
             DataCleanManager.cleanInternalCache(BaseBookApplication.getGlobalContext());
 
 

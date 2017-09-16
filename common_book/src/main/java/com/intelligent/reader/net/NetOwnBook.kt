@@ -51,7 +51,7 @@ object NetOwnBook {
                 ownChapterList = OWNParser.parserOwnChapterList(t, RequestItem.fromBook(book))
 
                 //更新数据库
-                val bookDaoHelper = BookDaoHelper.getInstance(BaseBookApplication.getGlobalContext())
+                val bookDaoHelper = BookDaoHelper.getInstance()
                 if (!ownChapterList.isEmpty() &&
                         bookDaoHelper.isBookSubed(book.book_id)) {
                     val chapterDao = BookChapterDao(BaseBookApplication.getGlobalContext(), book.book_id)
