@@ -53,6 +53,19 @@ public class BitmapManager {
         return bitmap;
     }
 
+    public Bitmap getBitmap8888() {
+        Bitmap bitmap;
+        try {
+            bitmap = Bitmap.createBitmap(myWidth, myHeight, Bitmap.Config.ARGB_8888);
+        } catch (OutOfMemoryError e) {
+            System.gc();
+            System.runFinalization();
+            bitmap = Bitmap.createBitmap(myWidth, myHeight, Bitmap.Config.ARGB_8888);
+        }
+        bitmaps.add(bitmap);
+        return bitmap;
+    }
+
     public Bitmap getBitmap(int which) {
         if (which >= SIZE) {
             throw new IllegalArgumentException();

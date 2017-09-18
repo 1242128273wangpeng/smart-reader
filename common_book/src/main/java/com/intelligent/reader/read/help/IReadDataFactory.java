@@ -115,6 +115,11 @@ public abstract class IReadDataFactory {
         readStatus.mLineList = tempLineList;
     }
 
+    public void setScreenSize(int screenWidth, int screenHeight) {
+        readStatus.screenWidth = screenWidth;
+        readStatus.screenHeight = screenHeight;
+    }
+
     /**
      * 加载失败时打点
      * <p/>
@@ -408,6 +413,12 @@ public abstract class IReadDataFactory {
         readStatus.isLoading = false;
 
         if (readStatus.currentPage == readStatus.pageCount) {
+        }
+    }
+
+    public void freshPage() {
+        if (dataListener != null) {
+            dataListener.freshPage();
         }
     }
 

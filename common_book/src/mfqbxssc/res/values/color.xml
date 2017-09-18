@@ -3,19 +3,20 @@
     
     <!--阅读页相关-->
     <color name="reading_default_pageback_color">#D0BD9C</color>
-    <color name="reading_text_color_first">#e5000000</color>
+    <color name="reading_text_color_first">#96000000</color>
+    <color name="reading_text_color_chapter">#96000000</color>
     <color name="reading_backdrop_first">#D0BD9C</color>
-    <color name="reading_text_color_second">#cc000000</color>
+    <color name="reading_text_color_second">#96000000</color>
     <color name="reading_backdrop_second">#F7F0DE</color>
-    <color name="reading_text_color_third">#cc000000</color>
+    <color name="reading_text_color_third">#96000000</color>
     <color name="reading_backdrop_third">#DEE9E1</color>
-    <color name="reading_text_color_fourth">#cc000000</color>
+    <color name="reading_text_color_fourth">#96000000</color>
     <color name="reading_backdrop_fourth">#FFFFFF</color>
-    <color name="reading_text_color_fifth">#cc000000</color>
+    <color name="reading_text_color_fifth">#96000000</color>
     <color name="reading_backdrop_fifth">#E2ECF6</color>
     <color name="reading_text_color_sixth">#8cffffff</color>
     <color name="reading_backdrop_sixth">#111111</color>
-    <color name="reading_text_color_night">#CC9B9B9B</color>
+    <color name="reading_text_color_night">#96000000</color>
     <color name="reading_backdrop_night">#333333</color>
     <color name="color_black_858C96">#858C96</color>
 </resources>

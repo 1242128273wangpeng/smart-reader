@@ -29,6 +29,7 @@ public class FListView extends ListView {
     private void initView(Context context) {
         LayoutInflater inflater = LayoutInflater.from(context);
         footView = inflater.inflate(com.intelligent.reader.R.layout.footview, null);
+        footView.setVisibility(GONE);
 //		headView = inflater.inflate(R.layout.footview, null);
 //		addHeaderView(headView);
 //		super.setOnScrollListener(this);

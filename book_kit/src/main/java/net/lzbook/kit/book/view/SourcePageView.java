@@ -34,7 +34,7 @@ public class SourcePageView extends View {
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setTextSize(12 * unit);
         mPaint.setStrokeWidth(0);
-        canvas.drawText("原网页", 22 * unit, (15) * unit, mPaint);
+        canvas.drawText("原网页", 16 * unit, 20 * unit, mPaint);
 
     }
 
