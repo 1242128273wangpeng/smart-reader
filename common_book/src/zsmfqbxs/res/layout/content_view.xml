@@ -269,7 +269,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:layout_marginRight="@dimen/padding_10"
-                android:layout_marginTop="@dimen/padding_10"
+                android:layout_marginTop="@dimen/padding_23"
                 android:scaleType="fitXY"
                 android:src="@drawable/icon_bookshelf_guide_download"
                 android:visibility="gone"/>
@@ -280,7 +280,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:layout_marginLeft="@dimen/padding_10"
-                android:layout_marginTop="@dimen/padding_10"
+                android:layout_marginTop="@dimen/padding_23"
                 android:scaleType="fitXY"
                 android:src="@drawable/icon_bookshelf_guide_setting"
                 android:visibility="gone"/>

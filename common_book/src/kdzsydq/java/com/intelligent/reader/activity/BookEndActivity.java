@@ -345,8 +345,6 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
         bundle.putSerializable(Constants.REQUEST_ITEM, readStatus.getRequestItem());
         intent.putExtras(bundle);
         startActivity(intent);
-        overridePendingTransition(0, 0);
-        //}
     }
 
     private void getBookSource() {
@@ -512,7 +510,6 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
             recommendIntent.setClass(this, SearchBookActivity.class);
             recommendIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(recommendIntent);
-            overridePendingTransition(0, 0);
             return;
         }
 
@@ -530,7 +527,6 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
 //                        ATManager.exitClient();
 //                    }
                     startActivity(storeIntent);
-                    overridePendingTransition(0, 0);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -550,7 +546,6 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
 //                        ATManager.exitClient();
 //                    }
                     startActivity(shelfIntent);
-                    overridePendingTransition(0, 0);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

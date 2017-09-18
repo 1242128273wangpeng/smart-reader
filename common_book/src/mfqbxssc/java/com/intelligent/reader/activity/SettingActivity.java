@@ -649,7 +649,6 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_SWITCH_THEME);
             themIntent.putExtras(bundle);
             startActivity(themIntent);
-            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
         } else {
             finish();
         }

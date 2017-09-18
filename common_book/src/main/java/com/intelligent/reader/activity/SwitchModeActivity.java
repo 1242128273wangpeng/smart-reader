@@ -78,7 +78,6 @@ public class SwitchModeActivity extends FrameActivity {
             bundle.putString("thememode", thememode);
             intent.putExtras(bundle);
             startActivity(intent);
-            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
             this.finish();
         } catch (Exception e) {
         }
