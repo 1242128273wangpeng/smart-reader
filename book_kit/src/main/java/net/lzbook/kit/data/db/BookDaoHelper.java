@@ -34,9 +34,9 @@ public class BookDaoHelper {
         books = mDao.getBooks();
     }
 
-    public synchronized static BookDaoHelper getInstance(Context context) {
+    public synchronized static BookDaoHelper getInstance() {
         if (mInstance == null) {
-            mInstance = new BookDaoHelper(context);
+            mInstance = new BookDaoHelper(BaseBookApplication.getGlobalContext());
         }
         return mInstance;
     }

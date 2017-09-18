@@ -329,7 +329,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         mCatlogMarkDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mCatlogMarkDrawer.addDrawerListener(mDrawerListener);
 
-        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus);
+        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus, dataFactory);
 
         mCatalogMarkFragment = (CatalogMarkFragment) getSupportFragmentManager().findFragmentById(R.id.read_catalog_mark_layout);
         mCatalogMarkPresenter.setView(mCatalogMarkFragment);
@@ -393,7 +393,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         mCatlogMarkDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mCatlogMarkDrawer.addDrawerListener(mDrawerListener);
 
-        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus);
+        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus, dataFactory);
 
         mCatalogMarkFragment = (CatalogMarkFragment) getSupportFragmentManager().findFragmentById(R.id.read_catalog_mark_layout);
         mCatalogMarkPresenter.setView(mCatalogMarkFragment);
@@ -621,7 +621,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
      */
     private void initBookState() {
         // 判断是否订阅
-        mBookDaoHelper = BookDaoHelper.getInstance(getApplicationContext());
+        mBookDaoHelper = BookDaoHelper.getInstance();
         readStatus.book_id = readStatus.book.book_id;
         isSubed = mBookDaoHelper.isBookSubed(readStatus.book_id);
         AppLog.e(TAG, "初始化书籍状态: " + readStatus.book_id);
@@ -652,7 +652,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         mCatlogMarkDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mCatlogMarkDrawer.addDrawerListener(mDrawerListener);
 
-        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus);
+        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus, dataFactory);
 
         mCatalogMarkFragment = (CatalogMarkFragment) getSupportFragmentManager().findFragmentById(R.id.read_catalog_mark_layout);
         mCatalogMarkPresenter.setView(mCatalogMarkFragment);
@@ -757,36 +757,10 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
      * 获取书籍内容
      */
     private void getBookContent() {
-        long last_read = sp.getLong(Constants.LAST_READ, 0);
 
-        long currentTime = System.currentTimeMillis();
-        boolean b = AppUtils.isToday(last_read, currentTime);
-        sp.edit().putLong(Constants.LAST_READ, currentTime).apply();
-        int nonet_readhour = sp.getInt(Constants.NONET_READTIME, 1);
-        if (!b) {
-            //用户当天首次进行阅读
-            Constants.is_today_first_read = true;
-            sp.edit().putLong(Constants.NONET_READ, 0).apply();
-        }
+        NetWorkUtils.NATIVE_AD_TYPE = NetWorkUtils.NATIVE_AD_ERROR;
+        dataFactory.getChapterByLoading(ReadingActivity.MSG_LOAD_CUR_CHAPTER, readStatus.sequence);
 
-        if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE && Constants.isNoNetRead == 1) {
-            long noNetRead = sp.getLong(Constants.NONET_READ, 0);
-
-            double noNetRead_hour = (noNetRead / 1000) / (60 * 60);
-
-            if (noNetRead_hour >= nonet_readhour) {
-                showChangeNetDialog();
-            } else {
-                NetWorkUtils.NATIVE_AD_TYPE = NetWorkUtils.NATIVE_AD_ERROR;
-                dataFactory.getChapterByLoading(ReadingActivity.MSG_LOAD_CUR_CHAPTER, readStatus.sequence);
-                noNetRead += currentTime - last_read;
-            }
-            sp.edit().putLong(Constants.NONET_READ, noNetRead).apply();
-
-        } else {
-            NetWorkUtils.NATIVE_AD_TYPE = NetWorkUtils.NATIVE_AD_ERROR;
-            dataFactory.getChapterByLoading(ReadingActivity.MSG_LOAD_CUR_CHAPTER, readStatus.sequence);
-        }
     }
 
     @Override
@@ -1070,7 +1044,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_click_back_btn);
                 Map<String, String> data2 = new HashMap<>();
                 data2.put("type", "1");
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE,StartLogClickUtil.BACK, data2);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data2);
                 goBackToHome();
                 break;
 
@@ -1208,7 +1182,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             //readStatus.requestConfig = BookApplication.getGlobalContext().getSourceConfig(requestItem.host);
 
 
-            BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance(ReadingActivity.this);
+            BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
             if (bookDaoHelper.isBookSubed(source.book_id)) {
                 Book iBook = bookDaoHelper.getBook(source.book_id, 0);
                 iBook.book_source_id = requestItem.book_source_id;
@@ -1855,11 +1829,11 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         if (IReadDataFactory.loadingPage != null) {
             IReadDataFactory.loadingPage = null;
         }
-        if(readStatus!=null&&dataFactory!=null&&dataFactory.currentChapter!=null){
+        if (readStatus != null && dataFactory != null && dataFactory.currentChapter != null) {
             //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
-            StartLogClickUtil.upLoadReadContent(readStatus.book_id,dataFactory.currentChapter.chapter_id+"",readStatus.source_ids,readStatus.pageCount+"",
-                    readStatus.currentPage+"",readStatus.currentPageConentLength+"",readStatus.requestItem.fromType+"",
-                    readStatus.startReadTime+"",System.currentTimeMillis()+"",System.currentTimeMillis()-readStatus.startReadTime+"","false",readStatus.requestItem.channel_code+"");
+            StartLogClickUtil.upLoadReadContent(readStatus.book_id, dataFactory.currentChapter.chapter_id + "", readStatus.source_ids, readStatus.pageCount + "",
+                    readStatus.currentPage + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
+                    readStatus.startReadTime + "", System.currentTimeMillis() + "", System.currentTimeMillis() - readStatus.startReadTime + "", "false", readStatus.requestItem.channel_code + "");
 
         }
         AppLog.e(TAG, "onDestroy");
@@ -2294,26 +2268,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
     @Override
     public void onJumpChapter() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext());
-        long last_read = sharedPreferences.getLong(Constants.LAST_READ, 0);
-        long currentTime = System.currentTimeMillis();
-        long noNetRead = sharedPreferences.getLong(Constants.NONET_READ, 0);
-        int nonet_readhour = sharedPreferences.getInt(Constants.NONET_READTIME, 1);
-        sharedPreferences.edit().putLong(Constants.LAST_READ, currentTime).apply();
-
-        if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE && Constants.isNoNetRead == 1) {
-            double noNetRead_hour = (noNetRead / 1000) / (60 * 60);
-            if (noNetRead_hour >= nonet_readhour) {
-                showChangeNetDialog();
-            } else {
-                dataFactory.getChapterByLoading(ReadingActivity.MSG_JUMP_CHAPTER, readStatus.novel_progress);
-                noNetRead += currentTime - last_read;
-            }
-            sharedPreferences.edit().putLong(Constants.NONET_READ, noNetRead).apply();
-        } else {
-            dataFactory.getChapterByLoading(ReadingActivity.MSG_JUMP_CHAPTER, readStatus.novel_progress);
-        }
-
+        dataFactory.getChapterByLoading(ReadingActivity.MSG_JUMP_CHAPTER, readStatus.novel_progress);
     }
 
     @Override

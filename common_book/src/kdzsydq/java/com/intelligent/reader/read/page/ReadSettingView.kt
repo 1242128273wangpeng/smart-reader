@@ -246,9 +246,9 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
             } else {
                 read_setting_increase_text!!.isEnabled = false
             }
-
-            novel_bottom_options.startAnimation(popUpInAnimation)
             novel_bottom_options.visibility = View.VISIBLE
+            novel_bottom_options.startAnimation(popUpInAnimation)
+
 
             if (readStatus!!.sequence <= 0) {
                 novel_jump_previous.isClickable = false
@@ -287,7 +287,6 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
                 novel_bottom_options!!.visibility = View.GONE
             }
             read_setting_detail!!.visibility = View.GONE
-            //dismissNovelHintLayout();
             //dismissNovelHintLayout();
         }
     }

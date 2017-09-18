@@ -3,51 +3,56 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@color/base_bg"
-              android:fitsSystemWindows="true"
               android:orientation="vertical"
               android:paddingTop="0dp">
 
     <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/top_bar_height"
+            android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:fitsSystemWindows="true"
             android:background="@color/color_primary">
 
-        <ImageView
-                android:id="@+id/iv_back"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:gravity="center"
-                android:paddingLeft="16dp"
-                android:paddingRight="@dimen/padding_16"
-                android:src="@mipmap/cover_top_back"/>
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/top_bar_height">
 
-        <TextView
-                android:id="@+id/name_bookend"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:singleLine="true"
-                android:textColor="@color/top_navigation_text_color"
-                android:text="@string/read_end_tip"
-                android:textSize="@dimen/large_size_18"
-                android:layout_alignParentTop="true"
-                android:layout_toLeftOf="@+id/imageView"
-                android:layout_toRightOf="@+id/iv_back"/>
+            <ImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:gravity="center"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="@dimen/padding_16"
+                    android:src="@mipmap/cover_top_back"/>
 
-        <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:paddingLeft="16dp"
-                android:visibility="invisible"
-                android:paddingRight="@dimen/padding_16"
-                android:src="@mipmap/cover_top_back"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:id="@+id/imageView"/>
+            <TextView
+                    android:id="@+id/name_bookend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:textColor="@color/top_navigation_text_color"
+                    android:text="@string/read_end_tip"
+                    android:textSize="@dimen/large_size_18"
+                    android:layout_alignParentTop="true"
+                    android:layout_toLeftOf="@+id/imageView"
+                    android:layout_toRightOf="@+id/iv_back"/>
+
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingLeft="16dp"
+                    android:visibility="invisible"
+                    android:paddingRight="@dimen/padding_16"
+                    android:src="@mipmap/cover_top_back"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:id="@+id/imageView"/>
+        </RelativeLayout>
     </RelativeLayout>
 
     <View

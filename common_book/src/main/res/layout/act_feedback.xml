@@ -8,35 +8,40 @@
     <RelativeLayout
             android:id="@+id/feedback_head"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_height_48"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
             android:background="@color/color_white">
-        
-        <TextView
-                android:id="@+id/feedback_head_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:drawableLeft="@drawable/icon_back_deep"
-                android:drawablePadding="@dimen/dimen_padding_10"
-                android:paddingLeft="@dimen/dimen_padding_12"
-                android:paddingRight="@dimen/dimen_padding_12"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/dimen_text_18"/>
-        
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="@string/help_width_feedback"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/dimen_text_18"/>
-        
-        <include
-                layout="@layout/layout_divider"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_view_height_0.5"
-                android:layout_alignParentBottom="true"/>
     
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/top_bar_height">
+        
+            <TextView
+                    android:id="@+id/feedback_head_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:drawableLeft="@drawable/icon_back_deep"
+                    android:drawablePadding="@dimen/dimen_padding_10"
+                    android:paddingLeft="@dimen/dimen_padding_12"
+                    android:paddingRight="@dimen/dimen_padding_12"
+                    android:textColor="@color/color_white"
+                    android:textSize="@dimen/dimen_text_18"/>
+        
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="@string/help_width_feedback"
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/dimen_text_18"/>
+        
+            <include
+                    layout="@layout/layout_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_view_height_0.5"
+                    android:layout_alignParentBottom="true"/>
+        </RelativeLayout>
     </RelativeLayout>
     
     <LinearLayout

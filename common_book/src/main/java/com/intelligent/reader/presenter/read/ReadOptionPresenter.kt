@@ -67,7 +67,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
         readStatus = rs
         dataFactory = factory
 
-        bookDaoHelper = BookDaoHelper.getInstance(act.getApplicationContext())
+        bookDaoHelper = BookDaoHelper.getInstance()
         isSubed = bookDaoHelper.isBookSubed(readStatus.book_id)
     }
 
@@ -90,6 +90,15 @@ class ReadOptionPresenter : ReadOption.Presenter {
             return
         }
         clickDownload(activity.get()!!, readStatus.book as Book, Math.max(readStatus.sequence, 0))
+    }
+
+    override fun showMore() {
+        val data = java.util.HashMap<String, String>()
+        data.put("bookid", readStatus.book_id)
+        if (dataFactory != null && dataFactory.currentChapter != null) {
+            data.put("chapterid", dataFactory.currentChapter.chapter_id)
+        }
+        StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.MORE1, data)
     }
 
     /**
@@ -150,10 +159,15 @@ class ReadOptionPresenter : ReadOption.Presenter {
                 BookHelper.startDownBookTask(context, mBook.book_id, if (sequence > -1) sequence + 1 else 0)
                 BookHelper.writeDownIndex(context, mBook.book_id, true, if (sequence > -1) sequence + 1 else 0)
                 dialog.dismiss()
-                //					if (mBook.is_vip == 1) {
-                //					} else {
                 Toast.makeText(context, R.string.reading_cache_hint, Toast.LENGTH_SHORT).show()
-                //					}
+
+                val data = java.util.HashMap<String, String>()
+                data.put("bookid", readStatus.book_id)
+                if (dataFactory != null && dataFactory.currentChapter != null) {
+                    data.put("chapterid", dataFactory.currentChapter.chapter_id)
+                }
+                data.put("type", "1")
+                StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
             })
             val cancel = dialog.findViewById(R.id.reading_cache_cancel) as TextView
 
@@ -161,6 +175,13 @@ class ReadOptionPresenter : ReadOption.Presenter {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_cancel)
                 if (dialog != null && dialog.isShowing) {
                     dialog.dismiss()
+                    val data = java.util.HashMap<String, String>()
+                    data.put("bookid", readStatus.book_id)
+                    if (dataFactory != null && dataFactory.currentChapter != null) {
+                        data.put("chapterid", dataFactory.currentChapter.chapter_id)
+                    }
+                    data.put("type", "0")
+                    StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
                 }
             }
             dialog.show()

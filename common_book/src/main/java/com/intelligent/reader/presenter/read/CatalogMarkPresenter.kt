@@ -7,6 +7,7 @@ import com.intelligent.reader.R
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.net.NetOwnBook
 import com.intelligent.reader.read.help.BookHelper
+import com.intelligent.reader.read.help.IReadDataFactory
 import com.quduquxie.network.DataCache
 import com.quduquxie.network.DataService
 import io.reactivex.Observable
@@ -14,6 +15,7 @@ import io.reactivex.ObservableEmitter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.*
 import net.lzbook.kit.data.db.BookChapterDao
@@ -26,10 +28,10 @@ import java.util.*
 /**
  * Created by xian on 2017/8/17.
  */
-class CatalogMarkPresenter(val readStatus: ReadStatus) : CatalogMark.Presenter {
+class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: IReadDataFactory) : CatalogMark.Presenter {
     override var view: CatalogMark.View? = null
 
-    private var mBookDaoHelper = BookDaoHelper.getInstance(BaseBookApplication.getGlobalContext())
+    private var mBookDaoHelper = BookDaoHelper.getInstance()
     val requestItem: RequestItem
 
     init {
@@ -137,6 +139,13 @@ class CatalogMarkPresenter(val readStatus: ReadStatus) : CatalogMark.Presenter {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         activity.startActivity(intent)
 
+        val data = java.util.HashMap<String, String>()
+        data.put("bookid", readStatus.book_id)
+        if (dataFactory != null && dataFactory.currentChapter != null) {
+            data.put("chapterid", dataFactory.currentChapter.chapter_id)
+        }
+        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CATALOG1, data)
+
     }
 
     override fun gotoBookMark(activity: Activity, mark: Bookmark) {
@@ -153,6 +162,13 @@ class CatalogMarkPresenter(val readStatus: ReadStatus) : CatalogMark.Presenter {
         intent.setClass(activity, ReadingActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         activity.startActivity(intent)
+
+        val data = java.util.HashMap<String, String>()
+        data.put("bookid", readStatus.book_id)
+        if (dataFactory != null && dataFactory.currentChapter != null) {
+            data.put("chapterid", dataFactory.currentChapter.chapter_id)
+        }
+        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.BOOKMARK, data)
 
     }
 

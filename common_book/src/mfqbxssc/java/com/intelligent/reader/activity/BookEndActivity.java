@@ -181,7 +181,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
     }
 
     private void initData() {
-        mBookDaoHelper = BookDaoHelper.getInstance(getApplicationContext());
+        mBookDaoHelper = BookDaoHelper.getInstance();
         if (getIntent() != null) {
             //readStatus = (ReadStatus) getIntent().getSerializableExtra("readStatus");
             bookName = getIntent().getStringExtra("bookName");
@@ -297,7 +297,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
             //readStatus.requestConfig = BookApplication.getGlobalContext().getSourceConfig(requestItem.host);
 
 
-            BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance(BookEndActivity.this);
+            BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
             if (bookDaoHelper.isBookSubed(source.book_id)) {
                 Book iBook = bookDaoHelper.getBook(source.book_id, 0);
                 iBook.book_source_id = requestItem.book_source_id;
@@ -351,7 +351,6 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
         bundle.putSerializable(Constants.REQUEST_ITEM, readStatus.getRequestItem());
         intent.putExtras(bundle);
         startActivity(intent);
-        overridePendingTransition(0, 0);
         //}
     }
 
@@ -518,7 +517,6 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
             recommendIntent.setClass(this, SearchBookActivity.class);
             recommendIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(recommendIntent);
-            overridePendingTransition(0, 0);
             return;
         }
 
@@ -536,7 +534,6 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
 //                        ATManager.exitClient();
 //                    }
                     startActivity(storeIntent);
-                    overridePendingTransition(0, 0);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -556,7 +553,6 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
 //                        ATManager.exitClient();
 //                    }
                     startActivity(shelfIntent);
-                    overridePendingTransition(0, 0);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

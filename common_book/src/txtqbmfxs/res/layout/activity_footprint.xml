@@ -3,7 +3,7 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
+
                 tools:context="com.intelligent.reader.activity.FootprintActivity"
                 android:background="@color/base_bg">
 
@@ -17,39 +17,44 @@
     <RelativeLayout
             android:id="@+id/rl_title_footprint"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/top_bar_height"
-            android:layout_alignParentTop="true"
+            android:fitsSystemWindows="true"
+            android:layout_height="wrap_content"
             android:background="@color/top_navigation_bg_color">
 
-        <ImageView
-                android:id="@+id/book_history_back"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
-                android:src="@mipmap/top_back"/>
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/top_bar_height">
 
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_centerInParent="true"
-                android:gravity="center_vertical"
-                android:text="足迹"
-                android:textColor="@color/top_navigation_text_color"
-                android:textSize="18sp"/>
+            <ImageView
+                    android:id="@+id/book_history_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:src="@mipmap/top_back"/>
 
-        <TextView
-                android:id="@+id/book_history_clear"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:gravity="center"
-                android:text="清空"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
-                android:textColor="@color/footprint_title_clear_color"
-                android:textSize="14sp"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:gravity="center_vertical"
+                    android:text="足迹"
+                    android:textColor="@color/top_navigation_text_color"
+                    android:textSize="18sp"/>
+
+            <TextView
+                    android:id="@+id/book_history_clear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center"
+                    android:text="清空"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:textColor="@color/footprint_title_clear_color"
+                    android:textSize="14sp"/>
+        </RelativeLayout>
     </RelativeLayout>
 
     <net.lzbook.kit.book.view.EmptyRecyclerView

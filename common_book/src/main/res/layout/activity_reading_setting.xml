@@ -5,40 +5,45 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/base_bg"
-        android:fitsSystemWindows="true"
         android:orientation="vertical">
     
     <RelativeLayout
             android:id="@+id/reading_setting_head"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_view_height_48"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
             android:background="@color/color_red_882f46"
             android:focusableInTouchMode="true">
-        
-        <ImageView
-                android:id="@+id/reading_setting_back"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:paddingLeft="@dimen/dimen_padding_12"
-                android:paddingRight="@dimen/dimen_padding_12"
-                android:src="@mipmap/cover_top_back"/>
-        
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_centerInParent="true"
-                android:gravity="center_vertical"
-                android:text="@string/read_setting"
-                android:textColor="@color/color_white_ffffff"
-                android:textSize="@dimen/dimen_text_18"/>
-        
-        <include
-                layout="@layout/dialog_divider"
+    
+        <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_view_height_0.5"
-                android:layout_alignParentBottom="true"/>
+                android:layout_height="@dimen/top_bar_height">
+        
+            <ImageView
+                    android:id="@+id/reading_setting_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:paddingLeft="@dimen/dimen_padding_12"
+                    android:paddingRight="@dimen/dimen_padding_12"
+                    android:src="@mipmap/cover_top_back"/>
+        
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:gravity="center_vertical"
+                    android:text="@string/read_setting"
+                    android:textColor="@color/color_white_ffffff"
+                    android:textSize="@dimen/dimen_text_18"/>
+        
+            <include
+                    layout="@layout/dialog_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_view_height_0.5"
+                    android:layout_alignParentBottom="true"/>
+        </RelativeLayout>
     </RelativeLayout>
     
     <ImageView

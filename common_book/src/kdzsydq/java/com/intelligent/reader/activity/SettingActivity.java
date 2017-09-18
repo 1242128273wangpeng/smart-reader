@@ -6,6 +6,7 @@ import com.intelligent.reader.R;
 import com.intelligent.reader.util.EventBookStore;
 
 import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.component.service.DownloadService;
 import net.lzbook.kit.book.view.ConsumeEvent;
 import net.lzbook.kit.book.view.MyDialog;
@@ -45,6 +46,7 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import iyouqu.theme.StatusBarCompat;
+import iyouqu.theme.ThemeMode;
 
 
 public class SettingActivity extends BaseCacheableActivity implements View.OnClickListener, SwitchButton.OnCheckedChangeListener {
@@ -126,7 +128,6 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     private Button btn_login;
     private ImageView img_head;
     private Button btn_logout;
-    private ImageView img_head_background;
     private TextView txt_login_des;
 
     @Override
@@ -202,7 +203,6 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         btn_login = (Button) findViewById(R.id.btn_login);
         btn_logout = (Button) findViewById(R.id.btn_logout);
         img_head = (ImageView) findViewById(R.id.img_head);
-        img_head_background = (ImageView) findViewById(R.id.img_head_background);
         int desid = getResources().getIdentifier("txt_login_des", "id", getPackageName());
 
         if (desid != 0) {
@@ -474,7 +474,6 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 btn_login.setClickable(false);
                 Intent loginIntent = new Intent(this, LoginActivity.class);
                 startActivityForResult(loginIntent, CODE_REQ_LOGIN);
-//                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                 break;
             case R.id.btn_logout:
             case R.id.rl_logout:
@@ -612,7 +611,6 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_SWITCH_THEME);
             themIntent.putExtras(bundle);
             startActivity(themIntent);
-            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
         } else {
             finish();
         }
@@ -633,20 +631,23 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     //夜间模式切换按钮的回调
     @Override
     public void onCheckedChanged(SwitchButton view, boolean isChecked) {
+        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.NIGHTMODE);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor edit = sharedPreferences.edit();
         if (isChecked) {
             tv_night_shift.setText(R.string.mode_day);
             edit.putInt("current_light_mode", Constants.MODE);
-            Constants.MODE = sharedPreferences.getInt("current_night_mode", 61);
+            Constants.MODE = 61;
+            mThemeHelper.setMode(ThemeMode.NIGHT);
         } else {
             tv_night_shift.setText(R.string.mode_night);
             edit.putInt("current_night_mode", Constants.MODE);
             Constants.MODE = sharedPreferences.getInt("current_light_mode", 51);
+            mThemeHelper.setMode(ThemeMode.THEME1);
         }
         edit.putInt("content_mode", Constants.MODE);
         edit.apply();
-        nightShift();
+        nightShift(isChecked, true);
     }
 
     private void CancelTask() {

@@ -113,7 +113,7 @@
                     android:textColor="@color/read_option_text"
                     android:textSize="@dimen/text_content"
                     android:background="@drawable/read_option_font_center_divider"
-            />
+                    />
             
             <ImageView
                     android:id="@+id/read_setting_increase_text"
@@ -264,7 +264,7 @@
                         android:layout_marginTop="6dp"
                         android:layout_marginBottom="6dp"
                         android:background="@color/read_option_divider"
-                />
+                        />
             </RelativeLayout>
             
             
@@ -288,7 +288,7 @@
                         android:layout_marginTop="6dp"
                         android:layout_marginBottom="6dp"
                         android:background="@color/read_option_divider"
-                />
+                        />
             </RelativeLayout>
             
             <RelativeLayout
@@ -311,7 +311,7 @@
                         android:layout_marginTop="6dp"
                         android:layout_marginBottom="6dp"
                         android:background="@color/read_option_divider"
-                />
+                        />
             </RelativeLayout>
             
             <RelativeLayout
@@ -326,7 +326,7 @@
                         android:layout_centerInParent="true"
                         android:background="@null"
                         android:button="@drawable/read_option_spacing_6_selector"
-                />
+                        />
             
             </RelativeLayout>
         </com.intelligent.reader.read.page.LRadioGroup>
@@ -376,7 +376,7 @@
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="6dp"
                     android:background="@color/read_option_divider"
-            />
+                    />
             
             <RadioButton
                     android:id="@+id/read_animation_simulation"
@@ -397,7 +397,7 @@
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="6dp"
                     android:background="@color/read_option_divider"
-            />
+                    />
             
             <RadioButton
                     android:id="@+id/read_animation_translation"
@@ -418,7 +418,7 @@
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="6dp"
                     android:background="@color/read_option_divider"
-            />
+                    />
             
             <RadioButton
         
@@ -482,7 +482,7 @@
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="6dp"
                     android:background="@color/read_option_divider"
-            />
+                    />
             
             <CheckBox
                     android:id="@+id/read_autoRead"
@@ -502,7 +502,7 @@
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="6dp"
                     android:background="@color/read_option_divider"
-            />
+                    />
             
             <CheckBox
                     android:id="@+id/read_full"

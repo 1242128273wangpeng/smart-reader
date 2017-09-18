@@ -2,15 +2,18 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
                 android:background="@color/base_bg">
 
     <RelativeLayout
             android:id="@+id/search_result_head"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_view_height_48"
+            android:layout_height="wrap_content"
             android:focusableInTouchMode="true"
+            android:fitsSystemWindows="true"
             android:background="@color/top_navigation_bg_color">
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/top_bar_height">
 
         <ImageView
                 android:id="@+id/search_result_back"
@@ -68,6 +71,7 @@
                     android:textSize="@dimen/dimen_text_16"/>
         </RelativeLayout>
 
+
         <RelativeLayout
                 android:id="@+id/search_result_default"
                 android:layout_width="wrap_content"
@@ -109,6 +113,7 @@
                     android:textColor="@color/search_input_text_color"
                     android:textColorHint="@color/search_input_text_color_hint"
                     android:textSize="@dimen/dimen_text_16"/>
+        </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
 

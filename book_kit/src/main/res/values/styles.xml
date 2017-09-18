@@ -86,4 +86,9 @@
         <item name="android:windowEnterAnimation">@anim/remove_menu_in</item>
         <item name="android:windowExitAnimation">@anim/remove_menu_out</item>
     </style>
+    
+    <declare-styleable name="NightShadowView">
+        <attr format="dimension"
+              name="cornerRadius"/>
+    </declare-styleable>
 </resources>

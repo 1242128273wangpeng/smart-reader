@@ -20,6 +20,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 
 import java.util.HashSet;
 
@@ -153,7 +154,7 @@ public class BookShelfRemoveHelper implements View.OnClickListener {
         popupWindow.setAnimationStyle(R.style.remove_menu_anim_style);
         delete_btn = (Button) baseView.findViewById(R.id.btn_right);
         selectAll_btn = (Button) baseView.findViewById(R.id.btn_left);
-        LinearLayout layout = (LinearLayout) baseView.findViewById(R.id.remove_delete_layout);
+        RelativeLayout layout = (RelativeLayout) baseView.findViewById(R.id.remove_delete_layout);
 
         layout.setOnKeyListener(new View.OnKeyListener() {
 

@@ -3,7 +3,6 @@ package com.intelligent.reader.read.help;
 import com.intelligent.reader.activity.ReadingActivity;
 
 import net.lzbook.kit.R;
-import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.ReadStatus;
@@ -17,8 +16,6 @@ import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.NetWorkUtils;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
@@ -29,7 +26,7 @@ public class ReadDataFactory extends IReadDataFactory {
     private BookDaoHelper mBookDaoHelper;
 
     private RequestFactory requestFactory;
-    private SharedPreferences mSharedPreferences;
+//    private SharedPreferences mSharedPreferences;
 
     public ReadDataFactory(Context context, ReadingActivity readingActivity, ReadStatus readStatus, NovelHelper novelHelper) {
         super(context, readingActivity, readStatus, novelHelper);
@@ -51,7 +48,7 @@ public class ReadDataFactory extends IReadDataFactory {
         final int temp_sequence = sequence;
 
         if (mBookDaoHelper == null) {
-            mBookDaoHelper = BookDaoHelper.getInstance(mContext);
+            mBookDaoHelper = BookDaoHelper.getInstance();
         }
         if (mBookChapterDao == null) {
             mBookChapterDao = new BookChapterDao(mContext, readStatus.book_id);
@@ -179,13 +176,13 @@ public class ReadDataFactory extends IReadDataFactory {
 
     @Override
     public Chapter getNextChapter() {
-        if (mSharedPreferences == null)
-            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext());
-        long last_read = mSharedPreferences.getLong(Constants.LAST_READ, 0);
-        long currentTime = System.currentTimeMillis();
-        long noNetRead = mSharedPreferences.getLong(Constants.NONET_READ, 0);
-        int nonet_readhour = mSharedPreferences.getInt(Constants.NONET_READTIME, 1);
-        mSharedPreferences.edit().putLong(Constants.LAST_READ, currentTime).apply();
+//        if (mSharedPreferences == null)
+//            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext());
+//        long last_read = mSharedPreferences.getLong(Constants.LAST_READ, 0);
+//        long currentTime = System.currentTimeMillis();
+//        long noNetRead = mSharedPreferences.getLong(Constants.NONET_READ, 0);
+//        int nonet_readhour = mSharedPreferences.getInt(Constants.NONET_READTIME, 1);
+//        mSharedPreferences.edit().putLong(Constants.LAST_READ, currentTime).apply();
 
         if (readStatus.requestItem == null || readStatus.requestItem.host == null || chapterList == null) {
             return null;
@@ -207,22 +204,22 @@ public class ReadDataFactory extends IReadDataFactory {
             if (Constants.QG_SOURCE.equals(readStatus.requestItem.host)) {
                 Chapter tempChapter = chapterList.get(readStatus.sequence + 1);
                 if (com.quduquxie.network.DataCache.isChapterExists(tempChapter.chapter_id, tempChapter.book_id)) {
-                    if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE && Constants.isNoNetRead == 1) {
-                        double noNetRead_hour = (noNetRead / 1000) / (60 * 60);
-                        if (noNetRead_hour >= nonet_readhour) {
-                            dataListener.showChangeNetDialog();
-                        } else {
-                            tempChapter.content = com.quduquxie.network.DataCache.getChapterFromCache(tempChapter.chapter_id, tempChapter.book_id);
-                            tempChapter.isSuccess = true;
-                            nextChapter = tempChapter;
-                            noNetRead += currentTime - last_read;
-                        }
-                        mSharedPreferences.edit().putLong(Constants.NONET_READ, noNetRead).apply();
-                    } else {
+//                    if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE && Constants.isNoNetRead == 1) {
+//                        double noNetRead_hour = (noNetRead / 1000) / (60 * 60);
+//                        if (noNetRead_hour >= nonet_readhour) {
+//                            dataListener.showChangeNetDialog();
+//                        } else {
+//                            tempChapter.content = com.quduquxie.network.DataCache.getChapterFromCache(tempChapter.chapter_id, tempChapter.book_id);
+//                            tempChapter.isSuccess = true;
+//                            nextChapter = tempChapter;
+//                            noNetRead += currentTime - last_read;
+//                        }
+//                        mSharedPreferences.edit().putLong(Constants.NONET_READ, noNetRead).apply();
+//                    } else {
                         tempChapter.content = com.quduquxie.network.DataCache.getChapterFromCache(tempChapter.chapter_id, tempChapter.book_id);
                         tempChapter.isSuccess = true;
                         nextChapter = tempChapter;
-                    }
+//                    }
                 } else {
                     if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
                         readStatus.isLoading = true;
@@ -250,18 +247,18 @@ public class ReadDataFactory extends IReadDataFactory {
                             nextChapter = chapter;
                         }
                     } else {
-                        if (Constants.isNoNetRead == 1) {
-                            double noNetRead_hour = (noNetRead / 1000) / (60 * 60);
-                            if (noNetRead_hour >= nonet_readhour) {
-                                dataListener.showChangeNetDialog();
-                            } else {
-                                nextChapter = chapter;
-                                noNetRead += currentTime - last_read;
-                            }
-                            mSharedPreferences.edit().putLong(Constants.NONET_READ, noNetRead).apply();
-                        } else {
+//                        if (Constants.isNoNetRead == 1) {
+//                            double noNetRead_hour = (noNetRead / 1000) / (60 * 60);
+//                            if (noNetRead_hour >= nonet_readhour) {
+//                                dataListener.showChangeNetDialog();
+//                            } else {
+//                                nextChapter = chapter;
+//                                noNetRead += currentTime - last_read;
+//                            }
+//                            mSharedPreferences.edit().putLong(Constants.NONET_READ, noNetRead).apply();
+//                        } else {
                             nextChapter = chapter;
-                        }
+//                        }
                     }
                 } else {
                     if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
@@ -289,12 +286,12 @@ public class ReadDataFactory extends IReadDataFactory {
 
     @Override
     public Chapter getPreviousChapter() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext());
-        long last_read = sharedPreferences.getLong(Constants.LAST_READ, 0);
-        long currentTime = System.currentTimeMillis();
-        long noNetRead = sharedPreferences.getLong(Constants.NONET_READ, 0);
-        int nonet_readhour = sharedPreferences.getInt(Constants.NONET_READTIME, 1);
-        sharedPreferences.edit().putLong(Constants.LAST_READ, currentTime).apply();
+//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext());
+//        long last_read = sharedPreferences.getLong(Constants.LAST_READ, 0);
+//        long currentTime = System.currentTimeMillis();
+//        long noNetRead = sharedPreferences.getLong(Constants.NONET_READ, 0);
+//        int nonet_readhour = sharedPreferences.getInt(Constants.NONET_READTIME, 1);
+//        sharedPreferences.edit().putLong(Constants.LAST_READ, currentTime).apply();
 
         if (readStatus.sequence == 0) {
             preChapter = new Chapter();
@@ -308,22 +305,22 @@ public class ReadDataFactory extends IReadDataFactory {
             if (Constants.QG_SOURCE.equals(readStatus.requestItem.host) && chapterList != null && chapterList.size() > (readStatus.sequence - 1)) {
                 Chapter tempChapter = chapterList.get(readStatus.sequence - 1);
                 if (com.quduquxie.network.DataCache.isChapterExists(tempChapter.chapter_id, tempChapter.book_id)) {
-                    if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE && Constants.isNoNetRead == 1) {
-                        double noNetRead_hour = (noNetRead / 1000) / (60 * 60);
-                        if (noNetRead_hour >= nonet_readhour) {
-                            dataListener.showChangeNetDialog();
-                        } else {
-                            tempChapter.content = com.quduquxie.network.DataCache.getChapterFromCache(tempChapter.chapter_id, tempChapter.book_id);
-                            tempChapter.isSuccess = true;
-                            preChapter = tempChapter;
-                            noNetRead += currentTime - last_read;
-                        }
-                        sharedPreferences.edit().putLong(Constants.NONET_READ, noNetRead).apply();
-                    } else {
+//                    if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE && Constants.isNoNetRead == 1) {
+//                        double noNetRead_hour = (noNetRead / 1000) / (60 * 60);
+//                        if (noNetRead_hour >= nonet_readhour) {
+//                            dataListener.showChangeNetDialog();
+//                        } else {
+//                            tempChapter.content = com.quduquxie.network.DataCache.getChapterFromCache(tempChapter.chapter_id, tempChapter.book_id);
+//                            tempChapter.isSuccess = true;
+//                            preChapter = tempChapter;
+//                            noNetRead += currentTime - last_read;
+//                        }
+//                        sharedPreferences.edit().putLong(Constants.NONET_READ, noNetRead).apply();
+//                    } else {
                         tempChapter.content = com.quduquxie.network.DataCache.getChapterFromCache(tempChapter.chapter_id, tempChapter.book_id);
                         tempChapter.isSuccess = true;
                         preChapter = tempChapter;
-                    }
+//                    }
                 } else {
                     if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
                         readStatus.isLoading = true;
@@ -351,18 +348,18 @@ public class ReadDataFactory extends IReadDataFactory {
                             preChapter = chapter;
                         }
                     } else {
-                        if (Constants.isNoNetRead == 1) {
-                            double noNetRead_hour = (noNetRead / 1000) / (60 * 60);
-                            if (noNetRead_hour >= nonet_readhour) {
-                                dataListener.showChangeNetDialog();
-                            } else {
-                                preChapter = chapter;
-                                noNetRead += currentTime - last_read;
-                            }
-                            sharedPreferences.edit().putLong(Constants.NONET_READ, noNetRead).apply();
-                        } else {
+//                        if (Constants.isNoNetRead == 1) {
+//                            double noNetRead_hour = (noNetRead / 1000) / (60 * 60);
+//                            if (noNetRead_hour >= nonet_readhour) {
+//                                dataListener.showChangeNetDialog();
+//                            } else {
+//                                preChapter = chapter;
+//                                noNetRead += currentTime - last_read;
+//                            }
+//                            sharedPreferences.edit().putLong(Constants.NONET_READ, noNetRead).apply();
+//                        } else {
                             preChapter = chapter;
-                        }
+//                        }
 
                     }
                 } else {

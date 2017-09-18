@@ -141,7 +141,7 @@ public class RemoveAdapterHelper implements PopupBase.PopupWindowDeleteClickList
             removeModeAdapter.notifyDataSetChanged();
             setSelectNum();
         }
-        selectAllListener.onSelectAll();
+        selectAllListener.onSelectAll(checkedAll);
     }
 
     // =================================================================
@@ -278,7 +278,7 @@ public class RemoveAdapterHelper implements PopupBase.PopupWindowDeleteClickList
 
 
     public interface OnMenuSelectAllListener {
-        void onSelectAll();
+        void onSelectAll(boolean checkedAll);
     }
 
     public interface OnMenuDeleteClickListener {//菜单删除按钮监听

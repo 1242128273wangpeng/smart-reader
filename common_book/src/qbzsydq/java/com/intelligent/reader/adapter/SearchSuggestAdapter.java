@@ -103,4 +103,8 @@ public class SearchSuggestAdapter extends BaseAdapter {
         this.editInput = editInput;
     }
 
+    public String getEditInput() {
+        return this.editInput;
+    }
+
 }

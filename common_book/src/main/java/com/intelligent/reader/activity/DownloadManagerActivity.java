@@ -193,7 +193,7 @@ public class DownloadManagerActivity extends BaseCacheableActivity implements On
     }
 
     private void initData() {
-        mBookDaoHelper = BookDaoHelper.getInstance(this);
+        mBookDaoHelper = BookDaoHelper.getInstance();
         downloadingBooks = new ArrayList<>();
         views = new DownloadPager(getApplicationContext(), this, downloadingBooks);
         content_layout.addView(views);
@@ -213,7 +213,7 @@ public class DownloadManagerActivity extends BaseCacheableActivity implements On
 
     private void getDownLoadBookList(boolean hasDeleted) {
         if (mBookDaoHelper == null) {
-            mBookDaoHelper = BookDaoHelper.getInstance(this);
+            mBookDaoHelper = BookDaoHelper.getInstance();
         }
         ArrayList<Book> books = mBookDaoHelper.getBooksOnLineList();
 //        Log.e(TAG, "addBookToService:"+books);
@@ -282,10 +282,12 @@ public class DownloadManagerActivity extends BaseCacheableActivity implements On
                     views.showRemoveMenu(views);
                     editBtn.setText("取消");
                     StatServiceUtils.statAppBtnClick(this, StatServiceUtils.bs_down_m_click_edit);
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.CACHEBUTTON);
                 } else {
                     views.dissmissremoveMenu();
                     editBtn.setText("编辑");
                     StatServiceUtils.statAppBtnClick(this, StatServiceUtils.bs_down_m_click_cancel);
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.CHCHEEDIT_PAGE, StartLogClickUtil.CANCLE);
                 }
 
                 break;
@@ -341,6 +343,9 @@ public class DownloadManagerActivity extends BaseCacheableActivity implements On
         if (!views.isRemoveMode() && !views.isShowing) {
             Book book = downloadingBooks.get(position);
             Book b = (Book) mBookDaoHelper.getBook(book.book_id, 0);
+            Map<String, String> data = new HashMap<>();
+            data.put("STATUS", BookHelper.isDownFnish(this, b) ? "1" : "0");
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.BOOKCLICK1, data);
             BookHelper.goToCoverOrRead(getApplicationContext(), DownloadManagerActivity.this, b);
         } else {
             views.setRemoveChecked(position);

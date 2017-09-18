@@ -11,56 +11,60 @@
             android:id="@+id/novel_catalog_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
             android:paddingLeft="@dimen/padding_0"
             android:paddingRight="@dimen/padding_0"
             android:background="@color/color_white_ffffff"
             android:orientation="vertical">
         
         <RelativeLayout
-                android:layout_marginTop="@dimen/dimen_margin_10"
+                android:fitsSystemWindows="true"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_view_height_48">
-            
-            <ImageView
-                    android:id="@+id/catalog_novel_close"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentLeft="true"
-                    android:src="@mipmap/directory_back"
-                    android:paddingLeft="@dimen/dimen_padding_12"
-                    android:paddingRight="@dimen/dimen_padding_12"/>
-            
-            <RadioGroup
+                android:layout_height="wrap_content">
+    
+            <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_view_height_50"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-                
-                <RadioButton
-                        android:id="@+id/tab_catalog"
-                        android:layout_width="125dp"
-                        android:layout_height="30dp"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/directory_top_selector"
-                        android:button="@null"
-                        android:checked="true"
+                    android:layout_height="@dimen/top_bar_height">
+        
+                <ImageView
+                        android:id="@+id/catalog_novel_close"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentLeft="true"
+                        android:src="@mipmap/directory_back"
+                        android:paddingLeft="@dimen/dimen_padding_12"
+                        android:paddingRight="@dimen/dimen_padding_12"/>
+        
+                <RadioGroup
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimen_view_height_50"
                         android:gravity="center"
-                        android:text="@string/read_catalog"
-                        android:textColor="@drawable/directory_top_text"/>
-                
-                <RadioButton
-                        android:id="@+id/tab_bookmark"
-                        android:layout_width="125dp"
-                        android:layout_height="30dp"
-                        android:button="@null"
-                        android:checked="false"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/directory_top_selector"
-                        android:gravity="center"
-                        android:text="@string/read_bookmark"
-                        android:textColor="@drawable/directory_top_text"/>
-            </RadioGroup>
+                        android:orientation="horizontal">
+            
+                    <RadioButton
+                            android:id="@+id/tab_catalog"
+                            android:layout_width="125dp"
+                            android:layout_height="30dp"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/directory_top_selector"
+                            android:button="@null"
+                            android:checked="true"
+                            android:gravity="center"
+                            android:text="@string/read_catalog"
+                            android:textColor="@drawable/directory_top_text"/>
+            
+                    <RadioButton
+                            android:id="@+id/tab_bookmark"
+                            android:layout_width="125dp"
+                            android:layout_height="30dp"
+                            android:button="@null"
+                            android:checked="false"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/directory_top_selector"
+                            android:gravity="center"
+                            android:text="@string/read_bookmark"
+                            android:textColor="@drawable/directory_top_text"/>
+                </RadioGroup>
+            </RelativeLayout>
         </RelativeLayout>
         
         <RelativeLayout

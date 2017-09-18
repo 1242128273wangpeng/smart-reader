@@ -46,6 +46,10 @@ import iyouqu.theme.FrameActivity;
 public class SearchBookActivity extends FrameActivity implements OnClickListener, OnFocusChangeListener, SearchViewHelper.OnHistoryClickListener,
         TextWatcher, OnEditorActionListener, SearchHelper.JsCallSearchCall, SearchHelper.StartLoadCall {
 
+    boolean isSearch = false;
+    //记录是否退出当前界面,for:修复退出界面时出现闪影
+    boolean isBackPressed = false;
+    boolean ziyougb;
     private ImageView search_result_back;
     private ImageView search_result_button;
     private RelativeLayout search_result_outcome;
@@ -57,20 +61,12 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
     private RelativeLayout search_result_main;
     private WebView search_result_content;
     private FrameLayout search_result_hint;
-
     private SearchViewHelper searchViewHelper;
     private BookDaoHelper bookDaoHelper;
     private Handler handler = new Handler();
-
     private CustomWebClient customWebClient;
     private JSInterfaceHelper jsInterfaceHelper;
-
-    boolean isSearch = false;
-    //记录是否退出当前界面,for:修复退出界面时出现闪影
-    boolean isBackPressed = false;
-
     private LoadingPage loadingPage;
-
     private SearchHelper mSearchHelper;
 
     @Override
@@ -122,12 +118,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
         }
         search_result_input = (HWEditText) findViewById(R.id.search_result_input);
         search_result_main = (RelativeLayout) findViewById(R.id.search_result_main);
-        View view_night_show =  findViewById(R.id.view_night_show);
-        if (mThemeHelper.isNight()){
-            view_night_show.setVisibility(View.VISIBLE);
-        }else {
-            view_night_show.setVisibility(View.GONE);
-        }
+
         search_result_content = (WebView) findViewById(R.id.search_result_content);
 
         search_result_hint = (FrameLayout) findViewById(R.id.search_result_hint);
@@ -168,7 +159,6 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
         }
 
     }
-
 
     private void initListener() {
         if (mSearchHelper != null){
@@ -239,7 +229,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
         }
 
         if (bookDaoHelper == null) {
-            bookDaoHelper = BookDaoHelper.getInstance(getApplicationContext());
+            bookDaoHelper = BookDaoHelper.getInstance();
         }
     }
 
@@ -277,7 +267,6 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
             showSearchViews();
         }
     }
-
 
     private void startLoading(Handler handler, final String url) {
         if (search_result_content == null) {
@@ -470,7 +459,6 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
         backAction();
     }
 
-
     private void showSearchViews() {
         if (NetWorkUtils.getNetWorkType(this) == NetWorkUtils.NETWORK_NONE) {
             return;
@@ -645,8 +633,6 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                 break;
         }
     }
-
-    boolean ziyougb;
 
     @Override
     public void onFocusChange(View view, boolean hasFocus) {

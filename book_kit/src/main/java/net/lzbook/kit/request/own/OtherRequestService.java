@@ -8,6 +8,7 @@ import net.lzbook.kit.data.bean.ChapterErrorBean;
 import net.lzbook.kit.data.bean.RequestItem;
 import net.lzbook.kit.data.db.BookChapterDao;
 import net.lzbook.kit.data.db.BookDaoHelper;
+import net.lzbook.kit.encrypt.URLBuilderIntterface;
 import net.lzbook.kit.net.volley.request.Parser;
 import net.lzbook.kit.net.volley.request.VolleyDataService;
 import net.lzbook.kit.request.DataCache;
@@ -16,7 +17,6 @@ import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.MurmurHash;
 import net.lzbook.kit.utils.Tools;
-import net.lzbook.kit.encrypt.URLBuilderIntterface;
 
 import org.json.JSONException;
 
@@ -65,7 +65,7 @@ public class OtherRequestService extends VolleyDataService {
                 public Object parserMethod(String response) throws Exception {
 
                     ArrayList<Chapter> chapterList = OWNParser.parserOwnChapterList(response, requestItem);
-                    if (chapterList != null && !chapterList.isEmpty() && BookDaoHelper.getInstance(context)
+                    if (chapterList != null && !chapterList.isEmpty() && BookDaoHelper.getInstance()
                             .isBookSubed(requestItem.book_id)) {
                         chapterDao.insertBookChapter(chapterList);
                         Chapter lastChapter = chapterList.get(chapterList.size() - 1);
@@ -78,7 +78,7 @@ public class OtherRequestService extends VolleyDataService {
                         book.last_chapter_name = lastChapter.chapter_name;
                         book.last_chapter_md5 = lastChapter.book_chapter_md5;
                         book.last_updateSucessTime = System.currentTimeMillis();
-                        BookDaoHelper.getInstance(context).updateBook(book);
+                        BookDaoHelper.getInstance().updateBook(book);
                     }
                     return chapterList;
                 }
@@ -122,7 +122,7 @@ public class OtherRequestService extends VolleyDataService {
                 public Object parserMethod(String response) throws JSONException, Exception {
                     try {
                         ArrayList<Chapter> chapters = OWNParser.parserOwnChapterList(response, requestItem);
-                        if (chapters != null && !chapters.isEmpty() && BookDaoHelper.getInstance(context).isBookSubed
+                        if (chapters != null && !chapters.isEmpty() && BookDaoHelper.getInstance().isBookSubed
                                 (requestItem.book_id)) {
                             chapterDao.insertBookChapter(chapters);
                             Chapter lastChapter = chapters.get(chapters.size() - 1);
@@ -139,7 +139,7 @@ public class OtherRequestService extends VolleyDataService {
                             book.gsort = lastChapter.gsort;
                             book.last_chapter_md5 = lastChapter.book_chapter_md5;
                             book.last_updateSucessTime = System.currentTimeMillis();
-                            BookDaoHelper.getInstance(context).updateBook(book);
+                            BookDaoHelper.getInstance().updateBook(book);
 
                         }
                         return chapters;
@@ -249,7 +249,7 @@ public class OtherRequestService extends VolleyDataService {
                     }
                 }
                 // 没有返回更新章节的书籍更新book.last_updateUpdateTime, 有更新的书籍更新对应信息
-                BookDaoHelper.getInstance(context).updateBook(book);
+                BookDaoHelper.getInstance().updateBook(book);
 
                 return resUpdate;
             }
@@ -262,7 +262,7 @@ public class OtherRequestService extends VolleyDataService {
         String uriTag = URLBuilderIntterface.DEFAULT_BOOK;
         String url = UrlUtils.buildUrl(uriTag, new HashMap<String, String>());
 
-        final BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance(context);
+        final BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
         publicCode(url, null, dataServiceCallBack, new Parser() {
             @Override
             public Object parserMethod(String response) throws JSONException, Exception {
@@ -282,7 +282,7 @@ public class OtherRequestService extends VolleyDataService {
 
     public static void updateShelfBooks(final Context context, DataServiceCallBack dataServiceCallBack)
             throws IOException, JSONException {
-        final BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance(context);
+        final BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
         ArrayList<Book> books = bookDaoHelper.getOwnBooksList();
         if (books == null || books.isEmpty()) {
             return;

@@ -1,6 +1,8 @@
 package com.intelligent.reader.receiver;
 
 import com.baidu.android.pushservice.PushMessageReceiver;
+import com.intelligent.reader.activity.HomeActivity;
+import com.intelligent.reader.activity.SplashActivity;
 import com.intelligent.reader.app.BookApplication;
 
 import net.lzbook.kit.data.bean.ReadStatus;
@@ -114,31 +116,38 @@ public class BaiduPushReceiver extends PushMessageReceiver {
         String notifyString = "通知点击 onNotificationClicked title=\"" + title + "\" description=\""
                 + description + "\" customContent=" + customContentString;
         AppLog.d(TAG, notifyString);
-        ActivityManager activityManager = (ActivityManager) context.getApplicationContext().getSystemService(Context
-                .ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> taskInfoList = activityManager.getRunningTasks(Integer.MAX_VALUE);
-        for (ActivityManager.RunningTaskInfo taskInfo : taskInfoList) {
-            if (taskInfo.topActivity.getPackageName().equals(context.getApplicationContext().getPackageName())) {
-                AppLog.i(TAG, " " + taskInfo.topActivity.getPackageName());
-                AppLog.i(TAG, " " + context.getApplicationContext().getPackageName());
-                AppLog.i(TAG, " " + taskInfo.topActivity.getClassName());
-                String className = taskInfo.topActivity.getClassName();
-                ComponentName componentName = new ComponentName(taskInfo.topActivity.getPackageName(), taskInfo.topActivity.getClassName());
-                Intent intent = new Intent();
-                if (className.equals(context.getApplicationContext().getPackageName() + ".activity.ReadingActivity")) {
-                    ReadStatus readStatus = (BookApplication.getGlobalContext()).getReadStatus();
-                    AppLog.i(TAG, "--------->" + readStatus.sequence + "::" + readStatus.offset + "::" + readStatus.book);
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("sequence", readStatus.sequence);
-                    bundle.putInt("offset", readStatus.offset);
-                    bundle.putSerializable("book", readStatus.book);
-                    intent.putExtras(bundle);
-                }
-                intent.setComponent(componentName);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.getApplicationContext().startActivity(intent);
-            }
-        }
+
+        Intent intent = new Intent();
+        intent.setClass(context.getApplicationContext(), SplashActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        context.getApplicationContext().startActivity(intent);
+
+//        ActivityManager activityManager = (ActivityManager) context.getApplicationContext().getSystemService(Context
+//                .ACTIVITY_SERVICE);
+//        List<ActivityManager.RunningTaskInfo> taskInfoList = activityManager.getRunningTasks(Integer.MAX_VALUE);
+//        for (ActivityManager.RunningTaskInfo taskInfo : taskInfoList) {
+//            if (taskInfo.topActivity.getPackageName().equals(context.getApplicationContext().getPackageName())) {
+//                AppLog.i(TAG, " " + taskInfo.topActivity.getPackageName());
+//                AppLog.i(TAG, " " + context.getApplicationContext().getPackageName());
+//                AppLog.i(TAG, " " + taskInfo.topActivity.getClassName());
+//                String className = taskInfo.topActivity.getClassName();
+//                ComponentName componentName = new ComponentName(taskInfo.topActivity.getPackageName(), taskInfo.topActivity.getClassName());
+//                Intent intent = new Intent();
+//                if (className.equals(context.getApplicationContext().getPackageName() + ".activity.ReadingActivity")) {
+//                    ReadStatus readStatus = (BookApplication.getGlobalContext()).getReadStatus();
+//                    AppLog.i(TAG, "--------->" + readStatus.sequence + "::" + readStatus.offset + "::" + readStatus.book);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putInt("sequence", readStatus.sequence);
+//                    bundle.putInt("offset", readStatus.offset);
+//                    bundle.putSerializable("book", readStatus.book);
+//                    intent.putExtras(bundle);
+//                }
+//                intent.setComponent(componentName);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                context.getApplicationContext().startActivity(intent);
+
+//            }
+//        }
     }
 
     /**

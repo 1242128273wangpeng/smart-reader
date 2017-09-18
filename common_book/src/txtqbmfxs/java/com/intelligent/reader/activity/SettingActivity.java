@@ -492,7 +492,6 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 btn_login.setClickable(false);
                 Intent loginIntent = new Intent(this, LoginActivity.class);
                 startActivityForResult(loginIntent, CODE_REQ_LOGIN);
-//                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                 break;
             case R.id.btn_logout:
             case R.id.rl_logout:
@@ -631,7 +630,6 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_SWITCH_THEME);
             themIntent.putExtras(bundle);
             startActivity(themIntent);
-            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
         } else {
             finish();
         }

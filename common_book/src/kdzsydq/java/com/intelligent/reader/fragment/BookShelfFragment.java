@@ -13,6 +13,7 @@ import com.intelligent.reader.util.BookShelfRemoveHelper;
 import com.intelligent.reader.util.ShelfGridLayoutManager;
 
 import net.lzbook.kit.ad.OwnNativeAdManager;
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
 import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.constants.Constants;
@@ -239,6 +240,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     public void onItemLongClick(View view, int position) {
         if (!bookShelfRemoveHelper.isRemoveMode()) {
             bookShelfRemoveHelper.showRemoveMenu(swipeRefreshLayout);
+            StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.LONGTIMEBOOKSHELFEDIT);
         }
     }
 
@@ -499,7 +501,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             return;
         }
         if (bookDaoHelper == null && mContext != null) {
-            bookDaoHelper = BookDaoHelper.getInstance(mContext);
+            bookDaoHelper = BookDaoHelper.getInstance();
         }
 
         esBookOnlineList = bookDaoHelper.getBooksOnLineListYS();
@@ -547,6 +549,8 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
                 public void onClick(View v) {
                     if (fragmentCallback != null) {
                         fragmentCallback.setSelectTab(1);
+
+                        StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.TOBOOKCITY);
                     }
                 }
             });
@@ -790,6 +794,13 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
 
         Book book = iBookList.get(index);
         clickAction(book);
+
+        if (book != null) {
+            Map<String, String> data = new HashMap<>();
+            data.put("bookid", book.book_id);
+            data.put("rank", String.valueOf(index + 1));
+            StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.BOOKCLICK, data);
+        }
     }
 
     /**
@@ -820,8 +831,8 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         book.update_status = 0;
         if (update_table.contains(book.book_id)) {
             update_table.remove(book_id);
+            bookDaoHelper.updateBook(book);
         }
-        bookDaoHelper.updateBook(book);
     }
 
     public void setResultRefresh() {
@@ -1046,7 +1057,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     }
 
     private Book changeBookSource(Source source, boolean changeReadFlag) {
-        BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance(getActivity().getApplicationContext());
+        BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
         Book iBook = bookDaoHelper.getBook(source.book_id, 0);
         iBook.book_source_id = source.book_source_id;
         iBook.site = source.host;

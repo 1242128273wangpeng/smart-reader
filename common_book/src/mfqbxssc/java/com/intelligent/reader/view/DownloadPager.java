@@ -7,6 +7,7 @@ import com.intelligent.reader.event.DownLoaderToHome;
 import com.intelligent.reader.read.help.BookHelper;
 
 import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.component.service.DownloadService;
 import net.lzbook.kit.book.download.CallBackDownload;
 import net.lzbook.kit.book.download.DownloadState;
@@ -35,7 +36,9 @@ import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import de.greenrobot.event.EventBus;
 
@@ -73,7 +76,7 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
     }
 
     private void initView(Context context, final Activity activity) {
-        mBookDaoHelper = BookDaoHelper.getInstance(context);
+        mBookDaoHelper = BookDaoHelper.getInstance();
 
         mContext = context;
         this.activity = activity;
@@ -114,8 +117,11 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
     }
 
     @Override
-    public void onSelectAll() {
+    public void onSelectAll(boolean checkedAll) {
         StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.bs_down_m_click_select_all);
+        Map<String, String> data = new HashMap<>();
+        data.put("type", checkedAll ? "1" : "0");
+        StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.CHCHEEDIT_PAGE, StartLogClickUtil.SELECTALL);
     }
 
     public ListView getListView() {
