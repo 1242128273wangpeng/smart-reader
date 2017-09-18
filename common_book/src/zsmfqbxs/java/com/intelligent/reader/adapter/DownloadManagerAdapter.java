@@ -45,7 +45,7 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
         super(context, list);
         this.mContext = context;
         mResources = context.getResources();
-        mBookDaoHelper = BookDaoHelper.getInstance(context);
+        mBookDaoHelper = BookDaoHelper.getInstance();
         book_data = list;
         this.frameLayout = frameLayout;
         downloadManagerActivity = (DownloadManagerActivity) context;

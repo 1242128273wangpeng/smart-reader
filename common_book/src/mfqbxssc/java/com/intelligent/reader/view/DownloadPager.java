@@ -73,7 +73,7 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
     }
 
     private void initView(Context context, final Activity activity) {
-        mBookDaoHelper = BookDaoHelper.getInstance(context);
+        mBookDaoHelper = BookDaoHelper.getInstance();
 
         mContext = context;
         this.activity = activity;

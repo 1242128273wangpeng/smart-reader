@@ -1,5 +1,19 @@
 package com.intelligent.reader.activity;
 
+import com.intelligent.reader.R;
+import com.intelligent.reader.search.SearchHelper;
+import com.intelligent.reader.util.SearchViewHelper;
+
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.book.view.HWEditText;
+import net.lzbook.kit.book.view.LoadingPage;
+import net.lzbook.kit.data.db.BookDaoHelper;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.CustomWebClient;
+import net.lzbook.kit.utils.JSInterfaceHelper;
+import net.lzbook.kit.utils.NetWorkUtils;
+
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
@@ -23,20 +37,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-import com.intelligent.reader.R;
-import com.intelligent.reader.search.SearchHelper;
-import com.intelligent.reader.util.SearchViewHelper;
-
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.view.HWEditText;
-import net.lzbook.kit.book.view.LoadingPage;
-import net.lzbook.kit.data.db.BookDaoHelper;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.CustomWebClient;
-import net.lzbook.kit.utils.JSInterfaceHelper;
-import net.lzbook.kit.utils.NetWorkUtils;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,6 +46,10 @@ import iyouqu.theme.FrameActivity;
 public class SearchBookActivity extends FrameActivity implements OnClickListener, OnFocusChangeListener, SearchViewHelper.OnHistoryClickListener,
         TextWatcher, OnEditorActionListener, SearchHelper.JsCallSearchCall, SearchHelper.StartLoadCall {
 
+    boolean isSearch = false;
+    //记录是否退出当前界面,for:修复退出界面时出现闪影
+    boolean isBackPressed = false;
+    boolean ziyougb;
     private ImageView search_result_back;
     private ImageView search_result_button;
     private RelativeLayout search_result_outcome;
@@ -56,20 +60,12 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
     private RelativeLayout search_result_main;
     private WebView search_result_content;
     private FrameLayout search_result_hint;
-
     private SearchViewHelper searchViewHelper;
     private BookDaoHelper bookDaoHelper;
     private Handler handler = new Handler();
-
     private CustomWebClient customWebClient;
     private JSInterfaceHelper jsInterfaceHelper;
-
-    boolean isSearch = false;
-    //记录是否退出当前界面,for:修复退出界面时出现闪影
-    boolean isBackPressed = false;
-
     private LoadingPage loadingPage;
-
     private SearchHelper mSearchHelper;
 
     @Override
@@ -162,7 +158,6 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
 
     }
 
-
     private void initListener() {
         if (mSearchHelper != null){
             mSearchHelper.setJsCallSearchCall(this);
@@ -223,7 +218,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
         }
 
         if (bookDaoHelper == null) {
-            bookDaoHelper = BookDaoHelper.getInstance(getApplicationContext());
+            bookDaoHelper = BookDaoHelper.getInstance();
         }
     }
 
@@ -257,7 +252,6 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
             showSearchViews();
         }
     }
-
 
     private void startLoading(Handler handler, final String url) {
         if (search_result_content == null) {
@@ -352,7 +346,6 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
         }
     }
 
-
     /**
      * 重载方法
      */
@@ -411,7 +404,6 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
         StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
         backAction();
     }
-
 
     private void showSearchViews() {
         if (NetWorkUtils.getNetWorkType(this) == NetWorkUtils.NETWORK_NONE) {
@@ -583,8 +575,6 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                 break;
         }
     }
-
-    boolean ziyougb;
 
     @Override
     public void onFocusChange(View view, boolean hasFocus) {
