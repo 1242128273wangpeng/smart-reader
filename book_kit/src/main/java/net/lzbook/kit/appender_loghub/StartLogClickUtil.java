@@ -28,6 +28,7 @@ public class StartLogClickUtil {
     public static final String SHELF_PAGE = "SHELF";//书架页
     public static final String SHELFEDIT_PAGE = "SHELFEDIT";//书架编辑页
     public static final String CHCHEEDIT_PAGE = "CHCHEEDIT";//缓存编辑页
+    public static final String CACHEMANAGE_PAGE = "CACHEMANAGE";//缓存管理页
     public static final String BOOOKDETAIL_PAGE = "BOOOKDETAIL";//书籍详情页
     public static final String PEASONAL_PAGE = "PEASONAL";//个人中心页
     public static final String MORESET_PAGE = "MORESET";//更多设置
@@ -61,8 +62,21 @@ public class StartLogClickUtil {
     public static final String TOBOOKCITY = "TOBOOKCITY";//空白页点击跳转书城
     public static final String LONGTIMEBOOKSHELFEDIT = "LONGTIMEBOOKSHELFEDIT";//长按编辑书架
 
+    //书架编辑页
+    public static final String SELECTALL1 = "SELECTALL";//全选
+    public static final String DELETE1 = "DELETE";//删除
+    public static final String CANCLE1 = "CANCLE";//右上角取消
+
+
     //缓存管理页
+    public static final String BOOKCLICK1 = "BOOKCLICK";//书籍点击
+    public static final String CACHEBUTTON = "CACHEBUTTON";//缓存按钮点击
+    public static final String CACHEEDIT1 = "CACHEEDIT";//右上角编辑按钮点击
+
+    //缓存编辑页
     public static final String SELECTALL = "SELECTALL";//全选
+    public static final String DELETE = "DELETE";//删除
+    public static final String CANCLE = "CANCLE";//右上角取消
 
     //搜索页
     public static final String BAR = "BAR";//点击搜索框
@@ -103,6 +117,27 @@ public class StartLogClickUtil {
     public static final String PROCTCOL = "PROCTCOL";//点击使用协议
     public static final String LOGOUT = "LOGOUT";//点击退出登录
 
+    //阅读页
+    public static final String LABELEDIT = "LABELEDIT";//添加书签
+    public static final String ORIGINALLINK = "ORIGINALLINK";//点击源网页链接
+    public static final String CACHE = "CACHE";//点击阅读页内缓存
+    public static final String MORE1 = "MORE";//点击阅读页内更多
+    public static final String CATALOG1 = "CATALOG";//点击阅读页内目录
+    public static final String BOOKMARK = "BOOKMARK";//点击阅读页目录内书签
+    public static final String NIGHTMODE1 = "NIGHTMODE";//点击阅读页内日/夜间模式
+    public static final String CHAPTERTURN = "CHAPTERTURN";//点击阅读页内上/下章切换
+    public static final String SET = "SET";//点击阅读页内设置
+
+    //'阅读页设置
+    public static final String LIGHTEDIT = "LIGHTEDIT";//点击亮度调整
+    public static final String SYSFOLLOW = "SYSFOLLOW";//点击跟随系统
+    public static final String WORDSIZE = "WORDSIZE";//点击字号增/减
+    public static final String BACKGROUNDCOLOR = "BACKGROUNDCOLOR";//点击阅读背景色
+    public static final String READGAP = "READGAP";//点击阅读间距
+    public static final String PAGETURN = "PAGETURN";//点击翻页模式
+    public static final String HPMODEL = "HPMODEL";//点击横/竖屏模式
+    public static final String AUTOREAD = "AUTOREAD";//点击自动阅读
+    public static final String FULLSCREENPAGEREAD = "FULLSCREENPAGEREAD";//点击全屏翻页阅读
 
     //阅读页更多
     public static final String READ_SOURCECHANGE = "SOURCECHANGE";//换源
@@ -115,7 +150,7 @@ public class StartLogClickUtil {
 
     //上传普通的点击事件
     public static void upLoadEventLog(Context context, String pageCode, String identify) {
-        if (!Constants.dy_ad_new_statistics_switch) {
+        if (!Constants.dy_ad_new_statistics_switch || context == null) {
             return;
         }
         final ServerLog log = new ServerLog(PLItemKey.ZN_APP_EVENT);
@@ -157,7 +192,7 @@ public class StartLogClickUtil {
 
     //上传普通的点击事件,带事件参数
     public static void upLoadEventLog(Context context, String pageCode, String identify, Map<String, String> extraParam) {
-        if (!Constants.dy_ad_new_statistics_switch) {
+        if (!Constants.dy_ad_new_statistics_switch || context == null) {
             return;
         }
         final ServerLog log = new ServerLog(PLItemKey.ZN_APP_EVENT);

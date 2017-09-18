@@ -328,7 +328,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         mCatlogMarkDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mCatlogMarkDrawer.addDrawerListener(mDrawerListener);
 
-        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus);
+        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus, dataFactory);
 
         mCatalogMarkFragment = (CatalogMarkFragment) getSupportFragmentManager().findFragmentById(R.id.read_catalog_mark_layout);
         mCatalogMarkPresenter.setView(mCatalogMarkFragment);
@@ -392,7 +392,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         mCatlogMarkDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mCatlogMarkDrawer.addDrawerListener(mDrawerListener);
 
-        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus);
+        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus, dataFactory);
 
         mCatalogMarkFragment = (CatalogMarkFragment) getSupportFragmentManager().findFragmentById(R.id.read_catalog_mark_layout);
         mCatalogMarkPresenter.setView(mCatalogMarkFragment);
@@ -651,7 +651,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         mCatlogMarkDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mCatlogMarkDrawer.addDrawerListener(mDrawerListener);
 
-        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus);
+        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus, dataFactory);
 
         mCatalogMarkFragment = (CatalogMarkFragment) getSupportFragmentManager().findFragmentById(R.id.read_catalog_mark_layout);
         mCatalogMarkPresenter.setView(mCatalogMarkFragment);

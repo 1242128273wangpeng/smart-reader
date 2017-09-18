@@ -51,6 +51,7 @@ import android.widget.TextView;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.Map;
 
 import de.greenrobot.event.EventBus;
 
@@ -332,6 +333,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                 downloadIntent.setClass(context, DownloadManagerActivity.class);
                 startActivity(downloadIntent);
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_download_btn);
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.CACHEMANAGE);
                 break;
             case R.id.content_tab_bookshelf:
                 AppLog.e(TAG, "BookShelf Selected");
@@ -379,6 +381,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
             case R.id.home_edit_back:
             case R.id.home_edit_cancel:
                 removeBookShelfMenu();
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.CANCLE1);
                 break;
             default:
                 setTabSelected(0);

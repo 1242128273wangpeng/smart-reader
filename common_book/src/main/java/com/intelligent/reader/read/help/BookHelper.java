@@ -167,7 +167,7 @@ public class BookHelper extends BaseBookHelper {
         }
     }
 
-    private static boolean isDownFnish(Context ctx, Book book) {
+    public static boolean isDownFnish(Context ctx, Book book) {
 
         DownloadState state = BookHelper.getInitDownstate(ctx, book, BookHelper.getStartDownIndex(ctx, book));
         return state == DownloadState.FINISH;

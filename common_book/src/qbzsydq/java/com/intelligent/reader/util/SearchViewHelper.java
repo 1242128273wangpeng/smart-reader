@@ -315,6 +315,9 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
 
                     Map<String, String> data = new HashMap<>();
                     data.put("keyword", suggest);
+                    data.put("enterword", mSuggestAdapter.getEditInput());
+                    data.put("rank", String.valueOf(arg2+1));
+                    data.put("type", searchType);
                     StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TIPLISTCLICK, data);
                 }
             }

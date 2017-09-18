@@ -4,6 +4,7 @@ import com.intelligent.reader.R;
 import com.intelligent.reader.activity.DownloadManagerActivity;
 import com.intelligent.reader.read.help.BookHelper;
 
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.adapter.RemoveModeAdapter;
 import net.lzbook.kit.book.download.DownloadState;
 import net.lzbook.kit.data.bean.Book;
@@ -24,6 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveModeAdapter.RemoveAdapterChild {
     private static final String TAG = "DownloadManagerAdapter";
@@ -124,8 +127,9 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
                 if (start > task.endSequence) {
                     start = task.endSequence;
                 }
+                final String speed = start + "/" + (task.endSequence);
                 if (cache.download_count != null) {
-                    cache.download_count.setText(start + "/" + (task.endSequence) + mResources.getString(R.string.chapter));
+                    cache.download_count.setText(speed + mResources.getString(R.string.chapter));
                 }
                 int num = task.endSequence == 0 ? task.book.chapter_count : task.endSequence;
                 int progress = task.progress;
@@ -199,23 +203,31 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
                         System.err.println("download : " + book.book_id);
                         DownloadState state = downloadManagerActivity.views.getService().getDownBookTask(book.book_id) == null ? null
                                 : downloadManagerActivity.views.getService().getDownBookTask(book.book_id).state;
+                        Map<String, String> data = new HashMap<>();
                         if (state == null || state == DownloadState.NOSTART) {
                             BookHelper.startDownBookTask(mContext, book.book_id, 0);
                             BookHelper.writeDownIndex(mContext, book.book_id, false, 0);
                             return;
                         } else if (state == DownloadState.DOWNLOADING || state == DownloadState.WAITTING) {
                             downloadManagerActivity.stopDownloadbook(book.book_id);
+                            data.put("type", "2");
+                            data.put("speed", speed);
                         } else if (state == DownloadState.LOCKED) {
                             BookHelper.startDownBookTask(mContext, book.book_id);
+                            data.put("type", "1");
                         } else if (state == DownloadState.NONE_NETWORK) {
                             BookHelper.startDownBookTask(mContext, book.book_id);
+                            data.put("type", "1");
                         } else if (state == DownloadState.PAUSEED || state == DownloadState.REFRESH) {
                             BookHelper.startDownBookTask(mContext, book.book_id);
+                            data.put("type", "1");
                         } else if (state == DownloadState.FINISH) {
                             Toast.makeText(mContext, "缓存已完成", Toast.LENGTH_SHORT).show();
+                            data.put("type", "1");
                         }
                         notifyDataSetChanged();
-
+                        data.put("BOOKID", book.book_id);
+                        StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.CACHEBUTTON, data);
                     }
                 });
                 break;
