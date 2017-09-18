@@ -424,7 +424,8 @@ public abstract class IReadDataFactory {
             isPrepared = true;
             if (readStatus.currentPage == readStatus.pageCount) {
             }
-        } else {
+        }
+        if (readStatus.currentPage > readStatus.pageCount / 2) {
             Constants.endReadTime = System.currentTimeMillis() / 1000L;
             HashMap<String, String> params = new HashMap<>();
             params.put("book_id", readStatus.book_id);
