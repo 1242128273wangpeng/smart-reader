@@ -1,42 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/find_book_detail_main"
-                android:fitsSystemWindows="true"
+
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
     <RelativeLayout
             android:id="@+id/find_book_detail_head"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_view_height_48"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
             android:background="@color/top_navigation_bg_color">
 
-        <ImageView
-                android:id="@+id/find_book_detail_back"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:paddingLeft="@dimen/dimen_padding_12"
-                android:paddingRight="@dimen/dimen_padding_12"
-                android:src="@mipmap/cover_top_back"/>
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/top_bar_height">
 
-        <TextView
-                android:id="@+id/find_book_detail_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:textSize="18sp"
-                android:textColor="@color/top_navigation_text_color"/>
+            <ImageView
+                    android:id="@+id/find_book_detail_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:paddingLeft="@dimen/dimen_padding_12"
+                    android:paddingRight="@dimen/dimen_padding_12"
+                    android:src="@mipmap/cover_top_back"/>
 
-        <ImageView
-                android:id="@+id/find_book_detail_search"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:paddingLeft="@dimen/dimen_padding_12"
-                android:paddingRight="@dimen/dimen_padding_12"
-                android:src="@mipmap/search_submit_btn"/>
+            <TextView
+                    android:id="@+id/find_book_detail_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:textSize="18sp"
+                    android:textColor="@color/top_navigation_text_color"/>
+
+            <ImageView
+                    android:id="@+id/find_book_detail_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:paddingLeft="@dimen/dimen_padding_12"
+                    android:paddingRight="@dimen/dimen_padding_12"
+                    android:src="@mipmap/search_submit_btn"/>
+        </RelativeLayout>
     </RelativeLayout>
 
     <WebView

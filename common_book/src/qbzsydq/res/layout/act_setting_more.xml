@@ -3,49 +3,54 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
                 android:background="@color/base_bg"
                 android:orientation="vertical">
 
     <RelativeLayout
             android:id="@+id/rl_setting_title"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/top_bar_height"
+            android:layout_height="wrap_content"
             android:background="@color/color_primary"
+            android:fitsSystemWindows="true"
             android:focusableInTouchMode="true">
 
-        <ImageView
-                android:id="@+id/btn_left_setting"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:paddingLeft="@dimen/dimen_padding_12"
-                android:paddingRight="@dimen/dimen_padding_12"
-                android:src="@mipmap/cover_top_back"/>
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/top_bar_height">
 
-        <TextView
-                android:id="@+id/tv_title_name"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="0dp"
-                android:gravity="center"
-                android:text="@string/setting_more"
-                android:textColor="@color/top_navigation_text_color"
-                android:textSize="18sp"/>
+            <ImageView
+                    android:id="@+id/btn_left_setting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:paddingLeft="@dimen/dimen_padding_12"
+                    android:paddingRight="@dimen/dimen_padding_12"
+                    android:src="@mipmap/cover_top_back"/>
 
-        <TextView
-                android:id="@+id/tv_feedback"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:gravity="center"
-                android:paddingRight="@dimen/padding_14"
-                android:text="@string/menu_feedback"
-                android:textColor="@color/color_gray_9a9a9a"
-                android:textSize="14sp"
-                android:visibility="gone"/>
+            <TextView
+                    android:id="@+id/tv_title_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="0dp"
+                    android:gravity="center"
+                    android:text="@string/setting_more"
+                    android:textColor="@color/top_navigation_text_color"
+                    android:textSize="18sp"/>
+
+            <TextView
+                    android:id="@+id/tv_feedback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center"
+                    android:paddingRight="@dimen/padding_14"
+                    android:text="@string/menu_feedback"
+                    android:textColor="@color/color_gray_9a9a9a"
+                    android:textSize="14sp"
+                    android:visibility="gone"/>
+        </RelativeLayout>
     </RelativeLayout>
 
     <ScrollView

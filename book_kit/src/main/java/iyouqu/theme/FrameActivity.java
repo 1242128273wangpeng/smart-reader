@@ -7,6 +7,7 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.utils.ATManager;
 import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.ResourceUtil;
 
@@ -20,6 +21,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -57,11 +59,23 @@ public abstract class FrameActivity extends AppCompatActivity {
     private String mode;
     //检测自身是不是前台运行app
     private boolean isCurrentRunningForeground = true;
+    private boolean isFirst = true;
+    private boolean isMfqbxssc = false;
+    private String packageName;
 
 
     @SuppressLint("NewApi")
     public void onCreate(Bundle paramBundle) {
         super.onCreate(paramBundle);
+        if (isFirst) {
+            hasGetPackageName();
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.M && !isMfqbxssc) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }
+
+
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         initThemeHelper();
@@ -78,9 +92,19 @@ public abstract class FrameActivity extends AppCompatActivity {
         finish();
     }
 
+    public void hasGetPackageName() {
+        packageName = AppUtils.getPackageName();
+        isFirst = false;
+        if (!TextUtils.isEmpty(packageName) && packageName.equals("cc.kdqbxs.reader")) {
+            isMfqbxssc = true;
+        } else {
+            isMfqbxssc = false;
+        }
+    }
     /**
      * 初始化主题助手
      */
+
     private void initThemeHelper() {
         if (mThemeHelper == null) {
             mThemeHelper = ThemeHelper.getInstance(this);

@@ -17,7 +17,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -57,7 +56,7 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
     @Override
     public void onCreate(Bundle paramBundle) {
         super.onCreate(paramBundle);
-        setContentView(R.layout.setting_more_layout);
+        setContentView(R.layout.act_setting_more);
         mContext = this;
         initView();
         initData();

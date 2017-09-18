@@ -1,36 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_centerHorizontal="true"
-              android:layout_centerVertical="true"
-              android:orientation="vertical"
-              android:background="@drawable/bg_read_catalog_mark_pop">
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-    <TextView
-            android:id="@+id/txt_delete_mark"
+    <LinearLayout
+            android:id="@id/container"
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:paddingLeft="72dp"
-            android:paddingRight="72dp"
-            android:gravity="center"
-            android:textColor="@color/color_read_catalog_mark_pop_txt"
-            android:textSize="14sp"
-            android:text="删除书签"/>
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:orientation="vertical"
+            android:background="@drawable/bg_read_catalog_mark_pop">
 
-    <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/bg_read_catalog_mark_pop_divider"/>
+        <TextView
+                android:id="@+id/txt_delete_mark"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:paddingLeft="72dp"
+                android:paddingRight="72dp"
+                android:gravity="center"
+                android:textColor="@color/color_read_catalog_mark_pop_txt"
+                android:textSize="14sp"
+                android:text="删除书签"/>
 
-    <TextView
-            android:id="@+id/txt_clear_mark"
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/bg_read_catalog_mark_pop_divider"/>
+
+        <TextView
+                android:id="@+id/txt_clear_mark"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:paddingLeft="72dp"
+                android:paddingRight="72dp"
+                android:gravity="center"
+                android:textColor="@color/color_read_catalog_mark_pop_txt"
+                android:textSize="14sp"
+                android:text="清空书签"/>
+    </LinearLayout>
+
+    <net.lzbook.kit.book.view.NightShadowView
+            android:visibility="gone"
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:paddingLeft="72dp"
-            android:paddingRight="72dp"
-            android:gravity="center"
-            android:textColor="@color/color_read_catalog_mark_pop_txt"
-            android:textSize="14sp"
-            android:text="清空书签"/>
-</LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/container"
+            android:layout_alignRight="@+id/container"
+            android:layout_alignBottom="@+id/container"
+            android:layout_alignLeft="@+id/container"
+            app:cornerRadius="10dp"
+    />
+</RelativeLayout>

@@ -126,7 +126,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_book_over);
+        setContentView(R.layout.act_book_over);
         EventBus.getDefault().register(this);
         initView();
         readStatus = new ReadStatus(getApplicationContext());
