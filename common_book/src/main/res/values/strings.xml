@@ -17,8 +17,9 @@
     <string name="check_update">当前版本</string>
     <string name="market_go">去评分</string>
     <string name="about">关于</string>
-    
-    
+    <string name="slogan">全本小说免费看</string>
+
+
     <string name="search_title_text">输入书名、作者或关键词</string>
     <string name="publish_confirm_hint">提示</string>
     <string name="publish_leave_detail">离开将丢失已输入的内容,您是否确定要离开?</string>

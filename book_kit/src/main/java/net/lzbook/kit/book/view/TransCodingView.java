@@ -33,7 +33,7 @@ public class TransCodingView extends View {
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setTextSize(12 * unit);
         mPaint.setStrokeWidth(0);
-        canvas.drawText("转码声明", 22 * unit, (15) * unit, mPaint);
+        canvas.drawText("转码声明", 10 * unit, 20 * unit, mPaint);
     }
 
     public void setColor(int color) {

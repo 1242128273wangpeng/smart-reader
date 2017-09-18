@@ -8,10 +8,12 @@ import com.intelligent.reader.read.help.CallBack;
 import com.intelligent.reader.read.help.DrawTextHelper;
 import com.intelligent.reader.read.help.IReadDataFactory;
 import com.intelligent.reader.read.help.NovelHelper;
+import com.intelligent.reader.util.DisplayUtils;
 
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.ReadStatus;
+import net.lzbook.kit.statistic.alilog.Log;
 import net.lzbook.kit.utils.AppUtils;
 
 import android.app.Activity;
@@ -99,8 +101,6 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        width = readStatus.screenWidth = w;
-        height = readStatus.screenHeight = h;
 
         manager = new BitmapManager(readStatus.screenWidth, readStatus.screenHeight);
         // if (Constants.isSlideUp) {
@@ -108,13 +108,13 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
         // }
         if (callBack != null && (Math.abs(oldh - h) > AppUtils.dip2px(mContext, 26))) {
             callBack.onResize();
-            if (android.os.Build.VERSION.SDK_INT < 11 && Constants.isFullWindowRead) {
-                height = readStatus.screenHeight - AppUtils.dip2px(mContext, 20);
-            } else {
-                height = readStatus.screenHeight - AppUtils.dip2px(mContext, 40);
-            }
-
-            lp = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, height);
+//            if (android.os.Build.VERSION.SDK_INT < 11 && Constants.isFullWindowRead) {
+//                height = readStatus.screenHeight - AppUtils.dip2px(mContext, 20);
+//            } else {
+//                height = readStatus.screenHeight - AppUtils.dip2px(mContext, 40);
+//            }
+//
+//            lp = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, height);
             setBackground();
             if (chapterContent != null) {
                 getChapter(true);
@@ -140,9 +140,11 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
         this.readStatus = readStatus;
 
         width = readStatus.screenWidth;
-        height = readStatus.screenHeight - AppUtils.dip2px(mContext, 40);
+        height = readStatus.screenHeight - DisplayUtils.dp2px(getResources(), 30) * 2;
 
-        chapterContent = new ArrayList<ArrayList<String>>();
+//        dataFactory.setScreenSize(readStatus.screenWidth, height);
+
+        chapterContent = new ArrayList<>();
 
         drawTextHelper = new DrawTextHelper(getResources(), this, mActivity);
 
@@ -429,6 +431,18 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
             }
         }
 
+        if (readStatus.sequence == -1) {
+            novel_content_battery_view.setVisibility(GONE);
+            novel_time.setVisibility(GONE);
+            novel_chapter.setVisibility(GONE);
+            novel_page.setVisibility(GONE);
+        } else {
+            novel_content_battery_view.setVisibility(VISIBLE);
+            novel_time.setVisibility(VISIBLE);
+            novel_chapter.setVisibility(VISIBLE);
+            novel_page.setVisibility(VISIBLE);
+        }
+
         readStatus.chapterName = chapter_name;
 //		if (chapterNameList != null) {
 //			readStatus.chapterNameList = chapterNameList;
@@ -449,10 +463,11 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
 
 
         novel_title.setText(chapter_name);
-        novel_chapter.setText((readStatus.sequence + 1) + "/" + readStatus.chapterCount);
-        novel_page.setText(position + "/" + readStatus.pageCount);
+        novel_chapter.setText((readStatus.sequence + 1) + "/" + readStatus.chapterCount + "章");
+        novel_page.setText("本章第" + position + "/" + readStatus.pageCount);
         // lastResult = position;
         novelHelper.getPageContentScroll();
+        dataFactory.freshPage();
         return position;
     }
 
@@ -519,6 +534,9 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
                     readStatus.currentPage = 1;
                 }
             });
+        }
+        if (readStatus.sequence == -1) {
+            dataFactory.next();
         }
     }
 
@@ -743,10 +761,11 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
 
     private void drawBackground() {
         if (Constants.MODE == 51) {// 牛皮纸
-            scroll_page.setBackgroundResource(R.drawable.read_page_bg_default);
-            novel_title.setBackgroundResource(R.drawable.read_page_bg_default_patch);
-            novel_bottom.setBackgroundResource(R.drawable.read_page_bg_default_patch);
-            page_list.setFootViewBackground(R.drawable.read_page_bg_default_patch);
+//            scroll_page.setBackgroundResource(R.drawable.read_page_bg_default);
+//            novel_title.setBackgroundResource(R.drawable.read_page_bg_default_patch);
+//            novel_bottom.setBackgroundResource(R.drawable.read_page_bg_default_patch);
+//            page_list.setFootViewBackground(R.drawable.read_page_bg_default_patch);
+            setBackgroundResource(R.drawable.read_page_bg_default);
         } else {
             // 通过新的画布，将矩形画新的bitmap上去
             int color_int = R.color.reading_backdrop_first;
@@ -764,9 +783,11 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
                 color_int = R.color.reading_backdrop_night;
             }
 
-            novel_title.setBackgroundColor(getResources().getColor(color_int));
-            novel_bottom.setBackgroundColor(getResources().getColor(color_int));
-            page_list.setFootViewBackgroundColor(getResources().getColor(color_int));
+//            novel_title.setBackgroundColor(getResources().getColor(color_int));
+//            novel_bottom.setBackgroundColor(getResources().getColor(color_int));
+//            page_list.setFootViewBackgroundColor(getResources().getColor(color_int));
+
+            setBackgroundColor(getResources().getColor(color_int));
         }
     }
 
@@ -921,7 +942,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
                 hodler = new ViewHodler();
                 hodler.page = (Page) convertView.findViewById(R.id.page_item);
                 convertView.setTag(hodler);
-                Bitmap mCurPageBitmap = manager.getBitmap();
+                Bitmap mCurPageBitmap = manager.getBitmap8888();
                 Canvas mCurrentCanvas = new Canvas(mCurPageBitmap);
 
                 hodler.page.setTag(R.id.tag_bitmap, mCurPageBitmap);
@@ -930,7 +951,6 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
             } else {
                 hodler = (ViewHodler) convertView.getTag();
             }
-            hodler.page.setLayoutParams(lp);
 //			Log.e("getView", "position:" + position);
             // readStatus.currentPage = getCurrentPage(lastVisible + 1);
             getCurrentSequence(position + 1);
@@ -941,7 +961,12 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
 
             Bitmap mCurPageBitmap = (Bitmap) hodler.page.getTag(R.id.tag_bitmap);
             Canvas mCurrentCanvas = (Canvas) hodler.page.getTag(R.id.tag_canvas);
-            drawTextHelper.drawText(mCurrentCanvas, chapterContent.get(position), chapterNameList);
+            float pageHeight = drawTextHelper.drawText(mCurrentCanvas, chapterContent.get(position), chapterNameList);
+            android.util.Log.e("ScrollView", "pageHeight: " + pageHeight);
+            if (position != 0) {
+                lp.height = (int) pageHeight;
+            }
+            hodler.page.setLayoutParams(lp);
             hodler.page.drawPage(mCurPageBitmap);
 
             return convertView;

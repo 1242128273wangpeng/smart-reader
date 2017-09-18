@@ -378,7 +378,7 @@ public class NovelHelper {
     }
 
     private ArrayList<ArrayList<String>> initTextContent2(String content) {
-        float chapterHeight = 35 * readStatus.screenScaledDensity;
+        float chapterHeight = 35 * readStatus.screenScaledDensity + 100;
         float hideHeight = 15 * readStatus.screenScaledDensity;
 
         TextPaint mTextPaint = new TextPaint();
@@ -397,10 +397,10 @@ public class NovelHelper {
         final float tHeight = fm.descent - fm.ascent;
         float height = 0;
         if (Constants.isSlideUp) {
-            height = readStatus.screenHeight - tHeight - 50 * readStatus.screenScaledDensity;
+            height = readStatus.screenHeight;
         } else {
             height = readStatus.screenHeight - tHeight - readStatus.screenDensity
-                    * Constants.READ_CONTENT_PAGE_TOP_SPACE * 2;
+                    * Constants.READ_CONTENT_PAGE_TOP_SPACE * readStatus.screenScaledDensity;
         }
 
         float width = readStatus.screenWidth - readStatus.screenDensity * Constants.READ_CONTENT_PAGE_LEFT_SPACE * 2;
@@ -425,18 +425,36 @@ public class NovelHelper {
             sb.append("chapter_homepage \n");
             sb.append("chapter_homepage \n");
             sb.append("chapter_homepage \n");
+
             if (!TextUtils.isEmpty(readStatus.chapterName)) {
                 readStatus.chapterNameList = getNovelText(mchapterPaint, readStatus.chapterName, width
                         - readStatus.screenDensity * 10);
             }
-            if (readStatus.chapterNameList != null && readStatus.chapterNameList.size() > 2) {
+
+
+            String[] chapterNumAndName = readStatus.chapterNameList.get(0).split("章");
+            ArrayList<String> newChapterList = new ArrayList<>();
+
+            for (int i = 0; i < chapterNumAndName.length; i++) {
+                if (i == 0) {
+                    newChapterList.add(chapterNumAndName[i] + "章");
+                } else {
+                    newChapterList.add(chapterNumAndName[i].trim());
+                }
+            }
+            if (readStatus.chapterNameList.size() > 1) {
+                readStatus.chapterNameList.remove(0);
+                newChapterList.addAll(readStatus.chapterNameList);
+            }
+            readStatus.chapterNameList = newChapterList;
+
+            if (readStatus.chapterNameList.size() > 2) {
                 ArrayList<String> temp = new ArrayList<String>();
                 for (int i = 0; i < 2; i++) {
                     temp.add(readStatus.chapterNameList.get(i));
                 }
                 readStatus.chapterNameList = temp;
             }
-
         }
 
         if (readStatus != null && readStatus.book != null && Constants.QG_SOURCE.equals(readStatus.book.site)) {
@@ -494,6 +512,7 @@ public class NovelHelper {
                 textSpace += lineHeight;
                 textLength += lineText.length();
             }
+
             if (textSpace < height) {
                 pageLines.add(lineText);
             } else {
@@ -516,6 +535,14 @@ public class NovelHelper {
                 can = false;
             }
             // isLastDuan = isDuan;
+        }
+
+        // 去除章节开头特殊符号
+        if ((readStatus.sequence >= 0) && lists.size() > 3) {
+            String chapterTitle = lists.get(0).get(3);
+            if (!TextUtils.isEmpty(chapterTitle) && chapterTitle.contains("\"")) {
+                lists.get(0).set(3, chapterTitle.replace("\"", "").trim());
+            }
         }
 
         if (isNativeAdAvailable() && lists.size() >= 3) {

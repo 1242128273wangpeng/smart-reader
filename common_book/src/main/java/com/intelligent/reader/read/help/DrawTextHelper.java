@@ -1,19 +1,5 @@
 package com.intelligent.reader.read.help;
 
-import com.dingyueads.sdk.Native.YQNativeAdInfo;
-import com.dingyueads.sdk.NativeInit;
-import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.read.page.PageInterface;
-
-import net.lzbook.kit.R;
-import net.lzbook.kit.ad.OwnNativeAdManager;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.ReadStatus;
-import net.lzbook.kit.data.bean.SensitiveWords;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.ResourceUtil;
-import net.lzbook.kit.utils.StatisticManager;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.res.Resources;
@@ -24,10 +10,28 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.FontMetrics;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.os.Build;
 import android.text.TextPaint;
 import android.text.TextUtils;
+
+import com.dingyueads.sdk.Native.YQNativeAdInfo;
+import com.dingyueads.sdk.NativeInit;
+import com.intelligent.reader.R;
+import com.intelligent.reader.app.BookApplication;
+import com.intelligent.reader.read.page.PageInterface;
+import com.intelligent.reader.read.page.PageView;
+import com.intelligent.reader.util.DisplayUtils;
+
+import net.lzbook.kit.ad.OwnNativeAdManager;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.bean.ReadStatus;
+import net.lzbook.kit.data.bean.SensitiveWords;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.ResourceUtil;
+import net.lzbook.kit.utils.StatisticManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,6 +62,7 @@ public class DrawTextHelper {
     private Bitmap mBackground; // 背景Bitmap
     private Bitmap mKraftBackground; // 牛皮纸模式 底部背景
     private Bitmap mSoftBackground;
+    private Bitmap mIconBitmap;
     private int footHeight;
     private int slideupfootHeight;
     private int unit;
@@ -114,14 +119,14 @@ public class DrawTextHelper {
         headPaint.setStyle(Paint.Style.FILL);
         headPaint.setAntiAlias(true);
         headPaint.setDither(true);
-        headPaint.setColor(res.getColor(R.color.reading_title_day));
+        headPaint.setColor(res.getColor(R.color.reading_text_color_first));
         headPaint.setTextSize(12 * readStatus.screenScaledDensity);
 
         footPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
         footPaint.setStyle(Paint.Style.FILL);
         footPaint.setAntiAlias(true);
         footPaint.setDither(true);
-        footPaint.setColor(res.getColor(R.color.reading_title_day));
+        footPaint.setColor(res.getColor(R.color.reading_text_color_first));
         footPaint.setTextSize(12 * readStatus.screenScaledDensity);
 
         textPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
@@ -166,6 +171,7 @@ public class DrawTextHelper {
     public void setTextColor(int textColor) {
         this.textColor = textColor;
         mPaint.setColor(textColor);
+        footPaint = setPaintColor(footPaint, 1);
     }
 
     public void setPercent(float percent, Canvas canvas) {
@@ -208,9 +214,9 @@ public class DrawTextHelper {
      * paint
      * type  0: 画背景
      */
-    public Paint setPaintColor(Paint paint, int type) {
+    private Paint setPaintColor(Paint paint, int type) {
 
-        int color_int = R.color.reading_backdrop_first;
+        int color_int;
         if (Constants.MODE == 51) {
             if (type == 0) {
                 color_int = R.color.reading_backdrop_first;
@@ -265,18 +271,18 @@ public class DrawTextHelper {
     }
 
     //上下滑动
-    public synchronized void drawText(Canvas canvas, List<String> pageLines, ArrayList<String> chapterNameList) {
+    public synchronized float drawText(Canvas canvas, List<String> pageLines, ArrayList<String> chapterNameList) {
         mPaint.setTextSize(Constants.FONT_SIZE * readStatus.screenScaledDensity);
         duanPaint.setTextSize(1 * readStatus.screenScaledDensity);
         FontMetrics fm = mPaint.getFontMetrics();
 
-        float m_iFontHeight = fm.descent - fm.ascent + Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE
-                * readStatus.screenScaledDensity;
+        float m_iFontHeight = fm.descent - fm.ascent + Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE * readStatus.screenScaledDensity;
         float m_duan = (Constants.READ_PARAGRAPH_SPACE - Constants.READ_INTERLINEAR_SPACE) * Constants.FONT_SIZE
                 * readStatus.screenScaledDensity;
         float sHeight = Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE * readStatus.screenScaledDensity;
         float height = 0;
         float y = 0;
+        float pageHeight = 0;
         if (Constants.isSlideUp) {
             y = m_iFontHeight;
             height = readStatus.screenHeight - 52 * readStatus.screenScaledDensity;
@@ -286,7 +292,6 @@ public class DrawTextHelper {
             height = readStatus.screenHeight - readStatus.screenDensity
                     * Constants.READ_CONTENT_PAGE_TOP_SPACE * 2 + sHeight;
         }
-
 
         float textHeight = 0;
         float duan = 0;
@@ -314,16 +319,17 @@ public class DrawTextHelper {
             m_iFontHeight = fm.descent - fm.ascent + Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE
                     * readStatus.screenScaledDensity - distance;
         }
-        drawBackground(canvas);
+
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
         if (pageLines != null && !pageLines.isEmpty()) {
 
             if (pageLines.get(0).startsWith("txtzsydsq_homepage")) {// 封面页
                 drawHomePage(canvas);
             } else if (pageLines.get(0).startsWith("chapter_homepage")) {// 章节首页
-                drawChapterPage(canvas, pageLines, chapterNameList);
+                pageHeight = drawChapterPage(canvas, pageLines, chapterNameList);
             } else {
-
+                int dunCount = 0;
                 for (int i = 0; i < pageLines.size(); i++) {
                     String text = pageLines.get(i);
                     if (Constants.isShielding && !noReadSensitive) {
@@ -334,18 +340,23 @@ public class DrawTextHelper {
                     if (!TextUtils.isEmpty(text) && text.equals(" ")) {
                         canvas.drawText(text, Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity,
                                 y + m_duan * i, duanPaint);
+                        dunCount++;
                         y -= m_iFontHeight - m_duan;
                     } else {
                         canvas.drawText(text, Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity,
                                 y + m_iFontHeight * i, mPaint);
                     }
-
+                    if (i == pageLines.size() - 1) {
+                        pageHeight = (y + m_iFontHeight * pageLines.size()) - Constants.READ_CONTENT_PAGE_TOP_SPACE;
+                    }
                 }
             }
+            return pageHeight;
         }
         if (!Constants.isSlideUp) {
             drawFoot(canvas);
         }
+        return pageHeight;
     }
 
     public synchronized void drawText(Canvas canvas, List<String> pageLines, Activity activity) {
@@ -672,13 +683,12 @@ public class DrawTextHelper {
     }
 
     //上下滑动模式
-    private void drawChapterPage(Canvas canvas, List<String> pageLines, ArrayList<String> chapterNameList) {
+    private float drawChapterPage(Canvas canvas, List<String> pageLines, ArrayList<String> chapterNameList) {
         mPaint.setTextSize(Constants.FONT_SIZE * readStatus.screenScaledDensity);
         duanPaint.setTextSize(1 * readStatus.screenScaledDensity);
         textPaint.setTextSize(Constants.FONT_CHAPTER_SIZE * readStatus.screenScaledDensity);
         FontMetrics fm_chapter = textPaint.getFontMetrics();
-        float m_iFontHeight_chapter = fm_chapter.descent - fm_chapter.ascent + 0.5f * Constants.FONT_CHAPTER_SIZE
-                * readStatus.screenScaledDensity;
+        float m_iFontHeight_chapter = 0;
 
         FontMetrics fm = mPaint.getFontMetrics();
 
@@ -687,17 +697,18 @@ public class DrawTextHelper {
 
         float m_duan = (Constants.READ_PARAGRAPH_SPACE - Constants.READ_INTERLINEAR_SPACE) * Constants.FONT_SIZE
                 * readStatus.screenScaledDensity;
-        float y = 0;
-        float y_chapter = 0;
-        if (Constants.isSlideUp) {
-            y_chapter = fm_chapter.descent - fm_chapter.ascent;
-            y = fm.descent - fm.ascent - 5 * readStatus.screenScaledDensity;
-        } else {
-            y_chapter = fm_chapter.descent - fm_chapter.ascent + Constants.READ_CONTENT_PAGE_TOP_SPACE * readStatus.screenScaledDensity;
-            y = fm.descent - fm.ascent + Constants.READ_CONTENT_PAGE_TOP_SPACE * readStatus.screenScaledDensity;
-        }
+        float y;
+        float y_chapter;
+        float pageHeight = 0;
 
-        int size_c = -1;
+        y_chapter = fm_chapter.descent - fm_chapter.ascent;
+        y = fm.descent - fm.ascent - 5 * readStatus.screenScaledDensity;
+
+        setPaintColor(textPaint, 1);
+
+        int size_c;
+
+        // 章节头
         if (chapterNameList != null && !chapterNameList.isEmpty()) {
             size_c = chapterNameList.size();
             for (int i = 0; i < size_c; i++) {
@@ -705,26 +716,24 @@ public class DrawTextHelper {
                     if (!TextUtils.isEmpty(chapterNameList.get(0))) {
                         String chapterNameRemain = chapterNameList.get(0);
 
-                        textPaint.setColor(textColor);
-                        textPaint.setTextSize(Constants.FONT_CHAPTER_DEFAULT * readStatus.screenScaledDensity);
+                        textPaint.setTextSize(16 * readStatus.screenScaledDensity);
                         canvas.drawText(chapterNameRemain, Constants.READ_CONTENT_PAGE_LEFT_SPACE
-                                        * readStatus.screenScaledDensity,
-                                y_chapter + unit + m_iFontHeight * i, textPaint);
+                                * readStatus.screenScaledDensity, y_chapter, textPaint);
                     }
                 } else {
+                    textPaint.setTextSize(23 * readStatus.screenScaledDensity);
                     fm_chapter = textPaint.getFontMetrics();
                     m_iFontHeight_chapter = fm_chapter.descent - fm_chapter.ascent + 0.5f
                             * Constants.FONT_CHAPTER_DEFAULT * readStatus.screenScaledDensity;
                     canvas.drawText(chapterNameList.get(i), Constants.READ_CONTENT_PAGE_LEFT_SPACE
-                            * readStatus.screenScaledDensity, y_chapter + m_iFontHeight_chapter * i, textPaint);
+                            * readStatus.screenScaledDensity, y_chapter + 20 + m_iFontHeight_chapter * i, textPaint);
                 }
             }
-            float line_2 = y_chapter + 15 * readStatus.screenScaledDensity + m_iFontHeight_chapter * (size_c - 1);
-            canvas.drawLine(Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity, line_2,
-                    readStatus.screenWidth - Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity,
-                    line_2, mPaint);
+
             float font_height = fm.descent - fm.ascent;
-            y = y + 50 * readStatus.screenScaledDensity + font_height;
+
+            // 章节头与正文间距
+            y = y + 100 * readStatus.screenScaledDensity;
 
             float sHeight = Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE * readStatus.screenScaledDensity;
             float textHeight = 0;
@@ -743,12 +752,7 @@ public class DrawTextHelper {
 
             }
             float height = 0;
-            if (Constants.isSlideUp) {
-                height = readStatus.screenHeight - 96 * readStatus.screenScaledDensity + sHeight - font_height;
-            } else {
-                height = readStatus.screenHeight - readStatus.screenDensity * Constants.READ_CONTENT_PAGE_TOP_SPACE
-                        * 2 - 50 * readStatus.screenScaledDensity + sHeight - font_height;
-            }
+            height = readStatus.screenHeight - 96 * readStatus.screenScaledDensity + sHeight - font_height;
 
             if (size_c > 1) {
                 y += 30 * readStatus.screenScaledDensity;
@@ -784,13 +788,17 @@ public class DrawTextHelper {
                         } else {
                             canvas.drawText(text, Constants.READ_CONTENT_PAGE_LEFT_SPACE
                                     * readStatus.screenScaledDensity, y + m_iFontHeight * (i - 3), mPaint);
-
                         }
                     }
+                }
 
+                if (i == pageLines.size() - 1) {
+//                    pageHeight += (y + m_duan * duanCount) + (y + m_iFontHeight * (pageLines.size() - 3 -duanCount));
+                    pageHeight = y + m_iFontHeight * (pageLines.size() - 3);
                 }
             }
         }
+        return pageHeight;
     }
 
     /*
@@ -802,8 +810,7 @@ public class DrawTextHelper {
         duanPaint.setTextSize(1 * readStatus.screenScaledDensity);
         textPaint.setTextSize(Constants.FONT_CHAPTER_SIZE * readStatus.screenScaledDensity);
         FontMetrics fm_chapter = textPaint.getFontMetrics();
-        float m_iFontHeight_chapter = fm_chapter.descent - fm_chapter.ascent + 0.5f * Constants.FONT_CHAPTER_SIZE
-                * readStatus.screenScaledDensity;
+        float m_iFontHeight_chapter;
 
         FontMetrics fm = mPaint.getFontMetrics();
 
@@ -812,8 +819,8 @@ public class DrawTextHelper {
 
         float m_duan = (Constants.READ_PARAGRAPH_SPACE - Constants.READ_INTERLINEAR_SPACE) * Constants.FONT_SIZE
                 * readStatus.screenScaledDensity;
-        float y = 0;
-        float y_chapter = 0;
+        float y;
+        float y_chapter;
         if (Constants.isSlideUp) {
             y_chapter = fm_chapter.descent - fm_chapter.ascent;
             y = fm.descent - fm.ascent - 5 * readStatus.screenScaledDensity;
@@ -822,7 +829,8 @@ public class DrawTextHelper {
             y = fm.descent - fm.ascent + Constants.READ_CONTENT_PAGE_TOP_SPACE * readStatus.screenScaledDensity;
         }
 
-        int size_c = -1;
+        setPaintColor(textPaint, 1);
+        int size_c;
         if (readStatus.chapterNameList != null && !readStatus.chapterNameList.isEmpty()) {
             size_c = readStatus.chapterNameList.size();
             for (int i = 0; i < size_c; i++) {
@@ -831,28 +839,23 @@ public class DrawTextHelper {
                     if (!TextUtils.isEmpty(readStatus.chapterName)) {
                         String chapterNameRemain = readStatus.chapterNameList.get(0);
 
-                        textPaint.setColor(textColor);
-                        textPaint.setTextSize(Constants.FONT_CHAPTER_DEFAULT * readStatus.screenScaledDensity);
+                        textPaint.setTextSize(16 * readStatus.screenScaledDensity);
                         canvas.drawText(chapterNameRemain, Constants.READ_CONTENT_PAGE_LEFT_SPACE
-                                        * readStatus.screenScaledDensity,
-                                y_chapter + unit + m_iFontHeight * i, textPaint);
+                                * readStatus.screenScaledDensity, y_chapter, textPaint);
                     }
                 } else {
+                    textPaint.setTextSize(23 * readStatus.screenScaledDensity);
                     fm_chapter = textPaint.getFontMetrics();
                     m_iFontHeight_chapter = fm_chapter.descent - fm_chapter.ascent + 0.5f
                             * Constants.FONT_CHAPTER_DEFAULT * readStatus.screenScaledDensity;
                     canvas.drawText(readStatus.chapterNameList.get(i), Constants.READ_CONTENT_PAGE_LEFT_SPACE
-                            * readStatus.screenScaledDensity, y_chapter + m_iFontHeight_chapter * i, textPaint);
+                            * readStatus.screenScaledDensity, y_chapter + 20 + m_iFontHeight_chapter * i, textPaint);
                 }
             }
-            float line_2 = y_chapter + 15 * readStatus.screenScaledDensity + m_iFontHeight_chapter * (size_c - 1);
-            mPaint.setStrokeWidth(1 * readStatus.screenScaledDensity);
-            canvas.drawLine(Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity, line_2,
-                    readStatus.screenWidth - Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity,
-                    line_2, mPaint);
+
             mPaint.setStrokeWidth(0.0f);
             float font_height = fm.descent - fm.ascent;
-            y = y + 50 * readStatus.screenScaledDensity + font_height;
+            y = y + 100 * readStatus.screenScaledDensity;
             float sHeight = Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE * readStatus.screenScaledDensity;
             float textHeight = 0;
             float duan = 0;
@@ -897,6 +900,9 @@ public class DrawTextHelper {
                 m_iFontHeight = fm.descent - fm.ascent + Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE
                         * readStatus.screenScaledDensity - distance;
             }
+
+            textPaint.setColor(textColor);
+            textPaint.setTextSize(Constants.FONT_CHAPTER_DEFAULT * readStatus.screenScaledDensity);
             for (int i = 0, j = pageLines.size(); i < j; i++) {
                 if (i > size_c) {
                     String text = pageLines.get(i);
@@ -922,8 +928,8 @@ public class DrawTextHelper {
 
     public void drawFoot(Canvas canvas) {
         if (readStatus.sequence != -1 && !Constants.isSlideUp) {
-            drawHeadBackground(canvas);
-            drawFootBackground(canvas);
+//            drawHeadBackground(canvas);
+//            drawFootBackground(canvas);
             drawChapterNum(canvas);
             drawBattery(canvas);
             drawTime(canvas);
@@ -935,6 +941,7 @@ public class DrawTextHelper {
         if (!readStatus.isCanDrawFootView && !Constants.isSlideUp) {
             return;
         }
+        footPaint = setPaintColor(footPaint, 1);
         drawHeadBackgroundNew(canvas);
         drawChapterNumNew(canvas);
         drawBatteryNew(canvas);
@@ -944,12 +951,11 @@ public class DrawTextHelper {
 
     private void drawChapterNum(Canvas canvas) {
         float position;
-        position = readStatus.screenHeight - 5 * readStatus.screenScaledDensity;
+        position = readStatus.screenHeight - 10 * readStatus.screenScaledDensity;
 
         int chapter = readStatus.sequence + 1;
 
         float strwid = footPaint.measureText(chapter + "/" + readStatus.chapterCount + "章");
-
         canvas.drawText(chapter + "/" + readStatus.chapterCount + "章", readStatus.screenWidth / 2 - strwid / 2,
                 position, setPaintColor(footPaint, 1));
         drawChapterName(canvas);
@@ -959,7 +965,7 @@ public class DrawTextHelper {
         if (readStatus.chapterName == null)
             return;
         float position;
-        position = 15 * readStatus.screenScaledDensity;
+        position = 20 * readStatus.screenScaledDensity;
         String name = readStatus.chapterName;
         if (readStatus.chapterName.length() > 17) {
             name = name.substring(0, 16) + "...";
@@ -968,7 +974,7 @@ public class DrawTextHelper {
         float strwid = footPaint.measureText(name);
 
         canvas.drawText(name, readStatus.screenWidth / 2 - strwid / 2,
-                position, footPaint);
+                position, setPaintColor(footPaint, 1));
     }
 
     private void drawChapterNumNew(Canvas canvas) {
@@ -980,17 +986,17 @@ public class DrawTextHelper {
 
     private void drawPageNum(Canvas canvas) {
         float position;
-        position = readStatus.screenHeight - 5 * readStatus.screenScaledDensity;
-        String page_num = readStatus.currentPage + "/" + readStatus.pageCount + "页";
+        position = readStatus.screenHeight - 10 * readStatus.screenScaledDensity;
+        String page_num = "本章第" + readStatus.currentPage + "/" + readStatus.pageCount;
         float temp_width = footPaint.measureText(page_num);
         canvas.drawText(page_num, readStatus.screenWidth - Constants.READ_CONTENT_PAGE_LEFT_SPACE
-                * readStatus.screenScaledDensity - temp_width, position, footPaint);
+                * readStatus.screenScaledDensity - temp_width, position, setPaintColor(footPaint, 1));
     }
 
     private void drawPageNumNew(Canvas canvas) {
         String page_num = readStatus.currentPage + "/" + readStatus.pageCount + "页";
         float temp_width = footPaint.measureText(page_num);
-        canvas.drawText(page_num, readStatus.screenWidth / 2 - temp_width / 2, 17 * readStatus.screenScaledDensity, footPaint);
+        canvas.drawText(page_num, readStatus.screenWidth / 2 - temp_width / 2, 17 * readStatus.screenScaledDensity, setPaintColor(footPaint, 1));
     }
 
     private void drawTime(Canvas canvas) {
@@ -998,10 +1004,10 @@ public class DrawTextHelper {
             return;
         }
         float position;
-        position = readStatus.screenHeight - 5 * readStatus.screenScaledDensity;
+        position = readStatus.screenHeight - 10 * readStatus.screenScaledDensity;
         canvas.drawText(timeText, Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity + right1 + 5
                         * readStatus.screenScaledDensity, position,
-                footPaint);
+                setPaintColor(footPaint, 1));
     }
 
     private void drawTimeNew(Canvas canvas) {
@@ -1011,7 +1017,7 @@ public class DrawTextHelper {
         float temp_width = footPaint.measureText(timeText);
         canvas.drawText(timeText, readStatus.screenWidth - Constants.READ_CONTENT_PAGE_LEFT_SPACE
                         * readStatus.screenScaledDensity - temp_width, 17 * readStatus.screenScaledDensity,
-                footPaint);
+                setPaintColor(footPaint, 1));
     }
 
     private void drawBattery(Canvas canvas) {
@@ -1019,19 +1025,19 @@ public class DrawTextHelper {
             return;
         }
         float position;
-        position = readStatus.screenHeight - (5 * readStatus.screenScaledDensity);
+        position = readStatus.screenHeight - (10 * readStatus.screenScaledDensity);
         float position2;
-        position2 = readStatus.screenHeight - (bottom1 + 5 * readStatus.screenScaledDensity);
+        position2 = readStatus.screenHeight - (bottom1 + 10 * readStatus.screenScaledDensity);
 
         float position3;
-        position3 = readStatus.screenHeight - (bottom1 - top1 + 5 * readStatus.screenScaledDensity) + 1;
+        position3 = readStatus.screenHeight - (bottom1 - top1 + 10 * readStatus.screenScaledDensity) + 1;
         canvas.drawRect(Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity + left1 + 2,
                 position3,
                 (right1 - (left1 + 1)) * percent
                         + (Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity + left1 - 1),
-                position, footPaint);
+                position, setPaintColor(footPaint, 1));
         canvas.drawBitmap(mBitmap, Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity + left1,
-                position2, footPaint);
+                position2, setPaintColor(footPaint, 1));
     }
 
     private void drawBatteryNew(Canvas canvas) {
@@ -1051,9 +1057,9 @@ public class DrawTextHelper {
         canvas.drawRect(r_left + 2,
                 r_top,
                 r_right,
-                r_bottom, footPaint);
+                r_bottom, setPaintColor(footPaint, 1));
         canvas.drawBitmap(mBitmap, r_left,
-                top1 + 7 * readStatus.screenScaledDensity, footPaint);
+                top1 + 7 * readStatus.screenScaledDensity, setPaintColor(footPaint, 1));
     }
 
     public void getRect() {
@@ -1095,19 +1101,18 @@ public class DrawTextHelper {
      */
     private void drawHomePage(Canvas canvas) {
 
-        int title_height = readStatus.screenHeight * 1 / 3;
-        textPaint.setTextSize(Constants.FONT_CHAPTER_SIZE * readStatus.screenScaledDensity);
+        int title_height = readStatus.screenHeight / 3;
         FontMetrics fm = textPaint.getFontMetrics();
         float y = fm.descent - fm.ascent + title_height;
         float d_line = fm.descent - fm.ascent;
         ArrayList<String> nameList = readStatus.bookNameList;
 
+        float paddingBottom = readStatus.screenHeight - d_line;
+
         if (nameList != null && !nameList.isEmpty()) {
         } else {
             return;
         }
-        textPaint.setColor(textColor);
-
         int name_length = nameList.size();
         name_length = (name_length > 4) ? 4 : name_length;
         int x_with = 0;
@@ -1118,25 +1123,67 @@ public class DrawTextHelper {
             x_with = readStatus.screenWidth / 2;
         } else if (textPaint.getTextAlign() == Paint.Align.RIGHT) {
         }
-        for (int i = 0; i < name_length; i++) {
-            if (i == 0) {
-                canvas.drawText(nameList.get(i), x_with, y, textPaint);
-            } else {
-                canvas.drawText(nameList.get(i), x_with, y + d_line * i, textPaint);
-            }
-        }
-        float lineHeight = y + d_line * (nameList.size() - 1) + 16 * readStatus.screenScaledDensity;
-        float line_1 = 10 + 8 * readStatus.screenScaledDensity;
-        textPaint.setTextSize(16 * readStatus.screenScaledDensity);
 
-        if (!TextUtils.isEmpty(readStatus.bookAuthor)) {
-            canvas.drawText(readStatus.bookAuthor, x_with, lineHeight + 2 * line_1, textPaint);
+        // 顶部slogan
+        textPaint.setTextSize(13 * readStatus.screenScaledDensity);
+        textPaint.setColor(Color.parseColor("#50000000"));
+        if (Constants.isSlideUp) {
+            drawSpacingText(canvas, resources.getString(R.string.slogan), 240, 13, d_line / 2);
+        } else {
+            drawSpacingText(canvas, resources.getString(R.string.slogan), 240, 13, d_line * 2);
         }
-        /*if (!TextUtils.isEmpty(readStatus.bookSource)) {
-            canvas.drawText(readStatus.bookSource, x_with, readStatus.screenHeight - line_1, textPaint);
-        }*/
+
+
+        // 书籍名称
+        textPaint.setTextSize(Constants.FONT_CHAPTER_SIZE * readStatus.screenScaledDensity);
+        textPaint.setColor(Color.parseColor("#96000000"));
+        for (int i = 0; i < name_length; i++) {
+            if (i > 0) y = y + d_line * 2;
+            canvas.drawText(nameList.get(i), x_with, y, setPaintColor(textPaint, 1));
+        }
+
+        // 作者
+        float lineHeight = y + d_line * 2;
+        textPaint.setTextSize(16 * readStatus.screenScaledDensity);
+        textPaint.setColor(Color.parseColor("#60000000"));
+        if (!TextUtils.isEmpty(readStatus.bookAuthor)) {
+            canvas.drawText(readStatus.bookAuthor, x_with, lineHeight, setPaintColor(textPaint, 1));
+        }
+
+        //底部icon及名称
+        textPaint.setTextSize(13 * readStatus.screenScaledDensity);
+        drawSpacingText(canvas, resources.getString(R.string.app_name), 100, 13, paddingBottom);
+        paddingBottom -= d_line;
+
+        if (mIconBitmap == null || mIconBitmap.isRecycled()) {
+            mIconBitmap = BitmapFactory.decodeResource(resources, R.drawable.icon);
+        }
+
+        // 计算左边位置
+        int left = readStatus.screenWidth / 2 - mIconBitmap.getWidth() / 2;
+        // 计算上边位置
+        int top = (int) (paddingBottom - (mIconBitmap.getHeight() + d_line));
+
+        canvas.drawBitmap(mIconBitmap, new Rect(0, 0, mIconBitmap.getWidth(), mIconBitmap.getHeight()),
+                new Rect(left, top, left + mIconBitmap.getWidth(), top + mIconBitmap.getHeight()),
+                new Paint());
+
+//        canvas.drawBitmap(mIconBitmap, (readStatus.screenWidth / 2) - mIconBitmap.getWidth() / 2, paddingBottom - mIconBitmap.getHeight() - 20, new Paint());
+
         //默认情况
         textPaint.setTextAlign(Paint.Align.LEFT);
+    }
+
+    // 绘制带间距文本
+    private void drawSpacingText(Canvas canvas, String text, int spacing, float textSize, float y) {
+        if (TextUtils.isEmpty(text)) return;
+
+        float textWidth = textSize * text.length() + text.length() * DisplayUtils.px2dp(resources, spacing);
+        float drawTextStart = (readStatus.screenWidth - textWidth) / 2;
+
+        for (int i = 0; i < text.length(); i++) {
+            canvas.drawText(String.valueOf(text.charAt(i)), drawTextStart + DisplayUtils.px2dp(resources, spacing) * i * 1.5f, y, setPaintColor(textPaint, 1));
+        }
     }
 
     /**

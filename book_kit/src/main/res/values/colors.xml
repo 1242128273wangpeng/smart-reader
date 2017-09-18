@@ -21,7 +21,7 @@
 
     <!--阅读页相关-->
     <color name="reading_text_color_first">#42403C</color>
-    <color name="reading_backdrop_first">#FFFAE6</color>
+    <color name="reading_backdrop_first">#95000000</color>
     <color name="reading_text_color_second">#353535</color>
     <color name="reading_backdrop_second">#DEEFE6</color>
     <color name="reading_text_color_third">#382F20</color>

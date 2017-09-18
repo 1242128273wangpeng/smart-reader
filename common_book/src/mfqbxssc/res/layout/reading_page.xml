@@ -20,7 +20,7 @@
     
     <net.lzbook.kit.book.view.TransCodingView
             android:id="@+id/novel_option_encode"
-            android:layout_width="@dimen/dimen_view_width_90"
+        android:layout_width="@dimen/dimen_view_width_74"
             android:layout_height="@dimen/dimen_view_height_30"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"/>
