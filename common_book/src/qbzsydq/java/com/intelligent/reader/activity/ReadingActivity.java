@@ -87,7 +87,6 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.support.annotation.AttrRes;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -122,6 +121,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
+
+import iyouqu.theme.ThemeMode;
 
 /**
  * ReadingActivity
@@ -418,7 +419,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             BookHelper.reStartDownloadService();
         }
 
-
+        changeMode(Constants.MODE);
     }
 
     /**
@@ -619,7 +620,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
      */
     private void initBookState() {
         // 判断是否订阅
-        mBookDaoHelper = BookDaoHelper.getInstance(getApplicationContext());
+        mBookDaoHelper = BookDaoHelper.getInstance();
         readStatus.book_id = readStatus.book.book_id;
         isSubed = mBookDaoHelper.isBookSubed(readStatus.book_id);
         AppLog.e(TAG, "初始化书籍状态: " + readStatus.book_id);
@@ -679,6 +680,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         if (pageView != null) {
             pageView.freshBattery(batteryPercent);
         }
+
+        changeMode(Constants.MODE);
     }
 
     private void getSavedState(Bundle savedInstanceState) {
@@ -753,36 +756,10 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
      * 获取书籍内容
      */
     private void getBookContent() {
-        long last_read = sp.getLong(Constants.LAST_READ, 0);
 
-        long currentTime = System.currentTimeMillis();
-        boolean b = AppUtils.isToday(last_read, currentTime);
-        sp.edit().putLong(Constants.LAST_READ, currentTime).apply();
-        int nonet_readhour = sp.getInt(Constants.NONET_READTIME, 1);
-        if (!b) {
-            //用户当天首次进行阅读
-            Constants.is_today_first_read = true;
-            sp.edit().putLong(Constants.NONET_READ, 0).apply();
-        }
-
-        if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE && Constants.isNoNetRead == 1) {
-            long noNetRead = sp.getLong(Constants.NONET_READ, 0);
-
-            double noNetRead_hour = (noNetRead / 1000) / (60 * 60);
-
-            if (noNetRead_hour >= nonet_readhour) {
-                showChangeNetDialog();
-            } else {
-                NetWorkUtils.NATIVE_AD_TYPE = NetWorkUtils.NATIVE_AD_ERROR;
-                dataFactory.getChapterByLoading(ReadingActivity.MSG_LOAD_CUR_CHAPTER, readStatus.sequence);
-                noNetRead += currentTime - last_read;
-            }
-            sp.edit().putLong(Constants.NONET_READ, noNetRead).apply();
-
-        } else {
             NetWorkUtils.NATIVE_AD_TYPE = NetWorkUtils.NATIVE_AD_ERROR;
             dataFactory.getChapterByLoading(ReadingActivity.MSG_LOAD_CUR_CHAPTER, readStatus.sequence);
-        }
+
     }
 
     @Override
@@ -1204,7 +1181,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             //readStatus.requestConfig = BookApplication.getGlobalContext().getSourceConfig(requestItem.host);
 
 
-            BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance(ReadingActivity.this);
+            BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
             if (bookDaoHelper.isBookSubed(source.book_id)) {
                 Book iBook = bookDaoHelper.getBook(source.book_id, 0);
                 iBook.book_source_id = requestItem.book_source_id;
@@ -1508,9 +1485,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
      * 切换夜间模式
      */
     private void changeMode(int mode) {
-        if (this.current_mode == mode) {
-            return;
-        }
+
         this.current_mode = mode;
         AppLog.e(TAG, "ChangeMode : " + mode);
         Editor editor = modeSp.edit();
@@ -1785,6 +1760,11 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
     @Override
     public boolean shouldReceiveCacheEvent() {
+        return false;
+    }
+
+    @Override
+    public boolean shouldShowNightShadow() {
         return false;
     }
 
@@ -2287,25 +2267,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
     @Override
     public void onJumpChapter() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext());
-        long last_read = sharedPreferences.getLong(Constants.LAST_READ, 0);
-        long currentTime = System.currentTimeMillis();
-        long noNetRead = sharedPreferences.getLong(Constants.NONET_READ, 0);
-        int nonet_readhour = sharedPreferences.getInt(Constants.NONET_READTIME, 1);
-        sharedPreferences.edit().putLong(Constants.LAST_READ, currentTime).apply();
 
-        if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE && Constants.isNoNetRead == 1) {
-            double noNetRead_hour = (noNetRead / 1000) / (60 * 60);
-            if (noNetRead_hour >= nonet_readhour) {
-                showChangeNetDialog();
-            } else {
-                dataFactory.getChapterByLoading(ReadingActivity.MSG_JUMP_CHAPTER, readStatus.novel_progress);
-                noNetRead += currentTime - last_read;
-            }
-            sharedPreferences.edit().putLong(Constants.NONET_READ, noNetRead).apply();
-        } else {
             dataFactory.getChapterByLoading(ReadingActivity.MSG_JUMP_CHAPTER, readStatus.novel_progress);
-        }
+
 
     }
 
@@ -2425,14 +2389,17 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             //夜间模式只有一种背景， 不能存储
 //            edit.putInt("current_night_mode", Constants.MODE);
             Constants.MODE = sharedPreferences.getInt("current_light_mode", 51);
+            mThemeHelper.setMode(ThemeMode.THEME1);
         } else {
             edit.putInt("current_light_mode", Constants.MODE);
 //            Constants.MODE = sharedPreferences.getInt("current_night_mode", 61);
             //夜间模式只有一种背景
             Constants.MODE = 61;
+            mThemeHelper.setMode(ThemeMode.NIGHT);
         }
         edit.putInt("content_mode", Constants.MODE);
         edit.apply();
+
         Intent intent = new Intent(this, ReadingActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt("sequence", readStatus.sequence);
@@ -2528,11 +2495,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             }
             finish();
         }
-    }
-
-    @Override
-    public int getStatusBarColorId() {
-        return R.color.color_statusBar_read;
     }
 
     private static class TimerRunnable implements Runnable {

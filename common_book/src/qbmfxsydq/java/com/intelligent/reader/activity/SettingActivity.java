@@ -51,6 +51,7 @@ import java.util.Map;
 
 import de.greenrobot.event.EventBus;
 import iyouqu.theme.StatusBarCompat;
+import iyouqu.theme.ThemeMode;
 
 
 public class SettingActivity extends BaseCacheableActivity implements View.OnClickListener, SwitchButton.OnCheckedChangeListener {
@@ -628,11 +629,13 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         if (isChecked) {
             tv_night_shift.setText(R.string.mode_day);
             edit.putInt("current_light_mode", Constants.MODE);
-            Constants.MODE = sharedPreferences.getInt("current_night_mode", 61);
+            Constants.MODE = 61;
+            mThemeHelper.setMode(ThemeMode.NIGHT);
         } else {
             tv_night_shift.setText(R.string.mode_night);
             edit.putInt("current_night_mode", Constants.MODE);
             Constants.MODE = sharedPreferences.getInt("current_light_mode", 51);
+            mThemeHelper.setMode(ThemeMode.THEME1);
         }
         edit.putInt("content_mode", Constants.MODE);
         edit.apply();

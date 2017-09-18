@@ -175,7 +175,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
     }
 
     private void initData() {
-        mBookDaoHelper = BookDaoHelper.getInstance(getApplicationContext());
+        mBookDaoHelper = BookDaoHelper.getInstance();
         if (getIntent() != null) {
             //readStatus = (ReadStatus) getIntent().getSerializableExtra("readStatus");
             bookName = getIntent().getStringExtra("bookName");
@@ -291,7 +291,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
             //readStatus.requestConfig = BookApplication.getGlobalContext().getSourceConfig(requestItem.host);
 
 
-            BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance(BookEndActivity.this);
+            BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
             if (bookDaoHelper.isBookSubed(source.book_id)) {
                 Book iBook = bookDaoHelper.getBook(source.book_id, 0);
                 iBook.book_source_id = requestItem.book_source_id;
@@ -332,6 +332,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
     private void openCategoryPage() {
         //if (readStatus.book.book_type == 0) {
         Intent intent = new Intent(BookEndActivity.this, CataloguesActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         Bundle bundle = new Bundle();
         bundle.putSerializable("cover", readStatus.book);
         bundle.putString("book_id", readStatus.book_id);
@@ -344,6 +345,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
         bundle.putSerializable(Constants.REQUEST_ITEM, readStatus.getRequestItem());
         intent.putExtras(bundle);
         startActivity(intent);
+        overridePendingTransition(0, 0);
         //}
     }
 
@@ -508,7 +510,9 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
             recommendIntent.putExtra("filter_word", "ALL");
             recommendIntent.putExtra("sort_type", "0");
             recommendIntent.setClass(this, SearchBookActivity.class);
+            recommendIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(recommendIntent);
+            overridePendingTransition(0, 0);
             return;
         }
 
@@ -517,6 +521,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
             case R.id.iv_back_bookstore:
                 Intent storeIntent = new Intent();
                 storeIntent.setClass(BookEndActivity.this, HomeActivity.class);
+                storeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 try {
                     Bundle bundle = new Bundle();
                     bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_BOOKSTORE);
@@ -525,6 +530,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
 //                        ATManager.exitClient();
 //                    }
                     startActivity(storeIntent);
+                    overridePendingTransition(0, 0);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -535,6 +541,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
             case R.id.iv_title_right:
                 Intent shelfIntent = new Intent();
                 shelfIntent.setClass(BookEndActivity.this, HomeActivity.class);
+                shelfIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 try {
                     Bundle bundle = new Bundle();
                     bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_BOOKSHELF);
@@ -543,6 +550,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
 //                        ATManager.exitClient();
 //                    }
                     startActivity(shelfIntent);
+                    overridePendingTransition(0, 0);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

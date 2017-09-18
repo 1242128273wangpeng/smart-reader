@@ -109,7 +109,7 @@ public class CheckNovelUpdateService extends Service {
 
     private void init() {
         if (mBookDaoHelper == null) {
-            mBookDaoHelper = BookDaoHelper.getInstance(this);
+            mBookDaoHelper = BookDaoHelper.getInstance();
         }
     }
 
@@ -158,7 +158,7 @@ public class CheckNovelUpdateService extends Service {
             ArrayList<CheckNovelUpdHelper.MyBook> books = new ArrayList<>();
             String last_chapter_name = null;
             if (mBookDaoHelper == null) {
-                mBookDaoHelper = BookDaoHelper.getInstance(this);
+                mBookDaoHelper = BookDaoHelper.getInstance();
             }
             for (int i = 0; i < list.size(); i++) {
                 BookUpdate item = list.get(i);
@@ -206,7 +206,7 @@ public class CheckNovelUpdateService extends Service {
         if (isUpdateTime()) {
             BookUpdateTaskData data = new BookUpdateTaskData();
             if (mBookDaoHelper == null) {
-                mBookDaoHelper = BookDaoHelper.getInstance(this);
+                mBookDaoHelper = BookDaoHelper.getInstance();
             }
             ArrayList<Book> books = mBookDaoHelper.getBooksList();
             data.books = checkBookUpdate(books);
@@ -266,7 +266,7 @@ public class CheckNovelUpdateService extends Service {
         for (Book book : books) {
             book.last_checkupdatetime = System.currentTimeMillis();
             if (mBookDaoHelper == null) {
-                mBookDaoHelper = BookDaoHelper.getInstance(this);
+                mBookDaoHelper = BookDaoHelper.getInstance();
             }
             mBookDaoHelper.updateBook(book);
             if (Constants.QG_SOURCE.equals(book.site)) {
@@ -345,7 +345,7 @@ public class CheckNovelUpdateService extends Service {
         try {
             AppLog.e("getQGChapters", "开始");
             BookChapterDao chapterDao = new BookChapterDao(context, bookUpdate.id_book);
-            BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance(context);
+            BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
             //获取数据
             ArrayList<com.quduquxie.bean.Chapter> list;
             if (bookUpdate.update_index == 1) {//异常情况，需要先删除本地的章节，然后再全量更新。
@@ -359,7 +359,7 @@ public class CheckNovelUpdateService extends Service {
             //章节数据获取成功后，更新本地数据库
             AppLog.e("getQGChapters", "bookUpdate.update_index=" + bookUpdate.update_index + ":bookUpdate.update_count=" + bookUpdate.update_count);
             ArrayList<Chapter> chapterList = BeanParser.buildOWNChapterList(list, 0, list.size());
-            if (chapterList != null && !chapterList.isEmpty() && BookDaoHelper.getInstance(context).isBookSubed
+            if (chapterList != null && !chapterList.isEmpty() && BookDaoHelper.getInstance().isBookSubed
                     (bookUpdate.id_book)) {
 
                 boolean a = chapterDao.insertBookChapter(chapterList);

@@ -494,7 +494,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             return;
         }
         if (bookDaoHelper == null && mContext != null) {
-            bookDaoHelper = BookDaoHelper.getInstance(mContext);
+            bookDaoHelper = BookDaoHelper.getInstance();
         }
 
         esBookOnlineList = bookDaoHelper.getBooksOnLineListYS();
@@ -1040,7 +1040,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     }
 
     private Book changeBookSource(Source source, boolean changeReadFlag) {
-        BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance(getActivity().getApplicationContext());
+        BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
         Book iBook = bookDaoHelper.getBook(source.book_id, 0);
         iBook.book_source_id = source.book_source_id;
         iBook.site = source.host;

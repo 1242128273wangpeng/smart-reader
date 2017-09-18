@@ -1,11 +1,5 @@
 package com.intelligent.reader.search;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.widget.Toast;
-
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.CoverPageActivity;
 import com.intelligent.reader.net.NetOwnSearch;
@@ -16,15 +10,21 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.RequestItem;
+import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.data.search.SearchAutoCompleteBean;
 import net.lzbook.kit.data.search.SearchCommonBean;
-import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.encrypt.URLBuilderIntterface;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.statistic.model.Search;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.JSInterfaceHelper;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -61,27 +61,35 @@ public class SearchHelper {
 
     private Context mContext;
     private String url_tag;
-
+    private SearchSuggestCallBack searchSuggestCallBack;
+    private JsCallSearchCall mJsCallSearchCall;
+    private StartLoadCall mStartLoadCall;
 
     public SearchHelper(Context context){
         mContext = context;
         if (bookDaoHelper == null) {
-            bookDaoHelper = BookDaoHelper.getInstance(mContext.getApplicationContext());
+            bookDaoHelper = BookDaoHelper.getInstance();
         }
     }
 
-    private class WordInfo{
-        boolean actioned = false;
-        private long startTime = System.currentTimeMillis();
-        private long useTime = 0;
+    // 生成 [0-n) 个不重复的随机数
+    public static ArrayList<Integer> getRandomInt(int range, int count) {
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        Random rand = new Random();
+        boolean[] bool = new boolean[range];
+        int num = 0;
 
-        public long computeUseTime(){
-            if(useTime == 0) {
-                useTime = System.currentTimeMillis() - startTime;
-            }
-            return useTime;
+        for (int i = 0; i < count; i++) {
+            do {
+                // 如果产生的数相同继续循环
+                num = rand.nextInt(range);
+            } while (bool[num]);
+
+            bool[num] = true;
+            list.add(num);
         }
 
+        return list;
     }
 
     public void startSearchSuggestData(String searchWord){
@@ -176,14 +184,8 @@ public class SearchHelper {
         }
     }
 
-    private SearchSuggestCallBack searchSuggestCallBack;
-
     public void setSearchSuggestCallBack(SearchSuggestCallBack ssb){
         searchSuggestCallBack = ssb;
-    }
-
-    public interface SearchSuggestCallBack{
-        void onSearchResult(List<SearchCommonBean> suggestList);
     }
 
     public void setStartedAction(){
@@ -400,26 +402,6 @@ public class SearchHelper {
 
     }
 
-    // 生成 [0-n) 个不重复的随机数
-    public static ArrayList<Integer> getRandomInt(int range, int count) {
-        ArrayList<Integer> list = new ArrayList<Integer>();
-        Random rand = new Random();
-        boolean[] bool = new boolean[range];
-        int num = 0;
-
-        for (int i = 0; i < count; i++) {
-            do {
-                // 如果产生的数相同继续循环
-                num = rand.nextInt(range);
-            } while (bool[num]);
-
-            bool[num] = true;
-            list.add(num);
-        }
-
-        return list;
-    }
-
     public String getReplaceWord() {
         String[] words = {"品质随时购", "春节不打烊", "轻松过大年", "便携无屏电视", "游戏笔记本电脑", "全自动洗衣机", "家团圆礼盒"};
         Random random = new Random();
@@ -438,25 +420,38 @@ public class SearchHelper {
         wordInfoMap.clear();
     }
 
-
-    private JsCallSearchCall mJsCallSearchCall;
-
     public void setJsCallSearchCall(JsCallSearchCall jsCallSearchCall){
         mJsCallSearchCall = jsCallSearchCall;
     }
 
-    public interface JsCallSearchCall{
-        void onJsSearch();
+    public void setStartLoadCall(StartLoadCall startLoadCall) {
+        mStartLoadCall = startLoadCall;
     }
 
-    private StartLoadCall mStartLoadCall;
+    public interface SearchSuggestCallBack {
+        void onSearchResult(List<SearchCommonBean> suggestList);
+    }
 
-    public void setStartLoadCall(StartLoadCall startLoadCall){
-        mStartLoadCall = startLoadCall;
+    public interface JsCallSearchCall {
+        void onJsSearch();
     }
 
     public interface StartLoadCall{
         void onStartLoad(String url);
+    }
+
+    private class WordInfo {
+        boolean actioned = false;
+        private long startTime = System.currentTimeMillis();
+        private long useTime = 0;
+
+        public long computeUseTime() {
+            if (useTime == 0) {
+                useTime = System.currentTimeMillis() - startTime;
+            }
+            return useTime;
+        }
+
     }
 
 

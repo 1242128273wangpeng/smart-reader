@@ -9,44 +9,50 @@
 
     <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/top_bar_height"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
             android:layout_alignParentTop="true">
 
-        <ImageView
-                android:id="@+id/iv_back"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:gravity="center"
-                android:paddingLeft="16dp"
-                android:paddingRight="@dimen/padding_16"
-                android:src="@drawable/bookend_top_back_selector"/>
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/top_bar_height">
 
-        <TextView
-                android:id="@+id/name_bookend"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:singleLine="true"
-                android:textColor="@color/setting_login_font_color"
-                android:text="@string/read_end_tip"
-                android:textSize="16sp"
-                android:layout_alignParentTop="true"
-                android:layout_toLeftOf="@+id/imageView"
-                android:layout_toRightOf="@+id/iv_back"/>
+            <ImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:gravity="center"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="@dimen/padding_16"
+                    android:src="@drawable/bookend_top_back_selector"/>
 
-        <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:paddingLeft="16dp"
-                android:visibility="invisible"
-                android:paddingRight="@dimen/padding_16"
-                android:src="@mipmap/top_back"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:id="@+id/imageView"/>
+            <TextView
+                    android:id="@+id/name_bookend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:textColor="@color/setting_login_font_color"
+                    android:text="@string/read_end_tip"
+                    android:textSize="16sp"
+                    android:layout_alignParentTop="true"
+                    android:layout_toLeftOf="@+id/imageView"
+                    android:layout_toRightOf="@+id/iv_back"/>
+
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingLeft="16dp"
+                    android:visibility="invisible"
+                    android:paddingRight="@dimen/padding_16"
+                    android:src="@mipmap/top_back"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:id="@+id/imageView"/>
+        </RelativeLayout>
     </RelativeLayout>
 
     <ScrollView

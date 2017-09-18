@@ -193,7 +193,7 @@ public class DownloadManagerActivity extends BaseCacheableActivity implements On
     }
 
     private void initData() {
-        mBookDaoHelper = BookDaoHelper.getInstance(this);
+        mBookDaoHelper = BookDaoHelper.getInstance();
         downloadingBooks = new ArrayList<>();
         views = new DownloadPager(getApplicationContext(), this, downloadingBooks);
         content_layout.addView(views);
@@ -213,7 +213,7 @@ public class DownloadManagerActivity extends BaseCacheableActivity implements On
 
     private void getDownLoadBookList(boolean hasDeleted) {
         if (mBookDaoHelper == null) {
-            mBookDaoHelper = BookDaoHelper.getInstance(this);
+            mBookDaoHelper = BookDaoHelper.getInstance();
         }
         ArrayList<Book> books = mBookDaoHelper.getBooksOnLineList();
 //        Log.e(TAG, "addBookToService:"+books);

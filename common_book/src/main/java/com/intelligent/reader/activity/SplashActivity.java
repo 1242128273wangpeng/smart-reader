@@ -6,7 +6,6 @@ import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.util.DynamicParamter;
 
 import net.lzbook.kit.ad.OwnNativeAdManager;
-import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Book;
@@ -38,6 +37,7 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -188,6 +188,16 @@ public class SplashActivity extends FrameActivity {
         super.onCreate(paramBundle);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
         try {
             setContentView(R.layout.act_splash);
         } catch (Exception e) {
@@ -402,7 +412,7 @@ public class SplashActivity extends FrameActivity {
 
             boolean b = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(Constants.UPDATE_CHAPTER_SOURCE_ID, false);
             if (!b) {
-                BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance(BaseBookApplication.getGlobalContext());
+                BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
                 ArrayList<Book> bookOnlineList = bookDaoHelper.getBooksOnLineList();
                 for (int i = 0; i < bookOnlineList.size(); i++) {
                     Book iBook = bookOnlineList.get(i);

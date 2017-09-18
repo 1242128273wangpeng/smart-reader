@@ -2,15 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/find_book_detail_main"
                 android:layout_width="match_parent"
-                android:fitsSystemWindows="true"
-                android:clipToPadding="true"
+
                 android:layout_height="match_parent">
 
     <RelativeLayout
             android:id="@+id/find_book_detail_head"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_view_height_48"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
             android:background="@color/top_navigation_bg_color">
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_view_height_48">
 
         <ImageView
                 android:id="@+id/find_book_detail_back"
@@ -38,6 +41,7 @@
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
                 android:src="@mipmap/search_submit_btn"/>
+        </RelativeLayout>
     </RelativeLayout>
 
     <WebView

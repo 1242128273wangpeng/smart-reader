@@ -2,16 +2,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
-                android:fitsSystemWindows="true"
                 android:layout_height="fill_parent"
                 android:background="@color/cover_bg">
 
     <RelativeLayout
             android:id="@+id/rl_title_book_cover"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/top_bar_height"
+            android:fitsSystemWindows="true"
+            android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:background="@color/top_navigation_bg_color">
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/top_bar_height">
 
         <ImageView
                 android:id="@+id/book_cover_back"
@@ -30,6 +33,7 @@
                 android:text="书籍封面"
                 android:textColor="@color/top_navigation_text_color"
                 android:textSize="18sp"/>
+        </RelativeLayout>
     </RelativeLayout>
 
     <RelativeLayout

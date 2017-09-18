@@ -23,6 +23,7 @@ import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.RequestItem;
 import net.lzbook.kit.data.db.BookChapterDao;
 import net.lzbook.kit.data.db.BookDaoHelper;
+import net.lzbook.kit.encrypt.URLBuilderIntterface;
 import net.lzbook.kit.net.volley.request.VolleyDataService;
 import net.lzbook.kit.request.RequestExecutorDefault;
 import net.lzbook.kit.request.RequestFactory;
@@ -38,7 +39,6 @@ import net.lzbook.kit.utils.MD5Utils;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.OpenUDID;
 import net.lzbook.kit.utils.StatServiceUtils;
-import net.lzbook.kit.encrypt.URLBuilderIntterface;
 
 import org.json.JSONException;
 
@@ -151,7 +151,7 @@ public class DownloadService extends Service {
         super.onCreate();
         binder = new MyBinder();
         if (mBookDaoHelper == null) {
-            mBookDaoHelper = BookDaoHelper.getInstance(this);
+            mBookDaoHelper = BookDaoHelper.getInstance();
         }
         if (mTaskQueue == null) {
             mTaskQueue = new BlockingLinkedHashMap(MAX_SIZE);
@@ -581,7 +581,7 @@ public class DownloadService extends Service {
 
             BaseBookHelper.writeDownIndex(this, task.book_id, true, task.endSequence);
 
-            task.book = BookDaoHelper.getInstance(this).getBook(task.book.book_id, 0);
+            task.book = BookDaoHelper.getInstance().getBook(task.book.book_id, 0);
 
             task.isAutoState = false;
 //            task.startSequence = start + BaseBookHelper.getCacheCount(task.book.book_id, start, task.book.chapter_count);// FIXME
@@ -694,7 +694,7 @@ public class DownloadService extends Service {
 
     private void onAutoStateTaskFinish(final BookTask task) {
         if (task != null) {
-            task.book = BookDaoHelper.getInstance(this).getBook(task.book.book_id, 0);
+            task.book = BookDaoHelper.getInstance().getBook(task.book.book_id, 0);
             int count = BaseBookHelper.getStartDownIndex(this, task.book);
             task.startSequence = downPosition;// FIXME
 
@@ -797,7 +797,7 @@ public class DownloadService extends Service {
 
                     final boolean isSameSource = cacheInfo.getHost().equalsIgnoreCase(task.book.site);
 
-                    BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance(DownloadService.this);
+                    BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
                     if (bookDaoHelper.isBookSubed(task.book.book_id)) {
                         Book iBook = bookDaoHelper.getBook(task.book.book_id, 0);
                         iBook.book_source_id = cacheInfo.getBookSourceId();
@@ -898,7 +898,7 @@ public class DownloadService extends Service {
                                         try {
                                             ArrayList<Chapter> chapters = OWNParser.parserOwnChapterList(response, requestItem);
 
-                                            if (chapters != null && !chapters.isEmpty() && BookDaoHelper.getInstance(DownloadService.this).isBookSubed
+                                            if (chapters != null && !chapters.isEmpty() && BookDaoHelper.getInstance().isBookSubed
                                                     (requestItem.book_id)) {
 
                                                 bookChapterDao.insertBookChapter(chapters);
@@ -916,7 +916,7 @@ public class DownloadService extends Service {
                                                 task.book.gsort = lastChapter.gsort;
                                                 task.book.last_chapter_md5 = lastChapter.book_chapter_md5;
                                                 task.book.last_updateSucessTime = System.currentTimeMillis();
-                                                BookDaoHelper.getInstance(DownloadService.this).updateBook(task.book);
+                                                BookDaoHelper.getInstance().updateBook(task.book);
 
                                             }
                                             chapterArrayList = chapters;
@@ -947,7 +947,7 @@ public class DownloadService extends Service {
 
                                     long startParse = System.currentTimeMillis();
                                     try {
-                                        BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance(DownloadService.this);
+                                        BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
 
                                         DesUtils des = new DesUtils();//自定义密钥
                                         File packageFile = targetCacheFile;

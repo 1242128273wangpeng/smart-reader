@@ -145,7 +145,7 @@ public class FileViewer {
 
 
     protected Book getBook(String gid) {
-        Book isbook = (Book) BookDaoHelper.getInstance(context).getBook(gid, 0);
+        Book isbook = (Book) BookDaoHelper.getInstance().getBook(gid, 0);
         return isbook;
     }
 

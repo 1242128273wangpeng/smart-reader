@@ -10,16 +10,17 @@ import com.intelligent.reader.activity.SettingActivity;
 import com.intelligent.reader.activity.SplashActivity;
 import com.intelligent.reader.app.BookApplication;
 
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.ConsumeEvent;
 import net.lzbook.kit.book.view.NonSwipeViewPager;
 import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.encrypt.URLBuilderIntterface;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AnimationHelper;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.FrameBookHelper;
 import net.lzbook.kit.utils.SharedPreferencesUtils;
-import net.lzbook.kit.encrypt.URLBuilderIntterface;
 
 import android.app.Activity;
 import android.content.Context;
@@ -510,6 +511,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
             case R.id.content_head_user:
             case R.id.book_button_left:
             case R.id.content_head_setting:
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.PERSONAL);
                 EventBus.getDefault().post(new ConsumeEvent(R.id.redpoint_home_setting));
                 startActivity(new Intent(context, SettingActivity.class));
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_mine_menu);
@@ -517,6 +519,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
             case R.id.book_button_right:
             case R.id.bookshelf_search_view:
             case R.id.content_head_search:
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.MORE);
                 Intent searchInter = new Intent();
                 searchInter.setClass(context, SearchBookActivity.class);
                 AppLog.e(TAG, "SearchBookActivity -----> Start");
@@ -538,6 +541,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                 if (STYLE_CASE == BOTTOM_FOUR_TABS) {
                     content_title.setText("书架");
                 }
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.BOOKSHELF);
                 break;
             case R.id.radiobutton_bookstore:
             case R.id.content_tab_recommend_four_tabs:
@@ -554,7 +558,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                     }
                 }
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_recommend_menu);
-
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.RECOMMEND);
                 break;
             case R.id.content_tab_ranking_four_tabs:
             case R.id.content_tab_ranking:
@@ -564,6 +568,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                     content_title.setText("榜单");
                 }
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_rank_menu);
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.TOP);
                 break;
 
             case R.id.content_tab_category_four_tabs:
@@ -574,6 +579,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                     content_title.setText("分类");
                 }
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_category_menu);
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.CLASS);
                 break;
 
             case R.id.home_edit_back:

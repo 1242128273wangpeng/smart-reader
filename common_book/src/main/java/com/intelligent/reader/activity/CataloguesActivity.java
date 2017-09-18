@@ -237,7 +237,7 @@ public class CataloguesActivity extends BaseCacheableActivity implements OnClick
         }
 
         if (mBookDaoHelper == null)
-            mBookDaoHelper = BookDaoHelper.getInstance(this);
+            mBookDaoHelper = BookDaoHelper.getInstance();
 
         getChapterData();
 
@@ -650,7 +650,7 @@ public class CataloguesActivity extends BaseCacheableActivity implements OnClick
     private void doDeleteBookmarks(ArrayList<?> deleteList) {
 
         if (mBookDaoHelper == null) {
-            mBookDaoHelper = BookDaoHelper.getInstance(this);
+            mBookDaoHelper = BookDaoHelper.getInstance();
         }
 
         mBookDaoHelper.deleteBookMark((ArrayList<Integer>) deleteList, 0);

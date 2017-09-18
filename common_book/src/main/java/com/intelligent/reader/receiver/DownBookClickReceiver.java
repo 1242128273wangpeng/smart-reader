@@ -30,13 +30,13 @@ public class DownBookClickReceiver extends BroadcastReceiver {
             }
             if (!isStart) {
                 int gid = paramIntent.getIntExtra("gid", 0);
-                BookDaoHelper mBookDaoHelper = BookDaoHelper.getInstance(ctt);
+                BookDaoHelper mBookDaoHelper = BookDaoHelper.getInstance();
                 if (mBookDaoHelper != null && mBookDaoHelper.isBookSubed(gid)) {
                     Intent intent = new Intent();
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.setClass(ctt, ReadingActivity.class);
                     if (gid != 0) {
-                        Book book = BookDaoHelper.getInstance(ctt).getBook(gid, 0);
+                        Book book = BookDaoHelper.getInstance().getBook(gid, 0);
                         Bundle bundle = new Bundle();
                         bundle.putInt("sequence", book.sequence);
                         bundle.putInt("offset", book.offset);
@@ -48,13 +48,13 @@ public class DownBookClickReceiver extends BroadcastReceiver {
                 }
             } else {
                 int gid = paramIntent.getIntExtra("gid", 0);
-                BookDaoHelper mBookDaoHelper = BookDaoHelper.getInstance(ctt);
+                BookDaoHelper mBookDaoHelper = BookDaoHelper.getInstance();
                 if (mBookDaoHelper != null && mBookDaoHelper.isBookSubed(gid)) {
                     Intent intent = new Intent();
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.setClass(ctt, ReadingActivity.class);
                     if (gid != 0) {
-                        Book book = (Book) BookDaoHelper.getInstance(ctt).getBook(gid, 0);
+                        Book book = (Book) BookDaoHelper.getInstance().getBook(gid, 0);
                         Bundle bundle = new Bundle();
                         bundle.putInt("sequence", book.sequence);
                         bundle.putInt("offset", book.offset);

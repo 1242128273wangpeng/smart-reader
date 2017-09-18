@@ -4,7 +4,6 @@ import com.intelligent.reader.activity.CataloguesActivity;
 import com.intelligent.reader.activity.CoverPageActivity;
 import com.intelligent.reader.activity.ReadingActivity;
 
-import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.book.download.DownloadState;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Book;
@@ -14,7 +13,6 @@ import net.lzbook.kit.data.ormlite.bean.HistoryInfo;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.BaseBookHelper;
 import net.lzbook.kit.utils.FootprintUtils;
-import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
 
 import android.app.Activity;
@@ -39,7 +37,7 @@ public class BookHelper extends BaseBookHelper {
                 updateBook.book_type = 0;
                 updateBook.dex = book.dex;
                 updateBook.initialization_status = book.initialization_status;
-                BookDaoHelper.getInstance(ctx).updateBook(updateBook);
+                BookDaoHelper.getInstance().updateBook(updateBook);
                 RequestItem requestItem = new RequestItem();
                 requestItem.book_id = book.book_id;
                 requestItem.book_source_id = book.book_source_id;
@@ -50,7 +48,7 @@ public class BookHelper extends BaseBookHelper {
                 requestItem.parameter = book.parameter;
                 requestItem.extra_parameter = book.extra_parameter;
 
-                if ((book.sequence > -1 || book.readed == 1 || isDownFnish(ctx, book)) && BookDaoHelper.getInstance(ctx).isBookSubed(book.book_id)) {
+                if ((book.sequence > -1 || book.readed == 1 || isDownFnish(ctx, book)) && BookDaoHelper.getInstance().isBookSubed(book.book_id)) {
                     AppLog.i("DownloadState---", "goToCoverOrRead " + isDownFnish(ctx, book));
                     requestItem.fromType = 0;
                     if (Constants.QG_SOURCE.equals(book.site)) {
@@ -70,7 +68,7 @@ public class BookHelper extends BaseBookHelper {
                     net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(activity, net.lzbook.kit.utils.StatServiceUtils.bs_click_one_book);
 
                 } else {
-                    BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance(BaseBookApplication.getGlobalContext());
+                    BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
                     book.initialization_status = 0;
                     bookDaoHelper.updateBookNew(book);
                     //跳转到目录页
@@ -110,7 +108,7 @@ public class BookHelper extends BaseBookHelper {
                 updateBook.book_type = 0;
                 updateBook.dex = book.dex;
                 updateBook.initialization_status = book.initialization_status;
-                BookDaoHelper.getInstance(ctx).updateBook(updateBook);
+                BookDaoHelper.getInstance().updateBook(updateBook);
                 RequestItem requestItem = new RequestItem();
                 requestItem.book_id = book.book_id;
                 requestItem.book_source_id = book.book_source_id;
@@ -121,7 +119,7 @@ public class BookHelper extends BaseBookHelper {
                 requestItem.parameter = book.parameter;
                 requestItem.extra_parameter = book.extra_parameter;
                 if (book.readed == -2 || book.initialization_status == 5) {
-                    BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance(BaseBookApplication.getGlobalContext());
+                    BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
                     book.initialization_status = 0;
                     bookDaoHelper.updateBookNew(book);
                     //跳转到目录页
@@ -135,7 +133,7 @@ public class BookHelper extends BaseBookHelper {
                     intent.setClass(ctx, CataloguesActivity.class);
                     intent.putExtras(bundle);
                     activity.startActivity(intent);
-                } else if ((book.sequence > -1 || book.readed == 1 || isDownFnish(ctx, book)) && BookDaoHelper.getInstance(ctx).isBookSubed(book.book_id)) {
+                } else if ((book.sequence > -1 || book.readed == 1 || isDownFnish(ctx, book)) && BookDaoHelper.getInstance().isBookSubed(book.book_id)) {
                     AppLog.i("DownloadState---", "goToCoverOrRead " + isDownFnish(ctx, book));
 
                     requestItem.fromType = 0;
@@ -187,7 +185,7 @@ public class BookHelper extends BaseBookHelper {
         currentBook.update_status = 0;
         currentBook.book_type = 0;
         currentBook.dex = book.dex;
-        BookDaoHelper.getInstance(context).updateBook(currentBook);
+        BookDaoHelper.getInstance().updateBook(currentBook);
         Intent intent = new Intent(context, ReadingActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt("sequence", book.sequence);
