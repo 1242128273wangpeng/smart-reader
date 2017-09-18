@@ -18,6 +18,7 @@ interface ReadOption {
         fun bookMark(): Int
         fun bookInfo()
         fun back()
+        fun showMore()
 
         fun updateStatus()
 

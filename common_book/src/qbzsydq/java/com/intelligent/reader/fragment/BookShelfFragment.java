@@ -938,15 +938,27 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             @Override
             public void run() {
                 String[] books = new String[size];
+                StringBuffer sb = new StringBuffer();
                 for (int i = 0; i < size; i++) {
                     Book book = deleteBooks.get(i);
                     books[i] = book.book_id;
+
+                    sb.append(book.book_id);
+                    sb.append((book.readed == 1)?"_1":"_0");
+                    sb.append((i == size-1)?"":"$");
+
                     handler.obtainMessage(REFRESH_DATA_AFTER_DELETE, book.book_id).sendToTarget();
                 }
                 // 删除书架数据库和章节数据库
                 if (bookDaoHelper != null) {
                     bookDaoHelper.deleteBook(books);
                 }
+
+                Map<String, String> data1 = new HashMap<>();
+                data1.put("type", "1");
+                data1.put("number", String.valueOf(size));
+                data1.put("bookids", sb.toString());
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.DELETE1, data1);
             }
         }).start();
     }
@@ -993,6 +1005,9 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
                 public void onClick(View v) {
                     deleteDialog.dismiss();
                     StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.bs_click_delete_cancel_btn);
+                    Map<String, String> data1 = new HashMap<>();
+                    data1.put("type", "2");
+                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.DELETE1, data1);
                 }
             });
             deleteDialog.show();
