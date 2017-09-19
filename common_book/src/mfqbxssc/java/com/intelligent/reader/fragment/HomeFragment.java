@@ -43,6 +43,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -62,6 +63,7 @@ import android.widget.TextView;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.Map;
 
 import de.greenrobot.event.EventBus;
 
@@ -452,6 +454,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                     content_title.setText("书架");
                 }
                 StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.BOOKSHELF);
+
                 break;
             case R.id.content_tab_recommend:
                 AppLog.e(TAG, "Selection Selected");
@@ -491,6 +494,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
             case R.id.home_edit_back:
             case R.id.home_edit_cancel:
                 removeBookShelfMenu();
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.CANCLE1);
                 break;
 
             case R.id.content_search:
@@ -505,12 +509,12 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                 break;
             case R.id.home_select_all:
                 if (bookShelfFragment != null && bookShelfFragment.bookShelfReAdapter != null) {
-
                     bookShelfFragment.bookShelfRemoveHelper.selectAll(bookShelfFragment.bookShelfRemoveHelper.isAllChecked() ? false : true);
                     home_select_all.setText(bookShelfFragment.bookShelfRemoveHelper.isAllChecked() ? "取消全选" : "全选");
+                    Map<String, String> data = new HashMap<>();
+                    data.put("type", bookShelfFragment.bookShelfRemoveHelper.isAllChecked() ? "2" : "1");
+                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.SELECTALL1, data);
                 }
-
-
                 break;
             default:
                 setTabSelected(0);
@@ -819,35 +823,27 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
             @Override
             public void onClick(View v) {
                 popupWindow.dismiss();
-                showPaiXuPop(content_main);
+                showSortPop(content_main);
                 StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.BOOKSORT);
             }
         });
 
-        //设置PopupWindow进入和退出动画
-//        popupWindow.setAnimationStyle(R.style.bookshelf_title_right_style);
         //设置PopupWindow显示的位置
-        popupWindow.showAtLocation(view, Gravity.TOP | Gravity.RIGHT, 0, 0);
+        popupWindow.showAsDropDown(view, 0, -(view.getHeight() + 30));
     }
 
-//    public void showGuideView(){
-//        GuideBuilder builder = new GuideBuilder();
-//        builder.setTargetView(content_head_user).set
-//    }
 
-    public void showPaiXuPop(View view) {
+    public void showSortPop(View view) {
         //自定义PopupWindow的布局
         View contentView = LayoutInflater.from(mContext).inflate(R.layout.popwindow_paixu, null);
         final PopupWindow popupWindow = new PopupWindow(contentView);
-        popupWindow.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
+        popupWindow.setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
         popupWindow.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
         popupWindow.setFocusable(true);
         popupWindow.setBackgroundDrawable(new ColorDrawable(0xb0000000));   //为PopupWindow设置半透明背景.
         popupWindow.setOutsideTouchable(false);
         btn_recent = (RadioButton) contentView.findViewById(R.id.btn_recent);
         btn_time = (RadioButton) contentView.findViewById(R.id.btn_time);
-        RadioGroup rg = (RadioGroup) contentView.findViewById(R.id.rg);
-
 
         initPaiXu();
         setBackgroundAlpha(0.6f);

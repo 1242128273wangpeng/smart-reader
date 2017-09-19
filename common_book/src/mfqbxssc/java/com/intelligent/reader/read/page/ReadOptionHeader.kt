@@ -23,7 +23,8 @@ import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.onEnd
 import net.lzbook.kit.utils.toastShort
-
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import java.util.HashMap
 
 /**
  * Created by xian on 2017/8/8.
@@ -100,17 +101,21 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
 
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_add_book_mark_btn)
                 val result = presenter?.bookMark()
+                val data = HashMap<String, String>()
 
                 when (result) {
                     1 -> {
                         v.context.toastShort("书签添加成功", false)
                         isMarkPage = true
                         inflate.read_option_pop_mark.text = "删除书签"
+                        data.put("type", "1")
                     }
                     2 -> {
                         v.context.toastShort("书签已删除", false)
                         isMarkPage = false
                         inflate.read_option_pop_mark.text = "添加书签"
+                        data.put("type", "2")
+
                     }
                     else -> {
                         v.context.toastShort(R.string.add_mark_fail, false)
@@ -118,6 +123,7 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
                 }
 
                 popupWindow.dismiss()
+                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, data)
             }
 
             inflate.read_option_pop_info.setOnClickListener {

@@ -224,7 +224,7 @@ public class PageView extends View implements PageInterface {
     public void drawNextPage() {
         nextPageContent = pageLines = novelHelper.getPageContent();
         drawTextHelper.drawText(mNextPageCanvas, pageLines, mActivity);
-        if (count == 1) {
+        if (count == 1 && readStatus != null) {
             readStatus.lastSequenceRemark = readStatus.sequence + 1;
             readStatus.lastCurrentPageRemark = readStatus.currentPage;
             readStatus.lastPageCount = readStatus.pageCount;
@@ -363,6 +363,7 @@ public class PageView extends View implements PageInterface {
             provider.finishAnimation();
             if (tmpX > touchStartX) {
                 if (isCurlType) {
+                    count = 0;
                     drawNextPage();
                 }
                 if (!prepareTurnPrePage() && readStatus.book.book_type == 0) {
@@ -380,6 +381,8 @@ public class PageView extends View implements PageInterface {
                     motionState = MotionState.kNone;
                     return false;
                 }
+                endTime = System.currentTimeMillis();
+                addLog(endTime);
                 drawNextPage();
                 motionState = MotionState.kMoveToLeft;
             }
@@ -662,6 +665,7 @@ public class PageView extends View implements PageInterface {
      */
     public void tryTurnPrePage() {
         readStatus.startReadTime = System.currentTimeMillis();
+        count = 0;
         if (isCurlType) {
             drawNextPage();
         }
