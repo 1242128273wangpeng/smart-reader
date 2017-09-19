@@ -12,6 +12,7 @@ import com.intelligent.reader.util.DisplayUtils;
 
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Chapter;
+import net.lzbook.kit.data.bean.NovelLineBean;
 import net.lzbook.kit.data.bean.ReadStatus;
 import net.lzbook.kit.statistic.alilog.Log;
 import net.lzbook.kit.utils.AppUtils;
@@ -24,7 +25,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -48,12 +48,12 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
     private final MHandler handler = new MHandler(this);
     public Chapter tempChapter;
     boolean nextResult = false;
-    ArrayList<String> chapterNameList = new ArrayList<String>();
+    ArrayList<NovelLineBean> chapterNameList = new ArrayList<NovelLineBean>();
     private FListView page_list;
-    private ArrayList<ArrayList<String>> chapterContent;
-    private ArrayList<ArrayList<String>> preChaperConent;
-    private ArrayList<ArrayList<String>> currentChaperConent;
-    private ArrayList<ArrayList<String>> nextChaperContent;
+    private ArrayList<ArrayList<NovelLineBean>> chapterContent;
+    private ArrayList<ArrayList<NovelLineBean>> preChaperConent;
+    private ArrayList<ArrayList<NovelLineBean>> currentChaperConent;
+    private ArrayList<ArrayList<NovelLineBean>> nextChaperContent;
     private Chapter preChapter;
     private Chapter curChapter;
     private Chapter nextChapter;
@@ -215,9 +215,9 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
                         firstVisibleItem == 0 && readStatus.currentPage <= 1) {
                     loadingData = true;
                     if (currentChaperConent != null && currentChaperConent.size() > 0) {
-                        ArrayList<String> arrayList = currentChaperConent.get(0);
+                        ArrayList<NovelLineBean> arrayList = currentChaperConent.get(0);
                         if (arrayList != null && arrayList.size() > 0 &&
-                                arrayList.get(0).indexOf("txtzsydsq_homepage") > -1) {
+                                arrayList.get(0).getLineContent().indexOf("txtzsydsq_homepage") > -1) {
                             loadingData = false;
                             if (page_list.getChildCount() > 1 && page_list.getChildAt(1) != null &&
                                     Math.abs(page_list.getChildAt(1).getTop() - height) < 10) {
@@ -229,9 +229,9 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
                         }
                     }
                     if (preChaperConent != null && preChaperConent.size() > 0) {
-                        ArrayList<String> arrayList = preChaperConent.get(0);
+                        ArrayList<NovelLineBean> arrayList = preChaperConent.get(0);
                         if (arrayList != null && arrayList.size() > 0 &&
-                                arrayList.get(0).indexOf("txtzsydsq_homepage") > -1) {
+                                arrayList.get(0).getLineContent().indexOf("txtzsydsq_homepage") > -1) {
                             loadingData = false;
                             if (page_list.getChildCount() > 1 && page_list.getChildAt(1) != null &&
                                     Math.abs(page_list.getChildAt(1).getTop() - height) < 10) {
@@ -542,9 +542,8 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
 
     @Override
     public void getPreChapter() {
-        Log.e("getNextChapter", "getPreChapter()");
         boolean canRemove = false;
-        ArrayList<ArrayList<String>> temp = nextChaperContent;
+        ArrayList<ArrayList<NovelLineBean>> temp = nextChaperContent;
         if (preChaperConent != null) {
             nextChaperContent = currentChaperConent;
             currentChaperConent = preChaperConent;
@@ -585,8 +584,8 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
 
     @Override
     public void getNextChapter() {
-        Log.e("getNextChapter", "getNextChapter()");
-        ArrayList<ArrayList<String>> temp = preChaperConent;
+
+        ArrayList<ArrayList<NovelLineBean>> temp = preChaperConent;
         boolean canRemove = false;
         if (nextChaperContent != null) {
             preChaperConent = currentChaperConent;

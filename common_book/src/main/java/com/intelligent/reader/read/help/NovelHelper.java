@@ -16,6 +16,7 @@ import net.lzbook.kit.data.NullCallBack;
 import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.BookTask;
 import net.lzbook.kit.data.bean.Chapter;
+import net.lzbook.kit.data.bean.NovelLineBean;
 import net.lzbook.kit.data.bean.ReadStatus;
 import net.lzbook.kit.data.bean.Source;
 import net.lzbook.kit.data.db.BookChapterDao;
@@ -57,6 +58,8 @@ public class NovelHelper {
     public static final String empty_page_ad = "empty_page_ad";
     public static final String empty_page_ad_inChapter = "empty_inChapter_ad";
     private static final String TAG = "NovelHelper";
+    private final char punct[] = {'，', '。', '！', '？', '；', '：', '、', '”'};
+    private final char regs[] = {',', '.', '!', '?', ';', ':', '、', '”'};
     public boolean isShown = false;
     private OnHelperCallBack helperCallBack;
     private boolean checked;
@@ -377,7 +380,7 @@ public class NovelHelper {
         }
     }
 
-    private ArrayList<ArrayList<String>> initTextContent2(String content) {
+    private ArrayList<ArrayList<NovelLineBean>> initTextContent2(String content) {
         float chapterHeight = 35 * readStatus.screenScaledDensity + 100;
         float hideHeight = 15 * readStatus.screenScaledDensity;
 
@@ -399,7 +402,7 @@ public class NovelHelper {
         if (Constants.isSlideUp) {
             height = readStatus.screenHeight;
         } else {
-            height = readStatus.screenHeight - tHeight - readStatus.screenDensity
+            height = readStatus.screenHeight - readStatus.screenDensity
                     * Constants.READ_CONTENT_PAGE_TOP_SPACE * readStatus.screenScaledDensity;
         }
 
@@ -432,14 +435,14 @@ public class NovelHelper {
             }
 
 
-            String[] chapterNumAndName = readStatus.chapterNameList.get(0).split("章");
-            ArrayList<String> newChapterList = new ArrayList<>();
+            String[] chapterNumAndName = readStatus.chapterNameList.get(0).getLineContent().split("章");
+            ArrayList<NovelLineBean> newChapterList = new ArrayList<>();
 
             for (int i = 0; i < chapterNumAndName.length; i++) {
                 if (i == 0) {
-                    newChapterList.add(chapterNumAndName[i] + "章");
+                    newChapterList.add(new NovelLineBean(chapterNumAndName[i] + "章", 0, 0));
                 } else {
-                    newChapterList.add(chapterNumAndName[i].trim());
+                    newChapterList.add(new NovelLineBean(chapterNumAndName[i].trim(), 0, 0));
                 }
             }
             if (readStatus.chapterNameList.size() > 1) {
@@ -449,21 +452,19 @@ public class NovelHelper {
             readStatus.chapterNameList = newChapterList;
 
             if (readStatus.chapterNameList.size() > 2) {
-                ArrayList<String> temp = new ArrayList<String>();
+                ArrayList<NovelLineBean> temp = new ArrayList<NovelLineBean>();
                 for (int i = 0; i < 2; i++) {
                     temp.add(readStatus.chapterNameList.get(i));
                 }
                 readStatus.chapterNameList = temp;
             }
         }
-
-        if (readStatus != null && readStatus.book != null && Constants.QG_SOURCE.equals(readStatus.book.site)) {
-            String[] contents = content.split("\n");
-            for (String temp : contents) {
+        String[] contents = content.split("\n");
+        for (String temp : contents) {
+            temp = temp.replaceAll("\\s+", "");
+            if (!"".equals(temp)) {
                 sb.append("\u3000\u3000" + temp + "\n");
             }
-        } else {
-            sb.append(content);
         }
         String text = "";
         if (readStatus.sequence == -1) {
@@ -471,7 +472,8 @@ public class NovelHelper {
             String homeText = "txtzsydsq_homepage\n";
             StringBuilder s = new StringBuilder();
             s.append(homeText);
-            text = s.toString() + sb.toString();
+            s.append(sb);
+            text = s.toString();
         } else {
             text = sb.toString();
         }
@@ -481,14 +483,13 @@ public class NovelHelper {
             readStatus.offset = 0;
         }
 
-        ArrayList<String> contentList = new ArrayList<String>();
-        contentList = getNovelText(mTextPaint, text, width);
+        ArrayList<NovelLineBean> contentList = getNovelText(mTextPaint, text, width);
         final int size = contentList.size();
         int textSpace = 0;
         long textLength = 0;
         boolean can = true;
-        ArrayList<String> pageLines = new ArrayList<String>();
-        ArrayList<ArrayList<String>> lists = new ArrayList<ArrayList<String>>();
+        ArrayList<NovelLineBean> pageLines = new ArrayList<NovelLineBean>();
+        ArrayList<ArrayList<NovelLineBean>> lists = new ArrayList<ArrayList<NovelLineBean>>();
         lists.add(pageLines);
         int chapterNameSize = 0;
         if (readStatus.chapterNameList != null) {
@@ -501,16 +502,16 @@ public class NovelHelper {
         // boolean isLastDuan = false;
         for (int i = 0; i < size; i++) {
             boolean isDuan = false;
-            String lineText = contentList.get(i);
-            if (lineText.equals(" ")) {// 段间距
+            NovelLineBean lineText = contentList.get(i);
+            if (lineText.getLineContent().equals(" ")) {// 段间距
                 isDuan = true;
                 textSpace += m_duan;
-            } else if (lineText.equals("chapter_homepage  ")) {
+            } else if (lineText.getLineContent().equals("chapter_homepage  ")) {
                 textSpace += hideHeight;
-                textLength += lineText.length();
+                textLength += lineText.getLineContent().length();
             } else {
                 textSpace += lineHeight;
-                textLength += lineText.length();
+                textLength += lineText.getLineContent().length();
             }
 
             if (textSpace < height) {
@@ -523,7 +524,7 @@ public class NovelHelper {
                 if (isDuan) {// 开始是空行
                     textSpace -= m_duan;
                 } else {
-                    pageLines = new ArrayList<String>();
+                    pageLines = new ArrayList<NovelLineBean>();
                     textSpace = 0;
                     pageLines.add(lineText);
                     lists.add(pageLines);
@@ -539,9 +540,9 @@ public class NovelHelper {
 
         // 去除章节开头特殊符号
         if ((readStatus.sequence >= 0) && lists.size() > 3) {
-            String chapterTitle = lists.get(0).get(3);
+            String chapterTitle = lists.get(0).get(3).getLineContent();
             if (!TextUtils.isEmpty(chapterTitle) && chapterTitle.contains("\"")) {
-                lists.get(0).set(3, chapterTitle.replace("\"", "").trim());
+                lists.get(0).set(3, new NovelLineBean(chapterTitle.replace("\"", "").trim(), 0, 0));
             }
         }
 
@@ -606,9 +607,9 @@ public class NovelHelper {
 //		add(empty_page_ad);
 //	}};
 
-    private ArrayList<String> addList(String adString) {
-        ArrayList<String> list = new ArrayList<>();
-        list.add(adString);
+    private ArrayList<NovelLineBean> addList(String adString) {
+        ArrayList<NovelLineBean> list = new ArrayList<>();
+        list.add(new NovelLineBean(adString, 0, 0));
         return list;
     }
 
@@ -621,8 +622,8 @@ public class NovelHelper {
      * 设定文件
      * ArrayList<String> 返回类型
      */
-    private ArrayList<String> getNovelText(TextPaint textPaint, String text, float width) {
-        ArrayList<String> list = new ArrayList<String>();
+    private ArrayList<NovelLineBean> getNovelText(TextPaint textPaint, String text, float width) {
+        ArrayList<NovelLineBean> list = new ArrayList<NovelLineBean>();
         float w = 0;
         int istart = 0;
         char mChar;
@@ -645,27 +646,75 @@ public class NovelHelper {
             }
             if (mChar == '\n') {
                 duan_coount++;
-                list.add(text.substring(istart, i) + " ");
+                String txt = text.substring(istart, i);
+                if (!"".equals(txt)) {
+                    list.add(new NovelLineBean(text.substring(istart, i) + " ", w, 0));
+                }
                 if (duan_coount > 3) {
-                    list.add(" ");// 段间距
+                    list.add(new NovelLineBean(" ", w, 0));// 段间距
                 }
                 istart = i + 1;
                 w = 0;
             } else {
                 w += widths[0];
                 if (w > width) {
-                    list.add(text.substring(istart, i));
-                    istart = i;
-                    i--;
+                    if (checkIsPunct(mChar)) {
+                        String substring = text.substring(istart, i);
+                        char lastFunct = full2half(mChar);
+                        list.add(new NovelLineBean(substring + lastFunct, w - widths[0] / 2, 1));
+                        istart = i + 1;
+                    } else {
+                        list.add(new NovelLineBean(getLine(text, istart, i), w - widths[0], 1));
+                        istart = i;
+                        i--;
+                    }
                     w = 0;
                 } else {
                     if (i == (text.length() - 1)) {
-                        list.add(text.substring(istart, text.length()));
+                        list.add(new NovelLineBean(text.substring(istart, text.length()), w, 0));
                     }
                 }
             }
         }
         return list;
+    }
+
+    private boolean checkIsPunct(char ch) {
+        boolean isInclude = false;
+        for (char c : punct) {
+            if (ch == c) {
+                isInclude = true;
+                break;
+            }
+        }
+        return isInclude;
+    }
+
+    private char full2half(char str) {
+        for (int i = 0; i < regs.length; i++) {
+            if (str == punct[i]) {
+                return regs[i];
+            }
+        }
+        return str;
+    }
+
+    /**
+     * 如果一行的末尾是标点,将标点变为半角
+     * @param text
+     * @param istart
+     * @param i
+     * @return
+     */
+    private String getLine(String text, int istart, int i) {
+        if (i > 0) {
+            char ch = text.charAt(i - 1);
+            if (checkIsPunct(ch)) {
+                char lastFunct = full2half(ch);
+                return text.substring(istart, i - 1) + lastFunct;
+            }
+        }
+        return text.substring(istart, i);
     }
 
     /**
@@ -697,7 +746,7 @@ public class NovelHelper {
 
     }
 
-    public synchronized List<String> getPageContent() {
+    public synchronized List<NovelLineBean> getPageContent() {
         if (readStatus.mLineList == null) {
             return null;
         }
@@ -710,27 +759,27 @@ public class NovelHelper {
         readStatus.offset = 0;
         // AppLog.d("initTextContent2", "readStatus.currentPage:" +
         // readStatus.currentPage);
-        ArrayList<String> pageContent = null;
+        ArrayList<NovelLineBean> pageContent = null;
         if (readStatus.currentPage - 1 < readStatus.mLineList.size()) {
             pageContent = readStatus.mLineList.get(readStatus.currentPage - 1);
         } else {
-            pageContent = new ArrayList<String>();
+            pageContent = new ArrayList<NovelLineBean>();
         }
 
         for (int i = 0; i < readStatus.currentPage - 1 && i < readStatus.mLineList.size(); i++) {
-            ArrayList<String> pageList = readStatus.mLineList.get(i);
+            ArrayList<NovelLineBean> pageList = readStatus.mLineList.get(i);
             final int size = pageList.size();
             // AppLog.d("initTextContent2", "size:" + size);
             for (int j = 0; j < size; j++) {
-                String string = pageList.get(j);
-                if (!TextUtils.isEmpty(string) && !string.equals(" ")) {
-                    readStatus.offset += string.length();
+                NovelLineBean string = pageList.get(j);
+                if (string != null && !TextUtils.isEmpty(string.getLineContent()) && !string.getLineContent().equals(" ")) {
+                    readStatus.offset += string.getLineContent().length();
                 }
             }
         }
         readStatus.currentPageConentLength = 0;
         for (int i = 0; i < pageContent.size(); i++) {
-            readStatus.currentPageConentLength += pageContent.get(i).length();
+            readStatus.currentPageConentLength += pageContent.get(i).getLineContent().length();
 
         }
         AppLog.e("总字数", "===" + readStatus.currentPage + "++" + readStatus.currentPageConentLength);
@@ -754,13 +803,13 @@ public class NovelHelper {
         // AppLog.d("initTextContent2", "readStatus.currentPage:" +
         // readStatus.currentPage);
         for (int i = 0; i < readStatus.currentPage - 1 && i < count; i++) {
-            ArrayList<String> pageList = readStatus.mLineList.get(i);
+            ArrayList<NovelLineBean> pageList = readStatus.mLineList.get(i);
             final int size = pageList.size();
             // AppLog.d("initTextContent2", "size:" + size);
             for (int j = 0; j < size; j++) {
-                String string = pageList.get(j);
-                if (!TextUtils.isEmpty(string) && !string.equals(" ")) {
-                    readStatus.offset += string.length();
+                NovelLineBean string = pageList.get(j);
+                if (string != null && !TextUtils.isEmpty(string.getLineContent()) && !string.getLineContent().equals(" ")) {
+                    readStatus.offset += string.getLineContent().length();
                 }
             }
         }

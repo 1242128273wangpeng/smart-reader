@@ -13,7 +13,7 @@ public class Chapter implements Serializable {
     //是否自动切源
     public int flag;
     //章节名称列表
-    public ArrayList<String> chapterNameList;
+    public ArrayList<NovelLineBean> chapterNameList;
 
     //升级后使用的字段
     //小说组id

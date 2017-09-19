@@ -16,6 +16,7 @@ import com.intelligent.reader.read.help.NovelHelper;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.bean.NovelLineBean;
 import net.lzbook.kit.data.bean.ReadStatus;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
@@ -63,7 +64,7 @@ public class PageView extends View implements PageInterface {
     private int turnThreshold;
 
     private AnimationProvider provider;
-    private List<String> pageLines;
+    private List<NovelLineBean> pageLines;
 
     private int backColor;// 仿真翻页背面颜色
 
@@ -82,8 +83,8 @@ public class PageView extends View implements PageInterface {
     //动画为执行完时, 不接受触摸
     private boolean mTouchable = true;
     private String timeText;
-    private List<String> currentPageContent;
-    private List<String> nextPageContent;
+    private List<NovelLineBean> currentPageContent;
+    private List<NovelLineBean> nextPageContent;
     private long endTime;
     private int touchStartX;
     private int touchStartY;

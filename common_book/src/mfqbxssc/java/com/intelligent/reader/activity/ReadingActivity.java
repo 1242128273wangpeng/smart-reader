@@ -1949,7 +1949,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             outState.putInt("nid", readStatus.nid);
             outState.putInt("offset", readStatus.offset);
             outState.putSerializable("book", readStatus.book);
-            outState.putSerializable("currentChapter", dataFactory.currentChapter);
+            if (dataFactory != null && dataFactory.currentChapter != null) {
+                outState.putSerializable("currentChapter", dataFactory.currentChapter);
+            }
             outState.putString("thememode", mThemeHelper.getMode());
             super.onSaveInstanceState(outState);
         } catch (ClassCastException e) {
