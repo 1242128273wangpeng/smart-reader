@@ -16,6 +16,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.text.TextPaint;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.dingyueads.sdk.Native.YQNativeAdInfo;
 import com.dingyueads.sdk.NativeInit;
@@ -273,6 +274,62 @@ public class DrawTextHelper {
         return paint;
     }
 
+    private Paint setPaintColorChapter(Paint paint, int type) {
+
+        int color_int;
+        if (Constants.MODE == 51) {
+            if (type == 0) {
+                color_int = R.color.reading_backdrop_first;
+            } else {
+                color_int = R.color.reading_operation_text_color_first;
+            }
+        } else if (Constants.MODE == 52) {
+            if (type == 0) {
+                color_int = R.color.reading_backdrop_second;
+            } else {
+                color_int = R.color.reading_text_color_second;
+            }
+        } else if (Constants.MODE == 53) {
+            if (type == 0) {
+                color_int = R.color.reading_backdrop_third;
+            } else {
+                color_int = R.color.reading_text_color_third;
+            }
+        } else if (Constants.MODE == 54) {
+            if (type == 0) {
+                color_int = R.color.reading_backdrop_fourth;
+            } else {
+                color_int = R.color.reading_text_color_fourth;
+            }
+        } else if (Constants.MODE == 55) {
+            if (type == 0) {
+                color_int = R.color.reading_backdrop_fifth;
+            } else {
+                color_int = R.color.reading_text_color_fifth;
+            }
+        } else if (Constants.MODE == 56) {
+            if (type == 0) {
+                color_int = R.color.reading_backdrop_sixth;
+            } else {
+                color_int = R.color.reading_text_color_sixth;
+            }
+        } else if (Constants.MODE == 61) {
+            if (type == 0) {
+                color_int = R.color.reading_backdrop_night;
+            } else {
+                color_int = R.color.reading_text_color_night;
+            }
+        } else {
+            if (type == 0) {
+                color_int = R.color.reading_backdrop_first;
+            } else {
+                color_int = R.color.reading_text_color_first;
+            }
+        }
+        paint.setColor(resources.getColor(color_int));
+        return paint;
+    }
+
     //上下滑动
     public synchronized float drawText(Canvas canvas, List<NovelLineBean> pageLines, ArrayList<NovelLineBean> chapterNameList) {
         mPaint.setTextSize(Constants.FONT_SIZE * readStatus.screenScaledDensity);
@@ -291,6 +348,7 @@ public class DrawTextHelper {
 
 
         y = -fm.top;
+//        y = m_iFontHeight;
         height = readStatus.screenHeight;
 
         float textHeight = 0;
@@ -322,7 +380,6 @@ public class DrawTextHelper {
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
         if (pageLines != null && !pageLines.isEmpty()) {
-
             if (pageLines.get(0).getLineContent().startsWith("txtzsydsq_homepage")) {// 封面页
                 drawHomePage(canvas);
             } else if (pageLines.get(0).getLineContent().startsWith("chapter_homepage")) {// 章节首页
@@ -350,15 +407,19 @@ public class DrawTextHelper {
                         canvas.drawText(text.getLineContent(), mLineStart, y + m_iFontHeight * i, mPaint);
                     }
                     if (i == pageLines.size() - 1) {
-                        pageHeight = (y + m_iFontHeight * i) - Constants.READ_CONTENT_PAGE_TOP_SPACE;
+                        pageHeight = (y + m_iFontHeight * pageLines.size()) - Constants.READ_CONTENT_PAGE_TOP_SPACE;
                     }
                 }
             }
+
+            Log.e("DrawHelper", "pageLines size : " + pageLines.size());
+            Log.e("DrawHelper", "pageLines : " + pageHeight);
             return pageHeight;
         }
         if (!Constants.isSlideUp) {
             drawFoot(canvas);
         }
+
         return pageHeight;
     }
 
@@ -830,9 +891,8 @@ public class DrawTextHelper {
         readStatus.native_type = 0;
         mPaint.setTextSize(Constants.FONT_SIZE * readStatus.screenScaledDensity);
         duanPaint.setTextSize(1 * readStatus.screenScaledDensity);
-        textPaint.setTextSize(Constants.FONT_CHAPTER_SIZE * readStatus.screenScaledDensity);
         mWidth = readStatus.screenWidth - readStatus.screenDensity * Constants.READ_CONTENT_PAGE_LEFT_SPACE * 2;
-        FontMetrics fm_chapter = textPaint.getFontMetrics();
+        FontMetrics fm_chapter;
         float m_iFontHeight_chapter;
 
         FontMetrics fm = mPaint.getFontMetrics();
@@ -922,7 +982,6 @@ public class DrawTextHelper {
             }
 
             textPaint.setColor(textColor);
-            textPaint.setTextSize(Constants.FONT_CHAPTER_DEFAULT * readStatus.screenScaledDensity);
             for (int i = 0, j = pageLines.size(); i < j; i++) {
                 if (i > size_c) {
                     NovelLineBean text = pageLines.get(i);
@@ -970,14 +1029,14 @@ public class DrawTextHelper {
     private void drawOrigin(Canvas canvas) {
         float y = 20 * readStatus.screenScaledDensity;
         float x = Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity;
-        canvas.drawText(resources.getString(R.string.origin_text), x, y, setPaintColor(footPaint, 1));
+        canvas.drawText(resources.getString(R.string.origin_text), x, y, setPaintColorChapter(footPaint, 1));
     }
 
     private void drawTransCoding(Canvas canvas) {
         float y = 20 * readStatus.screenScaledDensity;
         float x = readStatus.screenWidth - Constants.READ_CONTENT_PAGE_LEFT_SPACE
                 * readStatus.screenScaledDensity - footPaint.measureText(resources.getString(R.string.trans_coding_text));
-        canvas.drawText(resources.getString(R.string.trans_coding_text), x, y, setPaintColor(footPaint, 1));
+        canvas.drawText(resources.getString(R.string.trans_coding_text), x, y, setPaintColorChapter(footPaint, 1));
     }
 
     public void drawHeadNew(Canvas canvas) {
@@ -1000,7 +1059,7 @@ public class DrawTextHelper {
 
         float strwid = footPaint.measureText(chapter + "/" + readStatus.chapterCount + "章");
         canvas.drawText(chapter + "/" + readStatus.chapterCount + "章", readStatus.screenWidth / 2 - strwid / 2,
-                position, setPaintColor(footPaint, 1));
+                position, setPaintColorChapter(footPaint, 1));
         drawChapterName(canvas);
     }
 
@@ -1017,13 +1076,13 @@ public class DrawTextHelper {
         float strwid = footPaint.measureText(name);
 
         canvas.drawText(name, readStatus.screenWidth / 2 - strwid / 2,
-                position, setPaintColor(footPaint, 1));
+                position, setPaintColorChapter(footPaint, 1));
     }
 
     private void drawChapterNumNew(Canvas canvas) {
         int chapter = readStatus.sequence + 1;
         canvas.drawText(chapter + "/" + readStatus.chapterCount + "章", Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity,
-                17 * readStatus.screenScaledDensity, setPaintColor(footPaint, 1));
+                17 * readStatus.screenScaledDensity, setPaintColorChapter(footPaint, 1));
 
     }
 
@@ -1033,13 +1092,13 @@ public class DrawTextHelper {
         String page_num = "本章第" + readStatus.currentPage + "/" + readStatus.pageCount;
         float temp_width = footPaint.measureText(page_num);
         canvas.drawText(page_num, readStatus.screenWidth - Constants.READ_CONTENT_PAGE_LEFT_SPACE
-                * readStatus.screenScaledDensity - temp_width, position, setPaintColor(footPaint, 1));
+                * readStatus.screenScaledDensity - temp_width, position, setPaintColorChapter(footPaint, 1));
     }
 
     private void drawPageNumNew(Canvas canvas) {
         String page_num = readStatus.currentPage + "/" + readStatus.pageCount + "页";
         float temp_width = footPaint.measureText(page_num);
-        canvas.drawText(page_num, readStatus.screenWidth / 2 - temp_width / 2, 17 * readStatus.screenScaledDensity, setPaintColor(footPaint, 1));
+        canvas.drawText(page_num, readStatus.screenWidth / 2 - temp_width / 2, 17 * readStatus.screenScaledDensity, setPaintColorChapter(footPaint, 1));
     }
 
     private void drawTime(Canvas canvas) {
@@ -1050,7 +1109,7 @@ public class DrawTextHelper {
         position = readStatus.screenHeight - 10 * readStatus.screenScaledDensity;
         canvas.drawText(timeText, Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity + right1 + 5
                         * readStatus.screenScaledDensity, position,
-                setPaintColor(footPaint, 1));
+                setPaintColorChapter(footPaint, 1));
     }
 
     private void drawTimeNew(Canvas canvas) {
@@ -1060,7 +1119,7 @@ public class DrawTextHelper {
         float temp_width = footPaint.measureText(timeText);
         canvas.drawText(timeText, readStatus.screenWidth - Constants.READ_CONTENT_PAGE_LEFT_SPACE
                         * readStatus.screenScaledDensity - temp_width, 17 * readStatus.screenScaledDensity,
-                setPaintColor(footPaint, 1));
+                setPaintColorChapter(footPaint, 1));
     }
 
     private void drawBattery(Canvas canvas) {
@@ -1078,9 +1137,9 @@ public class DrawTextHelper {
                 position3,
                 (right1 - (left1 + 1)) * percent
                         + (Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity + left1 - 1),
-                position, setPaintColor(footPaint, 1));
+                position, setPaintColorChapter(footPaint, 1));
         canvas.drawBitmap(mBitmap, Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity + left1,
-                position2, setPaintColor(footPaint, 1));
+                position2, setPaintColorChapter(footPaint, 1));
     }
 
     private void drawBatteryNew(Canvas canvas) {
@@ -1102,7 +1161,7 @@ public class DrawTextHelper {
                 r_right,
                 r_bottom, setPaintColor(footPaint, 1));
         canvas.drawBitmap(mBitmap, r_left,
-                top1 + 7 * readStatus.screenScaledDensity, setPaintColor(footPaint, 1));
+                top1 + 7 * readStatus.screenScaledDensity, setPaintColorChapter(footPaint, 1));
     }
 
     public void getRect() {

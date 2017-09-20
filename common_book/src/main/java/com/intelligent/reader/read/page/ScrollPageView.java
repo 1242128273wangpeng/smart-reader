@@ -98,8 +98,15 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        width = readStatus.screenWidth = w;
+        height = readStatus.screenHeight = h;
         manager = new BitmapManager(readStatus.screenWidth, readStatus.screenHeight);
         if (callBack != null && (Math.abs(oldh - h) > AppUtils.dip2px(mContext, 26))) {
+            if (android.os.Build.VERSION.SDK_INT < 11 && Constants.isFullWindowRead) {
+                height = readStatus.screenHeight - AppUtils.dip2px(mContext, 20);
+            } else {
+                height = readStatus.screenHeight - AppUtils.dip2px(mContext, 40);
+            }
             callBack.onResize();
             setBackground();
             if (chapterContent != null) {
@@ -128,7 +135,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
 
         width = readStatus.screenWidth;
         height = readStatus.screenHeight - DisplayUtils.dp2px(getResources(), 26) * 2;
-
+        readStatus.screenHeight = height;
         chapterContent = new ArrayList<>();
 
         drawTextHelper = new DrawTextHelper(getResources(), this, mActivity);
@@ -173,12 +180,12 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
                 startTouchY = tmpY;
                 break;
             case MotionEvent.ACTION_MOVE:
-                Log.e("Scroll", "TouchEvent: lastY" + lastY);
-                Log.e("Scroll", "TouchEvent: event.getY()" + event.getY());
-                Log.e("Scroll", "TouchEvent: totalItemCount" + totalItemCount);
-                Log.e("Scroll", "TouchEvent: lastVisible" + lastVisible + 1);
-                Log.e("Scroll", "TouchEvent: readStatus.currentPage" + readStatus.currentPage);
-                Log.e("Scroll", "TouchEvent: readStatus.pageCount" + readStatus.pageCount);
+                Log.e("Scroll", "TouchEvent: lastY : " + lastY);
+                Log.e("Scroll", "TouchEvent: event.getY() : " + event.getY());
+                Log.e("Scroll", "TouchEvent: totalItemCount : " + totalItemCount);
+                Log.e("Scroll", "TouchEvent: lastVisible : " + (lastVisible + 1));
+                Log.e("Scroll", "TouchEvent: readStatus.currentPage : " + readStatus.currentPage);
+                Log.e("Scroll", "TouchEvent: readStatus.pageCount : " + readStatus.pageCount);
                 if (!loadingData && lastY - event.getY() > 20 && totalItemCount == lastVisible + 1
                         && readStatus.currentPage == readStatus.pageCount) {
                     loadingData = true;
@@ -934,11 +941,11 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
             Canvas mCurrentCanvas = (Canvas) hodler.page.getTag(R.id.tag_canvas);
             float pageHeight = drawTextHelper.drawText(mCurrentCanvas, chapterContent.get(position), chapterNameList);
             android.util.Log.e("ScrollView", "pageHeight: " + pageHeight);
-//            if (position != 0) {
-//                hodler.page.getLayoutParams().height = (int) pageHeight;
-//            } else {
-            hodler.page.getLayoutParams().height = readStatus.screenHeight;
-//            }
+            if (position != 0) {
+                hodler.page.getLayoutParams().height = (int) pageHeight;
+            } else {
+                hodler.page.getLayoutParams().height = readStatus.screenHeight;
+            }
             hodler.page.drawPage(mCurPageBitmap);
 
             return convertView;
