@@ -378,7 +378,7 @@ public class NovelHelper {
     }
 
     private ArrayList<ArrayList<String>> initTextContent2(String content) {
-        float chapterHeight = 35 * readStatus.screenScaledDensity + 100;
+        float chapterHeight = 75 * readStatus.screenScaledDensity;
         float hideHeight = 15 * readStatus.screenScaledDensity;
 
         TextPaint mTextPaint = new TextPaint();
@@ -395,7 +395,7 @@ public class NovelHelper {
 
         // 显示文字区域高度
         final float tHeight = fm.descent - fm.ascent;
-        float height = 0;
+        float height;
         if (Constants.isSlideUp) {
             height = readStatus.screenHeight;
         } else {
@@ -410,10 +410,6 @@ public class NovelHelper {
                 * readStatus.screenScaledDensity;
         float m_duan = (Constants.READ_PARAGRAPH_SPACE - Constants.READ_INTERLINEAR_SPACE) * Constants.FONT_SIZE
                 * readStatus.screenScaledDensity;
-
-        // lineHeight = fm.descent - fm.ascent +
-        // Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE
-        // * readStatus.screenScaledDensity;
 
         if (Constants.IS_LANDSCAPE) {
             width = readStatus.screenWidth - readStatus.screenDensity * Constants.READ_CONTENT_PAGE_LEFT_SPACE * 2;

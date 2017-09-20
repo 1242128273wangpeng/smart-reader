@@ -1,5 +1,26 @@
 package com.intelligent.reader.read.page;
 
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.os.Handler;
+import android.os.Message;
+import android.text.TextUtils;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.dingyueads.sdk.Bean.Novel;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.ReadingActivity;
@@ -13,41 +34,15 @@ import com.intelligent.reader.util.DisplayUtils;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.ReadStatus;
-import net.lzbook.kit.statistic.alilog.Log;
 import net.lzbook.kit.utils.AppUtils;
-
-import android.app.Activity;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.os.Handler;
-import android.os.Message;
-import android.text.TextUtils;
-import android.util.AttributeSet;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.BaseAdapter;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-public class ScrollPageView extends LinearLayout implements PageInterface {
-    private static final int NO_START = 0;
-    private static final int PRE_START = 1;
-    private static final int NEXt_START = 2;
+public class ScrollPageView extends LinearLayout implements PageInterface, View.OnClickListener {
     private final MHandler handler = new MHandler(this);
     public Chapter tempChapter;
-    boolean nextResult = false;
-    ArrayList<String> chapterNameList = new ArrayList<String>();
+    ArrayList<String> chapterNameList = new ArrayList<>();
     private FListView page_list;
     private ArrayList<ArrayList<String>> chapterContent;
     private ArrayList<ArrayList<String>> preChaperConent;
@@ -66,7 +61,6 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
     private ScrollPageAdapter adapter;
     private boolean loadingData = false;
     private int width, height;
-    private FrameLayout.LayoutParams lp;
     private float lastY;
     private int totalItemCount;
     private int lastVisible = -1;
@@ -85,7 +79,11 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
     private int startTouchY;
     private boolean isNeedToNextPage = false;
     private BatteryView novel_content_battery_view;
-    private RelativeLayout scroll_page;
+
+    private TextView mOriginTv;
+    private TextView mTransCodingTv;
+
+    private OnOperationClickListener mOnOperationClickListener;
 
     public ScrollPageView(Context context) {
         super(context);
@@ -100,48 +98,38 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-
         manager = new BitmapManager(readStatus.screenWidth, readStatus.screenHeight);
-        // if (Constants.isSlideUp) {
-        // resetCanvas(w, h);
-        // }
         if (callBack != null && (Math.abs(oldh - h) > AppUtils.dip2px(mContext, 26))) {
             callBack.onResize();
-//            if (android.os.Build.VERSION.SDK_INT < 11 && Constants.isFullWindowRead) {
-//                height = readStatus.screenHeight - AppUtils.dip2px(mContext, 20);
-//            } else {
-//                height = readStatus.screenHeight - AppUtils.dip2px(mContext, 40);
-//            }
-//
-//            lp = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, height);
             setBackground();
             if (chapterContent != null) {
                 getChapter(true);
             }
         }
-
     }
 
     @Override
     public void init(Activity activity, ReadStatus readStatus, NovelHelper novelHelper) {
         this.mActivity = activity;
         View view = LayoutInflater.from(mContext).inflate(R.layout.scroll_page, this);
-        scroll_page = (RelativeLayout) view.findViewById(R.id.scroll_page);
         page_list = (FListView) view.findViewById(R.id.page_list);
         novel_time = (TextView) view.findViewById(R.id.novel_time);
         novel_chapter = (TextView) view.findViewById(R.id.novel_chapter);
         novel_title = (TextView) view.findViewById(R.id.novel_title);
         novel_page = (TextView) view.findViewById(R.id.novel_page);
-        novel_bottom = (RelativeLayout) view.findViewById(R.id.novel_bottom);
         novel_content_battery_view = (BatteryView) view.findViewById(R.id.novel_content_battery_view);
+        mOriginTv = (TextView) findViewById(R.id.origin_tv);
+        mTransCodingTv = (TextView) findViewById(R.id.trans_coding_tv);
+        mOriginTv.setOnClickListener(this);
+        mTransCodingTv.setOnClickListener(this);
 
         this.novelHelper = novelHelper;
         this.readStatus = readStatus;
 
         width = readStatus.screenWidth;
-        height = readStatus.screenHeight - DisplayUtils.dp2px(getResources(), 30) * 2;
+        height = readStatus.screenHeight - DisplayUtils.dp2px(getResources(), 25) * 2;
 
-//        dataFactory.setScreenSize(readStatus.screenWidth, height);
+        dataFactory.setScreenSize(readStatus.screenWidth, height);
 
         chapterContent = new ArrayList<>();
 
@@ -149,7 +137,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
 
         adapter = new ScrollPageAdapter();
         page_list.setAdapter(adapter);
-        lp = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, height);
+
 
         page_list.setOnScrollListener(new AbsListView.OnScrollListener() {
 
@@ -161,25 +149,14 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 ScrollPageView.this.totalItemCount = totalItemCount;
                 ScrollPageView.this.firstVisibleItem = firstVisibleItem;
-                //
                 int lastVisible = page_list.getLastVisiblePosition();
-//				Log.e("onScroll", "getLastVisiblePosition:" + lastVisible);
                 if (ScrollPageView.this.lastVisible != lastVisible) {
-
                     ScrollPageView.this.lastVisible = lastVisible;
-//					Log.e("onScroll", "getLastVisiblePosition:" + lastVisible);
-//					Log.e("onScroll", "totalItemCount:" + totalItemCount);
-//					AppLog.e("onScroll", "firstVisibleItem:"+firstVisibleItem);
                     ScrollPageView.this.readStatus.currentPage = getCurrentPage(lastVisible);
-//					AppLog.e("onScroll", "readStatus.currentPage:" + ScrollPageView.this.readStatus.currentPage);
-//					AppLog.e("onScroll", "readStatus.sequence:" + ScrollPageView.this.readStatus.sequence);
-//					if (ScrollPageView.this.readStatus.currentPage == 1 && adapter != null) {
-//						adapter.notifyDataSetChanged();
-//					}
                 }
-
             }
         });
+        Log.e("Scroll", "sequence:" + readStatus.sequence);
     }
 
     @Override
@@ -199,23 +176,18 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
                 startTouchY = tmpY;
                 break;
             case MotionEvent.ACTION_MOVE:
-//			AppLog.e("onScroll", "sequence:"+readStatus.sequence);
                 if (!loadingData && lastY - event.getY() > 20 && totalItemCount == lastVisible + 1
                         && readStatus.currentPage == readStatus.pageCount) {
                     loadingData = true;
-//				AppLog.e("onScroll", "next:");
                     isNeedToNextPage = false;
                     boolean result = dataFactory.next();
                     if (!result) {
                         handler.sendEmptyMessageDelayed(0, 1000);
                     }
-
                 } else if (!loadingData && lastY - event.getY() < -20 &&
                         firstVisibleItem == 0 && readStatus.currentPage <= 1) {
                     loadingData = true;
 
-//				AppLog.e("onScroll", "getTop:"+page_list.getChildAt(1).getTop());
-//				AppLog.e("onScroll", "height:"+height);
                     if (currentChaperConent != null && currentChaperConent.size() > 0) {
                         ArrayList<String> arrayList = currentChaperConent.get(0);
                         if (arrayList != null && arrayList.size() > 0 &&
@@ -226,8 +198,6 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
                                 Toast.makeText(mContext, R.string.is_first_chapter, Toast.LENGTH_SHORT).show();
                             }
                             return false;
-                        } else {
-
                         }
                     }
                     if (preChaperConent != null && preChaperConent.size() > 0) {
@@ -240,18 +210,12 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
                                 Toast.makeText(mContext, R.string.is_first_chapter, Toast.LENGTH_SHORT).show();
                             }
                             return false;
-                        } else {
-
                         }
                     }
-
-//				AppLog.e("onScroll", "pre:");
-//				AppLog.e("onScroll", "sequence:"+readStatus.sequence);
                     boolean result = dataFactory.previous();
                     if (!result) {
                         handler.sendEmptyMessageDelayed(0, 1000);
                     }
-
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -293,11 +257,6 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
     }
 
     private int getCurrentSequence(int position) {
-//		Log.e("getCurrentPage", "position:"+position);
-//		Log.e("getCurrentPage", "preSize:"+preSize);
-//		Log.e("getCurrentPage", "currentSize:"+currentSize);
-//		Log.e("getCurrentPage", "nextSize:"+nextSize);
-//		ArrayList<String> chapterNameList = null;
         if (preSize == 0) {
             if (position <= currentSize) {
                 if (curChapter != null) {
@@ -344,11 +303,6 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
 
     private int getCurrentPage(int position) {
         String chapter_name = "";
-//		Log.e("getCurrentPage", "position:"+position);
-//		Log.e("getCurrentPage", "preSize:"+preSize);
-//		Log.e("getCurrentPage", "currentSize:"+currentSize);
-//		Log.e("getCurrentPage", "nextSize:"+nextSize);
-//		ArrayList<String> chapterNameList = null;
         if (preSize == 0) {
             if (position <= currentSize) {
                 readStatus.pageCount = currentSize;
@@ -492,7 +446,6 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
         if (readStatus.mLineList == null) {
             return;
         }
-        // totalChapter.put(readStatus.sequence, readStatus.mLineList);
         chapterContent.clear();
         preChapter = null;
         nextChapter = null;
@@ -511,12 +464,11 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
         preSize = 0;
         currentSize = 0;
         nextSize = 0;
-        getChapterSize();
         int offset = readStatus.offset;
         if (!needSavePage) {
             readStatus.currentPage = 1;
         }
-
+        getChapterSize();
         getCurrentPage(readStatus.currentPage);
         readStatus.offset = offset;
         final int position = readStatus.currentPage - 1;
@@ -589,7 +541,6 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
 
     @Override
     public void getNextChapter() {
-
         ArrayList<ArrayList<String>> temp = preChaperConent;
         boolean canRemove = false;
         if (nextChaperContent != null) {
@@ -765,10 +716,6 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
 
     private void drawBackground() {
         if (Constants.MODE == 51) {// 牛皮纸
-//            scroll_page.setBackgroundResource(R.drawable.read_page_bg_default);
-//            novel_title.setBackgroundResource(R.drawable.read_page_bg_default_patch);
-//            novel_bottom.setBackgroundResource(R.drawable.read_page_bg_default_patch);
-//            page_list.setFootViewBackground(R.drawable.read_page_bg_default_patch);
             setBackgroundResource(R.drawable.read_page_bg_default);
         } else {
             // 通过新的画布，将矩形画新的bitmap上去
@@ -786,11 +733,6 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
             } else if (Constants.MODE == 61) {//night3
                 color_int = R.color.reading_backdrop_night;
             }
-
-//            novel_title.setBackgroundColor(getResources().getColor(color_int));
-//            novel_bottom.setBackgroundColor(getResources().getColor(color_int));
-//            page_list.setFootViewBackgroundColor(getResources().getColor(color_int));
-
             setBackgroundColor(getResources().getColor(color_int));
         }
     }
@@ -814,6 +756,8 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
         }
 
         novel_time.setTextColor(getResources().getColor(color_int));
+        mOriginTv.setTextColor(getResources().getColor(color_int));
+        mTransCodingTv.setTextColor(getResources().getColor(color_int));
         novel_page.setTextColor(getResources().getColor(color_int));
         novel_chapter.setTextColor(getResources().getColor(color_int));
         novel_title.setTextColor(getResources().getColor(color_int));
@@ -881,11 +825,32 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
     }
 
     @Override
+    public void setOnOperationClickListener(OnOperationClickListener onOperationClickListener) {
+        mOnOperationClickListener = onOperationClickListener;
+    }
+
+    @Override
     public Novel getCurrentNovel() {
         if (dataFactory != null) {
             return dataFactory.transformation();
         }
         return null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.origin_tv:
+                if (mOnOperationClickListener != null) {
+                    mOnOperationClickListener.onOriginClick();
+                }
+                break;
+            case R.id.trans_coding_tv:
+                if (mOnOperationClickListener != null) {
+                    mOnOperationClickListener.onTransCodingClick();
+                }
+                break;
+        }
     }
 
     static class MHandler extends Handler {
@@ -951,26 +916,20 @@ public class ScrollPageView extends LinearLayout implements PageInterface {
 
                 hodler.page.setTag(R.id.tag_bitmap, mCurPageBitmap);
                 hodler.page.setTag(R.id.tag_canvas, mCurrentCanvas);
-//				Log.e("getView", "mCurrentCanvas");
             } else {
                 hodler = (ViewHodler) convertView.getTag();
             }
-//			Log.e("getView", "position:" + position);
-            // readStatus.currentPage = getCurrentPage(lastVisible + 1);
             getCurrentSequence(position + 1);
-//			Log.e("getView", "position:" + position);
-//			if (chapterNameList.size() > 0) {
-//				Log.e("getView", "chapterNameList:" + chapterNameList.get(0));
-//			}
 
             Bitmap mCurPageBitmap = (Bitmap) hodler.page.getTag(R.id.tag_bitmap);
             Canvas mCurrentCanvas = (Canvas) hodler.page.getTag(R.id.tag_canvas);
             float pageHeight = drawTextHelper.drawText(mCurrentCanvas, chapterContent.get(position), chapterNameList);
             android.util.Log.e("ScrollView", "pageHeight: " + pageHeight);
             if (position != 0) {
-                lp.height = (int) pageHeight;
+                hodler.page.getLayoutParams().height = (int) pageHeight;
+            } else {
+                hodler.page.getLayoutParams().height = readStatus.screenHeight;
             }
-            hodler.page.setLayoutParams(lp);
             hodler.page.drawPage(mCurPageBitmap);
 
             return convertView;

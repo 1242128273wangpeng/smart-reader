@@ -70,5 +70,13 @@ public interface PageInterface {
 
     void loadNatvieAd();
 
+    void setOnOperationClickListener(OnOperationClickListener onOperationClickListener);
+
     Novel getCurrentNovel();
+
+    interface OnOperationClickListener {
+        void onOriginClick();
+
+        void onTransCodingClick();
+    }
 }
