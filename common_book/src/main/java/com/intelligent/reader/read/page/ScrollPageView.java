@@ -1,21 +1,5 @@
 package com.intelligent.reader.read.page;
 
-import com.dingyueads.sdk.Bean.Novel;
-import com.intelligent.reader.R;
-import com.intelligent.reader.activity.ReadingActivity;
-import com.intelligent.reader.read.animation.BitmapManager;
-import com.intelligent.reader.read.help.CallBack;
-import com.intelligent.reader.read.help.DrawTextHelper;
-import com.intelligent.reader.read.help.IReadDataFactory;
-import com.intelligent.reader.read.help.NovelHelper;
-import com.intelligent.reader.util.DisplayUtils;
-
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.Chapter;
-import net.lzbook.kit.data.bean.ReadStatus;
-import net.lzbook.kit.statistic.alilog.Log;
-import net.lzbook.kit.utils.AppUtils;
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -31,11 +15,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.dingyueads.sdk.Bean.Novel;
+import com.intelligent.reader.R;
+import com.intelligent.reader.activity.ReadingActivity;
+import com.intelligent.reader.read.animation.BitmapManager;
+import com.intelligent.reader.read.help.CallBack;
+import com.intelligent.reader.read.help.DrawTextHelper;
+import com.intelligent.reader.read.help.IReadDataFactory;
+import com.intelligent.reader.read.help.NovelHelper;
+import com.intelligent.reader.util.DisplayUtils;
+
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.bean.Chapter;
+import net.lzbook.kit.data.bean.ReadStatus;
+import net.lzbook.kit.utils.AppUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -157,7 +155,6 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
                 }
             }
         });
-        Log.e("Scroll", "sequence:" + readStatus.sequence);
     }
 
     @Override
@@ -302,20 +299,6 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
         return position;
     }
 
-    private void getChapterSize() {
-
-        if (preChaperConent != null) {
-            preSize = preChaperConent.size();
-        } else {
-            preSize = 0;
-        }
-        if (currentChaperConent != null) {
-            currentSize = currentChaperConent.size();
-        }
-        if (nextChaperContent != null) {
-            nextSize = nextChaperContent.size();
-        }
-    }
 
     private int getCurrentPage(int position) {
         String chapter_name = "";
