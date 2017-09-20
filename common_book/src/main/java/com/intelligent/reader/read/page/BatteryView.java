@@ -47,9 +47,9 @@ public class BatteryView extends ImageView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        int color_int = R.color.reading_text_color_first;
+        int color_int = R.color.reading_operation_text_color_first;
         if (Constants.MODE == 51) {
-            color_int = R.color.reading_text_color_first;
+            color_int = R.color.reading_operation_text_color_first;
         } else if (Constants.MODE == 52) {
             color_int = R.color.reading_text_color_second;
         } else if (Constants.MODE == 53) {

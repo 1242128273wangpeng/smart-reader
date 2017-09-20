@@ -24,6 +24,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -128,8 +129,6 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
         width = readStatus.screenWidth;
         height = readStatus.screenHeight - DisplayUtils.dp2px(getResources(), 26) * 2;
 
-//        dataFactory.setScreenSize(readStatus.screenWidth, height);
-
         chapterContent = new ArrayList<>();
 
         drawTextHelper = new DrawTextHelper(getResources(), this, mActivity);
@@ -174,6 +173,12 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
                 startTouchY = tmpY;
                 break;
             case MotionEvent.ACTION_MOVE:
+                Log.e("Scroll", "TouchEvent: lastY" + lastY);
+                Log.e("Scroll", "TouchEvent: event.getY()" + event.getY());
+                Log.e("Scroll", "TouchEvent: totalItemCount" + totalItemCount);
+                Log.e("Scroll", "TouchEvent: lastVisible" + lastVisible + 1);
+                Log.e("Scroll", "TouchEvent: readStatus.currentPage" + readStatus.currentPage);
+                Log.e("Scroll", "TouchEvent: readStatus.pageCount" + readStatus.pageCount);
                 if (!loadingData && lastY - event.getY() > 20 && totalItemCount == lastVisible + 1
                         && readStatus.currentPage == readStatus.pageCount) {
                     loadingData = true;
@@ -379,11 +384,15 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
             novel_time.setVisibility(GONE);
             novel_chapter.setVisibility(GONE);
             novel_page.setVisibility(GONE);
+            mOriginTv.setVisibility(GONE);
+            mTransCodingTv.setVisibility(GONE);
         } else {
             novel_content_battery_view.setVisibility(VISIBLE);
             novel_time.setVisibility(VISIBLE);
             novel_chapter.setVisibility(VISIBLE);
             novel_page.setVisibility(VISIBLE);
+            mOriginTv.setVisibility(VISIBLE);
+            mTransCodingTv.setVisibility(VISIBLE);
         }
 
         readStatus.chapterName = chapter_name;
@@ -716,10 +725,6 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
 
     private void drawBackground() {
         if (Constants.MODE == 51) {// 牛皮纸
-//            scroll_page.setBackgroundResource(R.drawable.read_page_bg_default);
-//            novel_title.setBackgroundResource(R.drawable.read_page_bg_default_patch);
-//            novel_bottom.setBackgroundResource(R.drawable.read_page_bg_default_patch);
-//            page_list.setFootViewBackground(R.drawable.read_page_bg_default_patch);
             setBackgroundResource(R.drawable.read_page_bg_default);
         } else {
             // 通过新的画布，将矩形画新的bitmap上去
@@ -737,19 +742,14 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
             } else if (Constants.MODE == 61) {//night3
                 color_int = R.color.reading_backdrop_night;
             }
-
-//            novel_title.setBackgroundColor(getResources().getColor(color_int));
-//            novel_bottom.setBackgroundColor(getResources().getColor(color_int));
-//            page_list.setFootViewBackgroundColor(getResources().getColor(color_int));
-
             setBackgroundColor(getResources().getColor(color_int));
         }
     }
 
     private void drawHeadFootText() {
-        int color_int = R.color.reading_text_color_first;
+        int color_int = R.color.reading_operation_text_color_first;
         if (Constants.MODE == 51) {// night1
-            color_int = R.color.reading_text_color_first;
+            color_int = R.color.reading_operation_text_color_first;
         } else if (Constants.MODE == 52) {// day
             color_int = R.color.reading_text_color_second;
         } else if (Constants.MODE == 53) {// eye
@@ -937,7 +937,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
 //            if (position != 0) {
 //                hodler.page.getLayoutParams().height = (int) pageHeight;
 //            } else {
-                hodler.page.getLayoutParams().height = readStatus.screenHeight;
+            hodler.page.getLayoutParams().height = readStatus.screenHeight;
 //            }
             hodler.page.drawPage(mCurPageBitmap);
 

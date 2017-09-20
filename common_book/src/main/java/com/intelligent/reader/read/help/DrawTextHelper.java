@@ -1182,7 +1182,7 @@ public class DrawTextHelper {
         // 顶部slogan
         textPaint.setTextSize(11 * readStatus.screenScaledDensity);
         textPaint.setColor(Color.parseColor("#50000000"));
-        drawSpacingText(canvas, resources.getString(R.string.slogan), 240, 13, sloganPaddingY);
+        drawSpacingText(canvas, resources.getString(R.string.slogan), 220, 11, sloganPaddingY);
 
         // 书籍名称
         textPaint.setTextSize(Constants.FONT_CHAPTER_SIZE * readStatus.screenScaledDensity);
@@ -1203,7 +1203,8 @@ public class DrawTextHelper {
 
         //底部icon及名称
         textPaint.setTextSize(12 * readStatus.screenScaledDensity);
-        drawSpacingText(canvas, resources.getString(R.string.app_name), 100, 13, paddingBottom);
+        textPaint.setColor(Color.parseColor("#50000000"));
+        drawSpacingText(canvas, resources.getString(R.string.app_name), 100, 11, paddingBottom);
         paddingBottom -= d_line;
 
         if (mIconBitmap == null || mIconBitmap.isRecycled()) {
