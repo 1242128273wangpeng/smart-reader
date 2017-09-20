@@ -3,6 +3,8 @@ package com.intelligent.reader.read.page;
 import com.dingyueads.sdk.Bean.AdSceneData;
 import com.dingyueads.sdk.Bean.Novel;
 import com.dingyueads.sdk.NativeInit;
+import com.intelligent.reader.R;
+import com.intelligent.reader.activity.DisclaimerActivity;
 import com.intelligent.reader.activity.ReadingActivity;
 import com.intelligent.reader.read.animation.AnimationProvider;
 import com.intelligent.reader.read.animation.BitmapManager;
@@ -17,6 +19,7 @@ import com.intelligent.reader.read.help.NovelHelper;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.ReadStatus;
+import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
@@ -26,12 +29,16 @@ import net.lzbook.kit.utils.ToastUtils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -101,6 +108,8 @@ public class PageView extends View implements PageInterface {
     private int tempPageMode = AnimationProvider.SHIFT_MODE;
     private PowerManager.WakeLock mWakeLock;
     private VelocityTracker mVelocityTracker;
+    private Paint mOperationPaint;
+    private OnOperationClickListener mOnOperationClickListener;
 
     public PageView(Context context) {
         super(context);
@@ -127,7 +136,6 @@ public class PageView extends View implements PageInterface {
         PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "auto read");
         readStatus.startReadTime = System.currentTimeMillis();
-        AppLog.e("jjj", readStatus.toString());
         this.readStatus = readStatus;
         this.novelHelper = novelHelper;
 
@@ -150,8 +158,7 @@ public class PageView extends View implements PageInterface {
         pageHeight = readStatus.screenHeight;
 
         drawTextHelper.getRect();
-        drawTextHelper.drawText(mCurPageCanvas, pageLines, mActivity);
-
+        mOperationPaint = drawTextHelper.drawText(mCurPageCanvas, pageLines, mActivity);
 
         postInvalidate();
     }
@@ -200,10 +207,7 @@ public class PageView extends View implements PageInterface {
         }
         if (!isAutoReadMode()) {
             if (mCurPageCanvas != null) {
-                drawTextHelper.drawFoot(mCurPageCanvas);
-            }
-            if (mNextPageCanvas != null) {
-                drawTextHelper.drawFoot(mNextPageCanvas);
+                mOperationPaint = drawTextHelper.drawText(mCurPageCanvas, pageLines, mActivity);
             }
         }
 
@@ -242,7 +246,6 @@ public class PageView extends View implements PageInterface {
     }
 
     public void setTextColor(int color) {
-//        AppLog.e(TAG, "SetTextColor: " + color);
         drawTextHelper.setTextColor(color);
     }
 
@@ -251,12 +254,8 @@ public class PageView extends View implements PageInterface {
         System.gc();
         if (!isAutoReadMode()) {
             if (mCurPageCanvas != null) {
-                drawTextHelper.drawFoot(mCurPageCanvas);
+                mOperationPaint = drawTextHelper.drawText(mCurPageCanvas, pageLines, mActivity);
             }
-            if (mNextPageCanvas != null) {
-                drawTextHelper.drawFoot(mNextPageCanvas);
-            }
-
         }
 
     }
@@ -457,6 +456,7 @@ public class PageView extends View implements PageInterface {
             if (Constants.DEVELOPER_MODE) {
                 ToastUtils.showToastNoRepeat("AdOnclick");
             }
+        } else if (performOperation(event)) {
         } else {
             if (!Constants.FULL_SCREEN_READ) {
                 if (x <= w3) {
@@ -478,6 +478,43 @@ public class PageView extends View implements PageInterface {
                     }
                 }
             }
+        }
+    }
+
+
+    private boolean performOperation(MotionEvent event) {
+        if (mOperationPaint == null) return false;
+
+        Paint.FontMetrics fontMetrics = mOperationPaint.getFontMetrics();
+        float fontHeight = fontMetrics.descent - fontMetrics.ascent;
+
+        // 原网页
+        float originTop = 0;
+        float originLeft = 0;
+        float originBottom = originTop + fontHeight * readStatus.screenScaledDensity;
+        float originRight = originLeft + mOperationPaint.measureText(getResources().getString(R.string.origin_text)) + 80;
+
+        // 转码声明
+        float transCodingTop = originTop;
+        float transCodingLeft = readStatus.screenWidth - Constants.READ_CONTENT_PAGE_LEFT_SPACE
+                * readStatus.screenScaledDensity - mOperationPaint.measureText(getResources().getString(R.string.trans_coding_text)) - 80;
+        float transCodingBottom = originBottom;
+        float transCodingRight = readStatus.screenWidth;
+
+        if (event.getX() >= originLeft && event.getX() <= originRight &&
+                event.getY() >= originTop && event.getY() <= originBottom) {
+            if (mOnOperationClickListener != null) {
+                mOnOperationClickListener.onOriginClick();
+            }
+            return true;
+        } else if (event.getX() >= transCodingLeft && event.getX() <= transCodingRight &&
+                event.getY() >= transCodingTop && event.getY() <= transCodingBottom) {
+            if (mOnOperationClickListener != null) {
+                mOnOperationClickListener.onTransCodingClick();
+            }
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -597,6 +634,7 @@ public class PageView extends View implements PageInterface {
                 }
             } else if (readStatus.native_type == 22 || readStatus.native_type == 24 || readStatus.native_type == 25) {
                 try {
+                } catch (IllegalArgumentException e) {
                     if (readStatus.currentAdInfoDown != null) {
                         AdSceneData adSceneData = readStatus.currentAdInfoDown.getAdSceneData();
                         if (adSceneData != null) {
@@ -605,7 +643,6 @@ public class PageView extends View implements PageInterface {
                         }
                         statisticManager.schedulingRequest(mActivity, readStatus.novel_basePageView, readStatus.currentAdInfoDown, getCurrentNovel(), StatisticManager.TYPE_CLICK, NativeInit.ad_position[1]);
                     }
-                } catch (IllegalArgumentException e) {
                     e.printStackTrace();
                 }
             } else if (readStatus.native_type == 2 || readStatus.native_type == 5) {
@@ -706,11 +743,11 @@ public class PageView extends View implements PageInterface {
                     readStatus.lastCurrentPageRemark + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
                     readStatus.startReadTime + "", endTime + "", endTime - readStatus.startReadTime + "", "false", readStatus.requestItem.channel_code + "");
         } else {
-            if(dataFactory!=null&&dataFactory.currentChapter!=null){
+            if (dataFactory != null && dataFactory.currentChapter != null) {
                 //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
-                StartLogClickUtil.upLoadReadContent(readStatus.book_id,dataFactory.currentChapter.chapter_id+"",readStatus.source_ids,readStatus.pageCount+"",
-                        readStatus.currentPage-1+"",readStatus.currentPageConentLength+"",readStatus.requestItem.fromType+"",
-                        readStatus.startReadTime+"",endTime+"",endTime-readStatus.startReadTime+"","false",readStatus.requestItem.channel_code+"");
+                StartLogClickUtil.upLoadReadContent(readStatus.book_id, dataFactory.currentChapter.chapter_id + "", readStatus.source_ids, readStatus.pageCount + "",
+                        readStatus.currentPage - 1 + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
+                        readStatus.startReadTime + "", endTime + "", endTime - readStatus.startReadTime + "", "false", readStatus.requestItem.channel_code + "");
                 readStatus.lastChapterId = dataFactory.currentChapter.chapter_id;
             }
         }
@@ -1017,6 +1054,11 @@ public class PageView extends View implements PageInterface {
     @Override
     public void loadNatvieAd() {
         drawTextHelper.loadNatvieAd();
+    }
+
+    @Override
+    public void setOnOperationClickListener(OnOperationClickListener onOperationClickListener) {
+        mOnOperationClickListener = onOperationClickListener;
     }
 
     @Override
