@@ -290,7 +290,7 @@ public class DrawTextHelper {
         float pageHeight = 0;
 
 
-        y = -fm.top;
+        y = -fm.ascent;
         height = readStatus.screenHeight;
 
         float textHeight = 0;
@@ -350,7 +350,7 @@ public class DrawTextHelper {
                         canvas.drawText(text.getLineContent(), mLineStart, y + m_iFontHeight * i, mPaint);
                     }
                     if (i == pageLines.size() - 1) {
-                        pageHeight = (y + m_iFontHeight * i) - Constants.READ_CONTENT_PAGE_TOP_SPACE;
+                        pageHeight = (y + m_iFontHeight * i) + fm.descent + Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE * readStatus.screenScaledDensity;
                     }
                 }
             }
@@ -715,7 +715,7 @@ public class DrawTextHelper {
                 * readStatus.screenScaledDensity;
 
         // 正文行首与顶部间距
-        float y = 0;
+        float y = fm.ascent;
         float y_chapter;
         float pageHeight = 0;
 
@@ -816,7 +816,7 @@ public class DrawTextHelper {
                 }
 
                 if (i == pageLines.size() - 1) {
-                    pageHeight = y + m_iFontHeight * (pageLines.size() - 3);
+                    pageHeight = y + m_iFontHeight * (i - 3) + fm.descent + Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE * readStatus.screenScaledDensity;
                 }
             }
         }
