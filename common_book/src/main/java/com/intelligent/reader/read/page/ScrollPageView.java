@@ -14,14 +14,12 @@ import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.NovelLineBean;
 import net.lzbook.kit.data.bean.ReadStatus;
-import net.lzbook.kit.statistic.alilog.Log;
 import net.lzbook.kit.utils.AppUtils;
 
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -36,21 +34,6 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.dingyueads.sdk.Bean.Novel;
-import com.intelligent.reader.R;
-import com.intelligent.reader.activity.ReadingActivity;
-import com.intelligent.reader.read.animation.BitmapManager;
-import com.intelligent.reader.read.help.CallBack;
-import com.intelligent.reader.read.help.DrawTextHelper;
-import com.intelligent.reader.read.help.IReadDataFactory;
-import com.intelligent.reader.read.help.NovelHelper;
-import com.intelligent.reader.util.DisplayUtils;
-
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.Chapter;
-import net.lzbook.kit.data.bean.ReadStatus;
-import net.lzbook.kit.utils.AppUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -143,9 +126,9 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
         this.readStatus = readStatus;
 
         width = readStatus.screenWidth;
-        height = readStatus.screenHeight - DisplayUtils.dp2px(getResources(), 25) * 2;
+        height = readStatus.screenHeight - DisplayUtils.dp2px(getResources(), 26) * 2;
 
-        dataFactory.setScreenSize(readStatus.screenWidth, height);
+//        dataFactory.setScreenSize(readStatus.screenWidth, height);
 
         chapterContent = new ArrayList<>();
 
@@ -942,27 +925,20 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
 
                 hodler.page.setTag(R.id.tag_bitmap, mCurPageBitmap);
                 hodler.page.setTag(R.id.tag_canvas, mCurrentCanvas);
-//				Log.e("getView", "mCurrentCanvas");
             } else {
                 hodler = (ViewHodler) convertView.getTag();
             }
-//			Log.e("getView", "position:" + position);
-            // readStatus.currentPage = getCurrentPage(lastVisible + 1);
             getCurrentSequence(position + 1);
-//			Log.e("getView", "position:" + position);
-//			if (chapterNameList.size() > 0) {
-//				Log.e("getView", "chapterNameList:" + chapterNameList.get(0));
-//			}
 
             Bitmap mCurPageBitmap = (Bitmap) hodler.page.getTag(R.id.tag_bitmap);
             Canvas mCurrentCanvas = (Canvas) hodler.page.getTag(R.id.tag_canvas);
             float pageHeight = drawTextHelper.drawText(mCurrentCanvas, chapterContent.get(position), chapterNameList);
             android.util.Log.e("ScrollView", "pageHeight: " + pageHeight);
-            if (position != 0) {
-                hodler.page.getLayoutParams().height = (int) pageHeight;
-            } else {
+//            if (position != 0) {
+//                hodler.page.getLayoutParams().height = (int) pageHeight;
+//            } else {
                 hodler.page.getLayoutParams().height = readStatus.screenHeight;
-            }
+//            }
             hodler.page.drawPage(mCurPageBitmap);
 
             return convertView;

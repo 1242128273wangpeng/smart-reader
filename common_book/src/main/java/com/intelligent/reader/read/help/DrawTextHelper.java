@@ -290,7 +290,7 @@ public class DrawTextHelper {
         float pageHeight = 0;
 
 
-        y = m_iFontHeight;
+        y = -fm.top;
         height = readStatus.screenHeight;
 
         float textHeight = 0;
@@ -316,7 +316,7 @@ public class DrawTextHelper {
             int n = (int) Math.round((height - duan) / m_iFontHeight);// 行数
             float distance = (textHeight - (height)) / n;
             m_iFontHeight = fm.descent - fm.ascent + Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE
-                    * readStatus.screenScaledDensity;
+                    * readStatus.screenScaledDensity - distance;
         }
 
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
@@ -350,7 +350,7 @@ public class DrawTextHelper {
                         canvas.drawText(text.getLineContent(), mLineStart, y + m_iFontHeight * i, mPaint);
                     }
                     if (i == pageLines.size() - 1) {
-                        pageHeight = (y + m_iFontHeight * pageLines.size()) - Constants.READ_CONTENT_PAGE_TOP_SPACE;
+                        pageHeight = (y + m_iFontHeight * i) - Constants.READ_CONTENT_PAGE_TOP_SPACE;
                     }
                 }
             }
@@ -411,12 +411,12 @@ public class DrawTextHelper {
 
         }
         if (height - textHeight > 2 && height - textHeight < 4 * (fm.descent - fm.ascent)) {
-            int n = (int) Math.round((height - duan) / m_iFontHeight);// 行数
+            int n = Math.round((height - duan) / m_iFontHeight);// 行数
             float distance = (height - textHeight) / n;
             m_iFontHeight = fm.descent - fm.ascent + Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE
                     * readStatus.screenScaledDensity + distance;
         } else if (textHeight - height > 2) {
-            int n = (int) Math.round((height - duan) / m_iFontHeight);// 行数
+            int n = Math.round((height - duan) / m_iFontHeight);// 行数
             float distance = (textHeight - (height)) / n;
             m_iFontHeight = fm.descent - fm.ascent + Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE
                     * readStatus.screenScaledDensity - distance;

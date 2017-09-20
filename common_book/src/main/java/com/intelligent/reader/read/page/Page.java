@@ -36,12 +36,7 @@ public class Page extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawBitmap(mCurPageBitmap, new Rect(0, 0, getWidth(), getHeight()), new Rect(0, 0, getWidth(), getHeight()), paint);
+//        canvas.drawBitmap(mCurPageBitmap, new Rect(0, 0, getWidth(), getHeight()), new Rect(0, 0, getWidth(), getHeight()), paint);
+        canvas.drawBitmap(mCurPageBitmap, 0, 0, paint);
     }
-
-    public void drawContent(DrawTextHelper drawTextHelper, Canvas pageCanvas, Bitmap pageBitmap, List<NovelLineBean> pageLines, ArrayList<NovelLineBean> chapterNameList) {
-        drawTextHelper.drawText(pageCanvas, pageLines, chapterNameList);
-        drawPage(pageBitmap);
-    }
-
 }
