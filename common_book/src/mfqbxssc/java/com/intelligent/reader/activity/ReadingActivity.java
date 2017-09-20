@@ -75,7 +75,6 @@ import com.intelligent.reader.read.page.PageView;
 import com.intelligent.reader.read.page.ReadOptionHeader;
 import com.intelligent.reader.read.page.ReadSettingView;
 import com.intelligent.reader.read.page.ScrollPageView;
-import com.intelligent.reader.read.page.VerticalPagerView;
 import com.intelligent.reader.receiver.DownBookClickReceiver;
 import com.intelligent.reader.util.EventBookStore;
 

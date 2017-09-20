@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -33,7 +34,6 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -89,7 +89,6 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
     private TextView novel_chapter;
     private TextView novel_page;
     private TextView novel_title;
-    private RelativeLayout novel_bottom;
     private BitmapManager manager;
     private long startTouchTime;
     private int startTouchX;
@@ -481,11 +480,12 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
         preSize = 0;
         currentSize = 0;
         nextSize = 0;
+        getChapterSize();
         int offset = readStatus.offset;
         if (!needSavePage) {
             readStatus.currentPage = 1;
         }
-        getChapterSize();
+
         getCurrentPage(readStatus.currentPage);
         readStatus.offset = offset;
         final int position = readStatus.currentPage - 1;
@@ -558,7 +558,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
 
     @Override
     public void getNextChapter() {
-        ArrayList<ArrayList<String>> temp = preChaperConent;
+        ArrayList<ArrayList<NovelLineBean>> temp = preChaperConent;
         boolean canRemove = false;
         if (nextChaperContent != null) {
             preChaperConent = currentChaperConent;
@@ -782,6 +782,8 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
         }
 
         novel_time.setTextColor(getResources().getColor(color_int));
+        mOriginTv.setTextColor(getResources().getColor(color_int));
+        mTransCodingTv.setTextColor(getResources().getColor(color_int));
         novel_page.setTextColor(getResources().getColor(color_int));
         novel_chapter.setTextColor(getResources().getColor(color_int));
         novel_title.setTextColor(getResources().getColor(color_int));
@@ -849,11 +851,32 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
     }
 
     @Override
+    public void setOnOperationClickListener(OnOperationClickListener onOperationClickListener) {
+        mOnOperationClickListener = onOperationClickListener;
+    }
+
+    @Override
     public Novel getCurrentNovel() {
         if (dataFactory != null) {
             return dataFactory.transformation();
         }
         return null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.origin_tv:
+                if (mOnOperationClickListener != null) {
+                    mOnOperationClickListener.onOriginClick();
+                }
+                break;
+            case R.id.trans_coding_tv:
+                if (mOnOperationClickListener != null) {
+                    mOnOperationClickListener.onTransCodingClick();
+                }
+                break;
+        }
     }
 
     static class MHandler extends Handler {
@@ -936,9 +959,10 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
             float pageHeight = drawTextHelper.drawText(mCurrentCanvas, chapterContent.get(position), chapterNameList);
             android.util.Log.e("ScrollView", "pageHeight: " + pageHeight);
             if (position != 0) {
-                lp.height = (int) pageHeight;
+                hodler.page.getLayoutParams().height = (int) pageHeight;
+            } else {
+                hodler.page.getLayoutParams().height = readStatus.screenHeight;
             }
-            hodler.page.setLayoutParams(lp);
             hodler.page.drawPage(mCurPageBitmap);
 
             return convertView;

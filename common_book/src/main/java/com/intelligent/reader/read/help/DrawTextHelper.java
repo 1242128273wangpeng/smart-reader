@@ -11,6 +11,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.FontMetrics;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.os.Build;
 import android.text.TextPaint;
@@ -21,6 +22,7 @@ import com.dingyueads.sdk.NativeInit;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.read.page.PageInterface;
+import com.intelligent.reader.read.page.PageView;
 import com.intelligent.reader.util.DisplayUtils;
 
 import net.lzbook.kit.ad.OwnNativeAdManager;
@@ -360,7 +362,7 @@ public class DrawTextHelper {
         return pageHeight;
     }
 
-    public synchronized void drawText(Canvas canvas, List<NovelLineBean> pageLines, Activity activity) {
+    public synchronized Paint drawText(Canvas canvas, List<NovelLineBean> pageLines, Activity activity) {
         boolean isChapterFirstPage = false;
         readStatus.y_nativead = 0;
         readStatus.native_type = 0;
@@ -742,7 +744,7 @@ public class DrawTextHelper {
                     fm_chapter = textPaint.getFontMetrics();
                     m_iFontHeight_chapter = fm_chapter.descent - fm_chapter.ascent + 0.5f
                             * Constants.FONT_CHAPTER_DEFAULT * readStatus.screenScaledDensity;
-                    canvas.drawText(chapterNameList.get(i), Constants.READ_CONTENT_PAGE_LEFT_SPACE
+                    canvas.drawText(chapterNameList.get(i).getLineContent(), Constants.READ_CONTENT_PAGE_LEFT_SPACE
                             * readStatus.screenScaledDensity, y_chapter + m_iFontHeight_chapter * i, textPaint);
                     y = y_chapter + m_iFontHeight_chapter * i;
                 }
@@ -866,7 +868,7 @@ public class DrawTextHelper {
                     fm_chapter = textPaint.getFontMetrics();
                     m_iFontHeight_chapter = fm_chapter.descent - fm_chapter.ascent + 0.5f
                             * Constants.FONT_CHAPTER_DEFAULT * readStatus.screenScaledDensity;
-                    canvas.drawText(readStatus.chapterNameList.get(i), Constants.READ_CONTENT_PAGE_LEFT_SPACE
+                    canvas.drawText(readStatus.chapterNameList.get(i).getLineContent(), Constants.READ_CONTENT_PAGE_LEFT_SPACE
                             * readStatus.screenScaledDensity, y_chapter + m_iFontHeight_chapter * i, textPaint);
                 }
             }
@@ -1188,7 +1190,7 @@ public class DrawTextHelper {
         textPaint.setColor(Color.parseColor("#90000000"));
         for (int i = 0; i < name_length; i++) {
             if (i > 0) bookNamePaddingY += bookNameHeight + 10 * readStatus.screenScaledDensity;
-            canvas.drawText(nameList.get(i).getLineContent(), x_with, y, setPaintColor(textPaint, 1));
+            canvas.drawText(nameList.get(i).getLineContent(), x_with, bookNamePaddingY, setPaintColor(textPaint, 1));
         }
 
         // 作者
