@@ -13,6 +13,8 @@ import android.content.Context;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Administrator on 2017\8\14 0014.
@@ -35,6 +37,9 @@ public class StartLogClickUtil {
     public static final String READPAGE_PAGE = "READPAGE";//阅读页
     public static final String READPAGESET_PAGE = "READPAGESET";//阅读页设置
     public static final String READPAGEMORE_PAGE = "READPAGEMORE";//阅读页更多
+    public static final String RECOMMEND_PAGE = "RECOMMEND";//青果推荐页
+    public static final String TOP_PAGE = "TOP";//青果榜单页
+    public static final String CLASS_PAGE = "CLASS";//青果分类页
 
     //APP通用
     public static final String APPINIT = "APPINIT";//客户端启动
@@ -146,6 +151,28 @@ public class StartLogClickUtil {
     public static final String BOOKDETAIL = "BOOKDETAIL";//书籍详情
 
 
+    //青果推荐页
+    public static final String QG_TJY_MODULEEXPOSE = "MODULEEXPOSE";//模块露出
+    public static final String QG_TJY_BOOKEXPOSE = "BOOKEXPOSE";//各书籍位置露出
+    public static final String QG_TJY_SEARCH = "SEARCH";//点击搜索
+    public static final String QG_TJY_BOOKCLICK = "BOOKCLICK";//点击搜索
+    public static final String QG_TJY_MORE = "MORE";//点击搜索
+
+    //青果榜单页
+    public static final String QG_BDY_MODULEEXPOSE = "MODULEEXPOSE";//模块露出
+    public static final String QG_BDY_BOOKEXPOSE = "BOOKEXPOSE";//各书籍位置露出
+    public static final String QG_BDY_SEARCH = "SEARCH";//点击搜索
+    public static final String QG_BDY_BOOKCLICK = "BOOKCLICK";//点击搜索
+    public static final String QG_BDY_MORE = "MORE";//点击搜索
+
+
+    //青果分类页
+    public static final String QG_FL_FIRSTCLASS = "FIRSTCLASS";//点击一级分类
+    public static final String QG_FL_BOOKCLICK = "BOOKCLICK";//书籍点击
+
+    private static final ExecutorService logThreadPool = Executors.newSingleThreadExecutor();
+
+
     private static List<ServerLog> linkList = new LinkedList<ServerLog>();
 
     //上传普通的点击事件
@@ -174,18 +201,14 @@ public class StartLogClickUtil {
         log.PutContent("city_info", Constants.adCityInfo);//城市
         log.PutContent("location_detail", Constants.adLocationDetail);//具体位置信息
 
-        //事件对应的额外的参数部分
-//        Map<String, String> data = new HashMap<>();
-//        data.put("start_time", System.currentTimeMillis()+"");
-//        data.put("end_time", System.currentTimeMillis()+1000+"");
-//        log.PutContent("data", FormatUtil.forMatMap(data));
-        new Thread() {
+        logThreadPool.execute(new Runnable() {
             @Override
             public void run() {
                 AppLog.e("log", log.GetContent().toString());
                 AndroidLogClient.putLog(log);
             }
-        }.start();
+        });
+
 
 
     }
@@ -222,15 +245,13 @@ public class StartLogClickUtil {
             log.PutContent("data", FormatUtil.forMatMap(extraParam));
         }
 
-
-        new Thread() {
+        logThreadPool.execute(new Runnable() {
             @Override
             public void run() {
                 AppLog.e("log", log.GetContent().toString());
                 AndroidLogClient.putLog(log);
             }
-        }.start();
-
+        });
 
     }
 
@@ -248,13 +269,13 @@ public class StartLogClickUtil {
         log.PutContent("apps", applist);
         log.PutContent("time", System.currentTimeMillis() + "");
 
-        new Thread() {
+        logThreadPool.execute(new Runnable() {
             @Override
             public void run() {
                 AppLog.e("log", log.GetContent().toString());
                 AndroidLogClient.putLog(log);
             }
-        }.start();
+        });
 
 
     }
@@ -291,7 +312,7 @@ public class StartLogClickUtil {
         linkList.add(log);
         AppLog.e("log", log.GetContent().toString());
         if (linkList != null && linkList.size() > 10) {
-            new Thread() {
+            logThreadPool.execute(new Runnable() {
                 @Override
                 public void run() {
                     for (int i = 0; i < linkList.size(); i++) {
@@ -299,7 +320,7 @@ public class StartLogClickUtil {
                     }
                     linkList.clear();
                 }
-            }.start();
+            });
 
         }
 

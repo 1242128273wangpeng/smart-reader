@@ -21,10 +21,7 @@ import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.NullCallBack
-import net.lzbook.kit.data.bean.Book
-import net.lzbook.kit.data.bean.Bookmark
-import net.lzbook.kit.data.bean.ReadStatus
-import net.lzbook.kit.data.bean.RequestItem
+import net.lzbook.kit.data.bean.*
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.request.own.OtherRequestService
@@ -285,11 +282,11 @@ class ReadOptionPresenter : ReadOption.Presenter {
                 bookMark.chapter_name = "《" + readStatus.book.name + "》书籍封面页"
             } else if (readStatus.currentPage == 1 && content.size - 3 >= 0) {
                 for (i in 3..content.size - 1) {
-                    sb.append(content.get(i))
+                    sb.append(content.get(i).lineContent)
                 }
             } else {
                 for (i in content.indices) {
-                    sb.append(content.get(i))
+                    sb.append(content.get(i).lineContent)
                 }
             }
 
@@ -318,7 +315,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
     }
 
     @Synchronized
-    fun getPageContent(): List<String> {
+    fun getPageContent(): List<NovelLineBean> {
         if (readStatus.mLineList == null) {
             return listOf()
         }
@@ -331,11 +328,11 @@ class ReadOptionPresenter : ReadOption.Presenter {
         readStatus.offset = 0
         // AppLog.d("initTextContent2", "readStatus.currentPage:" +
         // readStatus.currentPage);
-        var pageContent: ArrayList<String>? = null
+        var pageContent: ArrayList<NovelLineBean>? = null
         if (readStatus.currentPage - 1 < readStatus.mLineList.size) {
             pageContent = readStatus.mLineList[readStatus.currentPage - 1]
         } else {
-            pageContent = ArrayList<String>()
+            pageContent = ArrayList<NovelLineBean>()
         }
 
         var i = 0
@@ -344,7 +341,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
             val size = pageList.size
             // AppLog.d("initTextContent2", "size:" + size);
             for (j in 0..size - 1) {
-                val string = pageList[j]
+                val string = pageList[j].lineContent
                 if (!TextUtils.isEmpty(string) && string != " ") {
                     readStatus.offset += string.length
                 }

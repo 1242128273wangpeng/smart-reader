@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.CornerPathEffect
 import android.graphics.Paint
+import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RectShape
 import android.util.AttributeSet
@@ -59,10 +60,16 @@ class NightShadowView : View {
             if (radius == 0F) {
                 setBackgroundColor(Color.BLACK)
             } else {
-                val shapeDrawable = ShapeDrawable(RectShape())
-                shapeDrawable.paint.color = Color.BLACK
-                shapeDrawable.paint.style = Paint.Style.FILL
-                shapeDrawable.paint.pathEffect = CornerPathEffect(radius)
+                val shapeDrawable = GradientDrawable()
+//                shapeDrawable.cornerRadius = radius
+                shapeDrawable.setCornerRadii(floatArrayOf(
+                        radius, radius,
+                        radius, radius,
+                        radius, radius,
+                        radius, radius
+                ))
+                shapeDrawable.shape = GradientDrawable.RECTANGLE
+                shapeDrawable.setColor(Color.BLACK)
                 setBackgroundDrawable(shapeDrawable)
             }
             alpha = Constants.NIGHT_SHADOW_ALPHA

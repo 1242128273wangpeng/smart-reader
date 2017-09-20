@@ -18,6 +18,7 @@ import com.intelligent.reader.read.help.NovelHelper;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.bean.NovelLineBean;
 import net.lzbook.kit.data.bean.ReadStatus;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
@@ -70,7 +71,7 @@ public class PageView extends View implements PageInterface {
     private int turnThreshold;
 
     private AnimationProvider provider;
-    private List<String> pageLines;
+    private List<NovelLineBean> pageLines;
 
     private int backColor;// 仿真翻页背面颜色
 
@@ -89,8 +90,8 @@ public class PageView extends View implements PageInterface {
     //动画为执行完时, 不接受触摸
     private boolean mTouchable = true;
     private String timeText;
-    private List<String> currentPageContent;
-    private List<String> nextPageContent;
+    private List<NovelLineBean> currentPageContent;
+    private List<NovelLineBean> nextPageContent;
     private long endTime;
     private int touchStartX;
     private int touchStartY;
@@ -227,7 +228,7 @@ public class PageView extends View implements PageInterface {
     public void drawNextPage() {
         nextPageContent = pageLines = novelHelper.getPageContent();
         drawTextHelper.drawText(mNextPageCanvas, pageLines, mActivity);
-        if (count == 1) {
+        if (count == 1 && readStatus != null) {
             readStatus.lastSequenceRemark = readStatus.sequence + 1;
             readStatus.lastCurrentPageRemark = readStatus.currentPage;
             readStatus.lastPageCount = readStatus.pageCount;
@@ -361,6 +362,7 @@ public class PageView extends View implements PageInterface {
             provider.finishAnimation();
             if (tmpX > touchStartX) {
                 if (isCurlType) {
+                    count = 0;
                     drawNextPage();
                 }
                 if (!prepareTurnPrePage() && readStatus.book.book_type == 0) {
@@ -378,6 +380,8 @@ public class PageView extends View implements PageInterface {
                     motionState = MotionState.kNone;
                     return false;
                 }
+                endTime = System.currentTimeMillis();
+                addLog(endTime);
                 drawNextPage();
                 motionState = MotionState.kMoveToLeft;
             }
@@ -698,6 +702,7 @@ public class PageView extends View implements PageInterface {
      */
     public void tryTurnPrePage() {
         readStatus.startReadTime = System.currentTimeMillis();
+        count = 0;
         if (isCurlType) {
             drawNextPage();
         }

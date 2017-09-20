@@ -491,4 +491,8 @@ public class SplashActivity extends FrameActivity {
 
     }
 
+    @Override
+    public boolean shouldShowNightShadow() {
+        return false;
+    }
 }

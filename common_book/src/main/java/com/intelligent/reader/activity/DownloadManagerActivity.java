@@ -282,7 +282,7 @@ public class DownloadManagerActivity extends BaseCacheableActivity implements On
                     views.showRemoveMenu(views);
                     editBtn.setText("取消");
                     StatServiceUtils.statAppBtnClick(this, StatServiceUtils.bs_down_m_click_edit);
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.CACHEBUTTON);
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.CACHEEDIT1);
                 } else {
                     views.dissmissremoveMenu();
                     editBtn.setText("编辑");

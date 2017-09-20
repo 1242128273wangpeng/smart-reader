@@ -2427,17 +2427,23 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     public void onChageNightMode() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Editor edit = sharedPreferences.edit();
+        Map<String, String> data = new HashMap<>();
+
         if (mThemeHelper.isNight()) {
             //夜间模式只有一种背景， 不能存储
 //            edit.putInt("current_night_mode", Constants.MODE);
             Constants.MODE = sharedPreferences.getInt("current_light_mode", 51);
             mThemeHelper.setMode(ThemeMode.THEME1);
+            data.put("type", "2");
+            StartLogClickUtil.upLoadEventLog(getApplicationContext(),StartLogClickUtil.READPAGE_PAGE,StartLogClickUtil.NIGHTMODE1,data);
         } else {
             edit.putInt("current_light_mode", Constants.MODE);
 //            Constants.MODE = sharedPreferences.getInt("current_night_mode", 61);
             //夜间模式只有一种背景
             Constants.MODE = 61;
             mThemeHelper.setMode(ThemeMode.NIGHT);
+            data.put("type", "1");
+            StartLogClickUtil.upLoadEventLog(getApplicationContext(),StartLogClickUtil.READPAGE_PAGE,StartLogClickUtil.NIGHTMODE1,data);
         }
         edit.putInt("content_mode", Constants.MODE);
         edit.apply();

@@ -23,6 +23,7 @@ import com.intelligent.reader.read.help.NovelHelper
 import kotlinx.android.synthetic.main.vertical_pager_layout.view.*
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Chapter
+import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.data.bean.ReadStatus
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.toastLong
@@ -210,7 +211,7 @@ class VerticalPagerView : FrameLayout, PageInterface {
     internal inner class PagerScrollAdapter(private val pageBitmap: Bitmap,
                                             private val pageCanvas: Canvas) : RecyclerView.Adapter<PagerScrollAdapter.PagerHolder>() {
 
-        private var chapterList: ArrayList<ArrayList<String>>
+        private var chapterList: ArrayList<ArrayList<NovelLineBean>>
 
         init {
             chapterList = ArrayList()
@@ -229,12 +230,12 @@ class VerticalPagerView : FrameLayout, PageInterface {
 
         override fun getItemCount() = chapterList.size
 
-        fun setChapter(data: ArrayList<ArrayList<String>>) {
+        fun setChapter(data: ArrayList<ArrayList<NovelLineBean>>) {
             chapterList = data
             notifyDataSetChanged()
         }
 
-        fun addAllChapter(location: Int, data: ArrayList<ArrayList<String>>): Boolean {
+        fun addAllChapter(location: Int, data: ArrayList<ArrayList<NovelLineBean>>): Boolean {
             return if (chapterList.addAll(location, data)) {
                 notifyItemRangeInserted(location, data.size)
                 true
@@ -243,7 +244,7 @@ class VerticalPagerView : FrameLayout, PageInterface {
             }
         }
 
-        fun addAllChapter(data: ArrayList<ArrayList<String>>): Boolean {
+        fun addAllChapter(data: ArrayList<ArrayList<NovelLineBean>>): Boolean {
             val lastIndex = chapterList.size
             return if (chapterList.addAll(data)) {
                 notifyItemRangeInserted(lastIndex, data.size)

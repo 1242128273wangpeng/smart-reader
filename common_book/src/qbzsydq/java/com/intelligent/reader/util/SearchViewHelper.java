@@ -382,6 +382,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
             @Override
             public void onClick(View v) {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.b_search_click_his_clear);
+                StartLogClickUtil.upLoadEventLog(context,StartLogClickUtil.SEARCH_PAGE,StartLogClickUtil.HISTORYCLEAR);
                 showDialog();
             }
         });

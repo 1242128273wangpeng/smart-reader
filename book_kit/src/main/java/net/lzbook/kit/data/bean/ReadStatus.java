@@ -58,7 +58,7 @@ public class ReadStatus {
     //当前小说名称
     public String bookSource;
     //当前章节数量
-    public ArrayList<ArrayList<String>> mLineList;
+    public ArrayList<ArrayList<NovelLineBean>> mLineList;
     //统计打点用，,获取当前页面的字符数，每次翻页会先至0
     public int currentPageConentLength;
     //统计打点用，书籍源，中间有切换源则多个源使用分隔符"`"进行连接
@@ -69,10 +69,10 @@ public class ReadStatus {
     public int lastSequenceRemark;
     public int lastCurrentPageRemark;
     public int lastPageCount;
-    public ArrayList<String> bookNameList;
+    public ArrayList<NovelLineBean> bookNameList;
     public String lastChapterId;//记录翻页前一页的章节ID
     //章节名称列表
-    public ArrayList<String> chapterNameList;
+    public ArrayList<NovelLineBean> chapterNameList;
     //小说bean
     public Book book;
     //小说阅读进度

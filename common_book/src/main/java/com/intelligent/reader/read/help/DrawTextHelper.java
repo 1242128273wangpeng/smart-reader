@@ -11,7 +11,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.FontMetrics;
 import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.os.Build;
 import android.text.TextPaint;
@@ -22,11 +21,11 @@ import com.dingyueads.sdk.NativeInit;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.read.page.PageInterface;
-import com.intelligent.reader.read.page.PageView;
 import com.intelligent.reader.util.DisplayUtils;
 
 import net.lzbook.kit.ad.OwnNativeAdManager;
 import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.bean.NovelLineBean;
 import net.lzbook.kit.data.bean.ReadStatus;
 import net.lzbook.kit.data.bean.SensitiveWords;
 import net.lzbook.kit.utils.AppLog;
@@ -78,6 +77,8 @@ public class DrawTextHelper {
     private List<String> readSensitiveWords;
     private boolean noReadSensitive = false;
     private float firstchapterHeight;
+    private float mWidth;
+    private float mLineStart;
 
     public DrawTextHelper(Resources res, PageInterface pageView, Activity mActivity) {
         this.resources = res;
@@ -271,10 +272,12 @@ public class DrawTextHelper {
     }
 
     //上下滑动
-    public synchronized float drawText(Canvas canvas, List<String> pageLines, ArrayList<String> chapterNameList) {
+    public synchronized float drawText(Canvas canvas, List<NovelLineBean> pageLines, ArrayList<NovelLineBean> chapterNameList) {
         mPaint.setTextSize(Constants.FONT_SIZE * readStatus.screenScaledDensity);
         duanPaint.setTextSize(1 * readStatus.screenScaledDensity);
         FontMetrics fm = mPaint.getFontMetrics();
+        mWidth = readStatus.screenWidth - readStatus.screenDensity * Constants.READ_CONTENT_PAGE_LEFT_SPACE * 2;
+        mLineStart = Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity;
 
         float m_iFontHeight = fm.descent - fm.ascent + Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE * readStatus.screenScaledDensity;
         float m_duan = (Constants.READ_PARAGRAPH_SPACE - Constants.READ_INTERLINEAR_SPACE) * Constants.FONT_SIZE
@@ -293,8 +296,8 @@ public class DrawTextHelper {
         if (pageLines != null) {
             int size = pageLines.size();
             for (int i = 0; i < size; i++) {
-                String text = pageLines.get(i);
-                if (!TextUtils.isEmpty(text) && text.equals(" ")) {
+                NovelLineBean text = pageLines.get(i);
+                if (text != null && !TextUtils.isEmpty(text.getLineContent()) && text.getLineContent().equals(" ")) {
                     textHeight += m_duan;
                     duan += m_duan;
                 } else {
@@ -318,25 +321,31 @@ public class DrawTextHelper {
 
         if (pageLines != null && !pageLines.isEmpty()) {
 
-            if (pageLines.get(0).startsWith("txtzsydsq_homepage")) {// 封面页
+            if (pageLines.get(0).getLineContent().startsWith("txtzsydsq_homepage")) {// 封面页
                 drawHomePage(canvas);
-            } else if (pageLines.get(0).startsWith("chapter_homepage")) {// 章节首页
+            } else if (pageLines.get(0).getLineContent().startsWith("chapter_homepage")) {// 章节首页
                 pageHeight = drawChapterPage(canvas, pageLines, chapterNameList);
             } else {
                 for (int i = 0; i < pageLines.size(); i++) {
-                    String text = pageLines.get(i);
+                    NovelLineBean text = pageLines.get(i);
                     if (Constants.isShielding && !noReadSensitive) {
                         for (String word : readSensitiveWords) {
-                            text = text.replace(word, getChangeWord(word.length()));
+                            text.setLineContent(text.getLineContent().replace(word, getChangeWord(word.length())));
                         }
                     }
-                    if (!TextUtils.isEmpty(text) && text.equals(" ")) {
-                        canvas.drawText(text, Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity,
+                    if (text != null && !TextUtils.isEmpty(text.getLineContent()) && text.getLineContent().equals(" ")) {
+                        canvas.drawText(text.getLineContent(), Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity,
                                 y + m_duan * i, duanPaint);
                         y -= m_iFontHeight - m_duan;
                     } else {
-                        canvas.drawText(text, Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity,
-                                y + m_iFontHeight * i, mPaint);
+
+                        if (text.getType() == 1) {
+                            mPaint.setTextScaleX(1.0f);
+                            mPaint.setTextScaleX(mWidth / mPaint.measureText(text.getLineContent()));
+                        } else {
+                            mPaint.setTextScaleX(1.0f);
+                        }
+                        canvas.drawText(text.getLineContent(), mLineStart, y + m_iFontHeight * i, mPaint);
                     }
                     if (i == pageLines.size() - 1) {
                         pageHeight = (y + m_iFontHeight * pageLines.size()) - Constants.READ_CONTENT_PAGE_TOP_SPACE;
@@ -351,13 +360,15 @@ public class DrawTextHelper {
         return pageHeight;
     }
 
-    public synchronized Paint drawText(Canvas canvas, List<String> pageLines, Activity activity) {
+    public synchronized void drawText(Canvas canvas, List<NovelLineBean> pageLines, Activity activity) {
         boolean isChapterFirstPage = false;
         readStatus.y_nativead = 0;
         readStatus.native_type = 0;
         mPaint.setTextSize(Constants.FONT_SIZE * readStatus.screenScaledDensity);
         duanPaint.setTextSize(1 * readStatus.screenScaledDensity);
         FontMetrics fm = mPaint.getFontMetrics();
+        mLineStart = Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity;
+        mWidth = readStatus.screenWidth - readStatus.screenDensity * Constants.READ_CONTENT_PAGE_LEFT_SPACE * 2;
 
         float m_iFontHeight = fm.descent - fm.ascent + Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE
                 * readStatus.screenScaledDensity;
@@ -387,7 +398,7 @@ public class DrawTextHelper {
         if (pageLines != null) {
             int size = pageLines.size();
             for (int i = 0; i < size; i++) {
-                String text = pageLines.get(i);
+                String text = pageLines.get(i).getLineContent();
                 if (!TextUtils.isEmpty(text) && text.equals(" ")) {
                     textHeight += m_duan;
                     duan += m_duan;
@@ -412,26 +423,26 @@ public class DrawTextHelper {
 
 
         if (pageLines != null && !pageLines.isEmpty()) {
-            if (pageLines.get(0).startsWith("txtzsydsq_homepage")) {// 封面页
+            if (pageLines.get(0).getLineContent().startsWith("txtzsydsq_homepage")) {// 封面页
                 drawHomePage(canvas);
-            } else if (pageLines.get(0).startsWith("chapter_homepage")) {// 章节首页
+            } else if (pageLines.get(0).getLineContent().startsWith("chapter_homepage")) {// 章节首页
                 drawChapterPage(canvas, pageLines);
                 isChapterFirstPage = true;
             } else {
                 isChapterFirstPage = false;
                 for (int i = 0; i < pageLines.size(); i++) {
-                    String text = pageLines.get(i);
+                    NovelLineBean text = pageLines.get(i);
                     if (Constants.isShielding && !noReadSensitive) {
                         for (String word : readSensitiveWords) {
-                            text = text.replace(word, getChangeWord(word.length()));
+                            text.setLineContent(text.getLineContent().replace(word, getChangeWord(word.length())));
                         }
                     }
-                    if (!TextUtils.isEmpty(text) && text.equals(" ")) {
-                        canvas.drawText(text, Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity,
+                    if (text != null && !TextUtils.isEmpty(text.getLineContent()) && text.getLineContent().equals(" ")) {
+                        canvas.drawText(text.getLineContent(), Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity,
                                 y + m_duan * i, duanPaint);
                         total_y = y + m_iFontHeight * i;
                         y -= m_iFontHeight - m_duan;
-                    } else if (text.contains(NovelHelper.empty_page_ad) || text.startsWith(NovelHelper.empty_page_ad)) {
+                    } else if (text != null && text.getLineContent().contains(NovelHelper.empty_page_ad) || text.getLineContent().startsWith(NovelHelper.empty_page_ad)) {
                         isShow_big_ad = true;
                         //章节间大图绘制代码
                         if (readStatus.getAd_bitmap_big() != null && !readStatus.getAd_bitmap_big().isRecycled()) {
@@ -455,7 +466,7 @@ public class DrawTextHelper {
                             attach(activity);
                         }
                         AppLog.e(TAG, "2_startsWith ad_page_tag" + " sequence:" + readStatus.sequence + " isShow_big_ad:" + isShow_big_ad);
-                    } else if (text.contains(NovelHelper.empty_page_ad_inChapter) || text.startsWith(NovelHelper.empty_page_ad_inChapter)) {
+                    } else if (text != null && text.getLineContent().contains(NovelHelper.empty_page_ad_inChapter) || text.getLineContent().startsWith(NovelHelper.empty_page_ad_inChapter)) {
                         isShow_big_ad = true;
                         //章节内大图绘制代码
                         if (readStatus.containerInChapter != null && readStatus.containerInChapter.size() > 0) {
@@ -497,8 +508,13 @@ public class DrawTextHelper {
                         AppLog.e(TAG, "2_startsWith ad_page_tag" + " sequence:" + readStatus.sequence + " isShow_big_ad:" + isShow_big_ad);
                     } else {
                         total_y = y + m_iFontHeight * i;
-                        canvas.drawText(text, Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity,
-                                y + m_iFontHeight * i, mPaint);
+                        if (text.getType() == 1) {
+                            mPaint.setTextScaleX(1.0f);
+                            mPaint.setTextScaleX(mWidth / mPaint.measureText(text.getLineContent()));
+                        } else {
+                            mPaint.setTextScaleX(1.0f);
+                        }
+                        canvas.drawText(text.getLineContent(), mLineStart, total_y, mPaint);
                     }
 
                 }
@@ -680,12 +696,13 @@ public class DrawTextHelper {
     }
 
     //上下滑动模式
-    private float drawChapterPage(Canvas canvas, List<String> pageLines, ArrayList<String> chapterNameList) {
+    private float drawChapterPage(Canvas canvas, List<NovelLineBean> pageLines, ArrayList<NovelLineBean> chapterNameList) {
         mPaint.setTextSize(Constants.FONT_SIZE * readStatus.screenScaledDensity);
         duanPaint.setTextSize(1 * readStatus.screenScaledDensity);
         textPaint.setTextSize(Constants.FONT_CHAPTER_SIZE * readStatus.screenScaledDensity);
-        FontMetrics fm_chapter;
-        float m_iFontHeight_chapter;
+        mWidth = readStatus.screenWidth - readStatus.screenDensity * Constants.READ_CONTENT_PAGE_LEFT_SPACE * 2;
+        FontMetrics fm_chapter = textPaint.getFontMetrics();
+        float m_iFontHeight_chapter = 0;
 
         FontMetrics fm = mPaint.getFontMetrics();
 
@@ -713,11 +730,11 @@ public class DrawTextHelper {
             size_c = chapterNameList.size();
             for (int i = 0; i < size_c; i++) {
                 if (i == 0) {
-                    if (!TextUtils.isEmpty(chapterNameList.get(0))) {
-                        String chapterNameRemain = chapterNameList.get(0);
+                    if (chapterNameList.get(0) != null && !TextUtils.isEmpty(chapterNameList.get(0).getLineContent())) {
+                        NovelLineBean chapterNameRemain = chapterNameList.get(0);
 
                         textPaint.setTextSize(16 * readStatus.screenScaledDensity);
-                        canvas.drawText(chapterNameRemain, Constants.READ_CONTENT_PAGE_LEFT_SPACE
+                        canvas.drawText(chapterNameRemain.getLineContent(), Constants.READ_CONTENT_PAGE_LEFT_SPACE
                                 * readStatus.screenScaledDensity, y_chapter, textPaint);
                     }
                 } else {
@@ -738,7 +755,7 @@ public class DrawTextHelper {
             if (pageLines != null) {
                 int size = pageLines.size();
                 for (int i = 0; i < size; i++) {
-                    String text = pageLines.get(i);
+                    String text = pageLines.get(i).getLineContent();
                     if (!TextUtils.isEmpty(text) && text.equals(" ")) {
                         textHeight += m_duan;
                         duan += m_duan;
@@ -770,21 +787,27 @@ public class DrawTextHelper {
 
             for (int i = 0, j = pageLines.size(); i < j; i++) {
                 if (i > size_c) {
-                    String text = pageLines.get(i);
+                    NovelLineBean text = pageLines.get(i);
                     if (Constants.isShielding && !noReadSensitive) {
                         for (String word : readSensitiveWords) {
-                            text = text.replace(word, getChangeWord(word.length()));
+                            text.setLineContent(text.getLineContent().replace(word, getChangeWord(word.length())));
                         }
                     }
-                    if (!TextUtils.isEmpty(text)) {
-                        if (text.equals(" ")) {
-                            canvas.drawText(text, Constants.READ_CONTENT_PAGE_LEFT_SPACE
+                    if (text != null && !TextUtils.isEmpty(text.getLineContent())) {
+                        if (text.getLineContent().equals(" ")) {
+                            canvas.drawText(text.getLineContent(), Constants.READ_CONTENT_PAGE_LEFT_SPACE
                                     * readStatus.screenScaledDensity, y + m_duan * i, duanPaint);
                             y -= m_iFontHeight - m_duan;
-                        } else if (text.equals("chapter_homepage  ")) {
+                        } else if (text.getLineContent().equals("chapter_homepage  ")) {
 
                         } else {
-                            canvas.drawText(text, Constants.READ_CONTENT_PAGE_LEFT_SPACE
+                            if (text.getType() == 1) {
+                                mPaint.setTextScaleX(1.0f);
+                                mPaint.setTextScaleX(mWidth / mPaint.measureText(text.getLineContent()));
+                            } else {
+                                mPaint.setTextScaleX(1.0f);
+                            }
+                            canvas.drawText(text.getLineContent(), Constants.READ_CONTENT_PAGE_LEFT_SPACE
                                     * readStatus.screenScaledDensity, y + m_iFontHeight * (i - 3), mPaint);
                         }
                     }
@@ -801,12 +824,13 @@ public class DrawTextHelper {
     /*
      * 章节首页提示效果
      */
-    private void drawChapterPage(Canvas canvas, List<String> pageLines) {
+    private void drawChapterPage(Canvas canvas, List<NovelLineBean> pageLines) {
         readStatus.native_type = 0;
         mPaint.setTextSize(Constants.FONT_SIZE * readStatus.screenScaledDensity);
         duanPaint.setTextSize(1 * readStatus.screenScaledDensity);
         textPaint.setTextSize(Constants.FONT_CHAPTER_SIZE * readStatus.screenScaledDensity);
-        FontMetrics fm_chapter;
+        mWidth = readStatus.screenWidth - readStatus.screenDensity * Constants.READ_CONTENT_PAGE_LEFT_SPACE * 2;
+        FontMetrics fm_chapter = textPaint.getFontMetrics();
         float m_iFontHeight_chapter;
 
         FontMetrics fm = mPaint.getFontMetrics();
@@ -831,7 +855,7 @@ public class DrawTextHelper {
                 if (i == 0) {
                     AppLog.e(TAG, "DrawChapterPage: " + readStatus.chapterName);
                     if (!TextUtils.isEmpty(readStatus.chapterName)) {
-                        String chapterNameRemain = readStatus.chapterNameList.get(0);
+                        String chapterNameRemain = readStatus.chapterNameList.get(0).getLineContent();
 
                         textPaint.setTextSize(16 * readStatus.screenScaledDensity);
                         canvas.drawText(chapterNameRemain, Constants.READ_CONTENT_PAGE_LEFT_SPACE
@@ -856,7 +880,7 @@ public class DrawTextHelper {
             if (pageLines != null) {
                 int size = pageLines.size();
                 for (int i = 0; i < size; i++) {
-                    String text = pageLines.get(i);
+                    String text = pageLines.get(i).getLineContent();
                     if (Constants.isShielding && !noReadSensitive) {
                         for (String word : readSensitiveWords) {
                             text = text.replace(word, getChangeWord(word.length()));
@@ -899,17 +923,24 @@ public class DrawTextHelper {
             textPaint.setTextSize(Constants.FONT_CHAPTER_DEFAULT * readStatus.screenScaledDensity);
             for (int i = 0, j = pageLines.size(); i < j; i++) {
                 if (i > size_c) {
-                    String text = pageLines.get(i);
-                    if (!TextUtils.isEmpty(text)) {
-                        if (text.equals(" ")) {
-                            canvas.drawText(text, Constants.READ_CONTENT_PAGE_LEFT_SPACE
+                    NovelLineBean text = pageLines.get(i);
+                    if (text != null && !TextUtils.isEmpty(text.getLineContent())) {
+                        if (text.getLineContent().equals(" ")) {
+                            canvas.drawText(text.getLineContent(), Constants.READ_CONTENT_PAGE_LEFT_SPACE
                                     * readStatus.screenScaledDensity, y + m_duan * i, duanPaint);
                             y -= m_iFontHeight - m_duan;
-                        } else if (text.equals("chapter_homepage  ")) {
+                        } else if (text.getLineContent().equals("chapter_homepage  ")) {
                             AppLog.e(TAG, "chapter_homepage3:" + text);
                         } else {
                             firstchapterHeight = y + m_iFontHeight * (i - 3);
-                            canvas.drawText(text, Constants.READ_CONTENT_PAGE_LEFT_SPACE
+
+                            if (text.getType() == 1) {
+                                mPaint.setTextScaleX(1.0f);
+                                mPaint.setTextScaleX(mWidth / mPaint.measureText(text.getLineContent()));
+                            } else {
+                                mPaint.setTextScaleX(1.0f);
+                            }
+                            canvas.drawText(text.getLineContent(), Constants.READ_CONTENT_PAGE_LEFT_SPACE
                                     * readStatus.screenScaledDensity, firstchapterHeight, mPaint);
                         }
                     }
@@ -1115,7 +1146,7 @@ public class DrawTextHelper {
         FontMetrics fm = textPaint.getFontMetrics();
         float y = fm.descent - fm.ascent + title_height;
         float d_line = fm.descent - fm.ascent;
-        ArrayList<String> nameList = readStatus.bookNameList;
+        ArrayList<NovelLineBean> nameList = readStatus.bookNameList;
 
         float paddingBottom;
         float bookNamePaddingY;
@@ -1157,7 +1188,7 @@ public class DrawTextHelper {
         textPaint.setColor(Color.parseColor("#90000000"));
         for (int i = 0; i < name_length; i++) {
             if (i > 0) bookNamePaddingY += bookNameHeight + 10 * readStatus.screenScaledDensity;
-            canvas.drawText(nameList.get(i), x_with, bookNamePaddingY, setPaintColor(textPaint, 1));
+            canvas.drawText(nameList.get(i).getLineContent(), x_with, y, setPaintColor(textPaint, 1));
         }
 
         // 作者
