@@ -332,6 +332,7 @@ public class DrawTextHelper {
 
     //上下滑动
     public synchronized float drawText(Canvas canvas, List<NovelLineBean> pageLines, ArrayList<NovelLineBean> chapterNameList) {
+        readStatus.currentPageConentLength = 0;
         mPaint.setTextSize(Constants.FONT_SIZE * readStatus.screenScaledDensity);
         duanPaint.setTextSize(1 * readStatus.screenScaledDensity);
         FontMetrics fm = mPaint.getFontMetrics();
@@ -356,6 +357,7 @@ public class DrawTextHelper {
             int size = pageLines.size();
             for (int i = 0; i < size; i++) {
                 NovelLineBean text = pageLines.get(i);
+                readStatus.currentPageConentLength += text.getLineContent().length();
                 if (text != null && !TextUtils.isEmpty(text.getLineContent()) && text.getLineContent().equals(" ")) {
                     textHeight += m_duan;
                     duan += m_duan;
