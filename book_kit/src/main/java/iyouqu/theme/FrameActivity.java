@@ -226,20 +226,23 @@ public abstract class FrameActivity extends AppCompatActivity {
         mSystemBrightness = getScreenBrightness(this);
     }
 
+
     @Override
     protected void onStop() {
         super.onStop();
         if (!isAppOnForeground()) {
             isActive = false;
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.HOME);
+            isCurrentRunningForeground = false;
             restoreSystemDisplayState();
         }
-        isCurrentRunningForeground = isAppOnForeground();
-        if (!isCurrentRunningForeground) {
-            outTime = System.currentTimeMillis();
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.HOME);
+        if (!Constants.isHideAD && Constants.isShowSwitchSplashAd && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
+            isCurrentRunningForeground = isAppOnForeground();
+            if (!isCurrentRunningForeground) {
+                outTime = System.currentTimeMillis();
+            }
         }
     }
-
 
     @Override
     protected void onStart() {
@@ -256,6 +259,16 @@ public abstract class FrameActivity extends AppCompatActivity {
             if (isShowSwitchSplash) {
                 OwnNativeAdManager.toSwitchAdActivity(this);
             }
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (!isCurrentRunningForeground && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
+            Map<String, String> data = new HashMap<>();
+            data.put("time", String.valueOf(inTime - outTime));
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.ACTIVATE, data);
         }
     }
 
