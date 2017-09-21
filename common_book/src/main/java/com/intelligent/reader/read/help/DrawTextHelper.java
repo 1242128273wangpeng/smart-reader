@@ -287,43 +287,43 @@ public class DrawTextHelper {
             if (type == 0) {
                 color_int = R.color.reading_backdrop_second;
             } else {
-                color_int = R.color.reading_text_color_second;
+                color_int = R.color.reading_operation_text_color_second;
             }
         } else if (Constants.MODE == 53) {
             if (type == 0) {
                 color_int = R.color.reading_backdrop_third;
             } else {
-                color_int = R.color.reading_text_color_third;
+                color_int = R.color.reading_operation_text_color_third;
             }
         } else if (Constants.MODE == 54) {
             if (type == 0) {
                 color_int = R.color.reading_backdrop_fourth;
             } else {
-                color_int = R.color.reading_text_color_fourth;
+                color_int = R.color.reading_operation_text_color_fourth;
             }
         } else if (Constants.MODE == 55) {
             if (type == 0) {
                 color_int = R.color.reading_backdrop_fifth;
             } else {
-                color_int = R.color.reading_text_color_fifth;
+                color_int = R.color.reading_operation_text_color_fifth;
             }
         } else if (Constants.MODE == 56) {
             if (type == 0) {
                 color_int = R.color.reading_backdrop_sixth;
             } else {
-                color_int = R.color.reading_text_color_sixth;
+                color_int = R.color.reading_operation_text_color_sixth;
             }
         } else if (Constants.MODE == 61) {
             if (type == 0) {
                 color_int = R.color.reading_backdrop_night;
             } else {
-                color_int = R.color.reading_text_color_night;
+                color_int = R.color.reading_operation_text_color_night;
             }
         } else {
             if (type == 0) {
                 color_int = R.color.reading_backdrop_first;
             } else {
-                color_int = R.color.reading_text_color_first;
+                color_int = R.color.reading_operation_text_color_first;
             }
         }
         paint.setColor(resources.getColor(color_int));

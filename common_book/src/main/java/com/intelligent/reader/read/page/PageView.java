@@ -460,10 +460,13 @@ public class PageView extends View implements PageInterface {
             if (Constants.DEVELOPER_MODE) {
                 ToastUtils.showToastNoRepeat("AdOnclick");
             }
-        } else if (performOperation(event)) {
-        } else {
+        }
+//        else if (performOperation(event)) {
+//        }
+        else {
             if (!Constants.FULL_SCREEN_READ) {
-                if (x <= w3) {
+                if (performOperation(event)) {
+                } else if (x <= w3) {
                     tryTurnPrePage();
                 } else if (x >= pageWidth - w3 || (y >= pageHeight - h4 && x >= w3)) {
                     tryTurnNextPage(event);

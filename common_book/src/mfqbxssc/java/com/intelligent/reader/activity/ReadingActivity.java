@@ -2541,6 +2541,11 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             Uri uri = Uri.parse(url);
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
+            Map<String, String> data = new HashMap<>();
+            if (readStatus != null) {
+                data.put("bookid", readStatus.book_id);
+            }
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ORIGINALLINK, data);
         } else {
             Toast.makeText(this, "无法查看原文链接", Toast.LENGTH_SHORT).show();
         }
@@ -2548,14 +2553,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
     @Override
     public void onTransCodingClick() {
-        Intent intent = new Intent(this, DisclaimerActivity.class);
-        try {
-            intent.putExtra("isFromReadingPage", true);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        showDisclaimerActivity();
     }
 
     private static class TimerRunnable implements Runnable {

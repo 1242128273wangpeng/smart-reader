@@ -758,17 +758,17 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
         if (Constants.MODE == 51) {// night1
             color_int = R.color.reading_operation_text_color_first;
         } else if (Constants.MODE == 52) {// day
-            color_int = R.color.reading_text_color_second;
+            color_int = R.color.reading_operation_text_color_second;
         } else if (Constants.MODE == 53) {// eye
-            color_int = R.color.reading_text_color_third;
+            color_int = R.color.reading_operation_text_color_third;
         } else if (Constants.MODE == 54) {// powersave
-            color_int = R.color.reading_text_color_fourth;
+            color_int = R.color.reading_operation_text_color_fourth;
         } else if (Constants.MODE == 55) {// color -4
-            color_int = R.color.reading_text_color_fifth;
+            color_int = R.color.reading_operation_text_color_fifth;
         } else if (Constants.MODE == 56) {// color -5
-            color_int = R.color.reading_text_color_sixth;
+            color_int = R.color.reading_operation_text_color_sixth;
         } else if (Constants.MODE == 61) {// night2
-            color_int = R.color.reading_text_color_night;
+            color_int = R.color.reading_operation_text_color_night;
         }
 
         novel_time.setTextColor(getResources().getColor(color_int));
