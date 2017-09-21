@@ -329,7 +329,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         mCatlogMarkDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mCatlogMarkDrawer.addDrawerListener(mDrawerListener);
 
-        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus);
+        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus, dataFactory);
 
         mCatalogMarkFragment = (CatalogMarkFragment) getSupportFragmentManager().findFragmentById(R.id.read_catalog_mark_layout);
         mCatalogMarkPresenter.setView(mCatalogMarkFragment);
@@ -393,7 +393,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         mCatlogMarkDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mCatlogMarkDrawer.addDrawerListener(mDrawerListener);
 
-        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus);
+        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus, dataFactory);
 
         mCatalogMarkFragment = (CatalogMarkFragment) getSupportFragmentManager().findFragmentById(R.id.read_catalog_mark_layout);
         mCatalogMarkPresenter.setView(mCatalogMarkFragment);
@@ -652,7 +652,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         mCatlogMarkDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mCatlogMarkDrawer.addDrawerListener(mDrawerListener);
 
-        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus);
+        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus, dataFactory);
 
         mCatalogMarkFragment = (CatalogMarkFragment) getSupportFragmentManager().findFragmentById(R.id.read_catalog_mark_layout);
         mCatalogMarkPresenter.setView(mCatalogMarkFragment);
@@ -1058,6 +1058,11 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                     Uri uri = Uri.parse(url);
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                     startActivity(intent);
+                    Map<String, String> data = new HashMap<>();
+                    if (readStatus != null) {
+                        data.put("bookid", readStatus.book_id);
+                    }
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ORIGINALLINK, data);
                 } else {
                     Toast.makeText(this, "无法查看原文链接", Toast.LENGTH_SHORT).show();
                 }
@@ -1322,11 +1327,17 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         Editor screen_mode = sp.edit();
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_portrait_btn);
+            Map<String, String> data = new HashMap<>();
+            data.put("type", "2");
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.HPMODEL, data);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             screen_mode.putInt("screen_mode", Configuration.ORIENTATION_PORTRAIT);
             Constants.IS_LANDSCAPE = false;
         } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_landscape_btn);
+            Map<String, String> data = new HashMap<>();
+            data.put("type", "1");
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.HPMODEL, data);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             isFromCover = false;
             screen_mode.putInt("screen_mode", Configuration.ORIENTATION_LANDSCAPE);
@@ -1949,7 +1960,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             outState.putInt("nid", readStatus.nid);
             outState.putInt("offset", readStatus.offset);
             outState.putSerializable("book", readStatus.book);
-            outState.putSerializable("currentChapter", dataFactory.currentChapter);
+            if (dataFactory != null && dataFactory.currentChapter != null) {
+                outState.putSerializable("currentChapter", dataFactory.currentChapter);
+            }
             outState.putString("thememode", mThemeHelper.getMode());
             super.onSaveInstanceState(outState);
         } catch (ClassCastException e) {
@@ -2188,6 +2201,15 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         }
 
         mCatlogMarkDrawer.openDrawer(GravityCompat.START);
+
+        Map<String, String> data = new HashMap<>();
+        if (readStatus != null) {
+            data.put("bookid", readStatus.book_id);
+        }
+        if (dataFactory != null && dataFactory.currentChapter != null) {
+            data.put("chapterid", dataFactory.currentChapter.book_id);
+        }
+        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CATALOG, data);
     }
 
     @Override
@@ -2291,6 +2313,17 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             Constants.manualReadedCount++;
             dataFactory.dealManualDialogShow();
         }
+
+        Map<String, String> data = new HashMap<>();
+        if (readStatus != null) {
+            data.put("bookid", readStatus.book_id);
+        }
+        if (dataFactory != null && dataFactory.currentChapter != null) {
+            data.put("chapterid", dataFactory.currentChapter.chapter_id);
+        }
+        data.put("type", "1");
+        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CHAPTERTURN, data);
+
     }
 
     @Override
@@ -2309,6 +2342,17 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             Constants.manualReadedCount++;
             dataFactory.dealManualDialogShow();
         }
+
+        Map<String, String> data = new HashMap<>();
+        if (readStatus != null) {
+            data.put("bookid", readStatus.book_id);
+        }
+        if (dataFactory != null && dataFactory.currentChapter != null) {
+            data.put("chapterid", dataFactory.currentChapter.chapter_id);
+        }
+        data.put("type", "2");
+        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CHAPTERTURN, data);
+
     }
 
     @Override
@@ -2386,17 +2430,23 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     public void onChageNightMode() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Editor edit = sharedPreferences.edit();
+        Map<String, String> data = new HashMap<>();
+
         if (mThemeHelper.isNight()) {
             //夜间模式只有一种背景， 不能存储
 //            edit.putInt("current_night_mode", Constants.MODE);
             Constants.MODE = sharedPreferences.getInt("current_light_mode", 51);
             mThemeHelper.setMode(ThemeMode.THEME1);
+            data.put("type", "2");
+            StartLogClickUtil.upLoadEventLog(getApplicationContext(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.NIGHTMODE1, data);
         } else {
             edit.putInt("current_light_mode", Constants.MODE);
 //            Constants.MODE = sharedPreferences.getInt("current_night_mode", 61);
             //夜间模式只有一种背景
             Constants.MODE = 61;
             mThemeHelper.setMode(ThemeMode.NIGHT);
+            data.put("type", "1");
+            StartLogClickUtil.upLoadEventLog(getApplicationContext(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.NIGHTMODE1, data);
         }
         edit.putInt("content_mode", Constants.MODE);
         edit.apply();
