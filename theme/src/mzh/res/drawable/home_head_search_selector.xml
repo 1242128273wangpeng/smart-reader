@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@mipmap/mzh_search_icon_search_pre"
-          android:state_enabled="true"
-          android:state_pressed="true"/>
-    <item android:drawable="@mipmap/mzh_search_icon_search"
-          android:state_enabled="false"
-          android:state_checked="false"/>
-</selector>

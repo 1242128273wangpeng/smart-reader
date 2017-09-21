@@ -1,5 +1,21 @@
 package com.intelligent.reader.read.help;
 
+import com.dingyueads.sdk.Native.YQNativeAdInfo;
+import com.dingyueads.sdk.NativeInit;
+import com.intelligent.reader.R;
+import com.intelligent.reader.app.BookApplication;
+import com.intelligent.reader.read.page.PageInterface;
+import com.intelligent.reader.util.DisplayUtils;
+
+import net.lzbook.kit.ad.OwnNativeAdManager;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.bean.NovelLineBean;
+import net.lzbook.kit.data.bean.ReadStatus;
+import net.lzbook.kit.data.bean.SensitiveWords;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.ResourceUtil;
+import net.lzbook.kit.utils.StatisticManager;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.res.Resources;
@@ -16,23 +32,6 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.text.TextPaint;
 import android.text.TextUtils;
-
-import com.dingyueads.sdk.Native.YQNativeAdInfo;
-import com.dingyueads.sdk.NativeInit;
-import com.intelligent.reader.R;
-import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.read.page.PageInterface;
-import com.intelligent.reader.read.page.PageView;
-import com.intelligent.reader.util.DisplayUtils;
-
-import net.lzbook.kit.ad.OwnNativeAdManager;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.NovelLineBean;
-import net.lzbook.kit.data.bean.ReadStatus;
-import net.lzbook.kit.data.bean.SensitiveWords;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.ResourceUtil;
-import net.lzbook.kit.utils.StatisticManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1207,7 +1206,7 @@ public class DrawTextHelper {
         paddingBottom -= d_line;
 
         if (mIconBitmap == null || mIconBitmap.isRecycled()) {
-            mIconBitmap = BitmapFactory.decodeResource(resources, R.drawable.icon_home_page);
+            mIconBitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_launcher);
         }
         // 计算左边位置
         int left = readStatus.screenWidth / 2 - mIconBitmap.getWidth() / 2;
