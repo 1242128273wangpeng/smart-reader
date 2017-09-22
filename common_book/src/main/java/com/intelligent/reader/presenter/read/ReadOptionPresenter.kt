@@ -11,7 +11,6 @@ import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.read.help.BookHelper
@@ -224,7 +223,6 @@ class ReadOptionPresenter : ReadOption.Presenter {
                 OtherRequestService.requestBookSourceChange(dataFactory.mHandler, ReadingActivity.MSG_SEARCH_CHAPTER, -144, readStatus.book_id)
                 null
             })
-            dataFactory.loadingError(loadingPage)
         }
     }
 

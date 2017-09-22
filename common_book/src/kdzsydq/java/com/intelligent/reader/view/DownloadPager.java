@@ -102,7 +102,7 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
     }
 
     @Override
-    public void onSelectAll() {
+    public void onSelectAll(boolean flag) {
         StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.bs_down_m_click_select_all);
     }
 

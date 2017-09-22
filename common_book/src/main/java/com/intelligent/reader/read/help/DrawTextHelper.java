@@ -1,5 +1,21 @@
 package com.intelligent.reader.read.help;
 
+import com.dingyueads.sdk.Native.YQNativeAdInfo;
+import com.dingyueads.sdk.NativeInit;
+import com.intelligent.reader.R;
+import com.intelligent.reader.app.BookApplication;
+import com.intelligent.reader.read.page.PageInterface;
+import com.intelligent.reader.util.DisplayUtils;
+
+import net.lzbook.kit.ad.OwnNativeAdManager;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.bean.NovelLineBean;
+import net.lzbook.kit.data.bean.ReadStatus;
+import net.lzbook.kit.data.bean.SensitiveWords;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.ResourceUtil;
+import net.lzbook.kit.utils.StatisticManager;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.res.Resources;
@@ -16,24 +32,6 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.text.TextPaint;
 import android.text.TextUtils;
-import android.util.Log;
-
-import com.dingyueads.sdk.Native.YQNativeAdInfo;
-import com.dingyueads.sdk.NativeInit;
-import com.intelligent.reader.R;
-import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.read.page.PageInterface;
-import com.intelligent.reader.read.page.PageView;
-import com.intelligent.reader.util.DisplayUtils;
-
-import net.lzbook.kit.ad.OwnNativeAdManager;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.NovelLineBean;
-import net.lzbook.kit.data.bean.ReadStatus;
-import net.lzbook.kit.data.bean.SensitiveWords;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.ResourceUtil;
-import net.lzbook.kit.utils.StatisticManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -422,6 +420,11 @@ public class DrawTextHelper {
     }
 
     public synchronized Paint drawText(Canvas canvas, List<NovelLineBean> pageLines, Activity activity) {
+
+        if (pageLines.get(0).getLineContent().trim().isEmpty()) {
+            pageLines.remove(0);
+        }
+
         boolean isChapterFirstPage = false;
         readStatus.y_nativead = 0;
         readStatus.native_type = 0;

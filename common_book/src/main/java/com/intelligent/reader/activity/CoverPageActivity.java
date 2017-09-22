@@ -435,20 +435,23 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
         } else {
             bookVo = ((CoverPage) objects).bookVo;
 
-            if (requestItem != null && !TextUtils.isEmpty(requestItem.book_id)) {
-                bookVo.book_id = requestItem.book_id;
-            }
+            if (bookVo != null) {
 
-            if (requestItem != null && !TextUtils.isEmpty(requestItem.book_source_id)) {
-                bookVo.book_source_id = requestItem.book_source_id;
-            }
 
-            if (requestItem != null && !TextUtils.isEmpty(requestItem.host)) {
-                bookVo.host = requestItem.host;
-            }
-            if (requestItem != null) {
-                bookVo.dex = requestItem.dex;
-            }
+                if (requestItem != null && !TextUtils.isEmpty(requestItem.book_id)) {
+                    bookVo.book_id = requestItem.book_id;
+                }
+
+                if (requestItem != null && !TextUtils.isEmpty(requestItem.book_source_id)) {
+                    bookVo.book_source_id = requestItem.book_source_id;
+                }
+
+                if (requestItem != null && !TextUtils.isEmpty(requestItem.host)) {
+                    bookVo.host = requestItem.host;
+                }
+                if (requestItem != null) {
+                    bookVo.dex = requestItem.dex;
+                }
 
             /*if (bookVo != null && !TextUtils.isEmpty(bookVo.book_id)) {
                 requestItem.book_id = bookVo.book_id;
@@ -464,30 +467,32 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
             if (bookVo != null) {
                 requestItem.dex = bookVo.dex;
             }*/
-            List<CoverPage.SourcesBean> sources = ((CoverPage) objects).sources;
-            if (bookSourceList == null) {
-                bookSourceList = new ArrayList<>();
-            }
-            bookSourceList.clear();
-
-            if (sources != null) {
-                bookSourceList.addAll(sources);
-                for (int i = 0; i < bookSourceList.size(); i++) {
-                    CoverPage.SourcesBean source = bookSourceList.get(i);
-                    if (requestItem.book_source_id.equals(source.book_source_id)) {
-                        currentSource = source;
-                    }
+                List<CoverPage.SourcesBean> sources = ((CoverPage) objects).sources;
+                if (bookSourceList == null) {
+                    bookSourceList = new ArrayList<>();
                 }
+                bookSourceList.clear();
 
-                if (book_cover_source_form != null) {
-                    if (currentSource != null && !TextUtils.isEmpty(currentSource.host)) {
-                        book_cover_source_form.setText(currentSource.host);
-                    } else {
-                        if (bookSourceList != null && bookSourceList.size() > 0) {
-                            book_cover_source_form.setText(bookSourceList.get(0).host);
-                            currentSource = bookSourceList.get(0);
+                if (sources != null) {
+                    bookSourceList.addAll(sources);
+                    for (int i = 0; i < bookSourceList.size(); i++) {
+                        CoverPage.SourcesBean source = bookSourceList.get(i);
+                        if (requestItem.book_source_id.equals(source.book_source_id)) {
+                            currentSource = source;
                         }
                     }
+
+                    if (book_cover_source_form != null) {
+                        if (currentSource != null && !TextUtils.isEmpty(currentSource.host)) {
+                            book_cover_source_form.setText(currentSource.host);
+                        } else {
+                            if (bookSourceList != null && bookSourceList.size() > 0) {
+                                book_cover_source_form.setText(bookSourceList.get(0).host);
+                                currentSource = bookSourceList.get(0);
+                            }
+                        }
+                    }
+
                 }
             }
         }

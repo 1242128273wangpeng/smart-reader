@@ -4,7 +4,6 @@ import com.dingyueads.sdk.Bean.AdSceneData;
 import com.dingyueads.sdk.Bean.Novel;
 import com.dingyueads.sdk.NativeInit;
 import com.intelligent.reader.R;
-import com.intelligent.reader.activity.DisclaimerActivity;
 import com.intelligent.reader.activity.ReadingActivity;
 import com.intelligent.reader.read.animation.AnimationProvider;
 import com.intelligent.reader.read.animation.BitmapManager;
@@ -20,7 +19,6 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.NovelLineBean;
 import net.lzbook.kit.data.bean.ReadStatus;
-import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
@@ -30,16 +28,13 @@ import net.lzbook.kit.utils.ToastUtils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -1226,9 +1221,11 @@ public class PageView extends View implements PageInterface {
             if (!tryTurnPage()) {
                 exitAutoReadNoCancel();
                 if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
-                    dataFactory.getChapterByLoading(ReadingActivity.MSG_LOAD_NEXT_CHAPTER, readStatus.sequence + 1);
+                    if (dataFactory != null) {
+                        dataFactory.getChapterByLoading(ReadingActivity.MSG_LOAD_NEXT_CHAPTER, readStatus.sequence + 1);
+                    }
                 } else {
-                    Toast.makeText(mContext, "网络不给力，请稍后重试", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(mContext, "网络不给力，请稍后重试", Toast.LENGTH_SHORT).show();
                 }
                 return false;
             }

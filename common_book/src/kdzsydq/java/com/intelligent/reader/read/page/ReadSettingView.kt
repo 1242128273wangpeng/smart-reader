@@ -1,44 +1,5 @@
 package com.intelligent.reader.read.page
 
-import android.annotation.TargetApi
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
-import android.content.res.Configuration
-import android.graphics.Rect
-import android.os.Build
-import android.os.Bundle
-import android.preference.PreferenceManager
-import android.text.TextUtils
-import android.util.AttributeSet
-import android.view.LayoutInflater
-import android.view.View
-import android.view.View.OnClickListener
-import android.view.ViewPropertyAnimator
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import android.widget.FrameLayout
-import android.widget.RadioGroup
-import android.widget.RadioGroup.OnCheckedChangeListener
-import android.widget.SeekBar
-import android.widget.SeekBar.OnSeekBarChangeListener
-import android.widget.Toast
-import com.intelligent.reader.R
-import com.intelligent.reader.activity.ReadingActivity
-import com.intelligent.reader.read.help.IReadDataFactory
-import com.intelligent.reader.read.help.ReadSettingHelper
-import iyouqu.theme.FrameActivity
-import iyouqu.theme.ThemeHelper
-import kotlinx.android.synthetic.kdzsydq.read_option_bottom.view.*
-import kotlinx.android.synthetic.kdzsydq.read_option_detail.view.*
-import net.lzbook.kit.app.BaseBookApplication
-import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.ReadStatus
-import net.lzbook.kit.request.DataCache
-import net.lzbook.kit.utils.*
-import java.text.NumberFormat
-
 
 /**
  * 阅读页阅读设置
@@ -151,6 +112,17 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
         } else {
             read_full.isEnabled = true
             read_full.isClickable = true
+            read_full.alpha = 1f
+        }
+
+        if (Constants.isSlideUp) {
+            read_autoRead.isClickable = false
+            read_autoRead.isEnabled = false
+            read_autoRead.alpha = 0.3f
+        } else {
+            read_autoRead.isClickable = false
+            read_autoRead.isEnabled = false
+            read_autoRead.alpha = 1f
         }
 
     }
@@ -170,6 +142,14 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
                 }
                 read_setting_detail!!.visibility = View.VISIBLE
                 novel_bottom_options!!.visibility = View.GONE
+
+                read_setting_backdrop_group.setOnCheckedChangeListener(null)
+                if (Constants.MODE == 61) {
+                    read_setting_backdrop_group.clearCheck()
+                } else {
+                    setNovelMode(Constants.MODE)
+                }
+                read_setting_backdrop_group.setOnCheckedChangeListener(this)
             }
 
             else -> {

@@ -20,7 +20,8 @@ public class DeviceID {
     // 用户唯一标志
     public final static String PREF_KEY = "openudid";
     public final static String TIME = "time";
-    public static final String COMMON_PREFS = "common_prefs";
+    //deviceid更换位置存储, 原来的位置和key与udid冲突
+    public static final String COMMON_PREFS = "deviceid_prefs";
     public static final String GENERATE_UDID = "generate_udid";
     private static String TAG = DeviceID.class.getSimpleName();
     private static String _openUdid;
