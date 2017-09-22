@@ -578,28 +578,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:layout_marginRight="@dimen/padding_14"
-                android:layout_marginTop="34dp"
+                android:layout_marginRight="@dimen/padding_8"
+                android:layout_marginTop="@dimen/padding_56"
                 android:scaleType="fitXY"
                 android:src="@drawable/icon_bookshelf_guide_download"
-                android:visibility="gone"/>
-        
-        <ImageView
-                android:id="@+id/iv_guide_setting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:layout_marginLeft="@dimen/padding_14"
-                android:layout_marginTop="34dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/icon_bookshelf_guide_setting"
                 android:visibility="gone"/>
         
         <ImageView
                 android:id="@+id/iv_guide_remove"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/padding_30"
                 android:scaleType="fitXY"
                 android:src="@drawable/bookshelf_guide_remove"
                 android:visibility="gone"/>

@@ -728,7 +728,7 @@ public class DrawTextHelper {
         }
     }
 
-    //上下滑动模式
+    //上下滑动首页
     private float drawChapterPage(Canvas canvas, List<NovelLineBean> pageLines, ArrayList<NovelLineBean> chapterNameList) {
         mPaint.setTextSize(Constants.FONT_SIZE * readStatus.screenScaledDensity);
         duanPaint.setTextSize(1 * readStatus.screenScaledDensity);
