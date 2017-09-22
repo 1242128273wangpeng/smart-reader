@@ -43,11 +43,13 @@ public class OpenUDID {
                 e.putString(PREF_KEY, _openUdid);
                 e.putLong(TIME, _time);
                 e.apply();
-                FileUtils.writeByteFile(filePath, MultiInputStreamHelper.encrypt(_openUdid.getBytes()));
             } else {
                 _openUdid = _keyInPref;
                 _time = _keyTime;
+
             }
+
+            FileUtils.writeByteFile(filePath, MultiInputStreamHelper.encrypt(_openUdid.getBytes()));
             AppLog.d(TAG, "_openUdid= " + _openUdid);
         }
     }
