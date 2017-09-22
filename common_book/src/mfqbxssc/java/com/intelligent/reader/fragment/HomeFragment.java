@@ -512,7 +512,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                     bookShelfFragment.bookShelfRemoveHelper.selectAll(bookShelfFragment.bookShelfRemoveHelper.isAllChecked() ? false : true);
                     home_select_all.setText(bookShelfFragment.bookShelfRemoveHelper.isAllChecked() ? "取消全选" : "全选");
                     Map<String, String> data = new HashMap<>();
-                    data.put("type", bookShelfFragment.bookShelfRemoveHelper.isAllChecked() ? "2" : "1");
+                    data.put("type", bookShelfFragment.bookShelfRemoveHelper.isAllChecked() ? "1" : "2");
                     StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.SELECTALL1, data);
                 }
                 break;

@@ -35,6 +35,7 @@ import java.util.Map;
  */
 public class ApkUpdateUtils {
     private WeakReference<Activity> reference;
+    private int type;
 
     public ApkUpdateUtils(Activity activity) {
         this.reference = new WeakReference<>(activity);
@@ -55,8 +56,10 @@ public class ApkUpdateUtils {
                     @Override
                     public void run() {
                         if ("SettingActivity".equals(from)) {
+                            type = 1;
                             doUpdateFromSettingACT(apkUpdateInfo);
                         } else if ("HomeActivity".equals(from)) {
+                            type = 2;
                             doUpdate(apkUpdateInfo);
                         }
                     }
@@ -135,7 +138,13 @@ public class ApkUpdateUtils {
             public void onClick(View v) {
                 downloadService(downloadLink, md5, fileName);
                 updateDialog.dismiss();
-                StartLogClickUtil.upLoadEventLog(reference.get(), StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.VERSIONUPDATE);
+
+                if (type == 1) {
+                    StartLogClickUtil.upLoadEventLog(reference.get(), StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.VERSIONUPDATE2);
+                } else {
+                    StartLogClickUtil.upLoadEventLog(reference.get(), StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.VERSIONUPDATE);
+                }
+
             }
         });
 

@@ -1,5 +1,6 @@
 package net.lzbook.kit.utils;
 
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.request.UrlUtils;
 
 import android.content.Context;
@@ -7,6 +8,8 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
+
+import java.util.Map;
 
 public class JSInterfaceHelper implements WebViewJsInterface {
 
@@ -253,6 +256,23 @@ public class JSInterfaceHelper implements WebViewJsInterface {
     // ========================================================
     // js调用 java 方法 并传参 ; js-->java :tell what to do
     // ======================================================
+
+
+    //收集打点信息,用于统计信息，提供给h5打点数据的通道
+    @Override
+    @JavascriptInterface
+    public void collectInfo(String urlData) {
+        AppLog.e("searchResult", "collectInfo");
+        if (!urlData.equals("")) {
+            Map<String, String> data = UrlUtils.getDataParams(urlData);
+            //截取页面编码
+            String pageCode = data.get("page_code");
+            //截取功能编码
+            String functionCode = data.get("func_code");
+
+            StartLogClickUtil.upLoadEventLog(context, pageCode, functionCode, data);
+        }
+    }
 
     @Override
     @JavascriptInterface

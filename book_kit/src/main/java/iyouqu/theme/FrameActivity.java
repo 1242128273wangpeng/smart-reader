@@ -262,16 +262,6 @@ public abstract class FrameActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        if (!isCurrentRunningForeground && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
-            Map<String, String> data = new HashMap<>();
-            data.put("time", String.valueOf(inTime - outTime));
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.ACTIVATE, data);
-        }
-    }
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
