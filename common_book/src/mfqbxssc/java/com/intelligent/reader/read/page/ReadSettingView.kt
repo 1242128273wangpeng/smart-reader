@@ -14,15 +14,12 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnClickListener
 import android.view.ViewPropertyAnimator
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import android.widget.RadioGroup
-import android.widget.RadioGroup.OnCheckedChangeListener
 import android.widget.SeekBar
-import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.ReadingActivity
@@ -44,7 +41,7 @@ import java.text.NumberFormat
 /**
  * 阅读页阅读设置
  */
-class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, OnSeekBarChangeListener {
+class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener {
 
     private var sharedPreferences: SharedPreferences? = null
     private var readSettingHelper: ReadSettingHelper? = null
@@ -165,8 +162,8 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
             read_autoRead.isEnabled = false
             read_autoRead.alpha = 0.3f
         } else {
-            read_autoRead.isClickable = false
-            read_autoRead.isEnabled = false
+            read_autoRead.isClickable = true
+            read_autoRead.isEnabled = true
             read_autoRead.alpha = 1f
         }
 
@@ -632,6 +629,36 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
         } else {
             setNovelMode(index)
         }
+
+        badiuStat(index)
+    }
+
+    private fun badiuStat(index: Int) {
+        when (index) {
+            51 -> {
+                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_01)
+            }
+            52 -> {
+                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_02)
+            }
+            53 -> {
+                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_03)
+            }
+            54 -> {
+                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_04)
+            }
+            55 -> {
+                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_05)
+            }
+            56 -> {
+                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_06)
+            }
+            61 -> {
+                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_08)
+            }
+            else -> {
+            }
+        }
     }
 
     fun setNovelMode(index: Int) {
@@ -642,43 +669,43 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
 
         when (index) {
             51 -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_01)
+
                 readSettingHelper!!.setReadMode(index)
                 changeMode(51)
                 read_setting_backdrop_group!!.check(R.id.read_backdrop_first)
             }
             52 -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_02)
+
                 readSettingHelper!!.setReadMode(index)
                 changeMode(52)
                 read_setting_backdrop_group!!.check(R.id.read_backdrop_second)
             }
             53 -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_03)
+
                 readSettingHelper!!.setReadMode(index)
                 changeMode(53)
                 read_setting_backdrop_group!!.check(R.id.read_backdrop_third)
             }
             54 -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_04)
+
                 readSettingHelper!!.setReadMode(index)
                 changeMode(54)
                 read_setting_backdrop_group!!.check(R.id.read_backdrop_fourth)
             }
             55 -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_05)
+
                 readSettingHelper!!.setReadMode(index)
                 changeMode(55)
                 read_setting_backdrop_group!!.check(R.id.read_backdrop_fifth)
             }
             56 -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_06)
+
                 readSettingHelper!!.setReadMode(index)
                 changeMode(56)
                 read_setting_backdrop_group!!.check(R.id.read_backdrop_sixth)
             }
             61 -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_08)
+
                 readSettingHelper!!.setReadMode(index)
                 changeMode(61)
             }
