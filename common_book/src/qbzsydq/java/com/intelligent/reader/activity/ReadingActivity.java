@@ -1043,6 +1043,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 } else {
                     Toast.makeText(this, "无法查看原文链接", Toast.LENGTH_SHORT).show();
                 }
+
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ORIGINALLINK);
                 break;
             default:
                 break;
@@ -2517,6 +2519,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         } else {
             Toast.makeText(this, "无法查看原文链接", Toast.LENGTH_SHORT).show();
         }
+
+        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ORIGINALLINK);
     }
 
     @Override

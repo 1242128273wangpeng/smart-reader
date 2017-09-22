@@ -139,11 +139,11 @@ public class Constants {
     public static int book_list_sort_type = 0;//0 默认自动书签时间，1 更新时间 ，2 书名
     public static int refreshTime = 3 * 60 * 1000;
     //阅读页行间距
-    public static float READ_INTERLINEAR_SPACE = 0.5f;//0.2f-2.5f
+    public static float READ_INTERLINEAR_SPACE = 0.3f;
     //阅读页段间距
-    public static float READ_PARAGRAPH_SPACE = 1.0f;//0.2f-3.0f
+    public static float READ_PARAGRAPH_SPACE = 1.0f;
     //阅读页内容页左右边距
-    public static int READ_CONTENT_PAGE_LEFT_SPACE = 16;//4-20
+    public static int READ_CONTENT_PAGE_LEFT_SPACE = 20;//4-20
     //阅读页内容上下页边距
     public static int READ_CONTENT_PAGE_TOP_SPACE = 45;//20-40
     public static boolean isFullWindowRead = true;

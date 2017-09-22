@@ -345,28 +345,34 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
 
         NumberFormat numFormat = NumberFormat.getNumberInstance();
         numFormat.setMaximumFractionDigits(2);
-        Constants.READ_INTERLINEAR_SPACE = sharedPreferences.getInt("read_interlinear_space", 3) * 0.1f + 0.2f;//阅读页行间距
+        Constants.READ_INTERLINEAR_SPACE = sharedPreferences.getInt("read_interlinear_space", 3) * 0.1f;//阅读页行间距
         try {
             Constants.READ_INTERLINEAR_SPACE = Float.valueOf(numFormat.format(Constants.READ_INTERLINEAR_SPACE));
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
         AppLog.d("ReadSettingView", "Constants.READ_INTERLINEAR_SPACE " + Constants.READ_INTERLINEAR_SPACE);
-        Constants.READ_PARAGRAPH_SPACE = sharedPreferences.getInt("read_paragraph_space", 8) * 0.1f + 0.2f;//阅读页段间距
+        Constants.READ_PARAGRAPH_SPACE = sharedPreferences.getInt("read_paragraph_space", 10) * 0.1f;//阅读页段间距
         try {
             Constants.READ_PARAGRAPH_SPACE = Float.valueOf(numFormat.format(Constants.READ_PARAGRAPH_SPACE));
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
         Constants.READ_CONTENT_PAGE_TOP_SPACE = sharedPreferences.getInt("read_content_page_top_space", 45); //阅读页内容上下页边距
-        Constants.READ_CONTENT_PAGE_LEFT_SPACE = sharedPreferences.getInt("read_content_page_left_space", 16); //阅读页内容页左右边距
+        Constants.READ_CONTENT_PAGE_LEFT_SPACE = sharedPreferences.getInt("read_content_page_left_space", 20); //阅读页内容页左右边距
+
+        // 老版本左右边距修正
+        if (Constants.READ_CONTENT_PAGE_LEFT_SPACE != 20) {
+            Constants.READ_CONTENT_PAGE_LEFT_SPACE = 20;
+            sharedPreferences.edit().putInt("read_content_page_left_space", 20).apply();
+        }
 
         AppLog.d("ReadSettingView", "isCustomSpaceSetted_Constants.READ_INTERLINEAR_SPACE " + Constants.READ_INTERLINEAR_SPACE);
         if (Constants.READ_INTERLINEAR_SPACE == 0.5f || Constants.READ_INTERLINEAR_SPACE == 0.2f || Constants.READ_INTERLINEAR_SPACE == 1.0f || Constants.READ_INTERLINEAR_SPACE == 1.5f) {
             AppLog.d("ReadSettingView", "READ_CONTENT_PAGE_LEFT_SPACE—— " + Constants.READ_CONTENT_PAGE_LEFT_SPACE);
             AppLog.d("ReadSettingView", "READ_CONTENT_PAGE_TOP_SPACE—— " + Constants.READ_CONTENT_PAGE_TOP_SPACE);
             AppLog.d("ReadSettingView", "READ_PARAGRAPH_SPACE—— " + Constants.READ_PARAGRAPH_SPACE);
-            if (Constants.READ_CONTENT_PAGE_LEFT_SPACE == 16 && Constants.READ_CONTENT_PAGE_TOP_SPACE == 45
+            if (Constants.READ_CONTENT_PAGE_LEFT_SPACE == 20 && Constants.READ_CONTENT_PAGE_TOP_SPACE == 45
                     && Constants.READ_PARAGRAPH_SPACE == 1.0f) {
 
                 isCustomReadingSpace = false;
@@ -431,7 +437,7 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
             this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         }
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("read_content_page_left_space", 16);
+        editor.putInt("read_content_page_left_space", 20);
         editor.putInt("read_content_page_top_space", 45);
         editor.putInt("read_paragraph_space", 8);
         editor.putBoolean("is_reading_custom_space", false);
@@ -440,7 +446,7 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
 
         Constants.READ_PARAGRAPH_SPACE = 1.0f;
         Constants.READ_CONTENT_PAGE_TOP_SPACE = 45;
-        Constants.READ_CONTENT_PAGE_LEFT_SPACE = 16;
+        Constants.READ_CONTENT_PAGE_LEFT_SPACE = 20;
         isCustomReadingSpace = false;
 
         if (previewPageView != null) {
@@ -458,22 +464,22 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
 
         if (Constants.READ_INTERLINEAR_SPACE == 0.2f) {
             reading_setting_row_spacing_group.check(R.id.reading_spacing_0_2);
-            editor.putInt("read_interlinear_space", 0);
+            editor.putInt("read_interlinear_space", 2);
             editor.apply();
 
-        } else if (Constants.READ_INTERLINEAR_SPACE == 0.5f) {
+        } else if (Constants.READ_INTERLINEAR_SPACE == 0.3f) {
             reading_setting_row_spacing_group.check(R.id.reading_spacing_0_5);
             editor.putInt("read_interlinear_space", 3);
             editor.apply();
 
-        } else if (Constants.READ_INTERLINEAR_SPACE == 1.0f) {
+        } else if (Constants.READ_INTERLINEAR_SPACE == 0.4f) {
             reading_setting_row_spacing_group.check(R.id.reading_spacing_1_0);
-            editor.putInt("read_interlinear_space", 8);
+            editor.putInt("read_interlinear_space", 4);
             editor.apply();
 
-        } else if (Constants.READ_INTERLINEAR_SPACE == 1.5f) {
+        } else if (Constants.READ_INTERLINEAR_SPACE == 0.5f) {
             reading_setting_row_spacing_group.check(R.id.reading_spacing_1_5);
-            editor.putInt("read_interlinear_space", 13);
+            editor.putInt("read_interlinear_space", 5);
             editor.apply();
 
         }
