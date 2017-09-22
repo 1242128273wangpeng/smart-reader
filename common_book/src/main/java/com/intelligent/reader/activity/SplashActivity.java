@@ -212,6 +212,8 @@ public class SplashActivity extends FrameActivity {
         AppLog.e("oncreat", "oncreat go");
         sharePreferenceUtils = new SharedPreferencesUtils(PreferenceManager.getDefaultSharedPreferences(this));
 
+        // 初始化InMobi SDK，此SDK需要在launcher activity的UI线程中初始化
+        InMobiAdapter.init(this);
         // 初始化任务
         InitTask initTask = new InitTask();
         initTask.execute();
@@ -324,6 +326,16 @@ public class SplashActivity extends FrameActivity {
                 }
             });
             AppLog.e(TAG, "AD display is not restricted!");
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        //科大讯飞的开屏点击返回后，需要手动跳转。
+        if (OwnNativeAdManager.getInstance(this).isClickKDXFSplash) {
+            OwnNativeAdManager.getInstance(this).isClickKDXFSplash = false;
+            handler.sendEmptyMessage(0);
         }
     }
 
