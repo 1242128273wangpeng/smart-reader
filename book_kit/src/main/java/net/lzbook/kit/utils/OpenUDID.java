@@ -30,6 +30,8 @@ public class OpenUDID {
                 if (file != null && file.exists()) {
                     byte[] bytes = FileUtils.readBytes(filePath);
                     _keyInPref = new String(MultiInputStreamHelper.encrypt(bytes));
+                    //应用内存被清理后, 需要恢复id
+                    mPreferences.edit().putString(PREF_KEY, _keyInPref).apply();
                 }
             }
             long _keyTime = mPreferences.getLong(TIME, 0);

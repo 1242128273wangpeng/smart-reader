@@ -230,8 +230,8 @@ public class NovelHelper {
         change_source_list.setAdapter(sourceListAdapter);
 
         if (Constants.IS_LANDSCAPE) {
-            if (sources.size() > 2) {
-                change_source_list.getLayoutParams().height = activity.getResources().getDimensionPixelOffset(R.dimen.dimen_view_height_120);
+            if (sources.size() > 1) {
+                change_source_list.getLayoutParams().height = activity.getResources().getDimensionPixelOffset(R.dimen.dimen_view_height_80);
             }
         } else {
             if (sources.size() > 3) {

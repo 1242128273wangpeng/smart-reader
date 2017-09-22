@@ -204,11 +204,11 @@ public class BookCoverUtil {
             if (downloadService.containTask(book.book_id)) {
                 downloadService.startTask(book.book_id);
             } else {
+                BaseBookHelper.writeDownIndex(context, book.book_id, false, 0);
                 downloadService.addTask(BaseBookHelper.getBookTask(context, book, DownloadState.NOSTART, new NullCallBack(), true));
                 downloadService.addRequestItem(book);
                 downloadService.startTask(book.book_id);
             }
-            BaseBookHelper.writeDownIndex(context, book.book_id, false, 0);
 
             if (onDownLoadService != null) {
                 onDownLoadService.downLoadService();

@@ -709,6 +709,7 @@ public class CheckNovelUpdateService extends Service {
                     Chapter lastChapter = bookChapterDao.getLastChapter();
                     if (lastChapter == null) {
                         AppLog.e(TAG, "arrToJson lastChapter = null 检测书籍更时发现该书籍的目录为空!!!");
+                        continue;
                     }
                     JSONObject jsonObj = new JSONObject();
                     jsonObj.put("name", book.name);

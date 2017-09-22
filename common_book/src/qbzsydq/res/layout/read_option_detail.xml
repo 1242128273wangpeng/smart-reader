@@ -430,7 +430,7 @@
                     android:drawablePadding="4dp"
                     android:text="@string/read_pagemode_updown"
                     android:gravity="center"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:textSize="@dimen/text_content"
                     android:textColor="@drawable/read_option_txt_check_color"/>
         </RadioGroup>

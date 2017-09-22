@@ -31,7 +31,7 @@ import java.util.HashMap;
 
 public abstract class IReadDataFactory {
 
-    public static LoadingPage loadingPage;
+    public LoadingPage loadingPage;
     public ArrayList<Chapter> chapterList;
     public boolean toChapterStart;
     public Chapter nextChapter;
@@ -672,8 +672,8 @@ public abstract class IReadDataFactory {
             if (dataFactory == null) {
                 return;
             }
-            if (loadingPage != null) {
-                loadingPage.onSuccess();
+            if (dataFactory.loadingPage != null) {
+                dataFactory.loadingPage.onSuccess();
             }
             switch (msg.what) {
                 case ReadingActivity.MSG_LOAD_CUR_CHAPTER:

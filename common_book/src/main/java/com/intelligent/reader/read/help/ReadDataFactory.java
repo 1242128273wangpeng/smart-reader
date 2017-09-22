@@ -99,7 +99,7 @@ public class ReadDataFactory extends IReadDataFactory {
                 return null;
             }
         });
-        loadingError(loadingPage);
+//        loadingError(loadingPage);
     }
 
     public void sendChapter(int what, RequestItem requestItem, int temp_sequence, ArrayList<Chapter> chapterList) {

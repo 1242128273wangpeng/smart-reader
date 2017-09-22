@@ -1814,9 +1814,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 mCatlogMarkDrawer.removeDrawerListener(mCatalogMarkFragment);
         }
 
-        if (IReadDataFactory.loadingPage != null) {
-            IReadDataFactory.loadingPage = null;
-        }
         if(readStatus!=null&&dataFactory!=null&&dataFactory.currentChapter!=null){
             //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
             StartLogClickUtil.upLoadReadContent(readStatus.book_id,dataFactory.currentChapter.chapter_id+"",readStatus.source_ids,readStatus.pageCount+"",
@@ -2443,19 +2440,19 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         }
         edit.putInt("content_mode", Constants.MODE);
         edit.apply();
-
-        Intent intent = new Intent(this, ReadingActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt("sequence", readStatus.sequence);
-        bundle.putInt("offset", readStatus.offset);
-        bundle.putSerializable("book", readStatus.book);
-        bundle.putSerializable(Constants.REQUEST_ITEM, readStatus.requestItem);
-        bundle.putString("thememode", currentThemeMode);
-        intent.putExtras(bundle);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-        finish();
+        changeMode(Constants.MODE);
+//        Intent intent = new Intent(this, ReadingActivity.class);
+//        Bundle bundle = new Bundle();
+//        bundle.putInt("sequence", readStatus.sequence);
+//        bundle.putInt("offset", readStatus.offset);
+//        bundle.putSerializable("book", readStatus.book);
+//        bundle.putSerializable(Constants.REQUEST_ITEM, readStatus.requestItem);
+//        bundle.putString("thememode", currentThemeMode);
+//        intent.putExtras(bundle);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        startActivity(intent);
+//        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+//        finish();
     }
 
     private void submitFeedback(int type) {

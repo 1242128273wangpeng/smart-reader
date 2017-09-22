@@ -157,6 +157,17 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
         } else {
             read_full.isEnabled = true
             read_full.isClickable = true
+            read_full.alpha = 1f
+        }
+
+        if (Constants.isSlideUp) {
+            read_autoRead.isClickable = false
+            read_autoRead.isEnabled = false
+            read_autoRead.alpha = 0.3f
+        } else {
+            read_autoRead.isClickable = false
+            read_autoRead.isEnabled = false
+            read_autoRead.alpha = 1f
         }
 
     }
@@ -176,6 +187,14 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
                 }
                 read_setting_detail!!.visibility = View.VISIBLE
                 novel_bottom_options!!.visibility = View.GONE
+
+                read_setting_backdrop_group.setOnCheckedChangeListener(null)
+                if (Constants.MODE == 61) {
+                    read_setting_backdrop_group.clearCheck()
+                } else {
+                    setNovelMode(Constants.MODE)
+                }
+                read_setting_backdrop_group.setOnCheckedChangeListener(this)
             }
 
             else -> {

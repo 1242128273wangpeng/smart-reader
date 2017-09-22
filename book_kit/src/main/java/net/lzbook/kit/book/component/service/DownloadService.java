@@ -135,6 +135,8 @@ public class DownloadService extends Service {
      */
     public static void clearTask(String book_id) {
         //        BaseBookHelper.delDownIndex(this,book_id);
+        if (mTaskQueue == null)
+            return;
         BookTask bookTask = mTaskQueue.get(book_id);
         if (bookTask != null) {
             bookTask.state = DownloadState.NOSTART;
