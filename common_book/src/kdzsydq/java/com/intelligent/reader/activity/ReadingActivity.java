@@ -2,6 +2,7 @@ package com.intelligent.reader.activity;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.bumptech.glide.Glide;
 import com.dingyueads.sdk.Bean.Advertisement;
 import com.dingyueads.sdk.Bean.Novel;
 import com.dingyueads.sdk.Native.YQNativeAdInfo;
@@ -944,8 +945,13 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         if (ownNativeAdManager == null) {
             ownNativeAdManager = OwnNativeAdManager.getInstance(this);
         }
+        ownNativeAdManager.setActivity(this);
         ownNativeAdManager.loadAdForMiddle(NativeInit.CustomPositionName.READING_MIDDLE_POSITION);
-        ownNativeAdManager.loadAd(NativeInit.CustomPositionName.READING_POSITION);
+        if (Constants.IS_LANDSCAPE) {
+            OwnNativeAdManager.getInstance(this).loadAd(NativeInit.CustomPositionName.SUPPLY_READING_SPACE);
+        } else {
+            OwnNativeAdManager.getInstance(this).loadAd(NativeInit.CustomPositionName.READING_POSITION);
+        }
     }
 
     /**
@@ -1754,6 +1760,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         if (isSubed) {
             readStatus.book = mBookDaoHelper.getBook(readStatus.book_id, 0);
         }
+        readStatus.isInMobiViewClicking = false;
         if (pageView != null) {
             pageView.resumeAutoRead();
         }
@@ -1831,7 +1838,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     @Override
     protected void onStop() {
         super.onStop();
-
+        pageView.removeAdView();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mCacheUpdateReceiver);
 
         if (actNovelRunForeground && handler != null && rest_tips_runnable != null) {
@@ -1945,8 +1952,12 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             ownNativeAdManager.recycleResourceFromReading(NativeInit.CustomPositionName.READING_POSITION.toString());
             ownNativeAdManager.recycleResourceFromReading(NativeInit.CustomPositionName.READING_IN_CHAPTER_POSITION.toString());
             ownNativeAdManager.recycleResourceFromReading(NativeInit.CustomPositionName.REST_POSITION.toString());
+            ownNativeAdManager.recycleResourceFromReading(NativeInit.CustomPositionName.SUPPLY_READING_IN_CHAPTER.toString());
+            ownNativeAdManager.recycleResourceFromReading(NativeInit.CustomPositionName.SUPPLY_READING_SPACE.toString());
             ownNativeAdManager.removeHandler();
         }
+
+        Glide.get(this).clearMemory();
 
         if (readStatus != null) {
             readStatus.recycleResourceNew();

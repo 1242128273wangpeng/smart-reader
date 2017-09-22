@@ -557,7 +557,11 @@ public class NovelHelper {
                 if (i1 < lists.size() && (lists.size() - i1) >= Constants.native_ad_page_in_chapter_limit) {
                     lists.add(i1, addList(empty_page_ad_inChapter + i));
                     if (actReference != null && actReference.get() != null && !actReference.get().isFinishing()) {
-                        OwnNativeAdManager.getInstance(actReference.get()).loadAd(NativeInit.CustomPositionName.READING_IN_CHAPTER_POSITION);
+                        if (Constants.IS_LANDSCAPE) {
+                            OwnNativeAdManager.getInstance(actReference.get()).loadAd(NativeInit.CustomPositionName.SUPPLY_READING_IN_CHAPTER);
+                        } else {
+                            OwnNativeAdManager.getInstance(actReference.get()).loadAd(NativeInit.CustomPositionName.READING_IN_CHAPTER_POSITION);
+                        }
                     }
                 }
                 if ((readStatus.currentPage >= i * Constants.native_ad_page_in_chapter_limit) && (readStatus.currentPage < ((i + 1) * Constants.native_ad_page_in_chapter_limit/* + i - 1*/)) && isFirst) {

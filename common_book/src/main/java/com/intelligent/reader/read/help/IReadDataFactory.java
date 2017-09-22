@@ -2,10 +2,12 @@ package com.intelligent.reader.read.help;
 
 import com.dingyueads.sdk.Bean.Novel;
 import com.dingyueads.sdk.NativeInit;
+import com.dingyueads.sdk.manager.ADStatisticManager;
 import com.intelligent.reader.activity.ReadingActivity;
 import com.intelligent.reader.read.page.PageInterface;
 
 import net.lzbook.kit.R;
+import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Chapter;
@@ -18,6 +20,7 @@ import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.request.DataCache;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.NetWorkUtils;
+import net.lzbook.kit.utils.OpenUDID;
 import net.lzbook.kit.utils.StatisticManager;
 
 import android.content.Context;
@@ -323,8 +326,13 @@ public abstract class IReadDataFactory {
             Novel novel = transformation();
 
             if (readStatus.currentAdInfo_image != null) {
-                statisticManager.schedulingRequest(readingActivity, readStatus.novel_basePageView, readStatus.currentAdInfo_image,
-                        novel, StatisticManager.TYPE_END, NativeInit.ad_position[2]);
+                if (Constants.IS_LANDSCAPE) {
+                    statisticManager.schedulingRequest(readingActivity, readStatus.novel_basePageView, readStatus.currentAdInfo_image,
+                            novel, StatisticManager.TYPE_END, NativeInit.ad_position[9]);
+                } else {
+                    statisticManager.schedulingRequest(readingActivity, readStatus.novel_basePageView, readStatus.currentAdInfo_image,
+                            novel, StatisticManager.TYPE_END, NativeInit.ad_position[2]);
+                }
             }
 
 //            if (readStatus.currentAdInfo_in_chapter != null) {
@@ -335,15 +343,8 @@ public abstract class IReadDataFactory {
             //翻到下一章时清除5-2广告容器储存的广告信息
             readStatus.recycleResourceNew();
 
-            if (readStatus.currentAdInfo != null) {
-                statisticManager.schedulingRequest(readingActivity, readStatus.novel_basePageView, readStatus.currentAdInfo, novel,
-                        StatisticManager.TYPE_END, NativeInit.ad_position[1]);
-            }
-            if (readStatus.currentAdInfoDown != null) {
-                statisticManager.schedulingRequest(readingActivity, readStatus.novel_basePageView, readStatus.currentAdInfoDown, novel,
-                        StatisticManager.TYPE_END, NativeInit.ad_position[1]);
-            }
-
+            //elk pv统计
+            ADStatisticManager.getADStatisticManager().onPvStatistics(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()), novel, Constants.dy_ad_old_request_switch);
         }
     }
 
@@ -383,7 +384,7 @@ public abstract class IReadDataFactory {
      * 翻页到上一章的处理
      */
     protected void preChapterCallBack(boolean drawCurrent) {
-
+        readStatus.shouldShowInMobiAdView = false;
         if (readStatus != null) {
             readStatus.recycleResourceNew();
         }
