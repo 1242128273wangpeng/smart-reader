@@ -1218,7 +1218,7 @@ public class DrawTextHelper {
             bookNamePaddingY = y + d_line;
             sloganPaddingY = 15 * readStatus.screenScaledDensity;
         } else {
-            paddingBottom = readStatus.screenHeight - d_line;
+            paddingBottom = readStatus.screenHeight - 25 * readStatus.screenScaledDensity;
             bookNamePaddingY = y + d_line * readStatus.screenScaledDensity;
             sloganPaddingY = 40 * readStatus.screenScaledDensity;
         }
@@ -1241,7 +1241,7 @@ public class DrawTextHelper {
         // 顶部slogan
         textPaint.setTextSize(11 * readStatus.screenScaledDensity);
         textPaint.setColor(Color.parseColor("#50000000"));
-        drawSpacingText(canvas, resources.getString(R.string.slogan), 220, 11, sloganPaddingY);
+        drawSpacingText(canvas, resources.getString(R.string.slogan), 230, 11, sloganPaddingY);
 
         // 书籍名称
         textPaint.setTextSize(Constants.FONT_CHAPTER_SIZE * readStatus.screenScaledDensity);
@@ -1263,7 +1263,7 @@ public class DrawTextHelper {
         //底部icon及名称
         textPaint.setTextSize(12 * readStatus.screenScaledDensity);
         textPaint.setColor(Color.parseColor("#50000000"));
-        drawSpacingText(canvas, resources.getString(R.string.app_name), 100, 11, paddingBottom);
+        drawSpacingText(canvas, resources.getString(R.string.app_name), 90, 11, paddingBottom);
         paddingBottom -= d_line;
 
         if (mIconBitmap == null || mIconBitmap.isRecycled()) {
@@ -1276,7 +1276,7 @@ public class DrawTextHelper {
         if (Constants.isSlideUp) {
             top = (int) (paddingBottom - (mIconBitmap.getHeight()) / 1.5);
         } else {
-            top = (int) (paddingBottom - mIconBitmap.getHeight());
+            top = (int) (paddingBottom - mIconBitmap.getHeight() - 5 * readStatus.screenScaledDensity);
         }
         canvas.drawBitmap(mIconBitmap, new Rect(0, 0, mIconBitmap.getWidth(), mIconBitmap.getHeight()),
                 new Rect(left, top, left + mIconBitmap.getWidth(), top + mIconBitmap.getHeight()),
@@ -1289,12 +1289,13 @@ public class DrawTextHelper {
     // 绘制带间距文本
     private void drawSpacingText(Canvas canvas, String text, int spacing, float textSize, float y) {
         if (TextUtils.isEmpty(text)) return;
-
-        float textWidth = textSize * text.length() + text.length() * DisplayUtils.px2dp(resources, spacing);
-        float drawTextStart = (readStatus.screenWidth - textWidth) / 2;
-
+        float textWidth = textPaint.measureText(String.valueOf(text.charAt(0)));
+        float textTotalWidth = textWidth * text.length() + DisplayUtils.px2dp(resources, spacing) * (text.length() - 1);
+        float drawTextStart = (readStatus.screenWidth - textTotalWidth) / 2;
+        float drawTextX = 0;
         for (int i = 0; i < text.length(); i++) {
-            canvas.drawText(String.valueOf(text.charAt(i)), drawTextStart + DisplayUtils.px2dp(resources, spacing) * i * 1.5f, y, setPaintColor(textPaint, 1));
+            drawTextX += (i == 0 ? drawTextStart : textWidth + DisplayUtils.px2dp(resources, spacing));
+            canvas.drawText(String.valueOf(text.charAt(i)), drawTextX, y, setPaintColor(textPaint, 1));
         }
     }
 
