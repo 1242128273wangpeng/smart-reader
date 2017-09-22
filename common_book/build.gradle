@@ -110,7 +110,7 @@ android {
     }
     defaultConfig {
 
-        applicationId "cc.kdqbxs.reader"
+        applicationId "cc.mianfeinovel"
 
 //        System.err.println("project.properties = ${project.getProperties()}")
 

@@ -364,8 +364,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|top"
-                android:layout_marginRight="@dimen/dimen_margin_7"
-                android:layout_marginTop="44dp"
+                android:layout_marginTop="@dimen/dimen_margin_40"
                 android:scaleType="fitXY"
                 android:src="@drawable/icon_bookshelf_guide_cache"
                 android:visibility="gone"/>
@@ -374,10 +373,9 @@
                 android:id="@+id/iv_guide_changan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="56dp"
+                android:layout_marginLeft="@dimen/dimen_padding_28"
                 android:scaleType="fitXY"
-                android:layout_gravity="right"
-                android:layout_marginTop="150dp"
+                android:layout_gravity="center_vertical"
                 android:src="@drawable/icon_bookshelf_guide_delete_books"
                 android:visibility="gone"/>
     </FrameLayout>

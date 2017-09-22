@@ -903,18 +903,14 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
         if (!sharedPreferencesUtils.getBoolean(versionCode + Constants.BOOKSHELF_GUIDE_TAG)) {
             final View ll_guide_layout = frameBookView.findViewById(R.id.ll_guide_layout);
             ll_guide_layout.setVisibility(View.VISIBLE);
-            ll_guide_layout.setBackgroundColor(getResources().getColor(R.color.color_black_alpha));
             final ImageView iv_gudie_download = (ImageView) frameBookView.findViewById(R.id.iv_guide_download);
-            final ImageView iv_gudie_setting = (ImageView) frameBookView.findViewById(R.id.iv_guide_setting);
             final ImageView iv_guide_remove = (ImageView) frameBookView.findViewById(R.id.iv_guide_remove);
-            iv_gudie_setting.setVisibility(View.VISIBLE);
             iv_guide_remove.setVisibility(View.VISIBLE);
             ll_guide_layout.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (b) {
                         iv_gudie_download.setVisibility(View.VISIBLE);
-                        iv_gudie_setting.setVisibility(View.GONE);
                         iv_guide_remove.setVisibility(View.GONE);
                         b = false;
                     } else {
