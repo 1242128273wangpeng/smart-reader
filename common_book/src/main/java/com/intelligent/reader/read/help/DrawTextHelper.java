@@ -350,7 +350,7 @@ public class DrawTextHelper {
         if (pageLines != null && !pageLines.isEmpty()) {
 
             if (pageLines.get(0).getLineContent().startsWith("txtzsydsq_homepage")) {// 封面页
-                drawHomePage(canvas);
+                pageHeight = drawHomePage(canvas);
             } else if (pageLines.get(0).getLineContent().startsWith("chapter_homepage")) {// 章节首页
                 pageHeight = drawChapterPage(canvas, pageLines, chapterNameList);
             } else {
@@ -1146,9 +1146,10 @@ public class DrawTextHelper {
     /*
      * 封面页 效果
      */
-    private void drawHomePage(Canvas canvas) {
+    private int drawHomePage(Canvas canvas) {
 
         int title_height = readStatus.screenHeight / 3;
+        textPaint.setTextSize(Constants.FONT_CHAPTER_SIZE * readStatus.screenScaledDensity);
         FontMetrics fm = textPaint.getFontMetrics();
         float y = fm.descent - fm.ascent + title_height;
         float d_line = fm.descent - fm.ascent;
@@ -1170,7 +1171,7 @@ public class DrawTextHelper {
 
         if (nameList != null && !nameList.isEmpty()) {
         } else {
-            return;
+            return 0;
         }
         int name_length = nameList.size();
         name_length = (name_length > 4) ? 4 : name_length;
@@ -1186,9 +1187,11 @@ public class DrawTextHelper {
         // 顶部slogan
         textPaint.setTextSize(11 * readStatus.screenScaledDensity);
         textPaint.setColor(Color.parseColor("#50000000"));
+        textPaint.setTextAlign(Paint.Align.LEFT);
         drawSpacingText(canvas, resources.getString(R.string.slogan), 230, 11, sloganPaddingY);
 
         // 书籍名称
+        textPaint.setTextAlign(Paint.Align.CENTER);
         textPaint.setTextSize(Constants.FONT_CHAPTER_SIZE * readStatus.screenScaledDensity);
         float bookNameHeight = textPaint.getFontMetrics().descent - textPaint.getFontMetrics().ascent;
         textPaint.setColor(Color.parseColor("#90000000"));
@@ -1208,7 +1211,9 @@ public class DrawTextHelper {
         //底部icon及名称
         textPaint.setTextSize(12 * readStatus.screenScaledDensity);
         textPaint.setColor(Color.parseColor("#50000000"));
+        textPaint.setTextAlign(Paint.Align.LEFT);
         drawSpacingText(canvas, resources.getString(R.string.app_name), 90, 11, paddingBottom);
+        textPaint.setTextAlign(Paint.Align.CENTER);
         paddingBottom -= d_line;
 
         if (mIconBitmap == null || mIconBitmap.isRecycled()) {
@@ -1229,6 +1234,8 @@ public class DrawTextHelper {
 
         //默认情况
         textPaint.setTextAlign(Paint.Align.LEFT);
+
+        return readStatus.screenHeight;
     }
 
     // 绘制带间距文本
