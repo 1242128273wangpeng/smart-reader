@@ -940,11 +940,10 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
             Bitmap mCurPageBitmap = (Bitmap) hodler.page.getTag(R.id.tag_bitmap);
             Canvas mCurrentCanvas = (Canvas) hodler.page.getTag(R.id.tag_canvas);
             float pageHeight = drawTextHelper.drawText(mCurrentCanvas, chapterContent.get(position), chapterNameList);
-            android.util.Log.e("ScrollView", "pageHeight: " + pageHeight);
-            if (position != 0) {
+            if (pageHeight != 0.0f) {
                 hodler.page.getLayoutParams().height = (int) pageHeight;
             } else {
-            hodler.page.getLayoutParams().height = readStatus.screenHeight;
+                hodler.page.getLayoutParams().height = readStatus.screenHeight;
             }
             hodler.page.drawPage(mCurPageBitmap);
 
