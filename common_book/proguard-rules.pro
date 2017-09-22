@@ -398,6 +398,10 @@ public protected *;
 -keep class android.support.v4.app.NotificationCompat**{
       public *;
 }
+
+#科大讯飞广告混淆
+-keep class com.iflytek.voiceads.** {*;}
+
 #mongo ad
 #-keep public class com.adsmogo.** {*;}
 #
