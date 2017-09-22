@@ -132,7 +132,7 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
         }
 
         Constants.READ_CONTENT_PAGE_TOP_SPACE = sharedPreferences!!.getInt("read_content_page_top_space", 45)
-        Constants.READ_CONTENT_PAGE_LEFT_SPACE = sharedPreferences!!.getInt("read_content_page_left_space", 16)
+        Constants.READ_CONTENT_PAGE_LEFT_SPACE = sharedPreferences!!.getInt("read_content_page_left_space", 20)
 
         isCustomSpaceSet()
         initPageMode()
@@ -831,7 +831,7 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
     // 根据页间距默认值判断是否为自定义间距
     private fun isCustomSpaceSet() {
         if (Constants.READ_INTERLINEAR_SPACE == 0.5f || Constants.READ_INTERLINEAR_SPACE == 0.2f || Constants.READ_INTERLINEAR_SPACE == 1.0f || Constants.READ_INTERLINEAR_SPACE == 1.5f) {
-            if (Constants.READ_CONTENT_PAGE_LEFT_SPACE == 16 && Constants.READ_CONTENT_PAGE_TOP_SPACE == 45 && Constants.READ_PARAGRAPH_SPACE == 1.0f) {
+            if (Constants.READ_CONTENT_PAGE_LEFT_SPACE == 20 && Constants.READ_CONTENT_PAGE_TOP_SPACE == 45 && Constants.READ_PARAGRAPH_SPACE == 1.0f) {
                 isCustomReadingSpace = false
                 switchSpaceState()
             } else {

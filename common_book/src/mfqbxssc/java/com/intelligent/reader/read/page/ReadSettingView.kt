@@ -115,24 +115,29 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
         val numberFormat = NumberFormat.getNumberInstance()
         numberFormat.maximumFractionDigits = 2
 
-        Constants.READ_INTERLINEAR_SPACE = sharedPreferences!!.getInt("read_interlinear_space", 3) * 0.1f + 0.2f
-
         try {
+            Constants.READ_INTERLINEAR_SPACE = sharedPreferences!!.getInt("read_interlinear_space", 3) * 0.1f
             Constants.READ_INTERLINEAR_SPACE = java.lang.Float.valueOf(numberFormat.format(Constants.READ_INTERLINEAR_SPACE.toDouble()))!!
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        Constants.READ_PARAGRAPH_SPACE = sharedPreferences!!.getInt("read_paragraph_space", 8) * 0.1f + 0.2f
-
-        try {
+            Constants.READ_PARAGRAPH_SPACE = sharedPreferences!!.getInt("read_paragraph_space", 10) * 0.1f
             Constants.READ_PARAGRAPH_SPACE = java.lang.Float.valueOf(numberFormat.format(Constants.READ_PARAGRAPH_SPACE.toDouble()))!!
         } catch (e: NumberFormatException) {
             e.printStackTrace()
         }
 
         Constants.READ_CONTENT_PAGE_TOP_SPACE = sharedPreferences!!.getInt("read_content_page_top_space", 45)
-        Constants.READ_CONTENT_PAGE_LEFT_SPACE = sharedPreferences!!.getInt("read_content_page_left_space", 16)
+        Constants.READ_CONTENT_PAGE_LEFT_SPACE = sharedPreferences!!.getInt("read_content_page_left_space", 20)
+
+        // 老版本左右边距修正
+        if (Constants.READ_CONTENT_PAGE_LEFT_SPACE != 20) {
+            Constants.READ_CONTENT_PAGE_LEFT_SPACE = 20
+            sharedPreferences!!.edit().putInt("read_content_page_left_space", 20).apply()
+        }
+
+        // 老版本行距修正
+        if (Constants.READ_INTERLINEAR_SPACE != 0.2f && Constants.READ_INTERLINEAR_SPACE != 0.3f && Constants.READ_INTERLINEAR_SPACE != 0.4f && Constants.READ_INTERLINEAR_SPACE != 0.5f) {
+            Constants.READ_INTERLINEAR_SPACE = 0.3f
+            sharedPreferences!!.edit().putInt("read_interlinear_space", 3).apply()
+        }
 
         isCustomSpaceSet()
         initPageMode()
@@ -340,7 +345,7 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
                     data.put("type", "3")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.READGAP, data)
                     if (read_spacing_0_5!!.isChecked) {
-                        Constants.READ_INTERLINEAR_SPACE = 0.5f
+                        Constants.READ_INTERLINEAR_SPACE = 0.3f
                         setInterLinearSpaceMode()
                     }
                 }
@@ -350,7 +355,7 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
                     data.put("type", "2")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.READGAP, data)
                     if (read_spacing_1_0!!.isChecked) {
-                        Constants.READ_INTERLINEAR_SPACE = 1.0f
+                        Constants.READ_INTERLINEAR_SPACE = 0.4f
                         setInterLinearSpaceMode()
                     }
                 }
@@ -360,7 +365,7 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
                     data.put("type", "1")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.READGAP, data)
                     if (read_spacing_1_5!!.isChecked) {
-                        Constants.READ_INTERLINEAR_SPACE = 1.5f
+                        Constants.READ_INTERLINEAR_SPACE = 0.5f
                         setInterLinearSpaceMode()
                     }
                 }
@@ -829,8 +834,8 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
 
     // 根据页间距默认值判断是否为自定义间距
     private fun isCustomSpaceSet() {
-        if (Constants.READ_INTERLINEAR_SPACE == 0.5f || Constants.READ_INTERLINEAR_SPACE == 0.2f || Constants.READ_INTERLINEAR_SPACE == 1.0f || Constants.READ_INTERLINEAR_SPACE == 1.5f) {
-            if (Constants.READ_CONTENT_PAGE_LEFT_SPACE == 16 && Constants.READ_CONTENT_PAGE_TOP_SPACE == 45 && Constants.READ_PARAGRAPH_SPACE == 1.0f) {
+        if (Constants.READ_INTERLINEAR_SPACE == 0.2f || Constants.READ_INTERLINEAR_SPACE == 0.3f || Constants.READ_INTERLINEAR_SPACE == 0.4f || Constants.READ_INTERLINEAR_SPACE == 0.5f) {
+            if (Constants.READ_CONTENT_PAGE_LEFT_SPACE == 20 && Constants.READ_CONTENT_PAGE_TOP_SPACE == 45 && Constants.READ_PARAGRAPH_SPACE == 1.0f) {
                 isCustomReadingSpace = false
                 switchSpaceState()
             } else {
@@ -847,19 +852,19 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
     private fun switchSpaceState() {
         if (Constants.READ_INTERLINEAR_SPACE == 0.2f) {
             read_setting_row_spacing_group!!.check(R.id.read_spacing_0_2)
-            readSettingHelper!!.setRowSpacing(0)
+            readSettingHelper!!.setRowSpacing(2)
 
-        } else if (Constants.READ_INTERLINEAR_SPACE == 0.5f) {
+        } else if (Constants.READ_INTERLINEAR_SPACE == 0.3f) {
             read_setting_row_spacing_group!!.check(R.id.read_spacing_0_5)
             readSettingHelper!!.setRowSpacing(3)
 
-        } else if (Constants.READ_INTERLINEAR_SPACE == 1.0f) {
+        } else if (Constants.READ_INTERLINEAR_SPACE == 0.4f) {
             read_setting_row_spacing_group!!.check(R.id.read_spacing_1_0)
-            readSettingHelper!!.setRowSpacing(8)
+            readSettingHelper!!.setRowSpacing(4)
 
-        } else if (Constants.READ_INTERLINEAR_SPACE == 1.5f) {
+        } else if (Constants.READ_INTERLINEAR_SPACE == 0.5f) {
             read_setting_row_spacing_group!!.check(R.id.read_spacing_1_5)
-            readSettingHelper!!.setRowSpacing(13)
+            readSettingHelper!!.setRowSpacing(5)
 
         }
     }

@@ -397,22 +397,13 @@ public class NovelHelper {
         mbookNamePaint.setTextSize(Constants.FONT_CHAPTER_SIZE * readStatus.screenScaledDensity);
 
         // 显示文字区域高度
-        final float tHeight = fm.descent - fm.ascent;
-        float height;
-        if (Constants.isSlideUp) {
-            height = readStatus.screenHeight;
-        } else {
-            height = readStatus.screenHeight - readStatus.screenDensity
-                    * Constants.READ_CONTENT_PAGE_TOP_SPACE * readStatus.screenScaledDensity;
-        }
+        float height = readStatus.screenHeight - readStatus.screenDensity * Constants.READ_CONTENT_PAGE_TOP_SPACE * 2;
 
         float width = readStatus.screenWidth - readStatus.screenDensity * Constants.READ_CONTENT_PAGE_LEFT_SPACE * 2;
 
-        // 获取行高 文字高度+0.5倍行间距
-        float lineHeight = fm.descent - fm.ascent + Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE
-                * readStatus.screenScaledDensity;
-        float m_duan = (Constants.READ_PARAGRAPH_SPACE - Constants.READ_INTERLINEAR_SPACE) * Constants.FONT_SIZE
-                * readStatus.screenScaledDensity;
+        float lineSpace = Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE * readStatus.screenScaledDensity;
+        float lineHeight = fm.descent - fm.ascent + lineSpace;
+        float m_duan = Constants.READ_PARAGRAPH_SPACE * lineSpace;
 
         if (Constants.IS_LANDSCAPE) {
             width = readStatus.screenWidth - readStatus.screenDensity * Constants.READ_CONTENT_PAGE_LEFT_SPACE * 2;
@@ -481,7 +472,7 @@ public class NovelHelper {
 
         ArrayList<NovelLineBean> contentList = getNovelText(mTextPaint, text, width);
         final int size = contentList.size();
-        int textSpace = 0;
+        float textSpace = 0.0f;
         long textLength = 0;
         boolean can = true;
         ArrayList<NovelLineBean> pageLines = new ArrayList<NovelLineBean>();
@@ -495,19 +486,22 @@ public class NovelHelper {
             textSpace += chapterHeight;
         }
 
-        // boolean isLastDuan = false;
+        float lastLineHeight;
         for (int i = 0; i < size; i++) {
             boolean isDuan = false;
             NovelLineBean lineText = contentList.get(i);
             if (lineText.getLineContent().equals(" ")) {// 段间距
                 isDuan = true;
                 textSpace += m_duan;
+                lastLineHeight = m_duan;
             } else if (lineText.getLineContent().equals("chapter_homepage  ")) {
                 textSpace += hideHeight;
                 textLength += lineText.getLineContent().length();
+                lastLineHeight = hideHeight;
             } else {
                 textSpace += lineHeight;
                 textLength += lineText.getLineContent().length();
+                lastLineHeight = lineHeight;
             }
 
             if (textSpace < height) {
@@ -519,9 +513,10 @@ public class NovelHelper {
                 // }else {
                 if (isDuan) {// 开始是空行
                     textSpace -= m_duan;
+                    pageLines.add(lineText);
                 } else {
                     pageLines = new ArrayList<NovelLineBean>();
-                    textSpace = 0;
+                    textSpace = lastLineHeight;
                     pageLines.add(lineText);
                     lists.add(pageLines);
                 }
