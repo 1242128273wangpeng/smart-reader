@@ -1,5 +1,9 @@
 package net.lzbook.kit.utils;
 
+import android.app.Activity;
+import android.os.Build;
+import android.view.View;
+
 import com.dingyueads.sdk.Bean.AdSceneData;
 import com.dingyueads.sdk.Bean.Novel;
 import com.dingyueads.sdk.Bean.Ration;
@@ -11,19 +15,18 @@ import com.logcat.sdk.LogEncapManager;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 
-import android.app.Activity;
-import android.os.Build;
-import android.view.View;
-
 import java.util.HashMap;
 
 public class StatisticManager {
 
     public static final String TAG = StatisticManager.class.getSimpleName();
+
+    private static volatile StatisticManager statisticManager = null;
+
     public static final int TYPE_SHOW = 0x20;
     public static final int TYPE_CLICK = 0x21;
     public static final int TYPE_END = 0x22;
-    private static volatile StatisticManager statisticManager = null;
+
     private HashMap<String, YQNativeAdInfo> nativeAD = new HashMap<>();
 
     public static StatisticManager getStatisticManager() {
@@ -47,8 +50,11 @@ public class StatisticManager {
         //广告位置判断
         if (NativeInit.ad_position[0].equals(position) || NativeInit.ad_position[7].equals(position) || NativeInit.ad_position[8].equals(position)
                 || NativeInit.ad_position[1].equals(position)
+                || NativeInit.ad_position[10].equals(position)
                 || (nativeAdInfo != null && nativeAdInfo.getAdvertisement() != null && nativeAdInfo.getAdvertisement().platformId == com.dingyueads.sdk.Constants.AD_TYPE_YINCHENG)
-                || (nativeAdInfo != null && nativeAdInfo.getAdvertisement() != null && nativeAdInfo.getAdvertisement().platformId == com.dingyueads.sdk.Constants.AD_TYPE_OWNAD)) {
+                || (nativeAdInfo != null && nativeAdInfo.getAdvertisement() != null && nativeAdInfo.getAdvertisement().platformId == com.dingyueads.sdk.Constants.AD_TYPE_OWNAD)
+                || (nativeAdInfo != null && nativeAdInfo.getAdvertisement() != null && nativeAdInfo.getAdvertisement().platformId == com.dingyueads.sdk.Constants.AD_TYPE_INMOBI)
+                || (nativeAdInfo != null && nativeAdInfo.getAdvertisement() != null && nativeAdInfo.getAdvertisement().platformId == com.dingyueads.sdk.Constants.AD_TYPE_KDXF)) {
             switch (type) {
                 //书架展现
                 case TYPE_SHOW:
@@ -97,7 +103,6 @@ public class StatisticManager {
                         if (nativeAdInfo != null && nativeAdInfo.getAdvertisement() != null && !nativeAdInfo.getAdvertisement().isShowed && !nativeAdInfo.getAdvertisement().isClicked) {
                             nativeAD.put(position, nativeAdInfo);
                             AdSceneData adSceneData = nativeAdInfo.getAdSceneData();
-
                             if (adSceneData != null && novel != null) {
                                 adSceneData.ad_show = 1;
                                 adSceneData.ad_showSuccessTime = String.valueOf(System.currentTimeMillis() / 1000L);
