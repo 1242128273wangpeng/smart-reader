@@ -1,35 +1,5 @@
 package net.lzbook.kit.ad;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
-import com.dingyueads.sdk.AdListener;
-import com.dingyueads.sdk.Bean.ADPlatform;
-import com.dingyueads.sdk.Bean.AdSceneData;
-import com.dingyueads.sdk.Bean.Advertisement;
-import com.dingyueads.sdk.Bean.Ration;
-import com.dingyueads.sdk.Native.YQNativeAdInfo;
-import com.dingyueads.sdk.NativeInit;
-import com.dingyueads.sdk.RationManager;
-import com.dingyueads.sdk.Utils.SDKUtil;
-import com.dingyueads.sdk.db.AdDao;
-
-import net.lzbook.kit.R;
-import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.cache.imagecache.ImageCacheManager;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.EventBookshelfAd;
-import net.lzbook.kit.data.bean.EventNativeType;
-import net.lzbook.kit.data.bean.ReadStatus;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.ImageUtils;
-import net.lzbook.kit.utils.NetWorkUtils;
-import net.lzbook.kit.utils.OpenUDID;
-import net.lzbook.kit.utils.ResourceUtil;
-import net.lzbook.kit.utils.StatServiceUtils;
-import net.lzbook.kit.utils.StatisticManager;
-import net.lzbook.kit.utils.Tools;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -47,6 +17,39 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
+import com.dingyueads.sdk.AdListener;
+import com.dingyueads.sdk.Bean.ADPlatform;
+import com.dingyueads.sdk.Bean.AdSceneData;
+import com.dingyueads.sdk.Bean.Advertisement;
+import com.dingyueads.sdk.Bean.Ration;
+import com.dingyueads.sdk.Native.YQNativeAdInfo;
+import com.dingyueads.sdk.NativeInit;
+import com.dingyueads.sdk.RationManager;
+import com.dingyueads.sdk.Utils.LogUtils;
+import com.dingyueads.sdk.Utils.SDKUtil;
+import com.dingyueads.sdk.adapter.InMobiAdapter;
+
+import net.lzbook.kit.R;
+import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.bean.EventBookshelfAd;
+import net.lzbook.kit.data.bean.EventNativeType;
+import net.lzbook.kit.data.bean.ReadStatus;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.ImageUtils;
+import net.lzbook.kit.utils.NetWorkUtils;
+import net.lzbook.kit.utils.OpenUDID;
+import net.lzbook.kit.utils.ResourceUtil;
+import net.lzbook.kit.utils.StatServiceUtils;
+import net.lzbook.kit.utils.StatisticManager;
+import net.lzbook.kit.utils.Tools;
+
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -60,30 +63,29 @@ import de.greenrobot.event.EventBus;
  */
 public class OwnNativeAdManager implements AdListener {
     private static final String TAG = "OwnNativeAdManager";
-    private static final int default_length = 20;
     private static WeakReference<Activity> mActivityRef;
-    private static OwnNativeAdManager mInstance;
-    Handler handler = new AdHandler();
-    private WeakReference<LayoutInflater> mInflaterRef;
     private ViewGroup viewGroup;
+    private static OwnNativeAdManager mInstance;
     private NativeInit nativeInit;
     private LinkedList<YQNativeAdInfo> adInfoLinkedList = new LinkedList<>();
     private HashMap<String, LinkedList<YQNativeAdInfo>> infoMap = new HashMap<>();
-    private WeakReference<ReadStatus> readStatusWeakReference;
+    private ReadStatus readStatus;
+    private LayoutInflater mInflater;
     private int handlerMsgCode = 0;
     private boolean hasInitConfig = true;
     private boolean isLoadSplash = false;
     private boolean isLoadDefaultSplashAD = false;
+    private static final int default_length = 20;
+    public boolean isClickKDXFSplash;
+
     private boolean isLoadMore = false;
+
     private StatisticManager statisticManager;
     private Handler splashHandler;
 
     public OwnNativeAdManager(Activity activity) {
         this.mActivityRef = new WeakReference<>(activity);
-        Activity act = mActivityRef.get();
-        if (act != null) {
-            mInflaterRef = new WeakReference<>(LayoutInflater.from(act));
-        }
+        this.mInflater = LayoutInflater.from(BaseBookApplication.getGlobalContext());
 
         //获取用户uid、定位信息内容
         com.dingyueads.sdk.Constants.uid = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext());
@@ -95,15 +97,11 @@ public class OwnNativeAdManager implements AdListener {
         nativeInit = new NativeInit(activity, this);
     }
 
-    public OwnNativeAdManager(Activity activity, ViewGroup viewGroup, Handler splashHandler, int handlerMsgCode, String defaultPostionId, String
-            PlatformAppId) {
+    public OwnNativeAdManager(Activity activity, ViewGroup viewGroup, Handler splashHandler, int handlerMsgCode) {
         this.mActivityRef = new WeakReference<>(activity);
         this.viewGroup = viewGroup;
         this.handlerMsgCode = handlerMsgCode;
-        Activity act = mActivityRef.get();
-        if (act != null) {
-            mInflaterRef = new WeakReference<>(LayoutInflater.from(act));
-        }
+        this.mInflater = LayoutInflater.from(BaseBookApplication.getGlobalContext());
 
         //获取用户uid、定位信息内容
         com.dingyueads.sdk.Constants.uid = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext());
@@ -115,11 +113,6 @@ public class OwnNativeAdManager implements AdListener {
         setSplashHandler(splashHandler);
         statisticManager = new StatisticManager();
         nativeInit = new NativeInit(activity, this);
-        nativeInit.setDfaultPostionId(defaultPostionId, PlatformAppId);
-        //如果传入了百度的ID和应用ID则视为 拉取广告失败默认加载百度
-        if (defaultPostionId != null && !defaultPostionId.equals("")) {
-            isLoadDefaultSplashAD = true;
-        }
     }
 
     public static synchronized OwnNativeAdManager getInstance(Activity mActivity) {
@@ -134,40 +127,31 @@ public class OwnNativeAdManager implements AdListener {
         }
         return mInstance;
     }
-
     /**
      * 广告被接收后回调
-     *
+     * @param mActivity
      * @param viewGroup        广告要展现的容器
      * @param splashHandler    界面跳转的handler对象
      * @param handlerMsgCode   要跳转的消息的编号 默认是0
-     * @param defaultPostionId 填充率不足或者自有后台拿不到匹配值时 默认展示百度广告，传入应用对应的百度PostionId 如TXT免费阅读器的就是"2362908"
-     *                         传入null则不显示默认广告;
-     * @param PlatformAppId    百度应用id
-     * @param SplashPostion    开屏位置
+     *  @param SplashPostion    开屏位置
      */
-    public static synchronized void InitSplashAd(Activity mActivity, ViewGroup viewGroup, Handler splashHandler, int handlerMsgCode, String
-            defaultPostionId, String PlatformAppId, NativeInit.CustomPositionName SplashPostion) {
+    public static synchronized void InitSplashAd(Activity mActivity, ViewGroup viewGroup, Handler splashHandler, int handlerMsgCode,
+                                                 NativeInit.CustomPositionName SplashPostion) {
         if (mInstance == null) {
-            mInstance = new OwnNativeAdManager(mActivity, viewGroup, splashHandler, handlerMsgCode, defaultPostionId, PlatformAppId);
+            mInstance = new OwnNativeAdManager(mActivity, viewGroup, splashHandler, handlerMsgCode);
             AppLog.e(TAG, "OwnNativeAdManager mInstance new instance");
         } else {
+            //对象存在时 不初始化网络直接加载开屏广告 设置开屏界面的handler对象
+            AppLog.e(TAG, "OwnNativeAdManager mInstance already exist");
             if (mActivityRef == null || mActivityRef.get() == null) {
                 mActivityRef = new WeakReference<>(mActivity);
             }
-            //对象存在时 不初始化网络直接加载开屏广告 设置开屏界面的handler对象
-            AppLog.e(TAG, "OwnNativeAdManager mInstance already exist");
-            mInstance.loadSplashAd(SplashPostion, viewGroup, false);
+            if (mActivity != null) {
+                mInstance.setActivity(mActivity);
+            }
+            mInstance.loadSplashAd(SplashPostion, viewGroup);
             mInstance.setSplashHandler(splashHandler);
         }
-    }
-
-    /**
-     * 跳到切屏广告
-     */
-    public static void toSwitchAdActivity(Activity activity) {
-        Intent adIntent = new Intent(activity, SwitchSplashAdActivity.class);
-        activity.startActivity(adIntent);
     }
 
     private void setSplashHandler(Handler splashHandler) {
@@ -175,13 +159,13 @@ public class OwnNativeAdManager implements AdListener {
         isLoadSplash = true;
     }
 
-    public void loadSplashAd(NativeInit.CustomPositionName type, final ViewGroup container, Boolean isDefault) {
+    public void loadSplashAd(NativeInit.CustomPositionName type, final ViewGroup container) {
         if (Constants.isHideAD) return;
         this.viewGroup = container;
         AppLog.e(TAG, "isLoadDefaultSplashAD !!!!!:" + isLoadDefaultSplashAD);
         if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
             if (nativeInit != null) {
-                nativeInit.loadSplahAd(type, container, isDefault, mActivityRef);
+                nativeInit.loadSplahAd(type, container, mActivityRef);
             }
         }
     }
@@ -194,8 +178,6 @@ public class OwnNativeAdManager implements AdListener {
                     AppLog.e(TAG, "OwnNativeAdManager nativeInit != null");
 
                     //针对360广告单独写一套逻辑
-                    if (readStatusWeakReference == null) return;
-                    ReadStatus readStatus = readStatusWeakReference.get();
                     if (readStatus == null) return;
                     //上
                     if (readStatus.currentAdInfo != null && readStatus.currentAdInfo.getAdvertisement() != null
@@ -234,8 +216,6 @@ public class OwnNativeAdManager implements AdListener {
             StatServiceUtils.statAdEventShow(BaseBookApplication.getGlobalContext(), StatServiceUtils.ad_adwin);
         }
 
-        ration.setReadingMiddlePostion(i);
-
         StatServiceUtils.statAdEventShow(BaseBookApplication.getGlobalContext(), StatServiceUtils.ad_count_request);
 
         String keyMd5 = SDKUtil.digest(ration.getMarkId() + ration.getPlatformId());
@@ -243,6 +223,7 @@ public class OwnNativeAdManager implements AdListener {
 
         if (yqNativeAdInfos == null || yqNativeAdInfos.isEmpty()) {
             if (!ration.isRequestingMiddleAd()) {
+                ration.setReadingMiddlePostion(i);
                 isLoadMore = true;
                 ration.setRequestingMiddleAd(true);
                 nativeInit.loadAdNew(RationManager.ad_load_count, ration, mActivityRef);
@@ -250,21 +231,22 @@ public class OwnNativeAdManager implements AdListener {
             } else {
                 ration.setRequestingMiddleAd(false);
                 if (i == 0) {
-                    if (readStatusWeakReference != null && readStatusWeakReference.get() != null) {
-                        readStatusWeakReference.get().currentAdInfo = null;
-                        readStatusWeakReference.get().setAd_bitmap_middle(null);
+                    if (readStatus != null) {
+                        readStatus.currentAdInfo = null;
+                        readStatus.setAd_bitmap_middle(null);
                     }
                 }
                 if (i == 1) {
-                    if (readStatusWeakReference != null && readStatusWeakReference.get() != null) {
-                        readStatusWeakReference.get().currentAdInfoDown = null;
-                        readStatusWeakReference.get().setAd_bitmap_middle_down(null);
+                    if (readStatus != null) {
+                        readStatus.currentAdInfoDown = null;
+                        readStatus.setAd_bitmap_middle_down(null);
                     }
                 }
             }
         } else {
             YQNativeAdInfo yqNativeAdInfo = null;
             if (currentPositionName == NativeInit.CustomPositionName.READING_MIDDLE_POSITION) {
+                ration.setReadingMiddlePostion(i);
                 if (com.dingyueads.sdk.Constants.AD_TYPE_360 == ration.getPlatformId()) {
                     yqNativeAdInfo = yqNativeAdInfos.removeFirst();
                 } else {
@@ -290,6 +272,7 @@ public class OwnNativeAdManager implements AdListener {
             }
         }
     }
+
 
     public void loadAd(NativeInit.CustomPositionName currentPositionName) {
         AppLog.e(TAG, "OwnNativeAdManager LoadAd");
@@ -323,11 +306,7 @@ public class OwnNativeAdManager implements AdListener {
                     } else {
                         YQNativeAdInfo yqNativeAdInfo = null;
                         if (currentPositionName == NativeInit.CustomPositionName.READING_POSITION) {
-                            if (Constants.IS_LANDSCAPE) {
-                                yqNativeAdInfo = getSingleADInfo(NativeInit.CustomPositionName.READING_MIDDLE_POSITION);
-                            } else {
-                                yqNativeAdInfo = getADInfoNew(yqNativeAdInfos, ration, keyMd5);
-                            }
+                            yqNativeAdInfo = getADInfoNew(yqNativeAdInfos, ration, keyMd5);
                             if (yqNativeAdInfo == null) {
                                 //获取的方法中已经进行了重新请求，此处只需要返回即可
                                 return;
@@ -335,6 +314,26 @@ public class OwnNativeAdManager implements AdListener {
                             Message message = handler.obtainMessage();
                             message.obj = yqNativeAdInfo;
                             message.what = 1;
+                            handler.sendMessageDelayed(message, 500);
+                        } else if (currentPositionName == NativeInit.CustomPositionName.SUPPLY_READING_SPACE) {
+                            yqNativeAdInfo = getADInfoNew(yqNativeAdInfos, ration, keyMd5);
+                            if (yqNativeAdInfo == null) {
+                                //获取的方法中已经进行了重新请求，此处只需要返回即可
+                                return;
+                            }
+                            Message message = handler.obtainMessage();
+                            message.obj = yqNativeAdInfo;
+                            message.what = 5;
+                            handler.sendMessageDelayed(message, 500);
+                        } else if (currentPositionName == NativeInit.CustomPositionName.SUPPLY_READING_IN_CHAPTER) {
+                            yqNativeAdInfo = getADInfoNew(yqNativeAdInfos, ration, keyMd5);
+                            if (yqNativeAdInfo == null) {
+                                //获取的方法中已经进行了重新请求，此处只需要返回即可
+                                return;
+                            }
+                            Message message = handler.obtainMessage();
+                            message.obj = yqNativeAdInfo;
+                            message.what = 6;
                             handler.sendMessageDelayed(message, 500);
                         } else if (currentPositionName == NativeInit.CustomPositionName.READING_MIDDLE_POSITION) {
                             yqNativeAdInfo = getADInfoNew(yqNativeAdInfos, ration, keyMd5);
@@ -347,11 +346,7 @@ public class OwnNativeAdManager implements AdListener {
                             message.what = 2;
                             handler.sendMessageDelayed(message, 500);
                         } else if (currentPositionName == NativeInit.CustomPositionName.READING_IN_CHAPTER_POSITION) {
-                            if (Constants.IS_LANDSCAPE) {
-                                yqNativeAdInfo = getSingleADInfo(NativeInit.CustomPositionName.READING_MIDDLE_POSITION);
-                            } else {
-                                yqNativeAdInfo = getADInfoNew(yqNativeAdInfos, ration, keyMd5);
-                            }
+                            yqNativeAdInfo = getADInfoNew(yqNativeAdInfos, ration, keyMd5);
                             if (yqNativeAdInfo == null) {
                                 //获取的方法中已经进行了重新请求，此处只需要返回即可
                                 return;
@@ -369,6 +364,43 @@ public class OwnNativeAdManager implements AdListener {
         }
     }
 
+    Handler handler = new AdHandler();
+
+    public void setActivity(Activity activity) {
+        if (nativeInit != null && activity != null) {
+            nativeInit.setActivityReference(activity);
+        }
+        if (mActivityRef == null || mActivityRef.get() == null) {
+            mActivityRef = new WeakReference<>(activity);
+        }
+    }
+
+    public class AdHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    getAdBitmapBig((YQNativeAdInfo) msg.obj);
+                    break;
+                case 2:
+                    getAdBitmapMiddle((YQNativeAdInfo) msg.obj, 0);
+                    break;
+                case 3:
+                    getAdBitmapBigInChapter((YQNativeAdInfo) msg.obj);
+                    break;
+                case 4:
+                    getAdBitmapMiddle((YQNativeAdInfo) msg.obj, 1);
+                    break;
+                case 5:
+                    getAdBitmapLandscape((YQNativeAdInfo) msg.obj);
+                    break;
+                case 6:
+                    getAdBitmapLandscapeInChapter((YQNativeAdInfo) msg.obj);
+                    break;
+            }
+        }
+    }
+
     public void loadAdNew(Ration ration) {
         if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
             if (nativeInit != null) {
@@ -378,6 +410,16 @@ public class OwnNativeAdManager implements AdListener {
             }
         }
     }
+
+
+    /**
+     * 跳到切屏广告
+     */
+    public static void toSwitchAdActivity(Activity activity) {
+        Intent adIntent = new Intent(activity, SwitchSplashAdActivity.class);
+        activity.startActivity(adIntent);
+    }
+
 
     @Override
     public void onRequestSuccess(List<YQNativeAdInfo> yqNativeAdInfoList, final Ration ration) {
@@ -408,14 +450,25 @@ public class OwnNativeAdManager implements AdListener {
             if (NativeInit.CustomPositionName.READING_POSITION.toString().equals(ration.getMarkId())) {
 //                AppLog.e("adtest5-1", "onRequestSuccess list size:" + yqNativeAdInfoList.size() + " currentPositionName:" + ration.getMarkId()
 //                        + " md5:" + keyMd5 + "\n" + adInfos.toString());
-                if (Constants.IS_LANDSCAPE) {
-                    yqNativeAdInfo = getSingleADInfo(NativeInit.CustomPositionName.READING_MIDDLE_POSITION);
-                } else {
-                    yqNativeAdInfo = getADInfoNew(adInfos, ration, keyMd5);
-                }
+                yqNativeAdInfo = getADInfoNew(adInfos, ration, keyMd5);
+                if (yqNativeAdInfo == null) return;
                 Message message = handler.obtainMessage();
                 message.obj = yqNativeAdInfo;
                 message.what = 1;
+                handler.sendMessageDelayed(message, 500);
+            } else if (NativeInit.CustomPositionName.SUPPLY_READING_SPACE.toString().equals(ration.getMarkId())) {
+                yqNativeAdInfo = getADInfoNew(adInfos, ration, keyMd5);
+                if (yqNativeAdInfo == null) return;
+                Message message = handler.obtainMessage();
+                message.obj = yqNativeAdInfo;
+                message.what = 5;
+                handler.sendMessageDelayed(message, 500);
+            } else if (NativeInit.CustomPositionName.SUPPLY_READING_IN_CHAPTER.toString().equals(ration.getMarkId())) {
+                yqNativeAdInfo = getADInfoNew(adInfos, ration, keyMd5);
+                if (yqNativeAdInfo == null) return;
+                Message message = handler.obtainMessage();
+                message.obj = yqNativeAdInfo;
+                message.what = 6;
                 handler.sendMessageDelayed(message, 500);
             } else if (NativeInit.CustomPositionName.READING_MIDDLE_POSITION.toString().equals(ration.getMarkId())) {
 //                AppLog.e("adtest8-1", "onRequestSuccess list size:" + yqNativeAdInfoList.size() + " currentPositionName:" + ration.getMarkId()
@@ -440,11 +493,7 @@ public class OwnNativeAdManager implements AdListener {
             } else if (NativeInit.CustomPositionName.READING_IN_CHAPTER_POSITION.toString().equals(ration.getMarkId())) {
 //                AppLog.e("adtest5-2", "onRequestSuccess list size:" + yqNativeAdInfoList.size() + " currentPositionName:" + ration.getMarkId()
 //                        + " md5:" + keyMd5 + "\n" + adInfos.toString());
-                if (Constants.IS_LANDSCAPE) {
-                    yqNativeAdInfo = getSingleADInfo(NativeInit.CustomPositionName.READING_MIDDLE_POSITION);
-                } else {
-                    yqNativeAdInfo = getADInfoNew(adInfos, ration, keyMd5);
-                }
+                yqNativeAdInfo = getADInfoNew(adInfos, ration, keyMd5);
                 //设置章节内大图
                 Message message = handler.obtainMessage();
                 message.obj = yqNativeAdInfo;
@@ -458,15 +507,21 @@ public class OwnNativeAdManager implements AdListener {
                 if (com.dingyueads.sdk.Constants.AD_TYPE_OWNAD == ration.getPlatformId()) {
                     StatServiceUtils.statAdEventShow(BaseBookApplication.getGlobalContext(), StatServiceUtils.ad_adwin_resuc);
                 }
+            } else if (NativeInit.CustomPositionName.SPLASH_POSITION.toString().equals(ration.getMarkId()) && ration.getPlatformId() == com.dingyueads.sdk.Constants.AD_TYPE_INMOBI) {
+                //InMobi的开屏广告处理
+                if (splashHandler != null && viewGroup != null) {
+                    yqNativeAdInfo = adInfos.removeFirst();
+                    addInMobiViewOnSplash(viewGroup, yqNativeAdInfo);
+                }
             } else if (NativeInit.CustomPositionName.SPLASH_POSITION.toString().equals(ration.getMarkId())) {
                 if (splashHandler != null && viewGroup != null) {
-                    splashHandler.sendEmptyMessageDelayed(handlerMsgCode, 5000L);
+                    splashHandler.sendEmptyMessageDelayed(handlerMsgCode, 3000L);
                     yqNativeAdInfo = adInfos.removeFirst();
                     drawBitmapOnSplash(viewGroup, yqNativeAdInfo, NativeInit.ad_position[5]);
                 }
             } else if (NativeInit.CustomPositionName.SWITCH_SPLASH_POSITION.toString().equals(ration.getMarkId())) {
                 if (splashHandler != null && viewGroup != null) {
-                    splashHandler.sendEmptyMessageDelayed(handlerMsgCode, 5000L);
+                    splashHandler.sendEmptyMessageDelayed(handlerMsgCode, 3000L);
                     yqNativeAdInfo = adInfos.removeFirst();
                     drawBitmapOnSplash(viewGroup, yqNativeAdInfo, NativeInit.ad_position[6]);
                 }
@@ -495,12 +550,16 @@ public class OwnNativeAdManager implements AdListener {
             }
         } else {
             if (NativeInit.CustomPositionName.SPLASH_POSITION.toString().equals(ration.getMarkId())) {
-                if (splashHandler != null) {
-                    splashHandler.sendEmptyMessageDelayed(handlerMsgCode, 5000L);
-                }
                 Ration rationNew = NativeInit.rationManager.getRation(NativeInit.CustomPositionName.SPLASH_SUPPLY_POSITION.toString());
                 if (rationNew == null) {
+                    if (splashHandler != null) {
+                        splashHandler.sendEmptyMessage(handlerMsgCode);
+                    }
                     return;
+                } else {
+                    if (splashHandler != null) {
+                        splashHandler.sendEmptyMessageDelayed(handlerMsgCode, 3000L);
+                    }
                 }
                 if (nativeInit != null) {
                     nativeInit.loadAdNew(1, rationNew, mActivityRef);
@@ -519,7 +578,7 @@ public class OwnNativeAdManager implements AdListener {
         }
     }
 
-    private void drawBitmapOnSplash(final ViewGroup view, YQNativeAdInfo yqNativeAdInfo, final String position) {
+    private void drawBitmapOnSplash(final ViewGroup view, final YQNativeAdInfo yqNativeAdInfo, final String position) {
         if (view == null || yqNativeAdInfo == null) return;
 
         final YQNativeAdInfo nativeAdInfo = yqNativeAdInfo;
@@ -534,51 +593,91 @@ public class OwnNativeAdManager implements AdListener {
         AppLog.e(TAG, "Advertisement: " + advertisement.toString());
         if (!TextUtils.isEmpty(advertisement.imageUrl)) {
             final String image_url = advertisement.imageUrl;
-            ImageCacheManager.getInstance().getImageLoader().get(image_url, new ImageLoader.ImageListener() {
-                @Override
-                public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
-                    AppLog.e(TAG, "onResponse big image");
-                    final Activity act = mActivityRef.get();
-                    if (act == null || imageContainer == null) {
-                        return;
-                    }
-                    Bitmap bitmap_icon = imageContainer.getBitmap();
-                    if (bitmap_icon == null) return;
-
-                    Bitmap logo_bitmap = BitmapFactory.decodeResource(act.getResources(), R.drawable.icon_ad_default);
-                    Bitmap bitmap = toConformBitmap(bitmap_icon, logo_bitmap, true, true);
-
-                    ImageView imageView = new ImageView(act);
-                    imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                    imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                    imageView.setImageBitmap(bitmap);
-                    view.removeAllViews();
-                    view.addView(imageView);
-
-                    if (statisticManager == null) {
-                        statisticManager = StatisticManager.getStatisticManager();
-                    }
-
-                    statisticManager.schedulingRequest(act, view, nativeAdInfo, null, StatisticManager.TYPE_SHOW, position);
-
-                    imageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (statisticManager == null) {
-                                statisticManager = StatisticManager.getStatisticManager();
-                            }
-                            statisticManager.schedulingRequest(act, view, nativeAdInfo, null, StatisticManager.TYPE_CLICK, position);
+            final Activity act = mActivityRef.get();
+            if (act == null) {
+                return;
+            }
+            try {
+                SimpleTarget target = new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap bitmap_icon, GlideAnimation<? super Bitmap> glideAnimation) {
+                        if (bitmap_icon == null) return;
+                        if (yqNativeAdInfo.getAdvertisement().platformId == com.dingyueads.sdk.Constants.AD_TYPE_KDXF) {
+                            float widthRatio = ((float) view.getWidth()) / (float) bitmap_icon.getWidth();
+                            float heightRatio = ((float) view.getHeight()) / (float) bitmap_icon.getHeight();
+                            bitmap_icon = kdxfBitmapScale(bitmap_icon, widthRatio, heightRatio);
                         }
-                    });
-                }
+                        Bitmap logo_bitmap = BitmapFactory.decodeResource(act.getResources(), R.drawable.icon_ad_default);
+                        Bitmap bitmap = toConformBitmap(bitmap_icon, logo_bitmap, true, true);
 
-                @Override
-                public void onErrorResponse(VolleyError volleyError) {
-                }
-            });
+                        ImageView imageView = new ImageView(act);
+                        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                        imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                        imageView.setImageBitmap(bitmap);
+                        view.removeAllViews();
+                        view.addView(imageView);
+
+                        if (statisticManager == null) {
+                            statisticManager = StatisticManager.getStatisticManager();
+                        }
+
+                        statisticManager.schedulingRequest(act, view, nativeAdInfo, null, StatisticManager.TYPE_SHOW, position);
+
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (statisticManager == null) {
+                                    statisticManager = StatisticManager.getStatisticManager();
+                                }
+                                if (yqNativeAdInfo.getAdvertisement().platformId == com.dingyueads.sdk.Constants.AD_TYPE_KDXF && yqNativeAdInfo.getAdSceneData().ad_isApp.equals("2")) {
+                                    //科大讯飞的特殊处理，点击后如果是落地页，要清除延时跳转的消息，因为他们的落地页是镶嵌在我们app内的activity的形式，有问题。而跳转会在在SplashActivity的onRestart()中进行。
+                                    splashHandler.removeMessages(handlerMsgCode);
+                                    isClickKDXFSplash = true;
+                                }
+                                statisticManager.schedulingRequest(act, view, nativeAdInfo, null, StatisticManager.TYPE_CLICK, position);
+                            }
+                        });
+                    }
+                };
+                Glide.with(act.getApplicationContext())
+                        .load(image_url)
+                        .asBitmap()
+                        .skipMemoryCache(true)
+                        .into(target);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
+    private void addInMobiViewOnSplash(final ViewGroup parent, YQNativeAdInfo yqNativeAdInfo) {
+        final Activity act = mActivityRef.get();
+        final YQNativeAdInfo nativeAdInfo = yqNativeAdInfo;
+        if (act == null) {
+            return;
+        }
+        //添加inmobiView
+        RelativeLayout relativeLayout = new RelativeLayout(act);
+        View inMobiView = yqNativeAdInfo.getInMobiNative().getPrimaryViewOfWidth(relativeLayout, parent, act.getResources().getDisplayMetrics().widthPixels);
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        relativeLayout.setLayoutParams(layoutParams);
+        relativeLayout.addView(inMobiView);
+        //添加logo
+        View logo = LayoutInflater.from(act).inflate(R.layout.view_default_logo, null);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        relativeLayout.addView(logo, -1, lp);
+        //添加到parent中
+        parent.addView(relativeLayout);
+
+        if (statisticManager == null) {
+            statisticManager = StatisticManager.getStatisticManager();
+        }
+
+        statisticManager.schedulingRequest(act, parent, nativeAdInfo, null, StatisticManager.TYPE_SHOW, NativeInit.ad_position[5]);
+
+    }
     @Override
     public void onNoNativeAD(AdSceneData adSceneData, String i, Ration ration) {
         isLoadMore = false;
@@ -602,18 +701,30 @@ public class OwnNativeAdManager implements AdListener {
 
         //广点通开屏广告请求失败后或者请求自有开屏广告失败后走的逻辑
         if (NativeInit.CustomPositionName.SPLASH_POSITION.toString().equals(ration.getMarkId())) {
-            if (splashHandler != null) {
-                splashHandler.sendEmptyMessageDelayed(handlerMsgCode, 5000L);
-            }
             Ration rationNew = NativeInit.rationManager.getRation(NativeInit.CustomPositionName.SPLASH_SUPPLY_POSITION.toString());
             if (rationNew == null) {
+                if (splashHandler != null) {
+                    splashHandler.sendEmptyMessage(handlerMsgCode);
+                }
                 return;
+            } else {
+                if (splashHandler != null) {
+                    splashHandler.sendEmptyMessageDelayed(handlerMsgCode, 3000L);
+                }
             }
+
             if (nativeInit != null) {
                 nativeInit.loadAdNew(1, rationNew, mActivityRef);
             }
             if (com.dingyueads.sdk.Constants.AD_TYPE_OWNAD == ration.getPlatformId()) {
                 StatServiceUtils.statAdEventShow(BaseBookApplication.getGlobalContext(), StatServiceUtils.ad_adwin);
+            }
+        }
+
+        //广点通切屏广告失败后进行关闭操作
+        if (NativeInit.CustomPositionName.SWITCH_SPLASH_POSITION.toString().equals(ration.getMarkId())) {
+            if (splashHandler != null) {
+                splashHandler.sendEmptyMessageDelayed(handlerMsgCode, 5000L);
             }
         }
 
@@ -688,11 +799,13 @@ public class OwnNativeAdManager implements AdListener {
     }
 
     public void setReadStatus(ReadStatus readStatus) {
-        readStatusWeakReference = new WeakReference<>(readStatus);
+        this.readStatus = readStatus;
     }
 
     /**
      * 获取 1条 ad info
+     *
+     * @return
      */
     public synchronized YQNativeAdInfo getSingleADInfo(NativeInit.CustomPositionName type) {
         if (Constants.isHideAD) return null;
@@ -749,7 +862,7 @@ public class OwnNativeAdManager implements AdListener {
             }
             return yqNativeAdInfo;
         } else {
-
+            AppLog.e("wyhad1-1", ration.getPlatformName() + ration.isRequestingMiddleAd() + positon);
             if (!ration.isRequestingMiddleAd()) {
                 isLoadMore = true;
                 ration.setRequestingMiddleAd(true);
@@ -791,8 +904,10 @@ public class OwnNativeAdManager implements AdListener {
             return null;
         }
 
-        if (ration.getPlatformId() == com.dingyueads.sdk.Constants.AD_TYPE_OWNAD ||
-                ration.getPlatformId() == com.dingyueads.sdk.Constants.AD_TYPE_360) {
+        if (ration.getPlatformId() == com.dingyueads.sdk.Constants.AD_TYPE_INMOBI
+                || ration.getPlatformId() == com.dingyueads.sdk.Constants.AD_TYPE_OWNAD
+                || ration.getPlatformId() == com.dingyueads.sdk.Constants.AD_TYPE_360
+                || ration.getPlatformId() == com.dingyueads.sdk.Constants.AD_TYPE_ADVIEW) {
             return yqNativeAdInfo;
         }
 
@@ -802,11 +917,10 @@ public class OwnNativeAdManager implements AdListener {
             String md5 = SDKUtil.digest(yqNativeAdInfo.getAdvertisement().title + yqNativeAdInfo.getAdvertisement().description);
             boolean flag;
             int status;
-            try {
-                status = AdDao.getInstance(BaseBookApplication.getGlobalContext()).queryMaterialStatus(md5);
-            } catch (Exception e) {
+            if (NativeInit.adStatusInfo.containsKey(md5)) {
+                status = NativeInit.adStatusInfo.get(md5);
+            } else {
                 status = 0;
-                e.printStackTrace();
             }
 
             if (status == 2) {
@@ -821,12 +935,11 @@ public class OwnNativeAdManager implements AdListener {
             }
             if (yqNativeAdInfo == null) return null;
             //获取到没有被点击过的广告信息，再根据展示顺序进行选择
-            try {
-                md5 = SDKUtil.digest(yqNativeAdInfo.getAdvertisement().title + yqNativeAdInfo.getAdvertisement().description);
-                status = AdDao.getInstance(BaseBookApplication.getGlobalContext()).queryMaterialStatus(md5);
-            } catch (Exception e) {
+            md5 = SDKUtil.digest(yqNativeAdInfo.getAdvertisement().title + yqNativeAdInfo.getAdvertisement().description);
+            if (NativeInit.adStatusInfo.containsKey(md5)) {
+                status = NativeInit.adStatusInfo.get(md5);
+            } else {
                 status = 0;
-                e.printStackTrace();
             }
             if (status == 1) {
                 flag = true;
@@ -894,19 +1007,20 @@ public class OwnNativeAdManager implements AdListener {
         return true;
     }
 
+
     public void getAdBitmapLandscape(YQNativeAdInfo yqNativeAdInfo) {
 
         YQNativeAdInfo nativeAdInfo = yqNativeAdInfo;
-        if (nativeAdInfo == null || readStatusWeakReference.get() == null) {
+        if (nativeAdInfo == null || readStatus == null) {
             return;
         }
         NetWorkUtils.NATIVE_AD_TYPE = NetWorkUtils.NATIVE_AD_READY;
-        readStatusWeakReference.get().currentAdInfo_image = nativeAdInfo;
+        readStatus.currentAdInfo_image = nativeAdInfo;
 
         AdSceneData adSceneData = nativeAdInfo.getAdSceneData();
         adSceneData.ad_requestTime = String.valueOf(System.currentTimeMillis() / 1000L);
 
-        Advertisement advertisement = nativeAdInfo.getAdvertisement();
+        final Advertisement advertisement = nativeAdInfo.getAdvertisement();
         AppLog.e(TAG, "Advertisement: " + advertisement.toString());
         if (advertisement == null) {
             return;
@@ -914,30 +1028,62 @@ public class OwnNativeAdManager implements AdListener {
 
         if (!TextUtils.isEmpty(advertisement.imageUrl)) {
             final String image_url = advertisement.imageUrl;
-            ImageCacheManager.getInstance().getImageLoader().get(image_url, new ImageLoader.ImageListener() {
-                @Override
-                public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
-                    AppLog.e(TAG, "getAdBitmapLandscape onResponse big image");
-                    if (imageContainer == null) return;
-                    final Bitmap bitmap_icon = imageContainer.getBitmap();
-                    if (bitmap_icon != null) {
-                        readStatusWeakReference.get().setAd_bitmap_big(bitmapScaleHeight(bitmap_icon, readStatusWeakReference.get().screenHeight -
-                                45 * readStatusWeakReference.get().screenScaledDensity, 0, false));
 
-                    }
-                }
-
+            NativeInit.fixedThreadPool.execute(new Runnable() {
                 @Override
-                public void onErrorResponse(VolleyError volleyError) {
-                    if (readStatusWeakReference.get() != null) {
-                        readStatusWeakReference.get().setAd_bitmap_big(null);
+                public void run() {
+                    try {
+                        Bitmap bitmap_icon = Glide.with(BaseBookApplication.getGlobalContext())
+                                .load(image_url)
+                                .asBitmap()
+                                .skipMemoryCache(true)
+                                .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                                .get();
+
+                        if (bitmap_icon != null) {
+                            Bitmap logo_bitmap = getLogoBitmap(advertisement);
+
+                            Bitmap bitmap = null;
+                            if (readStatus != null) {
+                                bitmap = bitmapScaleHeight(bitmap_icon, readStatus.screenHeight - 45 * readStatus.screenScaledDensity, 0, false);
+                            }
+                            if (bitmap != null) {
+                                if (readStatus != null) {
+                                    readStatus.setAd_bitmap_big(toConformBitmap(bitmap, logo_bitmap, true, true));
+                                }
+                            }
+                        } else {
+                            if (readStatus != null) {
+                                readStatus.setAd_bitmap_big(null);
+                            }
+                        }
+                    } catch (Exception e) {
+                        if (readStatus != null) {
+                            readStatus.setAd_bitmap_big(null);
+                        }
+                        e.printStackTrace();
                     }
                 }
             });
         } else {
-            if (readStatusWeakReference.get() != null) {
-                readStatusWeakReference.get().setAd_bitmap_big(null);
+            if (readStatus != null) {
+                readStatus.setAd_bitmap_big(null);
             }
+        }
+    }
+
+    private Bitmap getLogoBitmap(Advertisement advertisement) {
+        if (advertisement == null) {
+            return null;
+        }
+        if ("广点通".equals(advertisement.rationName)) {
+            return BitmapFactory.decodeResource(BaseBookApplication.getGlobalContext().getResources(), R.drawable.icon_ad_gdt);
+        } else if ("百度".equals(advertisement.rationName)) {
+            return BitmapFactory.decodeResource(BaseBookApplication.getGlobalContext().getResources(), R.drawable.icon_ad_bd);
+        } else if ("360".equals(advertisement.rationName)) {
+            return BitmapFactory.decodeResource(BaseBookApplication.getGlobalContext().getResources(), R.drawable.icon_ad_360);
+        } else {
+            return BitmapFactory.decodeResource(BaseBookApplication.getGlobalContext().getResources(), R.drawable.icon_ad_default);
         }
     }
 
@@ -945,17 +1091,17 @@ public class OwnNativeAdManager implements AdListener {
         NetWorkUtils.NATIVE_AD_TYPE = NetWorkUtils.NATIVE_AD_READY;
 
         YQNativeAdInfo nativeAdInfo = yqNativeAdInfo;
-        if (nativeAdInfo == null || readStatusWeakReference.get() == null)
+        if (nativeAdInfo == null || readStatus == null)
             return;
         //标记此条物料的时间，暂定为10分钟，用于后期此条物料被使用时，判定是否过期
         nativeAdInfo.setAvailableTime(System.currentTimeMillis());
 
         if (flag == 0) {
             AppLog.e("adtest8-1", "currentAdInfo= " + nativeAdInfo.toString());
-            readStatusWeakReference.get().currentAdInfo = nativeAdInfo;
+            readStatus.currentAdInfo = nativeAdInfo;
         } else if (flag == 1) {
             AppLog.e("adtest8-1", "currentAdInfoDown= " + nativeAdInfo.toString());
-            readStatusWeakReference.get().currentAdInfoDown = nativeAdInfo;
+            readStatus.currentAdInfoDown = nativeAdInfo;
         } else {
             return;
         }
@@ -967,172 +1113,156 @@ public class OwnNativeAdManager implements AdListener {
         if (advertisement == null) {
             return;
         }
-
         if (flag == 1) {
-            if (!TextUtils.isEmpty(advertisement.iconUrl)) {
-                final String icon_url = advertisement.iconUrl;
-                ImageCacheManager.getInstance().getImageLoader().get(icon_url, new ImageLoader.ImageListener() {
-                    @Override
-                    public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
-                        LayoutInflater inflater = mInflaterRef.get();
-                        Activity act = mActivityRef.get();
-                        if (inflater == null || act == null || imageContainer == null) {
-                            return;
-                        }
-                        final RelativeLayout ad_view = (RelativeLayout) inflater.inflate(R.layout.layout_ad_item_small, null);
-                        TextView item_ad_title = (TextView) ad_view.findViewById(R.id.item_ad_title);
-                        RatingBar item_ad_extension = (RatingBar) ad_view.findViewById(R.id.item_ad_extension);
-                        TextView item_ad_desc = (TextView) ad_view.findViewById(R.id.item_ad_desc);
+            //科大讯飞没有iconUrl只有imageUrl，这里做了特殊判断
+            if (!TextUtils.isEmpty(advertisement.iconUrl) || (com.dingyueads.sdk.Constants.AD_TYPE_KDXF == advertisement.platformId && !TextUtils.isEmpty(advertisement.imageUrl))) {
+                final String icon_url;
+                if (advertisement.iconUrl != null) {
+                    icon_url = advertisement.iconUrl;
+                } else {
+                    icon_url = advertisement.imageUrl;
+                }
+                final RelativeLayout ad_view = (RelativeLayout) mInflater.inflate(R.layout.layout_ad_item_small, null);
+                TextView item_ad_title = (TextView) ad_view.findViewById(R.id.item_ad_title);
+                RatingBar item_ad_extension = (RatingBar) ad_view.findViewById(R.id.item_ad_extension);
+                TextView item_ad_desc = (TextView) ad_view.findViewById(R.id.item_ad_desc);
 
-                        if (item_ad_title != null) {
-                            item_ad_title.setText(TextUtils.isEmpty(advertisement.title) ? "" : advertisement.title);
-                        }
-                        if ("night".equals(ResourceUtil.mode)) {
-                            if (act != null) {
-                                item_ad_title.setTextColor(act.getResources().getColor(R.color.color_gray_9b9b9b));
-                                item_ad_desc.setTextColor(act.getResources().getColor(R.color.color_gray_777777));
-                            }
-                        }
+                if (item_ad_title != null) {
+                    item_ad_title.setText(TextUtils.isEmpty(advertisement.title) ? "" : advertisement.title);
+                }
+                if ("night".equals(ResourceUtil.mode)) {
+                    item_ad_title.setTextColor(BaseBookApplication.getGlobalContext().getResources().getColor(R.color.color_gray_9b9b9b));
+                    item_ad_desc.setTextColor(BaseBookApplication.getGlobalContext().getResources().getColor(R.color.color_gray_777777));
+                }
 
-                        String detail = advertisement.description;
+                String detail = advertisement.description;
 
-                        int length = TextUtils.isEmpty(detail) ? 0 : detail.length();
-                        if (item_ad_desc != null) {
-                            if (length < default_length) {
-                                item_ad_desc.setText(detail);
-                            } else {
-                                detail = detail.substring(0, default_length) + "...";
-                                item_ad_desc.setText(detail);
-                            }
-                        }
-                        item_ad_extension.setRating(Tools.getIntRandom());
-
-                        Bitmap bitmap_icon = imageContainer.getBitmap();
-
-                        if (bitmap_icon != null) {
-                            ImageView item_ad_image = (ImageView) ad_view.findViewById(R.id.item_ad_image);
-                            Bitmap roundedCornerBitmap = ImageUtils.getRoundedCornerBitmap(bitmap_icon, 40);
-                            if (roundedCornerBitmap != null && !roundedCornerBitmap.isRecycled()) {
-                                item_ad_image.setImageBitmap(roundedCornerBitmap);
-                            }
-
-                            Bitmap logo_bitmap = null;
-                            if ("广点通".equals(advertisement.rationName)) {
-                                logo_bitmap = BitmapFactory.decodeResource(act.getResources(), R.drawable.icon_ad_gdt);
-                            } else if ("百度".equals(advertisement.rationName)) {
-                                logo_bitmap = BitmapFactory.decodeResource(act.getResources(), R.drawable.icon_ad_bd);
-                            } else if ("360".equals(advertisement.rationName)) {
-                                logo_bitmap = BitmapFactory.decodeResource(act.getResources(), R.drawable.icon_ad_360);
-                            } else {
-                                logo_bitmap = BitmapFactory.decodeResource(act.getResources(), R.drawable.icon_ad_default);
-                            }
-                            bitmap_icon = convertViewToBitmap3(ad_view, false);
-                            Bitmap bitmap = toConformBitmap(bitmap_icon, logo_bitmap, true, false);
-                            if (readStatusWeakReference.get() != null) {
-                                readStatusWeakReference.get().setAd_bitmap(bitmap);
-                            }
-                            if (roundedCornerBitmap != null) {
-                                recycleBitmap(roundedCornerBitmap);
-                                item_ad_image.setImageBitmap(null);
-                            }
-                        }
+                int length = TextUtils.isEmpty(detail) ? 0 : detail.length();
+                if (item_ad_desc != null) {
+                    if (length < default_length) {
+                        item_ad_desc.setText(detail);
+                    } else {
+                        detail = detail.substring(0, default_length) + "...";
+                        item_ad_desc.setText(detail);
                     }
+                }
+                item_ad_extension.setRating(Tools.getIntRandom());
 
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        if (readStatusWeakReference.get() != null) {
-                            readStatusWeakReference.get().setAd_bitmap(null);
+                try {
+                    SimpleTarget target = new SimpleTarget<Bitmap>(300, 300) {
+                        @Override
+                        public void onResourceReady(Bitmap bitmap_icon, GlideAnimation<? super Bitmap> glideAnimation) {
+                            if (readStatus == null) return;
+                            if (bitmap_icon != null) {
+                                ImageView item_ad_image = (ImageView) ad_view.findViewById(R.id.item_ad_image);
+                                Bitmap roundedCornerBitmap = ImageUtils.getRoundedCornerBitmap(bitmap_icon, 40);
+                                if (roundedCornerBitmap != null && !roundedCornerBitmap.isRecycled()) {
+                                    item_ad_image.setImageBitmap(roundedCornerBitmap);
+                                }
+
+                                Bitmap logo_bitmap = getLogoBitmap(advertisement);
+                                bitmap_icon = convertViewToBitmap3(ad_view, false);
+                                Bitmap bitmap = toConformBitmap(bitmap_icon, logo_bitmap, true, false);
+                                readStatus.setAd_bitmap(bitmap);
+                                if (roundedCornerBitmap != null) {
+                                    recycleBitmap(roundedCornerBitmap);
+                                    item_ad_image.setImageBitmap(null);
+                                }
+                            } else {
+                                readStatus.setAd_bitmap(null);
+                            }
                         }
+                    };
+                    Glide.with(BaseBookApplication.getGlobalContext())
+                            .load(icon_url)
+                            .asBitmap()
+                            .centerCrop()
+                            .skipMemoryCache(true)
+                            .into(target);
+                } catch (Exception e) {
+                    if (readStatus != null) {
+                        readStatus.setAd_bitmap(null);
                     }
-                });
+                    e.printStackTrace();
+                }
             } else {
-                if (readStatusWeakReference.get() != null) {
-                    readStatusWeakReference.get().setAd_bitmap(null);
+                if (readStatus != null) {
+                    readStatus.setAd_bitmap(null);
                 }
             }
         }
         if (!TextUtils.isEmpty(advertisement.imageUrl)) {
             final String image_url = advertisement.imageUrl;
-            ImageCacheManager.getInstance().getImageLoader().get(image_url, new ImageLoader.ImageListener() {
+            NativeInit.fixedThreadPool.execute(new Runnable() {
                 @Override
-                public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
-                    Activity act = mActivityRef.get();
-                    if (act == null || imageContainer == null) {
-                        return;
-                    }
-
-                    Bitmap bitmap_icon = imageContainer.getBitmap();
-                    if (bitmap_icon == null) return;
-
-                    Bitmap logo_bitmap;
-                    if ("广点通".equals(advertisement.rationName)) {
-                        logo_bitmap = BitmapFactory.decodeResource(act.getResources(), R.drawable.icon_ad_gdt);
-                    } else if ("百度".equals(advertisement.rationName)) {
-                        logo_bitmap = BitmapFactory.decodeResource(act.getResources(), R.drawable.icon_ad_bd);
-                    } else if ("360".equals(advertisement.rationName)) {
-                        logo_bitmap = BitmapFactory.decodeResource(act.getResources(), R.drawable.icon_ad_360);
-                    } else {
-                        logo_bitmap = BitmapFactory.decodeResource(act.getResources(), R.drawable.icon_ad_default);
-                    }
-
-                    Bitmap bitmap = null;
-                    if (readStatusWeakReference.get() != null) {
-                        bitmap = bitmapScale(bitmap_icon, readStatusWeakReference.get().screenWidth, 15, true);
-                    }
-
-                    if (bitmap != null) {
-                        if (readStatusWeakReference.get() != null) {
-                            if (flag == 0) {
-                                readStatusWeakReference.get().setAd_bitmap_middle(toConformBitmap(bitmap, logo_bitmap, true, true));
-                            } else {
-                                readStatusWeakReference.get().setAd_bitmap_middle_down(toConformBitmap(bitmap, logo_bitmap, true, true));
+                public void run() {
+                    try {
+                        Bitmap bitmap_icon = Glide.with(BaseBookApplication.getGlobalContext())
+                                .load(image_url)
+                                .asBitmap()
+                                .skipMemoryCache(true)
+                                .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                                .get();
+                        if (readStatus == null) return;
+                        if (bitmap_icon != null) {
+                            Bitmap logo_bitmap = getLogoBitmap(advertisement);
+                            if (advertisement.platformId == com.dingyueads.sdk.Constants.AD_TYPE_KDXF) {
+                                //科大讯飞8-1广告位的图片需要先缩放一次，从1:1.5的比例，变成1:1.78的比例
+                                bitmap_icon = kdxfBitmapScale(bitmap_icon, 1, 1.5F / 1.78F);
                             }
-                        }
-                    } else {
-                        if (readStatusWeakReference.get() != null) {
-                            if (flag == 0) {
-                                readStatusWeakReference.get().setAd_bitmap_middle(null);
-                            } else {
-                                readStatusWeakReference.get().setAd_bitmap_middle_down(null);
-                            }
-                        }
-                    }
-                }
+                            Bitmap bitmap = bitmapScale(bitmap_icon, readStatus.screenWidth, 15, true);
 
-                @Override
-                public void onErrorResponse(VolleyError volleyError) {
-                    if (readStatusWeakReference.get() != null) {
-                        if (flag == 0) {
-                            readStatusWeakReference.get().setAd_bitmap_middle(null);
+                            if (bitmap != null) {
+                                if (flag == 0) {
+                                    readStatus.setAd_bitmap_middle(toConformBitmap(bitmap, logo_bitmap, true, true));
+                                } else {
+                                    readStatus.setAd_bitmap_middle_down(toConformBitmap(bitmap, logo_bitmap, true, true));
+                                }
+                            } else {
+                                if (flag == 0) {
+                                    readStatus.setAd_bitmap_middle(null);
+                                } else {
+                                    readStatus.setAd_bitmap_middle_down(null);
+                                }
+                            }
                         } else {
-                            readStatusWeakReference.get().setAd_bitmap_middle_down(null);
+                            if (flag == 0) {
+                                readStatus.setAd_bitmap_middle(null);
+                            } else {
+                                readStatus.setAd_bitmap_middle_down(null);
+                            }
                         }
+                    } catch (Exception e) {
+                        if (readStatus != null) {
+                            if (flag == 0) {
+                                readStatus.setAd_bitmap_middle(null);
+                            } else {
+                                readStatus.setAd_bitmap_middle_down(null);
+                            }
+                        }
+                        e.printStackTrace();
                     }
                 }
             });
         } else {
-            if (readStatusWeakReference.get() != null) {
+            if (readStatus != null) {
                 if (flag == 0) {
-                    readStatusWeakReference.get().setAd_bitmap_middle(null);
+                    readStatus.setAd_bitmap_middle(null);
                 } else {
-                    readStatusWeakReference.get().setAd_bitmap_middle_down(null);
+                    readStatus.setAd_bitmap_middle_down(null);
                 }
             }
         }
     }
 
     public void getAdBitmapBig(YQNativeAdInfo yqNativeAdInfo) {
-        if (Constants.IS_LANDSCAPE) {
-            getAdBitmapLandscape(yqNativeAdInfo);
-            return;
-        }
         YQNativeAdInfo nativeAdInfo = yqNativeAdInfo;
-        if (nativeAdInfo == null || readStatusWeakReference.get() == null) {
+        if (nativeAdInfo == null || readStatus == null) {
             return;
         }
         AppLog.e("adtest5-1", yqNativeAdInfo.toString());
         NetWorkUtils.NATIVE_AD_TYPE = NetWorkUtils.NATIVE_AD_READY;
-        readStatusWeakReference.get().currentAdInfo_image = nativeAdInfo;
+        readStatus.currentAdInfo_image = nativeAdInfo;
         AdSceneData adSceneData = nativeAdInfo.getAdSceneData();
         if (adSceneData != null) {
             adSceneData.ad_requestTime = String.valueOf(System.currentTimeMillis() / 1000L);
@@ -1145,59 +1275,45 @@ public class OwnNativeAdManager implements AdListener {
 
         if (!TextUtils.isEmpty(advertisement.imageUrl)) {
             final String image_url = advertisement.imageUrl;
-            ImageCacheManager.getInstance().getImageLoader().get(image_url, new ImageLoader.ImageListener() {
-                @Override
-                public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
-                    AppLog.e(TAG, "onResponse big image");
-                    Activity act = mActivityRef.get();
-                    if (act == null || imageContainer == null) {
-                        return;
-                    }
-                    Bitmap bitmap_icon = imageContainer.getBitmap();
-                    if (bitmap_icon == null) return;
 
-                    Bitmap logo_bitmap;
-                    if ("广点通".equals(advertisement.rationName)) {
-                        logo_bitmap = BitmapFactory.decodeResource(act.getResources(), R.drawable.icon_ad_gdt);
-                    } else if ("百度".equals(advertisement.rationName)) {
-                        logo_bitmap = BitmapFactory.decodeResource(act.getResources(), R.drawable.icon_ad_bd);
-                    } else if ("360".equals(advertisement.rationName)) {
-                        logo_bitmap = BitmapFactory.decodeResource(act.getResources(), R.drawable.icon_ad_360);
-                    } else {
-                        logo_bitmap = BitmapFactory.decodeResource(act.getResources(), R.drawable.icon_ad_default);
-                    }
-                    Bitmap bitmap = null;
-                    if (readStatusWeakReference.get() != null) {
-                        bitmap = bitmapScale(bitmap_icon, readStatusWeakReference.get().screenWidth, 0, false);
-                    }
-                    if (bitmap != null) {
-                        if (readStatusWeakReference.get() != null) {
-                            readStatusWeakReference.get().setAd_bitmap_big(toConformBitmap(bitmap, logo_bitmap, true, true));
+            NativeInit.fixedThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Bitmap bitmap_icon = Glide.with(BaseBookApplication.getGlobalContext())
+                                .load(image_url)
+                                .asBitmap()
+                                .skipMemoryCache(true)
+                                .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                                .get();
+                        if (readStatus == null) return;
+                        if (bitmap_icon != null) {
+                            Bitmap logo_bitmap = getLogoBitmap(advertisement);
+                            Bitmap bitmap = bitmapScale(bitmap_icon, readStatus.screenWidth, 0, false);
+                            if (bitmap != null) {
+                                readStatus.setAd_bitmap_big(toConformBitmap(bitmap, logo_bitmap, true, true));
+                            }
+                        } else {
+                            readStatus.setAd_bitmap_big(null);
                         }
-                    }
-                }
-
-                @Override
-                public void onErrorResponse(VolleyError volleyError) {
-                    if (readStatusWeakReference.get() != null) {
-                        readStatusWeakReference.get().setAd_bitmap_big(null);
+                    } catch (Exception e) {
+                        if (readStatus != null) {
+                            readStatus.setAd_bitmap_big(null);
+                        }
+                        e.printStackTrace();
                     }
                 }
             });
         } else {
-            if (readStatusWeakReference.get() != null) {
-                readStatusWeakReference.get().setAd_bitmap_big(null);
+            if (readStatus != null) {
+                readStatus.setAd_bitmap_big(null);
             }
         }
     }
 
     public void getAdBitmapBigInChapter(YQNativeAdInfo yqNativeAdInfo) {
-        if (Constants.IS_LANDSCAPE) {
-            getAdBitmapLandscapeInChapter(yqNativeAdInfo);
-            return;
-        }
         final YQNativeAdInfo nativeAdInfo = yqNativeAdInfo;
-        if (nativeAdInfo == null || readStatusWeakReference.get() == null) {
+        if (nativeAdInfo == null || readStatus == null) {
             return;
         }
         NetWorkUtils.NATIVE_AD_TYPE = NetWorkUtils.NATIVE_AD_READY;
@@ -1212,50 +1328,41 @@ public class OwnNativeAdManager implements AdListener {
 
         if (!TextUtils.isEmpty(advertisement.imageUrl)) {
             final String image_url = advertisement.imageUrl;
-            ImageCacheManager.getInstance().getImageLoader().get(image_url, new ImageLoader.ImageListener() {
-                @Override
-                public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
-                    AppLog.e(TAG, "onResponse big image");
-                    Activity act = mActivityRef.get();
-                    if (act == null || imageContainer == null) {
-                        return;
-                    }
-                    Bitmap bitmap_icon = imageContainer.getBitmap();
-                    if (bitmap_icon == null) return;
 
-                    Bitmap logo_bitmap;
-                    if ("广点通".equals(advertisement.rationName)) {
-                        logo_bitmap = BitmapFactory.decodeResource(act.getResources(), R.drawable.icon_ad_gdt);
-                    } else if ("百度".equals(advertisement.rationName)) {
-                        logo_bitmap = BitmapFactory.decodeResource(act.getResources(), R.drawable.icon_ad_bd);
-                    } else if ("360".equals(advertisement.rationName)) {
-                        logo_bitmap = BitmapFactory.decodeResource(act.getResources(), R.drawable.icon_ad_360);
-                    } else {
-                        logo_bitmap = BitmapFactory.decodeResource(act.getResources(), R.drawable.icon_ad_default);
-                    }
-                    Bitmap bitmap = null;
-                    if (readStatusWeakReference.get() != null) {
-                        bitmap = bitmapScale(bitmap_icon, readStatusWeakReference.get().screenWidth, 0, false);
-                    }
-                    if (bitmap != null) {
-                        if (readStatusWeakReference.get() != null) {
-                            HashMap<YQNativeAdInfo, Bitmap> hashMap = new HashMap<YQNativeAdInfo, Bitmap>();
-                            hashMap.put(nativeAdInfo, toConformBitmap(bitmap, logo_bitmap, true, true));
-                            readStatusWeakReference.get().containerInChapter.add(hashMap);
+            NativeInit.fixedThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Bitmap bitmap_icon = Glide.with(BaseBookApplication.getGlobalContext())
+                                .load(image_url)
+                                .asBitmap()
+                                .skipMemoryCache(true)
+                                .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                                .get();
+
+                        if (readStatus == null) return;
+                        if (bitmap_icon != null) {
+                            Bitmap logo_bitmap = getLogoBitmap(advertisement);
+                            Bitmap bitmap = bitmapScale(bitmap_icon, readStatus.screenWidth, 0, false);
+                            if (bitmap != null) {
+                                HashMap<YQNativeAdInfo, Bitmap> hashMap = new HashMap<YQNativeAdInfo, Bitmap>();
+                                hashMap.put(nativeAdInfo, toConformBitmap(bitmap, logo_bitmap, true, true));
+                                readStatus.containerInChapter.add(hashMap);
+                            }
+                        } else {
+                            readStatus.setAd_bitmap_big_inChapter(null);
                         }
-                    }
-                }
-
-                @Override
-                public void onErrorResponse(VolleyError volleyError) {
-                    if (readStatusWeakReference.get() != null) {
-                        readStatusWeakReference.get().setAd_bitmap_big_inChapter(null);
+                    } catch (Exception e) {
+                        if (readStatus != null) {
+                            readStatus.setAd_bitmap_big_inChapter(null);
+                        }
+                        e.printStackTrace();
                     }
                 }
             });
         } else {
-            if (readStatusWeakReference.get() != null) {
-                readStatusWeakReference.get().setAd_bitmap_big_inChapter(null);
+            if (readStatus != null) {
+                readStatus.setAd_bitmap_big_inChapter(null);
             }
         }
     }
@@ -1263,7 +1370,7 @@ public class OwnNativeAdManager implements AdListener {
     public void getAdBitmapLandscapeInChapter(YQNativeAdInfo yqNativeAdInfo) {
 
         final YQNativeAdInfo nativeAdInfo = yqNativeAdInfo;
-        if (nativeAdInfo == null || readStatusWeakReference.get() == null) {
+        if (nativeAdInfo == null || readStatus == null) {
             return;
         }
         NetWorkUtils.NATIVE_AD_TYPE = NetWorkUtils.NATIVE_AD_READY;
@@ -1271,7 +1378,7 @@ public class OwnNativeAdManager implements AdListener {
         AdSceneData adSceneData = nativeAdInfo.getAdSceneData();
         adSceneData.ad_requestTime = String.valueOf(System.currentTimeMillis() / 1000L);
 
-        Advertisement advertisement = nativeAdInfo.getAdvertisement();
+        final Advertisement advertisement = nativeAdInfo.getAdvertisement();
         AppLog.e(TAG, "Advertisement: " + advertisement.toString());
         if (advertisement == null) {
             return;
@@ -1279,32 +1386,42 @@ public class OwnNativeAdManager implements AdListener {
 
         if (!TextUtils.isEmpty(advertisement.imageUrl)) {
             final String image_url = advertisement.imageUrl;
-            ImageCacheManager.getInstance().getImageLoader().get(image_url, new ImageLoader.ImageListener() {
-                @Override
-                public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
-                    AppLog.e(TAG, "getAdBitmapLandscape onResponse big image");
-                    if (imageContainer == null) return;
-                    final Bitmap bitmap_icon = imageContainer.getBitmap();
-                    if (bitmap_icon != null) {
-                        if (readStatusWeakReference.get() != null) {
-                            HashMap<YQNativeAdInfo, Bitmap> hashMap = new HashMap<YQNativeAdInfo, Bitmap>();
-                            hashMap.put(nativeAdInfo, bitmapScaleHeight(bitmap_icon, readStatusWeakReference.get().screenHeight -
-                                    45 * readStatusWeakReference.get().screenScaledDensity, 0, false));
-                            readStatusWeakReference.get().containerInChapter.add(hashMap);
-                        }
-                    }
-                }
 
+            NativeInit.fixedThreadPool.execute(new Runnable() {
                 @Override
-                public void onErrorResponse(VolleyError volleyError) {
-                    if (readStatusWeakReference.get() != null) {
-                        readStatusWeakReference.get().setAd_bitmap_big_inChapter(null);
+                public void run() {
+                    try {
+                        Bitmap bitmap_icon = Glide.with(BaseBookApplication.getGlobalContext())
+                                .load(image_url)
+                                .asBitmap()
+                                .skipMemoryCache(true)
+                                .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                                .get();
+
+                        if (readStatus == null) return;
+                        if (bitmap_icon != null) {
+                            Bitmap logo_bitmap = getLogoBitmap(advertisement);
+                            Bitmap bitmap = bitmapScaleHeight(bitmap_icon, readStatus.screenHeight - 45 * readStatus.screenScaledDensity, 0, false);
+                            if (bitmap != null) {
+                                HashMap<YQNativeAdInfo, Bitmap> hashMap = new HashMap<YQNativeAdInfo, Bitmap>();
+                                hashMap.put(nativeAdInfo, toConformBitmap(bitmap, logo_bitmap, true, true));
+                                readStatus.containerInChapter.add(hashMap);
+                            }
+                        } else {
+                            readStatus.setAd_bitmap_big_inChapter(null);
+                        }
+                    } catch (Exception e) {
+                        if (readStatus != null) {
+                            readStatus.setAd_bitmap_big_inChapter(null);
+                        }
+                        e.printStackTrace();
                     }
                 }
             });
+
         } else {
-            if (readStatusWeakReference.get() != null) {
-                readStatusWeakReference.get().setAd_bitmap_big_inChapter(null);
+            if (readStatus != null) {
+                readStatus.setAd_bitmap_big_inChapter(null);
             }
         }
     }
@@ -1325,17 +1442,17 @@ public class OwnNativeAdManager implements AdListener {
             System.gc();
             return null;
         }
-        if (readStatusWeakReference.get() != null) {
+        if (readStatus != null) {
             if (isMiddle) {
-                readStatusWeakReference.get().height_middle_nativead = resizeBmp.getHeight();
-                readStatusWeakReference.get().width_nativead_middle = resizeBmp.getWidth();
+                readStatus.height_middle_nativead = resizeBmp.getHeight();
+                readStatus.width_nativead_middle = resizeBmp.getWidth();
             } else {
-                readStatusWeakReference.get().width_nativead_big = resizeBmp.getWidth();
-                readStatusWeakReference.get().height_nativead_big = resizeBmp.getHeight();
+                readStatus.width_nativead_big = resizeBmp.getWidth();
+                readStatus.height_nativead_big = resizeBmp.getHeight();
             }
             AppLog.e(TAG, "bitmapScaleHeight resizeBmp.getHeight():" + resizeBmp.getHeight() + " width:" + resizeBmp.getWidth() + " bitmapHeight:" +
                     bitmapHeight
-                    + " screenheight:" + screenheight + " width:" + readStatusWeakReference.get().screenWidth);
+                    + " screenheight:" + screenheight + " width:" + readStatus.screenWidth);
         }
         if (bitmap != resizeBmp) {
             recycleBitmap(bitmap);
@@ -1358,13 +1475,13 @@ public class OwnNativeAdManager implements AdListener {
             System.gc();
             return null;
         }
-        if (readStatusWeakReference.get() != null) {
+        if (readStatus != null) {
             if (isMiddle) {
-                readStatusWeakReference.get().height_middle_nativead = resizeBmp.getHeight();
-                readStatusWeakReference.get().width_nativead_middle = resizeBmp.getWidth();
+                readStatus.height_middle_nativead = resizeBmp.getHeight();
+                readStatus.width_nativead_middle = resizeBmp.getWidth();
             } else {
-                readStatusWeakReference.get().width_nativead_big = resizeBmp.getWidth();
-                readStatusWeakReference.get().height_nativead_big = resizeBmp.getHeight();
+                readStatus.width_nativead_big = resizeBmp.getWidth();
+                readStatus.height_nativead_big = resizeBmp.getHeight();
             }
         }
         if (bitmap != resizeBmp) {
@@ -1373,23 +1490,35 @@ public class OwnNativeAdManager implements AdListener {
         return resizeBmp;
     }
 
+    public Bitmap kdxfBitmapScale(Bitmap bitmap, float widthRatio, float heightRatio) {
+        if (bitmap == null || bitmap.isRecycled()) {
+            return null;
+        }
+        widthRatio = widthRatio <= 0 ? 1 : widthRatio;
+        heightRatio = heightRatio <= 0 ? 1 : heightRatio;
+        Matrix matrix = new Matrix();
+        matrix.postScale(widthRatio, heightRatio);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+
     public Bitmap convertViewToBitmap3(RelativeLayout view, boolean isBig_ad) {
         Bitmap bitmap = null;
         try {
-            if (readStatusWeakReference.get() == null)
+            if (readStatus == null)
                 return null;
             /**防止 部分手机measure null 异常*/
             view.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
             view.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec
                     .UNSPECIFIED));
-            view.layout(0, 0, readStatusWeakReference.get().screenWidth - 10, view.getMeasuredHeight());
+            view.layout(0, 0, readStatus.screenWidth - 10, view.getMeasuredHeight());
             AppLog.e(TAG, "width:" + view.getMeasuredWidth() + " height:" + view.getMeasuredHeight());
             if (isBig_ad) {
-                readStatusWeakReference.get().width_nativead_big = view.getMeasuredWidth();
-                readStatusWeakReference.get().height_nativead_big = view.getMeasuredHeight();
+                readStatus.width_nativead_big = view.getMeasuredWidth();
+                readStatus.height_nativead_big = view.getMeasuredHeight();
             } else {
-                readStatusWeakReference.get().width_nativead = view.getMeasuredWidth();
-                readStatusWeakReference.get().height_nativead = view.getMeasuredHeight();
+                readStatus.width_nativead = view.getMeasuredWidth();
+                readStatus.height_nativead = view.getMeasuredHeight();
             }
             view.buildDrawingCache();
             bitmap = view.getDrawingCache();
@@ -1411,6 +1540,7 @@ public class OwnNativeAdManager implements AdListener {
 
     /**
      * 根据广告位置删除映射表里面存储的信息
+     * @param positionName
      */
     public void recycleResourceFromReading(String positionName) {
         if (NativeInit.rationManager != null) {
@@ -1450,6 +1580,8 @@ public class OwnNativeAdManager implements AdListener {
             handler.removeMessages(2);
             handler.removeMessages(3);
             handler.removeMessages(4);
+            handler.removeMessages(5);
+            handler.removeMessages(6);
         }
     }
 
@@ -1497,11 +1629,7 @@ public class OwnNativeAdManager implements AdListener {
             Canvas cv = new Canvas(bitmap);
             cv.drawBitmap(background, 0, 0, null);
             if (isDrawLogo) {
-                Activity act = mActivityRef.get();
-                float i = 0;
-                if (act != null) {
-                    i = AppUtils.sp2px(act.getResources(), 55);
-                }
+                float i = AppUtils.sp2px(BaseBookApplication.getGlobalContext().getResources(), 55);
                 if (isRGB565) {
                     cv.drawBitmap(prospect, backgroundWidth - prospectWidth, backgroundHeight - prospectHeight, null);
                 } else {
@@ -1529,6 +1657,16 @@ public class OwnNativeAdManager implements AdListener {
                 adSceneData.ad_showSuccessTime = String.valueOf(System.currentTimeMillis() / 1000L);
                 adSceneData.ad_show = 1;
             }
+            if (adSceneData != null && NativeInit.CustomPositionName.SPLASH_POSITION.toString().equals(adSceneData.ad_markId) && "8".equals(adSceneData.ad_platformId)) {
+                //InMobi的开屏处理，6秒后跳转页面
+                if (splashHandler != null) {
+                    splashHandler.sendEmptyMessageDelayed(handlerMsgCode, InMobiAdapter.SPLASH_SHOW_TIME);
+                }
+                if (statisticManager != null) {
+                    adSceneData.ad_showFinishTime = String.valueOf((System.currentTimeMillis() + InMobiAdapter.SPLASH_SHOW_TIME) / 1000L);
+                    statisticManager.sendAdSceneData(adSceneData);
+                }
+            }
         }
     }
 
@@ -1546,9 +1684,6 @@ public class OwnNativeAdManager implements AdListener {
     //百度开屏广告展示失败时调用
     @Override
     public void onAdFailed(AdSceneData adSceneData, String s) {
-        if (splashHandler != null) {
-            splashHandler.sendEmptyMessageDelayed(handlerMsgCode, 5000L);
-        }
 
         if (statisticManager != null && adSceneData != null) {
             adSceneData.ad_requestFailureTime = String.valueOf(System.currentTimeMillis() / 1000L);
@@ -1558,7 +1693,14 @@ public class OwnNativeAdManager implements AdListener {
 
         Ration ration = NativeInit.rationManager.getRation(NativeInit.CustomPositionName.SPLASH_SUPPLY_POSITION.toString());
         if (ration == null) {
+            if (splashHandler != null) {
+                splashHandler.sendEmptyMessage(handlerMsgCode);
+            }
             return;
+        } else {
+            if (splashHandler != null) {
+                splashHandler.sendEmptyMessageDelayed(handlerMsgCode, 3000L);
+            }
         }
         if (nativeInit != null) {
             nativeInit.loadAdNew(1, ration, mActivityRef);
@@ -1587,13 +1729,39 @@ public class OwnNativeAdManager implements AdListener {
         }
     }
 
-    // 此处请求广点通开屏和信息流原生广告都调用此方法
+    //InMobi的开屏点击回调
     @Override
-    public void onNoAD(AdSceneData adSceneData, int a) {
-        if (splashHandler != null) {
-            splashHandler.sendEmptyMessageDelayed(handlerMsgCode, 1000L);
+    public void onAdInMobiClick(YQNativeAdInfo adInfo) {
+        AdSceneData adSceneData = adInfo.getAdSceneData();
+        if (adSceneData != null && !TextUtils.isEmpty(adSceneData.ad_markId)) {
+            adSceneData.ad_clickSuccessTime = String.valueOf(System.currentTimeMillis() / 1000L);
+            adSceneData.ad_click = 1;
+        }
+        if (statisticManager == null) {
+            statisticManager = StatisticManager.getStatisticManager();
+        }
+        Activity act = mActivityRef.get();
+        if (act != null) {
+            statisticManager.schedulingRequest(act, new View(act), adInfo, null, statisticManager.TYPE_CLICK, NativeInit.ad_position[5]);
         }
     }
+
+    //adview的点击回调,点击后不会调用离开的方法，需要单独添加离开时发送的日志
+    @Override
+    public void onAdAdViewClick(AdSceneData adSceneData) {
+        if (adSceneData != null && !TextUtils.isEmpty(adSceneData.ad_markId)) {
+            adSceneData.ad_clickSuccessTime = String.valueOf(System.currentTimeMillis() / 1000L);
+            adSceneData.ad_click = 1;
+        }
+    }
+
+    // 此处请求广点通开屏和信息流原生广告都调用此方法
+//    @Override
+//    public void onNoAD(AdSceneData adSceneData, int a) {
+//        if (splashHandler != null) {
+//            splashHandler.sendEmptyMessageDelayed(handlerMsgCode, 1000L);
+//        }
+//    }
 
     @Override
     public void onADTick(long l) {
@@ -1605,13 +1773,14 @@ public class OwnNativeAdManager implements AdListener {
         if (hasInitConfig && isLoadSplash) {
             hasInitConfig = false;
             isLoadSplash = false;
-            loadSplashAd(NativeInit.CustomPositionName.SPLASH_POSITION, viewGroup, false);
+            loadSplashAd(NativeInit.CustomPositionName.SPLASH_POSITION, viewGroup);
         }
     }
 
     @Override
     public void onInitFail() {
-        if (splashHandler != null) {
+        if (splashHandler != null && isLoadSplash) {
+            isLoadSplash = false;
             splashHandler.sendEmptyMessage(handlerMsgCode);
         }
     }
@@ -1619,26 +1788,6 @@ public class OwnNativeAdManager implements AdListener {
     @Override
     public void onBaiduClickSplash() {
         StatServiceUtils.statAdEventShow(BaseBookApplication.getGlobalContext(), StatServiceUtils.ad_adwin);
-    }
-
-    public class AdHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 1:
-                    getAdBitmapBig((YQNativeAdInfo) msg.obj);
-                    break;
-                case 2:
-                    getAdBitmapMiddle((YQNativeAdInfo) msg.obj, 0);
-                    break;
-                case 3:
-                    getAdBitmapBigInChapter((YQNativeAdInfo) msg.obj);
-                    break;
-                case 4:
-                    getAdBitmapMiddle((YQNativeAdInfo) msg.obj, 1);
-                    break;
-            }
-        }
     }
 }
 
