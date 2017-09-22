@@ -1165,7 +1165,7 @@ public class DrawTextHelper {
             sloganPaddingY = 15 * readStatus.screenScaledDensity;
         } else {
             paddingBottom = readStatus.screenHeight - 25 * readStatus.screenScaledDensity;
-            bookNamePaddingY = y + d_line * readStatus.screenScaledDensity;
+            bookNamePaddingY = readStatus.screenHeight / 2 - d_line;
             sloganPaddingY = 40 * readStatus.screenScaledDensity;
         }
 
@@ -1214,7 +1214,7 @@ public class DrawTextHelper {
         textPaint.setTextAlign(Paint.Align.LEFT);
         drawSpacingText(canvas, resources.getString(R.string.app_name), 90, 11, paddingBottom);
         textPaint.setTextAlign(Paint.Align.CENTER);
-        paddingBottom -= d_line;
+        paddingBottom -= textPaint.getFontMetrics().descent - textPaint.getFontMetrics().ascent;
 
         if (mIconBitmap == null || mIconBitmap.isRecycled()) {
             mIconBitmap = BitmapFactory.decodeResource(resources, R.drawable.icon_home_page);
@@ -1222,12 +1222,7 @@ public class DrawTextHelper {
         // 计算左边位置
         int left = readStatus.screenWidth / 2 - mIconBitmap.getWidth() / 2;
         // 计算上边位置
-        int top;
-        if (Constants.isSlideUp) {
-            top = (int) (paddingBottom - (mIconBitmap.getHeight()) / 1.5);
-        } else {
-            top = (int) (paddingBottom - mIconBitmap.getHeight() - 5 * readStatus.screenScaledDensity);
-        }
+        int top = (int) (paddingBottom - mIconBitmap.getHeight() - 5 * readStatus.screenScaledDensity);
         canvas.drawBitmap(mIconBitmap, new Rect(0, 0, mIconBitmap.getWidth(), mIconBitmap.getHeight()),
                 new Rect(left, top, left + mIconBitmap.getWidth(), top + mIconBitmap.getHeight()),
                 new Paint());
