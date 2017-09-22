@@ -358,6 +358,8 @@ public class PageView extends View implements PageInterface {
             if (tmpX > touchStartX) {
                 if (isCurlType) {
                     count = 0;
+                    endTime = System.currentTimeMillis();
+                    addLog(endTime);
                     drawNextPage();
                 }
                 if (!prepareTurnPrePage() && readStatus.book.book_type == 0) {
@@ -742,7 +744,7 @@ public class PageView extends View implements PageInterface {
         //判断章节的最后一页
         if (readStatus.sequence + 1 > readStatus.lastSequenceRemark && !isFirstCome) {
             //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
-            StartLogClickUtil.upLoadReadContent(readStatus.book_id, readStatus.lastSequenceRemark + "", readStatus.source_ids, readStatus.lastPageCount + "",
+            StartLogClickUtil.upLoadReadContent(readStatus.book_id, readStatus.lastChapterId + "", readStatus.source_ids, readStatus.lastPageCount + "",
                     readStatus.lastCurrentPageRemark + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
                     readStatus.startReadTime + "", endTime + "", endTime - readStatus.startReadTime + "", "false", readStatus.requestItem.channel_code + "");
         } else {
@@ -925,6 +927,17 @@ public class PageView extends View implements PageInterface {
             return;
         }
         isMoveing = true;
+
+        readStatus.requestItem.fromType = 2;
+        endTime = System.currentTimeMillis();
+        if (dataFactory != null && dataFactory.currentChapter != null) {
+            //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
+            StartLogClickUtil.upLoadReadContent(readStatus.book_id, dataFactory.currentChapter.chapter_id + "", readStatus.source_ids, readStatus.pageCount + "",
+                    readStatus.currentPage + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
+                    readStatus.startReadTime + "", endTime + "", endTime - readStatus.startReadTime + "", "false", readStatus.requestItem.channel_code + "");
+            readStatus.lastChapterId = dataFactory.currentChapter.chapter_id;
+        }
+        readStatus.startReadTime = endTime;
         tempPageMode = Constants.PAGE_MODE;
         Constants.PAGE_MODE = AnimationProvider.SHIFT_MODE;
         getAnimationProvider();
@@ -1220,7 +1233,16 @@ public class PageView extends View implements PageInterface {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
+            AppLog.e("zidong00", "zidong00");
+            endTime = System.currentTimeMillis();
+            if (dataFactory != null && dataFactory.currentChapter != null) {
+                //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
+                StartLogClickUtil.upLoadReadContent(readStatus.book_id, dataFactory.currentChapter.chapter_id + "", readStatus.source_ids, readStatus.pageCount + "",
+                        readStatus.currentPage + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
+                        readStatus.startReadTime + "", endTime + "", endTime - readStatus.startReadTime + "", "false", readStatus.requestItem.channel_code + "");
+                readStatus.lastChapterId = dataFactory.currentChapter.chapter_id;
+            }
+            readStatus.startReadTime = endTime;
             if (!tryTurnPage()) {
                 exitAutoReadNoCancel();
                 if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {

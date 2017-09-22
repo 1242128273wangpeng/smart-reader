@@ -321,13 +321,14 @@ public class SearchHelper {
                     alilog(buildSearch(book, word, Search.OP.BOOKSHELF, wordInfo.computeUseTime()));
                 }
                 boolean succeed = bookDaoHelper.insertBook(book);
-                if (succeed) {
-                    Toast.makeText(mContext.getApplicationContext(), R.string.bookshelf_insert_success, Toast.LENGTH_SHORT).show();
-
-                    Map<String, String> data = new HashMap<>();
-                    data.put("type","1");
-                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SEARCHRESULT_PAGE, StartLogClickUtil.SHELFADD, data);
-                }
+//                if (succeed) {
+//                    Toast.makeText(mContext.getApplicationContext(), R.string.bookshelf_insert_success, Toast.LENGTH_SHORT).show();
+//
+//                    Map<String, String> data = new HashMap<>();
+//                    data.put("type","1");
+//                    data.put("bookId",book_id);
+//                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SEARCHRESULT_PAGE, StartLogClickUtil.SHELFADD, data);
+//                }
             }
         });
 
@@ -338,9 +339,9 @@ public class SearchHelper {
                 bookDaoHelper.deleteBook(book_id);
                 Toast.makeText(mContext.getApplicationContext(), R.string.bookshelf_delete_success, Toast.LENGTH_SHORT).show();
 
-                Map<String, String> data = new HashMap<>();
-                data.put("type","2");
-                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SEARCHRESULT_PAGE, StartLogClickUtil.SHELFADD, data);
+//                Map<String, String> data = new HashMap<>();
+//                data.put("type","2");
+//                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SEARCHRESULT_PAGE, StartLogClickUtil.SHELFADD, data);
             }
         });
     }

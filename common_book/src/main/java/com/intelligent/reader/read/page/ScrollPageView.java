@@ -10,10 +10,12 @@ import com.intelligent.reader.read.help.IReadDataFactory;
 import com.intelligent.reader.read.help.NovelHelper;
 import com.intelligent.reader.util.DisplayUtils;
 
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.NovelLineBean;
 import net.lzbook.kit.data.bean.ReadStatus;
+import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 
 import android.app.Activity;
@@ -22,6 +24,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -84,6 +87,10 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
     private TextView mTransCodingTv;
 
     private OnOperationClickListener mOnOperationClickListener;
+    private long endTime;//阅读结束时间
+    private int count = 0;//用于记录第一次进来时次数（用户画像打点）
+    private int markPosition;//标记是否是向下滑动
+    private boolean isFirstCome = true;//用于记录当前是否是第一次进来（用户画像打点）
 
     public ScrollPageView(Context context) {
         super(context);
@@ -139,6 +146,9 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
         chapterContent = new ArrayList<>();
 
         drawTextHelper = new DrawTextHelper(getResources(), this, mActivity);
+        readStatus.startReadTime = System.currentTimeMillis();
+        count = 0;
+        isFirstCome = true;
 
         adapter = new ScrollPageAdapter();
         page_list.setAdapter(adapter);
@@ -323,6 +333,13 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
                     chapter_name = curChapter.chapter_name;
 //					chapterNameList = curChapter.chapterNameList;
                 }
+                if (count > 2) {
+                    AppLog.e("count", count + "===" + readStatus.pageCount + "===" + readStatus.sequence + "===" + position);
+                    endTime = System.currentTimeMillis();
+                    addLog(endTime, position, readStatus.pageCount, readStatus.sequence);
+                }
+
+                count++;
 
             } else if (position <= currentSize + nextSize) {
                 position = position - currentSize;
@@ -333,6 +350,9 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
                     chapter_name = nextChapter.chapter_name;
 //					chapterNameList = nextChapter.chapterNameList;
                 }
+                endTime = System.currentTimeMillis();
+                addLog(endTime, position, readStatus.pageCount, readStatus.sequence);
+                count++;
             }
         } else if (nextSize == 0) {
             if (position <= preSize) {
@@ -382,6 +402,8 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
                     readStatus.sequence = nextChapter.sequence;
 //					chapterNameList = nextChapter.chapterNameList;
                 }
+                endTime = System.currentTimeMillis();
+                addLog(endTime, position, readStatus.pageCount, readStatus.sequence);
 
             }
         }
@@ -429,6 +451,42 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
         dataFactory.freshPage();
         return position;
     }
+
+    /**
+     * 用户画像打点
+     *
+     * @param endTime   阅读结束时间
+     * @param position  当前第几页
+     * @param pagecount 当前章的总页数
+     * @param sequence  当前第几张
+     */
+    public void addLog(long endTime, int position, int pagecount, int sequence) {
+        //判断章节的最后一页
+        if (sequence > readStatus.lastSequenceRemark && !isFirstCome) {
+            //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
+            StartLogClickUtil.upLoadReadContent(readStatus.book_id, readStatus.lastChapterId + "", readStatus.source_ids, readStatus.lastPageCount + "",
+                    readStatus.lastCurrentPageRemark + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
+                    readStatus.startReadTime + "", endTime + "", endTime - readStatus.startReadTime + "", "false", readStatus.requestItem.channel_code + "");
+
+        } else {
+            if (dataFactory != null && dataFactory.currentChapter != null && markPosition < position) {
+                //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
+                StartLogClickUtil.upLoadReadContent(readStatus.book_id, dataFactory.currentChapter.chapter_id + "", readStatus.source_ids, readStatus.pageCount + "",
+                        position - 1 + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
+                        readStatus.startReadTime + "", endTime + "", endTime - readStatus.startReadTime + "", "false", readStatus.requestItem.channel_code + "");
+                readStatus.lastChapterId = dataFactory.currentChapter.chapter_id;
+            }
+        }
+
+        readStatus.startReadTime = endTime;
+        readStatus.requestItem.fromType = 2;
+        readStatus.lastSequenceRemark = sequence;
+        readStatus.lastCurrentPageRemark = position;
+        readStatus.lastPageCount = pagecount;
+        markPosition = position;
+        isFirstCome = false;
+    }
+
 
     private void getChapterSize() {
 

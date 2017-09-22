@@ -144,6 +144,14 @@ class ReadOptionPresenter : ReadOption.Presenter {
                 BookHelper.writeDownIndex(context, mBook.book_id, false, 0)
                 dialog.dismiss()
                 Toast.makeText(context, R.string.reading_cache_hint, Toast.LENGTH_SHORT).show()
+
+                val data = java.util.HashMap<String, String>()
+                data.put("bookid", readStatus.book_id)
+                if (dataFactory != null && dataFactory.currentChapter != null) {
+                    data.put("chapterid", dataFactory.currentChapter.chapter_id)
+                }
+                data.put("type", "1")
+                StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
             })
             val reading_current_down = dialog.findViewById(R.id.reading_current_down) as TextView
             reading_current_down.setOnClickListener(View.OnClickListener {
@@ -163,7 +171,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
                 if (dataFactory != null && dataFactory.currentChapter != null) {
                     data.put("chapterid", dataFactory.currentChapter.chapter_id)
                 }
-                data.put("type", "1")
+                data.put("type", "2")
                 StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
             })
             val cancel = dialog.findViewById(R.id.reading_cache_cancel) as TextView

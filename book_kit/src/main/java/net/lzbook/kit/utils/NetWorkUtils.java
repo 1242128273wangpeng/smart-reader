@@ -15,6 +15,7 @@ public class NetWorkUtils {
      **/
     public static final int NATIVE_AD_READY = 1;//加载广告成功
     public static final int NATIVE_AD_ERROR = 2;//加载广告失败
+    public static String NETTYPE;
     public static int NETWORK_TYPE = NETWORK_MOBILE;
     public static int NATIVE_AD_TYPE = NATIVE_AD_ERROR;
 
@@ -53,12 +54,15 @@ public class NetWorkUtils {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo == null || !networkInfo.isAvailable()) {
+            NETTYPE = "none";
             return "无";
         }
         int networkInfoType = networkInfo.getType();
         if (networkInfoType == ConnectivityManager.TYPE_MOBILE) {
+            NETTYPE = getMobileType(networkInfo.getSubtype());
             return getMobileType(networkInfo.getSubtype());
         } else if (networkInfoType == ConnectivityManager.TYPE_WIFI) {
+            NETTYPE = "wifi";
             return "wifi";
         }
         return "无";

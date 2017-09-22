@@ -7,6 +7,7 @@ import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.NetWorkUtils;
 
 import android.content.Context;
 
@@ -66,6 +67,7 @@ public class StartLogClickUtil {
     public static final String BOOKCLICK = "BOOKCLICK";//书籍点击
     public static final String TOBOOKCITY = "TOBOOKCITY";//空白页点击跳转书城
     public static final String LONGTIMEBOOKSHELFEDIT = "LONGTIMEBOOKSHELFEDIT";//长按编辑书架
+    public static final String VERSIONUPDATE2 = "VERSIONUPDATE";//点击更新
 
     //书架编辑页
     public static final String SELECTALL1 = "SELECTALL";//全选
@@ -151,6 +153,9 @@ public class StartLogClickUtil {
     public static final String BOOKDETAIL = "BOOKDETAIL";//书籍详情
 
 
+    //搜索结果页
+    public static final String SEARCHRESULT = "SEARCHRESULT";//某本书点击
+
     //青果推荐页
     public static final String QG_TJY_MODULEEXPOSE = "MODULEEXPOSE";//模块露出
     public static final String QG_TJY_BOOKEXPOSE = "BOOKEXPOSE";//各书籍位置露出
@@ -195,7 +200,7 @@ public class StartLogClickUtil {
 
         log.PutContent("os", "android");//手机操作系统
         log.PutContent("log_time", System.currentTimeMillis() + "");//日志产生时间（毫秒数）
-        log.PutContent("network", AppUtils.getNetState(context));//网络状况
+        log.PutContent("network", NetWorkUtils.NETTYPE);//网络状况
         log.PutContent("longitude", Constants.longitude + "");//经度
         log.PutContent("latitude", Constants.latitude + "");//纬度
         log.PutContent("city_info", Constants.adCityInfo);//城市
@@ -233,7 +238,7 @@ public class StartLogClickUtil {
 
         log.PutContent("os", "android");//手机操作系统
         log.PutContent("log_time", System.currentTimeMillis() + "");//日志产生时间（毫秒数）
-        log.PutContent("network", AppUtils.getNetState(context));//网络状况
+        log.PutContent("network", NetWorkUtils.getNetWorkTypeNew(context));//网络状况
         log.PutContent("longitude", Constants.longitude + "");//经度
         log.PutContent("latitude", Constants.latitude + "");//纬度
         log.PutContent("city_info", Constants.adCityInfo);//城市
