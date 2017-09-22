@@ -457,9 +457,6 @@ public class PageView extends View implements PageInterface {
         return true;
     }
 
-    private Rect rect = new Rect();
-    private Rect rectDown = new Rect();
-
     private void onClick(MotionEvent event) {
         int x = (int) event.getX();
         int y = (int) event.getY();
