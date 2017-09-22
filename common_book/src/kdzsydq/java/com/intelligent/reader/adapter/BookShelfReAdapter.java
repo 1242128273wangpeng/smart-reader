@@ -51,6 +51,7 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private StatisticManager statisticManager;
     private ShelfItemClickListener shelfItemClickListener;
     private ShelfItemLongClickListener shelfItemLongClickListener;
+    private ViewGroup parentView;
 
     public BookShelfReAdapter(Activity context, List<Book> list, ShelfItemClickListener itemClick, ShelfItemLongClickListener itemLongClick, boolean isList) {
         mContext = context;
@@ -85,6 +86,7 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             case 1:
                 view = LayoutInflater.from(mContext).inflate(R.layout.ad_item_small_layout, parent, false);
                 holder = new ADViewHolder(view, shelfItemClickListener, shelfItemLongClickListener);
+                parentView = parent;
                 break;
         }
         return holder;
@@ -331,6 +333,7 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     class ADViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         RelativeLayout item_ad_layout;
+        RelativeLayout item_ad_image_rl;
         ImageView item_ad_image;
         TextView item_ad_title;
         TextView item_ad_desc;
