@@ -15,6 +15,7 @@ import com.intelligent.reader.presenter.read.ReadOption
 import com.intelligent.reader.read.help.IReadDataFactory
 import kotlinx.android.synthetic.mfqbxssc.read_option_header.view.*
 import kotlinx.android.synthetic.mfqbxssc.read_option_pop.view.*
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ReadStatus
 import net.lzbook.kit.data.db.BookDaoHelper
@@ -74,6 +75,7 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
         }
         header_ibtn_more?.setOnClickListener {
 
+            presenter?.showMore();
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_read_head_more)
 
             val inflate = LayoutInflater.from(context).inflate(R.layout.read_option_pop, null)
@@ -99,17 +101,21 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
 
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_add_book_mark_btn)
                 val result = presenter?.bookMark()
+                val data = HashMap<String, String>()
 
                 when (result) {
                     1 -> {
                         v.context.toastShort("书签添加成功", false)
                         isMarkPage = true
                         inflate.read_option_pop_mark.text = "删除书签"
+                        data.put("type", "1")
                     }
                     2 -> {
                         v.context.toastShort("书签已删除", false)
                         isMarkPage = false
                         inflate.read_option_pop_mark.text = "添加书签"
+                        data.put("type", "2")
+
                     }
                     else -> {
                         v.context.toastShort(R.string.add_mark_fail, false)
@@ -117,6 +123,7 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
                 }
 
                 popupWindow.dismiss()
+                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, data)
             }
 
             inflate.read_option_pop_info.setOnClickListener {

@@ -12,7 +12,9 @@
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
             android:background="@color/top_navigation_bg_color"
-            android:layout_alignParentTop="true">
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
 
         <RelativeLayout
                 android:layout_width="match_parent"

@@ -33,6 +33,7 @@ import iyouqu.theme.ThemeHelper
 import kotlinx.android.synthetic.zsmfqbxs.read_option_bottom.view.*
 import kotlinx.android.synthetic.zsmfqbxs.read_option_detail.view.*
 import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ReadStatus
 import net.lzbook.kit.request.DataCache

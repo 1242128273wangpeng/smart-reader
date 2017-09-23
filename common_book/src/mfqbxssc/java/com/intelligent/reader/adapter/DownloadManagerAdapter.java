@@ -129,8 +129,9 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
                 if (start > task.endSequence) {
                     start = task.endSequence;
                 }
+                final String speed = start + "/" + (task.endSequence);
                 if (cache.download_count != null) {
-                    cache.download_count.setText(start + "/" + (task.endSequence) + mResources.getString(R.string.chapter));
+                    cache.download_count.setText(speed + mResources.getString(R.string.chapter));
                 }
                 int num = task.endSequence == 0 ? task.book.chapter_count : task.endSequence;
                 int progress = task.progress;
@@ -214,26 +215,30 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
                         System.err.println("download : " + book.book_id);
                         DownloadState state = downloadManagerActivity.views.getService().getDownBookTask(book.book_id) == null ? null
                                 : downloadManagerActivity.views.getService().getDownBookTask(book.book_id).state;
+                        Map<String, String> data = new HashMap<>();
                         if (state == null || state == DownloadState.NOSTART) {
                             BookHelper.startDownBookTask(mContext, book.book_id, 0);
                             BookHelper.writeDownIndex(mContext, book.book_id, false, 0);
                             return;
                         } else if (state == DownloadState.DOWNLOADING || state == DownloadState.WAITTING) {
                             downloadManagerActivity.stopDownloadbook(book.book_id);
+                            data.put("type", "2");
+                            data.put("speed", speed);
                         } else if (state == DownloadState.LOCKED) {
                             BookHelper.startDownBookTask(mContext, book.book_id);
+                            data.put("type", "1");
                         } else if (state == DownloadState.NONE_NETWORK) {
                             BookHelper.startDownBookTask(mContext, book.book_id);
+                            data.put("type", "1");
                         } else if (state == DownloadState.PAUSEED || state == DownloadState.REFRESH) {
                             BookHelper.startDownBookTask(mContext, book.book_id);
+                            data.put("type", "1");
                         } else if (state == DownloadState.FINISH) {
                             Toast.makeText(mContext, "缓存已完成", Toast.LENGTH_SHORT).show();
+                            data.put("type", "1");
                         }
                         notifyDataSetChanged();
-                        Map<String, String> data = new HashMap<>();
-                        data.put("bookid", book.book_id + "");
                         StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.CACHEBUTTON, data);
-
                     }
                 });
                 break;

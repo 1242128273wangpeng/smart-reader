@@ -307,15 +307,19 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
                     searchType = "0";
                 }
                 if (!TextUtils.isEmpty(suggest) && mSearchEditText != null) {
+                    Map<String, String> data = new HashMap<>();
+                    data.put("keyword", suggest);
+                    data.put("enterword", mSearchEditText.getText().toString().trim());
+                    data.put("rank", String.valueOf(arg2+1));
+                    data.put("type", searchType);
+                    StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TIPLISTCLICK, data);
                     mShouldShowHint = false;
                     mSearchEditText.setText(suggest);
 
 //                    mSearchEditText.setSelection(suggest.length());
                     startSearch(suggest, searchType);
 
-                    Map<String, String> data = new HashMap<>();
-                    data.put("keyword", suggest);
-                    StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TIPLISTCLICK, data);
+
                 }
             }
         });
@@ -528,6 +532,9 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
             dialog_comfire.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Map<String, String> data = new HashMap<>();
+                    data.put("type", "1");
+                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SEARCH, StartLogClickUtil.HISTORYCLEAR, data);
                     if (mSearchHandler != null)
                         mSearchHandler.sendEmptyMessage(10);
                     myDialog.dismiss();
@@ -537,6 +544,9 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
             dialog_cancle.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Map<String,String> data = new HashMap<String, String>();
+                    data.put("type","0");
+                    StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.SEARCH_PAGE,StartLogClickUtil.HISTORYCLEAR,data);
                     myDialog.dismiss();
                 }
             });

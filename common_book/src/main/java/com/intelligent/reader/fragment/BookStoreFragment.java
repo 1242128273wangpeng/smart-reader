@@ -2,6 +2,7 @@ package com.intelligent.reader.fragment;
 
 import com.intelligent.reader.R;
 
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.NonSwipeViewPager;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppUtils;
@@ -116,6 +117,7 @@ public class BookStoreFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     setTabSelected(0);
+                    StartLogClickUtil.upLoadEventLog(getActivity(), StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.RECOMMEND);
                 }
             });
         }
@@ -126,6 +128,7 @@ public class BookStoreFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     setTabSelected(1);
+                    StartLogClickUtil.upLoadEventLog(getActivity(), StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.TOP);
                 }
             });
         }
@@ -135,6 +138,7 @@ public class BookStoreFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     setTabSelected(2);
+                    StartLogClickUtil.upLoadEventLog(getActivity(), StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.CLASS);
                 }
             });
         }
