@@ -7,6 +7,8 @@ import com.intelligent.reader.activity.ReadingActivity;
 import com.intelligent.reader.read.page.PageInterface;
 
 import net.lzbook.kit.R;
+import net.lzbook.kit.ad.PopupAdActivity;
+import net.lzbook.kit.ad.SwitchSplashAdActivity;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.constants.Constants;
@@ -24,6 +26,7 @@ import net.lzbook.kit.utils.OpenUDID;
 import net.lzbook.kit.utils.StatisticManager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -286,6 +289,12 @@ public abstract class IReadDataFactory {
     protected void nextChapterCallBack(boolean drawCurrent) {
         if (readStatus.sequence != -1) {
             statistics();
+        }
+
+        //// TODO: 2017/9/22 上下滑动翻章超过5章时显示弹窗广告
+        if (Constants.isSlideUp && Constants.readedCount % 5 == 0 && readingActivity != null) {
+            Intent intent = new Intent(readingActivity, PopupAdActivity.class);
+            readingActivity.startActivity(intent);
         }
 
         Constants.readedCount++;
