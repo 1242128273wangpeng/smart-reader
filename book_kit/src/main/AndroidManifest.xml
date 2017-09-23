@@ -37,6 +37,9 @@
                 android:name=".ad.SwitchSplashAdActivity"
                 android:theme="@android:style/Theme.Translucent.NoTitleBar"
                 ></activity>
+        <activity
+            android:name=".ad.PopupAdActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
     </application>
 
 </manifest>

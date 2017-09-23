@@ -25,6 +25,7 @@ import com.dingyueads.sdk.AdListener;
 import com.dingyueads.sdk.Bean.ADPlatform;
 import com.dingyueads.sdk.Bean.AdSceneData;
 import com.dingyueads.sdk.Bean.Advertisement;
+import com.dingyueads.sdk.Bean.EventPopupAd;
 import com.dingyueads.sdk.Bean.Ration;
 import com.dingyueads.sdk.Native.YQNativeAdInfo;
 import com.dingyueads.sdk.NativeInit;
@@ -354,6 +355,13 @@ public class OwnNativeAdManager implements AdListener {
                             message.obj = yqNativeAdInfo;
                             message.what = 3;
                             handler.sendMessageDelayed(message, 500);
+                        } else if (currentPositionName == NativeInit.CustomPositionName.SLIDEUP_POPUPAD_POSITION) {
+                            //处理切屏物料
+                            yqNativeAdInfo = getADInfoNew(yqNativeAdInfos, ration, keyMd5);
+                            if (yqNativeAdInfo != null) {
+                                LogUtils.e(TAG, "get Switch");
+                                EventBus.getDefault().post(new EventPopupAd(ration.getMarkId(), yqNativeAdInfo));
+                            }
                         } else {
                             EventBus.getDefault().post(new EventNativeType(currentPositionName.toString()));
                         }
@@ -523,6 +531,15 @@ public class OwnNativeAdManager implements AdListener {
                     splashHandler.sendEmptyMessageDelayed(handlerMsgCode, 3000L);
                     yqNativeAdInfo = adInfos.removeFirst();
                     drawBitmapOnSplash(viewGroup, yqNativeAdInfo, NativeInit.ad_position[6]);
+                }
+            } else if (NativeInit.CustomPositionName.SLIDEUP_POPUPAD_POSITION.toString().equals(ration.getMarkId())) {
+                yqNativeAdInfo = getADInfoNew(adInfos, ration, keyMd5);
+                if (yqNativeAdInfo != null) {
+                    LogUtils.e("Switch", "Switch success");
+                    EventBus.getDefault().post(new EventPopupAd(ration.getMarkId(), yqNativeAdInfo));
+                } else {
+                    //todo 失败处理
+                    LogUtils.e("Switch", "Switch, yq:null");
                 }
             } else {
                 if ("1-1".equals(ration.getMarkId())) {
