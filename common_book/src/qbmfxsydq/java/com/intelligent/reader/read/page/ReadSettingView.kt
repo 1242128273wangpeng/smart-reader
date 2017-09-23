@@ -1,5 +1,44 @@
 package com.intelligent.reader.read.page
 
+import android.annotation.TargetApi
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
+import android.content.res.Configuration
+import android.graphics.Rect
+import android.os.Build
+import android.os.Bundle
+import android.preference.PreferenceManager
+import android.text.TextUtils
+import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.view.View
+import android.view.View.OnClickListener
+import android.view.ViewPropertyAnimator
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.widget.FrameLayout
+import android.widget.RadioGroup
+import android.widget.RadioGroup.OnCheckedChangeListener
+import android.widget.SeekBar
+import android.widget.SeekBar.OnSeekBarChangeListener
+import android.widget.Toast
+import com.intelligent.reader.R
+import com.intelligent.reader.activity.ReadingActivity
+import com.intelligent.reader.read.help.IReadDataFactory
+import com.intelligent.reader.read.help.ReadSettingHelper
+import iyouqu.theme.FrameActivity
+import iyouqu.theme.ThemeHelper
+import kotlinx.android.synthetic.qbmfxsydq.read_option_bottom.view.*
+import kotlinx.android.synthetic.qbmfxsydq.read_option_detail.view.*
+import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.data.bean.ReadStatus
+import net.lzbook.kit.request.DataCache
+import net.lzbook.kit.utils.*
+import java.text.NumberFormat
+
 
 /**
  * 阅读页阅读设置

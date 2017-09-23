@@ -131,7 +131,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         }
 
         // 老版本行距修正
-        if (Constants.READ_INTERLINEAR_SPACE != 0.2f && Constants.READ_INTERLINEAR_SPACE != 0.3f && Constants.READ_INTERLINEAR_SPACE != 0.4f && Constants.READ_INTERLINEAR_SPACE != 0.5f) {
+        if (!(Constants.READ_INTERLINEAR_SPACE == 0.2f || Constants.READ_INTERLINEAR_SPACE == 0.3f || Constants.READ_INTERLINEAR_SPACE == 0.4f || Constants.READ_INTERLINEAR_SPACE == 0.5f)) {
             Constants.READ_INTERLINEAR_SPACE = 0.3f
             sharedPreferences!!.edit().putInt("read_interlinear_space", 3).apply()
         }
