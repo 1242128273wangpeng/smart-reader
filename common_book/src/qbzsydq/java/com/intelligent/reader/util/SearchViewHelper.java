@@ -541,6 +541,9 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
             dialog_cancle.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Map<String, String> data = new HashMap<>();
+                    data.put("type", "0");
+                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SEARCH, StartLogClickUtil.HISTORYCLEAR, data);
                     myDialog.dismiss();
                 }
             });
@@ -566,6 +569,9 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
         setHistoryHeadersTitleView();
         if (mHistoryAdapter != null)
             mHistoryAdapter.notifyDataSetChanged();
+        Map<String, String> data = new HashMap<>();
+        data.put("type", "1");
+        StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SEARCH, StartLogClickUtil.HISTORYCLEAR, data);
         Tools.saveHistoryWord(mContext, historyDatas);
     }
 
