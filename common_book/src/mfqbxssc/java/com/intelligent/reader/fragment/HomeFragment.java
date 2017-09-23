@@ -433,13 +433,19 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
 
                 break;
             case R.id.content_head_search2:
+                Intent searchInter2 = new Intent();
+                searchInter2.setClass(context, SearchBookActivity.class);
+                startActivity(searchInter2);
+                net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_search_btn);
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_BDY_SEARCH);
+                break;
             case R.id.content_tuijian_search:
                 Intent searchInter = new Intent();
                 searchInter.setClass(context, SearchBookActivity.class);
                 AppLog.e(TAG, "SearchBookActivity -----> Start");
                 startActivity(searchInter);
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_search_btn);
-                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.SEARCH);
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH);
                 break;
             case R.id.content_download_manage:
                 Intent downloadIntent = new Intent();
