@@ -8,6 +8,7 @@ import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.net.NetOwnBook
 import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.read.help.IReadDataFactory
+import com.j256.ormlite.stmt.query.In
 import com.quduquxie.network.DataCache
 import com.quduquxie.network.DataService
 import io.reactivex.Observable
@@ -103,7 +104,19 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: IReadDat
 
     }
 
-    override fun loadBookMark() {
+    override fun loadBookMark(activity: Activity, type: Int) {
+
+        if (type == 1) {
+            val data = java.util.HashMap<String, String>()
+            data.put("bookid", readStatus.book_id)
+            if (dataFactory != null && dataFactory.currentChapter != null) {
+                data.put("chapterid", dataFactory.currentChapter.chapter_id)
+            }
+            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.BOOKMARK, data)
+        }
+
+
+
         Observable.create<List<Bookmark>> { emitter: ObservableEmitter<List<Bookmark>>? ->
 
             val list = mBookDaoHelper.getBookMarks(readStatus.book_id)
@@ -173,7 +186,7 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: IReadDat
     }
 
 
-    override fun deleteBookMark(mark: Bookmark) {
+    override fun deleteBookMark(activity: Activity, mark: Bookmark) {
 
         Observable.create<Boolean> { e: ObservableEmitter<Boolean>? ->
 
@@ -183,11 +196,11 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: IReadDat
         }.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribekt(onNext = {
-                    loadBookMark()
+                    loadBookMark(activity, 2)
                 })
     }
 
-    override fun deleteAllBookMark() {
+    override fun deleteAllBookMark(activity: Activity) {
         Observable.create<Boolean> { e: ObservableEmitter<Boolean>? ->
 
             mBookDaoHelper.deleteBookMark(readStatus.book_id)
@@ -196,7 +209,7 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: IReadDat
         }.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribekt(onNext = {
-                    loadBookMark()
+                    loadBookMark(activity, 2)
                 })
 
     }

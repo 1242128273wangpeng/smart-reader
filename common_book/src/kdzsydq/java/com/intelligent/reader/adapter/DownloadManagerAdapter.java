@@ -4,6 +4,7 @@ import com.intelligent.reader.R;
 import com.intelligent.reader.activity.DownloadManagerActivity;
 import com.intelligent.reader.read.help.BookHelper;
 
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.adapter.RemoveModeAdapter;
 import net.lzbook.kit.book.download.DownloadState;
 import net.lzbook.kit.data.bean.Book;
@@ -23,6 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveModeAdapter.RemoveAdapterChild {
     private static final String TAG = "DownloadManagerAdapter";
@@ -227,6 +230,9 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
                             Toast.makeText(mContext, "缓存已完成", Toast.LENGTH_SHORT).show();
                         }
                         notifyDataSetChanged();
+                        Map<String, String> data = new HashMap<>();
+                        data.put("bookid", book.book_id + "");
+                        StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.CACHEBUTTON, data);
 
                     }
                 });

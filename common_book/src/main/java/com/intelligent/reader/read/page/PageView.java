@@ -358,8 +358,6 @@ public class PageView extends View implements PageInterface {
             if (tmpX > touchStartX) {
                 if (isCurlType) {
                     count = 0;
-                    endTime = System.currentTimeMillis();
-                    addLog(endTime);
                     drawNextPage();
                 }
                 if (!prepareTurnPrePage() && readStatus.book.book_type == 0) {

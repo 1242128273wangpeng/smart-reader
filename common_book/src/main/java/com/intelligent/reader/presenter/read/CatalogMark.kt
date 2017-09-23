@@ -15,11 +15,11 @@ interface CatalogMark {
     interface Presenter : IPresenter<View> {
         fun getBook(): Book
         fun loadCatalog(reverse: Boolean)
-        fun loadBookMark()
+        fun loadBookMark(activity: Activity, type: Int)
         fun gotoChapter(activity: Activity, chapter: Chapter)
         fun gotoBookMark(activity: Activity, mark: Bookmark)
-        fun deleteBookMark(mark: Bookmark)
-        fun deleteAllBookMark()
+        fun deleteBookMark(activity: Activity, mark: Bookmark)
+        fun deleteAllBookMark(activity: Activity)
     }
 
     interface View : IBaseView<Presenter> {

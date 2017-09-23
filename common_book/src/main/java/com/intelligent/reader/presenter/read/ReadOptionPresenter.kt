@@ -400,6 +400,11 @@ class ReadOptionPresenter : ReadOption.Presenter {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+            val data = java.util.HashMap<String, String>()
+            if (readStatus != null) {
+                data.put("bookid", readStatus.book_id)
+            }
+            StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ORIGINALLINK, data)
         } else {
             activity.get()?.toastShort("无法查看原文链接")
         }

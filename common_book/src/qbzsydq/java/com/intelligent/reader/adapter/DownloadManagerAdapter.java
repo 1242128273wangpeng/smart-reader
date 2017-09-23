@@ -226,7 +226,8 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
                             data.put("type", "1");
                         }
                         notifyDataSetChanged();
-                        data.put("BOOKID", book.book_id);
+                        Map<String, String> data = new HashMap<>();
+                        data.put("bookid", book.book_id + "");
                         StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.CACHEBUTTON, data);
                     }
                 });

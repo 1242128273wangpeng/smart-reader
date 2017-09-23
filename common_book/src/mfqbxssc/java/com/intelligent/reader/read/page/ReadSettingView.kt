@@ -771,8 +771,8 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         var current: Int = group.indexOfChild(group.findViewById(checkedId))
         when (checkedId) {
             R.id.read_backdrop_first -> {
-                if (lastIndex == current) {
-                    changePageBackgroundWrapper(51)
+                changePageBackgroundWrapper(51)
+                if (current != lastIndex) {
                     val data = java.util.HashMap<String, String>()
                     data.put("type", "1")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
@@ -781,8 +781,9 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
             }
             R.id.read_backdrop_second -> {
-                if (lastIndex == current) {
-                    changePageBackgroundWrapper(52)
+
+                changePageBackgroundWrapper(52)
+                if (current != lastIndex) {
                     val data = java.util.HashMap<String, String>()
                     data.put("type", "2")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
@@ -790,8 +791,8 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 lastIndex = current
             }
             R.id.read_backdrop_third -> {
-                if (lastIndex == current) {
-                    changePageBackgroundWrapper(53)
+                changePageBackgroundWrapper(53)
+                if (current != lastIndex) {
                     val data = java.util.HashMap<String, String>()
                     data.put("type", "3")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
@@ -799,8 +800,8 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 lastIndex = current
             }
             R.id.read_backdrop_fourth -> {
-                if (lastIndex == current) {
-                    changePageBackgroundWrapper(54)
+                changePageBackgroundWrapper(54)
+                if (current != lastIndex) {
                     val data = java.util.HashMap<String, String>()
                     data.put("type", "4")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
@@ -808,8 +809,9 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 lastIndex = current
             }
             R.id.read_backdrop_fifth -> {
-                if (lastIndex == current) {
-                    changePageBackgroundWrapper(55)
+                changePageBackgroundWrapper(55)
+                if (current != lastIndex) {
+
                     val data = java.util.HashMap<String, String>()
                     data.put("type", "6")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
@@ -817,8 +819,9 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 lastIndex = current
             }
             R.id.read_backdrop_sixth -> {
-                if (lastIndex == current) {
-                    changePageBackgroundWrapper(56)
+                changePageBackgroundWrapper(56)
+                if (current != lastIndex) {
+
                     val data = java.util.HashMap<String, String>()
                     data.put("type", "5")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
