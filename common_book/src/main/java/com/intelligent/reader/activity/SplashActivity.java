@@ -1,6 +1,7 @@
 package com.intelligent.reader.activity;
 
 import com.dingyueads.sdk.NativeInit;
+import com.dingyueads.sdk.adapter.InMobiAdapter;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.util.DynamicParamter;
@@ -166,7 +167,7 @@ public class SplashActivity extends FrameActivity {
             } catch (SecurityException e) {
                 e.printStackTrace();
             }
-            finish();
+//            finish();
         }
     }
 
@@ -186,6 +187,13 @@ public class SplashActivity extends FrameActivity {
     public void onCreate(Bundle paramBundle) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(paramBundle);
+
+        if (!isTaskRoot()) {
+            if (getIntent().hasCategory(Intent.CATEGORY_LAUNCHER) && Intent.ACTION_MAIN.equals(getIntent().getAction())) {
+                finish();
+                return;
+            }
+        }
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -211,6 +219,8 @@ public class SplashActivity extends FrameActivity {
         AppLog.e("oncreat", "oncreat go");
         sharePreferenceUtils = new SharedPreferencesUtils(PreferenceManager.getDefaultSharedPreferences(this));
 
+        // 初始化InMobi SDK，此SDK需要在launcher activity的UI线程中初始化
+        InMobiAdapter.init(this);
         // 初始化任务
         InitTask initTask = new InitTask();
         initTask.execute();
@@ -319,10 +329,20 @@ public class SplashActivity extends FrameActivity {
                     AppLog.e(TAG, "当前有网络");
                     AppLog.e(TAG, "AD display is not restricted! initmNativeAdManagerInstance");
                     //AppLog.e("Version------->", SDKUtil.getAppVersionCode() + "");
-                    OwnNativeAdManager.InitSplashAd(SplashActivity.this, ad_view, handler, 0, null, null, NativeInit.CustomPositionName.SPLASH_POSITION);
+                    OwnNativeAdManager.InitSplashAd(SplashActivity.this, ad_view, handler, 0, NativeInit.CustomPositionName.SPLASH_POSITION);
                 }
             });
             AppLog.e(TAG, "AD display is not restricted!");
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        //科大讯飞的开屏点击返回后，需要手动跳转。
+        if (OwnNativeAdManager.getInstance(this).isClickKDXFSplash) {
+            OwnNativeAdManager.getInstance(this).isClickKDXFSplash = false;
+            handler.sendEmptyMessage(0);
         }
     }
 

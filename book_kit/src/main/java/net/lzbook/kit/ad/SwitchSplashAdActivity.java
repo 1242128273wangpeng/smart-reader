@@ -55,7 +55,7 @@ public class SwitchSplashAdActivity extends Activity {
             }
         });
 
-        OwnNativeAdManager.InitSplashAd(this, fm, mHandler, 0, "", "", NativeInit.CustomPositionName.SWITCH_SPLASH_POSITION);
+        OwnNativeAdManager.InitSplashAd(this, fm, mHandler, 0, NativeInit.CustomPositionName.SWITCH_SPLASH_POSITION);
 
     }
 

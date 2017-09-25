@@ -525,11 +525,11 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                 searchInter.setClass(context, SearchBookActivity.class);
                 AppLog.e(TAG, "SearchBookActivity -----> Start");
                 startActivity(searchInter);
-                if(bottomType ==2){
+                if (bottomType == 2) {
                     StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH);
-                }else if(bottomType==3){
+                } else if (bottomType == 3) {
                     StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH);
-                }else {
+                } else {
                     StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.SEARCH);
                 }
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_search_btn);

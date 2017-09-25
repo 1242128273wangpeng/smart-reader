@@ -912,6 +912,13 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
     }
 
     @Override
+    public void removeAdView() {
+        if (drawTextHelper != null && !readStatus.isInMobiViewClicking) {
+            drawTextHelper.removeInMobiView();
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.origin_tv:

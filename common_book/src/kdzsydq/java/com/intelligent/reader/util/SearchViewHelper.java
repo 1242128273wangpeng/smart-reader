@@ -322,7 +322,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
                     Map<String, String> data = new HashMap<>();
                     data.put("keyword", suggest);
                     data.put("enterword", mSearchEditText.getText().toString().trim());
-                    data.put("rank", String.valueOf(arg2+1));
+                    data.put("rank", String.valueOf(arg2 + 1));
                     data.put("type", searchType);
                     StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TIPLISTCLICK, data);
                     mShouldShowHint = false;
@@ -544,9 +544,9 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
             dialog_cancle.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Map<String,String> data = new HashMap<String, String>();
-                    data.put("type","0");
-                    StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.SEARCH_PAGE,StartLogClickUtil.HISTORYCLEAR,data);
+                    Map<String, String> data = new HashMap<String, String>();
+                    data.put("type", "0");
+                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.HISTORYCLEAR, data);
                     myDialog.dismiss();
                 }
             });

@@ -162,6 +162,13 @@ public class PageView extends View implements PageInterface {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        if (readStatus != null) {
+            readStatus.recycleResourceNew();
+            readStatus.setAd_bitmap_big(null);
+            readStatus.setAd_bitmap_middle(null);
+            readStatus.setAd_bitmap_middle_down(null);
+        }
+
         pageWidth = readStatus.screenWidth = w;
         pageHeight = readStatus.screenHeight = h;
         if (provider != null) {
@@ -425,7 +432,7 @@ public class PageView extends View implements PageInterface {
         if (motionState == MotionState.kWaiting) {
             onClick(event);
         } else {
-
+            drawTextHelper.removeInMobiView();
             if (initMoveState == validMoveState && provider != null) {
                 if (MotionState.kMoveToRight == validMoveState) {
 //                    float v = (event.getX() - touchStartX) / getWidth();
@@ -636,7 +643,6 @@ public class PageView extends View implements PageInterface {
                 }
             } else if (readStatus.native_type == 22 || readStatus.native_type == 24 || readStatus.native_type == 25) {
                 try {
-                } catch (IllegalArgumentException e) {
                     if (readStatus.currentAdInfoDown != null) {
                         AdSceneData adSceneData = readStatus.currentAdInfoDown.getAdSceneData();
                         if (adSceneData != null) {
@@ -645,6 +651,7 @@ public class PageView extends View implements PageInterface {
                         }
                         statisticManager.schedulingRequest(mActivity, readStatus.novel_basePageView, readStatus.currentAdInfoDown, getCurrentNovel(), StatisticManager.TYPE_CLICK, NativeInit.ad_position[1]);
                     }
+                } catch (IllegalArgumentException e) {
                     e.printStackTrace();
                 }
             } else if (readStatus.native_type == 2 || readStatus.native_type == 5) {
@@ -653,18 +660,37 @@ public class PageView extends View implements PageInterface {
                     if (readStatus.native_type == 2 && readStatus.currentAdInfo_image != null) {
                         adSceneData = readStatus.currentAdInfo_image.getAdSceneData();
                         if (adSceneData != null) {
-                            adSceneData.ad_markId = NativeInit.ad_mark_id[2];
+                            if (Constants.IS_LANDSCAPE) {
+                                adSceneData.ad_markId = NativeInit.ad_mark_id[9];
+                            } else {
+                                adSceneData.ad_markId = NativeInit.ad_mark_id[2];
+                            }
                             adSceneData.ad_clickLocation = x + "*" + y;
                         }
-                        statisticManager.schedulingRequest(mActivity, readStatus.novel_basePageView, readStatus.currentAdInfo_image, getCurrentNovel(), StatisticManager.TYPE_CLICK, NativeInit.ad_position[2]);
+                        if (Constants.IS_LANDSCAPE) {
+                            statisticManager.schedulingRequest(mActivity, readStatus.novel_basePageView, readStatus.currentAdInfo_image, getCurrentNovel(), StatisticManager.TYPE_CLICK, NativeInit.ad_position[9]);
+                        } else {
+                            statisticManager.schedulingRequest(mActivity, readStatus.novel_basePageView, readStatus.currentAdInfo_image, getCurrentNovel(), StatisticManager.TYPE_CLICK, NativeInit.ad_position[2]);
+                        }
+
                     } else if (readStatus.native_type == 5 && readStatus.currentAdInfo_in_chapter != null) {
                         adSceneData = readStatus.currentAdInfo_in_chapter.getAdSceneData();
                         if (adSceneData != null) {
-                            adSceneData.ad_markId = NativeInit.ad_mark_id[7];
+                            if (Constants.IS_LANDSCAPE) {
+                                adSceneData.ad_markId = NativeInit.ad_mark_id[10];
+                            } else {
+                                adSceneData.ad_markId = NativeInit.ad_mark_id[7];
+                            }
                             adSceneData.ad_clickLocation = x + "*" + y;
                         }
-                        statisticManager.schedulingRequest(mActivity, readStatus.novel_basePageView, readStatus.currentAdInfo_in_chapter, getCurrentNovel(), StatisticManager.TYPE_CLICK, NativeInit.ad_position[7]);
+                        if (Constants.IS_LANDSCAPE) {
+                            statisticManager.schedulingRequest(mActivity, readStatus.novel_basePageView, readStatus.currentAdInfo_in_chapter, getCurrentNovel(), StatisticManager.TYPE_CLICK, NativeInit.ad_position[10]);
+                        } else {
+                            statisticManager.schedulingRequest(mActivity, readStatus.novel_basePageView, readStatus.currentAdInfo_in_chapter, getCurrentNovel(), StatisticManager.TYPE_CLICK, NativeInit.ad_position[7]);
+                        }
+
                     }
+                    readStatus.isInMobiViewClicking = true;
                 } catch (IllegalArgumentException e) {
                     e.printStackTrace();
                 }
@@ -855,6 +881,7 @@ public class PageView extends View implements PageInterface {
             callBack.onCancelPage();
         }
         cancelState = false;
+        drawTextHelper.removeInMobiView();
         drawCurrentPage();
     }
 
@@ -1215,7 +1242,7 @@ public class PageView extends View implements PageInterface {
                 }
                 drawNextPage();
             }
-
+            readStatus.shouldShowInMobiAdView = true;
             updateDrawPosition();
             return true;
         }
@@ -1273,6 +1300,13 @@ public class PageView extends View implements PageInterface {
             }
 
             return true;
+        }
+    }
+
+    @Override
+    public void removeAdView() {
+        if (drawTextHelper != null && !readStatus.isInMobiViewClicking) {
+            drawTextHelper.removeInMobiView();
         }
     }
 }

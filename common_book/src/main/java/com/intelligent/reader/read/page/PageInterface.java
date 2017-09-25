@@ -74,6 +74,8 @@ public interface PageInterface {
 
     Novel getCurrentNovel();
 
+    void removeAdView();
+
     interface OnOperationClickListener {
         void onOriginClick();
 

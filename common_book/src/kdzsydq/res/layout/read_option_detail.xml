@@ -421,7 +421,7 @@
                     />
             
             <RadioButton
-        
+
                     android:visibility="visible"
                     android:id="@+id/read_animation_updown"
                     android:layout_width="0dp"

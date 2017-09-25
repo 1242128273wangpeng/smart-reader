@@ -129,6 +129,14 @@ public class ReadStatus {
     private Bitmap ad_bitmap_middle;
     //中图广告Bitmap下
     private Bitmap ad_bitmap_middle_down;
+
+    //5-1&5-2 InMobi广告的父容器
+    private ViewGroup ad_inmobi_parent;
+    //存储5-2广告信息的容器
+    public ArrayList<YQNativeAdInfo> inMobiViewContainerInChapter = new ArrayList<>();
+    public boolean shouldShowInMobiAdView = false;
+    public boolean isInMobiViewClicking = false;
+
     //自动阅读速度
     private int _autoReadSpeed;
     private SharedPreferences preferences;
@@ -214,7 +222,6 @@ public class ReadStatus {
         }
         this.ad_bitmap_middle_down = ad_bitmap_middle_down;
     }
-
     public Bitmap getAd_bitmap_big() {
         return ad_bitmap_big;
     }
@@ -253,6 +260,14 @@ public class ReadStatus {
         this.ad_bitmap = ad_bitmap;
     }
 
+    public ViewGroup getAd_inmobi_parent() {
+        return ad_inmobi_parent;
+    }
+
+    public void setAd_inmobi_parent(ViewGroup ad_inmobi_parent) {
+        this.ad_inmobi_parent = ad_inmobi_parent;
+    }
+
     public void recycleResourceNew() {
         if (this.ad_bimap_big_inChapter != null && !this.ad_bimap_big_inChapter.isRecycled()) {
             this.ad_bimap_big_inChapter.recycle();
@@ -262,23 +277,37 @@ public class ReadStatus {
         if (containerInChapter != null && containerInChapter.size() > 0) {
             for (int i = 0; i < containerInChapter.size(); i++) {
                 HashMap<YQNativeAdInfo, Bitmap> hashMap = containerInChapter.get(i);
-                Iterator<Map.Entry<YQNativeAdInfo, Bitmap>> iterator = hashMap.entrySet().iterator();
-                while (iterator.hasNext()) {
-                    Map.Entry<YQNativeAdInfo, Bitmap> map = iterator.next();
-                    Bitmap bitmap = map.getValue();
-                    if (bitmap != null && !bitmap.isRecycled()) {
-                        bitmap.recycle();
-                        bitmap = null;
+                if (hashMap != null && hashMap.entrySet() != null) {
+                    Iterator<Map.Entry<YQNativeAdInfo, Bitmap>> iterator = hashMap.entrySet().iterator();
+                    if (iterator == null) continue;
+                    while (iterator.hasNext()) {
+                        Map.Entry<YQNativeAdInfo, Bitmap> map = iterator.next();
+                        Bitmap bitmap = map.getValue();
+                        if (bitmap != null && !bitmap.isRecycled()) {
+                            bitmap.recycle();
+                            bitmap = null;
+                        }
                     }
+                    hashMap.clear();
+                    hashMap = null;
                 }
-                hashMap.clear();
-                hashMap = null;
             }
             containerInChapter.clear();
-
-            System.gc();
-            System.gc();
         }
+
+        /*//清除InMobi5-2的广告
+        if (inMobiViewContainerInChapter != null && !inMobiViewContainerInChapter.isEmpty()) {
+            for(YQNativeAdInfo adInfo : inMobiViewContainerInChapter){
+                adInfo.getInMobiNative().destroy();
+            }
+            inMobiViewContainerInChapter.clear();
+            System.gc();
+        }*/
+
+        //清除InMobi5-1的广告
+//        if(currentAdInfo_image != null && currentAdInfo_image.getInMobiNative() != null) {
+//            currentAdInfo_image.getInMobiNative().destroy();
+//        }
     }
 
     public void recycleResource() {
@@ -400,7 +429,7 @@ public class ReadStatus {
         if (currentAdInfo != null ? !currentAdInfo.equals(that.currentAdInfo) : that.currentAdInfo != null)
             return false;
         if (currentAdInfoDown != null ? !currentAdInfoDown.equals(that.currentAdInfoDown) : that.currentAdInfoDown != null)
-            return false;
+            return false; 
         if (currentAdInfo_image != null ? !currentAdInfo_image.equals(that.currentAdInfo_image) : that.currentAdInfo_image != null)
             return false;
         if (currentAdInfo_in_chapter != null ? !currentAdInfo_in_chapter.equals(that.currentAdInfo_in_chapter) : that.currentAdInfo_in_chapter != null)
@@ -463,7 +492,7 @@ public class ReadStatus {
         result = 31 * result + width_nativead_big;
         result = 31 * result + height_nativead_big;
         result = 31 * result + (currentAdInfo != null ? currentAdInfo.hashCode() : 0);
-        result = 31 * result + (currentAdInfoDown != null ? currentAdInfoDown.hashCode() : 0);
+        result = 31 * result + (currentAdInfoDown != null ? currentAdInfoDown.hashCode() : 0);												  
         result = 31 * result + (currentAdInfo_image != null ? currentAdInfo_image.hashCode() : 0);
         result = 31 * result + (currentAdInfo_in_chapter != null ? currentAdInfo_in_chapter.hashCode() : 0);
         result = 31 * result + (novel_basePageView != null ? novel_basePageView.hashCode() : 0);

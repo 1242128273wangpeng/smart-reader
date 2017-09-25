@@ -1,5 +1,23 @@
 package com.intelligent.reader.read.help;
 
+import com.dingyueads.sdk.Native.YQNativeAdInfo;
+import com.dingyueads.sdk.NativeInit;
+import com.dingyueads.sdk.view.FilterLayout;
+import com.inmobi.ads.InMobiNative;
+import com.intelligent.reader.R;
+import com.intelligent.reader.app.BookApplication;
+import com.intelligent.reader.read.page.PageInterface;
+import com.intelligent.reader.util.DisplayUtils;
+
+import net.lzbook.kit.ad.OwnNativeAdManager;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.bean.NovelLineBean;
+import net.lzbook.kit.data.bean.ReadStatus;
+import net.lzbook.kit.data.bean.SensitiveWords;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.ResourceUtil;
+import net.lzbook.kit.utils.StatisticManager;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.res.Resources;
@@ -16,23 +34,10 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.text.TextPaint;
 import android.text.TextUtils;
-
-import com.dingyueads.sdk.Native.YQNativeAdInfo;
-import com.dingyueads.sdk.NativeInit;
-import com.intelligent.reader.R;
-import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.read.page.PageInterface;
-import com.intelligent.reader.read.page.PageView;
-import com.intelligent.reader.util.DisplayUtils;
-
-import net.lzbook.kit.ad.OwnNativeAdManager;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.NovelLineBean;
-import net.lzbook.kit.data.bean.ReadStatus;
-import net.lzbook.kit.data.bean.SensitiveWords;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.ResourceUtil;
-import net.lzbook.kit.utils.StatisticManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,6 +78,8 @@ public class DrawTextHelper {
     private String timeText;
     private PageInterface pageView;
     private OwnNativeAdManager nativeAdManager;
+    private Activity mActivity;
+
     private Paint nightPaint;
     private StatisticManager statisticManager;
     private SensitiveWords readSensitiveWord;
@@ -85,6 +92,7 @@ public class DrawTextHelper {
     public DrawTextHelper(Resources res, PageInterface pageView, Activity mActivity) {
         this.resources = res;
         this.pageView = pageView;
+        this.mActivity = mActivity;
 
         this.readSensitiveWord = SensitiveWords.getReadSensitiveWords();
         if (readSensitiveWord != null && readSensitiveWord.list.size() > 0) {
@@ -389,6 +397,8 @@ public class DrawTextHelper {
     }
 
     public synchronized Paint drawText(Canvas canvas, List<NovelLineBean> pageLines, Activity activity) {
+        readStatus.isInMobiViewClicking = false;
+        removeInMobiView();
         boolean isChapterFirstPage = false;
         readStatus.y_nativead = 0;
         readStatus.native_type = 0;
@@ -493,25 +503,48 @@ public class DrawTextHelper {
                                 AppLog.e(TAG, "drawBitmap ad_bitmap_big");
                             }
                             attach(activity);
+                        } else if (readStatus.shouldShowInMobiAdView && readStatus.currentAdInfo_image != null && readStatus.currentAdInfo_image.getInMobiNative() != null && readStatus.currentAdInfo_image.getInMobiNative().isReady()) {
+                            readStatus.native_type = 2;
+                            InMobiNative inMobiNative = readStatus.currentAdInfo_image.getInMobiNative();
+                            addInMobiView(inMobiNative);
+                            readStatus.shouldShowInMobiAdView = false;
+                            attach(activity);
+
                         }
                         AppLog.e(TAG, "2_startsWith ad_page_tag" + " sequence:" + readStatus.sequence + " isShow_big_ad:" + isShow_big_ad);
                     } else if (text != null && text.getLineContent().contains(NovelHelper.empty_page_ad_inChapter) || text.getLineContent().startsWith(NovelHelper.empty_page_ad_inChapter)) {
                         isShow_big_ad = true;
                         //章节内大图绘制代码
+                        int j = 1;
                         if (readStatus.containerInChapter != null && readStatus.containerInChapter.size() > 0) {
-                            for (int j = 1; j < readStatus.containerInChapter.size() + 1; j++) {
+                            for (; j < readStatus.containerInChapter.size() + 1; j++) {
                                 if (text.equals(NovelHelper.empty_page_ad_inChapter + j)) {
                                     HashMap<YQNativeAdInfo, Bitmap> hashMap = readStatus.containerInChapter.get(j - 1);
-                                    Iterator<Map.Entry<YQNativeAdInfo, Bitmap>> iterator = hashMap.entrySet().iterator();
-                                    if (iterator.hasNext()) {
-                                        Map.Entry<YQNativeAdInfo, Bitmap> map = iterator.next();
-                                        readStatus.currentAdInfo_in_chapter = map.getKey();
-                                        readStatus.ad_bimap_big_inChapter = map.getValue();
+                                    if (hashMap != null && hashMap.entrySet() != null) {
+                                        Iterator<Map.Entry<YQNativeAdInfo, Bitmap>> iterator = hashMap.entrySet().iterator();
+                                        if (iterator != null && iterator.hasNext()) {
+                                            Map.Entry<YQNativeAdInfo, Bitmap> map = iterator.next();
+                                            readStatus.currentAdInfo_in_chapter = map.getKey();
+                                            readStatus.ad_bimap_big_inChapter = map.getValue();
+                                        }
                                     }
                                     break;
                                 }
                             }
                         }
+                        /*InMobiNative inMobiNative = null;
+                        ArrayList<YQNativeAdInfo> adInfos = readStatus.inMobiViewContainerInChapter;
+                        //从readStatus.containerInChapter中没有拿到物料且有inmobi的有效物料时则尝试拿inmobi的物料
+                        if (j>readStatus.containerInChapter.size() && adInfos!= null && !adInfos.isEmpty()){
+                            for(; j < readStatus.containerInChapter.size() + readStatus.inMobiViewContainerInChapter.size() + 1 ; j++){
+                                if(text.equals(NovelHelper.empty_page_ad_inChapter + j) && adInfos.size() >= j-readStatus.containerInChapter.size()){
+                                    readStatus.ad_bimap_big_inChapter = null;
+                                    readStatus.currentAdInfo_in_chapter = adInfos.get(j - readStatus.containerInChapter.size() - 1);
+                                    inMobiNative = readStatus.currentAdInfo_in_chapter.getInMobiNative();
+                                    break;
+                                }
+                            }
+                        }*/
 
                         if (readStatus.ad_bimap_big_inChapter != null && !readStatus.ad_bimap_big_inChapter.isRecycled()) {
                             readStatus.native_type = 5;
@@ -533,9 +566,16 @@ public class DrawTextHelper {
                             }
                             attach(activity);
 
-                        }
+                        } /*else if (readStatus.shouldShowInMobiAdView && inMobiNative != null && inMobiNative.isReady()){
+                            readStatus.native_type = 5;
+//                            LogUtils.e(TAG,"5-2==inMobiNative"+inMobiNative.toString());
+                            addInMobiView(inMobiNative);
+                            readStatus.shouldShowInMobiAdView = false;
+                            attach(activity);
+                        }*/
                         AppLog.e(TAG, "2_startsWith ad_page_tag" + " sequence:" + readStatus.sequence + " isShow_big_ad:" + isShow_big_ad);
                     } else {
+                        readStatus.shouldShowInMobiAdView = false;
                         if (text.getType() == 1) {
                             mPaint.setTextScaleX(1.0f);
                             mPaint.setTextScaleX(mWidth / mPaint.measureText(text.getLineContent()));
@@ -669,8 +709,46 @@ public class DrawTextHelper {
         return mOperationPaint;
     }
 
+    private void addInMobiView(InMobiNative inMobiNative) {
+        //添加inmobiView
+        RelativeLayout filterLayout = new FilterLayout(BookApplication.getGlobalContext());
+        View inMobiView = inMobiNative.getPrimaryViewOfWidth(readStatus.novel_basePageView, readStatus.novel_basePageView, readStatus.screenWidth);
+        filterLayout.setLayoutParams(inMobiView.getLayoutParams());
+        filterLayout.addView(inMobiView);
+        //添加logo
+        View logo = LayoutInflater.from(BookApplication.getGlobalContext()).inflate(R.layout.view_default_logo, null);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        filterLayout.addView(logo, -1, lp);
+        //添加到parent中
+        ViewGroup.LayoutParams params = filterLayout.getLayoutParams();
+        ViewGroup.MarginLayoutParams marginParams = null;
+        if (params instanceof ViewGroup.MarginLayoutParams) {
+            marginParams = (ViewGroup.MarginLayoutParams) params;
+        } else {
+            marginParams = new ViewGroup.MarginLayoutParams(params);
+        }
+        readStatus.width_nativead_big = params.width;
+        readStatus.height_nativead_big = params.height;
+        int top = (readStatus.screenHeight - readStatus.height_nativead_big) / 2;
+        marginParams.setMargins(0, top, 0, top);
+        readStatus.setAd_inmobi_parent(filterLayout);
+        readStatus.novel_basePageView.addView(filterLayout, marginParams);
+    }
+
     private final int getHeight(Bitmap bitmap) {
         return (readStatus.screenHeight - bitmap.getHeight()) / 2;
+    }
+
+    public void removeInMobiView() {
+        ViewGroup inmobiParent = readStatus.getAd_inmobi_parent();
+        if (inmobiParent != null && readStatus.novel_basePageView.indexOfChild(inmobiParent) != -1) {
+//            LogUtils.e(TAG,"removeInmobi");
+            inmobiParent.removeAllViews();
+            readStatus.novel_basePageView.removeView(inmobiParent);
+            readStatus.setAd_inmobi_parent(null);
+        }
     }
 
     private void attach(Activity activity) {
@@ -685,17 +763,21 @@ public class DrawTextHelper {
                 }
                 /*if (readStatus.currentAdInfo != null && (readStatus.native_type == 1 || readStatus.native_type == 3 || readStatus.native_type == 4)) {
 
-
-
                     statisticManager.schedulingRequest(activity, readStatus.novel_basePageView, readStatus.currentAdInfo, pageView.getCurrentNovel(), StatisticManager.TYPE_SHOW, NativeInit.ad_position[1]);
                 } else */
                 if (readStatus.currentAdInfo_image != null && readStatus.native_type == 2) {
-
-
-                    statisticManager.schedulingRequest(activity, readStatus.novel_basePageView, readStatus.currentAdInfo_image, pageView.getCurrentNovel(), StatisticManager.TYPE_SHOW, NativeInit.ad_position[2]);
+                    if (Constants.IS_LANDSCAPE) {
+                        statisticManager.schedulingRequest(activity, readStatus.novel_basePageView, readStatus.currentAdInfo_image, pageView.getCurrentNovel(), StatisticManager.TYPE_SHOW, NativeInit.ad_position[9]);
+                    } else {
+                        statisticManager.schedulingRequest(activity, readStatus.novel_basePageView, readStatus.currentAdInfo_image, pageView.getCurrentNovel(), StatisticManager.TYPE_SHOW, NativeInit.ad_position[2]);
+                    }
                 } else if (readStatus.currentAdInfo_in_chapter != null && readStatus.native_type == 5) {
 
-                    statisticManager.schedulingRequest(activity, readStatus.novel_basePageView, readStatus.currentAdInfo_in_chapter, pageView.getCurrentNovel(), StatisticManager.TYPE_SHOW, NativeInit.ad_position[7]);
+                    if (Constants.IS_LANDSCAPE) {
+                        statisticManager.schedulingRequest(activity, readStatus.novel_basePageView, readStatus.currentAdInfo_in_chapter, pageView.getCurrentNovel(), StatisticManager.TYPE_SHOW, NativeInit.ad_position[10]);
+                    } else {
+                        statisticManager.schedulingRequest(activity, readStatus.novel_basePageView, readStatus.currentAdInfo_in_chapter, pageView.getCurrentNovel(), StatisticManager.TYPE_SHOW, NativeInit.ad_position[7]);
+                    }
                 } else if (readStatus.currentAdInfo != null && (readStatus.native_type == 20 || readStatus.native_type == 23)) {
 
                     statisticManager.schedulingRequest(activity, readStatus.novel_basePageView, readStatus.currentAdInfo, pageView.getCurrentNovel(), StatisticManager.TYPE_SHOW, NativeInit.ad_position[1]);
@@ -716,15 +798,13 @@ public class DrawTextHelper {
         }
     }
 
+
     public void loadNatvieAd() {
-        if (nativeAdManager != null) {
-//            if (nativeAdManager.getAdType()) {
-//                nativeAdManager.loadAd(NativeInit.CustomPositionName.READING_MIDDLE_POSITION);
-//            } else {
-//                nativeAdManager.loadAd(NativeInit.CustomPositionName.READING_POSITION);
-//            }
-            nativeAdManager.loadAdForMiddle(NativeInit.CustomPositionName.READING_MIDDLE_POSITION);
-            nativeAdManager.loadAd(NativeInit.CustomPositionName.READING_POSITION);
+        OwnNativeAdManager.getInstance(mActivity).loadAdForMiddle(NativeInit.CustomPositionName.READING_MIDDLE_POSITION);
+        if (Constants.IS_LANDSCAPE) {
+            OwnNativeAdManager.getInstance(mActivity).loadAd(NativeInit.CustomPositionName.SUPPLY_READING_SPACE);
+        } else {
+            OwnNativeAdManager.getInstance(mActivity).loadAd(NativeInit.CustomPositionName.READING_POSITION);
         }
     }
 

@@ -159,6 +159,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         if (!Constants.isHideAD) {
             ownNativeAdManager = OwnNativeAdManager.getInstance(getActivity());
+            ownNativeAdManager.setActivity(getActivity());
         }
         initData();
 
@@ -299,6 +300,9 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     public void onResume() {
         super.onResume();
         updateUI();
+        if (ownNativeAdManager != null) {
+            ownNativeAdManager.setActivity(getActivity());
+        }
     }
 
 

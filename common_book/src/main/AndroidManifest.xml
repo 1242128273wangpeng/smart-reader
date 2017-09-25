@@ -132,6 +132,9 @@
                 android:value="${QQ_APPID}"
                 />
 
+        <meta-data
+            android:name="IFLYTEK_APPKEY_AD"
+            android:value="5982c10f" />
 
         <!-- 声明Mogo的Activity -->
         <activity
@@ -351,6 +354,28 @@
                 android:protectionLevel="signature"
                 android:exported="true"/>
         <!-- 百度推送push结束 -->
+
+        <!-- Inmobi广告 下载类广告需要的 -->
+        <activity
+            android:name="com.inmobi.rendering.InMobiAdActivity"
+            android:configChanges="keyboardHidden|orientation|keyboard|smallestScreenSize|screenSize|screenLayout"
+            android:hardwareAccelerated="true"
+            android:resizeableActivity="false"
+            android:theme="@android:style/Theme.NoTitleBar"
+            tools:ignore="UnusedAttribute" />
+        <receiver
+            android:name="com.inmobi.commons.core.utilities.uid.ImIdShareBroadCastReceiver"
+            android:enabled="true"
+            android:exported="true"
+            tools:ignore="ExportedReceiver">
+            <intent-filter>
+                <action android:name="com.inmobi.share.id" />
+            </intent-filter>
+        </receiver>
+        <service
+            android:name="com.inmobi.ads.ApkDownloader$ApkDownloadService"
+            android:enabled="true"></service>
+        <!-- Inmobi相关配置结束 -->
         
         <activity
                 android:name=".activity.CoverPageActivity"
@@ -470,7 +495,12 @@
                 android:name="net.lzbook.kit.utils.update.DownloadIntentService"
                 android:enabled="true"
                 android:exported="true"/>
-    
+
+        <!-- 科大讯飞 -->
+        <service android:name="com.iflytek.voiceads.update.DownloadService" />
+        <activity
+            android:name="com.iflytek.voiceads.request.IFLYBrowser"
+            android:screenOrientation="portrait" />
     
     </application>
 

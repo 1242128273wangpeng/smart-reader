@@ -83,7 +83,6 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
     private BookShelfRemoveHelper removeMenuHelper;
     private BookShelfFragment bookView;
     private boolean isClosed = false;
-    private boolean isFirstIn = true;
     private ApkUpdateUtils apkUpdateUtils;
     private MyReceiver receiver;
     private LoadDataManager mLoadDataManager;
