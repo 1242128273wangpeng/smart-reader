@@ -958,7 +958,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                 }
                 intent.setClass(CoverPageActivity.this, ReadingActivity.class);
                 intent.putExtras(bundle);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
                 coverSourceDialog.dismiss();
             }
@@ -1088,7 +1088,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
         }
         intent.setClass(CoverPageActivity.this, ReadingActivity.class);
         intent.putExtras(bundle);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
     }
 
@@ -1121,7 +1121,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
         AppLog.e(TAG, "GotoReading: " + book.site + " : " + requestItem.host);
         intent.setClass(CoverPageActivity.this, ReadingActivity.class);
         intent.putExtras(bundle);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
     }
 
@@ -1170,7 +1170,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
         AppLog.e(TAG, "GotoReading: " + book.site + " : " + requestItem.host);
         intent.setClass(CoverPageActivity.this, ReadingActivity.class);
         intent.putExtras(bundle);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
     }
 

@@ -355,6 +355,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        showMenu(false);
         AppLog.d("ReadingActivity", "onNewIntent:");
         this.sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Constants.isFullWindowRead = sp.getBoolean("read_fullwindow", true);
@@ -2584,7 +2585,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                     bundle.putSerializable(Constants.REQUEST_ITEM, readStatus.requestItem);
                     Intent fresh = new Intent(mActivityWeakReference.get(), ReadingActivity.class);
                     fresh.putExtras(bundle);
-                    fresh.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    fresh.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     mActivityWeakReference.get().startActivity(fresh);
                 }
             }
