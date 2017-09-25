@@ -349,7 +349,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
             // AppLog.d("initTextContent2", "size:" + size);
             for (j in 0..size - 1) {
                 val string = pageList[j].lineContent
-                if (!TextUtils.isEmpty(string) && string != " ") {
+                if (!TextUtils.isEmpty(string)) {
                     readStatus.offset += string.length
                 }
             }
