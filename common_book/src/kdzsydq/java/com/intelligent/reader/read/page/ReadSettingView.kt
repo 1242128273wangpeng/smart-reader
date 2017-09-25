@@ -272,15 +272,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             novel_bottom_options.startAnimation(popUpInAnimation)
 
 
-            if (readStatus!!.sequence <= 0) {
-                novel_jump_previous.isClickable = false
-                novel_jump_previous.isEnabled = false
-                novel_jump_previous.alpha = 0.3f
-            } else {
-                novel_jump_previous.isClickable = true
-                novel_jump_previous.isEnabled = true
-                novel_jump_previous.alpha = 1f
-            }
+            refreshJumpPreBtnState()
 
             if (novel_jump_layout != null) {
                 if (readStatus!!.chapterCount - 1 <= 0 || readStatus!!.chapterCount - 1 < readStatus!!.sequence) {
@@ -415,13 +407,14 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 //dismissNovelHintLayout();
 
                 listener?.onJumpPreChapter()
-
+                refreshJumpPreBtnState()
             }
             R.id.novel_jump_next -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_next_chapter)
                 //dismissNovelHintLayout();
 
                 listener?.onJumpNextChapter()
+                refreshJumpPreBtnState()
 
             }
             R.id.novel_catalog -> {
@@ -436,7 +429,14 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             }
             R.id.novel_night//夜间模式
             -> {
+                if (themeHelper!!.isNight()) {
+                    txt_night.text = "夜间"
+                    ibtn_night.setImageResource(R.drawable.read_option_night_selector)
+                } else {
+                    txt_night.text = "白天"
+                    ibtn_night.setImageResource(R.drawable.read_option_day_selector)
 
+                }
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_night_mode)
                 listener?.onChageNightMode()
             }
@@ -492,6 +492,18 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             }
             else -> {
             }
+        }
+    }
+
+    private fun refreshJumpPreBtnState() {
+        if (readStatus!!.sequence <= 0) {
+            novel_jump_previous.isClickable = false
+            novel_jump_previous.isEnabled = false
+            novel_jump_previous.alpha = 0.3f
+        } else {
+            novel_jump_previous.isClickable = true
+            novel_jump_previous.isEnabled = true
+            novel_jump_previous.alpha = 1f
         }
     }
 
