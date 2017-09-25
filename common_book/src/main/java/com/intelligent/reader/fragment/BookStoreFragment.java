@@ -1,6 +1,7 @@
 package com.intelligent.reader.fragment;
 
 import com.intelligent.reader.R;
+import com.intelligent.reader.read.page.PageInterface;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.NonSwipeViewPager;
@@ -42,6 +43,7 @@ public class BookStoreFragment extends Fragment {
 
     private View view;
     private int versionCode = 0;
+    private SearchClickListener mSearchClickListener;
 
     public BookStoreFragment() {
 
@@ -95,12 +97,21 @@ public class BookStoreFragment extends Fragment {
                     switch (position) {
                         case 0:
                             switchState(position);
+                            if (mSearchClickListener != null) {
+                                mSearchClickListener.getCurrent(2);
+                            }
                             break;
                         case 1:
                             switchState(position);
+                            if (mSearchClickListener != null) {
+                                mSearchClickListener.getCurrent(3);
+                            }
                             break;
                         case 2:
                             switchState(position);
+                            if (mSearchClickListener != null) {
+                                mSearchClickListener.getCurrent(4);
+                            }
                             break;
                     }
                 }
@@ -118,6 +129,10 @@ public class BookStoreFragment extends Fragment {
                 public void onClick(View v) {
                     setTabSelected(0);
                     StartLogClickUtil.upLoadEventLog(getActivity(), StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.RECOMMEND);
+                    if (mSearchClickListener != null) {
+                        mSearchClickListener.getCurrent(2);
+                    }
+
                 }
             });
         }
@@ -129,6 +144,10 @@ public class BookStoreFragment extends Fragment {
                 public void onClick(View v) {
                     setTabSelected(1);
                     StartLogClickUtil.upLoadEventLog(getActivity(), StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.TOP);
+                    if (mSearchClickListener != null) {
+                        mSearchClickListener.getCurrent(3);
+                    }
+
                 }
             });
         }
@@ -139,6 +158,9 @@ public class BookStoreFragment extends Fragment {
                 public void onClick(View v) {
                     setTabSelected(2);
                     StartLogClickUtil.upLoadEventLog(getActivity(), StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.CLASS);
+                    if (mSearchClickListener != null) {
+                        mSearchClickListener.getCurrent(4);
+                    }
                 }
             });
         }
@@ -215,6 +237,15 @@ public class BookStoreFragment extends Fragment {
     public void onResume() {
         super.onResume();
         switchState(current_tab);
+    }
+
+    public void setOnBottomClickListener(SearchClickListener mSearchClickListener) {
+        this.mSearchClickListener = mSearchClickListener;
+    }
+
+    //大数据 青果搜索打点用
+    public interface SearchClickListener {
+        void getCurrent(int position);
     }
 
     /**

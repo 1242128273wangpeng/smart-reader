@@ -60,7 +60,7 @@ import de.greenrobot.event.EventBus;
 /**
  * 主页面
  */
-public class HomeFragment extends BaseFragment implements OnPageChangeListener, FrameBookHelper.SearchUpdateBook, OnClickListener {
+public class HomeFragment extends BaseFragment implements OnPageChangeListener, FrameBookHelper.SearchUpdateBook, OnClickListener,BookStoreFragment.SearchClickListener {
     private final static int TOP_TWO_TABS = 1;
     private final static int BOTTOM_FOUR_TABS = 2;
     private final static int TOP_FOUR_TABS = 3;
@@ -303,6 +303,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                 if (bookStoreFragment == null) {
                     if (STYLE_CASE == TOP_TWO_TABS || STYLE_CASE == TOP_TWO_FRAME) {
                         bookStoreFragment = BookStoreFragment.newInstance();
+                        bookStoreFragment.setOnBottomClickListener(this);
                         frame = bookStoreFragment;
                     } else {
                         recommendFragment = new WebViewFragment();
@@ -579,7 +580,14 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                         Intent intent = new Intent();
                         intent.setClass(context, SearchBookActivity.class);
                         startActivity(intent);
-                        StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.SEARCH);
+                        if(bottomType ==2){
+                            StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH);
+                        }else if(bottomType ==3){
+                            StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH);
+                        }else{
+                            StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.SEARCH);
+                        }
+
                     }
                 }
             });
@@ -758,6 +766,11 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
 
     public int getCurrentTab() {
         return current_tab;
+    }
+
+    @Override
+    public void getCurrent(int position) {
+        bottomType = position;
     }
 
     private static class MHandler extends Handler {
