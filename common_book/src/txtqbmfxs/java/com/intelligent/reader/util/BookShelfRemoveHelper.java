@@ -3,6 +3,7 @@ package com.intelligent.reader.util;
 import com.intelligent.reader.adapter.BookShelfReAdapter;
 
 import net.lzbook.kit.R;
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
 import net.lzbook.kit.utils.popup.PopupWindowInterface;
 
@@ -21,7 +22,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 /**
  * BookShelfRemoveHelper
@@ -141,6 +144,9 @@ public class BookShelfRemoveHelper implements View.OnClickListener {
                 }
                 break;
             case R.id.btn_left:
+                Map<String, String> data = new HashMap<>();
+                data.put("type", isAllChecked() ? "2" : "1");
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.SELECTALL1, data);
                 selectAll(isAllChecked() ? false : true);
                 break;
         }

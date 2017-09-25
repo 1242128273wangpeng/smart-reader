@@ -61,6 +61,13 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
     private static String TAG = SearchViewHelper.class.getSimpleName();
+    private static RelativeLayout mHistoryHeadersTitle;
+    private static ArrayAdapter<String> mHistoryAdapter;
+    private static ArrayList<String> historyDatas = new ArrayList<String>();
+    private final Handler mSearchHandler = new SearchHandler(this);
+    public OnHotWordClickListener onHotWordClickListener;
+    public Context context;
+    TextView tv_clear_history_search_view;
     private Context mContext;
     private Activity activity;
     private ViewGroup mRootLayout;
@@ -69,23 +76,12 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
     private ListView mSuggestListView;
     private ScrollForGridView mGridView;
     private LinearLayout linear_parent;
-
-    private static RelativeLayout mHistoryHeadersTitle;
-    TextView tv_clear_history_search_view;
-
-    private static ArrayAdapter<String> mHistoryAdapter;
     private SearchSuggestAdapter mSuggestAdapter;
-    private static ArrayList<String> historyDatas = new ArrayList<String>();
     private List<SearchCommonBean> mSuggestList = new ArrayList<SearchCommonBean>();
-
     private Resources mResources;
-
     private boolean mShouldShowHint = true;
-
-    public OnHotWordClickListener onHotWordClickListener;
     private OnHistoryClickListener mOnHistoryClickListener;
     private List<SearchHotBean.DataBean> hotWords = new ArrayList<>();
-    public Context context;
     private SearchHelper mSearchHelper;
     private SearchHotWordAdapter searchHotWordAdapter;
     private String suggest;
@@ -98,6 +94,17 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
         context = activity;
         mSearchHelper = searchHelper;
         init(context, activity, rootLayout, searchEditText);
+    }
+
+    private static void setHistoryHeadersTitleView() {
+        if (mHistoryHeadersTitle == null) {
+            return;
+        }
+        if (historyDatas != null && historyDatas.size() != 0) {
+            mHistoryHeadersTitle.setVisibility(View.VISIBLE);
+        } else {
+            mHistoryHeadersTitle.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void init(Context context, Activity activity, ViewGroup rootLayout, EditText
@@ -114,7 +121,6 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
         initHistoryView();
         initSuggestListView();
     }
-
 
     public void setShowHintEnabled(boolean showHint) {
         mShouldShowHint = showHint;
@@ -309,15 +315,19 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
                     searchType = "0";
                 }
                 if (!TextUtils.isEmpty(suggest) && mSearchEditText != null) {
+                    Map<String, String> data = new HashMap<>();
+                    data.put("keyword", suggest);
+                    data.put("enterword", mSearchEditText.getText().toString().trim());
+                    data.put("rank", String.valueOf(arg2 + 1));
+                    data.put("type", searchType);
+                    StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TIPLISTCLICK, data);
                     mShouldShowHint = false;
                     mSearchEditText.setText(suggest);
 
 //                    mSearchEditText.setSelection(suggest.length());
                     startSearch(suggest, searchType);
 
-                    Map<String, String> data = new HashMap<>();
-                    data.put("keyword", suggest);
-                    StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TIPLISTCLICK, data);
+
                 }
             }
         });
@@ -334,7 +344,6 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
         });
     }
 
-
     private void showHistoryList() {
         if (mHistoryListView != null)
             mHistoryListView.setVisibility(View.VISIBLE);
@@ -345,17 +354,6 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
     public void notifyListChanged() {
         if (mHistoryAdapter != null)
             mHistoryAdapter.notifyDataSetChanged();
-    }
-
-    private static void setHistoryHeadersTitleView() {
-        if (mHistoryHeadersTitle == null) {
-            return;
-        }
-        if (historyDatas != null && historyDatas.size() != 0) {
-            mHistoryHeadersTitle.setVisibility(View.VISIBLE);
-        } else {
-            mHistoryHeadersTitle.setVisibility(View.INVISIBLE);
-        }
     }
 
     private void initHistoryHeadersTitleView() {
@@ -490,6 +488,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
             linear_parent.setVisibility(View.GONE);
         }
     }
+
     /**
      * parse result data
      */
@@ -516,7 +515,6 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
         }
     }
 
-
     private void showDialog() {
         if (activity != null && !activity.isFinishing()) {
             final MyDialog myDialog = new MyDialog(activity, R.layout.publish_hint_dialog);
@@ -530,6 +528,9 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
             dialog_comfire.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Map<String, String> data = new HashMap<String, String>();
+                    data.put("type", "1");
+                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.HISTORYCLEAR, data);
                     if (mSearchHandler != null)
                         mSearchHandler.sendEmptyMessage(10);
                     myDialog.dismiss();
@@ -539,6 +540,9 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
             dialog_cancle.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Map<String, String> data = new HashMap<String, String>();
+                    data.put("type", "0");
+                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.HISTORYCLEAR, data);
                     myDialog.dismiss();
                 }
             });
@@ -559,6 +563,8 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
     }
 
     private void clearHistory() {
+
+
         if (historyDatas != null)
             historyDatas.clear();
         setHistoryHeadersTitleView();
@@ -626,45 +632,8 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
         });
     }
 
-    static class SearchHandler extends Handler {
-        private WeakReference<SearchViewHelper> reference;
-
-        SearchHandler(SearchViewHelper helper) {
-            reference = new WeakReference<SearchViewHelper>(helper);
-        }
-
-        public void handleMessage(Message msg) {
-            SearchViewHelper helper = reference.get();
-            if (helper == null) {
-                return;
-            }
-            switch (msg.what) {
-                case 10:
-                    helper.clearHistory();
-                    break;
-
-                case 20:
-                    helper.result((ArrayList<SearchCommonBean>) msg.obj);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    }
-
-    private final Handler mSearchHandler = new SearchHandler(this);
-
     public void setOnHistoryClickListener(OnHistoryClickListener listener) {
         mOnHistoryClickListener = listener;
-    }
-
-    public interface OnHotWordClickListener {
-        void hotWordClick(String tag, String searchType);
-    }
-
-    public interface OnHistoryClickListener {
-        void OnHistoryClick(String history, String searchType);
     }
 
     public void clear() {
@@ -738,6 +707,41 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
         InputMethodManager imm = (InputMethodManager) paramView.getContext().getSystemService(INPUT_METHOD_SERVICE);
         if (imm.isActive()) {
             imm.hideSoftInputFromWindow(paramView.getApplicationWindowToken(), 0);
+        }
+    }
+
+    public interface OnHotWordClickListener {
+        void hotWordClick(String tag, String searchType);
+    }
+
+    public interface OnHistoryClickListener {
+        void OnHistoryClick(String history, String searchType);
+    }
+
+    static class SearchHandler extends Handler {
+        private WeakReference<SearchViewHelper> reference;
+
+        SearchHandler(SearchViewHelper helper) {
+            reference = new WeakReference<SearchViewHelper>(helper);
+        }
+
+        public void handleMessage(Message msg) {
+            SearchViewHelper helper = reference.get();
+            if (helper == null) {
+                return;
+            }
+            switch (msg.what) {
+                case 10:
+                    helper.clearHistory();
+                    break;
+
+                case 20:
+                    helper.result((ArrayList<SearchCommonBean>) msg.obj);
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
 }

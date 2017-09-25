@@ -92,6 +92,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
     private Boolean b = true;
     private ImageView home_edit_back;
     private TextView home_edit_cancel;
+    private int bottomType;//青果打点搜索 2 推荐  3 榜单
 
 
     @Override
@@ -320,13 +321,19 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_mine_menu);
                 break;
             case R.id.content_head_search:
-                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.MORE);
                 Intent searchInter = new Intent();
                 searchInter.setClass(context, SearchBookActivity.class);
                 AppLog.e(TAG, "SearchBookActivity -----> Start");
                 startActivity(searchInter);
+                if(bottomType ==2){
+                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH);
+                }else if(bottomType==3){
+                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH);
+                }else {
+                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.SEARCH);
+                }
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_search_btn);
-                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.SEARCH);
+
                 break;
             case R.id.content_download_manage:
                 Intent downloadIntent = new Intent();
@@ -341,6 +348,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                 if (STYLE_CASE == BOTTOM_FOUR_TABS) {
                     content_title.setText("书架");
                 }
+                bottomType = 1;
                 StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.BOOKSHELF);
                 break;
             case R.id.content_tab_recommend:
@@ -355,6 +363,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                         }
                     }
                 }
+                bottomType = 2;
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_recommend_menu);
                 StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.RECOMMEND);
                 break;
@@ -364,6 +373,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                 if (STYLE_CASE == BOTTOM_FOUR_TABS) {
                     content_title.setText("榜单");
                 }
+                bottomType = 3;
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_rank_menu);
                 StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.TOP);
                 break;
@@ -374,6 +384,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                 if (STYLE_CASE == BOTTOM_FOUR_TABS) {
                     content_title.setText("分类");
                 }
+                bottomType = 4;
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_category_menu);
                 StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.CLASS);
                 break;

@@ -76,8 +76,8 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
         }
         header_ibtn_more?.setOnClickListener {
 
+            presenter?.showMore();
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_read_head_more)
-            presenter?.showMore()
 
             val inflate = LayoutInflater.from(context).inflate(R.layout.read_option_pop, null)
 
