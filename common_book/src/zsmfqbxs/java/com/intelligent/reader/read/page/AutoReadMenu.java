@@ -3,6 +3,7 @@ package com.intelligent.reader.read.page;
 import com.intelligent.reader.R;
 
 import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.data.bean.ReadStatus;
 import net.lzbook.kit.utils.StatServiceUtils;
 
@@ -15,6 +16,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class AutoReadMenu extends LinearLayout implements OnClickListener {
 
@@ -93,6 +97,9 @@ public class AutoReadMenu extends LinearLayout implements OnClickListener {
             }
 
         } else if (i == R.id.autoread_stop) {
+            Map<String, String> data = new HashMap<>();
+            data.put("type", "2");
+            StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.AUTOREAD, data);
             StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_auto_read_cancel);
             if (autoMemuListener != null) {
                 autoMemuListener.autoStop();

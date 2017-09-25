@@ -436,7 +436,14 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             }
             R.id.novel_night//夜间模式
             -> {
+                if (themeHelper!!.isNight()) {
+                    txt_night.text = "夜间"
+                    ibtn_night.setImageResource(R.drawable.read_option_night_selector)
+                } else {
+                    txt_night.text = "白天"
+                    ibtn_night.setImageResource(R.drawable.read_option_day_selector)
 
+                }
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_night_mode)
                 listener?.onChageNightMode()
             }

@@ -195,6 +195,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
                     public void onClick(View v) {
                         Intent intent = new Intent(mContext, DownloadManagerActivity.class);
                         startActivity(intent);
+                        StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.CACHEMANAGE);
                     }
                 });
             }
