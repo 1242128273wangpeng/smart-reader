@@ -763,7 +763,7 @@ public class NovelHelper {
             // AppLog.d("initTextContent2", "size:" + size);
             for (int j = 0; j < size; j++) {
                 NovelLineBean string = pageList.get(j);
-                if (string != null && !TextUtils.isEmpty(string.getLineContent()) && !string.getLineContent().equals(" ")) {
+                if (string != null && !TextUtils.isEmpty(string.getLineContent())) {
                     readStatus.offset += string.getLineContent().length();
                 }
             }
@@ -799,7 +799,7 @@ public class NovelHelper {
             // AppLog.d("initTextContent2", "size:" + size);
             for (int j = 0; j < size; j++) {
                 NovelLineBean string = pageList.get(j);
-                if (string != null && !TextUtils.isEmpty(string.getLineContent()) && !string.getLineContent().equals(" ")) {
+                if (string != null && !TextUtils.isEmpty(string.getLineContent())) {
                     readStatus.offset += string.getLineContent().length();
                 }
             }
