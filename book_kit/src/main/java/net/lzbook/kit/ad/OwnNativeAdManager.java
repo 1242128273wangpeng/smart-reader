@@ -355,7 +355,8 @@ public class OwnNativeAdManager implements AdListener {
                             message.obj = yqNativeAdInfo;
                             message.what = 3;
                             handler.sendMessageDelayed(message, 500);
-                        } else if (currentPositionName == NativeInit.CustomPositionName.SLIDEUP_POPUPAD_POSITION) {
+                        } else if (currentPositionName == NativeInit.CustomPositionName.SLIDEUP_POPUPAD_POSITION
+                                || currentPositionName == NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD) {
                             //处理切屏物料
                             yqNativeAdInfo = getADInfoNew(yqNativeAdInfos, ration, keyMd5);
                             if (yqNativeAdInfo != null) {
@@ -532,7 +533,8 @@ public class OwnNativeAdManager implements AdListener {
                     yqNativeAdInfo = adInfos.removeFirst();
                     drawBitmapOnSplash(viewGroup, yqNativeAdInfo, NativeInit.ad_position[6]);
                 }
-            } else if (NativeInit.CustomPositionName.SLIDEUP_POPUPAD_POSITION.toString().equals(ration.getMarkId())) {
+            } else if (NativeInit.CustomPositionName.SLIDEUP_POPUPAD_POSITION.toString().equals(ration.getMarkId())
+                    || NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD.toString().equals(ration.getMarkId())) {
                 yqNativeAdInfo = getADInfoNew(adInfos, ration, keyMd5);
                 if (yqNativeAdInfo != null) {
                     LogUtils.e("Switch", "Switch success");

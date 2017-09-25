@@ -34,6 +34,7 @@ public class DynamicParamter {
     public String native_ad_page_interstitial_count;
     public String native_ad_page_gap_in_chapter;
     public String native_ad_page_in_chapter_limit;
+    public String land_scroll_chapter_frequence;
     public String dy_is_new_reading_end;
     public String push_key;
     public String ban_gids;
@@ -174,6 +175,8 @@ public class DynamicParamter {
         native_ad_page_gap_in_chapter = getConfigParams("DY_in_chapter_frequence");
         //章节内展现广告要求的最小数量
         native_ad_page_in_chapter_limit = getConfigParams("DY_page_in_chapter_limit");
+        //上下翻页间隔5章时的弹窗广告
+        land_scroll_chapter_frequence = getConfigParams("land_scroll_chapter_frequence");
         //是否启用新版书末UI
         dy_is_new_reading_end = getConfigParams(Constants.DY_IS_NEW_READING_END);
         //api的host
@@ -283,6 +286,8 @@ public class DynamicParamter {
         native_ad_page_gap_in_chapter = OnlineConfigAgent.getInstance().getConfigParams(context, "DY_in_chapter_frequence");
         //章节内展现广告要求的最小数量
         native_ad_page_in_chapter_limit = OnlineConfigAgent.getInstance().getConfigParams(context, "DY_page_in_chapter_limit");
+        //上下翻页间隔5章时出现弹窗广告
+        land_scroll_chapter_frequence = OnlineConfigAgent.getInstance().getConfigParams(context, "land_scroll_chapter_frequence");
         //是否启用新版书末UI
         dy_is_new_reading_end = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_IS_NEW_READING_END);
 
@@ -442,6 +447,9 @@ public class DynamicParamter {
                 if (isOwn) {
                     putConfigParams(Constants.NATIVE_AD_PAGE_IN_CHAPTER_LIMIT, native_ad_page_in_chapter_limit);
                 }
+            }
+            if (!data.isNull("land_scroll_chapter_frequence")) {
+                land_scroll_chapter_frequence = data.getString("land_scroll_chapter_frequence");
             }
 
             if (!data.isNull(Constants.DY_IS_NEW_READING_END)) {
@@ -927,6 +935,14 @@ public class DynamicParamter {
         if (!TextUtils.isEmpty(native_ad_page_in_chapter_limit)) {
             try {
                 Constants.native_ad_page_in_chapter_limit = Integer.parseInt(native_ad_page_in_chapter_limit);
+            } catch (Exception e) {
+            }
+        }
+
+        //上下滑动间隔5章时的弹窗广告
+        if (!TextUtils.isEmpty(land_scroll_chapter_frequence)) {
+            try {
+                Constants.land_scroll_chapter_frequence = Integer.parseInt(land_scroll_chapter_frequence);
             } catch (Exception e) {
             }
         }

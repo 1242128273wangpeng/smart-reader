@@ -52,6 +52,7 @@ public class StatisticManager {
                 || NativeInit.ad_position[1].equals(position)
                 || NativeInit.ad_position[10].equals(position)
                 || NativeInit.ad_position[11].equals(position)
+                || NativeInit.ad_position[12].equals(position)
                 || (nativeAdInfo != null && nativeAdInfo.getAdvertisement() != null && nativeAdInfo.getAdvertisement().platformId == com.dingyueads.sdk.Constants.AD_TYPE_YINCHENG)
                 || (nativeAdInfo != null && nativeAdInfo.getAdvertisement() != null && nativeAdInfo.getAdvertisement().platformId == com.dingyueads.sdk.Constants.AD_TYPE_OWNAD)
                 || (nativeAdInfo != null && nativeAdInfo.getAdvertisement() != null && nativeAdInfo.getAdvertisement().platformId == com.dingyueads.sdk.Constants.AD_TYPE_INMOBI)
