@@ -12,7 +12,7 @@
             android:visibility="gone"
             android:layout_height="@dimen/dimen_view_height_48"
             android:background="@color/top_navigation_bg_color">
-        
+
         <ImageView
                 android:id="@+id/bookshelf_setting"
                 android:layout_width="wrap_content"
@@ -22,7 +22,7 @@
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
                 android:src="@mipmap/home_head_setting"/>
-        
+
         <ImageView
                 android:id="@+id/bookshelf_search"
                 android:layout_width="wrap_content"
@@ -32,7 +32,7 @@
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
                 android:src="@mipmap/home_head_search"/>
-        
+
         <ImageView
                 android:id="@+id/bookshelf_download"
                 android:layout_width="wrap_content"
@@ -43,7 +43,7 @@
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
                 android:src="@mipmap/home_head_download"/>
-        
+
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -53,7 +53,7 @@
                 android:layout_marginRight="@dimen/dimen_padding_35"
                 android:paddingLeft="@dimen/dimen_padding_35"
                 android:paddingRight="@dimen/dimen_padding_35">
-            
+
             <TextView
                     android:id="@+id/home_bookshelf"
                     android:layout_width="0dip"
@@ -65,7 +65,7 @@
                     android:text="@string/bookshelf"
                     android:textColor="@drawable/top_navigation_text_selector"
                     android:textSize="@dimen/dimen_text_17"/>
-            
+
             <TextView
                     android:id="@+id/home_bookstore"
                     android:layout_width="0dip"
@@ -87,11 +87,11 @@
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
             android:background="@color/top_navigation_bg_color">
-    
+
         <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/top_bar_height">
-        
+
             <ImageView
                     android:id="@+id/content_head_setting"
                     android:layout_width="23dp"
@@ -101,7 +101,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_marginLeft="14dp"
                     android:src="@mipmap/home_head_setting"/>
-        
+
             <net.lzbook.kit.book.view.FirstUsePointView
                     android:layout_width="7dp"
                     android:layout_height="7dp"
@@ -109,7 +109,7 @@
                     android:layout_alignTop="@+id/content_head_setting"
                     android:layout_alignRight="@+id/content_head_setting"
                     android:id="@+id/redpoint_home_setting"/>
-        
+
             <TextView
                     android:id="@+id/content_title"
                     android:layout_width="wrap_content"
@@ -120,7 +120,7 @@
                     android:text="书架"
                     android:textSize="18sp"
                     android:textColor="@color/top_navigation_text_color"/>
-        
+
             <ImageView
                     android:id="@+id/content_head_search"
                     android:layout_width="23dp"
@@ -130,7 +130,7 @@
                     android:layout_toLeftOf="@+id/content_download_manage"
                     android:layout_marginRight="21dp"
                     android:src="@mipmap/home_head_search"/>
-        
+
             <ImageView
                     android:id="@+id/content_download_manage"
                     android:layout_width="23dp"
@@ -150,7 +150,7 @@
             android:layout_height="@dimen/dimen_height_48"
             android:layout_alignParentTop="true"
             android:background="@color/color_white_f7f7f7">
-        
+
         <ImageView
                 android:id="@+id/content_head_user"
                 android:layout_width="wrap_content"
@@ -160,7 +160,7 @@
                 android:paddingRight="@dimen/padding_14"
                 android:src="@mipmap/home_head_setting"
                 android:layout_gravity="right|left"/>
-        
+
         <ImageView
                 android:id="@+id/content_download_manage_four_tabs"
                 android:layout_width="wrap_content"
@@ -171,7 +171,7 @@
                 android:src="@mipmap/home_head_download"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentTop="true"/>
-        
+
         <LinearLayout
                 android:id="@+id/content_tab_selection_four_tabs"
                 android:layout_width="match_parent"
@@ -182,14 +182,14 @@
                 android:paddingRight="@dimen/padding_5"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
-            
+
             <RelativeLayout
                     android:id="@+id/content_tab_bookshelf_four_tabs"
                     android:layout_width="@dimen/dimen_width_0"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center">
-                
+
                 <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -198,7 +198,7 @@
                         android:textStyle="bold"
                         android:textColor="@color/dialog_recommend"
                         android:textSize="@dimen/text_size_18"/>
-                
+
                 <View
                         android:layout_width="20dp"
                         android:layout_height="2dp"
@@ -206,14 +206,14 @@
                         android:layout_centerHorizontal="true"
                         android:background="@drawable/selector_view_bg"/>
             </RelativeLayout>
-            
+
             <RelativeLayout
                     android:id="@+id/content_tab_recommend_four_tabs"
                     android:layout_width="@dimen/dimen_width_0"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center">
-                
+
                 <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -222,7 +222,7 @@
                         android:textStyle="bold"
                         android:textColor="@color/dialog_recommend"
                         android:textSize="@dimen/text_size_18"/>
-                
+
                 <View
                         android:layout_width="20dp"
                         android:layout_height="2dp"
@@ -230,14 +230,14 @@
                         android:layout_centerHorizontal="true"
                         android:background="@drawable/selector_view_bg"/>
             </RelativeLayout>
-            
+
             <RelativeLayout
                     android:id="@+id/content_tab_ranking_four_tabs"
                     android:layout_width="@dimen/dimen_width_0"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center">
-                
+
                 <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -246,7 +246,7 @@
                         android:textStyle="bold"
                         android:textColor="@color/dialog_recommend"
                         android:textSize="@dimen/text_size_18"/>
-                
+
                 <View
                         android:layout_width="20dp"
                         android:layout_height="2dp"
@@ -254,14 +254,14 @@
                         android:layout_centerHorizontal="true"
                         android:background="@drawable/selector_view_bg"/>
             </RelativeLayout>
-            
+
             <RelativeLayout
                     android:id="@+id/content_tab_category_four_tabs"
                     android:layout_width="@dimen/dimen_width_0"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center">
-                
+
                 <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -270,7 +270,7 @@
                         android:textStyle="bold"
                         android:textColor="@color/dialog_recommend"
                         android:textSize="@dimen/text_size_18"/>
-                
+
                 <View
                         android:layout_width="20dp"
                         android:layout_height="2dp"
@@ -281,7 +281,7 @@
             </RelativeLayout>
         </LinearLayout>
     </RelativeLayout>
-    
+
     <RelativeLayout
             android:visibility="gone"
             android:id="@+id/bookshelf_search_view"
@@ -289,7 +289,7 @@
             android:layout_below="@id/content_head_four_tabs"
             android:layout_height="@dimen/dimen_height_50"
             android:background="@color/color_white_f7f7f7">
-        
+
         <TextView
                 android:id="@+id/bookshelf_search_four_tabs"
                 android:layout_width="match_parent"
@@ -314,7 +314,7 @@
             android:visibility="gone"
             android:background="@color/top_navigation_bg_color"
             android:elevation="@dimen/padding_4">
-        
+
         <ImageView
                 android:id="@+id/book_button_left"
                 android:layout_width="wrap_content"
@@ -325,7 +325,7 @@
                 android:paddingRight="@dimen/padding_12"
                 android:src="@mipmap/home_head_setting"
                 android:visibility="visible"/>
-        
+
         <RadioGroup
                 android:id="@+id/home_radiogroup"
                 android:layout_width="203dp"
@@ -338,7 +338,7 @@
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp"
                 android:paddingTop="0dp">
-            
+
             <RadioButton
                     android:id="@+id/radiobutton_bookshelf"
                     android:layout_width="0dp"
@@ -352,7 +352,7 @@
                     android:text="@string/bookshelf"
                     android:textColor="@drawable/home_top_text_selector"
                     android:textSize="@dimen/large_size_18"/>
-            
+
             <RadioButton
                     android:id="@+id/radiobutton_bookstore"
                     android:layout_width="0dp"
@@ -367,7 +367,7 @@
                     android:textColor="@drawable/home_top_text_selector"
                     android:textSize="@dimen/large_size_18"/>
         </RadioGroup>
-        
+
         <ImageView
                 android:id="@+id/book_button_right"
                 android:layout_width="wrap_content"
@@ -379,7 +379,7 @@
                 android:src="@mipmap/home_head_search"
                 android:visibility="visible"/>
     </RelativeLayout>
-    
+
     <RelativeLayout
             android:id="@+id/content_head_editor"
             android:layout_width="match_parent"
@@ -391,12 +391,12 @@
             android:background="@color/top_navigation_bg_color"
             android:clickable="true"
             android:visibility="gone">
-    
+
         <RelativeLayout
                 android:layout_alignParentBottom="true"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/top_bar_height">
-        
+
             <ImageView
                     android:id="@+id/home_edit_back"
                     android:layout_width="wrap_content"
@@ -406,7 +406,7 @@
                     android:paddingLeft="@dimen/dimen_padding_12"
                     android:paddingRight="@dimen/dimen_padding_12"
                     android:src="@mipmap/cover_top_back"/>
-        
+
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -416,7 +416,7 @@
                     android:text="编辑书架"
                     android:textSize="18sp"
                     android:textColor="@color/top_navigation_text_color"/>
-        
+
             <TextView
                     android:id="@+id/home_edit_cancel"
                     android:layout_width="wrap_content"
@@ -430,7 +430,7 @@
                     android:textSize="@dimen/text_size_16"/>
         </RelativeLayout>
     </RelativeLayout>
-    
+
     <net.lzbook.kit.book.view.NonSwipeViewPager
             android:id="@+id/content_view"
             android:layout_width="match_parent"
@@ -440,7 +440,7 @@
             android:background="@color/color_white_fafafa"
             android:flipInterval="30"
             android:persistentDrawingCache="animation"/>
-    
+
     <ImageView
             android:id="@+id/title_shadow"
             android:layout_below="@+id/content_head"
@@ -448,14 +448,14 @@
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
             android:src="@mipmap/top_shadow"/>
-    
+
     <View
             android:id="@+id/content_tab_selection_devider"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_above="@+id/content_tab_selection"
             android:background="@color/color_divider"/>
-    
+
     <LinearLayout
             android:id="@+id/content_tab_selection"
             android:layout_width="match_parent"
@@ -464,7 +464,7 @@
             android:background="@color/home_bottom_tab_bg"
             android:baselineAligned="false"
             android:orientation="horizontal">
-        
+
         <LinearLayout
                 android:id="@+id/content_tab_bookshelf"
                 android:layout_width="0dp"
@@ -472,7 +472,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:orientation="vertical">
-            
+
             <ImageView
                     android:id="@+id/content_tab_bookshelf_icon"
                     android:layout_width="wrap_content"
@@ -481,7 +481,7 @@
                     android:focusable="false"
                     android:padding="1dp"
                     android:src="@drawable/home_tab_select_bookshelf"/>
-            
+
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -489,7 +489,7 @@
                     android:textColor="@drawable/home_bottom_tab_text_color_selector"
                     android:textSize="@dimen/dimen_text_10"/>
         </LinearLayout>
-        
+
         <LinearLayout
                 android:id="@+id/content_tab_recommend"
                 android:layout_width="0dp"
@@ -497,7 +497,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:orientation="vertical">
-            
+
             <ImageView
                     android:id="@+id/content_tab_recommend_icon"
                     android:layout_width="wrap_content"
@@ -506,7 +506,7 @@
                     android:focusable="false"
                     android:padding="1dp"
                     android:src="@drawable/home_tab_select_recommend"/>
-            
+
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -514,7 +514,7 @@
                     android:textColor="@drawable/home_bottom_tab_text_color_selector"
                     android:textSize="@dimen/dimen_text_10"/>
         </LinearLayout>
-        
+
         <LinearLayout
                 android:id="@+id/content_tab_ranking"
                 android:layout_width="0dp"
@@ -522,7 +522,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:orientation="vertical">
-            
+
             <ImageView
                     android:id="@+id/content_tab_ranking_icon"
                     android:layout_width="wrap_content"
@@ -531,7 +531,7 @@
                     android:focusable="false"
                     android:padding="1dp"
                     android:src="@drawable/home_tab_select_ranking"/>
-            
+
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -539,7 +539,7 @@
                     android:textColor="@drawable/home_bottom_tab_text_color_selector"
                     android:textSize="@dimen/dimen_text_10"/>
         </LinearLayout>
-        
+
         <LinearLayout
                 android:id="@+id/content_tab_category"
                 android:layout_width="0dp"
@@ -547,7 +547,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:orientation="vertical">
-            
+
             <ImageView
                     android:id="@+id/content_tab_category_icon"
                     android:layout_width="wrap_content"
@@ -556,7 +556,7 @@
                     android:focusable="false"
                     android:padding="1dp"
                     android:src="@drawable/home_tab_select_category"/>
-            
+
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -565,30 +565,29 @@
                     android:textSize="@dimen/dimen_text_10"/>
         </LinearLayout>
     </LinearLayout>
-    
+
     <FrameLayout
             android:id="@+id/ll_guide_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:visibility="gone">
-        
+
         <ImageView
                 android:id="@+id/iv_guide_download"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:layout_marginRight="@dimen/padding_8"
-                android:layout_marginTop="@dimen/padding_56"
+                android:layout_marginTop="@dimen/padding_57"
                 android:scaleType="fitXY"
                 android:src="@drawable/icon_bookshelf_guide_download"
                 android:visibility="gone"/>
-        
+
         <ImageView
                 android:id="@+id/iv_guide_remove"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
+                android:layout_marginTop="310dp"
                 android:layout_marginLeft="@dimen/padding_30"
                 android:scaleType="fitXY"
                 android:src="@drawable/bookshelf_guide_remove"
