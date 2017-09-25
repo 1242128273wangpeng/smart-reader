@@ -131,7 +131,7 @@ import iyouqu.theme.ThemeMode;
 @SuppressLint("InlinedApi")
 public class ReadingActivity extends BaseCacheableActivity implements OnClickListener, NovelHelper
         .OnHelperCallBack, CallBack, IReadDataFactory.ReadDataListener, AutoReadMenu.OnAutoMemuListener, ReadSettingView.OnReadSettingListener,
-        DownloadService.OnDownloadListener ,PageInterface.OnOperationClickListener{
+        DownloadService.OnDownloadListener, PageInterface.OnOperationClickListener {
     public static final int MSG_LOAD_CUR_CHAPTER = 0;
     public static final int MSG_LOAD_PRE_CHAPTER = 1;
     public static final int MSG_LOAD_NEXT_CHAPTER = 2;
@@ -357,6 +357,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        showMenu(false);
         AppLog.d("ReadingActivity", "onNewIntent:");
         this.sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Constants.isFullWindowRead = sp.getBoolean("read_fullwindow", true);
@@ -753,8 +754,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
      */
     private void getBookContent() {
 
-            NetWorkUtils.NATIVE_AD_TYPE = NetWorkUtils.NATIVE_AD_ERROR;
-            dataFactory.getChapterByLoading(ReadingActivity.MSG_LOAD_CUR_CHAPTER, readStatus.sequence);
+        NetWorkUtils.NATIVE_AD_TYPE = NetWorkUtils.NATIVE_AD_ERROR;
+        dataFactory.getChapterByLoading(ReadingActivity.MSG_LOAD_CUR_CHAPTER, readStatus.sequence);
 
     }
 
@@ -1024,7 +1025,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_click_back_btn);
                 Map<String, String> data2 = new HashMap<>();
                 data2.put("type", "1");
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE,StartLogClickUtil.BACK, data2);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data2);
                 goBackToHome();
                 break;
 
@@ -1788,11 +1789,11 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 mCatlogMarkDrawer.removeDrawerListener(mCatalogMarkFragment);
         }
 
-        if(readStatus!=null&&dataFactory!=null&&dataFactory.currentChapter!=null){
+        if (readStatus != null && dataFactory != null && dataFactory.currentChapter != null) {
             //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
-            StartLogClickUtil.upLoadReadContent(readStatus.book_id,dataFactory.currentChapter.chapter_id+"",readStatus.source_ids,readStatus.pageCount+"",
-                    readStatus.currentPage+"",readStatus.currentPageConentLength+"",readStatus.requestItem.fromType+"",
-                    readStatus.startReadTime+"",System.currentTimeMillis()+"",System.currentTimeMillis()-readStatus.startReadTime+"","false",readStatus.requestItem.channel_code+"");
+            StartLogClickUtil.upLoadReadContent(readStatus.book_id, dataFactory.currentChapter.chapter_id + "", readStatus.source_ids, readStatus.pageCount + "",
+                    readStatus.currentPage + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
+                    readStatus.startReadTime + "", System.currentTimeMillis() + "", System.currentTimeMillis() - readStatus.startReadTime + "", "false", readStatus.requestItem.channel_code + "");
 
         }
         AppLog.e(TAG, "onDestroy");
@@ -2239,7 +2240,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     @Override
     public void onJumpChapter() {
 
-            dataFactory.getChapterByLoading(ReadingActivity.MSG_JUMP_CHAPTER, readStatus.novel_progress);
+        dataFactory.getChapterByLoading(ReadingActivity.MSG_JUMP_CHAPTER, readStatus.novel_progress);
 
 
     }
@@ -2578,7 +2579,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                     bundle.putSerializable(Constants.REQUEST_ITEM, readStatus.requestItem);
                     Intent fresh = new Intent(mActivityWeakReference.get(), ReadingActivity.class);
                     fresh.putExtras(bundle);
-                    fresh.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    fresh.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     mActivityWeakReference.get().startActivity(fresh);
                 }
             }

@@ -889,7 +889,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             bundle.putInt("offset", readStatus!!.offset)
             bundle.putString("thememode", currentThemeMode)
             intent.putExtras(bundle)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
 
             context!!.startActivity(intent)
         }

@@ -13,7 +13,7 @@ public class BitmapManager {
     public static final int CURRENT = 0;
     public static final int NEXT = 1;
     public static final int BG = 2;
-    private static final int SIZE = 5;
+    private static final int SIZE = 2;
     private final Bitmap[] myBitmaps = new Bitmap[SIZE];
     ArrayList<Bitmap> bitmaps = new ArrayList<>();
     private int myWidth;

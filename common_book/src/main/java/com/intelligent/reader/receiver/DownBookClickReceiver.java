@@ -33,7 +33,7 @@ public class DownBookClickReceiver extends BroadcastReceiver {
                 BookDaoHelper mBookDaoHelper = BookDaoHelper.getInstance();
                 if (mBookDaoHelper != null && mBookDaoHelper.isBookSubed(gid)) {
                     Intent intent = new Intent();
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     intent.setClass(ctt, ReadingActivity.class);
                     if (gid != 0) {
                         Book book = BookDaoHelper.getInstance().getBook(gid, 0);
@@ -51,7 +51,7 @@ public class DownBookClickReceiver extends BroadcastReceiver {
                 BookDaoHelper mBookDaoHelper = BookDaoHelper.getInstance();
                 if (mBookDaoHelper != null && mBookDaoHelper.isBookSubed(gid)) {
                     Intent intent = new Intent();
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     intent.setClass(ctt, ReadingActivity.class);
                     if (gid != 0) {
                         Book book = (Book) BookDaoHelper.getInstance().getBook(gid, 0);

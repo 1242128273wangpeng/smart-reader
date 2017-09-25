@@ -63,7 +63,7 @@ public class BookHelper extends BaseBookHelper {
                     bundle.putSerializable("book", book);
                     bundle.putSerializable(Constants.REQUEST_ITEM, requestItem);
                     intent.putExtras(bundle);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     activity.startActivity(intent);
                     net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(activity, net.lzbook.kit.utils.StatServiceUtils.bs_click_one_book);
 
@@ -145,7 +145,7 @@ public class BookHelper extends BaseBookHelper {
                     bundle.putSerializable("book", book);
                     bundle.putSerializable(Constants.REQUEST_ITEM, requestItem);
                     intent.putExtras(bundle);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     if (Constants.QG_SOURCE.equals(book.site)) {
                         requestItem.channel_code = 1;
                     } else {
@@ -193,7 +193,7 @@ public class BookHelper extends BaseBookHelper {
         bundle.putSerializable("book", book);
         bundle.putSerializable(Constants.REQUEST_ITEM, getRequestItem(book));
         intent.putExtras(bundle);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
