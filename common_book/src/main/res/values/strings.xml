@@ -261,7 +261,4 @@
     <string name="theme_night"></string>
     <string name="mode_day">日间模式</string>
     <string name="mode_night">夜间模式</string>
-    <!--Reader Page Operation-->
-    <string name="origin_text">原网页</string>
-    <string name="trans_coding_text">转码声明</string>
 </resources>

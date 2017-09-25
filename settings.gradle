@@ -1,1 +1,1 @@
-include ':common_book', ':book_kit', ':ad_sdk_1.1.0_forjuheapi', ':dycm_ad_sdk'
+include ':common_book', ':book_kit'
