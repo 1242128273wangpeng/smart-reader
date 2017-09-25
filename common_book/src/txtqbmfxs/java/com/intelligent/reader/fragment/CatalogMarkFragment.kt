@@ -48,7 +48,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
         if (view!!.catalog_main.visibility == View.VISIBLE) {
             presenter?.loadCatalog(reverse)
         } else {
-            presenter?.loadBookMark()
+            presenter?.loadBookMark(activity, 2)
         }
     }
 
@@ -87,7 +87,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
                 } else {
                     txtColor = R.color.read_item_catalog_uncached_chapter_text_color
                 }
-
+//
                 if (chapter.chapter_name?.equals(BaseBookApplication.getGlobalContext().readStatus?.chapterName) ?: false) {
                     txtColor = R.color.read_item_catalog_current_chapter_text_color
                 }
@@ -203,11 +203,11 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
             popupWindow.showAtLocation(view.rl_left_pop_bg, Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, -transX / 2, 0)
             inflate.txt_delete_mark.tag = v.tag
             inflate.txt_delete_mark.setOnClickListener { v ->
-                presenter?.deleteBookMark(v.tag as Bookmark)
+                presenter?.deleteBookMark(activity, v.tag as Bookmark)
                 popupWindow.dismiss()
             }
             inflate.txt_clear_mark.setOnClickListener { v ->
-                presenter?.deleteAllBookMark()
+                presenter?.deleteAllBookMark(activity)
                 popupWindow.dismiss()
             }
 
@@ -245,7 +245,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
                 }
                 R.id.tab_bookmark -> {
                     view.tv_catalog_novel_sort.visibility = View.GONE
-                    presenter?.loadBookMark()
+                    presenter?.loadBookMark(activity, 1)//用于标识只有为1的时候才打点书签
                 }
                 else -> {
 

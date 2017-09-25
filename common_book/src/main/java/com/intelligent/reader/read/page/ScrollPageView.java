@@ -10,10 +10,12 @@ import com.intelligent.reader.read.help.IReadDataFactory;
 import com.intelligent.reader.read.help.NovelHelper;
 import com.intelligent.reader.util.DisplayUtils;
 
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.NovelLineBean;
 import net.lzbook.kit.data.bean.ReadStatus;
+import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 
 import android.app.Activity;
@@ -22,8 +24,10 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -83,6 +87,10 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
     private TextView mTransCodingTv;
 
     private OnOperationClickListener mOnOperationClickListener;
+    private long endTime;//阅读结束时间
+    private int count = 0;//用于记录第一次进来时次数（用户画像打点）
+    private int markPosition;//标记是否是向下滑动
+    private boolean isFirstCome = true;//用于记录当前是否是第一次进来（用户画像打点）
 
     public ScrollPageView(Context context) {
         super(context);
@@ -97,8 +105,15 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        width = readStatus.screenWidth = w;
+        height = readStatus.screenHeight = h;
         manager = new BitmapManager(readStatus.screenWidth, readStatus.screenHeight);
         if (callBack != null && (Math.abs(oldh - h) > AppUtils.dip2px(mContext, 26))) {
+            if (android.os.Build.VERSION.SDK_INT < 11 && Constants.isFullWindowRead) {
+                height = readStatus.screenHeight - AppUtils.dip2px(mContext, 20);
+            } else {
+                height = readStatus.screenHeight - AppUtils.dip2px(mContext, 40);
+            }
             callBack.onResize();
             setBackground();
             if (chapterContent != null) {
@@ -127,12 +142,13 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
 
         width = readStatus.screenWidth;
         height = readStatus.screenHeight - DisplayUtils.dp2px(getResources(), 26) * 2;
-
-//        dataFactory.setScreenSize(readStatus.screenWidth, height);
-
+        readStatus.screenHeight = height;
         chapterContent = new ArrayList<>();
 
         drawTextHelper = new DrawTextHelper(getResources(), this, mActivity);
+        readStatus.startReadTime = System.currentTimeMillis();
+        count = 0;
+        isFirstCome = true;
 
         adapter = new ScrollPageAdapter();
         page_list.setAdapter(adapter);
@@ -174,6 +190,12 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
                 startTouchY = tmpY;
                 break;
             case MotionEvent.ACTION_MOVE:
+                Log.e("Scroll", "TouchEvent: lastY : " + lastY);
+                Log.e("Scroll", "TouchEvent: event.getY() : " + event.getY());
+                Log.e("Scroll", "TouchEvent: totalItemCount : " + totalItemCount);
+                Log.e("Scroll", "TouchEvent: lastVisible : " + (lastVisible + 1));
+                Log.e("Scroll", "TouchEvent: readStatus.currentPage : " + readStatus.currentPage);
+                Log.e("Scroll", "TouchEvent: readStatus.pageCount : " + readStatus.pageCount);
                 if (!loadingData && lastY - event.getY() > 20 && totalItemCount == lastVisible + 1
                         && readStatus.currentPage == readStatus.pageCount) {
                     loadingData = true;
@@ -311,6 +333,13 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
                     chapter_name = curChapter.chapter_name;
 //					chapterNameList = curChapter.chapterNameList;
                 }
+                if (count > 2) {
+                    AppLog.e("count", count + "===" + readStatus.pageCount + "===" + readStatus.sequence + "===" + position);
+                    endTime = System.currentTimeMillis();
+                    addLog(endTime, position, readStatus.pageCount, readStatus.sequence);
+                }
+
+                count++;
 
             } else if (position <= currentSize + nextSize) {
                 position = position - currentSize;
@@ -321,6 +350,9 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
                     chapter_name = nextChapter.chapter_name;
 //					chapterNameList = nextChapter.chapterNameList;
                 }
+                endTime = System.currentTimeMillis();
+                addLog(endTime, position, readStatus.pageCount, readStatus.sequence);
+                count++;
             }
         } else if (nextSize == 0) {
             if (position <= preSize) {
@@ -370,6 +402,8 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
                     readStatus.sequence = nextChapter.sequence;
 //					chapterNameList = nextChapter.chapterNameList;
                 }
+                endTime = System.currentTimeMillis();
+                addLog(endTime, position, readStatus.pageCount, readStatus.sequence);
 
             }
         }
@@ -379,11 +413,15 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
             novel_time.setVisibility(GONE);
             novel_chapter.setVisibility(GONE);
             novel_page.setVisibility(GONE);
+            mOriginTv.setVisibility(GONE);
+            mTransCodingTv.setVisibility(GONE);
         } else {
             novel_content_battery_view.setVisibility(VISIBLE);
             novel_time.setVisibility(VISIBLE);
             novel_chapter.setVisibility(VISIBLE);
             novel_page.setVisibility(VISIBLE);
+            mOriginTv.setVisibility(VISIBLE);
+            mTransCodingTv.setVisibility(VISIBLE);
         }
 
         readStatus.chapterName = chapter_name;
@@ -413,6 +451,42 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
         dataFactory.freshPage();
         return position;
     }
+
+    /**
+     * 用户画像打点
+     *
+     * @param endTime   阅读结束时间
+     * @param position  当前第几页
+     * @param pagecount 当前章的总页数
+     * @param sequence  当前第几张
+     */
+    public void addLog(long endTime, int position, int pagecount, int sequence) {
+        //判断章节的最后一页
+        if (sequence > readStatus.lastSequenceRemark && !isFirstCome) {
+            //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
+            StartLogClickUtil.upLoadReadContent(readStatus.book_id, readStatus.lastChapterId + "", readStatus.source_ids, readStatus.lastPageCount + "",
+                    readStatus.lastCurrentPageRemark + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
+                    readStatus.startReadTime + "", endTime + "", endTime - readStatus.startReadTime + "", "false", readStatus.requestItem.channel_code + "");
+
+        } else {
+            if (dataFactory != null && dataFactory.currentChapter != null && markPosition < position) {
+                //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
+                StartLogClickUtil.upLoadReadContent(readStatus.book_id, dataFactory.currentChapter.chapter_id + "", readStatus.source_ids, readStatus.pageCount + "",
+                        position - 1 + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
+                        readStatus.startReadTime + "", endTime + "", endTime - readStatus.startReadTime + "", "false", readStatus.requestItem.channel_code + "");
+                readStatus.lastChapterId = dataFactory.currentChapter.chapter_id;
+            }
+        }
+
+        readStatus.startReadTime = endTime;
+        readStatus.requestItem.fromType = 2;
+        readStatus.lastSequenceRemark = sequence;
+        readStatus.lastCurrentPageRemark = position;
+        readStatus.lastPageCount = pagecount;
+        markPosition = position;
+        isFirstCome = false;
+    }
+
 
     private void getChapterSize() {
 
@@ -716,10 +790,6 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
 
     private void drawBackground() {
         if (Constants.MODE == 51) {// 牛皮纸
-//            scroll_page.setBackgroundResource(R.drawable.read_page_bg_default);
-//            novel_title.setBackgroundResource(R.drawable.read_page_bg_default_patch);
-//            novel_bottom.setBackgroundResource(R.drawable.read_page_bg_default_patch);
-//            page_list.setFootViewBackground(R.drawable.read_page_bg_default_patch);
             setBackgroundResource(R.drawable.read_page_bg_default);
         } else {
             // 通过新的画布，将矩形画新的bitmap上去
@@ -737,31 +807,26 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
             } else if (Constants.MODE == 61) {//night3
                 color_int = R.color.reading_backdrop_night;
             }
-
-//            novel_title.setBackgroundColor(getResources().getColor(color_int));
-//            novel_bottom.setBackgroundColor(getResources().getColor(color_int));
-//            page_list.setFootViewBackgroundColor(getResources().getColor(color_int));
-
             setBackgroundColor(getResources().getColor(color_int));
         }
     }
 
     private void drawHeadFootText() {
-        int color_int = R.color.reading_text_color_first;
+        int color_int = R.color.reading_operation_text_color_first;
         if (Constants.MODE == 51) {// night1
-            color_int = R.color.reading_text_color_first;
+            color_int = R.color.reading_operation_text_color_first;
         } else if (Constants.MODE == 52) {// day
-            color_int = R.color.reading_text_color_second;
+            color_int = R.color.reading_operation_text_color_second;
         } else if (Constants.MODE == 53) {// eye
-            color_int = R.color.reading_text_color_third;
+            color_int = R.color.reading_operation_text_color_third;
         } else if (Constants.MODE == 54) {// powersave
-            color_int = R.color.reading_text_color_fourth;
+            color_int = R.color.reading_operation_text_color_fourth;
         } else if (Constants.MODE == 55) {// color -4
-            color_int = R.color.reading_text_color_fifth;
+            color_int = R.color.reading_operation_text_color_fifth;
         } else if (Constants.MODE == 56) {// color -5
-            color_int = R.color.reading_text_color_sixth;
+            color_int = R.color.reading_operation_text_color_sixth;
         } else if (Constants.MODE == 61) {// night2
-            color_int = R.color.reading_text_color_night;
+            color_int = R.color.reading_operation_text_color_night;
         }
 
         novel_time.setTextColor(getResources().getColor(color_int));
@@ -940,12 +1005,11 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
             Bitmap mCurPageBitmap = (Bitmap) hodler.page.getTag(R.id.tag_bitmap);
             Canvas mCurrentCanvas = (Canvas) hodler.page.getTag(R.id.tag_canvas);
             float pageHeight = drawTextHelper.drawText(mCurrentCanvas, chapterContent.get(position), chapterNameList);
-            android.util.Log.e("ScrollView", "pageHeight: " + pageHeight);
-//            if (position != 0) {
-//                hodler.page.getLayoutParams().height = (int) pageHeight;
-//            } else {
+            if (pageHeight != 0.0f) {
+                hodler.page.getLayoutParams().height = (int) pageHeight;
+            } else {
                 hodler.page.getLayoutParams().height = readStatus.screenHeight;
-//            }
+            }
             hodler.page.drawPage(mCurPageBitmap);
 
             return convertView;

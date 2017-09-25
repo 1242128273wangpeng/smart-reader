@@ -131,7 +131,7 @@ import iyouqu.theme.ThemeMode;
 @SuppressLint("InlinedApi")
 public class ReadingActivity extends BaseCacheableActivity implements OnClickListener, NovelHelper
         .OnHelperCallBack, CallBack, IReadDataFactory.ReadDataListener, AutoReadMenu.OnAutoMemuListener, ReadSettingView.OnReadSettingListener,
-        DownloadService.OnDownloadListener {
+        DownloadService.OnDownloadListener ,PageInterface.OnOperationClickListener{
     public static final int MSG_LOAD_CUR_CHAPTER = 0;
     public static final int MSG_LOAD_PRE_CHAPTER = 1;
     public static final int MSG_LOAD_NEXT_CHAPTER = 2;
@@ -211,10 +211,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private StatisticManager statisticManager;
     private boolean isSlideToAuto = false;
     private FrameLayout novel_basePageView;
-    //转码声明
-    private TransCodingView novel_option_encode;
-    //原网页
-    private SourcePageView novel_option_source;
     private Resources resources;
     private int isFirstGuide = 0;
     private MyDialog myDialog;
@@ -328,7 +324,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         mCatlogMarkDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mCatlogMarkDrawer.addDrawerListener(mDrawerListener);
 
-        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus);
+        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus,dataFactory);
 
         mCatalogMarkFragment = (CatalogMarkFragment) getSupportFragmentManager().findFragmentById(R.id.read_catalog_mark_layout);
         mCatalogMarkPresenter.setView(mCatalogMarkFragment);
@@ -392,7 +388,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         mCatlogMarkDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mCatlogMarkDrawer.addDrawerListener(mDrawerListener);
 
-        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus);
+        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus,dataFactory);
 
         mCatalogMarkFragment = (CatalogMarkFragment) getSupportFragmentManager().findFragmentById(R.id.read_catalog_mark_layout);
         mCatalogMarkPresenter.setView(mCatalogMarkFragment);
@@ -651,7 +647,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         mCatlogMarkDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mCatlogMarkDrawer.addDrawerListener(mDrawerListener);
 
-        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus);
+        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus,dataFactory);
 
         mCatalogMarkFragment = (CatalogMarkFragment) getSupportFragmentManager().findFragmentById(R.id.read_catalog_mark_layout);
         mCatalogMarkPresenter.setView(mCatalogMarkFragment);
@@ -870,6 +866,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         pageView.setReadFactory(dataFactory);
         pageView.init(this, readStatus, myNovelHelper);
         pageView.setCallBack(this);
+        pageView.setOnOperationClickListener(this);
         dataFactory.setPageView(pageView);
         myNovelHelper.setPageView(pageView);
         readSettingView.setDataFactory(dataFactory, readStatus, mThemeHelper);
@@ -878,13 +875,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         auto_menu.setOnAutoMemuListener(this);
 
         ll_guide_layout = findViewById(R.id.ll_guide_layout);
-        novel_option_encode = (TransCodingView) findViewById(R.id.novel_option_encode);
-        novel_option_encode.setVisibility(View.VISIBLE);
-        novel_option_encode.invalidate();
-        novel_option_source = (SourcePageView) findViewById(R.id.novel_option_source);
-
-        novel_option_source.setVisibility(View.VISIBLE);
-        novel_option_source.invalidate();
         initGuide();
         initReadingAd();
 
@@ -934,11 +924,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         }
         if (downloadService != null)
             downloadService.setOnDownloadListener(this);
-
-        //转码声明
-        novel_option_encode.setOnClickListener(this);
-        //原网页
-        novel_option_source.setOnClickListener(this);
     }
 
     private void reStartDownloadService(Activity context) {
@@ -965,11 +950,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
      */
     private void refreshPage() {
         //readStatus.isCanDrawFootView = (readStatus.sequence != -1);
-        novel_option_encode.setVisibility(View.VISIBLE);
-        novel_option_source.setVisibility(View.VISIBLE);
         if (readStatus.sequence == -1) {
-            novel_option_encode.setVisibility(View.GONE);
-            novel_option_source.setVisibility(View.GONE);
             readStatus.isCanDrawFootView = false;
         } else {
             readStatus.isCanDrawFootView = true;
@@ -1048,7 +1029,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 break;
 
             case R.id.novel_source_url:
-            case R.id.novel_option_source:
                 String url = null;
                 if (dataFactory != null && dataFactory.currentChapter != null) {
                     url = UrlUtils.buildContentUrl(dataFactory.currentChapter.curl);
@@ -1057,13 +1037,14 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                     Uri uri = Uri.parse(url);
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                     startActivity(intent);
+                    Map<String, String> data = new HashMap<>();
+                    if (readStatus != null) {
+                        data.put("bookid", readStatus.book_id);
+                    }
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ORIGINALLINK, data);
                 } else {
                     Toast.makeText(this, "无法查看原文链接", Toast.LENGTH_SHORT).show();
                 }
-                break;
-
-            case R.id.novel_option_encode:
-                showDisclaimerActivity();
                 break;
 
             default:
@@ -1321,11 +1302,17 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         Editor screen_mode = sp.edit();
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_portrait_btn);
+            Map<String, String> data = new HashMap<>();
+            data.put("type", "2");
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.HPMODEL, data);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             screen_mode.putInt("screen_mode", Configuration.ORIENTATION_PORTRAIT);
             Constants.IS_LANDSCAPE = false;
         } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_landscape_btn);
+            Map<String, String> data = new HashMap<>();
+            data.put("type", "1");
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.HPMODEL, data);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             isFromCover = false;
             screen_mode.putInt("screen_mode", Configuration.ORIENTATION_LANDSCAPE);
@@ -1510,18 +1497,12 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 setTextColor(getResources().getColor(R.color.reading_text_color_first));
                 setPageBackColor(getResources().getColor(R.color.reading_backdrop_first));
 
-                novel_option_encode.setColor(getResources().getColor(R.color.reading_text_color_first));
-                novel_option_source.setColor(getResources().getColor(R.color.reading_text_color_first));
-
                 setBackground();
                 setBatteryBackground(R.drawable.reading_batty_day);
                 break;
             case 52:
                 setTextColor(getResources().getColor(R.color.reading_text_color_second));
                 setPageBackColor(getResources().getColor(R.color.reading_backdrop_second));
-
-                novel_option_encode.setColor(getResources().getColor(R.color.reading_text_color_second));
-                novel_option_source.setColor(getResources().getColor(R.color.reading_text_color_second));
 
                 setBackground();
                 setBatteryBackground(R.drawable.reading_batty_eye);
@@ -1530,18 +1511,12 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 setTextColor(getResources().getColor(R.color.reading_text_color_third));
                 setPageBackColor(getResources().getColor(R.color.reading_backdrop_third));
 
-                novel_option_encode.setColor(getResources().getColor(R.color.reading_text_color_third));
-                novel_option_source.setColor(getResources().getColor(R.color.reading_text_color_third));
-
                 setBackground();
                 setBatteryBackground(R.drawable.reading_batty_4);
                 break;
             case 54:
                 setTextColor(getResources().getColor(R.color.reading_text_color_fourth));
                 setPageBackColor(getResources().getColor(R.color.reading_backdrop_fourth));
-
-                novel_option_encode.setColor(getResources().getColor(R.color.reading_text_color_fourth));
-                novel_option_source.setColor(getResources().getColor(R.color.reading_text_color_fourth));
 
                 setBackground();
                 setBatteryBackground(R.drawable.reading_batty_5);
@@ -1551,9 +1526,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 setPageBackColor(getResources().getColor(R.color.reading_backdrop_fifth));
 
                 setBatteryBackground(R.drawable.reading_batty_night);
-
-                novel_option_encode.setColor(getResources().getColor(R.color.reading_text_color_fifth));
-                novel_option_source.setColor(getResources().getColor(R.color.reading_text_color_fifth));
 
                 setBackground();
                 /*int screenBrightness = sp.getInt("screen_bright", -1);
@@ -1566,9 +1538,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 setTextColor(getResources().getColor(R.color.reading_text_color_sixth));
                 setPageBackColor(getResources().getColor(R.color.reading_backdrop_sixth));
 
-                novel_option_encode.setColor(getResources().getColor(R.color.reading_text_color_sixth));
-                novel_option_source.setColor(getResources().getColor(R.color.reading_text_color_sixth));
-
                 setBackground();
                 setBatteryBackground(R.drawable.reading_batty_night2);
                 break;
@@ -1576,18 +1545,12 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 setTextColor(getResources().getColor(R.color.reading_text_color_night));
                 setPageBackColor(getResources().getColor(R.color.reading_backdrop_night));
 
-                novel_option_encode.setColor(getResources().getColor(R.color.reading_text_color_night));
-                novel_option_source.setColor(getResources().getColor(R.color.reading_text_color_night));
-
                 setBackground();
                 setBatteryBackground(R.drawable.reading_batty_night2);
                 break;
             default:
                 setTextColor(getResources().getColor(R.color.reading_text_color_first));
                 setPageBackColor(Color.parseColor("#C2B282"));
-
-                novel_option_encode.setColor(getResources().getColor(R.color.reading_text_color_first));
-                novel_option_source.setColor(getResources().getColor(R.color.reading_text_color_first));
 
                 setBackground();
                 setBatteryBackground(R.drawable.reading_batty_day);
@@ -1825,9 +1788,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 mCatlogMarkDrawer.removeDrawerListener(mCatalogMarkFragment);
         }
 
-        if (IReadDataFactory.loadingPage != null) {
-            IReadDataFactory.loadingPage = null;
-        }
         if(readStatus!=null&&dataFactory!=null&&dataFactory.currentChapter!=null){
             //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
             StartLogClickUtil.upLoadReadContent(readStatus.book_id,dataFactory.currentChapter.chapter_id+"",readStatus.source_ids,readStatus.pageCount+"",
@@ -1948,7 +1908,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             outState.putInt("nid", readStatus.nid);
             outState.putInt("offset", readStatus.offset);
             outState.putSerializable("book", readStatus.book);
-            outState.putSerializable("currentChapter", dataFactory.currentChapter);
+            if (dataFactory != null && dataFactory.currentChapter != null) {
+                outState.putSerializable("currentChapter", dataFactory.currentChapter);
+            }
             outState.putString("thememode", mThemeHelper.getMode());
             super.onSaveInstanceState(outState);
         } catch (ClassCastException e) {
@@ -2187,6 +2149,15 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         }
 
         mCatlogMarkDrawer.openDrawer(GravityCompat.START);
+
+        Map<String, String> data = new HashMap<>();
+        if (readStatus != null) {
+            data.put("bookid", readStatus.book_id);
+        }
+        if (dataFactory != null && dataFactory.currentChapter != null) {
+            data.put("chapterid", dataFactory.currentChapter.book_id);
+        }
+        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CATALOG, data);
     }
 
     @Override
@@ -2290,6 +2261,17 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             Constants.manualReadedCount++;
             dataFactory.dealManualDialogShow();
         }
+
+        Map<String, String> data = new HashMap<>();
+        if (readStatus != null) {
+            data.put("bookid", readStatus.book_id);
+        }
+        if (dataFactory != null && dataFactory.currentChapter != null) {
+            data.put("chapterid", dataFactory.currentChapter.chapter_id);
+        }
+        data.put("type", "1");
+        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CHAPTERTURN, data);
+
     }
 
     @Override
@@ -2308,6 +2290,17 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             Constants.manualReadedCount++;
             dataFactory.dealManualDialogShow();
         }
+
+        Map<String, String> data = new HashMap<>();
+        if (readStatus != null) {
+            data.put("bookid", readStatus.book_id);
+        }
+        if (dataFactory != null && dataFactory.currentChapter != null) {
+            data.put("chapterid", dataFactory.currentChapter.chapter_id);
+        }
+        data.put("type", "2");
+        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CHAPTERTURN, data);
+
     }
 
     @Override
@@ -2385,33 +2378,39 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     public void onChageNightMode() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Editor edit = sharedPreferences.edit();
+        Map<String, String> data = new HashMap<>();
+
         if (mThemeHelper.isNight()) {
             //夜间模式只有一种背景， 不能存储
 //            edit.putInt("current_night_mode", Constants.MODE);
             Constants.MODE = sharedPreferences.getInt("current_light_mode", 51);
             mThemeHelper.setMode(ThemeMode.THEME1);
+            data.put("type", "2");
+            StartLogClickUtil.upLoadEventLog(getApplicationContext(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.NIGHTMODE1, data);
         } else {
             edit.putInt("current_light_mode", Constants.MODE);
 //            Constants.MODE = sharedPreferences.getInt("current_night_mode", 61);
             //夜间模式只有一种背景
             Constants.MODE = 61;
             mThemeHelper.setMode(ThemeMode.NIGHT);
+            data.put("type", "1");
+            StartLogClickUtil.upLoadEventLog(getApplicationContext(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.NIGHTMODE1, data);
         }
         edit.putInt("content_mode", Constants.MODE);
         edit.apply();
-
-        Intent intent = new Intent(this, ReadingActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt("sequence", readStatus.sequence);
-        bundle.putInt("offset", readStatus.offset);
-        bundle.putSerializable("book", readStatus.book);
-        bundle.putSerializable(Constants.REQUEST_ITEM, readStatus.requestItem);
-        bundle.putString("thememode", currentThemeMode);
-        intent.putExtras(bundle);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-        finish();
+        changeMode(Constants.MODE);
+//        Intent intent = new Intent(this, ReadingActivity.class);
+//        Bundle bundle = new Bundle();
+//        bundle.putInt("sequence", readStatus.sequence);
+//        bundle.putInt("offset", readStatus.offset);
+//        bundle.putSerializable("book", readStatus.book);
+//        bundle.putSerializable(Constants.REQUEST_ITEM, readStatus.requestItem);
+//        bundle.putString("thememode", currentThemeMode);
+//        intent.putExtras(bundle);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        startActivity(intent);
+//        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+//        finish();
     }
 
     private void submitFeedback(int type) {
@@ -2495,6 +2494,31 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             }
             finish();
         }
+    }
+
+    @Override
+    public void onOriginClick() {
+        String url = null;
+        if (dataFactory != null && dataFactory.currentChapter != null) {
+            url = UrlUtils.buildContentUrl(dataFactory.currentChapter.curl);
+        }
+        if (!TextUtils.isEmpty(url)) {
+            Uri uri = Uri.parse(url);
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(intent);
+            Map<String, String> data = new HashMap<>();
+            if (readStatus != null) {
+                data.put("bookid", readStatus.book_id);
+            }
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ORIGINALLINK, data);
+        } else {
+            Toast.makeText(this, "无法查看原文链接", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onTransCodingClick() {
+        showDisclaimerActivity();
     }
 
     private static class TimerRunnable implements Runnable {

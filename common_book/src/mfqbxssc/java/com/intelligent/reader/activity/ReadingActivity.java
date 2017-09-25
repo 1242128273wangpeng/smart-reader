@@ -1,56 +1,5 @@
 package com.intelligent.reader.activity;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Notification;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.SystemClock;
-import android.preference.PreferenceManager;
-import android.provider.Settings;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.text.TextUtils;
-import android.text.format.DateFormat;
-import android.util.DisplayMetrics;
-import android.view.Gravity;
-import android.view.InflateException;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.dingyueads.sdk.Bean.Advertisement;
@@ -108,6 +57,57 @@ import net.lzbook.kit.utils.ResourceUtil;
 import net.lzbook.kit.utils.SharedPreferencesUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
 import net.lzbook.kit.utils.StatisticManager;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.SystemClock;
+import android.preference.PreferenceManager;
+import android.provider.Settings;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.text.TextUtils;
+import android.text.format.DateFormat;
+import android.util.DisplayMetrics;
+import android.view.Gravity;
+import android.view.InflateException;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
@@ -1056,6 +1056,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 } else {
                     Toast.makeText(this, "无法查看原文链接", Toast.LENGTH_SHORT).show();
                 }
+
                 break;
             default:
                 break;
@@ -1822,9 +1823,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 mCatlogMarkDrawer.removeDrawerListener(mCatalogMarkFragment);
         }
 
-        if (IReadDataFactory.loadingPage != null) {
-            IReadDataFactory.loadingPage = null;
-        }
         if (readStatus != null && dataFactory != null && dataFactory.currentChapter != null) {
             //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
             StartLogClickUtil.upLoadReadContent(readStatus.book_id, dataFactory.currentChapter.chapter_id + "", readStatus.source_ids, readStatus.pageCount + "",
@@ -2433,18 +2431,30 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         edit.putInt("content_mode", Constants.MODE);
         edit.apply();
 
-        Intent intent = new Intent(this, ReadingActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt("sequence", readStatus.sequence);
-        bundle.putInt("offset", readStatus.offset);
-        bundle.putSerializable("book", readStatus.book);
-        bundle.putSerializable(Constants.REQUEST_ITEM, readStatus.requestItem);
-        bundle.putString("thememode", currentThemeMode);
-        intent.putExtras(bundle);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-        finish();
+        changeMode(Constants.MODE);
+//        if (isSubed) {
+//            if (readStatus.book.book_type == 0) {
+//                myNovelHelper.saveBookmark(dataFactory.chapterList, readStatus.book_id, readStatus.sequence,
+//                        readStatus.offset, mBookDaoHelper);
+//                // 统计阅读章节数
+//                SharedPreferencesUtils spUtils = new SharedPreferencesUtils(PreferenceManager
+//                        .getDefaultSharedPreferences(this));
+//                spUtils.putInt("readed_count", Constants.readedCount);
+//            }
+//        }
+//
+//        Intent intent = new Intent(this, ReadingActivity.class);
+//        Bundle bundle = new Bundle();
+//        bundle.putInt("sequence", readStatus.sequence);
+//        bundle.putInt("offset", readStatus.offset);
+//        bundle.putSerializable("book", readStatus.book);
+//        bundle.putSerializable(Constants.REQUEST_ITEM, readStatus.requestItem);
+//        bundle.putString("thememode", currentThemeMode);
+//        intent.putExtras(bundle);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        startActivity(intent);
+//        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+//        finish();
     }
 
     private void submitFeedback(int type) {
@@ -2540,6 +2550,11 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             Uri uri = Uri.parse(url);
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
+            Map<String, String> data = new HashMap<>();
+            if (readStatus != null) {
+                data.put("bookid", readStatus.book_id);
+            }
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ORIGINALLINK, data);
         } else {
             Toast.makeText(this, "无法查看原文链接", Toast.LENGTH_SHORT).show();
         }
@@ -2547,14 +2562,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
     @Override
     public void onTransCodingClick() {
-        Intent intent = new Intent(this, DisclaimerActivity.class);
-        try {
-            intent.putExtra("isFromReadingPage", true);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        showDisclaimerActivity();
     }
 
     private static class TimerRunnable implements Runnable {

@@ -1,106 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scroll_page"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+        android:id="@+id/scroll_page"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/novel_title_layout"
-        android:layout_width="match_parent"
-        android:layout_height="26dp">
+            android:id="@+id/novel_title_layout"
+            android:layout_width="match_parent"
+            android:layout_height="26dp">
 
         <TextView
-            android:id="@+id/origin_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="20dp"
-            android:gravity="center"
-            android:text="@string/origin_text"
-            android:textSize="10sp" />
+                android:id="@+id/origin_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="20dp"
+                android:gravity="center"
+                android:text="@string/origin_text"
+                android:textSize="10sp" />
 
         <TextView
-            android:id="@+id/novel_title"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="章节"
-            android:textSize="10sp"
-            android:visibility="visible" />
+                android:id="@+id/novel_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="章节"
+                android:textSize="10sp"
+                android:visibility="visible" />
 
         <TextView
-            android:id="@+id/trans_coding_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
-            android:gravity="center"
-            android:text="@string/trans_coding_text"
-            android:textSize="10sp" />
+                android:id="@+id/trans_coding_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="20dp"
+                android:gravity="center"
+                android:text="@string/trans_coding_text"
+                android:textSize="10sp" />
     </RelativeLayout>
 
 
     <com.intelligent.reader.read.page.FListView
-        android:id="@+id/page_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/novel_bottom"
-        android:layout_below="@+id/novel_title_layout"
-        android:divider="@color/transparent"
-        android:dividerHeight="0dp"
-        android:fadingEdge="none"
-        android:fadingEdgeLength="0dp"
-        android:overScrollMode="never"
-        android:scrollbars="none" />
+            android:id="@+id/page_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/novel_bottom"
+            android:layout_below="@+id/novel_title_layout"
+            android:divider="@color/transparent"
+            android:dividerHeight="0dp"
+            android:fadingEdge="none"
+            android:fadingEdgeLength="0dp"
+            android:listSelector="@android:color/transparent"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
 
     <RelativeLayout
-        android:id="@+id/novel_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="26dp"
-        android:layout_alignParentBottom="true"
-        android:background="@color/transparent"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp">
+            android:id="@+id/novel_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="26dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/transparent"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
 
         <com.intelligent.reader.read.page.BatteryView
-            android:id="@+id/novel_content_battery_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:paddingTop="2.0dip"
-            android:scrollbars="none"
-            android:src="@drawable/reading_batty_day" />
+                android:id="@+id/novel_content_battery_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:paddingTop="2.0dip"
+                android:scrollbars="none"
+                android:src="@drawable/reading_batty_day" />
 
         <TextView
-            android:id="@+id/novel_time"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="6dp"
-            android:layout_toRightOf="@+id/novel_content_battery_view"
-            android:gravity="center_vertical"
-            android:textSize="10sp" />
+                android:id="@+id/novel_time"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="6dp"
+                android:layout_toRightOf="@+id/novel_content_battery_view"
+                android:gravity="center_vertical"
+                android:textSize="10sp" />
 
         <TextView
-            android:id="@+id/novel_chapter"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:layout_centerVertical="true"
-            android:gravity="center"
-            android:textSize="10sp" />
+                android:id="@+id/novel_chapter"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:textSize="10sp" />
 
         <TextView
-            android:id="@+id/novel_page"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:gravity="center"
-            android:textSize="10sp" />
+                android:id="@+id/novel_page"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:textSize="10sp" />
 
 
     </RelativeLayout>

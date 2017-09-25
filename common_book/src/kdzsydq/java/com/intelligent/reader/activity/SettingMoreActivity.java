@@ -174,6 +174,9 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
         switch (paramView.getId()) {
 
             case R.id.btn_left_setting:
+                Map<String, String> data = new HashMap<>();
+                data.put("type", "1");
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
                 finish();
                 break;
 

@@ -19,6 +19,10 @@
     <string name="about">关于</string>
     <string name="slogan">全本小说免费看</string>
 
+    <!--Reader Page Operation-->
+    <string name="origin_text">原网页</string>
+    <string name="trans_coding_text">转码声明</string>
+
 
     <string name="search_title_text">输入书名、作者或关键词</string>
     <string name="publish_confirm_hint">提示</string>

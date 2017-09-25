@@ -226,20 +226,23 @@ public abstract class FrameActivity extends AppCompatActivity {
         mSystemBrightness = getScreenBrightness(this);
     }
 
+
     @Override
     protected void onStop() {
         super.onStop();
         if (!isAppOnForeground()) {
             isActive = false;
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.HOME);
+            isCurrentRunningForeground = false;
             restoreSystemDisplayState();
         }
-        isCurrentRunningForeground = isAppOnForeground();
-        if (!isCurrentRunningForeground) {
-            outTime = System.currentTimeMillis();
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.HOME);
+        if (!Constants.isHideAD && Constants.isShowSwitchSplashAd && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
+            isCurrentRunningForeground = isAppOnForeground();
+            if (!isCurrentRunningForeground) {
+                outTime = System.currentTimeMillis();
+            }
         }
     }
-
 
     @Override
     protected void onStart() {

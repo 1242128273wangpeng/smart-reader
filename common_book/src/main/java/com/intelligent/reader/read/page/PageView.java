@@ -4,7 +4,6 @@ import com.dingyueads.sdk.Bean.AdSceneData;
 import com.dingyueads.sdk.Bean.Novel;
 import com.dingyueads.sdk.NativeInit;
 import com.intelligent.reader.R;
-import com.intelligent.reader.activity.DisclaimerActivity;
 import com.intelligent.reader.activity.ReadingActivity;
 import com.intelligent.reader.read.animation.AnimationProvider;
 import com.intelligent.reader.read.animation.BitmapManager;
@@ -20,7 +19,6 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.NovelLineBean;
 import net.lzbook.kit.data.bean.ReadStatus;
-import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
@@ -30,16 +28,13 @@ import net.lzbook.kit.utils.ToastUtils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -467,10 +462,13 @@ public class PageView extends View implements PageInterface {
             if (Constants.DEVELOPER_MODE) {
                 ToastUtils.showToastNoRepeat("AdOnclick");
             }
-        } else if (performOperation(event)) {
-        } else {
+        }
+//        else if (performOperation(event)) {
+//        }
+        else {
             if (!Constants.FULL_SCREEN_READ) {
-                if (x <= w3) {
+                if (performOperation(event)) {
+                } else if (x <= w3) {
                     tryTurnPrePage();
                 } else if (x >= pageWidth - w3 || (y >= pageHeight - h4 && x >= w3)) {
                     tryTurnNextPage(event);
@@ -770,7 +768,7 @@ public class PageView extends View implements PageInterface {
         //判断章节的最后一页
         if (readStatus.sequence + 1 > readStatus.lastSequenceRemark && !isFirstCome) {
             //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
-            StartLogClickUtil.upLoadReadContent(readStatus.book_id, readStatus.lastSequenceRemark + "", readStatus.source_ids, readStatus.lastPageCount + "",
+            StartLogClickUtil.upLoadReadContent(readStatus.book_id, readStatus.lastChapterId + "", readStatus.source_ids, readStatus.lastPageCount + "",
                     readStatus.lastCurrentPageRemark + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
                     readStatus.startReadTime + "", endTime + "", endTime - readStatus.startReadTime + "", "false", readStatus.requestItem.channel_code + "");
         } else {
@@ -954,6 +952,17 @@ public class PageView extends View implements PageInterface {
             return;
         }
         isMoveing = true;
+
+        readStatus.requestItem.fromType = 2;
+        endTime = System.currentTimeMillis();
+        if (dataFactory != null && dataFactory.currentChapter != null) {
+            //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
+            StartLogClickUtil.upLoadReadContent(readStatus.book_id, dataFactory.currentChapter.chapter_id + "", readStatus.source_ids, readStatus.pageCount + "",
+                    readStatus.currentPage + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
+                    readStatus.startReadTime + "", endTime + "", endTime - readStatus.startReadTime + "", "false", readStatus.requestItem.channel_code + "");
+            readStatus.lastChapterId = dataFactory.currentChapter.chapter_id;
+        }
+        readStatus.startReadTime = endTime;
         tempPageMode = Constants.PAGE_MODE;
         Constants.PAGE_MODE = AnimationProvider.SHIFT_MODE;
         getAnimationProvider();
@@ -1249,13 +1258,24 @@ public class PageView extends View implements PageInterface {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
+            AppLog.e("zidong00", "zidong00");
+            endTime = System.currentTimeMillis();
+            if (dataFactory != null && dataFactory.currentChapter != null) {
+                //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
+                StartLogClickUtil.upLoadReadContent(readStatus.book_id, dataFactory.currentChapter.chapter_id + "", readStatus.source_ids, readStatus.pageCount + "",
+                        readStatus.currentPage + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
+                        readStatus.startReadTime + "", endTime + "", endTime - readStatus.startReadTime + "", "false", readStatus.requestItem.channel_code + "");
+                readStatus.lastChapterId = dataFactory.currentChapter.chapter_id;
+            }
+            readStatus.startReadTime = endTime;
             if (!tryTurnPage()) {
                 exitAutoReadNoCancel();
                 if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
-                    dataFactory.getChapterByLoading(ReadingActivity.MSG_LOAD_NEXT_CHAPTER, readStatus.sequence + 1);
+                    if (dataFactory != null) {
+                        dataFactory.getChapterByLoading(ReadingActivity.MSG_LOAD_NEXT_CHAPTER, readStatus.sequence + 1);
+                    }
                 } else {
-                    Toast.makeText(mContext, "网络不给力，请稍后重试", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(mContext, "网络不给力，请稍后重试", Toast.LENGTH_SHORT).show();
                 }
                 return false;
             }

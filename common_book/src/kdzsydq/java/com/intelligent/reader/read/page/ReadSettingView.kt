@@ -14,15 +14,12 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnClickListener
 import android.view.ViewPropertyAnimator
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import android.widget.RadioGroup
-import android.widget.RadioGroup.OnCheckedChangeListener
 import android.widget.SeekBar
-import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.ReadingActivity
@@ -33,17 +30,17 @@ import iyouqu.theme.ThemeHelper
 import kotlinx.android.synthetic.kdzsydq.read_option_bottom.view.*
 import kotlinx.android.synthetic.kdzsydq.read_option_detail.view.*
 import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ReadStatus
 import net.lzbook.kit.request.DataCache
 import net.lzbook.kit.utils.*
 import java.text.NumberFormat
 
-
 /**
  * 阅读页阅读设置
  */
-class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, OnSeekBarChangeListener {
+class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener {
 
     private var sharedPreferences: SharedPreferences? = null
     private var readSettingHelper: ReadSettingHelper? = null
@@ -58,6 +55,7 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
     private var popDownOutAnimation: Animation? = null
     private var dataFactory: IReadDataFactory? = null
     private var readStatus: ReadStatus? = null
+    private var lastIndex: Int? = null
     private var themeHelper: ThemeHelper? = null
     var currentThemeMode: String? = null
 
@@ -114,24 +112,29 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
         val numberFormat = NumberFormat.getNumberInstance()
         numberFormat.maximumFractionDigits = 2
 
-        Constants.READ_INTERLINEAR_SPACE = sharedPreferences!!.getInt("read_interlinear_space", 3) * 0.1f + 0.2f
-
         try {
+            Constants.READ_INTERLINEAR_SPACE = sharedPreferences!!.getInt("read_interlinear_space", 3) * 0.1f
             Constants.READ_INTERLINEAR_SPACE = java.lang.Float.valueOf(numberFormat.format(Constants.READ_INTERLINEAR_SPACE.toDouble()))!!
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        Constants.READ_PARAGRAPH_SPACE = sharedPreferences!!.getInt("read_paragraph_space", 8) * 0.1f + 0.2f
-
-        try {
+            Constants.READ_PARAGRAPH_SPACE = sharedPreferences!!.getInt("read_paragraph_space", 10) * 0.1f
             Constants.READ_PARAGRAPH_SPACE = java.lang.Float.valueOf(numberFormat.format(Constants.READ_PARAGRAPH_SPACE.toDouble()))!!
         } catch (e: NumberFormatException) {
             e.printStackTrace()
         }
 
         Constants.READ_CONTENT_PAGE_TOP_SPACE = sharedPreferences!!.getInt("read_content_page_top_space", 45)
-        Constants.READ_CONTENT_PAGE_LEFT_SPACE = sharedPreferences!!.getInt("read_content_page_left_space", 16)
+        Constants.READ_CONTENT_PAGE_LEFT_SPACE = sharedPreferences!!.getInt("read_content_page_left_space", 20)
+
+        // 老版本左右边距修正
+        if (Constants.READ_CONTENT_PAGE_LEFT_SPACE != 20) {
+            Constants.READ_CONTENT_PAGE_LEFT_SPACE = 20
+            sharedPreferences!!.edit().putInt("read_content_page_left_space", 20).apply()
+        }
+
+        // 老版本行距修正
+        if (!(Constants.READ_INTERLINEAR_SPACE == 0.2f || Constants.READ_INTERLINEAR_SPACE == 0.3f || Constants.READ_INTERLINEAR_SPACE == 0.4f || Constants.READ_INTERLINEAR_SPACE == 0.5f)) {
+            Constants.READ_INTERLINEAR_SPACE = 0.3f
+            sharedPreferences!!.edit().putInt("read_interlinear_space", 3).apply()
+        }
 
         isCustomSpaceSet()
         initPageMode()
@@ -151,6 +154,17 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
         } else {
             read_full.isEnabled = true
             read_full.isClickable = true
+            read_full.alpha = 1f
+        }
+
+        if (Constants.isSlideUp) {
+            read_autoRead.isClickable = false
+            read_autoRead.isEnabled = false
+            read_autoRead.alpha = 0.3f
+        } else {
+            read_autoRead.isClickable = true
+            read_autoRead.isEnabled = true
+            read_autoRead.alpha = 1f
         }
 
     }
@@ -170,6 +184,14 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
                 }
                 read_setting_detail!!.visibility = View.VISIBLE
                 novel_bottom_options!!.visibility = View.GONE
+
+                read_setting_backdrop_group.setOnCheckedChangeListener(null)
+                if (Constants.MODE == 61) {
+                    read_setting_backdrop_group.clearCheck()
+                } else {
+                    setNovelMode(Constants.MODE)
+                }
+                read_setting_backdrop_group.setOnCheckedChangeListener(this)
             }
 
             else -> {
@@ -325,6 +347,9 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
             when (id) {
                 R.id.read_spacing_0_2 -> {
                     StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_hangju_01)
+                    val data = java.util.HashMap<String, String>()
+                    data.put("type", "4")
+                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.READGAP, data)
                     if (read_spacing_0_2!!.isChecked) {
                         Constants.READ_INTERLINEAR_SPACE = 0.2f
                         setInterLinearSpaceMode()
@@ -332,22 +357,31 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
                 }
                 R.id.read_spacing_0_5 -> {
                     StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_hangju_02)
+                    val data = java.util.HashMap<String, String>()
+                    data.put("type", "3")
+                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.READGAP, data)
                     if (read_spacing_0_5!!.isChecked) {
-                        Constants.READ_INTERLINEAR_SPACE = 0.5f
+                        Constants.READ_INTERLINEAR_SPACE = 0.3f
                         setInterLinearSpaceMode()
                     }
                 }
                 R.id.read_spacing_1_0 -> {
                     StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_hangju_03)
+                    val data = java.util.HashMap<String, String>()
+                    data.put("type", "2")
+                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.READGAP, data)
                     if (read_spacing_1_0!!.isChecked) {
-                        Constants.READ_INTERLINEAR_SPACE = 1.0f
+                        Constants.READ_INTERLINEAR_SPACE = 0.4f
                         setInterLinearSpaceMode()
                     }
                 }
                 R.id.read_spacing_1_5 -> {
                     StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_hangju_04)
+                    val data = java.util.HashMap<String, String>()
+                    data.put("type", "1")
+                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.READGAP, data)
                     if (read_spacing_1_5!!.isChecked) {
-                        Constants.READ_INTERLINEAR_SPACE = 1.5f
+                        Constants.READ_INTERLINEAR_SPACE = 0.5f
                         setInterLinearSpaceMode()
                     }
                 }
@@ -397,6 +431,7 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
 
             R.id.novel_setting -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_setting_btn)
+                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.SET)
                 changeBottomSettingView(SETTING_DETAIL)
             }
             R.id.novel_night//夜间模式
@@ -423,6 +458,7 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
             R.id.read_setting_save_power_layout, R.id.read_setting_auto_power// 跟随系统 更改按钮背景
             -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_ld_with_system)
+                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.SYSFOLLOW)
                 changeSystemLight()
             }
             R.id.read_landscape -> {
@@ -432,6 +468,13 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
             }
             R.id.read_autoRead -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_auto_read_btn)
+                val data = java.util.HashMap<String, String>()
+                if (Constants.isSlideUp) {
+                    data.put("type", "2")
+                } else {
+                    data.put("type", "1")
+                }
+                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.AUTOREAD, data)
                 listener?.onReadAuto()
             }
             R.id.read_full -> {
@@ -439,6 +482,13 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
                 sharedPreferences?.edit()?.putBoolean("full_screen_read", read_full.isChecked)?.apply()
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_fullscreen_read_btn)
                 Constants.FULL_SCREEN_READ = read_full.isChecked
+                val data = java.util.HashMap<String, String>()
+                if (Constants.FULL_SCREEN_READ) {
+                    data.put("type", "1")
+                } else {
+                    data.put("type", "2")
+                }
+                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.FULLSCREENPAGEREAD, data)
             }
             else -> {
             }
@@ -504,6 +554,10 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
             }
             readStatus!!.offset = temp_offset
         }
+        val data = java.util.HashMap<String, String>()
+        data.put("type", "2")
+        data.put("FONT", Constants.FONT_SIZE.toString())
+        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.WORDSIZE, data)
     }
 
     /**
@@ -528,6 +582,10 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
             }
             readStatus!!.offset = temp_offset
         }
+        val data = java.util.HashMap<String, String>()
+        data.put("type", "1")
+        data.put("FONT", Constants.FONT_SIZE.toString())
+        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.WORDSIZE, data)
     }
 
     private fun setFontSize() {
@@ -571,6 +629,36 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
         } else {
             setNovelMode(index)
         }
+
+        badiuStat(index)
+    }
+
+    private fun badiuStat(index: Int) {
+        when (index) {
+            51 -> {
+                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_01)
+            }
+            52 -> {
+                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_02)
+            }
+            53 -> {
+                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_03)
+            }
+            54 -> {
+                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_04)
+            }
+            55 -> {
+                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_05)
+            }
+            56 -> {
+                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_06)
+            }
+            61 -> {
+                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_08)
+            }
+            else -> {
+            }
+        }
     }
 
     fun setNovelMode(index: Int) {
@@ -581,43 +669,43 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
 
         when (index) {
             51 -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_01)
+
                 readSettingHelper!!.setReadMode(index)
                 changeMode(51)
                 read_setting_backdrop_group!!.check(R.id.read_backdrop_first)
             }
             52 -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_02)
+
                 readSettingHelper!!.setReadMode(index)
                 changeMode(52)
                 read_setting_backdrop_group!!.check(R.id.read_backdrop_second)
             }
             53 -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_03)
+
                 readSettingHelper!!.setReadMode(index)
                 changeMode(53)
                 read_setting_backdrop_group!!.check(R.id.read_backdrop_third)
             }
             54 -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_04)
+
                 readSettingHelper!!.setReadMode(index)
                 changeMode(54)
                 read_setting_backdrop_group!!.check(R.id.read_backdrop_fourth)
             }
             55 -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_05)
+
                 readSettingHelper!!.setReadMode(index)
                 changeMode(55)
                 read_setting_backdrop_group!!.check(R.id.read_backdrop_fifth)
             }
             56 -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_06)
+
                 readSettingHelper!!.setReadMode(index)
                 changeMode(56)
                 read_setting_backdrop_group!!.check(R.id.read_backdrop_sixth)
             }
             61 -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_08)
+
                 readSettingHelper!!.setReadMode(index)
                 changeMode(61)
             }
@@ -678,28 +766,94 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
     }
 
     override fun onCheckedChanged(group: RadioGroup, checkedId: Int) {
+
+        var current: Int = group.indexOfChild(group.findViewById(checkedId))
         when (checkedId) {
-            R.id.read_backdrop_first -> changePageBackgroundWrapper(51)
-            R.id.read_backdrop_second -> changePageBackgroundWrapper(52)
-            R.id.read_backdrop_third -> changePageBackgroundWrapper(53)
-            R.id.read_backdrop_fourth -> changePageBackgroundWrapper(54)
-            R.id.read_backdrop_fifth -> changePageBackgroundWrapper(55)
-            R.id.read_backdrop_sixth -> changePageBackgroundWrapper(56)
+            R.id.read_backdrop_first -> {
+                changePageBackgroundWrapper(51)
+                if (current != lastIndex) {
+                    val data = java.util.HashMap<String, String>()
+                    data.put("type", "1")
+                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                }
+                lastIndex = current
+
+            }
+            R.id.read_backdrop_second -> {
+
+                changePageBackgroundWrapper(52)
+                if (current != lastIndex) {
+                    val data = java.util.HashMap<String, String>()
+                    data.put("type", "2")
+                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                }
+                lastIndex = current
+            }
+            R.id.read_backdrop_third -> {
+                changePageBackgroundWrapper(53)
+                if (current != lastIndex) {
+                    val data = java.util.HashMap<String, String>()
+                    data.put("type", "3")
+                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                }
+                lastIndex = current
+            }
+            R.id.read_backdrop_fourth -> {
+                changePageBackgroundWrapper(54)
+                if (current != lastIndex) {
+                    val data = java.util.HashMap<String, String>()
+                    data.put("type", "4")
+                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                }
+                lastIndex = current
+            }
+            R.id.read_backdrop_fifth -> {
+                changePageBackgroundWrapper(55)
+                if (current != lastIndex) {
+
+                    val data = java.util.HashMap<String, String>()
+                    data.put("type", "6")
+                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                }
+                lastIndex = current
+            }
+            R.id.read_backdrop_sixth -> {
+                changePageBackgroundWrapper(56)
+                if (current != lastIndex) {
+
+                    val data = java.util.HashMap<String, String>()
+                    data.put("type", "5")
+                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                }
+                lastIndex = current
+            }
 
             R.id.read_animation_slide -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_flip_page_01)
+                val data = java.util.HashMap<String, String>()
+                data.put("type", "1")
+                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.PAGETURN, data)
                 changePageMode(0)
             }
             R.id.read_animation_simulation -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_flip_page_02)
+                val data = java.util.HashMap<String, String>()
+                data.put("type", "3")
+                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.PAGETURN, data)
                 changePageMode(1)
             }
             R.id.read_animation_translation -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_flip_page_03)
+                val data = java.util.HashMap<String, String>()
+                data.put("type", "2")
+                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.PAGETURN, data)
                 changePageMode(2)
             }
             R.id.read_animation_updown -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_flip_page_04)
+                val data = java.util.HashMap<String, String>()
+                data.put("type", "4")
+                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.PAGETURN, data)
                 changePageMode(3)
             }
             else -> {
@@ -750,8 +904,8 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
 
     // 根据页间距默认值判断是否为自定义间距
     private fun isCustomSpaceSet() {
-        if (Constants.READ_INTERLINEAR_SPACE == 0.5f || Constants.READ_INTERLINEAR_SPACE == 0.2f || Constants.READ_INTERLINEAR_SPACE == 1.0f || Constants.READ_INTERLINEAR_SPACE == 1.5f) {
-            if (Constants.READ_CONTENT_PAGE_LEFT_SPACE == 16 && Constants.READ_CONTENT_PAGE_TOP_SPACE == 45 && Constants.READ_PARAGRAPH_SPACE == 1.0f) {
+        if (Constants.READ_INTERLINEAR_SPACE == 0.2f || Constants.READ_INTERLINEAR_SPACE == 0.3f || Constants.READ_INTERLINEAR_SPACE == 0.4f || Constants.READ_INTERLINEAR_SPACE == 0.5f) {
+            if (Constants.READ_CONTENT_PAGE_LEFT_SPACE == 20 && Constants.READ_CONTENT_PAGE_TOP_SPACE == 45 && Constants.READ_PARAGRAPH_SPACE == 1.0f) {
                 isCustomReadingSpace = false
                 switchSpaceState()
             } else {
@@ -768,19 +922,19 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
     private fun switchSpaceState() {
         if (Constants.READ_INTERLINEAR_SPACE == 0.2f) {
             read_setting_row_spacing_group!!.check(R.id.read_spacing_0_2)
-            readSettingHelper!!.setRowSpacing(0)
+            readSettingHelper!!.setRowSpacing(2)
 
-        } else if (Constants.READ_INTERLINEAR_SPACE == 0.5f) {
+        } else if (Constants.READ_INTERLINEAR_SPACE == 0.3f) {
             read_setting_row_spacing_group!!.check(R.id.read_spacing_0_5)
             readSettingHelper!!.setRowSpacing(3)
 
-        } else if (Constants.READ_INTERLINEAR_SPACE == 1.0f) {
+        } else if (Constants.READ_INTERLINEAR_SPACE == 0.4f) {
             read_setting_row_spacing_group!!.check(R.id.read_spacing_1_0)
-            readSettingHelper!!.setRowSpacing(8)
+            readSettingHelper!!.setRowSpacing(4)
 
-        } else if (Constants.READ_INTERLINEAR_SPACE == 1.5f) {
+        } else if (Constants.READ_INTERLINEAR_SPACE == 0.5f) {
             read_setting_row_spacing_group!!.check(R.id.read_spacing_1_5)
-            readSettingHelper!!.setRowSpacing(13)
+            readSettingHelper!!.setRowSpacing(5)
 
         }
     }
@@ -903,6 +1057,11 @@ class ReadSettingView : FrameLayout, OnClickListener, OnCheckedChangeListener, O
         } else if (seekBar.id == R.id.read_setting_brightness_progress) {
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_ld_progress)
             readSettingHelper!!.saveBrightness(seekBar.progress)
+
+            val data = java.util.HashMap<String, String>()
+            data.put("lightvalue", seekBar.progress.toString())
+            StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.LIGHTEDIT, data)
+
         }
     }
 

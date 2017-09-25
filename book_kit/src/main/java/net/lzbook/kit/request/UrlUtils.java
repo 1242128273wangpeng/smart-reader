@@ -21,7 +21,6 @@ public class UrlUtils {
     //正式线上webview地址，域名例子：bookwebview.wubutianxia.com
     public static String BOOK_WEBVIEW_HOST = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST;
 
-
     private UrlUtils() {
 
     }
@@ -33,6 +32,8 @@ public class UrlUtils {
         }
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext());
         String novel_host = sp.getString(Constants.NOVEL_HOST, BOOK_NOVEL_DEPLOY_HOST);
+//        String novel_host = BOOK_NOVEL_DEPLOY_HOST;
+
 
         String channelId = AppUtils.getChannelId();
         String version = String.valueOf(AppUtils.getVersionCode());
@@ -69,6 +70,7 @@ public class UrlUtils {
         }
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext());
         String webView_host = sp.getString(Constants.WEBVIEW_HOST, BOOK_WEBVIEW_HOST);
+
 
         String channelId = AppUtils.getChannelId();
         String version = String.valueOf(AppUtils.getVersionCode());
@@ -199,6 +201,26 @@ public class UrlUtils {
         for (int i = 0; i < params.length; i++) {
             String[] p = params[i].split("=");
             if (p.length == 2) {
+                map.put(p[0], p[1]);
+            } else if (p.length == 1) {
+                map.put(p[0], "");
+            }
+        }
+        return map;
+    }
+
+    public static Map<String, String> getDataParams(String param) {
+        Map<String, String> map = new HashMap<String, String>();
+        if ("".equals(param) || null == param) {
+            return map;
+        }
+        String[] params = param.split("#");
+        for (int i = 0; i < params.length; i++) {
+
+            int index = params[i].indexOf("=");
+            String[] p = params[i].split(String.valueOf(params[i].charAt(index)));
+
+            if (p.length >= 2) {
                 map.put(p[0], p[1]);
             } else if (p.length == 1) {
                 map.put(p[0], "");

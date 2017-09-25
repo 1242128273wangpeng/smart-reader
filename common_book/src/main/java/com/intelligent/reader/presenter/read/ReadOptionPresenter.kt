@@ -144,6 +144,14 @@ class ReadOptionPresenter : ReadOption.Presenter {
                 BookHelper.writeDownIndex(context, mBook.book_id, false, 0)
                 dialog.dismiss()
                 Toast.makeText(context, R.string.reading_cache_hint, Toast.LENGTH_SHORT).show()
+
+                val data = java.util.HashMap<String, String>()
+                data.put("bookid", readStatus.book_id)
+                if (dataFactory != null && dataFactory.currentChapter != null) {
+                    data.put("chapterid", dataFactory.currentChapter.chapter_id)
+                }
+                data.put("type", "1")
+                StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
             })
             val reading_current_down = dialog.findViewById(R.id.reading_current_down) as TextView
             reading_current_down.setOnClickListener(View.OnClickListener {
@@ -163,7 +171,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
                 if (dataFactory != null && dataFactory.currentChapter != null) {
                     data.put("chapterid", dataFactory.currentChapter.chapter_id)
                 }
-                data.put("type", "1")
+                data.put("type", "2")
                 StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
             })
             val cancel = dialog.findViewById(R.id.reading_cache_cancel) as TextView
@@ -224,7 +232,6 @@ class ReadOptionPresenter : ReadOption.Presenter {
                 OtherRequestService.requestBookSourceChange(dataFactory.mHandler, ReadingActivity.MSG_SEARCH_CHAPTER, -144, readStatus.book_id)
                 null
             })
-            dataFactory.loadingError(loadingPage)
         }
     }
 
@@ -342,7 +349,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
             // AppLog.d("initTextContent2", "size:" + size);
             for (j in 0..size - 1) {
                 val string = pageList[j].lineContent
-                if (!TextUtils.isEmpty(string) && string != " ") {
+                if (!TextUtils.isEmpty(string)) {
                     readStatus.offset += string.length
                 }
             }
@@ -393,6 +400,11 @@ class ReadOptionPresenter : ReadOption.Presenter {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+            val data = java.util.HashMap<String, String>()
+            if (readStatus != null) {
+                data.put("bookid", readStatus.book_id)
+            }
+            StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ORIGINALLINK, data)
         } else {
             activity.get()?.toastShort("无法查看原文链接")
         }

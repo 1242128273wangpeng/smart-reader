@@ -432,6 +432,7 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
                     intent.putExtra("filter_word", filter_word);
                     intent.putExtra("sort_type", sort_type);
                     startActivity(intent);
+                    AppLog.e("kkk", search_type + "===");
                     AppLog.i(TAG, "enterSearch success");
                 } catch (Exception e) {
                     AppLog.e(TAG, "Search failed");

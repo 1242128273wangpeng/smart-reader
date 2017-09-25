@@ -39,16 +39,16 @@ public class ReadSettingHelper implements ReadSettingInterface {
         }
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("read_content_page_left_space", 16);
+        editor.putInt("read_content_page_left_space", 20);
         editor.putInt("read_content_page_top_space", 45);
-        editor.putInt("read_paragraph_space", 8);
+        editor.putInt("read_paragraph_space", 10);
         editor.putBoolean("is_reading_custom_space", false);
 
         editor.apply();
 
         Constants.READ_PARAGRAPH_SPACE = 1.0f;
         Constants.READ_CONTENT_PAGE_TOP_SPACE = 45;
-        Constants.READ_CONTENT_PAGE_LEFT_SPACE = 16;
+        Constants.READ_CONTENT_PAGE_LEFT_SPACE = 20;
     }
 
     /**

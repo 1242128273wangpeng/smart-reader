@@ -167,7 +167,7 @@ public class SplashActivity extends FrameActivity {
             } catch (SecurityException e) {
                 e.printStackTrace();
             }
-            finish();
+//            finish();
         }
     }
 
@@ -187,6 +187,13 @@ public class SplashActivity extends FrameActivity {
     public void onCreate(Bundle paramBundle) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(paramBundle);
+
+        if (!isTaskRoot()) {
+            if (getIntent().hasCategory(Intent.CATEGORY_LAUNCHER) && Intent.ACTION_MAIN.equals(getIntent().getAction())) {
+                finish();
+                return;
+            }
+        }
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 

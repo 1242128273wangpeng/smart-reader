@@ -56,6 +56,9 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,SearchHisAdapter.SearchClearCallBack{
     private static String TAG = SearchViewHelper.class.getSimpleName();
+    private static ArrayList<String> hotDatas = new ArrayList<String>();
+    private static ArrayList<String> hisDatas = new ArrayList<String>();
+    public OnHotWordClickListener onHotWordClickListener;
     private Context mContext;
     private Activity activity;
     private ViewGroup mRootLayout;
@@ -63,19 +66,12 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
     private ListView mHotListView;
     private ListView mHisListView;
     private ListView mSuggestListView;
-
     private SearchHotWordAdapter mHotAdapter;
     private SearchSuggestAdapter mSuggestAdapter;
     private SearchHisAdapter mHisAdapter;
-    private static ArrayList<String> hotDatas = new ArrayList<String>();
-    private static ArrayList<String> hisDatas = new ArrayList<String>();
     private List<SearchCommonBean> mSuggestList = new ArrayList<SearchCommonBean>();
-
     private Resources mResources;
-
     private boolean mShouldShowHint = true;
-
-    public OnHotWordClickListener onHotWordClickListener;
     private OnHistoryClickListener mOnHistoryClickListener;
     private SearchHelper mSearchHelper;
     private boolean isFromEditClick = false;
@@ -278,6 +274,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
                                     startSearch(hotWord,hotWords.get(arg2-1).getWordType()+"");
 
                                     Map<String, String> data = new HashMap<>();
+                                    data.put("topicword", hotWord);
                                     StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TOPIC, data);
                                 }
                             }
@@ -399,15 +396,16 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
                     searchType = "0";
                 }
                 if (!TextUtils.isEmpty(suggest) && mSearchEditText != null) {
-                    mShouldShowHint = false;
-                    mSearchEditText.setText(suggest);
-
-//                    mSearchEditText.setSelection(suggest.length());
-                    startSearch(suggest, searchType);
-
                     Map<String, String> data = new HashMap<>();
                     data.put("keyword", suggest);
+                    data.put("type", searchType);
+                    data.put("enterword", mSearchEditText.getText().toString().trim());
+                    data.put("rank", arg2 + "");
                     StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TIPLISTCLICK, data);
+
+                    mShouldShowHint = false;
+                    mSearchEditText.setText(suggest);
+                    startSearch(suggest, searchType);
                 }
             }
         });
@@ -524,26 +522,16 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
         });
     }
 
-    public void setFromEditClick(boolean fromEditClick) {
-        isFromEditClick = fromEditClick;
-    }
-
     public boolean isFromEditClick() {
         return isFromEditClick;
     }
 
+    public void setFromEditClick(boolean fromEditClick) {
+        isFromEditClick = fromEditClick;
+    }
+
     public void setOnHistoryClickListener(OnHistoryClickListener listener) {
         mOnHistoryClickListener = listener;
-    }
-
-
-
-    public interface OnHotWordClickListener {
-        void hotWordClick(String tag, String searchType);
-    }
-
-    public interface OnHistoryClickListener {
-        void OnHistoryClick(String history, String searchType);
     }
 
     public void onDestroy() {
@@ -583,6 +571,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
             mSuggestList = null;
         }
     }
+
     public void hideInputMethod(final View paramView) {
         if (paramView == null || paramView.getContext() == null)
             return;
@@ -590,5 +579,13 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
         if (imm.isActive()) {
             imm.hideSoftInputFromWindow(paramView.getApplicationWindowToken(), 0);
         }
+    }
+
+    public interface OnHotWordClickListener {
+        void hotWordClick(String tag, String searchType);
+    }
+
+    public interface OnHistoryClickListener {
+        void OnHistoryClick(String history, String searchType);
     }
 }

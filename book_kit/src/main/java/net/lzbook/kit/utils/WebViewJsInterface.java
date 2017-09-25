@@ -33,5 +33,6 @@ public interface WebViewJsInterface {
 
     String returnBooks();
 
-
+    //统计信息
+    void collectInfo(String urlData);
 }

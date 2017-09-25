@@ -1001,6 +1001,9 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
                 @Override
                 public void onClick(View v) {
                     deleteDialog.dismiss();
+                    Map<String, String> data = new HashMap<>();
+                    data.put("type", "2");
+                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELFEDIT, StartLogClickUtil.DELETE1, data);
                     StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.bs_click_delete_cancel_btn);
                 }
             });

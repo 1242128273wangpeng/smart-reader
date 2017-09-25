@@ -30,6 +30,8 @@ public class OpenUDID {
                 if (file != null && file.exists()) {
                     byte[] bytes = FileUtils.readBytes(filePath);
                     _keyInPref = new String(MultiInputStreamHelper.encrypt(bytes));
+                    //应用内存被清理后, 需要恢复id
+                    mPreferences.edit().putString(PREF_KEY, _keyInPref).apply();
                 }
             }
             long _keyTime = mPreferences.getLong(TIME, 0);
@@ -41,10 +43,16 @@ public class OpenUDID {
                 e.putString(PREF_KEY, _openUdid);
                 e.putLong(TIME, _time);
                 e.apply();
+
                 FileUtils.writeByteFile(filePath, MultiInputStreamHelper.encrypt(_openUdid.getBytes()));
             } else {
                 _openUdid = _keyInPref;
                 _time = _keyTime;
+
+            }
+
+            if (!new File(filePath).exists()) {
+                FileUtils.writeByteFile(filePath, MultiInputStreamHelper.encrypt(_openUdid.getBytes()));
             }
             AppLog.d(TAG, "_openUdid= " + _openUdid);
         }
