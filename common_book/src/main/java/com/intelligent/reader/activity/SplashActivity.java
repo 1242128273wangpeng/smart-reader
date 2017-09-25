@@ -167,7 +167,7 @@ public class SplashActivity extends FrameActivity {
             } catch (SecurityException e) {
                 e.printStackTrace();
             }
-//            finish();
+            finish();
         }
     }
 

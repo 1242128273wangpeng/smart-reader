@@ -26,7 +26,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -53,7 +52,6 @@ import android.widget.TextView;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.Map;
 
 import de.greenrobot.event.EventBus;
 
@@ -139,11 +137,8 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
             e.printStackTrace();
 
             //need restart app
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                getActivity().finishAffinity();
-            } else {
-                getActivity().finish();
-            }
+
+            getActivity().finish();
             Intent intent = new Intent(getActivity(), SplashActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);

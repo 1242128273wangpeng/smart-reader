@@ -152,11 +152,9 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
             e.printStackTrace();
 
             //need restart app
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                getActivity().finishAffinity();
-            } else {
-                getActivity().finish();
-            }
+
+            getActivity().finish();
+
             Intent intent = new Intent(getActivity(), SplashActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
