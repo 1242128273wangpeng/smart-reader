@@ -219,6 +219,8 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
                         if (state == null || state == DownloadState.NOSTART) {
                             BookHelper.startDownBookTask(mContext, book.book_id, 0);
                             BookHelper.writeDownIndex(mContext, book.book_id, false, 0);
+                            data.put("type", "1");
+                            StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.CACHEBUTTON, data);
                             return;
                         } else if (state == DownloadState.DOWNLOADING || state == DownloadState.WAITTING) {
                             downloadManagerActivity.stopDownloadbook(book.book_id);
