@@ -132,7 +132,7 @@ import iyouqu.theme.ThemeMode;
 @SuppressLint("InlinedApi")
 public class ReadingActivity extends BaseCacheableActivity implements OnClickListener, NovelHelper
         .OnHelperCallBack, CallBack, IReadDataFactory.ReadDataListener, AutoReadMenu.OnAutoMemuListener, ReadSettingView.OnReadSettingListener,
-        DownloadService.OnDownloadListener ,PageInterface.OnOperationClickListener{
+        DownloadService.OnDownloadListener, PageInterface.OnOperationClickListener {
     public static final int MSG_LOAD_CUR_CHAPTER = 0;
     public static final int MSG_LOAD_PRE_CHAPTER = 1;
     public static final int MSG_LOAD_NEXT_CHAPTER = 2;

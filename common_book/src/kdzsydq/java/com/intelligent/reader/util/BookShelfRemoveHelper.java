@@ -142,7 +142,7 @@ public class BookShelfRemoveHelper implements View.OnClickListener {
                 break;
             case R.id.btn_left:
                 Map<String, String> data = new HashMap<>();
-                data.put("type", isAllChecked()?"2":"1");
+                data.put("type", isAllChecked() ? "2" : "1");
                 StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.SELECTALL1, data);
                 selectAll(isAllChecked() ? false : true);
                 break;

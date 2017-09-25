@@ -260,7 +260,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
 
 
         findViewById(R.id.rl_logout).setVisibility(View.GONE);
-
+        img_head.setImageResource(R.mipmap.default_head);
         if (txt_login_des != null) {
             txt_login_des.setVisibility(View.VISIBLE);
         }
