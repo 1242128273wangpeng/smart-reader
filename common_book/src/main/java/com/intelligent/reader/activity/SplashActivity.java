@@ -133,13 +133,13 @@ public class SplashActivity extends FrameActivity {
 
     private void gotoActivity(int versionCode, boolean firstGuide) {
 
-        //2017.8.25阅读页改版上线时,因缺少文案,除五步替壳外.其他壳临时限制不显示开屏引导
-        if (firstGuide && !"cc.kdqbxs.reader".equals(AppUtils.getPackageName())) {
-            firstGuide = false;
-            Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
-            editor.putBoolean(versionCode + "first_guide", false);
-            editor.apply();
-        }
+//        //2017.8.25阅读页改版上线时,因缺少文案,除五步替壳外.其他壳临时限制不显示开屏引导
+//        if (firstGuide && !"cc.kdqbxs.reader".equals(AppUtils.getPackageName())) {
+//            firstGuide = false;
+//            Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+//            editor.putBoolean(versionCode + "first_guide", false);
+//            editor.apply();
+//        }
 
         if (firstGuide) {
             Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
