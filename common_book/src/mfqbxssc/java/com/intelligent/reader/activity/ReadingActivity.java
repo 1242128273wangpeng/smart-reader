@@ -183,7 +183,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private OwnNativeAdManager ownNativeAdManager;
     private boolean isAcvNovelActive = true;
     private Runnable rest_tips_runnable;
-    private boolean isRestDialogShow = false;
+    public boolean isRestDialogShow = false;
     private boolean isRestPress = false;
     private boolean actNovelRunForeground = true;
     private Handler handler = new UiHandler(this);
