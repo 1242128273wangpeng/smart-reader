@@ -23,6 +23,7 @@ import com.dingyueads.sdk.Utils.LogUtils;
 
 import net.lzbook.kit.R;
 import net.lzbook.kit.cache.imagecache.ImageCacheManager;
+import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.ImageUtils;
 import net.lzbook.kit.utils.StatisticManager;
@@ -47,7 +48,9 @@ public class PopupAdActivity extends Activity implements View.OnClickListener {
     };
     private ImageView iv_image;
     private static int MSG_FINISH = 0;
-    private static final long CLOSE_TIME = 5000; //自动关闭毫秒数
+    private static final long CLOSE_TIME = 3000; //自动关闭毫秒数
+    private static final long CLOSE_TIME_NEW = 4000; //自动关闭毫秒数
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,16 +58,26 @@ public class PopupAdActivity extends Activity implements View.OnClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_switch_ad_default);
+        if (Constants.IS_LANDSCAPE) {
+            setContentView(R.layout.activity_switch_ad_new);
+        } else {
+            Random r = new Random();
+            setContentView(layouts[r.nextInt(layouts.length)]);
+        }
         EventBus.getDefault().register(this);
         ownNativeAdManager = OwnNativeAdManager.getInstance(this);
         switchHandler.sendEmptyMessageDelayed(MSG_FINISH, CLOSE_TIME);
         LogUtils.e(TAG, "loadAd");
-        ownNativeAdManager.loadAd(NativeInit.CustomPositionName.SLIDEUP_POPUPAD_POSITION);
+        if (Constants.IS_LANDSCAPE) {
+            ownNativeAdManager.loadAd(NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD);
+        } else {
+            ownNativeAdManager.loadAd(NativeInit.CustomPositionName.SLIDEUP_POPUPAD_POSITION);
+        }
     }
 
     public void onEvent(EventPopupAd popupAd) {
-        if (NativeInit.CustomPositionName.SLIDEUP_POPUPAD_POSITION.toString().equals(popupAd.type_ad)) {
+        if (NativeInit.CustomPositionName.SLIDEUP_POPUPAD_POSITION.toString().equals(popupAd.type_ad) ||
+                NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD.toString().equals(popupAd.type_ad)) {
             showRandomLayout(popupAd.yqNativeAdInfo);
         }
     }
@@ -89,9 +102,10 @@ public class PopupAdActivity extends Activity implements View.OnClickListener {
                     return;
                 }
                 switchHandler.removeMessages(MSG_FINISH);
+                switchHandler.sendEmptyMessageDelayed(MSG_FINISH, CLOSE_TIME_NEW);
                 bitmap = ImageUtils.getRoundedCornerBitmap(bitmap, AppUtils.dip2px(PopupAdActivity.this, 10));
-                Random r = new Random();
-                setContentView(layouts[r.nextInt(layouts.length)]);
+//                Random r = new Random();
+//                setContentView(layouts[r.nextInt(layouts.length)]);
                 iv_image = (ImageView) findViewById(R.id.ad_image_switch_act);
                 iv_image.setImageBitmap(bitmap);
                 iv_image.setOnClickListener(PopupAdActivity.this);
@@ -105,16 +119,22 @@ public class PopupAdActivity extends Activity implements View.OnClickListener {
                 } else {
                     iv_logo.setImageResource(R.drawable.icon_ad_default_new);
                 }
-                ImageView iv_see = (ImageView) findViewById(R.id.iv_see_switch_act);
-                iv_see.setOnClickListener(PopupAdActivity.this);
                 ImageView iv_close = (ImageView) findViewById(R.id.iv_close_switch_act);
                 iv_close.setOnClickListener(PopupAdActivity.this);
-                TextView tv_cancel_ad = (TextView) findViewById(R.id.tv_cancel_ad);
-                tv_cancel_ad.setOnClickListener(PopupAdActivity.this);
                 if (statisticManager == null) {
                     statisticManager = StatisticManager.getStatisticManager();
                 }
-                statisticManager.schedulingRequest(PopupAdActivity.this, iv_image, adInfo, null, StatisticManager.TYPE_SHOW, NativeInit.ad_position[11]);
+                if (!Constants.IS_LANDSCAPE) {
+                    ImageView iv_see = (ImageView) findViewById(R.id.iv_see_switch_act);
+                    iv_see.setOnClickListener(PopupAdActivity.this);
+                    TextView tv_cancel_ad = (TextView) findViewById(R.id.tv_cancel_ad);
+                    tv_cancel_ad.setOnClickListener(PopupAdActivity.this);
+                    statisticManager.schedulingRequest(PopupAdActivity.this, iv_image, adInfo, null, StatisticManager.TYPE_SHOW, NativeInit.ad_position[11]);
+                } else {
+                    statisticManager.schedulingRequest(PopupAdActivity.this, iv_image, adInfo, null, StatisticManager.TYPE_SHOW, NativeInit.ad_position[12]);
+                }
+
+
             }
 
             @Override
@@ -138,7 +158,7 @@ public class PopupAdActivity extends Activity implements View.OnClickListener {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return keyCode == KEYCODE_BACK || super.onKeyDown(keyCode, event);
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
@@ -147,14 +167,16 @@ public class PopupAdActivity extends Activity implements View.OnClickListener {
             statisticManager = StatisticManager.getStatisticManager();
         }
         if (v.getId() == R.id.iv_see_switch_act || v.getId() == R.id.ad_image_switch_act) {
-            if (adInfo != null) {
-                statisticManager.schedulingRequest(PopupAdActivity.this, v, adInfo, null, StatisticManager.TYPE_CLICK, NativeInit.ad_position[11]);
+            if (adInfo != null && iv_image != null) {
+                if (!Constants.IS_LANDSCAPE) {
+                    statisticManager.schedulingRequest(PopupAdActivity.this, iv_image, adInfo, null, StatisticManager.TYPE_CLICK, NativeInit.ad_position[11]);
+                } else {
+                    statisticManager.schedulingRequest(PopupAdActivity.this, iv_image, adInfo, null, StatisticManager.TYPE_CLICK, NativeInit.ad_position[12]);
+                }
                 finish();
-//                statisticManager.schedulingRequest(PopupAdActivity.this, v, adInfo, null, StatisticManager.TYPE_END, NativeInit.ad_position[11]);
             }
         } else if (v.getId() == R.id.iv_close_switch_act || v.getId() == R.id.tv_cancel_ad) {
             finish();
-//            statisticManager.schedulingRequest(PopupAdActivity.this, v, adInfo, null, StatisticManager.TYPE_END, NativeInit.ad_position[11]);
         }
     }
 }
