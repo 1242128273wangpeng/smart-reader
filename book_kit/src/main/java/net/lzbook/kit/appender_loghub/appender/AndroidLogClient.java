@@ -161,7 +161,6 @@ public class AndroidLogClient {
                 String logstore = logGroup.getLogstore();
                 try {
                     if (logGroup != null && logGroup != null) {
-                        System.out.println("sending............................");
                         LOGClient logClient = new LOGClient(endPoint, accessKeyId, accessKeySecret, project);
                         logClient.PostLog(logGroup, logstore);
                     }

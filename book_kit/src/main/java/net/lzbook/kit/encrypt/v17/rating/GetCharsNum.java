@@ -23,7 +23,6 @@ public class GetCharsNum {
 				chPunctuationCharacter++;
 			} else {
 				otherCharacter++;
-				//System.out.println(chars[i]);
 			}
 		}
 
