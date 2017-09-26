@@ -31,9 +31,6 @@ import java.util.*
 class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: IReadDataFactory) : CatalogMark.Presenter {
     override var view: CatalogMark.View? = null
 
-    @Volatile
-    var isLoading = false;
-
     private var mBookDaoHelper = BookDaoHelper.getInstance()
     val requestItem: RequestItem
 
@@ -46,98 +43,96 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: IReadDat
     }
 
     override fun loadCatalog(reverse: Boolean) {
-        if (!isLoading) {
-            isLoading = true
-            view?.onLoading()
+        view?.setChangeAble(false)
+        view?.onLoading()
 
-            Observable.create<List<Chapter>> { emitter: ObservableEmitter<List<Chapter>>? ->
+        Observable.create<List<Chapter>> { emitter: ObservableEmitter<List<Chapter>>? ->
 
-                val chapterDao = BookChapterDao(BaseBookApplication.getGlobalContext(), readStatus.book.book_id)
-                val chapterList = chapterDao.queryBookChapter()
-                if (chapterList != null && chapterList.size > 0) {
-                    emitter?.onNext(chapterList)
+            val chapterDao = BookChapterDao(BaseBookApplication.getGlobalContext(), readStatus.book.book_id)
+            val chapterList = chapterDao.queryBookChapter()
+            if (chapterList != null && chapterList.size > 0) {
+                emitter?.onNext(chapterList)
+            } else {
+                if (Constants.SG_SOURCE.equals(requestItem.host)) {
+                    emitter?.onError(Exception("error"))
                 } else {
-                    if (Constants.SG_SOURCE.equals(requestItem.host)) {
-                        emitter?.onError(Exception("error"))
-                    } else {
-                        if (Constants.QG_SOURCE.equals(requestItem.host)) {
-                            var chapters: ArrayList<com.quduquxie.bean.Chapter>? = null
-                            try {
-                                val udid = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())
-                                chapters = DataService.getChapterList(RequestExecutorDefault.mContext, requestItem.book_id, 1, Integer.MAX_VALUE - 1, udid)
-                                val list = BeanParser.buildOWNChapterList(chapters, 0, chapters!!.size)
-                                if (list != null && list.size > 0) {
-                                    emitter?.onNext(list)
-                                } else {
-                                    emitter?.onError(Exception("error"))
-                                }
-                            } catch (e: Exception) {
-                                e.printStackTrace()
+                    if (Constants.QG_SOURCE.equals(requestItem.host)) {
+                        var chapters: ArrayList<com.quduquxie.bean.Chapter>? = null
+                        try {
+                            val udid = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())
+                            chapters = DataService.getChapterList(RequestExecutorDefault.mContext, requestItem.book_id, 1, Integer.MAX_VALUE - 1, udid)
+                            val list = BeanParser.buildOWNChapterList(chapters, 0, chapters!!.size)
+                            if (list != null && list.size > 0) {
+                                emitter?.onNext(list)
+                            } else {
+                                emitter?.onError(Exception("error"))
                             }
-
-                        } else {
-                            NetOwnBook.requestOwnCatalogList(readStatus.book).subscribekt(
-                                    onNext = { t ->
-                                        emitter?.onNext(t)
-                                    },
-                                    onError = { err ->
-                                        emitter?.onError(err)
-                                    }
-                            )
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
+
+                    } else {
+                        NetOwnBook.requestOwnCatalogList(readStatus.book).subscribekt(
+                                onNext = { t ->
+                                    emitter?.onNext(t)
+                                },
+                                onError = { err ->
+                                    emitter?.onError(err)
+                                }
+                        )
                     }
                 }
-            }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribekt(
-                    onNext = { ret ->
-                        if (!ret.isEmpty()) {
-                            if (reverse) {
-                                Collections.reverse(ret)
-                                view?.showCatalog(ret, 0)
-                            } else {
-                                view?.showCatalog(ret, readStatus.sequence)
-                            }
+            }
+        }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribekt(
+                onNext = { ret ->
+                    if (!ret.isEmpty()) {
+                        if (reverse) {
+                            Collections.reverse(ret)
+                            view?.showCatalog(ret, 0)
                         } else {
-                            view?.onNetError()
+                            view?.showCatalog(ret, readStatus.sequence)
                         }
+                    } else {
+                        view?.onNetError()
+                    }
 
-                        isLoading = false
-                    }, onError = { e ->
-                e.printStackTrace()
-                view?.onNetError()
+                    view?.setChangeAble(true)
+                }, onError = { e ->
+            e.printStackTrace()
+            view?.onNetError()
 
-                isLoading = false
-            })
-        }
+            view?.setChangeAble(true)
+        })
+
     }
 
     override fun loadBookMark(activity: Activity, type: Int) {
 
-        if (!isLoading) {
-            isLoading = true
-            if (type == 1) {
-                val data = java.util.HashMap<String, String>()
-                data.put("bookid", readStatus.book_id)
-                if (dataFactory != null && dataFactory.currentChapter != null) {
-                    data.put("chapterid", dataFactory.currentChapter.chapter_id)
-                }
-                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.BOOKMARK, data)
+        view?.setChangeAble(false)
+        if (type == 1) {
+            val data = java.util.HashMap<String, String>()
+            data.put("bookid", readStatus.book_id)
+            if (dataFactory != null && dataFactory.currentChapter != null) {
+                data.put("chapterid", dataFactory.currentChapter.chapter_id)
             }
-
-
-
-            Observable.create<List<Bookmark>> { emitter: ObservableEmitter<List<Bookmark>>? ->
-
-                val list = mBookDaoHelper.getBookMarks(readStatus.book_id)
-
-                emitter?.onNext(list)
-            }.subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribekt(onNext = { ret ->
-                        view?.showMark(ret)
-                    })
-
-            isLoading = false
+            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.BOOKMARK, data)
         }
+
+
+
+        Observable.create<List<Bookmark>> { emitter: ObservableEmitter<List<Bookmark>>? ->
+
+            val list = mBookDaoHelper.getBookMarks(readStatus.book_id)
+
+            emitter?.onNext(list)
+        }.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribekt(onNext = { ret ->
+                    view?.showMark(ret)
+                })
+
+        view?.setChangeAble(true)
+
     }
 
     override fun gotoChapter(activity: Activity, chapter: Chapter) {
