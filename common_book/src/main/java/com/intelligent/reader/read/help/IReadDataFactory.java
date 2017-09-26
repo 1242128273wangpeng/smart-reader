@@ -292,7 +292,11 @@ public abstract class IReadDataFactory {
         }
 
         //// TODO: 2017/9/22 上下滑动翻章超过5章时显示弹窗广告
-        if (Constants.isSlideUp && Constants.readedCount % 5 == 0 && readingActivity != null) {
+        if (Constants.isSlideUp &&
+                Constants.land_scroll_chapter_frequence != 0 &&
+                Constants.readedCount % Constants.land_scroll_chapter_frequence == 0 && readingActivity != null &&
+                NetWorkUtils.getNetWorkType(BaseBookApplication.getGlobalContext()) != NetWorkUtils.NETWORK_NONE &&
+                !Constants.isHideAD && readingActivity != null && !readingActivity.isRestDialogShow) {
             Intent intent = new Intent(readingActivity, PopupAdActivity.class);
             readingActivity.startActivity(intent);
         }

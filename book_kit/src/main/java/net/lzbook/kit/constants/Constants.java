@@ -158,6 +158,7 @@ public class Constants {
     public static int native_ad_page_interstitial_count = 1;
     public static int native_ad_page_gap_in_chapter = 1;
     public static int native_ad_page_in_chapter_limit = 8;
+    public static int land_scroll_chapter_frequence = 5;
     public static int switchSplash_ad_sec = 60;
     public static boolean isShowSwitchSplashAd = false;
     public static int show_switchSplash_ad_close = 0;
