@@ -224,7 +224,6 @@
         
         </activity>
         <activity
-                android:launchMode="singleTask"
                 android:name=".activity.ReadingActivity"
                 android:configChanges="orientation|keyboardHidden|screenSize"
                 android:screenOrientation="nosensor"

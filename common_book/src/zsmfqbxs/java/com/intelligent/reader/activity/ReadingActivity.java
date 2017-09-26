@@ -388,9 +388,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             return;
         }
 
-        View main = getLayoutInflater().inflate(R.layout.act_read, null);
-
-        setContentView(main);
 //        setContentView(R.layout.act_read);
         mCatlogMarkDrawer = (DrawerLayout) findViewById(R.id.read_catalog_mark_drawer);
         if (mCatlogMarkDrawer == null) {
