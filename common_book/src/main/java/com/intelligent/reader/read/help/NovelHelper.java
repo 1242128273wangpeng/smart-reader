@@ -544,27 +544,29 @@ public class NovelHelper {
 //        if (isNativeAdAvailableNew() && lists.size() >= Constants.native_ad_page_in_chapter_limit) {
 //            lists.add(lists.size()/2, addList(empty_page_ad_inChapter));
 //        }
-        if (isNativeAdAvailableNew() && lists.size() >= 2 * Constants.native_ad_page_in_chapter_limit) {
-            int i2 = lists.size() / Constants.native_ad_page_in_chapter_limit;
-            boolean isFirst = true;
-            for (int i = 1; i <= i2; i++) {
-                int i1 = i * Constants.native_ad_page_in_chapter_limit;
-                if (i1 < lists.size() && (lists.size() - i1) >= Constants.native_ad_page_in_chapter_limit) {
-                    lists.add(i1, addList(empty_page_ad_inChapter + i));
-                    if (actReference != null && actReference.get() != null && !actReference.get().isFinishing()) {
-                        if (Constants.IS_LANDSCAPE) {
-                            OwnNativeAdManager.getInstance(actReference.get()).loadAd(NativeInit.CustomPositionName.SUPPLY_READING_IN_CHAPTER);
-                        } else {
-                            OwnNativeAdManager.getInstance(actReference.get()).loadAd(NativeInit.CustomPositionName.READING_IN_CHAPTER_POSITION);
+        if (!Constants.isSlideUp) {
+            if (isNativeAdAvailableNew() && lists.size() >= 2 * Constants.native_ad_page_in_chapter_limit) {
+                int i2 = lists.size() / Constants.native_ad_page_in_chapter_limit;
+                boolean isFirst = true;
+                for (int i = 1; i <= i2; i++) {
+                    int i1 = i * Constants.native_ad_page_in_chapter_limit;
+                    if (i1 < lists.size() && (lists.size() - i1) >= Constants.native_ad_page_in_chapter_limit) {
+                        lists.add(i1, addList(empty_page_ad_inChapter + i));
+                        if (actReference != null && actReference.get() != null && !actReference.get().isFinishing()) {
+                            if (Constants.IS_LANDSCAPE) {
+                                OwnNativeAdManager.getInstance(actReference.get()).loadAd(NativeInit.CustomPositionName.SUPPLY_READING_IN_CHAPTER);
+                            } else {
+                                OwnNativeAdManager.getInstance(actReference.get()).loadAd(NativeInit.CustomPositionName.READING_IN_CHAPTER_POSITION);
+                            }
                         }
                     }
-                }
-                if ((readStatus.currentPage >= i * Constants.native_ad_page_in_chapter_limit) && (readStatus.currentPage < ((i + 1) * Constants.native_ad_page_in_chapter_limit/* + i - 1*/)) && isFirst) {
-                    if (readStatus.currentPage == Constants.native_ad_page_in_chapter_limit) {
-                        continue;
+                    if ((readStatus.currentPage >= i * Constants.native_ad_page_in_chapter_limit) && (readStatus.currentPage < ((i + 1) * Constants.native_ad_page_in_chapter_limit/* + i - 1*/)) && isFirst) {
+                        if (readStatus.currentPage == Constants.native_ad_page_in_chapter_limit) {
+                            continue;
+                        }
+                        readStatus.currentPage += i;
+                        isFirst = false;
                     }
-                    readStatus.currentPage += i;
-                    isFirst = false;
                 }
             }
         }

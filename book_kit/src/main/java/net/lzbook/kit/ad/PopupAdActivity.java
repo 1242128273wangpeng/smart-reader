@@ -78,7 +78,11 @@ public class PopupAdActivity extends Activity implements View.OnClickListener {
     public void onEvent(EventPopupAd popupAd) {
         if (NativeInit.CustomPositionName.SLIDEUP_POPUPAD_POSITION.toString().equals(popupAd.type_ad) ||
                 NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD.toString().equals(popupAd.type_ad)) {
-            showRandomLayout(popupAd.yqNativeAdInfo);
+            try {
+                showRandomLayout(popupAd.yqNativeAdInfo);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

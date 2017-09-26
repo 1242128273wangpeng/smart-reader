@@ -800,11 +800,13 @@ public class DrawTextHelper {
 
 
     public void loadNatvieAd() {
-        OwnNativeAdManager.getInstance(mActivity).loadAdForMiddle(NativeInit.CustomPositionName.READING_MIDDLE_POSITION);
-        if (Constants.IS_LANDSCAPE) {
-            OwnNativeAdManager.getInstance(mActivity).loadAd(NativeInit.CustomPositionName.SUPPLY_READING_SPACE);
-        } else {
-            OwnNativeAdManager.getInstance(mActivity).loadAd(NativeInit.CustomPositionName.READING_POSITION);
+        if (!Constants.isSlideUp) {
+            OwnNativeAdManager.getInstance(mActivity).loadAdForMiddle(NativeInit.CustomPositionName.READING_MIDDLE_POSITION);
+            if (Constants.IS_LANDSCAPE) {
+                OwnNativeAdManager.getInstance(mActivity).loadAd(NativeInit.CustomPositionName.SUPPLY_READING_SPACE);
+            } else {
+                OwnNativeAdManager.getInstance(mActivity).loadAd(NativeInit.CustomPositionName.READING_POSITION);
+            }
         }
     }
 
