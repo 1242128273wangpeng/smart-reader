@@ -16,10 +16,10 @@
                 <corners android:radius="@dimen/dimen_radius_10"/>
                 <gradient
                         android:angle="90.0"
-                        android:centerColor="@color/color_orange_ff6600"
+                        android:centerColor="@color/color_blue_1dbfbb"
                         android:centerY="0.45"
-                        android:endColor="@color/color_orange_ff6600"
-                        android:startColor="@color/color_orange_ff6600"/>
+                        android:endColor="@color/color_blue_1dbfbb"
+                        android:startColor="@color/color_blue_1dbfbb"/>
             </shape>
         </clip>
     </item>
@@ -28,7 +28,7 @@
         <clip>
             <shape>
                 <corners android:radius="@dimen/dimen_radius_10"/>
-                <solid android:color="@color/color_orange_ff6600"/>
+                <solid android:color="@color/color_blue_1dbfbb"/>
             </shape>
         </clip>
     </item>

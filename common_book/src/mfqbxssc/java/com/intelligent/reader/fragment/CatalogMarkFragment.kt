@@ -320,6 +320,11 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
 
     private var loadingPage: LoadingPage? = null
 
+    override fun setChangeAble(enable: Boolean) {
+        view!!.tab_bookmark.isClickable = enable
+        view!!.tab_catalog.isClickable = enable
+    }
+
     override fun onLoading() {
         loadingPage?.onSuccess()
         if (!dataLoaded) {

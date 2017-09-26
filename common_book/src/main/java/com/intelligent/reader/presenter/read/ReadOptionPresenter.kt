@@ -111,10 +111,10 @@ class ReadOptionPresenter : ReadOption.Presenter {
 
         val bookTask = BookHelper.getDownBookTask(context, mBook.book_id)
         if (bookTask != null && BookHelper.getStartDownIndex(context, mBook) > -1) {
-            if (bookTask.state == DownloadState.DOWNLOADING) {
+            if (bookTask.state == DownloadState.DOWNLOADING || bookTask.state == DownloadState.WAITTING) {
                 Toast.makeText(context, "请耐心等待，已存在缓存队列", Toast.LENGTH_SHORT).show()
                 return
-            } else if (bookTask.state == DownloadState.WAITTING || bookTask.state == DownloadState.NOSTART
+            } else if (bookTask.state == DownloadState.NOSTART
                     || bookTask.state == DownloadState.PAUSEED || bookTask.state == DownloadState.REFRESH
                     || bookTask.state == DownloadState.LOCKED) {
                 BookHelper.startDownBookTask(context, mBook.book_id)

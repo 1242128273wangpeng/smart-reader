@@ -14,15 +14,12 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnClickListener
 import android.view.ViewPropertyAnimator
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import android.widget.RadioGroup
-import android.widget.RadioGroup.OnCheckedChangeListener
 import android.widget.SeekBar
-import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.ReadingActivity
@@ -151,6 +148,11 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         }
         read_full.isChecked = sharedPreferences!!.getBoolean("full_screen_read", false)
 
+        resetBtn()
+
+    }
+
+    private fun resetBtn() {
         if (Constants.PAGE_MODE == 3) {
             read_full.isEnabled = false
             read_full.isClickable = false
@@ -170,7 +172,6 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             read_autoRead.isEnabled = true
             read_autoRead.alpha = 1f
         }
-
     }
 
     private fun changeBottomSettingView(id: Int) {
@@ -190,6 +191,9 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 novel_bottom_options!!.visibility = View.GONE
 
                 read_setting_backdrop_group.setOnCheckedChangeListener(null)
+
+                resetBtn()
+
                 if (Constants.MODE == 61) {
                     read_setting_backdrop_group.clearCheck()
                 } else {

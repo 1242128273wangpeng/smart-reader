@@ -33,8 +33,6 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.component.service.DownloadService;
 import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.book.view.MyDialog;
-import net.lzbook.kit.book.view.SourcePageView;
-import net.lzbook.kit.book.view.TransCodingView;
 import net.lzbook.kit.cache.imagecache.ImageCacheManager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Book;
@@ -185,7 +183,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private OwnNativeAdManager ownNativeAdManager;
     private boolean isAcvNovelActive = true;
     private Runnable rest_tips_runnable;
-    private boolean isRestDialogShow = false;
+    public boolean isRestDialogShow = false;
     private boolean isRestPress = false;
     private boolean actNovelRunForeground = true;
     private Handler handler = new UiHandler(this);

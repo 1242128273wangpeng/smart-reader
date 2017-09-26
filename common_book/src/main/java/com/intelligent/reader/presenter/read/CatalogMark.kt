@@ -25,6 +25,7 @@ interface CatalogMark {
     interface View : IBaseView<Presenter> {
         fun showCatalog(chapters: List<Chapter>, sequence: Int)
         fun showMark(marks: List<Bookmark>)
+        fun setChangeAble(enable: Boolean)
         fun onLoading()
         fun onNetError()
     }
