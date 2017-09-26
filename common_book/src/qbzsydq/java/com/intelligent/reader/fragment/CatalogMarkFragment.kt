@@ -281,6 +281,12 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
     private var dataLoaded: Boolean = false
 
     override fun showCatalog(chapters: List<Chapter>, sequence: Int) {
+        if (view == null) {
+            //monkey
+            if (!activity.isFinishing)
+                activity.finish()
+            return
+        }
         view!!.catalog_main.visibility = View.VISIBLE
         view!!.catalog_fastscroller.visibility = View.VISIBLE
         view!!.bookmark_main.visibility = View.GONE
