@@ -9,6 +9,9 @@
     <color name="color_primary">
         #1fb7c3
     </color>
+    <color name="theme_primary">
+        #1fb7c3
+    </color>
     <color name="base_bg">
         #fafafa
     </color>
