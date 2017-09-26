@@ -518,7 +518,7 @@ public class DrawTextHelper {
                         int j = 1;
                         if (readStatus.containerInChapter != null && readStatus.containerInChapter.size() > 0) {
                             for (; j < readStatus.containerInChapter.size() + 1; j++) {
-                                if (text.equals(NovelHelper.empty_page_ad_inChapter + j)) {
+                                if (text.getLineContent().equals(NovelHelper.empty_page_ad_inChapter + j)) {
                                     HashMap<YQNativeAdInfo, Bitmap> hashMap = readStatus.containerInChapter.get(j - 1);
                                     if (hashMap != null && hashMap.entrySet() != null) {
                                         Iterator<Map.Entry<YQNativeAdInfo, Bitmap>> iterator = hashMap.entrySet().iterator();
