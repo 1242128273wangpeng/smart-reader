@@ -28,15 +28,15 @@ public abstract class PopupWindowManager implements PopupWindowInterface {
     public void initPopupWindow(int layout_id, boolean isAllowTouchOutside) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View baseView = inflater.inflate(layout_id, null);
-        if (ThemeHelper.getInstance(mContext).isNight()) {
-            View view = new View(mContext);
-            view.setBackgroundColor(Color.BLACK);
-            view.setAlpha(Constants.NIGHT_SHADOW_ALPHA);
-            FrameLayout frameLayout = new FrameLayout(mContext);
-            frameLayout.addView(baseView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            frameLayout.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            baseView = frameLayout;
-        }
+//        if (ThemeHelper.getInstance(mContext).isNight()) {
+//            View view = new View(mContext);
+//            view.setBackgroundColor(Color.BLACK);
+//            view.setAlpha(Constants.NIGHT_SHADOW_ALPHA);
+//            FrameLayout frameLayout = new FrameLayout(mContext);
+//            frameLayout.addView(baseView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+//            frameLayout.addView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+//            baseView = frameLayout;
+//        }
         initView(baseView);
 
         if (isAllowTouchOutside && popupWindow != null) {

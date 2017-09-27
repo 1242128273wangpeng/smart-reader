@@ -230,7 +230,7 @@
                 android:theme="@style/Theme.DesignDemo"/>
         <activity
                 android:name=".activity.CataloguesActivity"
-                android:screenOrientation="nosensor"
+                android:screenOrientation="portrait"
                 android:theme="@style/AppTheme"/>
         <!-- 关于 -->
         
@@ -408,7 +408,7 @@
         <activity
                 android:name=".activity.SwitchModeActivity"
                 android:launchMode="singleTop"
-                android:screenOrientation="nosensor"
+                android:screenOrientation="portrait"
                 android:theme="@style/AppTheme"/>
         
         <activity
