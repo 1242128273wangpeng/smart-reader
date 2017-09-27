@@ -206,9 +206,7 @@ public class BookStoreFragment extends Fragment {
                     recommendFragment.setArguments(bundle);
 
                 }
-                if (mSearchClickListener != null) {
-                    mSearchClickListener.getCurrent(2);
-                }
+
                 fragment = recommendFragment;
                 break;
             case 1:
@@ -220,9 +218,7 @@ public class BookStoreFragment extends Fragment {
                     bundle.putString("url", UrlUtils.buildWebUrl(uri, new HashMap<String, String>()));
                     rankingFragment.setArguments(bundle);
                 }
-                if (mSearchClickListener != null) {
-                    mSearchClickListener.getCurrent(3);
-                }
+
                 fragment = rankingFragment;
                 break;
             case 2:
@@ -234,9 +230,7 @@ public class BookStoreFragment extends Fragment {
                     bundle.putString("url", UrlUtils.buildWebUrl(uri, new HashMap<String, String>()));
                     categoryFragment.setArguments(bundle);
                 }
-                if (mSearchClickListener != null) {
-                    mSearchClickListener.getCurrent(4);
-                }
+
                 fragment = categoryFragment;
                 break;
         }
