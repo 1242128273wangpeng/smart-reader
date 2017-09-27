@@ -9,6 +9,9 @@
     <color name="color_primary">
         #882f46
     </color>
+    <color name="theme_primary">
+        #882f46
+    </color>
     <color name="base_bg">
         #ffffff
     </color>

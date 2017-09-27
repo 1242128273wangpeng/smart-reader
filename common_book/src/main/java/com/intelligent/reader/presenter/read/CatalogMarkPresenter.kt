@@ -8,7 +8,6 @@ import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.net.NetOwnBook
 import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.read.help.IReadDataFactory
-import com.j256.ormlite.stmt.query.In
 import com.quduquxie.network.DataCache
 import com.quduquxie.network.DataService
 import io.reactivex.Observable
@@ -44,7 +43,7 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: IReadDat
     }
 
     override fun loadCatalog(reverse: Boolean) {
-
+        view?.setChangeAble(false)
         view?.onLoading()
 
         Observable.create<List<Chapter>> { emitter: ObservableEmitter<List<Chapter>>? ->
@@ -96,16 +95,20 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: IReadDat
                     } else {
                         view?.onNetError()
                     }
+
+                    view?.setChangeAble(true)
                 }, onError = { e ->
             e.printStackTrace()
             view?.onNetError()
-        })
 
+            view?.setChangeAble(true)
+        })
 
     }
 
     override fun loadBookMark(activity: Activity, type: Int) {
 
+        view?.setChangeAble(false)
         if (type == 1) {
             val data = java.util.HashMap<String, String>()
             data.put("bookid", readStatus.book_id)
@@ -127,6 +130,8 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: IReadDat
                 .subscribekt(onNext = { ret ->
                     view?.showMark(ret)
                 })
+
+        view?.setChangeAble(true)
 
     }
 
