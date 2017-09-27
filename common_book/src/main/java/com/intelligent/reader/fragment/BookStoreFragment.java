@@ -204,6 +204,10 @@ public class BookStoreFragment extends Fragment {
                     String uri = URLBuilderIntterface.WEB_RECOMMEND.replace("{packageName}", AppUtils.getPackageName());
                     bundle.putString("url", UrlUtils.buildWebUrl(uri, new HashMap<String, String>()));
                     recommendFragment.setArguments(bundle);
+
+                }
+                if (mSearchClickListener != null) {
+                    mSearchClickListener.getCurrent(2);
                 }
                 fragment = recommendFragment;
                 break;
@@ -216,6 +220,9 @@ public class BookStoreFragment extends Fragment {
                     bundle.putString("url", UrlUtils.buildWebUrl(uri, new HashMap<String, String>()));
                     rankingFragment.setArguments(bundle);
                 }
+                if (mSearchClickListener != null) {
+                    mSearchClickListener.getCurrent(3);
+                }
                 fragment = rankingFragment;
                 break;
             case 2:
@@ -226,6 +233,9 @@ public class BookStoreFragment extends Fragment {
                     String uri = URLBuilderIntterface.WEB_CATEGORY.replace("{packageName}", AppUtils.getPackageName());
                     bundle.putString("url", UrlUtils.buildWebUrl(uri, new HashMap<String, String>()));
                     categoryFragment.setArguments(bundle);
+                }
+                if (mSearchClickListener != null) {
+                    mSearchClickListener.getCurrent(4);
                 }
                 fragment = categoryFragment;
                 break;
