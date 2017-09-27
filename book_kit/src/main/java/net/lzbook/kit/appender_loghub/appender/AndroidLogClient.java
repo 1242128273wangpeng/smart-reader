@@ -13,9 +13,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class AndroidLogClient {
 
-    private static final String endPoint = "cn-shenzhen.log.aliyuncs.com";// Endpoint
-    private static final String accessKeyId = "LTAIHv56dMm1Dd5Z"; // 使用您的阿里云访问密钥
-    private static final String accessKeySecret = "30hIE7U1i6D4azaCwsWnFWS19G4yAb"; // 使用您的阿里云访问密钥
+    public static final String endPoint = "cn-shenzhen.log.aliyuncs.com";// Endpoint
+    public static final String accessKeyId = "LTAIHv56dMm1Dd5Z"; // 使用您的阿里云访问密钥
+    public static final String accessKeySecret = "30hIE7U1i6D4azaCwsWnFWS19G4yAb"; // 使用您的阿里云访问密钥
     //	private final static Logger logger = LoggerFactory.getLogger(AndroidLogClient.class);
     // 定义发送队列
     private static volatile Queue<LogGroup> send_queue = new ConcurrentLinkedQueue<LogGroup>();
@@ -161,7 +161,6 @@ public class AndroidLogClient {
                 String logstore = logGroup.getLogstore();
                 try {
                     if (logGroup != null && logGroup != null) {
-                        System.out.println("sending............................");
                         LOGClient logClient = new LOGClient(endPoint, accessKeyId, accessKeySecret, project);
                         logClient.PostLog(logGroup, logstore);
                     }

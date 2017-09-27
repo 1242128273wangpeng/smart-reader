@@ -957,11 +957,13 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             ownNativeAdManager = OwnNativeAdManager.getInstance(this);
         }
         ownNativeAdManager.setActivity(this);
-        ownNativeAdManager.loadAdForMiddle(NativeInit.CustomPositionName.READING_MIDDLE_POSITION);
-        if (Constants.IS_LANDSCAPE) {
-            OwnNativeAdManager.getInstance(this).loadAd(NativeInit.CustomPositionName.SUPPLY_READING_SPACE);
-        } else {
-            OwnNativeAdManager.getInstance(this).loadAd(NativeInit.CustomPositionName.READING_POSITION);
+        if (!Constants.isSlideUp) {
+            ownNativeAdManager.loadAdForMiddle(NativeInit.CustomPositionName.READING_MIDDLE_POSITION);
+            if (Constants.IS_LANDSCAPE) {
+                OwnNativeAdManager.getInstance(this).loadAd(NativeInit.CustomPositionName.SUPPLY_READING_SPACE);
+            } else {
+                OwnNativeAdManager.getInstance(this).loadAd(NativeInit.CustomPositionName.READING_POSITION);
+            }
         }
     }
 

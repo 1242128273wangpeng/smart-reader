@@ -59,9 +59,9 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
         progressbarMain = R.drawable.down_manager_progressbar_main;
 
         progressbarSecond = R.drawable.down_manager_progressbar_second;
-        downBtnNoStart = R.mipmap.cache_icon_downing;
-        downBtnDowning = R.mipmap.cache_icon_pause;
-        downBtnWaitting = R.mipmap.cache_icon_wait;
+        downBtnNoStart = R.mipmap.icon_download_nostart;
+        downBtnDowning = R.mipmap.icon_downloading;
+        downBtnWaitting = R.mipmap.icon_download_watting;
 
 
     }

@@ -840,7 +840,6 @@ public class DownloadService extends Service {
                             new Function2<String, Integer, Boolean>() {
                                 @Override
                                 public Boolean invoke(String s, Integer integer) {
-                                    System.out.println("download progress : " + integer);
                                     task.progress = integer;
                                     task.mCallBack.onProgressUpdate(s, integer);
                                     return task.state == DownloadState.DOWNLOADING;
@@ -863,7 +862,6 @@ public class DownloadService extends Service {
 
 
                                     if (!isSameSource) {
-                                        System.out.println("异源 清除缓存目录内容");
                                         //异源都要 清除缓存目录内容
                                         delFile(new File(ReplaceConstants.getReplaceConstants().APP_PATH_BOOK + task.book.book_id));
                                         task.startSequence = 0;
