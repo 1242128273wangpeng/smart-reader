@@ -283,8 +283,6 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
     override fun showCatalog(chapters: List<Chapter>, sequence: Int) {
         if (view == null) {
             //monkey
-            if (!activity.isFinishing)
-                activity.finish()
             return
         }
         view!!.catalog_main.visibility = View.VISIBLE
