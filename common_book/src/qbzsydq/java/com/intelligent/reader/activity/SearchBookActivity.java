@@ -46,6 +46,10 @@ import iyouqu.theme.FrameActivity;
 public class SearchBookActivity extends FrameActivity implements OnClickListener, OnFocusChangeListener, SearchViewHelper.OnHistoryClickListener,
         TextWatcher, OnEditorActionListener, SearchHelper.JsCallSearchCall, SearchHelper.StartLoadCall {
 
+    boolean isSearch = false;
+    //记录是否退出当前界面,for:修复退出界面时出现闪影
+    boolean isBackPressed = false;
+    boolean ziyougb;
     private ImageView search_result_back;
     private ImageView search_result_button;
     private RelativeLayout search_result_outcome;
@@ -57,20 +61,12 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
     private RelativeLayout search_result_main;
     private WebView search_result_content;
     private FrameLayout search_result_hint;
-
     private SearchViewHelper searchViewHelper;
     private BookDaoHelper bookDaoHelper;
     private Handler handler = new Handler();
-
     private CustomWebClient customWebClient;
     private JSInterfaceHelper jsInterfaceHelper;
-
-    boolean isSearch = false;
-    //记录是否退出当前界面,for:修复退出界面时出现闪影
-    boolean isBackPressed = false;
-
     private LoadingPage loadingPage;
-
     private SearchHelper mSearchHelper;
 
     @Override
@@ -162,7 +158,6 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
         }
 
     }
-
 
     private void initListener() {
         if (mSearchHelper != null){
@@ -272,7 +267,6 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
         }
     }
 
-
     private void startLoading(Handler handler, final String url) {
         if (search_result_content == null) {
             return;
@@ -378,11 +372,6 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
     @Override
     protected void onPause() {
         super.onPause();
-        if (!isSearch) {
-            hideSearchView(false);
-        } else {
-            showSearchViews();
-        }
         if (search_result_input != null) {
             search_result_input.clearFocus();
         }
@@ -395,11 +384,6 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
     @Override
     protected void onStop() {
         super.onStop();
-        if (!isSearch) {
-            hideSearchView(false);
-        } else {
-            showSearchViews();
-        }
         if (search_result_input != null) {
             search_result_input.clearFocus();
         }
@@ -463,7 +447,6 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
         StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
         backAction();
     }
-
 
     private void showSearchViews() {
         if (NetWorkUtils.getNetWorkType(this) == NetWorkUtils.NETWORK_NONE) {
@@ -639,8 +622,6 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                 break;
         }
     }
-
-    boolean ziyougb;
 
     @Override
     public void onFocusChange(View view, boolean hasFocus) {

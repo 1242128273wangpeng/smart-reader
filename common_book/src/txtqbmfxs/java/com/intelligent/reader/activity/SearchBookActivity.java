@@ -379,11 +379,6 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
     @Override
     protected void onPause() {
         super.onPause();
-        if (!isSearch) {
-            hideSearchView(false);
-        } else {
-            showSearchViews();
-        }
         if (search_result_input != null) {
             search_result_input.clearFocus();
         }
@@ -396,11 +391,6 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
     @Override
     protected void onStop() {
         super.onStop();
-        if (!isSearch) {
-            hideSearchView(false);
-        } else {
-            showSearchViews();
-        }
         if (search_result_input != null) {
             search_result_input.clearFocus();
         }
