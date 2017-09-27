@@ -518,7 +518,7 @@ public class DrawTextHelper {
                         int j = 1;
                         if (readStatus.containerInChapter != null && readStatus.containerInChapter.size() > 0) {
                             for (; j < readStatus.containerInChapter.size() + 1; j++) {
-                                if (text.equals(NovelHelper.empty_page_ad_inChapter + j)) {
+                                if (text.getLineContent().equals(NovelHelper.empty_page_ad_inChapter + j)) {
                                     HashMap<YQNativeAdInfo, Bitmap> hashMap = readStatus.containerInChapter.get(j - 1);
                                     if (hashMap != null && hashMap.entrySet() != null) {
                                         Iterator<Map.Entry<YQNativeAdInfo, Bitmap>> iterator = hashMap.entrySet().iterator();
@@ -800,11 +800,13 @@ public class DrawTextHelper {
 
 
     public void loadNatvieAd() {
-        OwnNativeAdManager.getInstance(mActivity).loadAdForMiddle(NativeInit.CustomPositionName.READING_MIDDLE_POSITION);
-        if (Constants.IS_LANDSCAPE) {
-            OwnNativeAdManager.getInstance(mActivity).loadAd(NativeInit.CustomPositionName.SUPPLY_READING_SPACE);
-        } else {
-            OwnNativeAdManager.getInstance(mActivity).loadAd(NativeInit.CustomPositionName.READING_POSITION);
+        if (!Constants.isSlideUp) {
+            OwnNativeAdManager.getInstance(mActivity).loadAdForMiddle(NativeInit.CustomPositionName.READING_MIDDLE_POSITION);
+            if (Constants.IS_LANDSCAPE) {
+                OwnNativeAdManager.getInstance(mActivity).loadAd(NativeInit.CustomPositionName.SUPPLY_READING_SPACE);
+            } else {
+                OwnNativeAdManager.getInstance(mActivity).loadAd(NativeInit.CustomPositionName.READING_POSITION);
+            }
         }
     }
 
