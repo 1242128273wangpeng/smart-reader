@@ -20,6 +20,7 @@ public enum PLItemKey {
     ZN_DF_OK_EDITION_FIND("ZN_DF_OK_EDITION_FIND", "datastatistics-zn", "df_ok_edition_find", "智能数据流相关统计"),
     ZN_DF_EDITION_CHAPTER_UPDATE("ZN_DF_EDITION_CHAPTER_UPDATE", "datastatistics-zn", "df_edition_chapter_update", "智能数据流相关统计"),
     ZN_APP_EVENT("ZN_DF_APP_EVENT", "datastatistics-zn", "event", "智能数据流APP点击事件"),
+    ZN_APP_CRASH("ZN_APP_CRASH", "datastatistics-zn", "app_crash", "客户端异常日志"),
     ZN_APP_APPSTORE("ZN_APP_APPSTORE", "datastatistics-zn", "appstore", "app列表"),
     ZN_APP_READ_CONTENT("ZN_APP_READ_CONTENT", "datastatistics-zn", "read_content", "阅读内容"),
     ZN_APP_TEST("ZN_APP_TEST", "datastatistics-zn", "test", "智能数据流APP点击事件");

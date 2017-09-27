@@ -16,6 +16,7 @@ import android.util.Log;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -206,40 +207,30 @@ public class StartLogClickUtil {
 
     }
 
-    public static void sendDirectLog(String page, String identify) {
-        LogGroup logGroup = new LogGroup("", "", PLItemKey.ZN_APP_EVENT.getProject(), PLItemKey.ZN_APP_EVENT.getLogstore());
+    public static void sendDirectLog(PLItemKey key, String page, String identify, Map<String, String> params) {
+        LogGroup logGroup = new LogGroup("", "", key.getProject(), PLItemKey.ZN_APP_EVENT.getLogstore());
         ServerLog log = getCommonLog();
         log.PutContent("code", identify);//点击事件唯一标识
         log.PutContent("page_code", page);
 
+        Set<Map.Entry<String, String>> entries = params.entrySet();
+        for (Map.Entry<String, String> entry : entries) {
+            log.PutContent(entry.getKey(), entry.getValue());
+        }
+
         logGroup.PutLog(log);
 
-        LOGClient logClient = new LOGClient(AndroidLogClient.endPoint, AndroidLogClient.accessKeyId, AndroidLogClient.accessKeySecret, PLItemKey.ZN_APP_EVENT.getProject());
+        LOGClient logClient = new LOGClient(AndroidLogClient.endPoint, AndroidLogClient.accessKeyId, AndroidLogClient.accessKeySecret, key.getProject());
         try {
             long start = System.currentTimeMillis();
-            logClient.PostLog(logGroup, PLItemKey.ZN_APP_EVENT.getLogstore());
+            logClient.PostLog(logGroup, key.getLogstore());
             Log.i("upload-Log", "useTime : " + (System.currentTimeMillis() - start));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void sendDirectMsg(String type, String msg) {
-        LogGroup logGroup = new LogGroup("", "", PLItemKey.ZN_APP_EVENT.getProject(), PLItemKey.ZN_APP_EVENT.getLogstore());
-        ServerLog log = getCommonLog();
-        log.PutContent(type, msg);
 
-        logGroup.PutLog(log);
-
-        LOGClient logClient = new LOGClient(AndroidLogClient.endPoint, AndroidLogClient.accessKeyId, AndroidLogClient.accessKeySecret, PLItemKey.ZN_APP_EVENT.getProject());
-        try {
-            long start = System.currentTimeMillis();
-            logClient.PostLog(logGroup, PLItemKey.ZN_APP_EVENT.getLogstore());
-            Log.i("upload-Msg", "useTime : " + (System.currentTimeMillis() - start));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @NonNull
     private static ServerLog getCommonLog() {

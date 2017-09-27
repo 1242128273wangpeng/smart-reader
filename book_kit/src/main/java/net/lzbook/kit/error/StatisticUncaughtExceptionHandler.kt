@@ -1,12 +1,11 @@
 package net.lzbook.kit.error
 
-import android.util.Log
 import com.alibaba.fastjson.JSONObject
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.appender_loghub.common.PLItemKey
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.OpenUDID
-import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
 
@@ -24,14 +23,15 @@ class StatisticUncaughtExceptionHandler(val parent: Thread.UncaughtExceptionHand
         val stackTrace = StringWriter()
         exception.printStackTrace(PrintWriter(stackTrace))
 
-        val mainJson = JSONObject()
+        val mainJson = mutableMapOf<String, String>()
 
         mainJson.put("pkg", AppUtils.getPackageName())
         mainJson.put("version", AppUtils.getVersionName())
         mainJson.put("cause", exception.toString())
         mainJson.put("type", exception.javaClass.name)
         mainJson.put("udid", OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()))
-        mainJson.put("Crash:${thread.id}:${thread.name}", stackTrace.toString())
+        mainJson.put("crash", stackTrace.toString())
+        mainJson.put("crashThread", "${thread.id}:${thread.name}")
 
 //        val stackJson = JSONObject()
 //        val allStackTraces = Thread.getAllStackTraces()
@@ -47,16 +47,14 @@ class StatisticUncaughtExceptionHandler(val parent: Thread.UncaughtExceptionHand
         } else {
             extJson.put("readstatus", "null")
         }
-        mainJson.put("env", extJson)
+        mainJson.put("env", extJson.toString())
 
 //        Log.e("Crash", mainJson.toString())
 //
 //        File("/sdcard/crash.txt").writeText(mainJson.toJSONString())
 
         Thread() {
-            StartLogClickUtil.sendDirectMsg("crash", mainJson.toString())
-
-            StartLogClickUtil.sendDirectLog(StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.CRASH)
+            StartLogClickUtil.sendDirectLog(PLItemKey.ZN_APP_CRASH, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.CRASH, mainJson)
             synchronized(lock) {
                 lock.notify()
             }
