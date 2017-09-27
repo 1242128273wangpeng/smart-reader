@@ -530,10 +530,12 @@ public class NovelHelper {
         }
 
         // 去除章节开头特殊符号
-        if ((readStatus.sequence >= 0) && lists.size() > 3) {
-            String chapterTitle = lists.get(0).get(3).getLineContent();
-            if (!TextUtils.isEmpty(chapterTitle) && chapterTitle.contains("\"")) {
-                lists.get(0).set(3, new NovelLineBean(chapterTitle.replace("\"", "").trim(), 0, 0));
+        if ((readStatus.sequence >= 0) && lists.size() > 0) {
+            if (lists.get(0) != null && lists.get(0).size() > 4) {
+                String chapterTitle = lists.get(0).get(3).getLineContent();
+                if (!TextUtils.isEmpty(chapterTitle) && chapterTitle.contains("\"")) {
+                    lists.get(0).set(3, new NovelLineBean(chapterTitle.replace("\"", "").trim(), 0, 0));
+                }
             }
         }
 
@@ -696,10 +698,6 @@ public class NovelHelper {
 
     /**
      * 如果一行的末尾是标点,将标点变为半角
-     * @param text
-     * @param istart
-     * @param i
-     * @return
      */
     private String getLine(String text, int istart, int i) {
         if (i > 0) {
