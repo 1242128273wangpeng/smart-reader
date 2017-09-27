@@ -332,8 +332,6 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
     @Override
     public void onChapterDownFinish(String book_id, int sequence) {
 
-        System.out.println("onChapterDownFinish : " + sequence);
-
         if (System.currentTimeMillis() - time > 1000) {
             time = System.currentTimeMillis();
             if (downloadAdapter != null) {
@@ -386,7 +384,6 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        System.out.println("onProgressUpdate : " + progress);
                         downloadAdapter.notifyDataSetChanged();
                     }
                 });

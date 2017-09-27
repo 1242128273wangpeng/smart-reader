@@ -59,9 +59,9 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
         progressbarMain = R.drawable.down_manager_progressbar_main;
 
         progressbarSecond = R.drawable.down_manager_progressbar_second;
-        downBtnNoStart = R.mipmap.cache_icon_downing;
-        downBtnDowning = R.mipmap.cache_icon_pause;
-        downBtnWaitting = R.mipmap.cache_icon_wait;
+        downBtnNoStart = R.mipmap.icon_download_nostart;
+        downBtnDowning = R.mipmap.icon_downloading;
+        downBtnWaitting = R.mipmap.icon_download_watting;
 
 
     }
@@ -220,6 +220,7 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
                             BookHelper.startDownBookTask(mContext, book.book_id, 0);
                             BookHelper.writeDownIndex(mContext, book.book_id, false, 0);
                             data.put("type", "1");
+                            data.put("bookid",book.book_id);
                             StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.CACHEBUTTON, data);
                             return;
                         } else if (state == DownloadState.DOWNLOADING || state == DownloadState.WAITTING) {
@@ -240,6 +241,7 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
                             data.put("type", "1");
                         }
                         notifyDataSetChanged();
+                        data.put("bookid",book.book_id);
                         StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.CACHEBUTTON, data);
                     }
                 });

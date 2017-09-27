@@ -318,7 +318,11 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         if (isFromCover && Constants.IS_LANDSCAPE) {
             return;
         }
-        setContentView(R.layout.act_read);
+
+
+        View main = getLayoutInflater().inflate(R.layout.act_read, null);
+
+        setContentView(main);
 
         mCatlogMarkDrawer = (DrawerLayout) findViewById(R.id.read_catalog_mark_drawer);
 
@@ -331,7 +335,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         mCatalogMarkPresenter.setView(mCatalogMarkFragment);
         mCatalogMarkFragment.setPresenter(mCatalogMarkPresenter);
 
-        mCatalogMarkPresenter.loadCatalog(false);
+//        mCatalogMarkPresenter.loadCatalog(false);
 
         mCatlogMarkDrawer.addDrawerListener(mCatalogMarkFragment);
         ReadOptionHeader optionHeader = (ReadOptionHeader) findViewById(R.id.option_header);
@@ -384,8 +388,14 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         if (isFromCover && Constants.IS_LANDSCAPE) {
             return;
         }
+
 //        setContentView(R.layout.act_read);
         mCatlogMarkDrawer = (DrawerLayout) findViewById(R.id.read_catalog_mark_drawer);
+        if (mCatlogMarkDrawer == null) {
+            //inflate not finish
+            finish();
+            return;
+        }
 
         mCatlogMarkDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mCatlogMarkDrawer.addDrawerListener(mDrawerListener);
@@ -393,12 +403,22 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus, dataFactory);
 
         mCatalogMarkFragment = (CatalogMarkFragment) getSupportFragmentManager().findFragmentById(R.id.read_catalog_mark_layout);
+        if (mCatalogMarkFragment == null) {
+            //inflate not finish
+            finish();
+            return;
+        }
         mCatalogMarkPresenter.setView(mCatalogMarkFragment);
         mCatalogMarkFragment.setPresenter(mCatalogMarkPresenter);
 
         mCatlogMarkDrawer.addDrawerListener(mCatalogMarkFragment);
 
         ReadOptionHeader optionHeader = (ReadOptionHeader) findViewById(R.id.option_header);
+        if (optionHeader == null) {
+            //inflate not finish
+            finish();
+            return;
+        }
         mReadOptionPresenter = new ReadOptionPresenter(this, readStatus, dataFactory);
         mReadOptionPresenter.setView(optionHeader);
         optionHeader.setPresenter(mReadOptionPresenter);
@@ -937,11 +957,13 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             ownNativeAdManager = OwnNativeAdManager.getInstance(this);
         }
         ownNativeAdManager.setActivity(this);
-        ownNativeAdManager.loadAdForMiddle(NativeInit.CustomPositionName.READING_MIDDLE_POSITION);
-        if (Constants.IS_LANDSCAPE) {
-            OwnNativeAdManager.getInstance(this).loadAd(NativeInit.CustomPositionName.SUPPLY_READING_SPACE);
-        } else {
-            OwnNativeAdManager.getInstance(this).loadAd(NativeInit.CustomPositionName.READING_POSITION);
+        if (!Constants.isSlideUp) {
+            ownNativeAdManager.loadAdForMiddle(NativeInit.CustomPositionName.READING_MIDDLE_POSITION);
+            if (Constants.IS_LANDSCAPE) {
+                OwnNativeAdManager.getInstance(this).loadAd(NativeInit.CustomPositionName.SUPPLY_READING_SPACE);
+            } else {
+                OwnNativeAdManager.getInstance(this).loadAd(NativeInit.CustomPositionName.READING_POSITION);
+            }
         }
     }
 
@@ -1874,13 +1896,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         if (handler != null) {
             handler.removeCallbacksAndMessages(null);
         }
-
-        try {
-            setContentView(R.layout.empty);
-        } catch (Resources.NotFoundException e) {
-            e.printStackTrace();
-        }
-
 
         if (novel_basePageView != null) {
             novel_basePageView.removeAllViews();

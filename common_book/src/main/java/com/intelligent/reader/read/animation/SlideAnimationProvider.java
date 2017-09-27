@@ -18,7 +18,7 @@ public class SlideAnimationProvider extends AnimationProvider {
     boolean moveToLeft;
     boolean moveToLeftUp;
     private int speed = 10;
-    private boolean isCanDoStep = false;
+    private volatile boolean isCanDoStep = false;
     private int mMinFlingVelocity = 4500;
     private int mMinFlingVelocity2 = 6000;
 
@@ -57,9 +57,7 @@ public class SlideAnimationProvider extends AnimationProvider {
 
     @Override
     public boolean moveEvent(MotionEvent event) {
-        if (!mScroller.isFinished()) {
-            mScroller.abortAnimation();
-        }
+
         moveX = event.getX() - mTouch.x;
         moveY = event.getY() - mTouch.y;
         // mTouch.x = event.getX();
@@ -81,8 +79,6 @@ public class SlideAnimationProvider extends AnimationProvider {
                 }
 
                 moveX = mScroller.getCurrX();
-
-                System.out.println("moveX : " + moveX);
 
                 if (moveX > mWidth) {
                     isCanDoStep = false;
@@ -139,10 +135,11 @@ public class SlideAnimationProvider extends AnimationProvider {
 
     @Override
     public void setTouchStartPosition(int startX, int startY, boolean moveToLeft) {
-//        isCanDoStep = false;
-//        if(!mScroller.isFinished()){
-//            mScroller.abortAnimation();
-//        }
+        isCanDoStep = false;
+        if (!mScroller.isFinished()) {
+            mScroller.forceFinished(true);
+        }
+
         mTouch.x = this.startX = startX;
         mTouch.y = this.startY = startY;
         this.moveToLeft = moveToLeft;
@@ -152,7 +149,7 @@ public class SlideAnimationProvider extends AnimationProvider {
     public void startTurnAnimation(boolean moveToLeft) {
         synchronized (mScroller) {
             if (!mScroller.isFinished()) {
-                mScroller.abortAnimation();
+                mScroller.forceFinished(true);
             }
 
             this.moveToLeftUp = moveToLeft;
@@ -221,7 +218,7 @@ public class SlideAnimationProvider extends AnimationProvider {
     @Override
     public void finishAnimation() {
         if (!mScroller.isFinished()) {
-            mScroller.abortAnimation();
+            mScroller.forceFinished(true);
 //            moveX = mScroller.getFinalX();
 //            pageView.postInvalidate();
         }

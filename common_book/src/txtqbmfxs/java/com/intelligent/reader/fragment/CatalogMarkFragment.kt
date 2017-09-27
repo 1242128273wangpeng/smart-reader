@@ -282,6 +282,10 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
     private var dataLoaded: Boolean = false
 
     override fun showCatalog(chapters: List<Chapter>, sequence: Int) {
+        if (view == null) {
+            //monkey
+            return
+        }
         view!!.catalog_main.visibility = View.VISIBLE
         view!!.catalog_fastscroller.visibility = View.VISIBLE
         view!!.bookmark_main.visibility = View.GONE
@@ -320,6 +324,11 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
     }
 
     private var loadingPage: LoadingPage? = null
+
+    override fun setChangeAble(enable: Boolean) {
+        view!!.tab_bookmark.isClickable = enable
+        view!!.tab_catalog.isClickable = enable
+    }
 
     override fun onLoading() {
         loadingPage?.onSuccess()
