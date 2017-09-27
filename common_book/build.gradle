@@ -286,155 +286,155 @@ N多网	blf1298_10885_001
 
  */
 
-//        blp1298_10882_001 {
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            shrinkResources false
-//            fixChannelAppName(getOwner())
-//            addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10882_001'])
-//        }
-//        blp1298_10890_001 {
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            shrinkResources false
-//            fixChannelAppName(getOwner())
-//            addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10890_001'])
-//        }
-//        blp1298_10891_001 {
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            shrinkResources false
-//            fixChannelAppName(getOwner())
-//            addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10891_001'])
-//        }
-//        blf1298_10928_001 {
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            shrinkResources false
-//            fixChannelAppName(getOwner())
-//            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_10928_001'])
-//        }
-//        blp1298_10269_001 {
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            shrinkResources false
-//            fixChannelAppName(getOwner())
-//            addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10269_001'])
-//        }
-//        blp1298_10883_001 {
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            shrinkResources false
-//            fixChannelAppName(getOwner())
-//            addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10883_001'])
-//        }
-//        blp1298_10699_001 {
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            shrinkResources false
-//            fixChannelAppName(getOwner())
-//            addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10699_001'])
-//        }
-//        blp1298_10610_001 {
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            shrinkResources false
-//            fixChannelAppName(getOwner())
-//            addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10610_001'])
-//        }
-//        blf1298_10461_001 {
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            shrinkResources false
-//            fixChannelAppName(getOwner())
-//            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_10461_001'])
-//        }
-//        blf1298_12243_001 {
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            shrinkResources false
-//            fixChannelAppName(getOwner())
-//            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_12243_001'])
-//        }
-//        blf1298_12340_001 {
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            shrinkResources false
-//            fixChannelAppName(getOwner())
-//            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_12340_001'])
-//        }
-//        blf1298_12237_001 {
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            shrinkResources false
-//            fixChannelAppName(getOwner())
-//            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_12237_001'])
-//        }
-//        blf1298_10887_001 {
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            shrinkResources false
-//            fixChannelAppName(getOwner())
-//            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_10887_001'])
-//        }
-//        blf1298_12242_001 {
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            shrinkResources false
-//            fixChannelAppName(getOwner())
-//            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_12242_001'])
-//        }
-//        blf1298_12247_001 {
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            shrinkResources false
-//            fixChannelAppName(getOwner())
-//            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_12247_001'])
-//        }
-//        blf1298_13316_001 {
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            shrinkResources false
-//            fixChannelAppName(getOwner())
-//            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_13316_001'])
-//        }
-//        blf1298_12923_001 {
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            shrinkResources false
-//            fixChannelAppName(getOwner())
-//            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_12923_001'])
-//        }
-//        blf1298_10885_001 {
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            shrinkResources false
-//            fixChannelAppName(getOwner())
-//            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_10885_001'])
-//        }
-//        blf1298_13096_001 {
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            shrinkResources false
-//            fixChannelAppName(getOwner())
-//            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_13096_001'])
-//        }
-//        blf1298_10930_001 {
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            shrinkResources false
-//            fixChannelAppName(getOwner())
-//            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_10930_001'])
-//        }
-//
-//        //升级渠道
-//        blf1298_11974_001 {
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            shrinkResources false
-//            fixChannelAppName(getOwner())
-//            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_11974_001'])
-//        }
+        blp1298_10882_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10882_001'])
+        }
+        blp1298_10890_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10890_001'])
+        }
+        blp1298_10891_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10891_001'])
+        }
+        blf1298_10928_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_10928_001'])
+        }
+        blp1298_10269_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10269_001'])
+        }
+        blp1298_10883_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10883_001'])
+        }
+        blp1298_10699_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10699_001'])
+        }
+        blp1298_10610_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10610_001'])
+        }
+        blf1298_10461_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_10461_001'])
+        }
+        blf1298_12243_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_12243_001'])
+        }
+        blf1298_12340_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_12340_001'])
+        }
+        blf1298_12237_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_12237_001'])
+        }
+        blf1298_10887_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_10887_001'])
+        }
+        blf1298_12242_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_12242_001'])
+        }
+        blf1298_12247_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_12247_001'])
+        }
+        blf1298_13316_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_13316_001'])
+        }
+        blf1298_12923_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_12923_001'])
+        }
+        blf1298_10885_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_10885_001'])
+        }
+        blf1298_13096_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_13096_001'])
+        }
+        blf1298_10930_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_10930_001'])
+        }
+
+        //升级渠道
+        blf1298_11974_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_11974_001'])
+        }
 
         //推广渠道号
         blf1298_10000_001 {
@@ -458,25 +458,25 @@ N多网	blf1298_10885_001
             addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10894_001'])
         }
 
-//        //调试和开发使用
-//        debug {
-//            debuggable = true
-//            minifyEnabled false
-//            zipAlignEnabled true
-//            shrinkResources false
-//            fixChannelAppName(getOwner())
-//            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_11974_001'])
-//        }
-//
-//        //调试和开发使用
-//        release {
-//            debuggable = false
-//            minifyEnabled true
-//            zipAlignEnabled true
-//            shrinkResources false
-//            fixChannelAppName(getOwner())
-//            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_11974_001'])
-//        }
+        //调试和开发使用
+        debug {
+            debuggable = true
+            minifyEnabled false
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_11974_001'])
+        }
+
+        //调试和开发使用
+        release {
+            debuggable = false
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            fixChannelAppName(getOwner())
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_11974_001'])
+        }
 
     }
 

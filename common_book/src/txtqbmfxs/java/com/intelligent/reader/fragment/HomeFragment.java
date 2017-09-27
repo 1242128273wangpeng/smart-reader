@@ -106,6 +106,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
     private TextView home_edit_cancel;
 
     private int bottomType;//青果打点搜索 1 精选 2 榜单
+    private int bottomTypeStore = 2;//青果打点搜索 1 精选 2 榜单
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -578,6 +579,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                         Intent intent = new Intent();
                         intent.setClass(context, SearchBookActivity.class);
                         startActivity(intent);
+                        AppLog.d("bookshelf_search", "bottomType = " + bottomType);
                         if(bottomType ==2){
                             StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH);
                         }else if(bottomType ==3){
@@ -608,7 +610,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                 @Override
                 public void onClick(View v) {
                     setTabSelected(0);
-                    bottomType = 0;
+                    bottomType = 1;
                     StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.BOOKSHELF);
                 }
             });
@@ -618,7 +620,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
             home_bookstore_two_tab.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    bottomType = 1;
+                    bottomType = bottomTypeStore;
                     setTabSelected(1);
                 }
             });
@@ -768,7 +770,8 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
 
     @Override
     public void getCurrent(int position) {
-        bottomType = position;
+        bottomTypeStore = position;
+        bottomType = bottomTypeStore;
     }
 
     private static class MHandler extends Handler {
