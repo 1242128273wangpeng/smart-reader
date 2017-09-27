@@ -436,6 +436,28 @@ N多网	blf1298_10885_001
             addManifestPlaceholders([CHANNEL_NAME: 'blf1298_11974_001'])
         }
 
+        //推广渠道号
+        blf1298_10000_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_10000_001'])
+        }
+        blf1298_10001_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_10001_001'])
+        }
+
+        //安智市场渠道号
+        blp1298_10894_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10894_001'])
+        }
+
         //调试和开发使用
         debug {
             debuggable = true
