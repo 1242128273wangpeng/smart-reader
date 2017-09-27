@@ -10,6 +10,7 @@ import net.lzbook.kit.encrypt.MainExtractorInterface;
 import net.lzbook.kit.encrypt.URLBuilderIntterface;
 import net.lzbook.kit.encrypt.v17.MainExtractor;
 import net.lzbook.kit.encrypt.v17.URLBuilder;
+import net.lzbook.kit.error.StatisticUncaughtExceptionHandler;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.DeviceHelper;
 import net.lzbook.kit.utils.ExtensionsKt;
@@ -89,8 +90,15 @@ public abstract class BaseBookApplication extends Application {
 
     @Override
     protected void attachBaseContext(Context base) {
+        this.sCtx = this;
         super.attachBaseContext(base);
         loge(this, "attachBaseContext");
+
+        final Thread.UncaughtExceptionHandler parent = Thread.getDefaultUncaughtExceptionHandler();
+
+        Thread.setDefaultUncaughtExceptionHandler(new StatisticUncaughtExceptionHandler(parent));
+
+
 
         Constants.SHOW_LOG = ExtensionsKt.msDebuggAble =(getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)!= 0;
         //分割dex防止方法数过多

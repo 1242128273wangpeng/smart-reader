@@ -10,6 +10,8 @@ import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -156,6 +158,9 @@ public class StartLogClickUtil {
     //搜索结果页
     public static final String SEARCHRESULT = "SEARCHRESULT";//某本书点击
 
+    //Crash
+    public static final String CRASH = "CRASH";
+
     //青果推荐页
     public static final String QG_TJY_MODULEEXPOSE = "MODULEEXPOSE";//模块露出
     public static final String QG_TJY_BOOKEXPOSE = "BOOKEXPOSE";//各书籍位置露出
@@ -185,12 +190,63 @@ public class StartLogClickUtil {
         if (!Constants.dy_ad_new_statistics_switch || context == null) {
             return;
         }
+        final ServerLog log = getCommonLog();
+
+
+        log.PutContent("code", identify);//点击事件唯一标识
+        log.PutContent("page_code", pageCode);
+
+        logThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                AppLog.e("log", log.GetContent().toString());
+                AndroidLogClient.putLog(log);
+            }
+        });
+
+    }
+
+    public static void sendDirectLog(String page, String identify) {
+        LogGroup logGroup = new LogGroup("", "", PLItemKey.ZN_APP_EVENT.getProject(), PLItemKey.ZN_APP_EVENT.getLogstore());
+        ServerLog log = getCommonLog();
+        log.PutContent("code", identify);//点击事件唯一标识
+        log.PutContent("page_code", page);
+
+        logGroup.PutLog(log);
+
+        LOGClient logClient = new LOGClient(AndroidLogClient.endPoint, AndroidLogClient.accessKeyId, AndroidLogClient.accessKeySecret, PLItemKey.ZN_APP_EVENT.getProject());
+        try {
+            long start = System.currentTimeMillis();
+            logClient.PostLog(logGroup, PLItemKey.ZN_APP_EVENT.getLogstore());
+            Log.i("upload-Log", "useTime : " + (System.currentTimeMillis() - start));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void sendDirectMsg(String type, String msg) {
+        LogGroup logGroup = new LogGroup("", "", PLItemKey.ZN_APP_EVENT.getProject(), PLItemKey.ZN_APP_EVENT.getLogstore());
+        ServerLog log = getCommonLog();
+        log.PutContent(type, msg);
+
+        logGroup.PutLog(log);
+
+        LOGClient logClient = new LOGClient(AndroidLogClient.endPoint, AndroidLogClient.accessKeyId, AndroidLogClient.accessKeySecret, PLItemKey.ZN_APP_EVENT.getProject());
+        try {
+            long start = System.currentTimeMillis();
+            logClient.PostLog(logGroup, PLItemKey.ZN_APP_EVENT.getLogstore());
+            Log.i("upload-Msg", "useTime : " + (System.currentTimeMillis() - start));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @NonNull
+    private static ServerLog getCommonLog() {
         final ServerLog log = new ServerLog(PLItemKey.ZN_APP_EVENT);
 
         log.PutContent("project", PLItemKey.ZN_APP_EVENT.getProject());
         log.PutContent("logstore", PLItemKey.ZN_APP_EVENT.getLogstore());
-        log.PutContent("code", identify);//点击事件唯一标识
-        log.PutContent("page_code", pageCode);
 
         if (UserManager.INSTANCE.isUserLogin()) {
             log.PutContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
@@ -205,17 +261,7 @@ public class StartLogClickUtil {
         log.PutContent("latitude", Constants.latitude + "");//纬度
         log.PutContent("city_info", Constants.adCityInfo);//城市
         log.PutContent("location_detail", Constants.adLocationDetail);//具体位置信息
-
-        logThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                AppLog.e("log", log.GetContent().toString());
-                AndroidLogClient.putLog(log);
-            }
-        });
-
-
-
+        return log;
     }
 
     //上传普通的点击事件,带事件参数
