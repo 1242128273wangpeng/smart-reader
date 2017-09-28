@@ -1342,7 +1342,9 @@ public class DrawTextHelper {
                 } catch (OutOfMemoryError e) {
                     System.gc();
                     System.gc();
-                    mBackground = BitmapFactory.decodeResource(resources, com.intelligent.reader.R.drawable.read_page_bg_default);
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inSampleSize = 2;
+                    mBackground = BitmapFactory.decodeResource(resources, com.intelligent.reader.R.drawable.read_page_bg_default, options);
                 }
             }
             if (mBackground != null && !mBackground.isRecycled()) {
