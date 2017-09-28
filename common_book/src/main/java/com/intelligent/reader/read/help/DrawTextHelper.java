@@ -1337,7 +1337,13 @@ public class DrawTextHelper {
     private void drawBackground(Canvas canvas) {
         if (Constants.MODE == 51) {// 柔和
             if (mBackground == null || mBackground.isRecycled()) {
-                mBackground = BitmapFactory.decodeResource(resources, com.intelligent.reader.R.drawable.read_page_bg_default);
+                try {
+                    mBackground = BitmapFactory.decodeResource(resources, com.intelligent.reader.R.drawable.read_page_bg_default);
+                } catch (OutOfMemoryError e) {
+                    System.gc();
+                    System.gc();
+                    mBackground = BitmapFactory.decodeResource(resources, com.intelligent.reader.R.drawable.read_page_bg_default);
+                }
             }
             if (mBackground != null && !mBackground.isRecycled()) {
                 canvas.drawBitmap(mBackground, new Rect(0, 0, mBackground.getWidth(), mBackground.getHeight()), new Rect(0, 0, readStatus.screenWidth, readStatus.screenHeight), null);
