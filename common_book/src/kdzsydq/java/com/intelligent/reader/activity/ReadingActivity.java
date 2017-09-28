@@ -1824,7 +1824,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     @Override
     protected void onStop() {
         super.onStop();
-        pageView.removeAdView();
+        if (pageView != null) {
+            pageView.removeAdView();
+        }
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mCacheUpdateReceiver);
 
         if (actNovelRunForeground && handler != null && rest_tips_runnable != null) {
