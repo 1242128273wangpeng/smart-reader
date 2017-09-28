@@ -766,23 +766,23 @@ public class PageView extends View implements PageInterface {
 
     public void addLog(long endTime) {
         //判断章节的最后一页
-        if (readStatus.sequence + 1 > readStatus.lastSequenceRemark && !isFirstCome) {
+        if (readStatus.sequence + 1 > readStatus.lastSequenceRemark && !isFirstCome && readStatus.requestItem != null) {
             //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
             StartLogClickUtil.upLoadReadContent(readStatus.book_id, readStatus.lastChapterId + "", readStatus.source_ids, readStatus.lastPageCount + "",
                     readStatus.lastCurrentPageRemark + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
                     readStatus.startReadTime + "", endTime + "", endTime - readStatus.startReadTime + "", "false", readStatus.requestItem.channel_code + "");
         } else {
-            if (dataFactory != null && dataFactory.currentChapter != null) {
+            if (readStatus.requestItem != null && dataFactory != null && dataFactory.currentChapter != null) {
                 //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
                 StartLogClickUtil.upLoadReadContent(readStatus.book_id, dataFactory.currentChapter.chapter_id + "", readStatus.source_ids, readStatus.pageCount + "",
                         readStatus.currentPage - 1 + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
                         readStatus.startReadTime + "", endTime + "", endTime - readStatus.startReadTime + "", "false", readStatus.requestItem.channel_code + "");
                 readStatus.lastChapterId = dataFactory.currentChapter.chapter_id;
+                readStatus.requestItem.fromType = 2;
             }
         }
 
         readStatus.startReadTime = endTime;
-        readStatus.requestItem.fromType = 2;
         readStatus.lastSequenceRemark = readStatus.sequence + 1;
         readStatus.lastCurrentPageRemark = readStatus.currentPage;
         readStatus.lastPageCount = readStatus.pageCount;
@@ -953,9 +953,11 @@ public class PageView extends View implements PageInterface {
         }
         isMoveing = true;
 
-        readStatus.requestItem.fromType = 2;
+        if (readStatus.requestItem != null) {
+            readStatus.requestItem.fromType = 2;
+        }
         endTime = System.currentTimeMillis();
-        if (dataFactory != null && dataFactory.currentChapter != null) {
+        if (dataFactory != null && dataFactory.currentChapter != null && readStatus.requestItem != null) {
             //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
             StartLogClickUtil.upLoadReadContent(readStatus.book_id, dataFactory.currentChapter.chapter_id + "", readStatus.source_ids, readStatus.pageCount + "",
                     readStatus.currentPage + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
@@ -1110,6 +1112,13 @@ public class PageView extends View implements PageInterface {
         return null;
     }
 
+    @Override
+    public void removeAdView() {
+        if (drawTextHelper != null && !readStatus.isInMobiViewClicking) {
+            drawTextHelper.removeInMobiView();
+        }
+    }
+
     private enum MotionState {
         kWaiting, kMoveToLeft, kMoveToRight, kNone,
     }
@@ -1260,7 +1269,7 @@ public class PageView extends View implements PageInterface {
             }
             AppLog.e("zidong00", "zidong00");
             endTime = System.currentTimeMillis();
-            if (dataFactory != null && dataFactory.currentChapter != null) {
+            if (dataFactory != null && dataFactory.currentChapter != null && readStatus.requestItem != null) {
                 //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
                 StartLogClickUtil.upLoadReadContent(readStatus.book_id, dataFactory.currentChapter.chapter_id + "", readStatus.source_ids, readStatus.pageCount + "",
                         readStatus.currentPage + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
@@ -1300,13 +1309,6 @@ public class PageView extends View implements PageInterface {
             }
 
             return true;
-        }
-    }
-
-    @Override
-    public void removeAdView() {
-        if (drawTextHelper != null && !readStatus.isInMobiViewClicking) {
-            drawTextHelper.removeInMobiView();
         }
     }
 }
