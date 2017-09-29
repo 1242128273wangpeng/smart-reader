@@ -53,14 +53,14 @@ public class BitmapManager {
         return bitmap;
     }
 
-    public Bitmap getBitmap8888() {
+    public Bitmap getBitmap4444() {
         Bitmap bitmap;
         try {
-            bitmap = Bitmap.createBitmap(myWidth, myHeight, Bitmap.Config.ARGB_8888);
+            bitmap = Bitmap.createBitmap(myWidth, myHeight, Bitmap.Config.ARGB_4444);
         } catch (OutOfMemoryError e) {
             System.gc();
             System.runFinalization();
-            bitmap = Bitmap.createBitmap(myWidth, myHeight, Bitmap.Config.ARGB_8888);
+            bitmap = Bitmap.createBitmap(myWidth, myHeight, Bitmap.Config.ARGB_4444);
         }
         bitmaps.add(bitmap);
         return bitmap;
