@@ -362,6 +362,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        if (pageView != null) {
+            pageView.clear();
+        }
         showMenu(false);
         AppLog.d("ReadingActivity", "onNewIntent:");
         this.sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
