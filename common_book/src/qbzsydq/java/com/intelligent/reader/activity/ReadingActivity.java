@@ -1815,11 +1815,11 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 mCatlogMarkDrawer.removeDrawerListener(mCatalogMarkFragment);
         }
 
-        if(readStatus!=null&&dataFactory!=null&&dataFactory.currentChapter!=null){
+        if (readStatus != null && dataFactory != null && dataFactory.currentChapter != null&&readStatus.requestItem!=null) {
             //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
-            StartLogClickUtil.upLoadReadContent(readStatus.book_id,dataFactory.currentChapter.chapter_id+"",readStatus.source_ids,readStatus.pageCount+"",
-                    readStatus.currentPage+"",readStatus.currentPageConentLength+"",readStatus.requestItem.fromType+"",
-                    readStatus.startReadTime+"",System.currentTimeMillis()+"",System.currentTimeMillis()-readStatus.startReadTime+"","false",readStatus.requestItem.channel_code+"");
+            StartLogClickUtil.upLoadReadContent(readStatus.book_id, dataFactory.currentChapter.chapter_id + "", readStatus.source_ids, readStatus.pageCount + "",
+                    readStatus.currentPage + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
+                    readStatus.startReadTime + "", System.currentTimeMillis() + "", System.currentTimeMillis() - readStatus.startReadTime + "", "false", readStatus.requestItem.channel_code + "");
 
         }
         AppLog.e(TAG, "onDestroy");
