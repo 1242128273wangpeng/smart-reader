@@ -2,6 +2,7 @@ package com.intelligent.reader.activity;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.bumptech.glide.Glide;
 import com.dingyueads.sdk.Bean.Advertisement;
 import com.dingyueads.sdk.Bean.Novel;
 import com.dingyueads.sdk.Native.YQNativeAdInfo;
@@ -331,7 +332,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         mCatalogMarkPresenter.setView(mCatalogMarkFragment);
         mCatalogMarkFragment.setPresenter(mCatalogMarkPresenter);
 
-        mCatalogMarkPresenter.loadCatalog(false);
+//        mCatalogMarkPresenter.loadCatalog(false);
 
         mCatlogMarkDrawer.addDrawerListener(mCatalogMarkFragment);
         ReadOptionHeader optionHeader = (ReadOptionHeader) findViewById(R.id.option_header);
@@ -358,6 +359,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        if (pageView != null) {
+            pageView.clear();
+        }
         showMenu(false);
         AppLog.d("ReadingActivity", "onNewIntent:");
         this.sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -926,8 +930,15 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         if (ownNativeAdManager == null) {
             ownNativeAdManager = OwnNativeAdManager.getInstance(this);
         }
-        ownNativeAdManager.loadAdForMiddle(NativeInit.CustomPositionName.READING_MIDDLE_POSITION);
-        ownNativeAdManager.loadAd(NativeInit.CustomPositionName.READING_POSITION);
+        ownNativeAdManager.setActivity(this);
+        if (!Constants.isSlideUp) {
+            ownNativeAdManager.loadAdForMiddle(NativeInit.CustomPositionName.READING_MIDDLE_POSITION);
+            if (Constants.IS_LANDSCAPE) {
+                OwnNativeAdManager.getInstance(this).loadAd(NativeInit.CustomPositionName.SUPPLY_READING_SPACE);
+            } else {
+                OwnNativeAdManager.getInstance(this).loadAd(NativeInit.CustomPositionName.READING_POSITION);
+            }
+        }
     }
 
     /**
@@ -1042,7 +1053,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_click_back_btn);
                 Map<String, String> data2 = new HashMap<>();
                 data2.put("type", "1");
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE,StartLogClickUtil.BACK, data2);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data2);
                 goBackToHome();
                 break;
 
@@ -1063,8 +1074,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 } else {
                     Toast.makeText(this, "无法查看原文链接", Toast.LENGTH_SHORT).show();
                 }
-
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ORIGINALLINK);
                 break;
             default:
                 break;
@@ -1718,6 +1727,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         if (isSubed) {
             readStatus.book = mBookDaoHelper.getBook(readStatus.book_id, 0);
         }
+        readStatus.isInMobiViewClicking = false;
         if (pageView != null) {
             pageView.resumeAutoRead();
         }
@@ -1795,7 +1805,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     @Override
     protected void onStop() {
         super.onStop();
-
+        if (pageView != null) {
+            pageView.removeAdView();
+        }
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mCacheUpdateReceiver);
 
         if (actNovelRunForeground && handler != null && rest_tips_runnable != null) {
@@ -1899,8 +1911,12 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             ownNativeAdManager.recycleResourceFromReading(NativeInit.CustomPositionName.READING_POSITION.toString());
             ownNativeAdManager.recycleResourceFromReading(NativeInit.CustomPositionName.READING_IN_CHAPTER_POSITION.toString());
             ownNativeAdManager.recycleResourceFromReading(NativeInit.CustomPositionName.REST_POSITION.toString());
+            ownNativeAdManager.recycleResourceFromReading(NativeInit.CustomPositionName.SUPPLY_READING_IN_CHAPTER.toString());
+            ownNativeAdManager.recycleResourceFromReading(NativeInit.CustomPositionName.SUPPLY_READING_SPACE.toString());
             ownNativeAdManager.removeHandler();
         }
+
+        Glide.get(this).clearMemory();
 
         if (readStatus != null) {
             readStatus.recycleResourceNew();
@@ -1928,7 +1944,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             outState.putInt("nid", readStatus.nid);
             outState.putInt("offset", readStatus.offset);
             outState.putSerializable("book", readStatus.book);
-            outState.putSerializable("currentChapter", dataFactory.currentChapter);
+            if (dataFactory != null && dataFactory.currentChapter != null) {
+                outState.putSerializable("currentChapter", dataFactory.currentChapter);
+            }
             outState.putString("thememode", mThemeHelper.getMode());
             super.onSaveInstanceState(outState);
         } catch (ClassCastException e) {
@@ -2532,8 +2550,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         } else {
             Toast.makeText(this, "无法查看原文链接", Toast.LENGTH_SHORT).show();
         }
-
-        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ORIGINALLINK);
     }
 
     @Override
