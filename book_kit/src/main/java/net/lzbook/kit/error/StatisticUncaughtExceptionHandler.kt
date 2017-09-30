@@ -30,7 +30,7 @@ class StatisticUncaughtExceptionHandler(val parent: Thread.UncaughtExceptionHand
         mainJson.put("cause", exception.toString())
         mainJson.put("type", exception.javaClass.name)
         mainJson.put("udid", OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()))
-        mainJson.put("crash", stackTrace.toString())
+        mainJson.put("stack", stackTrace.toString().replace("\n\t", "#@").replace("\n", "#"))
         mainJson.put("crashThread", "${thread.id}:${thread.name}")
 
 //        val stackJson = JSONObject()
