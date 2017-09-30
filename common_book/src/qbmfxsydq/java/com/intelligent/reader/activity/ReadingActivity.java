@@ -149,6 +149,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private static final int font_count = 50;
     private static ReadStatus readStatus;
     public DownloadService downloadService;
+    public boolean isRestDialogShow = false;
     long stampTime = 0;
     int readLength = 0;
     private Context mContext;
@@ -186,7 +187,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private OwnNativeAdManager ownNativeAdManager;
     private boolean isAcvNovelActive = true;
     private Runnable rest_tips_runnable;
-    public boolean isRestDialogShow = false;
     private boolean isRestPress = false;
     private boolean actNovelRunForeground = true;
     private Handler handler = new UiHandler(this);
@@ -2668,31 +2668,34 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
         @Override
         protected Void doInBackground(Integer... params) {
-            if (dataFactory.chapterList == null) {
-                return null;
-            }
-
-            int size = dataFactory.chapterList.size();
-            for (int i = readStatus.sequence + 1; i < (readStatus.sequence + params[0] + 1) && i < size; i++) {
-                Chapter c = dataFactory.chapterList.get(i);
-                if (c == null) {
+            if (dataFactory != null) {
+                if (dataFactory.chapterList == null) {
                     return null;
                 }
-
-                try {
-                    AppLog.e(TAG, "预加载： " + c.toString());
-                    c = requestFactory.requestExecutor(readStatus.getRequestItem()).requestSingleChapter
-                            (readStatus.book.dex, mBookDaoHelper, bookChapterDao, c);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if (i == (readStatus.sequence + 1)) {
-                    dataFactory.nextChapter = c;
-                }
-                if (isCancelled()) {
-                    break;
+                int size = dataFactory.chapterList.size();
+                if (readStatus != null) {
+                    for (int i = readStatus.sequence + 1; i < (readStatus.sequence + params[0] + 1) && i < size; i++) {
+                        Chapter c = dataFactory.chapterList.get(i);
+                        if (c == null) {
+                            return null;
+                        }
+                        try {
+                            AppLog.e(TAG, "预加载： " + c.toString());
+                            c = requestFactory.requestExecutor(readStatus.getRequestItem()).requestSingleChapter
+                                    (readStatus.book.dex, mBookDaoHelper, bookChapterDao, c);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        if (i == (readStatus.sequence + 1)) {
+                            dataFactory.nextChapter = c;
+                        }
+                        if (isCancelled()) {
+                            break;
+                        }
+                    }
                 }
             }
+
             return null;
         }
     }

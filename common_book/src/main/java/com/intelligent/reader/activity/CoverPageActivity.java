@@ -1243,7 +1243,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
         }
 
         try {
-            if (!bookDaoHelper.isBookSubed(requestItem.book_id)) {
+            if (requestItem != null && !bookDaoHelper.isBookSubed(requestItem.book_id)) {
                 deleteDatabase("book_chapter_" + requestItem.book_id);
             }
         } catch (IndexOutOfBoundsException e) {

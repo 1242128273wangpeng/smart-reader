@@ -2710,31 +2710,34 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
         @Override
         protected Void doInBackground(Integer... params) {
-            if (dataFactory.chapterList == null) {
-                return null;
-            }
-
-            int size = dataFactory.chapterList.size();
-            for (int i = readStatus.sequence + 1; i < (readStatus.sequence + params[0] + 1) && i < size; i++) {
-                Chapter c = dataFactory.chapterList.get(i);
-                if (c == null) {
+            if(dataFactory!=null){
+                if (dataFactory.chapterList == null) {
                     return null;
                 }
-
-                try {
-                    AppLog.e(TAG, "预加载： " + c.toString());
-                    c = requestFactory.requestExecutor(readStatus.getRequestItem()).requestSingleChapter
-                            (readStatus.book.dex, mBookDaoHelper, bookChapterDao, c);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if (i == (readStatus.sequence + 1)) {
-                    dataFactory.nextChapter = c;
-                }
-                if (isCancelled()) {
-                    break;
+                int size = dataFactory.chapterList.size();
+                if(readStatus!=null){
+                    for (int i = readStatus.sequence + 1; i < (readStatus.sequence + params[0] + 1) && i < size; i++) {
+                        Chapter c = dataFactory.chapterList.get(i);
+                        if (c == null) {
+                            return null;
+                        }
+                        try {
+                            AppLog.e(TAG, "预加载： " + c.toString());
+                            c = requestFactory.requestExecutor(readStatus.getRequestItem()).requestSingleChapter
+                                    (readStatus.book.dex, mBookDaoHelper, bookChapterDao, c);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        if (i == (readStatus.sequence + 1)) {
+                            dataFactory.nextChapter = c;
+                        }
+                        if (isCancelled()) {
+                            break;
+                        }
+                    }
                 }
             }
+
             return null;
         }
     }
