@@ -995,7 +995,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
                 convertView.setTag(hodler);
                 Bitmap mCurPageBitmap = manager.getBitmap4444();
                 Canvas mCurrentCanvas = new Canvas(mCurPageBitmap);
-
+                Log.d("ScrollPage", "getView convertView == null");
                 hodler.page.setTag(R.id.tag_bitmap, mCurPageBitmap);
                 hodler.page.setTag(R.id.tag_canvas, mCurrentCanvas);
             } else {

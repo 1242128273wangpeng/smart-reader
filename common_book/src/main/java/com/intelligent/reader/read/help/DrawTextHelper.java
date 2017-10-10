@@ -207,10 +207,10 @@ public class DrawTextHelper {
     }
 
     public void resetBackBitmap() {
-        if (mBackground != null && !mBackground.isRecycled()) {
-            mBackground.recycle();
-            mBackground = null;
-        }
+//        if (mBackground != null && !mBackground.isRecycled()) {
+//            mBackground.recycle();
+//            mBackground = null;
+//        }
         if (mKraftBackground != null && !mKraftBackground.isRecycled()) {
             mKraftBackground.recycle();
             mKraftBackground = null;
