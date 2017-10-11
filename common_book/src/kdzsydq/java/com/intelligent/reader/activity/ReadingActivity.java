@@ -152,7 +152,13 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     long stampTime = 0;
     int readLength = 0;
     private Context mContext;
+
     private PageInterface pageView;
+
+    private ScrollPageView mScrollPageView;
+
+    private PageView mSlidePageView;
+
     private ArrayList<Source> sourcesList;
     private boolean isSourceListShow;
     // 系统存储设置
@@ -315,9 +321,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         dataFactory = new ReadDataFactory(getApplicationContext(), this, readStatus, myNovelHelper);
         dataFactory.setReadDataListener(this);
 
-        if (isFromCover && Constants.IS_LANDSCAPE) {
-            return;
-        }
+//        if (isFromCover && Constants.IS_LANDSCAPE) {
+//            return;
+//        }
 
 
         View main = getLayoutInflater().inflate(R.layout.act_read, null);
@@ -350,6 +356,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         initListener();
         //	开启护眼计时器
         startRestTimer();
+        initGuide();
+        initReadingAd();
+
         //注册一个监听按下电源键的广播
         registerReceiver(mPowerOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
         getBookContent();
@@ -362,9 +371,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        if (pageView != null) {
-            pageView.clear();
-        }
         showMenu(false);
         AppLog.d("ReadingActivity", "onNewIntent:");
         this.sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -373,60 +379,61 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         Constants.isSlideUp = (Constants.PAGE_MODE == 3);
         versionCode = AppUtils.getVersionCode();
         AppLog.e(TAG, "versionCode: " + versionCode);
-        inflater = LayoutInflater.from(getApplicationContext());
-        readStatus = new ReadStatus(getApplicationContext());
-        (BookApplication.getGlobalContext()).setReadStatus(readStatus);
-        autoSpeed = readStatus.autoReadSpeed();
-        myNovelHelper = new NovelHelper(this, readStatus, handler);
-        myNovelHelper.setOnHelperCallBack(this);
+//        inflater = LayoutInflater.from(getApplicationContext());
 
-        requestFactory = new RequestFactory();
+//        readStatus = new ReadStatus(getApplicationContext());
+//        (BookApplication.getGlobalContext()).setReadStatus(readStatus);
+//        autoSpeed = readStatus.autoReadSpeed();
+//        myNovelHelper = new NovelHelper(this, readStatus, handler);
+//        myNovelHelper.setOnHelperCallBack(this);
+//
+//        requestFactory = new RequestFactory();
 
         // 初始化窗口基本信息
-        initWindow();
-        setOrientation();
-        getSavedState(intent.getExtras());
-        dataFactory = new ReadDataFactory(getApplicationContext(), this, readStatus, myNovelHelper);
-        dataFactory.setReadDataListener(this);
-        if (isFromCover && Constants.IS_LANDSCAPE) {
-            return;
-        }
+//        initWindow();
+//        setOrientation();
+//        getSavedState(intent.getExtras());
+//        dataFactory = new ReadDataFactory(getApplicationContext(), this, readStatus, myNovelHelper);
+//        dataFactory.setReadDataListener(this);
+//        if (isFromCover && Constants.IS_LANDSCAPE) {
+//            return;
+//        }
 
 //        setContentView(R.layout.act_read);
         mCatlogMarkDrawer = (DrawerLayout) findViewById(R.id.read_catalog_mark_drawer);
-        if (mCatlogMarkDrawer == null) {
-            //inflate not finish
-            finish();
-            return;
-        }
+//        if (mCatlogMarkDrawer == null) {
+//            //inflate not finish
+//            finish();
+//            return;
+//        }
 
         mCatlogMarkDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mCatlogMarkDrawer.addDrawerListener(mDrawerListener);
 
-        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus, dataFactory);
+//        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus, dataFactory);
+//
+//        mCatalogMarkFragment = (CatalogMarkFragment) getSupportFragmentManager().findFragmentById(R.id.read_catalog_mark_layout);
+//        if (mCatalogMarkFragment == null) {
+//            //inflate not finish
+//            finish();
+//            return;
+//        }
+//        mCatalogMarkPresenter.setView(mCatalogMarkFragment);
+//        mCatalogMarkFragment.setPresenter(mCatalogMarkPresenter);
+//
+//        mCatlogMarkDrawer.addDrawerListener(mCatalogMarkFragment);
 
-        mCatalogMarkFragment = (CatalogMarkFragment) getSupportFragmentManager().findFragmentById(R.id.read_catalog_mark_layout);
-        if (mCatalogMarkFragment == null) {
-            //inflate not finish
-            finish();
-            return;
-        }
-        mCatalogMarkPresenter.setView(mCatalogMarkFragment);
-        mCatalogMarkFragment.setPresenter(mCatalogMarkPresenter);
+//        ReadOptionHeader optionHeader = (ReadOptionHeader) findViewById(R.id.option_header);
+//        if (optionHeader == null) {
+//            //inflate not finish
+//            finish();
+//            return;
+//        }
+//        mReadOptionPresenter = new ReadOptionPresenter(this, readStatus, dataFactory);
+//        mReadOptionPresenter.setView(optionHeader);
+//        optionHeader.setPresenter(mReadOptionPresenter);
 
-        mCatlogMarkDrawer.addDrawerListener(mCatalogMarkFragment);
-
-        ReadOptionHeader optionHeader = (ReadOptionHeader) findViewById(R.id.option_header);
-        if (optionHeader == null) {
-            //inflate not finish
-            finish();
-            return;
-        }
-        mReadOptionPresenter = new ReadOptionPresenter(this, readStatus, dataFactory);
-        mReadOptionPresenter.setView(optionHeader);
-        optionHeader.setPresenter(mReadOptionPresenter);
-
-        initBookState();
+//        initBookState();
         // 初始化view
         initView();
         // 初始化监听器
@@ -659,9 +666,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         // 初始化窗口基本信息
-        if (pageView != null) {
-            pageView.clear();
-        }
         initWindow();
         if (mCatlogMarkDrawer == null) {
             setContentView(R.layout.act_read);
@@ -672,18 +676,19 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         mCatlogMarkDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mCatlogMarkDrawer.addDrawerListener(mDrawerListener);
 
-        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus, dataFactory);
+//        mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus, dataFactory);
+//
+//        mCatalogMarkFragment = (CatalogMarkFragment) getSupportFragmentManager().findFragmentById(R.id.read_catalog_mark_layout);
+//        mCatalogMarkPresenter.setView(mCatalogMarkFragment);
+//        mCatalogMarkFragment.setPresenter(mCatalogMarkPresenter);
+//
+//        mCatlogMarkDrawer.addDrawerListener(mCatalogMarkFragment);
 
-        mCatalogMarkFragment = (CatalogMarkFragment) getSupportFragmentManager().findFragmentById(R.id.read_catalog_mark_layout);
-        mCatalogMarkPresenter.setView(mCatalogMarkFragment);
-        mCatalogMarkFragment.setPresenter(mCatalogMarkPresenter);
+//        ReadOptionHeader optionHeader = (ReadOptionHeader) findViewById(R.id.option_header);
+//        mReadOptionPresenter = new ReadOptionPresenter(this, readStatus, dataFactory);
+//        mReadOptionPresenter.setView(optionHeader);
+//        optionHeader.setPresenter(mReadOptionPresenter);
 
-        mCatlogMarkDrawer.addDrawerListener(mCatalogMarkFragment);
-
-        ReadOptionHeader optionHeader = (ReadOptionHeader) findViewById(R.id.option_header);
-        mReadOptionPresenter = new ReadOptionPresenter(this, readStatus, dataFactory);
-        mReadOptionPresenter.setView(optionHeader);
-        optionHeader.setPresenter(mReadOptionPresenter);
         initBookState();
         // 初始化view
         initView();
@@ -696,7 +701,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         setMode();
         readStatus.chapterCount = readStatus.book.chapter_count;
         // 注册一个接受广播类型
-        registerReceiver(mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+//        registerReceiver(mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         super.onConfigurationChanged(newConfig);
         if (pageView != null) {
             pageView.freshBattery(batteryPercent);
@@ -901,16 +906,32 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         reading_content = (RelativeLayout) findViewById(R.id.reading_content);
         readSettingView = (ReadSettingView) findViewById(R.id.readSettingView);
         readSettingView.setOnReadSettingListener(this);
-        int novel_top_margin;
         novel_basePageView = (FrameLayout) findViewById(R.id.novel_basePageView);
         readStatus.novel_basePageView = novel_basePageView;
+
         if (Constants.isSlideUp) {
-            novel_top_margin = getResources().getDimensionPixelOffset(R.dimen.dimen_margin_20);
             pageView = new ScrollPageView(getApplicationContext());
         } else {
-            novel_top_margin = getResources().getDimensionPixelOffset(R.dimen.dimen_margin_20);
             pageView = new PageView(getApplicationContext());
         }
+
+//        if (Constants.isSlideUp) {
+//            if (mScrollPageView == null) {
+//                mScrollPageView = new ScrollPageView(getApplicationContext());
+//                pageView = mScrollPageView;
+//            } else {
+//                pageView = mScrollPageView;
+//            }
+//        } else {
+//            if (mSlidePageView == null) {
+//                mSlidePageView = new PageView(getApplicationContext());
+//                pageView = mSlidePageView;
+//            } else {
+//                mSlidePageView.invalidate();
+//                pageView = mSlidePageView;
+//            }
+//        }
+
         novel_basePageView.removeAllViews();
         novel_basePageView.addView((View) pageView, new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT));
@@ -926,9 +947,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         auto_menu.setOnAutoMemuListener(this);
 
         ll_guide_layout = findViewById(R.id.ll_guide_layout);
-        initGuide();
-        initReadingAd();
-
         readSettingView.setNovelMode(Constants.MODE);
         readStatus.source_ids = readStatus.book.site;
     }
@@ -1736,9 +1754,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 //                    .FLAG_LAYOUT_INSET_DECOR);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
-        if (isFromCover && Constants.IS_LANDSCAPE) {
-            return;
-        }
+//        if (isFromCover && Constants.IS_LANDSCAPE) {
+//            return;
+//        }
         if (isModeChange()) {
             setMode();
         }
@@ -1822,6 +1840,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         }
         readLength = 0;
 
+        unregisterReceiver(mBatInfoReceiver);
     }
 
     @Override
@@ -1849,7 +1868,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 mCatlogMarkDrawer.removeDrawerListener(mCatalogMarkFragment);
         }
 
-        if (readStatus != null && dataFactory != null && dataFactory.currentChapter != null&&readStatus.requestItem!=null) {
+        if (readStatus != null && dataFactory != null && dataFactory.currentChapter != null && readStatus.requestItem != null) {
             //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
             StartLogClickUtil.upLoadReadContent(readStatus.book_id, dataFactory.currentChapter.chapter_id + "", readStatus.source_ids, readStatus.pageCount + "",
                     readStatus.currentPage + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
@@ -1860,11 +1879,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         readStatus.isMenuShow = false;
         if (mNovelLoader != null && mNovelLoader.getStatus() == BaseAsyncTask.Status.RUNNING) {
             mNovelLoader.cancel(true);
-        }
-        try {
-            unregisterReceiver(mBatInfoReceiver);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
         /**
@@ -2710,12 +2724,12 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
         @Override
         protected Void doInBackground(Integer... params) {
-            if(dataFactory!=null){
+            if (dataFactory != null) {
                 if (dataFactory.chapterList == null) {
                     return null;
                 }
                 int size = dataFactory.chapterList.size();
-                if(readStatus!=null){
+                if (readStatus != null) {
                     for (int i = readStatus.sequence + 1; i < (readStatus.sequence + params[0] + 1) && i < size; i++) {
                         Chapter c = dataFactory.chapterList.get(i);
                         if (c == null) {

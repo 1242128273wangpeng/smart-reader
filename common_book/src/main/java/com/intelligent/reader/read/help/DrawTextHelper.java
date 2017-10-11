@@ -206,21 +206,6 @@ public class DrawTextHelper {
         }
     }
 
-    public void resetBackBitmap() {
-//        if (mBackground != null && !mBackground.isRecycled()) {
-//            mBackground.recycle();
-//            mBackground = null;
-//        }
-//        if (mKraftBackground != null && !mKraftBackground.isRecycled()) {
-//            mKraftBackground.recycle();
-//            mKraftBackground = null;
-//        }
-//        if (mSoftBackground != null && !mSoftBackground.isRecycled()) {
-//            mSoftBackground.recycle();
-//            mSoftBackground = null;
-//        }
-    }
-
     /**
      * paint
      * type  0: 画背景
@@ -279,6 +264,21 @@ public class DrawTextHelper {
         }
         paint.setColor(resources.getColor(color_int));
         return paint;
+    }
+
+    public void resetBackBitmap() {
+//        if (mBackground != null && !mBackground.isRecycled()) {
+//            mBackground.recycle();
+//            mBackground = null;
+//        }
+//        if (mKraftBackground != null && !mKraftBackground.isRecycled()) {
+//            mKraftBackground.recycle();
+//            mKraftBackground = null;
+//        }
+//        if (mSoftBackground != null && !mSoftBackground.isRecycled()) {
+//            mSoftBackground.recycle();
+//            mSoftBackground = null;
+//        }
     }
 
     private Paint setPaintColorChapter(Paint paint, int type) {

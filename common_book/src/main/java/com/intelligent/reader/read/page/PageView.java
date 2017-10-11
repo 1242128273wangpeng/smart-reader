@@ -154,14 +154,17 @@ public class PageView extends View implements PageInterface {
         pageHeight = readStatus.screenHeight;
 
         drawTextHelper.getRect();
-        mOperationPaint = drawTextHelper.drawText(mCurPageCanvas, pageLines, mActivity);
 
-        postInvalidate();
+        AppLog.d("ScrollPageView", "init");
+//        mOperationPaint = drawTextHelper.drawText(mCurPageCanvas, pageLines, mActivity);
+
+//        postInvalidate();
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        AppLog.d("ScrollPageView", "onSizeChanged");
         if (readStatus != null) {
             readStatus.recycleResourceNew();
             readStatus.setAd_bitmap_big(null);
@@ -177,14 +180,14 @@ public class PageView extends View implements PageInterface {
         if (callBack != null && (Math.abs(oldh - h) > AppUtils.dip2px(mContext, 26))) {
             getAnimationProvider();
             callBack.onResize();
-            if (!isMoveing) {
-                drawCurrentPage();
-            } else {
-
-            }
-            drawNextPage();
+//            if (!isMoveing) {
+//                drawCurrentPage();
+//            } else {
+//
+//            }
+//            drawNextPage();
         }
-        setBackground();
+//        setBackground();
     }
 
     @Override
@@ -210,6 +213,7 @@ public class PageView extends View implements PageInterface {
         }
         if (!isAutoReadMode()) {
             if (mCurPageCanvas != null) {
+                AppLog.d("ScrollPageView", "freshTime");
                 mOperationPaint = drawTextHelper.drawText(mCurPageCanvas, pageLines, mActivity);
             }
         }
@@ -229,6 +233,7 @@ public class PageView extends View implements PageInterface {
      */
     public void drawNextPage() {
         nextPageContent = pageLines = novelHelper.getPageContent();
+        AppLog.d("ScrollPageView", "drawNextPage");
         drawTextHelper.drawText(mNextPageCanvas, pageLines, mActivity);
         if (count == 1 && readStatus != null) {
             readStatus.lastSequenceRemark = readStatus.sequence + 1;
@@ -266,6 +271,7 @@ public class PageView extends View implements PageInterface {
     public void setBackground() {
         if (!isAutoReadMode()) {
             drawTextHelper.resetBackBitmap();
+            AppLog.d("ScrollPageView", "setBackground");
             drawTextHelper.drawText(mCurPageCanvas, pageLines, mActivity);
             drawTextHelper.drawText(mNextPageCanvas, pageLines, mActivity);
 
@@ -289,7 +295,7 @@ public class PageView extends View implements PageInterface {
      * 8 刷新当前页
      */
     public void refreshCurrentPage() {
-
+        AppLog.d("ScrollPageView", "refreshCurrentPage");
         drawTextHelper.drawText(mCurPageCanvas, pageLines, mActivity);
     }
 
@@ -910,13 +916,13 @@ public class PageView extends View implements PageInterface {
             }
         }
 
-        if (this.mActivity != null) {
-            this.mActivity = null;
-        }
-
-        if (this.mContext != null) {
-            this.mContext = null;
-        }
+//        if (this.mActivity != null) {
+//            this.mActivity = null;
+//        }
+//
+//        if (this.mContext != null) {
+//            this.mContext = null;
+//        }
 
 //        if (this.readStatus != null) {
 //            this.readStatus = null;
