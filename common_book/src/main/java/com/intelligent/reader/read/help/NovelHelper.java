@@ -218,7 +218,7 @@ public class NovelHelper {
         TextView change_source_original_web = (TextView) sourceDialog.findViewById(R.id.change_source_original_web);
         TextView change_source_continue = (TextView) sourceDialog.findViewById(R.id.change_source_continue);
 
-        if (dataFactory.currentChapter.status != Chapter.Status.CONTENT_NORMAL) {
+        if (dataFactory != null && dataFactory.currentChapter != null && dataFactory.currentChapter.status != Chapter.Status.CONTENT_NORMAL) {
             change_source_disclaimer_message.setText(dataFactory.currentChapter.status.tips);
             change_source_original_web.setVisibility(View.INVISIBLE);
             change_source_continue.setText(R.string.jump_next_chapter);
@@ -272,7 +272,7 @@ public class NovelHelper {
                 map1.put("type", "1");
                 StartLogClickUtil.upLoadEventLog(actReference.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
                 dismissDialog(sourceDialog);
-                if (dataFactory.currentChapter.status != Chapter.Status.CONTENT_NORMAL) {
+                if (dataFactory != null && dataFactory.currentChapter != null && dataFactory.currentChapter.status != Chapter.Status.CONTENT_NORMAL) {
                     if (helperCallBack != null) {
                         helperCallBack.jumpNextChapter();
                     }
@@ -841,22 +841,24 @@ public class NovelHelper {
             ((ReadingActivity) activity).addTextLength(currentChapter.content.length());
         }
 
-        switch (currentChapter.status) {
-            case CONTENT_EMPTY:
-            case CONTENT_ERROR:
-            case SOURCE_ERROR:
-                if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE && mBook.book_type == 0) {
-                    Toast.makeText(activity, R.string.err_no_net, Toast.LENGTH_SHORT).show();
+        if (currentChapter != null) {
+            switch (currentChapter.status) {
+                case CONTENT_EMPTY:
+                case CONTENT_ERROR:
+                case SOURCE_ERROR:
+                    if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE && mBook.book_type == 0) {
+                        Toast.makeText(activity, R.string.err_no_net, Toast.LENGTH_SHORT).show();
+                        readStatus.mLineList = initTextContent2("");
+                        break;
+                    }
                     readStatus.mLineList = initTextContent2("");
                     break;
-                }
-                readStatus.mLineList = initTextContent2("");
-                break;
-            case CONTENT_NORMAL:
-                readStatus.mLineList = initTextContent2(currentChapter.content);
-                break;
-            default:
-                break;
+                case CONTENT_NORMAL:
+                    readStatus.mLineList = initTextContent2(currentChapter.content);
+                    break;
+                default:
+                    break;
+            }
         }
 
     }

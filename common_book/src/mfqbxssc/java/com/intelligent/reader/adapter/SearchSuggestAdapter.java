@@ -25,7 +25,7 @@ public class SearchSuggestAdapter extends BaseAdapter {
 
     private Context mContext;
     private List<SearchCommonBean> mData;
-    private String editInput;
+    private String editInput="";
 
     public SearchSuggestAdapter(Context context, List<SearchCommonBean> mData, String editInput) {
         this.mContext = context;
@@ -81,7 +81,10 @@ public class SearchSuggestAdapter extends BaseAdapter {
         }
         String content = bean.getSuggest();
 
-        String finalInput = AppUtils.deleteAllIllegalChar(editInput);
+        String finalInput="";
+        if(editInput!=null){
+            finalInput = AppUtils.deleteAllIllegalChar(editInput);
+        }
 
         content = content.replaceAll(finalInput, "<font color='#882f46'>" + finalInput + "</font>");
 

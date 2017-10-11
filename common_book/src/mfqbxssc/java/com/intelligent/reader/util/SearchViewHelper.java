@@ -371,7 +371,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
             mSuggestList.clear();
         }
         if (mSuggestAdapter == null) {
-            String inputString = null;
+            String inputString = "";
             if (mSearchEditText != null){
                 Editable editable = mSearchEditText.getText();
                 if (editable != null && editable.length() > 0){
@@ -505,7 +505,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
             @Override
             public void run() {
                 if (mSuggestAdapter != null){
-                    String inputString = null;
+                    String inputString = "";
                     if (mSearchEditText != null){
                         Editable editable = mSearchEditText.getText();
                         if (editable != null && editable.length() > 0){

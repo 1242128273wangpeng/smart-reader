@@ -2545,6 +2545,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             themIntent.putExtras(bundle);
             startActivity(themIntent);
             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+            finish();
         } else {
             if (isTaskRoot()) {
                 Intent intent = new Intent(this, SplashActivity.class);
@@ -2558,7 +2559,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     public void onOriginClick() {
         String url = null;
         if (dataFactory != null && dataFactory.currentChapter != null) {
-            url = UrlUtils.buildContentUrl(dataFactory.currentChapter.curl);
+            url = UrlUtils.buildContentUrl(dataFactory.currentChapter.curl).trim();
         }
         if (!TextUtils.isEmpty(url)) {
             Uri uri = Uri.parse(url);

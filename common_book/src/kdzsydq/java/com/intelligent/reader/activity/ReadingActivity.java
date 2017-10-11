@@ -149,6 +149,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private static final int font_count = 50;
     private static ReadStatus readStatus;
     public DownloadService downloadService;
+    public boolean isRestDialogShow = false;
     long stampTime = 0;
     int readLength = 0;
     private Context mContext;
@@ -186,7 +187,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private OwnNativeAdManager ownNativeAdManager;
     private boolean isAcvNovelActive = true;
     private Runnable rest_tips_runnable;
-    public boolean isRestDialogShow = false;
     private boolean isRestPress = false;
     private boolean actNovelRunForeground = true;
     private Handler handler = new UiHandler(this);
@@ -1980,6 +1980,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         if (isFinishing()) {
             return;
         }
+
         Intent intent = new Intent(ReadingActivity.this, BookEndActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constants.REQUEST_ITEM, readStatus.getRequestItem());
@@ -2561,6 +2562,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             themIntent.putExtras(bundle);
             startActivity(themIntent);
             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+
+            finish();
         } else {
             if (isTaskRoot()) {
                 Intent intent = new Intent(this, SplashActivity.class);
@@ -2574,7 +2577,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     public void onOriginClick() {
         String url = null;
         if (dataFactory != null && dataFactory.currentChapter != null) {
-            url = UrlUtils.buildContentUrl(dataFactory.currentChapter.curl);
+            url = UrlUtils.buildContentUrl(dataFactory.currentChapter.curl).trim();
         }
         if (!TextUtils.isEmpty(url)) {
             Uri uri = Uri.parse(url);

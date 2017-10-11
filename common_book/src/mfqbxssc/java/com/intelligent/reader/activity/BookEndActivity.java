@@ -533,6 +533,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
 //                    if(!thememode.equals(mThemeHelper.getMode())){
 //                        ATManager.exitClient();
 //                    }
+                    ATManager.exitReading();
                     startActivity(storeIntent);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -552,6 +553,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
 //                    if(!thememode.equals(mThemeHelper.getMode())){
 //                        ATManager.exitClient();
 //                    }
+                    ATManager.exitReading();
                     startActivity(shelfIntent);
                 } catch (Exception e) {
                     e.printStackTrace();
