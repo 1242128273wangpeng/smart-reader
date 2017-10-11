@@ -14,6 +14,7 @@ public class BitmapManager {
     public static final int NEXT = 1;
     public static final int BG = 2;
     private static final int SIZE = 2;
+    private static volatile BitmapManager mInstance = null;
     private final Bitmap[] myBitmaps = new Bitmap[SIZE];
     ArrayList<Bitmap> bitmaps = new ArrayList<>();
     private int myWidth;
@@ -21,8 +22,6 @@ public class BitmapManager {
     private int mFootHeight;
     private int navigetionHeight;
     private int spaceHeight;
-
-    private static volatile BitmapManager mInstance = null;
 
     private BitmapManager() {
         if (BookApplication.getDisplayMetrics() != null) {
@@ -70,14 +69,14 @@ public class BitmapManager {
         return bitmap;
     }
 
-    public synchronized Bitmap getBitmap8888() {
+    public synchronized Bitmap getBitmap4444() {
         Bitmap bitmap;
         try {
-            bitmap = Bitmap.createBitmap(myWidth, myHeight, Bitmap.Config.ARGB_8888);
+            bitmap = Bitmap.createBitmap(myWidth, myHeight, Bitmap.Config.ARGB_4444);
         } catch (OutOfMemoryError e) {
             System.gc();
             System.runFinalization();
-            bitmap = Bitmap.createBitmap(myWidth, myHeight, Bitmap.Config.ARGB_8888);
+            bitmap = Bitmap.createBitmap(myWidth, myHeight, Bitmap.Config.ARGB_4444);
         }
         bitmaps.add(bitmap);
         return bitmap;
