@@ -515,7 +515,6 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
             recommendIntent.putExtra("filter_word", "ALL");
             recommendIntent.putExtra("sort_type", "0");
             recommendIntent.setClass(this, SearchBookActivity.class);
-            recommendIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(recommendIntent);
             return;
         }
@@ -525,7 +524,6 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
             case R.id.iv_back_bookstore:
                 Intent storeIntent = new Intent();
                 storeIntent.setClass(BookEndActivity.this, HomeActivity.class);
-                storeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 try {
                     Bundle bundle = new Bundle();
                     bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_BOOKSTORE);
@@ -545,7 +543,6 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
             case R.id.iv_title_right:
                 Intent shelfIntent = new Intent();
                 shelfIntent.setClass(BookEndActivity.this, HomeActivity.class);
-                shelfIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 try {
                     Bundle bundle = new Bundle();
                     bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_BOOKSHELF);

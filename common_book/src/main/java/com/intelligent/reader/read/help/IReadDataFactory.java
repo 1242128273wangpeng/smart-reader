@@ -68,6 +68,26 @@ public abstract class IReadDataFactory {
     private BookDaoHelper bookDaoHelper;
     private StatisticManager statisticManager;
 
+    public void clean() {
+        if (chapterList != null) {
+            chapterList.clear();
+        }
+
+        if (tempChapterNameList != null) {
+            tempChapterNameList.clear();
+        }
+
+        if (tempLineList != null) {
+            tempLineList.clear();
+        }
+
+        if (readedChapter != null) {
+            readedChapter.clear();
+        }
+
+        readingActivity = null;
+    }
+
     public IReadDataFactory(Context context, ReadingActivity readingActivity, ReadStatus readStatus, NovelHelper
             novelHelper) {
         this.mContext = context;

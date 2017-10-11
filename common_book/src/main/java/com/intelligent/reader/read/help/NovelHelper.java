@@ -58,8 +58,8 @@ public class NovelHelper {
     public static final String empty_page_ad = "empty_page_ad";
     public static final String empty_page_ad_inChapter = "empty_inChapter_ad";
     private static final String TAG = "NovelHelper";
-    private final char punct[] = {'，', '。', '！', '？', '；', '：', '、', '”'};
-    private final char regs[] = {',', '.', '!', '?', ';', ':', '、', '”'};
+    private static final char punct[] = {'，', '。', '！', '？', '；', '：', '、', '”'};
+    private static final char regs[] = {',', '.', '!', '?', ';', ':', '、', '”'};
     public boolean isShown = false;
     private OnHelperCallBack helperCallBack;
     private boolean checked;

@@ -110,7 +110,7 @@ android {
     }
     defaultConfig {
 
-        applicationId "cn.txtzsydsq.reader"
+        applicationId "cc.kdqbxs.reader"
 
 //        System.err.println("project.properties = ${project.getProperties()}")
 
@@ -470,8 +470,8 @@ N多网	blf1298_10885_001
 
         //调试和开发使用
         release {
-            debuggable = false
-            minifyEnabled true
+            debuggable = true
+            minifyEnabled false
             zipAlignEnabled true
             shrinkResources false
             fixChannelAppName(getOwner())

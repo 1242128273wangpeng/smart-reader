@@ -200,7 +200,7 @@ public class ReadDataFactory extends IReadDataFactory {
                     dataListener.showToast(R.string.err_no_net);
                 }
             }
-        } else if (readStatus.sequence < readStatus.chapterCount - 1) {
+        } else if (readStatus.sequence < chapterList.size() - 1) {
             if (Constants.QG_SOURCE.equals(readStatus.requestItem.host)) {
                 Chapter tempChapter = chapterList.get(readStatus.sequence + 1);
                 if (com.quduquxie.network.DataCache.isChapterExists(tempChapter.chapter_id, tempChapter.book_id)) {
@@ -216,9 +216,9 @@ public class ReadDataFactory extends IReadDataFactory {
 //                        }
 //                        mSharedPreferences.edit().putLong(Constants.NONET_READ, noNetRead).apply();
 //                    } else {
-                        tempChapter.content = com.quduquxie.network.DataCache.getChapterFromCache(tempChapter.chapter_id, tempChapter.book_id);
-                        tempChapter.isSuccess = true;
-                        nextChapter = tempChapter;
+                    tempChapter.content = com.quduquxie.network.DataCache.getChapterFromCache(tempChapter.chapter_id, tempChapter.book_id);
+                    tempChapter.isSuccess = true;
+                    nextChapter = tempChapter;
 //                    }
                 } else {
                     if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
@@ -257,7 +257,7 @@ public class ReadDataFactory extends IReadDataFactory {
 //                            }
 //                            mSharedPreferences.edit().putLong(Constants.NONET_READ, noNetRead).apply();
 //                        } else {
-                            nextChapter = chapter;
+                        nextChapter = chapter;
 //                        }
                     }
                 } else {
@@ -317,9 +317,9 @@ public class ReadDataFactory extends IReadDataFactory {
 //                        }
 //                        sharedPreferences.edit().putLong(Constants.NONET_READ, noNetRead).apply();
 //                    } else {
-                        tempChapter.content = com.quduquxie.network.DataCache.getChapterFromCache(tempChapter.chapter_id, tempChapter.book_id);
-                        tempChapter.isSuccess = true;
-                        preChapter = tempChapter;
+                    tempChapter.content = com.quduquxie.network.DataCache.getChapterFromCache(tempChapter.chapter_id, tempChapter.book_id);
+                    tempChapter.isSuccess = true;
+                    preChapter = tempChapter;
 //                    }
                 } else {
                     if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
@@ -358,7 +358,7 @@ public class ReadDataFactory extends IReadDataFactory {
 //                            }
 //                            sharedPreferences.edit().putLong(Constants.NONET_READ, noNetRead).apply();
 //                        } else {
-                            preChapter = chapter;
+                        preChapter = chapter;
 //                        }
 
                     }

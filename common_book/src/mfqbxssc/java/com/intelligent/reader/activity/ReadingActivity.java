@@ -13,8 +13,10 @@ import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.fragment.CatalogMarkFragment;
 import com.intelligent.reader.presenter.read.CatalogMarkPresenter;
 import com.intelligent.reader.presenter.read.ReadOptionPresenter;
+import com.intelligent.reader.read.animation.BitmapManager;
 import com.intelligent.reader.read.help.BookHelper;
 import com.intelligent.reader.read.help.CallBack;
+import com.intelligent.reader.read.help.DrawTextHelper;
 import com.intelligent.reader.read.help.IReadDataFactory;
 import com.intelligent.reader.read.help.NovelHelper;
 import com.intelligent.reader.read.help.ReadDataFactory;
@@ -219,6 +221,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private RequestFactory requestFactory;
     private int type = -1;
     private String currentThemeMode;
+
+    private int lastMode = -1;
     /**
      * 接受电量改变广播
      */
@@ -311,10 +315,11 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         // 初始化窗口基本信息
         initWindow();
 
-        setOrientation();
-        getSavedState(savedInstanceState);
         dataFactory = new ReadDataFactory(getApplicationContext(), this, readStatus, myNovelHelper);
         dataFactory.setReadDataListener(this);
+
+        setOrientation();
+        getSavedState(savedInstanceState);
 
         if (isFromCover && Constants.IS_LANDSCAPE) {
             return;
@@ -379,13 +384,15 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         myNovelHelper.setOnHelperCallBack(this);
 
         requestFactory = new RequestFactory();
-
+        if (dataFactory != null) {
+            dataFactory.clean();
+        }
+        dataFactory = new ReadDataFactory(getApplicationContext(), this, readStatus, myNovelHelper);
+        dataFactory.setReadDataListener(this);
         // 初始化窗口基本信息
         initWindow();
         setOrientation();
         getSavedState(intent.getExtras());
-        dataFactory = new ReadDataFactory(getApplicationContext(), this, readStatus, myNovelHelper);
-        dataFactory.setReadDataListener(this);
         if (isFromCover && Constants.IS_LANDSCAPE) {
             return;
         }
@@ -1504,6 +1511,13 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
      * 切换夜间模式
      */
     private void changeMode(int mode) {
+        if (this.lastMode == -1) {
+            this.lastMode = mode;
+        } else {
+            if (this.lastMode == mode) {
+                return;
+            }
+        }
 
         this.current_mode = mode;
         AppLog.e(TAG, "ChangeMode : " + mode);
@@ -1941,6 +1955,10 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 dataFactory.mHandler.removeCallbacksAndMessages(null);
             }
         }
+
+        BitmapManager.getInstance().clearBitmap();
+
+        DrawTextHelper.clean();
 
         super.onDestroy();
 

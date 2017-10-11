@@ -47,7 +47,7 @@ import java.util.Map;
 
 public class DrawTextHelper {
     private static final String TAG = "DrawTextHelper";
-    Bitmap mBitmap;
+
     int mBitmapWidth;
     int mBitmapHeight;
     int left1;
@@ -65,10 +65,11 @@ public class DrawTextHelper {
     private TextPaint mchapterPaint;
     private ReadStatus readStatus;
     private Resources resources;
-    private Bitmap mBackground; // 背景Bitmap
-    private Bitmap mKraftBackground; // 牛皮纸模式 底部背景
-    private Bitmap mSoftBackground;
-    private Bitmap mIconBitmap;
+    private static Bitmap mBitmap;
+    private static Bitmap mBackground; // 背景Bitmap
+    private static Bitmap mKraftBackground; // 牛皮纸模式 底部背景
+    private static Bitmap mSoftBackground;
+    private static Bitmap mIconBitmap;
     private int footHeight;
     private int slideupfootHeight;
     private int unit;
@@ -88,6 +89,14 @@ public class DrawTextHelper {
     private float firstchapterHeight;
     private float mWidth;
     private float mLineStart;
+
+    public static void clean() {
+        mBitmap = null;
+        mBackground = null;
+        mKraftBackground = null;
+        mSoftBackground = null;
+        mIconBitmap = null;
+    }
 
     public DrawTextHelper(Resources res, PageInterface pageView, Activity mActivity) {
         this.resources = res;
@@ -207,18 +216,18 @@ public class DrawTextHelper {
     }
 
     public void resetBackBitmap() {
-//        if (mBackground != null && !mBackground.isRecycled()) {
-//            mBackground.recycle();
-//            mBackground = null;
-//        }
-//        if (mKraftBackground != null && !mKraftBackground.isRecycled()) {
-//            mKraftBackground.recycle();
-//            mKraftBackground = null;
-//        }
-//        if (mSoftBackground != null && !mSoftBackground.isRecycled()) {
-//            mSoftBackground.recycle();
-//            mSoftBackground = null;
-//        }
+        if (mBackground != null && !mBackground.isRecycled()) {
+            mBackground.recycle();
+            mBackground = null;
+        }
+        if (mKraftBackground != null && !mKraftBackground.isRecycled()) {
+            mKraftBackground.recycle();
+            mKraftBackground = null;
+        }
+        if (mSoftBackground != null && !mSoftBackground.isRecycled()) {
+            mSoftBackground.recycle();
+            mSoftBackground = null;
+        }
     }
 
     /**
@@ -1337,15 +1346,11 @@ public class DrawTextHelper {
     private void drawBackground(Canvas canvas) {
         if (Constants.MODE == 51) {// 柔和
             if (mBackground == null || mBackground.isRecycled()) {
-                try {
-                    mBackground = BitmapFactory.decodeResource(resources, com.intelligent.reader.R.drawable.read_page_bg_default);
-                } catch (OutOfMemoryError e) {
-                    System.gc();
-                    System.gc();
-                    BitmapFactory.Options options = new BitmapFactory.Options();
-                    options.inSampleSize = 2;
-                    mBackground = BitmapFactory.decodeResource(resources, com.intelligent.reader.R.drawable.read_page_bg_default, options);
-                }
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.RGB_565;
+                mBackground = BitmapFactory.decodeResource(resources, com.intelligent.reader.R.drawable.read_page_bg_default, options);
+                int byteCount = mBackground.getByteCount();
+                System.out.println("background : " + byteCount);
             }
             if (mBackground != null && !mBackground.isRecycled()) {
                 canvas.drawBitmap(mBackground, new Rect(0, 0, mBackground.getWidth(), mBackground.getHeight()), new Rect(0, 0, readStatus.screenWidth, readStatus.screenHeight), null);

@@ -107,7 +107,9 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
         super.onSizeChanged(w, h, oldw, oldh);
         width = readStatus.screenWidth = w;
         height = readStatus.screenHeight = h;
-        manager = new BitmapManager(readStatus.screenWidth, readStatus.screenHeight);
+        manager = BitmapManager.getInstance();
+        manager.setSize(readStatus.screenWidth, readStatus.screenHeight);
+
         if (callBack != null && (Math.abs(oldh - h) > AppUtils.dip2px(mContext, 26))) {
             if (android.os.Build.VERSION.SDK_INT < 11 && Constants.isFullWindowRead) {
                 height = readStatus.screenHeight - AppUtils.dip2px(mContext, 20);
@@ -993,7 +995,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
                 hodler = new ViewHodler();
                 hodler.page = (Page) convertView.findViewById(R.id.page_item);
                 convertView.setTag(hodler);
-                Bitmap mCurPageBitmap = manager.getBitmap4444();
+                Bitmap mCurPageBitmap = manager.getBitmap8888();
                 Canvas mCurrentCanvas = new Canvas(mCurPageBitmap);
                 Log.d("ScrollPage", "getView convertView == null");
                 hodler.page.setTag(R.id.tag_bitmap, mCurPageBitmap);

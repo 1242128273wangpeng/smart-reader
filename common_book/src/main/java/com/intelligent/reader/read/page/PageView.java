@@ -138,7 +138,8 @@ public class PageView extends View implements PageInterface {
 
         mScroller = new Scroller(mContext, new AccelerateInterpolator());
 
-        myBitmapManager = new BitmapManager(readStatus.screenWidth, readStatus.screenHeight);
+        myBitmapManager = BitmapManager.getInstance();
+        myBitmapManager.setSize(readStatus.screenWidth, readStatus.screenHeight);
 
         Bitmap mCurPageBitmap = myBitmapManager.getBitmap(0);
         Bitmap mNextPageBitmap = myBitmapManager.getBitmap(1);
@@ -265,7 +266,7 @@ public class PageView extends View implements PageInterface {
 
     public void setBackground() {
         if (!isAutoReadMode()) {
-            drawTextHelper.resetBackBitmap();
+//            drawTextHelper.resetBackBitmap();
             drawTextHelper.drawText(mCurPageCanvas, pageLines, mActivity);
             drawTextHelper.drawText(mNextPageCanvas, pageLines, mActivity);
 
