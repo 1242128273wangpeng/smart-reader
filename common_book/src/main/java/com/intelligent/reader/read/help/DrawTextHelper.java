@@ -216,18 +216,18 @@ public class DrawTextHelper {
     }
 
     public void resetBackBitmap() {
-        if (mBackground != null && !mBackground.isRecycled()) {
-            mBackground.recycle();
-            mBackground = null;
-        }
-        if (mKraftBackground != null && !mKraftBackground.isRecycled()) {
-            mKraftBackground.recycle();
-            mKraftBackground = null;
-        }
-        if (mSoftBackground != null && !mSoftBackground.isRecycled()) {
-            mSoftBackground.recycle();
-            mSoftBackground = null;
-        }
+//        if (mBackground != null && !mBackground.isRecycled()) {
+//            mBackground.recycle();
+//            mBackground = null;
+//        }
+//        if (mKraftBackground != null && !mKraftBackground.isRecycled()) {
+//            mKraftBackground.recycle();
+//            mKraftBackground = null;
+//        }
+//        if (mSoftBackground != null && !mSoftBackground.isRecycled()) {
+//            mSoftBackground.recycle();
+//            mSoftBackground = null;
+//        }
     }
 
     /**
