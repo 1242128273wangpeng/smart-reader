@@ -303,7 +303,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                 DataService.getBookInfo(this, requestItem.book_id, uiHandler, RequestExecutor.REQUEST_COVER_QG_SUCCESS, RequestExecutor
                         .REQUEST_COVER_QG_ERROR, udid);
             } else {//自有
-                if (Constants.SG_SOURCE.equals(requestItem.host)) {
+                if (Constants.SG_SOURCE.equals(requestItem.host) || requestItem.book_id == null || requestItem.book_source_id == null) {
                     uiHandler.sendEmptyMessage(RequestExecutor.REQUEST_COVER_ERROR);
                 } else {
                     requestFactory.requestExecutor(requestItem).requestBookCover(uiHandler, requestItem);
@@ -323,7 +323,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                             DataService.getBookInfo(CoverPageActivity.this, requestItem.book_id, uiHandler, RequestExecutor
                                     .REQUEST_COVER_QG_SUCCESS, RequestExecutor.REQUEST_COVER_QG_ERROR, udid);
                         } else {//自有
-                            if (Constants.SG_SOURCE.equals(requestItem.host)) {
+                            if (Constants.SG_SOURCE.equals(requestItem.host) || requestItem.book_id == null || requestItem.book_source_id == null) {
                                 uiHandler.sendEmptyMessage(RequestExecutor.REQUEST_COVER_ERROR);
                             } else {
                                 requestFactory.requestExecutor(requestItem).requestBookCover(uiHandler, requestItem);
