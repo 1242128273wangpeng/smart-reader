@@ -36,7 +36,7 @@ public class StartLogClickUtil {
     public static final String CHCHEEDIT_PAGE = "CHCHEEDIT";//缓存编辑页
     public static final String CACHEMANAGE_PAGE = "CACHEMANAGE";//缓存管理页
     public static final String BOOOKDETAIL_PAGE = "BOOOKDETAIL";//书籍详情页
-    public static final String PEASONAL_PAGE = "PEASONAL";//个人中心页
+    public static final String PEASONAL_PAGE = "PERSONAL";//个人中心页
     public static final String MORESET_PAGE = "MORESET";//更多设置
     public static final String READPAGE_PAGE = "READPAGE";//阅读页
     public static final String READPAGESET_PAGE = "READPAGESET";//阅读页设置
