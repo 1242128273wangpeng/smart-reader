@@ -2707,7 +2707,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         @Override
         protected Void doInBackground(Integer... params) {
             if(dataFactory!=null){
-                ArrayList<Chapter> chapterList = dataFactory.chapterList;
+                ArrayList<Chapter> chapterList = (ArrayList<Chapter>) dataFactory.chapterList.clone();
                 if (chapterList == null) {
                     return null;
                 }
@@ -2726,7 +2726,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                             e.printStackTrace();
                         }
                         if (i == (readStatus.sequence + 1)) {
-                            dataFactory.nextChapter = c;
+                            if (dataFactory != null){
+                                dataFactory.nextChapter = c;
+                            }
                         }
                         if (isCancelled()) {
                             break;
