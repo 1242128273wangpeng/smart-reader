@@ -9,6 +9,7 @@ import android.content.res.Configuration
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.preference.PreferenceManager
 import android.text.TextUtils
 import android.util.AttributeSet
@@ -63,18 +64,15 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
     constructor(context: Context) : super(context) {
         initView()
-        initListener()
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         initView()
-        initListener()
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         initView()
-        initListener()
     }
 
 
@@ -148,7 +146,6 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         read_full.isChecked = sharedPreferences!!.getBoolean("full_screen_read", false)
 
         resetBtn()
-
     }
 
     private fun resetBtn() {

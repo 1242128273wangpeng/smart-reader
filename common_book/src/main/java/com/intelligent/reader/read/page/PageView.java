@@ -267,8 +267,8 @@ public class PageView extends View implements PageInterface {
     public void setBackground() {
         if (!isAutoReadMode()) {
             drawTextHelper.resetBackBitmap();
-            drawTextHelper.drawText(mCurPageCanvas, pageLines, mActivity);
-            drawTextHelper.drawText(mNextPageCanvas, pageLines, mActivity);
+//            drawTextHelper.drawText(mCurPageCanvas, pageLines, mActivity);
+//            drawTextHelper.drawText(mNextPageCanvas, pageLines, mActivity);
 
             invalidate();
         }
