@@ -27,6 +27,7 @@ import net.lzbook.kit.data.bean.SourceItem;
 import net.lzbook.kit.data.db.BookChapterDao;
 import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.request.own.OtherRequestService;
+import net.lzbook.kit.utils.ATManager;
 import net.lzbook.kit.utils.BaseBookHelper;
 import net.lzbook.kit.utils.ResourceUtil;
 import net.lzbook.kit.utils.StatServiceUtils;

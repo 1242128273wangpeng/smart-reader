@@ -96,29 +96,29 @@ public class SearchHotWordAdapter extends BaseAdapter {
             currType = random.nextInt(7);
         }
         oldType = currType;
-        ColorStateList csl;
+        int csl;
         switch (currType){
             case 0:
             case 1:
             case 2:
             case 3:
                 textView.setBackgroundResource(R.drawable.search_hot_word_bg_1);
-                csl =  mContext.getResources().getColorStateList(R.color.search_hot_word_text_color_1);
+                csl =  mContext.getResources().getColor(R.color.search_hot_word_text_color_1);
                 textView.setTextColor(csl);
                 break;
             case 4:
                 textView.setBackgroundResource(R.drawable.search_hot_word_bg_2);
-                csl =  mContext.getResources().getColorStateList(R.color.search_hot_word_text_color_2);
+                csl =  mContext.getResources().getColor(R.color.search_hot_word_text_color_2);
                 textView.setTextColor(csl);
                 break;
             case 5:
                 textView.setBackgroundResource(R.drawable.search_hot_word_bg_3);
-                csl =  mContext.getResources().getColorStateList(R.color.search_hot_word_text_color_3);
+                csl =  mContext.getResources().getColor(R.color.search_hot_word_text_color_3);
                 textView.setTextColor(csl);
                 break;
             case 6:
                 textView.setBackgroundResource(R.drawable.search_hot_word_bg_3);
-                csl =  mContext.getResources().getColorStateList(R.color.search_hot_word_text_color_4);
+                csl =  mContext.getResources().getColor(R.color.search_hot_word_text_color_4);
                 textView.setTextColor(csl);
                 break;
         }

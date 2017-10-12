@@ -30,6 +30,7 @@ import net.lzbook.kit.request.own.OtherRequestService;
 import net.lzbook.kit.utils.BaseBookHelper;
 import net.lzbook.kit.utils.ResourceUtil;
 import net.lzbook.kit.utils.StatServiceUtils;
+import net.lzbook.kit.utils.ATManager;
 import net.lzbook.kit.utils.StatisticManager;
 
 import android.content.DialogInterface;

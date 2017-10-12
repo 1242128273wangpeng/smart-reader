@@ -234,15 +234,15 @@ public class BookShelfRemoveHelper implements View.OnClickListener {
             selectAll_btn.setText(isAllChecked() ? "取消全选" : "全选");
             if (num == 0) {
                 delete_btn.setText("删除");
-                ColorStateList textCsl = mContext.getResources().getColorStateList(R.color.color_gray_babfc1);
+                int textCsl = mContext.getResources().getColor(R.color.color_gray_babfc1);
                 delete_btn.setTextColor(textCsl);
                 delete_btn.setBackgroundResource(com.intelligent.reader.R.drawable.bookshelf_delete_submit_default_bg);
             } else {
                 delete_btn.setText("删除 (" + num + ")");
-                int textColor = R.drawable.bookshelf_delete_submit_text_color;
+                int textColor = com.intelligent.reader.R.color.bookshelf_delete_submit_text_color;
                 int bgColor = R.drawable.bookshelf_delete_submit_bg;
 
-                ColorStateList draw = mContext.getResources().getColorStateList(textColor);
+                int draw = mContext.getResources().getColor(textColor);
                 delete_btn.setTextColor(draw);
                 delete_btn.setBackgroundResource(bgColor);
             }

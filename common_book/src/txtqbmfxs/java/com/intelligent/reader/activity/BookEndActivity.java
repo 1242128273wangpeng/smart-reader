@@ -31,6 +31,7 @@ import net.lzbook.kit.utils.BaseBookHelper;
 import net.lzbook.kit.utils.ResourceUtil;
 import net.lzbook.kit.utils.StatServiceUtils;
 import net.lzbook.kit.utils.StatisticManager;
+import net.lzbook.kit.utils.ATManager;
 
 import android.content.DialogInterface;
 import android.content.Intent;
