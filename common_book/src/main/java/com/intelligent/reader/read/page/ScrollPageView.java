@@ -105,7 +105,6 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        AppLog.d("ScrollPageView", "onSizeChanged");
         width = readStatus.screenWidth = w;
         height = readStatus.screenHeight = h;
         manager = BitmapManager.getInstance();
@@ -743,13 +742,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
             drawTextHelper.clear();
         }
 
-//        if (this.mActivity != null) {
-//            this.mActivity = null;
-//        }
-//
-//        if (this.mContext != null) {
-//            this.mContext = null;
-//        }
+        setBackgroundResource(0);
     }
 
     @Override
