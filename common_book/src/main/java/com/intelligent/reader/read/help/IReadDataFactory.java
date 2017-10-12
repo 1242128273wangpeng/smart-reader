@@ -69,6 +69,9 @@ public abstract class IReadDataFactory {
     private StatisticManager statisticManager;
 
     public void clean() {
+        if (mHandler != null) {
+            mHandler.canHandleMessage = false;
+        }
         if (chapterList != null) {
             chapterList.clear();
         }
@@ -83,6 +86,18 @@ public abstract class IReadDataFactory {
 
         if (readedChapter != null) {
             readedChapter.clear();
+        }
+
+        if (readStatus != null) {
+            readStatus = null;
+        }
+
+        if (myNovelHelper != null) {
+            myNovelHelper.clear();
+        }
+
+        if (pageView != null) {
+            pageView = null;
         }
 
         readingActivity = null;
@@ -694,6 +709,7 @@ public abstract class IReadDataFactory {
     }
 
     public static class ReadHandler extends Handler {
+        public boolean canHandleMessage = true;
         private WeakReference<IReadDataFactory> reference;
 
         ReadHandler(IReadDataFactory instance) {
@@ -703,7 +719,7 @@ public abstract class IReadDataFactory {
         @Override
         public void handleMessage(Message msg) {
             IReadDataFactory dataFactory = reference.get();
-            if (dataFactory == null) {
+            if (!canHandleMessage || dataFactory == null) {
                 return;
             }
             if (dataFactory.loadingPage != null) {

@@ -22,6 +22,9 @@ public class ShiftAnimationProvider extends SlideAnimationProvider {
 
     @Override
     public void drawInternal(Canvas canvas) {
+        if (mNextPageBitmap.isRecycled() || mCurPageBitmap.isRecycled()) {
+            return;
+        }
         if (readPosition != 0) {
             canvas.drawBitmap(mNextPageBitmap, 0, 0, paint);
             canvas.save();

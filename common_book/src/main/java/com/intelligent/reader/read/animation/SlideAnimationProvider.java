@@ -31,6 +31,9 @@ public class SlideAnimationProvider extends AnimationProvider {
     @Override
     public void drawInternal(Canvas canvas) {
         doStep();
+        if (mNextPageBitmap.isRecycled() || mCurPageBitmap.isRecycled()) {
+            return;
+        }
         if (moveX > 0) {
             canvas.drawBitmap(mNextPageBitmap, moveX - mWidth, 0, paint);
 

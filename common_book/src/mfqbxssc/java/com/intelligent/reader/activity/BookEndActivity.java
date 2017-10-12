@@ -27,6 +27,7 @@ import net.lzbook.kit.data.bean.SourceItem;
 import net.lzbook.kit.data.db.BookChapterDao;
 import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.request.own.OtherRequestService;
+import net.lzbook.kit.utils.ATManager;
 import net.lzbook.kit.utils.BaseBookHelper;
 import net.lzbook.kit.utils.ResourceUtil;
 import net.lzbook.kit.utils.StatServiceUtils;
@@ -339,7 +340,6 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
     private void openCategoryPage() {
         //if (readStatus.book.book_type == 0) {
         Intent intent = new Intent(BookEndActivity.this, CataloguesActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         Bundle bundle = new Bundle();
         bundle.putSerializable("cover", readStatus.book);
         bundle.putString("book_id", readStatus.book_id);

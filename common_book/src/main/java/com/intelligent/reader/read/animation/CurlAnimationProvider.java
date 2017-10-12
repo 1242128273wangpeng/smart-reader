@@ -98,6 +98,9 @@ public class CurlAnimationProvider extends AnimationProvider {
 
     @Override
     public void drawInternal(Canvas canvas) {
+        if (mNextPageBitmap.isRecycled() || mCurPageBitmap.isRecycled()) {
+            return;
+        }
         if (isFromCenter) {
             mTouch.y = mHeight - 1;
         }

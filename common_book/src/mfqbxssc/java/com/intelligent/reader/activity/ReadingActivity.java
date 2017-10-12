@@ -2,6 +2,7 @@ package com.intelligent.reader.activity;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.bumptech.glide.Glide;
 import com.dingyueads.sdk.Bean.Advertisement;
 import com.dingyueads.sdk.Bean.Novel;
 import com.dingyueads.sdk.Native.YQNativeAdInfo;
@@ -368,6 +369,10 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        this.lastMode = -1;
+        if (pageView != null) {
+            pageView.clear();
+        }
         showMenu(false);
         AppLog.d("ReadingActivity", "onNewIntent:");
         this.sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -377,6 +382,10 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         versionCode = AppUtils.getVersionCode();
         AppLog.e(TAG, "versionCode: " + versionCode);
         inflater = LayoutInflater.from(getApplicationContext());
+        if(readStatus != null){
+            readStatus.recycleResource();
+            readStatus.recycleResourceNew();
+        }
         readStatus = new ReadStatus(getApplicationContext());
         (BookApplication.getGlobalContext()).setReadStatus(readStatus);
         autoSpeed = readStatus.autoReadSpeed();
@@ -663,6 +672,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
+        this.lastMode = -1;
         // 初始化窗口基本信息
         if (pageView != null) {
             pageView.clear();
@@ -1851,6 +1861,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
     @Override
     protected void onDestroy() {
+        if (mNovelLoader != null && mNovelLoader.getStatus() == BaseAsyncTask.Status.RUNNING) {
+            mNovelLoader.cancel(true);
+        }
 
         if (mCatlogMarkDrawer != null) {
             mCatlogMarkDrawer.removeDrawerListener(mDrawerListener);
@@ -1870,10 +1883,13 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         if (mNovelLoader != null && mNovelLoader.getStatus() == BaseAsyncTask.Status.RUNNING) {
             mNovelLoader.cancel(true);
         }
-        try {
-            unregisterReceiver(mBatInfoReceiver);
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        if (mBatInfoReceiver != null) {
+            try {
+                unregisterReceiver(mBatInfoReceiver);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         /**
@@ -1945,7 +1961,10 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             ownNativeAdManager.removeHandler();
         }
 
+        Glide.get(this).clearMemory();
+
         if (readStatus != null) {
+            readStatus.recycleResource();
             readStatus.recycleResourceNew();
         }
 
@@ -1954,6 +1973,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             if (dataFactory.mHandler != null) {
                 dataFactory.mHandler.removeCallbacksAndMessages(null);
             }
+            dataFactory.clean();
         }
 
         BitmapManager.getInstance().clearBitmap();
@@ -2577,12 +2597,16 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     public void onOriginClick() {
         String url = null;
         if (dataFactory != null && dataFactory.currentChapter != null) {
-            url = UrlUtils.buildContentUrl(dataFactory.currentChapter.curl).trim();
+            url = UrlUtils.buildContentUrl(dataFactory.currentChapter.curl);
         }
         if (!TextUtils.isEmpty(url)) {
-            Uri uri = Uri.parse(url);
+            Uri uri = Uri.parse(url.trim());
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-            startActivity(intent);
+            try {
+                startActivity(intent);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             Map<String, String> data = new HashMap<>();
             if (readStatus != null) {
                 data.put("bookid", readStatus.book_id);
@@ -2714,13 +2738,14 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         @Override
         protected Void doInBackground(Integer... params) {
             if(dataFactory!=null){
-                if (dataFactory.chapterList == null) {
+                ArrayList<Chapter> chapterList = dataFactory.chapterList;
+                if (chapterList == null) {
                     return null;
                 }
-                int size = dataFactory.chapterList.size();
+                int size = chapterList.size();
                 if(readStatus!=null){
                     for (int i = readStatus.sequence + 1; i < (readStatus.sequence + params[0] + 1) && i < size; i++) {
-                        Chapter c = dataFactory.chapterList.get(i);
+                        Chapter c = chapterList.get(i);
                         if (c == null) {
                             return null;
                         }

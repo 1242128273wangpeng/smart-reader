@@ -14,8 +14,10 @@ import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.fragment.CatalogMarkFragment;
 import com.intelligent.reader.presenter.read.CatalogMarkPresenter;
 import com.intelligent.reader.presenter.read.ReadOptionPresenter;
+import com.intelligent.reader.read.animation.BitmapManager;
 import com.intelligent.reader.read.help.BookHelper;
 import com.intelligent.reader.read.help.CallBack;
+import com.intelligent.reader.read.help.DrawTextHelper;
 import com.intelligent.reader.read.help.IReadDataFactory;
 import com.intelligent.reader.read.help.NovelHelper;
 import com.intelligent.reader.read.help.ReadDataFactory;
@@ -34,8 +36,6 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.component.service.DownloadService;
 import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.book.view.MyDialog;
-import net.lzbook.kit.book.view.SourcePageView;
-import net.lzbook.kit.book.view.TransCodingView;
 import net.lzbook.kit.cache.imagecache.ImageCacheManager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Book;
@@ -218,6 +218,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private RequestFactory requestFactory;
     private int type = -1;
     private String currentThemeMode;
+
+    private int lastMode = -1;
     /**
      * 接受电量改变广播
      */
@@ -310,10 +312,11 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         // 初始化窗口基本信息
         initWindow();
 
-        setOrientation();
-        getSavedState(savedInstanceState);
         dataFactory = new ReadDataFactory(getApplicationContext(), this, readStatus, myNovelHelper);
         dataFactory.setReadDataListener(this);
+
+        setOrientation();
+        getSavedState(savedInstanceState);
 
         if (isFromCover && Constants.IS_LANDSCAPE) {
             return;
@@ -362,6 +365,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        this.lastMode = -1;
         if (pageView != null) {
             pageView.clear();
         }
@@ -374,6 +378,10 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         versionCode = AppUtils.getVersionCode();
         AppLog.e(TAG, "versionCode: " + versionCode);
         inflater = LayoutInflater.from(getApplicationContext());
+        if(readStatus != null){
+            readStatus.recycleResource();
+            readStatus.recycleResourceNew();
+        }
         readStatus = new ReadStatus(getApplicationContext());
         (BookApplication.getGlobalContext()).setReadStatus(readStatus);
         autoSpeed = readStatus.autoReadSpeed();
@@ -381,16 +389,19 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         myNovelHelper.setOnHelperCallBack(this);
 
         requestFactory = new RequestFactory();
-
+        if (dataFactory != null) {
+            dataFactory.clean();
+        }
+        dataFactory = new ReadDataFactory(getApplicationContext(), this, readStatus, myNovelHelper);
+        dataFactory.setReadDataListener(this);
         // 初始化窗口基本信息
         initWindow();
         setOrientation();
         getSavedState(intent.getExtras());
-        dataFactory = new ReadDataFactory(getApplicationContext(), this, readStatus, myNovelHelper);
-        dataFactory.setReadDataListener(this);
         if (isFromCover && Constants.IS_LANDSCAPE) {
             return;
         }
+
 //        setContentView(R.layout.act_read);
         mCatlogMarkDrawer = (DrawerLayout) findViewById(R.id.read_catalog_mark_drawer);
         if (mCatlogMarkDrawer == null) {
@@ -657,6 +668,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
+        this.lastMode = -1;
         // 初始化窗口基本信息
         if (pageView != null) {
             pageView.clear();
@@ -1503,6 +1515,13 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
      * 切换夜间模式
      */
     private void changeMode(int mode) {
+        if (this.lastMode == -1) {
+            this.lastMode = mode;
+        } else {
+            if (this.lastMode == mode) {
+                return;
+            }
+        }
 
         this.current_mode = mode;
         AppLog.e(TAG, "ChangeMode : " + mode);
@@ -1815,6 +1834,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
     @Override
     protected void onDestroy() {
+        if (mNovelLoader != null && mNovelLoader.getStatus() == BaseAsyncTask.Status.RUNNING) {
+            mNovelLoader.cancel(true);
+        }
 
         if (mCatlogMarkDrawer != null) {
             mCatlogMarkDrawer.removeDrawerListener(mDrawerListener);
@@ -1834,10 +1856,13 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         if (mNovelLoader != null && mNovelLoader.getStatus() == BaseAsyncTask.Status.RUNNING) {
             mNovelLoader.cancel(true);
         }
-        try {
-            unregisterReceiver(mBatInfoReceiver);
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        if (mBatInfoReceiver != null) {
+            try {
+                unregisterReceiver(mBatInfoReceiver);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         /**
@@ -1914,6 +1939,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         Glide.get(this).clearMemory();
 
         if (readStatus != null) {
+            readStatus.recycleResource();
             readStatus.recycleResourceNew();
         }
 
@@ -1922,7 +1948,12 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             if (dataFactory.mHandler != null) {
                 dataFactory.mHandler.removeCallbacksAndMessages(null);
             }
+            dataFactory.clean();
         }
+
+        BitmapManager.getInstance().clearBitmap();
+
+        DrawTextHelper.clean();
 
         super.onDestroy();
 
@@ -2533,12 +2564,16 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     public void onOriginClick() {
         String url = null;
         if (dataFactory != null && dataFactory.currentChapter != null) {
-            url = UrlUtils.buildContentUrl(dataFactory.currentChapter.curl).trim();
+            url = UrlUtils.buildContentUrl(dataFactory.currentChapter.curl);
         }
         if (!TextUtils.isEmpty(url)) {
-            Uri uri = Uri.parse(url);
+            Uri uri = Uri.parse(url.trim());
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-            startActivity(intent);
+            try {
+                startActivity(intent);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             Map<String, String> data = new HashMap<>();
             if (readStatus != null) {
                 data.put("bookid", readStatus.book_id);
@@ -2669,14 +2704,15 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
         @Override
         protected Void doInBackground(Integer... params) {
-            if (dataFactory != null) {
-                if (dataFactory.chapterList == null) {
+            if(dataFactory!=null){
+                ArrayList<Chapter> chapterList = dataFactory.chapterList;
+                if (chapterList == null) {
                     return null;
                 }
-                int size = dataFactory.chapterList.size();
-                if (readStatus != null) {
+                int size = chapterList.size();
+                if(readStatus!=null){
                     for (int i = readStatus.sequence + 1; i < (readStatus.sequence + params[0] + 1) && i < size; i++) {
-                        Chapter c = dataFactory.chapterList.get(i);
+                        Chapter c = chapterList.get(i);
                         if (c == null) {
                             return null;
                         }

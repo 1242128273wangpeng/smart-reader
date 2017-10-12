@@ -470,7 +470,6 @@ N多网	blf1298_10885_001
 
         //调试和开发使用
         release {
-            debuggable = true
             minifyEnabled false
             zipAlignEnabled true
             shrinkResources false

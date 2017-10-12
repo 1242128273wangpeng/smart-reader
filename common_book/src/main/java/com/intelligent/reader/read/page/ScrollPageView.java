@@ -107,8 +107,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
         super.onSizeChanged(w, h, oldw, oldh);
         width = readStatus.screenWidth = w;
         height = readStatus.screenHeight = h;
-        manager = BitmapManager.getInstance();
-        manager.setSize(readStatus.screenWidth, readStatus.screenHeight);
+
 
         if (callBack != null && (Math.abs(oldh - h) > AppUtils.dip2px(mContext, 26))) {
             if (android.os.Build.VERSION.SDK_INT < 11 && Constants.isFullWindowRead) {
@@ -142,16 +141,14 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
         this.novelHelper = novelHelper;
         this.readStatus = readStatus;
 
-        width = readStatus.screenWidth;
-        height = readStatus.screenHeight - DisplayUtils.dp2px(getResources(), 26) * 2;
-        readStatus.screenHeight = height;
         chapterContent = new ArrayList<>();
 
         drawTextHelper = new DrawTextHelper(getResources(), this, mActivity);
         readStatus.startReadTime = System.currentTimeMillis();
         count = 0;
         isFirstCome = true;
-
+        manager = BitmapManager.getInstance();
+        manager.setSize(readStatus.screenWidth, readStatus.screenHeight);
         adapter = new ScrollPageAdapter();
         page_list.setAdapter(adapter);
 
@@ -530,6 +527,9 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
         preChaperConent = null;
 
         curChapter = dataFactory.currentChapter;
+        if (curChapter == null)
+            return;
+
         curChapter.chapterNameList = readStatus.chapterNameList;
         currentChaperConent = readStatus.mLineList;
         chapterContent.addAll(currentChaperConent);
@@ -740,6 +740,9 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
 
         if (drawTextHelper != null) {
             drawTextHelper.clear();
+        }
+        if (adapter != null) {
+            adapter = null;
         }
 
         setBackgroundResource(0);
@@ -985,7 +988,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHodler hodler = null;
             if (convertView == null) {
-                convertView = inflater.inflate(R.layout.page_item, null);
+                convertView = inflater.inflate(R.layout.page_item, parent, false);
                 hodler = new ViewHodler();
                 hodler.page = (Page) convertView.findViewById(R.id.page_item);
                 convertView.setTag(hodler);

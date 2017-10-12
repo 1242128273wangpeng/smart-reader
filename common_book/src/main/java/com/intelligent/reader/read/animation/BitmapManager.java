@@ -47,12 +47,16 @@ public class BitmapManager {
     }
 
     public synchronized void setSize(int width, int height) {
-        clearBitmap();
-
-        this.myWidth = width;
-        this.myHeight = height;
+        int tempHeight = height;
         if (Constants.isSlideUp) {
-            this.myHeight += spaceHeight;
+            tempHeight += spaceHeight;
+        }
+
+        if (myWidth != width || myHeight != tempHeight) {
+            clearBitmap();
+
+            this.myWidth = width;
+            this.myHeight = tempHeight;
         }
     }
 

@@ -68,7 +68,7 @@ public class ReadDataFactory extends IReadDataFactory {
                                 new Thread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        if (!readingActivity.isFinishing()) {
+                                        if (readingActivity != null && !readingActivity.isFinishing()) {
                                             ArrayList<Chapter> chapterList = (ArrayList<Chapter>) result;
                                             sendChapter(what, requestItem, temp_sequence, chapterList);
                                         }
