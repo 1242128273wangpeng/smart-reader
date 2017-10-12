@@ -149,6 +149,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private static final int font_count = 50;
     private static ReadStatus readStatus;
     public DownloadService downloadService;
+    public boolean isRestDialogShow = false;
     //    public boolean isRestDialogShow = false;
     long stampTime = 0;
     int readLength = 0;
@@ -187,7 +188,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private OwnNativeAdManager ownNativeAdManager;
     private boolean isAcvNovelActive = true;
     private Runnable rest_tips_runnable;
-    public boolean isRestDialogShow = false;
     private boolean isRestPress = false;
     private boolean actNovelRunForeground = true;
     private Handler handler = new UiHandler(this);
@@ -1517,9 +1517,11 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         if (this.lastMode == -1) {
             this.lastMode = mode;
         } else {
-//            if (this.lastMode == mode) {
-//                return;
-//            }
+            if (this.lastMode == mode) {
+                return;
+            } else {
+                this.lastMode = mode;
+            }
         }
 
         this.current_mode = mode;

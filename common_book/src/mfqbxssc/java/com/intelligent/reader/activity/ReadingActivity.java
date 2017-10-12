@@ -1526,6 +1526,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         } else {
             if (this.lastMode == mode) {
                 return;
+            }else{
+                this.lastMode = mode;
             }
         }
 
