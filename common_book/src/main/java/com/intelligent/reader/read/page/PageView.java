@@ -155,9 +155,9 @@ public class PageView extends View implements PageInterface {
         pageHeight = readStatus.screenHeight;
 
         drawTextHelper.getRect();
-        mOperationPaint = drawTextHelper.drawText(mCurPageCanvas, pageLines, mActivity);
+//        mOperationPaint = drawTextHelper.drawText(mCurPageCanvas, pageLines, mActivity);
 
-        postInvalidate();
+//        postInvalidate();
     }
 
     @Override
@@ -178,14 +178,14 @@ public class PageView extends View implements PageInterface {
         if (callBack != null && (Math.abs(oldh - h) > AppUtils.dip2px(mContext, 26))) {
             getAnimationProvider();
             callBack.onResize();
-            if (!isMoveing) {
-                drawCurrentPage();
-            } else {
-
-            }
-            drawNextPage();
+//            if (!isMoveing) {
+//                drawCurrentPage();
+//            } else {
+//
+//            }
+//            drawNextPage();
         }
-        setBackground();
+//        setBackground();
     }
 
     @Override
@@ -266,7 +266,7 @@ public class PageView extends View implements PageInterface {
 
     public void setBackground() {
         if (!isAutoReadMode()) {
-//            drawTextHelper.resetBackBitmap();
+            drawTextHelper.resetBackBitmap();
             drawTextHelper.drawText(mCurPageCanvas, pageLines, mActivity);
             drawTextHelper.drawText(mNextPageCanvas, pageLines, mActivity);
 
@@ -911,13 +911,13 @@ public class PageView extends View implements PageInterface {
             }
         }
 
-        if (this.mActivity != null) {
-            this.mActivity = null;
-        }
-
-        if (this.mContext != null) {
-            this.mContext = null;
-        }
+//        if (this.mActivity != null) {
+//            this.mActivity = null;
+//        }
+//
+//        if (this.mContext != null) {
+//            this.mContext = null;
+//        }
 
 //        if (this.readStatus != null) {
 //            this.readStatus = null;

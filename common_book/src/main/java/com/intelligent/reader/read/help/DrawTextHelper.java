@@ -216,18 +216,18 @@ public class DrawTextHelper {
     }
 
     public void resetBackBitmap() {
-        if (mBackground != null && !mBackground.isRecycled()) {
-            mBackground.recycle();
-            mBackground = null;
-        }
-        if (mKraftBackground != null && !mKraftBackground.isRecycled()) {
-            mKraftBackground.recycle();
-            mKraftBackground = null;
-        }
-        if (mSoftBackground != null && !mSoftBackground.isRecycled()) {
-            mSoftBackground.recycle();
-            mSoftBackground = null;
-        }
+//        if (mBackground != null && !mBackground.isRecycled()) {
+//            mBackground.recycle();
+//            mBackground = null;
+//        }
+//        if (mKraftBackground != null && !mKraftBackground.isRecycled()) {
+//            mKraftBackground.recycle();
+//            mKraftBackground = null;
+//        }
+//        if (mSoftBackground != null && !mSoftBackground.isRecycled()) {
+//            mSoftBackground.recycle();
+//            mSoftBackground = null;
+//        }
     }
 
     /**
@@ -1348,6 +1348,7 @@ public class DrawTextHelper {
             if (mBackground == null || mBackground.isRecycled()) {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inPreferredConfig = Bitmap.Config.RGB_565;
+                options.inSampleSize = 2;
                 mBackground = BitmapFactory.decodeResource(resources, com.intelligent.reader.R.drawable.read_page_bg_default, options);
                 int byteCount = mBackground.getByteCount();
                 System.out.println("background : " + byteCount);
