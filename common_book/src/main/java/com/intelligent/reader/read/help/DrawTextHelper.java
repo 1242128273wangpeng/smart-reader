@@ -1348,6 +1348,7 @@ public class DrawTextHelper {
             if (mBackground == null || mBackground.isRecycled()) {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inPreferredConfig = Bitmap.Config.RGB_565;
+                options.inSampleSize = 2;
                 mBackground = BitmapFactory.decodeResource(resources, com.intelligent.reader.R.drawable.read_page_bg_default, options);
                 int byteCount = mBackground.getByteCount();
                 System.out.println("background : " + byteCount);

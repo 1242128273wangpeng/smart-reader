@@ -151,7 +151,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private static final int font_count = 50;
     private static ReadStatus readStatus;
     public DownloadService downloadService;
-    public boolean isRestDialogShow = false;
+    //    public boolean isRestDialogShow = false;
     long stampTime = 0;
     int readLength = 0;
     private Context mContext;
@@ -393,10 +393,10 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 //
 //        requestFactory = new RequestFactory();
 
-        if(dataFactory!= null){
-            dataFactory.clean();
-        }
-        dataFactory = new ReadDataFactory(getApplicationContext(), this, readStatus, myNovelHelper);
+//        if(dataFactory!= null){
+//            dataFactory.clean();
+//        }
+//        dataFactory = new ReadDataFactory(getApplicationContext(), this, readStatus, myNovelHelper);
 
         // 初始化窗口基本信息
 //        initWindow();
@@ -410,11 +410,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
 //        setContentView(R.layout.act_read);
         mCatlogMarkDrawer = (DrawerLayout) findViewById(R.id.read_catalog_mark_drawer);
-//        if (mCatlogMarkDrawer == null) {
-//            //inflate not finish
-//            finish();
-//            return;
-//        }
 
         mCatlogMarkDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mCatlogMarkDrawer.addDrawerListener(mDrawerListener);
@@ -917,30 +912,11 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         readSettingView.setOnReadSettingListener(this);
         novel_basePageView = (FrameLayout) findViewById(R.id.novel_basePageView);
         readStatus.novel_basePageView = novel_basePageView;
-
         if (Constants.isSlideUp) {
             pageView = new ScrollPageView(getApplicationContext());
         } else {
             pageView = new PageView(getApplicationContext());
         }
-
-//        if (Constants.isSlideUp) {
-//            if (mScrollPageView == null) {
-//                mScrollPageView = new ScrollPageView(getApplicationContext());
-//                pageView = mScrollPageView;
-//            } else {
-//                pageView = mScrollPageView;
-//            }
-//        } else {
-//            if (mSlidePageView == null) {
-//                mSlidePageView = new PageView(getApplicationContext());
-//                pageView = mSlidePageView;
-//            } else {
-//                mSlidePageView.invalidate();
-//                pageView = mSlidePageView;
-//            }
-//        }
-
         novel_basePageView.removeAllViews();
         novel_basePageView.addView((View) pageView, new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT));
