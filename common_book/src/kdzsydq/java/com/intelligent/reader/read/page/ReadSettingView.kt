@@ -9,7 +9,6 @@ import android.content.res.Configuration
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.preference.PreferenceManager
 import android.text.TextUtils
 import android.util.AttributeSet
@@ -37,6 +36,7 @@ import net.lzbook.kit.data.bean.ReadStatus
 import net.lzbook.kit.request.DataCache
 import net.lzbook.kit.utils.*
 import java.text.NumberFormat
+
 
 /**
  * 阅读页阅读设置
@@ -149,6 +149,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         read_full.isChecked = sharedPreferences!!.getBoolean("full_screen_read", false)
 
         resetBtn()
+
     }
 
     private fun resetBtn() {
@@ -444,6 +445,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                     ibtn_night.setImageResource(R.drawable.read_option_day_selector)
 
                 }
+
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_night_mode)
                 listener?.onChageNightMode()
             }

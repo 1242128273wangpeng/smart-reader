@@ -15,8 +15,7 @@
             android:layout_marginRight="1dp"
             android:layout_gravity="start"
             android:focusable="true"
-            android:clickable="true"
-            >
+        android:clickable="true">
 
 
     </fragment>

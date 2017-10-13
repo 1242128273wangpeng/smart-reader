@@ -83,6 +83,16 @@ android {
     def BAIDU_STAT_ID_TXTMFQBYDQ = "a867478598"
     def BAIDU_STAT_ID_TXTMFQBDZS = "04fe041fcd"
 
+    def IFLYTEK_APPID_QBZSYDQ = "5982c10f"
+    def IFLYTEK_APPID_KDZSYDQ = "5982c0d0"
+    def IFLYTEK_APPID_QBXSXZQ = "5982c078"
+    def IFLYTEK_APPID_TXTMFQBDZS = "5982c033"
+    def IFLYTEK_APPID_TXTMFQBYDQ = "5982bfe1"
+    def IFLYTEK_APPID_QBMFYDQ = "5982bfa5"
+    def IFLYTEK_APPID_KDQBXS = "5982bf45"
+    def IFLYTEK_APPID_QBMFXSYDQ = "5982be96"
+    def IFLYTEK_APPID_HYCS = "5982bdd0"
+
     def appNameConfig = [
             kdzsydq  : "快读追书阅读器",
             qbzsydq  : "全本追书阅读器",
@@ -227,6 +237,8 @@ android {
             }
         }
 
+        //默认开启LeakCanary
+        buildConfigField "boolean", "IS_LEAKCANARY_DISABLE", "false"
     }
 
     sourceSets {
@@ -464,6 +476,10 @@ N多网	blf1298_10885_001
             minifyEnabled false
             zipAlignEnabled true
             shrinkResources false
+
+            //便于执行monkey, 跑monkey时 这是为true
+            buildConfigField "boolean", "IS_LEAKCANARY_DISABLE", "false"
+
             fixChannelAppName(getOwner())
             addManifestPlaceholders([CHANNEL_NAME: 'blf1298_11974_001'])
         }
@@ -494,6 +510,7 @@ N多网	blf1298_10885_001
                     WECHAT_APPID : "wx13973d52a1bb219b",
                     QQ_APPID     : "1104916456",
 //                    PACKAGE_NAME : "cn.txtzsydsq.reader"
+                    IFLYTEK_APPID : "${IFLYTEK_APPID_KDZSYDQ}",
                     PACKAGE_NAME : defaultConfig.applicationId
             ]
 
@@ -521,6 +538,7 @@ N多网	blf1298_10885_001
                     WECHAT_APPID : "wx1a93a804b313cef5",
                     QQ_APPID     : "1104925088",
 //                    PACKAGE_NAME : "cn.qbzsydsq.reader"
+                    IFLYTEK_APPID : "${IFLYTEK_APPID_QBZSYDQ}",
                     PACKAGE_NAME : defaultConfig.applicationId
 
             ]
@@ -631,6 +649,7 @@ N多网	blf1298_10885_001
                     WECHAT_APPID : "wx1adbbff037154040",
                     QQ_APPID     : "1105963470",
 //                    PACKAGE_NAME : "cc.quanben.novel"
+                    IFLYTEK_APPID : "${IFLYTEK_APPID_QBMFXSYDQ}",
                     PACKAGE_NAME : defaultConfig.applicationId
 //                    QQ_APPID  : "222222"
             ]
@@ -868,9 +887,9 @@ dependencies {
     compile "com.android.support:appcompat-v7:$support_version"
     compile project(path: ':book_kit')
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    compile 'com.squareup.leakcanary:leakcanary-android:1.5'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     compile "com.android.support:cardview-v7:$support_version"
     compile 'de.hdodenhof:circleimageview:2.1.0'
     debugCompile 'com.amitshekhar.android:debug-db:1.0.1'

@@ -231,7 +231,6 @@ public class StartLogClickUtil {
     }
 
 
-
     @NonNull
     private static ServerLog getCommonLog() {
         final ServerLog log = new ServerLog(PLItemKey.ZN_APP_EVENT);

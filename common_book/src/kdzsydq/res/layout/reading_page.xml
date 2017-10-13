@@ -46,8 +46,7 @@
                 android:layout_gravity="center"
                 android:visibility="gone"
                 android:scaleType="fitXY"
-                android:src="@drawable/read_guide_read_extend"
-                />
+            android:src="@drawable/read_guide_read_extend" />
 
         <ImageView
                 android:id="@+id/iv_guide_setting_bookmark"

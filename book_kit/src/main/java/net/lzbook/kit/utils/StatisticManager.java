@@ -50,6 +50,8 @@ public class StatisticManager {
         //广告位置判断
         if (NativeInit.ad_position[0].equals(position) || NativeInit.ad_position[7].equals(position) || NativeInit.ad_position[8].equals(position)
                 || NativeInit.ad_position[1].equals(position)
+                || NativeInit.ad_position[5].equals(position)
+                || NativeInit.ad_position[6].equals(position)
                 || NativeInit.ad_position[10].equals(position)
                 || NativeInit.ad_position[11].equals(position)
                 || NativeInit.ad_position[12].equals(position)
