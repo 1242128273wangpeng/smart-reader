@@ -64,15 +64,18 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
     constructor(context: Context) : super(context) {
         initView()
+        initListener()
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         initView()
+        initListener()
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         initView()
+        initListener()
     }
 
 
