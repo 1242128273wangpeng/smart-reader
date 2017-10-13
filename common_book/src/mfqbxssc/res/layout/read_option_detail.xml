@@ -201,7 +201,7 @@
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="21dp"
-                        android:drawableLeft="@drawable/read_option_page_bg6"
+                        android:drawableLeft="@drawable/read_option_page_bg5"
                         android:button="@null"
                         android:background="@null"/>
                 
@@ -211,7 +211,7 @@
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="21dp"
-                        android:drawableLeft="@drawable/read_option_page_bg5"
+                        android:drawableLeft="@drawable/read_option_page_bg6"
                         android:button="@null"
                         android:background="@null"/>
             </RadioGroup>
