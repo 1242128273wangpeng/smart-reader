@@ -30,6 +30,10 @@ public class BookApplication extends BaseBookApplication {
     public void onCreate() {
         super.onCreate();
 
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            return;
+        }
+
         // 自定义ErrorCallback
         FeedbackAPI.addErrorCallback(new FeedbackErrorCallback() {
             @Override
@@ -47,13 +51,11 @@ public class BookApplication extends BaseBookApplication {
         });
         FeedbackAPI.init(this, ReplaceConstants.getReplaceConstants().ALIFEEDBACK_KEY);
         if (BuildConfig.DEBUG) {
-            if (LeakCanary.isInAnalyzerProcess(this)) {
-                // This process is dedicated to LeakCanary for heap analysis.
-                // You should not init your app in this process.
-                return;
+            if (!BuildConfig.IS_LEAKCANARY_DISABLE) {
+                sRefWatcher = LeakCanary.install(this);
+            } else {
+                sRefWatcher = RefWatcher.DISABLED;
             }
-            sRefWatcher = LeakCanary.install(this);
-            // Normal app init code...
         }
         // 初始化SDK,传入上下文
         // 打印DebugLog开关,上线前建议改成false

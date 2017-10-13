@@ -509,4 +509,10 @@ public abstract class FrameActivity extends AppCompatActivity {
         ATManager.removeActivity(this);
         toast = null;
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ATManager.removeActivity(this);
+    }
 }
