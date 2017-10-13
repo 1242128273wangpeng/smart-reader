@@ -205,12 +205,12 @@ public class PageView extends View implements PageInterface {
     }
 
     public void freshTime(CharSequence time) {
-        if (time != null && time.length() > 0) {
+        if (time != null && time.length() > 0 && drawTextHelper != null) {
             drawTextHelper.setTimeText(time.toString());
             timeText = time.toString();
         }
         if (!isAutoReadMode()) {
-            if (mCurPageCanvas != null) {
+            if (mCurPageCanvas != null && drawTextHelper != null) {
                 mOperationPaint = drawTextHelper.drawText(mCurPageCanvas, pageLines, mActivity);
             }
         }
@@ -732,8 +732,10 @@ public class PageView extends View implements PageInterface {
             drawNextPage();
         }
         if (prepareTurnPrePage()) {
-            provider.setTouchStartPosition(0, pageHeight, false);
-            provider.startTurnAnimation(false);
+            if (provider != null) {
+                provider.setTouchStartPosition(0, pageHeight, false);
+                provider.startTurnAnimation(false);
+            }
             if (isCurlType) {
                 drawCurrentPage();
             } else {

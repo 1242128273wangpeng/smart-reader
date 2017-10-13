@@ -526,7 +526,9 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
         nextChaperContent = null;
         preChaperConent = null;
 
-        curChapter = dataFactory.currentChapter;
+        if (dataFactory != null) {
+            curChapter = dataFactory.currentChapter;
+        }
         if (curChapter == null)
             return;
 

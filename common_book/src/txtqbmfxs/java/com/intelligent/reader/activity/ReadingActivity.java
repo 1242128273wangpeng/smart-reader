@@ -1716,12 +1716,12 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             return;
         }
         // 显示菜单
-        if (readStatus.isMenuShow) {
+        if (readStatus != null && readStatus.isMenuShow) {
             showMenu(false);
             return;
         }
 
-        if (mBookDaoHelper != null) {
+        if (mBookDaoHelper != null && readStatus != null) {
             isSubed = mBookDaoHelper.isBookSubed(readStatus.book_id);
         }
 
@@ -2574,7 +2574,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     }
 
     private void changeMarkState() {
-        mReadOptionPresenter.updateStatus();
+        if(mReadOptionPresenter!=null){
+            mReadOptionPresenter.updateStatus();
+        }
     }
 
     public void goBackToHome() {

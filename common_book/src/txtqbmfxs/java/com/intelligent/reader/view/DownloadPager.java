@@ -358,7 +358,7 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
             int size = data.size();
             for (int i = 0; i < size; i++) {
                 Book b = data.get(i);
-                if (b.book_id.equals(book.book_id)) {
+                if (b.book_id != null && book.book_id !=null && b.book_id.equals(book.book_id)) {
                     data.remove(i);
                     break;
                 }
