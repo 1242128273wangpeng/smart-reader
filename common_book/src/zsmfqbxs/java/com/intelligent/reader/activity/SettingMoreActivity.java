@@ -294,10 +294,12 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
     }
 
     private void initPushTime() {
-        time_picker.setCurrentStartHour(settingItems.pushTimeStartH);
-        time_picker.setCurrentStartMinute(settingItems.pushTimeStartMin);
-        time_picker.setCurrentStopHour(settingItems.pushTimeStopH);
-        time_picker.setCurrentStopMinute(settingItems.pushTimeStopMin);
+        if(time_picker != null){
+            time_picker.setCurrentStartHour(settingItems.pushTimeStartH);
+            time_picker.setCurrentStartMinute(settingItems.pushTimeStartMin);
+            time_picker.setCurrentStopHour(settingItems.pushTimeStopH);
+            time_picker.setCurrentStopMinute(settingItems.pushTimeStopMin);
+        }
     }
 
     private void setPushTime2Show() {
