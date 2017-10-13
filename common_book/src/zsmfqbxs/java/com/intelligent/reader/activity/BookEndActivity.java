@@ -31,6 +31,7 @@ import net.lzbook.kit.utils.BaseBookHelper;
 import net.lzbook.kit.utils.ResourceUtil;
 import net.lzbook.kit.utils.StatServiceUtils;
 import net.lzbook.kit.utils.StatisticManager;
+import net.lzbook.kit.utils.ATManager;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -524,6 +525,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
 //                    if(!thememode.equals(mThemeHelper.getMode())){
 //                        ATManager.exitClient();
 //                    }
+                    ATManager.exitReading();
                     startActivity(storeIntent);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -542,6 +544,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
 //                    if(!thememode.equals(mThemeHelper.getMode())){
 //                        ATManager.exitClient();
 //                    }
+                    ATManager.exitReading();
                     startActivity(shelfIntent);
                 } catch (Exception e) {
                     e.printStackTrace();

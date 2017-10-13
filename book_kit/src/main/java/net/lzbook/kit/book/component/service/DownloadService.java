@@ -78,6 +78,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
 import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
 import kotlin.jvm.functions.Function2;
 
@@ -86,6 +87,7 @@ import static net.lzbook.kit.book.download.HttpUtilKt.getHttpDataString;
 import static net.lzbook.kit.book.download.KTFileUtilsKt.delFile;
 import static net.lzbook.kit.book.download.ParseCacheHelperKt.getChapterFromPackage;
 import static net.lzbook.kit.request.RequestExecutorDefault.RequestChaptersListener.ERROR_TYPE_NETWORK_NONE;
+import static net.lzbook.kit.utils.ExtensionsKt.runOnMain;
 
 public class DownloadService extends Service {
 
@@ -799,20 +801,26 @@ public class DownloadService extends Service {
 
                     final boolean isSameSource = cacheInfo.getHost().equalsIgnoreCase(task.book.site);
 
-                    BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
+                    final BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
                     if (bookDaoHelper.isBookSubed(task.book.book_id)) {
                         Book iBook = bookDaoHelper.getBook(task.book.book_id, 0);
                         iBook.book_source_id = cacheInfo.getBookSourceId();
                         iBook.site = cacheInfo.getHost();
                         bookDaoHelper.updateBook(iBook);
                     } else {
-                        Book iBook = task.book;
+                        final Book iBook = task.book;
                         iBook.book_source_id = cacheInfo.getBookSourceId();
                         iBook.site = cacheInfo.getHost();
                         iBook.dex = task.book.dex;
                         iBook.parameter = task.book.parameter;
                         iBook.extra_parameter = task.book.extra_parameter;
-                        bookDaoHelper.insertBook(iBook);
+                        runOnMain(this, new Function0<Unit>() {
+                            @Override
+                            public Unit invoke() {
+                                bookDaoHelper.insertBook(iBook);
+                                return null;
+                            }
+                        });
                     }
 
 
@@ -840,7 +848,6 @@ public class DownloadService extends Service {
                             new Function2<String, Integer, Boolean>() {
                                 @Override
                                 public Boolean invoke(String s, Integer integer) {
-                                    System.out.println("download progress : " + integer);
                                     task.progress = integer;
                                     task.mCallBack.onProgressUpdate(s, integer);
                                     return task.state == DownloadState.DOWNLOADING;
@@ -863,7 +870,6 @@ public class DownloadService extends Service {
 
 
                                     if (!isSameSource) {
-                                        System.out.println("异源 清除缓存目录内容");
                                         //异源都要 清除缓存目录内容
                                         delFile(new File(ReplaceConstants.getReplaceConstants().APP_PATH_BOOK + task.book.book_id));
                                         task.startSequence = 0;

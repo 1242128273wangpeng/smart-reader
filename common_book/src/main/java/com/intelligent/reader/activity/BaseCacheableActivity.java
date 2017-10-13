@@ -121,7 +121,7 @@ public class BaseCacheableActivity extends FrameActivity {
         @Override
         public void onReceive(Context context, final Intent intent) {
             AppLog.e("CacheUpdateReceiver", "onReceive");
-            if (mActivityWeakReference.get() != null) {
+            if (mActivityWeakReference.get() != null && !mActivityWeakReference.get().isFinishing()) {
 
                 final Book book = (Book) intent.getSerializableExtra(Constants.REQUEST_ITEM);
 

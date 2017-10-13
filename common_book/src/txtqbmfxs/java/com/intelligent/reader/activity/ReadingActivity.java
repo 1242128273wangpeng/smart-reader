@@ -2,6 +2,7 @@ package com.intelligent.reader.activity;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.bumptech.glide.Glide;
 import com.dingyueads.sdk.Bean.Advertisement;
 import com.dingyueads.sdk.Bean.Novel;
 import com.dingyueads.sdk.Native.YQNativeAdInfo;
@@ -13,8 +14,10 @@ import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.fragment.CatalogMarkFragment;
 import com.intelligent.reader.presenter.read.CatalogMarkPresenter;
 import com.intelligent.reader.presenter.read.ReadOptionPresenter;
+import com.intelligent.reader.read.animation.BitmapManager;
 import com.intelligent.reader.read.help.BookHelper;
 import com.intelligent.reader.read.help.CallBack;
+import com.intelligent.reader.read.help.DrawTextHelper;
 import com.intelligent.reader.read.help.IReadDataFactory;
 import com.intelligent.reader.read.help.NovelHelper;
 import com.intelligent.reader.read.help.ReadDataFactory;
@@ -33,8 +36,6 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.component.service.DownloadService;
 import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.book.view.MyDialog;
-import net.lzbook.kit.book.view.SourcePageView;
-import net.lzbook.kit.book.view.TransCodingView;
 import net.lzbook.kit.cache.imagecache.ImageCacheManager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Book;
@@ -148,6 +149,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private static final int font_count = 50;
     private static ReadStatus readStatus;
     public DownloadService downloadService;
+    public boolean isRestDialogShow = false;
     long stampTime = 0;
     int readLength = 0;
     private Context mContext;
@@ -185,7 +187,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private OwnNativeAdManager ownNativeAdManager;
     private boolean isAcvNovelActive = true;
     private Runnable rest_tips_runnable;
-    public boolean isRestDialogShow = false;
     private boolean isRestPress = false;
     private boolean actNovelRunForeground = true;
     private Handler handler = new UiHandler(this);
@@ -211,12 +212,18 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private StatisticManager statisticManager;
     private boolean isSlideToAuto = false;
     private FrameLayout novel_basePageView;
+    //    //转码声明
+//    private TransCodingView novel_option_encode;
+//    //原网页
+//    private SourcePageView novel_option_source;
     private Resources resources;
     private int isFirstGuide = 0;
     private MyDialog myDialog;
     private RequestFactory requestFactory;
     private int type = -1;
     private String currentThemeMode;
+
+    private int lastMode = -1;
     /**
      * 接受电量改变广播
      */
@@ -309,15 +316,20 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         // 初始化窗口基本信息
         initWindow();
 
-        setOrientation();
-        getSavedState(savedInstanceState);
         dataFactory = new ReadDataFactory(getApplicationContext(), this, readStatus, myNovelHelper);
         dataFactory.setReadDataListener(this);
+
+        setOrientation();
+        getSavedState(savedInstanceState);
 
         if (isFromCover && Constants.IS_LANDSCAPE) {
             return;
         }
-        setContentView(R.layout.act_read);
+
+
+        View main = getLayoutInflater().inflate(R.layout.act_read, null);
+
+        setContentView(main);
 
         mCatlogMarkDrawer = (DrawerLayout) findViewById(R.id.read_catalog_mark_drawer);
 
@@ -330,7 +342,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         mCatalogMarkPresenter.setView(mCatalogMarkFragment);
         mCatalogMarkFragment.setPresenter(mCatalogMarkPresenter);
 
-        mCatalogMarkPresenter.loadCatalog(false);
+//        mCatalogMarkPresenter.loadCatalog(false);
 
         mCatlogMarkDrawer.addDrawerListener(mCatalogMarkFragment);
         ReadOptionHeader optionHeader = (ReadOptionHeader) findViewById(R.id.option_header);
@@ -357,6 +369,10 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        this.lastMode = -1;
+        if (pageView != null) {
+            pageView.clear();
+        }
         showMenu(false);
         AppLog.d("ReadingActivity", "onNewIntent:");
         this.sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -366,6 +382,10 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         versionCode = AppUtils.getVersionCode();
         AppLog.e(TAG, "versionCode: " + versionCode);
         inflater = LayoutInflater.from(getApplicationContext());
+        if(readStatus != null){
+            readStatus.recycleResource();
+            readStatus.recycleResourceNew();
+        }
         readStatus = new ReadStatus(getApplicationContext());
         (BookApplication.getGlobalContext()).setReadStatus(readStatus);
         autoSpeed = readStatus.autoReadSpeed();
@@ -373,18 +393,26 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         myNovelHelper.setOnHelperCallBack(this);
 
         requestFactory = new RequestFactory();
-
+        if (dataFactory != null) {
+            dataFactory.clean();
+        }
+        dataFactory = new ReadDataFactory(getApplicationContext(), this, readStatus, myNovelHelper);
+        dataFactory.setReadDataListener(this);
         // 初始化窗口基本信息
         initWindow();
         setOrientation();
         getSavedState(intent.getExtras());
-        dataFactory = new ReadDataFactory(getApplicationContext(), this, readStatus, myNovelHelper);
-        dataFactory.setReadDataListener(this);
         if (isFromCover && Constants.IS_LANDSCAPE) {
             return;
         }
+
 //        setContentView(R.layout.act_read);
         mCatlogMarkDrawer = (DrawerLayout) findViewById(R.id.read_catalog_mark_drawer);
+        if (mCatlogMarkDrawer == null) {
+            //inflate not finish
+            finish();
+            return;
+        }
 
         mCatlogMarkDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mCatlogMarkDrawer.addDrawerListener(mDrawerListener);
@@ -392,12 +420,22 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         mCatalogMarkPresenter = new CatalogMarkPresenter(readStatus, dataFactory);
 
         mCatalogMarkFragment = (CatalogMarkFragment) getSupportFragmentManager().findFragmentById(R.id.read_catalog_mark_layout);
+        if (mCatalogMarkFragment == null) {
+            //inflate not finish
+            finish();
+            return;
+        }
         mCatalogMarkPresenter.setView(mCatalogMarkFragment);
         mCatalogMarkFragment.setPresenter(mCatalogMarkPresenter);
 
         mCatlogMarkDrawer.addDrawerListener(mCatalogMarkFragment);
 
         ReadOptionHeader optionHeader = (ReadOptionHeader) findViewById(R.id.option_header);
+        if (optionHeader == null) {
+            //inflate not finish
+            finish();
+            return;
+        }
         mReadOptionPresenter = new ReadOptionPresenter(this, readStatus, dataFactory);
         mReadOptionPresenter.setView(optionHeader);
         optionHeader.setPresenter(mReadOptionPresenter);
@@ -634,6 +672,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
+        this.lastMode = -1;
         // 初始化窗口基本信息
         if (pageView != null) {
             pageView.clear();
@@ -925,6 +964,11 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         }
         if (downloadService != null)
             downloadService.setOnDownloadListener(this);
+
+//        //转码声明
+//        novel_option_encode.setOnClickListener(this);
+//        //原网页
+//        novel_option_source.setOnClickListener(this);
     }
 
     private void reStartDownloadService(Activity context) {
@@ -951,7 +995,11 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
      */
     private void refreshPage() {
         //readStatus.isCanDrawFootView = (readStatus.sequence != -1);
+//        novel_option_encode.setVisibility(View.VISIBLE);
+//        novel_option_source.setVisibility(View.VISIBLE);
         if (readStatus.sequence == -1) {
+//            novel_option_encode.setVisibility(View.GONE);
+//            novel_option_source.setVisibility(View.GONE);
             readStatus.isCanDrawFootView = false;
         } else {
             readStatus.isCanDrawFootView = true;
@@ -1046,8 +1094,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 } else {
                     Toast.makeText(this, "无法查看原文链接", Toast.LENGTH_SHORT).show();
                 }
-                break;
 
+                break;
             default:
                 break;
         }
@@ -1473,6 +1521,15 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
      * 切换夜间模式
      */
     private void changeMode(int mode) {
+        if (this.lastMode == -1) {
+            this.lastMode = mode;
+        } else {
+            if (this.lastMode == mode) {
+                return;
+            }else{
+                this.lastMode = mode;
+            }
+        }
 
         this.current_mode = mode;
         AppLog.e(TAG, "ChangeMode : " + mode);
@@ -1498,12 +1555,18 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 setTextColor(getResources().getColor(R.color.reading_text_color_first));
                 setPageBackColor(getResources().getColor(R.color.reading_backdrop_first));
 
+//                novel_option_encode.setColor(getResources().getColor(R.color.reading_text_color_first));
+//                novel_option_source.setColor(getResources().getColor(R.color.reading_text_color_first));
+
                 setBackground();
                 setBatteryBackground(R.drawable.reading_batty_day);
                 break;
             case 52:
                 setTextColor(getResources().getColor(R.color.reading_text_color_second));
                 setPageBackColor(getResources().getColor(R.color.reading_backdrop_second));
+
+//                novel_option_encode.setColor(getResources().getColor(R.color.reading_text_color_second));
+//                novel_option_source.setColor(getResources().getColor(R.color.reading_text_color_second));
 
                 setBackground();
                 setBatteryBackground(R.drawable.reading_batty_eye);
@@ -1512,12 +1575,18 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 setTextColor(getResources().getColor(R.color.reading_text_color_third));
                 setPageBackColor(getResources().getColor(R.color.reading_backdrop_third));
 
+//                novel_option_encode.setColor(getResources().getColor(R.color.reading_text_color_third));
+//                novel_option_source.setColor(getResources().getColor(R.color.reading_text_color_third));
+
                 setBackground();
                 setBatteryBackground(R.drawable.reading_batty_4);
                 break;
             case 54:
                 setTextColor(getResources().getColor(R.color.reading_text_color_fourth));
                 setPageBackColor(getResources().getColor(R.color.reading_backdrop_fourth));
+
+//                novel_option_encode.setColor(getResources().getColor(R.color.reading_text_color_fourth));
+//                novel_option_source.setColor(getResources().getColor(R.color.reading_text_color_fourth));
 
                 setBackground();
                 setBatteryBackground(R.drawable.reading_batty_5);
@@ -1527,6 +1596,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 setPageBackColor(getResources().getColor(R.color.reading_backdrop_fifth));
 
                 setBatteryBackground(R.drawable.reading_batty_night);
+
+//                novel_option_encode.setColor(getResources().getColor(R.color.reading_text_color_fifth));
+//                novel_option_source.setColor(getResources().getColor(R.color.reading_text_color_fifth));
 
                 setBackground();
                 /*int screenBrightness = sp.getInt("screen_bright", -1);
@@ -1539,6 +1611,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 setTextColor(getResources().getColor(R.color.reading_text_color_sixth));
                 setPageBackColor(getResources().getColor(R.color.reading_backdrop_sixth));
 
+//                novel_option_encode.setColor(getResources().getColor(R.color.reading_text_color_sixth));
+//                novel_option_source.setColor(getResources().getColor(R.color.reading_text_color_sixth));
+
                 setBackground();
                 setBatteryBackground(R.drawable.reading_batty_night2);
                 break;
@@ -1546,12 +1621,18 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 setTextColor(getResources().getColor(R.color.reading_text_color_night));
                 setPageBackColor(getResources().getColor(R.color.reading_backdrop_night));
 
+//                novel_option_encode.setColor(getResources().getColor(R.color.reading_text_color_night));
+//                novel_option_source.setColor(getResources().getColor(R.color.reading_text_color_night));
+
                 setBackground();
                 setBatteryBackground(R.drawable.reading_batty_night2);
                 break;
             default:
                 setTextColor(getResources().getColor(R.color.reading_text_color_first));
                 setPageBackColor(Color.parseColor("#C2B282"));
+
+//                novel_option_encode.setColor(getResources().getColor(R.color.reading_text_color_first));
+//                novel_option_source.setColor(getResources().getColor(R.color.reading_text_color_first));
 
                 setBackground();
                 setBatteryBackground(R.drawable.reading_batty_day);
@@ -1782,6 +1863,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
     @Override
     protected void onDestroy() {
+        if (mNovelLoader != null && mNovelLoader.getStatus() == BaseAsyncTask.Status.RUNNING) {
+            mNovelLoader.cancel(true);
+        }
 
         if (mCatlogMarkDrawer != null) {
             mCatlogMarkDrawer.removeDrawerListener(mDrawerListener);
@@ -1789,7 +1873,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 mCatlogMarkDrawer.removeDrawerListener(mCatalogMarkFragment);
         }
 
-        if (readStatus != null && dataFactory != null && dataFactory.currentChapter != null) {
+        if (readStatus != null && dataFactory != null && dataFactory.currentChapter != null && readStatus.requestItem != null) {
             //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
             StartLogClickUtil.upLoadReadContent(readStatus.book_id, dataFactory.currentChapter.chapter_id + "", readStatus.source_ids, readStatus.pageCount + "",
                     readStatus.currentPage + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
@@ -1801,10 +1885,13 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         if (mNovelLoader != null && mNovelLoader.getStatus() == BaseAsyncTask.Status.RUNNING) {
             mNovelLoader.cancel(true);
         }
-        try {
-            unregisterReceiver(mBatInfoReceiver);
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        if (mBatInfoReceiver != null) {
+            try {
+                unregisterReceiver(mBatInfoReceiver);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         /**
@@ -1842,13 +1929,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             handler.removeCallbacksAndMessages(null);
         }
 
-        try {
-            setContentView(R.layout.empty);
-        } catch (Resources.NotFoundException e) {
-            e.printStackTrace();
-        }
-
-
         if (novel_basePageView != null) {
             novel_basePageView.removeAllViews();
             novel_basePageView = null;
@@ -1883,7 +1963,10 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             ownNativeAdManager.removeHandler();
         }
 
+        Glide.get(this).clearMemory();
+
         if (readStatus != null) {
+            readStatus.recycleResource();
             readStatus.recycleResourceNew();
         }
 
@@ -1892,7 +1975,12 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             if (dataFactory.mHandler != null) {
                 dataFactory.mHandler.removeCallbacksAndMessages(null);
             }
+            dataFactory.clean();
         }
+
+        BitmapManager.getInstance().clearBitmap();
+
+        DrawTextHelper.clean();
 
         super.onDestroy();
 
@@ -2239,10 +2327,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
     @Override
     public void onJumpChapter() {
-
         dataFactory.getChapterByLoading(ReadingActivity.MSG_JUMP_CHAPTER, readStatus.novel_progress);
-
-
     }
 
     @Override
@@ -2399,7 +2484,19 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         }
         edit.putInt("content_mode", Constants.MODE);
         edit.apply();
+
         changeMode(Constants.MODE);
+//        if (isSubed) {
+//            if (readStatus.book.book_type == 0) {
+//                myNovelHelper.saveBookmark(dataFactory.chapterList, readStatus.book_id, readStatus.sequence,
+//                        readStatus.offset, mBookDaoHelper);
+//                // 统计阅读章节数
+//                SharedPreferencesUtils spUtils = new SharedPreferencesUtils(PreferenceManager
+//                        .getDefaultSharedPreferences(this));
+//                spUtils.putInt("readed_count", Constants.readedCount);
+//            }
+//        }
+//
 //        Intent intent = new Intent(this, ReadingActivity.class);
 //        Bundle bundle = new Bundle();
 //        bundle.putInt("sequence", readStatus.sequence);
@@ -2488,6 +2585,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             themIntent.putExtras(bundle);
             startActivity(themIntent);
             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+            finish();
         } else {
             if (isTaskRoot()) {
                 Intent intent = new Intent(this, SplashActivity.class);
@@ -2504,9 +2602,13 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             url = UrlUtils.buildContentUrl(dataFactory.currentChapter.curl);
         }
         if (!TextUtils.isEmpty(url)) {
-            Uri uri = Uri.parse(url);
+            Uri uri = Uri.parse(url.trim());
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-            startActivity(intent);
+            try {
+                startActivity(intent);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             Map<String, String> data = new HashMap<>();
             if (readStatus != null) {
                 data.put("bookid", readStatus.book_id);
@@ -2637,31 +2739,37 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
         @Override
         protected Void doInBackground(Integer... params) {
-            if (dataFactory.chapterList == null) {
-                return null;
-            }
-
-            int size = dataFactory.chapterList.size();
-            for (int i = readStatus.sequence + 1; i < (readStatus.sequence + params[0] + 1) && i < size; i++) {
-                Chapter c = dataFactory.chapterList.get(i);
-                if (c == null) {
+            if(dataFactory!=null){
+                ArrayList<Chapter> chapterList = (ArrayList<Chapter>) dataFactory.chapterList.clone();
+                if (chapterList == null) {
                     return null;
                 }
-
-                try {
-                    AppLog.e(TAG, "预加载： " + c.toString());
-                    c = requestFactory.requestExecutor(readStatus.getRequestItem()).requestSingleChapter
-                            (readStatus.book.dex, mBookDaoHelper, bookChapterDao, c);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if (i == (readStatus.sequence + 1)) {
-                    dataFactory.nextChapter = c;
-                }
-                if (isCancelled()) {
-                    break;
+                int size = chapterList.size();
+                if(readStatus!=null){
+                    for (int i = readStatus.sequence + 1; i < (readStatus.sequence + params[0] + 1) && i < size; i++) {
+                        Chapter c = chapterList.get(i);
+                        if (c == null) {
+                            return null;
+                        }
+                        try {
+                            AppLog.e(TAG, "预加载： " + c.toString());
+                            c = requestFactory.requestExecutor(readStatus.getRequestItem()).requestSingleChapter
+                                    (readStatus.book.dex, mBookDaoHelper, bookChapterDao, c);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        if (i == (readStatus.sequence + 1)) {
+                            if (dataFactory != null){
+                                dataFactory.nextChapter = c;
+                            }
+                        }
+                        if (isCancelled()) {
+                            break;
+                        }
+                    }
                 }
             }
+
             return null;
         }
     }

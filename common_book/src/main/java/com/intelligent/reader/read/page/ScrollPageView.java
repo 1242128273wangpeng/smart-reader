@@ -107,7 +107,8 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
         super.onSizeChanged(w, h, oldw, oldh);
         width = readStatus.screenWidth = w;
         height = readStatus.screenHeight = h;
-        manager = new BitmapManager(readStatus.screenWidth, readStatus.screenHeight);
+
+
         if (callBack != null && (Math.abs(oldh - h) > AppUtils.dip2px(mContext, 26))) {
             if (android.os.Build.VERSION.SDK_INT < 11 && Constants.isFullWindowRead) {
                 height = readStatus.screenHeight - AppUtils.dip2px(mContext, 20);
@@ -140,16 +141,14 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
         this.novelHelper = novelHelper;
         this.readStatus = readStatus;
 
-        width = readStatus.screenWidth;
-        height = readStatus.screenHeight - DisplayUtils.dp2px(getResources(), 26) * 2;
-        readStatus.screenHeight = height;
         chapterContent = new ArrayList<>();
 
         drawTextHelper = new DrawTextHelper(getResources(), this, mActivity);
         readStatus.startReadTime = System.currentTimeMillis();
         count = 0;
         isFirstCome = true;
-
+        manager = BitmapManager.getInstance();
+        manager.setSize(readStatus.screenWidth, readStatus.screenHeight);
         adapter = new ScrollPageAdapter();
         page_list.setAdapter(adapter);
 
@@ -462,24 +461,25 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
      */
     public void addLog(long endTime, int position, int pagecount, int sequence) {
         //判断章节的最后一页
-        if (sequence > readStatus.lastSequenceRemark && !isFirstCome) {
+        if (sequence > readStatus.lastSequenceRemark && !isFirstCome && readStatus.requestItem != null) {
             //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
             StartLogClickUtil.upLoadReadContent(readStatus.book_id, readStatus.lastChapterId + "", readStatus.source_ids, readStatus.lastPageCount + "",
                     readStatus.lastCurrentPageRemark + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
                     readStatus.startReadTime + "", endTime + "", endTime - readStatus.startReadTime + "", "false", readStatus.requestItem.channel_code + "");
 
         } else {
-            if (dataFactory != null && dataFactory.currentChapter != null && markPosition < position) {
+            if (readStatus.requestItem != null && dataFactory != null && dataFactory.currentChapter != null && markPosition < position) {
                 //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
                 StartLogClickUtil.upLoadReadContent(readStatus.book_id, dataFactory.currentChapter.chapter_id + "", readStatus.source_ids, readStatus.pageCount + "",
                         position - 1 + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
                         readStatus.startReadTime + "", endTime + "", endTime - readStatus.startReadTime + "", "false", readStatus.requestItem.channel_code + "");
                 readStatus.lastChapterId = dataFactory.currentChapter.chapter_id;
+                readStatus.requestItem.fromType = 2;
             }
         }
 
         readStatus.startReadTime = endTime;
-        readStatus.requestItem.fromType = 2;
+
         readStatus.lastSequenceRemark = sequence;
         readStatus.lastCurrentPageRemark = position;
         readStatus.lastPageCount = pagecount;
@@ -527,6 +527,9 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
         preChaperConent = null;
 
         curChapter = dataFactory.currentChapter;
+        if (curChapter == null)
+            return;
+
         curChapter.chapterNameList = readStatus.chapterNameList;
         currentChaperConent = readStatus.mLineList;
         chapterContent.addAll(currentChaperConent);
@@ -738,14 +741,11 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
         if (drawTextHelper != null) {
             drawTextHelper.clear();
         }
-
-        if (this.mActivity != null) {
-            this.mActivity = null;
+        if (adapter != null) {
+            adapter = null;
         }
 
-        if (this.mContext != null) {
-            this.mContext = null;
-        }
+        setBackgroundResource(0);
     }
 
     @Override
@@ -988,13 +988,13 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHodler hodler = null;
             if (convertView == null) {
-                convertView = inflater.inflate(R.layout.page_item, null);
+                convertView = inflater.inflate(R.layout.page_item, parent, false);
                 hodler = new ViewHodler();
                 hodler.page = (Page) convertView.findViewById(R.id.page_item);
                 convertView.setTag(hodler);
-                Bitmap mCurPageBitmap = manager.getBitmap8888();
+                Bitmap mCurPageBitmap = manager.getBitmap4444();
                 Canvas mCurrentCanvas = new Canvas(mCurPageBitmap);
-
+                Log.d("ScrollPage", "getView convertView == null");
                 hodler.page.setTag(R.id.tag_bitmap, mCurPageBitmap);
                 hodler.page.setTag(R.id.tag_canvas, mCurrentCanvas);
             } else {

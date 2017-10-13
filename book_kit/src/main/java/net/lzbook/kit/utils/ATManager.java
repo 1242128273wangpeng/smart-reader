@@ -24,4 +24,10 @@ public class ATManager {
             activityList.clear();
         }
     }
+
+    public static void exitReading() {
+        if (activityList != null && activityList.size() >= 2) {
+            activityList.get(activityList.size() - 2).finish();
+        }
+    }
 }

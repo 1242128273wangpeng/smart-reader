@@ -88,7 +88,7 @@ public class SearchHotWordAdapter extends BaseAdapter {
             currType = random.nextInt(7);
         }
         oldType = currType;
-        ColorStateList csl;
+        int csl;
         TypedValue typeColor = new TypedValue();
         Resources.Theme theme = mContext.getTheme();
         switch (currType){
@@ -97,26 +97,26 @@ public class SearchHotWordAdapter extends BaseAdapter {
             case 2:
             case 3:
                 textView.setBackgroundResource(R.drawable.search_hot_word_bg_1);
-                csl = mContext.getResources().getColorStateList(R.color.color_black_1c1c1c);
+                csl = mContext.getResources().getColor(R.color.color_black_1c1c1c);
                 textView.setTextColor(csl);
                 break;
             case 4:
 
                 textView.setBackgroundResource(R.drawable.search_hot_word_bg_2);
-                csl = mContext.getResources().getColorStateList(R.color.color_green_06d2c0);
+                csl = mContext.getResources().getColor(R.color.color_green_06d2c0);
                 textView.setTextColor(csl);
                 break;
             case 5:
 
                 textView.setBackgroundResource(R.drawable.search_hot_word_bg_3);
 
-                csl = mContext.getResources().getColorStateList(R.color.color_orange_fd9929);
+                csl = mContext.getResources().getColor(R.color.color_orange_fd9929);
                 textView.setTextColor(csl);
                 break;
             case 6:
 
                 textView.setBackgroundResource(R.drawable.search_hot_word_bg_4);
-                csl = mContext.getResources().getColorStateList(R.color.color_red_fe290d);
+                csl = mContext.getResources().getColor(R.color.color_red_fe290d);
                 textView.setTextColor(csl);
                 break;
         }

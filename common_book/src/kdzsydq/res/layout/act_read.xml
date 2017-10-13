@@ -4,7 +4,7 @@
         android:id="@+id/read_catalog_mark_drawer"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    
+
     <include layout="@layout/reading_page"/>
 
     <fragment
@@ -15,8 +15,7 @@
             android:layout_marginRight="1dp"
             android:layout_gravity="start"
             android:focusable="true"
-            android:clickable="true"
-    >
+        android:clickable="true">
 
 
     </fragment>

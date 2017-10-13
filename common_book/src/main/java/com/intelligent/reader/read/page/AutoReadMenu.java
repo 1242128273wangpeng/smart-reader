@@ -4,7 +4,6 @@ import com.intelligent.reader.R;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.data.bean.ReadStatus;
 import net.lzbook.kit.utils.StatServiceUtils;
 
 import android.annotation.TargetApi;
@@ -27,7 +26,6 @@ public class AutoReadMenu extends LinearLayout implements OnClickListener {
     private TextView autoread_rate;
     private TextView autoread_label;
     private TextView autoread_stop;
-    private ReadStatus readStatus;
     private Context mContext;
     private OnAutoMemuListener autoMemuListener;
     private View view;
@@ -60,10 +58,9 @@ public class AutoReadMenu extends LinearLayout implements OnClickListener {
         autoread_stop = (TextView) view.findViewById(R.id.autoread_stop);
         autoread_label = (TextView) view.findViewById(R.id.autoread_label);
 
-        readStatus = BaseBookApplication.getGlobalContext().getReadStatus();
-        if (readStatus != null) {
-            setRateValue(readStatus.autoReadSpeed());
-        }
+
+        setRateValue(BaseBookApplication.getGlobalContext().getReadStatus().autoReadSpeed());
+
         initListener();
 
         addView(view);
@@ -86,14 +83,14 @@ public class AutoReadMenu extends LinearLayout implements OnClickListener {
             StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_auto_read_speed_up);
             if (autoMemuListener != null) {
                 autoMemuListener.speedUp();
-                setRateValue(readStatus.autoReadSpeed());
+                setRateValue(BaseBookApplication.getGlobalContext().getReadStatus().autoReadSpeed());
             }
 
         } else if (i == R.id.autoread_down) {
             StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_auto_read_speed_down);
             if (autoMemuListener != null) {
                 autoMemuListener.speedDown();
-                setRateValue(readStatus.autoReadSpeed());
+                setRateValue(BaseBookApplication.getGlobalContext().getReadStatus().autoReadSpeed());
             }
 
         } else if (i == R.id.autoread_stop) {
@@ -118,9 +115,6 @@ public class AutoReadMenu extends LinearLayout implements OnClickListener {
             this.mContext = null;
         }
 
-        if (this.readStatus != null) {
-            this.readStatus = null;
-        }
     }
 
     public interface OnAutoMemuListener {

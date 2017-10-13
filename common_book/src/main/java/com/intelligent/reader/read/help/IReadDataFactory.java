@@ -68,6 +68,41 @@ public abstract class IReadDataFactory {
     private BookDaoHelper bookDaoHelper;
     private StatisticManager statisticManager;
 
+    public void clean() {
+        if (mHandler != null) {
+            mHandler.canHandleMessage = false;
+        }
+        if (chapterList != null) {
+            chapterList.clear();
+        }
+
+        if (tempChapterNameList != null) {
+            tempChapterNameList.clear();
+        }
+
+        if (tempLineList != null) {
+            tempLineList.clear();
+        }
+
+        if (readedChapter != null) {
+            readedChapter.clear();
+        }
+
+        if (readStatus != null) {
+            readStatus = null;
+        }
+
+        if (myNovelHelper != null) {
+            myNovelHelper.clear();
+        }
+
+        if (pageView != null) {
+            pageView = null;
+        }
+
+        readingActivity = null;
+    }
+
     public IReadDataFactory(Context context, ReadingActivity readingActivity, ReadStatus readStatus, NovelHelper
             novelHelper) {
         this.mContext = context;
@@ -674,6 +709,7 @@ public abstract class IReadDataFactory {
     }
 
     public static class ReadHandler extends Handler {
+        public boolean canHandleMessage = true;
         private WeakReference<IReadDataFactory> reference;
 
         ReadHandler(IReadDataFactory instance) {
@@ -683,7 +719,7 @@ public abstract class IReadDataFactory {
         @Override
         public void handleMessage(Message msg) {
             IReadDataFactory dataFactory = reference.get();
-            if (dataFactory == null) {
+            if (!canHandleMessage || dataFactory == null) {
                 return;
             }
             if (dataFactory.loadingPage != null) {

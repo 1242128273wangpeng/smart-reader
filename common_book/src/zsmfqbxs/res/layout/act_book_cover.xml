@@ -3,7 +3,6 @@
                 xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fitsSystemWindows="true"
                 android:clipToPadding="true"
                 android:background="@color/cover_bg">
 
@@ -76,7 +75,6 @@
 
                 <RelativeLayout
                         android:layout_width="match_parent"
-                        android:fitsSystemWindows="true"
                         android:layout_height="@dimen/dimen_view_height_191"
                         android:background="@mipmap/cover_profile_bg_pic"
                         android:orientation="vertical">
@@ -449,13 +447,17 @@
             </LinearLayout>
         </ScrollView>
 
-        <ImageView
-                android:id="@+id/book_cover_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:fitsSystemWindows="true"
-                android:layout_margin="@dimen/margin_15"
-                android:src="@mipmap/directory_back"/>
+        <RelativeLayout android:fitsSystemWindows="true"
+            android:background="@color/color_transparent" android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout android:layout_width="match_parent"
+                android:layout_height="@dimen/top_bar_height">
+
+                <ImageView android:id="@+id/book_cover_back" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:gravity="center"
+                    android:layout_margin="@dimen/margin_10" android:src="@mipmap/directory_back" />
+            </RelativeLayout>
+        </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>

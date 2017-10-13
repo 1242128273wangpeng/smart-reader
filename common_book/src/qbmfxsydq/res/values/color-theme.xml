@@ -3,6 +3,9 @@
  <color name="colorPrimary">
   #1dbfbb
  </color>
+    <color name="theme_primary">
+        #1dbfbb
+    </color>
  <color name="colorAccent">
   #1dbfbb
  </color>

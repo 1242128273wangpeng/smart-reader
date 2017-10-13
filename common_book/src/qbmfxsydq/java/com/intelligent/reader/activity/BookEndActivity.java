@@ -27,6 +27,7 @@ import net.lzbook.kit.data.bean.SourceItem;
 import net.lzbook.kit.data.db.BookChapterDao;
 import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.request.own.OtherRequestService;
+import net.lzbook.kit.utils.ATManager;
 import net.lzbook.kit.utils.BaseBookHelper;
 import net.lzbook.kit.utils.ResourceUtil;
 import net.lzbook.kit.utils.StatServiceUtils;
@@ -524,6 +525,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
 //                    if(!thememode.equals(mThemeHelper.getMode())){
 //                        ATManager.exitClient();
 //                    }
+                    ATManager.exitReading();
                     startActivity(storeIntent);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -542,6 +544,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
 //                    if(!thememode.equals(mThemeHelper.getMode())){
 //                        ATManager.exitClient();
 //                    }
+                    ATManager.exitReading();
                     startActivity(shelfIntent);
                 } catch (Exception e) {
                     e.printStackTrace();

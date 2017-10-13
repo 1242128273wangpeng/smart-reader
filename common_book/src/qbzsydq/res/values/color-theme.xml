@@ -9,6 +9,9 @@
     <color name="color_primary">
         #ce3d3e
     </color>
+    <color name="theme_primary">
+        #ce3d3e
+    </color>
     <color name="base_bg">
         #ffffff
     </color>

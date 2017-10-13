@@ -156,9 +156,11 @@ public class ReadStatus {
         }
 
         _autoReadSpeed = speed;
-        Editor editor = preferences.edit();
-        editor.putInt(kKeyAutoReadSpeed, _autoReadSpeed);
-        editor.apply();
+        if (preferences != null) {
+            Editor editor = preferences.edit();
+            editor.putInt(kKeyAutoReadSpeed, _autoReadSpeed);
+            editor.apply();
+        }
     }
 
     public double autoReadFactor() {

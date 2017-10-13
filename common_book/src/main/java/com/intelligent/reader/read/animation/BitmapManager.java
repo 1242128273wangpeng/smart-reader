@@ -14,6 +14,7 @@ public class BitmapManager {
     public static final int NEXT = 1;
     public static final int BG = 2;
     private static final int SIZE = 2;
+    private static volatile BitmapManager mInstance = null;
     private final Bitmap[] myBitmaps = new Bitmap[SIZE];
     ArrayList<Bitmap> bitmaps = new ArrayList<>();
     private int myWidth;
@@ -22,7 +23,7 @@ public class BitmapManager {
     private int navigetionHeight;
     private int spaceHeight;
 
-    public BitmapManager(int width, int height) {
+    private BitmapManager() {
         if (BookApplication.getDisplayMetrics() != null) {
             navigetionHeight = (int) (BookApplication.getDisplayMetrics().density * 50);
             spaceHeight = (int) (BookApplication.getDisplayMetrics().density * 10);
@@ -31,16 +32,35 @@ public class BitmapManager {
             navigetionHeight = 120;
             spaceHeight = 30;
         }
+    }
 
-        this.myWidth = width;
-        this.myHeight = height;
+    public static BitmapManager getInstance() {
+        if (mInstance == null) {
+            synchronized (BitmapManager.class) {
+                if (mInstance == null) {
+                    mInstance = new BitmapManager();
+                }
+            }
+        }
+
+        return mInstance;
+    }
+
+    public synchronized void setSize(int width, int height) {
+        int tempHeight = height;
         if (Constants.isSlideUp) {
-            this.myHeight += spaceHeight;
+            tempHeight += spaceHeight;
         }
 
+        if (myWidth != width || myHeight != tempHeight) {
+            clearBitmap();
+
+            this.myWidth = width;
+            this.myHeight = tempHeight;
+        }
     }
 
-    public Bitmap getBitmap() {
+    public synchronized Bitmap getBitmap() {
         Bitmap bitmap;
         try {
             bitmap = Bitmap.createBitmap(myWidth, myHeight, Bitmap.Config.RGB_565);
@@ -53,20 +73,20 @@ public class BitmapManager {
         return bitmap;
     }
 
-    public Bitmap getBitmap8888() {
+    public synchronized Bitmap getBitmap4444() {
         Bitmap bitmap;
         try {
-            bitmap = Bitmap.createBitmap(myWidth, myHeight, Bitmap.Config.ARGB_8888);
+            bitmap = Bitmap.createBitmap(myWidth, myHeight, Bitmap.Config.ARGB_4444);
         } catch (OutOfMemoryError e) {
             System.gc();
             System.runFinalization();
-            bitmap = Bitmap.createBitmap(myWidth, myHeight, Bitmap.Config.ARGB_8888);
+            bitmap = Bitmap.createBitmap(myWidth, myHeight, Bitmap.Config.ARGB_4444);
         }
         bitmaps.add(bitmap);
         return bitmap;
     }
 
-    public Bitmap getBitmap(int which) {
+    public synchronized Bitmap getBitmap(int which) {
         if (which >= SIZE) {
             throw new IllegalArgumentException();
         }
@@ -124,19 +144,19 @@ public class BitmapManager {
         for (int i = 0; i < myBitmaps.length; i++) {
             if (myBitmaps[i] != null && !myBitmaps[i].isRecycled()) {
                 myBitmaps[i].recycle();
-                myBitmaps[i] = null;
             }
+            myBitmaps[i] = null;
         }
-        for (int i = 0; i < bitmaps.size(); i++) {
-            Bitmap bitmap = bitmaps.get(i);
-            if (bitmap != null && !bitmap.isRecycled()) {
-                bitmap.recycle();
-                bitmap = null;
-            }
-        }
-        bitmaps.clear();
-        bitmaps = null;
 
+        for (Bitmap bitmap :
+                bitmaps) {
+            if (!bitmap.isRecycled()) {
+                bitmap.recycle();
+            }
+        }
+
+        bitmaps.clear();
+        System.gc();
         System.gc();
     }
 

@@ -47,7 +47,7 @@ import java.util.Map;
 
 public class DrawTextHelper {
     private static final String TAG = "DrawTextHelper";
-    Bitmap mBitmap;
+
     int mBitmapWidth;
     int mBitmapHeight;
     int left1;
@@ -65,10 +65,11 @@ public class DrawTextHelper {
     private TextPaint mchapterPaint;
     private ReadStatus readStatus;
     private Resources resources;
-    private Bitmap mBackground; // 背景Bitmap
-    private Bitmap mKraftBackground; // 牛皮纸模式 底部背景
-    private Bitmap mSoftBackground;
-    private Bitmap mIconBitmap;
+    private static Bitmap mBitmap;
+    private static Bitmap mBackground; // 背景Bitmap
+    private static Bitmap mKraftBackground; // 牛皮纸模式 底部背景
+    private static Bitmap mSoftBackground;
+    private static Bitmap mIconBitmap;
     private int footHeight;
     private int slideupfootHeight;
     private int unit;
@@ -88,6 +89,14 @@ public class DrawTextHelper {
     private float firstchapterHeight;
     private float mWidth;
     private float mLineStart;
+
+    public static void clean() {
+        mBitmap = null;
+        mBackground = null;
+        mKraftBackground = null;
+        mSoftBackground = null;
+        mIconBitmap = null;
+    }
 
     public DrawTextHelper(Resources res, PageInterface pageView, Activity mActivity) {
         this.resources = res;
@@ -207,18 +216,18 @@ public class DrawTextHelper {
     }
 
     public void resetBackBitmap() {
-        if (mBackground != null && !mBackground.isRecycled()) {
-            mBackground.recycle();
-            mBackground = null;
-        }
-        if (mKraftBackground != null && !mKraftBackground.isRecycled()) {
-            mKraftBackground.recycle();
-            mKraftBackground = null;
-        }
-        if (mSoftBackground != null && !mSoftBackground.isRecycled()) {
-            mSoftBackground.recycle();
-            mSoftBackground = null;
-        }
+//        if (mBackground != null && !mBackground.isRecycled()) {
+//            mBackground.recycle();
+//            mBackground = null;
+//        }
+//        if (mKraftBackground != null && !mKraftBackground.isRecycled()) {
+//            mKraftBackground.recycle();
+//            mKraftBackground = null;
+//        }
+//        if (mSoftBackground != null && !mSoftBackground.isRecycled()) {
+//            mSoftBackground.recycle();
+//            mSoftBackground = null;
+//        }
     }
 
     /**
@@ -1268,7 +1277,7 @@ public class DrawTextHelper {
 
         // 顶部slogan
         textPaint.setTextSize(11 * readStatus.screenScaledDensity);
-        textPaint.setColor(Color.parseColor("#50000000"));
+        textPaint.setColor(Color.parseColor("#80000000"));
         textPaint.setTextAlign(Paint.Align.LEFT);
         drawSpacingText(canvas, resources.getString(R.string.slogan), 230, 11, sloganPaddingY);
 
@@ -1276,7 +1285,7 @@ public class DrawTextHelper {
         textPaint.setTextAlign(Paint.Align.CENTER);
         textPaint.setTextSize(Constants.FONT_CHAPTER_SIZE * readStatus.screenScaledDensity);
         float bookNameHeight = textPaint.getFontMetrics().descent - textPaint.getFontMetrics().ascent;
-        textPaint.setColor(Color.parseColor("#90000000"));
+        textPaint.setColor(Color.parseColor("#E6000000"));
         for (int i = 0; i < name_length; i++) {
             if (i > 0) bookNamePaddingY += bookNameHeight + 10 * readStatus.screenScaledDensity;
             canvas.drawText(nameList.get(i).getLineContent(), x_with, bookNamePaddingY, setPaintColor(textPaint, 1));
@@ -1285,14 +1294,14 @@ public class DrawTextHelper {
         // 作者
         float authHeight = bookNamePaddingY + bookNameHeight + 10 * readStatus.screenScaledDensity;
         textPaint.setTextSize(14 * readStatus.screenScaledDensity);
-        textPaint.setColor(Color.parseColor("#56000000"));
+        textPaint.setColor(Color.parseColor("#8C000000"));
         if (!TextUtils.isEmpty(readStatus.bookAuthor)) {
             canvas.drawText(readStatus.bookAuthor, x_with, authHeight, setPaintColor(textPaint, 1));
         }
 
         //底部icon及名称
         textPaint.setTextSize(12 * readStatus.screenScaledDensity);
-        textPaint.setColor(Color.parseColor("#50000000"));
+        textPaint.setColor(Color.parseColor("#80000000"));
         textPaint.setTextAlign(Paint.Align.LEFT);
         drawSpacingText(canvas, resources.getString(R.string.app_name), 90, 11, paddingBottom);
         textPaint.setTextAlign(Paint.Align.CENTER);
@@ -1337,7 +1346,11 @@ public class DrawTextHelper {
     private void drawBackground(Canvas canvas) {
         if (Constants.MODE == 51) {// 柔和
             if (mBackground == null || mBackground.isRecycled()) {
-                mBackground = BitmapFactory.decodeResource(resources, com.intelligent.reader.R.drawable.read_page_bg_default);
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.RGB_565;
+                mBackground = BitmapFactory.decodeResource(resources, R.drawable.read_page_bg_default, options);
+                int byteCount = mBackground.getByteCount();
+                System.out.println("background : " + byteCount);
             }
             if (mBackground != null && !mBackground.isRecycled()) {
                 canvas.drawBitmap(mBackground, new Rect(0, 0, mBackground.getWidth(), mBackground.getHeight()), new Rect(0, 0, readStatus.screenWidth, readStatus.screenHeight), null);

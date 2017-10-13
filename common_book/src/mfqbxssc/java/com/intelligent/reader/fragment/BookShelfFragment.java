@@ -92,8 +92,6 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     public BookShelfRemoveHelper bookShelfRemoveHelper;
     public BookShelfReAdapter bookShelfReAdapter;
     public ArrayList<Book> iBookList = new ArrayList<>();
-    public RelativeLayout book_shelf_loading;
-    public ProgressBar loading_progress;
     public ProgressBar loading_progress_bar;
     public TextView loading_message;
     public SuperSwipeRefreshLayout swipeRefreshLayout;
@@ -181,8 +179,8 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
 
             bookrack_update_time = AppUtils.getLongPreferences(mContext, "bookrack_update_time", System.currentTimeMillis());
 
-            book_shelf_loading = (RelativeLayout) bookshelf_content.findViewById(R.id.book_shelf_loading);
-            book_shelf_loading.setVisibility(View.GONE);
+//            book_shelf_loading = (RelativeLayout) bookshelf_content.findViewById(R.id.book_shelf_loading);
+//            book_shelf_loading.setVisibility(View.GONE);
             loading_progress_bar = (ProgressBar) bookshelf_content.findViewById(R.id.loading_progressbar);
 //            download_bookshelf = (ImageView) bookshelf_content.findViewById(R.id.fab_goto_down_act);
 //           if(download_bookshelf.getVisibility()==View.VISIBLE){
@@ -195,7 +193,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
 //                    }
 //                });
 //            }
-            loading_progress = (ProgressBar) bookshelf_content.findViewById(R.id.loading_progress);
+//            loading_progress = (ProgressBar) bookshelf_content.findViewById(R.id.loading_progress);
 //            loading_message = (TextView) bookshelf_content.findViewById(R.id.loading_message);
 
             //初始化RecyclerView

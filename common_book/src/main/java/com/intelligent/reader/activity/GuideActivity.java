@@ -46,34 +46,42 @@ public class GuideActivity extends FrameActivity implements GuideFragment.Fragme
         guideAdapter = new GuideAdapter(getSupportFragmentManager());
         guideAdapter.setPager(viewPager);
 
-        Bundle guide_first = new Bundle();
-        guide_first.putInt("image_center", R.drawable.splash_icon1);
-        GuideFragment guideFragmentFirst = new GuideFragment();
-        guideFragmentFirst.setArguments(guide_first);
+//        Bundle guide_first = new Bundle();
+//        guide_first.putInt("image_center", R.drawable.splash_icon1);
+//        GuideFragment guideFragmentFirst = new GuideFragment();
+//        guideFragmentFirst.setArguments(guide_first);
+//
+//        guideAdapter.add(guideFragmentFirst);
+//
+//        if (Arrays.asList(PACKAGE_2).contains(ACTION_CHKNUM)) {
+//            Bundle guide_second = new Bundle();
+//            guide_second.putInt("image_center", R.drawable.splash_icon2);
+//            GuideFragment guideFragmentSecond = new GuideFragment();
+//            guideFragmentSecond.setArguments(guide_second);
+//
+//            guideAdapter.add(guideFragmentSecond);
+//        } else if (Arrays.asList(PACKAGE_3).contains(ACTION_CHKNUM)) {
+//            Bundle guide_second = new Bundle();
+//            guide_second.putInt("image_center", R.drawable.splash_icon2);
+//            GuideFragment guideFragmentSecond = new GuideFragment();
+//            guideFragmentSecond.setArguments(guide_second);
+//
+//            Bundle guide_third = new Bundle();
+//            guide_third.putInt("image_center", R.drawable.splash_icon3);
+//            GuideFragment guideFragmentThird = new GuideFragment();
+//            guideFragmentThird.setArguments(guide_third);
+//
+//            guideAdapter.add(guideFragmentSecond);
+//            guideAdapter.add(guideFragmentThird);
+//        }
 
-        guideAdapter.add(guideFragmentFirst);
 
-        if (Arrays.asList(PACKAGE_2).contains(ACTION_CHKNUM)) {
-            Bundle guide_second = new Bundle();
-            guide_second.putInt("image_center", R.drawable.splash_icon2);
-            GuideFragment guideFragmentSecond = new GuideFragment();
-            guideFragmentSecond.setArguments(guide_second);
+        Bundle guideBundle = new Bundle();
+        guideBundle.putInt("image_center", R.drawable.guide_bg);
+        GuideFragment guideFragment = new GuideFragment();
+        guideFragment.setArguments(guideBundle);
 
-            guideAdapter.add(guideFragmentSecond);
-        } else if (Arrays.asList(PACKAGE_3).contains(ACTION_CHKNUM)) {
-            Bundle guide_second = new Bundle();
-            guide_second.putInt("image_center", R.drawable.splash_icon2);
-            GuideFragment guideFragmentSecond = new GuideFragment();
-            guideFragmentSecond.setArguments(guide_second);
-
-            Bundle guide_third = new Bundle();
-            guide_third.putInt("image_center", R.drawable.splash_icon3);
-            GuideFragment guideFragmentThird = new GuideFragment();
-            guideFragmentThird.setArguments(guide_third);
-
-            guideAdapter.add(guideFragmentSecond);
-            guideAdapter.add(guideFragmentThird);
-        }
+        guideAdapter.add(guideFragment);
 
         viewPager.setAdapter(guideAdapter);
 

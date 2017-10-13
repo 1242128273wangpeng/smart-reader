@@ -10,19 +10,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-    <!--<net.lzbook.kit.book.view.SourcePageView-->
-    <!--android:id="@+id/novel_option_source"-->
-    <!--android:layout_width="@dimen/dimen_view_width_90"-->
-    <!--android:layout_height="@dimen/dimen_view_height_30"-->
-    <!--android:layout_alignParentLeft="true"-->
-    <!--android:layout_alignParentTop="true"/>-->
-    <!---->
-    <!--<net.lzbook.kit.book.view.TransCodingView-->
-    <!--android:id="@+id/novel_option_encode"-->
-    <!--android:layout_width="@dimen/dimen_view_width_90"-->
-    <!--android:layout_height="@dimen/dimen_view_height_30"-->
-    <!--android:layout_alignParentRight="true"-->
-    <!--android:layout_alignParentTop="true"/>-->
 
     <com.intelligent.reader.read.page.ReadOptionHeader
             android:id="@+id/option_header"
@@ -59,9 +46,7 @@
                 android:layout_gravity="center"
                 android:visibility="gone"
                 android:scaleType="fitXY"
-                android:src="@drawable/read_guide_read_extend"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"/>
+            android:src="@drawable/read_guide_read_extend" />
 
         <ImageView
                 android:id="@+id/iv_guide_setting_bookmark"

@@ -27,9 +27,11 @@ import net.lzbook.kit.data.bean.SourceItem;
 import net.lzbook.kit.data.db.BookChapterDao;
 import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.request.own.OtherRequestService;
+import net.lzbook.kit.utils.ATManager;
 import net.lzbook.kit.utils.BaseBookHelper;
 import net.lzbook.kit.utils.ResourceUtil;
 import net.lzbook.kit.utils.StatServiceUtils;
+import net.lzbook.kit.utils.ATManager;
 import net.lzbook.kit.utils.StatisticManager;
 
 import android.content.DialogInterface;
@@ -338,7 +340,6 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
     private void openCategoryPage() {
         //if (readStatus.book.book_type == 0) {
         Intent intent = new Intent(BookEndActivity.this, CataloguesActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         Bundle bundle = new Bundle();
         bundle.putSerializable("cover", readStatus.book);
         bundle.putString("book_id", readStatus.book_id);
@@ -515,7 +516,6 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
             recommendIntent.putExtra("filter_word", "ALL");
             recommendIntent.putExtra("sort_type", "0");
             recommendIntent.setClass(this, SearchBookActivity.class);
-            recommendIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(recommendIntent);
             return;
         }
@@ -525,7 +525,6 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
             case R.id.iv_back_bookstore:
                 Intent storeIntent = new Intent();
                 storeIntent.setClass(BookEndActivity.this, HomeActivity.class);
-                storeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 try {
                     Bundle bundle = new Bundle();
                     bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_BOOKSTORE);
@@ -533,6 +532,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
 //                    if(!thememode.equals(mThemeHelper.getMode())){
 //                        ATManager.exitClient();
 //                    }
+                    ATManager.exitReading();
                     startActivity(storeIntent);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -544,7 +544,6 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
             case R.id.iv_title_right:
                 Intent shelfIntent = new Intent();
                 shelfIntent.setClass(BookEndActivity.this, HomeActivity.class);
-                shelfIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 try {
                     Bundle bundle = new Bundle();
                     bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_BOOKSHELF);
@@ -552,6 +551,7 @@ public class BookEndActivity extends BaseCacheableActivity implements View.OnCli
 //                    if(!thememode.equals(mThemeHelper.getMode())){
 //                        ATManager.exitClient();
 //                    }
+                    ATManager.exitReading();
                     startActivity(shelfIntent);
                 } catch (Exception e) {
                     e.printStackTrace();
