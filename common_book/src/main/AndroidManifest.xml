@@ -134,7 +134,7 @@
 
         <meta-data
             android:name="IFLYTEK_APPKEY_AD"
-            android:value="5982c10f" />
+            android:value="${IFLYTEK_APPID}" />
 
         <!-- 声明Mogo的Activity -->
         <activity

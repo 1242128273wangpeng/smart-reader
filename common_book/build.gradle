@@ -83,6 +83,16 @@ android {
     def BAIDU_STAT_ID_TXTMFQBYDQ = "a867478598"
     def BAIDU_STAT_ID_TXTMFQBDZS = "04fe041fcd"
 
+    def IFLYTEK_APPID_QBZSYDQ = "5982c10f"
+    def IFLYTEK_APPID_KDZSYDQ = "5982c0d0"
+    def IFLYTEK_APPID_QBXSXZQ = "5982c078"
+    def IFLYTEK_APPID_TXTMFQBDZS = "5982c033"
+    def IFLYTEK_APPID_TXTMFQBYDQ = "5982bfe1"
+    def IFLYTEK_APPID_QBMFYDQ = "5982bfa5"
+    def IFLYTEK_APPID_KDQBXS = "5982bf45"
+    def IFLYTEK_APPID_QBMFXSYDQ = "5982be96"
+    def IFLYTEK_APPID_HYCS = "5982bdd0"
+
     def appNameConfig = [
             kdzsydq  : "快读追书阅读器",
             qbzsydq  : "全本追书阅读器",
@@ -473,6 +483,7 @@ N多网	blf1298_10885_001
                     WECHAT_APPID : "wx13973d52a1bb219b",
                     QQ_APPID     : "1104916456",
 //                    PACKAGE_NAME : "cn.txtzsydsq.reader"
+                    IFLYTEK_APPID : "${IFLYTEK_APPID_KDZSYDQ}",
                     PACKAGE_NAME : defaultConfig.applicationId
             ]
 
@@ -500,6 +511,7 @@ N多网	blf1298_10885_001
                     WECHAT_APPID : "wx1a93a804b313cef5",
                     QQ_APPID     : "1104925088",
 //                    PACKAGE_NAME : "cn.qbzsydsq.reader"
+                    IFLYTEK_APPID : "${IFLYTEK_APPID_QBZSYDQ}",
                     PACKAGE_NAME : defaultConfig.applicationId
 
             ]
@@ -610,6 +622,7 @@ N多网	blf1298_10885_001
                     WECHAT_APPID : "wx1adbbff037154040",
                     QQ_APPID     : "1105963470",
 //                    PACKAGE_NAME : "cc.quanben.novel"
+                    IFLYTEK_APPID : "${IFLYTEK_APPID_QBMFXSYDQ}",
                     PACKAGE_NAME : defaultConfig.applicationId
 //                    QQ_APPID  : "222222"
             ]
