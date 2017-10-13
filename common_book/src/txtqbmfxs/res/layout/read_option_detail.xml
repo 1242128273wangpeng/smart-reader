@@ -195,16 +195,7 @@
                         android:background="@null"/>
                 
                 
-                <RadioButton
-                        android:id="@+id/read_backdrop_sixth"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="21dp"
-                        android:drawableLeft="@drawable/read_option_page_bg6"
-                        android:button="@null"
-                        android:background="@null"/>
-                
+
                 <RadioButton
                         android:id="@+id/read_backdrop_fifth"
                         android:layout_width="0dp"
@@ -212,6 +203,16 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="21dp"
                         android:drawableLeft="@drawable/read_option_page_bg5"
+                        android:button="@null"
+                        android:background="@null"/>
+
+                <RadioButton
+                        android:id="@+id/read_backdrop_sixth"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="21dp"
+                        android:drawableLeft="@drawable/read_option_page_bg6"
                         android:button="@null"
                         android:background="@null"/>
             </RadioGroup>
