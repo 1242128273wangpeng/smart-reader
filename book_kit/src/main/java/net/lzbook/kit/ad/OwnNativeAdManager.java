@@ -94,7 +94,7 @@ public class OwnNativeAdManager implements AdListener {
         com.dingyueads.sdk.Constants.latitude = (float) Constants.latitude;
         com.dingyueads.sdk.Constants.longitude = (float) Constants.longitude;
 
-        nativeInit = new NativeInit(activity, this);
+        nativeInit = new NativeInit(activity.getApplicationContext(), this, this.mActivityRef);
     }
 
     public OwnNativeAdManager(Activity activity, ViewGroup viewGroup, Handler splashHandler, int handlerMsgCode) {
@@ -112,7 +112,7 @@ public class OwnNativeAdManager implements AdListener {
 
         setSplashHandler(splashHandler);
         statisticManager = new StatisticManager();
-        nativeInit = new NativeInit(activity, this);
+        nativeInit = new NativeInit(activity.getApplicationContext(), this, this.mActivityRef);
     }
 
     public static synchronized OwnNativeAdManager getInstance(Activity mActivity) {
@@ -1525,6 +1525,7 @@ public class OwnNativeAdManager implements AdListener {
         try {
             if (readStatus == null)
                 return null;
+            if (view == null) return null;
             /**防止 部分手机measure null 异常*/
             view.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
             view.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec
@@ -1574,7 +1575,9 @@ public class OwnNativeAdManager implements AdListener {
                 if (infoMap != null) {
                     if (infoMap.containsKey(md5)) {
                         AppLog.e("OwnNativeAdManager", "OwnNativeAdManager : recycleBitmap " + positionName);
-                        infoMap.get(md5).clear();
+                        if (infoMap.get(md5) != null) {
+                            infoMap.get(md5).clear();
+                        }
                         infoMap.remove(md5);
                     }
                 }
@@ -1586,7 +1589,9 @@ public class OwnNativeAdManager implements AdListener {
         if (infoMap != null) {
             if (infoMap.containsKey(positionName)) {
                 AppLog.e("OwnNativeAdManager", "OwnNativeAdManager : recycleBitmap " + positionName);
-                infoMap.get(positionName).clear();
+                if (infoMap.get(positionName) != null) {
+                    infoMap.get(positionName).clear();
+                }
                 infoMap.remove(positionName);
             }
         }

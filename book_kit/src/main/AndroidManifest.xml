@@ -34,11 +34,11 @@
                 android:label="缓存文件服务"/>
         
         <activity
-                android:name=".ad.SwitchSplashAdActivity"
+                android:name="net.lzbook.kit.ad.SwitchSplashAdActivity"
                 android:theme="@android:style/Theme.Translucent.NoTitleBar"
                 ></activity>
         <activity
-            android:name=".ad.PopupAdActivity"
+            android:name="net.lzbook.kit.ad.PopupAdActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
     </application>
 

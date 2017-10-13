@@ -2714,13 +2714,13 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
         @Override
         protected Void doInBackground(Integer... params) {
-            if(dataFactory!=null){
+            if (dataFactory != null) {
                 ArrayList<Chapter> chapterList = (ArrayList<Chapter>) dataFactory.chapterList.clone();
                 if (chapterList == null) {
                     return null;
                 }
                 int size = chapterList.size();
-                if(readStatus!=null){
+                if (readStatus != null) {
                     for (int i = readStatus.sequence + 1; i < (readStatus.sequence + params[0] + 1) && i < size; i++) {
                         Chapter c = chapterList.get(i);
                         if (c == null) {
@@ -2734,7 +2734,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                             e.printStackTrace();
                         }
                         if (i == (readStatus.sequence + 1)) {
-                            if (dataFactory != null){
+                            if (dataFactory != null) {
                                 dataFactory.nextChapter = c;
                             }
                         }

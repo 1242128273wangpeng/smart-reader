@@ -134,7 +134,7 @@
 
         <meta-data
             android:name="IFLYTEK_APPKEY_AD"
-            android:value="5982c10f" />
+            android:value="${IFLYTEK_APPID}" />
 
         <!-- 声明Mogo的Activity -->
         <activity
@@ -225,13 +225,13 @@
         </activity>
         <activity
                 android:name=".activity.ReadingActivity"
-                android:launchMode="singleTask"
+            android:launchMode="singleTask"
                 android:configChanges="orientation|keyboardHidden|screenSize"
                 android:screenOrientation="nosensor"
                 android:theme="@style/Theme.DesignDemo"/>
         <activity
                 android:name=".activity.CataloguesActivity"
-                android:screenOrientation="portrait"
+            android:screenOrientation="portrait"
                 android:theme="@style/AppTheme"/>
         <!-- 关于 -->
         
@@ -409,7 +409,7 @@
         <activity
                 android:name=".activity.SwitchModeActivity"
                 android:launchMode="singleTop"
-                android:screenOrientation="portrait"
+            android:screenOrientation="portrait"
                 android:theme="@style/AppTheme"/>
         
         <activity

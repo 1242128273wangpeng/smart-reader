@@ -447,23 +447,16 @@
             </LinearLayout>
         </ScrollView>
 
-        <RelativeLayout
-                android:fitsSystemWindows="true"
-                android:background="@color/color_transparent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+        <RelativeLayout android:fitsSystemWindows="true"
+            android:background="@color/color_transparent" android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/top_bar_height">
+            <RelativeLayout android:layout_width="match_parent"
+                android:layout_height="@dimen/top_bar_height">
 
-                <ImageView
-                        android:id="@+id/book_cover_back"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:layout_margin="@dimen/margin_10"
-                        android:src="@mipmap/directory_back"/>
+                <ImageView android:id="@+id/book_cover_back" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:gravity="center"
+                    android:layout_margin="@dimen/margin_10" android:src="@mipmap/directory_back" />
             </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
