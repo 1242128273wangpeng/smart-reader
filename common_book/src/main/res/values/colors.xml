@@ -270,8 +270,9 @@
     <color name="read_option_page_bg4">#FFFFFF</color>
     <color name="read_option_page_bg5">#E2ECF6</color>
     <color name="read_option_page_bg6">#111111</color>
-    
-    
+    <color name="read_option_page_stroke_bg6">#666666</color>
+
+
     <color name="primary">#222222</color>
     <color name="color_transparent">#00ffffff</color>
     <color name="warm_heart_red">#ce3d3e</color>

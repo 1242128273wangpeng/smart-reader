@@ -711,16 +711,16 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 changeMode(54)
                 read_setting_backdrop_group!!.check(R.id.read_backdrop_fourth)
             }
-            55 -> {
-
-                readSettingHelper!!.setReadMode(index)
-                changeMode(55)
-                read_setting_backdrop_group!!.check(R.id.read_backdrop_fifth)
-            }
             56 -> {
 
                 readSettingHelper!!.setReadMode(index)
                 changeMode(56)
+                read_setting_backdrop_group!!.check(R.id.read_backdrop_fifth)
+            }
+            55 -> {
+
+                readSettingHelper!!.setReadMode(index)
+                changeMode(55)
                 read_setting_backdrop_group!!.check(R.id.read_backdrop_sixth)
             }
             61 -> {
@@ -827,7 +827,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 lastIndex = current
             }
             R.id.read_backdrop_fifth -> {
-                changePageBackgroundWrapper(55)
+                changePageBackgroundWrapper(56)
                 if (current != lastIndex) {
 
                     val data = java.util.HashMap<String, String>()
@@ -837,7 +837,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 lastIndex = current
             }
             R.id.read_backdrop_sixth -> {
-                changePageBackgroundWrapper(56)
+                changePageBackgroundWrapper(55)
                 if (current != lastIndex) {
 
                     val data = java.util.HashMap<String, String>()
