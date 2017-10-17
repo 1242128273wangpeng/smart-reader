@@ -52,6 +52,8 @@ public class StartLogClickUtil {
     public static final String BACK = "BACK";//返回
     public static final String SCREENSCROLL = "SCREENSCROLL";//屏幕滑动
     public static final String CASHERESULT = "CASHERESULT";//缓存结果
+    public static final String SYSTEM_SEARCHRESULT = "SEARCHRESULT";//被动搜索结果
+
 
     //主页
     public static final String BOOKSHELF = "BOOKSHELF";
@@ -60,6 +62,7 @@ public class StartLogClickUtil {
     public static final String CLASS = "CLASS";
     public static final String PERSONAL = "PERSONAL";
     public static final String SEARCH = "SEARCH";
+    public static final String BOOKLIST = "BOOKLIST";
 
 
     //书架页

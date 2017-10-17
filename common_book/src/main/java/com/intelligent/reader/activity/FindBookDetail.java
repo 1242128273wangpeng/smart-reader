@@ -347,6 +347,11 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             @Override
             public void doSearch(String keyWord, String search_type, String filter_type, String filter_word, String sort_type) {
                 try {
+                    Map<String, String> data = new HashMap<>();
+                    data.put("keyword", keyWord);
+                    data.put("type", "1");//0 代表从分类过来 1 代表从FindBookDetail
+                    StartLogClickUtil.upLoadEventLog(FindBookDetail.this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT, data);
+
                     Intent intent = new Intent();
                     intent.setClass(FindBookDetail.this, SearchBookActivity.class);
                     intent.putExtra("word", keyWord);
@@ -354,6 +359,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                     intent.putExtra("filter_type", filter_type);
                     intent.putExtra("filter_word", filter_word);
                     intent.putExtra("sort_type", sort_type);
+                    intent.putExtra("from_class", "findBookDetail");
                     startActivity(intent);
                     AppLog.i(TAG, "enterSearch success");
                 } catch (Exception e) {

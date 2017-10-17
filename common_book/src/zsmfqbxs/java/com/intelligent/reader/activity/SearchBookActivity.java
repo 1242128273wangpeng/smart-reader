@@ -612,7 +612,23 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                         if (mSearchHelper == null){
                             mSearchHelper = new SearchHelper(this);
                         }
-                        mSearchHelper.setHotWordType(keyword,"0");
+
+                        if(mSearchHelper.getFromClass() != null && !mSearchHelper.getFromClass().equals("other")){
+                            if(mSearchHelper.getSearchType() != null){
+                                mSearchHelper.setHotWordType(keyword,mSearchHelper.getSearchType());
+                                AppLog.e("type14",mSearchHelper.getSearchType()+"===");
+                            }
+                        }else{
+
+                            if(mSearchHelper.getSearchType() != null && !mSearchHelper.getSearchType().equals("0")){
+                                AppLog.e("type12",mSearchHelper.getSearchType()+"===");
+                                mSearchHelper.setHotWordType(keyword,mSearchHelper.getSearchType());
+                            }else{
+                                AppLog.e("type12",0+"===");
+                                mSearchHelper.setHotWordType(keyword,"0");
+                                mSearchHelper.setSearchType("0");
+                            }
+                        }
                         loadDataFromNet();
 
                         Map<String, String> data = new HashMap<>();
@@ -677,6 +693,23 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
 
     @Override
     public void afterTextChanged(Editable s) {
+        if(mSearchHelper != null && mSearchHelper.getWord() != null){
+            if(mSearchHelper.getFromClass() != null){
+                if(!mSearchHelper.getWord().trim().equals(s.toString().trim())){
+                    AppLog.e("typ11","typ111");
+                    if(!mSearchHelper.getFromClass().equals("other")){
+                        AppLog.e("typ","typ");
+                        mSearchHelper.setFromClass("other");
+                    }
+                    mSearchHelper.setSearchType("0");
+                }
+            }else{
+                if(!mSearchHelper.getWord().trim().equals(s.toString().trim())){
+                    mSearchHelper.setSearchType("0");
+                }
+            }
+        }
+
         if (searchViewHelper != null) {
             String finalContent = AppUtils.deleteAllIllegalChar(s.toString());
             searchViewHelper.showHintList(finalContent);

@@ -103,6 +103,8 @@ public class Constants {
     //夜间模式蒙板透明度
     public static final float NIGHT_SHADOW_ALPHA = 0.55f;
     public static final String SERARCH_HOT_WORD = "search_hot_word";//搜索热词
+    //打点书架页每日首次上传书ID
+    public static final String TODAY_FIRST_POST_BOOKIDS = "today_first_post_bookids";
     public static int NONET_READHOUR = 24;
     public static int DOWNLOAD = 400;
     // FIXME 上线要改成false
