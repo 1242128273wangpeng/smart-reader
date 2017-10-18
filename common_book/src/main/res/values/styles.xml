@@ -478,12 +478,21 @@
         <item name="android:textSize">14sp</item>
         <item name="android:background">@drawable/booksearch_red_bg</item>
     </style>
-    
-    <style name="checkBox_feedback_style">
-        <item name="android:layout_width">0dp</item>
+
+    <style name="checkBox_feedback_btn_style">
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:textSize">@dimen/text_big16_size</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:clickable">false</item>
+        <item name="android:button">@drawable/dialog_checkbox_selector</item>
+    </style>
+
+    <style name="checkBox_feedback_txt_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/text_size_14</item>
+        <item name="android:textColor">@color/color_black_99000000</item>
+        <item name="android:layout_alignParentLeft">true</item>
     </style>
     
     <style

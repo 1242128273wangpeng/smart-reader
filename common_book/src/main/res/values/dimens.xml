@@ -9,6 +9,7 @@
     <dimen name="dimen_view_height_50">50dip</dimen>
     <dimen name="dimen_view_height_64">64dip</dimen>
     <dimen name="dimen_view_height_80">80dip</dimen>
+    <dimen name="dimen_view_height_160">160dip</dimen>
     
     <dimen name="dimen_margin_5">5dip</dimen>
     <dimen name="dimen_margin_10">10dip</dimen>

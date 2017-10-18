@@ -340,6 +340,8 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
         novel_catalog?.setOnClickListener(this)
 
+        novel_feedback?.setOnClickListener(this)
+
         novel_setting?.setOnClickListener(this)
 
         novel_night?.setOnClickListener(this)
@@ -431,6 +433,10 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             R.id.novel_catalog -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_catalog_btn)
                 listener?.onReadCatalog()
+            }
+
+            R.id.novel_feedback -> {
+                listener?.onReadFeedBack()
             }
 
             R.id.novel_setting -> {

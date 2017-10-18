@@ -180,6 +180,7 @@
     <dimen name="dimen_radius_0">0dip</dimen>
     <dimen name="dimen_radius_2">2dip</dimen>
     <dimen name="dimen_radius_4">4dip</dimen>
+    <dimen name="dimen_radius_5">5dip</dimen>
     <dimen name="dimen_radius_8">8dip</dimen>
     <dimen name="dimen_radius_10">10dip</dimen>
     <dimen name="dimen_radius_30">30dip</dimen>

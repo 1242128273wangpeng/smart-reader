@@ -23,7 +23,8 @@ public enum PLItemKey {
     ZN_APP_CRASH("ZN_APP_CRASH", "datastatistics-zn", "app_crash", "客户端异常日志"),
     ZN_APP_APPSTORE("ZN_APP_APPSTORE", "datastatistics-zn", "appstore", "app列表"),
     ZN_APP_READ_CONTENT("ZN_APP_READ_CONTENT", "datastatistics-zn", "read_content", "阅读内容"),
-    ZN_APP_TEST("ZN_APP_TEST", "datastatistics-zn", "test", "智能数据流APP点击事件");
+    ZN_APP_TEST("ZN_APP_TEST", "datastatistics-zn", "test", "智能数据流APP点击事件"),
+    ZN_APP_FEEDBACK("ZN_APP_FEEDBACK", "datastatistics-zn", "feedback", "客户端问题章节反馈");
     private String key;
     private String desc;
     private String project;
