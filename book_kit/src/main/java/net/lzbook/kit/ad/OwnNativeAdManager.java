@@ -64,9 +64,9 @@ import de.greenrobot.event.EventBus;
 public class OwnNativeAdManager implements AdListener {
     private static final String TAG = "OwnNativeAdManager";
     private static WeakReference<Activity> mActivityRef;
-    private ViewGroup viewGroup;
+    public ViewGroup viewGroup;
     private static OwnNativeAdManager mInstance;
-    private NativeInit nativeInit;
+    public NativeInit nativeInit;
     private LinkedList<YQNativeAdInfo> adInfoLinkedList = new LinkedList<>();
     private HashMap<String, LinkedList<YQNativeAdInfo>> infoMap = new HashMap<>();
     private ReadStatus readStatus;

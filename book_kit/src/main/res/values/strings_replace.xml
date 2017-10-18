@@ -19,4 +19,5 @@
     <string name="baidu_stat_id">542233ee41</string>
     <string name="push_key">aHSRXNEN6xUTi2QM455gvQC6</string>
     <string name="alifeedback_key">23572755</string>
+    <string name="alifeedback_secret">23572755</string>
 </resources>

@@ -19,6 +19,7 @@ public class ReplaceConstants {
     public String BAIDU_STAT_ID;
     public String PUSH_KEY;
     public String ALIFEEDBACK_KEY;
+    public String ALIFEEDBACK_SECRET;
 
     private ReplaceConstants() {
         APP_PATH = Constants.SDCARD_PATH + ResourceUtil.getStringById(R.string.app_path);
@@ -37,6 +38,7 @@ public class ReplaceConstants {
         BAIDU_STAT_ID = ResourceUtil.getStringById(R.string.baidu_stat_id);
         PUSH_KEY = ResourceUtil.getStringById(R.string.push_key);
         ALIFEEDBACK_KEY = ResourceUtil.getStringById(R.string.alifeedback_key);
+        ALIFEEDBACK_SECRET = ResourceUtil.getStringById(R.string.alifeedback_secret);
     }
 
     public static ReplaceConstants getReplaceConstants() {
