@@ -13,10 +13,12 @@ import net.lzbook.kit.utils.CustomWebClient;
 import net.lzbook.kit.utils.JSInterfaceHelper;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -63,6 +65,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     private CustomWebClient customWebClient;
     private JSInterfaceHelper jsInterfaceHelper;
     private Handler handler;
+    private SharedPreferences mSharedPreferences;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,7 +87,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             currentTitle = intent.getStringExtra("title");
             names.add(currentTitle);
         }
-
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         initView();
 
@@ -154,6 +157,16 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                 clickBackBtn();
                 break;
             case R.id.find_book_detail_search:
+                String fromType = mSharedPreferences.getString(Constants.FINDBOOK_SEARCH, "other");
+
+                if (fromType.equals("class")) {
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE, StartLogClickUtil.SEARCH);
+                } else if (fromType.equals("top")) {
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE, StartLogClickUtil.SEARCH);
+                } else if (fromType.equals("recommend")) {
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTRECOMMEND_PAGE, StartLogClickUtil.SEARCH);
+                }
+
                 Intent intent = new Intent();
                 intent.setClass(this, SearchBookActivity.class);
                 startActivity(intent);
