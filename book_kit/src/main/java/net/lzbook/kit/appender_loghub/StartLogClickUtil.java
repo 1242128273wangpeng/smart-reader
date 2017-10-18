@@ -49,6 +49,9 @@ public class StartLogClickUtil {
     public static final String RECOMMEND_PAGE = "RECOMMEND";//青果推荐页
     public static final String TOP_PAGE = "TOP";//青果榜单页
     public static final String CLASS_PAGE = "CLASS";//青果分类页
+    public static final String FIRSTCLASS_PAGE = "FIRSTCLASS";//分类一级页面的搜索
+    public static final String FIRSTTOP_PAGE = "FIRSTTOP";//榜单一级页面的搜索
+    public static final String FIRSTRECOMMEND_PAGE = "FIRSTRECOMMEND";//推荐一级页面的搜索
 
     //APP通用
     public static final String APPINIT = "APPINIT";//客户端启动

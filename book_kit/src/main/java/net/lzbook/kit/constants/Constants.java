@@ -105,6 +105,8 @@ public class Constants {
     public static final String SERARCH_HOT_WORD = "search_hot_word";//搜索热词
     //打点书架页每日首次上传书ID
     public static final String TODAY_FIRST_POST_BOOKIDS = "today_first_post_bookids";
+    //打点FindBookDetail的搜索按钮
+    public static final String FINDBOOK_SEARCH = "findbook_search";
     public static int NONET_READHOUR = 24;
     public static int DOWNLOAD = 400;
     // FIXME 上线要改成false
