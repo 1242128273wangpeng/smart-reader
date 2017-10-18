@@ -100,7 +100,9 @@ android {
             mfqbxssc : "免费全本小说书城", //快读替
             zsmfqbxs : "追书免费全本小说", //阅微替
             txtqbmfxs: "TXT全本免费小说", //鸿雁替
-            qbmfxsydq: "全本免费小说阅读器" //五步替
+            qbmfxsydq: "全本免费小说阅读器", //五步替
+            txtqbdzs : "TXT全本免费电子书",
+            kdqbdzs  : "快读全本电子书"
     ]
 
     def appPackageIDConfig = [
@@ -109,7 +111,9 @@ android {
             mfqbxssc : "cc.kdqbxs.reader",
             zsmfqbxs : "cc.mianfeinovel",
             txtqbmfxs: "cc.lianzainovel",
-            qbmfxsydq: "cc.quanben.novel"
+            qbmfxsydq: "cc.quanben.novel",
+            txtqbdzs : "cc.remennovel",
+            kdqbdzs  : "cn.kkqbtxtxs.reader"
     ]
 
 
@@ -672,6 +676,60 @@ N多网	blf1298_10885_001
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "7be24d1f8f5196a4aa6d6d6788004d4b"
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://n.wubutianxia.com"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://xiaoshuo.wubutianxia.com:443"
+        }
+
+
+
+
+        txtqbdzs {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release1
+            manifestPlaceholders = [
+                    UMENG_APP_KEY: "${UMENG_APPKEY_TXTQBDZS}",
+                    APP_NAME     : 'TXT全本免费电子书',
+                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_TXTQBDZS}",
+                    AMAP_APIKEY  : "${AMAP_APIKEY_TXTQBDZS}",
+                    WECHAT_APPID : "",
+                    QQ_APPID     : "",
+                    IFLYTEK_APPID: "",
+//                    PACKAGE_NAME : "cc.lianzainovel"
+                    PACKAGE_NAME : defaultConfig.applicationId
+            ]
+
+            notOverrideResValue getOwner(), "string", "app_path", "/quanben_new"
+            // notOverrideResValue getOwner(), "string", "app_name", "TXT全本免费电子书"
+            notOverrideResValue getOwner(), "string", "database_name", "novelnew.db"
+            notOverrideResValue getOwner(), "string", "baidu_stat_id", "7e37d6eced"
+            notOverrideResValue getOwner(), "string", "push_key", "cxBc7MXYbhHQ2NAzkFBAfoM3KwPlGjr9"
+            notOverrideResValue getOwner(), "string", "alifeedback_key", "23731453"
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://b.quanbennovel.com"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://bookview.quanbennovel.com:443"
+        }
+
+
+        kdqbdzs {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            manifestPlaceholders = [
+                    UMENG_APP_KEY: "${UMENG_APPKEY_KDQBDZS}",
+                    APP_NAME     : '快读全本电子书',
+                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_KDQBDZS}",
+                    AMAP_APIKEY  : "${AMAP_APIKEY_KDQBDZS}",
+                    WECHAT_APPID : "",
+                    QQ_APPID     : "",
+                    IFLYTEK_APPID: "",
+//                    PACKAGE_NAME : "cc.lianzainovel"
+                    PACKAGE_NAME : defaultConfig.applicationId
+            ]
+
+            notOverrideResValue getOwner(), "string", "app_path", "/kkqbtxtxs_book"
+            // notOverrideResValue getOwner(), "string", "app_name", "快读全本电子书"
+            notOverrideResValue getOwner(), "string", "database_name", "kkqbtxtxsBook.db"
+            notOverrideResValue getOwner(), "string", "baidu_stat_id", "1b75898a50"
+            notOverrideResValue getOwner(), "string", "push_key", "Hyu8ZPSKUltvAIuOkSAG94tb"
+            notOverrideResValue getOwner(), "string", "alifeedback_key", "23571962"
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://k.zhuishuwang.com"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://xiaoshuodq.zhuishuwang.com:443"
         }
 
     }
