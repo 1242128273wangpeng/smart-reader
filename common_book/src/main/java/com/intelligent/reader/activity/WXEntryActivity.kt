@@ -1,4 +1,4 @@
-package cc.lianzainovel.wxapi
+package cn.kkqbtxtxs.reader.wxapi
 
 import android.app.Activity
 import android.content.Intent
