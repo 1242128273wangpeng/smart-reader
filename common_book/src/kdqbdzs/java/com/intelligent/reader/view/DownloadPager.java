@@ -21,6 +21,7 @@ import com.intelligent.reader.adapter.DownloadManagerAdapter;
 import com.intelligent.reader.read.help.BookHelper;
 
 import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.component.service.DownloadService;
 import net.lzbook.kit.book.download.CallBackDownload;
 import net.lzbook.kit.book.download.DownloadState;
@@ -35,7 +36,9 @@ import net.lzbook.kit.utils.StatServiceUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import de.greenrobot.event.EventBus;
 
@@ -44,23 +47,27 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
         .OnMenuDeleteClickListener,
         RemoveAdapterHelper.OnMenuStateListener, RemoveAdapterHelper.OnMenuSelectAllListener {
 
+    private static boolean isDeleteBookrack = false;
     private final String TAG = "DownloadPager";
-
-    private DownloadManagerAdapter downloadAdapter;
+    private final Handler handler = new MHandler(this);
     public ArrayList<Book> booksData;
     public RemoveAdapterHelper removehelper;
-
-    private static boolean isDeleteBookrack = false;
+    public DeleteItemListener deleteItemListener;
+    public boolean isShowing = false;
+    protected DownloadService downService;
+    long lastShowTime;
+    DownloadManagerActivity downloadManagerActivity;
+    long time = System.currentTimeMillis();
+    BookChapterDao bookChapterDao;
+    private DownloadManagerAdapter downloadAdapter;
     private ArrayList<Book> deleteBooks;
-
     private Context mContext;
     private Activity activity;
     private ListView listView;
     private RelativeLayout bookshelf_empty;
     private BookDaoHelper mBookDaoHelper;
     private TextView btnEmpty;
-
-    long lastShowTime;
+    private FrameLayout frameLayout;
 
     public DownloadPager(Context context, Activity activity, ArrayList<Book> books) {
         super(context);
@@ -68,10 +75,8 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
         initView(context, activity);
     }
 
-    DownloadManagerActivity downloadManagerActivity;
-
-    private void initView(Context context, Activity activity) {
-        mBookDaoHelper = BookDaoHelper.getInstance(context);
+    private void initView(Context context, final Activity activity) {
+        mBookDaoHelper = BookDaoHelper.getInstance();
 
         mContext = context;
         this.activity = activity;
@@ -95,23 +100,19 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
         removehelper.setListView(listView);
         downloadManagerActivity = (DownloadManagerActivity) activity;
 
-    }
 
-    public DeleteItemListener deleteItemListener;
+    }
 
     public void setDeleteItemListener(DeleteItemListener deleteItemListener) {
         this.deleteItemListener = deleteItemListener;
     }
 
     @Override
-    public void onSelectAll() {
+    public void onSelectAll(boolean checkedAll) {
         StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.bs_down_m_click_select_all);
-    }
-
-    public interface DeleteItemListener {
-        void onSuccess();
-
-        void onFailed();
+        Map<String, String> data = new HashMap<>();
+        data.put("type", checkedAll ? "1" : "0");
+        StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.CHCHEEDIT_PAGE, StartLogClickUtil.SELECTALL, data);
     }
 
     public ListView getListView() {
@@ -226,6 +227,9 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
                     if (myDialog != null) {
                         try {
                             myDialog.dismiss();
+                            Map<String, String> data = new HashMap<>();
+                            data.put("type", "0");
+                            StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.CHCHEEDIT_PAGE, StartLogClickUtil.DELETE, data);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -252,6 +256,12 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
                             mBookDaoHelper.deleteBook(gids);
                         }
 
+                    }
+                    if (deleteBooks != null) {
+                        Map<String, String> data = new HashMap<>();
+                        data.put("type", "1");
+                        data.put("number", String.valueOf(deleteBooks.size()));
+                        StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.CHCHEEDIT_PAGE, StartLogClickUtil.DELETE, data);
                     }
                     new Thread(new Runnable() {
 
@@ -295,33 +305,6 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
         }
     }
 
-    private final Handler handler = new MHandler(this);
-
-    private static class MHandler extends Handler {
-        private WeakReference<DownloadPager> reference;
-
-        MHandler(DownloadPager pager) {
-            reference = new WeakReference<DownloadPager>(pager);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            DownloadPager downloadPager = reference.get();
-            if (downloadPager == null) {
-                return;
-            }
-
-            switch (msg.what) {
-                case 0:
-                    downloadPager.dealHandler();
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    }
-
     private void dealHandler() {
         if (isDeleteBookrack) {
             ((DownloadManagerActivity) activity).freshBooks(true);// FIXME
@@ -346,12 +329,9 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
 //		AppLog.d(TAG, "onChapterDownStart =");
     }
 
-    long time = System.currentTimeMillis();
-
     @Override
     public void onChapterDownFinish(String book_id, int sequence) {
 
-        System.out.println("onChapterDownFinish : " + sequence);
 
         if (System.currentTimeMillis() - time > 1000) {
             time = System.currentTimeMillis();
@@ -380,7 +360,7 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
             int size = data.size();
             for (int i = 0; i < size; i++) {
                 Book b = data.get(i);
-                if (b.book_id.equals(book.book_id)) {
+                if (b.book_id != null && book.book_id != null && b.book_id.equals(book.book_id)) {
                     data.remove(i);
                     break;
                 }
@@ -405,7 +385,6 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        System.out.println("onProgressUpdate : " + progress);
                         downloadAdapter.notifyDataSetChanged();
                     }
                 });
@@ -417,8 +396,6 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
     public void onOffLineFinish() {
         AppLog.d(TAG, "onOffLineFinish =");
     }
-
-    protected DownloadService downService;
 
     public DownloadService getService() {
         if (downService == null) {
@@ -432,8 +409,6 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
             getService().replaceOffLineCallBack(this);// TODO 替换初始化时的空回调
         }
     }
-
-    public boolean isShowing = false;
 
     @Override
     public void getMenuShownState(boolean isShown) {
@@ -452,9 +427,6 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
     public void onChapterDownFailedNeedPay(String book_id, int nid, int sequence) {
 
     }
-
-    BookChapterDao bookChapterDao;
-    private FrameLayout frameLayout;
 
     public void recycleResource() {
 
@@ -482,6 +454,37 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
 
         if (this.activity != null) {
             this.activity = null;
+        }
+    }
+
+    public interface DeleteItemListener {
+        void onSuccess();
+
+        void onFailed();
+    }
+
+    private static class MHandler extends Handler {
+        private WeakReference<DownloadPager> reference;
+
+        MHandler(DownloadPager pager) {
+            reference = new WeakReference<DownloadPager>(pager);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            DownloadPager downloadPager = reference.get();
+            if (downloadPager == null) {
+                return;
+            }
+
+            switch (msg.what) {
+                case 0:
+                    downloadPager.dealHandler();
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
 }
