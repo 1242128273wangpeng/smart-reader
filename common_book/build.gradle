@@ -124,7 +124,7 @@ android {
     }
     defaultConfig {
 
-        applicationId "cn.txtzsydsq.reader"
+        applicationId "cc.remennovel"
 
 //        System.err.println("project.properties = ${project.getProperties()}")
 

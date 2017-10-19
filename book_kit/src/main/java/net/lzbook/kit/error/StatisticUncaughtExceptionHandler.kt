@@ -14,7 +14,7 @@ class StatisticUncaughtExceptionHandler(val parent: Thread.UncaughtExceptionHand
     val lock = java.lang.Object()
 
     override fun uncaughtException(thread: Thread, exception: Throwable) {
-
+        exception.printStackTrace()
         //防止死循环
         Thread.setDefaultUncaughtExceptionHandler(parent)
 
