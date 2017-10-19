@@ -28,5 +28,9 @@ allprojects {
                 password 'iyouquedwin'
             }
         }
+
+        maven {
+            url 'http://maven.aliyun.com/nexus/content/repositories/releases/'
+        }
     }
 }

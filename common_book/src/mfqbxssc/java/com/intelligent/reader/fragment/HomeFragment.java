@@ -472,6 +472,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                         }
                     }
                 }
+                sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH, "recommend").apply();
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_recommend_menu);
                 StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.RECOMMEND);
                 break;
@@ -481,6 +482,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                 if (STYLE_CASE == BOTTOM_FOUR_TABS) {
                     content_title.setText("榜单");
                 }
+                sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH, "top").apply();
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_rank_menu);
                 StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.TOP);
                 break;
@@ -491,6 +493,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                 if (STYLE_CASE == BOTTOM_FOUR_TABS) {
                     content_title.setText("分类");
                 }
+                sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH, "class").apply();
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_category_menu);
                 StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.CLASS);
                 break;

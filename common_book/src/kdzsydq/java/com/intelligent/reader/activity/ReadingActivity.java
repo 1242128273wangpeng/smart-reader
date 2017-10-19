@@ -916,7 +916,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
         ll_guide_layout = findViewById(R.id.ll_guide_layout);
         initGuide();
-        initReadingAd();
+//        initReadingAd();
 
         readSettingView.setNovelMode(Constants.MODE);
         readStatus.source_ids = readStatus.book.site;
@@ -1726,6 +1726,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     protected void onResume() {
         super.onResume();
         AppLog.d("ReadingActivity", "onResume:" + Constants.isFullWindowRead);
+
+        // 注册一个接受广播类型
+        registerReceiver(mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         // 设置全屏
         if (!Constants.isFullWindowRead) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
@@ -1753,8 +1756,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         }
 
         readStatus.chapterCount = readStatus.book.chapter_count;
-        // 注册一个接受广播类型
-        registerReceiver(mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+
 
         int lock = sp.getInt("lock_screen_time", 5);
         if (lock == Integer.MAX_VALUE) {
@@ -1820,6 +1822,17 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         }
         readLength = 0;
 
+    }
+
+    boolean isFirstVisiable = true;
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (isFirstVisiable && hasFocus) {
+            isFirstVisiable = false;
+            initReadingAd();
+        }
     }
 
     @Override

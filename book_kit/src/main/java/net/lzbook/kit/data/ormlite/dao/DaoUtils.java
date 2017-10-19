@@ -13,6 +13,6 @@ public class DaoUtils extends OrmDaoUtils {
 
     @Override
     protected OrmDatabaseHelper getHelper() {
-        return new DbHelper(BaseBookApplication.sCtx);
+        return DbHelper.getInstance();
     }
 }

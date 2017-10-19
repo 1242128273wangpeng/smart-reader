@@ -1,5 +1,6 @@
 package net.lzbook.kit.data.ormlite.helper;
 
+import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.ormlite.bean.HistoryInfo;
 
@@ -13,8 +14,21 @@ public class DbHelper extends OrmDatabaseHelper {
     private static final String DEF_DB_NAME = ReplaceConstants.getReplaceConstants().DATABASE_NAME;
     private static final int DB_VERSION = 15;
 
+    private volatile static DbHelper mInstance = null;
 
-    public DbHelper(Context context) {
+    public static DbHelper getInstance() {
+        if (mInstance == null) {
+            synchronized (DbHelper.class) {
+                if (mInstance == null) {
+                    mInstance = new DbHelper(BaseBookApplication.getGlobalContext());
+                }
+            }
+        }
+
+        return mInstance;
+    }
+
+    private DbHelper(Context context) {
         super(context, DEF_DB_NAME, null, DB_VERSION);
     }
 

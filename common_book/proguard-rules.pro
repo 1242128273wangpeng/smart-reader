@@ -437,3 +437,13 @@ public protected *;
 -keepclassmembers class * {
     @net.lzbook.kit.utils.NotProguard <methods>;
 }
+
+#阿里云
+-keep class com.taobao.** {*;}
+-keep class com.alibaba.** {*;}
+-dontwarn com.taobao.**
+-dontwarn com.alibaba.**
+-keep class com.ut.** {*;}
+-dontwarn com.ut.**
+-keep class com.ta.** {*;}
+-dontwarn com.ta.**

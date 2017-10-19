@@ -49,7 +49,7 @@ public class BookApplication extends BaseBookApplication {
                 return null;
             }
         });
-        FeedbackAPI.init(this, ReplaceConstants.getReplaceConstants().ALIFEEDBACK_KEY);
+        FeedbackAPI.init(this, ReplaceConstants.getReplaceConstants().ALIFEEDBACK_KEY, ReplaceConstants.getReplaceConstants().ALIFEEDBACK_SECRET);
         if (BuildConfig.DEBUG) {
             if (!BuildConfig.IS_LEAKCANARY_DISABLE) {
                 sRefWatcher = LeakCanary.install(this);

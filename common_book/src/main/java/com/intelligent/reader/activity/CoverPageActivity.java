@@ -729,6 +729,10 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                 break;
 
             case R.id.book_cover_download:
+
+                if (bookVo == null)
+                    return;
+
                 Book book = bookCoverUtil.getCoverBook(bookDaoHelper, bookVo);
                 DownloadState downloadState = BookHelper.getDownloadState(CoverPageActivity.this, book);
                 if (downloadState != DownloadState.FINISH && downloadState != DownloadState.WAITTING && downloadState != DownloadState.DOWNLOADING) {
@@ -807,6 +811,8 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                 break;
             case R.id.book_cover_chapter_view:
             case R.id.book_cover_last_chapter:
+                if (bookVo == null)
+                    return;
                 if (Constants.QG_SOURCE.equals(requestItem.host)) {
                     goToCataloguesAct(intent, bookVo.serial_number - 1, true);
                 } else {
