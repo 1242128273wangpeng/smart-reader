@@ -10,16 +10,13 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.search.SearchCommonBean;
-import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.intelligent.reader.R;
-
-import iyouqu.theme.ThemeHelper;
 
 /**
  * Created by Administrator on 2016/12/16 0016.
@@ -28,15 +25,12 @@ public class SearchSuggestAdapter extends BaseAdapter {
 
     private Context mContext;
     private List<SearchCommonBean> mData;
-    private String editInput;
-    private ThemeHelper mThemeHelper;
+    private String editInput = "";
 
     public SearchSuggestAdapter(Context context, List<SearchCommonBean> mData, String editInput) {
         this.mContext = context;
         this.mData = mData;
         this.editInput = editInput;
-        mThemeHelper = new ThemeHelper(mContext);
-
     }
 
     @Override
@@ -60,7 +54,7 @@ public class SearchSuggestAdapter extends BaseAdapter {
         if (convertView == null) {
             try {
                 LayoutInflater inflater = LayoutInflater.from(mContext);
-                convertView = inflater.inflate(R.layout.lv_searchbook_item, parent, false);
+                convertView = inflater.inflate(R.layout.item_search_suggest, parent, false);
             } catch (InflateException e) {
                 e.printStackTrace();
             }
@@ -86,16 +80,12 @@ public class SearchSuggestAdapter extends BaseAdapter {
             hodler.iv_type.setImageResource(R.drawable.search_transparent);
         }
         String content = bean.getSuggest();
+        String finalInput = "";
 
-        String finalInput = AppUtils.deleteAllIllegalChar(editInput);
-        if (mThemeHelper != null) {
-            if (mThemeHelper.isNight()) {
-                content = content.replaceAll(finalInput, "<font color='#90826b'>" + finalInput + "</font>");
-            } else {
-                content = content.replaceAll(finalInput, "<font color='#3ecc96'>" + finalInput + "</font>");
-            }
+        if (editInput != null) {
+            finalInput = AppUtils.deleteAllIllegalChar(editInput);
         }
-
+        content = content.replaceAll(finalInput, "<font color='#ce3d3e'>" + finalInput + "</font>");
 
         hodler.tv_2.setText(Html.fromHtml(content));
         return convertView;
@@ -114,6 +104,10 @@ public class SearchSuggestAdapter extends BaseAdapter {
 
     public void setEditInput(String editInput) {
         this.editInput = editInput;
+    }
+
+    public String getEditInput() {
+        return this.editInput;
     }
 
 }

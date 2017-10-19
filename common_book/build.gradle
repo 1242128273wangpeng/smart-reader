@@ -13,6 +13,7 @@ def releaseTime() {
 }
 
 android {
+
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
@@ -38,6 +39,9 @@ android {
     def UMENG_APPKEY_HYCS = "54800fd1fd98c53cb000096c"
     def UMENG_APPKEY_TXTMFQBYDQ = "5475a099fd98c5e733000c41"
     def UMENG_APPKEY_TXTMFQBDZS = "539e59d856240b0520057ce7"
+
+
+
 
 
 
@@ -89,11 +93,6 @@ android {
     def IFLYTEK_APPID_QBMFXSYDQ = "5982be96"
     def IFLYTEK_APPID_HYCS = "5982bdd0"
 
-    //科大讯飞ID 暂用 快读申请后替换
-    def IFLYTEK_APPID_MFQBXSSC = "59e707d4"
-    def IFLYTEK_APPID_ZSMFQBXS = "59e597c3"
-    def IFLYTEK_APPID_TXTQBMFXS = "59e70add"
-
     def appNameConfig = [
             kdzsydq  : "快读追书阅读器",
             qbzsydq  : "全本追书阅读器",
@@ -125,7 +124,7 @@ android {
     }
     defaultConfig {
 
-        applicationId "cn.qbzsydsq.reader"
+        applicationId "cc.remennovel"
 
 //        System.err.println("project.properties = ${project.getProperties()}")
 
@@ -576,7 +575,7 @@ N多网	blf1298_10885_001
                     AMAP_APIKEY  : "${AMAP_APIKEY_MFQBXSSC}",
                     WECHAT_APPID : "wx6a3fdf0169bb5e02",
                     QQ_APPID     : "1105887983",
-                    IFLYTEK_APPID : "${IFLYTEK_APPID_MFQBXSSC}",
+                    IFLYTEK_APPID: "${IFLYTEK_APPID_QBZSYDQ}",
                     PACKAGE_NAME : defaultConfig.applicationId
             ]
 
@@ -602,8 +601,8 @@ N多网	blf1298_10885_001
                     AMAP_APIKEY  : "${AMAP_APIKEY_ZSMFQBXS}",
                     WECHAT_APPID : "wxdf1bd911ebe48b00",
                     QQ_APPID     : "1105964662",
+                    IFLYTEK_APPID: "${IFLYTEK_APPID_QBZSYDQ}",
 //                    PACKAGE_NAME : "cc.mianfeinovel"
-                    IFLYTEK_APPID : "${IFLYTEK_APPID_ZSMFQBXS}",
                     PACKAGE_NAME : defaultConfig.applicationId
             ]
 
@@ -635,8 +634,8 @@ N多网	blf1298_10885_001
                     AMAP_APIKEY  : "${AMAP_APIKEY_TXTQBMFXS}",
                     WECHAT_APPID : "wx4dfa750e9f5f9389",
                     QQ_APPID     : "1105888471",
+                    IFLYTEK_APPID: "${IFLYTEK_APPID_QBZSYDQ}",
 //                    PACKAGE_NAME : "cc.lianzainovel"
-                    IFLYTEK_APPID : "${IFLYTEK_APPID_TXTQBMFXS}",
                     PACKAGE_NAME : defaultConfig.applicationId
             ]
 
