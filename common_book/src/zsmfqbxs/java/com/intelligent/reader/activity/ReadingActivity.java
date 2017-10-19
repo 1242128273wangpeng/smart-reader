@@ -948,8 +948,15 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         if (ownNativeAdManager == null) {
             ownNativeAdManager = OwnNativeAdManager.getInstance(this);
         }
+        ownNativeAdManager.setActivity(this);
+        if (!Constants.isSlideUp) {
         ownNativeAdManager.loadAdForMiddle(NativeInit.CustomPositionName.READING_MIDDLE_POSITION);
-        ownNativeAdManager.loadAd(NativeInit.CustomPositionName.READING_POSITION);
+            if (Constants.IS_LANDSCAPE) {
+                OwnNativeAdManager.getInstance(this).loadAd(NativeInit.CustomPositionName.SUPPLY_READING_SPACE);
+            } else {
+                OwnNativeAdManager.getInstance(this).loadAd(NativeInit.CustomPositionName.READING_POSITION);
+            }
+        }
     }
 
     /**
@@ -1773,6 +1780,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         if (isSubed) {
             readStatus.book = mBookDaoHelper.getBook(readStatus.book_id, 0);
         }
+        readStatus.isInMobiViewClicking = false;
         if (pageView != null) {
             pageView.resumeAutoRead();
         }
@@ -1850,7 +1858,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     @Override
     protected void onStop() {
         super.onStop();
-
+        if (pageView != null) {
+            pageView.removeAdView();
+        }
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mCacheUpdateReceiver);
 
         if (actNovelRunForeground && handler != null && rest_tips_runnable != null) {
@@ -1960,6 +1970,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             ownNativeAdManager.recycleResourceFromReading(NativeInit.CustomPositionName.READING_POSITION.toString());
             ownNativeAdManager.recycleResourceFromReading(NativeInit.CustomPositionName.READING_IN_CHAPTER_POSITION.toString());
             ownNativeAdManager.recycleResourceFromReading(NativeInit.CustomPositionName.REST_POSITION.toString());
+            ownNativeAdManager.recycleResourceFromReading(NativeInit.CustomPositionName.SUPPLY_READING_IN_CHAPTER.toString());
+            ownNativeAdManager.recycleResourceFromReading(NativeInit.CustomPositionName.SUPPLY_READING_SPACE.toString());
             ownNativeAdManager.removeHandler();
         }
 
