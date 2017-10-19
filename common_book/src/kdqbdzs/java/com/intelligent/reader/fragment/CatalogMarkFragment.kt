@@ -1,12 +1,14 @@
 package com.intelligent.reader.fragment
 
 import android.app.Activity
+import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -29,8 +31,6 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Bookmark
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.utils.StatServiceUtils
-import net.lzbook.kit.utils.attrDrawable
-import net.lzbook.kit.utils.resolveTextColor
 import java.text.SimpleDateFormat
 import java.util.concurrent.Callable
 
@@ -40,13 +40,14 @@ import java.util.concurrent.Callable
 class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerListener {
 
     override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+
     }
 
     override fun onDrawerOpened(drawerView: View) {
         if (view!!.catalog_main.visibility == View.VISIBLE) {
             presenter?.loadCatalog(reverse)
         } else {
-            presenter?.loadBookMark()
+            presenter?.loadBookMark(activity, 2)
         }
     }
 
@@ -78,16 +79,19 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
                     chapterExist = BookHelper.isChapterExist(chapter.sequence, chapter.book_id)
                 }
 
+                var txtColor = 0
                 if (chapterExist) {
-                    txt.resolveTextColor(R.attr.read_item_catalog_chapter_text_color)
+                    txtColor = R.color.read_item_catalog_chapter_text_color
 
                 } else {
-                    txt.resolveTextColor(R.attr.read_item_catalog_uncached_chapter_text_color)
+                    txtColor = R.color.read_item_catalog_uncached_chapter_text_color
+                }
+//
+                if (chapter.chapter_name?.equals(BaseBookApplication.getGlobalContext().readStatus?.chapterName) ?: false) {
+                    txtColor = R.color.read_item_catalog_current_chapter_text_color
                 }
 
-                if (chapter.chapter_name?.equals(BaseBookApplication.getGlobalContext().readStatus?.chapterName) ?: false) {
-                    txt.resolveTextColor(R.attr.read_item_catalog_current_chapter_text_color)
-                }
+                txt.setTextColor(itemView.context.resources.getColor(txtColor))
 
             }
 
@@ -147,15 +151,14 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
         val view = inflater?.inflate(R.layout.read_catalog_mark_layout, container, false)
         val dividerCatalog = ShapeItemDecoration(activity, DividerItemDecoration.VERTICAL)
         val dividerBookmark = ShapeItemDecoration(activity, DividerItemDecoration.VERTICAL)
-        val drawablCatalog = context.attrDrawable(R.attr.frag_catalog_mark_divider)
-        val drawableMark = context.attrDrawable(R.attr.frag_catalog_mark_divider)
-        dividerCatalog.setDrawable(drawablCatalog)
-        dividerBookmark.setDrawable(drawableMark)
 
-        view!!.catalog_main.layoutManager = LinearLayoutManager(activity)
+        dividerCatalog.setDrawable(ColorDrawable(Color.parseColor("#0c000000")))
+        dividerBookmark.setDrawable(ColorDrawable(Color.parseColor("#0c000000")))
+
+//        view!!.catalog_main.layoutManager = LinearLayoutManager(activity)
         view!!.catalog_main.addItemDecoration(dividerCatalog)
-        view.bookmark_main.layoutManager = LinearLayoutManager(activity)
-        view.bookmark_main.addItemDecoration(dividerBookmark)
+//        view.bookmark_main.layoutManager = LinearLayoutManager(activity)
+        view!!.bookmark_main.addItemDecoration(dividerBookmark)
 
         val catalogAdapter = ListRecyclerAdapter(chapterList, R.layout.item_read_catalog, ChapterHolder::class.java)
         catalogAdapter.itemClick = View.OnClickListener { v ->
@@ -164,6 +167,22 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
 
         }
         view.catalog_main.adapter = catalogAdapter
+        view.catalog_main.setLayoutManager(object : LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false) {
+            override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State) {
+                super.onLayoutChildren(recycler, state)
+                val firstVisibleItemPosition = findFirstVisibleItemPosition()
+                if (firstVisibleItemPosition != 0) {
+                    if (firstVisibleItemPosition == -1)
+                        view.catalog_fastscroller.setVisibility(View.GONE)
+                    return
+                }
+                val lastVisibleItemPosition = findLastVisibleItemPosition()
+                val itemsShown = lastVisibleItemPosition - firstVisibleItemPosition + 1
+                view.catalog_fastscroller.setVisibility(if (catalogAdapter.getItemCount() > itemsShown) View.VISIBLE else View.GONE)
+            }
+        })
+        view.catalog_fastscroller.setRecyclerView(view.catalog_main)
+        view.catalog_fastscroller.setViewsToUse(R.layout.read_recyclerview_fast_scroller, R.id.fastscroller_handle)
 
         val bookmarkAdapter = ListRecyclerAdapter(bookMarkList, R.layout.item_read_bookmark, BookMarkHolder::class.java)
         bookmarkAdapter.itemClick = View.OnClickListener { v ->
@@ -182,11 +201,11 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
             popupWindow.showAtLocation(view.rl_left_pop_bg, Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, -transX / 2, 0)
             inflate.txt_delete_mark.tag = v.tag
             inflate.txt_delete_mark.setOnClickListener { v ->
-                presenter?.deleteBookMark(v.tag as Bookmark)
+                presenter?.deleteBookMark(activity, v.tag as Bookmark)
                 popupWindow.dismiss()
             }
             inflate.txt_clear_mark.setOnClickListener { v ->
-                presenter?.deleteAllBookMark()
+                presenter?.deleteAllBookMark(activity)
                 popupWindow.dismiss()
             }
 
@@ -198,6 +217,22 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
             true
         }
         view.bookmark_main.adapter = bookmarkAdapter
+        view.bookmark_main.setLayoutManager(object : LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false) {
+            override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State) {
+                super.onLayoutChildren(recycler, state)
+                val firstVisibleItemPosition = findFirstVisibleItemPosition()
+                if (firstVisibleItemPosition != 0) {
+                    if (firstVisibleItemPosition == -1)
+                        view.bookmark_fastscroller.setVisibility(View.GONE)
+                    return
+                }
+                val lastVisibleItemPosition = findLastVisibleItemPosition()
+                val itemsShown = lastVisibleItemPosition - firstVisibleItemPosition + 1
+                view.bookmark_fastscroller.setVisibility(if (bookmarkAdapter.getItemCount() > itemsShown) View.VISIBLE else View.GONE)
+            }
+        })
+        view.bookmark_fastscroller.setRecyclerView(view.bookmark_main)
+        view.bookmark_fastscroller.setViewsToUse(R.layout.read_recyclerview_fast_scroller, R.id.fastscroller_handle)
 
         view.read_rg_catlog_mark.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
@@ -207,7 +242,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
                 }
                 R.id.tab_bookmark -> {
                     view.tv_catalog_novel_sort.visibility = View.GONE
-                    presenter?.loadBookMark()
+                    presenter?.loadBookMark(activity, 1)//用于标识只有为1的时候才打点书签
                 }
                 else -> {
 
@@ -218,10 +253,10 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
             reverse = !reverse
 //            var sortIcon = TypedValue()//背景色
             if (reverse) {
-//                activity.theme.resolveAttribute(R.attr.directory_sort_positive, sortIcon, true)
+//                activity.iyouqu.theme.resolveAttribute(R.attr.directory_sort_positive, sortIcon, true)
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_catalog_click_dx_btn)
             } else {
-//                activity.theme.resolveAttribute(R.attr.directory_sort_negative, sortIcon, true)
+//                activity.iyouqu.theme.resolveAttribute(R.attr.directory_sort_negative, sortIcon, true)
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_catalog_click_zx_btn)
             }
 //            view.iv_catalog_novel_sort.setImageResource(sortIcon.resourceId)
@@ -244,8 +279,14 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
     private var dataLoaded: Boolean = false
 
     override fun showCatalog(chapters: List<Chapter>, sequence: Int) {
+        if (view == null) {
+            //monkey
+            return
+        }
         view!!.catalog_main.visibility = View.VISIBLE
+        view!!.catalog_fastscroller.visibility = View.VISIBLE
         view!!.bookmark_main.visibility = View.GONE
+        view!!.bookmark_fastscroller.visibility = View.GONE
         view!!.rl_layout_empty_online.visibility = View.GONE
         loadingPage?.onSuccess()
 
@@ -264,7 +305,9 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
 
     override fun showMark(marks: List<Bookmark>) {
         view!!.catalog_main.visibility = View.GONE
+        view!!.catalog_fastscroller.visibility = View.GONE
         view!!.bookmark_main.visibility = View.VISIBLE
+        view!!.bookmark_fastscroller.visibility = View.VISIBLE
         loadingPage?.onSuccess()
         if (marks.isEmpty()) {
             view!!.rl_layout_empty_online.visibility = View.VISIBLE
@@ -278,6 +321,11 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
     }
 
     private var loadingPage: LoadingPage? = null
+
+    override fun setChangeAble(enable: Boolean) {
+        view?.tab_bookmark?.isClickable = enable
+        view?.tab_catalog?.isClickable = enable
+    }
 
     override fun onLoading() {
         loadingPage?.onSuccess()

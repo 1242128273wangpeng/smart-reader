@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:fitsSystemWindows="true"
+        android:layout_height="match_parent">
+
+    <Button
+            android:id="@+id/btn_login"
+            android:layout_width="275dp"
+            android:layout_height="45dp"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/txt_login_ignore"
+            android:layout_marginBottom="16.5dp"
+            android:text="一键登录"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:background="@color/top_navigation_bg_color"
+            />
+
+    <TextView
+            android:id="@+id/txt_login_ignore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="41.5dp"
+            android:textSize="12sp"
+            android:textColor="#666666"
+            android:text="以后再说"
+            />
+</RelativeLayout>

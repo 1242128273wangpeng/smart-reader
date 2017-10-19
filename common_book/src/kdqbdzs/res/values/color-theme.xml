@@ -276,4 +276,31 @@
     <color name="color_statusBar_read">
         #1d1d1c
     </color>
+    <color name="footprint_name_text_color">
+        #1a1a1a
+    </color>
+    <color name="footprint_author_text_color">
+        #9a9a9a
+    </color>
+    <color name="footprint_brow_time_text_color">
+        #989797
+    </color>
+    <color name="footprint_item_divider_color">
+        #eaeaea
+    </color>
+    <color name="footprint_item_divider1_color">
+        #F5F5F5
+    </color>
+    <color name="footprint_empty_hint_color">
+        #9B9B9B
+    </color>
+    <color name="footprint_empty_find_color">
+        #ffffff
+    </color>
+    <color name="footprint_title_clear_color">
+        #ffffff
+    </color>
+    <color name="footprint_title_clear_unusable_color">
+        #4Cffffff
+    </color>
 </resources>
