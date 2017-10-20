@@ -13,7 +13,6 @@ def releaseTime() {
 }
 
 android {
-
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
@@ -39,9 +38,6 @@ android {
     def UMENG_APPKEY_HYCS = "54800fd1fd98c53cb000096c"
     def UMENG_APPKEY_TXTMFQBYDQ = "5475a099fd98c5e733000c41"
     def UMENG_APPKEY_TXTMFQBDZS = "539e59d856240b0520057ce7"
-
-
-
 
 
 
@@ -94,9 +90,9 @@ android {
     def IFLYTEK_APPID_HYCS = "5982bdd0"
 
     //科大讯飞ID 暂用 快读申请后替换
-    def IFLYTEK_APPID_MFQBXSSC = "5982c0d0"
-    def IFLYTEK_APPID_ZSMFQBXS = "5982c0d0"
-    def IFLYTEK_APPID_TXTQBMFXS = "5982c0d0"
+    def IFLYTEK_APPID_MFQBXSSC = "59e707d4"
+    def IFLYTEK_APPID_ZSMFQBXS = "59e597c3"
+    def IFLYTEK_APPID_TXTQBMFXS = "59e70add"
 
     def appNameConfig = [
             kdzsydq  : "快读追书阅读器",
@@ -125,7 +121,7 @@ android {
     }
     defaultConfig {
 
-        applicationId "cn.txtzsydsq.reader"
+        applicationId "cn.qbzsydsq.reader"
 
 //        System.err.println("project.properties = ${project.getProperties()}")
 
