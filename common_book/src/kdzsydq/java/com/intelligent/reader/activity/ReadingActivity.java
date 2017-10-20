@@ -109,6 +109,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -381,6 +382,10 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         versionCode = AppUtils.getVersionCode();
         AppLog.e(TAG, "versionCode: " + versionCode);
         inflater = LayoutInflater.from(getApplicationContext());
+        if(readStatus != null){
+            readStatus.recycleResource();
+            readStatus.recycleResourceNew();
+        }
         readStatus = new ReadStatus(getApplicationContext());
         (BookApplication.getGlobalContext()).setReadStatus(readStatus);
         autoSpeed = readStatus.autoReadSpeed();
@@ -388,18 +393,15 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         myNovelHelper.setOnHelperCallBack(this);
 
         requestFactory = new RequestFactory();
-
         if (dataFactory != null) {
             dataFactory.clean();
         }
         dataFactory = new ReadDataFactory(getApplicationContext(), this, readStatus, myNovelHelper);
-
+        dataFactory.setReadDataListener(this);
         // 初始化窗口基本信息
         initWindow();
         setOrientation();
         getSavedState(intent.getExtras());
-
-        dataFactory.setReadDataListener(this);
         if (isFromCover && Constants.IS_LANDSCAPE) {
             return;
         }
@@ -888,11 +890,14 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         reading_content = (RelativeLayout) findViewById(R.id.reading_content);
         readSettingView = (ReadSettingView) findViewById(R.id.readSettingView);
         readSettingView.setOnReadSettingListener(this);
+        int novel_top_margin;
         novel_basePageView = (FrameLayout) findViewById(R.id.novel_basePageView);
         readStatus.novel_basePageView = novel_basePageView;
         if (Constants.isSlideUp) {
+            novel_top_margin = getResources().getDimensionPixelOffset(R.dimen.dimen_margin_20);
             pageView = new ScrollPageView(getApplicationContext());
         } else {
+            novel_top_margin = getResources().getDimensionPixelOffset(R.dimen.dimen_margin_20);
             pageView = new PageView(getApplicationContext());
         }
         novel_basePageView.removeAllViews();
@@ -911,7 +916,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
         ll_guide_layout = findViewById(R.id.ll_guide_layout);
         initGuide();
-        initReadingAd();
+//        initReadingAd();
 
         readSettingView.setNovelMode(Constants.MODE);
         readStatus.source_ids = readStatus.book.site;
@@ -1721,6 +1726,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     protected void onResume() {
         super.onResume();
         AppLog.d("ReadingActivity", "onResume:" + Constants.isFullWindowRead);
+
+        // 注册一个接受广播类型
+        registerReceiver(mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         // 设置全屏
         if (!Constants.isFullWindowRead) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
@@ -1748,8 +1756,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         }
 
         readStatus.chapterCount = readStatus.book.chapter_count;
-        // 注册一个接受广播类型
-        registerReceiver(mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+
 
         int lock = sp.getInt("lock_screen_time", 5);
         if (lock == Integer.MAX_VALUE) {
@@ -1815,7 +1822,17 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         }
         readLength = 0;
 
-        unregisterReceiver(mBatInfoReceiver);
+    }
+
+    boolean isFirstVisiable = true;
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (isFirstVisiable && hasFocus) {
+            isFirstVisiable = false;
+            initReadingAd();
+        }
     }
 
     @Override
@@ -1857,6 +1874,14 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         readStatus.isMenuShow = false;
         if (mNovelLoader != null && mNovelLoader.getStatus() == BaseAsyncTask.Status.RUNNING) {
             mNovelLoader.cancel(true);
+        }
+
+        if (mBatInfoReceiver != null) {
+            try {
+                unregisterReceiver(mBatInfoReceiver);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         /**
@@ -2386,29 +2411,42 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             myDialog = new MyDialog(this, R.layout.dialog_feedback);
             myDialog.setCanceledOnTouchOutside(true);
             TextView dialog_title = (TextView) myDialog.findViewById(R.id.dialog_title);
-            dialog_title.setText(R.string.read_feedback);
+            dialog_title.setText(R.string.read_bottom_feedback);
             LinearLayout checkboxsParent = (LinearLayout) myDialog.findViewById(R.id.feedback_checkboxs_parent);
-            final CheckBox[] checkboxs = new CheckBox[5];
+            final CheckBox[] checkboxs = new CheckBox[7];
+            RelativeLayout[] relativeLayouts = new RelativeLayout[7];
             int index = 0;
             for (int i = 0; i < checkboxsParent.getChildCount(); i++) {
-                LinearLayout linearLayout = (LinearLayout) checkboxsParent.getChildAt(i);
-                for (int j = 0; j < linearLayout.getChildCount(); j++) {
-                    checkboxs[index] = (CheckBox) linearLayout.getChildAt(j);
-                    index++;
+                RelativeLayout relativeLayout = (RelativeLayout) checkboxsParent.getChildAt(i);
+                relativeLayouts[i] = relativeLayout;
+                relativeLayouts[i].setTag(i);
+                for (int j = 0; j < relativeLayout.getChildCount(); j++) {
+                    View v = relativeLayout.getChildAt(j);
+                    if (v instanceof CheckBox){
+                        checkboxs[index] = (CheckBox)v;
+                        index++;
+                    }
                 }
             }
-            for (CheckBox checkBox : checkboxs) {
-                checkBox.setOnClickListener(new OnClickListener() {
+
+            if (Constants.IS_LANDSCAPE){
+                myDialog.findViewById(R.id.sv_feedback).getLayoutParams().height = getResources().getDimensionPixelOffset(R.dimen.dimen_view_height_160);
+             }else {
+                myDialog.findViewById(R.id.sv_feedback).getLayoutParams().height = ScrollView.LayoutParams.WRAP_CONTENT;
+            }
+
+            for (RelativeLayout relativeLayout : relativeLayouts) {
+                relativeLayout.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         for (CheckBox checkBox : checkboxs) {
                             checkBox.setChecked(false);
                         }
-                        ((CheckBox) v).setChecked(true);
+                        checkboxs[(int) v.getTag()].setChecked(true);
                     }
                 });
             }
-            TextView submitButton = (TextView) myDialog.findViewById(R.id.feedback_submit);
+            Button submitButton = (Button) myDialog.findViewById(R.id.feedback_submit);
             submitButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -2417,7 +2455,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                         if (checkboxs[n].isChecked()) {
                             type = n + 1;
                         }
-                        ;
                     }
                     if (type == -1) {
                         showToastShort("请选择错误类型");
@@ -2429,7 +2466,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 }
             });
 
-            ImageView cancelImage = (ImageView) myDialog.findViewById(R.id.feedback_cancel);
+            Button cancelImage = (Button) myDialog.findViewById(R.id.feedback_cancel);
             cancelImage.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -2495,6 +2532,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         Book book = readStatus.book;
         chapterErrorBean.bookName = getEncode(book.name);
         chapterErrorBean.author = getEncode(book.author);
+        chapterErrorBean.channelCode = Constants.QG_SOURCE.equals(book.site)? "1": "2";
         BookChapterDao bookChapterDao = new BookChapterDao(this, book.book_id);
         Chapter currChapter = bookChapterDao.getChapterBySequence(readStatus.sequence);
         if (currChapter == null) {
@@ -2525,9 +2563,13 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         if (TextUtils.isEmpty(chapterErrorBean.bookChapterId)) {
             chapterErrorBean.bookChapterId = "";
         }
+        if (TextUtils.isEmpty(chapterErrorBean.host)) {
+            chapterErrorBean.host = "";
+        }
         AppLog.i(TAG, "chapterErrorBean = " + chapterErrorBean.toString());
         LoadDataManager loadDataManager = new LoadDataManager(this);
         loadDataManager.submitBookError(chapterErrorBean);
+        StartLogClickUtil.upLoadChapterError(chapterErrorBean);
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -2549,7 +2591,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     }
 
     private void changeMarkState() {
-        mReadOptionPresenter.updateStatus();
+        if(mReadOptionPresenter!=null){
+            mReadOptionPresenter.updateStatus();
+        }
     }
 
     public void goBackToHome() {

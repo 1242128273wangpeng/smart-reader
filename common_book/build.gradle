@@ -483,7 +483,7 @@ N多网	blf1298_10885_001
             shrinkResources false
 
             //便于执行monkey, 跑monkey时 这是为true
-            buildConfigField "boolean", "IS_LEAKCANARY_DISABLE", "false"
+            buildConfigField "boolean", "IS_LEAKCANARY_DISABLE", "true"
 
             fixChannelAppName(getOwner())
             addManifestPlaceholders([CHANNEL_NAME: 'blf1298_11974_001'])
@@ -525,6 +525,7 @@ N多网	blf1298_10885_001
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "542233ee41"
             notOverrideResValue getOwner(), "string", "push_key", "aHSRXNEN6xUTi2QM455gvQC6"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23572755"
+            notOverrideResValue getOwner(), "string", "alifeedback_secret", "ea0dfde6fc6241cd0aa7a4330bfcd8ad"
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://yuedu.dushixiaoshuo.cn"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://scpage.dushixiaoshuo.cn:443"
         }
@@ -554,6 +555,7 @@ N多网	blf1298_10885_001
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "c2543b8059"
             notOverrideResValue getOwner(), "string", "push_key", "DPAKieWG5BWSyNrq5ZGBCfUH"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23571376"
+            notOverrideResValue getOwner(), "string", "alifeedback_secret", "5c2fff1a99656234df13d8b525ca8361"
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://zhuishu.lsread.cn"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://ctbookcity.lsread.cn:443"
         }
@@ -584,6 +586,7 @@ N多网	blf1298_10885_001
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "6dc230cbb1"
             notOverrideResValue getOwner(), "string", "push_key", "vig504s5U9vGM2Oa0NM7snMW8gbmR4lS"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23730467"
+            notOverrideResValue getOwner(), "string", "alifeedback_secret", "eab534147f294990578b4463958c33c3"
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://kuai.0106636.cn"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://kdbc.0106636.cn:443"
         }
@@ -608,8 +611,9 @@ N多网	blf1298_10885_001
 //            notOverrideResValue getOwner(), "string", "app_name", "追书免费全本小说"
             notOverrideResValue getOwner(), "string", "database_name", "mianfeinovelnew.db"
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "e4ed492234"
-            notOverrideResValue getOwner(), "string", "push_key", "l1XQOTrS9hzzdTxSh2pMEobvgUhPoNeM"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23730466"
+            notOverrideResValue getOwner(), "string", "alifeedback_secret", "77f2350e86dc8d19f644ba0cdf0efa70"
+            notOverrideResValue getOwner(), "string", "push_key", "l1XQOTrS9hzzdTxSh2pMEobvgUhPoNeM"
 
 
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://novel.caotangteach.com"
@@ -642,6 +646,7 @@ N多网	blf1298_10885_001
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "0aeda7846c"
             notOverrideResValue getOwner(), "string", "push_key", "5IGK3hQjIasKH9P9thgBtqop5tTzjiuF"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23730670"
+            notOverrideResValue getOwner(), "string", "alifeedback_secret", "8b015dab3f63bdb0f98c03e35bc885ab"
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://book.lzbook.net"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://boyuelist.lzbook.net:443"
         }
@@ -668,6 +673,7 @@ N多网	blf1298_10885_001
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "9368f00036"
             notOverrideResValue getOwner(), "string", "push_key", "wxjKNUKiif2bBS95aBo7E8Gj4Iivtp6c"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23731853"
+            notOverrideResValue getOwner(), "string", "alifeedback_secret", "7be24d1f8f5196a4aa6d6d6788004d4b"
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://n.wubutianxia.com"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://xiaoshuo.wubutianxia.com:443"
         }
@@ -896,8 +902,8 @@ dependencies {
     compile project(path: ':book_kit')
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
-//    compile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
-    compile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    compile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+//    compile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
 
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile "com.android.support:cardview-v7:$support_version"

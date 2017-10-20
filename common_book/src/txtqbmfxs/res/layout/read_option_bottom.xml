@@ -100,8 +100,8 @@
             android:layout_above="@+id/reading_foot_options"
             android:background="@color/color_gray_707070"
             android:visibility="gone"/>
-    
-    <RelativeLayout
+
+    <LinearLayout
             android:id="@+id/reading_foot_options"
             android:layout_width="match_parent"
             android:layout_height="@dimen/bottom_nav"
@@ -109,17 +109,22 @@
             android:clickable="true"
             android:gravity="center_vertical"
             android:background="@color/read_option_bg"
-            tools:ignore="DisableBaselineAlignment,UselessParent">
+            android:orientation="horizontal"
+            tools:ignore="DisableBaselineAlignment,UselessParent"
+            >
+
+        <View
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                />
 
         <RelativeLayout
                 android:id="@+id/novel_catalog"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:orientation="vertical"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="10dp">
+                android:paddingRight="10dp">
             
             <TextView
                     android:id="@+id/txt_catalog"
@@ -128,7 +133,6 @@
                     android:layout_alignParentBottom="true"
                     android:layout_marginBottom="5dp"
                     android:layout_centerHorizontal="true"
-                    
                     android:gravity="center"
                     android:singleLine="true"
                     android:text="@string/read_catalog"
@@ -153,15 +157,19 @@
                     android:src="@drawable/read_option_catalog_selector"/>
         </RelativeLayout>
 
+        <View
+                android:layout_width="0dp"
+                android:layout_weight="1.6"
+                android:layout_height="match_parent"
+                />
+
         <RelativeLayout
                 android:id="@+id/novel_night"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:orientation="vertical"
-                android:layout_centerHorizontal="true"
-                android:layout_marginRight="20dp">
+                >
 
             <TextView
                     android:id="@+id/txt_night"
@@ -169,7 +177,6 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_marginBottom="5dp"
-                    
                     android:singleLine="true"
                     android:layout_centerHorizontal="true"
                     android:text="@string/read_night"
@@ -193,16 +200,61 @@
                     android:duplicateParentState="true"
                     android:src="@drawable/read_option_night_selector"/>
         </RelativeLayout>
+
+        <View
+                android:layout_width="0dp"
+                android:layout_weight="1.6"
+                android:layout_height="match_parent"/>
+
+        <RelativeLayout
+                android:id="@+id/novel_feedback"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                >
+
+            <TextView
+                    android:id="@+id/txt_feedback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="5dp"
+                    android:singleLine="true"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/read_bottom_feedback"
+                    android:textColor="@drawable/read_option_txt_alpha_click_color"
+                    android:duplicateParentState="true"
+                    android:textSize="@dimen/text_small"
+                    android:clickable="false"
+                    android:focusable="false"/>
+
+            <ImageButton
+                    android:id="@+id/ibtn_feedback"
+                    android:layout_above="@+id/txt_feedback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitCenter"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:background="@null"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:duplicateParentState="true"
+                    android:src="@drawable/read_option_feedback_selector"/>
+        </RelativeLayout>
+
+        <View
+                android:layout_width="0dp"
+                android:layout_weight="1.6"
+                android:layout_height="match_parent"/>
         
         <RelativeLayout
                 android:id="@+id/novel_setting"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:orientation="vertical"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp">
+                android:paddingRight="10dp">
             
             <TextView
                     android:id="@+id/txt_setting"
@@ -234,6 +286,12 @@
                     android:duplicateParentState="true"
                     android:src="@drawable/read_option_setting_selector"/>
         </RelativeLayout>
-    </RelativeLayout>
+
+        <View
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                />
+    </LinearLayout>
 
 </RelativeLayout>

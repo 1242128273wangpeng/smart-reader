@@ -21,6 +21,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -84,7 +85,7 @@ public abstract class FrameActivity extends AppCompatActivity {
 
         initThemeHelper();
         initTheme();
-        ATManager.addActivity(this);
+//        ATManager.addActivity(this);
 //        StatusBarCompat.compat(this, getStatusBarColorId());
     }
 
@@ -513,6 +514,10 @@ public abstract class FrameActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+//        getWindow().getDecorView().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+//        if(getWindow().getDecorView() instanceof  ViewGroup){
+//            ((ViewGroup)getWindow().getDecorView()).removeAllViews();
+//        }
         ATManager.removeActivity(this);
     }
 }

@@ -365,6 +365,10 @@ public class SplashActivity extends FrameActivity {
         if (context != null) {
             context = null;
         }
+
+        //会持有SplashActivity
+        OwnNativeAdManager.getInstance(this).viewGroup = null;
+        OwnNativeAdManager.getInstance(this).nativeInit.container = null;
         AppLog.e(TAG, "ondestory执行");
         super.onDestroy();
     }

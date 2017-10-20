@@ -31,6 +31,7 @@ import com.intelligent.reader.search.SearchHelper;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.search.SearchAutoCompleteBean;
 import net.lzbook.kit.data.search.SearchCommonBean;
 import net.lzbook.kit.data.search.SearchHotBean;
 import net.lzbook.kit.request.UrlUtils;
@@ -81,6 +82,9 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
     private RelativeLayout relative_parent;
     private String searchType;
     private String suggest;
+    private List<SearchAutoCompleteBean.DataBean.AuthorsBean> authorsBean = new ArrayList<>();
+    private List<SearchAutoCompleteBean.DataBean.LabelBean> labelBean = new ArrayList<>();
+    private List<SearchAutoCompleteBean.DataBean.NameBean> bookNameBean = new ArrayList<>();
 
     public SearchViewHelper(Context context, Activity activity, ViewGroup rootLayout, EditText
             searchEditText, SearchHelper searchHelper) {
@@ -395,12 +399,26 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
                 } else {
                     searchType = "0";
                 }
+                if (mSearchHelper != null) {
+                    mSearchHelper.setSearchType(searchType);
+                    mSearchHelper.setWord(suggest);
+                    AppLog.e("typesearc", mSearchHelper.getSearchType() + suggest);
+                }
                 if (!TextUtils.isEmpty(suggest) && mSearchEditText != null) {
                     Map<String, String> data = new HashMap<>();
                     data.put("keyword", suggest);
                     data.put("type", searchType);
                     data.put("enterword", mSearchEditText.getText().toString().trim());
-                    data.put("rank", arg2 + "");
+                    data.put("rank", arg2 + 1 + "");
+                    if (arg2 + 1 <= authorsBean.size()) {
+                        data.put("typerank", arg2 + 1 + "");
+                    } else if (arg2 + 1 <= authorsBean.size() + labelBean.size()) {
+                        data.put("typerank", arg2 + 1 - authorsBean.size() + "");
+                    } else if (arg2 + 1 <= authorsBean.size() + labelBean.size() + bookNameBean.size()) {
+                        data.put("typerank", arg2 + 1 - authorsBean.size() - labelBean.size() + "");
+                    } else {
+                        data.put("typerank", arg2 + 1 + "");
+                    }
                     StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TIPLISTCLICK, data);
 
                     mShouldShowHint = false;
@@ -492,11 +510,25 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
     }
 
     @Override
-    public void onSearchResult(List<SearchCommonBean>  suggestList) {
+    public void onSearchResult(List<SearchCommonBean> suggestList, SearchAutoCompleteBean transmitBean) {
         if (mSuggestList == null){
             return;
         }
         mSuggestList.clear();
+        authorsBean.clear();
+        labelBean.clear();
+        bookNameBean.clear();
+        if (transmitBean.getData() != null) {
+            if (transmitBean.getData().getAuthors() != null) {
+                authorsBean = transmitBean.getData().getAuthors();
+            }
+            if (transmitBean.getData().getLabel() != null) {
+                labelBean = transmitBean.getData().getLabel();
+            }
+            if (transmitBean.getData().getName() != null) {
+                bookNameBean = transmitBean.getData().getName();
+            }
+        }
         for (SearchCommonBean item : suggestList) {
 
             mSuggestList.add(item);

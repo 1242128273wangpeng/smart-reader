@@ -6,6 +6,7 @@
     <string name="read_changesource">换源</string>
     <string name="read_cache">缓存</string>
     <string name="read_feedback">报错</string>
+    <string name="read_bottom_feedback">反馈</string>
     <string name="read_landscape">横屏</string>
     <string name="read_landscape_or_portrait">横/竖屏</string>
     <string name="read_portrait">竖屏</string>

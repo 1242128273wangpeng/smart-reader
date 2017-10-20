@@ -4,7 +4,6 @@ import com.dingyueads.sdk.Native.YQNativeAdInfo;
 import com.dingyueads.sdk.NativeInit;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
-import com.intelligent.reader.activity.DownloadManagerActivity;
 import com.intelligent.reader.activity.HomeActivity;
 import com.intelligent.reader.adapter.BookShelfReAdapter;
 import com.intelligent.reader.app.BookApplication;
@@ -36,7 +35,6 @@ import net.lzbook.kit.utils.Tools;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
@@ -488,6 +486,27 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
 
             bookShelfReAdapter.setUpdate_table(update_table);
             bookShelfReAdapter.notifyDataSetChanged();
+        }
+
+        //判断用户是否是当日首次打开应用,并上传书架的id
+        long first_time = sharedPreferences.getLong(Constants.TODAY_FIRST_POST_BOOKIDS, 0);
+
+        long currentTime = System.currentTimeMillis();
+        boolean b = AppUtils.isToday(first_time, currentTime);
+        if (!b) {
+            StringBuilder bookIdList = new StringBuilder();
+            for(int i=0;i<iBookList.size();i++){
+                Book book = iBookList.get(i);
+                bookIdList.append(book.book_id);
+
+                bookIdList.append((book.readed == 1) ? "_1" : "_0");//1已读，0未读
+                bookIdList.append((i == iBookList.size()) ? "" : "$");
+
+            }
+            Map<String, String> data = new HashMap<>();
+            data.put("bookid",bookIdList.toString());
+            StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.BOOKLIST, data);
+            sharedPreferences.edit().putLong(Constants.TODAY_FIRST_POST_BOOKIDS, currentTime).apply();
         }
     }
 

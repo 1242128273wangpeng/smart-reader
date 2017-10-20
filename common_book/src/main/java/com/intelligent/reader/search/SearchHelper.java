@@ -58,12 +58,15 @@ public class SearchHelper {
     private String filterWord = "ALL";
     private String sortType = "0";
     private String mUrl;
+    private String fromClass;
 
     private Context mContext;
     private String url_tag;
     private SearchSuggestCallBack searchSuggestCallBack;
     private JsCallSearchCall mJsCallSearchCall;
     private StartLoadCall mStartLoadCall;
+    private SearchAutoCompleteBean transmitBean;
+
 
     public SearchHelper(Context context){
         mContext = context;
@@ -102,7 +105,6 @@ public class SearchHelper {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        AppLog.e("word",searchWord);
         if (searchWord != null && !TextUtils.isEmpty(searchWord)) {
             OwnSearchService searchService = NetOwnSearch.INSTANCE.getOwnSearchService();
             searchService .searchAutoComplete(searchWord)
@@ -118,7 +120,7 @@ public class SearchHelper {
                         public void onNext(SearchAutoCompleteBean bean) {
                             List<SearchCommonBean> resultSuggest = new ArrayList<SearchCommonBean>();
                             resultSuggest.clear();
-
+                            transmitBean = bean;
                             AppLog.e("bean",bean.toString());
                             if(bean.getSuc().equals("200")&&bean.getData()!=null){
                                 for(int i=0;i<bean.getData().getAuthors().size();i++){
@@ -143,8 +145,9 @@ public class SearchHelper {
                                 for(SearchCommonBean bean1:resultSuggest){
                                     AppLog.e("uuu",bean1.toString());
                                 }
-                                if (searchSuggestCallBack != null){
-                                    searchSuggestCallBack.onSearchResult(resultSuggest);
+                                if (searchSuggestCallBack != null && transmitBean != null) {
+
+                                    searchSuggestCallBack.onSearchResult(resultSuggest, transmitBean);
                                 }
                             }
 
@@ -161,26 +164,6 @@ public class SearchHelper {
                             AppLog.e("result22","onComplete");
                         }
                     });
-
-
-//            String url = URLBuilderIntterface.YS_SEARCH_SUGGEST.replace("{word}", searchWord);
-//            url_tag = url;
-//            YSRequestService.getSearchSuggestData(new YSRequestService.DataServiceTagCallBack() {
-//                @Override
-//                public void onSuccess(Object result, Object tag) {
-//                    if (result != null && url_tag.equals(tag)) {
-//                        ArrayList<String> resultSuggest = (ArrayList<String>) result;
-//                        if (searchSuggestCallBack != null){
-//                            searchSuggestCallBack.onSearchResult(resultSuggest);
-//                        }
-//                    }
-//                }
-//
-//                @Override
-//                public void onError(Exception error, Object tag) {
-//
-//                }
-//            }, url);
         }
     }
 
@@ -206,7 +189,23 @@ public class SearchHelper {
         this.word = word;
     }
 
-    public void setHotWordType(String word,String type){
+    public String getFromClass() {
+        return fromClass;
+    }
+
+    public void setFromClass(String fromClass) {
+        this.fromClass = fromClass;
+    }
+
+    public String getSearchType() {
+        return searchType;
+    }
+
+    public void setSearchType(String searchType) {
+        this.searchType = searchType;
+    }
+
+    public void setHotWordType(String word, String type) {
         this.word = word;
         searchType = type;
         filterType = "0";
@@ -216,10 +215,12 @@ public class SearchHelper {
 
     public void setInitType(Intent intent){
         word = intent.getStringExtra("word");
+        fromClass = intent.getStringExtra("from_class");
         searchType = intent.getStringExtra("search_type");
         filterType = intent.getStringExtra("filter_type");
         filterWord = intent.getStringExtra("filter_word");
         sortType = intent.getStringExtra("sort_type");
+
     }
 
     public void initJSHelp(JSInterfaceHelper jsInterfaceHelper) {
@@ -233,6 +234,7 @@ public class SearchHelper {
             @Override
             public void doSearch(String keyWord, String search_type, String filter_type, String filter_word, String sort_type) {
 
+                AppLog.e("aaa", "aaaa");
                 word = keyWord;
                 searchType = search_type;
                 filterType = filter_type;
@@ -323,11 +325,6 @@ public class SearchHelper {
                 boolean succeed = bookDaoHelper.insertBook(book);
                 if (succeed) {
                     Toast.makeText(mContext.getApplicationContext(), R.string.bookshelf_insert_success, Toast.LENGTH_SHORT).show();
-//
-//                    Map<String, String> data = new HashMap<>();
-//                    data.put("type","1");
-//                    data.put("bookId",book_id);
-//                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SEARCHRESULT_PAGE, StartLogClickUtil.SHELFADD, data);
                 }
             }
         });
@@ -338,10 +335,6 @@ public class SearchHelper {
                 AppLog.e(TAG, "doDeleteBook");
                 bookDaoHelper.deleteBook(book_id);
                 Toast.makeText(mContext.getApplicationContext(), R.string.bookshelf_delete_success, Toast.LENGTH_SHORT).show();
-
-//                Map<String, String> data = new HashMap<>();
-//                data.put("type","2");
-//                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SEARCHRESULT_PAGE, StartLogClickUtil.SHELFADD, data);
             }
         });
     }
@@ -430,7 +423,7 @@ public class SearchHelper {
     }
 
     public interface SearchSuggestCallBack {
-        void onSearchResult(List<SearchCommonBean> suggestList);
+        void onSearchResult(List<SearchCommonBean> suggestList, SearchAutoCompleteBean transmitBean);
     }
 
     public interface JsCallSearchCall {

@@ -90,6 +90,26 @@ public class ServerLog {
             if (!mContent.containsKey("app_channel_id")) {
                 mContent.put("app_channel_id", AppUtils.getChannelId());//app渠道号
             }
+        } else if (type.equals(PLItemKey.ZN_APP_FEEDBACK)) {
+            if (!mContent.containsKey("project")) {
+                mContent.put("project", PLItemKey.ZN_APP_FEEDBACK.getProject());
+            }
+            if (!mContent.containsKey("logstore")) {
+                mContent.put("logstore", PLItemKey.ZN_APP_FEEDBACK.getLogstore());
+            }
+            if (!mContent.containsKey("phone_identity")) {
+                mContent.put("phone_identity", DeviceID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));//手机唯一标识符
+            }
+            if (!mContent.containsKey("vendor")) {
+                mContent.put("vendor", AppUtils.getPhoneBrand() + "," + AppUtils.getPhoneModel() + "," + AppUtils.getRelease());//设备信息
+            }
+            if (!mContent.containsKey("operator")) {
+                mContent.put("operator", AppUtils.getProvidersName(BaseBookApplication.getGlobalContext()));//运营商
+            }
+            if (!mContent.containsKey("resolution_ratio")) {
+                mContent.put("resolution_ratio", AppUtils.getMetrics(BaseBookApplication.getGlobalContext()));//分辨率
+            }
+
         }
 
         mContent.put("__time__", new Long(System.currentTimeMillis() / 1000).intValue());
