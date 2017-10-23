@@ -444,6 +444,14 @@ public class NovelHelper {
                 readStatus.chapterNameList = temp;
             }
         }
+
+        // 去除章节开头特殊符号
+        if (content.startsWith(" \"")) {
+            content = content.replaceFirst(" \"", "");
+        } else if (content.startsWith("\"")) {
+            content = content.replaceFirst("\"", "");
+        }
+
         String[] contents = content.split("\n");
         for (String temp : contents) {
             temp = temp.replaceAll("\\s+", "");
@@ -525,16 +533,6 @@ public class NovelHelper {
                 can = false;
             }
             // isLastDuan = isDuan;
-        }
-
-        // 去除章节开头特殊符号
-        if ((readStatus.sequence >= 0) && lists.size() > 0) {
-            if (lists.get(0) != null && lists.get(0).size() > 4) {
-                String chapterTitle = lists.get(0).get(3).getLineContent();
-                if (!TextUtils.isEmpty(chapterTitle) && chapterTitle.contains("\"")) {
-                    lists.get(0).set(3, new NovelLineBean(chapterTitle.replace("\"", "").trim(), 0, 0, false, null));
-                }
-            }
         }
 
         if (isNativeAdAvailable() && lists.size() >= 3) {
