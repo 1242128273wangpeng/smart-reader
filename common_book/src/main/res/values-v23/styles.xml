@@ -10,7 +10,14 @@
         <!-- 设置activity切换动画 -->
         <item name="android:windowAnimationStyle">@style/activityAnimation</item>
     </style>
-
+    
+    <style name="Theme.DesignDemo"
+           parent="Base.Theme.DesignDemo">
+        <!-- 设置activity切换动画 -->
+        <item name="android:windowAnimationStyle">@style/activityAnimation</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+    
     <!-- animation 样式 -->
     <style name="activityAnimation" parent="@android:style/Animation">
         <item name="android:activityOpenEnterAnimation">@anim/slide_right_in</item>

@@ -148,11 +148,11 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                             if (imageContainer != null) {
                                 Bitmap bitmap = imageContainer.getBitmap();
                                 if (bitmap != null) {
-                                    Bitmap roundedCornerBitmap = ImageUtils.getRoundedCornerBitmap
-                                            (bitmap, 40);
-                                    if (roundedCornerBitmap != null && aDViewHolder.item_ad_image != null) {
+//                                    Bitmap roundedCornerBitmap = ImageUtils.getRoundedCornerBitmap
+//                                            (bitmap, 40);
+                                    if (bitmap != null && aDViewHolder.item_ad_image != null) {
                                         aDViewHolder.item_ad_image_rl.setVisibility(View.INVISIBLE);
-                                        aDViewHolder.item_ad_image.setImageBitmap(roundedCornerBitmap);
+                                        aDViewHolder.item_ad_image.setImageBitmap(bitmap);
                                         aDViewHolder.item_ad_image.setVisibility(View.VISIBLE);
                                     } else {
                                         aDViewHolder.item_ad_layout.setVisibility(View.GONE);
