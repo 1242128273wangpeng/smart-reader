@@ -383,12 +383,11 @@ public class DrawTextHelper {
                     } else {
 
                         if (text.getType() == 1) {
-                            mPaint.setTextScaleX(1.0f);
-                            mPaint.setTextScaleX(mWidth / mPaint.measureText(text.getLineContent()));
+                            drawLineIntervalText(canvas, text, total_y);
                         } else {
-                            mPaint.setTextScaleX(1.0f);
+                            canvas.drawText(text.getLineContent(), mLineStart, total_y, mPaint);
                         }
-                        canvas.drawText(text.getLineContent(), mLineStart, total_y, mPaint);
+
                         total_y += m_iFontHeight;
                         readStatus.currentPageConentLength += text.getLineContent().length();
                     }
@@ -585,13 +584,13 @@ public class DrawTextHelper {
                         AppLog.e(TAG, "2_startsWith ad_page_tag" + " sequence:" + readStatus.sequence + " isShow_big_ad:" + isShow_big_ad);
                     } else {
                         readStatus.shouldShowInMobiAdView = false;
+
                         if (text.getType() == 1) {
-                            mPaint.setTextScaleX(1.0f);
-                            mPaint.setTextScaleX(mWidth / mPaint.measureText(text.getLineContent()));
+                            drawLineIntervalText(canvas, text, total_y);
                         } else {
-                            mPaint.setTextScaleX(1.0f);
+                            canvas.drawText(text.getLineContent(), mLineStart, total_y, mPaint);
                         }
-                        canvas.drawText(text.getLineContent(), mLineStart, total_y, mPaint);
+
                         total_y += m_iFontHeight;
                     }
 
@@ -716,6 +715,63 @@ public class DrawTextHelper {
         }
 
         return mOperationPaint;
+    }
+
+    /**
+     * 完整行单个字符绘制
+     */
+    private void drawLineIntervalText(Canvas canvas, NovelLineBean novelLineBean, float total_y) {
+        if (novelLineBean == null || novelLineBean.getLineContent() == null || novelLineBean.getLineContent().length() < 3) {
+            return;
+        }
+        ArrayList<Float> arrLenths = novelLineBean.getArrLenths();
+        int length = novelLineBean.getLineContent().length();
+        if (arrLenths == null || arrLenths.size() < length) {
+            return;
+        }
+
+//        float[] chineseWidth = new float[1];
+//        float[] charWidth = new float[1];
+//        mPaint.getTextWidths("正", chineseWidth);
+        int charNum;
+        if (novelLineBean.isLastIsPunct()) {
+            charNum = length - 2;
+        } else {
+            charNum = length - 1;
+        }
+        float marg = (mWidth - novelLineBean.getLineLength()) / charNum;
+        float star;
+        for (int i = 0; i < length; i++) {
+            star = mLineStart + arrLenths.get(i) + marg * i;
+            char c = novelLineBean.getLineContent().charAt(i);
+//            if (Tools.isChinese(c) || c == '，' || c == '。'){
+//                charWidth[0] = chineseWidth[0];
+//            }else {
+//                charWidth[0] = mPaint.measureText(String.valueOf(c));
+//            }
+            if (i == length - 1 && isEndPunct(c)) {
+                Rect rect = new Rect();
+                mPaint.getTextBounds(String.valueOf(c), 0, 1, rect);
+                star -= marg;
+                star -= rect.left;
+                star += (ReadConstants.chineseWth / 2 - rect.width()) / 2;
+                canvas.drawText(String.valueOf(c), star, total_y, mPaint);
+            } else {
+                canvas.drawText(String.valueOf(c), star, total_y, mPaint);
+            }
+        }
+
+    }
+
+    private boolean isEndPunct(char ch) {
+        boolean isInclude = false;
+        for (char c : ReadConstants.endPuncts) {
+            if (ch == c) {
+                isInclude = true;
+                break;
+            }
+        }
+        return isInclude;
     }
 
     private void addInMobiView(InMobiNative inMobiNative) {
@@ -890,14 +946,13 @@ public class DrawTextHelper {
                         } else if (text.getLineContent().equals("chapter_homepage  ")) {
 
                         } else {
+
                             if (text.getType() == 1) {
-                                mPaint.setTextScaleX(1.0f);
-                                mPaint.setTextScaleX(mWidth / mPaint.measureText(text.getLineContent()));
+                                drawLineIntervalText(canvas, text, total_y);
                             } else {
-                                mPaint.setTextScaleX(1.0f);
+                                canvas.drawText(text.getLineContent(), mLineStart, total_y, mPaint);
                             }
-                            canvas.drawText(text.getLineContent(), Constants.READ_CONTENT_PAGE_LEFT_SPACE
-                                    * readStatus.screenScaledDensity, total_y, mPaint);
+
                             total_y += m_iFontHeight;
                             readStatus.currentPageConentLength += text.getLineContent().length();
                         }
@@ -1026,13 +1081,11 @@ public class DrawTextHelper {
                         } else {
 
                             if (text.getType() == 1) {
-                                mPaint.setTextScaleX(1.0f);
-                                mPaint.setTextScaleX(mWidth / mPaint.measureText(text.getLineContent()));
+                                drawLineIntervalText(canvas, text, total_y);
                             } else {
-                                mPaint.setTextScaleX(1.0f);
+                                canvas.drawText(text.getLineContent(), mLineStart, total_y, mPaint);
                             }
-                            canvas.drawText(text.getLineContent(), Constants.READ_CONTENT_PAGE_LEFT_SPACE
-                                    * readStatus.screenScaledDensity, total_y, mPaint);
+
                             total_y += m_iFontHeight;
                             firstchapterHeight = total_y;
                         }

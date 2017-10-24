@@ -6,6 +6,7 @@ import com.dingyueads.sdk.Bean.AdSceneData;
 import com.dingyueads.sdk.Bean.Advertisement;
 import com.dingyueads.sdk.Native.YQNativeAdInfo;
 import com.dingyueads.sdk.NativeInit;
+import com.dingyueads.sdk.Utils.LogUtils;
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.holder.AbsRecyclerViewHolder;
 
@@ -50,6 +51,7 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private StatisticManager statisticManager;
     private ShelfItemClickListener shelfItemClickListener;
     private ShelfItemLongClickListener shelfItemLongClickListener;
+    private ViewGroup parentView;
 
     public BookShelfReAdapter(Activity context, List<Book> list, ShelfItemClickListener itemClick, ShelfItemLongClickListener itemLongClick, boolean isList) {
         mContext = context;
@@ -77,6 +79,7 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             case 1:
                 view = LayoutInflater.from(mContext).inflate(R.layout.ad_item_small_layout, parent, false);
                 holder = new ADViewHolder(view, shelfItemClickListener, shelfItemLongClickListener);
+                parentView = parent;
                 break;
         }
         return holder;
@@ -123,19 +126,34 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             return;
         }
 
-        if (!TextUtils.isEmpty(advertisement.iconUrl)) {
-
-            ImageCacheManager.getInstance().getImageLoader().get(advertisement.iconUrl, new
+        if (advertisement.platformId == com.dingyueads.sdk.Constants.AD_TYPE_INMOBI && nativeAdInfo.getInMobiNative() != null) {
+            LogUtils.e("BookShelfReAdapter", "set 1-1 item");
+            View inMobiView = nativeAdInfo.getInMobiNative().getPrimaryViewOfWidth(aDViewHolder.item_ad_layout, parentView, aDViewHolder.item_ad_image_rl.getMeasuredWidth());
+            if (inMobiView != null) {
+                aDViewHolder.item_ad_image_rl.removeAllViews();
+                LogUtils.e("BookShelfReAdapter", "inmobiNative hash:" + nativeAdInfo.getInMobiNative().hashCode() + "1-1 inmobi hash:" + inMobiView.hashCode());
+                aDViewHolder.item_ad_image_rl.addView(inMobiView);
+                aDViewHolder.item_ad_image_rl.setVisibility(View.VISIBLE);
+                aDViewHolder.item_ad_image.setVisibility(View.GONE);
+            } else {
+                aDViewHolder.item_ad_layout.setVisibility(View.GONE);
+            }
+            setAdViewHolder(position, aDViewHolder, book, nativeAdInfo, advertisement);
+        } else if (!TextUtils.isEmpty(advertisement.iconUrl) || (com.dingyueads.sdk.Constants.AD_TYPE_KDXF == advertisement.platformId && !TextUtils.isEmpty(advertisement.imageUrl))) {
+            String url = advertisement.iconUrl == null ? advertisement.imageUrl : advertisement.iconUrl;
+            ImageCacheManager.getInstance().getImageLoader().get(url, new
                     ImageLoader.ImageListener() {
                         @Override
                         public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
                             if (imageContainer != null) {
                                 Bitmap bitmap = imageContainer.getBitmap();
                                 if (bitmap != null) {
-                                    Bitmap roundedCornerBitmap = ImageUtils.getRoundedCornerBitmap
-                                            (bitmap, 40);
-                                    if (roundedCornerBitmap != null && aDViewHolder.item_ad_image != null) {
-                                        aDViewHolder.item_ad_image.setImageBitmap(roundedCornerBitmap);
+//                                    Bitmap roundedCornerBitmap = ImageUtils.getRoundedCornerBitmap
+//                                            (bitmap, 40);
+                                    if (bitmap != null && aDViewHolder.item_ad_image != null) {
+                                        aDViewHolder.item_ad_image_rl.setVisibility(View.INVISIBLE);
+                                        aDViewHolder.item_ad_image.setImageBitmap(bitmap);
+                                        aDViewHolder.item_ad_image.setVisibility(View.VISIBLE);
                                     } else {
                                         aDViewHolder.item_ad_layout.setVisibility(View.GONE);
                                     }
@@ -149,6 +167,10 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         }
                     });
 
+            setAdViewHolder(position, aDViewHolder, book, nativeAdInfo, advertisement);
+        }
+    }
+    private void setAdViewHolder(final int position, ADViewHolder aDViewHolder, Book book, final YQNativeAdInfo nativeAdInfo, Advertisement advertisement) {
             if (aDViewHolder.item_ad_title != null) {
                 aDViewHolder.item_ad_title.setText(TextUtils.isEmpty(advertisement.title) ? "" : advertisement.title);
             }
@@ -208,7 +230,6 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     }
                 }
             });
-        }
     }
 
 
@@ -303,6 +324,7 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     class ADViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         RelativeLayout item_ad_layout;
+        RelativeLayout item_ad_image_rl;
         ImageView item_ad_image;
         TextView item_ad_title;
         TextView item_ad_desc;
@@ -319,6 +341,7 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
             item_ad_layout = (RelativeLayout) itemView.findViewById(R.id.item_ad_layout);
+            item_ad_image_rl = (RelativeLayout) itemView.findViewById(R.id.item_ad_image_rl);
             item_ad_image = (ImageView) itemView.findViewById(R.id.item_ad_image);
             item_ad_title = (TextView) itemView.findViewById(R.id.item_ad_title);
             item_ad_extension = (RatingBar) itemView.findViewById(R.id.item_ad_extension);

@@ -149,8 +149,9 @@ public class OwnNativeAdManager implements AdListener {
             if (mActivity != null) {
                 mInstance.setActivity(mActivity);
             }
-            mInstance.loadSplashAd(SplashPostion, viewGroup);
             mInstance.setSplashHandler(splashHandler);
+            mInstance.loadSplashAd(SplashPostion, viewGroup);
+
         }
     }
 
@@ -1173,17 +1174,17 @@ public class OwnNativeAdManager implements AdListener {
                             if (readStatus == null) return;
                             if (bitmap_icon != null) {
                                 ImageView item_ad_image = (ImageView) ad_view.findViewById(R.id.item_ad_image);
-                                Bitmap roundedCornerBitmap = ImageUtils.getRoundedCornerBitmap(bitmap_icon, 40);
-                                if (roundedCornerBitmap != null && !roundedCornerBitmap.isRecycled()) {
-                                    item_ad_image.setImageBitmap(roundedCornerBitmap);
+//                                Bitmap roundedCornerBitmap = ImageUtils.getRoundedCornerBitmap(bitmap_icon, 40);
+                                if (bitmap_icon != null && !bitmap_icon.isRecycled()) {
+                                    item_ad_image.setImageBitmap(bitmap_icon);
                                 }
 
                                 Bitmap logo_bitmap = getLogoBitmap(advertisement);
                                 bitmap_icon = convertViewToBitmap3(ad_view, false);
                                 Bitmap bitmap = toConformBitmap(bitmap_icon, logo_bitmap, true, false);
                                 readStatus.setAd_bitmap(bitmap);
-                                if (roundedCornerBitmap != null) {
-                                    recycleBitmap(roundedCornerBitmap);
+                                if (bitmap_icon != null) {
+                                    recycleBitmap(bitmap_icon);
                                     item_ad_image.setImageBitmap(null);
                                 }
                             } else {

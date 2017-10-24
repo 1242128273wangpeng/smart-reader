@@ -58,8 +58,6 @@ public class NovelHelper {
     public static final String empty_page_ad = "empty_page_ad";
     public static final String empty_page_ad_inChapter = "empty_inChapter_ad";
     private static final String TAG = "NovelHelper";
-    private static final char punct[] = {'，', '。', '！', '？', '；', '：', '、', '”'};
-    private static final char regs[] = {',', '.', '!', '?', ';', ':', '、', '”'};
     public boolean isShown = false;
     private OnHelperCallBack helperCallBack;
     private boolean checked;
@@ -427,9 +425,9 @@ public class NovelHelper {
 
             for (int i = 0; i < chapterNumAndName.length; i++) {
                 if (i == 0) {
-                    newChapterList.add(new NovelLineBean(chapterNumAndName[i] + "章", 0, 0));
+                    newChapterList.add(new NovelLineBean(chapterNumAndName[i] + "章", 0, 0, false, null));
                 } else {
-                    newChapterList.add(new NovelLineBean(chapterNumAndName[i].trim(), 0, 0));
+                    newChapterList.add(new NovelLineBean(chapterNumAndName[i].trim(), 0, 0, false, null));
                 }
             }
             if (readStatus.chapterNameList.size() > 1) {
@@ -446,6 +444,14 @@ public class NovelHelper {
                 readStatus.chapterNameList = temp;
             }
         }
+
+        // 去除章节开头特殊符号
+        if (content.startsWith(" \"")) {
+            content = content.replaceFirst(" \"", "");
+        } else if (content.startsWith("\"")) {
+            content = content.replaceFirst("\"", "");
+        }
+
         String[] contents = content.split("\n");
         for (String temp : contents) {
             temp = temp.replaceAll("\\s+", "");
@@ -529,16 +535,6 @@ public class NovelHelper {
             // isLastDuan = isDuan;
         }
 
-        // 去除章节开头特殊符号
-        if ((readStatus.sequence >= 0) && lists.size() > 0) {
-            if (lists.get(0) != null && lists.get(0).size() > 4) {
-                String chapterTitle = lists.get(0).get(3).getLineContent();
-                if (!TextUtils.isEmpty(chapterTitle) && chapterTitle.contains("\"")) {
-                    lists.get(0).set(3, new NovelLineBean(chapterTitle.replace("\"", "").trim(), 0, 0));
-                }
-            }
-        }
-
         if (isNativeAdAvailable() && lists.size() >= 3) {
             lists.add(addList(empty_page_ad));
         }
@@ -608,7 +604,7 @@ public class NovelHelper {
 
     private ArrayList<NovelLineBean> addList(String adString) {
         ArrayList<NovelLineBean> list = new ArrayList<>();
-        list.add(new NovelLineBean(adString, 0, 0));
+        list.add(new NovelLineBean(adString, 0, 0, false, null));
         return list;
     }
 
@@ -623,12 +619,16 @@ public class NovelHelper {
      */
     private ArrayList<NovelLineBean> getNovelText(TextPaint textPaint, String text, float width) {
         ArrayList<NovelLineBean> list = new ArrayList<NovelLineBean>();
+        ArrayList<Float> charWidths = new ArrayList<Float>();
+        charWidths.add(0.0f);
         float w = 0;
         int istart = 0;
         char mChar;
         float[] widths = new float[1];
         float[] chineseWidth = new float[1];
         textPaint.getTextWidths("正", chineseWidth);
+        ReadConstants.chineseWth = chineseWidth[0];
+        float wordSpace = chineseWidth[0] / 2;
         if (text == null) {
             return list;
         }
@@ -637,7 +637,7 @@ public class NovelHelper {
             mChar = text.charAt(i);
             if (mChar == '\n') {
                 widths[0] = 0;
-            } else if (Tools.isChinese(mChar)) {
+            } else if (Tools.isChinese(mChar) || mChar == '，' || mChar == '。') {
                 widths[0] = chineseWidth[0];
             } else {
                 String srt = String.valueOf(mChar);
@@ -647,30 +647,46 @@ public class NovelHelper {
                 duan_coount++;
                 String txt = text.substring(istart, i);
                 if (!"".equals(txt)) {
-                    list.add(new NovelLineBean(text.substring(istart, i) + " ", w, 0));
+                    list.add(new NovelLineBean(text.substring(istart, i) + " ", w, 0, false, charWidths));
                 }
                 if (duan_coount > 3) {
-                    list.add(new NovelLineBean(" ", w, 0));// 段间距
+                    list.add(new NovelLineBean(" ", w, 0, false, charWidths));// 段间距
                 }
                 istart = i + 1;
                 w = 0;
+                charWidths = new ArrayList<Float>();
+                charWidths.add(0.0f);
             } else {
                 w += widths[0];
-                if (w > width) {
+                charWidths.add(w);
+                if (w > width - wordSpace) {
+                    float lineWth = w - widths[0];
                     if (checkIsPunct(mChar)) {
+                        // 下一行开始字符为标点的处理
+                        // 将标点移动到本行
+                        // 为标点分配宽度 => 半个中文字符宽度
+                        // 为了保证移动后的文本宽度不超出文本绘制的理论宽度 width , 需满足行间距 wordSpace >= chineseWidth[0] / 2
                         String substring = text.substring(istart, i);
-                        char lastFunct = full2half(mChar);
-                        list.add(new NovelLineBean(substring + lastFunct, w - widths[0] / 2, 1));
+                        list.add(new NovelLineBean(substring + mChar, lineWth + chineseWidth[0] / 2, 1, true, charWidths));
                         istart = i + 1;
                     } else {
-                        list.add(new NovelLineBean(getLine(text, istart, i), w - widths[0], 1));
+                        if (lastIsPunct(text, i)) {
+                            // 本行的结束字符为标点的处理
+                            // 为标点分配宽度 => 半个中文字符宽度
+                            // 结束字符为'"'时需单独处理
+                            list.add(new NovelLineBean(text.substring(istart, i), lineWth - chineseWidth[0] / 2, 1, true, charWidths));
+                        } else {
+                            list.add(new NovelLineBean(text.substring(istart, i), lineWth, 1, false, charWidths));
+                        }
                         istart = i;
                         i--;
                     }
                     w = 0;
+                    charWidths = new ArrayList<Float>();
+                    charWidths.add(0.0f);
                 } else {
                     if (i == (text.length() - 1)) {
-                        list.add(new NovelLineBean(text.substring(istart, text.length()), w, 0));
+                        list.add(new NovelLineBean(text.substring(istart, text.length()), w, 0, false, charWidths));
                     }
                 }
             }
@@ -680,7 +696,7 @@ public class NovelHelper {
 
     private boolean checkIsPunct(char ch) {
         boolean isInclude = false;
-        for (char c : punct) {
+        for (char c : ReadConstants.puncts) {
             if (ch == c) {
                 isInclude = true;
                 break;
@@ -689,28 +705,19 @@ public class NovelHelper {
         return isInclude;
     }
 
-    private char full2half(char str) {
-        for (int i = 0; i < regs.length; i++) {
-            if (str == punct[i]) {
-                return regs[i];
-            }
-        }
-        return str;
-    }
-
-    /**
-     * 如果一行的末尾是标点,将标点变为半角
-     */
-    private String getLine(String text, int istart, int i) {
+    private boolean lastIsPunct(String text, int i) {
         if (i > 0) {
             char ch = text.charAt(i - 1);
+            if (ch == '”') {
+                return false;
+            }
             if (checkIsPunct(ch)) {
-                char lastFunct = full2half(ch);
-                return text.substring(istart, i - 1) + lastFunct;
+                return true;
             }
         }
-        return text.substring(istart, i);
+        return false;
     }
+
 
     /**
      * 保存书签
