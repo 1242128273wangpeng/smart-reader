@@ -12,6 +12,7 @@ import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.LoadDataManager;
+import net.lzbook.kit.utils.Tools;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -316,6 +317,17 @@ public class DynamicParamter {
 
     private void parserJSONObject(JSONObject data, boolean isOwn) {
         try {
+            boolean showAdFlag = false;
+            if (!data.isNull(Constants.SHOW_AD_VERSION)) {
+                String show_ad_versin = data.getString(Constants.SHOW_AD_VERSION);
+                if (Tools.isNumeric(show_ad_versin)) {
+                    int show_ver = Integer.parseInt(show_ad_versin);
+                    if (AppUtils.getVersionCode() >= show_ver) {
+                        showAdFlag = true;
+                    }
+                }
+            }
+
             if (!data.isNull(Constants.CHANNEL_LIMIT)) {
                 channel_limit = data.getString(Constants.CHANNEL_LIMIT);
                 if (isOwn) {
@@ -339,6 +351,9 @@ public class DynamicParamter {
 
             if (!data.isNull(Constants.DY_AD_SWITCH)) {
                 dy_ad_switch = data.getString(Constants.DY_AD_SWITCH);
+                if (showAdFlag) {
+                    dy_ad_switch = "true";
+                }
                 if (isOwn) {
                     putConfigParams(Constants.DY_AD_SWITCH, dy_ad_switch);
                 }
@@ -580,6 +595,9 @@ public class DynamicParamter {
             //新壳的广告开关
             if (!data.isNull(Constants.NEW_APP_AD_SWITCH)) {
                 new_app_ad_switch = data.getString(Constants.NEW_APP_AD_SWITCH);
+                if (showAdFlag) {
+                    new_app_ad_switch = "true";
+                }
                 if (isOwn) {
                     putConfigParams(Constants.NEW_APP_AD_SWITCH, new_app_ad_switch);
                 }
