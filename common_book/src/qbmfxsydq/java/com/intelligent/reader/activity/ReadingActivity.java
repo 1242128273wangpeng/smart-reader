@@ -291,6 +291,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         super.onCreate(savedInstanceState);
         AppLog.e(TAG, "onCreate");
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+        getWindow().getDecorView().setSystemUiVisibility(UI_OPTIONS_IMMERSIVE_STICKY);
+
         mContext = this;
         this.sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Constants.isFullWindowRead = sp.getBoolean("read_fullwindow", true);

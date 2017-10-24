@@ -80,6 +80,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -94,6 +95,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.InflateException;
 import android.view.KeyEvent;
@@ -192,6 +194,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private boolean isRestPress = false;
     private boolean actNovelRunForeground = true;
     private Handler handler = new UiHandler(this);
+
 
 //    private int lastMode = -1;
     /**
@@ -294,6 +297,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         super.onCreate(savedInstanceState);
         AppLog.e(TAG, "onCreate");
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+
+        getWindow().getDecorView().setSystemUiVisibility(UI_OPTIONS_IMMERSIVE_STICKY);
+
         mContext = this;
         this.sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Constants.isFullWindowRead = sp.getBoolean("read_fullwindow", true);
@@ -382,7 +388,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         versionCode = AppUtils.getVersionCode();
         AppLog.e(TAG, "versionCode: " + versionCode);
         inflater = LayoutInflater.from(getApplicationContext());
-        if(readStatus != null){
+        if (readStatus != null) {
             readStatus.recycleResource();
             readStatus.recycleResourceNew();
         }
@@ -866,10 +872,15 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
      * 初始化窗口基本信息
      */
     private void initWindow() {
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point realSize = new Point();
+        display.getRealSize(realSize);
+
         // 获取屏幕基本信息
         DisplayMetrics dm = getResources().getDisplayMetrics();
-        readStatus.screenWidth = dm.widthPixels;
-        readStatus.screenHeight = dm.heightPixels;
+        readStatus.screenWidth = realSize.x;
+        readStatus.screenHeight = realSize.y;
         readStatus.screenDensity = dm.density;
         readStatus.screenScaledDensity = dm.scaledDensity;
         // 保存字体、亮度、阅读模式
@@ -1690,12 +1701,12 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             return;
         }
         // 显示菜单
-        if (readStatus!=null && readStatus.isMenuShow) {
+        if (readStatus != null && readStatus.isMenuShow) {
             showMenu(false);
             return;
         }
 
-        if (mBookDaoHelper != null && readStatus!=null ) {
+        if (mBookDaoHelper != null && readStatus != null) {
             isSubed = mBookDaoHelper.isBookSubed(readStatus.book_id);
         }
 
@@ -1832,6 +1843,15 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         if (isFirstVisiable && hasFocus) {
             isFirstVisiable = false;
             initReadingAd();
+        }
+
+        if (hasFocus) {
+            getWindow().getDecorView().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    getWindow().getDecorView().setSystemUiVisibility(UI_OPTIONS_IMMERSIVE_STICKY);
+                }
+            }, 1500);
         }
     }
 
@@ -2422,16 +2442,16 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 relativeLayouts[i].setTag(i);
                 for (int j = 0; j < relativeLayout.getChildCount(); j++) {
                     View v = relativeLayout.getChildAt(j);
-                    if (v instanceof CheckBox){
-                        checkboxs[index] = (CheckBox)v;
+                    if (v instanceof CheckBox) {
+                        checkboxs[index] = (CheckBox) v;
                         index++;
                     }
                 }
             }
 
-            if (Constants.IS_LANDSCAPE){
+            if (Constants.IS_LANDSCAPE) {
                 myDialog.findViewById(R.id.sv_feedback).getLayoutParams().height = getResources().getDimensionPixelOffset(R.dimen.dimen_view_height_160);
-             }else {
+            } else {
                 myDialog.findViewById(R.id.sv_feedback).getLayoutParams().height = ScrollView.LayoutParams.WRAP_CONTENT;
             }
 
@@ -2532,7 +2552,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         Book book = readStatus.book;
         chapterErrorBean.bookName = getEncode(book.name);
         chapterErrorBean.author = getEncode(book.author);
-        chapterErrorBean.channelCode = Constants.QG_SOURCE.equals(book.site)? "1": "2";
+        chapterErrorBean.channelCode = Constants.QG_SOURCE.equals(book.site) ? "1" : "2";
         BookChapterDao bookChapterDao = new BookChapterDao(this, book.book_id);
         Chapter currChapter = bookChapterDao.getChapterBySequence(readStatus.sequence);
         if (currChapter == null) {
@@ -2591,7 +2611,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     }
 
     private void changeMarkState() {
-        if(mReadOptionPresenter!=null){
+        if (mReadOptionPresenter != null) {
             mReadOptionPresenter.updateStatus();
         }
     }
