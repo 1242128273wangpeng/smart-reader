@@ -43,6 +43,9 @@ android {
 
 
 
+
+
+
     def AMAP_APIKEY_KDZSYDQ = "1785d6e6115cd482d31ac4d8bc7c7c5a"
     def AMAP_APIKEY_KDQBXS = "4abc3656c3dce890fbd05bfcc2e7a9ae"
     def AMAP_APIKEY_QBZSYDQ = "1e0227f8d7bf906da1f4384771875bf7"
@@ -90,11 +93,6 @@ android {
     def IFLYTEK_APPID_QBMFXSYDQ = "5982be96"
     def IFLYTEK_APPID_HYCS = "5982bdd0"
 
-    //科大讯飞ID 暂用 快读申请后替换
-    def IFLYTEK_APPID_MFQBXSSC = "59e707d4"
-    def IFLYTEK_APPID_ZSMFQBXS = "59e597c3"
-    def IFLYTEK_APPID_TXTQBMFXS = "59e70add"
-
     def appNameConfig = [
             kdzsydq   : "快读追书阅读器",
             qbzsydq   : "全本追书阅读器",
@@ -119,8 +117,6 @@ android {
             txtqbxsydq: "cn.zsqbydq.reader"
     ]
 
-    def channel = "custom_channel"
-
 
     lintOptions {
         // true--错误发生后停止gradle构建
@@ -130,7 +126,7 @@ android {
     }
     defaultConfig {
 
-        applicationId "cc.remennovel"
+        applicationId "cn.zsqbydq.reader"
 
 //        System.err.println("project.properties = ${project.getProperties()}")
 
@@ -173,8 +169,6 @@ android {
                         buildTypeName = buildTypeName.split("debug")[0]
                     else
                         buildTypeName = buildTypeName.split("release")[0]
-                    if (buildTypeName.contains("custom"))
-                        buildTypeName = buildTypeName.split("custom")[0]
                 }
                 System.err.println("buildTypeName = ${buildTypeName}")
                 if (appPackageIDConfig.containsKey(buildTypeName)) {
@@ -249,10 +243,6 @@ android {
             }
         }
 
-        if (project.hasProperty('channel')) {
-            channel = project.getProperties().get('channel')
-        }
-
         //默认开启LeakCanary
         buildConfigField "boolean", "IS_LEAKCANARY_DISABLE", "false"
     }
@@ -311,7 +301,6 @@ android {
 VIVO应用商店	blf1298_12923_001
 默认升级渠道	blf1298_11974_001
 N多网	blf1298_10885_001
-猎豹联盟 dyp1024_20001_001
 
  */
 
@@ -458,6 +447,7 @@ N多网	blf1298_10885_001
 
         //升级渠道
         blf1298_11974_001 {
+            debuggable = true
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources false
@@ -472,7 +462,6 @@ N多网	blf1298_10885_001
             shrinkResources false
             addManifestPlaceholders([CHANNEL_NAME: 'blf1298_10000_001'])
         }
-
         blf1298_10001_001 {
             minifyEnabled true
             zipAlignEnabled true
@@ -486,22 +475,6 @@ N多网	blf1298_10885_001
             zipAlignEnabled true
             shrinkResources false
             addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10894_001'])
-        }
-
-        //猎豹联盟
-        dyp1024_20001_001 {
-            minifyEnabled true
-            zipAlignEnabled true
-            shrinkResources false
-            addManifestPlaceholders([CHANNEL_NAME: 'dyp1024_20001_001'])
-        }
-
-        //自定义
-        custom {
-            minifyEnabled true
-            zipAlignEnabled true
-            shrinkResources false
-            addManifestPlaceholders([CHANNEL_NAME: "${channel}"])
         }
 
         //调试和开发使用
@@ -605,7 +578,7 @@ N多网	blf1298_10885_001
                     AMAP_APIKEY  : "${AMAP_APIKEY_MFQBXSSC}",
                     WECHAT_APPID : "wx6a3fdf0169bb5e02",
                     QQ_APPID     : "1105887983",
-                    IFLYTEK_APPID : "${IFLYTEK_APPID_MFQBXSSC}",
+                    IFLYTEK_APPID: "${IFLYTEK_APPID_QBZSYDQ}",
                     PACKAGE_NAME : defaultConfig.applicationId
             ]
 
@@ -631,8 +604,8 @@ N多网	blf1298_10885_001
                     AMAP_APIKEY  : "${AMAP_APIKEY_ZSMFQBXS}",
                     WECHAT_APPID : "wxdf1bd911ebe48b00",
                     QQ_APPID     : "1105964662",
+                    IFLYTEK_APPID: "${IFLYTEK_APPID_QBZSYDQ}",
 //                    PACKAGE_NAME : "cc.mianfeinovel"
-                    IFLYTEK_APPID : "${IFLYTEK_APPID_ZSMFQBXS}",
                     PACKAGE_NAME : defaultConfig.applicationId
             ]
 
@@ -664,8 +637,8 @@ N多网	blf1298_10885_001
                     AMAP_APIKEY  : "${AMAP_APIKEY_TXTQBMFXS}",
                     WECHAT_APPID : "wx4dfa750e9f5f9389",
                     QQ_APPID     : "1105888471",
+                    IFLYTEK_APPID: "${IFLYTEK_APPID_QBZSYDQ}",
 //                    PACKAGE_NAME : "cc.lianzainovel"
-                    IFLYTEK_APPID : "${IFLYTEK_APPID_TXTQBMFXS}",
                     PACKAGE_NAME : defaultConfig.applicationId
             ]
 
@@ -731,8 +704,6 @@ N多网	blf1298_10885_001
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "7e37d6eced"
             notOverrideResValue getOwner(), "string", "push_key", "cxBc7MXYbhHQ2NAzkFBAfoM3KwPlGjr9"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23731453"
-            notOverrideResValue getOwner(), "string", "alifeedback_secret", "9fd4a66d6d0db1af289ff64443fdab6e"
-
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://b.quanbennovel.com"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://bookview.quanbennovel.com:443"
         }
@@ -759,8 +730,6 @@ N多网	blf1298_10885_001
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "1b75898a50"
             notOverrideResValue getOwner(), "string", "push_key", "Hyu8ZPSKUltvAIuOkSAG94tb"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23571962"
-            notOverrideResValue getOwner(), "string", "alifeedback_secret", "e2c84c86c1f6d0b193409c9d0bcb26b8"
-
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://k.zhuishuwang.com"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://xiaoshuodq.zhuishuwang.com:443"
         }
@@ -788,8 +757,6 @@ N多网	blf1298_10885_001
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "05c32565e4"
             notOverrideResValue getOwner(), "string", "push_key", "DOGRj3vpV9F6KamswYShmdHM"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23571370"
-            notOverrideResValue getOwner(), "string", "alifeedback_secret", "003658cd2cde6537a912eff2c171d0a7"
-
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://xiaoshuo.youshiit.com"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://bookrank.youshiit.com:443"
         }
@@ -932,47 +899,40 @@ N多网	blf1298_10885_001
             def outputFile = output.outputFile
             if (outputFile != null && outputFile.name.endsWith('.apk')) {
                 def fileName
-
-                def channel_flag = variant.buildType.name
-
-                if (channel_flag == "custom") {
-                    channel_flag = channel
-                }
-
                 if (variant.flavorName == "kdzsydq") {
-                    fileName = "txtzsydsq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
+                    fileName = "txtzsydsq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
                 } else if (variant.flavorName == "kdqbxs") {
-                    fileName = "kdqbxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
+                    fileName = "kdqbxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
                 } else if (variant.flavorName == "qbzsydq") {
-                    fileName = "qbzsydsq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
+                    fileName = "qbzsydsq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
                 } else if (variant.flavorName == "txtqbxsydq") {
-                    fileName = "zsqbydq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
+                    fileName = "zsqbydq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
                 } else if (variant.flavorName == "txtkdxs") {
-                    fileName = "txtkdxsdq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
+                    fileName = "txtkdxsdq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
                 } else if (variant.flavorName == "kdqbdzs") {
-                    fileName = "kkqbtxtxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
+                    fileName = "kkqbtxtxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
                 } else if (variant.flavorName == "mfqbxssc") {
-                    fileName = "mfqbxssc_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
+                    fileName = "mfqbxssc_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
                 } else if (variant.flavorName == "jrdkqbxs") {
-                    fileName = "jrdkqbxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
+                    fileName = "jrdkqbxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
                 } else if (variant.flavorName == "txtqbdzs") {
-                    fileName = "txtqbdzs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
+                    fileName = "txtqbdzs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
                 } else if (variant.flavorName == "zsmfqbxs") {
-                    fileName = "zsmfqbxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
+                    fileName = "zsmfqbxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
                 } else if (variant.flavorName == "txtqbmfxs") {
-                    fileName = "txtqbmfxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
+                    fileName = "txtqbmfxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
                 } else if (variant.flavorName == "qbmfxsydq") {
-                    fileName = "qbmfxsydq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
+                    fileName = "qbmfxsydq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
                 } else if (variant.flavorName == "qbmfydq") {
-                    fileName = "qbmfydq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
+                    fileName = "qbmfydq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
                 } else if (variant.flavorName == "qbxsxzq") {
-                    fileName = "quanbennovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
+                    fileName = "quanbennovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
                 } else if (variant.flavorName == "hycs") {
-                    fileName = "lianzainovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
+                    fileName = "lianzainovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
                 } else if (variant.flavorName == "txtmfqbydq") {
-                    fileName = "mianfeinovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
+                    fileName = "mianfeinovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
                 } else {
-                    fileName = "remennovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
+                    fileName = "remennovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
                 }
 
                 output.outputFile = new File(outputFile.parent, fileName)
