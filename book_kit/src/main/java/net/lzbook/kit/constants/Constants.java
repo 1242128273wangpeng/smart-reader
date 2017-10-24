@@ -89,6 +89,7 @@ public class Constants {
     public static final String AD_HUAJIAO_SWITCH = "ad_huajiao_switch";
     public static final String AD_HUAJIAO_ACCESS_ADDRESS = "ad_huajiao_access_address";
     public static final String CHANNEL_LIMIT = "channel_limit";
+    public static final String SHOW_AD_VERSION = "show_ad_version";
     public static final String DAY_LIMIT = "day_limit";
     public static final String REQUEST_ITEM = "request_item";
     public static final String NOTIFY_ID = "notify_id";
