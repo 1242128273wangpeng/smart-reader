@@ -27,7 +27,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:padding="6dp"
-                    android:src="@mipmap/cover_top_back"/>
+                    android:src="@mipmap/top_back"/>
         
             <TextView
                     android:id="@+id/title_name_btn"

@@ -25,7 +25,7 @@ public class BookShelfItemHolder extends AbsRecyclerViewHolder<Book> {
 
     private final ImageView mCheck;
     private final ImageView mImage;
-    private final TextView mName, mUpdateTime, mUnread;
+    private final TextView mName, mUpdateTime, mUnread, mAuthor, mLastChapter;
     private final View mFinish, mUpdate;
 
     public BookShelfItemHolder(View itemView,
@@ -40,7 +40,9 @@ public class BookShelfItemHolder extends AbsRecyclerViewHolder<Book> {
         mUpdate = itemView.findViewById(R.id.book_shelf_status_update);
         mName = (TextView) itemView.findViewById(R.id.book_shelf_name);
         mUpdateTime = (TextView) itemView.findViewById(R.id.book_shelf_update_time);
+        mLastChapter = (TextView) itemView.findViewById(R.id.book_shelf_last_chapter);
         mUnread = (TextView) itemView.findViewById(R.id.book_shelf_unread);
+        mAuthor = (TextView) itemView.findViewById(R.id.book_shelf_author);
 
     }
 
@@ -50,16 +52,37 @@ public class BookShelfItemHolder extends AbsRecyclerViewHolder<Book> {
         if (!TextUtils.isEmpty(book.name))
             this.mName.setText(book.name);
 
+        if (!TextUtils.isEmpty(book.author)) {
+            mAuthor.setText(book.author);
+        }
+
         if (book.sequence + 1 > book.chapter_count) {
             book.sequence = book.chapter_count - 1;
         }
-        int update_count = book.chapter_count - (book.sequence + 1);
-        if (update_count == 0) {
-            this.mUnread.setVisibility(View.GONE);
+
+        if (book.sequence >= 0) {
+            this.mUnread.setText(book.sequence + 1 + "/" + book.chapter_count + "章");
         } else {
-            this.mUnread.setVisibility(View.VISIBLE);
-            this.mUnread.setText(update_count + "章未读");
+            this.mUnread.setText("未读");
         }
+
+//        if (book.sequence == -2) {
+//            book.sequence = -1;
+//        }
+//        int update_count;
+//        update_count = book.chapter_count - (book.sequence + 1);
+//
+//        //快读全本电子书 和 TXT全本小说阅读器 隐藏书架未读 for 差异化上线
+//        if ("cn.zsqbydq.reader".equals(AppUtils.getPackageName()) || "cn.kkqbtxtxs.reader".equals(AppUtils.getPackageName())) {
+//            this.mUnread.setVisibility(View.GONE);
+//        } else {
+//            if (update_count == 0) {
+//                this.mUnread.setVisibility(View.GONE);
+//            } else {
+//                this.mUnread.setVisibility(View.VISIBLE);
+//                this.mUnread.setText(String.valueOf(update_count) + "章");
+//            }
+//        }
 
         // 是否连载
         if (((Book) book).status == 2) {
@@ -76,7 +99,7 @@ public class BookShelfItemHolder extends AbsRecyclerViewHolder<Book> {
         }
         if (this.mUpdateTime != null) {
             this.mUpdateTime.setText(Tools.compareTime(AppUtils.formatter, book
-                    .last_updatetime_native) + "更新");
+                    .last_updatetime_native) + "更新: ");
         }
 
         if (!TextUtils.isEmpty(book.img_url) && !book.img_url.equals(ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL)) {
@@ -84,6 +107,9 @@ public class BookShelfItemHolder extends AbsRecyclerViewHolder<Book> {
         } else {
             Glide.with(itemView.getContext().getApplicationContext()).load(R.drawable.icon_book_cover_default).into(this.mImage);
         }
+
+        this.mLastChapter.setText(book.last_chapter_name);
+
 
         if (isRemoveMode) {
             this.mCheck.setVisibility(View.VISIBLE);
@@ -99,5 +125,7 @@ public class BookShelfItemHolder extends AbsRecyclerViewHolder<Book> {
         } else {
             this.mCheck.setVisibility(View.GONE);
         }
+
     }
+
 }

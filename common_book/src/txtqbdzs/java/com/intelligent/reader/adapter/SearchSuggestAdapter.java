@@ -85,7 +85,7 @@ public class SearchSuggestAdapter extends BaseAdapter {
         if (editInput != null) {
             finalInput = AppUtils.deleteAllIllegalChar(editInput);
         }
-        content = content.replaceAll(finalInput, "<font color='#ce3d3e'>" + finalInput + "</font>");
+        content = content.replaceAll(finalInput, "<font color='#3ecc96'>" + finalInput + "</font>");
 
         hodler.tv_2.setText(Html.fromHtml(content));
         return convertView;
@@ -97,17 +97,17 @@ public class SearchSuggestAdapter extends BaseAdapter {
         }
     }
 
-    private static class ViewHolder {
-        TextView tv_2;
-        ImageView iv_type;
+    public String getEditInput() {
+        return this.editInput;
     }
 
     public void setEditInput(String editInput) {
         this.editInput = editInput;
     }
 
-    public String getEditInput() {
-        return this.editInput;
+    private static class ViewHolder {
+        TextView tv_2;
+        ImageView iv_type;
     }
 
 }
