@@ -78,11 +78,6 @@ public class SearchHotWordAdapter extends BaseAdapter {
 
     }
 
-    private class ViewHolder {
-        TextView tvHotWord;
-    }
-
-
     public void setDatas(List<SearchHotBean.DataBean> datas) {
         this.datas = datas;
     }
@@ -94,7 +89,7 @@ public class SearchHotWordAdapter extends BaseAdapter {
             currType = random.nextInt(7);
         }
         oldType = currType;
-        ColorStateList csl;
+        int csl;
         TypedValue typeColor = new TypedValue();
         Resources.Theme theme = mContext.getTheme();
         switch (currType) {
@@ -102,33 +97,33 @@ public class SearchHotWordAdapter extends BaseAdapter {
             case 1:
             case 2:
             case 3:
-                theme.resolveAttribute(R.attr.search_hot_word_text_bg_1, typeColor, true);
-                textView.setBackgroundResource(typeColor.resourceId);
-                theme.resolveAttribute(R.attr.search_hot_word_text_color_1, typeColor, true);
-                csl = mContext.getResources().getColorStateList(typeColor.resourceId);
+                textView.setBackgroundResource(R.drawable.search_hot_word_bg_1);
+                csl = mContext.getResources().getColor(R.color.color_black_1c1c1c);
                 textView.setTextColor(csl);
                 break;
             case 4:
-                theme.resolveAttribute(R.attr.search_hot_word_text_bg_2, typeColor, true);
-                textView.setBackgroundResource(typeColor.resourceId);
-                theme.resolveAttribute(R.attr.search_hot_word_text_color_2, typeColor, true);
-                csl = mContext.getResources().getColorStateList(typeColor.resourceId);
+
+                textView.setBackgroundResource(R.drawable.search_hot_word_bg_2);
+                csl = mContext.getResources().getColor(R.color.color_green_06d2c0);
                 textView.setTextColor(csl);
                 break;
             case 5:
-                theme.resolveAttribute(R.attr.search_hot_word_text_bg_3, typeColor, true);
-                textView.setBackgroundResource(typeColor.resourceId);
-                theme.resolveAttribute(R.attr.search_hot_word_text_color_3, typeColor, true);
-                csl = mContext.getResources().getColorStateList(typeColor.resourceId);
+
+                textView.setBackgroundResource(R.drawable.search_hot_word_bg_3);
+
+                csl = mContext.getResources().getColor(R.color.color_orange_fd9929);
                 textView.setTextColor(csl);
                 break;
             case 6:
-                theme.resolveAttribute(R.attr.search_hot_word_text_bg_4, typeColor, true);
-                textView.setBackgroundResource(typeColor.resourceId);
-                theme.resolveAttribute(R.attr.search_hot_word_text_color_4, typeColor, true);
-                csl = mContext.getResources().getColorStateList(typeColor.resourceId);
+
+                textView.setBackgroundResource(R.drawable.search_hot_word_bg_4);
+                csl = mContext.getResources().getColor(R.color.color_red_fe290d);
                 textView.setTextColor(csl);
                 break;
         }
+    }
+
+    private class ViewHolder {
+        TextView tvHotWord;
     }
 }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/read_catalog_mark_drawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    
+    <include layout="@layout/reading_page"/>
+    
+    <fragment
+            android:name="com.intelligent.reader.fragment.CatalogMarkFragment"
+            android:id="@+id/read_catalog_mark_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="1dp"
+            android:layout_gravity="start"
+            android:focusable="true"
+            android:clickable="true">
+    
+    
+    </fragment>
+
+</android.support.v4.widget.DrawerLayout>

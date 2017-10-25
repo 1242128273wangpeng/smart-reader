@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        
-        android:scrollbars="vertical">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:layout_gravity="center"
+
+             android:scrollbars="vertical">
     
     <LinearLayout
             android:layout_width="match_parent"
@@ -45,7 +44,6 @@
                     android:text="@string/reading_all_down"
                     android:textColor="@drawable/read_option_txt_click_color"
                     android:textSize="16sp"/>
-            
             <TextView
                     android:visibility="gone"
                     android:id="@+id/reading_current_down"
@@ -61,7 +59,6 @@
                     android:text="@string/reading_current_down"
                     android:textColor="@drawable/read_option_txt_click_color"
                     android:textSize="14sp"/>
-            
             <TextView
                     android:id="@+id/reading_cache_cancel"
                     android:layout_width="match_parent"

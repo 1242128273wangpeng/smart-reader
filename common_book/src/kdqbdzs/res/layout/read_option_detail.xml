@@ -9,12 +9,12 @@
         android:background="@color/read_option_bg"
         android:gravity="bottom"
         android:orientation="vertical">
-    
+
     <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_view_height_50"
             android:layout_marginLeft="@dimen/dimen_margin_16">
-        
+
         <TextView
                 android:id="@+id/txt_btightness"
                 android:layout_width="wrap_content"
@@ -24,7 +24,7 @@
                 android:textSize="@dimen/text_small"
                 android:gravity="center"
                 android:text="亮度"/>
-        
+
         <SeekBar
                 android:id="@+id/read_setting_brightness_progress"
                 android:layout_width="match_parent"
@@ -39,7 +39,7 @@
                 android:progressDrawable="@drawable/read_option_progress_brightness"
                 android:splitTrack="false"
                 android:thumb="@drawable/read_option_seekbar_slider"/>
-        
+
         <LinearLayout
                 android:id="@+id/read_setting_save_power_layout"
                 android:layout_width="wrap_content"
@@ -48,7 +48,7 @@
                 android:orientation="horizontal"
                 android:paddingLeft="@dimen/dimen_padding_10"
                 android:visibility="visible">
-            
+
             <CheckBox
                     android:id="@+id/read_setting_auto_power"
                     android:layout_width="wrap_content"
@@ -67,7 +67,7 @@
                     android:background="@drawable/read_option_brightness_bg"/>
         </LinearLayout>
     </RelativeLayout>
-    
+
     <LinearLayout
             android:id="@+id/read_setting_land_extend"
             android:layout_width="match_parent"
@@ -75,7 +75,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:layout_marginLeft="@dimen/dimen_margin_16">
-        
+
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -83,7 +83,7 @@
                 android:text="字号"
                 android:textSize="@dimen/text_small"
                 android:textColor="@color/read_option_text"/>
-        
+
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -91,7 +91,7 @@
                 android:background="@drawable/read_option_group_border"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp">
-            
+
             <ImageView
                     android:id="@+id/read_setting_reduce_text"
                     android:layout_width="0dp"
@@ -100,7 +100,7 @@
                     android:contentDescription="TODO"
                     android:scaleType="center"
                     android:src="@drawable/read_option_font_down_selector"/>
-            
+    
             <TextView
                     android:id="@+id/read_setting_text_size"
                     android:layout_width="50dp"
@@ -114,7 +114,7 @@
                     android:textSize="@dimen/text_content"
                     android:background="@drawable/read_option_font_center_divider"
                     />
-            
+    
             <ImageView
                     android:id="@+id/read_setting_increase_text"
                     android:layout_width="0dp"
@@ -196,22 +196,23 @@
                 
                 
                 <RadioButton
-                        android:id="@+id/read_backdrop_sixth"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="21dp"
-                        android:drawableLeft="@drawable/read_option_page_bg6"
-                        android:button="@null"
-                        android:background="@null"/>
-                
-                <RadioButton
                         android:id="@+id/read_backdrop_fifth"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="21dp"
                         android:drawableLeft="@drawable/read_option_page_bg5"
+                        android:button="@null"
+                        android:background="@null"/>
+                
+                
+                <RadioButton
+                        android:id="@+id/read_backdrop_sixth"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="21dp"
+                        android:drawableLeft="@drawable/read_option_page_bg6"
                         android:button="@null"
                         android:background="@null"/>
             </RadioGroup>
@@ -421,6 +422,8 @@
                     />
             
             <RadioButton
+                    
+                    android:visibility="visible"
                     android:id="@+id/read_animation_updown"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"

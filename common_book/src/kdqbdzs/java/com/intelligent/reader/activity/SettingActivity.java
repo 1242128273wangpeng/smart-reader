@@ -24,6 +24,7 @@ import com.intelligent.reader.R;
 import com.intelligent.reader.util.EventBookStore;
 
 import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.component.service.DownloadService;
 import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.book.view.SwitchButton;
@@ -36,30 +37,43 @@ import net.lzbook.kit.utils.UIHelper;
 import net.lzbook.kit.utils.update.ApkUpdateUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import de.greenrobot.event.EventBus;
 import iyouqu.theme.StatusBarCompat;
+import iyouqu.theme.ThemeMode;
 
 
 public class SettingActivity extends BaseCacheableActivity implements View.OnClickListener, SwitchButton.OnCheckedChangeListener {
 
+    private final static int PUSH_TIME_SETTING = 1;
+    private static final int LOGIN_SUCCESS = 0x20;
+    public static SettingActivity sInstance;
+    public static long cacheSize;
     public String TAG = SettingActivity.class.getSimpleName();
+    public Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message message) {
+            super.handleMessage(message);
+            switch (message.what) {
+
+            }
+        }
+    };
+    protected String currentThemeMode; //是否切换了主题
+    ApkUpdateUtils apkUpdateUtils = new ApkUpdateUtils(this);
+    TypedValue themeName = new TypedValue();//分割块颜色
     private ImageView btnBack;
     private ImageView top_setting_back;
-
-    protected String currentThemeMode; //是否切换了主题
-
     private MyDialog myDialog;//清除缓存对话框
     private RelativeLayout user_login_layout;
     private View is_show_drawable;
-
     private List<RelativeLayout> mRelativeLayoutList;
     private List<TextView> mTextViewList;
     private List<View> mDivider;
     private List<View> mGap;
-
-    public static SettingActivity sInstance;
-
     private TextView tv_readpage_bbs;
     private TextView tv_style_change;
     private TextView tv_night_shift;
@@ -70,7 +84,6 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     private TextView text_check_update;
     private TextView text_clear_cache;
     private TextView text_disclaimer_statement;
-
     //第二种布局 登录在左侧
     private RelativeLayout top_navigation_bg;
     private ImageView icon_more_left;
@@ -79,7 +92,6 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     private TextView top_navigation_title;
     private ImageView iv_mine_image_left;
     private RelativeLayout user_login_layout_left;
-
     private LinearLayout rl_setting_layout;//背景
     private RelativeLayout rl_readpage_bbs;//论坛
     private RelativeLayout rl_style_change;//主题切换
@@ -96,33 +108,15 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     private TextView check_update_message; //版本号
     private TextView clear_cache_size;//缓存
     private TextView theme_name;//主题名
-    private final static int PUSH_TIME_SETTING = 1;
-
-    public static long cacheSize;
-    ApkUpdateUtils apkUpdateUtils = new ApkUpdateUtils(this);
     private CacheAsyncTask cacheAsyncTask;
-
     private boolean isActivityPause = false;
     private boolean isStyleChanged = false;
-    private static final int LOGIN_SUCCESS = 0x20;
-    public Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message message) {
-            super.handleMessage(message);
-            switch (message.what) {
-
-            }
-        }
-    };
-
     private Runnable feedbackRunnable = new Runnable() {
         @Override
         public void run() {
             FeedbackAPI.openFeedbackActivity();
         }
     };
-
-    TypedValue themeName = new TypedValue();//分割块颜色
 
     @Override
     public void onCreate(Bundle paramBundle) {
@@ -234,9 +228,9 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             tv_night_shift.setText(R.string.mode_night);
             bt_night_shift.setChecked(false);
         }
-        //初始化主题名
-        getTheme().resolveAttribute(R.attr.theme_name, themeName, true);
-        theme_name.setText(getResources().getText(themeName.resourceId));
+//        //初始化主题名
+//        getTheme().resolveAttribute(R.attr.theme_name, themeName, true);
+//        theme_name.setText(getResources().getText(themeName.resourceId));
     }
 
     protected void initListener() {
@@ -330,6 +324,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
 
         switch (paramView.getId()) {
             case R.id.rl_setting_more:
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.MORESET);
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_more);
                 startActivity(new Intent(SettingActivity.this, SettingMoreActivity.class));
                 break;
@@ -346,15 +341,18 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 Toast.makeText(getApplicationContext(), R.string.enter_community, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.check_update_rl:
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.VERSION);
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_ver);
                 checkUpdate();
                 break;
             case R.id.rl_feedback:
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.HELP);
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_help);
                 handler.removeCallbacks(feedbackRunnable);
                 handler.postDelayed(feedbackRunnable, 500);
                 break;
             case R.id.rl_mark:
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.COMMENT);
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_help);
                 try {
                     Uri uri = Uri.parse("market://details?id=" + getPackageName());
@@ -367,6 +365,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 break;
 
             case R.id.disclaimer_statement_rl:
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.PROCTCOL);
                 Intent intent = new Intent(this, DisclaimerActivity.class);
                 startActivity(intent);
                 break;
@@ -379,13 +378,18 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 Toast.makeText(getApplicationContext(), R.string.enter_community, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.clear_cache_rl://清除缓存的处理
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.CACHECLEAR);
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_clear_cache);
                 clearCacheDialog();
                 break;
 
             case R.id.top_setting_back:
             case R.id.setting_back:
+                Map<String, String> data = new HashMap<>();
+                data.put("type", "1");
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
                 goBackToHome();
+                break;
             default:
                 break;
         }
@@ -485,7 +489,6 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_SWITCH_THEME);
             themIntent.putExtras(bundle);
             startActivity(themIntent);
-            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
         } else {
             finish();
         }
@@ -500,28 +503,36 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
 
     private void nightShift() {
         mThemeHelper.showAnimation(this);
-        mThemeHelper.toggleThemeSetting(this);
-        refreshUI();
         StatusBarCompat.compat(this);
+    }
+
+    private void CancelTask() {
+        if (cacheAsyncTask != null) {
+            cacheAsyncTask.cancel(true);
+            cacheAsyncTask = null;
+        }
     }
 
     //夜间模式切换按钮的回调
     @Override
     public void onCheckedChanged(SwitchButton view, boolean isChecked) {
+        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.NIGHTMODE);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor edit = sharedPreferences.edit();
         if (isChecked) {
             tv_night_shift.setText(R.string.mode_day);
             edit.putInt("current_light_mode", Constants.MODE);
-            Constants.MODE = sharedPreferences.getInt("current_night_mode", 61);
+            Constants.MODE = 61;
+            mThemeHelper.setMode(ThemeMode.NIGHT);
         } else {
             tv_night_shift.setText(R.string.mode_night);
             edit.putInt("current_night_mode", Constants.MODE);
             Constants.MODE = sharedPreferences.getInt("current_light_mode", 51);
+            mThemeHelper.setMode(ThemeMode.THEME1);
         }
         edit.putInt("content_mode", Constants.MODE);
         edit.apply();
-        nightShift();
+        nightShift(isChecked, true);
     }
 
     private class CacheAsyncTask extends AsyncTask<Void, Void, String> {
@@ -544,139 +555,5 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             clear_cache_size.setText(result);
         }
 
-    }
-
-    private void CancelTask() {
-        if (cacheAsyncTask != null) {
-            cacheAsyncTask.cancel(true);
-            cacheAsyncTask = null;
-        }
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (resultCode) {
-            case RESULT_OK:
-                setResult(67);
-                this.finish();
-                break;
-            default:
-                break;
-        }
-    }
-
-
-    private void refreshUI() {
-        Resources.Theme theme = getTheme();
-        Resources resources = getResources();
-
-        TypedValue myBackgroundPic = new TypedValue();//顶部背景
-        TypedValue textColor = new TypedValue();//字体颜色
-        TypedValue iconBack = new TypedValue();//分割块颜色
-        TypedValue smallTextColor = new TypedValue();//字体颜色
-        TypedValue loginBackgroundPic = new TypedValue();//登录讨论区图片背景
-        TypedValue loginTextColor = new TypedValue();//登录讨论区字体颜色
-        TypedValue loginDefaultPic = new TypedValue();//登录讨论区头像
-        TypedValue itemBackground = new TypedValue();//背景色
-        TypedValue bbsIcon = new TypedValue();//讨论区
-        TypedValue skinIcon = new TypedValue();//主题换肤
-        TypedValue nightShiftIcon = new TypedValue();//夜间模式
-        TypedValue readingSettingIcon = new TypedValue();//阅读页设置
-        TypedValue moreSettingIcon = new TypedValue();//更多设置
-        TypedValue feedbackIcon = new TypedValue();//帮助与回馈
-        TypedValue commentIcon = new TypedValue();//去评分
-        TypedValue updatingIcon = new TypedValue();//当前版本
-        TypedValue clearCacheIcon = new TypedValue();//清除缓存
-        TypedValue protocalIcon = new TypedValue();//使用协议
-        TypedValue moreIcon = new TypedValue();//更多符号
-        TypedValue dividerColor = new TypedValue();//分割线颜色
-        TypedValue gapColor = new TypedValue();//分割块颜色
-
-        TypedValue navigationColor = new TypedValue();//头部导航的颜色
-        TypedValue navigationTextColor = new TypedValue();//头部导航的字体颜色
-
-        //icon资源
-        theme.resolveAttribute(R.attr.my_item_bbs_icon, bbsIcon, true);
-        theme.resolveAttribute(R.attr.my_item_skin_icon, skinIcon, true);
-        theme.resolveAttribute(R.attr.my_item_nightshift_icon, nightShiftIcon, true);
-        theme.resolveAttribute(R.attr.my_item_readingsetting_icon, readingSettingIcon, true);
-        theme.resolveAttribute(R.attr.my_item_moresetting_icon, moreSettingIcon, true);
-        theme.resolveAttribute(R.attr.my_item_feedback_icon, feedbackIcon, true);
-        theme.resolveAttribute(R.attr.my_item_comment_icon, commentIcon, true);
-        theme.resolveAttribute(R.attr.my_item_update_icon, updatingIcon, true);
-        theme.resolveAttribute(R.attr.my_item_clearcache_icon, clearCacheIcon, true);
-        theme.resolveAttribute(R.attr.my_item_protocol_icon, protocalIcon, true);
-        theme.resolveAttribute(R.attr.my_item_more_icon, moreIcon, true);
-        theme.resolveAttribute(R.attr.theme_name, themeName, true);
-
-        if (is_show_drawable.getVisibility() == View.VISIBLE) {
-            mThemeHelper.setTextviewDrawable(this, bbsIcon, null, moreIcon, null, tv_readpage_bbs);
-            mThemeHelper.setTextviewDrawable(this, skinIcon, null, null, null, tv_style_change);
-            mThemeHelper.setTextviewDrawable(this, nightShiftIcon, null, null, null, tv_night_shift);
-            mThemeHelper.setTextviewDrawable(this, readingSettingIcon, null, moreIcon, null, tv_readpage_setting);
-            mThemeHelper.setTextviewDrawable(this, moreSettingIcon, null, moreIcon, null, tv_setting_more);
-            mThemeHelper.setTextviewDrawable(this, feedbackIcon, null, moreIcon, null, tv_feedback);
-            mThemeHelper.setTextviewDrawable(this, commentIcon, null, moreIcon, null, tv_mark);
-            mThemeHelper.setTextviewDrawable(this, updatingIcon, null, null, null, text_check_update);
-            mThemeHelper.setTextviewDrawable(this, clearCacheIcon, null, null, null, text_clear_cache);
-            mThemeHelper.setTextviewDrawable(this, protocalIcon, null, moreIcon, null, text_disclaimer_statement);
-
-        }
-
-
-        // 分割线
-        theme.resolveAttribute(R.attr.color_divider, dividerColor, true);
-        for (View divider : mDivider) {
-            divider.setBackgroundResource(dividerColor.resourceId);
-        }
-
-        //分割块
-        theme.resolveAttribute(R.attr.color_lv_gap, gapColor, true);
-        for (View gapr : mGap) {
-            gapr.setBackgroundResource(gapColor.resourceId);
-        }
-
-        //题目字体颜色 更多符号
-        theme.resolveAttribute(R.attr.color_text_most, textColor, true);
-        for (TextView textView : mTextViewList) {
-            textView.setTextColor(resources.getColor(textColor.resourceId));
-        }
-
-        //顶部背景
-        theme.resolveAttribute(R.attr.my_top_bg, myBackgroundPic, true);
-        theme.resolveAttribute(R.attr.my_bg_color, itemBackground, true);
-        theme.resolveAttribute(R.attr.my_top_pic, loginDefaultPic, true);
-        theme.resolveAttribute(R.attr.my_top_login_bg, loginBackgroundPic, true);
-        theme.resolveAttribute(R.attr.my_top_login_text, loginTextColor, true);
-        theme.resolveAttribute(R.attr.my_item_small_text_color, smallTextColor, true);
-        theme.resolveAttribute(R.attr.title_back, iconBack, true);
-
-
-        //主题名
-        theme_name.setText(resources.getText(themeName.resourceId));
-
-        //颜色背景
-        iv_mine_image.setBackgroundResource(loginDefaultPic.resourceId);//登录讨论区头像
-        tv_login_info.setBackgroundResource(loginBackgroundPic.resourceId);//顶部登录讨论区背景
-        tv_login_info.setTextColor(resources.getColor(loginTextColor.resourceId));//顶部登录讨论区字体颜色
-        user_login_layout.setBackgroundResource(myBackgroundPic.resourceId);//顶部整个背景
-        rl_setting_layout.setBackgroundResource(itemBackground.resourceId);//设置页面背景
-        theme_name.setTextColor(resources.getColor(smallTextColor.resourceId));//主题名
-        check_update_message.setTextColor(resources.getColor(smallTextColor.resourceId));//版本号
-        clear_cache_size.setTextColor(resources.getColor(smallTextColor.resourceId));//缓存
-        btnBack.setImageDrawable(resources.getDrawable(iconBack.resourceId));
-
-
-        //第二套布局的资源
-        theme.resolveAttribute(R.attr.color_primary, navigationColor, true);
-        theme.resolveAttribute(R.attr.top_navigation_text_color, navigationTextColor, true);
-
-        top_navigation_bg.setBackgroundResource(navigationColor.resourceId);//顶部导航的颜色
-        top_setting_back.setImageDrawable(resources.getDrawable(iconBack.resourceId));//返回键颜色
-        icon_more_left.setBackgroundResource(moreIcon.resourceId);//更多
-        tv_login_info_detail_left.setTextColor(resources.getColor(smallTextColor.resourceId));
-        top_navigation_title.setTextColor(resources.getColor(navigationTextColor.resourceId));
-        iv_mine_image_left.setBackgroundResource(loginDefaultPic.resourceId);
     }
 }

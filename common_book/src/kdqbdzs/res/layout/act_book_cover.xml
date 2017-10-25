@@ -9,9 +9,14 @@
     <RelativeLayout
             android:id="@+id/rl_title_book_cover"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/top_bar_height"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
             android:layout_alignParentTop="true"
             android:background="@color/top_navigation_bg_color">
+    
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/top_bar_height">
         
         <ImageView
                 android:id="@+id/book_cover_back"
@@ -22,14 +27,15 @@
                 android:paddingRight="12dp"
                 android:src="@mipmap/cover_top_back"/>
         
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_centerInParent="true"
-                android:gravity="center_vertical"
-                android:text="书籍封面"
-                android:textColor="@color/top_navigation_text_color"
-                android:textSize="18sp"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:gravity="center_vertical"
+                    android:text="书籍封面"
+                    android:textColor="@color/top_navigation_text_color"
+                    android:textSize="18sp"/>
+        </RelativeLayout>
     </RelativeLayout>
     
     <RelativeLayout
