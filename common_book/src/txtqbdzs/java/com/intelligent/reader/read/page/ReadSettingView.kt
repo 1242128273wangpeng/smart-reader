@@ -14,15 +14,12 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnClickListener
 import android.view.ViewPropertyAnimator
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import android.widget.RadioGroup
-import android.widget.RadioGroup.OnCheckedChangeListener
 import android.widget.SeekBar
-import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.ReadingActivity
@@ -340,7 +337,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
         novel_catalog?.setOnClickListener(this)
 
-//        novel_feedback?.setOnClickListener(this)
+        novel_feedback?.setOnClickListener(this)
 
         novel_setting?.setOnClickListener(this)
 
@@ -435,9 +432,9 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 listener?.onReadCatalog()
             }
 
-//            R.id.novel_feedback -> {
-//                listener?.onReadFeedBack()
-//            }
+            R.id.novel_feedback -> {
+                listener?.onReadFeedBack()
+            }
 
             R.id.novel_setting -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_setting_btn)
@@ -454,6 +451,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                     ibtn_night.setImageResource(R.drawable.read_option_day_selector)
 
                 }
+
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_night_mode)
                 listener?.onChageNightMode()
             }
