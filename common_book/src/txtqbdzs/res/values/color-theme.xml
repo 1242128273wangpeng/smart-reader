@@ -304,4 +304,7 @@
     <color name="book_end_item_des">
         #858C96
     </color>
+    <color name="theme_primary">
+        #3ecc96
+    </color>
 </resources>

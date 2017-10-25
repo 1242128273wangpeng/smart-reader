@@ -4,167 +4,207 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bookshelf__item_press_bg">
-    <TextView android:id="@+id/bookshelf_item_layout_type"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="ListOne"
-              android:visibility="gone"/>
-    <ImageView android:id="@+id/book_unread_tip"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:visibility="gone"/>
-    <ImageView android:id="@+id/check_delete"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_centerVertical="true"
-               android:layout_marginLeft="15dp"
-               android:layout_marginRight="15dp"
-               android:background="@drawable/icon_delete_checked"
-               android:contentDescription="@string/app_name"
-               android:visibility="gone"/>
-    <RelativeLayout android:id="@+id/book_shelf_item"
+
+    <TextView
+            android:id="@+id/bookshelf_item_layout_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ListOne"
+            android:visibility="gone"/>
+
+    <ImageView
+            android:id="@+id/book_unread_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
+    <ImageView
+            android:id="@+id/check_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/icon_delete_checked"
+            android:contentDescription="@string/app_name"
+            android:visibility="gone"/>
+
+    <RelativeLayout
+            android:id="@+id/book_shelf_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="clip_vertical"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/check_delete">
+
+        <FrameLayout
+                android:id="@+id/book_shelf_image_view"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignBottom="@+id/bookshelf_information"
+                android:layout_alignParentLeft="true"
+                android:layout_alignTop="@+id/bookshelf_information"
+                android:layout_marginLeft="@dimen/dimen_margin_12">
+
+            <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="false"
+                    android:contentDescription="@string/app_name"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/book_mask"
+                    android:visibility="gone"/>
+
+            <ImageView
+                    android:id="@+id/book_shelf_image"
+                    android:layout_width="@dimen/dimen_view_width_60"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/book_mask"
+                    android:contentDescription="@string/app_name"
+                    android:paddingBottom="3dp"
+                    android:paddingLeft="2dp"
+                    android:paddingRight="3dp"
+                    android:paddingTop="2dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"/>
+        </FrameLayout>
+
+        <RelativeLayout
+                android:id="@+id/bookshelf_information"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_toRightOf="@+id/book_shelf_image_view">
+
+            <LinearLayout
+                    android:id="@+id/ll_book_shelf_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="clip_vertical"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_toRightOf="@+id/check_delete">
-        <FrameLayout android:id="@+id/book_shelf_image_view"
-                     android:layout_width="wrap_content"
-                     android:layout_height="match_parent"
-                     android:layout_alignBottom="@+id/bookshelf_information"
-                     android:layout_alignParentLeft="true"
-                     android:layout_alignTop="@+id/bookshelf_information"
-                     android:layout_marginLeft="@dimen/dimen_margin_12">
-            <ImageView android:layout_width="match_parent"
-                       android:layout_height="match_parent"
-                       android:adjustViewBounds="false"
-                       android:contentDescription="@string/app_name"
-                       android:scaleType="fitXY"
-                       android:src="@drawable/book_mask"
-                       android:visibility="gone"/>
-            <ImageView android:id="@+id/book_shelf_image"
-                       android:layout_width="@dimen/dimen_view_width_60"
-                       android:layout_height="match_parent"
-                       android:background="@drawable/book_mask"
-                       android:contentDescription="@string/app_name"
-                       android:paddingBottom="3dp"
-                       android:paddingLeft="2dp"
-                       android:paddingRight="3dp"
-                       android:paddingTop="2dp"
-                       android:adjustViewBounds="true"
-                       android:scaleType="fitXY"/>
-        </FrameLayout>
-        <RelativeLayout android:id="@+id/bookshelf_information"
-                        android:layout_width="match_parent"
-                        android:layout_height="80dp"
-                        android:layout_toRightOf="@+id/book_shelf_image_view">
-            <LinearLayout android:id="@+id/ll_book_shelf_title"
-                          android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:layout_marginLeft="15dp"
-                          android:layout_marginRight="@dimen/dimen_margin_12"
-                          android:layout_marginTop="4dp"
-                          android:orientation="horizontal">
-                <TextView android:id="@+id/book_shelf_name"
-                          android:layout_width="0dip"
-                          android:layout_height="wrap_content"
-                          android:layout_gravity="center_vertical"
-                          android:layout_weight="3"
-                          android:ellipsize="end"
-                          android:singleLine="true"
-                          android:text="name"
-                          android:textColor="@color/bookshelf_book_name_text_color"
-                          android:textSize="@dimen/dimen_text_16"/>
-                <TextView android:id="@+id/book_shelf_status_update"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:layout_alignParentRight="true"
-                          android:layout_centerVertical="true"
-                          android:layout_gravity="center_vertical"
-                          android:layout_marginBottom="@dimen/padding_1"
-                          android:layout_marginLeft="@dimen/dimen_margin_5"
-                          android:layout_marginRight="@dimen/dimen_margin_5"
-                          android:text="更新"
-                          android:textColor="@color/bookshelf_status_update_text_color"
-                          android:textSize="@dimen/dimen_text_12"
-                          android:visibility="gone"/>
-                <TextView android:id="@+id/book_shelf_status_finish"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:layout_alignParentRight="true"
-                          android:layout_centerVertical="true"
-                          android:layout_gravity="center_vertical"
-                          android:layout_marginBottom="@dimen/padding_1"
-                          android:layout_marginLeft="@dimen/dimen_margin_5"
-                          android:layout_marginRight="@dimen/dimen_margin_5"
-                          android:text="完结"
-                          android:textColor="@color/bookshelf_status_finish_text_color"
-                          android:textSize="@dimen/dimen_text_12"
-                          android:visibility="gone"/>
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="@dimen/dimen_margin_12"
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal">
+
+                <TextView
+                        android:id="@+id/book_shelf_name"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="3"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="name"
+                        android:textColor="@color/bookshelf_book_name_text_color"
+                        android:textSize="@dimen/dimen_text_16"/>
+
+                <TextView
+                        android:id="@+id/book_shelf_status_update"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginBottom="@dimen/padding_1"
+                        android:layout_marginLeft="@dimen/dimen_margin_5"
+                        android:layout_marginRight="@dimen/dimen_margin_5"
+                        android:text="更新"
+                        android:textColor="@color/bookshelf_status_update_text_color"
+                        android:textSize="@dimen/dimen_text_12"
+                        android:visibility="gone"/>
+
+                <TextView
+                        android:id="@+id/book_shelf_status_finish"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginBottom="@dimen/padding_1"
+                        android:layout_marginLeft="@dimen/dimen_margin_5"
+                        android:layout_marginRight="@dimen/dimen_margin_5"
+                        android:text="完结"
+                        android:textColor="@color/bookshelf_status_finish_text_color"
+                        android:textSize="@dimen/dimen_text_12"
+                        android:visibility="gone"/>
             </LinearLayout>
-            <RelativeLayout android:id="@+id/book_shelf_author_unread_container"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/ll_book_shelf_title"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginRight="13dp"
-                            android:layout_marginTop="10dp">
-                <TextView android:id="@+id/book_shelf_author"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:ellipsize="end"
-                          android:singleLine="true"
-                          android:text="author"
-                          android:textColor="@color/bookshelf_author_text_color"
-                          android:textSize="@dimen/dimen_text_12"/>
-                <View android:id="@+id/author_progress_divider"
-                      android:layout_width="1dp"
-                      android:layout_height="wrap_content"
-                      android:layout_alignBottom="@+id/book_shelf_author"
-                      android:layout_alignTop="@+id/book_shelf_author"
-                      android:layout_margin="3dp"
-                      android:layout_toRightOf="@+id/book_shelf_author"
-                      android:background="@color/bookshelf_author_text_color"/>
-                <TextView android:id="@+id/book_shelf_unread"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:layout_toRightOf="@+id/author_progress_divider"
-                          android:ellipsize="end"
-                          android:singleLine="true"
-                          android:text="20/260章"
-                          android:textColor="@color/bookshelf_book_unread_text_color"
-                          android:textSize="@dimen/dimen_text_12"/>
+
+            <RelativeLayout
+                    android:id="@+id/book_shelf_author_unread_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/ll_book_shelf_title"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="13dp"
+                    android:layout_marginTop="10dp">
+
+                <TextView
+                        android:id="@+id/book_shelf_author"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="author"
+                        android:textColor="@color/bookshelf_author_text_color"
+                        android:textSize="@dimen/dimen_text_12"/>
+
+                <View
+                        android:id="@+id/author_progress_divider"
+                        android:layout_width="1dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/book_shelf_author"
+                        android:layout_alignTop="@+id/book_shelf_author"
+                        android:layout_margin="3dp"
+                        android:layout_toRightOf="@+id/book_shelf_author"
+                        android:background="@color/bookshelf_author_text_color"/>
+
+                <TextView
+                        android:id="@+id/book_shelf_unread"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/author_progress_divider"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="20/260章"
+                        android:textColor="@color/bookshelf_book_unread_text_color"
+                        android:textSize="@dimen/dimen_text_12"/>
             </RelativeLayout>
-            <RelativeLayout android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/book_shelf_author_unread_container"
-                            android:layout_marginBottom="4dp"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginRight="13dp"
-                            android:layout_marginTop="10dp">
-                <TextView android:id="@+id/book_shelf_update_time"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:layout_alignParentLeft="true"
-                          android:singleLine="true"
-                          android:text="2014-08-14更新: "
-                          android:textColor="@color/bookshelf_update_time_text_color"
-                          android:textSize="@dimen/dimen_text_11"/>
-                <TextView android:id="@+id/book_shelf_last_chapter"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:layout_toRightOf="@+id/book_shelf_update_time"
-                          android:ellipsize="end"
-                          android:singleLine="true"
-                          android:text="二百六十章..."
-                          android:textColor="@color/bookshelf_last_chapter_text_color"
-                          android:textSize="@dimen/dimen_text_11"/>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/book_shelf_author_unread_container"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="13dp"
+                    android:layout_marginTop="10dp">
+
+                <TextView
+                        android:id="@+id/book_shelf_update_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:singleLine="true"
+                        android:text="2014-08-14更新: "
+                        android:textColor="@color/bookshelf_update_time_text_color"
+                        android:textSize="@dimen/dimen_text_11"/>
+
+                <TextView
+                        android:id="@+id/book_shelf_last_chapter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/book_shelf_update_time"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="二百六十章..."
+                        android:textColor="@color/bookshelf_last_chapter_text_color"
+                        android:textSize="@dimen/dimen_text_11"/>
             </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
-    <View android:layout_width="match_parent"
-          android:layout_height="@dimen/dimen_view_height_0.5"
-          android:layout_below="@+id/book_shelf_item"
-          android:background="@color/bookshelf_divider"/>
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_view_height_0.5"
+            android:layout_below="@+id/book_shelf_item"
+            android:background="@color/bookshelf_divider"/>
 </RelativeLayout>

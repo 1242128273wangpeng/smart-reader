@@ -25,7 +25,7 @@
                     android:layout_centerVertical="true"
                     android:paddingLeft="@dimen/dimen_padding_12"
                     android:paddingRight="@dimen/dimen_padding_12"
-                    android:src="@mipmap/cover_top_back"/>
+                    android:src="@mipmap/top_back"/>
             
             <TextView
                     android:id="@+id/find_book_detail_title"
