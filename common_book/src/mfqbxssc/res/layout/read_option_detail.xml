@@ -196,7 +196,7 @@
                 
                 
                 <RadioButton
-                        android:id="@+id/read_backdrop_sixth"
+                        android:id="@+id/read_backdrop_fifth"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
@@ -206,7 +206,7 @@
                         android:background="@null"/>
                 
                 <RadioButton
-                        android:id="@+id/read_backdrop_fifth"
+                        android:id="@+id/read_backdrop_sixth"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
