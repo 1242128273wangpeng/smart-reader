@@ -80,6 +80,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -94,6 +95,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.InflateException;
 import android.view.KeyEvent;
@@ -151,8 +153,10 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private static ReadStatus readStatus;
     public DownloadService downloadService;
     public boolean isRestDialogShow = false;
+    //    public boolean isRestDialogShow = false;
     long stampTime = 0;
     int readLength = 0;
+    boolean isFirstVisiable = true;
     private Context mContext;
     private PageInterface pageView;
     private ArrayList<Source> sourcesList;
@@ -190,6 +194,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private Runnable rest_tips_runnable;
     private boolean isRestPress = false;
     private boolean actNovelRunForeground = true;
+
+
+    //    private int lastMode = -1;
     private Handler handler = new UiHandler(this);
     /**
      * 接受按下电源键的广播
@@ -219,7 +226,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private RequestFactory requestFactory;
     private int type = -1;
     private String currentThemeMode;
-
     private int lastMode = -1;
     /**
      * 接受电量改变广播
@@ -242,9 +248,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private ReadOptionPresenter mReadOptionPresenter;
     private DrawerLayout mCatlogMarkDrawer;
     private CatalogMarkPresenter mCatalogMarkPresenter;
-
     private CatalogMarkFragment mCatalogMarkFragment;
-
     private DrawerLayout.DrawerListener mDrawerListener = new DrawerLayout.DrawerListener() {
         @Override
         public void onDrawerSlide(View drawerView, float slideOffset) {
@@ -291,6 +295,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         super.onCreate(savedInstanceState);
         AppLog.e(TAG, "onCreate");
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+
+        getWindow().getDecorView().setSystemUiVisibility(UI_OPTIONS_IMMERSIVE_STICKY);
+
         mContext = this;
         this.sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Constants.isFullWindowRead = sp.getBoolean("read_fullwindow", true);
@@ -312,12 +319,12 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
         // 初始化窗口基本信息
         initWindow();
-
         dataFactory = new ReadDataFactory(getApplicationContext(), this, readStatus, myNovelHelper);
         dataFactory.setReadDataListener(this);
 
         setOrientation();
         getSavedState(savedInstanceState);
+
 
         if (isFromCover && Constants.IS_LANDSCAPE) {
             return;
@@ -863,10 +870,15 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
      * 初始化窗口基本信息
      */
     private void initWindow() {
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point realSize = new Point();
+        display.getRealSize(realSize);
+
         // 获取屏幕基本信息
         DisplayMetrics dm = getResources().getDisplayMetrics();
-        readStatus.screenWidth = dm.widthPixels;
-        readStatus.screenHeight = dm.heightPixels;
+        readStatus.screenWidth = realSize.x;
+        readStatus.screenHeight = realSize.y;
         readStatus.screenDensity = dm.density;
         readStatus.screenScaledDensity = dm.scaledDensity;
         // 保存字体、亮度、阅读模式
@@ -913,7 +925,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
         ll_guide_layout = findViewById(R.id.ll_guide_layout);
         initGuide();
-        initReadingAd();
+//        initReadingAd();
 
         readSettingView.setNovelMode(Constants.MODE);
         readStatus.source_ids = readStatus.book.site;
@@ -1723,6 +1735,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     protected void onResume() {
         super.onResume();
         AppLog.d("ReadingActivity", "onResume:" + Constants.isFullWindowRead);
+
+        // 注册一个接受广播类型
+        registerReceiver(mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         // 设置全屏
         if (!Constants.isFullWindowRead) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
@@ -1750,8 +1765,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         }
 
         readStatus.chapterCount = readStatus.book.chapter_count;
-        // 注册一个接受广播类型
-        registerReceiver(mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+
 
         int lock = sp.getInt("lock_screen_time", 5);
         if (lock == Integer.MAX_VALUE) {
@@ -1817,6 +1831,24 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         }
         readLength = 0;
 
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (isFirstVisiable && hasFocus) {
+            isFirstVisiable = false;
+            initReadingAd();
+        }
+
+        if (hasFocus) {
+            getWindow().getDecorView().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    getWindow().getDecorView().setSystemUiVisibility(UI_OPTIONS_IMMERSIVE_STICKY);
+                }
+            }, 1500);
+        }
     }
 
     @Override
@@ -1987,6 +2019,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         if (isFinishing()) {
             return;
         }
+
         Intent intent = new Intent(ReadingActivity.this, BookEndActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constants.REQUEST_ITEM, readStatus.getRequestItem());
@@ -2303,9 +2336,25 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
     @Override
     public void onJumpChapter() {
-
+//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext());
+//        long last_read = sharedPreferences.getLong(Constants.LAST_READ, 0);
+//        long currentTime = System.currentTimeMillis();
+//        long noNetRead = sharedPreferences.getLong(Constants.NONET_READ, 0);
+//        int nonet_readhour = sharedPreferences.getInt(Constants.NONET_READTIME, 1);
+//        sharedPreferences.edit().putLong(Constants.LAST_READ, currentTime).apply();
+//
+//        if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE && Constants.isNoNetRead == 1) {
+//            double noNetRead_hour = (noNetRead / 1000) / (60 * 60);
+//            if (noNetRead_hour >= nonet_readhour) {
+//                showChangeNetDialog();
+//            } else {
+//                dataFactory.getChapterByLoading(ReadingActivity.MSG_JUMP_CHAPTER, readStatus.novel_progress);
+//                noNetRead += currentTime - last_read;
+//            }
+//            sharedPreferences.edit().putLong(Constants.NONET_READ, noNetRead).apply();
+//        } else {
         dataFactory.getChapterByLoading(ReadingActivity.MSG_JUMP_CHAPTER, readStatus.novel_progress);
-
+//        }
 
     }
 
