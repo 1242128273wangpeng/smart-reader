@@ -304,7 +304,6 @@ public class DownloadManagerActivity extends BaseCacheableActivity implements On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add("menu");
         return super.onCreateOptionsMenu(menu);
     }
 
