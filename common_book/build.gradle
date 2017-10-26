@@ -121,7 +121,7 @@ android {
     }
     defaultConfig {
 
-        applicationId "cc.kdqbxs.reader"
+        applicationId "cc.lianzainovel"
 
 //        System.err.println("project.properties = ${project.getProperties()}")
 
@@ -469,6 +469,13 @@ N多网	blf1298_10885_001
             zipAlignEnabled true
             shrinkResources false
             addManifestPlaceholders([CHANNEL_NAME: 'blp1298_10894_001'])
+        }
+        //猎豹联盟
+        dyp1024_20001_001 {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            addManifestPlaceholders([CHANNEL_NAME: 'dyp1024_20001_001'])
         }
 
         //调试和开发使用
