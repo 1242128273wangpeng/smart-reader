@@ -10,6 +10,7 @@ import com.dingyueads.sdk.Utils.LogUtils;
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.holder.AbsRecyclerViewHolder;
 import com.intelligent.reader.adapter.holder.BookShelfItemHolder;
+import com.intelligent.reader.fragment.BookShelfFragment;
 
 import net.lzbook.kit.cache.imagecache.ImageCacheManager;
 import net.lzbook.kit.constants.Constants;
@@ -210,8 +211,11 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 if (adSceneData != null) {
                     adSceneData.ad_showSuccessTime = String.valueOf(System.currentTimeMillis() / 1000L);
                 }
-                statisticManager.schedulingRequest(mContext, aDViewHolder.item_ad_layout, nativeAdInfo, null, StatisticManager.TYPE_SHOW, NativeInit
-                        .ad_position[0]);
+                //判断当前页面处于显示状态 上传生效
+                if(BookShelfFragment.isFragmentShow){
+                    statisticManager.schedulingRequest(mContext, aDViewHolder.item_ad_layout, nativeAdInfo, null, StatisticManager.TYPE_SHOW, NativeInit
+                            .ad_position[0]);
+                }
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
             }

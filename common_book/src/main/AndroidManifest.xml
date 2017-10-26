@@ -148,6 +148,12 @@
                 android:name="com.ak.android.bridge.AKActivity"
                 android:configChanges="orientation|screenSize|keyboardHidden"
                 android:theme="@android:style/Theme.Black.NoTitleBar"/>
+
+        <provider
+            android:name="com.ak.android.provider.AKProvider"
+            android:authorities="${PACKAGE_NAME}.akadsdkprovider"
+            android:exported="false"
+            android:grantUriPermissions="true"/>
         
         <!-- baidu 信息流广告必须添加 -->
         <activity
