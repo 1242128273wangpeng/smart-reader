@@ -518,7 +518,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                                 Bitmap bitmap = bitmapDrawable.getBitmap();
                                 if (bitmap != null && !bitmap.isRecycled()) {
                                     AppLog.e(TAG, "Bitmap != null");
-                                    bitmap.recycle();
+//                                    bitmap.recycle();
                                 }
                             }
                         }
