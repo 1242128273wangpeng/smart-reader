@@ -256,7 +256,7 @@ public class ReadStatus {
     public void setAd_bitmap(Bitmap ad_bitmap) {
         if (this.ad_bitmap != null && !this.ad_bitmap.isRecycled()) {
             AppLog.e("ReadStatus", "ReadStatus : recycle ad_bitmap");
-            this.ad_bitmap.recycle();
+//            this.ad_bitmap.recycle();
             this.ad_bitmap = null;
         }
         this.ad_bitmap = ad_bitmap;
@@ -286,7 +286,7 @@ public class ReadStatus {
                         Map.Entry<YQNativeAdInfo, Bitmap> map = iterator.next();
                         Bitmap bitmap = map.getValue();
                         if (bitmap != null && !bitmap.isRecycled()) {
-                            bitmap.recycle();
+//                            bitmap.recycle();
                             bitmap = null;
                         }
                     }
@@ -352,7 +352,7 @@ public class ReadStatus {
         }
 
         if (this.ad_bitmap != null) {
-            this.ad_bitmap.recycle();
+//            this.ad_bitmap.recycle();
             this.ad_bitmap = null;
         }
 

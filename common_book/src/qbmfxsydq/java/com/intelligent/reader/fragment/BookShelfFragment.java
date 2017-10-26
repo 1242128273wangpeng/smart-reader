@@ -49,6 +49,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.InflateException;
@@ -135,6 +136,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     private ShelfGridLayoutManager layoutManager;
     private boolean isList = true;
     private boolean isShowDownloadBtn = false;
+    public static boolean isFragmentShow = true;
 
     private HashMap<Integer, YQNativeAdInfo> adInfoHashMap = new HashMap<>();
 
@@ -158,6 +160,16 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         }
         initData();
 
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser){
+            isFragmentShow = isVisibleToUser;//显示
+        }else{
+            isFragmentShow = isVisibleToUser;//不显示
+        }
     }
 
     @Override
@@ -295,7 +307,9 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     @Override
     public void onResume() {
         super.onResume();
-        updateUI();
+        if(isFragmentShow){//判断当前页面是否显示 未显示不重新获取数据
+            updateUI();
+        }
         if (ownNativeAdManager != null) {
             ownNativeAdManager.setActivity(getActivity());
         }
@@ -340,8 +354,9 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         if (!isShowAD || bookShelfRemoveHelper.isRemoveMode()) {
             return;
         }
+
         AppLog.e("wyhad1-1", this.isResumed() + "");
-        if (!this.isResumed()) {
+        if (!this.isResumed()) {//备注 判断当前页面是否为显示状态
             return;
         }
         YQNativeAdInfo adInfo;
