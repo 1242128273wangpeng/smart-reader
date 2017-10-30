@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.dingyueads.sdk.AdListener;
@@ -1171,35 +1170,26 @@ public class OwnNativeAdManager implements AdListener {
                 try {
                     SimpleTarget target = new SimpleTarget<Bitmap>(300, 300) {
                         @Override
-                        public void onResourceReady(final Bitmap bitmap, final GlideAnimation<? super Bitmap> glideAnimation) {
-
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-
-                                    Bitmap bitmap_icon = bitmap;
-
-                                    if (readStatus == null) return;
-                                    if (bitmap_icon != null) {
-                                        ImageView item_ad_image = (ImageView) ad_view.findViewById(R.id.item_ad_image);
+                        public void onResourceReady(Bitmap bitmap_icon, GlideAnimation<? super Bitmap> glideAnimation) {
+                            if (readStatus == null) return;
+                            if (bitmap_icon != null) {
+                                ImageView item_ad_image = (ImageView) ad_view.findViewById(R.id.item_ad_image);
 //                                Bitmap roundedCornerBitmap = ImageUtils.getRoundedCornerBitmap(bitmap_icon, 40);
-                                        if (bitmap_icon != null && !bitmap_icon.isRecycled()) {
-                                            item_ad_image.setImageBitmap(bitmap_icon);
-                                        }
-
-                                        Bitmap logo_bitmap = getLogoBitmap(advertisement);
-                                        bitmap_icon = convertViewToBitmap3(ad_view, false);
-                                        Bitmap bitmap = toConformBitmap(bitmap_icon, logo_bitmap, true, false);
-                                        readStatus.setAd_bitmap(bitmap);
-                                        if (bitmap_icon != null) {
-                                            recycleBitmap(bitmap_icon);
-                                            item_ad_image.setImageBitmap(null);
-                                        }
-                                    } else {
-                                        readStatus.setAd_bitmap(null);
-                                    }
+                                if (bitmap_icon != null && !bitmap_icon.isRecycled()) {
+                                    item_ad_image.setImageBitmap(bitmap_icon);
                                 }
-                            });
+
+                                Bitmap logo_bitmap = getLogoBitmap(advertisement);
+                                bitmap_icon = convertViewToBitmap3(ad_view, false);
+                                Bitmap bitmap = toConformBitmap(bitmap_icon, logo_bitmap, true, false);
+                                readStatus.setAd_bitmap(bitmap);
+                                if (bitmap_icon != null) {
+                                    recycleBitmap(bitmap_icon);
+                                    item_ad_image.setImageBitmap(null);
+                                }
+                            } else {
+                                readStatus.setAd_bitmap(null);
+                            }
                         }
                     };
                     Glide.with(BaseBookApplication.getGlobalContext())
