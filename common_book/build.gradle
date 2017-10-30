@@ -714,6 +714,8 @@ N多网	blf1298_10885_001
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "7e37d6eced"
             notOverrideResValue getOwner(), "string", "push_key", "cxBc7MXYbhHQ2NAzkFBAfoM3KwPlGjr9"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23731453"
+            notOverrideResValue getOwner(), "string", "alifeedback_secret", "9fd4a66d6d0db1af289ff64443fdab6e"
+
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://b.quanbennovel.com"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://bookview.quanbennovel.com:443"
         }
@@ -740,6 +742,8 @@ N多网	blf1298_10885_001
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "1b75898a50"
             notOverrideResValue getOwner(), "string", "push_key", "Hyu8ZPSKUltvAIuOkSAG94tb"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23571962"
+            notOverrideResValue getOwner(), "string", "alifeedback_secret", "e2c84c86c1f6d0b193409c9d0bcb26b8"
+
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://k.zhuishuwang.com"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://xiaoshuodq.zhuishuwang.com:443"
         }
@@ -767,6 +771,8 @@ N多网	blf1298_10885_001
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "05c32565e4"
             notOverrideResValue getOwner(), "string", "push_key", "DOGRj3vpV9F6KamswYShmdHM"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23571370"
+            notOverrideResValue getOwner(), "string", "alifeedback_secret", "003658cd2cde6537a912eff2c171d0a7"
+
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://xiaoshuo.youshiit.com"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://bookrank.youshiit.com:443"
         }
