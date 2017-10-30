@@ -155,8 +155,9 @@ public class BaseCacheableActivity extends FrameActivity {
                         }
                     });
                     myDialog.setCanceledOnTouchOutside(true);
-                    myDialog.show();
-
+                    if (!isFinishing()) {
+                        myDialog.show();
+                    }
                 }
             }
         }

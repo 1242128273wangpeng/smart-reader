@@ -184,7 +184,7 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
                     cache.download_btn.setImageResource(downBtnNoStart);
                 } else if (state == DownloadState.FINISH) {
                     cache.download_state.setText("缓存完成");
-                    cache.download_btn.setImageResource(R.mipmap.cache_icon_complete);
+                    cache.download_btn.setImageResource(R.drawable.icon_download_complete);
                     cache.download_progress.setProgressDrawable(mResources.getDrawable(progressbarSecond));
                     cache.download_progress.setProgress(100);
                 } else if (state == DownloadState.LOCKED) {

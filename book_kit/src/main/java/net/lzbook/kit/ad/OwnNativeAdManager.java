@@ -1612,7 +1612,7 @@ public class OwnNativeAdManager implements AdListener {
     private void recycleBitmap(Bitmap bitmap) {
         if (bitmap != null && !bitmap.isRecycled()) {
             AppLog.e(TAG, "recycleBitmap");
-            bitmap.recycle();
+//            bitmap.recycle();
             bitmap = null;
         }
     }

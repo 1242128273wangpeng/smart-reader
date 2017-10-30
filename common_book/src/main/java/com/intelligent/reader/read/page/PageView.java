@@ -412,6 +412,9 @@ public class PageView extends View implements PageInterface {
     }
 
     private boolean prepareTurnNextPage() {
+        if (dataFactory == null) {
+            return false;
+        }
         if (!isAutoReadMode()) {
             Constants.manualReadedCount++;
             dataFactory.dealManualDialogShow();

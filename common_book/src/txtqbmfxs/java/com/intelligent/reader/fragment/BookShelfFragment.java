@@ -4,6 +4,7 @@ import com.dingyueads.sdk.Native.YQNativeAdInfo;
 import com.dingyueads.sdk.NativeInit;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
+import com.intelligent.reader.activity.DownloadManagerActivity;
 import com.intelligent.reader.activity.HomeActivity;
 import com.intelligent.reader.adapter.BookShelfReAdapter;
 import com.intelligent.reader.app.BookApplication;
@@ -35,6 +36,7 @@ import net.lzbook.kit.utils.Tools;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
@@ -184,17 +186,17 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
 //            book_shelf_loading = (RelativeLayout) bookshelf_content.findViewById(R.id.book_shelf_loading);
 //            book_shelf_loading.setVisibility(View.GONE);
             loading_progress_bar = (ProgressBar) bookshelf_content.findViewById(R.id.loading_progressbar);
-//            download_bookshelf = (ImageView) bookshelf_content.findViewById(R.id.fab_goto_down_act);
-//           if(download_bookshelf.getVisibility()==View.VISIBLE){
-//               isShowDownloadBtn = true;
-//                download_bookshelf.setOnClickListener(new OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Intent intent = new Intent(mContext, DownloadManagerActivity.class);
-//                        startActivity(intent);
-//                    }
-//                });
-//            }
+            download_bookshelf = (ImageView) bookshelf_content.findViewById(R.id.fab_goto_down_act);
+            if (download_bookshelf.getVisibility() == View.VISIBLE) {
+                isShowDownloadBtn = true;
+                download_bookshelf.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(mContext, DownloadManagerActivity.class);
+                        startActivity(intent);
+                    }
+                });
+            }
 //            loading_progress = (ProgressBar) bookshelf_content.findViewById(R.id.loading_progress);
 //            loading_message = (TextView) bookshelf_content.findViewById(R.id.loading_message);
 
