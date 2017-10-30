@@ -84,7 +84,11 @@ public class SwitchSplashAdActivity extends Activity {
                     activity.finish();
                     break;
                 case SHOW_CLOSE_BT:
-                    mCloseBt.setVisibility(View.VISIBLE);
+                    if (Constants.IS_LANDSCAPE) {
+                        mCloseBt.setVisibility(View.GONE);
+                    } else {
+                        mCloseBt.setVisibility(View.VISIBLE);
+                    }
                     break;
             }
         }
