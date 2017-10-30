@@ -121,7 +121,7 @@ android {
     }
     defaultConfig {
 
-        applicationId "cc.lianzainovel"
+        applicationId "cn.txtzsydsq.reader"
 
 //        System.err.println("project.properties = ${project.getProperties()}")
 
