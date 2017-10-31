@@ -80,6 +80,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -94,6 +95,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.InflateException;
 import android.view.KeyEvent;
@@ -151,10 +153,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private static ReadStatus readStatus;
     public DownloadService downloadService;
     public boolean isRestDialogShow = false;
-    //    public boolean isRestDialogShow = false;
     long stampTime = 0;
     int readLength = 0;
-    boolean isFirstVisiable = true;
     private Context mContext;
     private PageInterface pageView;
     private ArrayList<Source> sourcesList;
@@ -292,6 +292,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         super.onCreate(savedInstanceState);
         AppLog.e(TAG, "onCreate");
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+        getWindow().getDecorView().setSystemUiVisibility(UI_OPTIONS_IMMERSIVE_STICKY);
+
         mContext = this;
         this.sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Constants.isFullWindowRead = sp.getBoolean("read_fullwindow", true);
@@ -510,7 +512,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                                 Bitmap bitmap = bitmapDrawable.getBitmap();
                                 if (bitmap != null && !bitmap.isRecycled()) {
                                     AppLog.e(TAG, "Bitmap != null");
-                                    bitmap.recycle();
+//                                    bitmap.recycle();
                                 }
                             }
                         }
@@ -864,10 +866,15 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
      * 初始化窗口基本信息
      */
     private void initWindow() {
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point realSize = new Point();
+        display.getRealSize(realSize);
+
         // 获取屏幕基本信息
         DisplayMetrics dm = getResources().getDisplayMetrics();
-        readStatus.screenWidth = dm.widthPixels;
-        readStatus.screenHeight = dm.heightPixels;
+        readStatus.screenWidth = realSize.x;
+        readStatus.screenHeight = realSize.y;
         readStatus.screenDensity = dm.density;
         readStatus.screenScaledDensity = dm.scaledDensity;
         // 保存字体、亮度、阅读模式
@@ -1822,12 +1829,23 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
     }
 
+    boolean isFirstVisiable = true;
+
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (isFirstVisiable && hasFocus) {
             isFirstVisiable = false;
             initReadingAd();
+        }
+
+        if(hasFocus){
+            getWindow().getDecorView().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    getWindow().getDecorView().setSystemUiVisibility(UI_OPTIONS_IMMERSIVE_STICKY);
+                }
+            }, 1500);
         }
     }
 

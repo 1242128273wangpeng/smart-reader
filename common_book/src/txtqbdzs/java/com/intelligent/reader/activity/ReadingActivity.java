@@ -153,10 +153,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private static ReadStatus readStatus;
     public DownloadService downloadService;
     public boolean isRestDialogShow = false;
-    //    public boolean isRestDialogShow = false;
     long stampTime = 0;
     int readLength = 0;
-    boolean isFirstVisiable = true;
     private Context mContext;
     private PageInterface pageView;
     private ArrayList<Source> sourcesList;
@@ -516,7 +514,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                                 Bitmap bitmap = bitmapDrawable.getBitmap();
                                 if (bitmap != null && !bitmap.isRecycled()) {
                                     AppLog.e(TAG, "Bitmap != null");
-                                    bitmap.recycle();
+//                                    bitmap.recycle();
                                 }
                             }
                         }
@@ -1832,6 +1830,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         readLength = 0;
 
     }
+
+    boolean isFirstVisiable = true;
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
