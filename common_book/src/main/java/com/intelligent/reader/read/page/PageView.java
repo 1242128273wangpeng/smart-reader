@@ -483,7 +483,8 @@ public class PageView extends View implements PageInterface {
                     }
                 }
             } else {
-                if (x <= w3 || x >= pageWidth - w3 || (y >= pageHeight - h4 && x >= w3)) {
+                if (performOperation(event)) {
+                } else if (x <= w3 || x >= pageWidth - w3 || (y >= pageHeight - h4 && x >= w3)) {
                     tryTurnNextPage(event);
                 } else {
                     if (callBack != null) {
