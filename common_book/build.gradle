@@ -119,6 +119,8 @@ android {
             txtqbxsydq: "cn.zsqbydq.reader"
     ]
 
+    def custom_channel = "custom_channel"
+
 
     lintOptions {
         // true--错误发生后停止gradle构建
@@ -243,6 +245,10 @@ android {
             } else {
                 System.err.println("gradlew params -Pwebview_host = ${webview_host} use default")
             }
+        }
+
+        if (project.hasProperty('channel')) {
+            custom_channel = project.getProperties().get('channel')
         }
 
         //默认开启LeakCanary
@@ -487,6 +493,15 @@ N多网	blf1298_10885_001
             shrinkResources false
             addManifestPlaceholders([CHANNEL_NAME: 'dyp1024_20001_001'])
         }
+
+        //自定义
+        custom {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources false
+            addManifestPlaceholders([CHANNEL_NAME: "${custom_channel}"])
+        }
+
         //调试和开发使用
         debug {
             debuggable = true
