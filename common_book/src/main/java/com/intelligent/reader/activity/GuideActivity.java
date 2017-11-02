@@ -47,7 +47,7 @@ public class GuideActivity extends FrameActivity implements GuideFragment.Fragme
         guideAdapter.setPager(viewPager);
 
         Bundle guide_first = new Bundle();
-        guide_first.putInt("image_center", R.drawable.splash_icon1);
+        guide_first.putInt("image_center", getResources().getIdentifier("splash_icon1", "drawable", getPackageName()));
         GuideFragment guideFragmentFirst = new GuideFragment();
         guideFragmentFirst.setArguments(guide_first);
 
@@ -55,19 +55,19 @@ public class GuideActivity extends FrameActivity implements GuideFragment.Fragme
 
         if (Arrays.asList(PACKAGE_2).contains(ACTION_CHKNUM)) {
             Bundle guide_second = new Bundle();
-            guide_second.putInt("image_center", R.drawable.splash_icon2);
+            guide_second.putInt("image_center", getResources().getIdentifier("splash_icon2", "drawable", getPackageName()));
             GuideFragment guideFragmentSecond = new GuideFragment();
             guideFragmentSecond.setArguments(guide_second);
 
             guideAdapter.add(guideFragmentSecond);
         } else if (Arrays.asList(PACKAGE_3).contains(ACTION_CHKNUM)) {
             Bundle guide_second = new Bundle();
-            guide_second.putInt("image_center", R.drawable.splash_icon2);
+            guide_second.putInt("image_center", getResources().getIdentifier("splash_icon2", "drawable", getPackageName()));
             GuideFragment guideFragmentSecond = new GuideFragment();
             guideFragmentSecond.setArguments(guide_second);
 
             Bundle guide_third = new Bundle();
-            guide_third.putInt("image_center", R.drawable.splash_icon3);
+            guide_third.putInt("image_center", getResources().getIdentifier("splash_icon3", "drawable", getPackageName()));
             GuideFragment guideFragmentThird = new GuideFragment();
             guideFragmentThird.setArguments(guide_third);
 
