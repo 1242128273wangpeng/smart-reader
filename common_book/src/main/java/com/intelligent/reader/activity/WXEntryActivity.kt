@@ -1,4 +1,4 @@
-package cc.remennovel.wxapi
+package cc.quanben.novel.wxapi
 
 import android.app.Activity
 import android.content.Intent

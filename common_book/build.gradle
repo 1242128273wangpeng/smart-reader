@@ -119,7 +119,7 @@ android {
             txtqbxsydq: "cn.zsqbydq.reader"
     ]
 
-    def custom_channel = "custom_channel"
+    def channel = "custom_channel"
 
 
     lintOptions {
@@ -248,7 +248,7 @@ android {
         }
 
         if (project.hasProperty('channel')) {
-            custom_channel = project.getProperties().get('channel')
+            channel = project.getProperties().get('channel')
         }
 
         //默认开启LeakCanary
@@ -499,7 +499,7 @@ N多网	blf1298_10885_001
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources false
-            addManifestPlaceholders([CHANNEL_NAME: "${custom_channel}"])
+            addManifestPlaceholders([CHANNEL_NAME: "${channel}"])
         }
 
         //调试和开发使用
@@ -930,40 +930,47 @@ N多网	blf1298_10885_001
             def outputFile = output.outputFile
             if (outputFile != null && outputFile.name.endsWith('.apk')) {
                 def fileName
+
+                def channel_flag = variant.buildType.name
+
+                if (channel_flag == "custom") {
+                    channel_flag = channel
+                }
+
                 if (variant.flavorName == "kdzsydq") {
-                    fileName = "txtzsydsq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                    fileName = "txtzsydsq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
                 } else if (variant.flavorName == "kdqbxs") {
-                    fileName = "kdqbxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                    fileName = "kdqbxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
                 } else if (variant.flavorName == "qbzsydq") {
-                    fileName = "qbzsydsq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                    fileName = "qbzsydsq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
                 } else if (variant.flavorName == "txtqbxsydq") {
-                    fileName = "zsqbydq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                    fileName = "zsqbydq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
                 } else if (variant.flavorName == "txtkdxs") {
-                    fileName = "txtkdxsdq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                    fileName = "txtkdxsdq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
                 } else if (variant.flavorName == "kdqbdzs") {
-                    fileName = "kkqbtxtxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                    fileName = "kkqbtxtxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
                 } else if (variant.flavorName == "mfqbxssc") {
-                    fileName = "mfqbxssc_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                    fileName = "mfqbxssc_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
                 } else if (variant.flavorName == "jrdkqbxs") {
-                    fileName = "jrdkqbxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                    fileName = "jrdkqbxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
                 } else if (variant.flavorName == "txtqbdzs") {
-                    fileName = "txtqbdzs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                    fileName = "txtqbdzs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
                 } else if (variant.flavorName == "zsmfqbxs") {
-                    fileName = "zsmfqbxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                    fileName = "zsmfqbxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
                 } else if (variant.flavorName == "txtqbmfxs") {
-                    fileName = "txtqbmfxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                    fileName = "txtqbmfxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
                 } else if (variant.flavorName == "qbmfxsydq") {
-                    fileName = "qbmfxsydq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                    fileName = "qbmfxsydq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
                 } else if (variant.flavorName == "qbmfydq") {
-                    fileName = "qbmfydq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                    fileName = "qbmfydq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
                 } else if (variant.flavorName == "qbxsxzq") {
-                    fileName = "quanbennovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                    fileName = "quanbennovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
                 } else if (variant.flavorName == "hycs") {
-                    fileName = "lianzainovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                    fileName = "lianzainovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
                 } else if (variant.flavorName == "txtmfqbydq") {
-                    fileName = "mianfeinovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                    fileName = "mianfeinovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
                 } else {
-                    fileName = "remennovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+                    fileName = "remennovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
                 }
 
                 output.outputFile = new File(outputFile.parent, fileName)
