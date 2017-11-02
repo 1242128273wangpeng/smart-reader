@@ -47,7 +47,7 @@ public class GuideActivity extends FrameActivity implements GuideFragment.Fragme
         guideAdapter.setPager(viewPager);
 
         Bundle guide_first = new Bundle();
-        guide_first.putInt("image_center", getResources().getIdentifier("splash_icon1", "drawable", getPackageName()));
+        guide_first.putInt("image_center", R.drawable.guide_bg);
         GuideFragment guideFragmentFirst = new GuideFragment();
         guideFragmentFirst.setArguments(guide_first);
 
