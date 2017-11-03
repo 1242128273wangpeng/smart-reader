@@ -59,6 +59,8 @@ public class DynamicParamter {
     public String dy_splash_ad_switch;
     //书架页开关
     public String dy_shelf_ad_switch;
+    //九宫格书架页广告显示类型切换开关 1表示横向header, 2 表示九宫格列表形式
+    public String dy_shelf_grid_ad_type;
     //书架页广告间隔频率设置
     public String dy_shelf_ad_freq;
     //章节末开关
@@ -152,6 +154,8 @@ public class DynamicParamter {
         dy_splash_ad_switch = getConfigParams(Constants.DY_SPLASH_AD_SWITCH);
         //书架页开关
         dy_shelf_ad_switch = getConfigParams(Constants.DY_SHELF_AD_SWITCH);
+        //九宫格书架页广告显示类型切换开关 1表示横向header, 2 表示九宫格列表形式
+        dy_shelf_grid_ad_type = getConfigParams(Constants.DY_SHELF_GRID_AD_TYPE);
         //书架页广告间隔频率设置
         dy_shelf_ad_freq = getConfigParams(Constants.DY_SHELF_AD_FREQ);
         //章节末开关
@@ -265,6 +269,8 @@ public class DynamicParamter {
         dy_splash_ad_switch = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_SPLASH_AD_SWITCH);
         //书架页开关
         dy_shelf_ad_switch = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_SHELF_AD_SWITCH);
+        //九宫格书架页广告显示类型切换开关 1表示横向header, 2 表示九宫格列表形式
+        dy_shelf_grid_ad_type = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_SHELF_GRID_AD_TYPE);
         //书架页广告间隔频率设置
         dy_shelf_ad_freq = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_SHELF_AD_FREQ);
         //章节末开关
@@ -406,6 +412,14 @@ public class DynamicParamter {
                     putConfigParams(Constants.DY_SHELF_AD_SWITCH, dy_shelf_ad_switch);
                 }
             }
+            //九宫格书架页广告显示类型切换开关 1表示横向header, 2 表示九宫格列表形式
+            if (!data.isNull(Constants.DY_SHELF_GRID_AD_TYPE)) {
+                dy_shelf_grid_ad_type = data.getString(Constants.DY_SHELF_GRID_AD_TYPE);
+                if (isOwn) {
+                    putConfigParams(Constants.DY_SHELF_GRID_AD_TYPE, dy_shelf_grid_ad_type);
+                }
+            }
+
 
             if (!data.isNull(Constants.DY_SHELF_AD_FREQ)) {
                 dy_shelf_ad_freq = data.getString(Constants.DY_SHELF_AD_FREQ);
@@ -886,9 +900,20 @@ public class DynamicParamter {
         if (!TextUtils.isEmpty(dy_shelf_ad_switch)) {
             try {
                 Constants.dy_shelf_ad_switch = Boolean.parseBoolean(dy_shelf_ad_switch);
+
             } catch (Exception e) {
             }
         }
+
+        //九宫格书架页广告显示类型切换开关 1表示横向header, 2 表示九宫格列表形式
+        if (!TextUtils.isEmpty(dy_shelf_grid_ad_type)) {
+            try {
+                Constants.dy_shelf_grid_ad_type = Integer.parseInt(dy_shelf_grid_ad_type);
+            } catch (Exception e) {
+            }
+        }
+
+
 
         //书架页广告间隔频率设置
         if (!TextUtils.isEmpty(dy_shelf_ad_freq)) {
