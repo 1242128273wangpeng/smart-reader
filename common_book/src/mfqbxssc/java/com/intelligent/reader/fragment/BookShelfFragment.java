@@ -1,5 +1,9 @@
 package com.intelligent.reader.fragment;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
+import com.dingyueads.sdk.Bean.AdSceneData;
+import com.dingyueads.sdk.Bean.Advertisement;
 import com.dingyueads.sdk.Native.YQNativeAdInfo;
 import com.dingyueads.sdk.NativeInit;
 import com.intelligent.reader.BuildConfig;
@@ -15,6 +19,7 @@ import net.lzbook.kit.ad.OwnNativeAdManager;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
 import net.lzbook.kit.book.view.MyDialog;
+import net.lzbook.kit.cache.imagecache.ImageCacheManager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.UpdateCallBack;
 import net.lzbook.kit.data.bean.Book;
@@ -30,6 +35,7 @@ import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.FrameBookHelper;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
+import net.lzbook.kit.utils.StatisticManager;
 import net.lzbook.kit.utils.ToastUtils;
 import net.lzbook.kit.utils.Tools;
 
@@ -37,6 +43,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -57,6 +64,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
@@ -129,6 +137,8 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     private ShelfGridLayoutManager layoutManager;
     private boolean isList = false;
     private boolean isShowDownloadBtn = false;
+    private RelativeLayout headerReleative;//头部广告view
+    private StatisticManager statisticManager;//AD 位
 
     private HashMap<Integer, YQNativeAdInfo> adInfoHashMap = new HashMap<>();
 
@@ -179,6 +189,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             bookshelf_empty.setVisibility(View.GONE);
 
             bookrack_update_time = AppUtils.getLongPreferences(mContext, "bookrack_update_time", System.currentTimeMillis());
+            headerReleative = (RelativeLayout) bookshelf_content.findViewById(R.id.headerLayout);//header AD
 
 //            book_shelf_loading = (RelativeLayout) bookshelf_content.findViewById(R.id.book_shelf_loading);
 //            book_shelf_loading.setVisibility(View.GONE);
@@ -589,6 +600,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 12);
         layoutManager = new ShelfGridLayoutManager(mContext, 3);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setFocusable(false);//放弃焦点
 //        recyclerView.getItemAnimator().setSupportsChangeAnimations(false);
         recyclerView.getItemAnimator().setAddDuration(0);
         recyclerView.getItemAnimator().setChangeDuration(0);
@@ -620,12 +632,19 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
                 Collections.sort(booksOnLine, new FrameBookHelper.MultiComparator());
                 iBookList.addAll(booksOnLine);
                 if (Constants.dy_shelf_ad_switch && !Constants.isHideAD && ownNativeAdManager != null) {
+                    if (Constants.dy_shelf_grid_ad_type==1) {//headerview open
+
+                        setHeaderAdBook(headerReleative);//设置书架header 位置广告
+                    } else {
+                        headerReleative.setVisibility(View.GONE);//隐藏headerview
                     setAdBook(booksOnLine);
                 }
             }
         }
+        }
         return iBookList;
     }
+    
 
     private void setBookListHeadData(int num) {
         if (num == 0 && swipeRefreshLayout != null) {
@@ -1150,5 +1169,129 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
                     break;
             }
         }
+    }
+    private void setHeaderAdBook(View view) {
+        AppLog.e("wyhad1-1", this.isResumed() + "");
+        if (!this.isResumed()) {
+            return;
+        }
+        YQNativeAdInfo adInfo;
+        if (adInfoHashMap.containsKey(0) && adInfoHashMap.get(0) != null && adInfoHashMap.get(0).getAdvertisement() != null
+                && (System.currentTimeMillis() - adInfoHashMap.get(0).getAvailableTime() < 3000 || !adInfoHashMap.get(0).getAdvertisement().isShowed)) {
+            adInfo = adInfoHashMap.get(0);
+        } else {
+            adInfo = ownNativeAdManager.getSingleADInfoNew(0, NativeInit.CustomPositionName.SHELF_POSITION);
+            if (adInfo != null) {
+                adInfo.setAvailableTime(System.currentTimeMillis());
+                adInfoHashMap.put(0, adInfo);
+            }
+        }
+        if(adInfo==null)return;//获取广告失败直接返回
+        checkAdeffective(view, adInfo);//判断当前广告是否有效
+        headerReleative.setVisibility(View.VISIBLE);//显示headerview
+    }
+    private void checkAdeffective(final View view, YQNativeAdInfo yqNativeAdInfo) {
+        if (yqNativeAdInfo == null) {
+            return;
+        }
+        Advertisement advertisement = yqNativeAdInfo.getAdvertisement();
+        if (advertisement == null) {
+            return;
+        }
+        final RelativeLayout ad_image_rl = (RelativeLayout) view.findViewById(R.id.item_ad_image_rl);//view 大小
+        final ImageView ad_image = (ImageView) view.findViewById(R.id.item_ad_image);// 正常显示图片的位置
+        if (advertisement.platformId == com.dingyueads.sdk.Constants.AD_TYPE_INMOBI && yqNativeAdInfo.getInMobiNative() != null) {
+            View inMobiView = yqNativeAdInfo.getInMobiNative().getPrimaryViewOfWidth(view, null, ad_image_rl.getMeasuredWidth());
+            if (inMobiView != null) {
+                ad_image_rl.removeAllViews();
+                ad_image_rl.addView(inMobiView);
+                ad_image_rl.setVisibility(View.VISIBLE);
+                ad_image.setVisibility(View.GONE);
+            } else {
+                view.setVisibility(View.GONE);
+            }
+            showHeaderView(view, yqNativeAdInfo, advertisement);
+        } else if (!TextUtils.isEmpty(advertisement.iconUrl) || (com.dingyueads.sdk.Constants.AD_TYPE_KDXF == advertisement.platformId && !TextUtils.isEmpty(advertisement.imageUrl))) {
+            String url = advertisement.iconUrl == null ? advertisement.imageUrl : advertisement.iconUrl;
+            ImageCacheManager.getInstance().getImageLoader().get(url, new
+                    ImageLoader.ImageListener() {
+                        @Override
+                        public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
+                            if (imageContainer != null) {
+                                Bitmap bitmap = imageContainer.getBitmap();
+                                if (bitmap != null) {
+                                    if (bitmap != null && ad_image != null) {
+                                        ad_image_rl.setVisibility(View.INVISIBLE);
+                                        ad_image.setImageBitmap(bitmap);
+                                        ad_image.setVisibility(View.VISIBLE);
+                                    } else {
+                                        view.setVisibility(View.GONE);
+                                    }
+                                }
+                            }
+                        }
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
+                            view.setVisibility(View.GONE);
+                        }
+                    });
+            showHeaderView(view, yqNativeAdInfo, advertisement);
+        }
+    }
+    private void showHeaderView(final View view, final YQNativeAdInfo yqNativeAdInfo, Advertisement advertisement) {
+        TextView header_title = (TextView) view.findViewById(R.id.item_ad_title);//标题
+        TextView header_desc = (TextView) view.findViewById(R.id.item_ad_desc);//广告描述
+        ImageView header_rightdown = (ImageView) view.findViewById(R.id.item_ad_right_down);//广告角标
+        if (header_title != null) {
+            header_title.setText(TextUtils.isEmpty(advertisement.title) ? "" : advertisement.title);
+        }
+        if (header_desc != null) {
+            header_desc.setText(TextUtils.isEmpty(advertisement.description) ? "" : advertisement.description);
+        }
+        if (header_rightdown != null) {
+            if ("广点通".equals(advertisement.rationName)) {
+                header_rightdown.setImageResource(R.drawable.zhuishu_ad);
+            } else if ("百度".equals(advertisement.rationName)) {
+                header_rightdown.setImageResource(R.drawable.icon_ad_bd);
+            } else if ("360".equals(advertisement.rationName)) {
+                header_rightdown.setImageResource(R.drawable.icon_ad_360);
+            } else {
+                header_rightdown.setImageResource(R.drawable.icon_ad_default);
+            }
+        }
+        try {
+            if (statisticManager == null) {
+                statisticManager = StatisticManager.getStatisticManager();
+            }
+            AdSceneData adSceneData = yqNativeAdInfo.getAdSceneData();
+            if (adSceneData != null) {
+                adSceneData.ad_showSuccessTime = String.valueOf(System.currentTimeMillis() / 1000L);
+            }
+            statisticManager.schedulingRequest((Activity) mContext, view, yqNativeAdInfo, null, StatisticManager.TYPE_SHOW, NativeInit
+                    .ad_position[0]);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+        view.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    if (statisticManager == null) {
+                        statisticManager = StatisticManager.getStatisticManager();
+                    }
+                    statisticManager.schedulingRequest((Activity) mContext, view, yqNativeAdInfo, null, StatisticManager.TYPE_CLICK, NativeInit.ad_position[0]);
+                    if (yqNativeAdInfo != null && com.dingyueads.sdk.Constants.AD_TYPE_360 == yqNativeAdInfo.getAdvertisement().platformId) {
+                        EventBookshelfAd eventBookshelfAd = new EventBookshelfAd("bookshelfclick_360", 0 / Constants.dy_shelf_ad_freq, yqNativeAdInfo);
+                        EventBus.getDefault().post(eventBookshelfAd);
+                    }
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                }
+                StatServiceUtils.statBookEventClick(mContext, StatServiceUtils.type_ad_shelf);
+                if (Constants.DEVELOPER_MODE) {
+                    Toast.makeText(mContext, "你点击了广告", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }
