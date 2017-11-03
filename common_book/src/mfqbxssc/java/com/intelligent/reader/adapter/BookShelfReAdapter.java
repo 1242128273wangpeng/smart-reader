@@ -84,7 +84,9 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         shelfItemLongClickListener);
                 break;
             case 1:
-                view = LayoutInflater.from(mContext).inflate(R.layout.ad_item_small_layout, parent, false);
+//              view = LayoutInflater.from(mContext).inflate(R.layout.ad_item_small_layout, parent, false);
+                //修改广告显示样式为九宫格
+                view = LayoutInflater.from(mContext).inflate(R.layout.ad_item_small_layout_xssc_grid, parent, false);
                 holder = new ADViewHolder(view, shelfItemClickListener, shelfItemLongClickListener);
                 parentView = parent;
                 break;
@@ -191,7 +193,7 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             if (aDViewHolder.item_ad_right_down != null) {
                 if ("广点通".equals(advertisement.rationName)) {
-                    aDViewHolder.item_ad_right_down.setImageResource(R.drawable.icon_ad_gdt);
+                aDViewHolder.item_ad_right_down.setImageResource(R.drawable.zhuishu_ad);
                 } else if ("百度".equals(advertisement.rationName)) {
                     aDViewHolder.item_ad_right_down.setImageResource(R.drawable.icon_ad_bd);
                 } else if ("360".equals(advertisement.rationName)) {
@@ -351,7 +353,7 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             item_ad_image_rl = (RelativeLayout) itemView.findViewById(R.id.item_ad_image_rl);
             item_ad_image = (ImageView) itemView.findViewById(R.id.item_ad_image);
             item_ad_title = (TextView) itemView.findViewById(R.id.item_ad_title);
-            item_ad_extension = (RatingBar) itemView.findViewById(R.id.item_ad_extension);
+//            item_ad_extension = (RatingBar) itemView.findViewById(R.id.item_ad_extension);
             item_ad_desc = (TextView) itemView.findViewById(R.id.item_ad_desc);
             item_ad_right_down = (ImageView) itemView.findViewById(R.id.item_ad_right_down);
         }
