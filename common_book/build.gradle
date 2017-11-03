@@ -173,6 +173,8 @@ android {
                         buildTypeName = buildTypeName.split("debug")[0]
                     else
                         buildTypeName = buildTypeName.split("release")[0]
+                    if (buildTypeName.contains("custom"))
+                        buildTypeName = buildTypeName.split("custom")[0]
                 }
                 System.err.println("buildTypeName = ${buildTypeName}")
                 if (appPackageIDConfig.containsKey(buildTypeName)) {
