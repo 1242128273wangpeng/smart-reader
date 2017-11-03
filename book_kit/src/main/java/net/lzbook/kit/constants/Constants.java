@@ -44,6 +44,8 @@ public class Constants {
     public static final String DY_SPLASH_AD_SWITCH = "DY_splash_ad_switch";
     //书架广告开关
     public static final String DY_SHELF_AD_SWITCH = "DY_shelf_ad_switch";
+    //九宫格书架页广告显示类型切换开关 1表示横向header, 2 表示九宫格列表形式
+    public static final String DY_SHELF_GRID_AD_TYPE = "DY_shelf_grid_ad_type";
     //书架广告频率
     public static final String DY_SHELF_AD_FREQ = "DY_shelf_ad_freq";
     //章节末广告开关
@@ -172,6 +174,8 @@ public class Constants {
     public static int dy_adfree_new_user = 48;
     public static boolean dy_splash_ad_switch = true;
     public static boolean dy_shelf_ad_switch = true;
+    //九宫格书架页广告显示类型切换开关 1表示横向header, 2 表示九宫格列表形式
+    public static int dy_shelf_grid_ad_type = 1;
     public static int dy_shelf_ad_freq = 10;
     public static boolean dy_page_end_ad_switch = true;
     public static int dy_page_end_ad_freq = 1;
