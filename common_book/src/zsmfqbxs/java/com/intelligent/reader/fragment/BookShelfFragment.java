@@ -649,7 +649,6 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
                 iBookList.addAll(booksOnLine);
                 if (Constants.dy_shelf_ad_switch && !Constants.isHideAD && ownNativeAdManager != null) {
                     if (Constants.dy_shelf_grid_ad_type==1) {//headerview open
-                        headerReleative.setVisibility(View.VISIBLE);//显示headerview
                         setHeaderAdBook(headerReleative);//设置书架header 位置广告
                     } else {
                         headerReleative.setVisibility(View.GONE);//隐藏headerview
@@ -1207,7 +1206,9 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
                 adInfoHashMap.put(0, adInfo);
             }
         }
+        if(adInfo==null)return;//没有请求到广告直接return
         checkAdeffective(view, adInfo);//判断当前广告是否有效
+        headerReleative.setVisibility(View.VISIBLE);//显示headerview
     }
 
     //检验广告信息
