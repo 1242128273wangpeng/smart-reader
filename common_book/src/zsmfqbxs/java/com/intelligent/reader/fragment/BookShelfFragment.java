@@ -351,6 +351,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         if (!this.isResumed()) {
             return;
         }
+        if(Constants.book_shelf_state !=3){//表示横条，九宫格一起显示 列表首位不显示广告 其他位置间隔显示
         YQNativeAdInfo adInfo;
         if (adInfoHashMap.containsKey(0) && adInfoHashMap.get(0) != null && adInfoHashMap.get(0).getAdvertisement() != null
                 && (System.currentTimeMillis() - adInfoHashMap.get(0).getAvailableTime() < 3000 || !adInfoHashMap.get(0).getAdvertisement().isShowed)) {
@@ -377,9 +378,16 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         } else {
             AppLog.e("wyhad1-1", "adInfo == null");
         }
+        }
+        int distance;
+        if(Constants.book_shelf_state !=3){
+            distance = booksOnLine.size() / Constants.dy_shelf_ad_freq;//计算广告展现频率  dy_shelf_ad_freq 为间隔
+        }else{
+            //状态为3的时候
+            distance = (booksOnLine.size()-1) / Constants.dy_shelf_ad_freq;//计算广告展现频率  dy_shelf_ad_freq 为间隔
+        }
 
-        int distance = booksOnLine.size() / Constants.dy_shelf_ad_freq;
-
+        int currentPostion = 1;//当状态为3的时候 从1 开始计算
         for (int i = 0; i < distance; i++) {
             YQNativeAdInfo info;
             if (adInfoHashMap.containsKey(i + 1) && adInfoHashMap.get(i + 1) != null && adInfoHashMap.get(i + 1).getAdvertisement() != null
@@ -400,7 +408,8 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
                 AppLog.e("wyhad1-1", "info：" + info.getAdvertisement().toString());
                 book1.rating = Tools.getIntRandom();
                 try {
-                    iBookList.add(Constants.dy_shelf_ad_freq * (i + 1), book1);
+                    iBookList.add(Constants.dy_shelf_ad_freq + currentPostion, book1);
+                    currentPostion = currentPostion+Constants.dy_shelf_ad_freq +1;
                 } catch (IndexOutOfBoundsException e) {
                     e.printStackTrace();
                     break;
@@ -647,11 +656,14 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             if (!booksOnLine.isEmpty()) {
                 Collections.sort(booksOnLine, new FrameBookHelper.MultiComparator());
                 iBookList.addAll(booksOnLine);
-                if (Constants.dy_shelf_ad_switch && !Constants.isHideAD && ownNativeAdManager != null) {
-                    if (Constants.dy_shelf_grid_ad_type==1) {//headerview open
+                if (Constants.dy_shelf_ad_switch && !Constants.isHideAD && ownNativeAdManager != null&&Constants.book_shelf_state!=0) {
+                    if (Constants.book_shelf_state==1) {//headerview open
                         setHeaderAdBook(headerReleative);//设置书架header 位置广告
-                    } else {
+                    }else if(Constants.book_shelf_state==2){//只显示九宫格
+                        setAdBook(booksOnLine);
                         headerReleative.setVisibility(View.GONE);//隐藏headerview
+                    } else if(Constants.book_shelf_state==3){
+                        setHeaderAdBook(headerReleative);//设置书架header 位置广告
                         setAdBook(booksOnLine);
                     }
                 }
