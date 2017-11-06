@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/dimen_margin_15"
     android:layout_marginRight="@dimen/dimen_margin_19"
-    android:layout_marginTop="@dimen/dimen_margin_19"
+    android:layout_marginTop="@dimen/dimen_margin_10"
     android:background="@drawable/bookshef_header_ad_bg">
 
     <RelativeLayout
