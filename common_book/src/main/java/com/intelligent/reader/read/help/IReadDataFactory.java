@@ -7,8 +7,6 @@ import com.intelligent.reader.activity.ReadingActivity;
 import com.intelligent.reader.read.page.PageInterface;
 
 import net.lzbook.kit.R;
-import net.lzbook.kit.ad.PopupAdActivity;
-import net.lzbook.kit.ad.SwitchSplashAdActivity;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.constants.Constants;
@@ -327,18 +325,18 @@ public abstract class IReadDataFactory {
         }
 
         //// TODO: 2017/9/22 上下滑动翻章超过5章时显示弹窗广告
-        if (Constants.isSlideUp &&
-                Constants.land_scroll_chapter_frequence != 0 &&
-                Constants.readedCount % Constants.land_scroll_chapter_frequence == 0 &&
-                readingActivity != null &&
-                NetWorkUtils.getNetWorkType(BaseBookApplication.getGlobalContext()) != NetWorkUtils.NETWORK_NONE &&
-                !Constants.isHideAD &&
-                Constants.dy_ad_readPage_slide_switch &&
-                readingActivity != null &&
-                !readingActivity.isRestDialogShow) {
-            Intent intent = new Intent(readingActivity, PopupAdActivity.class);
-            readingActivity.startActivity(intent);
-        }
+//        if (Constants.isSlideUp &&
+//                Constants.land_scroll_chapter_frequence != 0 &&
+//                Constants.readedCount % Constants.land_scroll_chapter_frequence == 0 &&
+//                readingActivity != null &&
+//                NetWorkUtils.getNetWorkType(BaseBookApplication.getGlobalContext()) != NetWorkUtils.NETWORK_NONE &&
+//                !Constants.isHideAD &&
+//                Constants.dy_ad_readPage_slide_switch &&
+//                readingActivity != null &&
+//                !readingActivity.isRestDialogShow) {
+//            Intent intent = new Intent(readingActivity, PopupAdActivity.class);
+//            readingActivity.startActivity(intent);
+//        }
 
         Constants.readedCount++;
         preChapter = currentChapter;

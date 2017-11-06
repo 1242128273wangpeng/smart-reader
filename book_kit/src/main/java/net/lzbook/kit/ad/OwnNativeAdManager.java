@@ -25,7 +25,6 @@ import com.dingyueads.sdk.AdListener;
 import com.dingyueads.sdk.Bean.ADPlatform;
 import com.dingyueads.sdk.Bean.AdSceneData;
 import com.dingyueads.sdk.Bean.Advertisement;
-import com.dingyueads.sdk.Bean.EventPopupAd;
 import com.dingyueads.sdk.Bean.Ration;
 import com.dingyueads.sdk.Native.YQNativeAdInfo;
 import com.dingyueads.sdk.NativeInit;
@@ -42,7 +41,6 @@ import net.lzbook.kit.data.bean.EventNativeType;
 import net.lzbook.kit.data.bean.ReadStatus;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.ImageUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.OpenUDID;
 import net.lzbook.kit.utils.ResourceUtil;
@@ -360,9 +358,19 @@ public class OwnNativeAdManager implements AdListener {
                                 || currentPositionName == NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD) {
                             //处理切屏物料
                             yqNativeAdInfo = getADInfoNew(yqNativeAdInfos, ration, keyMd5);
-                            if (yqNativeAdInfo != null) {
-                                LogUtils.e(TAG, "get Switch");
-                                EventBus.getDefault().post(new EventPopupAd(ration.getMarkId(), yqNativeAdInfo));
+                            if (yqNativeAdInfo != null && readStatus != null) {
+                                if (Constants.IS_LANDSCAPE && currentPositionName == NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD) {
+                                    readStatus.currentAdInfo = yqNativeAdInfo;
+                                    LogUtils.e("scrollhaha own", "own横: " + yqNativeAdInfo.getAdvertisement().imageUrl);
+                                } else if (!Constants.IS_LANDSCAPE){
+                                    if (currentPositionName == NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD) {
+                                        readStatus.currentAdInfo = yqNativeAdInfo;
+                                        LogUtils.e("scrollhaha own", "own竖: readStatus.currentAdInfo：" + yqNativeAdInfo.getAdvertisement().imageUrl);
+                                    } else if (currentPositionName == NativeInit.CustomPositionName.SLIDEUP_POPUPAD_POSITION) {
+                                        readStatus.currentAdInfo_image = yqNativeAdInfo;
+                                        LogUtils.e("scrollhaha own", "own竖: readStatus.currentAdInfo_image：" + yqNativeAdInfo.getAdvertisement().imageUrl);
+                                    }
+                                }
                             }
                         } else {
                             EventBus.getDefault().post(new EventNativeType(currentPositionName.toString()));
@@ -537,12 +545,19 @@ public class OwnNativeAdManager implements AdListener {
             } else if (NativeInit.CustomPositionName.SLIDEUP_POPUPAD_POSITION.toString().equals(ration.getMarkId())
                     || NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD.toString().equals(ration.getMarkId())) {
                 yqNativeAdInfo = getADInfoNew(adInfos, ration, keyMd5);
-                if (yqNativeAdInfo != null) {
-                    LogUtils.e("Switch", "Switch success");
-                    EventBus.getDefault().post(new EventPopupAd(ration.getMarkId(), yqNativeAdInfo));
-                } else {
-                    //todo 失败处理
-                    LogUtils.e("Switch", "Switch, yq:null");
+                if (yqNativeAdInfo != null && readStatus != null) {
+                    if (Constants.IS_LANDSCAPE && NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD.equals(ration.getMarkId())) {
+                        readStatus.currentAdInfo = yqNativeAdInfo;
+                        LogUtils.e("scrollhaha own", "own横: " + yqNativeAdInfo.getAdvertisement().imageUrl);
+                    } else if (!Constants.IS_LANDSCAPE){
+                        if (NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD.equals(ration.getMarkId())) {
+                            readStatus.currentAdInfo = yqNativeAdInfo;
+                            LogUtils.e("scrollhaha own", "own竖: readStatus.currentAdInfo：" + yqNativeAdInfo.getAdvertisement().imageUrl);
+                        } else if (NativeInit.CustomPositionName.SLIDEUP_POPUPAD_POSITION.equals(ration.getMarkId())) {
+                            readStatus.currentAdInfo_image = yqNativeAdInfo;
+                            LogUtils.e("scrollhaha own", "own竖: readStatus.currentAdInfo_image：" + yqNativeAdInfo.getAdvertisement().imageUrl);
+                        }
+                    }
                 }
             } else {
                 if ("1-1".equals(ration.getMarkId())) {
