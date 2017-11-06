@@ -349,37 +349,41 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         if (!this.isResumed()) {
             return;
         }
-        YQNativeAdInfo adInfo;
-        if (adInfoHashMap.containsKey(0) && adInfoHashMap.get(0) != null && adInfoHashMap.get(0).getAdvertisement() != null
-                && (System.currentTimeMillis() - adInfoHashMap.get(0).getAvailableTime() < 3000 || !adInfoHashMap.get(0).getAdvertisement().isShowed)) {
-            adInfo = adInfoHashMap.get(0);
-        } else {
-            adInfo = ownNativeAdManager.getSingleADInfoNew(0, NativeInit.CustomPositionName.SHELF_POSITION);
+        if(Constants.book_shelf_state !=3){//表示横条，九宫格一起显示 列表首位不显示广告 其他位置间隔显示
+            YQNativeAdInfo adInfo;
+            if (adInfoHashMap.containsKey(0) && adInfoHashMap.get(0) != null && adInfoHashMap.get(0).getAdvertisement() != null
+                    && (System.currentTimeMillis() - adInfoHashMap.get(0).getAvailableTime() < 3000 || !adInfoHashMap.get(0).getAdvertisement().isShowed)) {
+                adInfo = adInfoHashMap.get(0);
+            } else {
+                adInfo = ownNativeAdManager.getSingleADInfoNew(0, NativeInit.CustomPositionName.SHELF_POSITION);
+                android.util.Log.e("ADSDK","列表真正获取数据一次");
+                if (adInfo != null) {
+                    adInfo.setAvailableTime(System.currentTimeMillis());
+                    adInfoHashMap.put(0, adInfo);
+                }
+            }
             if (adInfo != null) {
-                adInfo.setAvailableTime(System.currentTimeMillis());
-                adInfoHashMap.put(0, adInfo);
+                Book book1 = new Book();
+                book1.book_type = -2;
+                book1.info = adInfo;
+                AppLog.e("wyhad1-1", "adInfo：" + adInfo.getAdvertisement().toString());
+                book1.rating = Tools.getIntRandom();
+                try {
+                    iBookList.add(0, book1);
+                } catch (IndexOutOfBoundsException e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                AppLog.e("wyhad1-1", "adInfo == null");
             }
         }
-        if (adInfo != null) {
-            Book book1 = new Book();
-            book1.book_type = -2;
-            book1.info = adInfo;
-            AppLog.e("wyhad1-1", "adInfo：" + adInfo.getAdvertisement().toString());
-            book1.rating = Tools.getIntRandom();
-            try {
-                iBookList.add(0, book1);
-            } catch (IndexOutOfBoundsException e) {
-                e.printStackTrace();
-            }
-
-        } else {
-            AppLog.e("wyhad1-1", "adInfo == null");
-        }
-
-        int distance = booksOnLine.size() / Constants.dy_shelf_ad_freq;
-
+        //两种广告都显示 0位置 一定不能是广告
+        int distance = (booksOnLine.size()-1) / Constants.dy_shelf_ad_freq;//计算广告展现频率  dy_shelf_ad_freq 为间隔
+        int currentPostion = 1;//当状态为3的时候 从1 开始计算
         for (int i = 0; i < distance; i++) {
             YQNativeAdInfo info;
+            //adInfoHashMap(0)被用于显示在header位置
             if (adInfoHashMap.containsKey(i + 1) && adInfoHashMap.get(i + 1) != null && adInfoHashMap.get(i + 1).getAdvertisement() != null
                     && (System.currentTimeMillis() - adInfoHashMap.get(i + 1).getAvailableTime() < 3000 || !adInfoHashMap.get(i + 1).getAdvertisement().isShowed)) {
                 info = adInfoHashMap.get(i + 1);
@@ -398,7 +402,8 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
                 AppLog.e("wyhad1-1", "info：" + info.getAdvertisement().toString());
                 book1.rating = Tools.getIntRandom();
                 try {
-                    iBookList.add(Constants.dy_shelf_ad_freq * (i + 1), book1);
+                    iBookList.add(Constants.dy_shelf_ad_freq + currentPostion, book1);
+                    currentPostion = currentPostion+Constants.dy_shelf_ad_freq +1;
                 } catch (IndexOutOfBoundsException e) {
                     e.printStackTrace();
                     break;
@@ -508,7 +513,6 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             for (int i = 0; i < iBookList.size(); i++) {
                 Book book = iBookList.get(i);
                 bookIdList.append(book.book_id);
-
                 bookIdList.append((book.readed == 1) ? "_1" : "_0");//1已读，0未读
                 bookIdList.append((i == iBookList.size()) ? "" : "$");
 
@@ -631,20 +635,28 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             if (!booksOnLine.isEmpty()) {
                 Collections.sort(booksOnLine, new FrameBookHelper.MultiComparator());
                 iBookList.addAll(booksOnLine);
-                if (Constants.dy_shelf_ad_switch && !Constants.isHideAD && ownNativeAdManager != null) {
-                    if (Constants.dy_shelf_grid_ad_type==1) {//headerview open
-
+                //book_shelf_state  0-关闭书架页广告位；两种形式都不开启
+                if (Constants.dy_shelf_ad_switch && !Constants.isHideAD && ownNativeAdManager != null&&Constants.book_shelf_state!=0) {
+                     /*
+                      1-开启书架页广告位A样式:顶部横幅书架页广告
+                      2-开启书架页广告位B样式：九宫格原生书架页广告
+                      3-开启书架页广告位两种样式
+                       九宫格书架页广告显示类型切换开关
+                     */
+                    if (Constants.book_shelf_state==1) {//headerview open
                         setHeaderAdBook(headerReleative);//设置书架header 位置广告
-                    } else {
+                    }else if(Constants.book_shelf_state==2){//只显示九宫格
+                        setAdBook(booksOnLine);
                         headerReleative.setVisibility(View.GONE);//隐藏headerview
-                    setAdBook(booksOnLine);
-                }
+                    } else if(Constants.book_shelf_state==3){
+                        setHeaderAdBook(headerReleative);//设置书架header 位置广告
+                        setAdBook(booksOnLine);
+                    }
             }
         }
         }
         return iBookList;
     }
-    
 
     private void setBookListHeadData(int num) {
         if (num == 0 && swipeRefreshLayout != null) {
