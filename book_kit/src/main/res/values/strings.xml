@@ -486,4 +486,9 @@
           type="id"></item>
     <item name="tag_canvas"
           type="id"></item>
+
+    <item name="Tag_AD"
+          type="id"></item>
+    <item name="Tag_BOOK"
+          type="id"></item>
 </resources>
