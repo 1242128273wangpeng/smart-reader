@@ -873,6 +873,14 @@ public class DrawTextHelper {
                 OwnNativeAdManager.getInstance(mActivity).loadAd(NativeInit.CustomPositionName.READING_POSITION);
             }
         }
+        if (Constants.isSlideUp) {
+            if (Constants.IS_LANDSCAPE) {
+                OwnNativeAdManager.getInstance(mActivity).loadAd(NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD);
+            } else {
+                OwnNativeAdManager.getInstance(mActivity).loadAd(NativeInit.CustomPositionName.SLIDEUP_POPUPAD_POSITION);
+                OwnNativeAdManager.getInstance(mActivity).loadAd(NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD);
+            }
+        }
     }
 
     //上下滑动首页

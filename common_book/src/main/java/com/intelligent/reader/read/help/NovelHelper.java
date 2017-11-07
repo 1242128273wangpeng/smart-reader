@@ -569,6 +569,13 @@ public class NovelHelper {
             }
         }
 
+        //为上下翻页模式广告添加预留标记 // TODO: 2017/10/31 需要添加开关相应内容
+        if (/*isNativeAdAvailable() &&*/ lists.size() >= 3 && Constants.isSlideUp) {
+            if (actReference != null && actReference.get() != null && !actReference.get().isFinishing()) {
+                lists.add(addList(empty_page_ad));
+            }
+        }
+
         readStatus.pageCount = lists.size();
         if (readStatus.currentPage == 0) {
             readStatus.currentPage = 1;

@@ -968,6 +968,14 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 OwnNativeAdManager.getInstance(this).loadAd(NativeInit.CustomPositionName.READING_POSITION);
             }
         }
+        if (Constants.isSlideUp) {
+            if (Constants.IS_LANDSCAPE) {
+                OwnNativeAdManager.getInstance(this).loadAd(NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD);
+            } else {
+                OwnNativeAdManager.getInstance(this).loadAd(NativeInit.CustomPositionName.SLIDEUP_POPUPAD_POSITION);
+                OwnNativeAdManager.getInstance(this).loadAd(NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD);
+            }
+        }
     }
 
     /**
@@ -1972,6 +1980,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             ownNativeAdManager.recycleResourceFromReading(NativeInit.CustomPositionName.REST_POSITION.toString());
             ownNativeAdManager.recycleResourceFromReading(NativeInit.CustomPositionName.SUPPLY_READING_IN_CHAPTER.toString());
             ownNativeAdManager.recycleResourceFromReading(NativeInit.CustomPositionName.SUPPLY_READING_SPACE.toString());
+            ownNativeAdManager.recycleResourceFromReading(NativeInit.CustomPositionName.SLIDEUP_POPUPAD_POSITION.toString());
+            ownNativeAdManager.recycleResourceFromReading(NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD.toString());
             ownNativeAdManager.removeHandler();
         }
 

@@ -361,14 +361,14 @@ public class OwnNativeAdManager implements AdListener {
                             if (yqNativeAdInfo != null && readStatus != null) {
                                 if (Constants.IS_LANDSCAPE && currentPositionName == NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD) {
                                     readStatus.currentAdInfo = yqNativeAdInfo;
-                                    LogUtils.e("scrollhaha own", "own横: " + yqNativeAdInfo.getAdvertisement().imageUrl);
+                                    LogUtils.e("scrollgaga own", "own横: " + yqNativeAdInfo.getAdvertisement().imageUrl);
                                 } else if (!Constants.IS_LANDSCAPE){
                                     if (currentPositionName == NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD) {
                                         readStatus.currentAdInfo = yqNativeAdInfo;
-                                        LogUtils.e("scrollhaha own", "own竖: readStatus.currentAdInfo：" + yqNativeAdInfo.getAdvertisement().imageUrl);
+                                        LogUtils.e("scrollgaga own", "own竖: readStatus.currentAdInfo：" + yqNativeAdInfo.getAdvertisement().imageUrl);
                                     } else if (currentPositionName == NativeInit.CustomPositionName.SLIDEUP_POPUPAD_POSITION) {
                                         readStatus.currentAdInfo_image = yqNativeAdInfo;
-                                        LogUtils.e("scrollhaha own", "own竖: readStatus.currentAdInfo_image：" + yqNativeAdInfo.getAdvertisement().imageUrl);
+                                        LogUtils.e("scrollgaga own", "own竖: readStatus.currentAdInfo_image：" + yqNativeAdInfo.getAdvertisement().imageUrl);
                                     }
                                 }
                             }
@@ -546,16 +546,16 @@ public class OwnNativeAdManager implements AdListener {
                     || NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD.toString().equals(ration.getMarkId())) {
                 yqNativeAdInfo = getADInfoNew(adInfos, ration, keyMd5);
                 if (yqNativeAdInfo != null && readStatus != null) {
-                    if (Constants.IS_LANDSCAPE && NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD.equals(ration.getMarkId())) {
+                    if (Constants.IS_LANDSCAPE && NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD.toString().equals(ration.getMarkId())) {
                         readStatus.currentAdInfo = yqNativeAdInfo;
-                        LogUtils.e("scrollhaha own", "own横: " + yqNativeAdInfo.getAdvertisement().imageUrl);
+                        LogUtils.e("scrollgaga own", "own横: " + yqNativeAdInfo.getAdvertisement().imageUrl);
                     } else if (!Constants.IS_LANDSCAPE){
-                        if (NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD.equals(ration.getMarkId())) {
+                        if (NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD.toString().equals(ration.getMarkId())) {
                             readStatus.currentAdInfo = yqNativeAdInfo;
-                            LogUtils.e("scrollhaha own", "own竖: readStatus.currentAdInfo：" + yqNativeAdInfo.getAdvertisement().imageUrl);
-                        } else if (NativeInit.CustomPositionName.SLIDEUP_POPUPAD_POSITION.equals(ration.getMarkId())) {
+                            LogUtils.e("scrollgaga own", "own竖: readStatus.currentAdInfo：" + yqNativeAdInfo.getAdvertisement().imageUrl);
+                        } else if (NativeInit.CustomPositionName.SLIDEUP_POPUPAD_POSITION.toString().equals(ration.getMarkId())) {
                             readStatus.currentAdInfo_image = yqNativeAdInfo;
-                            LogUtils.e("scrollhaha own", "own竖: readStatus.currentAdInfo_image：" + yqNativeAdInfo.getAdvertisement().imageUrl);
+                            LogUtils.e("scrollgaga own", "own竖: readStatus.currentAdInfo_image：" + yqNativeAdInfo.getAdvertisement().imageUrl);
                         }
                     }
                 }

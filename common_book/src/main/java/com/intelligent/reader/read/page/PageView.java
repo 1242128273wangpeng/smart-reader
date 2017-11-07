@@ -170,6 +170,10 @@ public class PageView extends View implements PageInterface {
             readStatus.setAd_bitmap_middle_down(null);
         }
 
+        if (drawTextHelper != null) {
+            drawTextHelper.loadNatvieAd();
+        }
+
         pageWidth = readStatus.screenWidth = w;
         pageHeight = readStatus.screenHeight = h;
         if (provider != null) {

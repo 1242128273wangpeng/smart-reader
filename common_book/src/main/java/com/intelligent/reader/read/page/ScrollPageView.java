@@ -1,6 +1,10 @@
 package com.intelligent.reader.read.page;
 
+import com.bumptech.glide.Glide;
+import com.dingyueads.sdk.Bean.AdSceneData;
 import com.dingyueads.sdk.Bean.Novel;
+import com.dingyueads.sdk.Native.YQNativeAdInfo;
+import com.dingyueads.sdk.NativeInit;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.ReadingActivity;
 import com.intelligent.reader.read.animation.BitmapManager;
@@ -17,6 +21,7 @@ import net.lzbook.kit.data.bean.NovelLineBean;
 import net.lzbook.kit.data.bean.ReadStatus;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.StatisticManager;
 
 import android.app.Activity;
 import android.content.Context;
@@ -35,12 +40,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ScrollPageView extends LinearLayout implements PageInterface, View.OnClickListener {
     private final MHandler handler = new MHandler(this);
@@ -92,6 +99,10 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
     private int markPosition;//标记是否是向下滑动
     private boolean isFirstCome = true;//用于记录当前是否是第一次进来（用户画像打点）
 
+    private HashMap<String, YQNativeAdInfo> adInfoHashMapUp = new HashMap<>();
+    private HashMap<String, YQNativeAdInfo> adInfoHashMap = new HashMap<>();
+    private StatisticManager statisticManager;
+
     public ScrollPageView(Context context) {
         super(context);
         this.mContext = context;
@@ -121,6 +132,10 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
                 getChapter(true);
             }
         }
+
+//        if (drawTextHelper != null) {
+//            drawTextHelper.loadNatvieAd();
+//        }
     }
 
     @Override
@@ -987,38 +1002,214 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
         }
 
         @Override
+        public int getViewTypeCount() {
+            return 2;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (chapterContent.get(position).get(0).getLineContent().startsWith(NovelHelper.empty_page_ad)) {
+                return 1;
+            }
+            return 0;
+        }
+
+        @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHodler hodler = null;
+            AdHolder adHolder = null;
+            int type = getItemViewType(position);
             if (convertView == null) {
-                convertView = inflater.inflate(R.layout.page_item, parent, false);
-                hodler = new ViewHodler();
-                hodler.page = (Page) convertView.findViewById(R.id.page_item);
-                convertView.setTag(hodler);
-                Bitmap mCurPageBitmap = manager.getBitmap4444();
-                Canvas mCurrentCanvas = new Canvas(mCurPageBitmap);
-                Log.d("ScrollPage", "getView convertView == null");
-                hodler.page.setTag(R.id.tag_bitmap, mCurPageBitmap);
-                hodler.page.setTag(R.id.tag_canvas, mCurrentCanvas);
+                switch (type) {
+                    case 0:
+                        convertView = inflater.inflate(R.layout.page_item, parent, false);
+                        hodler = new ViewHodler();
+                        hodler.page = (Page) convertView.findViewById(R.id.page_item);
+                        Bitmap mCurPageBitmap = manager.getBitmap4444();
+                        Canvas mCurrentCanvas = new Canvas(mCurPageBitmap);
+                        hodler.page.setTag(R.id.tag_bitmap, mCurPageBitmap);
+                        hodler.page.setTag(R.id.tag_canvas, mCurrentCanvas);
+                        convertView.setTag(R.id.Tag_BOOK, hodler);
+                        break;
+                    case 1:
+                        convertView = inflater.inflate(R.layout.page_item_ad, parent, false);
+                        adHolder = new AdHolder();
+                        adHolder.iv_ad_middle_scroll = (ImageView) convertView.findViewById(R.id.iv_ad_middle_scroll);
+                        adHolder.iv_up_icon = (ImageView) convertView.findViewById(R.id.iv_up_icon);
+                        adHolder.iv_ad_big_scroll = (ImageView) convertView.findViewById(R.id.iv_ad_big_scroll);
+                        adHolder.iv_down_icon = (ImageView) convertView.findViewById(R.id.iv_down_icon);
+                        convertView.setTag(R.id.Tag_AD, adHolder);
+                        break;
+                }
             } else {
-                hodler = (ViewHodler) convertView.getTag();
+                switch (type) {
+                    case 0:
+                        hodler = (ViewHodler) convertView.getTag(R.id.Tag_BOOK);
+                        break;
+                    case 1:
+                        adHolder = (AdHolder) convertView.getTag(R.id.Tag_AD);
+                        break;
+                }
             }
             getCurrentSequence(position + 1);
+            switch (type) {
+                case 0:
+                    Bitmap mCurPageBitmap = (Bitmap) hodler.page.getTag(R.id.tag_bitmap);
+                    Canvas mCurrentCanvas = (Canvas) hodler.page.getTag(R.id.tag_canvas);
+                    float pageHeight = drawTextHelper.drawText(mCurrentCanvas, chapterContent.get(position), chapterNameList);
+                    if (pageHeight != 0.0f) {
+                        hodler.page.getLayoutParams().height = (int) pageHeight;
+                    } else {
+                        hodler.page.getLayoutParams().height = readStatus.screenHeight;
+                    }
+                    hodler.page.drawPage(mCurPageBitmap);
+                    break;
+                case 1:
+                    //添加一个新的实例，用于存储广告页面对应的imageUrl,广告展示与否的状态,广告的类型
+                    String imageUrlUp = "";
+                    String imageUrl = "";
+                    //无论横竖屏拿的第一条广告信息都是8-1，currentAdInfo
+                    if (chapterContent.get(position).size() > 1) {
+                        imageUrlUp = chapterContent.get(position).get(1).getLineContent();
+                        if (TextUtils.isEmpty(imageUrlUp) && readStatus != null && readStatus.currentAdInfo != null &&
+                                !TextUtils.isEmpty(readStatus.currentAdInfo.getAdvertisement().imageUrl)) {
+                            chapterContent.get(position).get(1).setLineContent(readStatus.currentAdInfo.getAdvertisement().imageUrl);
+                            imageUrlUp = chapterContent.get(position).get(1).getLineContent();
+                            adInfoHashMapUp.put(imageUrlUp, readStatus.currentAdInfo);
+                        }
+                    } else if (chapterContent.get(position).size() == 1){
+                        if (readStatus != null && readStatus.currentAdInfo != null && !TextUtils.isEmpty(readStatus.currentAdInfo.getAdvertisement().imageUrl)) {
+                            chapterContent.get(position).add(new NovelLineBean(readStatus.currentAdInfo.getAdvertisement().imageUrl, 0, 0, false, null));
+                            imageUrlUp = chapterContent.get(position).get(1).getLineContent();
+                            adInfoHashMapUp.put(imageUrlUp, readStatus.currentAdInfo);
+                            Log.e("scrollhaha", "position:" + position + " readStatus.currentAdInfo: " + readStatus.currentAdInfo.getAdvertisement().imageUrl);
+                        } else {
+                            chapterContent.get(position).add(new NovelLineBean("", 0, 0, false, null));
+                        }
+                    }
+                    if (!Constants.IS_LANDSCAPE) {
+                        if (chapterContent.get(position).size() > 2) {
+                            imageUrl = chapterContent.get(position).get(2).getLineContent();
+                        } else if (chapterContent.get(position).size() == 2) {
+                            if (readStatus != null && readStatus.currentAdInfo_image != null && !TextUtils.isEmpty(readStatus.currentAdInfo_image.getAdvertisement().imageUrl)) {
+                                chapterContent.get(position).add(new NovelLineBean(readStatus.currentAdInfo_image.getAdvertisement().imageUrl, 0, 0, false, null));
+                                imageUrl = chapterContent.get(position).get(2).getLineContent();
+                                adInfoHashMap.put(imageUrl, readStatus.currentAdInfo_image);
+                                Log.e("scrollhaha", "position:" + position + " readStatus.currentAdInfo_image: " + readStatus.currentAdInfo_image.getAdvertisement().imageUrl);
+                            }
+                        }
+                    }
 
-            Bitmap mCurPageBitmap = (Bitmap) hodler.page.getTag(R.id.tag_bitmap);
-            Canvas mCurrentCanvas = (Canvas) hodler.page.getTag(R.id.tag_canvas);
-            float pageHeight = drawTextHelper.drawText(mCurrentCanvas, chapterContent.get(position), chapterNameList);
-            if (pageHeight != 0.0f) {
-                hodler.page.getLayoutParams().height = (int) pageHeight;
-            } else {
-                hodler.page.getLayoutParams().height = readStatus.screenHeight;
+                    if (adInfoHashMapUp != null && adInfoHashMapUp.containsKey(imageUrlUp) && adInfoHashMapUp.get(imageUrlUp) != null && adInfoHashMapUp.get(imageUrlUp).getAdvertisement()
+                            != null) {
+                        adHolder.iv_up_icon.setImageResource(getResourceId(adInfoHashMapUp.get(imageUrlUp).getAdvertisement().rationName));
+                    } else {
+                        adHolder.iv_up_icon.setImageResource(R.drawable.icon_ad_default);
+                    }
+                    Glide.with(getContext()).load(imageUrlUp).dontAnimate().placeholder(R.drawable.icon_scroll_ad_up)
+                            .error((R.drawable.icon_scroll_ad_up))/*.skipMemoryCache(true)*/.into(adHolder.iv_ad_middle_scroll);
+                    setAdView(adHolder, adInfoHashMapUp.get(imageUrlUp), 0);
+                    if (adInfoHashMapUp.get(imageUrlUp) != null) {
+                        Log.e("scrollgaga", "imageUrlUp: " + imageUrlUp + " 上：" + adInfoHashMapUp.get(imageUrlUp).toString());
+                    }
+
+
+                    if (!Constants.IS_LANDSCAPE) {
+                        if (adInfoHashMap != null && adInfoHashMap.containsKey(imageUrl) && adInfoHashMap.get(imageUrl) != null && adInfoHashMap.get(imageUrl).getAdvertisement()
+                                != null) {
+                            adHolder.iv_down_icon.setImageResource(getResourceId(adInfoHashMap.get(imageUrl).getAdvertisement().rationName));
+                        } else {
+                            adHolder.iv_down_icon.setImageResource(R.drawable.icon_ad_default);
+                        }
+                        Glide.with(getContext()).load(imageUrl).dontAnimate().placeholder(R.drawable.icon_scroll_ad)
+                                .error((R.drawable.icon_scroll_ad))/*.skipMemoryCache(true)*/.into(adHolder.iv_ad_big_scroll);
+                        setAdView(adHolder, adInfoHashMap.get(imageUrl), 1);
+                        if (adInfoHashMap.get(imageUrl) != null) {
+                            Log.e("scrollgaga", "imageUrl: " + imageUrl + " 下：" + adInfoHashMap.get(imageUrl).toString());
+                        }
+                    }
+                    Log.e("scrollgaga", "存储信息: " + chapterContent.get(position).toString());
+                    break;
             }
-            hodler.page.drawPage(mCurPageBitmap);
-
             return convertView;
+        }
+
+        private int getResourceId(String rationName) {
+            switch (rationName) {
+                case "广点通":
+                    return R.drawable.icon_ad_gdt;
+                case "百度":
+                    return R.drawable.icon_ad_bd;
+                case "360":
+                    return R.drawable.icon_ad_360;
+                default:
+                    return R.drawable.icon_ad_default;
+            }
+        }
+
+        private void setAdView(AdHolder adHolder, final YQNativeAdInfo adInfo, int type) {
+            //type 0:上 1:下
+            if (adInfo == null) return;
+            Novel novel = null;
+            if (dataFactory != null) {
+                novel = dataFactory.transformation();
+            }
+            try {
+                if (statisticManager == null) {
+                    statisticManager = StatisticManager.getStatisticManager();
+                }
+                AdSceneData adSceneData = adInfo.getAdSceneData();
+                if (adSceneData != null) {
+                    adSceneData.ad_showSuccessTime = String.valueOf(System.currentTimeMillis() / 1000L);
+                }
+                final Novel finalNovel = novel;
+                if (type == 0) {
+                    statisticManager.schedulingRequest(mActivity, adHolder.iv_ad_middle_scroll, adInfo, novel, StatisticManager.TYPE_SHOW, NativeInit.ad_position[12]);
+                    adHolder.iv_ad_middle_scroll.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (statisticManager == null) {
+                                statisticManager = StatisticManager.getStatisticManager();
+                            }
+                            Log.e("scrollhaha", "上报物料信息：" + adInfo.toString());
+                            statisticManager.schedulingRequest(mActivity, view, adInfo, finalNovel, StatisticManager.TYPE_CLICK, NativeInit.ad_position[12]);
+                            if (Constants.DEVELOPER_MODE) {
+                                Toast.makeText(mContext, "你点击了广告", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                } else if (type == 1) {
+                    statisticManager.schedulingRequest(mActivity, adHolder.iv_ad_big_scroll, adInfo, novel, StatisticManager.TYPE_SHOW, NativeInit.ad_position[11]);
+                    adHolder.iv_ad_big_scroll.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (statisticManager == null) {
+                                statisticManager = StatisticManager.getStatisticManager();
+                            }
+                            Log.e("scrollhaha", "上报物料信息：" + adInfo.toString());
+                            statisticManager.schedulingRequest(mActivity, view, adInfo, finalNovel, StatisticManager.TYPE_CLICK, NativeInit.ad_position[11]);
+                            if (Constants.DEVELOPER_MODE) {
+                                Toast.makeText(mContext, "你点击了广告", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         class ViewHodler {
             Page page;
+        }
+
+        class AdHolder {
+            ImageView iv_ad_middle_scroll;
+            ImageView iv_up_icon;
+            ImageView iv_ad_big_scroll;
+            ImageView iv_down_icon;
         }
 
     }
