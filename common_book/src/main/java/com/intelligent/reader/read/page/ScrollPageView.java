@@ -1,10 +1,14 @@
 package com.intelligent.reader.read.page;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.dingyueads.sdk.Bean.AdSceneData;
 import com.dingyueads.sdk.Bean.Novel;
 import com.dingyueads.sdk.Native.YQNativeAdInfo;
 import com.dingyueads.sdk.NativeInit;
+import com.dingyueads.sdk.Utils.LogUtils;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.ReadingActivity;
 import com.intelligent.reader.read.animation.BitmapManager;
@@ -132,10 +136,6 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
                 getChapter(true);
             }
         }
-
-//        if (drawTextHelper != null) {
-//            drawTextHelper.loadNatvieAd();
-//        }
     }
 
     @Override
@@ -1082,7 +1082,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
                             chapterContent.get(position).add(new NovelLineBean(readStatus.currentAdInfo.getAdvertisement().imageUrl, 0, 0, false, null));
                             imageUrlUp = chapterContent.get(position).get(1).getLineContent();
                             adInfoHashMapUp.put(imageUrlUp, readStatus.currentAdInfo);
-                            Log.e("scrollhaha", "position:" + position + " readStatus.currentAdInfo: " + readStatus.currentAdInfo.getAdvertisement().imageUrl);
+                            LogUtils.e("scrollhaha", "position:" + position + " readStatus.currentAdInfo: " + readStatus.currentAdInfo.getAdvertisement().imageUrl);
                         } else {
                             chapterContent.get(position).add(new NovelLineBean("", 0, 0, false, null));
                         }
@@ -1095,40 +1095,17 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
                                 chapterContent.get(position).add(new NovelLineBean(readStatus.currentAdInfo_image.getAdvertisement().imageUrl, 0, 0, false, null));
                                 imageUrl = chapterContent.get(position).get(2).getLineContent();
                                 adInfoHashMap.put(imageUrl, readStatus.currentAdInfo_image);
-                                Log.e("scrollhaha", "position:" + position + " readStatus.currentAdInfo_image: " + readStatus.currentAdInfo_image.getAdvertisement().imageUrl);
+                                LogUtils.e("scrollhaha", "position:" + position + " readStatus.currentAdInfo_image: " + readStatus.currentAdInfo_image.getAdvertisement().imageUrl);
                             }
                         }
                     }
 
-                    if (adInfoHashMapUp != null && adInfoHashMapUp.containsKey(imageUrlUp) && adInfoHashMapUp.get(imageUrlUp) != null && adInfoHashMapUp.get(imageUrlUp).getAdvertisement()
-                            != null) {
-                        adHolder.iv_up_icon.setImageResource(getResourceId(adInfoHashMapUp.get(imageUrlUp).getAdvertisement().rationName));
-                    } else {
-                        adHolder.iv_up_icon.setImageResource(R.drawable.icon_ad_default);
-                    }
-                    Glide.with(getContext()).load(imageUrlUp).dontAnimate().placeholder(R.drawable.icon_scroll_ad_up)
-                            .error((R.drawable.icon_scroll_ad_up))/*.skipMemoryCache(true)*/.into(adHolder.iv_ad_middle_scroll);
-                    setAdView(adHolder, adInfoHashMapUp.get(imageUrlUp), 0);
-                    if (adInfoHashMapUp.get(imageUrlUp) != null) {
-                        Log.e("scrollgaga", "imageUrlUp: " + imageUrlUp + " 上：" + adInfoHashMapUp.get(imageUrlUp).toString());
-                    }
-
+                    //准备广告显示和上报相关
+                    setAdView(adHolder, adInfoHashMapUp.get(imageUrlUp), 0, imageUrlUp);
 
                     if (!Constants.IS_LANDSCAPE) {
-                        if (adInfoHashMap != null && adInfoHashMap.containsKey(imageUrl) && adInfoHashMap.get(imageUrl) != null && adInfoHashMap.get(imageUrl).getAdvertisement()
-                                != null) {
-                            adHolder.iv_down_icon.setImageResource(getResourceId(adInfoHashMap.get(imageUrl).getAdvertisement().rationName));
-                        } else {
-                            adHolder.iv_down_icon.setImageResource(R.drawable.icon_ad_default);
-                        }
-                        Glide.with(getContext()).load(imageUrl).dontAnimate().placeholder(R.drawable.icon_scroll_ad)
-                                .error((R.drawable.icon_scroll_ad))/*.skipMemoryCache(true)*/.into(adHolder.iv_ad_big_scroll);
-                        setAdView(adHolder, adInfoHashMap.get(imageUrl), 1);
-                        if (adInfoHashMap.get(imageUrl) != null) {
-                            Log.e("scrollgaga", "imageUrl: " + imageUrl + " 下：" + adInfoHashMap.get(imageUrl).toString());
-                        }
+                        setAdView(adHolder, adInfoHashMap.get(imageUrl), 1, imageUrl);
                     }
-                    Log.e("scrollgaga", "存储信息: " + chapterContent.get(position).toString());
                     break;
             }
             return convertView;
@@ -1147,13 +1124,11 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
             }
         }
 
-        private void setAdView(AdHolder adHolder, final YQNativeAdInfo adInfo, int type) {
+        private void setAdView(final AdHolder adHolder, final YQNativeAdInfo adInfo, int type, final String url) {
             //type 0:上 1:下
-            if (adInfo == null) return;
-            Novel novel = null;
-            if (dataFactory != null) {
-                novel = dataFactory.transformation();
-            }
+            if (adInfo == null || dataFactory == null) return;
+
+            final Novel novel = dataFactory.transformation();
             try {
                 if (statisticManager == null) {
                     statisticManager = StatisticManager.getStatisticManager();
@@ -1162,35 +1137,74 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
                 if (adSceneData != null) {
                     adSceneData.ad_showSuccessTime = String.valueOf(System.currentTimeMillis() / 1000L);
                 }
-                final Novel finalNovel = novel;
+
                 if (type == 0) {
-                    statisticManager.schedulingRequest(mActivity, adHolder.iv_ad_middle_scroll, adInfo, novel, StatisticManager.TYPE_SHOW, NativeInit.ad_position[12]);
+                    Glide.with(getContext()).load(url).dontAnimate().placeholder(R.drawable.icon_scroll_ad_up)
+                            .error((R.drawable.icon_scroll_ad_up)).listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            adHolder.iv_up_icon.setVisibility(View.GONE);
+                            adHolder.iv_ad_middle_scroll.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            adHolder.iv_up_icon.setVisibility(View.VISIBLE);
+                            adHolder.iv_ad_middle_scroll.setVisibility(View.VISIBLE);
+                            if (adInfoHashMapUp != null && adInfoHashMapUp.containsKey(url) && adInfoHashMapUp.get(url) != null && adInfoHashMapUp.get(url).getAdvertisement()
+                                    != null) {
+                                adHolder.iv_up_icon.setImageResource(getResourceId(adInfoHashMapUp.get(url).getAdvertisement().rationName));
+                            } else {
+                                adHolder.iv_up_icon.setImageResource(R.drawable.icon_ad_default);
+                            }
+                            statisticManager.schedulingRequest(mActivity, adHolder.iv_ad_middle_scroll, adInfo, novel, StatisticManager.TYPE_SHOW, NativeInit.ad_position[12]);
+                            return false;
+                        }
+                    }).into(adHolder.iv_ad_middle_scroll);
+
                     adHolder.iv_ad_middle_scroll.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             if (statisticManager == null) {
                                 statisticManager = StatisticManager.getStatisticManager();
                             }
-                            Log.e("scrollhaha", "上报物料信息：" + adInfo.toString());
-                            statisticManager.schedulingRequest(mActivity, view, adInfo, finalNovel, StatisticManager.TYPE_CLICK, NativeInit.ad_position[12]);
-                            if (Constants.DEVELOPER_MODE) {
-                                Toast.makeText(mContext, "你点击了广告", Toast.LENGTH_SHORT).show();
-                            }
+                            LogUtils.e("scrollhaha", "上报物料信息：" + adInfo.toString());
+                            statisticManager.schedulingRequest(mActivity, view, adInfo, novel, StatisticManager.TYPE_CLICK, NativeInit.ad_position[12]);
                         }
                     });
                 } else if (type == 1) {
-                    statisticManager.schedulingRequest(mActivity, adHolder.iv_ad_big_scroll, adInfo, novel, StatisticManager.TYPE_SHOW, NativeInit.ad_position[11]);
+                    Glide.with(getContext()).load(url).dontAnimate().placeholder(R.drawable.icon_scroll_ad)
+                            .error((R.drawable.icon_scroll_ad)).listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            adHolder.iv_down_icon.setVisibility(View.GONE);
+                            adHolder.iv_ad_big_scroll.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            adHolder.iv_down_icon.setVisibility(View.VISIBLE);
+                            adHolder.iv_ad_big_scroll.setVisibility(View.VISIBLE);
+                            if (adInfoHashMap != null && adInfoHashMap.containsKey(url) && adInfoHashMap.get(url) != null && adInfoHashMap.get(url).getAdvertisement()
+                                    != null) {
+                                adHolder.iv_down_icon.setImageResource(getResourceId(adInfoHashMap.get(url).getAdvertisement().rationName));
+                            } else {
+                                adHolder.iv_down_icon.setImageResource(R.drawable.icon_ad_default);
+                            }
+                            statisticManager.schedulingRequest(mActivity, adHolder.iv_ad_big_scroll, adInfo, novel, StatisticManager.TYPE_SHOW, NativeInit.ad_position[11]);
+                            return false;
+                        }
+                    }).into(adHolder.iv_ad_big_scroll);
                     adHolder.iv_ad_big_scroll.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             if (statisticManager == null) {
                                 statisticManager = StatisticManager.getStatisticManager();
                             }
-                            Log.e("scrollhaha", "上报物料信息：" + adInfo.toString());
-                            statisticManager.schedulingRequest(mActivity, view, adInfo, finalNovel, StatisticManager.TYPE_CLICK, NativeInit.ad_position[11]);
-                            if (Constants.DEVELOPER_MODE) {
-                                Toast.makeText(mContext, "你点击了广告", Toast.LENGTH_SHORT).show();
-                            }
+                            LogUtils.e("scrollhaha", "上报物料信息：" + adInfo.toString());
+                            statisticManager.schedulingRequest(mActivity, view, adInfo, novel, StatisticManager.TYPE_CLICK, NativeInit.ad_position[11]);
                         }
                     });
                 }
