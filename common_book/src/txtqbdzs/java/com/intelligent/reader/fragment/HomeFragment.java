@@ -469,9 +469,12 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                     StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH);
                 } else if (bottomType == 3) {
                     StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH);
-                } else {
+                }else if(bottomType == 4){
+                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.QG_FL_SEARCH);
+                }else{
                     StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.SEARCH);
                 }
+
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_search_btn);
                 break;
             case R.id.content_download_manage_four_tabs:
