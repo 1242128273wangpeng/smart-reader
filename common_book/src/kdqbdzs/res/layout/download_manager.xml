@@ -6,7 +6,7 @@
         android:layout_height="match_parent"
         android:background="@color/color_black"
         android:orientation="vertical">
-
+    
     <RelativeLayout
             android:id="@+id/top_layout"
             android:layout_width="match_parent"
@@ -15,11 +15,11 @@
             android:fitsSystemWindows="true"
             android:orientation="vertical"
             android:paddingBottom="5dp">
-
+        
         <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/top_bar_height">
-
+            
             <ImageView
                     android:id="@+id/title_back_btn"
                     android:layout_width="wrap_content"
@@ -28,7 +28,7 @@
                     android:layout_centerVertical="true"
                     android:padding="6dp"
                     android:src="@mipmap/cover_top_back"/>
-
+            
             <TextView
                     android:id="@+id/title_name_btn"
                     android:layout_width="wrap_content"
@@ -37,7 +37,7 @@
                     android:text="缓存管理"
                     android:textColor="@color/top_navigation_text_color"
                     android:textSize="18sp"/>
-
+            
             <TextView
                     android:id="@+id/btn_edit"
                     android:layout_width="wrap_content"
@@ -58,7 +58,7 @@
             <!--android:background="@color/color_gray_939191"/>-->
         </RelativeLayout>
     </RelativeLayout>
-
+    
     <FrameLayout
             android:id="@+id/content_layout"
             android:layout_width="match_parent"
@@ -66,7 +66,7 @@
             android:background="@color/download_manager_lv_bg_color"
             android:layout_below="@id/top_layout">
     </FrameLayout>
-
+    
     <ImageView
             android:id="@+id/title_shadow"
             android:layout_below="@+id/top_layout"

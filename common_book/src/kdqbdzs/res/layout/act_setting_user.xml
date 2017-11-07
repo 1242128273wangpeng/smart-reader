@@ -15,12 +15,12 @@
             android:fitsSystemWindows="true"
             android:layout_alignParentTop="true"
             android:background="@color/color_primary">
-
+    
         <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/top_bar_height">
-
-
+        
+        
             <View
                 android:id="@+id/is_show_drawable"
                 android:layout_width="wrap_content"

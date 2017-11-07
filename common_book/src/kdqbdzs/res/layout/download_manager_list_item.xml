@@ -3,7 +3,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
+    
     <RelativeLayout
             android:id="@+id/rl_item_content"
             android:layout_width="match_parent"
@@ -11,7 +11,7 @@
             android:paddingLeft="14dp"
             android:paddingTop="16dp"
             android:background="@color/download_manager_lv_bg_color">
-
+        
         <ImageView
                 android:id="@+id/download_manager_download_btn"
                 android:layout_width="@dimen/dimen_view_width_60"
@@ -21,7 +21,7 @@
                 android:layout_centerVertical="true"
                 android:paddingLeft="@dimen/dimen_margin_17"
                 android:src="@drawable/icon_download_nostart"/>
-
+        
         <LinearLayout
                 android:id="@+id/download_manager_click_item"
                 android:layout_width="match_parent"
@@ -29,7 +29,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@id/download_manager_download_btn"
                 android:orientation="vertical">
-
+            
             <TextView
                     android:id="@+id/download_manager_bookname"
                     android:layout_width="wrap_content"
@@ -39,7 +39,7 @@
                     android:text="凡人修仙传"
                     android:textColor="@color/download_manager_book_name_color"
                     android:textSize="@dimen/text_big16_size"/>
-
+            
             <ProgressBar
                     android:id="@+id/download_progress"
                     style="?android:attr/progressBarStyleHorizontal"
@@ -47,12 +47,12 @@
                     android:layout_height="@dimen/dimen_view_height_5"
                     android:layout_marginTop="@dimen/margin_10"
                     android:progressDrawable="@drawable/bg_download_progressbar"/>
-
+            
             <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_5">
-
+                
                 <TextView
                         android:id="@+id/download_manager_download_state"
                         android:layout_width="wrap_content"
@@ -61,7 +61,7 @@
                         android:text="正在缓存"
                         android:textColor="@color/download_manager_other_tag_color"
                         android:textSize="@dimen/dimen_text_12"/>
-
+                
                 <TextView
                         android:id="@+id/download_manager_chapter_num"
                         android:layout_width="wrap_content"
@@ -73,7 +73,7 @@
             </RelativeLayout>
         </LinearLayout>
     </RelativeLayout>
-
+    
     <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_height_0.5"

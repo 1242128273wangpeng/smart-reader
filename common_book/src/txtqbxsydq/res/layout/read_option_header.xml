@@ -7,12 +7,12 @@
         android:background="@color/read_option_bg"
         android:clickable="true"
         android:paddingTop="@dimen/dimen_padding_20">
-
+    
     <RelativeLayout
             android:id="@+id/reading_head_content"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_view_height_50">
-
+        
         <ImageView
                 android:id="@+id/novel_read_back"
                 android:layout_width="wrap_content"
@@ -23,7 +23,7 @@
                 android:paddingRight="@dimen/dimen_padding_10"
                 android:paddingTop="@dimen/dimen_padding_5"
                 android:src="@drawable/read_option_back_selector"/>
-
+        
         <ImageView
                 android:id="@+id/novel_automatic_reading"
                 android:layout_width="wrap_content"
@@ -34,7 +34,7 @@
                 android:paddingRight="@dimen/dimen_padding_10"
                 android:src="@drawable/icon_automatic_reading"
                 android:visibility="gone"/>
-
+        
         <ImageView
                 android:id="@+id/novel_bookmark"
                 android:layout_width="wrap_content"
@@ -45,7 +45,7 @@
                 android:paddingRight="@dimen/dimen_padding_10"
                 android:src="@drawable/light_bookmark_selector"
                 android:visibility="gone"/>
-
+        
         <TextView
                 android:id="@+id/novel_name"
                 android:layout_width="match_parent"
@@ -64,7 +64,7 @@
                 android:textColor="@color/color_gray_cbcbcb"
                 android:textSize="@dimen/dimen_text_16"
                 android:visibility="gone"/>
-
+        
         <ImageButton
                 android:id="@+id/header_ibtn_download"
                 android:layout_width="44dp"
@@ -75,7 +75,7 @@
                 android:scaleType="fitCenter"
                 android:padding="10dp"
                 android:src="@drawable/read_option_download_selector"/>
-
+        
         <ImageButton
                 android:id="@+id/header_ibtn_more"
                 android:layout_width="44dp"
@@ -86,7 +86,7 @@
                 android:src="@drawable/read_option_more_selector"
                 android:layout_alignParentRight="true"/>
     </RelativeLayout>
-
+    
     <TextView
             android:id="@+id/novel_source_url"
             android:layout_width="match_parent"

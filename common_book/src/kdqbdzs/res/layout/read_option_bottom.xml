@@ -100,7 +100,7 @@
             android:layout_above="@+id/reading_foot_options"
             android:background="@color/color_gray_707070"
             android:visibility="gone"/>
-
+    
     <LinearLayout
             android:id="@+id/reading_foot_options"
             android:layout_width="match_parent"
@@ -111,21 +111,21 @@
             android:background="@color/read_option_bg"
             android:orientation="horizontal"
             tools:ignore="DisableBaselineAlignment,UselessParent"
-            >
-
+    >
+        
         <View
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                />
-
+        />
+        
         <RelativeLayout
                 android:id="@+id/novel_catalog"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp">
-
+            
             <TextView
                     android:id="@+id/txt_catalog"
                     android:layout_width="wrap_content"
@@ -141,7 +141,7 @@
                     android:textSize="@dimen/text_small"
                     android:clickable="false"
                     android:focusable="false"/>
-
+            
             <ImageButton
                     android:id="@+id/ibtn_catalog"
                     android:layout_above="@+id/txt_catalog"
@@ -156,21 +156,21 @@
                     android:duplicateParentState="true"
                     android:src="@drawable/read_option_catalog_selector"/>
         </RelativeLayout>
-
+        
         <View
                 android:layout_width="0dp"
                 android:layout_weight="1.6"
                 android:layout_height="match_parent"
-                />
-
+        />
+        
         <RelativeLayout
                 android:id="@+id/novel_night"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                >
-
+        >
+            
             <TextView
                     android:id="@+id/txt_night"
                     android:layout_width="wrap_content"
@@ -185,7 +185,7 @@
                     android:textSize="@dimen/text_small"
                     android:clickable="false"
                     android:focusable="false"/>
-
+            
             <ImageButton
                     android:id="@+id/ibtn_night"
                     android:layout_above="@+id/txt_night"
@@ -200,20 +200,20 @@
                     android:duplicateParentState="true"
                     android:src="@drawable/read_option_night_selector"/>
         </RelativeLayout>
-
+        
         <View
                 android:layout_width="0dp"
                 android:layout_weight="1.6"
                 android:layout_height="match_parent"/>
-
+        
         <RelativeLayout
                 android:id="@+id/novel_feedback"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                >
-
+        >
+            
             <TextView
                     android:id="@+id/txt_feedback"
                     android:layout_width="wrap_content"
@@ -228,7 +228,7 @@
                     android:textSize="@dimen/text_small"
                     android:clickable="false"
                     android:focusable="false"/>
-
+            
             <ImageButton
                     android:id="@+id/ibtn_feedback"
                     android:layout_above="@+id/txt_feedback"
@@ -243,19 +243,19 @@
                     android:duplicateParentState="true"
                     android:src="@drawable/read_option_feedback_selector"/>
         </RelativeLayout>
-
+        
         <View
                 android:layout_width="0dp"
                 android:layout_weight="1.6"
                 android:layout_height="match_parent"/>
-
+        
         <RelativeLayout
                 android:id="@+id/novel_setting"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp">
-
+            
             <TextView
                     android:id="@+id/txt_setting"
                     android:layout_width="wrap_content"
@@ -271,7 +271,7 @@
                     android:textSize="@dimen/text_small"
                     android:clickable="false"
                     android:focusable="false"/>
-
+            
             <ImageButton
                     android:id="@+id/ibtn_settting"
                     android:layout_above="@+id/txt_setting"
@@ -286,12 +286,12 @@
                     android:duplicateParentState="true"
                     android:src="@drawable/read_option_setting_selector"/>
         </RelativeLayout>
-
+        
         <View
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                />
+        />
     </LinearLayout>
 
 </RelativeLayout>

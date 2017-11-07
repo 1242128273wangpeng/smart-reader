@@ -4,7 +4,7 @@
         android:layout_width="match_parent"
         android:fitsSystemWindows="true"
         android:layout_height="match_parent">
-
+    
     <Button
             android:id="@+id/btn_login"
             android:layout_width="275dp"
@@ -16,8 +16,8 @@
             android:textColor="#FFFFFF"
             android:textSize="18sp"
             android:background="@color/top_navigation_bg_color"
-            />
-
+    />
+    
     <TextView
             android:id="@+id/txt_login_ignore"
             android:layout_width="wrap_content"
@@ -28,5 +28,5 @@
             android:textSize="12sp"
             android:textColor="#666666"
             android:text="以后再说"
-            />
+    />
 </RelativeLayout>

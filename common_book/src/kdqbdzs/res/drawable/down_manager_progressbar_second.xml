@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-
+    
     <item android:id="@android:id/background">
         <shape>
             <corners android:radius="@dimen/dimen_radius_10"/>
@@ -8,7 +8,7 @@
             <solid android:color="@color/color_white_f0f0f0"/>
         </shape>
     </item>
-
+    
     <!-- 第二条进度条颜色 -->
     <item android:id="@android:id/secondaryProgress">
         <clip>
