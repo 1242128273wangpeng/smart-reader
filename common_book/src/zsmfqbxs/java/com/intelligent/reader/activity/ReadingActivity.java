@@ -156,6 +156,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     public boolean isRestDialogShow = false;
     long stampTime = 0;
     int readLength = 0;
+    boolean isFirstVisiable = true;
     private Context mContext;
     private PageInterface pageView;
     private ArrayList<Source> sourcesList;
@@ -226,7 +227,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private RequestFactory requestFactory;
     private int type = -1;
     private String currentThemeMode;
-
     private int lastMode = -1;
     /**
      * 接受电量改变广播
@@ -249,9 +249,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private ReadOptionPresenter mReadOptionPresenter;
     private DrawerLayout mCatlogMarkDrawer;
     private CatalogMarkPresenter mCatalogMarkPresenter;
-
     private CatalogMarkFragment mCatalogMarkFragment;
-
     private DrawerLayout.DrawerListener mDrawerListener = new DrawerLayout.DrawerListener() {
         @Override
         public void onDrawerSlide(View drawerView, float slideOffset) {
@@ -1894,8 +1892,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
     }
 
-    boolean isFirstVisiable = true;
-
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -2463,6 +2459,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     @Override
     public void onReadFeedBack() {
         if (!isFinishing()) {
+            final Map<String, String> data = new HashMap<>();
+            Book book;
             if (readStatus.sequence == -1) {
                 showToastShort("请到错误章节反馈");
                 return;
@@ -2522,6 +2520,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                     if (type == -1) {
                         showToastShort("请选择错误类型");
                     } else {
+
                         data.put("type", "1");
 						StartLogClickUtil.upLoadEventLog(ReadingActivity.this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data);
                         submitFeedback(type);
