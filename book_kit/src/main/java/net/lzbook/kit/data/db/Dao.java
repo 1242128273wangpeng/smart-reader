@@ -1200,6 +1200,8 @@ public class Dao {
 
     /**
      * 增加修复状态信息
+     * @param bookFix
+     * @return
      */
     public boolean insertBookFix(BookFix bookFix) {
         SQLiteDatabase db = null;
@@ -1232,6 +1234,8 @@ public class Dao {
 
     /**
      * 删除修复状态信息
+     * @param book_id
+     * @return
      */
     public String[] deleteBookFix(String... book_id) {
         String[] delete_ids = new String[book_id.length];
@@ -1263,6 +1267,7 @@ public class Dao {
 
     /**
      * 查询所有修复状态信息
+     * @return
      */
     public ArrayList<BookFix> getBookFixs() {
         SQLiteDatabase db = null;
@@ -1302,6 +1307,7 @@ public class Dao {
 
     /**
      * 根据book_id获取修复状态信息
+     *
      */
     public BookFix getBookFix(String book_id) {
         SQLiteDatabase db = null;

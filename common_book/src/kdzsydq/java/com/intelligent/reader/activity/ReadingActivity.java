@@ -46,6 +46,7 @@ import net.lzbook.kit.data.bean.RequestItem;
 import net.lzbook.kit.data.bean.Source;
 import net.lzbook.kit.data.db.BookChapterDao;
 import net.lzbook.kit.data.db.BookDaoHelper;
+import net.lzbook.kit.repair_books.RepairHelp;
 import net.lzbook.kit.request.RequestExecutor;
 import net.lzbook.kit.request.RequestFactory;
 import net.lzbook.kit.request.UrlUtils;
@@ -327,6 +328,18 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
         setOrientation();
         getSavedState(savedInstanceState);
 
+        RepairHelp.showFixMsg(this, readStatus.book, new RepairHelp.FixCallBack() {
+            @Override
+            public void toDownLoadActivity() {
+                Intent intent_download = new Intent(ReadingActivity.this, DownloadManagerActivity.class);
+                try {
+                    ReadingActivity.this.startActivity(intent_download);
+                    ReadingActivity.this.finish();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         if (isFromCover && Constants.IS_LANDSCAPE) {
             return;

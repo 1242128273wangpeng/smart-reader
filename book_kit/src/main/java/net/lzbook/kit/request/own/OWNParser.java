@@ -63,7 +63,6 @@ public class OWNParser {
             }
         }
 
-
         if (!bookVoObject.isNull("source")) {
             JSONObject sourceObject = bookVoObject.getJSONObject("source");
             if (!sourceObject.isNull("gid")) {
@@ -100,22 +99,6 @@ public class OWNParser {
             sourcesBean.update_time = sourceObject.getLong("update_time");
             JSONObject bookSourceObject = sourceObject.getJSONObject("bookSourceVO");
             sourcesBean.dex = bookSourceObject.getInt("dex");
-
-            if (!bookSourceObject.isNull("label")) {
-                sourcesBean.labels = bookSourceObject.getString("label");
-            }
-
-            if (!bookSourceObject.isNull("wordCountDescp")) {
-                sourcesBean.wordCountDescp = bookSourceObject.getString("wordCountDescp");
-            }
-            if (!bookSourceObject.isNull("readerCountDescp")) {
-                sourcesBean.readerCountDescp = bookSourceObject.getString("readerCountDescp");
-            }
-
-            if (!bookSourceObject.isNull("score")) {
-                sourcesBean.score = bookSourceObject.getDouble("score");
-            }
-
             if (!sourceObject.isNull("last_chapter")) {
                 JSONObject chapterObject = sourceObject.getJSONObject("last_chapter");
                 sourcesBean.last_chapter_name = chapterObject.getString("name");

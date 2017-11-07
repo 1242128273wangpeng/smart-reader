@@ -170,7 +170,18 @@
                     android:text="@string/read_bookmark"
                     android:textColor="@drawable/read_catalog_mark_navi_color_selector"/>
         </RadioGroup>
-        
+
+        <ImageView
+                android:id="@+id/iv_fixbook"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/read_rg_catlog_mark"
+                android:visibility="gone"
+                android:src="@drawable/cata_fixbook_img"
+                android:layout_marginBottom="27dp"
+                android:layout_marginRight="15dp"
+                android:layout_alignParentRight="true"/>
+
         <net.lzbook.kit.book.view.NightShadowView
                 android:visibility="gone"
                 android:layout_width="match_parent"

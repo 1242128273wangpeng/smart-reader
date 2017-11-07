@@ -56,6 +56,7 @@ public class RepairHelp {
         final List<UpdateBean.FixBookBean> fix_books = repairData.getFix_book();
 
 
+
         final List<UpdateBean.FixContentBean> fix_contents = repairData.getFix_content();
 //        if (fix_contents != null){
 //            for (int i = 0; i < fix_contents.size(); i++){

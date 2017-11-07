@@ -100,10 +100,7 @@ public class UpdateBean {
          * list_version : 1
          * c_version : 1
          * dex : 0
-         * chapters : [{"id":"59f17a6885b1ce043c5439b7","book_souce_id":"58c08020df43fe69c00d6cdd","name":"第七百八十九章
-         * 毒魂体","serial_number":844,"host":"www.basicnos.cn","url":"https://www.basicnos.cn/v3/book/chaptersContents?chapterId=59f17a6885b1ce043c5439b7","url1":null,"terminal":"WEB","status":"ENABLE","update_time":1508997736204,"word_count":4423,"vip":0,"price":0},{"id":"59f1c0af85b1ce043c54427b","book_souce_id":"58c08020df43fe69c00d6cdd","name":"第七百九十章
-         * 十叶花","serial_number":845,"host":"www.basicnos.cn","url":"https://www.basicnos.cn/v3/book/chaptersContents?chapterId=59f1c0af85b1ce043c54427b","url1":null,"terminal":"WEB","status":"ENABLE","update_time":1509015727637,"word_count":4026,"vip":0,"price":0},{"id":"59f2cc2485b1ce043c546458","book_souce_id":"58c08020df43fe69c00d6cdd","name":"第七百九十一章
-         * 价格","serial_number":846,"host":"www.basicnos.cn","url":"https://www.basicnos.cn/v3/book/chaptersContents?chapterId=59f2cc2485b1ce043c546458","url1":null,"terminal":"WEB","status":"ENABLE","update_time":1509084196582,"word_count":3485,"vip":0,"price":0}]
+         * chapters : [{"id":"59f17a6885b1ce043c5439b7","book_souce_id":"58c08020df43fe69c00d6cdd","name":"第七百八十九章 毒魂体","serial_number":844,"host":"www.basicnos.cn","url":"https://www.basicnos.cn/v3/book/chaptersContents?chapterId=59f17a6885b1ce043c5439b7","url1":null,"terminal":"WEB","status":"ENABLE","update_time":1508997736204,"word_count":4423,"vip":0,"price":0},{"id":"59f1c0af85b1ce043c54427b","book_souce_id":"58c08020df43fe69c00d6cdd","name":"第七百九十章 十叶花","serial_number":845,"host":"www.basicnos.cn","url":"https://www.basicnos.cn/v3/book/chaptersContents?chapterId=59f1c0af85b1ce043c54427b","url1":null,"terminal":"WEB","status":"ENABLE","update_time":1509015727637,"word_count":4026,"vip":0,"price":0},{"id":"59f2cc2485b1ce043c546458","book_souce_id":"58c08020df43fe69c00d6cdd","name":"第七百九十一章 价格","serial_number":846,"host":"www.basicnos.cn","url":"https://www.basicnos.cn/v3/book/chaptersContents?chapterId=59f2cc2485b1ce043c546458","url1":null,"terminal":"WEB","status":"ENABLE","update_time":1509084196582,"word_count":3485,"vip":0,"price":0}]
          */
 
         private String book_id;
@@ -313,10 +310,7 @@ public class UpdateBean {
          * book_source_id : 58c08020df43fe69c00d6cdd
          * last_update : 1509095425016
          * dex : 0
-         * chapters : [{"id":"59f17a6885b1ce043c5439b7","book_souce_id":"58c08020df43fe69c00d6cdd","name":"第七百八十九章
-         * 毒魂体","serial_number":844,"host":"www.basicnos.cn","url":"https://www.basicnos.cn/v3/book/chaptersContents?chapterId=59f17a6885b1ce043c5439b7","url1":null,"terminal":"WEB","status":"ENABLE","update_time":1508997736204,"word_count":4423,"vip":0,"price":0},{"id":"59f1c0af85b1ce043c54427b","book_souce_id":"58c08020df43fe69c00d6cdd","name":"第七百九十章
-         * 十叶花","serial_number":845,"host":"www.basicnos.cn","url":"https://www.basicnos.cn/v3/book/chaptersContents?chapterId=59f1c0af85b1ce043c54427b","url1":null,"terminal":"WEB","status":"ENABLE","update_time":1509015727637,"word_count":4026,"vip":0,"price":0},{"id":"59f2cc2485b1ce043c546458","book_souce_id":"58c08020df43fe69c00d6cdd","name":"第七百九十一章
-         * 价格","serial_number":846,"host":"www.basicnos.cn","url":"https://www.basicnos.cn/v3/book/chaptersContents?chapterId=59f2cc2485b1ce043c546458","url1":null,"terminal":"WEB","status":"ENABLE","update_time":1509084196582,"word_count":3485,"vip":0,"price":0}]
+         * chapters : [{"id":"59f17a6885b1ce043c5439b7","book_souce_id":"58c08020df43fe69c00d6cdd","name":"第七百八十九章 毒魂体","serial_number":844,"host":"www.basicnos.cn","url":"https://www.basicnos.cn/v3/book/chaptersContents?chapterId=59f17a6885b1ce043c5439b7","url1":null,"terminal":"WEB","status":"ENABLE","update_time":1508997736204,"word_count":4423,"vip":0,"price":0},{"id":"59f1c0af85b1ce043c54427b","book_souce_id":"58c08020df43fe69c00d6cdd","name":"第七百九十章 十叶花","serial_number":845,"host":"www.basicnos.cn","url":"https://www.basicnos.cn/v3/book/chaptersContents?chapterId=59f1c0af85b1ce043c54427b","url1":null,"terminal":"WEB","status":"ENABLE","update_time":1509015727637,"word_count":4026,"vip":0,"price":0},{"id":"59f2cc2485b1ce043c546458","book_souce_id":"58c08020df43fe69c00d6cdd","name":"第七百九十一章 价格","serial_number":846,"host":"www.basicnos.cn","url":"https://www.basicnos.cn/v3/book/chaptersContents?chapterId=59f2cc2485b1ce043c546458","url1":null,"terminal":"WEB","status":"ENABLE","update_time":1509084196582,"word_count":3485,"vip":0,"price":0}]
          */
 
         private String book_id;
