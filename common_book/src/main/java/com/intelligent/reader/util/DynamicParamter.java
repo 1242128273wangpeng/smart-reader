@@ -59,6 +59,14 @@ public class DynamicParamter {
     public String dy_splash_ad_switch;
     //书架页开关
     public String dy_shelf_ad_switch;
+    /*
+     0-关闭书架页广告位；两种形式都不开启
+     1-开启书架页广告位A样式:顶部横幅书架页广告
+     2-开启书架页广告位B样式：九宫格原生书架页广告
+     3-开启书架页广告位两种样式
+      九宫格书架页广告显示类型切换开关
+    */
+    public String book_shelf_state;
     //书架页广告间隔频率设置
     public String dy_shelf_ad_freq;
     //章节末开关
@@ -152,6 +160,14 @@ public class DynamicParamter {
         dy_splash_ad_switch = getConfigParams(Constants.DY_SPLASH_AD_SWITCH);
         //书架页开关
         dy_shelf_ad_switch = getConfigParams(Constants.DY_SHELF_AD_SWITCH);
+         /*
+          0-关闭书架页广告位；两种形式都不开启
+          1-开启书架页广告位A样式:顶部横幅书架页广告
+          2-开启书架页广告位B样式：九宫格原生书架页广告
+          3-开启书架页广告位两种样式
+           九宫格书架页广告显示类型切换开关
+         */
+        book_shelf_state = getConfigParams(Constants.BOOK_SHELF_STATE);
         //书架页广告间隔频率设置
         dy_shelf_ad_freq = getConfigParams(Constants.DY_SHELF_AD_FREQ);
         //章节末开关
@@ -265,6 +281,14 @@ public class DynamicParamter {
         dy_splash_ad_switch = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_SPLASH_AD_SWITCH);
         //书架页开关
         dy_shelf_ad_switch = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_SHELF_AD_SWITCH);
+         /*
+          0-关闭书架页广告位；两种形式都不开启
+          1-开启书架页广告位A样式:顶部横幅书架页广告
+          2-开启书架页广告位B样式：九宫格原生书架页广告
+          3-开启书架页广告位两种样式
+           九宫格书架页广告显示类型切换开关
+         */
+        book_shelf_state = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.BOOK_SHELF_STATE);
         //书架页广告间隔频率设置
         dy_shelf_ad_freq = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_SHELF_AD_FREQ);
         //章节末开关
@@ -406,6 +430,20 @@ public class DynamicParamter {
                     putConfigParams(Constants.DY_SHELF_AD_SWITCH, dy_shelf_ad_switch);
                 }
             }
+             /*
+              0-关闭书架页广告位；两种形式都不开启
+              1-开启书架页广告位A样式:顶部横幅书架页广告
+              2-开启书架页广告位B样式：九宫格原生书架页广告
+              3-开启书架页广告位两种样式
+               九宫格书架页广告显示类型切换开关
+             */
+            if (!data.isNull(Constants.BOOK_SHELF_STATE)) {
+                book_shelf_state = data.getString(Constants.BOOK_SHELF_STATE);
+                if (isOwn) {
+                    putConfigParams(Constants.BOOK_SHELF_STATE, book_shelf_state);
+                }
+            }
+
 
             if (!data.isNull(Constants.DY_SHELF_AD_FREQ)) {
                 dy_shelf_ad_freq = data.getString(Constants.DY_SHELF_AD_FREQ);
@@ -886,14 +924,32 @@ public class DynamicParamter {
         if (!TextUtils.isEmpty(dy_shelf_ad_switch)) {
             try {
                 Constants.dy_shelf_ad_switch = Boolean.parseBoolean(dy_shelf_ad_switch);
+
             } catch (Exception e) {
             }
         }
+
+         /*
+          0-关闭书架页广告位；两种形式都不开启
+          1-开启书架页广告位A样式:顶部横幅书架页广告
+          2-开启书架页广告位B样式：九宫格原生书架页广告
+          3-开启书架页广告位两种样式
+           九宫格书架页广告显示类型切换开关
+         */
+        if (!TextUtils.isEmpty(book_shelf_state)) {
+            try {
+                Constants.book_shelf_state = Integer.parseInt(book_shelf_state);
+            } catch (Exception e) {
+            }
+        }
+
+
 
         //书架页广告间隔频率设置
         if (!TextUtils.isEmpty(dy_shelf_ad_freq)) {
             try {
                 Constants.dy_shelf_ad_freq = Integer.parseInt(dy_shelf_ad_freq);
+                Constants.dy_shelf_ad_freq = 9;
             } catch (Exception e) {
             }
         }
