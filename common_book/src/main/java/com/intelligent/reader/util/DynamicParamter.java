@@ -962,7 +962,6 @@ public class DynamicParamter {
         if (!TextUtils.isEmpty(dy_shelf_ad_freq)) {
             try {
                 Constants.dy_shelf_ad_freq = Integer.parseInt(dy_shelf_ad_freq);
-                Constants.dy_shelf_ad_freq = 9;
             } catch (Exception e) {
             }
         }
