@@ -584,8 +584,10 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                             StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH);
                         }else if(bottomType ==3){
                             StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH);
+                        } else if (bottomType == 4) {
+                            StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.QG_FL_SEARCH);
                         }else{
-                            StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.SEARCH);
+                            StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.SEARCH);
                         }
 
                     }
