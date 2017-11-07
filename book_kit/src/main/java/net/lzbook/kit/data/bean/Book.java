@@ -90,6 +90,9 @@ public class Book implements Serializable, Comparable<Book> {
     public int chapters_update_index;
     public String readPersonNum;
 
+    public int list_version = -1;
+    public int c_version = -1;
+
     public static boolean isOnlineType(int type) {
         return type == TYPE_ONLINE;
     }

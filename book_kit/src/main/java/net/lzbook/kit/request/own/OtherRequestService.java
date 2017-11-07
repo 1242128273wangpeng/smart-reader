@@ -195,7 +195,7 @@ public class OtherRequestService extends VolleyDataService {
 
         publicCode(url, parameter, dataServiceCallBack, new Parser() {
             @Override
-            public Object parserMethod(String response) throws JSONException, Exception {
+            public Object parserMethod(String response) throws Exception {
                 ArrayList<BookUpdate> resultLists = OWNParser.parserBookUpdateInfo(response, bookItems);
                 ArrayList<BookUpdate> bookUpdateLists = null;
                 if (resultLists != null && resultLists.size() > 0) {

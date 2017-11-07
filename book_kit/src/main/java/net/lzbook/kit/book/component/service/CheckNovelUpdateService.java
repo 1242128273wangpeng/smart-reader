@@ -712,36 +712,13 @@ public class CheckNovelUpdateService extends Service {
                         continue;
                     }
                     JSONObject jsonObj = new JSONObject();
-                    jsonObj.put("name", book.name);
                     jsonObj.put("book_id", book.book_id);
                     jsonObj.put("book_source_id", book.book_source_id);
-                    jsonObj.put("host", lastChapter.site);
-                    jsonObj.put("last_update", book.last_updateSucessTime);
+                    jsonObj.put("last_chapter_id", lastChapter.chapter_id);
+                    jsonObj.put("list_version", book.list_version);
+                    jsonObj.put("c_version", book.c_version);
+                    jsonObj.put("add_bookshelf_time", book.insert_time);
 
-                    ArrayList<Chapter> chapters = null;
-                    AppLog.e(TAG, "arrToJson lastChapter.sequence = " + lastChapter.sequence);
-                    if (lastChapter.sequence >= 9) {
-                        chapters = bookChapterDao.queryLastChapters(lastChapter.sequence, 10);
-                    } else {
-                        chapters = bookChapterDao.queryBookChapter();
-                    }
-
-                    AppLog.e(TAG, "arrToJson chapters.size = " + chapters.size());
-                    JSONArray array = new JSONArray();
-                    for (int j = 0; j < chapters.size(); j++) {
-                        Chapter chapter = chapters.get(j);
-                        JSONObject chapterObject = new JSONObject();
-
-                        chapterObject.put("id", TextUtils.isEmpty(chapter.chapter_id) ? "" : chapter.chapter_id);
-                        chapterObject.put("book_souce_id", TextUtils.isEmpty(chapter.book_source_id) ? book.book_source_id : chapter.book_source_id);
-                        chapterObject.put("name", chapter.chapter_name);
-                        chapterObject.put("serial_number", chapter.sequence);
-                        chapterObject.put("host", chapter.site);
-                        chapterObject.put("update_time", chapter.time);
-
-                        array.put(chapterObject);
-                    }
-                    jsonObj.put("chapters", array);
                     jsonarray.put(jsonObj);
                 }
                 jsonresult = jsonarray.toString();

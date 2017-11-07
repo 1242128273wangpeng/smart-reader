@@ -29,6 +29,22 @@ public class DataCache {
         }
     }
 
+    public static boolean fixChapter(String content, int sequence, String book_id) {
+        String filePath = ReplaceConstants.getReplaceConstants().APP_PATH_BOOK + book_id + "/" + sequence + ".text";
+        File file = new File(filePath);
+
+        boolean isDeleteSuc = true;
+        if (file.exists()) {
+            isDeleteSuc = file.delete();
+        }
+
+        if (isDeleteSuc) {
+            return !TextUtils.isEmpty(content) && FileUtils.writeByteFile(filePath, MultiInputStreamHelper.encrypt(content.getBytes()));
+        }
+
+        return false;
+    }
+
     public static String getChapterFromCache(int sequence, String book_id) {
         String filePath = ReplaceConstants.getReplaceConstants().APP_PATH_BOOK + book_id + "/" + sequence + ".text";
         File file = new File(filePath);

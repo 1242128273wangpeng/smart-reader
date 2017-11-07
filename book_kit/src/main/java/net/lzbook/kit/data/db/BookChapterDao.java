@@ -467,6 +467,52 @@ public class BookChapterDao {
         return null;
     }
 
+    public Chapter getChapterById(String chapter_id) {
+        SQLiteDatabase db = null;
+        Cursor c = null;
+        try {
+            db = mHelper.getReadableDatabase();
+            c = db.query(TAB_CHAPTER, null, ChapterTable.CHAPTER_ID + " = '" + chapter_id + "'", null, null, null, null,
+                    null);
+            Chapter chapter;
+            if (c.moveToNext()) {
+                chapter = new Chapter();
+                chapter.book_id = _book_id;
+                chapter.chapter_name = c.getString(ChapterTable.CHAPTER_NAME_INDEX);
+                chapter.nid = c.getInt(ChapterTable.NID_INDEX);
+                chapter.sequence = c.getInt(ChapterTable.SEQUENCE_INDEX);
+                chapter.sort = c.getInt(ChapterTable.SORT_INDEX);
+                chapter.site = c.getString(ChapterTable.SITE_INDEX);
+                chapter.curl = c.getString(ChapterTable.CURL_INDEX);
+                chapter.curl1 = c.getString(ChapterTable.CURL1_INDEX);
+                chapter.gsort = c.getInt(ChapterTable.GSORT_INDEX);
+                chapter.book_chapter_md5 = c.getString(ChapterTable.BOOK_CHAPTER_MD5_INDEX);
+                chapter.cmd = c.getString(ChapterTable.CMD_INDEX);
+                chapter.book_id = c.getString(ChapterTable.BOOK_ID_INDEX);
+                chapter.parameter = c.getString(ChapterTable.PARAMETER_INDEX);
+                chapter.extra_parameter = c.getString(ChapterTable.EXTRA_PARAMETER_INDEX);
+                chapter.api_url = c.getString(ChapterTable.API_URL_INDEX);
+                chapter.chapter_form = c.getInt(ChapterTable.CHAPTER_FORM_INDEX);
+                chapter.word_count = c.getInt(ChapterTable.WORD_COUNT_INDEX);
+                chapter.chapter_id = c.getString(ChapterTable.CHAPTER_ID_INDEX);
+                chapter.book_source_id = c.getString(ChapterTable.BOOK_SOURCE_ID_INDEX);
+                chapter.chapter_status = c.getString(ChapterTable.CHAPTER_STATUS_INDEX);
+                chapter.time = c.getLong(ChapterTable.CHAPTER_UPDATE_TIME_INDEX);
+
+                return chapter;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                c.close();
+                db.close();
+            } catch (Exception e2) {
+            }
+        }
+        return null;
+    }
+
     /**
      * 单章切源更新当前章节
      * <p/>
@@ -508,6 +554,52 @@ public class BookChapterDao {
             if (db != null)
                 db.close();
         }
+    }
+
+    /**
+     * 根据章节id更新当前章节
+     * <p/>
+     * updateBookCurrentChapter
+     * c
+     * void
+     */
+    public boolean updateChapterById(Chapter c) {
+        SQLiteDatabase db = null;
+        int result = 0;
+        try {
+            db = mHelper.getWritableDatabase();
+            ContentValues cv = new ContentValues();
+            if (!TextUtils.isEmpty(c.chapter_name) && !c.chapter_name.equals("null")) {
+                cv.put(ChapterTable.CHAPTER_NAME, c.chapter_name);
+            }
+            cv.put(ChapterTable.NID, c.nid);
+            cv.put(ChapterTable.SORT, c.sort);
+            cv.put(ChapterTable.SITE, c.site);
+            cv.put(ChapterTable.CURL, c.curl);
+            cv.put(ChapterTable.CURL1, c.curl1);
+            cv.put(ChapterTable.SEQUENCE, c.sequence);
+            cv.put(ChapterTable.BOOK_CHAPTER_MD5, c.book_chapter_md5);
+            cv.put(ChapterTable.CMD, c.cmd);
+            cv.put(ChapterTable.BOOK_ID, c.book_id);
+            cv.put(ChapterTable.PARAMETER, c.parameter);
+            cv.put(ChapterTable.EXTRA_PARAMETER, c.extra_parameter);
+            cv.put(ChapterTable.API_URL, c.api_url);
+            cv.put(ChapterTable.CHAPTER_FORM, c.chapter_form);
+            cv.put(ChapterTable.WORD_COUNT, c.word_count);
+            cv.put(ChapterTable.CHAPTER_ID, c.chapter_id);
+            cv.put(ChapterTable.BOOK_SOURCE_ID, c.book_source_id);
+            cv.put(ChapterTable.CHAPTER_STATUS, c.chapter_status);
+            cv.put(ChapterTable.CHAPTER_UPDATE_TIME, c.time);
+//			cv.put(ChapterTable.GSORT, c.gsort);
+            result = db.update(TAB_CHAPTER, cv, ChapterTable.CHAPTER_ID + " = '" + c.chapter_id + "'", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (db != null)
+                db.close();
+        }
+
+        return result != 0;
     }
 
     /**

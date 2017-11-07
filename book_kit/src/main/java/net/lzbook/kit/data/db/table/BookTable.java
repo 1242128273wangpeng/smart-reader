@@ -44,6 +44,8 @@ public class BookTable {
     public static String LAST_CHAPTER_URL1 = "last_chapter_url1";
     public static String LAST_UPDATESUCESS_TIME = "last_updatesucess_time";
     public static String CHAPTERS_UPDATE_INDEX = "chapters_update_index";
+    public static String LIST_VERSION = "list_version";
+    public static String C_VERSION = "c_version";
 
     public static int _ID_INDEX = 0;
     public static int GID_INDEX = 1;
@@ -82,5 +84,7 @@ public class BookTable {
     public static int LAST_CHAPTER_URL1_INDEX = 34;
     public static int LAST_UPTADESUCESS_TIME_INDEX = 35;
     public static int CHAPTERS_UPDATEINDEX_INDEX = 36;
+    public static int LIST_VERSION_INDEX = 37;
+    public static int C_VERSION_INDEX = 38;
 
 }
