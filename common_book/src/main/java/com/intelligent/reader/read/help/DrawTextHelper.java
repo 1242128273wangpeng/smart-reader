@@ -873,7 +873,7 @@ public class DrawTextHelper {
                 OwnNativeAdManager.getInstance(mActivity).loadAd(NativeInit.CustomPositionName.READING_POSITION);
             }
         }
-        if (Constants.isSlideUp) {
+        if (Constants.isSlideUp && Constants.dy_ad_readPage_slide_switch_new) {
             if (Constants.IS_LANDSCAPE) {
                 OwnNativeAdManager.getInstance(mActivity).loadAd(NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD);
             } else {

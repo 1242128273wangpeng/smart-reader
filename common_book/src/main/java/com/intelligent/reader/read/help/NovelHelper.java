@@ -540,10 +540,7 @@ public class NovelHelper {
         if (isNativeAdAvailable() && lists.size() >= 3) {
             lists.add(addList(empty_page_ad));
         }
-        //添加章节内广告
-//        if (isNativeAdAvailableNew() && lists.size() >= Constants.native_ad_page_in_chapter_limit) {
-//            lists.add(lists.size()/2, addList(empty_page_ad_inChapter));
-//        }
+
         if (!Constants.isSlideUp) {
             if (isNativeAdAvailableNew() && lists.size() >= 2 * Constants.native_ad_page_in_chapter_limit) {
                 int i2 = lists.size() / Constants.native_ad_page_in_chapter_limit;
@@ -571,11 +568,9 @@ public class NovelHelper {
             }
         }
 
-        //为上下翻页模式广告添加预留标记 // TODO: 2017/10/31 需要添加开关相应内容
-        if (/*isNativeAdAvailable() &&*/ lists.size() >= 3 && Constants.isSlideUp) {
-            if (actReference != null && actReference.get() != null && !actReference.get().isFinishing()) {
-                lists.add(addList(empty_page_ad));
-            }
+        //为上下翻页模式广告添加预留标记
+        if (isNativeAdInScrollPattern() && lists.size() >= 3) {
+            lists.add(addList(empty_page_ad));
         }
 
         readStatus.pageCount = lists.size();
@@ -586,11 +581,18 @@ public class NovelHelper {
         return lists;
     }
 
+    private boolean isNativeAdInScrollPattern() {
+        boolean isAvailable = Constants.isSlideUp && readStatus.sequence != -1 && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE
+                && !Constants.isHideAD
+                && Constants.dy_ad_readPage_slide_switch_new;
+        AppLog.e(TAG, "isAvailable:" + isAvailable);
+        return isAvailable;
+    }
+
     private boolean isNativeAdAvailable() {
         AppLog.e(TAG, "readedCount:" + Constants.readedCount + " native_ad_page_interstitial_count:" + Constants.native_ad_page_interstitial_count
                 + " chapterCount:" + readStatus.chapterCount + " NetworkUtils.NATIVE_AD_TYPE:" + NetWorkUtils.NATIVE_AD_TYPE);
         boolean isAvailable = !Constants.isSlideUp && readStatus.sequence != -1 && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE
-                /*&& NetWorkUtils.NATIVE_AD_TYPE == NetWorkUtils.NATIVE_AD_READY*/
                 && !Constants.isHideAD
                 && Constants.readedCount != 0 && Constants.native_ad_page_interstitial_count != 0 && Constants.readedCount % Constants.native_ad_page_interstitial_count == 0 && Constants.dy_page_middle_ad_switch;
         AppLog.e(TAG, "isAvailable:" + isAvailable);
@@ -601,7 +603,6 @@ public class NovelHelper {
         AppLog.e(TAG, "readedCount:" + Constants.readedCount + " native_ad_page_gap_in_chapter:" + Constants.native_ad_page_gap_in_chapter
                 + " chapterCount:" + readStatus.chapterCount + " NetworkUtils.NATIVE_AD_TYPE:" + NetWorkUtils.NATIVE_AD_TYPE);
         boolean isAvailable = !Constants.isSlideUp && readStatus.sequence != -1 && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE
-                /*&& NetWorkUtils.NATIVE_AD_TYPE == NetWorkUtils.NATIVE_AD_READY*/
                 && !Constants.isHideAD
                 && Constants.readedCount != 0 && Constants.native_ad_page_gap_in_chapter != 0 && Constants.readedCount % Constants.native_ad_page_gap_in_chapter == 0 && Constants.dy_page_in_chapter_ad_switch;
         AppLog.e(TAG, "isAvailable:" + isAvailable);
