@@ -33,7 +33,7 @@ public class Constants {
     // 阅读页翻页统计开关
     public static final String DY_READPAGE_STATISTICS_SWITCH = "Dy_readPage_statistics_switch";
     // 阅读页上下翻页展示广告开关
-    public static final String DY_AD_READPAGE_SLIDE_SWITCH = "Dy_ad_readPage_slide_switch";
+    public static final String DY_AD_READPAGE_SLIDE_SWITCH_NEW = "Dy_ad_readPage_slide_switch_new";
     //老的广告统计开关key
     public static final String DY_AD_OLD_REQUEST_SWITCH = "DY_ad_old_request_switch";
     //广告总开关
@@ -205,7 +205,7 @@ public class Constants {
     //新壳广告开关
     public static boolean new_app_ad_switch = false;
     //阅读页上下翻页展示广告开关
-    public static boolean dy_ad_readPage_slide_switch = true;
+    public static boolean dy_ad_readPage_slide_switch_new = true;
     public static int ad_limit_time_day = 2;//新用户前三天不显示ad
     public static boolean isBaiduExamine = false;
     public static boolean isHuaweiExamine = false;

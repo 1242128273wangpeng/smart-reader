@@ -5,6 +5,7 @@ import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.alibaba.sdk.android.feedback.util.ErrorCode;
 import com.alibaba.sdk.android.feedback.util.FeedbackErrorCallback;
 import com.intelligent.reader.BuildConfig;
+import com.qq.e.ads.cfg.MultiProcessFlag;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -61,5 +62,7 @@ public class BookApplication extends BaseBookApplication {
         // 打印DebugLog开关,上线前建议改成false
         // 请求测试广告开关,上线前务必改成false
         AKAD.initSdk(this, false, false);
+        //仅限于和DownloadService的不在同一进程的Activity,广点通
+        MultiProcessFlag.setMultiProcess(true);
     }
 }

@@ -50,7 +50,7 @@ public class DynamicParamter {
     //阅读页翻页统计开关
     public String dy_readPage_statistics_switch;
     //阅读页上下翻页展示广告开关
-    public String dy_ad_readPage_slide_switch;
+    public String dy_ad_readPage_slide_switch_new;
     //老的广告统计开关
     public String dy_ad_old_request_switch;
     //X小时内新用户不显示广告设置
@@ -154,7 +154,7 @@ public class DynamicParamter {
         //阅读页翻页统计开关
         dy_readPage_statistics_switch = getConfigParams(Constants.DY_READPAGE_STATISTICS_SWITCH);
         //阅读页上下翻页展示广告开关
-        dy_ad_readPage_slide_switch = getConfigParams(Constants.DY_AD_READPAGE_SLIDE_SWITCH);
+        dy_ad_readPage_slide_switch_new = getConfigParams(Constants.DY_AD_READPAGE_SLIDE_SWITCH_NEW);
         //老的广告统计开关
         dy_ad_old_request_switch = getConfigParams(Constants.DY_AD_OLD_REQUEST_SWITCH);
         //X小时内新用户不显示广告设置
@@ -276,7 +276,7 @@ public class DynamicParamter {
         //阅读页翻页统计开关
         dy_readPage_statistics_switch = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_READPAGE_STATISTICS_SWITCH);
         //阅读页上下翻页展示广告开关
-        dy_ad_readPage_slide_switch = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_AD_READPAGE_SLIDE_SWITCH);
+        dy_ad_readPage_slide_switch_new = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_AD_READPAGE_SLIDE_SWITCH_NEW);
         //老的广告统计开关
         dy_ad_old_request_switch = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_AD_OLD_REQUEST_SWITCH);
         //X小时内新用户不显示广告设置
@@ -413,10 +413,10 @@ public class DynamicParamter {
                     putConfigParams(Constants.DY_READPAGE_STATISTICS_SWITCH, dy_readPage_statistics_switch);
                 }
             }
-            if (!data.isNull(Constants.DY_AD_READPAGE_SLIDE_SWITCH)) {
-                dy_ad_readPage_slide_switch = data.getString(Constants.DY_AD_READPAGE_SLIDE_SWITCH);
+            if (!data.isNull(Constants.DY_AD_READPAGE_SLIDE_SWITCH_NEW)) {
+                dy_ad_readPage_slide_switch_new = data.getString(Constants.DY_AD_READPAGE_SLIDE_SWITCH_NEW);
                 if (isOwn) {
-                    putConfigParams(Constants.DY_AD_READPAGE_SLIDE_SWITCH, dy_ad_readPage_slide_switch);
+                    putConfigParams(Constants.DY_AD_READPAGE_SLIDE_SWITCH_NEW, dy_ad_readPage_slide_switch_new);
                 }
             }
             if (!data.isNull(Constants.DY_AD_OLD_REQUEST_SWITCH)) {
@@ -896,9 +896,9 @@ public class DynamicParamter {
             }
         }
         //阅读页上下翻页展示广告开关
-        if (!TextUtils.isEmpty(dy_ad_readPage_slide_switch)) {
+        if (!TextUtils.isEmpty(dy_ad_readPage_slide_switch_new)) {
             try {
-                Constants.dy_ad_readPage_slide_switch = Boolean.parseBoolean(dy_ad_readPage_slide_switch);
+                Constants.dy_ad_readPage_slide_switch_new = Boolean.parseBoolean(dy_ad_readPage_slide_switch_new);
             } catch (Exception e) {
             }
         }
@@ -962,7 +962,6 @@ public class DynamicParamter {
         if (!TextUtils.isEmpty(dy_shelf_ad_freq)) {
             try {
                 Constants.dy_shelf_ad_freq = Integer.parseInt(dy_shelf_ad_freq);
-                Constants.dy_shelf_ad_freq = 9;
             } catch (Exception e) {
             }
         }

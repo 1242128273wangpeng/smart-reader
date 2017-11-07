@@ -53,6 +53,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -311,6 +312,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
 
     public void onEvent(final EventBookshelfAd eventBookshelfAd) {
 //        if (!isGetEvent) return;
+        Log.e("ADSDK","onEvent");
         if (eventBookshelfAd.type_ad.equals(NativeInit.CustomPositionName.SHELF_POSITION.toString())) {
             Activity activity = getActivity();
             if (activity != null && isAdded()) {
@@ -356,7 +358,6 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
                 adInfo = adInfoHashMap.get(0);
             } else {
                 adInfo = ownNativeAdManager.getSingleADInfoNew(0, NativeInit.CustomPositionName.SHELF_POSITION);
-                android.util.Log.e("ADSDK","列表真正获取数据一次");
                 if (adInfo != null) {
                     adInfo.setAvailableTime(System.currentTimeMillis());
                     adInfoHashMap.put(0, adInfo);
@@ -378,8 +379,12 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
                 AppLog.e("wyhad1-1", "adInfo == null");
             }
         }
-        //两种广告都显示 0位置 一定不能是广告
-        int distance = (booksOnLine.size()-1) / Constants.dy_shelf_ad_freq;//计算广告展现频率  dy_shelf_ad_freq 为间隔
+        int distance;
+        if(Constants.book_shelf_state !=3){
+            distance = booksOnLine.size() / Constants.dy_shelf_ad_freq;//计算广告展现频率  dy_shelf_ad_freq 为间隔
+        }else{
+            distance = (booksOnLine.size()-1) / Constants.dy_shelf_ad_freq;//计算广告展现频率  dy_shelf_ad_freq 为间隔
+        }
         int currentPostion = 1;//当状态为3的时候 从1 开始计算
         for (int i = 0; i < distance; i++) {
             YQNativeAdInfo info;
@@ -391,6 +396,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
                 info = ownNativeAdManager.getSingleADInfoNew(i + 1, NativeInit.CustomPositionName.SHELF_POSITION);
                 if (info != null) {
                     info.setAvailableTime(System.currentTimeMillis());
+                    Log.e("ADSDK","列表广告放入"+i + 1+"位置"+"adInfoHashMap 大小"+adInfoHashMap.size());
                     adInfoHashMap.put(i + 1, info);
                 }
             }
@@ -599,7 +605,6 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         swipeRefreshLayout.setHeaderViewBackgroundColor(0x00000000);
         swipeRefreshLayout.setHeaderView(createHeaderView());
         swipeRefreshLayout.setTargetScrollWithLayout(true);
-
         recyclerView = (RecyclerView) bookshelf_content.findViewById(R.id.recycler_view);
         recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 12);
         layoutManager = new ShelfGridLayoutManager(mContext, 3);
@@ -649,8 +654,8 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
                         setAdBook(booksOnLine);
                         headerReleative.setVisibility(View.GONE);//隐藏headerview
                     } else if(Constants.book_shelf_state==3){
-                        setHeaderAdBook(headerReleative);//设置书架header 位置广告
                         setAdBook(booksOnLine);
+                        setHeaderAdBook(headerReleative);//设置书架header 位置广告
                     }
                 }
             }
@@ -1165,6 +1170,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             adInfo = ownNativeAdManager.getSingleADInfoNew(0, NativeInit.CustomPositionName.SHELF_POSITION);
             if (adInfo != null) {
                 adInfo.setAvailableTime(System.currentTimeMillis());
+                Log.e("ADSDK","header广告放入0位置"+"adInfoHashMap 大小"+adInfoHashMap.size());
                 adInfoHashMap.put(0, adInfo);
             }
         }
