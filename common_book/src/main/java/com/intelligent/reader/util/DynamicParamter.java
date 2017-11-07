@@ -59,6 +59,14 @@ public class DynamicParamter {
     public String dy_splash_ad_switch;
     //书架页开关
     public String dy_shelf_ad_switch;
+    /*
+     0-关闭书架页广告位；两种形式都不开启
+     1-开启书架页广告位A样式:顶部横幅书架页广告
+     2-开启书架页广告位B样式：九宫格原生书架页广告
+     3-开启书架页广告位两种样式
+      九宫格书架页广告显示类型切换开关
+    */
+    public String book_shelf_state;
     //书架页广告间隔频率设置
     public String dy_shelf_ad_freq;
     //章节末开关
@@ -75,6 +83,8 @@ public class DynamicParamter {
     public String dy_page_middle_ad_switch;
     //章节内开关
     public String dy_page_in_chapter_ad_switch;
+    //书籍封面页的推荐位
+    public String recommend_bookcover;
 
     public String ad_limit_time_day;
     public String baidu_examine;
@@ -131,6 +141,7 @@ public class DynamicParamter {
         dy_ad_new_request_domain_name = getConfigParams(Constants.DY_AD_NEW_REQUEST_DOMAIN_NAME);
         user_transfer_first = getConfigParams("user_transfer_first");
         user_transfer_second = getConfigParams("user_transfer_second");
+        recommend_bookcover = getConfigParams(Constants.RECOMMEND_BOOKCOVER);
 
         //新壳广告开关
         new_app_ad_switch = getConfigParams(Constants.NEW_APP_AD_SWITCH);
@@ -152,6 +163,14 @@ public class DynamicParamter {
         dy_splash_ad_switch = getConfigParams(Constants.DY_SPLASH_AD_SWITCH);
         //书架页开关
         dy_shelf_ad_switch = getConfigParams(Constants.DY_SHELF_AD_SWITCH);
+         /*
+          0-关闭书架页广告位；两种形式都不开启
+          1-开启书架页广告位A样式:顶部横幅书架页广告
+          2-开启书架页广告位B样式：九宫格原生书架页广告
+          3-开启书架页广告位两种样式
+           九宫格书架页广告显示类型切换开关
+         */
+        book_shelf_state = getConfigParams(Constants.BOOK_SHELF_STATE);
         //书架页广告间隔频率设置
         dy_shelf_ad_freq = getConfigParams(Constants.DY_SHELF_AD_FREQ);
         //章节末开关
@@ -246,6 +265,7 @@ public class DynamicParamter {
         dy_ad_new_request_domain_name = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_AD_NEW_REQUEST_DOMAIN_NAME);
         user_transfer_first = OnlineConfigAgent.getInstance().getConfigParams(context, "user_transfer_first");
         user_transfer_second = OnlineConfigAgent.getInstance().getConfigParams(context, "user_transfer_second");
+        recommend_bookcover = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.RECOMMEND_BOOKCOVER);
 
         //广告总开关
         dy_ad_switch = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_AD_SWITCH);
@@ -265,6 +285,14 @@ public class DynamicParamter {
         dy_splash_ad_switch = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_SPLASH_AD_SWITCH);
         //书架页开关
         dy_shelf_ad_switch = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_SHELF_AD_SWITCH);
+         /*
+          0-关闭书架页广告位；两种形式都不开启
+          1-开启书架页广告位A样式:顶部横幅书架页广告
+          2-开启书架页广告位B样式：九宫格原生书架页广告
+          3-开启书架页广告位两种样式
+           九宫格书架页广告显示类型切换开关
+         */
+        book_shelf_state = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.BOOK_SHELF_STATE);
         //书架页广告间隔频率设置
         dy_shelf_ad_freq = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_SHELF_AD_FREQ);
         //章节末开关
@@ -328,6 +356,7 @@ public class DynamicParamter {
                 }
             }
 
+
             if (!data.isNull(Constants.CHANNEL_LIMIT)) {
                 channel_limit = data.getString(Constants.CHANNEL_LIMIT);
                 if (isOwn) {
@@ -335,6 +364,14 @@ public class DynamicParamter {
                 }
             }
 
+            if (!data.isNull(Constants.RECOMMEND_BOOKCOVER)) {
+                recommend_bookcover = data.getString(Constants.RECOMMEND_BOOKCOVER);
+
+                if (isOwn) {
+                    putConfigParams(Constants.RECOMMEND_BOOKCOVER, recommend_bookcover);
+                    AppLog.e("ppp", getConfigParams(Constants.RECOMMEND_BOOKCOVER));
+                }
+            }
             if (!data.isNull(Constants.DAY_LIMIT)) {
                 day_limit = data.getString(Constants.DAY_LIMIT);
                 if (isOwn) {
@@ -406,6 +443,20 @@ public class DynamicParamter {
                     putConfigParams(Constants.DY_SHELF_AD_SWITCH, dy_shelf_ad_switch);
                 }
             }
+             /*
+              0-关闭书架页广告位；两种形式都不开启
+              1-开启书架页广告位A样式:顶部横幅书架页广告
+              2-开启书架页广告位B样式：九宫格原生书架页广告
+              3-开启书架页广告位两种样式
+               九宫格书架页广告显示类型切换开关
+             */
+            if (!data.isNull(Constants.BOOK_SHELF_STATE)) {
+                book_shelf_state = data.getString(Constants.BOOK_SHELF_STATE);
+                if (isOwn) {
+                    putConfigParams(Constants.BOOK_SHELF_STATE, book_shelf_state);
+                }
+            }
+
 
             if (!data.isNull(Constants.DY_SHELF_AD_FREQ)) {
                 dy_shelf_ad_freq = data.getString(Constants.DY_SHELF_AD_FREQ);
@@ -886,14 +937,32 @@ public class DynamicParamter {
         if (!TextUtils.isEmpty(dy_shelf_ad_switch)) {
             try {
                 Constants.dy_shelf_ad_switch = Boolean.parseBoolean(dy_shelf_ad_switch);
+
             } catch (Exception e) {
             }
         }
+
+         /*
+          0-关闭书架页广告位；两种形式都不开启
+          1-开启书架页广告位A样式:顶部横幅书架页广告
+          2-开启书架页广告位B样式：九宫格原生书架页广告
+          3-开启书架页广告位两种样式
+           九宫格书架页广告显示类型切换开关
+         */
+        if (!TextUtils.isEmpty(book_shelf_state)) {
+            try {
+                Constants.book_shelf_state = Integer.parseInt(book_shelf_state);
+            } catch (Exception e) {
+            }
+        }
+
+
 
         //书架页广告间隔频率设置
         if (!TextUtils.isEmpty(dy_shelf_ad_freq)) {
             try {
                 Constants.dy_shelf_ad_freq = Integer.parseInt(dy_shelf_ad_freq);
+                Constants.dy_shelf_ad_freq = 9;
             } catch (Exception e) {
             }
         }

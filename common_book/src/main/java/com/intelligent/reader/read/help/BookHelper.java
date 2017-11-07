@@ -4,6 +4,7 @@ import com.intelligent.reader.activity.CataloguesActivity;
 import com.intelligent.reader.activity.CoverPageActivity;
 import com.intelligent.reader.activity.ReadingActivity;
 
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.download.DownloadState;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Book;
@@ -19,6 +20,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2016/8/8 0008.
@@ -92,11 +96,12 @@ public class BookHelper extends BaseBookHelper {
 
     /**
      * 跳转小说封面或者小说阅读页
+     * type 打点需求，0 从书架页进入  1 从缓存管理页进入  2 从书籍详情页推荐页进入 3 从阅读页进入
      * <p/>
      * ctx
      * book
      */
-    public static void goToCoverOrRead(Context ctx, Activity activity, Book book) {
+    public static void goToCoverOrRead(Context ctx, Activity activity, Book book, int type) {
 
         switch (book.book_type) {
             case Book.TYPE_ONLINE:
@@ -154,6 +159,22 @@ public class BookHelper extends BaseBookHelper {
                     activity.startActivity(intent);
                     net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(activity, net.lzbook.kit.utils.StatServiceUtils.bs_click_one_book);
                 } else {
+
+                    Map<String, String> data = new HashMap<>();
+                    data.put("BOOKID", book.book_id);
+                    if (type == 0) {
+                        data.put("source", "SHELF");
+                    } else if (type == 1) {
+                        data.put("source", "CACHEMANAGE");
+                    } else if (type == 2) {
+                        data.put("source", "BOOOKDETAIL");
+                    } else if (type == 3) {
+                        data.put("source", "READPAGE");
+                    }
+                    StartLogClickUtil.upLoadEventLog(ctx, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data);
+
+
+
                     Intent intent = new Intent();
                     intent.setClass(ctx, CoverPageActivity.class);
                     Bundle bundle = new Bundle();

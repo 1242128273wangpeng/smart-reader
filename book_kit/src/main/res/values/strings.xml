@@ -231,6 +231,7 @@
     <string name="book_cover_no_resource">暂时找不到此本书的资源</string>
     <string name="book_cover_add_bookshelf">加入书架</string>
     <string name="book_cover_remove_bookshelf">移出书架</string>
+    <string name="book_cover_havein_bookshelf">已在书架</string>
     <string name="book_cover_continue_read_cache">阅读已缓存内容</string>
     <string name="book_cover_confirm_change_source">确认换源</string>
     <string name="book_cover_change_source_prompt">在新的来源下阅读会丢失已经缓存的内容，确认换源？</string>

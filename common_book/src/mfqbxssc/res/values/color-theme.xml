@@ -348,4 +348,13 @@
     <color name="footprint_title_clear_unusable_color">
         #33000000
     </color>
+    <color name="cover_bottom_bg_pressed">
+        #581B2B
+    </color>
+    <color name="cover_text_color">#882F46</color>
+    <color name="cover_title_color">#252B35</color>
+    <color name="cover_recommend_read">#949AA5</color>
+    <color name="cover_label">#C6CCD6</color>
+
+
 </resources>

@@ -171,6 +171,8 @@ public class NovelHelper {
             public void onClick(View v) {
                 if (myDialog != null) {
                     try {
+
+
                         myDialog.dismiss();
                     } catch (Exception e) {
                         e.printStackTrace();

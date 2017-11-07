@@ -70,8 +70,6 @@
                     android:cacheColorHint="@color/color_black_00000000"
                     android:divider="@color/color_gray_e8e8e8"
                     android:dividerHeight="@dimen/dimen_view_height_0.5"
-                    android:paddingLeft="@dimen/dimen_padding_5"
-                    android:paddingRight="@dimen/dimen_padding_5"
                     android:fadingEdge="none"
                     android:scrollbarFadeDuration="0"
                     android:fadeScrollbars="false"

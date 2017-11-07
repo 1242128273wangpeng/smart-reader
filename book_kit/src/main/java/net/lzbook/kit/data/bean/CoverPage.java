@@ -83,6 +83,10 @@ public class CoverPage implements Serializable {
         public int serial_number;
         public long update_time;
         public int word_count;
+        public String wordCountDescp;
+        public String readerCountDescp;
+        public double score;
+
 
         @Override
         public boolean equals(Object o) {
@@ -158,6 +162,9 @@ public class CoverPage implements Serializable {
                     ", serial_number=" + serial_number +
                     ", update_time=" + update_time +
                     ", word_count=" + word_count +
+                    ", wordCountDescp=" + wordCountDescp +
+                    ", readerCountDescp=" + readerCountDescp +
+                    ", score=" + score +
                     '}';
         }
     }
@@ -173,6 +180,10 @@ public class CoverPage implements Serializable {
         public String last_chapter_name;
         public Object wordCount;
         public int dex;
+        public String wordCountDescp;
+        public String readerCountDescp;
+        public double score;
+        public String labels;
 
         @Override
         public boolean equals(Object o) {

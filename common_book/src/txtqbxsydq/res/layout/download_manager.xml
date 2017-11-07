@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_black"
+        android:orientation="vertical">
+    
+    <RelativeLayout
+            android:id="@+id/top_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/top_navigation_bg_color"
+            android:fitsSystemWindows="true"
+            android:orientation="vertical"
+            android:paddingBottom="5dp">
+        
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/top_bar_height">
+            
+            <ImageView
+                    android:id="@+id/title_back_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:padding="6dp"
+                    android:src="@mipmap/cover_top_back"/>
+            
+            <TextView
+                    android:id="@+id/title_name_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="缓存管理"
+                    android:textColor="@color/top_navigation_text_color"
+                    android:textSize="18sp"/>
+            
+            <TextView
+                    android:id="@+id/btn_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="@dimen/dimen_margin_12"
+                    android:paddingRight="@dimen/dimen_margin_12"
+                    android:paddingBottom="@dimen/dimen_margin_2"
+                    android:paddingTop="@dimen/dimen_margin_2"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center_vertical"
+                    android:layout_centerVertical="true"
+                    android:textSize="@dimen/text_big16_size"
+                    android:textColor="@color/top_navigation_text_color"
+                    android:text="编辑"/>
+            <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="@dimen/dimen_height_30"-->
+            <!--android:background="@color/color_gray_939191"/>-->
+        </RelativeLayout>
+    </RelativeLayout>
+    
+    <FrameLayout
+            android:id="@+id/content_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/download_manager_lv_bg_color"
+            android:layout_below="@id/top_layout">
+    </FrameLayout>
+    
+    <ImageView
+            android:id="@+id/title_shadow"
+            android:layout_below="@+id/top_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@mipmap/top_shadow"/>
+</RelativeLayout>

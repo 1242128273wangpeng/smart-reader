@@ -4,9 +4,8 @@
     <item android:state_pressed="true">
         <shape>
             <stroke android:width="1dip"
-                    android:color="@color/color_red_882f46"/>
-            <solid android:color="@color/color_red_882f46"/>
-            <corners android:radius="4dp"/>
+                    android:color="@color/cover_bottom_bg_pressed"/>
+            <solid android:color="@color/cover_bottom_bg_pressed"/>
         </shape>
     </item>
     
@@ -14,8 +13,7 @@
         <shape>
             <stroke android:width="1dip"
                     android:color="@color/color_red_882f46"/>
-            <solid android:color="@color/color_transparent"/>
-            <corners android:radius="4dp"/>
+            <solid android:color="@color/color_red_882f46"/>
         </shape>
     </item>
 </selector>

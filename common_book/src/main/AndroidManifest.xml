@@ -384,7 +384,7 @@
         
         <activity
                 android:name=".activity.CoverPageActivity"
-                android:launchMode="singleTop"
+
                 android:label="@string/title_activity_act_book_cover"
                 android:screenOrientation="portrait"
                 android:theme="@style/AppTheme"/>

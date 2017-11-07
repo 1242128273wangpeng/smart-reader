@@ -4,55 +4,45 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/padding_18"
-        android:paddingRight="@dimen/padding_18"
-        android:paddingTop="@dimen/padding_10">
+
+        >
+
+    <ImageView
+            android:id="@+id/iv_bestSource"
+            android:layout_width="50dp"
+            android:layout_height="20dp"
+            android:gravity="left"
+            android:background="@drawable/icon_recommend_sources"
+            />
     
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:paddingLeft="@dimen/padding_18"
+            android:paddingRight="@dimen/padding_18"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
             android:paddingBottom="3dp">
         
-        <TextView
-                android:id="@+id/bestSource_text"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginRight="@dimen/dimen_margin_6"
-                android:layout_marginTop="1dp"
-                android:gravity="left"
-                android:paddingLeft="0dp"
-                android:singleLine="true"
-                android:text="[推荐]"
-                android:textColor="@color/dialog_recommend"
-                android:textSize="16.0sp"
-                android:visibility="gone"/>
+
         
         <TextView
                 android:id="@+id/new_text"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="left"
                 android:text="最新"
                 android:textColor="@color/book_end_item_title"
                 android:textSize="16.0sp"/>
-        <!--<TextView
-                  android:id="@+id/bestSource_text"
-                  android:layout_width="wrap_content"
-                  android:layout_height="match_parent"
-                  android:gravity="left"
-                  android:paddingLeft="0dp"
-                  android:singleLine="true"
-                  android:text="[最优源]"
-                  android:textColor="@color/color_orange_ff7d1a"
-                  android:textSize="@dimen/medium_size_16"
-                  android:visibility="gone"/>-->
     </LinearLayout>
     
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/padding_18"
+            android:paddingRight="@dimen/padding_18"
+            android:layout_marginTop="2dp"
             android:orientation="horizontal"
             android:paddingBottom="@dimen/padding_12">
         
@@ -76,6 +66,6 @@
                 android:singleLine="true"
                 android:text="12天前更新"
                 android:textColor="@color/book_end_item_des"
-                android:textSize="12.0sp"/>
+                android:textSize="11sp"/>
     </LinearLayout>
 </LinearLayout>

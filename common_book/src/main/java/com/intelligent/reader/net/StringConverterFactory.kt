@@ -42,8 +42,16 @@ class StringResponseBodyConverter : Converter<ResponseBody, String> {
 class StringConverterFactory private constructor() : Converter.Factory() {
 
     override fun responseBodyConverter(type: Type, annotations: Array<Annotation>,
-                                       retrofit: Retrofit): Converter<ResponseBody, *> {
-        return StringResponseBodyConverter()
+                                       retrofit: Retrofit): Converter<ResponseBody, *>? {
+        return when (type) {
+            java.lang.String::class.java, String.javaClass -> {
+                StringResponseBodyConverter()
+            }
+            else -> {
+                null
+            }
+        }
+
     }
 
     override fun requestBodyConverter(type: Type,

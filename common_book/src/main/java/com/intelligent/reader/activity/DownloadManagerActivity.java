@@ -345,7 +345,7 @@ public class DownloadManagerActivity extends BaseCacheableActivity implements On
             Map<String, String> data = new HashMap<>();
             data.put("STATUS", BookHelper.isDownFnish(this, b) ? "1" : "0");
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.BOOKCLICK1, data);
-            BookHelper.goToCoverOrRead(getApplicationContext(), DownloadManagerActivity.this, b);
+            BookHelper.goToCoverOrRead(getApplicationContext(), DownloadManagerActivity.this, b, 1);
         } else {
             views.setRemoveChecked(position);
         }

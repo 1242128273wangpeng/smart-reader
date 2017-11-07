@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/activity_style_change"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:fitsSystemWindows="true"
+              android:orientation="vertical">
+    <RelativeLayout android:id="@+id/reading_setting_head"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_view_height_48"
+                    android:background="@color/color_primary"
+                    android:focusableInTouchMode="true">
+        <ImageView android:id="@+id/imageView_back_styleChange"
+                   android:layout_width="wrap_content"
+                   android:layout_height="match_parent"
+                   android:layout_alignParentLeft="true"
+                   android:gravity="center_vertical"
+                   android:paddingLeft="@dimen/dimen_padding_12"
+                   android:paddingRight="@dimen/dimen_padding_12"
+                   android:src="@mipmap/top_back"/>
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="match_parent"
+                  android:layout_centerInParent="true"
+                  android:gravity="center_vertical"
+                  android:text="@string/style_change"
+                  android:textColor="@color/top_navigation_text_color"
+                  android:textSize="@dimen/dimen_text_17"/>
+        <TextView android:id="@+id/textView_confirm_styleChange"
+                  android:layout_width="wrap_content"
+                  android:layout_height="match_parent"
+                  android:layout_alignParentRight="true"
+                  android:gravity="center_vertical"
+                  android:text="@string/confirm"
+                  android:paddingRight="@dimen/dimen_padding_12"
+                  android:paddingLeft="@dimen/dimen_padding_12"
+                  android:textSize="@dimen/dimen_text_16"
+                  android:textColor="@color/top_navigation_text_color"/>
+    </RelativeLayout>
+    <RelativeLayout android:layout_width="match_parent"
+                    android:background="@color/stylechange_bg"
+                    android:layout_height="0dp"
+                    android:layout_weight="9">
+        <ImageView android:id="@+id/imageView_styleChange"
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:scaleType="centerInside"/>
+    </RelativeLayout>
+    <include layout="@layout/dialog_divider"/>
+    <RadioGroup android:id="@+id/radioGroup_styleChange"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_view_height_15"
+                android:layout_weight="1.8"
+                android:background="@color/stylechange_bottom_bg"
+                android:orientation="horizontal">
+        <RadioButton android:id="@+id/radioButton_styleChange_1"
+                     android:layout_width="0dp"
+                     android:layout_height="match_parent"
+                     android:layout_weight="1"
+                     android:button="@null"
+                     android:drawableTop="@drawable/style_change_selector1"
+                     android:textColor="@color/color_text_most"
+                     android:text="@string/style_change_1"
+                     android:drawablePadding="-15dp"
+                     android:textAlignment="center">
+        </RadioButton>
+        <RadioButton android:id="@+id/radioButton_styleChange_2"
+                     android:layout_width="0dp"
+                     android:layout_height="match_parent"
+                     android:layout_weight="1"
+                     android:button="@null"
+                     android:textColor="@color/color_text_most"
+                     android:drawableTop="@drawable/style_change_selector2"
+                     android:text="@string/style_change_2"
+                     android:drawablePadding="-15dp"
+                     android:textAlignment="center">
+        </RadioButton>
+        <RadioButton android:id="@+id/radioButton_styleChange_3"
+                     android:layout_width="0dp"
+                     android:layout_height="match_parent"
+                     android:layout_weight="1"
+                     android:button="@null"
+                     android:visibility="invisible"
+                     android:textColor="@color/color_text_most"
+                     android:drawableTop="@drawable/style_change_selector3"
+                     android:text="@string/style_change_3"
+                     android:drawablePadding="15dp"
+                     android:textAlignment="center">
+        </RadioButton>
+        <RadioButton android:layout_marginTop="@dimen/dimen_margin_15"
+                     android:id="@+id/radioButton_styleChange_4"
+                     android:layout_width="0dp"
+                     android:visibility="invisible"
+                     android:layout_height="match_parent"
+                     android:layout_weight="1"
+                     android:button="@null"
+                     android:textColor="@color/color_text_most"
+                     android:drawableTop="@drawable/style_change_selector4"
+                     android:text="@string/style_change_4"
+                     android:drawablePadding="-15dp"
+                     android:textAlignment="center">
+        </RadioButton>
+    </RadioGroup>
+</LinearLayout>

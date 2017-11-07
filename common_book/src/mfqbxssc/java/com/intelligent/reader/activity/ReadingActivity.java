@@ -155,6 +155,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     public boolean isRestDialogShow = false;
     long stampTime = 0;
     int readLength = 0;
+    boolean isFirstVisiable = true;
     private Context mContext;
     private PageInterface pageView;
     private ArrayList<Source> sourcesList;
@@ -225,7 +226,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private RequestFactory requestFactory;
     private int type = -1;
     private String currentThemeMode;
-
     private int lastMode = -1;
     /**
      * 接受电量改变广播
@@ -248,9 +248,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private ReadOptionPresenter mReadOptionPresenter;
     private DrawerLayout mCatlogMarkDrawer;
     private CatalogMarkPresenter mCatalogMarkPresenter;
-
     private CatalogMarkFragment mCatalogMarkFragment;
-
     private DrawerLayout.DrawerListener mDrawerListener = new DrawerLayout.DrawerListener() {
         @Override
         public void onDrawerSlide(View drawerView, float slideOffset) {
@@ -1299,6 +1297,19 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             Toast.makeText(ReadingActivity.this, succeed ? R.string.reading_add_succeed : R.string.reading_add_fail,
                     Toast.LENGTH_SHORT).show();
         }
+        Map<String, String> map1 = new HashMap<String, String>();
+        if (readStatus.book != null) {
+            map1.put("bookid", readStatus.book.book_id);
+        }
+        if (dataFactory != null && dataFactory.currentChapter != null) {
+            map1.put("chapterid", dataFactory.currentChapter.chapter_id);
+        }
+        if (isAddShelf) {
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.POPUPSHELFADD, map1);
+        } else {
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.POPUPSHELFADDCANCLE, map1);
+        }
+
         goBackToHome();
     }
 
@@ -1867,8 +1878,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
     }
 
-    boolean isFirstVisiable = true;
-
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -2436,9 +2445,15 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     @Override
     public void onReadFeedBack() {
         if (!isFinishing()) {
+            final Map<String, String> data = new HashMap<>();
+            Book book;
             if (readStatus.sequence == -1) {
                 showToastShort("请到错误章节反馈");
                 return;
+            }
+            if (readStatus != null && readStatus.book != null) {
+                book = readStatus.book;
+                data.put("bookid", book.book_id);
             }
             myDialog = new MyDialog(this, R.layout.dialog_feedback);
             myDialog.setCanceledOnTouchOutside(true);
@@ -2491,6 +2506,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                     if (type == -1) {
                         showToastShort("请选择错误类型");
                     } else {
+                        data.put("type", "1");
+                        StartLogClickUtil.upLoadEventLog(ReadingActivity.this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data);
                         submitFeedback(type);
                         dismissDialog();
                         type = -1;
@@ -2502,6 +2519,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             cancelImage.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+                    data.put("type", "2");
+                    StartLogClickUtil.upLoadEventLog(ReadingActivity.this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data);
                     dismissDialog();
                 }
             });

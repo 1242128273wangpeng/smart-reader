@@ -1299,6 +1299,19 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             Toast.makeText(ReadingActivity.this, succeed ? R.string.reading_add_succeed : R.string.reading_add_fail,
                     Toast.LENGTH_SHORT).show();
         }
+        Map<String, String> map1 = new HashMap<String, String>();
+        if(readStatus.book != null){
+            map1.put("bookid", readStatus.book.book_id);
+        }
+        if(dataFactory != null && dataFactory.currentChapter != null){
+            map1.put("chapterid", dataFactory.currentChapter.chapter_id);
+        }
+        if(isAddShelf ){
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.POPUPSHELFADD, map1);
+        }else{
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.POPUPSHELFADDCANCLE, map1);
+        }
+
         goBackToHome();
     }
 
@@ -2440,6 +2453,10 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 showToastShort("请到错误章节反馈");
                 return;
             }
+            if(readStatus != null && readStatus.book != null){
+                book = readStatus.book;
+                data.put("bookid",book.book_id);
+            }
             myDialog = new MyDialog(this, R.layout.dialog_feedback);
             myDialog.setCanceledOnTouchOutside(true);
             TextView dialog_title = (TextView) myDialog.findViewById(R.id.dialog_title);
@@ -2491,6 +2508,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                     if (type == -1) {
                         showToastShort("请选择错误类型");
                     } else {
+                        data.put("type", "1");
+						StartLogClickUtil.upLoadEventLog(ReadingActivity.this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data);
                         submitFeedback(type);
                         dismissDialog();
                         type = -1;
@@ -2502,6 +2521,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             cancelImage.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+                    data.put("type", "2");
+                    StartLogClickUtil.upLoadEventLog(ReadingActivity.this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data);
                     dismissDialog();
                 }
             });

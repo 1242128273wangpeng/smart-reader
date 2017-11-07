@@ -97,6 +97,14 @@ public class AppUtils {
         return (int) (dpValue * scale + 0.5f);
     }
 
+    /**
+     * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
+     */
+    public static int px2dip(Context context, float pxValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (pxValue / scale + 0.5f);
+    }
+
     public static String deleteTextPoint(String text) {
         text = text.trim();
 
@@ -631,5 +639,30 @@ public class AppUtils {
         return sb.toString();
     }
 
+    /**
+     * 书籍封面页字数显示
+     */
+    public static String getWordNums(long num) {
+        if (num < 10000) {
+            return num + "字";
+        } else {
+            return num / 10000 + "." + (num - (num / 10000) * 10000) / 1000 + "万字";
+        }
+
+    }
+
+    /**
+     * 书籍封面页在读人数显示
+     */
+    public static String getReadNums(long num) {
+        if (num < 10000) {
+            return num + "人在读";
+        } else if (num < 100000000) {
+            return num / 10000 + "." + (num - (num / 10000) * 10000) / 1000 + "万人在读";
+        } else {
+            return "9999+万人在读";
+        }
+
+    }
 
 }

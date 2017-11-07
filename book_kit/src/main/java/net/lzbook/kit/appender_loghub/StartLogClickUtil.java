@@ -47,11 +47,13 @@ public class StartLogClickUtil {
     public static final String READPAGESET_PAGE = "READPAGESET";//阅读页设置
     public static final String READPAGEMORE_PAGE = "READPAGEMORE";//阅读页更多
     public static final String RECOMMEND_PAGE = "RECOMMEND";//青果推荐页
-    public static final String TOP_PAGE = "TOP";//青果榜单页
-    public static final String CLASS_PAGE = "CLASS";//青果分类页
+    public static final String TOP_PAGE = "TOP";//榜单页
+    public static final String CLASS_PAGE = "CLASS";//分类页
     public static final String FIRSTCLASS_PAGE = "FIRSTCLASS";//分类一级页面的搜索
     public static final String FIRSTTOP_PAGE = "FIRSTTOP";//榜单一级页面的搜索
     public static final String FIRSTRECOMMEND_PAGE = "FIRSTRECOMMEND";//推荐一级页面的搜索
+    public static final String BOOKCATALOG = "BOOKCATALOG";//书籍目录页
+
 
     //APP通用
     public static final String APPINIT = "APPINIT";//客户端启动
@@ -118,6 +120,17 @@ public class StartLogClickUtil {
     public static final String CASHEALL = "CASHEALL";//点击全本缓存
     public static final String SHELFEDIT = "SHELFEDIT";//点击加入书架
     public static final String TRANSCODEREAD = "TRANSCODEREAD";//点击转码阅读
+    public static final String ENTER = "ENTER";//进入书籍详情页
+    public static final String SOURCECHANGEPOPUP = "SOURCECHANGEPOPUP";//换源弹窗
+    public static final String INTRODUCTION = "INTRODUCTION";//简介点击展开/收起
+    public static final String RECOMMENDEDBOOK = "RECOMMENDEDBOOK";//点击推荐的书籍
+
+    //书籍目录页
+    public static final String CATALOG_CASHEALL = "CASHEALL";//点击全本缓存
+    public static final String CATALOG_CATALOGCHAPTER = "CATALOGCHAPTER";//目录中点击某章节
+    public static final String CATALOG_SHELFEDIT = "SHELFEDIT";//点击加入书架
+    public static final String CATALOG_TRANSCODEREAD = "TRANSCODEREAD";//点击转码阅读
+    public static final String CATALOG_TRANSCODEPOPUP = "TRANSCODEPOPUP";//转码弹窗
 
 
     //更多设置
@@ -147,7 +160,12 @@ public class StartLogClickUtil {
     public static final String BOOKMARK = "BOOKMARK";//点击阅读页目录内书签
     public static final String NIGHTMODE1 = "NIGHTMODE";//点击阅读页内日/夜间模式
     public static final String CHAPTERTURN = "CHAPTERTURN";//点击阅读页内上/下章切换
+    public static final String REPAIRDEDIALOGUE = "REPAIRDEDIALOGUE";//弹出修复提示弹窗
+    public static final String DIRECTORYREPAIR = "DIRECTORYREPAIR";//点击阅读页目录内修复书籍
+    public static final String POPUPSHELFADD = "POPUPSHELFADD";//阅读页加入书架弹窗加入
+    public static final String POPUPSHELFADDCANCLE = "POPUPSHELFADDCANCLE";//阅读页加入书架弹窗取消
     public static final String SET = "SET";//点击阅读页内设置
+
 
     //'阅读页设置
     public static final String LIGHTEDIT = "LIGHTEDIT";//点击亮度调整
@@ -191,6 +209,11 @@ public class StartLogClickUtil {
     //青果分类页
     public static final String QG_FL_FIRSTCLASS = "FIRSTCLASS";//点击一级分类
     public static final String QG_FL_BOOKCLICK = "BOOKCLICK";//书籍点击
+    public static final String QG_FL_SEARCH = "SEARCH";//点击搜索
+
+    //一级分类页面
+    public static final String FIRST_SEARCH = "SEARCH";//点击搜索
+
 
     private static final ExecutorService logThreadPool = Executors.newSingleThreadExecutor();
 
@@ -296,6 +319,7 @@ public class StartLogClickUtil {
         if (extraParam != null) {
             log.PutContent("data", FormatUtil.forMatMap(extraParam));
         }
+
 
         logThreadPool.execute(new Runnable() {
             @Override
