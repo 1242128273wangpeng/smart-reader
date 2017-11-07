@@ -853,7 +853,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         if (Constants.isShielding && !noBookSensitive && bookSensitiveWords.contains(String.valueOf(book.book_id))) {
             ToastUtils.showToastNoRepeat("抱歉，该小说已下架！");
         } else {
-            BookHelper.goToCoverOrRead(weakReference.get().getApplicationContext(), weakReference.get(), book);
+            BookHelper.goToCoverOrRead(weakReference.get().getApplicationContext(), weakReference.get(), book, 0);
         }
     }
 
@@ -1152,36 +1152,6 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         return headerView;
     }
 
-    public static class UiHandler extends Handler {
-        private WeakReference<BookShelfFragment> reference;
-
-        UiHandler(BookShelfFragment vpBook) {
-            reference = new WeakReference<>(vpBook);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            BookShelfFragment bookShelfFragment = reference.get();
-            if (bookShelfFragment == null) {
-                return;
-            }
-            switch (msg.what) {
-
-                case NO_BOOK_DATA_VIEW_SHOW:
-                    bookShelfFragment.emptyViewShow();
-                    break;
-                case NO_BOOK_DATA_VIEW_GONE:
-                    bookShelfFragment.emptyViewGone();
-                    break;
-                case LONG_PRESS_EDIT:
-                    bookShelfFragment.longPressEdit();
-                    break;
-                case REFRESH_DATA_AFTER_DELETE:
-                    bookShelfFragment.refreshDataAfterDelete();
-                    break;
-            }
-        }
-    }
     private void setHeaderAdBook(View view) {
         AppLog.e("wyhad1-1", this.isResumed() + "");
         if (!this.isResumed()) {
@@ -1202,6 +1172,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         checkAdeffective(view, adInfo);//判断当前广告是否有效
         headerReleative.setVisibility(View.VISIBLE);//显示headerview
     }
+
     private void checkAdeffective(final View view, YQNativeAdInfo yqNativeAdInfo) {
         if (yqNativeAdInfo == null) {
             return;
@@ -1250,6 +1221,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             showHeaderView(view, yqNativeAdInfo, advertisement);
         }
     }
+
     private void showHeaderView(final View view, final YQNativeAdInfo yqNativeAdInfo, Advertisement advertisement) {
         TextView header_title = (TextView) view.findViewById(R.id.item_ad_title);//标题
         TextView header_desc = (TextView) view.findViewById(R.id.item_ad_desc);//广告描述
@@ -1305,5 +1277,36 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
                 }
             }
         });
+    }
+
+    public static class UiHandler extends Handler {
+        private WeakReference<BookShelfFragment> reference;
+
+        UiHandler(BookShelfFragment vpBook) {
+            reference = new WeakReference<>(vpBook);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            BookShelfFragment bookShelfFragment = reference.get();
+            if (bookShelfFragment == null) {
+                return;
+            }
+            switch (msg.what) {
+
+                case NO_BOOK_DATA_VIEW_SHOW:
+                    bookShelfFragment.emptyViewShow();
+                    break;
+                case NO_BOOK_DATA_VIEW_GONE:
+                    bookShelfFragment.emptyViewGone();
+                    break;
+                case LONG_PRESS_EDIT:
+                    bookShelfFragment.longPressEdit();
+                    break;
+                case REFRESH_DATA_AFTER_DELETE:
+                    bookShelfFragment.refreshDataAfterDelete();
+                    break;
+            }
+        }
     }
 }

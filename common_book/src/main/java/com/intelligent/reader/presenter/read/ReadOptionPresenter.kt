@@ -380,6 +380,10 @@ class ReadOptionPresenter : ReadOption.Presenter {
         bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
         intent.putExtras(bundle)
 
+        val data = java.util.HashMap<String, String>()
+        data.put("ENTER", "READPAGE")
+        StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data)
+
         activity.get()?.startActivity(intent)
     }
 

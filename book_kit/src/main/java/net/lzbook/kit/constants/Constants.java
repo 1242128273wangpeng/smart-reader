@@ -62,6 +62,8 @@ public class Constants {
     public static final String DY_IS_NEW_READING_END = "DY_is_new_reading_end";
     //新壳广告开关
     public static final String NEW_APP_AD_SWITCH = "new_app_ad_switch";
+    //书籍封面页推荐位智能，青果书籍配比
+    public static final String RECOMMEND_BOOKCOVER = "recommend_bookcover";
 
     public static final String DY_ACTIVITED_SWITCH_AD = "DY_activited_switch_ad";
     public static final String DY_SWITCH_AD_SEC = "DY_switch_ad_sec";

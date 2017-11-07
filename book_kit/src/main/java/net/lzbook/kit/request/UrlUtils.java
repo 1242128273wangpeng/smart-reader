@@ -15,11 +15,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UrlUtils {
+//
+//    //正式线上API，域名例子：api.wubutianxia.com
+//    public static String BOOK_NOVEL_DEPLOY_HOST = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST;
+//    //正式线上webview地址，域名例子：bookwebview.wubutianxia.com
+//    public static String BOOK_WEBVIEW_HOST = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST;
+
 
     //正式线上API，域名例子：api.wubutianxia.com
-    public static String BOOK_NOVEL_DEPLOY_HOST = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST;
+    public static String BOOK_NOVEL_DEPLOY_HOST = "http://test5.api.bookapi.cn:8090";
     //正式线上webview地址，域名例子：bookwebview.wubutianxia.com
-    public static String BOOK_WEBVIEW_HOST = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST;
+    public static String BOOK_WEBVIEW_HOST = "http://test5.api.bookapi.cn:8090";
+
 
     private UrlUtils() {
 
@@ -30,9 +37,9 @@ public class UrlUtils {
         if (uriTag == null) {
             return null;
         }
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext());
-        String novel_host = sp.getString(Constants.NOVEL_HOST, BOOK_NOVEL_DEPLOY_HOST);
-//        String novel_host = BOOK_NOVEL_DEPLOY_HOST;
+//        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext());
+//        String novel_host = sp.getString(Constants.NOVEL_HOST, BOOK_NOVEL_DEPLOY_HOST);
+        String novel_host = BOOK_NOVEL_DEPLOY_HOST;
 
 
         String channelId = AppUtils.getChannelId();
@@ -68,9 +75,9 @@ public class UrlUtils {
         if (uriTag == null) {
             return null;
         }
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext());
-        String webView_host = sp.getString(Constants.WEBVIEW_HOST, BOOK_WEBVIEW_HOST);
-
+//        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext());
+//        String webView_host = sp.getString(Constants.WEBVIEW_HOST, BOOK_WEBVIEW_HOST);
+        String webView_host = BOOK_WEBVIEW_HOST;
 
         String channelId = AppUtils.getChannelId();
         String version = String.valueOf(AppUtils.getVersionCode());
@@ -106,8 +113,10 @@ public class UrlUtils {
         if (uriTag == null) {
             return null;
         }
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext());
-        String dynamicHost = sp.getString(Constants.NOVEL_HOST, BOOK_NOVEL_DEPLOY_HOST);
+//        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext());
+//        String dynamicHost = sp.getString(Constants.NOVEL_HOST, BOOK_NOVEL_DEPLOY_HOST);
+        String dynamicHost = BOOK_NOVEL_DEPLOY_HOST;
+
 
         String channelId = AppUtils.getChannelId();
         String version = String.valueOf(AppUtils.getVersionCode());
@@ -166,8 +175,9 @@ public class UrlUtils {
         if (uriTag == null) {
             return null;
         }
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext());
-        String novel_host = sp.getString(Constants.NOVEL_HOST, BOOK_NOVEL_DEPLOY_HOST);
+//        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext());
+//        String novel_host = sp.getString(Constants.NOVEL_HOST, BOOK_NOVEL_DEPLOY_HOST);
+        String novel_host = BOOK_NOVEL_DEPLOY_HOST;
 
         String channelId = AppUtils.getChannelId();
         String version = String.valueOf(AppUtils.getVersionCode());

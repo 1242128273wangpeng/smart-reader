@@ -20,6 +20,7 @@ package net.lzbook.kit.book.view;
 
 import net.lzbook.kit.R;
 import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.utils.AppUtils;
 
 import android.annotation.TargetApi;
@@ -40,6 +41,9 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class ExpandableTextView extends LinearLayout implements View.OnClickListener {
@@ -125,12 +129,19 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
 
         mCollapsed = !mCollapsed;
         mButton.setText(mCollapsed ? "展开" : "收起");
-        mButton.setTextColor(Color.GRAY);
+//        mButton.setTextColor(Color.GRAY);
         mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
+        Map<String, String> data = new HashMap<>();
 
         if (mCollapsedStatus != null) {
             mCollapsedStatus.put(mPosition, mCollapsed);
         }
+        if (mButton.getText().toString().trim().equals("展开")) {
+            data.put("type", "2");
+        } else {
+            data.put("type", "1");
+        }
+        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.INTRODUCTION, data);
 
         mAnimating = true;
 
@@ -239,7 +250,7 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         mButton = (TextView) findViewById(R.id.expand_collapse);
         mButton.setCompoundDrawablePadding(12);
         mButton.setText(mCollapsed ? "展开" : "收起");
-        mButton.setTextColor(Color.GRAY);
+//        mButton.setTextColor(Color.GRAY);
         mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
         mButton.setOnClickListener(this);
     }
@@ -251,7 +262,7 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         clearAnimation();
         mCollapsed = isCollapsed;
         mButton.setText(mCollapsed ? "展开" : "收起");
-        mButton.setTextColor(Color.GRAY);
+//        mButton.setTextColor(Color.GRAY);
         mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
         setText(text);
         getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;

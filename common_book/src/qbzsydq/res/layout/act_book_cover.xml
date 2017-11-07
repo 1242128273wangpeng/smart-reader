@@ -393,6 +393,7 @@
                                 android:paddingRight="16dp"
                                 android:paddingBottom="5dp"
                                 android:layout_marginTop="@dimen/dimen_radius_10"
+                                android:textColor="@color/color_black_727272"
                                 android:text="展开"
                                 android:background="@android:color/transparent"/>
                     </net.lzbook.kit.book.view.ExpandableTextView>

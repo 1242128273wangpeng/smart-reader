@@ -88,6 +88,7 @@ public class Book implements Serializable, Comparable<Book> {
 
     //上一次更新到的章节序号，为了和青果适配而新增的字段
     public int chapters_update_index;
+    public String readPersonNum;
 
     public static boolean isOnlineType(int type) {
         return type == TYPE_ONLINE;

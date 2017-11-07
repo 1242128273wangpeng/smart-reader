@@ -44,6 +44,7 @@
     <string name="resource_text">来源：</string>
     <string name="resource_count">本书全部%d个来源</string>
     <string name="succeed_add">成功添加到书架！</string>
+    <string name="have_add">已在书架中！</string>
     <string name="succeed_remove">成功从书架移除！</string>
     <!-- 推荐页 -->
     <string name="over_chapter_count">共%d章</string>

@@ -83,6 +83,8 @@ public class DynamicParamter {
     public String dy_page_middle_ad_switch;
     //章节内开关
     public String dy_page_in_chapter_ad_switch;
+    //书籍封面页的推荐位
+    public String recommend_bookcover;
 
     public String ad_limit_time_day;
     public String baidu_examine;
@@ -139,6 +141,7 @@ public class DynamicParamter {
         dy_ad_new_request_domain_name = getConfigParams(Constants.DY_AD_NEW_REQUEST_DOMAIN_NAME);
         user_transfer_first = getConfigParams("user_transfer_first");
         user_transfer_second = getConfigParams("user_transfer_second");
+        recommend_bookcover = getConfigParams(Constants.RECOMMEND_BOOKCOVER);
 
         //新壳广告开关
         new_app_ad_switch = getConfigParams(Constants.NEW_APP_AD_SWITCH);
@@ -262,6 +265,7 @@ public class DynamicParamter {
         dy_ad_new_request_domain_name = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_AD_NEW_REQUEST_DOMAIN_NAME);
         user_transfer_first = OnlineConfigAgent.getInstance().getConfigParams(context, "user_transfer_first");
         user_transfer_second = OnlineConfigAgent.getInstance().getConfigParams(context, "user_transfer_second");
+        recommend_bookcover = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.RECOMMEND_BOOKCOVER);
 
         //广告总开关
         dy_ad_switch = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_AD_SWITCH);
@@ -352,6 +356,7 @@ public class DynamicParamter {
                 }
             }
 
+
             if (!data.isNull(Constants.CHANNEL_LIMIT)) {
                 channel_limit = data.getString(Constants.CHANNEL_LIMIT);
                 if (isOwn) {
@@ -359,6 +364,14 @@ public class DynamicParamter {
                 }
             }
 
+            if (!data.isNull(Constants.RECOMMEND_BOOKCOVER)) {
+                recommend_bookcover = data.getString(Constants.RECOMMEND_BOOKCOVER);
+
+                if (isOwn) {
+                    putConfigParams(Constants.RECOMMEND_BOOKCOVER, recommend_bookcover);
+                    AppLog.e("ppp", getConfigParams(Constants.RECOMMEND_BOOKCOVER));
+                }
+            }
             if (!data.isNull(Constants.DAY_LIMIT)) {
                 day_limit = data.getString(Constants.DAY_LIMIT);
                 if (isOwn) {

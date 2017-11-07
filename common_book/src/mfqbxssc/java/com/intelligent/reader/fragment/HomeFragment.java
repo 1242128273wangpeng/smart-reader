@@ -131,6 +131,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
     private View ll_guide_layout;
     private SharedPreferencesUtils sharedPreferencesUtils;
     private ImageView iv_guide_changan;
+    private int markSearch = 0;//标记搜索
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -435,7 +436,12 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                 searchInter2.setClass(context, SearchBookActivity.class);
                 startActivity(searchInter2);
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_search_btn);
-                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_BDY_SEARCH);
+                if (markSearch == 3) {
+                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH);
+                } else {
+                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.QG_FL_SEARCH);
+                }
+
                 break;
             case R.id.content_tuijian_search:
                 Intent searchInter = new Intent();
@@ -482,6 +488,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                 if (STYLE_CASE == BOTTOM_FOUR_TABS) {
                     content_title.setText("榜单");
                 }
+                markSearch = 3;
                 sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH, "top").apply();
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_rank_menu);
                 StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.TOP);
@@ -493,6 +500,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                 if (STYLE_CASE == BOTTOM_FOUR_TABS) {
                     content_title.setText("分类");
                 }
+                markSearch = 4;
                 sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH, "class").apply();
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_category_menu);
                 StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.CLASS);

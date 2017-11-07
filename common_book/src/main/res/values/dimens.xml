@@ -77,6 +77,7 @@
     <dimen name="bookrack_topiew_height">25dp</dimen>
     <!-- 封面图片大小 -->
     <dimen name="cover_page_author_text">12sp</dimen>
+    <dimen name="cover_page_author_text_13">13sp</dimen>
     <dimen name="cover_guide_image_top">190dp</dimen>
     <dimen name="remove_list_dx">50dp</dimen>
     <dimen name="book_name_size">16sp</dimen>

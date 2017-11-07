@@ -21,8 +21,9 @@ import java.net.URLDecoder
 class CommonParamsInterceptor : Interceptor {
 
     val MAIN_HOST by lazy {
-        val sp = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext())
-        sp.getString(Constants.NOVEL_HOST, UrlUtils.BOOK_NOVEL_DEPLOY_HOST)
+        //        val sp = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext())
+//        sp.getString(Constants.NOVEL_HOST, UrlUtils.BOOK_NOVEL_DEPLOY_HOST)
+        UrlUtils.BOOK_NOVEL_DEPLOY_HOST
     }
 
     val commonParams = mutableMapOf<String, String>()
@@ -74,24 +75,11 @@ class CommonParamsInterceptor : Interceptor {
 
                 "POST" -> {
                     if (request.body() != null && request.body() is FormBody) {
-                        val formBody = request.body() as FormBody
-                        var data: String? = null
-                        for (index in 0..formBody.size() - 1) {
-                            if (formBody.name(index).equals("data")) {
-                                data = formBody.value(index)
-                                break
-                            }
-                        }
-
-                        if (data != null) {
-                            val map = mutableMapOf<String, String>()
-                            val hash = MurmurHash.hash32(data)
-                            map.put("hash", hash.toString())
-                            val url = genTokenParams(request, map)
+                        val map = mutableMapOf<String, String>()
+                        val url = UrlUtils.buildUrl(request.url().toString().replace(UrlUtils.BOOK_NOVEL_DEPLOY_HOST, ""), map);
                             if (url != null) {
                                 request = request.newBuilder().url(url).build()
                             }
-                        }
                     } else {
                         log("intercept", "POST as GET")
                         request = buildGetRequest(request)
@@ -124,6 +112,7 @@ class CommonParamsInterceptor : Interceptor {
             return request
         }
         newRequest = newRequest.newBuilder().url(url).build()
+
         return newRequest
     }
 }

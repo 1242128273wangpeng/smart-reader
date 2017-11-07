@@ -10,7 +10,7 @@ dependencies {
     //compile 'net.iyouqu.android.common:Iyouqu_Volley:1.0.0'
     compile 'net.iyouqu.android.common:iyouqu_adsdk:1.4.4'
     compile 'net.iyouqu.android.common:iyouqu_logencap:1.0.6'
-    compile 'net.iyouqu.android.common:QG_SDK:1.0.1'
+    compile 'net.iyouqu.android.common:QG_SDK:1.0.2'
     compile 'net.youqu:ibook-token:2.0.0'
     compile 'net.iyouqu:novel-extractor:1.0.1-SNAPSHOT'
     compile 'com.amap:AMap_Location:2.4.1'

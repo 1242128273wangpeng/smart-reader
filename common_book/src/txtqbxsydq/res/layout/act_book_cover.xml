@@ -392,6 +392,7 @@
                                 android:paddingLeft="16dp"
                                 android:paddingRight="16dp"
                                 android:paddingBottom="5dp"
+                                android:textColor="@color/color_black_727272"
                                 android:layout_marginTop="@dimen/dimen_radius_10"
                                 android:text="展开"
                                 android:background="@android:color/transparent"/>

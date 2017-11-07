@@ -840,7 +840,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         if (Constants.isShielding && !noBookSensitive && bookSensitiveWords.contains(String.valueOf(book.book_id))) {
             ToastUtils.showToastNoRepeat("抱歉，该小说已下架！");
         } else {
-            BookHelper.goToCoverOrRead(weakReference.get().getApplicationContext(), weakReference.get(), book);
+            BookHelper.goToCoverOrRead(weakReference.get().getApplicationContext(), weakReference.get(), book,0);
         }
     }
 

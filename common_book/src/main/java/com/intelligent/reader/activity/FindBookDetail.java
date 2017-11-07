@@ -158,13 +158,18 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                 break;
             case R.id.find_book_detail_search:
                 String fromType = mSharedPreferences.getString(Constants.FINDBOOK_SEARCH, "other");
+                Map<String, String> postData = new HashMap<>();
+
 
                 if (fromType.equals("class")) {
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE, StartLogClickUtil.SEARCH);
+                    postData.put("firstclass", currentTitle);
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE, StartLogClickUtil.SEARCH, postData);
                 } else if (fromType.equals("top")) {
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE, StartLogClickUtil.SEARCH);
+                    postData.put("firsttop", currentTitle);
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE, StartLogClickUtil.SEARCH, postData);
                 } else if (fromType.equals("recommend")) {
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTRECOMMEND_PAGE, StartLogClickUtil.SEARCH);
+                    postData.put("firstrecommend", currentTitle);
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTRECOMMEND_PAGE, StartLogClickUtil.SEARCH, postData);
                 }
 
                 Intent intent = new Intent();

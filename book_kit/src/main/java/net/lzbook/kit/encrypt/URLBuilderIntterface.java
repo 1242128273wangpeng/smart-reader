@@ -40,6 +40,8 @@ public interface URLBuilderIntterface {
     //获取书籍的下载地址接口
     public static final String GET_DOWN_ADDRESS = "/v3/book/{book_source_id}/downUrl";
 
+    //书籍封面页 推荐书籍接口
+    public static final String GET_COVER_RECOMMEND = "/v4/recommend/{book_id}/coverPage";
     // webview分类页面
     public static final String DYNAMIC_PARAMAS = "/v3/dynamic/dynamicParameter";
 
