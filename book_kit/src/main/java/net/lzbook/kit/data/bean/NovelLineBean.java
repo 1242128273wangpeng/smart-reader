@@ -64,4 +64,10 @@ public class NovelLineBean implements Serializable {
         this.lineLength = lineLength;
     }
 
+    @Override
+    public String toString() {
+        return "NovelLineBean{" +
+                "lineContent=" + getLineContent() +
+                '}';
+    }
 }
