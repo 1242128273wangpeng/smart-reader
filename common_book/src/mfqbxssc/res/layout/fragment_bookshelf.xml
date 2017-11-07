@@ -11,7 +11,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
         
-        <ScrollView
+        <com.intelligent.reader.view.ADScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="none"
@@ -33,7 +33,7 @@
                     android:clipToPadding="false"
                     android:paddingTop="10dp" />
             </LinearLayout>
-        </ScrollView>
+        </com.intelligent.reader.view.ADScrollView>
     </net.lzbook.kit.pulllist.SuperSwipeRefreshLayout>
     
     <ImageView
