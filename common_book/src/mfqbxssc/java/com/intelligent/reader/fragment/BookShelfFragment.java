@@ -652,8 +652,8 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
                         setHeaderAdBook(headerReleative);//设置书架header 位置广告
                         setAdBook(booksOnLine);
                     }
+                }
             }
-        }
         }
         return iBookList;
     }
