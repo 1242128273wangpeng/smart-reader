@@ -8,7 +8,7 @@ dependencies {
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     //compile 'net.iyouqu.android.common:Iyouqu_Volley:1.0.0'
-    compile 'net.iyouqu.android.common:iyouqu_adsdk:1.4.4'
+    compile 'net.iyouqu.android.common:iyouqu_adsdk:1.4.6' //广告测试环境
     compile 'net.iyouqu.android.common:iyouqu_logencap:1.0.6'
     compile 'net.iyouqu.android.common:QG_SDK:1.0.2'
     compile 'net.youqu:ibook-token:2.0.0'
