@@ -209,6 +209,7 @@ public class RepairHelp {
 
             try {
                 String url = UrlUtils.buildContentUrl(chapter.curl);
+                url = url.replace("https://www.mantantd.cn", "http://test5.api.bookapi.cn:8090");
                 chapter.content = BaseBookApplication.getGlobalContext().getMainExtractorInterface().extract(url);
                 if (!TextUtils.isEmpty(chapter.content)) {
                     chapter.content = chapter.content.replace("\\n", "\n");
