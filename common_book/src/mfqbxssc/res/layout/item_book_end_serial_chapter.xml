@@ -11,6 +11,7 @@
             android:id="@+id/iv_bestSource"
             android:layout_width="50dp"
             android:layout_height="20dp"
+            android:visibility="gone"
             android:gravity="left"
             android:background="@drawable/icon_recommend_sources"
             />
