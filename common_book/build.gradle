@@ -130,7 +130,7 @@ android {
     }
     defaultConfig {
 
-        applicationId "cc.remennovel"
+        applicationId "cc.quanben.novel"
 
 //        System.err.println("project.properties = ${project.getProperties()}")
 

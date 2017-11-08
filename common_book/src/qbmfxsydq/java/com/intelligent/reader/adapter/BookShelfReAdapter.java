@@ -212,10 +212,10 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     adSceneData.ad_showSuccessTime = String.valueOf(System.currentTimeMillis() / 1000L);
                 }
                 //判断当前页面处于显示状态 上传生效
-                if(BookShelfFragment.isFragmentShow){
-                    statisticManager.schedulingRequest(mContext, aDViewHolder.item_ad_layout, nativeAdInfo, null, StatisticManager.TYPE_SHOW, NativeInit
+
+                statisticManager.schedulingRequest(mContext, aDViewHolder.item_ad_layout, nativeAdInfo, null, StatisticManager.TYPE_SHOW, NativeInit
                             .ad_position[0]);
-                }
+
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
             }
