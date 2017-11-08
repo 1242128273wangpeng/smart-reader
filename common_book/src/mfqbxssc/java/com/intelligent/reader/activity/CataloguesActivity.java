@@ -610,7 +610,7 @@ public class CataloguesActivity extends BaseCacheableActivity implements OnClick
 
         DownloadState downloadState = BookHelper.getDownloadState(CataloguesActivity.this, book);
         if (downloadState != DownloadState.FINISH && downloadState != DownloadState.WAITTING && downloadState != DownloadState.DOWNLOADING) {
-            Toast.makeText(this, "马上开始为你缓存。。。", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "正在缓存中。。。", Toast.LENGTH_SHORT).show();
         }
 
         //全本缓存的点击统计

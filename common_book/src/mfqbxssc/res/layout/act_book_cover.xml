@@ -83,7 +83,7 @@
 
                             android:layout_marginRight="16dp"
                             android:paddingBottom="@dimen/padding_17"
-                            android:paddingTop="@dimen/padding_18">
+                            android:paddingTop="@dimen/padding_19">
 
                         <FrameLayout
                                 android:id="@+id/frame"
@@ -274,6 +274,8 @@
                                         android:paddingTop="0.5dp"
                                         android:layout_height="11dp"
                                         android:numStars="5"
+                                        android:isIndicator="true"
+                                        android:stepSize="0.1"
                                         android:layout_centerVertical="true"
                                         style="@style/GlimmerRatingbar"
                                         />

@@ -7,6 +7,7 @@ import com.intelligent.reader.R;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.bean.Book;
+import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 
 import android.content.Context;
@@ -50,7 +51,7 @@ public class CoverRecommendAdapter extends RecyclerView.Adapter<CoverRecommendAd
         holder.tv_book_name.setText(book.name);
         if (book.readPersonNum != null && !TextUtils.isEmpty(book.readPersonNum) && !book.readPersonNum.equals("null")) {
             if (Constants.QG_SOURCE.equals(book.site)) {
-                holder.tv_readnum.setText(AppUtils.getReadNums(Long.valueOf(book.readPersonNum)) + "人在读");
+                holder.tv_readnum.setText(AppUtils.getReadNums(Long.valueOf(book.readPersonNum)));
             } else {
                 holder.tv_readnum.setText(book.readPersonNum + "人在读");
             }
@@ -59,9 +60,10 @@ public class CoverRecommendAdapter extends RecyclerView.Adapter<CoverRecommendAd
             holder.tv_readnum.setText("");
         }
 
-        if (holder.iv_recommend_image != null && !TextUtils.isEmpty(book.img_url) && !book.img_url.equals(ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL)) {
+        AppLog.e("url", book.img_url);
+        if (holder.iv_recommend_image != null && !TextUtils.isEmpty(book.img_url)) {
             Glide.with(weakReference.get()).load(book.img_url).placeholder(net.lzbook.kit.R.drawable.icon_book_cover_default)
-                    .error((net.lzbook.kit.R.drawable.icon_book_cover_default)).diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .error((net.lzbook.kit.R.drawable.icon_book_cover_default))
                     .into(holder.iv_recommend_image);
         } else {
             Glide.with(weakReference.get()).load(net.lzbook.kit.R.drawable.icon_book_cover_default).into(holder.iv_recommend_image);
