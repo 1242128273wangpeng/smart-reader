@@ -49,8 +49,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -117,7 +115,6 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     private LinearLayout bookshelf_empty;
     private ArrayList<Book> bookOnLines;
     private ArrayList<String> update_table;
-    private ArrayList<String> down_table;
     private FrameBookHelper frameBookHelper;
     private BookDaoHelper bookDaoHelper;
     private boolean isShowAD = false;
@@ -136,7 +133,6 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     private ShelfGridLayoutManager layoutManager;
     private boolean isList = true;
     private boolean isShowDownloadBtn = false;
-    public static boolean isFragmentShow = true;
 
     private HashMap<Integer, YQNativeAdInfo> adInfoHashMap = new HashMap<>();
 
@@ -150,7 +146,12 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        isList = true;
+        //九宫格：quanbennovel 或 mianfeinovel
+        if ("cc.quanbennovel".equals(ACTION_CHKHIDE) || "cc.mianfeinovel".equals(ACTION_CHKHIDE) || "cc.kdqbxs.reader".equals(ACTION_CHKHIDE)) {
+            isList = false;
+        } else {
+            isList = true;
+        }
         mContext = getActivity();
         versionCode = AppUtils.getVersionCode();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
@@ -160,16 +161,6 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         }
         initData();
 
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if(isVisibleToUser){
-            isFragmentShow = isVisibleToUser;//显示
-        }else{
-            isFragmentShow = isVisibleToUser;//不显示
-        }
     }
 
     @Override
@@ -248,7 +239,6 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     public void onItemLongClick(View view, int position) {
         if (!bookShelfRemoveHelper.isRemoveMode()) {
             bookShelfRemoveHelper.showRemoveMenu(swipeRefreshLayout);
-
             StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.LONGTIMEBOOKSHELFEDIT);
         }
     }
@@ -307,9 +297,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     @Override
     public void onResume() {
         super.onResume();
-        if(isFragmentShow){//判断当前页面是否显示 未显示不重新获取数据
-            updateUI();
-        }
+        updateUI();
         if (ownNativeAdManager != null) {
             ownNativeAdManager.setActivity(getActivity());
         }
@@ -354,9 +342,8 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         if (!isShowAD || bookShelfRemoveHelper.isRemoveMode()) {
             return;
         }
-
         AppLog.e("wyhad1-1", this.isResumed() + "");
-        if (!this.isResumed()) {//备注 判断当前页面是否为显示状态
+        if (!this.isResumed()) {
             return;
         }
         YQNativeAdInfo adInfo;
@@ -492,7 +479,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     /**
      * 查Book数据库更新界面
      */
-    public void updateUI() {
+    private void updateUI() {
 
         getBookListData();
 
@@ -506,7 +493,6 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             }
 
             bookShelfReAdapter.setUpdate_table(update_table);
-            bookShelfReAdapter.setBookDownLoad(down_table);
             bookShelfReAdapter.notifyDataSetChanged();
         }
         //判断用户是否是当日首次打开应用,并上传书架的id
@@ -546,10 +532,6 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             update_table = new ArrayList<>();
         }
         update_table.clear();
-        if (down_table == null) {
-            down_table = new ArrayList<>();
-        }
-        down_table.clear();
 
         bookCollect_checked = new ArrayList<>();
     }
@@ -613,7 +595,17 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
 
         recyclerView = (RecyclerView) bookshelf_content.findViewById(R.id.recycler_view);
         recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 12);
-        layoutManager = new ShelfGridLayoutManager(mContext, 1);
+        if (isList) {
+            layoutManager = new ShelfGridLayoutManager(mContext, 1);
+        } else {
+            layoutManager = new ShelfGridLayoutManager(mContext, 3);
+            //有分割线的九宫格
+            if (!"cc.quanbennovel".equals(ACTION_CHKHIDE)) {
+                int typeColor = R.color.bookshelf_divider;
+
+                recyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.BOTH_SET, 2, mContext.getResources().getColor(typeColor)));
+            }
+        }
         recyclerView.setLayoutManager(layoutManager);
 //        recyclerView.getItemAnimator().setSupportsChangeAnimations(false);
         recyclerView.getItemAnimator().setAddDuration(0);
