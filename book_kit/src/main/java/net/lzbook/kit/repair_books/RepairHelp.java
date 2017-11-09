@@ -146,14 +146,14 @@ public class RepairHelp {
                 for (UpdateBean.FixContentBean.ChaptersBean c : fixContentBook.getChapters()) {
                     //1.修复章节表
                     if (TextUtils.isEmpty(c.getId())) {
-                        fixState.addState(false);
+                        fixState.addMsgState(false);
                         continue;
                     }
                     Chapter chapter = chapterDao.getChapterById(c.getId());
                     if (chapter == null) {
                         // 根据章节id找不到该章节,这种情况可能是2016年数据流改版之前缓存的书籍
                         // 处理方式: 进入fix_book逻辑
-                        fixState.addState(false);
+                        fixState.addMsgState(false);
                         isNoChapterID = true;
                         continue;
                     }
@@ -166,8 +166,8 @@ public class RepairHelp {
                     chapter.time = c.getUpdate_time();
                     chapter.word_count = c.getWord_count();
                     boolean isUpdateChapterByIdSucess = chapterDao.updateChapterById(chapter);
+                    fixState.addMsgState(isUpdateChapterByIdSucess);
                     AppLog.d(TAG, "fixChapterContent --- chapter.chapter_name = " + chapter.chapter_name + "isUpdateChapterByIdSucess = " + isUpdateChapterByIdSucess);
-                    fixState.addState(true);
                     //2.修复章节缓存内容
                     fixChapterContent(chapter, fixState);
 
@@ -181,11 +181,13 @@ public class RepairHelp {
                             book.list_version = fixContentBook.getList_version();
                             book.c_version = fixContentBook.getC_version();
                             instance.updateBook(book);
-                            BookFix bookFix = new BookFix();
-                            bookFix.book_id = book.book_id;
-                            bookFix.fix_type = 1;
-                            boolean isinsertBookFixSucess = instance.insertBookFix(bookFix);
-                            AppLog.d(TAG, "fixChapterContent --- book.name = " + book.name + "isinsertBookFixSucess = " + isinsertBookFixSucess);
+                            if (fixState.getSaveFixState()) {
+                                BookFix bookFix = new BookFix();
+                                bookFix.book_id = book.book_id;
+                                bookFix.fix_type = 1;
+                                boolean isinsertBookFixSucess = instance.insertBookFix(bookFix);
+                                AppLog.d(TAG, "fixChapterContent --- book.name = " + book.name + "isinsertBookFixSucess = " + isinsertBookFixSucess);
+                            }
                         }
                     }
                 }
@@ -223,9 +225,9 @@ public class RepairHelp {
                     content = "null";
                 }
 
-                fixState.addState(DataCache.fixChapter(content, chapter.sequence, chapter.book_id));
+                fixState.addContState(DataCache.fixChapter(content, chapter.sequence, chapter.book_id));
             } catch (Exception e) {
-                fixState.addState(false);
+                fixState.addContState(false);
                 e.printStackTrace();
             }
         }
