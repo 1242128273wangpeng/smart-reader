@@ -315,14 +315,11 @@ public class RepairHelp {
                 DownloadService downloadService = BaseBookApplication.getDownloadService();
 
                 if (downloadService != null) {
-                    if (downloadService.containTask(book.book_id)) {
-                        downloadService.startTask(book.book_id);
-                    } else {
-                        BaseBookHelper.writeDownIndex(BaseBookApplication.getGlobalContext(), book.book_id, false, 0);
-                        downloadService.addTask(BaseBookHelper.getBookTask(BaseBookApplication.getGlobalContext(), book, DownloadState.NOSTART, new NullCallBack(), true));
-                        downloadService.addRequestItem(book);
-                        downloadService.startTask(book.book_id);
-                    }
+                    downloadService.dellTask(book.book_id);
+                    BaseBookHelper.writeDownIndex(BaseBookApplication.getGlobalContext(), book.book_id, false, 0);
+                    downloadService.addTask(BaseBookHelper.getBookTask(BaseBookApplication.getGlobalContext(), book, DownloadState.NOSTART, new NullCallBack(), true));
+                    downloadService.addRequestItem(book);
+                    downloadService.startTask(book.book_id);
                     book.list_version = bookFix.list_version;
                     book.c_version = bookFix.c_version;
                     instance.updateBook(book);
@@ -389,14 +386,11 @@ public class RepairHelp {
                                     DownloadService downloadService = BaseBookApplication.getDownloadService();
 
                                     if (downloadService != null) {
-                                        if (downloadService.containTask(book.book_id)) {
-                                            downloadService.startTask(book.book_id);
-                                        } else {
-                                            BaseBookHelper.writeDownIndex(BaseBookApplication.getGlobalContext(), book.book_id, false, 0);
-                                            downloadService.addTask(BaseBookHelper.getBookTask(BaseBookApplication.getGlobalContext(), book, DownloadState.NOSTART, new NullCallBack(), true));
-                                            downloadService.addRequestItem(book);
-                                            downloadService.startTask(book.book_id);
-                                        }
+                                        downloadService.dellTask(book.book_id);
+                                        BaseBookHelper.writeDownIndex(BaseBookApplication.getGlobalContext(), book.book_id, false, 0);
+                                        downloadService.addTask(BaseBookHelper.getBookTask(BaseBookApplication.getGlobalContext(), book, DownloadState.NOSTART, new NullCallBack(), true));
+                                        downloadService.addRequestItem(book);
+                                        downloadService.startTask(book.book_id);
                                         book.list_version = bookFix.list_version;
                                         book.c_version = bookFix.c_version;
                                         instance.updateBook(book);
