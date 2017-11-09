@@ -269,6 +269,9 @@ public class RepairHelp {
                     } else {
                         ToastUtils.showToastNoRepeat("网络不给力，请检查网络连接");
                     }
+                    Map<String, String> data2 = new HashMap<>();
+                    data2.put("type", "1");
+                    StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data2);
                 }
             });
             TextView dialog_cancle = (TextView) myDialog.findViewById(R.id.publish_stay);
@@ -283,6 +286,9 @@ public class RepairHelp {
                 public void onDismiss(DialogInterface dialog) {
                     bookFix.dialog_flag = 1;
                     instance.updateBookFix(bookFix);
+                    Map<String, String> data2 = new HashMap<>();
+                    data2.put("type", "2");
+                    StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data2);
                 }
             });
             if (!myDialog.isShowing()) {
