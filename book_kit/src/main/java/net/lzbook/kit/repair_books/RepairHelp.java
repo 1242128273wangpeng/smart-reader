@@ -255,14 +255,17 @@ public class RepairHelp {
     }
 
 
+    private static boolean isComfire = false;
     private static void showFixHintDialog(final Activity activity, final BookDaoHelper instance, final Book book, final BookFix bookFix, final FixCallBack fixCallBack) {
         if (activity != null && !activity.isFinishing()) {
+            isComfire = false;
             final MyDialog myDialog = new MyDialog(activity, R.layout.fixbook_hint_dialog);
             myDialog.setCanceledOnTouchOutside(true);
             TextView dialog_comfire = (TextView) myDialog.findViewById(R.id.publish_leave);
             dialog_comfire.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    isComfire = true;
                     myDialog.dismiss();
                     if (NetWorkUtils.isNetworkAvailable(activity)) {
                         fixBook(instance, book, bookFix, fixCallBack);
@@ -286,9 +289,11 @@ public class RepairHelp {
                 public void onDismiss(DialogInterface dialog) {
                     bookFix.dialog_flag = 1;
                     instance.updateBookFix(bookFix);
-                    Map<String, String> data2 = new HashMap<>();
-                    data2.put("type", "2");
-                    StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data2);
+                    if (!isComfire) {
+                        Map<String, String> data2 = new HashMap<>();
+                        data2.put("type", "2");
+                        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data2);
+                    }
                 }
             });
             if (!myDialog.isShowing()) {
