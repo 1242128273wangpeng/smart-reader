@@ -2460,7 +2460,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     @Override
     public void onReadFeedBack() {
         if (!isFinishing()) {
-            final Map<String, String> data = new HashMap<>();
+//            final Map<String, String> data = new HashMap<>();
             Book book ;
             if (readStatus.sequence == -1) {
                 showToastShort("请到错误章节反馈");
@@ -2468,7 +2468,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             }
             if(readStatus != null && readStatus.book != null){
                 book = readStatus.book;
-                data.put("bookid",book.book_id);
+//                data.put("bookid",book.book_id);
             }
             myDialog = new MyDialog(this, R.layout.dialog_feedback);
             myDialog.setCanceledOnTouchOutside(true);
@@ -2521,8 +2521,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                     if (type == -1) {
                         showToastShort("请选择错误类型");
                     } else {
-                        data.put("type", "1");
-						StartLogClickUtil.upLoadEventLog(ReadingActivity.this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data);
+//                        data.put("type", "1");
+//						StartLogClickUtil.upLoadEventLog(ReadingActivity.this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data);
                         submitFeedback(type);
                         dismissDialog();
                         type = -1;
@@ -2535,8 +2535,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 @Override
                 public void onClick(View view) {
 
-                    data.put("type", "2");
-                    StartLogClickUtil.upLoadEventLog(ReadingActivity.this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data);
+//                    data.put("type", "2");
+//                    StartLogClickUtil.upLoadEventLog(ReadingActivity.this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data);
                     dismissDialog();
                 }
             });

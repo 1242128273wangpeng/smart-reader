@@ -180,6 +180,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
                     e.printStackTrace()
                 }
             })
+            presenter?.onClickFixBook(activity)
         }
 
         val catalogAdapter = ListRecyclerAdapter(chapterList, R.layout.item_read_catalog, ChapterHolder::class.java)
