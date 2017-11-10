@@ -34,7 +34,7 @@
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
                     android:gravity="center_vertical"
-                    android:text="书籍封面"
+                    android:text="书籍详情"
                     android:singleLine="true"
                     android:ellipsize="end"
                     android:textColor="@color/color_text_most"

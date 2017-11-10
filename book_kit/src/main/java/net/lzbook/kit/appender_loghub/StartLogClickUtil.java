@@ -124,6 +124,9 @@ public class StartLogClickUtil {
     public static final String SOURCECHANGEPOPUP = "SOURCECHANGEPOPUP";//换源弹窗
     public static final String INTRODUCTION = "INTRODUCTION";//简介点击展开/收起
     public static final String RECOMMENDEDBOOK = "RECOMMENDEDBOOK";//点击推荐的书籍
+    public static final String TRANSCODEPOPUP = "TRANSCODEPOPUP";//点击转码阅读
+
+
 
     //书籍目录页
     public static final String CATALOG_CASHEALL = "CASHEALL";//点击全本缓存
