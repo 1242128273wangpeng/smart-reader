@@ -75,7 +75,7 @@ public class OtherRequestChapterExecutorTerminal extends OtherRequestChapterExec
             url = UrlUtils.buildContentUrl(chapter.curl);
 
             try {
-                chapter.content = BaseBookApplication.getGlobalContext().getMainExtractorInterface().extract(url.replace("https://www.mantantd.cn", "http://test5.api.bookapi.cn:8066"));
+                chapter.content = BaseBookApplication.getGlobalContext().getMainExtractorInterface().extract(url.replace("https://www.mantantd.cn", "http://test5.api.bookapi.cn:8080"));
             } catch (Exception e) {
                 chapter.status = Chapter.Status.SOURCE_ERROR;
                 e.printStackTrace();
