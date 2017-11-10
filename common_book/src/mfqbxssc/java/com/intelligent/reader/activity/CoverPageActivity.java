@@ -380,7 +380,6 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
 
 
         if (requestItem != null) {
-            AppLog.e("loadCoverInfo", "requestItem.host-->" + requestItem.host);
             if (Constants.QG_SOURCE.equals(requestItem.host)) {//青果
                 requestItem.channel_code = 1;
                 RequestManager.init(getApplicationContext());
@@ -527,7 +526,6 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
 
             }
         }
-        AppLog.e("size", mRecommendBooks.size() + "====");
     }
 
     /**
@@ -576,7 +574,6 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
 
 
         }
-        AppLog.e("size222", mRecommendBooks.size() + "====");
     }
 
 
@@ -597,7 +594,6 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                         @Override
                         public void onNext(String value) {
                             try {
-                                AppLog.e("kkk", value);
                                 Message msg = uiHandler.obtainMessage();
                                 msg.what = REQUEST_COVER_SUCCESS;
                                 msg.obj = OWNParser.parserOwnCoverInfo(value);
@@ -772,7 +768,6 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
         }
 
         upDateUI();
-        AppLog.e("label", bookVo.labels);
 
         if (loadingPage != null) {
             loadingPage.onSuccess();
@@ -860,7 +855,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                 tv_score.setText("暂无评分");
             } else {
                 tv_score.setText(bookVo.score + "分");
-                if (bookVo.score > 0.2) {
+                if (bookVo.score > 0.4) {
                     ratingBar.setRating(Float.valueOf(bookVo.score / 2 - 0.2 + ""));
                 } else {
                     ratingBar.setRating(Float.valueOf(bookVo.score / 2 + ""));
@@ -1403,7 +1398,6 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
         if (requestItem != null) {
             bundle.putSerializable(Constants.REQUEST_ITEM, requestItem);
         }
-        AppLog.e(TAG, "GotoReading: " + book.site + " : " + requestItem.host);
         intent.setClass(CoverPageActivity.this, ReadingActivity.class);
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -1452,7 +1446,6 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
             book = changeBookInformation(source, book);
             bundle.putSerializable("book", book);
         }
-        AppLog.e(TAG, "GotoReading: " + book.site + " : " + requestItem.host);
         intent.setClass(CoverPageActivity.this, ReadingActivity.class);
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -1594,7 +1587,6 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
 
     @Override
     public void onScrollChanged(int top, int oldTop) {
-        AppLog.e("kkk", top + "====" + oldTop);
         if (AppUtils.px2dip(this, top) > 32) {
             if (tv_title != null && !TextUtils.isEmpty(bookVo.name)) {
                 tv_title.setText(bookVo.name);
