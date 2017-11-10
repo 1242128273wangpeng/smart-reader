@@ -1119,7 +1119,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
             ListView sourceView = (ListView) coverSourceDialog.findViewById(R.id
                     .change_source_list);
             TextView dialog_top_title = (TextView) coverSourceDialog.findViewById(R.id.dialog_top_title);
-            dialog_top_title.setText(R.string.change_source);
+            dialog_top_title.setText("更换来源");
             RelativeLayout change_source_statement = (RelativeLayout) coverSourceDialog
                     .findViewById(R.id.change_source_statement);
             change_source_statement.setVisibility(View.GONE);
@@ -1284,7 +1284,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                 public void onClick(View v) {
                     Map<String, String> data = new HashMap<>();
                     data.put("type", "2");
-                    StartLogClickUtil.upLoadEventLog(CoverPageActivity.this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
+                    StartLogClickUtil.upLoadEventLog(CoverPageActivity.this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data);
 
                     readingSourceDialog.dismiss();
                 }
@@ -1292,6 +1292,10 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
             change_source_continue.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Map<String, String> data = new HashMap<>();
+                    data.put("type", "1");
+                    StartLogClickUtil.upLoadEventLog(CoverPageActivity.this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data);
+
                     requestItem.fromType = 3;// 打点统计 当前页面来源，所有可能来源的映射唯一字符串。书架(0)/目录页(1)/上一页翻页(2)/书籍封面(3)
                     if (bookDaoHelper.isBookSubed(bookVo.book_id)) {
                         Book book = bookDaoHelper.getBook(bookVo.book_id, 0);
@@ -1588,7 +1592,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                 tv_title.setText(bookVo.name);
             }
         } else {
-            tv_title.setText("书籍封面");
+            tv_title.setText("书籍详情");
         }
 
     }
