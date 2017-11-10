@@ -1,11 +1,9 @@
-package net.lzbook.kit.user
+package net.lzbook.kit.net.custom
 
-import android.preference.PreferenceManager
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.MurmurHash
 import net.lzbook.kit.utils.OpenUDID
 import net.lzbook.kit.utils.log
 import okhttp3.FormBody
@@ -19,12 +17,6 @@ import java.net.URLDecoder
  * Created by xian on 2017/7/24.
  */
 class CommonParamsInterceptor : Interceptor {
-
-    val MAIN_HOST by lazy {
-        //        val sp = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext())
-//        sp.getString(Constants.NOVEL_HOST, UrlUtils.BOOK_NOVEL_DEPLOY_HOST)
-        UrlUtils.BOOK_NOVEL_DEPLOY_HOST
-    }
 
     val commonParams = mutableMapOf<String, String>()
 
@@ -67,7 +59,7 @@ class CommonParamsInterceptor : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
-        if (request.url().host().equals(URL(MAIN_HOST).host)) {
+        if (request.url().host().equals(URL(UrlUtils.getBookNovelDeployHost()).host)) {
             when (request.method().toUpperCase()) {
                 "GET" -> {
                     request = buildGetRequest(request)
@@ -76,7 +68,7 @@ class CommonParamsInterceptor : Interceptor {
                 "POST" -> {
                     if (request.body() != null && request.body() is FormBody) {
                         val map = mutableMapOf<String, String>()
-                        val url = UrlUtils.buildUrl(request.url().toString().replace(UrlUtils.BOOK_NOVEL_DEPLOY_HOST, ""), map);
+                        val url = UrlUtils.buildUrl(request.url().toString().replace(UrlUtils.getBookNovelDeployHost(), ""), map)
                             if (url != null) {
                                 request = request.newBuilder().url(url).build()
                             }

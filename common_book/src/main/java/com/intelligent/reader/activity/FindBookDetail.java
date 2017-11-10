@@ -557,8 +557,8 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         }
 
         url = UrlUtils.buildUrl(url, map);
-        if (url.contains(UrlUtils.BOOK_NOVEL_DEPLOY_HOST)) {
-            int start = url.lastIndexOf(UrlUtils.BOOK_NOVEL_DEPLOY_HOST) + UrlUtils.BOOK_NOVEL_DEPLOY_HOST.length();
+        if (url.contains(UrlUtils.getBookNovelDeployHost())) {
+            int start = url.lastIndexOf(UrlUtils.getBookNovelDeployHost()) + UrlUtils.getBookNovelDeployHost().length();
             String tempUrl = url.substring(start, url.length());
             this.currentUrl = tempUrl;
         }

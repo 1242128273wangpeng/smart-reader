@@ -2,11 +2,9 @@ package com.intelligent.reader.activity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.dingyueads.sdk.Bean.App;
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.CoverRecommendAdapter;
 import com.intelligent.reader.adapter.CoverSourceAdapter;
-import com.intelligent.reader.net.NetOwnBook;
 import com.intelligent.reader.read.help.BookHelper;
 import com.intelligent.reader.receiver.DownBookClickReceiver;
 import com.intelligent.reader.util.ShelfGridLayoutManager;
@@ -25,13 +23,13 @@ import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.book.view.RecommendItemView;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.CoverPage;
 import net.lzbook.kit.data.bean.RequestItem;
 import net.lzbook.kit.data.db.BookChapterDao;
 import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.data.recommend.CoverRecommendBean;
+import net.lzbook.kit.net.custom.service.NetService;
 import net.lzbook.kit.request.RequestExecutor;
 import net.lzbook.kit.request.RequestFactory;
 import net.lzbook.kit.request.own.OWNParser;
@@ -59,11 +57,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -425,7 +421,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
      */
     public void getRecommendBook(RequestItem requestItem, String bookIds) {
         if (requestItem != null && requestItem.book_id != null && !TextUtils.isEmpty(bookIds)) {
-            NetOwnBook.INSTANCE.getOwnBookService().requestCoverRecommend(requestItem.book_id, bookIds)
+            NetService.INSTANCE.getOwnBookService().requestCoverRecommend(requestItem.book_id, bookIds)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<CoverRecommendBean>() {
@@ -582,7 +578,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
      */
     public void getOwnBookCover(RequestItem requestItem) {
         if (requestItem != null && requestItem.book_id != null && requestItem.book_source_id != null) {
-            NetOwnBook.INSTANCE.getOwnBookService().requestBookCover(requestItem.book_id, requestItem.book_source_id)
+            NetService.INSTANCE.getOwnBookService().requestBookCover(requestItem.book_id, requestItem.book_source_id)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<String>() {

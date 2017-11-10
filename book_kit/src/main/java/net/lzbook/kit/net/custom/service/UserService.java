@@ -1,4 +1,4 @@
-package net.lzbook.kit.user;
+package net.lzbook.kit.net.custom.service;
 
 
 import com.google.gson.JsonObject;

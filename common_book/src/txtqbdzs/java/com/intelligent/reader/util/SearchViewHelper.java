@@ -42,7 +42,6 @@ import com.google.gson.Gson;
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.SearchHotWordAdapter;
 import com.intelligent.reader.adapter.SearchSuggestAdapter;
-import com.intelligent.reader.net.NetOwnSearch;
 import com.intelligent.reader.net.OwnSearchService;
 import com.intelligent.reader.search.SearchHelper;
 import com.intelligent.reader.view.ScrollForGridView;

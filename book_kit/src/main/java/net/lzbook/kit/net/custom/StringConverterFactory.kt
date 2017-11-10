@@ -1,4 +1,4 @@
-package com.intelligent.reader.net
+package net.lzbook.kit.net.custom
 
 import okhttp3.MediaType
 import okhttp3.RequestBody
