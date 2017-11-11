@@ -46,6 +46,7 @@ import net.lzbook.kit.data.bean.RequestItem;
 import net.lzbook.kit.data.bean.Source;
 import net.lzbook.kit.data.db.BookChapterDao;
 import net.lzbook.kit.data.db.BookDaoHelper;
+import net.lzbook.kit.repair_books.RepairHelp;
 import net.lzbook.kit.request.RequestExecutor;
 import net.lzbook.kit.request.RequestFactory;
 import net.lzbook.kit.request.UrlUtils;
@@ -216,10 +217,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private StatisticManager statisticManager;
     private boolean isSlideToAuto = false;
     private FrameLayout novel_basePageView;
-    //    //转码声明
-//    private TransCodingView novel_option_encode;
-//    //原网页
-//    private SourcePageView novel_option_source;
     private Resources resources;
     private int isFirstGuide = 0;
     private MyDialog myDialog;
@@ -324,6 +321,19 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
         setOrientation();
         getSavedState(savedInstanceState);
+
+        RepairHelp.showFixMsg(this, readStatus.book, new RepairHelp.FixCallBack() {
+            @Override
+            public void toDownLoadActivity() {
+                Intent intent_download = new Intent(ReadingActivity.this, DownloadManagerActivity.class);
+                try {
+                    ReadingActivity.this.startActivity(intent_download);
+                    ReadingActivity.this.finish();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         if (isFromCover && Constants.IS_LANDSCAPE) {
             return;
@@ -2455,7 +2465,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     @Override
     public void onReadFeedBack() {
         if (!isFinishing()) {
-            final Map<String, String> data = new HashMap<>();
+//            final Map<String, String> data = new HashMap<>();
             Book book;
             if (readStatus.sequence == -1) {
                 showToastShort("请到错误章节反馈");
@@ -2463,7 +2473,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
             }
             if (readStatus != null && readStatus.book != null) {
                 book = readStatus.book;
-                data.put("bookid", book.book_id);
+//                data.put("bookid", book.book_id);
             }
             myDialog = new MyDialog(this, R.layout.dialog_feedback);
             myDialog.setCanceledOnTouchOutside(true);
@@ -2516,8 +2526,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                     if (type == -1) {
                         showToastShort("请选择错误类型");
                     } else {
-                        data.put("type", "1");
-                        StartLogClickUtil.upLoadEventLog(ReadingActivity.this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data);
+//                        data.put("type", "1");
+//                        StartLogClickUtil.upLoadEventLog(ReadingActivity.this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data);
                         submitFeedback(type);
                         dismissDialog();
                         type = -1;
@@ -2530,8 +2540,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 @Override
                 public void onClick(View view) {
 
-                    data.put("type", "2");
-                    StartLogClickUtil.upLoadEventLog(ReadingActivity.this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data);
+//                    data.put("type", "2");
+//                    StartLogClickUtil.upLoadEventLog(ReadingActivity.this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data);
                     dismissDialog();
                 }
             });

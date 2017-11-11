@@ -5,7 +5,9 @@ import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.Bookmark;
 import net.lzbook.kit.data.db.table.BookMarkTable;
 import net.lzbook.kit.data.db.table.BookTable;
+import net.lzbook.kit.data.db.table.FixBookTable;
 import net.lzbook.kit.data.db.table.HistoryInforTable;
+import net.lzbook.kit.repair_books.bean.BookFix;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -20,7 +22,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Dao {
 
-    private static final int version = 15;
+    private static final int version = 16;
     private static final String DATABASE_NAME = ReplaceConstants.getReplaceConstants().DATABASE_NAME;
     private static final String TAB_SITE_PATTERN = "site_pattern";
     // 正则模板表
@@ -64,7 +66,9 @@ public class Dao {
             + BookTable.LAST_CHECKUPDATETIME + " long ,"
             + BookTable.LAST_CHAPTER_URL1 + " VARCHAR(250) ,"
             + BookTable.LAST_UPDATESUCESS_TIME + " long ,"
-            + BookTable.CHAPTERS_UPDATE_INDEX + " INTEGER default 0"
+            + BookTable.CHAPTERS_UPDATE_INDEX + " INTEGER default 0 ,"
+            + BookTable.LIST_VERSION + " INTEGER default 0 ,"
+            + BookTable.C_VERSION + " INTEGER default 0"
             + ");";
     // 书签表
     private static final String SQL_CREATE_BOOK_MARK = "create table if not exists " + BookMarkTable.TABLE_NAME + "("
@@ -92,6 +96,14 @@ public class Dao {
             + HistoryInforTable.DESC + " VARCHAR(2000) , "
             + HistoryInforTable.LAST_BROW_TIME + " long, "
             + HistoryInforTable.LAST_CHAPTER_NAME + " VARCHAR(250)"
+            + ");";
+    // 记录书籍修复状态的表
+    private static final String SQL_CREATE_BOOK_FIX = "create table IF NOT EXISTS " + FixBookTable.TABLE_NAME + "("
+            + FixBookTable.BOOK_ID + " VARCHAR(250) PRIMARY KEY , "
+            + FixBookTable.FIX_TYPE + " INTEGER , "
+            + FixBookTable.LIST_VERSION + " INTEGER , "
+            + FixBookTable.C_VERSION + " INTEGER , "
+            + FixBookTable.DIALOG_FLAG + " INTEGER default 0"
             + ");";
     private static Dao mInstance;
     private SqliteHelper mHelper = null;
@@ -372,6 +384,8 @@ public class Dao {
             cv.put(BookTable.LAST_CHAPTER_URL1, book.last_chapter_url1);
             cv.put(BookTable.LAST_UPDATESUCESS_TIME, book.last_updateSucessTime);
             cv.put(BookTable.CHAPTERS_UPDATE_INDEX, book.chapters_update_index);
+            cv.put(BookTable.LIST_VERSION, -1);
+            cv.put(BookTable.C_VERSION, -1);
 
             result = db.insert(BookTable.TABLE_NAME, null, cv);
 
@@ -476,6 +490,8 @@ public class Dao {
         item.last_chapter_url1 = c.getString(BookTable.LAST_CHAPTER_URL1_INDEX);
         item.last_updateSucessTime = c.getLong(BookTable.LAST_UPTADESUCESS_TIME_INDEX);
         item.chapters_update_index = c.getInt(BookTable.CHAPTERS_UPDATEINDEX_INDEX);
+        item.list_version = c.getInt(BookTable.LIST_VERSION_INDEX);
+        item.c_version = c.getInt(BookTable.C_VERSION_INDEX);
     }
 
     /**
@@ -726,6 +742,14 @@ public class Dao {
                 cv.put(BookTable.CHAPTERS_UPDATE_INDEX, book.chapters_update_index);
             }
 
+            if (book.list_version != -1) {
+                cv.put(BookTable.LIST_VERSION, book.list_version);
+            }
+
+            if (book.c_version != -1) {
+                cv.put(BookTable.C_VERSION, book.c_version);
+            }
+
             result = db.update(BookTable.TABLE_NAME, cv, BookTable.BOOK_ID + " =? ",
                     new String[]{book.book_id});
 
@@ -847,6 +871,14 @@ public class Dao {
 
             if (book.chapters_update_index != 0) {
                 cv.put(BookTable.CHAPTERS_UPDATE_INDEX, book.chapters_update_index);
+            }
+
+            if (book.list_version != -1) {
+                cv.put(BookTable.LIST_VERSION, book.list_version);
+            }
+
+            if (book.c_version != -1) {
+                cv.put(BookTable.C_VERSION, book.c_version);
             }
 
             result = db.update(BookTable.TABLE_NAME, cv, BookTable.BOOK_ID + " =? ",
@@ -1166,6 +1198,189 @@ public class Dao {
         return delete_ids;
     }
 
+    /**
+     * 增加修复状态信息
+     * @param bookFix
+     * @return
+     */
+    public boolean insertBookFix(BookFix bookFix) {
+        SQLiteDatabase db = null;
+        long result = -1;
+        try {
+            db = mHelper.getWritableDatabase();
+            ContentValues cv = new ContentValues();
+            cv.put(FixBookTable.BOOK_ID, bookFix.book_id);
+            cv.put(FixBookTable.FIX_TYPE, bookFix.fix_type);
+            cv.put(FixBookTable.LIST_VERSION, bookFix.list_version);
+            cv.put(FixBookTable.C_VERSION, bookFix.c_version);
+            cv.put(FixBookTable.DIALOG_FLAG, bookFix.dialog_flag);
+
+            result = db.insert(FixBookTable.TABLE_NAME, null, cv);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (db != null) {
+                try {
+                    db.close();
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                }
+            }
+        }
+
+        return result != -1;
+    }
+
+    /**
+     * 删除修复状态信息
+     * @param book_id
+     * @return
+     */
+    public String[] deleteBookFix(String... book_id) {
+        String[] delete_ids = new String[book_id.length];
+        SQLiteDatabase db = null;
+        try {
+            db = mHelper.getWritableDatabase();
+            db.beginTransaction();
+            for (int i = 0; i < book_id.length; i++) {
+                if (db.delete(FixBookTable.TABLE_NAME, FixBookTable.BOOK_ID + " =? ", new String[]{book_id[i]}) > 0) {
+                    delete_ids[i] = book_id[i];
+                }
+            }
+            db.setTransactionSuccessful();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (db != null) {
+                try {
+                    db.endTransaction();
+                    db.close();
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                }
+            }
+        }
+        return delete_ids;
+    }
+
+    /**
+     * 查询所有修复状态信息
+     * @return
+     */
+    public ArrayList<BookFix> getBookFixs() {
+        SQLiteDatabase db = null;
+        Cursor c = null;
+        ArrayList<BookFix> list = new ArrayList<>();
+        try {
+            db = mHelper.getReadableDatabase();
+            c = db.query(FixBookTable.TABLE_NAME, null, null, null, null, null, null);
+            BookFix item = null;
+            for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+                item = new BookFix();
+                item.book_id = c.getString(FixBookTable.BOOK_ID_INDEX);
+                item.fix_type = c.getInt(FixBookTable.FIX_TYPE_INDEX);
+                item.list_version = c.getInt(FixBookTable.LIST_VERSION_INDEX);
+                item.c_version = c.getInt(FixBookTable.C_VERSION_INDEX);
+                item.dialog_flag = c.getInt(FixBookTable.DIALOG_FLAG_INDEX);
+                list.add(item);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (c != null) {
+                    c.close();
+                }
+                if (db != null) {
+                    db.close();
+                }
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+        return list;
+
+    }
+
+    /**
+     * 根据book_id获取修复状态信息
+     *
+     */
+    public BookFix getBookFix(String book_id) {
+        SQLiteDatabase db = null;
+        Cursor c = null;
+        BookFix item = new BookFix();
+        try {
+            db = mHelper.getReadableDatabase();
+            c = db.query(FixBookTable.TABLE_NAME, null, FixBookTable.BOOK_ID + "=" + "'" + book_id + "'", null, null, null, null);
+            if (c.moveToNext()) {
+                item.book_id = c.getString(FixBookTable.BOOK_ID_INDEX);
+                item.fix_type = c.getInt(FixBookTable.FIX_TYPE_INDEX);
+                item.list_version = c.getInt(FixBookTable.LIST_VERSION_INDEX);
+                item.c_version = c.getInt(FixBookTable.C_VERSION_INDEX);
+                item.dialog_flag = c.getInt(FixBookTable.DIALOG_FLAG_INDEX);
+            }
+            return item;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (c != null) {
+                    c.close();
+                }
+                if (db != null) {
+                    db.close();
+                }
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+
+        }
+        return item;
+    }
+
+    /**
+     * 修改bookFix值
+     */
+    public boolean updateBookFix(BookFix bookFix) {
+        long result = 0;
+        SQLiteDatabase db = null;
+        try {
+            db = mHelper.getWritableDatabase();
+            ContentValues cv = new ContentValues();
+
+            if (!TextUtils.isEmpty(bookFix.book_id)) {
+                cv.put(FixBookTable.BOOK_ID, bookFix.book_id);
+            }
+            if (bookFix.fix_type != 0) {
+                cv.put(FixBookTable.FIX_TYPE, bookFix.fix_type);
+            }
+            cv.put(FixBookTable.LIST_VERSION, bookFix.list_version);
+            cv.put(FixBookTable.C_VERSION, bookFix.c_version);
+            if (bookFix.dialog_flag != 0) {
+                cv.put(FixBookTable.DIALOG_FLAG, bookFix.dialog_flag);
+            }
+
+            result = db.update(FixBookTable.TABLE_NAME, cv, FixBookTable.BOOK_ID + " =? ",
+                    new String[]{bookFix.book_id});
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (db != null) {
+                try {
+                    db.close();
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                }
+            }
+        }
+        return result != 0;
+    }
+
     private static class SqliteHelper extends SQLiteOpenHelper {
 
         public static final String DROP_TEMP_SUBSCRIBE = "drop table if exists temp_A";
@@ -1190,6 +1405,7 @@ public class Dao {
             paramSQLiteDatabase.execSQL(SQL_CREATE_SITE_PATTERN);
             paramSQLiteDatabase.execSQL(SQL_CREATE_BOOK_MARK);
             paramSQLiteDatabase.execSQL(SQL_CREATE_HISTORY);
+            paramSQLiteDatabase.execSQL(SQL_CREATE_BOOK_FIX);
         }
 
         @Override
@@ -1358,6 +1574,18 @@ public class Dao {
 
             if (oldVersion < 15) {
                 db.execSQL(SQL_CREATE_HISTORY);
+            }
+
+            if (oldVersion < 16) {
+                db.execSQL(SQL_CREATE_BOOK_FIX);
+                if (!checkColumnExist1(db, BookTable.TABLE_NAME, BookTable.LIST_VERSION)) {
+                    new_column = "alter table " + BookTable.TABLE_NAME + " add " + BookTable.LIST_VERSION + " INTEGER default 0";
+                    db.execSQL(new_column);
+                }
+                if (!checkColumnExist1(db, BookTable.TABLE_NAME, BookTable.C_VERSION)) {
+                    new_column = "alter table " + BookTable.TABLE_NAME + " add " + BookTable.C_VERSION + " INTEGER default 0";
+                    db.execSQL(new_column);
+                }
             }
 
         }

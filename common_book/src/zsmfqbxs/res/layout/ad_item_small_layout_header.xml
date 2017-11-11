@@ -76,6 +76,7 @@
         android:layout_above="@+id/item_ad_desc"
         android:layout_toRightOf="@id/item_ad_image_rl"
         android:layout_weight="3"
+        android:paddingRight="40dip"
         android:ellipsize="end"
         android:singleLine="true"
         android:text="@string/app_name"

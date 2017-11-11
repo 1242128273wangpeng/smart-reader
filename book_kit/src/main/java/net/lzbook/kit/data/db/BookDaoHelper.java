@@ -6,6 +6,7 @@ import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.Bookmark;
 import net.lzbook.kit.data.bean.Chapter;
+import net.lzbook.kit.repair_books.bean.BookFix;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.BaseBookHelper;
 
@@ -504,11 +505,52 @@ public class BookDaoHelper {
                     mContext.deleteDatabase("book_chapter_" + delete_ids[i]);
                     BaseBookHelper.delDownIndex(mContext, delete_ids[i]);
                     BaseBookHelper.removeChapterCacheFile(delete_ids[i]);
+                    if (!TextUtils.isEmpty(mDao.getBookFix(delete_ids[i]).book_id)) {
+                        mDao.deleteBookFix(delete_ids[i]);
+                    }
                 }
             }
         }).start();
         return delete_ids.length > 0;
     }
 
+    /**
+     * 新增修复书籍状态信息
+     */
+    public synchronized boolean insertBookFix(BookFix bookFix) {
+        if (TextUtils.isEmpty(mDao.getBookFix(bookFix.book_id).book_id)) {
+            return mDao.insertBookFix(bookFix);
+        } else {
+            return mDao.updateBookFix(bookFix);
+        }
+    }
+
+    /**
+     * 查询所有修复状态信息
+     */
+    public synchronized ArrayList<BookFix> getBookFixs() {
+        return mDao.getBookFixs();
+    }
+
+    /**
+     * 根据book_id查询修复状态信息
+     */
+    public synchronized BookFix getBookFix(String book_id) {
+        return mDao.getBookFix(book_id);
+    }
+
+    /**
+     * 根据book_id更新bookFix
+     */
+    public synchronized boolean updateBookFix(BookFix bookFix) {
+        return mDao.updateBookFix(bookFix);
+    }
+
+    /**
+     * 删除修复状态信息
+     */
+    public synchronized boolean deleteBookFix(String... book_id) {
+        return mDao.deleteBookFix(book_id).length > 0;
+    }
 
 }

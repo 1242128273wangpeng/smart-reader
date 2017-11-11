@@ -1,5 +1,7 @@
 package net.lzbook.kit.request.own;
 
+import com.google.gson.Gson;
+
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.BookUpdate;
@@ -10,6 +12,8 @@ import net.lzbook.kit.data.bean.ParseJarBean;
 import net.lzbook.kit.data.bean.RequestItem;
 import net.lzbook.kit.data.bean.Source;
 import net.lzbook.kit.data.bean.SourceItem;
+import net.lzbook.kit.data.update.UpdateBean;
+import net.lzbook.kit.repair_books.RepairHelp;
 import net.lzbook.kit.utils.AppLog;
 
 import org.json.JSONArray;
@@ -58,7 +62,6 @@ public class OWNParser {
                 bookVo.status = 2;
             }
         }
-
 
         if (!bookVoObject.isNull("source")) {
             JSONObject sourceObject = bookVoObject.getJSONObject("source");
@@ -458,65 +461,70 @@ public class OWNParser {
         return null;
     }
 
-    public static ArrayList<BookUpdate> parserBookUpdateInfo(String json, HashMap<String, Book> bookItems) throws JSONException {
+    public static ArrayList<BookUpdate> parserBookUpdateInfo(String json, HashMap<String, Book> bookItems) throws Exception {
         ArrayList<BookUpdate> lists = new ArrayList<>();
-        JSONObject jsonObject = new JSONObject(json);
         AppLog.i(TAG, "parserBookUpdateInfo checkRes" + json);
-        if (!jsonObject.getBoolean("success")) {
+        JSONObject jsonObject = new JSONObject(json);
+        if (20000 != jsonObject.getInt("respCode")) {
             return null;
         }
 
-        JSONArray jsonArray = jsonObject.getJSONArray("items");
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject bookObject = jsonArray.getJSONObject(i);
-            BookUpdate bookUpdate = new BookUpdate();
-            Book book = null;
-            if (!bookObject.isNull("book_id")) {
-                String bookId = bookObject.getString("book_id");
-                book = bookItems.get(bookId);
-                bookUpdate.book_id = bookId;
-            } else {
-                continue;
-            }
+        JSONObject jsonData = jsonObject.getJSONObject("data");
 
-            if (book == null) {
-                continue;
-            }
+        UpdateBean updateBean = new Gson().fromJson(jsonData.toString(), UpdateBean.class);
 
-            if (!bookObject.isNull("last_update")) {
-                book.last_updateSucessTime = bookObject.getLong("last_update");
-            } else {
-                book.last_updateSucessTime = System.currentTimeMillis();
-            }
-            ArrayList<Chapter> chapterList = new ArrayList<>();
-            JSONArray chapterArray = bookObject.getJSONArray("chapters");
-            for (int j = 0; j < chapterArray.length(); j++) {
-                JSONObject chapterObject = chapterArray.getJSONObject(j);
-                Chapter chapter = new Chapter();
-                chapter.book_id = book.book_id;
-                chapter.parameter = book.parameter;
-                chapter.extra_parameter = book.extra_parameter;
-                chapter.chapter_name = chapterObject.getString("name");
-                chapter.sort = chapterObject.getInt("serial_number");
-                chapter.site = chapterObject.getString("host");
-                chapter.curl = chapterObject.getString("url");
-                chapter.curl1 = chapterObject.getString("url1");
-                if (!chapterObject.isNull("word_count")) {
-                    chapter.word_count = Integer.parseInt(chapterObject.getString("word_count"));
+        AppLog.i(TAG, "parserBookUpdateInfo updateBean" + updateBean.toString());
+
+        List<UpdateBean.UpdateBookBean> items = updateBean.getUpdate_book();
+
+        if (items != null) {
+            for (int i = 0; i < items.size(); i++) {
+                UpdateBean.UpdateBookBean itemsBean = items.get(i);
+                BookUpdate bookUpdate = new BookUpdate();
+                Book book;
+                if (TextUtils.isEmpty(itemsBean.getBook_id())) {
+                    continue;
+                } else {
+                    book = bookItems.get(itemsBean.getBook_id());
+                    bookUpdate.book_id = itemsBean.getBook_id();
                 }
-                chapter.chapter_id = chapterObject.getString("id");
-                chapter.time = chapterObject.getLong("update_time");
-                chapter.book_source_id = chapterObject.getString("book_souce_id");
-                chapter.chapter_status = chapterObject.getString("status");
-                chapter.api_url = chapter.curl;
-                chapter.chapter_form = 1;
-                chapterList.add(chapter);
-            }
-            bookUpdate.chapterList = chapterList;
-            if (chapterList != null) {
-                lists.add(bookUpdate);
+                if (book == null) {
+                    continue;
+                }
+
+                ArrayList<Chapter> chapterList = new ArrayList<>();
+                List<UpdateBean.UpdateBookBean.ChaptersBeanX> chapters = itemsBean.getChapters();
+                if (chapters != null) {
+                    for (int j = 0; j < chapters.size(); j++) {
+                        UpdateBean.UpdateBookBean.ChaptersBeanX c = chapters.get(j);
+                        Chapter chapter = new Chapter();
+                        chapter.book_id = book.book_id;
+                        chapter.parameter = book.parameter;
+                        chapter.extra_parameter = book.extra_parameter;
+                        chapter.chapter_name = c.getName();
+                        chapter.sort = c.getSerial_number();
+                        chapter.site = c.getHost();
+                        chapter.curl = c.getUrl();
+
+                        chapter.word_count = c.getWord_count();
+
+                        chapter.chapter_id = c.getId();
+                        chapter.time = c.getUpdate_time();
+                        chapter.book_source_id = c.getBook_souce_id();
+                        chapter.chapter_status = c.getStatus();
+                        chapter.api_url = chapter.curl;
+                        chapter.chapter_form = 1;
+                        chapterList.add(chapter);
+                    }
+                    bookUpdate.chapterList = chapterList;
+                    lists.add(bookUpdate);
+                }
+
             }
         }
+
+        RepairHelp.parserData(updateBean);
+
         return lists;
     }
 

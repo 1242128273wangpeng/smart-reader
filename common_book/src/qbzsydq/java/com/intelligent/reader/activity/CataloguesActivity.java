@@ -23,6 +23,7 @@ import net.lzbook.kit.data.bean.EventBookmark;
 import net.lzbook.kit.data.bean.RequestItem;
 import net.lzbook.kit.data.db.BookChapterDao;
 import net.lzbook.kit.data.db.BookDaoHelper;
+import net.lzbook.kit.repair_books.RepairHelp;
 import net.lzbook.kit.request.RequestExecutor;
 import net.lzbook.kit.request.RequestFactory;
 import net.lzbook.kit.utils.AppLog;
@@ -121,6 +122,7 @@ public class CataloguesActivity extends BaseCacheableActivity implements OnClick
     private OffLineDownLoadReceiver downLoadReceiver;
     private RequestFactory requestFactory;
     private RequestItem requestItem;
+    private ImageView iv_fixbook;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -195,6 +197,8 @@ public class CataloguesActivity extends BaseCacheableActivity implements OnClick
         catalog_chapter_hint = (TextView) findViewById(R.id.char_hint);
         catalog_chapter_hint.setVisibility(View.INVISIBLE);
 
+        iv_fixbook = (ImageView) findViewById(R.id.iv_fixbook);
+
         iv_back_reading = (ImageView) findViewById(R.id.iv_back_reading);
         iv_back_reading.setOnClickListener(this);
         currentView = tab_catalog;
@@ -215,6 +219,10 @@ public class CataloguesActivity extends BaseCacheableActivity implements OnClick
         if (catalog_empty_refresh != null) {
             catalog_empty_refresh.setOnClickListener(this);
         }
+
+        if (iv_fixbook != null) {
+            iv_fixbook.setOnClickListener(this);
+        }
     }
 
     private void initData(Bundle bundle) {
@@ -234,6 +242,12 @@ public class CataloguesActivity extends BaseCacheableActivity implements OnClick
         book = (Book) bundle.getSerializable("cover");
         if (book != null) {
             catalog_novel_name.setText(book.name);
+            if (RepairHelp.isShowFixBtn(this, book.book_id)){
+                iv_fixbook.setVisibility(View.VISIBLE);
+            }else {
+                iv_fixbook.setVisibility(View.GONE);
+            }
+
         }
 
         if (mBookDaoHelper == null)
@@ -574,6 +588,20 @@ public class CataloguesActivity extends BaseCacheableActivity implements OnClick
                     mCatalogAdapter.notifyDataSetChanged();
                     changeSortState(isPositive);
                 }
+                break;
+            case R.id.iv_fixbook:
+                RepairHelp.fixBook(this, book, new RepairHelp.FixCallBack() {
+                    @Override
+                    public void toDownLoadActivity() {
+                        Intent intent_download = new Intent(CataloguesActivity.this, DownloadManagerActivity.class);
+                        try {
+                            CataloguesActivity.this.startActivity(intent_download);
+                            CataloguesActivity.this.finish();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
                 break;
             default:
                 break;

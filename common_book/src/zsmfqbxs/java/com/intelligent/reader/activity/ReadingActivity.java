@@ -46,6 +46,7 @@ import net.lzbook.kit.data.bean.RequestItem;
 import net.lzbook.kit.data.bean.Source;
 import net.lzbook.kit.data.db.BookChapterDao;
 import net.lzbook.kit.data.db.BookDaoHelper;
+import net.lzbook.kit.repair_books.RepairHelp;
 import net.lzbook.kit.request.RequestExecutor;
 import net.lzbook.kit.request.RequestFactory;
 import net.lzbook.kit.request.UrlUtils;
@@ -155,6 +156,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     public boolean isRestDialogShow = false;
     long stampTime = 0;
     int readLength = 0;
+    boolean isFirstVisiable = true;
     private Context mContext;
     private PageInterface pageView;
     private ArrayList<Source> sourcesList;
@@ -225,7 +227,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private RequestFactory requestFactory;
     private int type = -1;
     private String currentThemeMode;
-
     private int lastMode = -1;
     /**
      * 接受电量改变广播
@@ -248,9 +249,7 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     private ReadOptionPresenter mReadOptionPresenter;
     private DrawerLayout mCatlogMarkDrawer;
     private CatalogMarkPresenter mCatalogMarkPresenter;
-
     private CatalogMarkFragment mCatalogMarkFragment;
-
     private DrawerLayout.DrawerListener mDrawerListener = new DrawerLayout.DrawerListener() {
         @Override
         public void onDrawerSlide(View drawerView, float slideOffset) {
@@ -326,6 +325,19 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
         setOrientation();
         getSavedState(savedInstanceState);
+
+        RepairHelp.showFixMsg(this, readStatus.book, new RepairHelp.FixCallBack() {
+            @Override
+            public void toDownLoadActivity() {
+                Intent intent_download = new Intent(ReadingActivity.this, DownloadManagerActivity.class);
+                try {
+                    ReadingActivity.this.startActivity(intent_download);
+                    ReadingActivity.this.finish();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         if (isFromCover && Constants.IS_LANDSCAPE) {
             return;
@@ -1888,8 +1900,6 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
 
     }
 
-    boolean isFirstVisiable = true;
-
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -2459,13 +2469,15 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
     @Override
     public void onReadFeedBack() {
         if (!isFinishing()) {
+//            final Map<String, String> data = new HashMap<>();
+            Book book;
             if (readStatus.sequence == -1) {
                 showToastShort("请到错误章节反馈");
                 return;
             }
             if(readStatus != null && readStatus.book != null){
                 book = readStatus.book;
-                data.put("bookid",book.book_id);
+//                data.put("bookid",book.book_id);
             }
             myDialog = new MyDialog(this, R.layout.dialog_feedback);
             myDialog.setCanceledOnTouchOutside(true);
@@ -2518,8 +2530,9 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                     if (type == -1) {
                         showToastShort("请选择错误类型");
                     } else {
-                        data.put("type", "1");
-						StartLogClickUtil.upLoadEventLog(ReadingActivity.this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data);
+
+//                        data.put("type", "1");
+//						StartLogClickUtil.upLoadEventLog(ReadingActivity.this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data);
                         submitFeedback(type);
                         dismissDialog();
                         type = -1;
@@ -2532,8 +2545,8 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                 @Override
                 public void onClick(View view) {
 
-                    data.put("type", "2");
-                    StartLogClickUtil.upLoadEventLog(ReadingActivity.this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data);
+//                    data.put("type", "2");
+//                    StartLogClickUtil.upLoadEventLog(ReadingActivity.this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data);
                     dismissDialog();
                 }
             });

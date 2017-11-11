@@ -1,6 +1,7 @@
 package com.intelligent.reader.fragment
 
 import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -17,8 +18,10 @@ import android.widget.FrameLayout
 import android.widget.PopupWindow
 import android.widget.TextView
 import com.intelligent.reader.R
+import com.intelligent.reader.activity.DownloadManagerActivity
 import com.intelligent.reader.adapter.BaseRecyclerHolder
 import com.intelligent.reader.adapter.ListRecyclerAdapter
+import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.presenter.read.CatalogMark
 import com.intelligent.reader.read.help.BookHelper
 import com.quduquxie.network.DataCache
@@ -30,6 +33,7 @@ import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Bookmark
 import net.lzbook.kit.data.bean.Chapter
+import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.utils.StatServiceUtils
 import java.text.SimpleDateFormat
 import java.util.concurrent.Callable
@@ -159,6 +163,25 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
         view!!.catalog_main.addItemDecoration(dividerCatalog)
 //        view.bookmark_main.layoutManager = LinearLayoutManager(activity)
         view!!.bookmark_main.addItemDecoration(dividerBookmark)
+
+        if (RepairHelp.isShowFixBtn(activity, (BookApplication.getGlobalContext())?.readStatus?.book_id)) {
+            view!!.iv_fixbook.visibility = View.VISIBLE
+        } else {
+            view!!.iv_fixbook.visibility = View.GONE
+        }
+
+        view!!.iv_fixbook.setOnClickListener { v ->
+            RepairHelp.fixBook(activity, presenter?.getBook(), RepairHelp.FixCallBack {
+                val intent_download = Intent(activity, DownloadManagerActivity::class.java)
+                try {
+                    activity.startActivity(intent_download)
+                    activity.finish()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            })
+            presenter?.onClickFixBook(activity)
+        }
 
         val catalogAdapter = ListRecyclerAdapter(chapterList, R.layout.item_read_catalog, ChapterHolder::class.java)
         catalogAdapter.itemClick = View.OnClickListener { v ->

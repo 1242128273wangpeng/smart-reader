@@ -68,6 +68,10 @@ public class NetWorkUtils {
         return "无";
     }
 
+    public static boolean isNetworkAvailable(Context context) {
+        return NetWorkUtils.getNetWorkType(context) != NetWorkUtils.NETWORK_NONE;
+    }
+
     private static String getMobileType(int subType) {
         switch (subType) {
             case TelephonyManager.NETWORK_TYPE_1xRTT:

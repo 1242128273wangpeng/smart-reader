@@ -119,7 +119,7 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
     }
 
     private void checckUrlIsTest() {
-        if (UrlUtils.BOOK_NOVEL_DEPLOY_HOST.contains("test") || UrlUtils.BOOK_WEBVIEW_HOST.contains("test")) {
+        if (UrlUtils.getBookNovelDeployHost().contains("test") || UrlUtils.getBookWebviewHost().contains("test")) {
             ToastUtils.showToastNoRepeat("请注意！！请求的是测试地址！！！");
         }
     }

@@ -12,7 +12,7 @@ import java.util.List;
 public class DbHelper extends OrmDatabaseHelper {
 
     private static final String DEF_DB_NAME = ReplaceConstants.getReplaceConstants().DATABASE_NAME;
-    private static final int DB_VERSION = 15;
+    private static final int DB_VERSION = 16;
 
     private volatile static DbHelper mInstance = null;
 

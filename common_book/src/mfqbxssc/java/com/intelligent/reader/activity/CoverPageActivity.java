@@ -2,11 +2,9 @@ package com.intelligent.reader.activity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.dingyueads.sdk.Bean.App;
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.CoverRecommendAdapter;
 import com.intelligent.reader.adapter.CoverSourceAdapter;
-import com.intelligent.reader.net.NetOwnBook;
 import com.intelligent.reader.read.help.BookHelper;
 import com.intelligent.reader.receiver.DownBookClickReceiver;
 import com.intelligent.reader.util.ShelfGridLayoutManager;
@@ -25,13 +23,13 @@ import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.book.view.RecommendItemView;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.CoverPage;
 import net.lzbook.kit.data.bean.RequestItem;
 import net.lzbook.kit.data.db.BookChapterDao;
 import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.data.recommend.CoverRecommendBean;
+import net.lzbook.kit.net.custom.service.NetService;
 import net.lzbook.kit.request.RequestExecutor;
 import net.lzbook.kit.request.RequestFactory;
 import net.lzbook.kit.request.own.OWNParser;
@@ -59,11 +57,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -187,7 +183,6 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
         requestFactory = new RequestFactory();
         downloadService = BaseBookApplication.getDownloadService();
         preferences = getSharedPreferences("onlineconfig_agent_online_setting_" + AppUtils.getPackageName(), 0);
-        ;
         initView();
         initData(getIntent());
         initListener();
@@ -381,7 +376,6 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
 
 
         if (requestItem != null) {
-            AppLog.e("loadCoverInfo", "requestItem.host-->" + requestItem.host);
             if (Constants.QG_SOURCE.equals(requestItem.host)) {//青果
                 requestItem.channel_code = 1;
                 RequestManager.init(getApplicationContext());
@@ -427,7 +421,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
      */
     public void getRecommendBook(RequestItem requestItem, String bookIds) {
         if (requestItem != null && requestItem.book_id != null && !TextUtils.isEmpty(bookIds)) {
-            NetOwnBook.INSTANCE.getOwnBookService().requestCoverRecommend(requestItem.book_id, bookIds)
+            NetService.INSTANCE.getOwnBookService().requestCoverRecommend(requestItem.book_id, bookIds)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<CoverRecommendBean>() {
@@ -451,10 +445,10 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                                     }
                                     if (!TextUtils.isEmpty(scale[1])) {
                                         addQGBookss(bean, Integer.parseInt(scale[1]));
-
                                     }
-                                    initRecyclerView();
+
                                 }
+                                initRecyclerView();
 
                             } else {
                                 if (tv_recommend_title != null) {
@@ -528,7 +522,6 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
 
             }
         }
-        AppLog.e("size", mRecommendBooks.size() + "====");
     }
 
     /**
@@ -545,7 +538,6 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                     if (!markIndexs.contains(qgIndex)) {
                         break;
                     }
-
                 }
             }
             markIndexs.add(qgIndex);
@@ -563,8 +555,8 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                 book.name = qgBean.getBookName();
                 book.category = qgBean.getLabels();
                 book.author = qgBean.getAuthor_name();
-                book.img_url = qgBean.getImage();
-                book.site = qgBean.getHost();
+                book.img_url = qgBean.getImage() + "";
+                book.site = qgBean.getHost() + "";
                 book.last_chapter_name = qgBean.getChapter_name() + "";
                 book.chapter_count = Integer.valueOf(qgBean.getChapter_sn());
                 book.last_updatetime_native = qgBean.getUpdate_time();
@@ -578,7 +570,6 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
 
 
         }
-        AppLog.e("size222", mRecommendBooks.size() + "====");
     }
 
 
@@ -587,7 +578,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
      */
     public void getOwnBookCover(RequestItem requestItem) {
         if (requestItem != null && requestItem.book_id != null && requestItem.book_source_id != null) {
-            NetOwnBook.INSTANCE.getOwnBookService().requestBookCover(requestItem.book_id, requestItem.book_source_id)
+            NetService.INSTANCE.getOwnBookService().requestBookCover(requestItem.book_id, requestItem.book_source_id)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<String>() {
@@ -599,7 +590,6 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                         @Override
                         public void onNext(String value) {
                             try {
-                                AppLog.e("kkk", value);
                                 Message msg = uiHandler.obtainMessage();
                                 msg.what = REQUEST_COVER_SUCCESS;
                                 msg.obj = OWNParser.parserOwnCoverInfo(value);
@@ -774,7 +764,6 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
         }
 
         upDateUI();
-        AppLog.e("label", bookVo.labels);
 
         if (loadingPage != null) {
             loadingPage.onSuccess();
@@ -804,7 +793,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
         bookVoBean.desc = bookMode.model.description;
         bookVoBean.update_time = bookMode.model.id_last_chapter_create_time;
         bookVoBean.wordCountDescp = bookMode.model.word_count + "";
-        bookVoBean.readerCountDescp = bookMode.model.read_count + "";
+        bookVoBean.readerCountDescp = bookMode.model.follow_count + "";
         bookVoBean.score = Double.valueOf(bookMode.model.score + "");
 //        bookVoBean.readerCountDescp = bookMode.model.re
 
@@ -823,8 +812,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
         book_cover_content.smoothScrollTo(0, 0);
         if (bookVo != null) {
 
-            if (book_cover_image != null && !TextUtils.isEmpty(bookVo.img_url) && !bookVo
-                    .img_url.equals(ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL)) {
+            if (book_cover_image != null && !TextUtils.isEmpty(bookVo.img_url)) {
                 Glide.with(getApplicationContext()).load(bookVo.img_url).placeholder(net.lzbook.kit.R.drawable.icon_book_cover_default).error((net.lzbook.kit.R.drawable.icon_book_cover_default)).diskCacheStrategy(DiskCacheStrategy.ALL).into(book_cover_image);
             } else {
                 Glide.with(getApplicationContext()).load(net.lzbook.kit.R.drawable.icon_book_cover_default).into(book_cover_image);
@@ -863,8 +851,12 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                 tv_score.setText("暂无评分");
             } else {
                 tv_score.setText(bookVo.score + "分");
-                ratingBar.setRating(Float.valueOf(bookVo.score / 2 + ""));
-//                ratingBar.setRating(4.3f);
+                if (bookVo.score > 0.4) {
+                    ratingBar.setRating(Float.valueOf(bookVo.score / 2 - 0.2 + ""));
+                } else {
+                    ratingBar.setRating(Float.valueOf(bookVo.score / 2 + ""));
+                }
+
             }
 
             if (flowlayout != null && !TextUtils.isEmpty(bookVo.labels)) {
@@ -1018,7 +1010,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                 Book book = bookCoverUtil.getCoverBook(bookDaoHelper, bookVo);
                 DownloadState downloadState = BookHelper.getDownloadState(CoverPageActivity.this, book);
                 if (downloadState != DownloadState.FINISH && downloadState != DownloadState.WAITTING && downloadState != DownloadState.DOWNLOADING) {
-                    Toast.makeText(this, "马上开始为你缓存。。。", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "正在缓存中。。。", Toast.LENGTH_SHORT).show();
                 }
 
                 //全本缓存的点击统计
@@ -1127,7 +1119,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
             ListView sourceView = (ListView) coverSourceDialog.findViewById(R.id
                     .change_source_list);
             TextView dialog_top_title = (TextView) coverSourceDialog.findViewById(R.id.dialog_top_title);
-            dialog_top_title.setText(R.string.change_source);
+            dialog_top_title.setText("更换来源");
             RelativeLayout change_source_statement = (RelativeLayout) coverSourceDialog
                     .findViewById(R.id.change_source_statement);
             change_source_statement.setVisibility(View.GONE);
@@ -1292,7 +1284,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                 public void onClick(View v) {
                     Map<String, String> data = new HashMap<>();
                     data.put("type", "2");
-                    StartLogClickUtil.upLoadEventLog(CoverPageActivity.this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
+                    StartLogClickUtil.upLoadEventLog(CoverPageActivity.this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data);
 
                     readingSourceDialog.dismiss();
                 }
@@ -1300,6 +1292,10 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
             change_source_continue.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Map<String, String> data = new HashMap<>();
+                    data.put("type", "1");
+                    StartLogClickUtil.upLoadEventLog(CoverPageActivity.this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data);
+
                     requestItem.fromType = 3;// 打点统计 当前页面来源，所有可能来源的映射唯一字符串。书架(0)/目录页(1)/上一页翻页(2)/书籍封面(3)
                     if (bookDaoHelper.isBookSubed(bookVo.book_id)) {
                         Book book = bookDaoHelper.getBook(bookVo.book_id, 0);
@@ -1402,7 +1398,6 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
         if (requestItem != null) {
             bundle.putSerializable(Constants.REQUEST_ITEM, requestItem);
         }
-        AppLog.e(TAG, "GotoReading: " + book.site + " : " + requestItem.host);
         intent.setClass(CoverPageActivity.this, ReadingActivity.class);
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -1451,7 +1446,6 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
             book = changeBookInformation(source, book);
             bundle.putSerializable("book", book);
         }
-        AppLog.e(TAG, "GotoReading: " + book.site + " : " + requestItem.host);
         intent.setClass(CoverPageActivity.this, ReadingActivity.class);
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -1593,13 +1587,12 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
 
     @Override
     public void onScrollChanged(int top, int oldTop) {
-        AppLog.e("kkk", top + "====" + oldTop);
         if (AppUtils.px2dip(this, top) > 32) {
             if (tv_title != null && !TextUtils.isEmpty(bookVo.name)) {
                 tv_title.setText(bookVo.name);
             }
         } else {
-            tv_title.setText("书籍封面");
+            tv_title.setText("书籍详情");
         }
 
     }
@@ -1613,13 +1606,11 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
             return;
         }
         Map<String, String> data = new HashMap<>();
-        data.put("Tbookid", book.book_id);
-        if (requestItem != null) {
+        if (requestItem != null && requestItem.book_id != null) {
             data.put("bookid", requestItem.book_id);
         }
         StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.RECOMMENDEDBOOK, data);
         BookHelper.goToCoverOrRead(this, this, book, 2);
-
     }
 
     private static class UIHandler extends Handler {

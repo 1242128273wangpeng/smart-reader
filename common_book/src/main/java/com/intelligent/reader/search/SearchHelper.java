@@ -2,11 +2,11 @@ package com.intelligent.reader.search;
 
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.CoverPageActivity;
-import com.intelligent.reader.net.NetOwnSearch;
-import com.intelligent.reader.net.OwnSearchService;
+
+import net.lzbook.kit.net.custom.service.NetService;
+import net.lzbook.kit.net.custom.service.OwnSearchService;
 import com.intelligent.reader.read.help.BookHelper;
 
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.RequestItem;
@@ -106,7 +106,7 @@ public class SearchHelper {
             e.printStackTrace();
         }
         if (searchWord != null && !TextUtils.isEmpty(searchWord)) {
-            OwnSearchService searchService = NetOwnSearch.INSTANCE.getOwnSearchService();
+            OwnSearchService searchService = NetService.INSTANCE.getOwnSearchService();
             searchService .searchAutoComplete(searchWord)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

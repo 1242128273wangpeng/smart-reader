@@ -29,6 +29,15 @@ import java.util.*
  * Created by xian on 2017/8/17.
  */
 class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: IReadDataFactory) : CatalogMark.Presenter {
+    override fun onClickFixBook(activity: Activity) {
+        val data = java.util.HashMap<String, String>()
+        data.put("bookid", readStatus.book_id)
+        if (dataFactory != null && dataFactory.currentChapter != null) {
+            data.put("chapterid", dataFactory.currentChapter.chapter_id)
+        }
+        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.DIRECTORYREPAIR, data)
+    }
+
     override var view: CatalogMark.View? = null
 
     private var mBookDaoHelper = BookDaoHelper.getInstance()

@@ -7,45 +7,17 @@ import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.data.db.BookDaoHelper
-import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.request.own.OWNParser
-import net.lzbook.kit.user.CommonParamsInterceptor
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
 
 /**
  * Created by xian on 2017/8/19.
  */
 object NetOwnBook {
 
-    val ownBookService: OwnBookService
-    val okHttpClient: OkHttpClient
-
-    init {
-        val httpLoggingInterceptor = HttpLoggingInterceptor()
-        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BASIC
-
-        okHttpClient = OkHttpClient.Builder().addNetworkInterceptor(httpLoggingInterceptor)
-                .addNetworkInterceptor(CommonParamsInterceptor())
-                .build()
-
-        val retrofit = Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(StringConverterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(okHttpClient)
-                .baseUrl(UrlUtils.BOOK_NOVEL_DEPLOY_HOST).build()
-
-        ownBookService = retrofit.create(OwnBookService::class.java)
-
-    }
-
 
     fun requestOwnCatalogList(book: Book): Observable<List<Chapter>> {
-        val observable = ownBookService.requestOwnCatalogList(book.book_id, book.book_source_id).map { t: String? ->
+        val observable = NetService.ownBookService.requestOwnCatalogList(book.book_id, book.book_source_id).map { t: String? ->
             var ownChapterList = listOf<Chapter>()
             if (t != null) {
                 ownChapterList = OWNParser.parserOwnChapterList(t, RequestItem.fromBook(book))

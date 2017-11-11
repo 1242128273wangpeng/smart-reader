@@ -128,6 +128,7 @@
     <color name="color_white_aae5e5e5">#AAE5E5E5</color>
     <color name="color_white_fff5f5f5">#FFF5F5F5</color>
     <color name="color_black_e0eeeeee">#E0EEEEEE</color>
+    <color name="color_white_ffffff">#ffffff</color>
 
     <color name="color_gray_dfdfdf">#DFDFDF</color>
     <color name="color_gray_babfc1">#BABFC1</color>
@@ -196,6 +197,7 @@
     <color name="color_gray_e0e0e0">#E0E0E0</color>
     <color name="color_gray_9b9b9b">#9B9B9B</color>
     <color name="color_gray_777777">#777777</color>
+    <color name="color_gray_e8e8e8">#e8e8e8</color>
 
     <color name="color_black">#000000</color>
     <color name="color_black_33000000">#33000000</color>
@@ -223,6 +225,8 @@
     <color name="color_black_666565">#666565</color>
     <color name="color_black_414040">#414040</color>
     <color name="color_black_595858">#595858</color>
+    <color name="color_black_323232">#323232</color>
+    <color name="color_black_939393_with_alp">#56939393</color>
 
     <color name="color_black_d8b2b2b2">#D8B2B2B2</color>
     <color name="color_black_00000000">#00000000</color>
@@ -247,4 +251,7 @@
     <color name="color_red_ff1010">#ff1010</color>
     <color name="color_red_f04c3b">#F04C3B</color>
     <color name="color_gray_b3b3b3">#b3b3b3</color>
+
+    <color name="color_blue_1dbfbb">#1dbfbb</color>
+    <color name="color_blue_1dbfbb_with_alp">#561dbfbb</color>
 </resources>

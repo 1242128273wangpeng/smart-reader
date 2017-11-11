@@ -5,8 +5,6 @@ import com.google.gson.Gson;
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.SearchHotWordAdapter;
 import com.intelligent.reader.adapter.SearchSuggestAdapter;
-import com.intelligent.reader.net.NetOwnSearch;
-import com.intelligent.reader.net.OwnSearchService;
 import com.intelligent.reader.search.SearchHelper;
 import com.intelligent.reader.view.ScrollForGridView;
 
@@ -16,6 +14,8 @@ import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.search.SearchAutoCompleteBean;
 import net.lzbook.kit.data.search.SearchCommonBean;
 import net.lzbook.kit.data.search.SearchHotBean;
+import net.lzbook.kit.net.custom.service.NetService;
+import net.lzbook.kit.net.custom.service.OwnSearchService;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
@@ -464,8 +464,8 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
         if (NetWorkUtils.getNetWorkTypeNew(mContext).equals("无")) {
             getCacheDataFromShare(false);
         } else {
-            AppLog.e("url", UrlUtils.BOOK_NOVEL_DEPLOY_HOST + "===" + NetWorkUtils.getNetWorkTypeNew(mContext));
-            OwnSearchService searchService = NetOwnSearch.INSTANCE.getOwnSearchService();
+            AppLog.e("url", UrlUtils.getBookNovelDeployHost() + "===" + NetWorkUtils.getNetWorkTypeNew(mContext));
+            OwnSearchService searchService = NetService.INSTANCE.getOwnSearchService();
             searchService.getHotWord()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -493,7 +493,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack {
                         }
                     });
 
-            AppLog.e("url", UrlUtils.BOOK_NOVEL_DEPLOY_HOST + "===" + NetWorkUtils.getNetWorkTypeNew(mContext));
+            AppLog.e("url", UrlUtils.getBookNovelDeployHost() + "===" + NetWorkUtils.getNetWorkTypeNew(mContext));
         }
     }
 

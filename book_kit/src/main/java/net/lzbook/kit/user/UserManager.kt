@@ -20,6 +20,7 @@ import com.tencent.tauth.UiError
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.user.bean.LoginReq
 import net.lzbook.kit.user.bean.LoginResp
 import net.lzbook.kit.utils.log

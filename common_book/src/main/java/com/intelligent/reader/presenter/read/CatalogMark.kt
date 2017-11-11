@@ -20,6 +20,7 @@ interface CatalogMark {
         fun gotoBookMark(activity: Activity, mark: Bookmark)
         fun deleteBookMark(activity: Activity, mark: Bookmark)
         fun deleteAllBookMark(activity: Activity)
+        fun onClickFixBook(activity: Activity)
     }
 
     interface View : IBaseView<Presenter> {

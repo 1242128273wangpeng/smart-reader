@@ -9,6 +9,8 @@ import com.umeng.onlineconfig.UmengOnlineConfigureListener;
 
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
+import net.lzbook.kit.net.custom.service.NetService;
+import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.LoadDataManager;
@@ -129,6 +131,11 @@ public class DynamicParamter {
                 setUMDynamicParamter();
             }
         });
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        UrlUtils.setBookNovelDeployHost(sp.getString(Constants.NOVEL_HOST, ""));
+        UrlUtils.setBookWebviewHost(sp.getString(Constants.WEBVIEW_HOST, ""));
+        NetService.INSTANCE.initService();
 
         baidu_stat_id = getConfigParams("baidu_stat_id");
         push_key = getConfigParams("push_key");
@@ -962,7 +969,6 @@ public class DynamicParamter {
         if (!TextUtils.isEmpty(dy_shelf_ad_freq)) {
             try {
                 Constants.dy_shelf_ad_freq = Integer.parseInt(dy_shelf_ad_freq);
-                Constants.dy_shelf_ad_freq = 9;
             } catch (Exception e) {
             }
         }

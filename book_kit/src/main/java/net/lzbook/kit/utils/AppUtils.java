@@ -655,7 +655,9 @@ public class AppUtils {
      * 书籍封面页在读人数显示
      */
     public static String getReadNums(long num) {
-        if (num < 10000) {
+        if (num == 0) {
+            return "";
+        } else if (num < 10000) {
             return num + "人在读";
         } else if (num < 100000000) {
             return num / 10000 + "." + (num - (num / 10000) * 10000) / 1000 + "万人在读";

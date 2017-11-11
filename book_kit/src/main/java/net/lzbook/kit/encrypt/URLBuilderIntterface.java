@@ -15,7 +15,7 @@ public interface URLBuilderIntterface {
     public static final String BOOK_SOURCE_SINGLE = "/v3/book/source/{book_id}/single";
     public static final String BOOK_SOURCE_BATCH = "/v3/book/source/batch";
     // 检查更新
-    public static final String BOOK_CHECK = "/v3/book/check";
+    public static final String BOOK_CHECK = "/v4/book/check";
     // 默认书籍
     public static final String DEFAULT_BOOK = "/v3/book/default";
     // 搜索

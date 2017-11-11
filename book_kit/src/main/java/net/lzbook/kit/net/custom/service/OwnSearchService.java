@@ -1,4 +1,4 @@
-package com.intelligent.reader.net;
+package net.lzbook.kit.net.custom.service;
 
 import net.lzbook.kit.data.search.SearchAutoCompleteBean;
 import net.lzbook.kit.data.search.SearchHotBean;

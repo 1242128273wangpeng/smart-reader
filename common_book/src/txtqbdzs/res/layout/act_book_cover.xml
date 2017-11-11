@@ -25,7 +25,7 @@
                     android:gravity="center"
                     android:paddingLeft="12dp"
                     android:paddingRight="12dp"
-                    android:src="@mipmap/cover_top_back"/>
+                    android:src="@mipmap/directory_back"/>
         
             <TextView
                     android:layout_width="wrap_content"

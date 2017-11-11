@@ -34,6 +34,7 @@
 -keep class com.quduquxie.bean.** { *; }
 
 -keep class net.lzbook.kit.data.search.**{*;}
+-keep class net.lzbook.kit.data.update.**{*;}
 -keep class net.lzbook.kit.data.recommend.**{*;}
 
 ##---------------End: proguard configuration for Gson  ----------
