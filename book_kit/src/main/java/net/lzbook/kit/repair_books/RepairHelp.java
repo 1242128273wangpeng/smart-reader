@@ -326,14 +326,14 @@ public class RepairHelp {
                 DownloadService downloadService = BaseBookApplication.getDownloadService();
 
                 if (downloadService != null) {
+                    book.list_version = bookFix.list_version;
+                    book.c_version = bookFix.c_version;
+                    instance.updateBook(book);
                     downloadService.dellTask(book.book_id);
                     BaseBookHelper.writeDownIndex(BaseBookApplication.getGlobalContext(), book.book_id, false, 0);
                     downloadService.addTask(BaseBookHelper.getBookTask(BaseBookApplication.getGlobalContext(), book, DownloadState.NOSTART, new NullCallBack(), true));
                     downloadService.addRequestItem(book);
                     downloadService.startTask(book.book_id);
-                    book.list_version = bookFix.list_version;
-                    book.c_version = bookFix.c_version;
-                    instance.updateBook(book);
                     boolean isdeleteBookFixSucess = instance.deleteBookFix(book.book_id);
                     AppLog.d(TAG, "删除修复状态信息 -- isdeleteBookFixSucess = " + isdeleteBookFixSucess);
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -397,14 +397,14 @@ public class RepairHelp {
                                     DownloadService downloadService = BaseBookApplication.getDownloadService();
 
                                     if (downloadService != null) {
+                                        book.list_version = bookFix.list_version;
+                                        book.c_version = bookFix.c_version;
+                                        instance.updateBook(book);
                                         downloadService.dellTask(book.book_id);
                                         BaseBookHelper.writeDownIndex(BaseBookApplication.getGlobalContext(), book.book_id, false, 0);
                                         downloadService.addTask(BaseBookHelper.getBookTask(BaseBookApplication.getGlobalContext(), book, DownloadState.NOSTART, new NullCallBack(), true));
                                         downloadService.addRequestItem(book);
                                         downloadService.startTask(book.book_id);
-                                        book.list_version = bookFix.list_version;
-                                        book.c_version = bookFix.c_version;
-                                        instance.updateBook(book);
                                         boolean isdeleteBookFixSucess = instance.deleteBookFix(book.book_id);
                                         AppLog.d(TAG, "删除修复状态信息 -- isdeleteBookFixSucess = " + isdeleteBookFixSucess);
                                         new Handler(Looper.getMainLooper()).post(new Runnable() {
