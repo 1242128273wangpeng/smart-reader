@@ -793,7 +793,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
         bookVoBean.desc = bookMode.model.description;
         bookVoBean.update_time = bookMode.model.id_last_chapter_create_time;
         bookVoBean.wordCountDescp = bookMode.model.word_count + "";
-        bookVoBean.readerCountDescp = bookMode.model.read_count + "";
+        bookVoBean.readerCountDescp = bookMode.model.follow_count + "";
         bookVoBean.score = Double.valueOf(bookMode.model.score + "");
 //        bookVoBean.readerCountDescp = bookMode.model.re
 
