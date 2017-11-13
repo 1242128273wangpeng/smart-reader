@@ -188,7 +188,9 @@ public class BookShelfRemoveHelper implements View.OnClickListener {
                     List<Integer> list = new ArrayList(bookShelfReAdapter.remove_checked_states);
                     Collections.sort(list);
                     for (int i = 0; i < list.size(); i++) {
-                        mlist.add(bookShelfReAdapter.book_list.get(Integer.parseInt(list.get(i) + "")));
+                        if (list.get(i) < bookShelfReAdapter.book_list.size()) {
+                            mlist.add(bookShelfReAdapter.book_list.get(list.get(i)));
+                        }
                     }
                 }
                 if (mlist.size() > 0) {
