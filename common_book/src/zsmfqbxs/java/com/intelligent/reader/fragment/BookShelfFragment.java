@@ -656,21 +656,35 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             if (!booksOnLine.isEmpty()) {
                 Collections.sort(booksOnLine, new FrameBookHelper.MultiComparator());
                 iBookList.addAll(booksOnLine);
-                if (Constants.dy_shelf_ad_switch && !Constants.isHideAD && ownNativeAdManager != null&&Constants.book_shelf_state!=0) {
-                    if (Constants.book_shelf_state==1) {//headerview open
-                        setHeaderAdBook(headerReleative);//设置书架header 位置广告
-                    }else if(Constants.book_shelf_state==2){//只显示九宫格
-                        setAdBook(booksOnLine);
-                        headerReleative.setVisibility(View.GONE);//隐藏headerview
-                    } else if(Constants.book_shelf_state==3){
-                        setHeaderAdBook(headerReleative);//设置书架header 位置广告
-                        setAdBook(booksOnLine);
+                if(Constants.dy_shelf_ad_switch){//判断总开关是否开启
+                    if(Constants.book_shelf_state!=0){
+                        toShowAdList(booksOnLine);
+                    }
+                }else{
+                    if(Constants.book_shelf_state !=0){//判断类型开关是否开启
+                        toShowAdList(booksOnLine);
                     }
                 }
             }
         }
         return iBookList;
     }
+
+   public void toShowAdList(ArrayList<Book> booksOnLine){
+       if (!Constants.isHideAD && ownNativeAdManager != null) {
+                    if (Constants.book_shelf_state==1) {//headerview open
+                        setHeaderAdBook(headerReleative);//设置书架header 位置广告
+                    }else if(Constants.book_shelf_state==2){//只显示九宫格
+                        setAdBook(booksOnLine);
+                        headerReleative.setVisibility(View.GONE);//隐藏headerview
+                    } else if(Constants.book_shelf_state==3){
+               setAdBook(booksOnLine);
+                        setHeaderAdBook(headerReleative);//设置书架header 位置广告
+
+                    }
+                }
+            }
+
 
     private void setBookListHeadData(int num) {
         if (num == 0 && swipeRefreshLayout != null) {
