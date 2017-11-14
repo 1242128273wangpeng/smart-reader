@@ -641,27 +641,41 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
                 Collections.sort(booksOnLine, new FrameBookHelper.MultiComparator());
                 iBookList.addAll(booksOnLine);
                 //book_shelf_state  0-关闭书架页广告位；两种形式都不开启
-                if (Constants.dy_shelf_ad_switch && !Constants.isHideAD && ownNativeAdManager != null&&Constants.book_shelf_state!=0) {
-                     /*
-                      1-开启书架页广告位A样式:顶部横幅书架页广告
-                      2-开启书架页广告位B样式：九宫格原生书架页广告
-                      3-开启书架页广告位两种样式
-                       九宫格书架页广告显示类型切换开关
-                     */
-                    if (Constants.book_shelf_state==1) {//headerview open
-                        setHeaderAdBook(headerReleative);//设置书架header 位置广告
-                    }else if(Constants.book_shelf_state==2){//只显示九宫格
-                        setAdBook(booksOnLine);
-                        headerReleative.setVisibility(View.GONE);//隐藏headerview
-                    } else if(Constants.book_shelf_state==3){
-                        setAdBook(booksOnLine);
-                        setHeaderAdBook(headerReleative);//设置书架header 位置广告
+                if(Constants.dy_shelf_ad_switch){//判断总开关是否开启
+                    if(Constants.book_shelf_state!=0){
+                        toShowAdList(booksOnLine);
+                    }
+                }else{
+                    if(Constants.book_shelf_state !=0){//判断类型开关是否开启
+                        toShowAdList(booksOnLine);
                     }
                 }
             }
         }
         return iBookList;
     }
+
+   //广告列表信息
+   public void toShowAdList(ArrayList<Book> booksOnLine){
+       if (!Constants.isHideAD && ownNativeAdManager != null) {
+                     /*
+                      1-开启书架页广告位A样式:顶部横幅书架页广告
+                      2-开启书架页广告位B样式：九宫格原生书架页广告
+                      3-开启书架页广告位两种样式
+                       九宫格书架页广告显示类型切换开关
+                     */
+           if (Constants.book_shelf_state==1) {//headerview open
+               setHeaderAdBook(headerReleative);//设置书架header 位置广告
+           }else if(Constants.book_shelf_state==2){//只显示九宫格
+               setAdBook(booksOnLine);
+               headerReleative.setVisibility(View.GONE);//隐藏headerview
+           } else if(Constants.book_shelf_state==3){
+               setAdBook(booksOnLine);
+               setHeaderAdBook(headerReleative);//设置书架header 位置广告
+           }
+       }
+    }
+
 
     private void setBookListHeadData(int num) {
         if (num == 0 && swipeRefreshLayout != null) {
