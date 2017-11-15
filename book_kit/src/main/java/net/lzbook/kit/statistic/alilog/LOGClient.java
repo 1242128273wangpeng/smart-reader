@@ -80,7 +80,7 @@ public class LOGClient {
         byte[] dataBytes = encryptText.getBytes("UTF-8");
         Mac mac = Mac.getInstance("HmacSHA1");
         mac.init(new SecretKeySpec(keyBytes, "HmacSHA1"));
-        return new String(com.aliyun.logsdk.Base64Kit.encode(mac.doFinal(dataBytes)));
+        return new String(Base64Kit.encode(mac.doFinal(dataBytes)));
     }
 
     public void SetToken(String token) {
