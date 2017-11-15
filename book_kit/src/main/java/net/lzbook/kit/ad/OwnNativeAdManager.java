@@ -1096,6 +1096,9 @@ public class OwnNativeAdManager implements AdListener {
                             readStatus.setAd_bitmap_big(null);
                         }
                         e.printStackTrace();
+                    } catch (OutOfMemoryError e) {
+                        e.printStackTrace();
+                        System.gc();
                     }
                 }
             });
@@ -1275,6 +1278,9 @@ public class OwnNativeAdManager implements AdListener {
                             }
                         }
                         e.printStackTrace();
+                    } catch (OutOfMemoryError e) {
+                        e.printStackTrace();
+                        System.gc();
                     }
                 }
             });
@@ -1335,6 +1341,9 @@ public class OwnNativeAdManager implements AdListener {
                             readStatus.setAd_bitmap_big(null);
                         }
                         e.printStackTrace();
+                    } catch (OutOfMemoryError e) {
+                        e.printStackTrace();
+                        System.gc();
                     }
                 }
             });
@@ -1391,6 +1400,9 @@ public class OwnNativeAdManager implements AdListener {
                             readStatus.setAd_bitmap_big_inChapter(null);
                         }
                         e.printStackTrace();
+                    } catch (OutOfMemoryError e) {
+                        e.printStackTrace();
+                        System.gc();
                     }
                 }
             });
@@ -1449,6 +1461,9 @@ public class OwnNativeAdManager implements AdListener {
                             readStatus.setAd_bitmap_big_inChapter(null);
                         }
                         e.printStackTrace();
+                    } catch (OutOfMemoryError e) {
+                        e.printStackTrace();
+                        System.gc();
                     }
                 }
             });

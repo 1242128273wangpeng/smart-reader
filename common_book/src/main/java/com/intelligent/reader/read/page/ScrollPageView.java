@@ -1008,7 +1008,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
 
         @Override
         public int getItemViewType(int position) {
-            if (chapterContent.get(position).get(0).getLineContent().startsWith(NovelHelper.empty_page_ad)) {
+            if (chapterContent != null && chapterContent.size() > 0 && chapterContent.get(position).get(0).getLineContent().startsWith(NovelHelper.empty_page_ad)) {
                 return 1;
             }
             return 0;
