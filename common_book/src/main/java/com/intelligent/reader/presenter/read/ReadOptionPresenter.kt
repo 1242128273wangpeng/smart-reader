@@ -16,7 +16,9 @@ import com.intelligent.reader.activity.CoverPageActivity
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.read.help.IReadDataFactory
+import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.constants.Constants
@@ -47,7 +49,6 @@ class ReadOptionPresenter : ReadOption.Presenter {
 
     val bookDaoHelper: BookDaoHelper
 
-    private var isSubed: Boolean
     private var readStatus: ReadStatus
 
     private var activity: WeakReference<Activity>
@@ -65,7 +66,6 @@ class ReadOptionPresenter : ReadOption.Presenter {
         dataFactory = factory
 
         bookDaoHelper = BookDaoHelper.getInstance()
-        isSubed = bookDaoHelper.isBookSubed(readStatus.book_id)
     }
 
     override fun cache() {
@@ -74,13 +74,8 @@ class ReadOptionPresenter : ReadOption.Presenter {
             return
         }
 
-        if (!isSubed) {
-            val succeed = bookDaoHelper.insertBook(readStatus.book)
-            if (succeed) {
-                isSubed = true
-            } else {
-                return
-            }
+        if (!bookDaoHelper.isBookSubed(readStatus.book_id) && !bookDaoHelper.insertBook(readStatus.book)) {
+            return
         }
         if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
             showToastShort("网络不给力，请稍后再试")
@@ -215,6 +210,8 @@ class ReadOptionPresenter : ReadOption.Presenter {
             showToastShort("该小说暂无其他来源！")
             return
         }
+
+
         if (isSourceListShow) {
             isSourceListShow = false
         } else {

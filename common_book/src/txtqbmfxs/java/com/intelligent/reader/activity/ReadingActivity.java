@@ -1197,6 +1197,10 @@ public class ReadingActivity extends BaseCacheableActivity implements OnClickLis
                     Map<String, String> map2 = new HashMap<String, String>();
                     map2.put("type", "1");
                     StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGECONFIRM, map2);
+
+                    DownloadService.clearTask(readStatus.book_id);
+                    BaseBookHelper.removeChapterCacheFile(readStatus.book_id);
+                    BaseBookHelper.delDownIndex(ReadingActivity.this, readStatus.book_id);
                     dismissDialog();
                     intoCatalogActivity(source, true);
                 }
