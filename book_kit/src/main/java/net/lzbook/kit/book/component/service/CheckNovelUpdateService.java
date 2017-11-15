@@ -466,6 +466,7 @@ public class CheckNovelUpdateService extends Service {
             if (nftmgr == null) {
                 nftmgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             }
+
             Notification preNTF = new NotificationCompat.Builder(getApplicationContext())
                     .setSmallIcon(R.drawable.icon)
                     .setContentTitle(tickerText)
@@ -473,10 +474,14 @@ public class CheckNovelUpdateService extends Service {
             if (shouldSound()) {
                 preNTF.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
             }
+
             preNTF.when = System.currentTimeMillis();
             preNTF.flags = Notification.FLAG_AUTO_CANCEL;
             if (onBookUpdateListenerWef != null && onBookUpdateListenerWef.get() != null) {
                 onBookUpdateListenerWef.get().receiveUpdateCallBack(preNTF);
+            } else {
+                PendingIntent pendingintent = PendingIntent.getActivity(getApplicationContext(), 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
+                preNTF.contentIntent = pendingintent;
             }
             nftmgr.notify(novel_upd_notify_id, preNTF);
         }
