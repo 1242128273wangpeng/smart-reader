@@ -172,8 +172,8 @@ public class CoverRecommendBean implements Serializable {
                 private String bookChapterId;
                 private String lastChapterId;
                 private String lastChapterName;
-                private int lastSerialNumber;
-                private int v;
+                private long lastSerialNumber;
+                private long v;
                 private long updateTime;
                 private long createTime;
                 private int chapterCount;
@@ -328,7 +328,7 @@ public class CoverRecommendBean implements Serializable {
                     this.lastChapterName = lastChapterName;
                 }
 
-                public int getLastSerialNumber() {
+                public long getLastSerialNumber() {
                     return lastSerialNumber;
                 }
 
@@ -336,7 +336,7 @@ public class CoverRecommendBean implements Serializable {
                     this.lastSerialNumber = lastSerialNumber;
                 }
 
-                public int getV() {
+                public long getV() {
                     return v;
                 }
 
@@ -564,8 +564,8 @@ public class CoverRecommendBean implements Serializable {
                 private String bookChapterId;
                 private String lastChapterId;
                 private String lastChapterName;
-                private int lastSerialNumber;
-                private int v;
+                private long lastSerialNumber;
+                private long v;
                 private long updateTime;
                 private long createTime;
                 private int chapterCount;
@@ -720,7 +720,7 @@ public class CoverRecommendBean implements Serializable {
                     this.lastChapterName = lastChapterName;
                 }
 
-                public int getLastSerialNumber() {
+                public long getLastSerialNumber() {
                     return lastSerialNumber;
                 }
 
@@ -728,7 +728,7 @@ public class CoverRecommendBean implements Serializable {
                     this.lastSerialNumber = lastSerialNumber;
                 }
 
-                public int getV() {
+                public long getV() {
                     return v;
                 }
 
