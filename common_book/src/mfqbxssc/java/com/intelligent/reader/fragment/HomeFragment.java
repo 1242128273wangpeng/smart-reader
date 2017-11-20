@@ -1,5 +1,34 @@
 package com.intelligent.reader.fragment;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.Gravity;
+import android.view.InflateException;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.RadioButton;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
 import com.baidu.mobstat.StatService;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
@@ -18,6 +47,7 @@ import net.lzbook.kit.book.view.FirstUsePointView;
 import net.lzbook.kit.book.view.NonSwipeViewPager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.SettingItems;
+import net.lzbook.kit.encrypt.URLBuilderIntterface;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AnimationHelper;
 import net.lzbook.kit.utils.AppLog;
@@ -26,39 +56,6 @@ import net.lzbook.kit.utils.FrameBookHelper;
 import net.lzbook.kit.utils.SettingItemsHelper;
 import net.lzbook.kit.utils.SharedPreferencesUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
-import net.lzbook.kit.encrypt.URLBuilderIntterface;
-
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.text.TextUtils;
-import android.view.Gravity;
-import android.view.InflateException;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
@@ -408,8 +405,8 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
     }
 
     private void removeBookShelfMenu() {
-        if (bookShelfFragment != null && bookShelfFragment.bookShelfRemoveHelper != null) {
-            bookShelfFragment.bookShelfRemoveHelper.dismissRemoveMenu();
+        if (bookShelfFragment != null && bookShelfFragment.getBookShelfRemoveHelper() != null) {
+            bookShelfFragment.getBookShelfRemoveHelper().dismissRemoveMenu();
         }
     }
 
@@ -523,11 +520,11 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
 
                 break;
             case R.id.home_select_all:
-                if (bookShelfFragment != null && bookShelfFragment.bookShelfReAdapter != null) {
-                    bookShelfFragment.bookShelfRemoveHelper.selectAll(bookShelfFragment.bookShelfRemoveHelper.isAllChecked() ? false : true);
-                    home_select_all.setText(bookShelfFragment.bookShelfRemoveHelper.isAllChecked() ? "取消全选" : "全选");
+                if (bookShelfFragment != null && bookShelfFragment.getBookShelfReAdapter() != null) {
+                    bookShelfFragment.getBookShelfRemoveHelper().selectAll(bookShelfFragment.getBookShelfRemoveHelper().isAllChecked() ? false : true);
+                    home_select_all.setText(bookShelfFragment.getBookShelfRemoveHelper().isAllChecked() ? "取消全选" : "全选");
                     Map<String, String> data = new HashMap<>();
-                    data.put("type", bookShelfFragment.bookShelfRemoveHelper.isAllChecked() ? "1" : "2");
+                    data.put("type", bookShelfFragment.getBookShelfRemoveHelper().isAllChecked() ? "1" : "2");
                     StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.SELECTALL1, data);
                 }
                 break;
@@ -559,8 +556,8 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
     public void onResume() {
         super.onResume();
         AppLog.e(TAG, "onResume");
-        if (bookShelfFragment != null && bookShelfFragment.bookShelfReAdapter != null) {
-            bookShelfFragment.bookShelfReAdapter.notifyDataSetChanged();
+        if (bookShelfFragment != null && bookShelfFragment.getBookShelfReAdapter() != null) {
+            bookShelfFragment.getBookShelfReAdapter().notifyDataSetChanged();
         }
         changeView(current_tab);
         StatService.onResume(this);
@@ -779,7 +776,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                 @Override
                 public void onClick(View v) {
                     if (b) {
-                        if (bookShelfFragment != null && bookShelfFragment.iBookList.size() != 0) {
+                        if (bookShelfFragment != null && bookShelfFragment.getPresenter().getIBookList().size() != 0) {
                             iv_guide_changan.setVisibility(View.VISIBLE);
                         } else {
                             iv_guide_changan.setVisibility(View.GONE);
@@ -866,8 +863,8 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
             @Override
             public void onDismiss() {
                 setBackgroundAlpha(1.0f);
-                if (bookShelfFragment != null && bookShelfFragment.bookShelfReAdapter != null) {
-                    bookShelfFragment.bookShelfReAdapter.notifyDataSetChanged();
+                if (bookShelfFragment != null && bookShelfFragment.getBookShelfReAdapter() != null) {
+                    bookShelfFragment.getBookShelfReAdapter().notifyDataSetChanged();
                 }
             }
         });
@@ -881,7 +878,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                 settingItemsHelper.putInt(settingItemsHelper.booklistSortType, 1);
                 Constants.book_list_sort_type = 1;
                 setBackgroundAlpha(1.0f);
-                if (bookShelfFragment != null && bookShelfFragment.bookShelfReAdapter != null) {
+                if (bookShelfFragment != null && bookShelfFragment.getBookShelfReAdapter() != null) {
                     bookShelfFragment.updateUI();
                 }
                 popupWindow.dismiss();
@@ -896,7 +893,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                 settingItemsHelper.putInt(settingItemsHelper.booklistSortType, 0);
                 Constants.book_list_sort_type = 0;
                 setBackgroundAlpha(1.0f);
-                if (bookShelfFragment != null && bookShelfFragment.bookShelfReAdapter != null) {
+                if (bookShelfFragment != null && bookShelfFragment.getBookShelfReAdapter() != null) {
                     bookShelfFragment.updateUI();
                 }
                 popupWindow.dismiss();

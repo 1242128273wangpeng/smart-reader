@@ -1,51 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/bookshelf_main"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/home_title_background">
-    
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bookshelf_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/home_title_background">
+
     <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
-            android:id="@+id/bookshelf_refresh_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        
+        android:id="@+id/bookshelf_refresh_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
         <com.intelligent.reader.view.ADScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="none"
             >
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <include
-                    android:id="@+id/headerLayout"
-                    layout="@layout/ad_item_small_layout_header"
-                    android:visibility="gone"
-                    />
-        <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view"
-                android:layout_width="match_parent"
+
+                <com.intelligent.reader.view.BannerAdView
+                    android:id="@+id/bannerAdView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:alwaysDrawnWithCache="false"
                     android:clipToPadding="false"
-                    android:paddingTop="10dp" />
+                    android:paddingTop="10dp"/>
             </LinearLayout>
         </com.intelligent.reader.view.ADScrollView>
     </net.lzbook.kit.pulllist.SuperSwipeRefreshLayout>
-    
+
     <ImageView
-            android:id="@+id/fab_goto_down_act"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:visibility="gone"
-            android:layout_marginBottom="@dimen/dimen_margin_30"
-            android:layout_marginRight="@dimen/dimen_margin_10"
-            android:src="@mipmap/bookshelf_downlaod_floating_btn"/>
+        android:id="@+id/fab_goto_down_act"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/dimen_margin_30"
+        android:layout_marginRight="@dimen/dimen_margin_10"
+        android:src="@mipmap/bookshelf_downlaod_floating_btn"
+        android:visibility="gone"/>
     <!--<LinearLayout-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="match_parent"-->
@@ -73,34 +76,34 @@
     <!--android:src="@drawable/bookshelf_empty_btn"/>-->
     <!--</LinearLayout>-->
     <RelativeLayout
+        android:id="@+id/bookshelf_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/rl_title_footprint"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/bookshelf_empty_btn"
+            android:layout_centerHorizontal="true"
+            android:text="暂时没有书，去书城逛逛吧"
+            android:textColor="@color/footprint_empty_hint_color"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/bookshelf_empty_btn"
+            android:layout_width="120dp"
+            android:layout_height="38dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="17dp"
+            android:background="@drawable/bookshelf_empty_find_bg"
             android:gravity="center"
-            android:id="@+id/bookshelf_empty"
-            android:layout_below="@+id/rl_title_footprint"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone">
-    
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_above="@+id/bookshelf_empty_btn"
-                android:textSize="18sp"
-                android:textColor="@color/footprint_empty_hint_color"
-                android:text="暂时没有书，去书城逛逛吧"/>
-    
-        <TextView
-                android:id="@+id/bookshelf_empty_btn"
-                android:layout_width="120dp"
-                android:layout_height="38dp"
-                android:gravity="center"
-                android:layout_gravity="center_horizontal"
-                android:textSize="16sp"
-                android:layout_centerInParent="true"
-                android:textColor="@drawable/cover_bottom_btn_text_selector"
-                android:background="@drawable/bookshelf_empty_find_bg"
-                android:layout_marginTop="17dp"
-                android:text="去书城"/>
+            android:text="去书城"
+            android:textColor="@drawable/cover_bottom_btn_text_selector"
+            android:textSize="16sp"/>
     </RelativeLayout>
 
 

@@ -15,6 +15,9 @@ import android.widget.TextView
 import de.greenrobot.event.EventBus
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
 
 /**
  * Created by xian on 2017/6/21.
@@ -22,6 +25,17 @@ import io.reactivex.disposables.Disposable
 
 @JvmField
 var msDebuggAble = false
+
+private object BackgroundExecutor {
+    private var executor: ExecutorService =
+            Executors.newScheduledThreadPool(2 * Runtime.getRuntime().availableProcessors())
+
+    fun <R> submit(task: () -> R): Future<R> = executor.submit(task)
+}
+
+fun Any.doAsync(task: () -> Unit) : Future<Unit>{
+    return BackgroundExecutor.submit(task)
+}
 
 @JvmField
 val msMainLooperHandler = Handler(Looper.getMainLooper())

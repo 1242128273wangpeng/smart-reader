@@ -1,27 +1,5 @@
 package com.intelligent.reader.fragment;
 
-import com.baidu.mobstat.StatService;
-import com.intelligent.reader.BuildConfig;
-import com.intelligent.reader.R;
-import com.intelligent.reader.activity.DownloadManagerActivity;
-import com.intelligent.reader.activity.HomeActivity;
-import com.intelligent.reader.activity.SearchBookActivity;
-import com.intelligent.reader.activity.SettingActivity;
-import com.intelligent.reader.activity.SplashActivity;
-import com.intelligent.reader.app.BookApplication;
-
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.view.ConsumeEvent;
-import net.lzbook.kit.book.view.NonSwipeViewPager;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.encrypt.URLBuilderIntterface;
-import net.lzbook.kit.request.UrlUtils;
-import net.lzbook.kit.utils.AnimationHelper;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.FrameBookHelper;
-import net.lzbook.kit.utils.SharedPreferencesUtils;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -48,6 +26,28 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.baidu.mobstat.StatService;
+import com.intelligent.reader.BuildConfig;
+import com.intelligent.reader.R;
+import com.intelligent.reader.activity.DownloadManagerActivity;
+import com.intelligent.reader.activity.HomeActivity;
+import com.intelligent.reader.activity.SearchBookActivity;
+import com.intelligent.reader.activity.SettingActivity;
+import com.intelligent.reader.activity.SplashActivity;
+import com.intelligent.reader.app.BookApplication;
+
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.book.view.ConsumeEvent;
+import net.lzbook.kit.book.view.NonSwipeViewPager;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.encrypt.URLBuilderIntterface;
+import net.lzbook.kit.request.UrlUtils;
+import net.lzbook.kit.utils.AnimationHelper;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.FrameBookHelper;
+import net.lzbook.kit.utils.SharedPreferencesUtils;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
@@ -494,8 +494,8 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
     }
 
     private void removeBookShelfMenu() {
-        if (bookShelfFragment != null && bookShelfFragment.bookShelfRemoveHelper != null) {
-            bookShelfFragment.bookShelfRemoveHelper.dismissRemoveMenu();
+        if (bookShelfFragment != null && bookShelfFragment.getBookShelfRemoveHelper() != null) {
+            bookShelfFragment.getBookShelfRemoveHelper().dismissRemoveMenu();
         }
     }
 
@@ -625,8 +625,8 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
     public void onResume() {
         super.onResume();
         AppLog.e(TAG, "onResume");
-        if (bookShelfFragment != null && bookShelfFragment.bookShelfReAdapter != null) {
-            bookShelfFragment.bookShelfReAdapter.notifyDataSetChanged();
+        if (bookShelfFragment != null && bookShelfFragment.getBookShelfReAdapter() != null) {
+            bookShelfFragment.getBookShelfReAdapter().notifyDataSetChanged();
         }
         changeView(current_tab);
         StatService.onResume(this);
