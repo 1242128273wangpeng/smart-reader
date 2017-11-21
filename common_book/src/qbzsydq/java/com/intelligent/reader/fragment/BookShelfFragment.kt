@@ -1,401 +1,233 @@
 package com.intelligent.reader.fragment
 
+import android.content.SharedPreferences
+import android.os.Bundle
+import android.preference.PreferenceManager
+import android.support.v4.app.Fragment
+import android.support.v7.widget.SimpleItemAnimator
+import android.text.TextUtils
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
 import com.dingyueads.sdk.Native.YQNativeAdInfo
-import com.dingyueads.sdk.NativeInit
 import com.intelligent.reader.BuildConfig
 import com.intelligent.reader.R
-import com.intelligent.reader.activity.DownloadManagerActivity
 import com.intelligent.reader.activity.HomeActivity
 import com.intelligent.reader.adapter.BookShelfReAdapter
 import com.intelligent.reader.app.BookApplication
+import com.intelligent.reader.presenter.bookshelf.BookShelfPresenter
+import com.intelligent.reader.presenter.bookshelf.BookShelfView
 import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.util.BookShelfRemoveHelper
 import com.intelligent.reader.util.ShelfGridLayoutManager
-
+import com.intelligent.reader.view.BookDeleteDialog
+import de.greenrobot.event.EventBus
+import io.reactivex.Flowable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import kotlinx.android.synthetic.qbzsydq.fragment_bookshelf.*
 import net.lzbook.kit.ad.OwnNativeAdManager
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
-import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.BookUpdate
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.data.bean.EventBookshelfAd
-import net.lzbook.kit.data.bean.SensitiveWords
-import net.lzbook.kit.data.bean.Source
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
-import net.lzbook.kit.utils.AppLog
-import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.FrameBookHelper
-import net.lzbook.kit.utils.NetWorkUtils
-import net.lzbook.kit.utils.StatServiceUtils
-import net.lzbook.kit.utils.ToastUtils
-import net.lzbook.kit.utils.Tools
-
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
-import android.content.res.Resources
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.Message
-import android.preference.PreferenceManager
-import android.support.v4.app.Fragment
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SimpleItemAnimator
-import android.text.TextUtils
-import android.view.Gravity
-import android.view.InflateException
-import android.view.LayoutInflater
-import android.view.View
-import android.view.View.OnClickListener
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.RelativeLayout
-import android.widget.TextView
-
-import java.lang.ref.WeakReference
-import java.lang.reflect.Field
-import java.util.ArrayList
-import java.util.Collections
-import java.util.HashMap
-import java.util.HashSet
-import java.util.LinkedHashMap
-
-import de.greenrobot.event.EventBus
+import net.lzbook.kit.utils.*
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * 书架页Fragment
  */
-class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdateService, FrameBookHelper.DownLoadStateCallback, FrameBookHelper.DownLoadNotify, FrameBookHelper.NotificationCallback, BookShelfRemoveHelper.OnMenuDeleteClickListener, BookShelfRemoveHelper.OnMenuStateListener, FrameBookHelper.BookChanged, BookShelfReAdapter.ShelfItemClickListener, BookShelfReAdapter.ShelfItemLongClickListener {
-    private val handler = UiHandler(this)
-    var bookshelf_content: View? = null
-    var bookshelf_main: RelativeLayout
-    var bookShelfRemoveHelper: BookShelfRemoveHelper? = null
-    var bookShelfReAdapter: BookShelfReAdapter? = null
-    var iBookList: ArrayList<Book>? = ArrayList()
-    var loading_progress_bar: ProgressBar
-    var loading_message: TextView? = null
-    var swipeRefreshLayout: SuperSwipeRefreshLayout? = null
-    //书籍屏蔽相关字段
-    protected var bookSensitiveWord: SensitiveWords? = null
-    internal var download_bookshelf: ImageView? = null
-    internal var isUpdateFinish = false
-    internal var bookCollect_checked: ArrayList<Book>? = null
-    private var weakReference: WeakReference<Activity>? = null
-    private var mContext: Context? = null
-    private var fragmentCallback: BaseFragment.FragmentCallback? = null
-    private var versionCode: Int = 0
-    private val bookSensitiveWords: List<String>? = null
+class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdateService,
+        FrameBookHelper.DownLoadStateCallback, FrameBookHelper.DownLoadNotify,
+        FrameBookHelper.NotificationCallback, BookShelfRemoveHelper.OnMenuDeleteClickListener,
+        BookShelfRemoveHelper.OnMenuStateListener, FrameBookHelper.BookChanged,
+        BookShelfReAdapter.ShelfItemClickListener, BookShelfReAdapter.ShelfItemLongClickListener,
+        BookShelfView {
+
+    private val presenter: BookShelfPresenter by lazy { BookShelfPresenter(this) }
+
+    val bookShelfReAdapter: BookShelfReAdapter by lazy {
+        BookShelfReAdapter(activity, presenter.iBookList, this, this, true)
+    }
+    val bookShelfRemoveHelper: BookShelfRemoveHelper by lazy {
+        val helper = BookShelfRemoveHelper(activity, bookShelfReAdapter)
+        helper.setLayout(bookshelf_refresh_view)
+        helper.setOnMenuStateListener(this)
+        helper.setOnMenuDeleteListener(this)
+        helper
+    }
+
+    private val fragmentCallback: BaseFragment.FragmentCallback by lazy { activity as BaseFragment.FragmentCallback }
+    private val bookSensitiveWords: ArrayList<String> = ArrayList()
     private val noBookSensitive = false
     //自有广告管理类
-    private var ownNativeAdManager: OwnNativeAdManager? = null
-    private var bookshelf_empty: LinearLayout? = null
-    private var bookOnLines: ArrayList<Book>? = null
-    private var update_table: ArrayList<String>? = null
+    private val ownNativeAdManager: OwnNativeAdManager? by lazy {
+        var manager: OwnNativeAdManager? = null
+        if (!Constants.isHideAD) {
+            manager = OwnNativeAdManager.getInstance(activity)
+            manager.setActivity(activity)
+        }
+        manager
+    }
+
     private var frameBookHelper: FrameBookHelper? = null
-    private var bookDaoHelper: BookDaoHelper? = null
+    private var bookDaoHelper: BookDaoHelper = BookDaoHelper.getInstance()
     private var isShowAD = false
-    private var isGetAdEvent: Boolean = false
-    private var bookrack_update_time: Long = 0
-    private var load_data_finish_time: Long = 0
-    private var deleteDialog: MyDialog? = null
-    private val mDialog: MyDialog? = null
-    private var sharedPreferences: SharedPreferences? = null
-    private var esBookOnlineList = ArrayList<Book>()
-    private var bookshelf_empty_btn: ImageView? = null
+    private var bookRackUpdateTime: Long = 0
+    private var latestLoadDataTime: Long = 0
+    private val sharedPreferences: SharedPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(activity.applicationContext)
+    }
     private var head_pb_view: ProgressBar? = null
     private var head_text_view: TextView? = null
     private var head_image_view: ImageView? = null
-    private var recyclerView: RecyclerView? = null
-    private var layoutManager: ShelfGridLayoutManager? = null
-    private var isList = true
-    private val isShowDownloadBtn = false
+    //    private val isShowDownloadBtn = false
 
-    private val adInfoHashMap = HashMap<Int, YQNativeAdInfo>()
-
-    /**
-     * 从数据库中取书架中书本显示内容
-     */
-    private val bookListData: ArrayList<Book>?
-        get() {
-
-            val booksOnLine = bookDaoHelper!!.booksOnLineList
-            if (bookOnLines == null)
-                bookOnLines = ArrayList()
-
-            if (bookOnLines != null) {
-                bookOnLines!!.clear()
-                bookOnLines!!.addAll(booksOnLine)
-
-                setBookListHeadData(bookOnLines!!.size)
-            }
-            if (iBookList != null) {
-                iBookList!!.clear()
-                if (!booksOnLine.isEmpty()) {
-                    Collections.sort(booksOnLine, FrameBookHelper.MultiComparator())
-                    iBookList!!.addAll(booksOnLine)
-                    if (Constants.dy_shelf_ad_switch && !Constants.isHideAD && ownNativeAdManager != null) {
-                        setAdBook(booksOnLine)
-                    }
-                }
-            }
-            return iBookList
+    private val bookDeleteDialog: BookDeleteDialog by lazy {
+        val dialog = BookDeleteDialog(activity)
+        dialog.setOnConfirmListener { books ->
+            if (books != null && books.isNotEmpty()) presenter.deleteBooks(books)
+            StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.bs_click_delete_ok_btn)
         }
-
-    override fun onAttach(activity: Activity?) {
-        super.onAttach(activity)
-        this.weakReference = WeakReference<Activity>(activity)
-        fragmentCallback = activity as BaseFragment.FragmentCallback?
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        isList = true
-        mContext = activity
-        versionCode = AppUtils.getVersionCode()
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity.applicationContext)
-        if (!Constants.isHideAD) {
-            ownNativeAdManager = OwnNativeAdManager.getInstance(activity)
+        dialog.setOnAbrogateListener {
+            presenter.uploadBookDeleteCancelLog()
+            StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.bs_click_delete_cancel_btn)
         }
-        initData()
-
+        dialog
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        super.onCreateView(inflater, container, savedInstanceState)
-        return initView(inflater)
+        return inflater?.inflate(R.layout.fragment_bookshelf, container, false)
     }
 
-    private fun initView(inflater: LayoutInflater?): View? {
-        var inflater = inflater
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        bookRackUpdateTime = AppUtils.getLongPreferences(activity, "book_rack_update_time", System.currentTimeMillis())
+        fragmentCallback.getRemoveMenuHelper(bookShelfRemoveHelper)
+        initRecyclerView()
+        bookshelf_refresh_view.setOnPullRefreshListener(object : SuperSwipeRefreshLayout.OnPullRefreshListener {
+            override fun onRefresh() {
+                head_text_view?.text = "正在刷新"
+                head_image_view?.visibility = View.GONE
+                head_pb_view?.visibility = View.VISIBLE
+                checkBookUpdate()
+            }
 
-        if (inflater == null) {
-            inflater = mContext!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            override fun onPullDistance(distance: Int) {}
+
+            override fun onPullEnable(enable: Boolean) {
+                head_pb_view?.visibility = View.GONE
+                head_text_view?.text = if (enable) "松开刷新" else "下拉刷新"
+                head_image_view?.visibility = View.VISIBLE
+                head_image_view?.rotation = (if (enable) 180 else 0).toFloat()
+            }
+        })
+        bookshelf_empty_btn.setOnClickListener {
+            fragmentCallback.setSelectTab(1)
+            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.TOBOOKCITY)
         }
-        try {
-            bookshelf_content = inflater.inflate(R.layout.fragment_bookshelf, null)
-        } catch (e: InflateException) {
-            e.printStackTrace()
-        }
-
-        if (bookshelf_content != null) {
-            bookshelf_main = bookshelf_content!!.findViewById(R.id.bookshelf_main) as RelativeLayout
-
-            bookshelf_empty = bookshelf_content!!.findViewById(R.id.bookshelf_empty) as LinearLayout
-            bookshelf_empty_btn = bookshelf_content!!.findViewById(R.id.bookshelf_empty_btn) as ImageView
-            bookshelf_empty!!.visibility = View.GONE
-
-            bookrack_update_time = AppUtils.getLongPreferences(mContext, "bookrack_update_time", System.currentTimeMillis())
-
-            //            book_shelf_loading = (RelativeLayout) bookshelf_content.findViewById(R.id.book_shelf_loading);
-            //            book_shelf_loading.setVisibility(View.GONE);
-            loading_progress_bar = bookshelf_content!!.findViewById(R.id.loading_progressbar) as ProgressBar
-            //            download_bookshelf = (ImageView) bookshelf_content.findViewById(R.id.fab_goto_down_act);
-            //           if(download_bookshelf.getVisibility()==View.VISIBLE){
-            //               isShowDownloadBtn = true;
-            //                download_bookshelf.setOnClickListener(new OnClickListener() {
-            //                    @Override
-            //                    public void onClick(View v) {
-            //                        Intent intent = new Intent(mContext, DownloadManagerActivity.class);
-            //                        startActivity(intent);
-            //                    }
-            //                });
-            //            }
-            //            loading_progress = (ProgressBar) bookshelf_content.findViewById(R.id.loading_progress);
-            //            loading_message = (TextView) bookshelf_content.findViewById(R.id.loading_message);
-
-            //初始化RecyclerView
-            initRecyclerView()
-
-            val activity = weakReference!!.get() ?: return null
-
-            initRemoveHelper()
-        }
-
-        return bookshelf_content
     }
 
+    private fun initRecyclerView() {
+        bookshelf_refresh_view.setHeaderViewBackgroundColor(0x00000000)
+        bookshelf_refresh_view.setHeaderView(createHeaderView())
+        bookshelf_refresh_view.isTargetScrollWithLayout = true
+        recycler_view.recycledViewPool.setMaxRecycledViews(0, 12)
+        val layoutManager = ShelfGridLayoutManager(activity, 1)
+        recycler_view.layoutManager = layoutManager
+        //        recyclerView.getItemAnimator().setSupportsChangeAnimations(false);
+        recycler_view.itemAnimator.addDuration = 0
+        recycler_view.itemAnimator.changeDuration = 0
+        recycler_view.itemAnimator.moveDuration = 0
+        recycler_view.itemAnimator.removeDuration = 0
+        (recycler_view.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        recycler_view.adapter = bookShelfReAdapter
+    }
+
+    private fun createHeaderView(): View {
+        val headerView = LayoutInflater.from(bookshelf_refresh_view.context)
+                .inflate(R.layout.layout_head, null)
+        head_pb_view = headerView.findViewById(R.id.head_pb_view) as ProgressBar
+        head_text_view = headerView.findViewById(R.id.head_text_view) as TextView
+        head_text_view?.text = "下拉刷新"
+        head_image_view = headerView.findViewById(R.id.head_image_view) as ImageView
+        head_image_view?.visibility = View.VISIBLE
+        head_image_view?.setImageResource(R.drawable.pulltorefresh_down_arrow)
+        head_pb_view?.visibility = View.GONE
+        return headerView
+    }
 
     override fun onItemClick(view: View, position: Int) {
         AppLog.e(TAG, "BookShelfItemClick")
-        if (iBookList == null || position < 0 || position > iBookList!!.size) {
+        if (position < 0 || position > presenter.iBookList.size) {
             return
         }
-        if (bookShelfRemoveHelper!!.isRemoveMode) {
-            bookShelfRemoveHelper!!.setCheckPosition(position)
-        }
-        if (!bookShelfRemoveHelper!!.isRemoveMode) {
-            intoNovelContent(position)
+        if (bookShelfRemoveHelper.isRemoveMode) {
+            bookShelfRemoveHelper.setCheckPosition(position)
+        } else {
+            AppLog.e(TAG, "intoNovelContent")
+            if (position >= presenter.iBookList.size || position < 0) return
+            val book = presenter.iBookList[position]
+            handleBook(book)
+            presenter.uploadItemClickLog(position)
         }
     }
 
     override fun onItemLongClick(view: View, position: Int) {
-        if (!bookShelfRemoveHelper!!.isRemoveMode) {
-            bookShelfRemoveHelper!!.showRemoveMenu(swipeRefreshLayout)
-            StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.LONGTIMEBOOKSHELFEDIT)
+        if (!bookShelfRemoveHelper.isRemoveMode) {
+            bookShelfRemoveHelper.showRemoveMenu(bookshelf_refresh_view)
+            presenter.uploadItemLongClickLog()
         }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        initListener()
-
-        if (fragmentCallback != null) {
-            fragmentCallback!!.frameHelper()
+        fragmentCallback.frameHelper()
+        if (activity is HomeActivity) {
+            frameBookHelper = (activity as HomeActivity).frameHelper
         }
 
-        val activity = weakReference!!.get() ?: return
-
-        if (frameBookHelper == null) {
-            if (activity is HomeActivity) {
-                frameBookHelper = activity.frameHelper
-            }
-        }
-
-        if (frameBookHelper != null) {
-            frameBookHelper!!.setBookUpdate(this)
-            frameBookHelper!!.setDownLoadState(this)
-            frameBookHelper!!.setDownNotify(this)
-            frameBookHelper!!.setNotification(this)
-            frameBookHelper!!.initDownUpdateService()
-            frameBookHelper!!.clickNotification(activity.intent)
-            frameBookHelper!!.setBookChanged(this)
-        }
+        frameBookHelper?.setBookUpdate(this)
+        frameBookHelper?.setDownLoadState(this)
+        frameBookHelper?.setDownNotify(this)
+        frameBookHelper?.setNotification(this)
+        frameBookHelper?.initDownUpdateService()
+        frameBookHelper?.clickNotification(activity.intent)
+        frameBookHelper?.setBookChanged(this)
 
         //根据书架数量确定是否刷新
-        if (bookOnLines!!.size > 0) {
-            swipeRefreshLayout!!.isRefreshing = true
+        if (presenter.iBookList.size > 0) {
+            bookshelf_refresh_view.isRefreshing = true
         }
-    }
-
-    private fun initRemoveHelper() {
-        if (bookShelfRemoveHelper == null) {
-            bookShelfRemoveHelper = BookShelfRemoveHelper(mContext, bookShelfReAdapter)
-        }
-        if (recyclerView != null) {
-            bookShelfRemoveHelper!!.setLayout(swipeRefreshLayout)
-        }
-        if (fragmentCallback != null) {
-            fragmentCallback!!.getRemoveMenuHelper(bookShelfRemoveHelper)
-        }
-        bookShelfRemoveHelper!!.setOnMenuStateListener(this)
-        bookShelfRemoveHelper!!.setOnMenuDeleteListener(this)
     }
 
     override fun onResume() {
         super.onResume()
         updateUI()
+        ownNativeAdManager?.setActivity(activity)
     }
-
-
-    //    private boolean isGetEvent;
 
     fun onEvent(eventBookshelfAd: EventBookshelfAd) {
-        //        if (!isGetEvent) return;
-        if (eventBookshelfAd.type_ad == NativeInit.CustomPositionName.SHELF_POSITION.toString()) {
-            val activity = activity
-            if (activity != null && isAdded) {
-                Handler().post {
-                    isShowAD = true
-                    if (eventBookshelfAd.yqNativeAdInfo != null) {
-                        eventBookshelfAd.yqNativeAdInfo.availableTime = System.currentTimeMillis()
-                    }
-                    adInfoHashMap.put(eventBookshelfAd.position, eventBookshelfAd.yqNativeAdInfo)
-                    bookListData
-                    bookShelfReAdapter!!.notifyDataSetChanged()
-                    AppLog.e(TAG, "notifyDataSetChanged")
-                    StatServiceUtils.statBookEventShow(mContext, StatServiceUtils.type_ad_shelf)
-                }
-            }
-        } else if (eventBookshelfAd.type_ad == "bookshelfclick_360") {
-            if (eventBookshelfAd.yqNativeAdInfo != null) {
-                eventBookshelfAd.yqNativeAdInfo.availableTime = System.currentTimeMillis() + 2000
-            }
-            adInfoHashMap.put(eventBookshelfAd.position, eventBookshelfAd.yqNativeAdInfo)
-        }
+        AppLog.e("ADSDK", "onEvent")
+        val isHandle = activity != null && isAdded
+        if (isHandle) isShowAD = true
+        val isNotShowAd = !isShowAD || bookShelfRemoveHelper.isRemoveMode || !isResumed
+        presenter.handleBookShelfAd(eventBookshelfAd, isHandle, isNotShowAd, ownNativeAdManager, true)
     }
 
-
-    private fun setAdBook(booksOnLine: ArrayList<Book>) {
-        AppLog.e("wyhad1-1", adInfoHashMap.toString())
-
-        //长按删除状态下不请求广告
-        if (!isShowAD || bookShelfRemoveHelper!!.isRemoveMode) {
-            return
-        }
-        AppLog.e("wyhad1-1", this.isResumed.toString() + "")
-        if (!this.isResumed) {
-            return
-        }
-        val adInfo: YQNativeAdInfo?
-        if (adInfoHashMap.containsKey(0) && adInfoHashMap[0] != null && adInfoHashMap[0].getAdvertisement() != null
-                && (System.currentTimeMillis() - adInfoHashMap[0].getAvailableTime() < 3000 || !adInfoHashMap[0].getAdvertisement().isShowed)) {
-            adInfo = adInfoHashMap[0]
-        } else {
-            adInfo = ownNativeAdManager!!.getSingleADInfoNew(0, NativeInit.CustomPositionName.SHELF_POSITION)
-            if (adInfo != null) {
-                adInfo.availableTime = System.currentTimeMillis()
-                adInfoHashMap.put(0, adInfo)
-            }
-        }
-        if (adInfo != null) {
-            val book1 = Book()
-            book1.book_type = -2
-            book1.info = adInfo
-            AppLog.e("wyhad1-1", "adInfo：" + adInfo.advertisement.toString())
-            book1.rating = Tools.getIntRandom()
-            try {
-                iBookList!!.add(0, book1)
-            } catch (e: IndexOutOfBoundsException) {
-                e.printStackTrace()
-            }
-
-        } else {
-            AppLog.e("wyhad1-1", "adInfo == null")
-        }
-
-        val distance = booksOnLine.size / Constants.dy_shelf_ad_freq
-
-        for (i in 0 until distance) {
-            val info: YQNativeAdInfo?
-            if (adInfoHashMap.containsKey(i + 1) && adInfoHashMap[i + 1] != null && adInfoHashMap[i + 1].getAdvertisement() != null
-                    && (System.currentTimeMillis() - adInfoHashMap[i + 1].getAvailableTime() < 3000 || !adInfoHashMap[i + 1].getAdvertisement().isShowed)) {
-                info = adInfoHashMap[i + 1]
-            } else {
-                info = ownNativeAdManager!!.getSingleADInfoNew(i + 1, NativeInit.CustomPositionName.SHELF_POSITION)
-                if (info != null) {
-                    info.availableTime = System.currentTimeMillis()
-                    adInfoHashMap.put(i + 1, info)
-                }
-            }
-
-            if (info != null) {
-                val book1 = Book()
-                book1.book_type = -2
-                book1.info = info
-                AppLog.e("wyhad1-1", "info：" + info.advertisement.toString())
-                book1.rating = Tools.getIntRandom()
-                try {
-                    iBookList!!.add(Constants.dy_shelf_ad_freq * (i + 1), book1)
-                } catch (e: IndexOutOfBoundsException) {
-                    e.printStackTrace()
-                    break
-                }
-
-            } else {
-                AppLog.e("wyhad1-1", "info == null")
-            }
-        }
-
+    override fun onBookShelfAdHandle() {
+        bookShelfReAdapter.notifyDataSetChanged()
+        AppLog.e(TAG, "notifyDataSetChanged")
+        StatServiceUtils.statBookEventShow(activity, StatServiceUtils.type_ad_shelf)
     }
 
     override fun onStart() {
@@ -420,7 +252,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
         } catch (e: IllegalAccessException) {
             e.printStackTrace()
         }
-
     }
 
     override fun onDestroy() {
@@ -430,179 +261,43 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
             BookApplication.getRefWatcher().watch(this)
         }
 
-        if (frameBookHelper != null) {
-            frameBookHelper!!.recycleCallback()
-        }
+        frameBookHelper?.recycleCallback()
 
-        if (bookOnLines != null) {
-            bookOnLines!!.clear()
-        }
-        adInfoHashMap?.clear()
-    }
-
-    /**
-     * 根据网络及书架数据设置下拉刷新模式为直接完成或显式下拉
-     */
-    protected fun isPullAction(rackBookList: ArrayList<Book>?, refreshLayout: SuperSwipeRefreshLayout?): Boolean {
-        if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
-            refreshLayout!!.isRefreshing = false
-            showToastDelay(R.string.bookshelf_refresh_network_problem)
-            return false
-        }
-
-        //根据书架数量确定是否刷新
-        //        if (rackBookList.size() > 0) {
-        //            refreshLayout.setRefreshing(false);
-        //        }
-        return true
+        presenter.iBookList.clear()
+        presenter.adInfoHashMap.clear()
     }
 
     /**
      * 查Book数据库更新界面
      */
     fun updateUI() {
-
-        bookListData
-
-        if (bookShelfReAdapter == null) {
-            bookShelfReAdapter = BookShelfReAdapter(activity, iBookList, this, this, isList)
-        }
-        if (bookShelfReAdapter != null) {
-            for (i in bookOnLines!!.indices) {
-                val book = bookOnLines!![i]
-                setUpdateState(book)
-            }
-
-            bookShelfReAdapter!!.setUpdate_table(update_table)
-            bookShelfReAdapter!!.notifyDataSetChanged()
-        }
-        //判断用户是否是当日首次打开应用,并上传书架的id
-        val first_time = sharedPreferences!!.getLong(Constants.TODAY_FIRST_POST_BOOKIDS, 0)
-
-        val currentTime = System.currentTimeMillis()
-        val b = AppUtils.isToday(first_time, currentTime)
-        if (!b) {
-            val bookIdList = StringBuilder()
-            for (i in iBookList!!.indices) {
-                val book = iBookList!![i]
-                bookIdList.append(book.book_id)
-
-                bookIdList.append(if (book.readed == 1) "_1" else "_0")//1已读，0未读
-                bookIdList.append(if (i == iBookList!!.size) "" else "$")
-
-            }
-            val data = HashMap<String, String>()
-            data.put("bookid", bookIdList.toString())
-            StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.BOOKLIST, data)
-            sharedPreferences!!.edit().putLong(Constants.TODAY_FIRST_POST_BOOKIDS, currentTime).apply()
-        }
-    }
-
-    private fun initData() {
-        val activity = weakReference!!.get() ?: return
-        if (bookDaoHelper == null && mContext != null) {
-            bookDaoHelper = BookDaoHelper.getInstance()
-        }
-
-        esBookOnlineList = bookDaoHelper!!.booksOnLineListYS
-
-        if (update_table == null) {
-            update_table = ArrayList()
-        }
-        update_table!!.clear()
-
-        bookCollect_checked = ArrayList()
-    }
-
-    private fun initListener() {
-        if (swipeRefreshLayout != null) {
-            swipeRefreshLayout!!.setOnPullRefreshListener(object : SuperSwipeRefreshLayout.OnPullRefreshListener {
-
-                override fun onRefresh() {
-                    head_text_view!!.text = "正在刷新"
-                    head_image_view!!.visibility = View.GONE
-                    head_pb_view!!.visibility = View.VISIBLE
-                    checkBookUpdate()
-                }
-
-                override fun onPullDistance(distance: Int) {
-                    // pull distance
-                }
-
-                override fun onPullEnable(enable: Boolean) {
-                    head_pb_view!!.visibility = View.GONE
-                    head_text_view!!.text = if (enable) "松开刷新" else "下拉刷新"
-                    head_image_view!!.visibility = View.VISIBLE
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                        head_image_view!!.rotation = (if (enable) 180 else 0).toFloat()
-                    }
-                }
-            })
-        }
-        if (bookshelf_empty_btn != null) {
-            bookshelf_empty_btn!!.setOnClickListener {
-                if (fragmentCallback != null) {
-                    fragmentCallback!!.setSelectTab(1)
-
-                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.TOBOOKCITY)
-                }
+        val isNotShowAd = !isShowAD || bookShelfRemoveHelper.isRemoveMode || !isResumed
+        doAsync {
+            presenter.queryBookListAndAd(ownNativeAdManager, isNotShowAd, true)
+            runOnMain {
+                bookShelfReAdapter.setUpdate_table(presenter.filterUpdateTableList())
+                bookShelfReAdapter.notifyDataSetChanged()
+                presenter.uploadFirstOpenLog(sharedPreferences)
             }
         }
     }
 
-    private fun initRecyclerView() {
-
-        if (bookOnLines == null) {
-            bookOnLines = ArrayList()
-        }
-        if (bookShelfReAdapter == null) {
-            bookShelfReAdapter = BookShelfReAdapter(activity, iBookList, this, this, isList)
-        }
-
-        swipeRefreshLayout = bookshelf_content!!.findViewById(R.id.bookshelf_refresh_view) as SuperSwipeRefreshLayout
-        swipeRefreshLayout!!.setHeaderViewBackgroundColor(0x00000000)
-        swipeRefreshLayout!!.setHeaderView(createHeaderView())
-        swipeRefreshLayout!!.isTargetScrollWithLayout = true
-
-        recyclerView = bookshelf_content!!.findViewById(R.id.recycler_view) as RecyclerView
-        recyclerView!!.recycledViewPool.setMaxRecycledViews(0, 12)
-
-        layoutManager = ShelfGridLayoutManager(mContext, 1)
-
-        recyclerView!!.layoutManager = layoutManager
-        //        recyclerView.getItemAnimator().setSupportsChangeAnimations(false);
-        recyclerView!!.itemAnimator.addDuration = 0
-        recyclerView!!.itemAnimator.changeDuration = 0
-        recyclerView!!.itemAnimator.moveDuration = 0
-        recyclerView!!.itemAnimator.removeDuration = 0
-        (recyclerView!!.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
-        recyclerView!!.adapter = bookShelfReAdapter
-
-    }
-
-    private fun setBookListHeadData(num: Int) {
-        if (num == 0 && swipeRefreshLayout != null) {
-            swipeRefreshLayout!!.setPullToRefreshEnabled(false)
-            handler.obtainMessage(NO_BOOK_DATA_VIEW_SHOW).sendToTarget()
-        } else if (swipeRefreshLayout != null) {
-            swipeRefreshLayout!!.setPullToRefreshEnabled(true)
-            handler.obtainMessage(NO_BOOK_DATA_VIEW_GONE).sendToTarget()
+    override fun onBookListQuery(bookList: ArrayList<Book>) {
+        if (bookList.isEmpty()) {
+            bookshelf_refresh_view.setPullToRefreshEnabled(false)
+            bookshelf_empty.visibility = View.VISIBLE
+        } else {
+            bookshelf_refresh_view.setPullToRefreshEnabled(true)
+            bookshelf_empty.visibility = View.GONE
         }
     }
 
+    override fun hideBannerAd() {
+        //NONE
+    }
 
-    private fun setUpdateState(book: Book?) {
-        if (book != null) {
-            if (book.update_status == 1) {
-                if (!update_table!!.contains(book.book_id)) {
-                    update_table!!.add(book.book_id)
-                }
-            } else {
-                if (update_table!!.contains(book.book_id)) {
-                    update_table!!.remove(book.book_id)
-                }
-            }
-        }
+    override fun showBannerAd(adInfo: YQNativeAdInfo) {
+        //NONE
     }
 
     /**
@@ -610,29 +305,21 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
      */
     private fun checkBookUpdate() {
 
-        if (!isPullAction(bookOnLines, swipeRefreshLayout)) {
+        if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
+            bookshelf_refresh_view.isRefreshing = false
+            showToastDelay(R.string.bookshelf_refresh_network_problem)
             return
         }
 
-        val start_pull_time = System.currentTimeMillis()
-        val delay = Math.abs(start_pull_time - load_data_finish_time)
+        val startPullTime = System.currentTimeMillis()
+        val interval = Math.abs(startPullTime - latestLoadDataTime)
 
         //下拉刷新时删除标记的360广告信息
-        if (adInfoHashMap != null) {
-            val iterator = adInfoHashMap.entries.iterator()
-            while (iterator.hasNext()) {
-                val entry = iterator.next()
-                val key = entry.key
-                val value = entry.value
-                if (value != null && value.advertisement != null && value.advertisement.platformId == com.dingyueads.sdk.Constants.AD_TYPE_360 && value.advertisement.isClicked) {
-                    iterator.remove()
-                }
-            }
-        }
+        presenter.remove360Ads()
 
         // 刷新间隔小于30秒无效
-        if (delay <= PULL_REFRESH_DELAY) {
-            swipeRefreshLayout!!.onRefreshComplete()
+        if (interval <= PULL_REFRESH_DELAY) {
+            bookshelf_refresh_view.onRefreshComplete()
             AppLog.d(TAG, "刷新间隔小于30秒不请求数据")
             showToastDelay(R.string.main_update_no_new)
         } else {
@@ -644,210 +331,80 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
     }
 
     private fun addUpdateTask() {
-        if (frameBookHelper != null) {
-            val updateService = frameBookHelper!!.updateService
-            if (bookDaoHelper!!.booksCount > 0 && updateService != null) {
-                val list = bookDaoHelper!!.booksList
-                AppLog.e("BookUpdateCount", "BookUpdateCount: " + list.size)
-                updateService.checkUpdate(BookHelper.getBookUpdateTaskData(list, this))
-            }
+        val updateService = frameBookHelper?.updateService
+        if (bookDaoHelper.booksCount > 0 && updateService != null) {
+            val list = bookDaoHelper.booksList
+            AppLog.e("BookUpdateCount", "BookUpdateCount: " + list.size)
+            updateService.checkUpdate(BookHelper.getBookUpdateTaskData(list, this))
         }
     }
 
     private fun showToastDelay(textId: Int) {
-        handler.postDelayed({
-            val activity = weakReference!!.get()
-            if (isAdded && activity != null) {
-                if (activity is HomeActivity) {
-                    val homeActivity = activity as HomeActivity?
-                    homeActivity!!.showToastShort(textId)
+        if (!isAdded) return
+        Flowable.timer(2000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    activity.applicationContext.toastShort(textId)
                 }
-            }
-        }, 2000)
     }
 
     private fun showToastDelay(text: String) {
-        handler.postDelayed({
-            val activity = weakReference!!.get()
-            if (isAdded && activity != null) {
-                if (activity is HomeActivity) {
-                    val homeActivity = activity as HomeActivity?
-                    homeActivity!!.showToastLong(text)
+        if (!isAdded) return
+        Flowable.timer(2000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    activity.applicationContext.toastShort(text)
                 }
-            }
-        }, 2000)
-    }
-
-    private fun showToast(text: Int) {
-        val activity = weakReference!!.get()
-        if (isAdded && activity != null) {
-            if (activity is HomeActivity) {
-                val homeActivity = activity as HomeActivity?
-                homeActivity!!.showToastShort(text)
-            }
-        }
-    }
-
-    private fun getSelfString(context: Context?, StringId: Int): String {
-        if (isAdded && context != null) {
-            try {
-                return context.resources.getString(StringId)
-            } catch (e: Resources.NotFoundException) {
-                e.printStackTrace()
-                return ""
-            }
-
-        }
-        return ""
-    }
-
-    private fun emptyViewShow() {
-        bookshelf_empty!!.visibility = View.VISIBLE
-    }
-
-    private fun emptyViewGone() {
-        bookshelf_empty!!.visibility = View.GONE
-    }
-
-    private fun longPressEdit() {
-
-    }
-
-    private fun refreshDataAfterDelete() {
-        //        recyclerView.smoothScrollToPosition(0);
-        updateUI()
-        if (bookShelfRemoveHelper != null) {
-            bookShelfRemoveHelper!!.dismissRemoveMenu()
-        }
-        if (bookCollect_checked != null && bookCollect_checked!!.size > 0) {
-            bookCollect_checked!!.clear()
-        }
-    }
-
-    //打开长按编辑模式时，过滤掉广告
-    private fun filterAd() {
-        for (i in iBookList!!.indices) {
-            //若当前的书籍是广告，则长按状态删除广告
-            if (iBookList!![i].book_type == -2) {
-                iBookList!!.removeAt(i)
-            }
-        }
     }
 
     /**
-     * 点击书架条目情况
+     * 处理被点击或更新通知的book
      */
-    private fun intoNovelContent(index: Int) {
-        if (index >= iBookList!!.size || index < 0) {
-            return
-        }
-
-        val book = iBookList!![index]
-        clickAction(book)
-
-        if (book != null) {
-            val data = HashMap<String, String>()
-            data.put("bookid", book.book_id)
-            data.put("rank", (index + 1).toString())
-            StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.BOOKCLICK, data)
-        }
-    }
-
-    /**
-     * listitem点击或更新通知点击处理
-     */
-    private fun clickAction(book: Book?) {
-        val activity = weakReference!!.get()
-        if (activity == null || book == null) {
-            return
-        }
+    private fun handleBook(book: Book) {
+        AppLog.e(TAG, "handleBook")
         if (!TextUtils.isEmpty(book.book_id) && book.book_type == 0) {
-            cancelUpdateStatus(book.book_id)
+            presenter.resetUpdateStatus(book.book_id)
         }
 
-        if (Constants.isShielding && !noBookSensitive && bookSensitiveWords!!.contains(book.book_id.toString())) {
+        if (Constants.isShielding && !noBookSensitive && bookSensitiveWords.contains(book.book_id.toString())) {
             ToastUtils.showToastNoRepeat("抱歉，该小说已下架！")
         } else {
-            BookHelper.goToCoverOrRead(weakReference!!.get().getApplicationContext(), weakReference!!.get(), book, 0)
+            BookHelper.goToCoverOrRead(activity.applicationContext, activity, book, 0)
+            AppLog.e(TAG, "goToCoverOrRead")
         }
-    }
-
-    /**
-     * 消除数据库中更新状态
-     */
-    private fun cancelUpdateStatus(book_id: String) {
-        val book = Book()
-        book.book_id = book_id
-        book.update_status = 0
-        if (update_table!!.contains(book.book_id)) {
-            update_table!!.remove(book_id)
-        }
-        bookDaoHelper!!.updateBook(book)
-    }
-
-    fun setResultRefresh() {
-        updateUI()
     }
 
     override fun onSuccess(result: BookUpdateResult) {
-        load_data_finish_time = System.currentTimeMillis()
-        if (swipeRefreshLayout != null) {
-            swipeRefreshLayout!!.onRefreshComplete()
-        }
-        onUpdateSuccessToast(result)
-        bookrack_update_time = System.currentTimeMillis()
-        AppUtils.setLongPreferences(mContext, "bookrack_update_time", bookrack_update_time)
+        latestLoadDataTime = System.currentTimeMillis()
+        bookRackUpdateTime = System.currentTimeMillis()
+        bookshelf_refresh_view.onRefreshComplete()
+        presenter.handleSuccessUpdate(result)
+        AppUtils.setLongPreferences(activity, "book_rack_update_time", bookRackUpdateTime)
         AppLog.e(TAG, "onSuccess的刷新ui调用")
         isShowAD = true
         updateUI()
-        isGetAdEvent = false
-        if (!isUpdateFinish)
-            isUpdateFinish = true
     }
 
     override fun onException(e: Exception) {
-        load_data_finish_time = System.currentTimeMillis()
+        latestLoadDataTime = System.currentTimeMillis()
         showToastDelay(R.string.bookshelf_refresh_network_problem)
-        if (swipeRefreshLayout != null) {
-            swipeRefreshLayout!!.onRefreshComplete()
-        }
-        if (!isUpdateFinish)
-            isUpdateFinish = true
+        bookshelf_refresh_view.onRefreshComplete()
     }
 
-    protected fun onUpdateSuccessToast(result: BookUpdateResult?) {
-        var newsCount = 0
-        val hasUpdateList = ArrayList<BookUpdate>()
-        if (result != null && result.items != null && !result.items.isEmpty()) {
-            val bookUpdates = result.items
-            val size = bookUpdates.size
-            for (i in 0 until size) {
-                val item = bookUpdates[i]
-                if (!TextUtils.isEmpty(item.book_id) && item.update_count != 0) {
-                    newsCount++
-                    hasUpdateList.add(item)
-                }
-            }
-            if (hasUpdateList.size != 0) {
-                showMoreToast(newsCount, hasUpdateList)
-            }
-        } else {
+    override fun onSuccessUpdateHandle(updateCount: Int, firstBook: BookUpdate?) {
+        if (updateCount == 0) {
             showToastDelay(R.string.main_update_no_new)
-        }
-    }
-
-    private fun showMoreToast(newsCount: Int, hasUpdateList: ArrayList<BookUpdate>) {
-        val bookUpdate = hasUpdateList[0]
-        val book_name = bookUpdate.book_name
-        val activity = weakReference!!.get() ?: return
-        if (book_name != null && !TextUtils.isEmpty(book_name)) {
-
-            if (newsCount == 1) {
-                showToastDelay("《" + book_name + getSelfString(mContext, R.string.bookshelf_one_book_update) + bookUpdate.last_chapter_name)
-            } else {
-                val update_size = hasUpdateList.size
-                showToastDelay("《" + book_name + getSelfString(mContext, R.string.bookshelf_more_book_update) + update_size + getSelfString(mContext,
-                        R.string.bookshelf_update_chapters))
+        } else {
+            val bookName = firstBook?.book_name
+            val bookLastChapterName = firstBook?.last_chapter_name
+            if (bookName?.isNotEmpty() == true && bookLastChapterName?.isNotEmpty() == true) {
+                if (updateCount == 1) {
+                    showToastDelay("《$bookName${activity.getString(R.string.bookshelf_one_book_update)}" +
+                            "$bookLastChapterName")
+                } else {
+                    showToastDelay("《$bookName${activity.getString(R.string.bookshelf_more_book_update)}" +
+                            "$updateCount${activity.getString(R.string.bookshelf_update_chapters)}")
+                }
             }
         }
     }
@@ -857,9 +414,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
     }
 
     override fun doUpdateBook(updateService: CheckNovelUpdateService?) {
-        val activity = weakReference!!.get()
         updateService?.setBookUpdateListener(activity as CheckNovelUpdateService.OnBookUpdateListener)
-
         addUpdateTask()
 
     }
@@ -872,118 +427,54 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
 
     override fun notification(gid: String) {
         if (!TextUtils.isEmpty(gid)) {
-            val book = bookDaoHelper!!.getBook(gid, 0) as Book
-            if (book != null) {
-                clickAction(book)
-            }
+            val book = bookDaoHelper.getBook(gid, 0) as Book
+            handleBook(book)
         }
-    }
-
-    /**
-     * 菜单删除按钮触发删除动作
-     */
-    private fun deleteBooks(deleteBooks: ArrayList<Book>, rankList: ArrayList<Book>?) {
-
-        val size = deleteBooks.size
-        Thread(Runnable {
-            val books = arrayOfNulls<String>(size)
-            val sb = StringBuffer()
-            for (i in 0 until size) {
-                val book = deleteBooks[i]
-                books[i] = book.book_id
-
-                sb.append(book.book_id)
-                sb.append(if (book.readed == 1) "_1" else "_0")
-                sb.append(if (i == size - 1) "" else "$")
-
-                handler.obtainMessage(REFRESH_DATA_AFTER_DELETE, book.book_id).sendToTarget()
-            }
-            // 删除书架数据库和章节数据库
-            if (bookDaoHelper != null) {
-                bookDaoHelper!!.deleteBook(*books)
-            }
-
-            val data1 = HashMap<String, String>()
-            data1.put("type", "1")
-            data1.put("number", size.toString())
-            data1.put("bookids", sb.toString())
-            StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.DELETE1, data1)
-        }).start()
     }
 
     override fun onMenuDelete(checked_state: HashSet<Int>) {
         val checkedBooks = ArrayList<Book>()
-        checkedBooks.clear()
-        val size = iBookList!!.size
-        for (i in 0 until size) {
-            if (checked_state.contains(i)) {
-                checkedBooks.add(iBookList!![i])
-            }
+        val size = presenter.iBookList.size
+        (0 until size).filter {
+            checked_state.contains(it)
+        }.mapTo(checkedBooks) {
+            presenter.iBookList[it]
         }
-        onMenuDeleteAction(checkedBooks)
+        bookDeleteDialog.show(checkedBooks)
     }
 
-    private fun onMenuDeleteAction(deleteBooks: ArrayList<Book>) {
-        val activity = weakReference!!.get() ?: return
-        if (deleteBooks.size > 0) {
-            deleteDialog = MyDialog(activity, R.layout.publish_hint_dialog)
-            val base_dialog_title = deleteDialog!!.findViewById(R.id.dialog_title) as TextView
-            base_dialog_title.setText(R.string.prompt)
-            val base_dialog_content = deleteDialog!!.findViewById(R.id.publish_content) as TextView
-            base_dialog_content.gravity = Gravity.CENTER
-            base_dialog_content.setText(R.string.determine_delete_book_cache)
-            val base_dialog_confirm = deleteDialog!!.findViewById(R.id.publish_stay) as Button
-            base_dialog_confirm.setText(R.string.cancel)
-            val base_dialog_abrogate = deleteDialog!!.findViewById(R.id.publish_leave) as Button
-            base_dialog_abrogate.setText(R.string.confirm)
-            base_dialog_abrogate.setOnClickListener {
-                deleteDialog!!.dismiss()
-                deleteBooks(deleteBooks, bookOnLines)
-                StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.bs_click_delete_ok_btn)
-            }
-            base_dialog_confirm.setOnClickListener {
-                deleteDialog!!.dismiss()
-                StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.bs_click_delete_cancel_btn)
-                val data1 = HashMap<String, String>()
-                data1.put("type", "2")
-                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.DELETE1, data1)
-            }
-            deleteDialog!!.show()
-
-        } else {
-            //            showToast(R.string.mian_delete_cache_no_choose);
-        }
+    override fun onBookDelete() {
+        AppLog.e(TAG, "onBookDelete")
+        updateUI()
+        bookShelfRemoveHelper.dismissRemoveMenu()
     }
 
     override fun getMenuShownState(state: Boolean) {
+        AppLog.e(TAG, "getMenuShowState: $state")
         if (state) {
-            swipeRefreshLayout!!.setPullToRefreshEnabled(false)
-            if (isShowDownloadBtn) {
-                download_bookshelf!!.visibility = View.GONE
-            }
+            bookshelf_refresh_view.setPullToRefreshEnabled(false)
+//            if (isShowDownloadBtn) {
+//                fab_goto_down_act.visibility = View.GONE
+//            }
         } else {
-            if (bookOnLines!!.size != 0) {
-                swipeRefreshLayout!!.setPullToRefreshEnabled(true)
+            if (presenter.iBookList.isNotEmpty()) {
+                bookshelf_refresh_view.setPullToRefreshEnabled(true)
             }
-            if (isShowDownloadBtn) {
-                download_bookshelf!!.visibility = View.VISIBLE
-            }
+//            if (isShowDownloadBtn) {
+//                fab_goto_down_act.visibility = View.VISIBLE
+//            }
             updateUI()
         }
-        if (fragmentCallback != null) {
-            fragmentCallback!!.getMenuShownState(state)
-        }
+        fragmentCallback.getMenuShownState(state)
     }
 
     override fun getAllCheckedState(isAll: Boolean) {
-        if (fragmentCallback != null) {
-            fragmentCallback!!.getAllCheckedState(isAll)
-        }
+        fragmentCallback.getAllCheckedState(isAll)
     }
 
     override fun doHideAd() {
         if (isShowAD) {
-            filterAd()
+            presenter.removeAd()
         }
     }
 
@@ -992,78 +483,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
         updateUI()
     }
 
-    private fun changeBookSource(source: Source, changeReadFlag: Boolean): Book {
-        val bookDaoHelper = BookDaoHelper.getInstance()
-        val iBook = bookDaoHelper.getBook(source.book_id, 0)
-        iBook.book_source_id = source.book_source_id
-        iBook.site = source.host
-        iBook.dex = source.dex
-        val iterator = source.source.entries.iterator()
-        val list = ArrayList<String>()
-        while (iterator.hasNext()) {
-            val entry = iterator.next()
-            val value = entry.value
-            list.add(value)
-        }
-        if (list.size > 0) {
-            iBook.parameter = list[0]
-        }
-        if (list.size > 1) {
-            iBook.extra_parameter = list[1]
-        }
-        iBook.last_updatetime_native = source.update_time
-
-        if (changeReadFlag) {
-            // 更新阅读标记为未阅读0、章节序为-1
-            iBook.readed = 0
-            iBook.sequence = -1
-        }
-
-        if (bookDaoHelper.isBookSubed(source.book_id)) {
-            bookDaoHelper.updateBook(iBook)
-        }
-        return iBook
-    }
-
-    private fun createHeaderView(): View {
-        val headerView = LayoutInflater.from(swipeRefreshLayout!!.context)
-                .inflate(R.layout.layout_head, null)
-        head_pb_view = headerView.findViewById(R.id.head_pb_view) as ProgressBar
-        head_text_view = headerView.findViewById(R.id.head_text_view) as TextView
-        head_text_view!!.text = "下拉刷新"
-        head_image_view = headerView.findViewById(R.id.head_image_view) as ImageView
-        head_image_view!!.visibility = View.VISIBLE
-        head_image_view!!.setImageResource(R.drawable.pulltorefresh_down_arrow)
-        head_pb_view!!.visibility = View.GONE
-        return headerView
-    }
-
-    class UiHandler internal constructor(vpBook: BookShelfFragment) : Handler() {
-        private val reference: WeakReference<BookShelfFragment>
-
-        init {
-            reference = WeakReference(vpBook)
-        }
-
-        override fun handleMessage(msg: Message) {
-            val bookShelfFragment = reference.get() ?: return
-            when (msg.what) {
-
-                NO_BOOK_DATA_VIEW_SHOW -> bookShelfFragment.emptyViewShow()
-                NO_BOOK_DATA_VIEW_GONE -> bookShelfFragment.emptyViewGone()
-                LONG_PRESS_EDIT -> bookShelfFragment.longPressEdit()
-                REFRESH_DATA_AFTER_DELETE -> bookShelfFragment.refreshDataAfterDelete()
-            }
-        }
-    }
-
     companion object {
 
         val ACTION_CHKHIDE = AppUtils.getPackageName()
-        private val NO_BOOK_DATA_VIEW_SHOW = 0x14
-        private val NO_BOOK_DATA_VIEW_GONE = NO_BOOK_DATA_VIEW_SHOW + 1
-        private val LONG_PRESS_EDIT = NO_BOOK_DATA_VIEW_GONE + 1
-        private val REFRESH_DATA_AFTER_DELETE = LONG_PRESS_EDIT + 1
         private val PULL_REFRESH_DELAY = 30 * 1000
         private val TAG = BookShelfFragment::class.java.simpleName
     }

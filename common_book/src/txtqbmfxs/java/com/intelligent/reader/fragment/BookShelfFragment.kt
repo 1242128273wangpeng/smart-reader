@@ -1,10 +1,10 @@
 package com.intelligent.reader.fragment
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.SimpleItemAnimator
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -16,6 +16,7 @@ import android.widget.TextView
 import com.dingyueads.sdk.Native.YQNativeAdInfo
 import com.intelligent.reader.BuildConfig
 import com.intelligent.reader.R
+import com.intelligent.reader.activity.DownloadManagerActivity
 import com.intelligent.reader.activity.HomeActivity
 import com.intelligent.reader.adapter.BookShelfReAdapter
 import com.intelligent.reader.app.BookApplication
@@ -28,7 +29,7 @@ import com.intelligent.reader.view.BookDeleteDialog
 import de.greenrobot.event.EventBus
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.kdzsydq.fragment_bookshelf.*
+import kotlinx.android.synthetic.txtqbmfxs.fragment_bookshelf.*
 import net.lzbook.kit.ad.OwnNativeAdManager
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
@@ -41,10 +42,8 @@ import net.lzbook.kit.data.bean.EventBookshelfAd
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.utils.*
-import net.lzbook.kit.utils.pulllist.DividerItemDecoration
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
 
 /**
  * 书架页Fragment
@@ -59,7 +58,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
     private val presenter: BookShelfPresenter by lazy { BookShelfPresenter(this) }
 
     val bookShelfReAdapter: BookShelfReAdapter by lazy {
-        BookShelfReAdapter(activity, presenter.iBookList, this, this, isList)
+        BookShelfReAdapter(activity, presenter.iBookList, this, this, true)
     }
     val bookShelfRemoveHelper: BookShelfRemoveHelper by lazy {
         val helper = BookShelfRemoveHelper(activity, bookShelfReAdapter)
@@ -93,10 +92,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
     private var head_pb_view: ProgressBar? = null
     private var head_text_view: TextView? = null
     private var head_image_view: ImageView? = null
-    private val isList by lazy {
-        !("cc.quanbennovel" == ACTION_CHKHIDE || "cc.mianfeinovel" == ACTION_CHKHIDE || "cc.kdqbxs.reader" == ACTION_CHKHIDE)
-    }
-//    private val isShowDownloadBtn = false
 
     private val bookDeleteDialog: BookDeleteDialog by lazy {
         val dialog = BookDeleteDialog(activity)
@@ -140,6 +135,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
             fragmentCallback.setSelectTab(1)
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.TOBOOKCITY)
         }
+        fab_goto_down_act.setOnClickListener {
+            val intent = Intent(activity, DownloadManagerActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun initRecyclerView() {
@@ -147,19 +146,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
         bookshelf_refresh_view.setHeaderView(createHeaderView())
         bookshelf_refresh_view.isTargetScrollWithLayout = true
         recycler_view.recycledViewPool.setMaxRecycledViews(0, 12)
-        val layoutManager: ShelfGridLayoutManager
-        if (isList) {
-            layoutManager = ShelfGridLayoutManager(activity, 1)
-        } else {
-            layoutManager = ShelfGridLayoutManager(activity, 3)
-            //有分割线的九宫格
-            if ("cc.quanbennovel" != ACTION_CHKHIDE) {
-                val typeColor = R.color.bookshelf_divider
-                recycler_view.addItemDecoration(DividerItemDecoration(activity,
-                        DividerItemDecoration.BOTH_SET, 2,
-                        ContextCompat.getColor(activity, typeColor)))
-            }
-        }
+        val layoutManager = ShelfGridLayoutManager(activity, 1)
         recycler_view.layoutManager = layoutManager
         //        recyclerView.getItemAnimator().setSupportsChangeAnimations(false);
         recycler_view.itemAnimator.addDuration = 0
@@ -239,7 +226,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
         val isHandle = activity != null && isAdded
         if (isHandle) isShowAD = true
         val isNotShowAd = !isShowAD || bookShelfRemoveHelper.isRemoveMode || !isResumed
-        presenter.handleBookShelfAd(eventBookshelfAd, isHandle, isNotShowAd, ownNativeAdManager, isList)
+        presenter.handleBookShelfAd(eventBookshelfAd, isHandle, isNotShowAd, ownNativeAdManager, true)
     }
 
     override fun onBookShelfAdHandle() {
@@ -289,10 +276,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
     /**
      * 查Book数据库更新界面
      */
-    private fun updateUI() {
+    fun updateUI() {
         val isNotShowAd = !isShowAD || bookShelfRemoveHelper.isRemoveMode || !isResumed
         doAsync {
-            presenter.queryBookListAndAd(ownNativeAdManager, isNotShowAd, isList)
+            presenter.queryBookListAndAd(ownNativeAdManager, isNotShowAd, true)
             runOnMain {
                 bookShelfReAdapter.setUpdate_table(presenter.filterUpdateTableList())
                 bookShelfReAdapter.notifyDataSetChanged()
@@ -472,16 +459,12 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
         AppLog.e(TAG, "getMenuShowState: $state")
         if (state) {
             bookshelf_refresh_view.setPullToRefreshEnabled(false)
-//            if (isShowDownloadBtn) {
-//                fab_goto_down_act.visibility = View.GONE
-//            }
+            fab_goto_down_act.visibility = View.GONE
         } else {
             if (presenter.iBookList.isNotEmpty()) {
                 bookshelf_refresh_view.setPullToRefreshEnabled(true)
             }
-//            if (isShowDownloadBtn) {
-//                fab_goto_down_act.visibility = View.VISIBLE
-//            }
+            fab_goto_down_act.visibility = View.VISIBLE
             updateUI()
         }
         fragmentCallback.getMenuShownState(state)
@@ -502,9 +485,13 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
         updateUI()
     }
 
-
     companion object {
+
         val ACTION_CHKHIDE = AppUtils.getPackageName()
+        private val NO_BOOK_DATA_VIEW_SHOW = 0x14
+        private val NO_BOOK_DATA_VIEW_GONE = NO_BOOK_DATA_VIEW_SHOW + 1
+        private val LONG_PRESS_EDIT = NO_BOOK_DATA_VIEW_GONE + 1
+        private val REFRESH_DATA_AFTER_DELETE = LONG_PRESS_EDIT + 1
         private val PULL_REFRESH_DELAY = 30 * 1000
         private val TAG = BookShelfFragment::class.java.simpleName
     }

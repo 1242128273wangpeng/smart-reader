@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/bookshelf_main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/base_bg">
+                android:id="@+id/bookshelf_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/base_bg">
 
     <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
         android:id="@+id/bookshelf_refresh_view"
@@ -13,19 +13,18 @@
         <com.intelligent.reader.view.ADScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="none"
-            >
+            android:scrollbars="none">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <include
-                    android:id="@+id/headerLayout"
-                    layout="@layout/ad_item_small_layout_header"
-                    android:visibility="gone"
-                    />
+                <com.intelligent.reader.view.BannerAdView
+                    android:id="@+id/bannerAdView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view"
@@ -33,7 +32,7 @@
                     android:layout_height="match_parent"
                     android:alwaysDrawnWithCache="false"
                     android:clipToPadding="false"
-                    android:paddingTop="10dp" />
+                    android:paddingTop="10dp"/>
             </LinearLayout>
         </com.intelligent.reader.view.ADScrollView>
 
@@ -49,7 +48,7 @@
         android:layout_marginBottom="@dimen/dimen_margin_30"
         android:layout_marginRight="@dimen/dimen_margin_10"
         android:src="@mipmap/bookshelf_downlaod_floating_btn"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/bookshelf_empty"
@@ -62,7 +61,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/bookshelf_empty_icon" />
+            android:src="@drawable/bookshelf_empty_icon"/>
 
         <TextView
             android:id="@+id/bookshelf_empty_prompt"
@@ -72,14 +71,14 @@
             android:layout_marginTop="37dp"
             android:text="@string/mian_bookshelf_empty_hint"
             android:textColor="@color/color_black_282828"
-            android:textSize="@dimen/dimen_text_16" />
+            android:textSize="@dimen/dimen_text_16"/>
 
         <ImageView
             android:id="@+id/bookshelf_empty_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:src="@drawable/bookshelf_empty_btn" />
+            android:src="@drawable/bookshelf_empty_btn"/>
     </LinearLayout>
 
     <RelativeLayout
@@ -98,7 +97,7 @@
             android:layout_centerInParent="true"
             android:layout_marginBottom="@dimen/dimen_margin_10"
             android:layout_marginTop="@dimen/dimen_margin_30"
-            android:progressDrawable="@drawable/background_splash_progress" />
+            android:progressDrawable="@drawable/background_splash_progress"/>
 
         <ProgressBar
             android:id="@+id/loading_progressbar"
@@ -108,7 +107,7 @@
             android:layout_above="@id/loading_progress"
             android:layout_centerHorizontal="true"
             android:indeterminateDuration="1000"
-            android:progressDrawable="@drawable/background_splash_progress" />
+            android:progressDrawable="@drawable/background_splash_progress"/>
 
         <TextView
             android:id="@+id/loading_message_first"
@@ -119,7 +118,7 @@
             android:text="新版数据升级中,本过程不消耗流量,"
             android:textColor="@color/color_black_353535"
             android:textSize="@dimen/dimen_text_15"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/loading_message_second"
@@ -130,6 +129,6 @@
             android:text="请您耐心等待...."
             android:textColor="@color/color_black_353535"
             android:textSize="@dimen/dimen_text_15"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
     </RelativeLayout>
 </RelativeLayout>

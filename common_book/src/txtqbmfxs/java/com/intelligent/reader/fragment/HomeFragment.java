@@ -375,8 +375,8 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
     }
 
     private void removeBookShelfMenu() {
-        if (bookShelfFragment != null && bookShelfFragment.bookShelfRemoveHelper != null) {
-            bookShelfFragment.bookShelfRemoveHelper.dismissRemoveMenu();
+        if (bookShelfFragment != null && bookShelfFragment.getBookShelfRemoveHelper() != null) {
+            bookShelfFragment.getBookShelfRemoveHelper().dismissRemoveMenu();
         }
     }
 
@@ -487,8 +487,8 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
     public void onResume() {
         super.onResume();
         AppLog.e(TAG, "onResume");
-        if (bookShelfFragment != null && bookShelfFragment.bookShelfReAdapter != null) {
-            bookShelfFragment.bookShelfReAdapter.notifyDataSetChanged();
+        if (bookShelfFragment != null && bookShelfFragment.getBookShelfReAdapter() != null) {
+            bookShelfFragment.getBookShelfReAdapter().notifyDataSetChanged();
         }
         changeView(current_tab);
         StatService.onResume(this);

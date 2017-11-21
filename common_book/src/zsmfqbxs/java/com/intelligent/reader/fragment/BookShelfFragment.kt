@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.SimpleItemAnimator
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -28,7 +27,7 @@ import com.intelligent.reader.view.BookDeleteDialog
 import de.greenrobot.event.EventBus
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.kdzsydq.fragment_bookshelf.*
+import kotlinx.android.synthetic.zsmfqbxs.fragment_bookshelf.*
 import net.lzbook.kit.ad.OwnNativeAdManager
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
@@ -41,10 +40,8 @@ import net.lzbook.kit.data.bean.EventBookshelfAd
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.utils.*
-import net.lzbook.kit.utils.pulllist.DividerItemDecoration
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
 
 /**
  * 书架页Fragment
@@ -59,7 +56,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
     private val presenter: BookShelfPresenter by lazy { BookShelfPresenter(this) }
 
     val bookShelfReAdapter: BookShelfReAdapter by lazy {
-        BookShelfReAdapter(activity, presenter.iBookList, this, this, isList)
+        BookShelfReAdapter(activity, presenter.iBookList, this, this, false)
     }
     val bookShelfRemoveHelper: BookShelfRemoveHelper by lazy {
         val helper = BookShelfRemoveHelper(activity, bookShelfReAdapter)
@@ -76,6 +73,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
     private val ownNativeAdManager: OwnNativeAdManager? by lazy {
         var manager: OwnNativeAdManager? = null
         if (!Constants.isHideAD) {
+            AppLog.e(TAG, "ownNativeAdManager init")
             manager = OwnNativeAdManager.getInstance(activity)
             manager.setActivity(activity)
         }
@@ -93,10 +91,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
     private var head_pb_view: ProgressBar? = null
     private var head_text_view: TextView? = null
     private var head_image_view: ImageView? = null
-    private val isList by lazy {
-        !("cc.quanbennovel" == ACTION_CHKHIDE || "cc.mianfeinovel" == ACTION_CHKHIDE || "cc.kdqbxs.reader" == ACTION_CHKHIDE)
-    }
-//    private val isShowDownloadBtn = false
 
     private val bookDeleteDialog: BookDeleteDialog by lazy {
         val dialog = BookDeleteDialog(activity)
@@ -147,20 +141,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
         bookshelf_refresh_view.setHeaderView(createHeaderView())
         bookshelf_refresh_view.isTargetScrollWithLayout = true
         recycler_view.recycledViewPool.setMaxRecycledViews(0, 12)
-        val layoutManager: ShelfGridLayoutManager
-        if (isList) {
-            layoutManager = ShelfGridLayoutManager(activity, 1)
-        } else {
-            layoutManager = ShelfGridLayoutManager(activity, 3)
-            //有分割线的九宫格
-            if ("cc.quanbennovel" != ACTION_CHKHIDE) {
-                val typeColor = R.color.bookshelf_divider
-                recycler_view.addItemDecoration(DividerItemDecoration(activity,
-                        DividerItemDecoration.BOTH_SET, 2,
-                        ContextCompat.getColor(activity, typeColor)))
-            }
-        }
+        val layoutManager = ShelfGridLayoutManager(activity, 3)
         recycler_view.layoutManager = layoutManager
+        recycler_view.isFocusable = false//放弃焦点
         //        recyclerView.getItemAnimator().setSupportsChangeAnimations(false);
         recycler_view.itemAnimator.addDuration = 0
         recycler_view.itemAnimator.changeDuration = 0
@@ -239,7 +222,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
         val isHandle = activity != null && isAdded
         if (isHandle) isShowAD = true
         val isNotShowAd = !isShowAD || bookShelfRemoveHelper.isRemoveMode || !isResumed
-        presenter.handleBookShelfAd(eventBookshelfAd, isHandle, isNotShowAd, ownNativeAdManager, isList)
+        presenter.handleBookShelfAd(eventBookshelfAd, isHandle, isNotShowAd, ownNativeAdManager, false)
     }
 
     override fun onBookShelfAdHandle() {
@@ -276,6 +259,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
     override fun onDestroy() {
         super.onDestroy()
 
+        super.onDestroy()
+
         if (BuildConfig.DEBUG) {
             BookApplication.getRefWatcher().watch(this)
         }
@@ -289,10 +274,11 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
     /**
      * 查Book数据库更新界面
      */
-    private fun updateUI() {
+    fun updateUI() {
         val isNotShowAd = !isShowAD || bookShelfRemoveHelper.isRemoveMode || !isResumed
         doAsync {
-            presenter.queryBookListAndAd(ownNativeAdManager, isNotShowAd, isList)
+            AppLog.e(TAG, "ownNativeAdManager: $ownNativeAdManager")
+            presenter.queryBookListAndAd(ownNativeAdManager, isNotShowAd, false)
             runOnMain {
                 bookShelfReAdapter.setUpdate_table(presenter.filterUpdateTableList())
                 bookShelfReAdapter.notifyDataSetChanged()
@@ -312,11 +298,11 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
     }
 
     override fun hideBannerAd() {
-        //NONE
+        bannerAdView.visibility = View.GONE
     }
 
     override fun showBannerAd(adInfo: YQNativeAdInfo) {
-        //NONE
+        bannerAdView.showBannerAd(adInfo)
     }
 
     /**
@@ -502,10 +488,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
         updateUI()
     }
 
-
     companion object {
+
         val ACTION_CHKHIDE = AppUtils.getPackageName()
         private val PULL_REFRESH_DELAY = 30 * 1000
-        private val TAG = BookShelfFragment::class.java.simpleName
+        val TAG = BookShelfFragment::class.java.simpleName
     }
 }

@@ -44,9 +44,8 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
         runOnMain {
             view?.onBookListQuery(bookList)
         }
-//        if (bookList.isNotEmpty() && Constants.dy_shelf_ad_switch && !Constants.isHideAD
-//                && ownNativeAdManager != null) {
-        if (true){
+        if (bookList.isNotEmpty() && Constants.dy_shelf_ad_switch && !Constants.isHideAD
+                && ownNativeAdManager != null) {
             if (isList) {//书架页列表形式
                 AppLog.e(tag, "book形式的广告")
                 fetchBookAd(true, bookList, ownNativeAdManager, isNotShowAd)

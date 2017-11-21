@@ -381,7 +381,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
         bookRackUpdateTime = System.currentTimeMillis()
         bookshelf_refresh_view.onRefreshComplete()
         presenter.handleSuccessUpdate(result)
-        AppUtils.setLongPreferences(activity, "bookRackUpdateTime", bookRackUpdateTime)
+        AppUtils.setLongPreferences(activity, "book_rack_update_time", bookRackUpdateTime)
         AppLog.e(TAG, "onSuccess的刷新ui调用")
         isShowAD = true
         updateUI()
