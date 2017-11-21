@@ -163,7 +163,7 @@ public class CoverRecommendBean implements Serializable {
                 private String serialStatus;
                 private String label;
                 private String sourceImageUrl;
-                private Object imageId;
+                private String imageId;
                 private AttributeBean attribute;
                 private String host;
                 private String url;
@@ -172,25 +172,25 @@ public class CoverRecommendBean implements Serializable {
                 private String bookChapterId;
                 private String lastChapterId;
                 private String lastChapterName;
-                private int lastSerialNumber;
-                private int v;
+                private long lastSerialNumber;
+                private long v;
                 private long updateTime;
                 private long createTime;
                 private int chapterCount;
-                private Object chapterBlankCount;
+                private int chapterBlankCount;
                 private int chapterShortCount;
                 private int wordCount;
                 private String wordCountDescp;
                 private int readerCount;
                 private String readerCountDescp;
                 private int dex;
-                private Object hot;
-                private int score;
+                private int hot;
+                private double score;
                 private int vip;
-                private int chapterPrice;
-                private int bookprice;
-                private int selfPrice;
-                private int selfBookPrice;
+                private float chapterPrice;
+                private float bookprice;
+                private float selfPrice;
+                private float selfBookPrice;
 
                 public String getId() {
                     return id;
@@ -260,7 +260,7 @@ public class CoverRecommendBean implements Serializable {
                     return imageId;
                 }
 
-                public void setImageId(Object imageId) {
+                public void setImageId(String imageId) {
                     this.imageId = imageId;
                 }
 
@@ -328,7 +328,7 @@ public class CoverRecommendBean implements Serializable {
                     this.lastChapterName = lastChapterName;
                 }
 
-                public int getLastSerialNumber() {
+                public long getLastSerialNumber() {
                     return lastSerialNumber;
                 }
 
@@ -336,7 +336,7 @@ public class CoverRecommendBean implements Serializable {
                     this.lastSerialNumber = lastSerialNumber;
                 }
 
-                public int getV() {
+                public long getV() {
                     return v;
                 }
 
@@ -372,7 +372,7 @@ public class CoverRecommendBean implements Serializable {
                     return chapterBlankCount;
                 }
 
-                public void setChapterBlankCount(Object chapterBlankCount) {
+                public void setChapterBlankCount(int chapterBlankCount) {
                     this.chapterBlankCount = chapterBlankCount;
                 }
 
@@ -428,11 +428,11 @@ public class CoverRecommendBean implements Serializable {
                     return hot;
                 }
 
-                public void setHot(Object hot) {
+                public void setHot(int hot) {
                     this.hot = hot;
                 }
 
-                public int getScore() {
+                public double getScore() {
                     return score;
                 }
 
@@ -448,7 +448,7 @@ public class CoverRecommendBean implements Serializable {
                     this.vip = vip;
                 }
 
-                public int getChapterPrice() {
+                public float getChapterPrice() {
                     return chapterPrice;
                 }
 
@@ -456,7 +456,7 @@ public class CoverRecommendBean implements Serializable {
                     this.chapterPrice = chapterPrice;
                 }
 
-                public int getBookprice() {
+                public float getBookprice() {
                     return bookprice;
                 }
 
@@ -464,7 +464,7 @@ public class CoverRecommendBean implements Serializable {
                     this.bookprice = bookprice;
                 }
 
-                public int getSelfPrice() {
+                public float getSelfPrice() {
                     return selfPrice;
                 }
 
@@ -472,7 +472,7 @@ public class CoverRecommendBean implements Serializable {
                     this.selfPrice = selfPrice;
                 }
 
-                public int getSelfBookPrice() {
+                public float getSelfBookPrice() {
                     return selfBookPrice;
                 }
 
@@ -555,8 +555,8 @@ public class CoverRecommendBean implements Serializable {
                 private String serialStatus;
                 private String label;
                 private String sourceImageUrl;
-                private Object imageId;
-                private AttributeBean attribute;
+                private String imageId;
+                private FeeListBean.AttributeBean attribute;
                 private String host;
                 private String url;
                 private String terminal;
@@ -564,25 +564,25 @@ public class CoverRecommendBean implements Serializable {
                 private String bookChapterId;
                 private String lastChapterId;
                 private String lastChapterName;
-                private int lastSerialNumber;
-                private int v;
+                private long lastSerialNumber;
+                private long v;
                 private long updateTime;
                 private long createTime;
                 private int chapterCount;
-                private Object chapterBlankCount;
+                private int chapterBlankCount;
                 private int chapterShortCount;
                 private int wordCount;
                 private String wordCountDescp;
                 private int readerCount;
                 private String readerCountDescp;
                 private int dex;
-                private Object hot;
-                private int score;
+                private int hot;
+                private double score;
                 private int vip;
-                private int chapterPrice;
-                private int bookprice;
-                private int selfPrice;
-                private int selfBookPrice;
+                private float chapterPrice;
+                private float bookprice;
+                private float selfPrice;
+                private float selfBookPrice;
 
                 public String getId() {
                     return id;
@@ -652,15 +652,15 @@ public class CoverRecommendBean implements Serializable {
                     return imageId;
                 }
 
-                public void setImageId(Object imageId) {
+                public void setImageId(String imageId) {
                     this.imageId = imageId;
                 }
 
-                public AttributeBean getAttribute() {
+                public FeeListBean.AttributeBean getAttribute() {
                     return attribute;
                 }
 
-                public void setAttribute(AttributeBean attribute) {
+                public void setAttribute(FeeListBean.AttributeBean attribute) {
                     this.attribute = attribute;
                 }
 
@@ -720,7 +720,7 @@ public class CoverRecommendBean implements Serializable {
                     this.lastChapterName = lastChapterName;
                 }
 
-                public int getLastSerialNumber() {
+                public long getLastSerialNumber() {
                     return lastSerialNumber;
                 }
 
@@ -728,7 +728,7 @@ public class CoverRecommendBean implements Serializable {
                     this.lastSerialNumber = lastSerialNumber;
                 }
 
-                public int getV() {
+                public long getV() {
                     return v;
                 }
 
@@ -764,7 +764,7 @@ public class CoverRecommendBean implements Serializable {
                     return chapterBlankCount;
                 }
 
-                public void setChapterBlankCount(Object chapterBlankCount) {
+                public void setChapterBlankCount(int chapterBlankCount) {
                     this.chapterBlankCount = chapterBlankCount;
                 }
 
@@ -820,11 +820,11 @@ public class CoverRecommendBean implements Serializable {
                     return hot;
                 }
 
-                public void setHot(Object hot) {
+                public void setHot(int hot) {
                     this.hot = hot;
                 }
 
-                public int getScore() {
+                public double getScore() {
                     return score;
                 }
 
@@ -840,7 +840,7 @@ public class CoverRecommendBean implements Serializable {
                     this.vip = vip;
                 }
 
-                public int getChapterPrice() {
+                public float getChapterPrice() {
                     return chapterPrice;
                 }
 
@@ -848,7 +848,7 @@ public class CoverRecommendBean implements Serializable {
                     this.chapterPrice = chapterPrice;
                 }
 
-                public int getBookprice() {
+                public float getBookprice() {
                     return bookprice;
                 }
 
@@ -856,7 +856,7 @@ public class CoverRecommendBean implements Serializable {
                     this.bookprice = bookprice;
                 }
 
-                public int getSelfPrice() {
+                public float getSelfPrice() {
                     return selfPrice;
                 }
 
@@ -864,7 +864,7 @@ public class CoverRecommendBean implements Serializable {
                     this.selfPrice = selfPrice;
                 }
 
-                public int getSelfBookPrice() {
+                public float getSelfBookPrice() {
                     return selfBookPrice;
                 }
 
@@ -946,13 +946,13 @@ public class CoverRecommendBean implements Serializable {
                 private int read_count;
                 private String author_id;
                 private String author_name;
-                private Object url;
+                private String url;
                 private int author_is_sign;
                 private Object avatar;
                 private String chapter_id;
                 private String chapter_name;
                 private int chapter_sn;
-                private Object chapter_content;
+                private String chapter_content;
                 private long create_time;
                 private long update_time;
 
@@ -1088,7 +1088,7 @@ public class CoverRecommendBean implements Serializable {
                     return url;
                 }
 
-                public void setUrl(Object url) {
+                public void setUrl(String url) {
                     this.url = url;
                 }
 
@@ -1136,7 +1136,7 @@ public class CoverRecommendBean implements Serializable {
                     return chapter_content;
                 }
 
-                public void setChapter_content(Object chapter_content) {
+                public void setChapter_content(String chapter_content) {
                     this.chapter_content = chapter_content;
                 }
 

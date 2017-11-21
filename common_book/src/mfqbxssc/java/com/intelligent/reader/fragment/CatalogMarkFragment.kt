@@ -172,12 +172,14 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
 
         view!!.iv_fixbook.setOnClickListener { v ->
             RepairHelp.fixBook(activity, presenter?.getBook(), RepairHelp.FixCallBack {
-                val intent_download = Intent(activity, DownloadManagerActivity::class.java)
-                try {
-                    activity.startActivity(intent_download)
-                    activity.finish()
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                if (activity != null && !activity.isFinishing) {
+                    val intent_download = Intent(activity, DownloadManagerActivity::class.java)
+                    try {
+                        activity.startActivity(intent_download)
+                        activity.finish()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
             })
             presenter?.onClickFixBook(activity)

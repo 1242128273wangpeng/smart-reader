@@ -75,6 +75,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -714,7 +715,6 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                 if (requestItem != null) {
                     bookVo.dex = requestItem.dex;
                 }
-
                 List<CoverPage.SourcesBean> sources = ((CoverPage) objects).sources;
                 if (bookSourceList == null) {
                     bookSourceList = new ArrayList<>();
@@ -850,6 +850,9 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
             if (bookVo.score == 0.0) {
                 tv_score.setText("暂无评分");
             } else {
+                if (!Constants.QG_SOURCE.equals(bookVo.host)) {
+                    bookVo.score = Double.valueOf(new DecimalFormat("0.00").format(bookVo.score));
+                }
                 tv_score.setText(bookVo.score + "分");
                 if (bookVo.score > 0.4) {
                     ratingBar.setRating(Float.valueOf(bookVo.score / 2 - 0.2 + ""));

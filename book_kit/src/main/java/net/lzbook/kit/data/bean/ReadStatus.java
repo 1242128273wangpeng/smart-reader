@@ -206,7 +206,7 @@ public class ReadStatus {
     public void setAd_bitmap_middle(Bitmap ad_bitmap_middle) {
         if (this.ad_bitmap_middle != null && !this.ad_bitmap_middle.isRecycled()) {
             AppLog.e("ReadStatus", "ReadStatus : recycle ad_bitmap_middle");
-            this.ad_bitmap_middle.recycle();
+//            this.ad_bitmap_middle.recycle();
             this.ad_bitmap_middle = null;
         }
         this.ad_bitmap_middle = ad_bitmap_middle;
@@ -219,7 +219,7 @@ public class ReadStatus {
     public void setAd_bitmap_middle_down(Bitmap ad_bitmap_middle_down) {
         if (this.ad_bitmap_middle_down != null && !this.ad_bitmap_middle_down.isRecycled()) {
             AppLog.e("ReadStatus", "ReadStatus : recycle ad_bitmap_middle_down");
-            this.ad_bitmap_middle_down.recycle();
+//            this.ad_bitmap_middle_down.recycle();
             this.ad_bitmap_middle_down = null;
         }
         this.ad_bitmap_middle_down = ad_bitmap_middle_down;
@@ -231,7 +231,7 @@ public class ReadStatus {
     public void setAd_bitmap_big(Bitmap ad_bitmap_big) {
         if (this.ad_bitmap_big != null && !this.ad_bitmap_big.isRecycled()) {
             AppLog.e("ReadStatus", "ReadStatus : recycle ad_bitmap_big");
-            this.ad_bitmap_big.recycle();
+//            this.ad_bitmap_big.recycle();
             this.ad_bitmap_big = null;
         }
         this.ad_bitmap_big = ad_bitmap_big;
@@ -243,7 +243,7 @@ public class ReadStatus {
 
     public void setAd_bitmap_big_inChapter(Bitmap ad_bimap_big_inChapter) {
         if (this.ad_bimap_big_inChapter != null && !this.ad_bimap_big_inChapter.isRecycled()) {
-            this.ad_bimap_big_inChapter.recycle();
+//            this.ad_bimap_big_inChapter.recycle();
             this.ad_bimap_big_inChapter = null;
         }
         this.ad_bimap_big_inChapter = ad_bimap_big_inChapter;
@@ -272,7 +272,7 @@ public class ReadStatus {
 
     public void recycleResourceNew() {
         if (this.ad_bimap_big_inChapter != null && !this.ad_bimap_big_inChapter.isRecycled()) {
-            this.ad_bimap_big_inChapter.recycle();
+//            this.ad_bimap_big_inChapter.recycle();
             this.ad_bimap_big_inChapter = null;
         }
 
@@ -352,7 +352,7 @@ public class ReadStatus {
         }
 
         if (this.ad_bitmap != null) {
-//            this.ad_bitmap.recycle();
+            this.ad_bitmap.recycle();
             this.ad_bitmap = null;
         }
 
