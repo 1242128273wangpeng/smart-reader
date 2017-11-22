@@ -16,7 +16,6 @@ import com.intelligent.reader.read.help.CallBack;
 import com.intelligent.reader.read.help.DrawTextHelper;
 import com.intelligent.reader.read.help.IReadDataFactory;
 import com.intelligent.reader.read.help.NovelHelper;
-import com.intelligent.reader.util.DisplayUtils;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
@@ -33,7 +32,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -535,6 +533,9 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
             return;
         }
         chapterContent.clear();
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
         preChapter = null;
         nextChapter = null;
         currentChaperConent = null;

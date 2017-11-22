@@ -1292,7 +1292,7 @@ public class PageView extends View implements PageInterface {
                 exitAutoReadNoCancel();
                 if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
                     if (dataFactory != null) {
-                        dataFactory.getChapterByLoading(ReadingActivity.MSG_LOAD_NEXT_CHAPTER, readStatus.sequence + 1);
+                        dataFactory.getChapterByLoading(ReadingActivity.Companion.getMSG_LOAD_NEXT_CHAPTER(), readStatus.sequence + 1);
                     }
                 } else {
 //                    Toast.makeText(mContext, "网络不给力，请稍后重试", Toast.LENGTH_SHORT).show();

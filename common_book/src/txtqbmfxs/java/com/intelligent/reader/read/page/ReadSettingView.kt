@@ -214,8 +214,8 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         val screenBrightness = sharedPreferences!!.getInt("screen_bright", -1)
         if (screenBrightness >= 0) {
             readSettingHelper!!.setScreenBrightness(context as Activity?, 20 + screenBrightness)
-        } else if (ReadingActivity.mSystemBrightness >= 20) {
-            readSettingHelper!!.setScreenBrightness(context as Activity?, ReadingActivity.mSystemBrightness)
+        } else if (FrameActivity.mSystemBrightness >= 20) {
+            readSettingHelper!!.setScreenBrightness(context as Activity?, FrameActivity.mSystemBrightness)
         } else {
             readSettingHelper!!.setScreenBrightness(context as Activity?, 20)
         }
@@ -257,8 +257,8 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
         if (screenBrightness >= 0) {
             read_setting_brightness_progress!!.progress = screenBrightness
-        } else if (ReadingActivity.mSystemBrightness >= 20) {
-            read_setting_brightness_progress!!.progress = ReadingActivity.mSystemBrightness - 20
+        } else if (FrameActivity.mSystemBrightness >= 20) {
+            read_setting_brightness_progress!!.progress = FrameActivity.mSystemBrightness - 20
         } else {
             read_setting_brightness_progress!!.progress = 5
         }
@@ -451,6 +451,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                     ibtn_night.setImageResource(R.drawable.read_option_day_selector)
 
                 }
+
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_night_mode)
                 listener?.onChageNightMode()
             }
@@ -1015,9 +1016,9 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 if (screenBrightness >= 0) {
                     read_setting_brightness_progress!!.progress = screenBrightness
                     readSettingHelper!!.setScreenBrightness(context as Activity?, 20 + screenBrightness)
-                } else if (ReadingActivity.mSystemBrightness >= 20) {
-                    read_setting_brightness_progress!!.progress = ReadingActivity.mSystemBrightness - 20
-                    readSettingHelper!!.setScreenBrightness(context as Activity?, ReadingActivity.mSystemBrightness)
+                } else if (FrameActivity.mSystemBrightness >= 20) {
+                    read_setting_brightness_progress!!.progress = FrameActivity.mSystemBrightness - 20
+                    readSettingHelper!!.setScreenBrightness(context as Activity?, FrameActivity.mSystemBrightness)
                 } else {
                     read_setting_brightness_progress!!.progress = 0
                     readSettingHelper!!.setScreenBrightness(context as Activity?, 20)

@@ -24,7 +24,6 @@ import net.lzbook.kit.utils.OpenUDID;
 import net.lzbook.kit.utils.StatisticManager;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -173,7 +172,7 @@ public abstract class IReadDataFactory {
 
             @Override
             public void run() {
-                mHandler.sendEmptyMessage(ReadingActivity.ERROR);
+                mHandler.sendEmptyMessage(ReadingActivity.Companion.getERROR());
 
             }
         });
@@ -551,7 +550,7 @@ public abstract class IReadDataFactory {
             nextChapter = null;
             if (readStatus.sequence < readStatus.chapterCount - 1) {
                 if (BookHelper.isChapterExist(readStatus.sequence + 1, readStatus.book_id)) {
-                    nextChapter = getChapterByAuto(ReadingActivity.MSG_LOAD_NEXT_CHAPTER, readStatus.sequence
+                    nextChapter = getChapterByAuto(ReadingActivity.Companion.getMSG_LOAD_NEXT_CHAPTER(), readStatus.sequence
                             + 1);
                 }
             }
@@ -714,28 +713,28 @@ public abstract class IReadDataFactory {
                 dataFactory.loadingPage.onSuccess();
             }
             switch (msg.what) {
-                case ReadingActivity.MSG_LOAD_CUR_CHAPTER:
+                case 0:
                     dataFactory.loadCurrentChapter(msg);
                     break;
-                case ReadingActivity.MSG_LOAD_NEXT_CHAPTER:
+                case 2:
                     dataFactory.loadNextChapter(msg);
                     break;
-                case ReadingActivity.MSG_LOAD_PRE_CHAPTER:
+                case 1:
                     dataFactory.loadPreChapter(msg);
                     break;
-                case ReadingActivity.MSG_SEARCH_CHAPTER:
+                case 3:
                     dataFactory.loadSearchChapter(msg);
                     break;
-                case ReadingActivity.MSG_CHANGE_SOURCE:
+                case 4:
                     dataFactory.loadChangeSource(msg);
                     break;
-                case ReadingActivity.MSG_JUMP_CHAPTER:
+                case 6:
                     dataFactory.loadJumpChapter(msg);
                     break;
-                case ReadingActivity.ERROR:
+                case 7:
                     dataFactory.loadError(msg);
                     break;
-                case ReadingActivity.NEED_LOGIN:
+                case 8:
                     dataFactory.loadNeedLogin(msg);
                     break;
                 default:
