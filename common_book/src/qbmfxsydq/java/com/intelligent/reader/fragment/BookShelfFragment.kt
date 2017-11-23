@@ -439,6 +439,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
     }
 
     override fun onMenuDelete(checked_state: HashSet<Int>) {
+        if (checked_state.isEmpty()) return
         val checkedBooks = ArrayList<Book>()
         val size = presenter.iBookList.size
         (0 until size).filter {

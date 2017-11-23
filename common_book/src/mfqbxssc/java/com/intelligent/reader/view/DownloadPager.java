@@ -1,7 +1,6 @@
 package com.intelligent.reader.view;
 
 import com.intelligent.reader.R;
-import com.intelligent.reader.activity.DownloadManagerActivity;
 import com.intelligent.reader.adapter.DownloadManagerAdapter;
 import com.intelligent.reader.event.DownLoaderToHome;
 import com.intelligent.reader.read.help.BookHelper;
@@ -121,7 +120,7 @@ public class DownloadPager extends LinearLayout implements CallBackDownload, Rem
         StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.bs_down_m_click_select_all);
         Map<String, String> data = new HashMap<>();
         data.put("type", checkedAll ? "1" : "0");
-        StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.CHCHEEDIT_PAGE, StartLogClickUtil.SELECTALL);
+        StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.CHCHEEDIT_PAGE, StartLogClickUtil.SELECTALL, data);
     }
 
     public ListView getListView() {

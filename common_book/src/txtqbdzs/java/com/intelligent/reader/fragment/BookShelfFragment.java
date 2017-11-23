@@ -1,7 +1,6 @@
 package com.intelligent.reader.fragment;
 
 import com.intelligent.reader.R;
-import com.intelligent.reader.activity.DownloadManagerActivity;
 import com.intelligent.reader.activity.HomeActivity;
 import com.intelligent.reader.adapter.BookShelfReAdapter;
 import com.intelligent.reader.read.help.BookHelper;

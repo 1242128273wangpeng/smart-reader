@@ -1,17 +1,5 @@
 package com.intelligent.reader.fragment;
 
-import com.intelligent.reader.BuildConfig;
-import com.intelligent.reader.R;
-import com.intelligent.reader.activity.DownloadManagerActivity;
-import com.intelligent.reader.activity.HomeActivity;
-import com.intelligent.reader.activity.SearchBookActivity;
-import com.intelligent.reader.app.BookApplication;
-
-import net.lzbook.kit.book.view.LoadingPage;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.CustomWebClient;
-import net.lzbook.kit.utils.JSInterfaceHelper;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -29,6 +17,17 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.RelativeLayout;
+
+import com.intelligent.reader.BuildConfig;
+import com.intelligent.reader.R;
+import com.intelligent.reader.activity.DownloadManagerActivity;
+import com.intelligent.reader.activity.SearchBookActivity;
+import com.intelligent.reader.app.BookApplication;
+
+import net.lzbook.kit.book.view.LoadingPage;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.CustomWebClient;
+import net.lzbook.kit.utils.JSInterfaceHelper;
 
 import java.lang.ref.WeakReference;
 

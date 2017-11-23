@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.intelligent.reader.R;
-import com.intelligent.reader.activity.DownloadManagerActivity;
 import com.intelligent.reader.adapter.DownloadManagerAdapter;
 import com.intelligent.reader.read.help.BookHelper;
 

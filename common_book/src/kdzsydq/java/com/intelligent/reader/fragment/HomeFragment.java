@@ -30,7 +30,6 @@ import android.widget.TextView;
 import com.baidu.mobstat.StatService;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
-import com.intelligent.reader.activity.DownloadManagerActivity;
 import com.intelligent.reader.activity.HomeActivity;
 import com.intelligent.reader.activity.SearchBookActivity;
 import com.intelligent.reader.activity.SettingActivity;

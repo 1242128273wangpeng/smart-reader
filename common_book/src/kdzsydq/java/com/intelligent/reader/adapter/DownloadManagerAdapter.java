@@ -1,7 +1,6 @@
 package com.intelligent.reader.adapter;
 
 import com.intelligent.reader.R;
-import com.intelligent.reader.activity.DownloadManagerActivity;
 import com.intelligent.reader.read.help.BookHelper;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;

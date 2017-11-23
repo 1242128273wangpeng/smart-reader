@@ -4,7 +4,6 @@ import com.dingyueads.sdk.Native.YQNativeAdInfo;
 import com.dingyueads.sdk.NativeInit;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
-import com.intelligent.reader.activity.DownloadManagerActivity;
 import com.intelligent.reader.activity.HomeActivity;
 import com.intelligent.reader.adapter.BookShelfReAdapter;
 import com.intelligent.reader.app.BookApplication;
