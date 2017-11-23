@@ -27,8 +27,8 @@ import com.intelligent.reader.read.help.IReadDataFactory
 import com.intelligent.reader.read.help.ReadSettingHelper
 import iyouqu.theme.FrameActivity
 import iyouqu.theme.ThemeHelper
-import kotlinx.android.synthetic.kdzsydq.read_option_bottom.view.*
-import kotlinx.android.synthetic.kdzsydq.read_option_detail.view.*
+import kotlinx.android.synthetic.qbmfxsydq.read_option_bottom.view.*
+import kotlinx.android.synthetic.qbmfxsydq.read_option_detail.view.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
@@ -214,8 +214,8 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         val screenBrightness = sharedPreferences!!.getInt("screen_bright", -1)
         if (screenBrightness >= 0) {
             readSettingHelper!!.setScreenBrightness(context as Activity?, 20 + screenBrightness)
-        } else if (ReadingActivity.mSystemBrightness >= 20) {
-            readSettingHelper!!.setScreenBrightness(context as Activity?, ReadingActivity.mSystemBrightness)
+        } else if (FrameActivity.mSystemBrightness >= 20) {
+            readSettingHelper!!.setScreenBrightness(context as Activity?, FrameActivity.mSystemBrightness)
         } else {
             readSettingHelper!!.setScreenBrightness(context as Activity?, 20)
         }
@@ -257,8 +257,8 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
         if (screenBrightness >= 0) {
             read_setting_brightness_progress!!.progress = screenBrightness
-        } else if (ReadingActivity.mSystemBrightness >= 20) {
-            read_setting_brightness_progress!!.progress = ReadingActivity.mSystemBrightness - 20
+        } else if (FrameActivity.mSystemBrightness >= 20) {
+            read_setting_brightness_progress!!.progress = FrameActivity.mSystemBrightness - 20
         } else {
             read_setting_brightness_progress!!.progress = 5
         }
@@ -1016,9 +1016,9 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 if (screenBrightness >= 0) {
                     read_setting_brightness_progress!!.progress = screenBrightness
                     readSettingHelper!!.setScreenBrightness(context as Activity?, 20 + screenBrightness)
-                } else if (ReadingActivity.mSystemBrightness >= 20) {
-                    read_setting_brightness_progress!!.progress = ReadingActivity.mSystemBrightness - 20
-                    readSettingHelper!!.setScreenBrightness(context as Activity?, ReadingActivity.mSystemBrightness)
+                } else if (FrameActivity.mSystemBrightness >= 20) {
+                    read_setting_brightness_progress!!.progress = FrameActivity.mSystemBrightness - 20
+                    readSettingHelper!!.setScreenBrightness(context as Activity?, FrameActivity.mSystemBrightness)
                 } else {
                     read_setting_brightness_progress!!.progress = 0
                     readSettingHelper!!.setScreenBrightness(context as Activity?, 20)

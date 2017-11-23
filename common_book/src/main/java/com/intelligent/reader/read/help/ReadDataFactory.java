@@ -79,7 +79,7 @@ public class ReadDataFactory extends IReadDataFactory {
 
                             @Override
                             public void onError(Exception error) {
-                                mHandler.obtainMessage(ReadingActivity.ERROR).sendToTarget();
+                                mHandler.obtainMessage(ReadingActivity.Companion.getERROR()).sendToTarget();
                                 if (loadingPage != null) {
                                     loadingPage.onError();
                                 }
@@ -223,20 +223,20 @@ public class ReadDataFactory extends IReadDataFactory {
                 } else {
                     if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
                         readStatus.isLoading = true;
-                        getChapterByLoading(ReadingActivity.MSG_LOAD_NEXT_CHAPTER, readStatus.sequence + 1);
+                        getChapterByLoading(ReadingActivity.Companion.getMSG_LOAD_NEXT_CHAPTER(), readStatus.sequence + 1);
                     } else if (dataListener != null) {//提示网络不给力
                         dataListener.showToast(R.string.err_no_net);
                     }
                 }
             } else {
                 if (BookHelper.isChapterExist(readStatus.sequence + 1, readStatus.book_id)) {
-                    Chapter chapter = getChapter(ReadingActivity.MSG_LOAD_NEXT_CHAPTER, readStatus.sequence + 1);
+                    Chapter chapter = getChapter(ReadingActivity.Companion.getMSG_LOAD_NEXT_CHAPTER(), readStatus.sequence + 1);
                     if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
                         if (chapter != null) {
                             if (!TextUtils.isEmpty(chapter.content)) {
                                 if ((chapter.content.length()) <= Constants.CONTENT_ERROR_COUNT) {
                                     readStatus.isLoading = true;
-                                    getChapterByLoading(ReadingActivity.MSG_LOAD_NEXT_CHAPTER, readStatus.sequence + 1);
+                                    getChapterByLoading(ReadingActivity.Companion.getMSG_LOAD_NEXT_CHAPTER(), readStatus.sequence + 1);
                                 } else {
                                     nextChapter = chapter;
                                 }
@@ -263,7 +263,7 @@ public class ReadDataFactory extends IReadDataFactory {
                 } else {
                     if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
                         readStatus.isLoading = true;
-                        getChapterByLoading(ReadingActivity.MSG_LOAD_NEXT_CHAPTER, readStatus.sequence + 1);
+                        getChapterByLoading(ReadingActivity.Companion.getMSG_LOAD_NEXT_CHAPTER(), readStatus.sequence + 1);
                     } else if (dataListener != null) {
                         dataListener.showToast(R.string.err_no_net);
                     }
@@ -324,20 +324,20 @@ public class ReadDataFactory extends IReadDataFactory {
                 } else {
                     if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
                         readStatus.isLoading = true;
-                        getChapterByLoading(ReadingActivity.MSG_LOAD_PRE_CHAPTER, readStatus.sequence - 1);
+                        getChapterByLoading(ReadingActivity.Companion.getMSG_LOAD_PRE_CHAPTER(), readStatus.sequence - 1);
                     } else if (dataListener != null) {//提示网络不给力
                         dataListener.showToast(R.string.err_no_net);
                     }
                 }
             } else {
                 if (BookHelper.isChapterExist(readStatus.sequence - 1, readStatus.book_id)) {
-                    Chapter chapter = getChapter(ReadingActivity.MSG_LOAD_PRE_CHAPTER, readStatus.sequence - 1);
+                    Chapter chapter = getChapter(ReadingActivity.Companion.getMSG_LOAD_PRE_CHAPTER(), readStatus.sequence - 1);
                     if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
                         if (chapter != null) {
                             if (!TextUtils.isEmpty(chapter.content)) {
                                 if ((chapter.content.length()) <= Constants.CONTENT_ERROR_COUNT) {
                                     readStatus.isLoading = true;
-                                    getChapterByLoading(ReadingActivity.MSG_LOAD_PRE_CHAPTER, readStatus.sequence - 1);
+                                    getChapterByLoading(ReadingActivity.Companion.getMSG_LOAD_PRE_CHAPTER(), readStatus.sequence - 1);
                                 } else {
                                     preChapter = chapter;
                                 }
@@ -365,7 +365,7 @@ public class ReadDataFactory extends IReadDataFactory {
                 } else {
                     if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
                         readStatus.isLoading = true;
-                        getChapterByLoading(ReadingActivity.MSG_LOAD_PRE_CHAPTER, readStatus.sequence - 1);
+                        getChapterByLoading(ReadingActivity.Companion.getMSG_LOAD_PRE_CHAPTER(), readStatus.sequence - 1);
                     } else {
                         if (dataListener != null) {
                             dataListener.showToast(R.string.err_no_net);
