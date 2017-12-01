@@ -57,7 +57,7 @@
     <include
         layout="@layout/download_manager_pager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@id/top_layout"/>
 
     <ImageView

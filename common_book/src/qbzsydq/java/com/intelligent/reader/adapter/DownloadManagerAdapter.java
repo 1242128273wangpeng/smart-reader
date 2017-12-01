@@ -1,27 +1,28 @@
 package com.intelligent.reader.adapter;
 
-import com.intelligent.reader.R;
-import com.intelligent.reader.read.help.BookHelper;
-
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.adapter.RemoveModeAdapter;
-import net.lzbook.kit.book.download.DownloadState;
-import net.lzbook.kit.data.bean.Book;
-import net.lzbook.kit.data.bean.BookTask;
-import net.lzbook.kit.data.db.BookDaoHelper;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.intelligent.reader.R;
+import com.intelligent.reader.activity.DownloadManagerActivity;
+import com.intelligent.reader.read.help.BookHelper;
+
+import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.book.adapter.RemoveModeAdapter;
+import net.lzbook.kit.book.component.service.DownloadService;
+import net.lzbook.kit.book.download.DownloadState;
+import net.lzbook.kit.data.bean.Book;
+import net.lzbook.kit.data.bean.BookTask;
+import net.lzbook.kit.data.db.BookDaoHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +32,6 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
     private static final String TAG = "DownloadManagerAdapter";
     public BookDaoHelper mBookDaoHelper;
     protected ArrayList<Book> book_data;
-    FrameLayout frameLayout;
     Resources.Theme theme;
     Resources resources;
     int progressbarMain;//点亮的进度条
@@ -43,13 +43,12 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
     private Resources mResources;
     private Context mContext;
 
-    public DownloadManagerAdapter(Activity context, ArrayList<Book> list, FrameLayout frameLayout) {
+    public DownloadManagerAdapter(Activity context, ArrayList<Book> list) {
         super(context, list);
         this.mContext = context;
         mResources = context.getResources();
         mBookDaoHelper = BookDaoHelper.getInstance();
         book_data = list;
-        this.frameLayout = frameLayout;
         downloadManagerActivity = (DownloadManagerActivity) context;
         setAdapterChild(this, MODE_EXCEPT_FIRST);
 
@@ -114,7 +113,9 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
         final Book book = book_data.get(position);
         switch (getItemViewType(position)) {
             case 0:
-                final BookTask task = downloadManagerActivity.views.getService().getDownBookTask(book.book_id);
+                DownloadService downloadService = BaseBookApplication.getDownloadService();
+                if (downloadService == null) return;
+                final BookTask task = downloadService.getDownBookTask(book.book_id);
                 if (task == null || book == null) {
                     return;
                 }
@@ -200,18 +201,22 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
                     @Override
                     public void onClick(View v) {
                         System.err.println("download : " + book.book_id);
-                        DownloadState state = downloadManagerActivity.views.getService().getDownBookTask(book.book_id) == null ? null
-                                : downloadManagerActivity.views.getService().getDownBookTask(book.book_id).state;
+                        DownloadService downloadService = BaseBookApplication.getDownloadService();
+                        DownloadState state = null;
+                        if (downloadService != null) {
+                            state = downloadService.getDownBookTask(book.book_id) == null ? null
+                                    : downloadService.getDownBookTask(book.book_id).state;
+                        }
                         Map<String, String> data = new HashMap<>();
                         if (state == null || state == DownloadState.NOSTART) {
                             BookHelper.startDownBookTask(mContext, book.book_id, 0);
                             BookHelper.writeDownIndex(mContext, book.book_id, false, 0);
                             data.put("type", "1");
-                            data.put("bookid",book.book_id);
+                            data.put("bookid", book.book_id);
                             StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.CACHEBUTTON, data);
                             return;
                         } else if (state == DownloadState.DOWNLOADING || state == DownloadState.WAITTING) {
-                            downloadManagerActivity.stopDownloadbook(book.book_id);
+                            downloadManagerActivity.stopDownloadBook(book.book_id);
                             data.put("type", "2");
                             data.put("speed", speed);
                         } else if (state == DownloadState.LOCKED) {
@@ -228,7 +233,7 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
                             data.put("type", "1");
                         }
                         notifyDataSetChanged();
-                        data.put("bookid",book.book_id);
+                        data.put("bookid", book.book_id);
                         StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.CACHEBUTTON, data);
                     }
                 });
