@@ -1,17 +1,12 @@
 package com.intelligent.reader.presenter.search
 
-import android.app.Activity
 import android.content.Context
 import android.os.Handler
-import android.os.Message
 import android.preference.PreferenceManager
 import android.text.TextUtils
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import com.google.gson.Gson
-import com.intelligent.reader.R
-import com.intelligent.reader.adapter.SearchHotWordAdapter
 import com.intelligent.reader.presenter.IPresenter
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -19,7 +14,6 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.search.SearchAutoCompleteBean
 import net.lzbook.kit.data.search.SearchCommonBean
@@ -27,7 +21,6 @@ import net.lzbook.kit.data.search.SearchHotBean
 import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
-import java.lang.ref.WeakReference
 import java.util.ArrayList
 import java.util.HashMap
 
