@@ -59,11 +59,7 @@ public class BookmarkAdapter extends AdapterBase {
         } else {
             viewCache = (ViewCache) convertView.getTag();
         }
-        if ("night".equals(ResourceUtil.mode)) {
-            viewCache.bookmark_divider.setBackgroundColor(mContext.getResources().getColor(R.color.color_gray_3d3d3d));
-        } else {
             viewCache.bookmark_divider.setBackgroundColor(mContext.getResources().getColor(R.color.color_white_ebebeb));
-        }
         Bookmark bookmark = bookmarkList.get(position);
         if (bookmark == null) {
             return convertView;

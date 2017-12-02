@@ -9,8 +9,8 @@
     <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:fitsSystemWindows="true"
+            android:layout_alignParentTop="true"
             android:background="@color/color_primary">
 
         <RelativeLayout

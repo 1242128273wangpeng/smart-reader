@@ -42,6 +42,29 @@ public class QGRequestExecutor extends RequestExecutorDefault {
                     ArrayList<Chapter> list = BeanParser.buildOWNChapterList(chapters, 0, chapters.size());
                     if (list != null && list.size() > 0) {
                         Message.obtain(handler, RequestExecutor.REQUEST_QG_CATALOG_SUCCESS, list).sendToTarget();
+
+                        //数据库操作
+                        BookChapterDao chapterDao = new BookChapterDao(context, requestItem.book_id);
+                        ArrayList<Chapter> chapterList = chapterDao.queryBookChapter();
+                        if (chapterList == null || chapterList.size() == 0) {
+                            if (BookDaoHelper.getInstance().isBookSubed(requestItem.book_id)) {
+                                chapterDao.insertBookChapter(list);
+                                Chapter lastChapter = list.get(list.size() - 1);
+                                Book book = new Book();
+                                book.book_id = requestItem.book_id;
+                                book.book_source_id = requestItem.book_source_id;
+                                book.parameter = requestItem.parameter;
+                                book.extra_parameter = requestItem.extra_parameter;
+                                book.chapter_count = chapterDao.getCount();
+                                book.last_updatetime_native = lastChapter.time;
+                                book.last_chapter_name = lastChapter.chapter_name;
+                                book.last_updateSucessTime = System.currentTimeMillis();
+                                book.last_sort = lastChapter.sort;
+                                book.gsort = lastChapter.gsort;
+                                book.last_chapter_md5 = lastChapter.book_chapter_md5;
+                                BookDaoHelper.getInstance().updateBook(book);
+                            }
+                        }
                     } else {
                         Message.obtain(handler, RequestExecutor.REQUEST_QG_CATALOG_ERROR, list).sendToTarget();
                     }

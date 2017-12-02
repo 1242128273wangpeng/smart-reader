@@ -1,16 +1,17 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/root_view"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/base_bg"
-              android:orientation="vertical"
-              android:paddingTop="0dp">
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/root_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/base_bg"
+        android:orientation="vertical"
+        android:paddingTop="0dp">
 
     <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:fitsSystemWindows="true"
+            android:layout_alignParentTop="true"
             android:background="@color/color_primary">
 
         <RelativeLayout
@@ -25,7 +26,7 @@
                     android:gravity="center"
                     android:paddingLeft="16dp"
                     android:paddingRight="@dimen/padding_16"
-                    android:src="@mipmap/top_back"/>
+                    android:src="@mipmap/cover_top_back"/>
 
             <TextView
                     android:id="@+id/name_bookend"
@@ -47,7 +48,7 @@
                     android:paddingLeft="16dp"
                     android:visibility="invisible"
                     android:paddingRight="@dimen/padding_16"
-                    android:src="@mipmap/top_back"
+                    android:src="@mipmap/cover_top_back"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
@@ -124,6 +125,10 @@
                     android:background="@color/base_bg">
             </ListView>
 
+            <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:background="@color/color_divider"/>
 
             <RelativeLayout
                     android:layout_width="match_parent"
@@ -186,7 +191,7 @@
                          android:layout_width="match_parent"
                          android:layout_marginBottom="@dimen/dimen_margin_10"
                          android:layout_height="wrap_content">
-
+         
                          <ImageView
                              android:id="@+id/item_ad_image"
                              android:layout_width="@dimen/dimen_view_width_64"
@@ -198,9 +203,9 @@
                              android:layout_alignParentTop="true"
                              android:adjustViewBounds="true"
                              android:scaleType="fitXY" />
-
-
-
+         
+         
+         
                          <TextView
                              android:layout_alignTop="@id/item_ad_image"
                              android:layout_marginLeft="@dimen/dimen_margin_15"
@@ -213,9 +218,9 @@
                              android:singleLine="true"
                              android:textColor="?attr/bookshelf_book_name_text_color"
                              android:textSize="@dimen/dimen_text_16" />
-
-
-
+         
+         
+         
                          <RatingBar
                              android:id="@+id/item_ad_extension"
                              style="@style/promotion"
@@ -228,7 +233,7 @@
                              android:layout_centerVertical="true"
                              android:layout_alignLeft="@+id/item_ad_title"
                              android:layout_alignStart="@+id/item_ad_title" />
-
+         
                          <TextView
                              android:id="@+id/item_ad_desc"
                              android:layout_width="wrap_content"
@@ -241,7 +246,7 @@
                              android:layout_marginLeft="15dp"
                              android:textColor="?attr/bookshelf_update_time_text_color"
                              android:textSize="@dimen/dimen_text_12" />
-
+         
                          <ImageView
                              android:layout_alignTop="@id/item_ad_image"
                              android:id="@+id/item_ad_right_down"
@@ -250,7 +255,7 @@
                              android:layout_marginRight="@dimen/dimen_margin_10"
                              android:layout_alignParentRight="true"
                              android:layout_alignParentEnd="true" />
-
+         
                      </RelativeLayout>-->
         </LinearLayout>
     </ScrollView>
