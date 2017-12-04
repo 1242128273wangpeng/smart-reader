@@ -290,11 +290,11 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
 
     override fun onBookListQuery(bookList: ArrayList<Book>) {
         if (bookList.isEmpty()) {
-            bookshelf_refresh_view.setPullToRefreshEnabled(false)
-            bookshelf_empty.visibility = View.VISIBLE
+            bookshelf_refresh_view?.setPullToRefreshEnabled(false)
+            bookshelf_empty?.visibility = View.VISIBLE
         } else {
-            bookshelf_refresh_view.setPullToRefreshEnabled(true)
-            bookshelf_empty.visibility = View.GONE
+            bookshelf_refresh_view?.setPullToRefreshEnabled(true)
+            bookshelf_empty?.visibility = View.GONE
         }
     }
 
