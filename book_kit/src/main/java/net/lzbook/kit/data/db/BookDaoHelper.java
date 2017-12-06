@@ -251,7 +251,7 @@ public class BookDaoHelper {
         }
     }
 
-    public boolean isBookSubed(String book_id) {
+    public synchronized boolean isBookSubed(String book_id) {
         int size = books.size();
         for (int i = 0; i < size; i++) {
             if (books.get(i) != null && !TextUtils.isEmpty(books.get(i).book_id)) {
