@@ -2,6 +2,7 @@ package net.lzbook.kit.net.custom
 
 import okhttp3.MediaType
 import okhttp3.RequestBody
+import okhttp3.Response
 import okhttp3.ResponseBody
 import okio.Buffer
 import retrofit2.Converter
@@ -28,11 +29,11 @@ class StringRequestBodyConverter internal constructor() : Converter<String, Requ
     }
 }
 
-class StringResponseBodyConverter : Converter<ResponseBody, String> {
+class StringResponseBodyConverter : Converter<Response, String> {
     @Throws(IOException::class)
-    override fun convert(value: ResponseBody): String {
+    override fun convert(value: Response): String {
         try {
-            return value.string()
+            return value.body()!!.string()
         } finally {
             value.close()
         }
@@ -41,8 +42,7 @@ class StringResponseBodyConverter : Converter<ResponseBody, String> {
 
 class StringConverterFactory private constructor() : Converter.Factory() {
 
-    override fun responseBodyConverter(type: Type, annotations: Array<Annotation>,
-                                       retrofit: Retrofit): Converter<ResponseBody, *>? {
+    override fun responseBodyConverter(type: Type, annotations: Array<Annotation>, retrofit: Retrofit): Converter<Response, *>? {
         return when (type) {
             java.lang.String::class.java, String.javaClass -> {
                 StringResponseBodyConverter()
