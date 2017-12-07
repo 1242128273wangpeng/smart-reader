@@ -1,6 +1,5 @@
 package com.intelligent.reader.activity
 
-import com.dingyueads.sdk.NativeInit
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.SourceAdapter
 import com.intelligent.reader.presenter.bookEnd.BookEndContract
@@ -9,12 +8,10 @@ import com.intelligent.reader.presenter.bookEnd.BookEndPresenter
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Book
-import net.lzbook.kit.data.bean.EventNativeType
 import net.lzbook.kit.data.bean.ReadStatus
 import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.bean.Source
 import net.lzbook.kit.utils.ResourceUtil
-import net.lzbook.kit.utils.StatisticManager
 
 import android.content.res.Resources
 import android.graphics.Bitmap
@@ -29,8 +26,6 @@ import android.widget.Toast
 
 import java.util.ArrayList
 import java.util.concurrent.Callable
-
-import de.greenrobot.event.EventBus
 
 class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndContract {
     private var iv_back_bookstore: View? = null
@@ -57,7 +52,6 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.act_book_end)
-        EventBus.getDefault().register(this)
         initListener()
         readStatus = ReadStatus(applicationContext)
         initData()
@@ -74,7 +68,6 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
             if (mBookEndPresenter == null) {
                 mBookEndPresenter = BookEndPresenter(this, this, requestItem!!, readStatus!!, bookName!!, book_id!!, category!!)
             }
-            mBookEndPresenter!!.initAD()
         }
         loadingPage = LoadingPage(this, LoadingPage.setting_result)
         if (mBookEndPresenter != null) {
@@ -83,7 +76,6 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
         loadingPage!!.setReloadAction(Callable<Void> {
             if (mBookEndPresenter != null) {
                 mBookEndPresenter!!.getBookSource()
-                mBookEndPresenter!!.setADItem()
             }
             null
         })
@@ -132,18 +124,6 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
         }
     }
 
-
-    fun onEvent(eventNativeType: EventNativeType) {
-        if (NativeInit.CustomPositionName.BOOK_END_POSITION.toString() == eventNativeType.type_ad) {
-            if (!isFinishing) {
-                if (mBookEndPresenter != null) {
-                    mBookEndPresenter!!.setADItem()
-                }
-            }
-        }
-    }
-
-
     override fun onClick(v: View) {
         if (mBookEndPresenter != null) {
             mBookEndPresenter!!.goToBookSearchActivity(v)
@@ -163,9 +143,6 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
             }
             R.id.iv_back -> finish()
             R.id.ad_view -> {
-                if (mBookEndPresenter != null) {
-                    mBookEndPresenter!!.adSchedulingRequest(v, StatisticManager.TYPE_CLICK, false)
-                }
                 if (Constants.DEVELOPER_MODE) {
                     Toast.makeText(this@BookEndActivity, "你点击了广告", Toast.LENGTH_SHORT).show()
                 }
@@ -229,31 +206,15 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
 
         ad_view_logo!!.visibility = View.VISIBLE
 
-        if (mBookEndPresenter != null) {
-            mBookEndPresenter!!.adSchedulingRequest(ad_view!!, StatisticManager.TYPE_SHOW, false)
-        }
     }
 
 
     override fun showAdImgError() {
         ad_view!!.visibility = View.GONE
-        if (mBookEndPresenter != null) {
-            mBookEndPresenter!!.adSchedulingRequest(ad_view!!, StatisticManager.TYPE_SHOW, false)
-        }
     }
 
     /*****************************以上广告相关 */
     override fun onDestroy() {
-
-        if (ad_view != null && mBookEndPresenter != null) {
-            mBookEndPresenter!!.adSchedulingRequest(ad_view!!, StatisticManager.TYPE_END, true)
-        }
-
-        try {
-            EventBus.getDefault().unregister(this)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
 
         if (loadingPage != null) {
             loadingPage = null

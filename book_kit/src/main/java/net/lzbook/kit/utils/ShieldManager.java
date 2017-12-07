@@ -4,8 +4,6 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.dingyueads.sdk.adapter.InMobiAdapter;
-
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 
@@ -44,7 +42,6 @@ public class ShieldManager {
                     stopAchieveUserLocation();
                     //为InMobi广告sdk设置Location
 //                    LogUtils.e(TAG,"location:"+aMapLocation.toString());
-                    InMobiAdapter.setLocation(aMapLocation);
                 } else {
                     //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
                     AppLog.e("AmapError", "location Error, ErrCode:" + aMapLocation.getErrorCode() + ", errInfo:" + aMapLocation.getErrorInfo());

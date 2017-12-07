@@ -388,26 +388,4 @@ public class OtherRequestService extends VolleyDataService {
         publicCode(url, null, null, null);
         AppLog.d(TAG, "url = " + url);
     }
-
-    /**
-     * 发送用户基础数据
-     */
-    public static void sendUserBaseData(String jsonData) {
-        if (Constants.dy_ad_new_request_switch) {
-            HashMap<String, String> data = new HashMap<>();
-            data.put("adUser", jsonData);
-            publicCode(Constants.AD_DATA_Collect, data, null, null);
-        }
-    }
-
-    /**
-     * 发送用户广告场景数据
-     */
-    public static void sendAdScentData(String jsonData) {
-        if (Constants.dy_ad_new_request_switch) {
-            HashMap<String, String> data = new HashMap<>();
-            data.put("adScene", jsonData);
-            publicCode(Constants.AD_DATA_Collect, data, null, null);
-        }
-    }
 }

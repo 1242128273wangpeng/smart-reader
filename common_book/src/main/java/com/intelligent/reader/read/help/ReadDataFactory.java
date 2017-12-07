@@ -194,7 +194,6 @@ public class ReadDataFactory extends IReadDataFactory {
                     readStatus.isLoading = true;
                     if (dataListener != null) {
                         dataListener.gotoOver();
-                        statistics();
                     }
                 } else if (dataListener != null) {
                     dataListener.showToast(R.string.err_no_net);
@@ -274,7 +273,6 @@ public class ReadDataFactory extends IReadDataFactory {
                 readStatus.isLoading = true;
                 if (dataListener != null) {
                     dataListener.gotoOver();
-                    statistics();
                 }
             } else if (dataListener != null) {
                 dataListener.showToast(R.string.err_no_net);

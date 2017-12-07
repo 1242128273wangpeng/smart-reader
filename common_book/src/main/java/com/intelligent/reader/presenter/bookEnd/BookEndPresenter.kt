@@ -1,33 +1,23 @@
 package com.intelligent.reader.presenter.bookEnd
 
 import android.app.Activity
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.text.TextUtils
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
-import com.android.volley.VolleyError
-import com.android.volley.toolbox.ImageLoader
-import com.dingyueads.sdk.Bean.Novel
-import com.dingyueads.sdk.Native.YQNativeAdInfo
-import com.dingyueads.sdk.NativeInit
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CataloguesActivity
 import com.intelligent.reader.activity.HomeActivity
 import com.intelligent.reader.activity.SearchBookActivity
-import com.intelligent.reader.presenter.IPresenter
 import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.util.EventBookStore
-import net.lzbook.kit.ad.OwnNativeAdManager
 import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.book.view.RecommendItemView
-import net.lzbook.kit.cache.imagecache.ImageCacheManager
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.*
 import net.lzbook.kit.data.db.BookChapterDao
@@ -48,14 +38,10 @@ class BookEndPresenter(val act: Activity, val bookEndContract: BookEndContract,
     var myDialog: MyDialog? = null
     var sourceList = ArrayList<Source>()
     private var mBookDaoHelper: BookDaoHelper? = null
-    var nativeAdInfo: YQNativeAdInfo? = null
-    var nativeAdManager: OwnNativeAdManager? = null
-    var statisticManager: StatisticManager? = null
 
     init {
         activity = WeakReference(act)
         mBookDaoHelper = BookDaoHelper.getInstance()
-        statisticManager = StatisticManager.getStatisticManager()
     }
 
     //获取书籍来源信息
@@ -277,89 +263,5 @@ class BookEndPresenter(val act: Activity, val bookEndContract: BookEndContract,
             super.handleMessage(msg)
         }
     }
-
-    /********************** 以下是广告相关的*******************************/
-
-    fun initAD() {
-        nativeAdManager = OwnNativeAdManager.getInstance(activity!!.get())
-        //        nativeAdManager.loadAd(NativeInit.CustomPositionName.BOOK_END_POSITION);
-        setADItem()
-    }
-
-    fun setADItem() {
-        //开关
-        if (!Constants.dy_book_end_ad_switch || Constants.isHideAD) {
-            return
-        }
-        nativeAdInfo = nativeAdManager!!.getSingleADInfo(NativeInit.CustomPositionName.BOOK_END_POSITION)
-        if (nativeAdInfo == null) {
-            //            isGetEvent = true;
-            return
-        }
-        val advertisement = nativeAdInfo!!.getAdvertisement() ?: return
-        bookEndContract.showAdViewLogo(advertisement.rationName)
-
-        if (!TextUtils.isEmpty(advertisement.imageUrl)) {
-            ImageCacheManager.getInstance().imageLoader.get(advertisement.imageUrl, object : ImageLoader.ImageListener {
-                override fun onResponse(imageContainer: ImageLoader.ImageContainer?, b: Boolean) {
-                    if (imageContainer != null) {
-                        val bitmap = imageContainer.bitmap
-                        if (bitmap != null) {
-                            bookEndContract!!.showAdImgSuccess(bitmap)
-                        }
-                    }
-                }
-
-                override fun onErrorResponse(volleyError: VolleyError) {
-                    bookEndContract!!.showAdImgError()
-                }
-            })
-        }
-
-    }
-
-    /**
-     * isActDestory 如果activity销毁则不需要进行百度统计
-     */
-    fun adSchedulingRequest(ad_view: View, type: Int, isActDestory: Boolean) {
-        if (nativeAdInfo != null) {
-            try {
-                if (statisticManager == null) {
-                    statisticManager = StatisticManager.getStatisticManager()
-                }
-                statisticManager!!.schedulingRequest(activity!!.get(), ad_view, nativeAdInfo, transformation(), type, NativeInit.ad_position[4])
-            } catch (e: IllegalArgumentException) {
-                e.printStackTrace()
-            }
-            if (!isActDestory) {
-                StatServiceUtils.statBookEventShow(activity!!.get(), StatServiceUtils.type_ad_book_end)
-            } else {
-                if (nativeAdManager != null) {
-                    nativeAdManager = null
-                }
-            }
-        }
-    }
-
-    fun transformation(): Novel {
-        val novel = Novel()
-        novel.novelId = requestItem.book_id
-        novel.chapterId = 0.toString()
-        novel.author = requestItem.author
-        novel.label = category
-        novel.adBookName = requestItem.name
-        novel.book_source_id = requestItem.book_source_id
-        if (Constants.QG_SOURCE == requestItem.host) {
-            novel.channelCode = "A001"
-            //            novel.ad_QG_bookCategory = category;
-            //            novel.ad_QG_bookFenpin = "";
-        } else {
-            novel.channelCode = "A002"
-            //            novel.ad_YQ_bookLabel = category;
-        }
-        return novel
-    }
-
-    /********************** 以上是广告相关的*******************************/
 
 }

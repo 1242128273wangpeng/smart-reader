@@ -2,13 +2,11 @@ package iyouqu.theme;
 
 import com.baidu.mobstat.StatService;
 
-import net.lzbook.kit.ad.OwnNativeAdManager;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.utils.ATManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.ResourceUtil;
 
 import android.annotation.SuppressLint;
@@ -21,7 +19,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -253,12 +250,6 @@ public abstract class FrameActivity extends AppCompatActivity {
             isCurrentRunningForeground = false;
             restoreSystemDisplayState();
         }
-        if (!Constants.isHideAD && Constants.isShowSwitchSplashAd && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
-            isCurrentRunningForeground = isAppOnForeground();
-            if (!isCurrentRunningForeground) {
-                outTime = System.currentTimeMillis();
-            }
-        }
     }
 
     @Override
@@ -270,12 +261,6 @@ public abstract class FrameActivity extends AppCompatActivity {
             Map<String, String> data = new HashMap<>();
             data.put("time", String.valueOf(inTime - outTime));
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.ACTIVATE, data);
-        }
-        if (!isCurrentRunningForeground && !Constants.isHideAD && Constants.isShowSwitchSplashAd && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
-            boolean isShowSwitchSplash = inTime - outTime > Constants.switchSplash_ad_sec * 1000;
-            if (isShowSwitchSplash) {
-                OwnNativeAdManager.toSwitchAdActivity(this);
-            }
         }
     }
 

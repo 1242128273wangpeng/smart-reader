@@ -137,7 +137,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         readSettingView = findViewById(R.id.readSettingView) as ReadSettingView
         readSettingView!!.setOnReadSettingListener(this)
         novel_basePageView = findViewById(R.id.novel_basePageView) as FrameLayout
-        readStatus!!.novel_basePageView = novel_basePageView
         if (Constants.isSlideUp) {
             pageView = ScrollPageView(applicationContext)
         } else {

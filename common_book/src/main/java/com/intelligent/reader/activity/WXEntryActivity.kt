@@ -1,4 +1,4 @@
-package cc.mianfeinovel.wxapi
+package cn.txtzsydsq.reader.wxapi
 
 import android.app.Activity
 import android.content.Intent

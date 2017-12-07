@@ -150,12 +150,6 @@ public class DynamicParamter {
         user_transfer_second = getConfigParams("user_transfer_second");
         recommend_bookcover = getConfigParams(Constants.RECOMMEND_BOOKCOVER);
 
-        //新壳广告开关
-        new_app_ad_switch = getConfigParams(Constants.NEW_APP_AD_SWITCH);
-        //广告总开关
-        dy_ad_switch = getConfigParams(Constants.DY_AD_SWITCH);
-        //广告，新的请求开关
-        dy_ad_new_request_switch = getConfigParams(Constants.DY_AD_NEW_REQUEST_SWITCH);
         //新的统计开关
         dy_ad_new_statistics_switch = getConfigParams(Constants.DY_AD_NEW_STATISTICS_SWITCH);
         //阅读页翻页统计开关
@@ -164,8 +158,6 @@ public class DynamicParamter {
         dy_ad_readPage_slide_switch_new = getConfigParams(Constants.DY_AD_READPAGE_SLIDE_SWITCH_NEW);
         //老的广告统计开关
         dy_ad_old_request_switch = getConfigParams(Constants.DY_AD_OLD_REQUEST_SWITCH);
-        //X小时内新用户不显示广告设置
-        dy_adfree_new_user = getConfigParams(Constants.DY_ADFREE_NEW_USER);
         //开屏页开关
         dy_splash_ad_switch = getConfigParams(Constants.DY_SPLASH_AD_SWITCH);
         //书架页开关
@@ -650,16 +642,6 @@ public class DynamicParamter {
 //                    putConfigParams(Constants.NONET_READTIME, nonet_readhour);
 //                }
 //            }
-            //新壳的广告开关
-            if (!data.isNull(Constants.NEW_APP_AD_SWITCH)) {
-                new_app_ad_switch = data.getString(Constants.NEW_APP_AD_SWITCH);
-                if (showAdFlag) {
-                    new_app_ad_switch = "true";
-                }
-                if (isOwn) {
-                    putConfigParams(Constants.NEW_APP_AD_SWITCH, new_app_ad_switch);
-                }
-            }
             installParam();
         } catch (JSONException e) {
             e.printStackTrace();

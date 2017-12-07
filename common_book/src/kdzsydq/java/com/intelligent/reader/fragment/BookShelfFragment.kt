@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import com.dingyueads.sdk.Native.YQNativeAdInfo
 import com.intelligent.reader.BuildConfig
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.HomeActivity
@@ -25,11 +24,9 @@ import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.util.BookShelfRemoveHelper
 import com.intelligent.reader.util.ShelfGridLayoutManager
 import com.intelligent.reader.view.BookDeleteDialog
-import de.greenrobot.event.EventBus
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.kdzsydq.fragment_bookshelf.*
-import net.lzbook.kit.ad.OwnNativeAdManager
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.constants.Constants
@@ -37,7 +34,6 @@ import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.BookUpdate
 import net.lzbook.kit.data.bean.BookUpdateResult
-import net.lzbook.kit.data.bean.EventBookshelfAd
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.utils.*
@@ -72,15 +68,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
     private val fragmentCallback: BaseFragment.FragmentCallback by lazy { activity as BaseFragment.FragmentCallback }
     private val bookSensitiveWords: ArrayList<String> = ArrayList()
     private val noBookSensitive = false
-    //自有广告管理类
-    private val ownNativeAdManager: OwnNativeAdManager? by lazy {
-        var manager: OwnNativeAdManager? = null
-        if (!Constants.isHideAD) {
-            manager = OwnNativeAdManager.getInstance(activity)
-            manager.setActivity(activity)
-        }
-        manager
-    }
 
     private var frameBookHelper: FrameBookHelper? = null
     private var bookDaoHelper: BookDaoHelper = BookDaoHelper.getInstance()
@@ -231,32 +218,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
     override fun onResume() {
         super.onResume()
         updateUI()
-        ownNativeAdManager?.setActivity(activity)
     }
 
-    fun onEvent(eventBookshelfAd: EventBookshelfAd) {
-        AppLog.e("ADSDK", "onEvent")
-        val isHandle = activity != null && isAdded
-        if (isHandle) isShowAD = true
-        val isNotShowAd = !isShowAD || bookShelfRemoveHelper.isRemoveMode || !isResumed
-        presenter.handleBookShelfAd(eventBookshelfAd, isHandle, isNotShowAd, ownNativeAdManager, isList)
-    }
-
-    override fun onBookShelfAdHandle() {
-        bookShelfReAdapter.notifyDataSetChanged()
-        AppLog.e(TAG, "notifyDataSetChanged")
-        StatServiceUtils.statBookEventShow(activity, StatServiceUtils.type_ad_shelf)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        EventBus.getDefault().register(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        EventBus.getDefault().unregister(this)
-    }
 
     override fun onDetach() {
         super.onDetach()
@@ -283,16 +246,14 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
         frameBookHelper?.recycleCallback()
 
         presenter.iBookList.clear()
-        presenter.adInfoHashMap.clear()
     }
 
     /**
      * 查Book数据库更新界面
      */
     private fun updateUI() {
-        val isNotShowAd = !isShowAD || bookShelfRemoveHelper.isRemoveMode || !isResumed
         doAsync {
-            presenter.queryBookListAndAd(ownNativeAdManager, isNotShowAd, isList)
+            presenter.queryBookListAndAd()
             runOnMain {
                 bookShelfReAdapter.setUpdate_table(presenter.filterUpdateTableList())
                 bookShelfReAdapter.notifyDataSetChanged()
@@ -311,14 +272,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
         }
     }
 
-    override fun hideBannerAd() {
-        //NONE
-    }
-
-    override fun showBannerAd(adInfo: YQNativeAdInfo) {
-        //NONE
-    }
-
     /**
      * 下拉时检查更新
      */
@@ -332,9 +285,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
 
         val startPullTime = System.currentTimeMillis()
         val interval = Math.abs(startPullTime - latestLoadDataTime)
-
-        //下拉刷新时删除标记的360广告信息
-        presenter.remove360Ads()
 
         // 刷新间隔小于30秒无效
         if (interval <= PULL_REFRESH_DELAY) {

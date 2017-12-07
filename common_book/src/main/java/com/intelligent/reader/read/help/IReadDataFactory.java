@@ -1,13 +1,9 @@
 package com.intelligent.reader.read.help;
 
-import com.dingyueads.sdk.Bean.Novel;
-import com.dingyueads.sdk.NativeInit;
-import com.dingyueads.sdk.manager.ADStatisticManager;
 import com.intelligent.reader.activity.ReadingActivity;
 import com.intelligent.reader.read.page.PageInterface;
 
 import net.lzbook.kit.R;
-import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Chapter;
@@ -20,8 +16,6 @@ import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.request.DataCache;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.NetWorkUtils;
-import net.lzbook.kit.utils.OpenUDID;
-import net.lzbook.kit.utils.StatisticManager;
 
 import android.content.Context;
 import android.os.Handler;
@@ -63,7 +57,6 @@ public abstract class IReadDataFactory {
     protected ReadingActivity readingActivity;
     protected ArrayList<Chapter> readedChapter;
     private BookDaoHelper bookDaoHelper;
-    private StatisticManager statisticManager;
 
     public void clean() {
         if (mHandler != null) {
@@ -319,9 +312,6 @@ public abstract class IReadDataFactory {
      * 翻页到下一章的处理
      */
     protected void nextChapterCallBack(boolean drawCurrent) {
-        if (readStatus.sequence != -1) {
-            statistics();
-        }
 
         Constants.readedCount++;
         preChapter = currentChapter;
@@ -347,82 +337,12 @@ public abstract class IReadDataFactory {
             dataListener.changeChapter();
         }
         readStatus.isLoading = false;
-        // 加载章节间大图相关内容
-        loadNativeAd();
-    }
-
-    public void statistics() {
-        if (statisticManager == null) {
-            statisticManager = StatisticManager.getStatisticManager();
-        }
-
-        if (readStatus != null && readStatus.novel_basePageView != null) {
-            //翻到下一章时处理上一章时处理当前章节广告
-            Novel novel = transformation();
-
-            if (readStatus.currentAdInfo_image != null) {
-                if (Constants.IS_LANDSCAPE) {
-                    statisticManager.schedulingRequest(readingActivity, readStatus.novel_basePageView, readStatus.currentAdInfo_image,
-                            novel, StatisticManager.TYPE_END, NativeInit.ad_position[9]);
-                } else {
-                    statisticManager.schedulingRequest(readingActivity, readStatus.novel_basePageView, readStatus.currentAdInfo_image,
-                            novel, StatisticManager.TYPE_END, NativeInit.ad_position[2]);
-                }
-            }
-
-//            if (readStatus.currentAdInfo_in_chapter != null) {
-//                statisticManager.schedulingRequest(readStatus.novel_basePageView, readStatus.currentAdInfo_in_chapter,
-//                        novel, StatisticManager.TYPE_END, NativeInit.ad_position[7]);
-//            }
-//            readStatus.recycleResourceNew();
-            //翻到下一章时清除5-2广告容器储存的广告信息
-            readStatus.recycleResourceNew();
-
-            //elk pv统计
-            ADStatisticManager.getADStatisticManager().onPvStatistics(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()), novel, Constants.dy_ad_old_request_switch);
-        }
-    }
-
-    public Novel transformation() {
-        Novel novel = new Novel();
-        if (readStatus != null && readStatus.book != null) {
-            novel.novelId = readStatus.book.book_id;
-            novel.author = readStatus.book.author;
-            novel.label = readStatus.book.category;
-            novel.adBookName = readStatus.book.name;
-            novel.book_source_id = readStatus.book.book_source_id;
-        }
-        if (currentChapter != null) {
-            novel.chapterId = String.valueOf(currentChapter.sort);
-            novel.adChapterId = currentChapter.chapter_id;
-        } else if (tempCurrentChapter != null) {
-            novel.chapterId = String.valueOf(tempCurrentChapter.sort);
-            novel.adChapterId = tempCurrentChapter.chapter_id;
-        }
-
-        if (readStatus != null && readStatus.book != null && Constants.QG_SOURCE.equals(readStatus.book.site)) {
-            novel.channelCode = "A001";
-//            novel.ad_QG_bookCategory = readStatus.book.category;
-//            novel.ad_QG_bookFenpin = "";
-        } else {
-            novel.channelCode = "A002";
-//            novel.ad_YQ_bookLabel = readStatus.book.category;
-        }
-        return novel;
-    }
-
-    private void loadNativeAd() {
-        pageView.loadNatvieAd();
     }
 
     /**
      * 翻页到上一章的处理
      */
     protected void preChapterCallBack(boolean drawCurrent) {
-        readStatus.shouldShowInMobiAdView = false;
-        if (readStatus != null) {
-            readStatus.recycleResourceNew();
-        }
 
         Constants.readedCount++;
         nextChapter = currentChapter;
@@ -527,10 +447,6 @@ public abstract class IReadDataFactory {
         params.put("chapter_pages", String.valueOf(readStatus.pageCount));
         params.put("start_time", String.valueOf(Constants.startReadTime));
         params.put("end_time", String.valueOf(Constants.endReadTime));
-        if (statisticManager == null) {
-            statisticManager = StatisticManager.getStatisticManager();
-        }
-        statisticManager.sendReadPvData(params);
     }
 
     public boolean nextByAutoRead() {

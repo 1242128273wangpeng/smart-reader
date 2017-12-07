@@ -8,7 +8,6 @@ dependencies {
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     //compile 'net.iyouqu.android.common:Iyouqu_Volley:1.0.0'
-    compile 'net.iyouqu.android.common:iyouqu_adsdk:1.4.7' //广告正式环境
     compile 'net.iyouqu.android.common:iyouqu_logencap:1.0.7'
     compile 'net.iyouqu.android.common:QG_SDK:1.0.3'
     compile 'net.youqu:ibook-token:2.0.0'
@@ -52,6 +51,7 @@ dependencies {
     compile 'com.aliyun.ams:alicloud-android-utdid:1.1.5.3'
     compile 'com.aliyun.ams:alicloud-android-ut:5.1.0'
     compile 'com.aliyun.ams:alicloud-android-utils:1.0.3'
+//    compile project(':retrofit-tag')
 }
 
 configurations.all {

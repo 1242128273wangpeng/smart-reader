@@ -15,6 +15,16 @@ import java.util.Map;
 
 public class InputStreamHelper {
 
+    public enum IEncoding {
+        NONE(""), ESENC("esenc"), GZIP("gzip"), ESENCGZIP("gzip,esenc");
+
+        public final String encoding;
+
+        IEncoding(String encoding) {
+            this.encoding = encoding;
+        }
+    }
+
     public static byte[] encrypt(byte[] bytes) {
         for (int i = 0; i < bytes.length; i++) {
             bytes[i] = (byte) ~bytes[i];
@@ -35,6 +45,7 @@ public class InputStreamHelper {
         }
         return encoding.toString();
     }
+
 
     public static InputStream getInputStream(Map<String, String> responseHeaders, InputStream inputStream) throws IOException {
         return getInputStream(getEncoding(responseHeaders), inputStream);
@@ -74,15 +85,5 @@ public class InputStreamHelper {
             e.printStackTrace();
         }
         return stringBuffer.toString();
-    }
-
-    public enum IEncoding {
-        NONE(""), ESENC("esenc"), GZIP("gzip"), ESENCGZIP("gzip,esenc");
-
-        public final String encoding;
-
-        IEncoding(String encoding) {
-            this.encoding = encoding;
-        }
     }
 }

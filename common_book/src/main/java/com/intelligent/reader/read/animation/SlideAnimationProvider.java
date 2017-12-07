@@ -98,7 +98,6 @@ public class SlideAnimationProvider extends AnimationProvider {
             } else {
 
                 isCanDoStep = false;
-                readStatus.shouldShowInMobiAdView = true;
                 moveX = 0;// currentbitmap归位
                 finishAnimation();
             }

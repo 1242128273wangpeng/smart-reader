@@ -1,8 +1,5 @@
 package com.intelligent.reader.read.page;
 
-import com.dingyueads.sdk.Bean.AdSceneData;
-import com.dingyueads.sdk.Bean.Novel;
-import com.dingyueads.sdk.NativeInit;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.ReadingActivity;
 import com.intelligent.reader.read.animation.AnimationProvider;
@@ -22,8 +19,6 @@ import net.lzbook.kit.data.bean.ReadStatus;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
-import net.lzbook.kit.utils.StatisticManager;
-import net.lzbook.kit.utils.ToastUtils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -79,7 +74,6 @@ public class PageView extends View implements PageInterface {
     private float percent;
     private boolean isFirstCome = true;//打点统计用 判断每次退出阅读后是否重新进来
 
-    private StatisticManager statisticManager;
     private int count;//用户首次进入后进行标识（打点用）  会执行两次的drawCurrentPage 和 drawNextPage（原因待查）
 
     //动画为执行完时, 不接受触摸
@@ -163,16 +157,6 @@ public class PageView extends View implements PageInterface {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        if (readStatus != null) {
-            readStatus.recycleResourceNew();
-            readStatus.setAd_bitmap_big(null);
-            readStatus.setAd_bitmap_middle(null);
-            readStatus.setAd_bitmap_middle_down(null);
-        }
-
-        if (drawTextHelper != null) {
-            drawTextHelper.loadNatvieAd();
-        }
 
         pageWidth = readStatus.screenWidth = w;
         pageHeight = readStatus.screenHeight = h;
@@ -440,7 +424,6 @@ public class PageView extends View implements PageInterface {
         if (motionState == MotionState.kWaiting) {
             onClick(event);
         } else {
-            drawTextHelper.removeInMobiView();
             if (initMoveState == validMoveState && provider != null) {
                 if (MotionState.kMoveToRight == validMoveState) {
 //                    float v = (event.getX() - touchStartX) / getWidth();
@@ -466,39 +449,29 @@ public class PageView extends View implements PageInterface {
 
         int h4 = pageHeight / 4;
         int w3 = pageWidth / 3;
-        if (AdOnclick(x, y)) {
-            if (Constants.DEVELOPER_MODE) {
-                ToastUtils.showToastNoRepeat("AdOnclick");
-            }
-        }
-//        else if (performOperation(event)) {
-//        }
-        else {
-            if (!Constants.FULL_SCREEN_READ) {
-                if (performOperation(event)) {
-                } else if (x <= w3) {
-                    tryTurnPrePage();
-                } else if (x >= pageWidth - w3 || (y >= pageHeight - h4 && x >= w3)) {
-                    tryTurnNextPage(event);
-                } else {
-
-                    if (callBack != null) {
-                        callBack.onShowMenu(true);
-                    }
-                }
+        if (!Constants.FULL_SCREEN_READ) {
+            if (performOperation(event)) {
+            } else if (x <= w3) {
+                tryTurnPrePage();
+            } else if (x >= pageWidth - w3 || (y >= pageHeight - h4 && x >= w3)) {
+                tryTurnNextPage(event);
             } else {
-                if (performOperation(event)) {
-                } else if (x <= w3 || x >= pageWidth - w3 || (y >= pageHeight - h4 && x >= w3)) {
-                    tryTurnNextPage(event);
-                } else {
-                    if (callBack != null) {
-                        callBack.onShowMenu(true);
-                    }
+
+                if (callBack != null) {
+                    callBack.onShowMenu(true);
+                }
+            }
+        } else {
+            if (performOperation(event)) {
+            } else if (x <= w3 || x >= pageWidth - w3 || (y >= pageHeight - h4 && x >= w3)) {
+                tryTurnNextPage(event);
+            } else {
+                if (callBack != null) {
+                    callBack.onShowMenu(true);
                 }
             }
         }
     }
-
 
     private boolean performOperation(MotionEvent event) {
         if (mOperationPaint == null) return false;
@@ -536,199 +509,6 @@ public class PageView extends View implements PageInterface {
         }
     }
 
-    private boolean AdOnclick(int x, int y) {
-        if (readStatus.native_type == 20) {
-            if (readStatus.width_nativead_middle == 0 || readStatus.height_middle_nativead == 0) {
-                return false;
-            }
-            rect.left = 0;
-            rect.top = (int) readStatus.y_nativead;
-            rect.right = readStatus.screenWidth;
-            rect.bottom = (int) readStatus.y_nativead + readStatus.height_middle_nativead;
-
-            rectDown.left = 0;
-            rectDown.top = 0;
-            rectDown.right = 0;
-            rectDown.bottom = 0;
-        } else if (readStatus.native_type == 2 || readStatus.native_type == 5) {
-            if (readStatus.width_nativead_big == 0 || readStatus.height_nativead_big == 0) {
-                return false;
-            }
-            rect.left = (readStatus.screenWidth - readStatus.width_nativead_big) / 2;
-            rect.top = (readStatus.screenHeight - readStatus.height_nativead_big) / 2;
-            rect.right = (readStatus.screenWidth + readStatus.width_nativead_big) / 2;
-            rect.bottom = (readStatus.screenHeight + readStatus.height_nativead_big) / 2;
-
-            rectDown.left = 0;
-            rectDown.top = 0;
-            rectDown.right = 0;
-            rectDown.bottom = 0;
-        } else if (readStatus.native_type == 21) {
-            if (readStatus.width_nativead_middle == 0 || readStatus.height_middle_nativead == 0) {
-                return false;
-            }
-            rect.left = 0;
-            rect.top = (int) (readStatus.y_nativead - readStatus.height_middle_nativead);
-            rect.right = readStatus.screenWidth;
-            rect.bottom = (int) readStatus.y_nativead;
-
-            rectDown.left = 0;
-            rectDown.top = (int) readStatus.y_nativead;
-            rectDown.right = readStatus.screenWidth;
-            rectDown.bottom = (int) readStatus.y_nativead + readStatus.height_middle_nativead;
-        } else if (readStatus.native_type == 22) {
-            if (readStatus.width_nativead_middle == 0 || readStatus.height_middle_nativead == 0) {
-                return false;
-            }
-            rect.left = 0;
-            rect.top = (int) (readStatus.y_nativead);
-            rect.right = readStatus.screenWidth;
-            rect.bottom = (int) readStatus.y_nativead + readStatus.height_middle_nativead;
-
-            rectDown.left = 0;
-            rectDown.top = 0;
-            rectDown.right = 0;
-            rectDown.bottom = 0;
-        } else if (readStatus.native_type == 23) {
-            if (readStatus.width_nativead_middle == 0 || readStatus.height_middle_nativead == 0) {
-                return false;
-            }
-            rect.left = 0;
-            rect.top = (int) (readStatus.y_nativead);
-            rect.right = readStatus.screenWidth;
-            rect.bottom = (int) readStatus.y_nativead + readStatus.height_middle_nativead;
-
-            rectDown.left = 0;
-            rectDown.top = 0;
-            rectDown.right = 0;
-            rectDown.bottom = 0;
-        } else if (readStatus.native_type == 24) {
-            if (readStatus.width_nativead_middle == 0 || readStatus.height_middle_nativead == 0) {
-                return false;
-            }
-            rect.left = 0;
-            rect.top = (int) (readStatus.y_nativead);
-            rect.right = readStatus.screenWidth;
-            rect.bottom = (int) readStatus.y_nativead + readStatus.height_middle_nativead;
-
-            rectDown.left = 0;
-            rectDown.top = 0;
-            rectDown.right = 0;
-            rectDown.bottom = 0;
-        } else if (readStatus.native_type == 25) {
-            if (readStatus.width_nativead == 0 || readStatus.height_nativead == 0) {
-                return false;
-            }
-            rect.left = 0;
-            rect.top = (int) (readStatus.y_nativead);
-            rect.right = readStatus.screenWidth;
-            rect.bottom = (int) readStatus.y_nativead + readStatus.height_nativead;
-
-            rectDown.left = 0;
-            rectDown.top = 0;
-            rectDown.right = 0;
-            rectDown.bottom = 0;
-        } else {
-            return false;
-        }
-
-        if (rect.contains(x, y)) {
-            AppLog.e(TAG, "PageView onADClicked");
-            if (statisticManager == null) {
-                statisticManager = StatisticManager.getStatisticManager();
-            }
-            if (readStatus.native_type == 20 || readStatus.native_type == 21 || readStatus.native_type == 23) {
-                try {
-                    if (readStatus.currentAdInfo != null) {
-                        AdSceneData adSceneData = readStatus.currentAdInfo.getAdSceneData();
-                        if (adSceneData != null) {
-                            adSceneData.ad_markId = NativeInit.ad_mark_id[1];
-                            adSceneData.ad_clickLocation = x + "*" + y;
-                        }
-                        statisticManager.schedulingRequest(mActivity, readStatus.novel_basePageView, readStatus.currentAdInfo, getCurrentNovel(), StatisticManager.TYPE_CLICK, NativeInit.ad_position[1]);
-                    }
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
-                }
-            } else if (readStatus.native_type == 22 || readStatus.native_type == 24 || readStatus.native_type == 25) {
-                try {
-                    if (readStatus.currentAdInfoDown != null) {
-                        AdSceneData adSceneData = readStatus.currentAdInfoDown.getAdSceneData();
-                        if (adSceneData != null) {
-                            adSceneData.ad_markId = NativeInit.ad_mark_id[1];
-                            adSceneData.ad_clickLocation = x + "*" + y;
-                        }
-                        statisticManager.schedulingRequest(mActivity, readStatus.novel_basePageView, readStatus.currentAdInfoDown, getCurrentNovel(), StatisticManager.TYPE_CLICK, NativeInit.ad_position[1]);
-                    }
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
-                }
-            } else if (readStatus.native_type == 2 || readStatus.native_type == 5) {
-                try {
-                    AdSceneData adSceneData;
-                    if (readStatus.native_type == 2 && readStatus.currentAdInfo_image != null) {
-                        adSceneData = readStatus.currentAdInfo_image.getAdSceneData();
-                        if (adSceneData != null) {
-                            if (Constants.IS_LANDSCAPE) {
-                                adSceneData.ad_markId = NativeInit.ad_mark_id[9];
-                            } else {
-                                adSceneData.ad_markId = NativeInit.ad_mark_id[2];
-                            }
-                            adSceneData.ad_clickLocation = x + "*" + y;
-                        }
-                        if (Constants.IS_LANDSCAPE) {
-                            statisticManager.schedulingRequest(mActivity, readStatus.novel_basePageView, readStatus.currentAdInfo_image, getCurrentNovel(), StatisticManager.TYPE_CLICK, NativeInit.ad_position[9]);
-                        } else {
-                            statisticManager.schedulingRequest(mActivity, readStatus.novel_basePageView, readStatus.currentAdInfo_image, getCurrentNovel(), StatisticManager.TYPE_CLICK, NativeInit.ad_position[2]);
-                        }
-
-                    } else if (readStatus.native_type == 5 && readStatus.currentAdInfo_in_chapter != null) {
-                        adSceneData = readStatus.currentAdInfo_in_chapter.getAdSceneData();
-                        if (adSceneData != null) {
-                            if (Constants.IS_LANDSCAPE) {
-                                adSceneData.ad_markId = NativeInit.ad_mark_id[10];
-                            } else {
-                                adSceneData.ad_markId = NativeInit.ad_mark_id[7];
-                            }
-                            adSceneData.ad_clickLocation = x + "*" + y;
-                        }
-                        if (Constants.IS_LANDSCAPE) {
-                            statisticManager.schedulingRequest(mActivity, readStatus.novel_basePageView, readStatus.currentAdInfo_in_chapter, getCurrentNovel(), StatisticManager.TYPE_CLICK, NativeInit.ad_position[10]);
-                        } else {
-                            statisticManager.schedulingRequest(mActivity, readStatus.novel_basePageView, readStatus.currentAdInfo_in_chapter, getCurrentNovel(), StatisticManager.TYPE_CLICK, NativeInit.ad_position[7]);
-                        }
-
-                    }
-                    readStatus.isInMobiViewClicking = true;
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
-                }
-            }
-            return true;
-        }
-        if (rectDown.contains(x, y)) {
-            AppLog.e(TAG, "PageView onADClicked");
-            if (statisticManager == null) {
-                statisticManager = StatisticManager.getStatisticManager();
-            }
-            if (readStatus.native_type == 21) {
-                try {
-                    if (readStatus.currentAdInfoDown != null) {
-                        AdSceneData adSceneData = readStatus.currentAdInfoDown.getAdSceneData();
-                        if (adSceneData != null) {
-                            adSceneData.ad_markId = NativeInit.ad_mark_id[1];
-                            adSceneData.ad_clickLocation = x + "*" + y;
-                        }
-                        statisticManager.schedulingRequest(mActivity, readStatus.novel_basePageView, readStatus.currentAdInfoDown, getCurrentNovel(), StatisticManager.TYPE_CLICK, NativeInit.ad_position[1]);
-                    }
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
-                }
-            }
-            return true;
-        }
-        return false;
-    }
 
     /**
      * 翻到上一页
@@ -892,7 +672,6 @@ public class PageView extends View implements PageInterface {
             callBack.onCancelPage();
         }
         cancelState = false;
-        drawTextHelper.removeInMobiView();
         drawCurrentPage();
     }
 
@@ -1106,28 +885,8 @@ public class PageView extends View implements PageInterface {
     }
 
     @Override
-    public void loadNatvieAd() {
-        drawTextHelper.loadNatvieAd();
-    }
-
-    @Override
     public void setOnOperationClickListener(OnOperationClickListener onOperationClickListener) {
         mOnOperationClickListener = onOperationClickListener;
-    }
-
-    @Override
-    public Novel getCurrentNovel() {
-        if (dataFactory != null) {
-            return dataFactory.transformation();
-        }
-        return null;
-    }
-
-    @Override
-    public void removeAdView() {
-        if (drawTextHelper != null && !readStatus.isInMobiViewClicking) {
-            drawTextHelper.removeInMobiView();
-        }
     }
 
     private enum MotionState {
@@ -1262,7 +1021,6 @@ public class PageView extends View implements PageInterface {
                 }
                 drawNextPage();
             }
-            readStatus.shouldShowInMobiAdView = true;
             updateDrawPosition();
             return true;
         }

@@ -577,7 +577,6 @@ public class CurlAnimationProvider extends AnimationProvider {
                     delayCheckAnimation();
                 }
             } else {
-                readStatus.shouldShowInMobiAdView = true;
                 finishAnimation();
             }
         }

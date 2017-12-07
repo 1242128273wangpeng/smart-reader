@@ -20,7 +20,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.webkit.WebView;
 
-import com.dingyueads.sdk.db.AdDao;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
@@ -46,8 +45,6 @@ import net.lzbook.kit.utils.FrameBookHelper;
 import net.lzbook.kit.utils.JSInterfaceHelper;
 import net.lzbook.kit.utils.LoadDataManager;
 import net.lzbook.kit.utils.MD5Utils;
-import net.lzbook.kit.utils.NetWorkUtils;
-import net.lzbook.kit.utils.StatisticManager;
 import net.lzbook.kit.utils.ToastUtils;
 import net.lzbook.kit.utils.update.ApkUpdateUtils;
 
@@ -242,38 +239,6 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
         mLoadDataManager = new LoadDataManager(this);
         Constants.upload_userinformation = sharedPreferences.getBoolean(Constants.IS_UPLOAD, false);
 
-        final int premVersionCode = Constants.preVersionCode;
-        final int currentVersionCode = AppUtils.getVersionCode();
-
-        if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
-            //
-            if (!Constants.upload_userinformation || premVersionCode != currentVersionCode) {
-                // 获取用户基础数据
-                StatisticManager.getStatisticManager().sendUserData();
-
-                Constants.upload_userinformation = true;
-                Constants.preVersionCode = currentVersionCode;
-                sharedPreferences.edit().putBoolean(Constants.IS_UPLOAD, Constants.upload_userinformation).apply();
-            }
-        }
-
-
-        if (Constants.is_user_today_first) {
-            // 老用户更新书架书籍的完结/连载状态,和dex值
-            mLoadDataManager.updateShelfBooks();
-
-            // 用户第一次启动时删掉物料表中的信息
-            new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        AdDao.getInstance(HomeActivity.this).deleteAdMaterial();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }.start();
-        }
     }
 
     @Override

@@ -57,7 +57,7 @@ public class UtilStringRequest extends StringRequest {
     }
 
     @Override
-    public com.android.volley.Request.Priority getPriority() {
+    public Priority getPriority() {
         return priority;
     }
 
@@ -100,6 +100,6 @@ public class UtilStringRequest extends StringRequest {
                 e.printStackTrace();
             }
         }
-
+        
     }
 }

@@ -1,7 +1,5 @@
 package net.lzbook.kit.data.bean;
 
-import com.dingyueads.sdk.Native.YQNativeAdInfo;
-
 import android.text.TextUtils;
 
 import java.io.Serializable;
@@ -34,10 +32,6 @@ public class Book implements Serializable, Comparable<Book> {
     public int readed;
     //初始化书籍信息时，加入到数据库的时间
     public long insert_time;
-    //广告信息
-    public YQNativeAdInfo info;
-    //广告评级星数
-    public int rating = 5;
     //升级后使用的字段
     //小说名称
     public String name;

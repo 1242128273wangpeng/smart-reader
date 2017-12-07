@@ -1,12 +1,9 @@
 package com.intelligent.reader.activity;
 
-import com.dingyueads.sdk.NativeInit;
-import com.dingyueads.sdk.adapter.InMobiAdapter;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.util.DynamicParamter;
 
-import net.lzbook.kit.ad.OwnNativeAdManager;
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Book;
@@ -16,7 +13,6 @@ import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.SharedPreferencesUtils;
 import net.lzbook.kit.utils.ShieldManager;
 import net.lzbook.kit.utils.StatServiceUtils;
@@ -219,8 +215,6 @@ public class SplashActivity extends FrameActivity {
         AppLog.e("oncreat", "oncreat go");
         sharePreferenceUtils = new SharedPreferencesUtils(PreferenceManager.getDefaultSharedPreferences(this));
 
-        // 初始化InMobi SDK，此SDK需要在launcher activity的UI线程中初始化
-        InMobiAdapter.init(this);
         // 初始化任务
         InitTask initTask = new InitTask();
         initTask.execute();
@@ -234,116 +228,9 @@ public class SplashActivity extends FrameActivity {
         }
     }
 
-    //初始化广告展示信息
-    private void initADInformation() {
-        if (!Constants.dy_ad_switch) {
-            Constants.isHideAD = true;
-            return;
-        }
-
-        //判断是否展示广告
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        if (preferences != null) {
-            long limited_time = preferences.getLong(Constants.AD_LIMIT_TIME_DAY, 0L);
-            if (limited_time == 0) {
-                limited_time = System.currentTimeMillis();
-                try {
-                    preferences.edit().putLong(Constants.AD_LIMIT_TIME_DAY, limited_time).apply();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            AppLog.e(TAG, "Limited_Time : " + limited_time);
-            AppLog.e(TAG, "Current_Time : " + System.currentTimeMillis());
-            AppLog.e(TAG, "AD_Limited_day : " + Constants.ad_limit_time_day);
-
-            int user_index = preferences.getInt(Constants.user_new_index, 0);
-            boolean init_ad = false;
-
-            if (user_index == 0) {
-                if (!preferences.getBoolean(Constants.ADD_DEFAULT_BOOKS, false)) {
-                    preferences.edit().putInt(Constants.user_new_index, 1).apply();
-                    init_ad = true;
-                } else {
-                    init_ad = false;
-                    //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
-                    if (Constants.new_app_ad_switch) {
-                        Constants.isHideAD = false;
-                    } else {
-                        Constants.isHideAD = true;
-                    }
-                }
-            } else if (user_index == 1) {
-                if (preferences.getBoolean(Constants.ADD_DEFAULT_BOOKS, false)) {
-                    init_ad = true;
-                }
-            } else {
-                init_ad = false;
-                //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
-                if (Constants.new_app_ad_switch) {
-                    Constants.isHideAD = false;
-                } else {
-                    Constants.isHideAD = true;
-                }
-            }
-
-            if (init_ad) {
-                int ad_limit_time_day = preferences.getInt(Constants.user_new_ad_limit_day, 0);
-                if (ad_limit_time_day == 0 || Constants.ad_limit_time_day != ad_limit_time_day) {
-                    ad_limit_time_day = Constants.ad_limit_time_day;
-                    preferences.edit().putInt(Constants.user_new_ad_limit_day, ad_limit_time_day).apply();
-                }
-
-                if (limited_time + (ad_limit_time_day * (Constants.DEVELOPER_MODE ? Constants.read_rest_time : Constants.one_day_time)) > System
-                        .currentTimeMillis()) {
-                    Constants.isHideAD = true;
-                } else {
-                    preferences.edit().putInt(Constants.user_new_index, 2).apply();
-                    //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
-                    if (Constants.new_app_ad_switch) {
-                        Constants.isHideAD = false;
-                    } else {
-                        Constants.isHideAD = true;
-                    }
-                }
-            }
-        } else {
-            //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
-            if (Constants.new_app_ad_switch) {
-                Constants.isHideAD = false;
-            } else {
-                Constants.isHideAD = true;
-            }
-        }
-
-        if (Constants.isHideAD) {
-            AppLog.e(TAG, "Limited AD display!");
-        } else {
-            if (!Constants.dy_splash_ad_switch) {
-                handler.sendEmptyMessageDelayed(0, 1000);
-                return;
-            }
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    AppLog.e(TAG, "当前有网络");
-                    AppLog.e(TAG, "AD display is not restricted! initmNativeAdManagerInstance");
-                    //AppLog.e("Version------->", SDKUtil.getAppVersionCode() + "");
-                    OwnNativeAdManager.InitSplashAd(SplashActivity.this, ad_view, handler, 0, NativeInit.CustomPositionName.SPLASH_POSITION);
-                }
-            });
-            AppLog.e(TAG, "AD display is not restricted!");
-        }
-    }
-
     @Override
     protected void onRestart() {
         super.onRestart();
-        //科大讯飞的开屏点击返回后，需要手动跳转。
-        if (OwnNativeAdManager.getInstance(this).isClickKDXFSplash) {
-            OwnNativeAdManager.getInstance(this).isClickKDXFSplash = false;
-            handler.sendEmptyMessage(0);
-        }
     }
 
     @Override
@@ -354,9 +241,6 @@ public class SplashActivity extends FrameActivity {
     @Override
     protected void onDestroy() {
         try {
-            if (handler != null) {
-                handler.removeCallbacksAndMessages(null);
-            }
             setContentView(R.layout.empty);
         } catch (Resources.NotFoundException e) {
             e.printStackTrace();
@@ -366,9 +250,6 @@ public class SplashActivity extends FrameActivity {
             context = null;
         }
 
-        //会持有SplashActivity
-        OwnNativeAdManager.getInstance(this).viewGroup = null;
-        OwnNativeAdManager.getInstance(this).nativeInit.container = null;
         AppLog.e(TAG, "ondestory执行");
         super.onDestroy();
     }
@@ -419,17 +300,6 @@ public class SplashActivity extends FrameActivity {
             try {
                 DynamicParamter dynamicParameter = new DynamicParamter(getApplicationContext());
                 dynamicParameter.setDynamicParamter();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            // 6 初始化广告
-            try {
-                if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
-                    AppLog.e(TAG, "NETWORK_AVILIABLE");
-                    initADInformation();
-                }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -489,12 +359,7 @@ public class SplashActivity extends FrameActivity {
                 e.printStackTrace();
             }
 
-            // 初始化结束后 如果没有网络或者不展示广告直接跳转
-            if (Constants.isHideAD || NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
-                handler.sendEmptyMessageDelayed(0, 500);
-            }
-
-            // handler.sendEmptyMessage(0);
+            handler.sendEmptyMessage(0);
 
             return null;
         }

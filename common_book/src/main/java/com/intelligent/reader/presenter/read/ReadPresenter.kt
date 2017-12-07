@@ -6,7 +6,6 @@ import android.app.PendingIntent
 import android.content.*
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
-import net.lzbook.kit.ad.OwnNativeAdManager
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.data.db.BookChapterDao
@@ -23,12 +22,7 @@ import android.text.TextUtils
 import android.text.format.DateFormat
 import android.view.*
 import android.widget.*
-import com.android.volley.VolleyError
-import com.android.volley.toolbox.ImageLoader
 import com.bumptech.glide.Glide
-import com.dingyueads.sdk.Native.YQNativeAdInfo
-import com.dingyueads.sdk.NativeInit
-import com.dingyueads.sdk.Utils.LogUtils
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.*
 import com.intelligent.reader.app.BookApplication
@@ -43,7 +37,6 @@ import iyouqu.theme.ThemeMode
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.DownloadService
-import net.lzbook.kit.cache.imagecache.ImageCacheManager
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.*
 import net.lzbook.kit.repair_books.RepairHelp
@@ -110,7 +103,6 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
     private var time_text: CharSequence? = null
     var versionCode: Int = 0
         get() = 0
-    private var ownNativeAdManager: OwnNativeAdManager? = null
     private var isAcvNovelActive = true
     private var rest_tips_runnable: Runnable? = null
     private var isRestPress = false
@@ -143,7 +135,6 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
             }
         }
     }
-    private var statisticManager: StatisticManager? = null
     private var isSlideToAuto = false
     private var resources: Resources? = null
     private var myDialog: MyDialog? = null
@@ -235,8 +226,6 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
         view?.initView(dataFactory!!)
         // 初始化监听器
         initListener()
-        //	开启护眼计时器
-        startRestTimer()
         //注册一个监听按下电源键的广播
         readReference?.get()?.registerReceiver(mPowerOffReceiver, IntentFilter(Intent.ACTION_SCREEN_OFF))
         getBookContent()
@@ -269,7 +258,6 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
         AppLog.e(TAG, "versionCode: " + versionCode)
         if (readStatus != null) {
             readStatus!!.recycleResource()
-            readStatus!!.recycleResourceNew()
         }
         readStatus = ReadStatus(readReference?.get()?.getApplicationContext())
         BookApplication.getGlobalContext().readStatus = readStatus
@@ -299,8 +287,6 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
         view?.initView(dataFactory!!)
         // 初始化监听器
         initListener()
-        //	开启护眼计时器
-        startRestTimer()
         //注册一个监听按下电源键的广播
         readReference?.get()?.registerReceiver(mPowerOffReceiver, IntentFilter(Intent.ACTION_SCREEN_OFF))
         getBookContent()
@@ -309,186 +295,6 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
         }
 
         changeMode(Constants.MODE)
-    }
-
-    /**
-     * 休息提醒计时器
-     */
-    private fun startRestTimer() {
-        val read_rest_time = sp!!.getInt("read_rest_time", Constants.read_rest_time / 60000) * 60000
-        /**
-         * 增加健壮性判断，当用户选择休息提示为：“永不   ”时，直接return，避免多出修改字段类型为long
-         */
-        //        if (read_rest_time == Integer.MAX_VALUE * 60000) {
-        //            return;
-        //        }
-
-        rest_tips_runnable = Runnable {
-            mDialog = MyDialog(readReference?.get(), R.layout.reading_resttime, Gravity.CENTER, false)
-            val iv_reset_ad = mDialog!!.findViewById(R.id.iv_reset_ad) as ImageView
-            val iv_reset_ad_logo = mDialog!!.findViewById(R.id.iv_reset_ad_logo) as ImageView
-            val iv_reset_ad_image = mDialog!!.findViewById(R.id.iv_reset_ad_image) as ImageView
-            val ll_reset_layout = mDialog!!.findViewById(R.id.ll_reset_layout) as LinearLayout
-            val iv_close = mDialog!!.findViewById(R.id.iv_close) as ImageView
-
-            iv_reset_ad_image.visibility = View.INVISIBLE
-
-            try {
-                if ("night" == ResourceUtil.mode) {
-                    ll_reset_layout.alpha = 0.6f
-                } else {
-                    ll_reset_layout.alpha = 1.0f
-                }
-            } catch (e: NoSuchMethodError) {
-                e.printStackTrace()
-            }
-
-            if (ownNativeAdManager == null) {
-                ownNativeAdManager = OwnNativeAdManager.getInstance(readReference?.get())
-            }
-
-            ownNativeAdManager?.loadAd(NativeInit.CustomPositionName.REST_POSITION)
-
-            val nativeADInfo = ownNativeAdManager?.getSingleADInfo(NativeInit.CustomPositionName
-                    .REST_POSITION)
-
-            iv_close.setOnClickListener {
-                mDialog?.dismiss()
-
-                if (iv_reset_ad != null) {
-                    val bitmapDrawable = iv_reset_ad.drawable as BitmapDrawable
-                    if (bitmapDrawable != null) {
-                        AppLog.e(TAG, "BitmapDrawable != null")
-                        val bitmap = bitmapDrawable.bitmap
-                        if (bitmap != null && !bitmap.isRecycled) {
-                            AppLog.e(TAG, "Bitmap != null")
-                            //                                    bitmap.recycle();
-                        }
-                    }
-                }
-            }
-
-            if (nativeADInfo != null) {
-                val advertisement = nativeADInfo.advertisement
-                if (advertisement != null) {
-                    val image_url = advertisement.imageUrl
-                    if (!TextUtils.isEmpty(image_url)) {
-                        ImageCacheManager.getInstance().imageLoader.get(image_url, object : ImageLoader.ImageListener {
-                            override fun onResponse(imageContainer: ImageLoader.ImageContainer?, b: Boolean) {
-                                if (imageContainer != null) {
-                                    val bitmap_icon = imageContainer.bitmap
-                                    if (bitmap_icon != null) {
-                                        iv_reset_ad.setImageBitmap(bitmap_icon)
-
-                                        if ("广点通" == advertisement.rationName) {
-                                            iv_reset_ad_logo.setImageResource(R.drawable.icon_ad_gdt)
-                                        } else if ("百度" == advertisement.rationName) {
-                                            iv_reset_ad_logo.setImageResource(R.drawable.icon_ad_bd)
-                                        } else if ("360" == advertisement.rationName) {
-                                            iv_reset_ad_logo.setImageResource(R.drawable.icon_ad_360)
-                                        } else {
-                                            iv_reset_ad_logo.setImageResource(R.drawable.icon_ad_default)
-                                        }
-
-                                        iv_reset_ad_image.visibility = View.VISIBLE
-
-                                        StatServiceUtils.statBookEventShow(readReference?.get(), StatServiceUtils.type_ad_reset_30)
-                                    }
-                                }
-                            }
-
-                            override fun onErrorResponse(volleyError: VolleyError) {}
-                        })
-                    }
-                    iv_reset_ad.tag = nativeADInfo
-                    try {
-                        if (statisticManager == null) {
-                            statisticManager = StatisticManager.getStatisticManager()
-                        }
-                        val novel = dataFactory?.transformation()
-                        statisticManager!!.schedulingRequest(readReference?.get(), ll_reset_layout, nativeADInfo, novel, StatisticManager
-                                .TYPE_SHOW, NativeInit.ad_position[3])
-                    } catch (e: IllegalArgumentException) {
-                        e.printStackTrace()
-                    }
-
-                }
-                iv_reset_ad.setOnClickListener { view ->
-                    if (view.tag != null) {
-                        val yqNativeAdInfo = view.tag as YQNativeAdInfo
-                        if (yqNativeAdInfo != null) {
-                            try {
-                                if (statisticManager == null) {
-                                    statisticManager = StatisticManager.getStatisticManager()
-                                }
-                                val novel = dataFactory?.transformation()
-                                statisticManager!!.schedulingRequest(readReference?.get(), view, yqNativeAdInfo, novel,
-                                        StatisticManager.TYPE_CLICK, NativeInit.ad_position[3])
-                            } catch (e: IllegalArgumentException) {
-                                e.printStackTrace()
-                            }
-
-                            StatServiceUtils.statBookEventClick(readReference?.get(), StatServiceUtils
-                                    .type_ad_reset_30)
-                            if (Constants.DEVELOPER_MODE) {
-                                Toast.makeText(readReference?.get(), "你点击了广告", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    }
-                }
-            }
-            try {
-                if (nativeADInfo != null) {
-                    mDialog?.show()
-                    isRestDialogShow = true
-                    mDialog?.setOnDismissListener(DialogInterface.OnDismissListener {
-                        //								isRestDialogShow = true;
-
-                        if (statisticManager == null) {
-                            statisticManager = StatisticManager.getStatisticManager()
-                        }
-                        val novel = dataFactory?.transformation()
-                        statisticManager!!.schedulingRequest(readReference?.get(), iv_reset_ad, nativeADInfo, novel, StatisticManager
-                                .TYPE_END, NativeInit.ad_position[3])
-
-                        if (!isRestPress) {
-                            //									Log.e(TAG, "按下Back键了，屏幕变暗了！");
-                            //									handler.postDelayed(rest_tips_runnable,
-                            // read_rest_time);
-                            if (handler != null) {
-                                handler.removeCallbacks(rest_tips_runnable)
-                                startRestTimer()
-                            }
-                        } else {
-                            /**当弹出休息提示对话框时候，用户点击休息一下按钮后，对话框消失，
-                             * 需要重置isRestPress按钮的默认值为false;
-                             * 防止点击休息一下后，在阅读非书架书籍时会弹出添加到书架的对话框，
-                             * 当点击屏幕空白处取消添加到书架对话框继续阅读后，再下次弹出的休息提醒对话框时，
-                             * 如果用户点击继续看后，休息提醒对话框消失，但是计时器不会重新启动的bug
-                             */
-
-                            isRestPress = false
-                        }
-                        if (isRestDialogShow) {
-                            isRestDialogShow = false
-                        }
-                    })
-                } else {
-                    if (handler != null) {
-                        handler.removeCallbacks(rest_tips_runnable)
-                        handler.postDelayed(rest_tips_runnable, 60000)//获取广告null 重新获取
-                    }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
-        if (mDialog == null) {
-            handler.postDelayed(rest_tips_runnable, read_rest_time.toLong())
-        } else if (!mDialog!!.isShowing) {
-            handler.postDelayed(rest_tips_runnable, read_rest_time.toLong())
-        }
     }
 
     /**
@@ -722,37 +528,6 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
         pageView?.setOnOperationClickListener(this)
         dataFactory?.setPageView(pageView)
         myNovelHelper?.setPageView(pageView)
-    }
-
-
-    /**
-     * 首次进入阅读页面 展示广告小图
-     */
-    private fun initReadingAd() {
-        if (readReference == null || readReference!!.get() == null) {
-            return
-        }
-
-        if (ownNativeAdManager == null) {
-            ownNativeAdManager = OwnNativeAdManager.getInstance(readReference?.get())
-        }
-        ownNativeAdManager?.setActivity(readReference?.get())
-        if (!Constants.isSlideUp) {
-            ownNativeAdManager?.loadAdForMiddle(NativeInit.CustomPositionName.READING_MIDDLE_POSITION)
-            if (Constants.IS_LANDSCAPE) {
-                OwnNativeAdManager.getInstance(readReference?.get()).loadAd(NativeInit.CustomPositionName.SUPPLY_READING_SPACE)
-            } else {
-                OwnNativeAdManager.getInstance(readReference?.get()).loadAd(NativeInit.CustomPositionName.READING_POSITION)
-            }
-        }
-        if (Constants.isSlideUp && Constants.dy_ad_readPage_slide_switch_new) {
-            if (Constants.IS_LANDSCAPE) {
-                OwnNativeAdManager.getInstance(readReference?.get()).loadAd(NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD)
-            } else {
-                OwnNativeAdManager.getInstance(readReference?.get()).loadAd(NativeInit.CustomPositionName.SLIDEUP_POPUPAD_POSITION)
-                OwnNativeAdManager.getInstance(readReference?.get()).loadAd(NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD)
-            }
-        }
     }
 
     /**
@@ -1417,7 +1192,6 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
         if (isSubed) {
             readStatus!!.book = mBookDaoHelper!!.getBook(readStatus!!.book_id, 0)
         }
-        readStatus!!.isInMobiViewClicking = false
         pageView?.resumeAutoRead()
 
         readStatus!!.chapterCount = readStatus!!.book.chapter_count
@@ -1432,11 +1206,9 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
         readReference?.get()?.setScreenOffTimeout(Constants.screenOffTimeout)
         if (!actNovelRunForeground && !isRestDialogShow) {
             actNovelRunForeground = true
-            startRestTimer()
         }
         if (!isAcvNovelActive && !isRestDialogShow) {
             isAcvNovelActive = true
-            startRestTimer()
         }
 
         if (dataFactory != null && readStatus != null && Constants.isNetWorkError) {
@@ -1471,17 +1243,10 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
 
     }
 
-    internal var isFirstVisiable = true
-
     fun onWindowFocusChanged(hasFocus: Boolean) {
-        if (isFirstVisiable && hasFocus) {
-            isFirstVisiable = false
-            initReadingAd()
-        }
     }
 
     fun onStop() {
-        pageView?.removeAdView()
         LocalBroadcastManager.getInstance(readReference?.get()).unregisterReceiver(mCacheUpdateReceiver)
 
         if (actNovelRunForeground && handler != null && rest_tips_runnable != null) {
@@ -1552,25 +1317,10 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
 
         handler?.removeCallbacksAndMessages(null)
 
-
-        if (ownNativeAdManager != null) {
-            //            ownNativeAdManager.recycleResourceFromReading(NativeInit.CustomPositionName.CHANGE_SOURCE_POSITION.toString());
-            ownNativeAdManager!!.recycleResourceFromReading(NativeInit.CustomPositionName.READING_MIDDLE_POSITION.toString())
-            ownNativeAdManager!!.recycleResourceFromReading(NativeInit.CustomPositionName.READING_POSITION.toString())
-            ownNativeAdManager!!.recycleResourceFromReading(NativeInit.CustomPositionName.READING_IN_CHAPTER_POSITION.toString())
-            ownNativeAdManager!!.recycleResourceFromReading(NativeInit.CustomPositionName.REST_POSITION.toString())
-            ownNativeAdManager!!.recycleResourceFromReading(NativeInit.CustomPositionName.SUPPLY_READING_IN_CHAPTER.toString())
-            ownNativeAdManager!!.recycleResourceFromReading(NativeInit.CustomPositionName.SUPPLY_READING_SPACE.toString())
-            ownNativeAdManager!!.recycleResourceFromReading(NativeInit.CustomPositionName.SLIDEUP_POPUPAD_POSITION.toString())
-            ownNativeAdManager!!.recycleResourceFromReading(NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD.toString())
-            ownNativeAdManager!!.removeHandler()
-        }
-
         Glide.get(readReference?.get()).clearMemory()
 
         if (readStatus != null) {
             readStatus!!.recycleResource()
-            readStatus!!.recycleResourceNew()
         }
 
         if (dataFactory != null) {
@@ -2193,7 +1943,6 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
         }
 
         override fun onReceive(context: Context, intent: Intent) {
-            LogUtils.e("CacheUpdateReceiver", "onReceive")
             val book = intent.getSerializableExtra(Constants.REQUEST_ITEM) as Book ?: return
 
             if (Constants.QG_SOURCE != book.site) {

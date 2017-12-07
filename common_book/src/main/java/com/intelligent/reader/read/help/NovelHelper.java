@@ -1,12 +1,10 @@
 package com.intelligent.reader.read.help;
 
-import com.dingyueads.sdk.NativeInit;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.ReadingActivity;
 import com.intelligent.reader.adapter.SourceAdapter;
 import com.intelligent.reader.read.page.PageInterface;
 
-import net.lzbook.kit.ad.OwnNativeAdManager;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.download.DownloadState;
 import net.lzbook.kit.book.view.LoadingPage;
@@ -60,12 +58,8 @@ public class NovelHelper {
     private static final String TAG = "NovelHelper";
     public boolean isShown = false;
     private OnHelperCallBack helperCallBack;
-    private boolean checked;
-    private boolean showDialog;
-    private int lineNum;
     private WeakReference<Activity> actReference;
     private Handler handler;
-    private MyDialog myDialog;
     private ReadStatus readStatus;
     private PageInterface pageView;
 
@@ -515,10 +509,6 @@ public class NovelHelper {
             if (textSpace < height) {
                 pageLines.add(lineText);
             } else {
-                // if (isLastDuan) {
-                // textSpace -= m_duan;
-                // pageLines.remove(lineText);
-                // }else {
                 if (isDuan) {// 开始是空行
                     textSpace -= m_duan;
                     pageLines.add(lineText);
@@ -534,43 +524,6 @@ public class NovelHelper {
                 readStatus.currentPage = lists.size();
                 can = false;
             }
-            // isLastDuan = isDuan;
-        }
-
-        if (isNativeAdAvailable() && lists.size() >= 3) {
-            lists.add(addList(empty_page_ad));
-        }
-
-        if (!Constants.isSlideUp) {
-            if (isNativeAdAvailableNew() && lists.size() >= 2 * Constants.native_ad_page_in_chapter_limit) {
-                int i2 = lists.size() / Constants.native_ad_page_in_chapter_limit;
-                boolean isFirst = true;
-                for (int i = 1; i <= i2; i++) {
-                    int i1 = i * Constants.native_ad_page_in_chapter_limit;
-                    if (i1 < lists.size() && (lists.size() - i1) >= Constants.native_ad_page_in_chapter_limit) {
-                        lists.add(i1, addList(empty_page_ad_inChapter + i));
-                        if (actReference != null && actReference.get() != null && !actReference.get().isFinishing()) {
-                            if (Constants.IS_LANDSCAPE) {
-                                OwnNativeAdManager.getInstance(actReference.get()).loadAd(NativeInit.CustomPositionName.SUPPLY_READING_IN_CHAPTER);
-                            } else {
-                                OwnNativeAdManager.getInstance(actReference.get()).loadAd(NativeInit.CustomPositionName.READING_IN_CHAPTER_POSITION);
-                            }
-                        }
-                    }
-                    if ((readStatus.currentPage >= i * Constants.native_ad_page_in_chapter_limit) && (readStatus.currentPage < ((i + 1) * Constants.native_ad_page_in_chapter_limit/* + i - 1*/)) && isFirst) {
-                        if (readStatus.currentPage == Constants.native_ad_page_in_chapter_limit) {
-                            continue;
-                        }
-                        readStatus.currentPage += i;
-                        isFirst = false;
-                    }
-                }
-            }
-        }
-
-        //为上下翻页模式广告添加预留标记
-        if (isNativeAdInScrollPattern() && lists.size() >= 3) {
-            lists.add(addList(empty_page_ad));
         }
 
         readStatus.pageCount = lists.size();
@@ -579,43 +532,6 @@ public class NovelHelper {
         }
 
         return lists;
-    }
-
-    private boolean isNativeAdInScrollPattern() {
-        boolean isAvailable = Constants.isSlideUp && readStatus.sequence != -1 && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE
-                && !Constants.isHideAD
-                && Constants.dy_ad_readPage_slide_switch_new;
-        AppLog.e(TAG, "isAvailable:" + isAvailable);
-        return isAvailable;
-    }
-
-    private boolean isNativeAdAvailable() {
-        AppLog.e(TAG, "readedCount:" + Constants.readedCount + " native_ad_page_interstitial_count:" + Constants.native_ad_page_interstitial_count
-                + " chapterCount:" + readStatus.chapterCount + " NetworkUtils.NATIVE_AD_TYPE:" + NetWorkUtils.NATIVE_AD_TYPE);
-        boolean isAvailable = !Constants.isSlideUp && readStatus.sequence != -1 && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE
-                && !Constants.isHideAD
-                && Constants.readedCount != 0 && Constants.native_ad_page_interstitial_count != 0 && Constants.readedCount % Constants.native_ad_page_interstitial_count == 0 && Constants.dy_page_middle_ad_switch;
-        AppLog.e(TAG, "isAvailable:" + isAvailable);
-        return isAvailable;
-    }
-
-    private boolean isNativeAdAvailableNew() {
-        AppLog.e(TAG, "readedCount:" + Constants.readedCount + " native_ad_page_gap_in_chapter:" + Constants.native_ad_page_gap_in_chapter
-                + " chapterCount:" + readStatus.chapterCount + " NetworkUtils.NATIVE_AD_TYPE:" + NetWorkUtils.NATIVE_AD_TYPE);
-        boolean isAvailable = !Constants.isSlideUp && readStatus.sequence != -1 && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE
-                && !Constants.isHideAD
-                && Constants.readedCount != 0 && Constants.native_ad_page_gap_in_chapter != 0 && Constants.readedCount % Constants.native_ad_page_gap_in_chapter == 0 && Constants.dy_page_in_chapter_ad_switch;
-        AppLog.e(TAG, "isAvailable:" + isAvailable);
-        return isAvailable;
-    }
-//	private static final ArrayList<String> emptyList = new ArrayList<String>() {{
-//		add(empty_page_ad);
-//	}};
-
-    private ArrayList<NovelLineBean> addList(String adString) {
-        ArrayList<NovelLineBean> list = new ArrayList<>();
-        list.add(new NovelLineBean(adString, 0, 0, false, null));
-        return list;
     }
 
     /**

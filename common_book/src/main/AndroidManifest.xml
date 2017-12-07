@@ -132,34 +132,6 @@
                 android:value="${QQ_APPID}"
                 />
 
-        <meta-data
-            android:name="IFLYTEK_APPKEY_AD"
-            android:value="${IFLYTEK_APPID}" />
-
-        <!-- 声明Mogo的Activity -->
-        <activity
-                android:name="com.adsmogo.adview.AdsMogoWebView"
-                android:configChanges="orientation|keyboardHidden|screenSize|keyboard|keyboardHidden"
-                android:label="@string/app_name"
-                android:theme="@android:style/Theme.Translucent"/>
-        
-        <!-- 360广告依赖的activity -->
-        <activity
-                android:name="com.ak.android.bridge.AKActivity"
-                android:configChanges="orientation|screenSize|keyboardHidden"
-                android:theme="@android:style/Theme.Black.NoTitleBar"/>
-
-        <provider
-            android:name="com.ak.android.provider.AKProvider"
-            android:authorities="${PACKAGE_NAME}.akadsdkprovider"
-            android:exported="false"
-            android:grantUriPermissions="true"/>
-        
-        <!-- baidu 信息流广告必须添加 -->
-        <activity
-                android:name="com.baidu.mobad.feeds.BaiduActivity"
-                android:configChanges="keyboard|keyboardHidden|orientation"/>
-        
         <!-- 注册Service，应用下载所需 -->
         <service
                 android:name="com.adsmogo.controller.service.UpdateService"

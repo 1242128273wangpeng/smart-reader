@@ -1,6 +1,5 @@
 package com.intelligent.reader.read.page;
 
-import com.dingyueads.sdk.Bean.Novel;
 import com.intelligent.reader.read.help.CallBack;
 import com.intelligent.reader.read.help.IReadDataFactory;
 import com.intelligent.reader.read.help.NovelHelper;
@@ -68,13 +67,7 @@ public interface PageInterface {
 
     boolean setKeyEvent(KeyEvent event);
 
-    void loadNatvieAd();
-
     void setOnOperationClickListener(OnOperationClickListener onOperationClickListener);
-
-    Novel getCurrentNovel();
-
-    void removeAdView();
 
     interface OnOperationClickListener {
         void onOriginClick();

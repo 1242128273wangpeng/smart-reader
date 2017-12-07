@@ -27,10 +27,8 @@ import com.intelligent.reader.adapter.holder.AbsRecyclerViewHolder;
 
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Book;
-import net.lzbook.kit.data.bean.EventBookshelfAd;
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
 import net.lzbook.kit.utils.StatServiceUtils;
-import net.lzbook.kit.utils.StatisticManager;
 
 import java.util.ArrayList;
 import java.util.HashSet;

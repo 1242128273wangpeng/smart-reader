@@ -1,22 +1,15 @@
 package com.intelligent.reader.read.help;
 
-import com.dingyueads.sdk.Native.YQNativeAdInfo;
-import com.dingyueads.sdk.NativeInit;
-import com.dingyueads.sdk.view.FilterLayout;
-import com.inmobi.ads.InMobiNative;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.read.page.PageInterface;
 import com.intelligent.reader.util.DisplayUtils;
 
-import net.lzbook.kit.ad.OwnNativeAdManager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.NovelLineBean;
 import net.lzbook.kit.data.bean.ReadStatus;
 import net.lzbook.kit.data.bean.SensitiveWords;
 import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.ResourceUtil;
-import net.lzbook.kit.utils.StatisticManager;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -34,16 +27,9 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.text.TextPaint;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public class DrawTextHelper {
     private static final String TAG = "DrawTextHelper";
@@ -78,11 +64,9 @@ public class DrawTextHelper {
     private float percent;
     private String timeText;
     private PageInterface pageView;
-    private OwnNativeAdManager nativeAdManager;
     private Activity mActivity;
 
     private Paint nightPaint;
-    private StatisticManager statisticManager;
     private SensitiveWords readSensitiveWord;
     private List<String> readSensitiveWords;
     private boolean noReadSensitive = false;
@@ -112,8 +96,6 @@ public class DrawTextHelper {
         }
 
         readStatus = BookApplication.getGlobalContext().getReadStatus();
-        nativeAdManager = OwnNativeAdManager.getInstance(mActivity);
-        nativeAdManager.setReadStatus(readStatus);
 
         translateColor = res.getColor(R.color.color_black_00000000);
         footHeight = (int) (18 * readStatus.screenScaledDensity);
@@ -405,11 +387,6 @@ public class DrawTextHelper {
     }
 
     public synchronized Paint drawText(Canvas canvas, List<NovelLineBean> pageLines, Activity activity) {
-        readStatus.isInMobiViewClicking = false;
-        removeInMobiView();
-        boolean isChapterFirstPage = false;
-        readStatus.y_nativead = 0;
-        readStatus.native_type = 0;
         mPaint.setTextSize(Constants.FONT_SIZE * readStatus.screenScaledDensity);
         duanPaint.setTextSize(1 * readStatus.screenScaledDensity);
         FontMetrics fm = mPaint.getFontMetrics();
@@ -425,9 +402,6 @@ public class DrawTextHelper {
         total_y += Constants.READ_CONTENT_PAGE_TOP_SPACE * readStatus.screenDensity - fm.ascent;
 
         float textHeight = 0;
-        int distance_ad = 0;
-        int distance_ad_middle = 0;
-        int distance_ad_middle_down = 0;
         float duan = 0;
         boolean isShow_big_ad = false;
         boolean lastIsDuan = false;
@@ -477,9 +451,7 @@ public class DrawTextHelper {
                 drawHomePage(canvas);
             } else if (pageLines.get(0).getLineContent().startsWith("chapter_homepage")) {// 章节首页
                 drawChapterPage(canvas, pageLines);
-                isChapterFirstPage = true;
             } else {
-                isChapterFirstPage = false;
                 for (int i = 0; i < pageLines.size(); i++) {
                     NovelLineBean text = pageLines.get(i);
                     if (Constants.isShielding && !noReadSensitive) {
@@ -490,101 +462,8 @@ public class DrawTextHelper {
                     if (text != null && !TextUtils.isEmpty(text.getLineContent()) && text.getLineContent().equals(" ")) {
                         total_y += m_duan;
                     } else if (text != null && text.getLineContent().contains(NovelHelper.empty_page_ad) || text.getLineContent().startsWith(NovelHelper.empty_page_ad)) {
-                        isShow_big_ad = true;
-                        //章节间大图绘制代码
-                        if (readStatus.getAd_bitmap_big() != null && !readStatus.getAd_bitmap_big().isRecycled()) {
-                            readStatus.native_type = 2;
-                            readStatus.y_nativead_big = (readStatus.screenHeight - readStatus.height_nativead_big) / 2;
-                            if ("night".equals(ResourceUtil.mode)) {
-                                if (Constants.IS_LANDSCAPE) {
-                                    canvas.drawBitmap(readStatus.getAd_bitmap_big(), (readStatus.screenWidth - readStatus.width_nativead_big) / 2, getHeight(readStatus.getAd_bitmap_big()), nightPaint);
-                                } else {
-                                    canvas.drawBitmap(readStatus.getAd_bitmap_big(), 0, getHeight(readStatus.getAd_bitmap_big()), nightPaint);
-                                }
-                                AppLog.e(TAG, "drawBitmap ad_bitmap_big nightPaint");
-                            } else {
-                                if (Constants.IS_LANDSCAPE) {
-                                    canvas.drawBitmap(readStatus.getAd_bitmap_big(), (readStatus.screenWidth - readStatus.width_nativead_big) / 2, getHeight(readStatus.getAd_bitmap_big()), null);
-                                } else {
-                                    canvas.drawBitmap(readStatus.getAd_bitmap_big(), 0, getHeight(readStatus.getAd_bitmap_big()), null);
-                                }
-                                AppLog.e(TAG, "drawBitmap ad_bitmap_big");
-                            }
-                            attach(activity);
-                        } else if (readStatus.shouldShowInMobiAdView && readStatus.currentAdInfo_image != null && readStatus.currentAdInfo_image.getInMobiNative() != null && readStatus.currentAdInfo_image.getInMobiNative().isReady()) {
-                            readStatus.native_type = 2;
-                            InMobiNative inMobiNative = readStatus.currentAdInfo_image.getInMobiNative();
-                            addInMobiView(inMobiNative);
-                            readStatus.shouldShowInMobiAdView = false;
-                            attach(activity);
-
-                        }
-                        AppLog.e(TAG, "2_startsWith ad_page_tag" + " sequence:" + readStatus.sequence + " isShow_big_ad:" + isShow_big_ad);
                     } else if (text != null && text.getLineContent().contains(NovelHelper.empty_page_ad_inChapter) || text.getLineContent().startsWith(NovelHelper.empty_page_ad_inChapter)) {
-                        isShow_big_ad = true;
-                        //章节内大图绘制代码
-                        int j = 1;
-                        if (readStatus.containerInChapter != null && readStatus.containerInChapter.size() > 0) {
-                            for (; j < readStatus.containerInChapter.size() + 1; j++) {
-                                if (text.getLineContent().equals(NovelHelper.empty_page_ad_inChapter + j)) {
-                                    HashMap<YQNativeAdInfo, Bitmap> hashMap = readStatus.containerInChapter.get(j - 1);
-                                    if (hashMap != null && hashMap.entrySet() != null) {
-                                        Iterator<Map.Entry<YQNativeAdInfo, Bitmap>> iterator = hashMap.entrySet().iterator();
-                                        if (iterator != null && iterator.hasNext()) {
-                                            Map.Entry<YQNativeAdInfo, Bitmap> map = iterator.next();
-                                            readStatus.currentAdInfo_in_chapter = map.getKey();
-                                            readStatus.ad_bimap_big_inChapter = map.getValue();
-                                        }
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                        /*InMobiNative inMobiNative = null;
-                        ArrayList<YQNativeAdInfo> adInfos = readStatus.inMobiViewContainerInChapter;
-                        //从readStatus.containerInChapter中没有拿到物料且有inmobi的有效物料时则尝试拿inmobi的物料
-                        if (j>readStatus.containerInChapter.size() && adInfos!= null && !adInfos.isEmpty()){
-                            for(; j < readStatus.containerInChapter.size() + readStatus.inMobiViewContainerInChapter.size() + 1 ; j++){
-                                if(text.equals(NovelHelper.empty_page_ad_inChapter + j) && adInfos.size() >= j-readStatus.containerInChapter.size()){
-                                    readStatus.ad_bimap_big_inChapter = null;
-                                    readStatus.currentAdInfo_in_chapter = adInfos.get(j - readStatus.containerInChapter.size() - 1);
-                                    inMobiNative = readStatus.currentAdInfo_in_chapter.getInMobiNative();
-                                    break;
-                                }
-                            }
-                        }*/
-
-                        if (readStatus.ad_bimap_big_inChapter != null && !readStatus.ad_bimap_big_inChapter.isRecycled()) {
-                            readStatus.native_type = 5;
-                            readStatus.y_nativead_big = (readStatus.screenHeight - readStatus.height_nativead_big) / 2;
-                            if ("night".equals(ResourceUtil.mode)) {
-                                if (Constants.IS_LANDSCAPE) {
-                                    canvas.drawBitmap(readStatus.ad_bimap_big_inChapter, (readStatus.screenWidth - readStatus.width_nativead_big) / 2, getHeight(readStatus.ad_bimap_big_inChapter), nightPaint);
-                                } else {
-                                    canvas.drawBitmap(readStatus.ad_bimap_big_inChapter, 0, getHeight(readStatus.ad_bimap_big_inChapter), nightPaint);
-                                }
-                                AppLog.e(TAG, "drawBitmap ad_bitmap_big nightPaint");
-                            } else {
-                                if (Constants.IS_LANDSCAPE) {
-                                    canvas.drawBitmap(readStatus.ad_bimap_big_inChapter, (readStatus.screenWidth - readStatus.width_nativead_big) / 2, getHeight(readStatus.ad_bimap_big_inChapter), null);
-                                } else {
-                                    canvas.drawBitmap(readStatus.ad_bimap_big_inChapter, 0, getHeight(readStatus.ad_bimap_big_inChapter), null);
-                                }
-                                AppLog.e(TAG, "drawBitmap ad_bitmap_big");
-                            }
-                            attach(activity);
-
-                        } /*else if (readStatus.shouldShowInMobiAdView && inMobiNative != null && inMobiNative.isReady()){
-                            readStatus.native_type = 5;
-//                            LogUtils.e(TAG,"5-2==inMobiNative"+inMobiNative.toString());
-                            addInMobiView(inMobiNative);
-                            readStatus.shouldShowInMobiAdView = false;
-                            attach(activity);
-                        }*/
-                        AppLog.e(TAG, "2_startsWith ad_page_tag" + " sequence:" + readStatus.sequence + " isShow_big_ad:" + isShow_big_ad);
                     } else {
-                        readStatus.shouldShowInMobiAdView = false;
-
                         if (text.getType() == 1) {
                             drawLineIntervalText(canvas, text, total_y);
                         } else {
@@ -607,113 +486,6 @@ public class DrawTextHelper {
         if (!Constants.isSlideUp) {
             mOperationPaint = drawFoot(canvas);
         }
-
-        textHeight += lineSpace;
-        total_y = isChapterFirstPage ? firstchapterHeight : total_y;
-//        distance_ad = (int) ((int) total_y + readStatus.height_nativead + 40*readStatus.screenScaledDensity);
-//        distance_ad_middle = distance_ad + readStatus.height_middle_nativead;
-
-        distance_ad = (int) ((int) total_y + readStatus.height_nativead + 40 * readStatus.screenScaledDensity);
-        distance_ad_middle = (int) ((int) total_y + readStatus.height_middle_nativead + 40 * readStatus.screenScaledDensity);
-        distance_ad_middle_down = (int) ((int) total_y + 2 * readStatus.height_middle_nativead + 40 * readStatus.screenScaledDensity);
-        if (readStatus.sequence != -1 && !isShow_big_ad) {
-
-            //中图方案
-            if (Constants.dy_page_end_ad_switch && Constants.readedCount % Constants.dy_page_end_ad_freq == 0) {
-                if (readStatus.screenHeight > distance_ad_middle_down) {
-                    //显示两张中图
-                    total_y = total_y + 20 * readStatus.screenScaledDensity;
-
-                    if (readStatus.getAd_bitmap_middle() != null && !readStatus.getAd_bitmap_middle().isRecycled()) {
-                        readStatus.native_type = 20;//显示最上面那张中图
-                        readStatus.y_nativead = total_y;
-                        if ("night".equals(ResourceUtil.mode)) {
-                            canvas.drawBitmap(readStatus.getAd_bitmap_middle(), (readStatus.screenWidth - readStatus.width_nativead_middle) / 2, total_y, nightPaint);
-                            if (Constants.DEVELOPER_MODE)
-                                AppLog.e(TAG, "drawBitmap ad_bitmap_middle nightPaint");
-                        } else {
-                            canvas.drawBitmap(readStatus.getAd_bitmap_middle(), (readStatus.screenWidth - readStatus.width_nativead_middle) / 2, total_y, null);
-
-                            if (Constants.DEVELOPER_MODE)
-                                AppLog.e(TAG, "drawBitmap ad_bitmap_middle");
-                        }
-                        total_y = total_y + readStatus.height_middle_nativead;
-                    } else {
-                        readStatus.native_type = 30;
-                    }
-
-                    if (readStatus.getAd_bitmap_middle_down() != null && !readStatus.getAd_bitmap_middle_down().isRecycled()) {
-
-                        if (readStatus.native_type == 20) {
-                            readStatus.native_type = 21;//显示两张中图
-                        } else if (readStatus.native_type == 30) {
-                            readStatus.native_type = 22;//只显示最下面那一张中图
-//                            total_y = total_y + 20 * readStatus.screenScaledDensity;
-                        }
-                        readStatus.y_nativead = total_y;
-
-                        if ("night".equals(ResourceUtil.mode)) {
-                            canvas.drawBitmap(readStatus.getAd_bitmap_middle_down(), (readStatus.screenWidth - readStatus.width_nativead_middle) / 2, total_y, nightPaint);
-                            if (Constants.DEVELOPER_MODE)
-                                AppLog.e(TAG, "drawBitmap ad_bitmap_middle_down nightPaint");
-                        } else {
-                            canvas.drawBitmap(readStatus.getAd_bitmap_middle_down(), (readStatus.screenWidth - readStatus.width_nativead_middle) / 2, total_y, null);
-                            if (Constants.DEVELOPER_MODE)
-                                AppLog.e(TAG, "drawBitmap ad_bitmap_middle_down");
-                        }
-
-                    }
-                } else if (readStatus.screenHeight > distance_ad_middle) {
-                    total_y = total_y + 20 * readStatus.screenScaledDensity;
-
-
-                    if (readStatus.getAd_bitmap_middle() != null && !readStatus.getAd_bitmap_middle().isRecycled()) {
-                        readStatus.native_type = 23;//只显示一张中图的情况下，显示中图上
-                        readStatus.y_nativead = total_y;
-                        if ("night".equals(ResourceUtil.mode)) {
-                            canvas.drawBitmap(readStatus.getAd_bitmap_middle(), (readStatus.screenWidth - readStatus.width_nativead_middle) / 2, total_y, nightPaint);
-
-
-                        } else {
-                            canvas.drawBitmap(readStatus.getAd_bitmap_middle(), (readStatus.screenWidth - readStatus.width_nativead_middle) / 2, total_y, null);
-
-
-                        }
-
-                    } else {
-                        if (readStatus.getAd_bitmap_middle_down() != null && !readStatus.getAd_bitmap_middle_down().isRecycled()) {
-                            readStatus.native_type = 24;//只显示一张中图的情况下，显示中图下
-                            readStatus.y_nativead = total_y;
-                            if ("night".equals(ResourceUtil.mode)) {
-                                canvas.drawBitmap(readStatus.getAd_bitmap_middle_down(), (readStatus.screenWidth - readStatus.width_nativead_middle) / 2, total_y, nightPaint);
-                            } else {
-                                canvas.drawBitmap(readStatus.getAd_bitmap_middle_down(), (readStatus.screenWidth - readStatus.width_nativead_middle) / 2, total_y, null);
-                            }
-                        }
-                    }
-                } else if (readStatus.screenHeight > distance_ad) {
-                    //只显示小图,用的是中图下对应的小图
-                    if (readStatus.getAd_bitmap() != null && !readStatus.getAd_bitmap().isRecycled()) {
-                        readStatus.native_type = 25;//只显示一张小图
-                        readStatus.y_nativead = total_y;
-
-                        if ("night".equals(ResourceUtil.mode)) {
-                            canvas.drawBitmap(readStatus.getAd_bitmap(), (readStatus.screenWidth - readStatus.width_nativead_middle) / 2, total_y, nightPaint);
-                        } else {
-                            canvas.drawBitmap(readStatus.getAd_bitmap(), (readStatus.screenWidth - readStatus.width_nativead_middle) / 2, total_y, null);
-                        }
-                    }
-                } else {
-                    //剩余空间不够，什么都放不下
-                }
-            }
-
-            attach(activity);
-            if (Constants.DEVELOPER_MODE)
-                AppLog.e(TAG, "ad total_y:" + total_y + " textHeight:" + textHeight + " readStatus.y_nativead:" + readStatus.y_nativead + " show ad" + "" +
-                        " distance_ad2:" + distance_ad_middle + " height:" + readStatus.screenHeight + " native_type:" + readStatus.native_type + " height_nativead:" + readStatus.height_nativead);
-        }
-
         return mOperationPaint;
     }
 
@@ -772,115 +544,6 @@ public class DrawTextHelper {
             }
         }
         return isInclude;
-    }
-
-    private void addInMobiView(InMobiNative inMobiNative) {
-        //添加inmobiView
-        RelativeLayout filterLayout = new FilterLayout(BookApplication.getGlobalContext());
-        View inMobiView = inMobiNative.getPrimaryViewOfWidth(readStatus.novel_basePageView, readStatus.novel_basePageView, readStatus.screenWidth);
-        filterLayout.setLayoutParams(inMobiView.getLayoutParams());
-        filterLayout.addView(inMobiView);
-        //添加logo
-        View logo = LayoutInflater.from(BookApplication.getGlobalContext()).inflate(R.layout.view_default_logo, null);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        filterLayout.addView(logo, -1, lp);
-        //添加到parent中
-        ViewGroup.LayoutParams params = filterLayout.getLayoutParams();
-        ViewGroup.MarginLayoutParams marginParams = null;
-        if (params instanceof ViewGroup.MarginLayoutParams) {
-            marginParams = (ViewGroup.MarginLayoutParams) params;
-        } else {
-            marginParams = new ViewGroup.MarginLayoutParams(params);
-        }
-        readStatus.width_nativead_big = params.width;
-        readStatus.height_nativead_big = params.height;
-        int top = (readStatus.screenHeight - readStatus.height_nativead_big) / 2;
-        marginParams.setMargins(0, top, 0, top);
-        readStatus.setAd_inmobi_parent(filterLayout);
-        readStatus.novel_basePageView.addView(filterLayout, marginParams);
-    }
-
-    private final int getHeight(Bitmap bitmap) {
-        return (readStatus.screenHeight - bitmap.getHeight()) / 2;
-    }
-
-    public void removeInMobiView() {
-        ViewGroup inmobiParent = readStatus.getAd_inmobi_parent();
-        if (inmobiParent != null && readStatus.novel_basePageView.indexOfChild(inmobiParent) != -1) {
-//            LogUtils.e(TAG,"removeInmobi");
-            inmobiParent.removeAllViews();
-            readStatus.novel_basePageView.removeView(inmobiParent);
-            readStatus.setAd_inmobi_parent(null);
-        }
-    }
-
-    private void attach(Activity activity) {
-        if (readStatus == null) {
-            return;
-        }
-
-        if (readStatus.novel_basePageView != null) {
-            try {
-                if (statisticManager == null) {
-                    statisticManager = StatisticManager.getStatisticManager();
-                }
-                /*if (readStatus.currentAdInfo != null && (readStatus.native_type == 1 || readStatus.native_type == 3 || readStatus.native_type == 4)) {
-
-                    statisticManager.schedulingRequest(activity, readStatus.novel_basePageView, readStatus.currentAdInfo, pageView.getCurrentNovel(), StatisticManager.TYPE_SHOW, NativeInit.ad_position[1]);
-                } else */
-                if (readStatus.currentAdInfo_image != null && readStatus.native_type == 2) {
-                    if (Constants.IS_LANDSCAPE) {
-                        statisticManager.schedulingRequest(activity, readStatus.novel_basePageView, readStatus.currentAdInfo_image, pageView.getCurrentNovel(), StatisticManager.TYPE_SHOW, NativeInit.ad_position[9]);
-                    } else {
-                        statisticManager.schedulingRequest(activity, readStatus.novel_basePageView, readStatus.currentAdInfo_image, pageView.getCurrentNovel(), StatisticManager.TYPE_SHOW, NativeInit.ad_position[2]);
-                    }
-                } else if (readStatus.currentAdInfo_in_chapter != null && readStatus.native_type == 5) {
-
-                    if (Constants.IS_LANDSCAPE) {
-                        statisticManager.schedulingRequest(activity, readStatus.novel_basePageView, readStatus.currentAdInfo_in_chapter, pageView.getCurrentNovel(), StatisticManager.TYPE_SHOW, NativeInit.ad_position[10]);
-                    } else {
-                        statisticManager.schedulingRequest(activity, readStatus.novel_basePageView, readStatus.currentAdInfo_in_chapter, pageView.getCurrentNovel(), StatisticManager.TYPE_SHOW, NativeInit.ad_position[7]);
-                    }
-                } else if (readStatus.currentAdInfo != null && (readStatus.native_type == 20 || readStatus.native_type == 23)) {
-
-                    statisticManager.schedulingRequest(activity, readStatus.novel_basePageView, readStatus.currentAdInfo, pageView.getCurrentNovel(), StatisticManager.TYPE_SHOW, NativeInit.ad_position[1]);
-                } else if (readStatus.currentAdInfoDown != null && (readStatus.native_type == 22 || readStatus.native_type == 24 || readStatus.native_type == 25)) {
-
-                    statisticManager.schedulingRequest(activity, readStatus.novel_basePageView, readStatus.currentAdInfoDown, pageView.getCurrentNovel(), StatisticManager.TYPE_SHOW, NativeInit.ad_position[1]);
-                } else if (readStatus.native_type == 21) {
-                    if (readStatus.currentAdInfo != null) {
-                        statisticManager.schedulingRequest(activity, readStatus.novel_basePageView, readStatus.currentAdInfo, pageView.getCurrentNovel(), StatisticManager.TYPE_SHOW, NativeInit.ad_position[1]);
-                    }
-                    if (readStatus.currentAdInfoDown != null) {
-                        statisticManager.schedulingRequest(activity, readStatus.novel_basePageView, readStatus.currentAdInfoDown, pageView.getCurrentNovel(), StatisticManager.TYPE_SHOW, NativeInit.ad_position[1]);
-                    }
-                }
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-    public void loadNatvieAd() {
-        if (!Constants.isSlideUp) {
-            OwnNativeAdManager.getInstance(mActivity).loadAdForMiddle(NativeInit.CustomPositionName.READING_MIDDLE_POSITION);
-            if (Constants.IS_LANDSCAPE) {
-                OwnNativeAdManager.getInstance(mActivity).loadAd(NativeInit.CustomPositionName.SUPPLY_READING_SPACE);
-            } else {
-                OwnNativeAdManager.getInstance(mActivity).loadAd(NativeInit.CustomPositionName.READING_POSITION);
-            }
-        }
-        if (Constants.isSlideUp && Constants.dy_ad_readPage_slide_switch_new) {
-            if (Constants.IS_LANDSCAPE) {
-                OwnNativeAdManager.getInstance(mActivity).loadAd(NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD);
-            } else {
-                OwnNativeAdManager.getInstance(mActivity).loadAd(NativeInit.CustomPositionName.SLIDEUP_POPUPAD_POSITION);
-                OwnNativeAdManager.getInstance(mActivity).loadAd(NativeInit.CustomPositionName.LANDSCAPE_SLIDEUP_POPUPAD);
-            }
-        }
     }
 
     //上下滑动首页
@@ -979,7 +642,6 @@ public class DrawTextHelper {
      * 章节首页提示效果
      */
     private void drawChapterPage(Canvas canvas, List<NovelLineBean> pageLines) {
-        readStatus.native_type = 0;
         mPaint.setTextSize(Constants.FONT_SIZE * readStatus.screenScaledDensity);
         duanPaint.setTextSize(1 * readStatus.screenScaledDensity);
         textPaint.setTextSize(Constants.FONT_CHAPTER_SIZE * readStatus.screenScaledDensity);

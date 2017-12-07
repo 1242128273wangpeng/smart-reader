@@ -1,14 +1,5 @@
 package com.intelligent.reader.read.page;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
-import com.dingyueads.sdk.Bean.AdSceneData;
-import com.dingyueads.sdk.Bean.Novel;
-import com.dingyueads.sdk.Native.YQNativeAdInfo;
-import com.dingyueads.sdk.NativeInit;
-import com.dingyueads.sdk.Utils.LogUtils;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.ReadingActivity;
 import com.intelligent.reader.read.animation.BitmapManager;
@@ -24,7 +15,6 @@ import net.lzbook.kit.data.bean.NovelLineBean;
 import net.lzbook.kit.data.bean.ReadStatus;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.StatisticManager;
 
 import android.app.Activity;
 import android.content.Context;
@@ -42,7 +32,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -100,10 +89,6 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
     private int count = 0;//用于记录第一次进来时次数（用户画像打点）
     private int markPosition;//标记是否是向下滑动
     private boolean isFirstCome = true;//用于记录当前是否是第一次进来（用户画像打点）
-
-    private HashMap<String, YQNativeAdInfo> adInfoHashMapUp = new HashMap<>();
-    private HashMap<String, YQNativeAdInfo> adInfoHashMap = new HashMap<>();
-    private StatisticManager statisticManager;
 
     public ScrollPageView(Context context) {
         super(context);
@@ -912,28 +897,8 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
     }
 
     @Override
-    public void loadNatvieAd() {
-        drawTextHelper.loadNatvieAd();
-    }
-
-    @Override
     public void setOnOperationClickListener(OnOperationClickListener onOperationClickListener) {
         mOnOperationClickListener = onOperationClickListener;
-    }
-
-    @Override
-    public Novel getCurrentNovel() {
-        if (dataFactory != null) {
-            return dataFactory.transformation();
-        }
-        return null;
-    }
-
-    @Override
-    public void removeAdView() {
-        if (drawTextHelper != null && !readStatus.isInMobiViewClicking) {
-            drawTextHelper.removeInMobiView();
-        }
     }
 
     @Override
@@ -1018,7 +983,6 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHodler hodler = null;
-            AdHolder adHolder = null;
             int type = getItemViewType(position);
             if (convertView == null) {
                 switch (type) {
@@ -1032,23 +996,11 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
                         hodler.page.setTag(R.id.tag_canvas, mCurrentCanvas);
                         convertView.setTag(R.id.Tag_BOOK, hodler);
                         break;
-                    case 1:
-                        convertView = inflater.inflate(R.layout.page_item_ad, parent, false);
-                        adHolder = new AdHolder();
-                        adHolder.iv_ad_middle_scroll = (ImageView) convertView.findViewById(R.id.iv_ad_middle_scroll);
-                        adHolder.iv_up_icon = (ImageView) convertView.findViewById(R.id.iv_up_icon);
-                        adHolder.iv_ad_big_scroll = (ImageView) convertView.findViewById(R.id.iv_ad_big_scroll);
-                        adHolder.iv_down_icon = (ImageView) convertView.findViewById(R.id.iv_down_icon);
-                        convertView.setTag(R.id.Tag_AD, adHolder);
-                        break;
                 }
             } else {
                 switch (type) {
                     case 0:
                         hodler = (ViewHodler) convertView.getTag(R.id.Tag_BOOK);
-                        break;
-                    case 1:
-                        adHolder = (AdHolder) convertView.getTag(R.id.Tag_AD);
                         break;
                 }
             }
@@ -1065,166 +1017,12 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
                     }
                     hodler.page.drawPage(mCurPageBitmap);
                     break;
-                case 1:
-                    //添加一个新的实例，用于存储广告页面对应的imageUrl,广告展示与否的状态,广告的类型
-                    String imageUrlUp = "";
-                    String imageUrl = "";
-                    //无论横竖屏拿的第一条广告信息都是8-1，currentAdInfo
-                    if (chapterContent.get(position).size() > 1) {
-                        imageUrlUp = chapterContent.get(position).get(1).getLineContent();
-                        if (TextUtils.isEmpty(imageUrlUp) && readStatus != null && readStatus.currentAdInfo != null &&
-                                !TextUtils.isEmpty(readStatus.currentAdInfo.getAdvertisement().imageUrl)) {
-                            chapterContent.get(position).get(1).setLineContent(readStatus.currentAdInfo.getAdvertisement().imageUrl);
-                            imageUrlUp = chapterContent.get(position).get(1).getLineContent();
-                            adInfoHashMapUp.put(imageUrlUp, readStatus.currentAdInfo);
-                        }
-                    } else if (chapterContent.get(position).size() == 1){
-                        if (readStatus != null && readStatus.currentAdInfo != null && !TextUtils.isEmpty(readStatus.currentAdInfo.getAdvertisement().imageUrl)) {
-                            chapterContent.get(position).add(new NovelLineBean(readStatus.currentAdInfo.getAdvertisement().imageUrl, 0, 0, false, null));
-                            imageUrlUp = chapterContent.get(position).get(1).getLineContent();
-                            adInfoHashMapUp.put(imageUrlUp, readStatus.currentAdInfo);
-                            LogUtils.e("scrollhaha", "position:" + position + " readStatus.currentAdInfo: " + readStatus.currentAdInfo.getAdvertisement().imageUrl);
-                        } else {
-                            chapterContent.get(position).add(new NovelLineBean("", 0, 0, false, null));
-                        }
-                    }
-                    if (!Constants.IS_LANDSCAPE) {
-                        if (chapterContent.get(position).size() > 2) {
-                            imageUrl = chapterContent.get(position).get(2).getLineContent();
-                        } else if (chapterContent.get(position).size() == 2) {
-                            if (readStatus != null && readStatus.currentAdInfo_image != null && !TextUtils.isEmpty(readStatus.currentAdInfo_image.getAdvertisement().imageUrl)) {
-                                chapterContent.get(position).add(new NovelLineBean(readStatus.currentAdInfo_image.getAdvertisement().imageUrl, 0, 0, false, null));
-                                imageUrl = chapterContent.get(position).get(2).getLineContent();
-                                adInfoHashMap.put(imageUrl, readStatus.currentAdInfo_image);
-                                LogUtils.e("scrollhaha", "position:" + position + " readStatus.currentAdInfo_image: " + readStatus.currentAdInfo_image.getAdvertisement().imageUrl);
-                            }
-                        }
-                    }
-
-                    //准备广告显示和上报相关
-                    setAdView(adHolder, adInfoHashMapUp.get(imageUrlUp), 0, imageUrlUp);
-
-                    if (!Constants.IS_LANDSCAPE) {
-                        setAdView(adHolder, adInfoHashMap.get(imageUrl), 1, imageUrl);
-                    }
-                    break;
             }
             return convertView;
         }
 
-        private int getResourceId(String rationName) {
-            switch (rationName) {
-                case "广点通":
-                    return R.drawable.icon_ad_gdt;
-                case "百度":
-                    return R.drawable.icon_ad_bd;
-                case "360":
-                    return R.drawable.icon_ad_360;
-                default:
-                    return R.drawable.icon_ad_default;
-            }
-        }
-
-        private void setAdView(final AdHolder adHolder, final YQNativeAdInfo adInfo, int type, final String url) {
-            //type 0:上 1:下
-            if (adInfo == null || dataFactory == null) return;
-
-            final Novel novel = dataFactory.transformation();
-            try {
-                if (statisticManager == null) {
-                    statisticManager = StatisticManager.getStatisticManager();
-                }
-                AdSceneData adSceneData = adInfo.getAdSceneData();
-                if (adSceneData != null) {
-                    adSceneData.ad_showSuccessTime = String.valueOf(System.currentTimeMillis() / 1000L);
-                }
-
-                if (type == 0) {
-                    Glide.with(getContext()).load(url).dontAnimate().placeholder(R.drawable.icon_scroll_ad_up)
-                            .error((R.drawable.icon_scroll_ad_up)).listener(new RequestListener<String, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            adHolder.iv_up_icon.setVisibility(View.GONE);
-                            adHolder.iv_ad_middle_scroll.setVisibility(View.GONE);
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            adHolder.iv_up_icon.setVisibility(View.VISIBLE);
-                            adHolder.iv_ad_middle_scroll.setVisibility(View.VISIBLE);
-                            if (adInfoHashMapUp != null && adInfoHashMapUp.containsKey(url) && adInfoHashMapUp.get(url) != null && adInfoHashMapUp.get(url).getAdvertisement()
-                                    != null) {
-                                adHolder.iv_up_icon.setImageResource(getResourceId(adInfoHashMapUp.get(url).getAdvertisement().rationName));
-                            } else {
-                                adHolder.iv_up_icon.setImageResource(R.drawable.icon_ad_default);
-                            }
-                            statisticManager.schedulingRequest(mActivity, adHolder.iv_ad_middle_scroll, adInfo, novel, StatisticManager.TYPE_SHOW, NativeInit.ad_position[12]);
-                            return false;
-                        }
-                    }).into(adHolder.iv_ad_middle_scroll);
-
-                    adHolder.iv_ad_middle_scroll.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (statisticManager == null) {
-                                statisticManager = StatisticManager.getStatisticManager();
-                            }
-                            LogUtils.e("scrollhaha", "上报物料信息：" + adInfo.toString());
-                            statisticManager.schedulingRequest(mActivity, view, adInfo, novel, StatisticManager.TYPE_CLICK, NativeInit.ad_position[12]);
-                        }
-                    });
-                } else if (type == 1) {
-                    Glide.with(getContext()).load(url).dontAnimate().placeholder(R.drawable.icon_scroll_ad)
-                            .error((R.drawable.icon_scroll_ad)).listener(new RequestListener<String, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            adHolder.iv_down_icon.setVisibility(View.GONE);
-                            adHolder.iv_ad_big_scroll.setVisibility(View.GONE);
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            adHolder.iv_down_icon.setVisibility(View.VISIBLE);
-                            adHolder.iv_ad_big_scroll.setVisibility(View.VISIBLE);
-                            if (adInfoHashMap != null && adInfoHashMap.containsKey(url) && adInfoHashMap.get(url) != null && adInfoHashMap.get(url).getAdvertisement()
-                                    != null) {
-                                adHolder.iv_down_icon.setImageResource(getResourceId(adInfoHashMap.get(url).getAdvertisement().rationName));
-                            } else {
-                                adHolder.iv_down_icon.setImageResource(R.drawable.icon_ad_default);
-                            }
-                            statisticManager.schedulingRequest(mActivity, adHolder.iv_ad_big_scroll, adInfo, novel, StatisticManager.TYPE_SHOW, NativeInit.ad_position[11]);
-                            return false;
-                        }
-                    }).into(adHolder.iv_ad_big_scroll);
-                    adHolder.iv_ad_big_scroll.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (statisticManager == null) {
-                                statisticManager = StatisticManager.getStatisticManager();
-                            }
-                            LogUtils.e("scrollhaha", "上报物料信息：" + adInfo.toString());
-                            statisticManager.schedulingRequest(mActivity, view, adInfo, novel, StatisticManager.TYPE_CLICK, NativeInit.ad_position[11]);
-                        }
-                    });
-                }
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
         class ViewHodler {
             Page page;
-        }
-
-        class AdHolder {
-            ImageView iv_ad_middle_scroll;
-            ImageView iv_up_icon;
-            ImageView iv_ad_big_scroll;
-            ImageView iv_down_icon;
         }
 
     }

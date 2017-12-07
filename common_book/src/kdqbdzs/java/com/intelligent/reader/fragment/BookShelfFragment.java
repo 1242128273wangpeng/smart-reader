@@ -20,7 +20,6 @@ import net.lzbook.kit.data.UpdateCallBack;
 import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.BookUpdate;
 import net.lzbook.kit.data.bean.BookUpdateResult;
-import net.lzbook.kit.data.bean.EventBookshelfAd;
 import net.lzbook.kit.data.bean.SensitiveWords;
 import net.lzbook.kit.data.bean.Source;
 import net.lzbook.kit.data.db.BookDaoHelper;
