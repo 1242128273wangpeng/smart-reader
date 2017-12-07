@@ -4,11 +4,15 @@ apply plugin: 'kotlin-android-extensions'
 
 dependencies {
     compile fileTree(include: '*.jar', dir: 'libs')
+    compile 'net.iyouqu.android.common:dycm_ssp_sdk:1.0.0'//ssp广告
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
 //    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     //compile 'net.iyouqu.android.common:Iyouqu_Volley:1.0.0'
     compile 'net.iyouqu.android.common:iyouqu_logencap:1.0.7'
-    compile 'net.iyouqu.android.common:QG_SDK:1.0.3'
+    compile('net.iyouqu.android.common:QG_SDK:1.0.3') {
+        exclude group: 'com.mcxiaoke.volley', module: 'library'
+    }
     compile 'net.youqu:ibook-token:2.0.0'
     compile 'net.iyouqu:novel-extractor:1.0.1-SNAPSHOT'
     compile 'com.amap:AMap_Location:2.4.1'
@@ -43,7 +47,6 @@ dependencies {
 //    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
     compile 'com.squareup.okhttp3:logging-interceptor:3.8.1'
-//    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
 //    compile 'com.aliyun.openservices:aliyun-log-android-sdk:0.3.1'
     compile 'com.github.bumptech.glide:glide:3.8.0'
 //阿里云
