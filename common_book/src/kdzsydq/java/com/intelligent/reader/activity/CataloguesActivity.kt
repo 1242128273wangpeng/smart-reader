@@ -1,8 +1,3 @@
-/**
- * @Title: CataloguesActivity.java
- * *
- * @Description: 小说目录页
- */
 package com.intelligent.reader.activity
 
 import com.baidu.mobstat.StatService
@@ -180,7 +175,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         iv_back_reading = findViewById(R.id.iv_back_reading) as ImageView
         iv_back_reading!!.setOnClickListener(this)
         currentView = tab_catalog
-        iv_back_reading!!.setOnClickListener { v -> ToastUtils.showToastNoRepeat("aaa") }
 
         changeSortState(isPositive)
     }
@@ -610,11 +604,5 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
 
     override fun successAddIntoShelf(isAddIntoShelf: Boolean) {}
 
-    companion object {
 
-        protected val MESSAGE_FETCH_CATALOG = 0
-        protected val MESSAGE_FETCH_BOOKMARK = MESSAGE_FETCH_CATALOG + 1
-        protected val MESSAGE_FETCH_ERROR = MESSAGE_FETCH_BOOKMARK + 1
-        private val DELAY_OVERLAY = MESSAGE_FETCH_ERROR + 1
-    }
 }

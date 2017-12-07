@@ -1,50 +1,24 @@
 package com.intelligent.reader.activity
 
-import com.android.volley.VolleyError
-import com.android.volley.toolbox.ImageLoader
-import com.dingyueads.sdk.Bean.Advertisement
-import com.dingyueads.sdk.Bean.Novel
-import com.dingyueads.sdk.Native.YQNativeAdInfo
-import com.dingyueads.sdk.NativeInit
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.SourceAdapter
 import com.intelligent.reader.presenter.bookEnd.BookEndContract
 import com.intelligent.reader.presenter.bookEnd.BookEndPresenter
 
-import net.lzbook.kit.ad.OwnNativeAdManager
-import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.book.view.MyDialog
-import net.lzbook.kit.book.view.RecommendItemView
-import net.lzbook.kit.cache.imagecache.ImageCacheManager
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Book
-import net.lzbook.kit.data.bean.EventNativeType
 import net.lzbook.kit.data.bean.ReadStatus
 import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.bean.Source
-import net.lzbook.kit.data.bean.SourceItem
-import net.lzbook.kit.data.db.BookChapterDao
-import net.lzbook.kit.data.db.BookDaoHelper
-import net.lzbook.kit.request.own.OtherRequestService
-import net.lzbook.kit.utils.BaseBookHelper
 import net.lzbook.kit.utils.ResourceUtil
-import net.lzbook.kit.utils.StatServiceUtils
-import net.lzbook.kit.utils.StatisticManager
-import net.lzbook.kit.utils.ATManager
 
-import android.content.DialogInterface
-import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.os.Handler
-import android.os.Message
 import android.text.Html
-import android.text.TextUtils
 import android.view.View
 import android.widget.AdapterView
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
@@ -53,38 +27,23 @@ import android.widget.Toast
 import java.util.ArrayList
 import java.util.concurrent.Callable
 
-import de.greenrobot.event.EventBus
-
 class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndContract {
     private var iv_back_bookstore: View? = null
     private var iv_back: View? = null
     private var iv_title_right: View? = null
     private var ad_view: ImageView? = null
     private var ad_view_logo: ImageView? = null
-    //    private ImageView item_ad_image ;
-    //    private TextView item_ad_title ;
-    //    private RatingBar item_ad_extension ;
-    //    private TextView item_ad_desc ;
     private var textView_endInfo: TextView? = null
-    //    private ImageView item_ad_right_down ;
-    //    private RelativeLayout bookend_ad_layout;
     private var book: Book? = null
     private var bookName: String? = null
-    private val nativeAdManager: OwnNativeAdManager? = null
     private var loadingPage: LoadingPage? = null
-    //	private boolean isGetEvent;
     private var name_bookend: TextView? = null
-
-    private val statisticManager: StatisticManager? = null
-    private val nativeAdInfo: YQNativeAdInfo? = null
 
     private var requestItem: RequestItem? = null
     private var category: String? = null
     private var book_id: String? = null
-    private val myDialog: MyDialog? = null
     private var readStatus: ReadStatus? = null
 
-    private val sourceList = ArrayList<Source>()
     private var sourceAdapter: SourceAdapter? = null
     private var sourceListView: ListView? = null
     private var mBookEndPresenter: BookEndPresenter? = null
@@ -93,10 +52,8 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.act_book_end)
-        EventBus.getDefault().register(this)
         initListener()
         readStatus = ReadStatus(applicationContext)
-
         initData()
         if (requestItem != null && readStatus != null) {
             mBookEndPresenter = BookEndPresenter(this, this, requestItem!!, readStatus!!, bookName!!, book_id!!, category!!)
@@ -111,7 +68,6 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
             if (mBookEndPresenter == null) {
                 mBookEndPresenter = BookEndPresenter(this, this, requestItem!!, readStatus!!, bookName!!, book_id!!, category!!)
             }
-            mBookEndPresenter!!.initAD()
         }
         loadingPage = LoadingPage(this, LoadingPage.setting_result)
         if (mBookEndPresenter != null) {
@@ -120,30 +76,29 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
         loadingPage!!.setReloadAction(Callable<Void> {
             if (mBookEndPresenter != null) {
                 mBookEndPresenter!!.getBookSource()
-                mBookEndPresenter!!.setADItem()
             }
             null
         })
     }
+
 
     private fun initListener() {
         sourceListView = findViewById(R.id.sourcelist_bookend) as ListView
         iv_title_right = findViewById(R.id.iv_title_right)
         iv_back = findViewById(R.id.iv_back)
         iv_back_bookstore = findViewById(R.id.iv_back_bookstore)
-
         ad_view = findViewById(R.id.ad_view) as ImageView
-
         ad_view_logo = findViewById(R.id.ad_view_logo) as ImageView
         ad_view_logo!!.visibility = View.GONE
         textView_endInfo = findViewById(R.id.textView_endInfo) as TextView
         textView_endInfo!!.text = Html.fromHtml(resources.getString(R.string.book_end_info))
         name_bookend = findViewById(R.id.name_bookend) as TextView
 
-        ad_view!!.setOnClickListener(this)
         iv_title_right!!.setOnClickListener(this)
         iv_back!!.setOnClickListener(this)
         iv_back_bookstore!!.setOnClickListener(this)
+        ad_view!!.setOnClickListener(this)
+
 
     }
 
@@ -169,18 +124,6 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
         }
     }
 
-
-    fun onEvent(eventNativeType: EventNativeType) {
-        if (NativeInit.CustomPositionName.BOOK_END_POSITION.toString() == eventNativeType.type_ad) {
-            if (!isFinishing) {
-                if (mBookEndPresenter != null) {
-                    mBookEndPresenter!!.setADItem()
-                }
-            }
-        }
-    }
-
-
     override fun onClick(v: View) {
         if (mBookEndPresenter != null) {
             mBookEndPresenter!!.goToBookSearchActivity(v)
@@ -200,9 +143,6 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
             }
             R.id.iv_back -> finish()
             R.id.ad_view -> {
-                if (mBookEndPresenter != null) {
-                    mBookEndPresenter!!.adSchedulingRequest(v, StatisticManager.TYPE_CLICK, false)
-                }
                 if (Constants.DEVELOPER_MODE) {
                     Toast.makeText(this@BookEndActivity, "你点击了广告", Toast.LENGTH_SHORT).show()
                 }
@@ -266,31 +206,15 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
 
         ad_view_logo!!.visibility = View.VISIBLE
 
-        if (mBookEndPresenter != null) {
-            mBookEndPresenter!!.adSchedulingRequest(ad_view!!, StatisticManager.TYPE_SHOW, false)
-        }
     }
 
 
     override fun showAdImgError() {
         ad_view!!.visibility = View.GONE
-        if (mBookEndPresenter != null) {
-            mBookEndPresenter!!.adSchedulingRequest(ad_view!!, StatisticManager.TYPE_SHOW, false)
-        }
     }
 
     /*****************************以上广告相关 */
     override fun onDestroy() {
-
-        if (ad_view != null && mBookEndPresenter != null) {
-            mBookEndPresenter!!.adSchedulingRequest(ad_view!!, StatisticManager.TYPE_END, true)
-        }
-
-        try {
-            EventBus.getDefault().unregister(this)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
 
         if (loadingPage != null) {
             loadingPage = null

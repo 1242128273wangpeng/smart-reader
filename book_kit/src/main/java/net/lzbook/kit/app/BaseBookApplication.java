@@ -1,5 +1,6 @@
 package net.lzbook.kit.app;
 
+import com.dycm_adsdk.PlatformSDK;
 import com.quduquxie.QuInitialization;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
@@ -86,6 +87,7 @@ public abstract class BaseBookApplication extends Application {
         super.onCreate();
         this.sCtx = this;
         loge(this, "onCreate");
+        PlatformSDK.app().onAppCreate(this);
     }
 
     @Override
