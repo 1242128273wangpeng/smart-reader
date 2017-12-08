@@ -114,6 +114,9 @@ public class Constants {
     public static final String TODAY_FIRST_POST_BOOKIDS = "today_first_post_bookids";
     //打点FindBookDetail的搜索按钮
     public static final String FINDBOOK_SEARCH = "findbook_search";
+    //书架页推荐书籍黑名单
+    public static final String DISLIKED_BOOK_ID = "disliked_bookId";
+    public static final String RECOMMEND_UPDATE_TIME = "recommend_update_time";
     public static int NONET_READHOUR = 24;
     public static int DOWNLOAD = 400;
     // FIXME 上线要改成false

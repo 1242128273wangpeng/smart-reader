@@ -3,6 +3,7 @@ package net.lzbook.kit.net.custom.service
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.net.custom.CommonParamsInterceptor
 import net.lzbook.kit.net.custom.StringConverterFactory
+import net.lzbook.kit.user.RecommendService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -19,6 +20,7 @@ object NetService {
     var userService: UserService by Delegates.notNull<UserService>()
     var ownSearchService: OwnSearchService by Delegates.notNull<OwnSearchService>()
     var ownBookService: OwnBookService by Delegates.notNull<OwnBookService>()
+    var recommendService: RecommendService by Delegates.notNull<RecommendService>()
 
     init {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
@@ -42,6 +44,7 @@ object NetService {
         userService = retrofit.create(UserService::class.java)
         ownSearchService = retrofit.create(OwnSearchService::class.java)
         ownBookService = retrofit.create(OwnBookService::class.java)
+        recommendService = retrofit.create(RecommendService::class.java)
     }
 
 }

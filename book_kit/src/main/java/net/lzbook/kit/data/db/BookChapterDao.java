@@ -14,6 +14,7 @@ import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BookChapterDao {
@@ -104,7 +105,7 @@ public class BookChapterDao {
         return count;
     }
 
-    public synchronized boolean insertBookChapter(ArrayList<Chapter> chapterList) {
+    public synchronized boolean insertBookChapter(List<Chapter> chapterList) {
         SQLiteDatabase db = mHelper.getWritableDatabase();
         Cursor cur = null;
         try {
@@ -620,6 +621,57 @@ public class BookChapterDao {
         } finally {
             if (db != null)
                 db.close();
+        }
+    }
+
+    /*
+    * 根据 章节ID查询_id
+    */
+    public int getChapterIdByChapterId(String id) {
+        SQLiteDatabase db = null;
+        Cursor c = null;
+        int _id = -1;
+        try {
+            db = mHelper.getReadableDatabase();
+            c = db.query(TAB_CHAPTER, null, ChapterTable.CHAPTER_ID + "='" + id + "'", null, null, null, null, null);
+            while (c.moveToNext()) {
+                _id = c.getInt(ChapterTable.ID_INDEX);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                c.close();
+                db.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+        return _id;
+    }
+
+    public void changeChargeBookState(int _id, int length) {
+        SQLiteDatabase db = null;
+        Cursor c = null;
+        int index = _id;
+        int isBought = -1;
+        try {
+            db = mHelper.getWritableDatabase();
+            ContentValues cv = new ContentValues();
+            cv.put("is_purchased", 1);
+            for (int i = 0; i < length; i++) {
+                db.update(TAB_CHAPTER, cv, ChapterTable.ID + "='" + index + "'", null);
+                index++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+            if (c != null) {
+                c.close();
+            }
         }
     }
 

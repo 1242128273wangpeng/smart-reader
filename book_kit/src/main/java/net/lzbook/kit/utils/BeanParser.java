@@ -7,6 +7,7 @@ import com.quduquxie.bean.Chapter;
 import net.lzbook.kit.data.bean.BookUpdate;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Administrator on 2016/11/4 0004.
@@ -105,7 +106,7 @@ public class BeanParser {
         return list;
     }
 
-    public static ArrayList<net.lzbook.kit.data.bean.Chapter> buildOWNChapterList(ArrayList<com.quduquxie.bean.Chapter> chapterList, int start, int size) {
+    public static ArrayList<net.lzbook.kit.data.bean.Chapter> buildOWNChapterList(List<Chapter> chapterList, int start, int size) {
         ArrayList<net.lzbook.kit.data.bean.Chapter> list = new ArrayList<>();
         for (int i = start; i < start + size; i++) {
             if (i > -1 && i < chapterList.size()) {

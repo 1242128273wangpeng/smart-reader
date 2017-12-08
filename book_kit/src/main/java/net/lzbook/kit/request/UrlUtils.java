@@ -17,9 +17,16 @@ public class UrlUtils {
 
 
     //正式线上API，域名例子：api.wubutianxia.com
-    private static String BOOK_NOVEL_DEPLOY_HOST = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST;
+    public static String BOOK_NOVEL_DEPLOY_HOST = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST;
     //正式线上webview地址，域名例子：bookwebview.wubutianxia.com
-    private static String BOOK_WEBVIEW_HOST = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST;
+    public static String BOOK_WEBVIEW_HOST = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST;
+
+    public static String BOOK_CONTENT;
+
+
+    private UrlUtils() {
+
+    }
 
     public static String getBookNovelDeployHost() {
         return BOOK_NOVEL_DEPLOY_HOST;
@@ -40,12 +47,6 @@ public class UrlUtils {
             BOOK_WEBVIEW_HOST = bookWebviewHost;
         }
     }
-
-
-    private UrlUtils() {
-
-    }
-
 
     public static String buildUrl(String uriTag, Map<String, String> params) {
         if (uriTag == null) {
