@@ -7,7 +7,7 @@ import com.intelligent.reader.R
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.net.NetOwnBook
 import com.intelligent.reader.read.help.BookHelper
-import com.intelligent.reader.read.help.IReadDataFactory
+import com.intelligent.reader.reader.ReaderViewModel
 import com.quduquxie.network.DataCache
 import com.quduquxie.network.DataService
 import io.reactivex.Observable
@@ -28,12 +28,12 @@ import java.util.*
 /**
  * Created by xian on 2017/8/17.
  */
-class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: IReadDataFactory) : CatalogMark.Presenter {
+class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: ReaderViewModel) : CatalogMark.Presenter {
     override fun onClickFixBook(activity: Activity) {
         val data = java.util.HashMap<String, String>()
         data.put("bookid", readStatus.book_id)
         if (dataFactory != null && dataFactory.currentChapter != null) {
-            data.put("chapterid", dataFactory.currentChapter.chapter_id)
+            data.put("chapterid", dataFactory!!.currentChapter!!.chapter_id)
         }
         StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.DIRECTORYREPAIR, data)
     }
@@ -122,7 +122,7 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: IReadDat
             val data = java.util.HashMap<String, String>()
             data.put("bookid", readStatus.book_id)
             if (dataFactory != null && dataFactory.currentChapter != null) {
-                data.put("chapterid", dataFactory.currentChapter.chapter_id)
+                data.put("chapterid", dataFactory!!.currentChapter!!.chapter_id)
             }
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.BOOKMARK, data)
         }
@@ -169,7 +169,7 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: IReadDat
         val data = java.util.HashMap<String, String>()
         data.put("bookid", readStatus.book_id)
         if (dataFactory != null && dataFactory.currentChapter != null) {
-            data.put("chapterid", dataFactory.currentChapter.chapter_id)
+            data.put("chapterid", dataFactory!!.currentChapter!!.chapter_id)
         }
         StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CATALOG1, data)
 
@@ -193,7 +193,7 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: IReadDat
         val data = java.util.HashMap<String, String>()
         data.put("bookid", readStatus.book_id)
         if (dataFactory != null && dataFactory.currentChapter != null) {
-            data.put("chapterid", dataFactory.currentChapter.chapter_id)
+            data.put("chapterid", dataFactory!!.currentChapter!!.chapter_id)
         }
         StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.BOOKMARK, data)
 

@@ -313,7 +313,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
         Flowable.timer(2000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    activity.applicationContext.toastShort(textId)
+                    if (activity != null && !activity.isFinishing) {
+                        activity.applicationContext.toastShort(textId)
+                    }
                 }
     }
 
@@ -322,7 +324,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
         Flowable.timer(2000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    activity.applicationContext.toastShort(text)
+                    if (activity != null && !activity.isFinishing) {
+                        activity.applicationContext.toastShort(text)
+                    }
                 }
     }
 

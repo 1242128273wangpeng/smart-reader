@@ -156,7 +156,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, MyScrollView
                 iv_arrow!!.visibility = View.GONE
             }
             if (isQGTitle) {
-                book_cover_source_form!!.text = "青果阅读"
+                if (book_cover_source_form != null) {
+                    book_cover_source_form!!.text = "青果阅读"
+                }
             }
         }
     }

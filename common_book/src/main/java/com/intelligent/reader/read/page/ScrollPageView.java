@@ -5,8 +5,8 @@ import com.intelligent.reader.activity.ReadingActivity;
 import com.intelligent.reader.read.animation.BitmapManager;
 import com.intelligent.reader.read.help.CallBack;
 import com.intelligent.reader.read.help.DrawTextHelper;
-import com.intelligent.reader.read.help.IReadDataFactory;
 import com.intelligent.reader.read.help.NovelHelper;
+import com.intelligent.reader.reader.ReaderViewModel;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
@@ -38,7 +38,6 @@ import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ScrollPageView extends LinearLayout implements PageInterface, View.OnClickListener {
     private final MHandler handler = new MHandler(this);
@@ -59,7 +58,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
     private NovelHelper novelHelper;
     private ReadStatus readStatus;
     private DrawTextHelper drawTextHelper;
-    private IReadDataFactory dataFactory;
+    private ReaderViewModel dataFactory;
     private ScrollPageAdapter adapter;
     private boolean loadingData = false;
     private int width, height;
@@ -466,12 +465,12 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
                     readStatus.startReadTime + "", endTime + "", endTime - readStatus.startReadTime + "", "false", readStatus.requestItem.channel_code + "");
 
         } else {
-            if (readStatus.requestItem != null && dataFactory != null && dataFactory.currentChapter != null && markPosition < position) {
+            if (readStatus.requestItem != null && dataFactory != null && dataFactory.getCurrentChapter() != null && markPosition < position) {
                 //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
-                StartLogClickUtil.upLoadReadContent(readStatus.book_id, dataFactory.currentChapter.chapter_id + "", readStatus.source_ids, readStatus.pageCount + "",
+                StartLogClickUtil.upLoadReadContent(readStatus.book_id, dataFactory.getCurrentChapter().chapter_id + "", readStatus.source_ids, readStatus.pageCount + "",
                         position - 1 + "", readStatus.currentPageConentLength + "", readStatus.requestItem.fromType + "",
                         readStatus.startReadTime + "", endTime + "", endTime - readStatus.startReadTime + "", "false", readStatus.requestItem.channel_code + "");
-                readStatus.lastChapterId = dataFactory.currentChapter.chapter_id;
+                readStatus.lastChapterId = dataFactory.getCurrentChapter().chapter_id;
                 readStatus.requestItem.fromType = 2;
             }
         }
@@ -502,9 +501,8 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
     }
 
     @Override
-    public void setReadFactory(IReadDataFactory factory) {
-        this.dataFactory = factory;
-
+    public void setViewModel(ReaderViewModel mReaderViewModel) {
+        this.dataFactory = mReaderViewModel;
     }
 
     @Override
@@ -528,7 +526,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
         preChaperConent = null;
 
         if (dataFactory != null) {
-            curChapter = dataFactory.currentChapter;
+            curChapter = dataFactory.getCurrentChapter();
         }
         if (curChapter == null)
             return;
@@ -590,7 +588,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
 
             canRemove = true;
         }
-        preChapter = dataFactory.currentChapter;
+        preChapter = dataFactory.getCurrentChapter();
         preChapter.chapterNameList = readStatus.chapterNameList;
         preChaperConent = readStatus.mLineList;
         getChapterSize();
@@ -632,7 +630,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
 
             canRemove = true;
         }
-        nextChapter = dataFactory.currentChapter;
+        nextChapter = dataFactory.getCurrentChapter();
         if (nextChapter == null) {
             return;
         }
@@ -667,6 +665,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
             readStatus.offset = 1;
         }
     }
+
 
     @Override
     public void freshTime(CharSequence time) {

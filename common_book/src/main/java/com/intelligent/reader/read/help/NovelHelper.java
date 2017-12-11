@@ -4,6 +4,7 @@ import com.intelligent.reader.R;
 import com.intelligent.reader.activity.ReadingActivity;
 import com.intelligent.reader.adapter.SourceAdapter;
 import com.intelligent.reader.read.page.PageInterface;
+import com.intelligent.reader.reader.ReaderViewModel;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.download.DownloadState;
@@ -201,7 +202,7 @@ public class NovelHelper {
         }
     }
 
-    public void showSourceDialog(final IReadDataFactory dataFactory, String curl, final ArrayList<Source> sources) {
+    public void showSourceDialog(final ReaderViewModel mReaderViewModel, String curl, final ArrayList<Source> sources) {
         if (actReference == null || actReference.get() == null || actReference.get().isFinishing()) {
             return;
         }
@@ -212,8 +213,8 @@ public class NovelHelper {
         TextView change_source_original_web = (TextView) sourceDialog.findViewById(R.id.change_source_original_web);
         TextView change_source_continue = (TextView) sourceDialog.findViewById(R.id.change_source_continue);
 
-        if (dataFactory != null && dataFactory.currentChapter != null && dataFactory.currentChapter.status != Chapter.Status.CONTENT_NORMAL) {
-            change_source_disclaimer_message.setText(dataFactory.currentChapter.status.tips);
+        if (mReaderViewModel != null && mReaderViewModel.getCurrentChapter() != null && mReaderViewModel.getCurrentChapter().status != Chapter.Status.CONTENT_NORMAL) {
+            change_source_disclaimer_message.setText(mReaderViewModel.getCurrentChapter().status.tips);
             change_source_original_web.setVisibility(View.INVISIBLE);
             change_source_continue.setText(R.string.jump_next_chapter);
         }
@@ -266,7 +267,7 @@ public class NovelHelper {
                 map1.put("type", "1");
                 StartLogClickUtil.upLoadEventLog(actReference.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
                 dismissDialog(sourceDialog);
-                if (dataFactory != null && dataFactory.currentChapter != null && dataFactory.currentChapter.status != Chapter.Status.CONTENT_NORMAL) {
+                if (mReaderViewModel != null && mReaderViewModel.getCurrentChapter() != null && mReaderViewModel.getCurrentChapter().status != Chapter.Status.CONTENT_NORMAL) {
                     if (helperCallBack != null) {
                         helperCallBack.jumpNextChapter();
                     }

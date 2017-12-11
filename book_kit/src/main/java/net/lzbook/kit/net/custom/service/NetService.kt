@@ -1,5 +1,6 @@
 package net.lzbook.kit.net.custom.service
 
+import net.lzbook.kit.net.GsonDataFilterFactory
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.net.custom.CommonParamsInterceptor
 import net.lzbook.kit.net.custom.StringConverterFactory
@@ -26,7 +27,11 @@ object NetService {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
         httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BASIC
 
+        val httpLoggingBodyInterceptor = HttpLoggingInterceptor()
+        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+
         okHttpClient = OkHttpClient.Builder().addNetworkInterceptor(httpLoggingInterceptor)
+                .addNetworkInterceptor(httpLoggingBodyInterceptor)
                 .addNetworkInterceptor(CommonParamsInterceptor())
                 .build()
 
@@ -36,6 +41,7 @@ object NetService {
     fun initService() {
         val retrofit = Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonDataFilterFactory.create())
                 .addConverterFactory(StringConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)

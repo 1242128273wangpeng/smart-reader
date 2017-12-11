@@ -254,7 +254,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun showArrow(isShow: Boolean, isQGTitle: Boolean) {
         if (isQGTitle) {
-            book_cover_source_form!!.text = "青果阅读"
+            if (book_cover_source_form != null) {
+                book_cover_source_form!!.text = "青果阅读"
+            }
         }
     }
 

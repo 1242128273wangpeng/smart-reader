@@ -1,8 +1,8 @@
 package com.intelligent.reader.read.page;
 
 import com.intelligent.reader.read.help.CallBack;
-import com.intelligent.reader.read.help.IReadDataFactory;
 import com.intelligent.reader.read.help.NovelHelper;
+import com.intelligent.reader.reader.ReaderViewModel;
 
 import net.lzbook.kit.data.bean.ReadStatus;
 
@@ -59,7 +59,7 @@ public interface PageInterface {
 
     void getNextChapter();
 
-    void setReadFactory(IReadDataFactory factory);
+    void setViewModel(ReaderViewModel mReaderViewModel);
 
     void setFirstPage(boolean firstPage);
 

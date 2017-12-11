@@ -15,11 +15,10 @@ import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.read.help.BookHelper
-import com.intelligent.reader.read.help.IReadDataFactory
-import net.lzbook.kit.app.BaseBookApplication
+import com.intelligent.reader.reader.ReaderViewModel
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.book.download.DownloadState
+import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.NullCallBack
@@ -54,16 +53,17 @@ class ReadOptionPresenter : ReadOption.Presenter {
     private var activity: WeakReference<Activity>
 
 
-    private var dataFactory: IReadDataFactory
+    private var mReaderViewModel: ReaderViewModel
 
     private var isSourceListShow: Boolean = false
+    private var loadingPage: LoadingPage? = null
 
-    constructor(act: Activity, rs: ReadStatus, factory: IReadDataFactory) {
+    constructor(act: Activity, rs: ReadStatus, factory: ReaderViewModel) {
 
         activity = WeakReference(act)
 
         readStatus = rs
-        dataFactory = factory
+        mReaderViewModel = factory
 
         bookDaoHelper = BookDaoHelper.getInstance()
     }
@@ -87,8 +87,8 @@ class ReadOptionPresenter : ReadOption.Presenter {
     override fun showMore() {
         val data = java.util.HashMap<String, String>()
         data.put("bookid", readStatus.book_id)
-        if (dataFactory != null && dataFactory.currentChapter != null) {
-            data.put("chapterid", dataFactory.currentChapter.chapter_id)
+        if (mReaderViewModel != null && mReaderViewModel.currentChapter != null) {
+            data.put("chapterid", mReaderViewModel!!.currentChapter!!.chapter_id)
         }
         StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.MORE1, data)
     }
@@ -142,8 +142,8 @@ class ReadOptionPresenter : ReadOption.Presenter {
 
                 val data = java.util.HashMap<String, String>()
                 data.put("bookid", readStatus.book_id)
-                if (dataFactory != null && dataFactory.currentChapter != null) {
-                    data.put("chapterid", dataFactory.currentChapter.chapter_id)
+                if (mReaderViewModel != null && mReaderViewModel.currentChapter != null) {
+                    data.put("chapterid", mReaderViewModel!!.currentChapter!!.chapter_id)
                 }
                 data.put("type", "1")
                 StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
@@ -163,8 +163,8 @@ class ReadOptionPresenter : ReadOption.Presenter {
 
                 val data = java.util.HashMap<String, String>()
                 data.put("bookid", readStatus.book_id)
-                if (dataFactory != null && dataFactory.currentChapter != null) {
-                    data.put("chapterid", dataFactory.currentChapter.chapter_id)
+                if (mReaderViewModel != null && mReaderViewModel.currentChapter != null) {
+                    data.put("chapterid", mReaderViewModel!!.currentChapter!!.chapter_id)
                 }
                 data.put("type", "2")
                 StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
@@ -177,8 +177,8 @@ class ReadOptionPresenter : ReadOption.Presenter {
                     dialog.dismiss()
                     val data = java.util.HashMap<String, String>()
                     data.put("bookid", readStatus.book_id)
-                    if (dataFactory != null && dataFactory.currentChapter != null) {
-                        data.put("chapterid", dataFactory.currentChapter.chapter_id)
+                    if (mReaderViewModel != null && mReaderViewModel.currentChapter != null) {
+                        data.put("chapterid", mReaderViewModel!!.currentChapter!!.chapter_id)
                     }
                     data.put("type", "0")
                     StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
@@ -224,29 +224,51 @@ class ReadOptionPresenter : ReadOption.Presenter {
                 (activity.get() as ReadingActivity).showMenu(false)
             }
 
-            val loadingPage = dataFactory.getCustomLoadingPage()
-            loadingPage.loading(Callable<Void> {
-                OtherRequestService.requestBookSourceChange(dataFactory.mHandler, ReadingActivity.MSG_SEARCH_CHAPTER, -144, readStatus.book_id)
+            getCustomLoadingPage()
+            loadingPage!!.loading(Callable<Void> {
+                mReaderViewModel!!.getBookSource(readStatus!!.book_id)
+//                OtherRequestService.requestBookSourceChange(dataFactory.mHandler, ReadingActivity.MSG_SEARCH_CHAPTER, -144, readStatus.book_id)
                 null
             })
         }
     }
 
+    //ReadDataFactory
+    //LoadingPage
+    fun getCustomLoadingPage() {
+        var curl = ""
+        if (mReaderViewModel!!.readStatus!!.sequence == -1) {
+            curl = mReaderViewModel!!.readStatus!!.firstChapterCurl
+            //dataFactory
+        } else if (mReaderViewModel!!.currentChapter != null && !TextUtils.isEmpty(mReaderViewModel!!.currentChapter!!.curl)) {
+            //if (readStatus.book.dex == 1 && !TextUtils.isEmpty(currentChapter.curl)) {
+            curl = mReaderViewModel!!.currentChapter!!.curl
+            /*} else if (readStatus.book.dex == 0 && !TextUtils.isEmpty(currentChapter.curl1)) {
+                curl = currentChapter.curl1;
+            }*/
+        }
+        if (loadingPage == null) {
+            loadingPage = LoadingPage(activity.get()!!, true, curl, LoadingPage.setting_result)
+        }
+        loadingPage!!.setCustomBackgroud()
+    }
+
+
     override fun bookMark(): Int {
         StatServiceUtils.statAppBtnClick(activity.get(), StatServiceUtils.rb_click_add_book_mark_btn)
-        return addOptionMark(bookDaoHelper, dataFactory, font_count, readStatus.book.book_type)
+        return addOptionMark(bookDaoHelper, mReaderViewModel, font_count, readStatus.book.book_type)
     }
 
     /**
      * 添加手动书签
      */
-    fun addOptionMark(mBookDaoHelper: BookDaoHelper?, dataFactory: IReadDataFactory?,
+    fun addOptionMark(mBookDaoHelper: BookDaoHelper?, mReaderViewModel: ReaderViewModel?,
                       font_count: Int, type: Int): Int {
         if (activity.get() == null) {
             return 0
         }
 
-        if (mBookDaoHelper == null || dataFactory == null || readStatus == null) {
+        if (mBookDaoHelper == null || mReaderViewModel == null || readStatus == null) {
             return 0
         }
         if (!mBookDaoHelper.isBookMarkExist(readStatus.book_id, readStatus.sequence, readStatus.offset, type)) {
@@ -259,7 +281,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
                     return 0
                 }
             }
-            if (dataFactory.currentChapter == null || getPageContent() == null) {
+            if (mReaderViewModel.currentChapter == null || getPageContent() == null) {
                 return 0
             }
 
@@ -272,14 +294,14 @@ class ReadOptionPresenter : ReadOption.Presenter {
             bookMark.extra_parameter = requestItem.extra_parameter
             bookMark.sequence = if (readStatus.sequence + 1 > readStatus.chapterCount) readStatus.chapterCount else readStatus.sequence
             bookMark.offset = readStatus.offset
-            bookMark.sort = dataFactory.currentChapter.sort
+            bookMark.sort = mReaderViewModel!!.currentChapter!!.sort
             bookMark.last_time = System.currentTimeMillis()
             //if (readStatus.book.dex == 1) {
-            bookMark.book_url = dataFactory.currentChapter.curl
+            bookMark.book_url = mReaderViewModel!!.currentChapter!!.curl
             /*} else if (readStatus.book.dex == 0) {
                 bookMark.book_url = dataFactory.currentChapter.curl1;
             }*/
-            bookMark.chapter_name = dataFactory.currentChapter.chapter_name
+            bookMark.chapter_name = mReaderViewModel!!.currentChapter!!.chapter_name
             val content = getPageContent()
             val sb = StringBuilder()
             if (readStatus.sequence == -1) {
@@ -386,9 +408,9 @@ class ReadOptionPresenter : ReadOption.Presenter {
 
     override fun openWeb() {
         var url: String? = null
-        if (dataFactory != null && dataFactory.currentChapter != null) {
+        if (mReaderViewModel != null && mReaderViewModel!!.currentChapter != null) {
             //if (readStatus.book.dex == 1) {
-            url = UrlUtils.buildContentUrl(dataFactory.currentChapter.curl)
+            url = UrlUtils.buildContentUrl(mReaderViewModel!!.currentChapter!!.curl)
             /*} else if (readStatus.book.dex == 0) {
                     url = dataFactory.currentChapter.curl1;*/
             //}
@@ -421,6 +443,6 @@ class ReadOptionPresenter : ReadOption.Presenter {
     }
 
     override fun updateStatus() {
-        view?.updateStatus(readStatus, dataFactory, bookDaoHelper)
+        view?.updateStatus(readStatus, mReaderViewModel, bookDaoHelper)
     }
 }

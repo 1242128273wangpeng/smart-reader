@@ -1,14 +1,7 @@
 package com.intelligent.reader.presenter.coverPage
 
-import android.support.annotation.IdRes
-import com.intelligent.reader.presenter.IBaseView
-import com.intelligent.reader.presenter.read.ReadOption
-import com.intelligent.reader.read.help.IReadDataFactory
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.CoverPage
-import net.lzbook.kit.data.bean.ReadStatus
-import net.lzbook.kit.data.db.BookDaoHelper
-import net.lzbook.kit.data.recommend.CoverRecommendBean
 
 /**
  * Created by zhenXiang on 2017\11\15 0015.

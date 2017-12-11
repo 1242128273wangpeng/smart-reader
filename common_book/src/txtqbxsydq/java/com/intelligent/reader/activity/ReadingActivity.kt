@@ -598,7 +598,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     }
 
     override fun onNewInitView(): Boolean {
-        mCatlogMarkDrawer = findViewById(R.id.read_catalog_mark_drawer) as DrawerLayout
+        mCatlogMarkDrawer = findViewById(R.id.read_catalog_mark_drawer) as DrawerLayout?
         if (mCatlogMarkDrawer == null) {
             finish()
             return false

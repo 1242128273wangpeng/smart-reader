@@ -12,6 +12,7 @@ import net.lzbook.kit.purchase.SingleChapterBean
 import net.lzbook.kit.request.RequestFactory
 import net.lzbook.kit.user.bean.RecommendBooksEndResp
 import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.NetWorkUtils
 
 /**
  * @desc 阅读模块数据源

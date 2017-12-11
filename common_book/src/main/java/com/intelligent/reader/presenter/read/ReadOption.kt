@@ -3,7 +3,7 @@ package com.intelligent.reader.presenter.read
 import android.support.annotation.IdRes
 import com.intelligent.reader.presenter.IBaseView
 import com.intelligent.reader.presenter.IPresenter
-import com.intelligent.reader.read.help.IReadDataFactory
+import com.intelligent.reader.reader.ReaderViewModel
 import net.lzbook.kit.data.bean.ReadStatus
 import net.lzbook.kit.data.db.BookDaoHelper
 
@@ -30,7 +30,7 @@ interface ReadOption {
 
         fun setBookSource(source: String)
         fun setBookMarkImg(@IdRes id: Int)
-        fun updateStatus(readStatus: ReadStatus, dataFactory: IReadDataFactory, bookDaoHelper: BookDaoHelper)
+        fun updateStatus(readStatus: ReadStatus, mReaderViewModel: ReaderViewModel, bookDaoHelper: BookDaoHelper)
         fun show(flag: Boolean)
     }
 }

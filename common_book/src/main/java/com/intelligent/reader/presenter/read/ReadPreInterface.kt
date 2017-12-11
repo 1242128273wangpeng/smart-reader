@@ -1,9 +1,7 @@
 package com.intelligent.reader.presenter.read
 
-import com.intelligent.reader.presenter.IBaseView
-import com.intelligent.reader.presenter.IPresenter
-import com.intelligent.reader.read.help.IReadDataFactory
 import com.intelligent.reader.read.page.PageInterface
+import com.intelligent.reader.reader.ReaderViewModel
 import net.lzbook.kit.data.bean.ReadStatus
 
 /**
@@ -13,7 +11,7 @@ interface ReadPreInterface {
 
 
     interface View {
-        fun initView(fac: IReadDataFactory)
+        fun initView(fac: ReaderViewModel)
         fun initPresenter(optionPresenter: ReadOptionPresenter?, markPresenter: CatalogMarkPresenter?)
         fun setReadStatus(readStatus: ReadStatus)
         fun showSetMenu(isShow: Boolean)

@@ -26,19 +26,29 @@ import com.bumptech.glide.Glide
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.*
 import com.intelligent.reader.app.BookApplication
+import com.intelligent.reader.cover.BookCoverLocalRepository
+import com.intelligent.reader.cover.BookCoverOtherRepository
+import com.intelligent.reader.cover.BookCoverQGRepository
+import com.intelligent.reader.cover.BookCoverRepositoryFactory
 import com.intelligent.reader.fragment.CatalogMarkFragment
 import com.intelligent.reader.presenter.IPresenter
 import com.intelligent.reader.read.animation.BitmapManager
 import com.intelligent.reader.read.help.*
 import com.intelligent.reader.read.page.*
+import com.intelligent.reader.reader.ReaderOwnRepository
+import com.intelligent.reader.reader.ReaderRepositoryFactory
+import com.intelligent.reader.reader.ReaderViewModel
 import com.intelligent.reader.receiver.DownBookClickReceiver
 import com.intelligent.reader.util.EventBookStore
 import iyouqu.theme.ThemeMode
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.DownloadService
+import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.*
+import net.lzbook.kit.net.custom.service.NetService
+import net.lzbook.kit.purchase.SingleChapterBean
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.request.RequestExecutor
 import net.lzbook.kit.request.RequestFactory
@@ -50,12 +60,83 @@ import java.io.UnsupportedEncodingException
 import java.lang.ref.WeakReference
 import java.net.URLEncoder
 import java.util.*
+import java.util.concurrent.Callable
 
 
 /**
  * Created by yuchao on 2017/11/14 0014.
  */
-class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCallBack, IReadDataFactory.ReadDataListener, CallBack, PageInterface.OnOperationClickListener, DownloadService.OnDownloadListener {
+class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCallBack, CallBack,
+        PageInterface.OnOperationClickListener, DownloadService.OnDownloadListener, ReaderViewModel.ReadDataListener {
+
+
+    //获取章节信息
+    override fun getChapter(what: Int, sequence: Int) {
+        getChapterByLoading(what, sequence)
+    }
+
+    /**
+     * 翻页到下一章的处理
+     */
+    override fun nextChapterCallBack(drawCurrent: Boolean) {
+        Constants.readedCount++
+        mReaderViewModel!!.preChapter = mReaderViewModel!!.currentChapter
+        mReaderViewModel!!.currentChapter = mReaderViewModel!!.nextChapter
+        mReaderViewModel!!.nextChapter = null
+        mReaderViewModel!!.readStatus!!.sequence++
+        mReaderViewModel!!.readStatus!!.offset = 0
+        myNovelHelper!!.isShown = false
+        myNovelHelper!!.getChapterContent(readReference!!.get(), mReaderViewModel!!.currentChapter, mReaderViewModel!!.readStatus!!.book, false)
+        mReaderViewModel!!.readStatus!!.currentPage = 1
+        pageView!!.drawNextPage()
+        if (drawCurrent) {
+            pageView!!.drawCurrentPage()
+        }
+        pageView!!.getNextChapter()
+        if (mReaderViewModel!!.mReadDataListener != null) {
+            mReaderViewModel!!.mReadDataListener!!.downLoadNovelMore()
+        }
+        if (mReaderViewModel!!.mReadDataListener != null) {
+            mReaderViewModel!!.mReadDataListener!!.freshPage()
+            mReaderViewModel!!.mReadDataListener!!.changeChapter()
+        }
+        mReaderViewModel!!.readStatus!!.isLoading = false
+    }
+
+    /**
+     * 翻页到上一章的处理
+     */
+    override fun preChapterCallBack(drawCurrent: Boolean) {
+        Constants.readedCount++
+        mReaderViewModel!!.nextChapter = mReaderViewModel!!.currentChapter
+        mReaderViewModel!!.currentChapter = mReaderViewModel!!.preChapter
+        mReaderViewModel!!.preChapter = null
+
+        mReaderViewModel!!.readStatus!!.sequence--
+        mReaderViewModel!!.readStatus!!.offset = 0
+        myNovelHelper!!.isShown = false
+        myNovelHelper!!.getChapterContent(readReference!!.get(), mReaderViewModel!!.currentChapter, mReaderViewModel!!.readStatus!!.book, false)
+        if (mReaderViewModel!!.toChapterStart) {
+            mReaderViewModel!!.readStatus!!.currentPage = 1
+        } else {
+            mReaderViewModel!!.readStatus!!.currentPage = mReaderViewModel!!.readStatus!!.pageCount
+        }
+        mReaderViewModel!!.toChapterStart = false
+        pageView!!.drawNextPage()
+        if (drawCurrent) {
+            pageView!!.drawCurrentPage()
+        }
+        pageView!!.getPreChapter()
+        if (mReaderViewModel!!.mReadDataListener != null) {
+            mReaderViewModel!!.mReadDataListener!!.freshPage()
+            mReaderViewModel!!.mReadDataListener!!.changeChapter()
+        }
+        mReaderViewModel!!.readStatus!!.isLoading = false
+
+        if (mReaderViewModel!!.readStatus!!.currentPage == mReaderViewModel!!.readStatus!!.pageCount) {
+        }
+    }
+
 
     private val TAG = ReadPresenter::class.java!!.getSimpleName()
 
@@ -88,12 +169,10 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
     private var mCalendar: Calendar? = null
     private var mTimerStopped = false
     private var bookChapterDao: BookChapterDao? = null
-    private var mNovelLoader: NovelDownloader? = null
     private var mBookDaoHelper: BookDaoHelper? = null
     private var screen_moding = false
     private var isFromCover = true
     private var myNovelHelper: NovelHelper? = null
-    private var dataFactory: IReadDataFactory? = null
     private var autoSpeed: Int = 0
     private var auto_menu: AutoReadMenu? = null
     private var batteryPercent: Float = 0.toFloat()
@@ -108,9 +187,11 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
     private var isRestPress = false
     private var actNovelRunForeground = true
     private var readReference: WeakReference<ReadingActivity>? = null
+    private var mReaderViewModel: ReaderViewModel? = null
 
     //    private int lastMode = -1;
     private val handler = UiHandler(this)
+    private var loadingPage: LoadingPage? = null
 
     constructor(act: ReadingActivity) {
         readReference = WeakReference(act)
@@ -197,8 +278,8 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
 
         // 初始化窗口基本信息
         initWindow()
-        dataFactory = ReadDataFactory(readReference?.get(), readReference?.get(), readStatus, myNovelHelper)
-        dataFactory?.setReadDataListener(this)
+//        dataFactory = ReadDataFactory(readReference?.get(), readReference?.get(), readStatus, myNovelHelper)
+//        dataFactory?.setReadDataListener(this)
 
         setOrientation()
         getSavedState(savedInstanceState)
@@ -223,7 +304,7 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
 
         initBookState()
         // 初始化view
-        view?.initView(dataFactory!!)
+        view?.initView(mReaderViewModel!!)
         // 初始化监听器
         initListener()
         //注册一个监听按下电源键的广播
@@ -236,10 +317,10 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
     }
 
     fun initCatalogPresenter(catalogMarkFragment: CatalogMarkFragment, optionHeader: ReadOptionHeader) {
-        mCatalogMarkPresenter = CatalogMarkPresenter(readStatus!!, dataFactory!!)
+        mCatalogMarkPresenter = CatalogMarkPresenter(readStatus!!, mReaderViewModel!!)
         mCatalogMarkPresenter!!.view = catalogMarkFragment
 
-        mReadOptionPresenter = ReadOptionPresenter(readReference?.get() as Activity, readStatus!!, dataFactory!!)
+        mReadOptionPresenter = ReadOptionPresenter(readReference?.get() as Activity, readStatus!!, mReaderViewModel!!)
         mReadOptionPresenter!!.view = optionHeader
 
         view?.initPresenter(mReadOptionPresenter, mCatalogMarkPresenter)
@@ -267,9 +348,6 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
         myNovelHelper?.setOnHelperCallBack(this)
 
         requestFactory = RequestFactory()
-        dataFactory?.clean()
-        dataFactory = ReadDataFactory(readReference?.get()?.getApplicationContext(), readReference?.get(), readStatus, myNovelHelper)
-        dataFactory?.setReadDataListener(this)
         // 初始化窗口基本信息
         initWindow()
         setOrientation()
@@ -284,7 +362,7 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
 
         initBookState()
         // 初始化view
-        view?.initView(dataFactory!!)
+        view?.initView(mReaderViewModel!!)
         // 初始化监听器
         initListener()
         //注册一个监听按下电源键的广播
@@ -324,17 +402,17 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
         initWindow()
         AppLog.e(TAG, "onConfigurationChanged")
 
-        mCatalogMarkPresenter = CatalogMarkPresenter(readStatus!!, dataFactory!!)
+        mCatalogMarkPresenter = CatalogMarkPresenter(readStatus!!, mReaderViewModel!!)
         mCatalogMarkPresenter!!.view = catalogMarkFragment
 
-        mReadOptionPresenter = ReadOptionPresenter(readReference?.get()!!, readStatus!!, dataFactory!!)
+        mReadOptionPresenter = ReadOptionPresenter(readReference?.get()!!, readStatus!!, mReaderViewModel!!)
         mReadOptionPresenter!!.view = optionHeader
 
         view?.initPresenter(mReadOptionPresenter, mCatalogMarkPresenter)
 
         initBookState()
         // 初始化view
-        view?.initView(dataFactory!!)
+        view?.initView(mReaderViewModel!!)
         // 初始化监听器
         initListener()
         getBookContent()
@@ -366,11 +444,10 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
             // 获取本书
             readStatus!!.book = savedInstanceState.getSerializable("book") as Book?
             // 获取当前章
-            if (dataFactory == null) {
-                dataFactory = ReadDataFactory(readReference?.get()?.getApplicationContext(), readReference?.get(), readStatus, myNovelHelper)
-                dataFactory?.setReadDataListener(this)
-            }
-            dataFactory?.currentChapter = savedInstanceState.getSerializable("currentChapter") as Chapter?
+            mReaderViewModel!!.mReadDataListener = this
+            mReaderViewModel!!.readStatus = readStatus
+
+            mReaderViewModel?.currentChapter = savedInstanceState.getSerializable("currentChapter") as Chapter?
             currentThemeMode = savedInstanceState.getString("thememode", readReference?.get()?.mThemeHelper?.getMode())
             AppLog.e(TAG, "getState1" + readStatus!!.sequence)
         } else {
@@ -424,9 +501,218 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
     private fun getBookContent() {
 
         NetWorkUtils.NATIVE_AD_TYPE = NetWorkUtils.NATIVE_AD_ERROR
-        dataFactory?.getChapterByLoading(ReadingActivity.MSG_LOAD_CUR_CHAPTER, readStatus!!.sequence)
+//        dataFactory?.getChapterByLoading(ReadingActivity.MSG_LOAD_CUR_CHAPTER, readStatus!!.sequence)
+        getChapterByLoading(ReadingActivity.MSG_LOAD_CUR_CHAPTER, readStatus!!.sequence)
 
     }
+
+
+    //ReadDataFactory
+    //LoadingPage
+    fun getCustomLoadingPage() {
+        var curl = ""
+        if (mReaderViewModel != null && mReaderViewModel!!.readStatus != null && mReaderViewModel!!.readStatus!!.sequence == -1) {
+            curl = mReaderViewModel!!.readStatus!!.firstChapterCurl
+            //dataFactory
+        } else if (mReaderViewModel!!.currentChapter != null && !TextUtils.isEmpty(mReaderViewModel!!.currentChapter!!.curl)) {
+            //if (readStatus.book.dex == 1 && !TextUtils.isEmpty(currentChapter.curl)) {
+            curl = mReaderViewModel!!.currentChapter!!.curl
+            /*} else if (readStatus.book.dex == 0 && !TextUtils.isEmpty(currentChapter.curl1)) {
+                curl = currentChapter.curl1;
+            }*/
+        }
+        if (loadingPage == null) {
+            loadingPage = LoadingPage(readReference?.get(), true, curl, LoadingPage.setting_result)
+        }
+        loadingPage!!.setCustomBackgroud()
+    }
+
+    /**
+     * 获取章节内容
+     */
+    fun getChapterByLoading(what: Int, sequence: Int) {
+        var sequence = sequence
+
+        if (sequence < -1) {
+            sequence = -1
+        } else if (mReaderViewModel!!.chapterList != null && mReaderViewModel!!.chapterList!!.size > 0 && sequence + 1 > mReaderViewModel!!.chapterList!!.size) {
+            sequence = mReaderViewModel!!.chapterList!!.size - 1
+        }
+        val temp_sequence = sequence
+
+        getCustomLoadingPage()
+        loadingPage!!.loading(Callable<Void> {
+            val requestItem = mReaderViewModel!!.readStatus!!.getRequestItem()
+            if (requestItem != null) {
+                if (mReaderViewModel!!.chapterList == null || mReaderViewModel!!.chapterList!!.isEmpty()) {
+                    mReaderViewModel!!.setBookChapterViewCallback(object : ReaderViewModel.BookChapterViewCallback {
+                        override fun onChapterList(result: List<Chapter>) {
+                            if (readReference!!.get() != null && !readReference!!.get()!!.isFinishing()) {
+                                val chapterList = result as ArrayList<Chapter>
+                                sendChapter(what, requestItem, temp_sequence, chapterList)
+                            }
+                        }
+
+                        override fun onFail(msg: String) {
+
+                            if (loadingPage != null) {
+                                loadingPage!!.onError()
+                            }
+                        }
+                    })
+                    mReaderViewModel!!.getChapterList(requestItem!!)
+                } else {
+                    sendChapter(what, requestItem, temp_sequence, mReaderViewModel!!.chapterList)
+                }
+            }
+            null
+        })
+    }
+
+
+    fun sendChapter(what: Int, requestItem: RequestItem, temp_sequence: Int, chapterList: ArrayList<Chapter>?) {
+        try {
+            if (chapterList == null) {
+                return
+            } else {
+                mReaderViewModel!!.chapterList = chapterList
+                mReaderViewModel!!.readStatus!!.book.extra_parameter = requestItem.extra_parameter
+            }
+            mReaderViewModel!!.readStatus!!.chapterCount = chapterList.size
+
+            if (temp_sequence == -1) {
+                val result = Chapter()
+                result.chapter_name = ""
+                result.content = ""
+                //                mHandler.obtainMessage(what, result).sendToTarget();
+                obtainWhat(what, result)
+                setLoadingCurl(500)
+                return
+            }
+
+            AppLog.e("ReadDataFactory", "ReadDataFactory: " + temp_sequence + " : " + mReaderViewModel!!.readStatus!!.book_id)
+            val result = chapterList[temp_sequence]
+            mReaderViewModel!!.requestSingleChapter(requestItem.host, result, object : ReaderViewModel.BookSingleChapterCallback {
+                override fun onPayChapter(chapter: Chapter) {
+                    loadingPage!!.onSuccess()
+                    obtainWhat(what, chapter)
+                }
+
+                override fun onFail(msg: String) {}
+            })
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
+
+    fun dealManualDialogShow() {
+
+        AppLog.d("IReadDataFactory", "Constants.manualReadedCount " + Constants.manualReadedCount)
+        if (Constants.manualReadedCount != 0) {
+            if (Constants.manualReadedCount == Constants.manualTip) {
+                AppLog.d("IReadDataFactory", "显示自动阅读提醒")
+                if (myNovelHelper != null) {
+                    myNovelHelper!!.showHintAutoReadDialog()
+                }
+            }
+        }
+    }
+
+    /**
+     * loading 页面显示原网页地址
+     */
+    @Throws(InterruptedException::class)
+    private fun setLoadingCurl(time: Int) {
+        if (mReaderViewModel!!.chapterList != null && !mReaderViewModel!!.chapterList!!.isEmpty()) {
+            val firstChapter = mReaderViewModel!!.chapterList!!.get(0)
+            if (firstChapter != null) {
+                //if (readStatus.book.dex == 0) {
+                mReaderViewModel!!.readStatus!!.firstChapterCurl = firstChapter!!.curl
+                /*} else if (readStatus.book.dex == 1) {
+                    readStatus.firstChapterCurl = firstChapter.curl1;
+                }*/
+
+                loadingPage!!.setNovelSource(mReaderViewModel!!.readStatus!!.firstChapterCurl)
+                Thread.sleep(time.toLong())
+            }
+        }
+    }
+
+    private fun obtainWhat(what: Int, chapter: Chapter) {
+        if (mReaderViewModel == null) {
+            return
+        }
+        if (loadingPage != null) {
+            loadingPage!!.onSuccess()
+        }
+        when (what) {
+            ReadingActivity.MSG_LOAD_CUR_CHAPTER -> {
+                //                            loadCurrentChapter(m);
+                mReaderViewModel!!.currentChapter = chapter
+                if (mReaderViewModel!!.readStatus != null && mReaderViewModel!!.currentChapter != null && mReaderViewModel!!.currentChapter!!.sequence != -1) {
+                    mReaderViewModel!!.readStatus!!.sequence = mReaderViewModel!!.currentChapter!!.sequence
+                }
+                initBookCallBack()
+            }
+            ReadingActivity.MSG_LOAD_NEXT_CHAPTER -> {
+                //                            loadNextChapter(m);
+                mReaderViewModel!!.nextChapter = chapter
+                nextChapterCallBack(true)
+            }
+            ReadingActivity.MSG_LOAD_PRE_CHAPTER -> {
+                //                            loadPreChapter(m);
+                mReaderViewModel!!.preChapter = chapter
+                preChapterCallBack(true)
+            }
+            ReadingActivity.MSG_JUMP_CHAPTER -> {
+                //                            loadJumpChapter(m);
+                mReaderViewModel!!.currentChapter = chapter
+                jumpChapterCallBack()
+                Constants.readedCount++
+            }
+        }
+        Constants.startReadTime = System.currentTimeMillis() / 1000L
+    }
+
+    /**
+     * 打开书籍取得书签章节内容后的处理
+     */
+    private fun initBookCallBack() {
+        Constants.readedCount++
+        if (mReaderViewModel!!.chapterList == null) {
+            return
+        }
+        // 章节数
+        if (mReaderViewModel!!.readStatus != null) {
+            mReaderViewModel!!.readStatus!!.chapterCount = mReaderViewModel!!.chapterList!!.size
+            if (mReaderViewModel!!.chapterList != null && !mReaderViewModel!!.chapterList!!.isEmpty()) {
+                val firstChapter = mReaderViewModel!!.chapterList!!.get(0)
+                if (firstChapter != null) {
+                    mReaderViewModel!!.readStatus!!.firstChapterCurl = firstChapter!!.curl
+                }
+            }
+        }
+
+        // 初始化章节内容
+        if (myNovelHelper != null) {
+            myNovelHelper!!.getChapterContent(readReference!!.get(), mReaderViewModel!!.currentChapter, mReaderViewModel!!.readStatus!!.book, false)
+        }
+        // 刷新页面
+        if (mReaderViewModel!!.mReadDataListener != null) {
+            mReaderViewModel!!.mReadDataListener!!.freshPage()
+        }
+
+        if (pageView != null) {
+            pageView!!.drawCurrentPage()
+            pageView!!.drawNextPage()
+            pageView!!.getChapter(true)
+        }
+        if (mReaderViewModel!!.mReadDataListener != null) {
+            mReaderViewModel!!.mReadDataListener!!.initBookStateDeal()
+        }
+    }
+
 
     override fun showChangeNetDialog() {
         var act = readReference?.get()
@@ -514,6 +800,25 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
         } else {
             Constants.FONT_SIZE = 18
         }
+
+        //ViewModel
+        mReaderViewModel = ReaderViewModel(ReaderRepositoryFactory.getInstance(ReaderOwnRepository.getInstance()), BookCoverRepositoryFactory.getInstance(BookCoverOtherRepository.getInstance(NetService.userService),
+                BookCoverQGRepository.getInstance(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())), BookCoverLocalRepository.getInstance(BaseBookApplication.getGlobalContext())))
+
+        //换源监听
+        mReaderViewModel!!.setReaderBookSourceViewCallback(object : ReaderViewModel.ReaderBookSourceViewCallback {
+            override fun onBookSource(sourceItem: SourceItem) {
+                searchChapterCallBack(sourceItem.sourceList)
+                loadingPage!!.onSuccess()
+            }
+
+            override fun onBookSourceFail(msg: String?) {
+                loadingPage!!.onSuccess()
+            }
+        })
+        mReaderViewModel!!.mReadDataListener = this
+        mReaderViewModel!!.readStatus = readStatus
+
     }
 
     /**
@@ -522,11 +827,10 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
     fun initData(v: PageInterface) {
         pageView = v
         resources = readReference?.get()?.getResources()
-        pageView?.setReadFactory(dataFactory)
+        pageView?.setViewModel(mReaderViewModel)
         pageView?.init(readReference?.get(), readStatus, myNovelHelper)
         pageView?.setCallBack(this)
         pageView?.setOnOperationClickListener(this)
-        dataFactory?.setPageView(pageView)
         myNovelHelper?.setPageView(pageView)
     }
 
@@ -577,9 +881,7 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
      * 预加载
      */
     private fun downloadNovel() {
-        if (mNovelLoader != null && mNovelLoader!!.status == AsyncTask.Status.RUNNING) {
-            mNovelLoader?.cancel(true)
-        }
+
 
         if (mBookDaoHelper!!.isBookSubed(readStatus!!.book_id)) {
             var num = BookHelper.CHAPTER_CACHE_COUNT
@@ -588,18 +890,36 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
                 if (max < num) {
                     num = max
                 }
-                mNovelLoader = NovelDownloader()
-                mNovelLoader?.execute2(num)
+
+                //预加载
+                val size = mReaderViewModel!!.chapterList!!.size
+                var i = readStatus!!.sequence + 1
+                while (i < readStatus!!.sequence + num + 1 && i < size) {
+                    val c = mReaderViewModel!!.chapterList!![i]
+                    if (c != null) {
+                        AppLog.e(TAG, "预加载： " + c.toString())
+                        val finalI = i
+                        mReaderViewModel!!.requestSingleChapter(readStatus!!.getRequestItem().host, c, object : ReaderViewModel.BookSingleChapterCallback {
+                            override fun onPayChapter(chapter: Chapter) {
+                                if (finalI == readStatus!!.sequence + 1) {
+                                    mReaderViewModel!!.nextChapter = c
+                                }
+                            }
+
+                            override fun onFail(msg: String) {}
+                        })
+                    }
+                    i++
+                }
             }
         }
 
     }
 
     fun searchChapterCallBack(sourcesList: ArrayList<Source>?) {
-        if (myNovelHelper != null && dataFactory != null && dataFactory!!.currentChapter != null && !TextUtils.isEmpty(dataFactory!!.currentChapter
-                .curl) && sourcesList != null) {
+        if (myNovelHelper != null && mReaderViewModel != null && mReaderViewModel!!.currentChapter != null && !TextUtils.isEmpty(mReaderViewModel!!.currentChapter!!.curl) && sourcesList != null) {
             //if (readStatus.book.dex == 1 && !TextUtils.isEmpty(dataFactory.currentChapter.curl) && sourcesList != null) {
-            myNovelHelper?.showSourceDialog(dataFactory, dataFactory?.currentChapter?.curl, sourcesList)
+            myNovelHelper?.showSourceDialog(mReaderViewModel, mReaderViewModel?.currentChapter?.curl, sourcesList)
             /*} else if (readStatus.book.dex == 0 && !TextUtils.isEmpty(dataFactory.currentChapter.curl1) && sourcesList != null) {
                 myNovelHelper.showSourceDialog(dataFactory, dataFactory.currentChapter.curl1, sourcesList);*/
             //}
@@ -614,9 +934,6 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
     private fun openCategoryPage() {
         if (readStatus!!.isMenuShow) {
             showMenu(false)
-        }
-        if (mNovelLoader != null && mNovelLoader!!.status == AsyncTask.Status.RUNNING) {
-            mNovelLoader!!.cancel(true)
         }
         if (readStatus!!.book.book_type == 0) {
             val intent = Intent(readReference?.get(), CataloguesActivity::class.java)
@@ -702,7 +1019,7 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
     private fun intoCatalogActivity(source: Source, b: Boolean) {
         if (readStatus != null && readStatus!!.getRequestItem() != null) {
             readStatus!!.firstChapterCurl = ""
-            dataFactory?.currentChapter = null
+            mReaderViewModel?.currentChapter = null
 
             val requestItem = RequestItem()
             requestItem.book_id = source.book_id
@@ -759,7 +1076,7 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
                 iBook.extra_parameter = requestItem.extra_parameter
                 readStatus!!.book = iBook
             }
-            dataFactory?.chapterList?.clear()
+            mReaderViewModel?.chapterList?.clear()
             openCategoryPage()
         }
     }
@@ -788,12 +1105,12 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
             readStatus!!.book.sequence_time = System.currentTimeMillis()
             readStatus!!.book.last_updateSucessTime = System.currentTimeMillis()
             readStatus!!.book.readed = 1
-            if (dataFactory != null) {
-                if (dataFactory?.chapterList != null && dataFactory!!.chapterList!!.size > 0) {
-                    val chapter = dataFactory!!.chapterList[dataFactory!!.chapterList!!.size - 1]
+            if (mReaderViewModel != null) {
+                if (mReaderViewModel?.chapterList != null && mReaderViewModel!!.chapterList!!.size > 0) {
+                    val chapter = mReaderViewModel!!.chapterList!![mReaderViewModel!!.chapterList!!.size - 1]
                     readStatus!!.book.extra_parameter = chapter.extra_parameter
                 }
-                bookChapterDao?.insertBookChapter(dataFactory?.chapterList)
+                bookChapterDao?.insertBookChapter(mReaderViewModel?.chapterList)
             }
             val succeed = mBookDaoHelper?.insertBook(readStatus!!.book)
             Toast.makeText(readReference?.get(), if (succeed!!) R.string.reading_add_succeed else R.string.reading_add_fail,
@@ -803,8 +1120,8 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
         if (readStatus!!.book != null) {
             map1.put("bookid", readStatus!!.book.book_id)
         }
-        if (dataFactory != null && dataFactory?.currentChapter != null) {
-            map1.put("chapterid", dataFactory!!.currentChapter!!.chapter_id)
+        if (mReaderViewModel != null && mReaderViewModel?.currentChapter != null) {
+            map1.put("chapterid", mReaderViewModel!!.currentChapter!!.chapter_id)
         }
         if (isAddShelf) {
             StartLogClickUtil.upLoadEventLog(readReference?.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.POPUPSHELFADD, map1)
@@ -834,12 +1151,13 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
                 return
             }
             showMenu(false)
-            val loadingPage = dataFactory?.getCustomLoadingPage()
+            getCustomLoadingPage()
             loadingPage?.loading {
-                OtherRequestService.requestBookSourceChange(dataFactory?.mHandler, ReadingActivity.MSG_SEARCH_CHAPTER, -144, readStatus!!.book_id)
+                mReaderViewModel!!.getBookSource(readStatus!!.book_id)
+//                OtherRequestService.requestBookSourceChange(dataFactory?.mHandler, ReadingActivity.MSG_SEARCH_CHAPTER, -144, readStatus!!.book_id)
                 null
             }
-            dataFactory?.loadingError(loadingPage)
+//            dataFactory?.loadingError(loadingPage)
         }
     }
 
@@ -901,7 +1219,7 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
         readStatus!!.currentPage = 1
         readStatus!!.offset = 0
         myNovelHelper?.isShown = false
-        myNovelHelper?.getChapterContent(readReference?.get(), dataFactory?.currentChapter, readStatus!!.book,
+        myNovelHelper?.getChapterContent(readReference?.get(), mReaderViewModel?.currentChapter, readStatus!!.book,
                 false)
         refreshPage()
         isSourceListShow = false
@@ -919,14 +1237,14 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
      */
     fun jumpChapterCallBack() {
 
-        if (dataFactory == null || readStatus == null || myNovelHelper == null) {
+        if (mReaderViewModel == null || readStatus == null || myNovelHelper == null) {
             return
         }
-        dataFactory!!.nextChapter = null
+        mReaderViewModel!!.nextChapter = null
         readStatus!!.sequence = readStatus!!.novel_progress
         readStatus!!.offset = 0
         myNovelHelper!!.isShown = false
-        myNovelHelper!!.getChapterContent(readReference?.get(), dataFactory!!.currentChapter, readStatus!!.book,
+        myNovelHelper!!.getChapterContent(readReference?.get(), mReaderViewModel!!.currentChapter, readStatus!!.book,
                 false)
         readStatus!!.currentPage = 1
         refreshPage()
@@ -1211,9 +1529,9 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
             isAcvNovelActive = true
         }
 
-        if (dataFactory != null && readStatus != null && Constants.isNetWorkError) {
+        if (readStatus != null && Constants.isNetWorkError) {
             Constants.isNetWorkError = false
-            dataFactory?.getChapterByLoading(ReadingActivity.MSG_LOAD_CUR_CHAPTER, readStatus!!.sequence)
+            getChapterByLoading(ReadingActivity.MSG_LOAD_CUR_CHAPTER, readStatus!!.sequence)
         }
     }
 
@@ -1231,7 +1549,7 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
         isFromCover = false
         if (isSubed) {
             if (readStatus!!.book.book_type == 0) {
-                myNovelHelper?.saveBookmark(dataFactory?.chapterList, readStatus?.book_id, readStatus!!.sequence,
+                myNovelHelper?.saveBookmark(mReaderViewModel?.chapterList, readStatus?.book_id, readStatus!!.sequence,
                         readStatus!!.offset, mBookDaoHelper)
                 // 统计阅读章节数
                 val spUtils = SharedPreferencesUtils(PreferenceManager
@@ -1257,22 +1575,22 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
     }
 
     fun onDestroy() {
-        if (mNovelLoader != null && mNovelLoader!!.status == AsyncTask.Status.RUNNING) {
-            mNovelLoader!!.cancel(true)
-        }
+//        if (mNovelLoader != null && mNovelLoader!!.status == AsyncTask.Status.RUNNING) {
+//            mNovelLoader!!.cancel(true)
+//        }
 
-        if (readStatus != null && dataFactory != null && dataFactory!!.currentChapter != null && readStatus!!.requestItem != null) {
+        if (readStatus != null && mReaderViewModel != null && mReaderViewModel!!.currentChapter != null && readStatus!!.requestItem != null) {
             //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
-            StartLogClickUtil.upLoadReadContent(readStatus!!.book_id, dataFactory!!.currentChapter.chapter_id + "", readStatus!!.source_ids, readStatus!!.pageCount.toString() + "",
+            StartLogClickUtil.upLoadReadContent(readStatus!!.book_id, mReaderViewModel!!.currentChapter!!.chapter_id + "", readStatus!!.source_ids, readStatus!!.pageCount.toString() + "",
                     readStatus!!.currentPage.toString() + "", readStatus!!.currentPageConentLength.toString() + "", readStatus!!.requestItem.fromType.toString() + "",
                     readStatus!!.startReadTime.toString() + "", System.currentTimeMillis().toString() + "", (System.currentTimeMillis() - readStatus!!.startReadTime).toString() + "", "false", readStatus!!.requestItem.channel_code.toString() + "")
 
         }
         AppLog.e(TAG, "onDestroy")
         readStatus!!.isMenuShow = false
-        if (mNovelLoader != null && mNovelLoader!!.status == AsyncTask.Status.RUNNING) {
-            mNovelLoader?.cancel(true)
-        }
+//        if (mNovelLoader != null && mNovelLoader!!.status == AsyncTask.Status.RUNNING) {
+//            mNovelLoader?.cancel(true)
+//        }
 
         if (mBatInfoReceiver != null) {
             try {
@@ -1323,12 +1641,11 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
             readStatus!!.recycleResource()
         }
 
-        if (dataFactory != null) {
-            dataFactory!!.setReadDataListener(null)
-            if (dataFactory!!.mHandler != null) {
-                dataFactory!!.mHandler.removeCallbacksAndMessages(null)
-            }
-            dataFactory!!.clean()
+        if (mReaderViewModel != null) {
+            mReaderViewModel!!.mReadDataListener = null
+
+
+            mReaderViewModel!!.clean()
         }
 
         BitmapManager.getInstance().clearBitmap()
@@ -1343,8 +1660,8 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
             outState.putInt("nid", readStatus!!.nid)
             outState.putInt("offset", readStatus!!.offset)
             outState.putSerializable("book", readStatus!!.book)
-            if (dataFactory != null && dataFactory?.currentChapter != null) {
-                outState.putSerializable("currentChapter", dataFactory?.currentChapter)
+            if (mReaderViewModel != null && mReaderViewModel?.currentChapter != null) {
+                outState.putSerializable("currentChapter", mReaderViewModel?.currentChapter)
             }
             outState.putString("thememode", readReference?.get()?.mThemeHelper?.getMode())
             return outState
@@ -1393,13 +1710,13 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
                     readStatus!!.setRequestItem(requestItem)
                     //readStatus.requestConfig = BookApplication.getGlobalContext().getSourceConfig(requestItem.host);
                 }
-                if (dataFactory!!.chapterList != null) {
-                    dataFactory!!.chapterList.clear()
+                if (mReaderViewModel!!.chapterList != null) {
+                    mReaderViewModel!!.chapterList!!.clear()
                 }
                 myNovelHelper?.isShown = false
                 readStatus!!.currentPage = 1
-                dataFactory?.nextChapter = null
-                dataFactory?.preChapter = null
+                mReaderViewModel?.nextChapter = null
+                mReaderViewModel?.preChapter = null
                 readStatus!!.requestItem.fromType = 1//打点 书籍封面（0）/书架（1）/上一页翻页（2）
                 if (Constants.QG_SOURCE == readStatus!!.book.site) {
                     requestItem?.channel_code = 1
@@ -1434,7 +1751,7 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
             showMenu(false)
             return
         }
-        dataFactory?.next()
+        mReaderViewModel?.next()
         pageView?.drawCurrentPage()
     }
 
@@ -1443,14 +1760,14 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
     }
 
     override fun onCancelPage() {
-        dataFactory?.restore()
+        mReaderViewModel?.restore()
         refreshPage()
     }
 
     override fun onResize() {
         AppLog.e("ReadingActivity", "onResize")
-        if (dataFactory?.currentChapter != null && readStatus!!.book != null) {
-            myNovelHelper?.getChapterContent(readReference?.get(), dataFactory?.currentChapter, readStatus!!
+        if (mReaderViewModel?.currentChapter != null && readStatus!!.book != null) {
+            myNovelHelper?.getChapterContent(readReference?.get(), mReaderViewModel?.currentChapter, readStatus!!
                     .book, true)
             refreshPage()
         }
@@ -1516,8 +1833,7 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
             view?.resetPageView(pageView!!)
             pageView!!.init(readReference?.get(), readStatus, myNovelHelper)
             pageView!!.setCallBack(this)
-            pageView!!.setReadFactory(dataFactory)
-            dataFactory?.setPageView(pageView)
+            pageView!!.setViewModel(mReaderViewModel)
             myNovelHelper?.setPageView(pageView)
             pageView!!.freshTime(time_text)
             pageView!!.freshBattery(batteryPercent)
@@ -1546,15 +1862,15 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
         if (readStatus!!.isMenuShow) {
             showMenu(false)
         }
-        if (mNovelLoader != null && mNovelLoader!!.status == AsyncTask.Status.RUNNING) {
-            mNovelLoader!!.cancel(true)
-        }
+//        if (mNovelLoader != null && mNovelLoader!!.status == AsyncTask.Status.RUNNING) {
+//            mNovelLoader!!.cancel(true)
+//        }
         val data = HashMap<String, String>()
         if (readStatus != null) {
             data.put("bookid", readStatus!!.book_id)
         }
-        if (dataFactory != null && dataFactory?.currentChapter != null) {
-            data.put("chapterid", dataFactory!!.currentChapter.book_id)
+        if (mReaderViewModel != null && mReaderViewModel?.currentChapter != null) {
+            data.put("chapterid", mReaderViewModel!!.currentChapter!!.book_id)
         }
         StartLogClickUtil.upLoadEventLog(readReference?.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CATALOG, data)
     }
@@ -1585,8 +1901,7 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
             view?.resetPageView(pageView!!)
             pageView!!.init(readReference?.get(), readStatus, myNovelHelper)
             pageView!!.setCallBack(this)
-            pageView!!.setReadFactory(dataFactory)
-            dataFactory?.setPageView(pageView)
+            pageView!!.setViewModel(mReaderViewModel)
             myNovelHelper?.setPageView(pageView)
             pageView!!.freshTime(time_text)
             pageView!!.freshBattery(batteryPercent)
@@ -1608,7 +1923,7 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
             myNovelHelper!!.getChapterContent(readReference?.get(), (pageView as ScrollPageView)!!.tempChapter,
                     readStatus!!.book, true)
         } else {
-            myNovelHelper!!.getChapterContent(readReference?.get(), dataFactory!!.currentChapter, readStatus
+            myNovelHelper!!.getChapterContent(readReference?.get(), mReaderViewModel!!.currentChapter, readStatus
             !!.book, true)
         }
         refreshPage()
@@ -1618,13 +1933,13 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
     }
 
     fun onJumpChapter() {
-        dataFactory!!.getChapterByLoading(ReadingActivity.MSG_JUMP_CHAPTER, readStatus!!.novel_progress)
+        getChapterByLoading(ReadingActivity.MSG_JUMP_CHAPTER, readStatus!!.novel_progress)
     }
 
     fun onJumpPreChapter() {
         readStatus!!.currentPage = 1
-        dataFactory!!.toChapterStart = true
-        dataFactory!!.previous()
+        mReaderViewModel!!.toChapterStart = true
+        mReaderViewModel!!.previous()
         if (Constants.isSlideUp) {
             pageView!!.getChapter(false)
         } else {
@@ -1635,15 +1950,15 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
 
         if (!pageView!!.isAutoReadMode()) {
             Constants.manualReadedCount++
-            dataFactory!!.dealManualDialogShow()
+            dealManualDialogShow()
         }
 
         val data = HashMap<String, String>()
         if (readStatus != null) {
             data.put("bookid", readStatus!!.book_id)
         }
-        if (dataFactory != null && dataFactory!!.currentChapter != null) {
-            data.put("chapterid", dataFactory!!.currentChapter.chapter_id)
+        if (mReaderViewModel != null && mReaderViewModel!!.currentChapter != null) {
+            data.put("chapterid", mReaderViewModel!!.currentChapter!!.chapter_id)
         }
         data.put("type", "1")
         StartLogClickUtil.upLoadEventLog(readReference?.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CHAPTERTURN, data)
@@ -1652,7 +1967,7 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
 
     fun onJumpNextChapter() {
         readStatus!!.currentPage = readStatus!!.pageCount
-        dataFactory!!.next()
+        mReaderViewModel!!.next()
         if (Constants.isSlideUp) {
             pageView!!.getChapter(false)
         } else {
@@ -1663,15 +1978,15 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
 
         if (!pageView!!.isAutoReadMode()) {
             Constants.manualReadedCount++
-            dataFactory!!.dealManualDialogShow()
+            dealManualDialogShow()
         }
 
         val data = HashMap<String, String>()
         if (readStatus != null) {
             data.put("bookid", readStatus!!.book_id)
         }
-        if (dataFactory != null && dataFactory!!.currentChapter != null) {
-            data.put("chapterid", dataFactory!!.currentChapter.chapter_id)
+        if (mReaderViewModel != null && mReaderViewModel!!.currentChapter != null) {
+            data.put("chapterid", mReaderViewModel!!.currentChapter!!.chapter_id)
         }
         data.put("type", "2")
         StartLogClickUtil.upLoadEventLog(readReference?.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CHAPTERTURN, data)
@@ -1867,7 +2182,7 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
             bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_SWITCH_THEME)
             themIntent.putExtras(bundle)
             act.startActivity(themIntent)
-            act.overridePendingTransition(R.anim.activity_in, R.anim.activity_out)
+//            act.overridePendingTransition(R.anim.activity_in, R.anim.activity_out)
             act.finish()
         } else {
             if (act.isTaskRoot()) {
@@ -1880,8 +2195,8 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
 
     override fun onOriginClick() {
         var url: String? = null
-        if (dataFactory != null && dataFactory!!.currentChapter != null) {
-            url = UrlUtils.buildContentUrl(dataFactory!!.currentChapter.curl)
+        if (mReaderViewModel != null && mReaderViewModel!!.currentChapter != null) {
+            url = UrlUtils.buildContentUrl(mReaderViewModel!!.currentChapter!!.curl)
         }
         if (!TextUtils.isEmpty(url)) {
             val uri = Uri.parse(url!!.trim { it <= ' ' })
@@ -1991,44 +2306,44 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
             }
         }
     }
-
-    private inner class NovelDownloader : BaseAsyncTask<Int?, Void?, Void?>() {
-
-        override fun onPostExecute(result: Void?) {
-            if (isCancelled || readReference == null || readReference?.get() == null || readReference!!.get()!!.isFinishing())
-                return
-            super.onPostExecute(result)
-        }
-
-        protected override fun doInBackground(vararg params: Int?): Void? {
-            if (dataFactory != null) {
-                val chapterList = dataFactory?.chapterList?.clone() as ArrayList<Chapter> ?: return null
-                val size = chapterList.size
-                if (readStatus != null) {
-                    var i = readStatus!!.sequence + 1
-                    while (i < readStatus!!.sequence + params[0]!! + 1 && i < size) {
-                        var c: Chapter? = chapterList[i] ?: return null
-                        try {
-                            AppLog.e(TAG, "预加载： " + c.toString())
-                            c = requestFactory!!.requestExecutor(readStatus!!.getRequestItem()).requestSingleChapter(readStatus!!.book.dex, mBookDaoHelper, bookChapterDao, c)
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-
-                        if (i == readStatus!!.sequence + 1) {
-                            if (dataFactory != null) {
-                                dataFactory!!.nextChapter = c
-                            }
-                        }
-                        if (isCancelled) {
-                            break
-                        }
-                        i++
-                    }
-                }
-            }
-
-            return null
-        }
-    }
+//
+//    private inner class NovelDownloader : BaseAsyncTask<Int?, Void?, Void?>() {
+//
+//        override fun onPostExecute(result: Void?) {
+//            if (isCancelled || readReference == null || readReference?.get() == null || readReference!!.get()!!.isFinishing())
+//                return
+//            super.onPostExecute(result)
+//        }
+//
+//        protected override fun doInBackground(vararg params: Int?): Void? {
+//            if (mReaderViewModel != null) {
+//                val chapterList = mReaderViewModel?.chapterList?.clone() as ArrayList<Chapter> ?: return null
+//                val size = chapterList.size
+//                if (readStatus != null) {
+//                    var i = readStatus!!.sequence + 1
+//                    while (i < readStatus!!.sequence + params[0]!! + 1 && i < size) {
+//                        var c: Chapter? = chapterList[i] ?: return null
+//                        try {
+//                            AppLog.e(TAG, "预加载： " + c.toString())
+//                            c = requestFactory!!.requestExecutor(readStatus!!.getRequestItem()).requestSingleChapter(readStatus!!.book.dex, mBookDaoHelper, bookChapterDao, c)
+//                        } catch (e: Exception) {
+//                            e.printStackTrace()
+//                        }
+//
+//                        if (i == readStatus!!.sequence + 1) {
+//                            if (mReaderViewModel != null) {
+//                                mReaderViewModel!!.nextChapter = c
+//                            }
+//                        }
+//                        if (isCancelled) {
+//                            break
+//                        }
+//                        i++
+//                    }
+//                }
+//            }
+//
+//            return null
+//        }
+//    }
 }

@@ -2,7 +2,6 @@ package com.intelligent.reader.cover;
 
 import com.intelligent.reader.repository.BookCoverRepository;
 
-import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.Bookmark;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.CoverPage;
@@ -64,6 +63,7 @@ public class BookCoverOtherRepository implements BookCoverRepository {
 
     @Override
     public Observable<List<Chapter>> getChapterList(final RequestItem requestItem) {
+
         return mApi.getChapterList(requestItem.book_id, requestItem.book_source_id, requestItem);
     }
 

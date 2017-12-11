@@ -1,5 +1,6 @@
 package com.intelligent.reader.reader
 
+import android.os.Message
 import android.text.TextUtils
 import com.intelligent.reader.DisposableAndroidViewModel
 import com.intelligent.reader.activity.ReadingActivity
@@ -12,8 +13,10 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.*
 import net.lzbook.kit.data.db.BookChapterDao
+import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.purchase.SingleChapterBean
 import net.lzbook.kit.request.DataCache
+import net.lzbook.kit.request.RequestExecutorDefault
 import net.lzbook.kit.user.bean.RecommendBooksEndResp
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.NetWorkUtils
@@ -123,11 +126,29 @@ class ReaderViewModel : DisposableAndroidViewModel {
                         { mReaderBookSourceViewCallback?.onBookSourceFail(it.message) }))
     }
 
+
     /**
      * 获取书籍目录 //复用BookCoverRepositoyFactory
      */
     fun getChapterList(requestItem: RequestItem) {
-        addDisposable(mBookCoverRepository!!.getChapterList(requestItem)
+        if (NetWorkUtils.getNetWorkType(BaseBookApplication.getGlobalContext()) == NetWorkUtils.NETWORK_NONE) {
+            val bookChapterDao = BookChapterDao(BaseBookApplication.getGlobalContext(), requestItem.book_id)
+            val chapterList = bookChapterDao.queryBookChapter()
+            if (chapterList.size != 0) {
+                if (mBookChapterViewCallback != null) {
+                    mBookChapterViewCallback?.onChapterList(chapterList)
+                }
+                return
+            } else {
+                if (mBookChapterViewCallback != null) {
+                    mBookChapterViewCallback?.onFail("拉取章节时无网络")
+                }
+                return
+            }
+        }
+
+        addDisposable(
+                mBookCoverRepository!!.getChapterList(requestItem)
                 .doOnNext { chapters ->
                     // 已被订阅则加入数据库
                     mBookCoverRepository?.saveBookChapterList(chapters, requestItem)
@@ -178,7 +199,6 @@ class ReaderViewModel : DisposableAndroidViewModel {
                         if (chapters.flag == 1 && !TextUtils.isEmpty(chapters.content)) {
                             mReaderRepository!!.updateBookCurrentChapter(chapters.book_id, chapters, chapters.sequence)
                         }
-
                     }
                     mReaderRepository?.writeChapterCache(chapters, false)
                     mBookSingleChapterCallback.onPayChapter(chapters)
@@ -325,7 +345,7 @@ class ReaderViewModel : DisposableAndroidViewModel {
                     mReadDataListener?.showToast(net.lzbook.kit.R.string.err_no_net)
                 }
             }
-        } else if (readStatus?.sequence!! < readStatus?.chapterCount!! - 1) {
+        } else if (readStatus?.sequence!! < chapterList!!.size - 1) {
             if (Constants.QG_SOURCE == readStatus?.requestItem?.host) {
                 if (mReadDataListener != null) {
                     var tempChapter: Chapter? = null
@@ -344,8 +364,6 @@ class ReaderViewModel : DisposableAndroidViewModel {
                             mReadDataListener?.showToast(net.lzbook.kit.R.string.err_no_net)
                         }
                     }
-                } else {
-                    mReadDataListener?.showToast(net.lzbook.kit.R.string.err_no_net)
                 }
             } else {
                 if (BookHelper.isChapterExist(readStatus?.sequence!! + 1, readStatus?.book_id)) {
@@ -403,31 +421,7 @@ class ReaderViewModel : DisposableAndroidViewModel {
             if (readStatus?.currentPage == readStatus?.pageCount) {
             }
         } else {
-            Constants.endReadTime = System.currentTimeMillis() / 1000L
-            val params = HashMap<String, String>()
-            params.put("book_id", readStatus?.book_id!!)
-            val book_source_id: String
-            if (Constants.QG_SOURCE == readStatus?.book?.site) {
-                book_source_id = readStatus?.book?.book_id!!
-            } else {
-                book_source_id = readStatus?.book?.book_source_id!!
-            }
-            params.put("book_source_id", book_source_id)
-            if (currentChapter != null) {
-                params.put("chapter_id", currentChapter?.chapter_id!!)
-            }
-            val channelCode: String
-            if (Constants.QG_SOURCE == readStatus?.book?.site) {
-                channelCode = "1"
-            } else {
-                channelCode = "2"
-            }
-            params.put("channel_code", channelCode)
-            params.put("chapter_read", "1")
-            params.put("chapter_pages", readStatus?.pageCount.toString())
-            params.put("start_time", Constants.startReadTime.toString())
-            params.put("end_time", Constants.endReadTime.toString())
-
+            sendPVData() // 走的是广告的点位，后期需要注意此点位  还有广告的用户基础数据的点位
             if (readStatus?.sequence == readStatus?.chapterCount!! - 1) {
                 if (readStatus?.book?.book_type != 0 && mReadDataListener != null) {
                     mReadDataListener?.showToast(net.lzbook.kit.R.string.last_chapter_tip)
@@ -447,6 +441,35 @@ class ReaderViewModel : DisposableAndroidViewModel {
             }
         }
         return isPrepared
+    }
+
+    private fun sendPVData() {
+        Constants.endReadTime = System.currentTimeMillis() / 1000L
+        val params = HashMap<String, String>()
+        params.put("book_id", readStatus?.book_id!!)
+        val book_source_id: String
+        if (Constants.QG_SOURCE == readStatus?.book?.site) {
+            book_source_id = readStatus?.book?.book_id!!
+        } else {
+            book_source_id = readStatus?.book?.book_source_id!!
+        }
+        params.put("book_source_id", book_source_id)
+        if (currentChapter != null) {
+            params.put("chapter_id", currentChapter!!.chapter_id)
+        }
+        val channelCode: String
+        if (Constants.QG_SOURCE == readStatus?.book?.site) {
+            channelCode = "1"
+        } else {
+            channelCode = "2"
+        }
+        params.put("channel_code", channelCode)
+        params.put("chapter_read", "1")
+        params.put("chapter_pages", readStatus?.pageCount.toString())
+        params.put("start_time", Constants.startReadTime.toString())
+        params.put("end_time", Constants.endReadTime.toString())
+
+//        StatisticManager.getStatisticManager().sendReadPvData(params)
     }
 
     fun nextByAutoRead(): Boolean {
@@ -504,6 +527,42 @@ class ReaderViewModel : DisposableAndroidViewModel {
         return isPrepared
     }
 
+
+    //获取章节  方便pageView调用
+    fun getChapterByLoading(type: Int, sequence: Int) {
+        if (mReadDataListener != null) {
+            mReadDataListener?.getChapter(type, sequence)
+        }
+    }
+
+    //刷新 方便上下阅读时调用
+    fun freshPage() {
+        if (mReadDataListener != null) {
+            mReadDataListener?.freshPage()
+        }
+    }
+
+    fun clean() {
+        if (chapterList != null) {
+            chapterList!!.clear()
+        }
+
+        if (tempChapterNameList != null) {
+            tempChapterNameList!!.clear()
+        }
+
+        if (tempLineList != null) {
+            tempLineList!!.clear()
+        }
+
+
+        if (readStatus != null) {
+            readStatus = null
+        }
+
+
+    }
+
     interface ReaderRecommendViewCallback {
 
         fun onRecommendBook(recommanded: RecommendBooksEndResp)
@@ -549,6 +608,7 @@ class ReaderViewModel : DisposableAndroidViewModel {
         fun getChapter(what: Int, sequence: Int)
         fun nextChapterCallBack(b: Boolean)
         fun preChapterCallBack(b: Boolean)
+        fun showChangeNetDialog()
     }
 
     fun setReaderRecommendViewCallback(readerRecommendViewCallback: ReaderRecommendViewCallback) {
