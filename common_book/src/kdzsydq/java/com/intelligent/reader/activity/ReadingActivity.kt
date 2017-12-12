@@ -44,7 +44,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     private var sharedPreferencesUtils: SharedPreferencesUtils? = null
     private var reading_content: RelativeLayout? = null
 
-    private var novel_basePageView: FrameLayout? = null
+    private var novel_basePageView: ReaderViewWidget? = null
     private var mCatlogMarkDrawer: DrawerLayout? = null
     private var mCatalogMarkFragment: CatalogMarkFragment? = null
     private val mDrawerListener = object : DrawerLayout.DrawerListener {
@@ -120,27 +120,26 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         reading_content = findViewById(R.id.reading_content) as RelativeLayout
         readSettingView = findViewById(R.id.readSettingView) as ReadSettingView
         readSettingView!!.setOnReadSettingListener(this)
-        novel_basePageView = findViewById(R.id.novel_basePageView) as FrameLayout
+        novel_basePageView = findViewById(R.id.novel_basePageView) as ReaderViewWidget
         if (Constants.isSlideUp) {
             pageView = ScrollPageView(applicationContext)
         } else {
             pageView = PageView(applicationContext)
         }
-        novel_basePageView!!.removeAllViews()
-        novel_basePageView!!.addView(pageView as View?, FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+        novel_basePageView?.removeAllViews()
+        novel_basePageView?.addView(pageView as View?, FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT))
-        mReadPresenter!!.initData(pageView!!)
-        readSettingView!!.setDataFactory(fac, readStatus!!, mThemeHelper)
-        readSettingView!!.currentThemeMode = mReadPresenter!!.currentThemeMode
+        mReadPresenter?.initData(pageView!!)
+        readSettingView?.setDataFactory(fac, readStatus!!, mThemeHelper)
+        readSettingView?.currentThemeMode = mReadPresenter?.currentThemeMode
         auto_menu = findViewById(R.id.auto_menu) as AutoReadMenu
-        auto_menu!!.setOnAutoMemuListener(this)
+        auto_menu?.setOnAutoMemuListener(this)
 
         ll_guide_layout = findViewById(R.id.ll_guide_layout)
         initGuide()
 
         readSettingView!!.setNovelMode(Constants.MODE)
         readStatus!!.source_ids = readStatus!!.book.site
-
     }
 
     private fun initGuide() {

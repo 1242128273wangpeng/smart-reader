@@ -80,27 +80,27 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
      */
     override fun nextChapterCallBack(drawCurrent: Boolean) {
         Constants.readedCount++
-        mReaderViewModel!!.preChapter = mReaderViewModel!!.currentChapter
-        mReaderViewModel!!.currentChapter = mReaderViewModel!!.nextChapter
-        mReaderViewModel!!.nextChapter = null
-        mReaderViewModel!!.readStatus!!.sequence++
-        mReaderViewModel!!.readStatus!!.offset = 0
-        myNovelHelper!!.isShown = false
-        myNovelHelper!!.getChapterContent(readReference!!.get(), mReaderViewModel!!.currentChapter, mReaderViewModel!!.readStatus!!.book, false)
-        mReaderViewModel!!.readStatus!!.currentPage = 1
-        pageView!!.drawNextPage()
+        mReaderViewModel?.preChapter = mReaderViewModel!!.currentChapter
+        mReaderViewModel?.currentChapter = mReaderViewModel!!.nextChapter
+        mReaderViewModel?.nextChapter = null
+        mReaderViewModel?.readStatus!!.sequence++
+        mReaderViewModel?.readStatus!!.offset = 0
+        myNovelHelper?.isShown = false
+        myNovelHelper?.getChapterContent(readReference?.get(), mReaderViewModel?.currentChapter, mReaderViewModel?.readStatus?.book, false)
+        mReaderViewModel?.readStatus!!.currentPage = 1
+        pageView?.drawNextPage()
         if (drawCurrent) {
             pageView!!.drawCurrentPage()
         }
         pageView!!.getNextChapter()
-        if (mReaderViewModel!!.mReadDataListener != null) {
-            mReaderViewModel!!.mReadDataListener!!.downLoadNovelMore()
+        if (mReaderViewModel?.mReadDataListener != null) {
+            mReaderViewModel?.mReadDataListener?.downLoadNovelMore()
         }
-        if (mReaderViewModel!!.mReadDataListener != null) {
-            mReaderViewModel!!.mReadDataListener!!.freshPage()
-            mReaderViewModel!!.mReadDataListener!!.changeChapter()
+        if (mReaderViewModel?.mReadDataListener != null) {
+            mReaderViewModel?.mReadDataListener?.freshPage()
+            mReaderViewModel?.mReadDataListener?.changeChapter()
         }
-        mReaderViewModel!!.readStatus!!.isLoading = false
+        mReaderViewModel?.readStatus?.isLoading = false
     }
 
     /**
@@ -108,37 +108,37 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
      */
     override fun preChapterCallBack(drawCurrent: Boolean) {
         Constants.readedCount++
-        mReaderViewModel!!.nextChapter = mReaderViewModel!!.currentChapter
-        mReaderViewModel!!.currentChapter = mReaderViewModel!!.preChapter
-        mReaderViewModel!!.preChapter = null
+        mReaderViewModel?.nextChapter = mReaderViewModel!!.currentChapter
+        mReaderViewModel?.currentChapter = mReaderViewModel!!.preChapter
+        mReaderViewModel?.preChapter = null
 
-        mReaderViewModel!!.readStatus!!.sequence--
-        mReaderViewModel!!.readStatus!!.offset = 0
-        myNovelHelper!!.isShown = false
-        myNovelHelper!!.getChapterContent(readReference!!.get(), mReaderViewModel!!.currentChapter, mReaderViewModel!!.readStatus!!.book, false)
-        if (mReaderViewModel!!.toChapterStart) {
-            mReaderViewModel!!.readStatus!!.currentPage = 1
+        mReaderViewModel?.readStatus!!.sequence--
+        mReaderViewModel?.readStatus?.offset = 0
+        myNovelHelper?.isShown = false
+        myNovelHelper?.getChapterContent(readReference?.get(), mReaderViewModel?.currentChapter, mReaderViewModel?.readStatus?.book, false)
+        if (mReaderViewModel?.toChapterStart != false) {
+            mReaderViewModel?.readStatus?.currentPage = 1
         } else {
-            mReaderViewModel!!.readStatus!!.currentPage = mReaderViewModel!!.readStatus!!.pageCount
+            mReaderViewModel?.readStatus?.currentPage = mReaderViewModel?.readStatus?.pageCount
         }
-        mReaderViewModel!!.toChapterStart = false
-        pageView!!.drawNextPage()
+        mReaderViewModel?.toChapterStart = false
+        pageView?.drawNextPage()
         if (drawCurrent) {
-            pageView!!.drawCurrentPage()
+            pageView?.drawCurrentPage()
         }
-        pageView!!.getPreChapter()
-        if (mReaderViewModel!!.mReadDataListener != null) {
-            mReaderViewModel!!.mReadDataListener!!.freshPage()
-            mReaderViewModel!!.mReadDataListener!!.changeChapter()
+        pageView?.getPreChapter()
+        if (mReaderViewModel?.mReadDataListener != null) {
+            mReaderViewModel?.mReadDataListener?.freshPage()
+            mReaderViewModel?.mReadDataListener?.changeChapter()
         }
-        mReaderViewModel!!.readStatus!!.isLoading = false
+        mReaderViewModel?.readStatus?.isLoading = false
 
-        if (mReaderViewModel!!.readStatus!!.currentPage == mReaderViewModel!!.readStatus!!.pageCount) {
+        if (mReaderViewModel?.readStatus?.currentPage == mReaderViewModel?.readStatus?.pageCount) {
         }
     }
 
 
-    private val TAG = ReadPresenter::class.java!!.getSimpleName()
+    private val TAG = ReadPresenter::class.java?.getSimpleName()
 
     override var view: ReadPreInterface.View? = null
 
@@ -172,7 +172,8 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
     private var mBookDaoHelper: BookDaoHelper? = null
     private var screen_moding = false
     private var isFromCover = true
-    private var myNovelHelper: NovelHelper? = null
+//    private var myNovelHelper: NovelHelper? = null
+    var myNovelHelper: NovelHelper? = null
     private var autoSpeed: Int = 0
     private var auto_menu: AutoReadMenu? = null
     private var batteryPercent: Float = 0.toFloat()
@@ -187,7 +188,7 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
     private var isRestPress = false
     private var actNovelRunForeground = true
     private var readReference: WeakReference<ReadingActivity>? = null
-    private var mReaderViewModel: ReaderViewModel? = null
+    var mReaderViewModel: ReaderViewModel? = null
 
     //    private int lastMode = -1;
     private val handler = UiHandler(this)
@@ -259,18 +260,18 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
         AppLog.e(TAG, "onCreate")
 
         sp = PreferenceManager.getDefaultSharedPreferences(readReference?.get()?.getApplicationContext())
-        Constants.isFullWindowRead = sp!!.getBoolean("read_fullwindow", true)
-        Constants.PAGE_MODE = sp!!.getInt("page_mode", 0)
-        Constants.FULL_SCREEN_READ = sp!!.getBoolean("full_screen_read", false)
+        Constants.isFullWindowRead = sp?.getBoolean("read_fullwindow", true)?:true
+        Constants.PAGE_MODE = sp?.getInt("page_mode", 0)?:0
+        Constants.FULL_SCREEN_READ = sp?.getBoolean("full_screen_read", false)?:false
         Constants.isSlideUp = Constants.PAGE_MODE == 3
-        Constants.isVolumeTurnover = sp!!.getBoolean("sound_turnover", true)
+        Constants.isVolumeTurnover = sp?.getBoolean("sound_turnover", true)?:true
         AppLog.e("getAdsStatus", "novel_onCreate")
         versionCode = AppUtils.getVersionCode()
         AppLog.e(TAG, "versionCode: " + versionCode)
         readStatus = ReadStatus(readReference?.get()?.getApplicationContext())
         BookApplication.getGlobalContext().readStatus = readStatus
         view?.setReadStatus(readStatus!!)
-        autoSpeed = readStatus!!.autoReadSpeed()
+        autoSpeed = readStatus?.autoReadSpeed()!!
         myNovelHelper = NovelHelper(readReference?.get(), readStatus, handler)
         myNovelHelper?.setOnHelperCallBack(this)
         downloadService = BaseBookApplication.getDownloadService()
@@ -284,8 +285,8 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
         setOrientation()
         getSavedState(savedInstanceState)
 
-        RepairHelp.showFixMsg(readReference?.get(), readStatus!!.book, RepairHelp.FixCallBack {
-            if (readReference != null && readReference!!.get() != null && !readReference!!.get()!!.isFinishing) {
+        RepairHelp.showFixMsg(readReference?.get(), readStatus?.book, RepairHelp.FixCallBack {
+            if (readReference != null && readReference?.get() != null && !readReference?.get()!!.isFinishing) {
                 val intent_download = Intent(readReference?.get(), DownloadManagerActivity::class.java)
                 try {
                     readReference?.get()?.startActivity(intent_download)
@@ -300,7 +301,7 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
             return
         }
 
-        view!!.initCatlogView()
+        view?.initCatlogView()
 
         initBookState()
         // 初始化view
@@ -318,10 +319,10 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
 
     fun initCatalogPresenter(catalogMarkFragment: CatalogMarkFragment, optionHeader: ReadOptionHeader) {
         mCatalogMarkPresenter = CatalogMarkPresenter(readStatus!!, mReaderViewModel!!)
-        mCatalogMarkPresenter!!.view = catalogMarkFragment
+        mCatalogMarkPresenter?.view = catalogMarkFragment
 
         mReadOptionPresenter = ReadOptionPresenter(readReference?.get() as Activity, readStatus!!, mReaderViewModel!!)
-        mReadOptionPresenter!!.view = optionHeader
+        mReadOptionPresenter?.view = optionHeader
 
         view?.initPresenter(mReadOptionPresenter, mCatalogMarkPresenter)
     }
@@ -331,14 +332,14 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
         pageView?.clear()
         showMenu(false)
         AppLog.d("ReadingActivity", "onNewIntent:")
-        this.sp = PreferenceManager.getDefaultSharedPreferences(readReference?.get()?.getApplicationContext())
-        Constants.isFullWindowRead = sp!!.getBoolean("read_fullwindow", true)
-        Constants.PAGE_MODE = sp!!.getInt("page_mode", 0)
+        this.sp = PreferenceManager.getDefaultSharedPreferences(readReference?.get()?.applicationContext)
+        Constants.isFullWindowRead = sp?.getBoolean("read_fullwindow", true)?:true
+        Constants.PAGE_MODE = sp?.getInt("page_mode", 0)?:0
         Constants.isSlideUp = Constants.PAGE_MODE == 3
         versionCode = AppUtils.getVersionCode()
         AppLog.e(TAG, "versionCode: " + versionCode)
         if (readStatus != null) {
-            readStatus!!.recycleResource()
+            readStatus?.recycleResource()
         }
         readStatus = ReadStatus(readReference?.get()?.getApplicationContext())
         BookApplication.getGlobalContext().readStatus = readStatus
@@ -592,9 +593,9 @@ class ReadPresenter : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCal
 
             AppLog.e("ReadDataFactory", "ReadDataFactory: " + temp_sequence + " : " + mReaderViewModel!!.readStatus!!.book_id)
             val result = chapterList[temp_sequence]
-            mReaderViewModel!!.requestSingleChapter(requestItem.host, result, object : ReaderViewModel.BookSingleChapterCallback {
+            mReaderViewModel?.requestSingleChapter(requestItem.host, result, object : ReaderViewModel.BookSingleChapterCallback {
                 override fun onPayChapter(chapter: Chapter) {
-                    loadingPage!!.onSuccess()
+                    loadingPage?.onSuccess()
                     obtainWhat(what, chapter)
                 }
 

@@ -63,7 +63,7 @@ public class DrawTextHelper {
     private int translateColor;
     private float percent;
     private String timeText;
-    private PageInterface pageView;
+
     private Activity mActivity;
 
     private Paint nightPaint;
@@ -82,9 +82,8 @@ public class DrawTextHelper {
         mIconBitmap = null;
     }
 
-    public DrawTextHelper(Resources res, PageInterface pageView, Activity mActivity) {
+    public DrawTextHelper(Resources res, Activity mActivity) {
         this.resources = res;
-        this.pageView = pageView;
         this.mActivity = mActivity;
 
         this.readSensitiveWord = SensitiveWords.getReadSensitiveWords();
@@ -387,22 +386,22 @@ public class DrawTextHelper {
     }
 
     public synchronized Paint drawText(Canvas canvas, List<NovelLineBean> pageLines, Activity activity) {
-        mPaint.setTextSize(Constants.FONT_SIZE * readStatus.screenScaledDensity);
-        duanPaint.setTextSize(1 * readStatus.screenScaledDensity);
-        FontMetrics fm = mPaint.getFontMetrics();
-        mLineStart = Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity;
-        mWidth = readStatus.screenWidth - readStatus.screenDensity * Constants.READ_CONTENT_PAGE_LEFT_SPACE * 2;
+        mPaint.setTextSize(Constants.FONT_SIZE * readStatus.screenScaledDensity);//设置字体大小
+        duanPaint.setTextSize(1 * readStatus.screenScaledDensity);//设置画笔字体大小1x屏幕密度
+        FontMetrics fm = mPaint.getFontMetrics();//字体测量类
+        mLineStart = Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity;//开始位置20x屏幕密度
+        mWidth = readStatus.screenWidth - readStatus.screenDensity * Constants.READ_CONTENT_PAGE_LEFT_SPACE * 2;//720-2*20
 
-        float lineSpace = Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE * readStatus.screenScaledDensity;
-        float m_iFontHeight = fm.descent - fm.ascent + lineSpace;
+        float lineSpace = Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE * readStatus.screenScaledDensity;//10.8 行间距 = 行间距比例*字体大小*屏幕密度
+        float m_iFontHeight = fm.descent - fm.ascent + lineSpace;//字体下坡度 - 字体上坡度 + 行间距 8.7 - -33.39 + 10.8 ≈ 52.9875
         float m_duan = Constants.READ_PARAGRAPH_SPACE * lineSpace;
-        float height = readStatus.screenHeight - readStatus.screenDensity * Constants.READ_CONTENT_PAGE_TOP_SPACE * 2 + lineSpace;
-        float total_y = 0;
+        float height = readStatus.screenHeight - readStatus.screenDensity * Constants.READ_CONTENT_PAGE_TOP_SPACE * 2 + lineSpace;//开始高度 = 屏幕高度 - 密度*45*2+行间距
+        float total_y = 0;//
 
         total_y += Constants.READ_CONTENT_PAGE_TOP_SPACE * readStatus.screenDensity - fm.ascent;
 
         float textHeight = 0;
-        float duan = 0;
+        float duan = 0;//段落
         boolean isShow_big_ad = false;
         boolean lastIsDuan = false;
         if (pageLines != null && !pageLines.isEmpty()) {
@@ -417,7 +416,7 @@ public class DrawTextHelper {
                 if (!TextUtils.isEmpty(text) && text.equals(" ")) {
                     textHeight += m_duan;
                     duan += m_duan;
-                    lastIsDuan = true;
+                    lastIsDuan = true;//最后一段画一半，另一半画下页
                 } else {
                     textHeight += m_iFontHeight;
                     lastIsDuan = false;
@@ -426,7 +425,7 @@ public class DrawTextHelper {
 
         }
 
-        if (lastIsDuan) {
+        if (lastIsDuan) {//判断是否需要断字
             textHeight -= m_duan;
         }
 
@@ -439,11 +438,11 @@ public class DrawTextHelper {
             m_iFontHeight = m_iFontHeight + distanceLine / numLine;
             m_duan = m_duan + distanceDuan / numDuan;
         } else if (textHeight - height > 2) {
-            int n = (int) Math.round((height - duan) / m_iFontHeight);// 行数
+            int n = (int) Math.round((height - duan) / m_iFontHeight);// 行数 21
             float distance = (textHeight - (height)) / n;
             m_iFontHeight = m_iFontHeight - distance;
         }
-        drawBackground(canvas);
+        drawBackground(canvas);//行背景
 
 
         if (pageLines != null && !pageLines.isEmpty()) {
@@ -465,9 +464,9 @@ public class DrawTextHelper {
                     } else if (text != null && text.getLineContent().contains(NovelHelper.empty_page_ad_inChapter) || text.getLineContent().startsWith(NovelHelper.empty_page_ad_inChapter)) {
                     } else {
                         if (text.getType() == 1) {
-                            drawLineIntervalText(canvas, text, total_y);
+                            drawLineIntervalText(canvas, text, total_y);//开始画行
                         } else {
-                            canvas.drawText(text.getLineContent(), mLineStart, total_y, mPaint);
+                            canvas.drawText(text.getLineContent(), mLineStart, total_y, mPaint);//每段最后一行
                         }
 
                         total_y += m_iFontHeight;

@@ -140,7 +140,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
 
         chapterContent = new ArrayList<>();
 
-        drawTextHelper = new DrawTextHelper(getResources(), this, mActivity);
+        drawTextHelper = new DrawTextHelper(getResources(), mActivity);
         readStatus.startReadTime = System.currentTimeMillis();
         count = 0;
         isFirstCome = true;

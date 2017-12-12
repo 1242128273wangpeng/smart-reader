@@ -1,6 +1,5 @@
 package com.intelligent.reader.reader
 
-import android.os.Message
 import android.text.TextUtils
 import com.intelligent.reader.DisposableAndroidViewModel
 import com.intelligent.reader.activity.ReadingActivity

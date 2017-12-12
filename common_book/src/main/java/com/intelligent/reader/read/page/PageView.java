@@ -142,7 +142,7 @@ public class PageView extends View implements PageInterface {
         // 创建绘制当前页以及下一页的画布canvas
         mCurPageCanvas = new Canvas(mCurPageBitmap);
         mNextPageCanvas = new Canvas(mNextPageBitmap);
-        drawTextHelper = new DrawTextHelper(getResources(), this, mActivity);
+        drawTextHelper = new DrawTextHelper(getResources(), mActivity);
 
         moveThreshold = AppUtils.dip2px(mContext, kMoveThresholdDP);
         turnThreshold = AppUtils.dip2px(mContext, kTurnThresholdDP);
