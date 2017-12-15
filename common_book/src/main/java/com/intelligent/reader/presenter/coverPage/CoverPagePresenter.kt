@@ -18,6 +18,7 @@ import com.intelligent.reader.activity.DownloadManagerActivity
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.activity.SearchBookActivity
 import com.intelligent.reader.adapter.CoverSourceAdapter
+import com.intelligent.reader.cover.*
 import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.receiver.DownBookClickReceiver
 import com.quduquxie.bean.BookMode
@@ -73,10 +74,15 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
     val DOWNLOAD_STATE_LOCKED = 2;
     val DOWNLOAD_STATE_NOSTART = 3;
     val DOWNLOAD_STATE_OTHER = 4;
+    var mBookCoverViewModel: BookCoverViewModel? = null
 
 
     init {
         preferences = BaseBookApplication.getGlobalContext().getSharedPreferences("onlineconfig_agent_online_setting_" + AppUtils.getPackageName(), 0);
+//        mBookCoverViewModel  = BookCoverViewModel(BookCoverRepositoryFactory.getInstance(BookCoverOtherRepository.getInstance(NetService.userService),
+//                BookCoverQGRepository.getInstance(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())), BookCoverLocalRepository.getInstance(BaseBookApplication.getGlobalContext())))
+//        mBookCoverViewModel?.setBookCoverViewCallback(this)
+
         if (bookDaoHelper == null) {
             bookDaoHelper = BookDaoHelper.getInstance()
         }

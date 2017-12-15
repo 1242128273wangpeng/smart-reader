@@ -94,6 +94,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             if (mCoverPagePresenter != null) {
                 mCoverPagePresenter!!.getBookCoverInfo(false)
             }
+
+//            mBookCoverViewModel.getCoverDetail(requestItem.book_id, requestItem.book_source_id, requestItem.host)
+
             requestItem!!.channel_code = 2
         }
 

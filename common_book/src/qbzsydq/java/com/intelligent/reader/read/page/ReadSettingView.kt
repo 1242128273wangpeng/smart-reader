@@ -23,8 +23,8 @@ import android.widget.SeekBar
 import android.widget.Toast
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.ReadingActivity
-import com.intelligent.reader.read.help.IReadDataFactory
 import com.intelligent.reader.read.help.ReadSettingHelper
+import com.intelligent.reader.reader.ReaderViewModel
 import iyouqu.theme.FrameActivity
 import iyouqu.theme.ThemeHelper
 import kotlinx.android.synthetic.qbzsydq.read_option_bottom.view.*
@@ -54,7 +54,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     private var listener: OnReadSettingListener? = null
     private var popUpInAnimation: Animation? = null
     private var popDownOutAnimation: Animation? = null
-    private var dataFactory: IReadDataFactory? = null
+    private var mReaderViewModel: ReaderViewModel? = null
     private var readStatus: ReadStatus? = null
     private var lastIndex: Int? = null
     private var themeHelper: ThemeHelper? = null
@@ -967,8 +967,8 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     }
 
 
-    fun setDataFactory(factory: IReadDataFactory, readStatus: ReadStatus, themeHelper: ThemeHelper) {
-        this.dataFactory = factory
+    fun setDataFactory(factory: ReaderViewModel, readStatus: ReadStatus, themeHelper: ThemeHelper) {
+        this.mReaderViewModel = factory
         this.readStatus = readStatus
         this.themeHelper = themeHelper
 
@@ -993,11 +993,11 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
             val resizeProgress = progress * (readStatus!!.chapterCount - 1) / 100
 
-            if (dataFactory!!.chapterList != null && !dataFactory!!.chapterList.isEmpty()
-                    && resizeProgress < dataFactory!!.chapterList.size && resizeProgress >= 0) {
+            if (mReaderViewModel!!.chapterList != null && !mReaderViewModel!!.chapterList!!.isEmpty()
+                    && resizeProgress < mReaderViewModel!!.chapterList!!.size && resizeProgress >= 0) {
                 readStatus!!.novel_progress = resizeProgress
                 changeBottomSettingView(SETTING_OPTION)
-                novel_hint_chapter!!.text = dataFactory!!.chapterList[resizeProgress].chapter_name
+                novel_hint_chapter!!.text = mReaderViewModel!!.chapterList!!.get(resizeProgress).chapter_name
                 novel_hint_sequence!!.text = (resizeProgress + 1).toString() + "/" + readStatus!!.chapterCount
             }
 
@@ -1033,7 +1033,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     override fun onStartTrackingTouch(seekBar: SeekBar) {}
 
     fun getQGChapterId(sequence: Int): String? {
-        for (chapter in dataFactory!!.chapterList) {
+        for (chapter in mReaderViewModel!!.chapterList!!) {
             if (chapter.sequence == sequence) {
                 return chapter.chapter_id
             }
@@ -1100,8 +1100,8 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
         this.detachAllViewsFromParent()
 
-        if (this.dataFactory != null) {
-            this.dataFactory = null
+        if (this.mReaderViewModel != null) {
+            this.mReaderViewModel = null
         }
 
         if (this.readStatus != null) {

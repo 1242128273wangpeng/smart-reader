@@ -12,19 +12,18 @@ import android.widget.FrameLayout
 import android.widget.PopupWindow
 import com.intelligent.reader.R
 import com.intelligent.reader.presenter.read.ReadOption
-import com.intelligent.reader.read.help.IReadDataFactory
+import com.intelligent.reader.reader.ReaderViewModel
 import kotlinx.android.synthetic.mfqbxssc.read_option_header.view.*
 import kotlinx.android.synthetic.mfqbxssc.read_option_pop.view.*
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ReadStatus
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.request.UrlUtils
-import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.onEnd
 import net.lzbook.kit.utils.toastShort
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import java.util.HashMap
+
 
 /**
  * Created by xian on 2017/8/8.
@@ -151,7 +150,7 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
         novel_bookmark?.setImageResource(id)
     }
 
-    override fun updateStatus(readStatus: ReadStatus, dataFactory: IReadDataFactory, bookDaoHelper: BookDaoHelper) {
+    override fun updateStatus(readStatus: ReadStatus, mReaderViewModel: ReaderViewModel, bookDaoHelper: BookDaoHelper) {
         var typeChangeMark = 0
         if (bookDaoHelper != null && bookDaoHelper.isBookMarkExist(readStatus.book_id, readStatus.sequence,
                 readStatus.offset, readStatus.book.book_type)) {
@@ -185,9 +184,9 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
                 novel_source_url.text = "青果阅读"
                 novel_source_url.visibility = View.VISIBLE
             } else {
-                if (dataFactory != null && dataFactory.currentChapter != null && !TextUtils.isEmpty(dataFactory.currentChapter.curl)) {
+                if (mReaderViewModel != null && mReaderViewModel.currentChapter != null && !TextUtils.isEmpty(mReaderViewModel!!.currentChapter!!.curl)) {
                     //if (readStatus.book.dex == 1 && !TextUtils.isEmpty(dataFactory.currentChapter.curl)) {
-                    novel_source_url.text = UrlUtils.buildContentUrl(dataFactory.currentChapter.curl)
+                    novel_source_url.text = UrlUtils.buildContentUrl(mReaderViewModel!!.currentChapter!!.curl)
                     novel_source_url.visibility = View.VISIBLE
                     /*} else if (readStatus.book.dex == 0 && !TextUtils.isEmpty(dataFactory.currentChapter.curl1)) {
                         novel_source_url.setText("来源于：" + dataFactory.currentChapter.curl1);

@@ -1,46 +1,30 @@
 package com.intelligent.reader.activity
 
-import com.intelligent.reader.R
-import com.intelligent.reader.fragment.CatalogMarkFragment
-import com.intelligent.reader.presenter.read.CatalogMarkPresenter
-import com.intelligent.reader.presenter.read.ReadOptionPresenter
-import com.intelligent.reader.presenter.read.ReadPreInterface
-import com.intelligent.reader.presenter.read.ReadPresenter
-import com.intelligent.reader.read.help.IReadDataFactory
-import com.intelligent.reader.read.page.AutoReadMenu
-import com.intelligent.reader.read.page.PageInterface
-import com.intelligent.reader.read.page.PageView
-import com.intelligent.reader.read.page.ReadOptionHeader
-import com.intelligent.reader.read.page.ReadSettingView
-import com.intelligent.reader.read.page.ScrollPageView
-
-import net.lzbook.kit.book.component.service.DownloadService
-import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.ReadStatus
-import net.lzbook.kit.data.bean.Source
-import net.lzbook.kit.utils.AppLog
-import net.lzbook.kit.utils.SharedPreferencesUtils
-
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
-import android.view.Gravity
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.View
+import android.view.*
 import android.view.ViewGroup.LayoutParams
-import android.view.WindowManager
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import com.intelligent.reader.R
+import com.intelligent.reader.fragment.CatalogMarkFragment
+import com.intelligent.reader.presenter.read.CatalogMarkPresenter
+import com.intelligent.reader.presenter.read.ReadOptionPresenter
+import com.intelligent.reader.presenter.read.ReadPreInterface
+import com.intelligent.reader.presenter.read.ReadPresenter
+import com.intelligent.reader.read.page.*
+import com.intelligent.reader.reader.ReaderViewModel
 import iyouqu.theme.FrameActivity
-
-import java.util.ArrayList
+import net.lzbook.kit.book.component.service.DownloadService
+import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.data.bean.ReadStatus
+import net.lzbook.kit.data.bean.Source
+import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.SharedPreferencesUtils
+import java.util.*
 
 /**
  * ReadingActivity
@@ -132,7 +116,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         mReadPresenter!!.onConfigurationChanged(mCatalogMarkFragment!!, mOptionHeader!!)
     }
 
-    override fun initView(fac: IReadDataFactory) {
+    override fun initView(fac: ReaderViewModel) {
         reading_content = findViewById(R.id.reading_content) as RelativeLayout
         readSettingView = findViewById(R.id.readSettingView) as ReadSettingView
         readSettingView!!.setOnReadSettingListener(this)
@@ -177,6 +161,14 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     fun freshPage() {
         if (mReadPresenter != null) {
             mReadPresenter!!.freshPage()
+        }
+    }
+
+    //自动阅读
+    fun dealManualDialogShow() {
+
+        if (mReadPresenter != null) {
+            mReadPresenter!!.dealManualDialogShow()
         }
     }
 
