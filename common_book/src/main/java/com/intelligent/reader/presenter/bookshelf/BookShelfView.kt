@@ -14,4 +14,6 @@ interface BookShelfView {
 
     fun onSuccessUpdateHandle(updateCount: Int = 0, firstBook: BookUpdate? = null)
 
+    fun onAdRefresh()
+
 }

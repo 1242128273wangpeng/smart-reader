@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,10 +31,12 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private ShelfItemClickListener shelfItemClickListener;
     private ShelfItemLongClickListener shelfItemLongClickListener;
     private ViewGroup parentView;
+    private List<ViewGroup> mAdViews;
 
-    public BookShelfReAdapter(Activity context, List<Book> list, ShelfItemClickListener itemClick, ShelfItemLongClickListener itemLongClick, boolean isList) {
+    public BookShelfReAdapter(Activity context, List<Book> list, List<ViewGroup> adViews, ShelfItemClickListener itemClick, ShelfItemLongClickListener itemLongClick, boolean isList) {
         mContext = context;
         book_list = (ArrayList<Book>) list;
+        mAdViews = adViews;
         shelfItemClickListener = itemClick;
         shelfItemLongClickListener = itemLongClick;
         this.isList = isList;
@@ -60,20 +64,35 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 holder = new BookShelfItemHolder(view, shelfItemClickListener,
                         shelfItemLongClickListener);
                 break;
+            case 1:
+                view = LayoutInflater.from(mContext).inflate(R.layout.layout_bookshelf_item_list_ad, parent, false);
+                holder = new ADViewHolder(view);
+                break;
         }
         return holder;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        Book book = book_list.get(position);
         switch (getItemViewType(position)) {
             case 0: {
-                Book book = book_list.get(position);
                 ((AbsRecyclerViewHolder<Book>) holder).onBindData(position, book,
                         update_table.contains(book.book_id), isRemoveMode(), remove_checked_states
                                 .contains(position));
             }
             break;
+            case 1:
+                View adView = getAdView(book);
+                if (adView != null) {
+                    ViewParent parent = adView.getParent();
+                    if (parent != null && parent instanceof RelativeLayout) {
+                        ((RelativeLayout) parent).removeAllViews();
+                    }
+                    ((ADViewHolder) holder).book_shelf_item_ad.removeAllViews();
+                    ((ADViewHolder) holder).book_shelf_item_ad.addView(adView);
+                }
+                break;
         }
     }
 
@@ -83,6 +102,16 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             return book_list.size();
         }
         return 0;
+    }
+
+    private View getAdView(Book book) {
+        if (mAdViews == null || mAdViews.isEmpty() || book == null) {
+            return null;
+        }
+        if (book.sequence < mAdViews.size()) {
+            return mAdViews.get(book.sequence);
+        }
+        return null;
     }
 
     @Override
@@ -164,6 +193,15 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public interface ShelfItemLongClickListener {
         void onItemLongClick(View view, int position);
+    }
+
+    class ADViewHolder extends RecyclerView.ViewHolder {
+        RelativeLayout book_shelf_item_ad;
+
+        public ADViewHolder(View itemView) {
+            super(itemView);
+            book_shelf_item_ad = (RelativeLayout) itemView.findViewById(R.id.book_shelf_item_ad);
+        }
     }
 
 }

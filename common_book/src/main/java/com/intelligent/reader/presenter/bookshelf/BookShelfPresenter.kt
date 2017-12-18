@@ -1,7 +1,14 @@
 package com.intelligent.reader.presenter.bookshelf
 
+import android.app.Activity
 import android.content.SharedPreferences
 import android.text.TextUtils
+import android.view.ViewGroup
+import android.widget.RelativeLayout
+import com.dycm_adsdk.PlatformSDK
+import com.dycm_adsdk.callback.AbstractCallback
+import com.dycm_adsdk.callback.ResultCode
+import com.dycm_adsdk.utils.DyLogUtils
 import com.intelligent.reader.presenter.IPresenter
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -11,6 +18,8 @@ import net.lzbook.kit.data.bean.BookUpdate
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.utils.*
+import org.json.JSONException
+import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -25,19 +34,113 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
 
     var iBookList: ArrayList<Book> = ArrayList()
 
+    var aDViews: ArrayList<ViewGroup> = ArrayList()
+
     private val updateTableList: ArrayList<String> = ArrayList()
 
     /**
      * 查询书籍列表
      */
-    fun queryBookListAndAd() {
+    fun queryBookListAndAd(activity: Activity, isShowAd: Boolean) {
+        updateBookList()
+        if (isShowAd)
+            updateAd(activity)
+    }
+
+    fun updateBookList() {
         val bookList = bookDaoHelper.booksOnLineList
         Collections.sort(bookList, FrameBookHelper.MultiComparator())
         iBookList.clear()
         iBookList.addAll(bookList)
+        if (aDViews.isNotEmpty()) {
+            var index = 0
+            var book1 = Book()
+            book1.book_type = -2
+            book1.sequence = index++
+            iBookList.add(0, book1)
+            if (iBookList.size > 7 && aDViews.size > 1) {
+                book1 = Book()
+                book1.book_type = -2
+                book1.sequence = index++
+                iBookList.add(5, book1)
+            }
+
+            if (iBookList.size > 12 && aDViews.size > 2) {
+                book1 = Book()
+                book1.book_type = -2
+                book1.sequence = index++
+                iBookList.add(10, book1)
+            }
+        }
         runOnMain {
             view?.onBookListQuery(bookList)
         }
+    }
+
+    fun updateAd(activity: Activity) {
+        PlatformSDK.adapp().dycmNativeAd(activity, "1-1", RelativeLayout(activity), object : AbstractCallback() {
+            override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
+                DyLogUtils.dd("NativeActivity:" + jsonResult!!)
+                if (!adswitch) return
+                try {
+                    val jsonObject = JSONObject(jsonResult)
+                    DyLogUtils.e("ADSDK", "执行NativeActivity 回调")
+                    if (jsonObject.has("state_code")) {
+                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+                            ResultCode.AD_REQ_SUCCESS//请求成功
+                            -> {
+                                if (views != null) {
+                                    aDViews.clear()
+                                    updateBookList()
+                                    aDViews.addAll(views)
+                                    if (iBookList.isEmpty()) {
+                                        return
+                                    }
+                                    var index = 0
+                                    var book1 = Book()
+                                    book1.book_type = -2
+                                    book1.sequence = index++
+                                    iBookList.add(0, book1)
+                                    if (iBookList.size > 3) {
+                                        book1 = Book()
+                                        book1.book_type = -2
+                                        book1.sequence = index++
+                                        iBookList.add(2, book1)
+                                    }
+
+                                    if (iBookList.size > 5) {
+                                        book1 = Book()
+                                        book1.book_type = -2
+                                        book1.sequence = index++
+                                        iBookList.add(4, book1)
+                                    }
+
+                                    if (iBookList.size > 7) {
+                                        book1 = Book()
+                                        book1.book_type = -2
+                                        book1.sequence = index++
+                                        iBookList.add(6, book1)
+                                    }
+
+                                    runOnMain {
+                                        view?.onAdRefresh()
+                                    }
+
+                                    DyLogUtils.e("ADSDK", "请求成功")
+                                }
+
+                            }
+                            ResultCode.AD_REQ_FAILED//请示失败
+                            -> {
+                            }
+                        }
+                    }
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+
+            }
+        }, 8)
     }
 
     fun handleSuccessUpdate(result: BookUpdateResult) {

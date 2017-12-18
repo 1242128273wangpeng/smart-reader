@@ -52,7 +52,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
     private val presenter: BookShelfPresenter by lazy { BookShelfPresenter(this) }
 
     val bookShelfReAdapter: BookShelfReAdapter by lazy {
-        BookShelfReAdapter(activity, presenter.iBookList, this, this, true)
+        BookShelfReAdapter(activity, presenter.iBookList, presenter.aDViews, this, this, true)
     }
     val bookShelfRemoveHelper: BookShelfRemoveHelper by lazy {
         val helper = BookShelfRemoveHelper(activity, bookShelfReAdapter)
@@ -233,8 +233,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
      * 查Book数据库更新界面
      */
     fun updateUI() {
+        var isShowAd = !bookShelfRemoveHelper.isRemoveMode && isResumed
         doAsync {
-            presenter.queryBookListAndAd()
+            presenter.queryBookListAndAd(activity, isShowAd)
             runOnMain {
                 bookShelfReAdapter.setUpdate_table(presenter.filterUpdateTableList())
                 bookShelfReAdapter.notifyDataSetChanged()
@@ -431,6 +432,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
         if (isShowAD) {
             presenter.removeAd()
         }
+    }
+
+    override fun onAdRefresh() {
+        bookShelfReAdapter?.notifyDataSetChanged()
     }
 
     override fun updateBook() {
