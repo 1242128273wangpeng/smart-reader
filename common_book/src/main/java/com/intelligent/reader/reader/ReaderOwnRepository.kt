@@ -7,6 +7,7 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.SourceItem
 import net.lzbook.kit.net.custom.service.NetService
+import net.lzbook.kit.net.custom.service.UserService
 import net.lzbook.kit.purchase.SingleChapterBean
 import net.lzbook.kit.request.RequestExecutorDefault
 import net.lzbook.kit.request.UrlUtils
@@ -25,16 +26,16 @@ import java.util.Map
  * @mail jun_li@dingyuegroup.cn
  * @data 2017/11/20 15:16
  */
-class ReaderOwnRepository private constructor(api: RecommendService) : ReaderRepository {
+class ReaderOwnRepository private constructor(api: UserService) : ReaderRepository {
 
-    private val mApi: RecommendService = api
+    private val mApi: UserService = api
 
     companion object {
         fun getInstance() = RepositoryHolder.INSTANCE
     }
 
     private object RepositoryHolder {
-        val INSTANCE = ReaderOwnRepository(NetService.recommendService)
+        val INSTANCE = ReaderOwnRepository(NetService.userService)
     }
 
     override fun getBookEndRecommendBook(recommanded: String, bookId: String): Observable<RecommendBooksEndResp> {
@@ -81,7 +82,7 @@ class ReaderOwnRepository private constructor(api: RecommendService) : ReaderRep
         } catch (e: MalformedURLException) {
             e.printStackTrace()
         }
-        return NetService.userService.getChapterContent(chapter?.curl, chapter)
+        return NetService.userService.getChapterContent(chapter?.curl!!, chapter)
     }
 
     /**

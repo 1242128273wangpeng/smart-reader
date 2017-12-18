@@ -131,4 +131,9 @@ public abstract class BaseBookApplication extends Application {
         StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.APPINIT);
     }
 
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        PlatformSDK.app().onTerminate();
+    }
 }

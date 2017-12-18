@@ -36,7 +36,7 @@ class ReaderQGRepository private constructor() : ReaderRepository {
     }
 
     override fun paySingleChapter(sourceId: String?, chapterId: String?, chapterName: String?, uid: String?): Observable<SingleChapterBean> {
-        return NetService.userService.requestSingleChapter(sourceId, chapterId, chapterName, uid)
+        return NetService.userService.requestSingleChapter(sourceId!!, chapterId!!, chapterName!!, uid!!)
     }
 
     //空实现

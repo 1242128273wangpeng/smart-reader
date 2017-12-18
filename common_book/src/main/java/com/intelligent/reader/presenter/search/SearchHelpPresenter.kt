@@ -113,7 +113,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
             getCacheDataFromShare(false)
         } else {
             AppLog.e("url", UrlUtils.getBookNovelDeployHost() + "===" + NetWorkUtils.getNetWorkTypeNew(context))
-            val searchService = NetService.ownSearchService
+            val searchService = NetService.userService
             searchService.hotWord
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

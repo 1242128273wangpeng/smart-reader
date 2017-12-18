@@ -79,7 +79,7 @@ class SearchPresenter(private val mContext: Context, override var view: SearchVi
         }
 
         if (searchWord != null && !TextUtils.isEmpty(searchWord)) {
-            val searchService = NetService.ownSearchService
+            val searchService = NetService.userService
             searchService.searchAutoComplete(searchWord)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

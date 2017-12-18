@@ -17,7 +17,7 @@ object NetOwnBook {
 
 
     fun requestOwnCatalogList(book: Book): Observable<List<Chapter>> {
-        val observable = NetService.ownBookService.requestOwnCatalogList(book.book_id, book.book_source_id).map { t: String? ->
+        val observable = NetService.userService.requestOwnCatalogList(book.book_id, book.book_source_id).map { t: String? ->
             var ownChapterList = listOf<Chapter>()
             if (t != null) {
                 ownChapterList = OWNParser.parserOwnChapterList(t, RequestItem.fromBook(book))

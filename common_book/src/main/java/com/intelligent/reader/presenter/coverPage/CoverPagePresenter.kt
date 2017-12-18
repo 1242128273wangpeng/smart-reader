@@ -863,7 +863,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
      */
     fun getBookInfo(isNeedShowMoreTags: Boolean) {
         if (requestItem != null && requestItem.book_id != null && requestItem.book_source_id != null) {
-            NetService.ownBookService.requestBookCover(requestItem.book_id, requestItem.book_source_id)
+            NetService.userService.requestBookCover(requestItem.book_id, requestItem.book_source_id)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(object : Observer<String> {
@@ -895,7 +895,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
     fun getRecommend() {
         var bookIds: String = getBookOnLineIds(bookDaoHelper!!)
         if (requestItem != null && requestItem.book_id != null && !TextUtils.isEmpty(bookIds)) {
-            NetService.ownBookService.requestCoverRecommend(requestItem.book_id, bookIds)
+            NetService.userService.requestCoverRecommend(requestItem.book_id, bookIds)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(object : Observer<CoverRecommendBean> {
