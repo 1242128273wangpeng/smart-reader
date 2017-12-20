@@ -1,17 +1,13 @@
 package com.intelligent.reader.read.page
 
 import android.content.Context
-import android.os.Handler
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.view.MotionEvent
 import com.intelligent.reader.read.adapter.HorizontalAdapter
 import com.intelligent.reader.read.help.*
 import com.intelligent.reader.read.mode.ReadInfo
 import com.intelligent.reader.read.mode.ReadViewEnums
-import com.intelligent.reader.view.PagerAdapter
 import com.intelligent.reader.view.ViewPager
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
