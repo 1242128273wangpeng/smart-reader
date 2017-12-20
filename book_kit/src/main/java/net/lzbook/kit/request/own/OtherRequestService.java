@@ -1,8 +1,6 @@
 package net.lzbook.kit.request.own;
 
-import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Book;
-import net.lzbook.kit.data.bean.BookUpdate;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.ChapterErrorBean;
 import net.lzbook.kit.data.bean.RequestItem;
@@ -11,12 +9,9 @@ import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.encrypt.URLBuilderIntterface;
 import net.lzbook.kit.net.volley.request.Parser;
 import net.lzbook.kit.net.volley.request.VolleyDataService;
-import net.lzbook.kit.request.DataCache;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.MurmurHash;
-import net.lzbook.kit.utils.Tools;
 
 import org.json.JSONException;
 
@@ -181,79 +176,6 @@ public class OtherRequestService extends VolleyDataService {
             }
         });
         return;
-    }
-
-
-    public static void doBookUpdate(final Context context, HashMap<String, String> parameter, final HashMap<String, Book>
-            bookItems, DataServiceCallBack dataServiceCallBack) {
-
-        String uri = URLBuilderIntterface.BOOK_CHECK;
-        HashMap<String, String> map = new HashMap<String, String>();
-        int hash = MurmurHash.hash32(parameter.get("data"));
-        map.put("hash", String.valueOf(hash));
-        String url = UrlUtils.buildUrl(uri, map);
-
-        publicCode(url, parameter, dataServiceCallBack, new Parser() {
-            @Override
-            public Object parserMethod(String response) throws Exception {
-                ArrayList<BookUpdate> resultLists = OWNParser.parserBookUpdateInfo(response, bookItems);
-                ArrayList<BookUpdate> bookUpdateLists = null;
-                if (resultLists != null && resultLists.size() > 0) {
-                    bookUpdateLists = new ArrayList<BookUpdate>();
-                    for (int i = 0; i < resultLists.size(); i++) {
-                        BookUpdate bookUpdate = changeChapters(resultLists.get(i));
-                        if (bookUpdate != null) {
-                            bookUpdateLists.add(bookUpdate);
-                        }
-                    }
-                }
-                return bookUpdateLists;
-            }
-
-
-            private synchronized BookUpdate changeChapters(BookUpdate bookUpdate) {
-                Book book = bookItems.get(bookUpdate.book_id);
-                BookUpdate resUpdate = null;
-                if (!bookUpdate.chapterList.isEmpty()) {
-                    BookChapterDao bookChapterDao = new BookChapterDao(context, book.book_id);
-                    // 增加更新章节
-                    bookChapterDao.insertBookChapter(bookUpdate.chapterList);
-                    // 更新书架信息
-                    Chapter lastchapter = bookUpdate.chapterList.get(bookUpdate.chapterList.size() - 1);
-                    book.chapter_count = bookChapterDao.getCount();
-                    book.last_updatetime_native = lastchapter.time;
-                    book.last_chapter_name = lastchapter.chapter_name;
-                    book.last_sort = lastchapter.sort;
-                    book.gsort = lastchapter.gsort;
-                    book.update_status = 1;
-
-                    // 返回bookUpdate
-                    resUpdate = new BookUpdate();
-                    resUpdate.book_name = book.name;
-                    resUpdate.book_id = book.book_id;
-                    resUpdate.last_chapter_name = lastchapter.chapter_name;
-                    resUpdate.update_count = bookUpdate.chapterList.size();
-
-                    if (Constants.DEVELOPER_MODE) {
-                        StringBuilder update_log = new StringBuilder();
-                        update_log.append("book_id : ").append(book.book_id).append(" \\\n");
-                        update_log.append("book_source_id : ").append(book.book_source_id).append(" \\\n");
-                        update_log.append("book_name : ").append(bookUpdate.book_name).append(" \\\n");
-                        update_log.append("update_count_service : ").append(bookUpdate.chapterList.size()).append(" \\\n");
-                        update_log.append("update_count_local : ").append(book.chapter_count).append(" \\\n");
-                        update_log.append("last_chapter_name_service : ").append(lastchapter.chapter_name).append(" \\\n");
-                        update_log.append("last_chapter_name_local : ").append(book.name).append(" \\\n");
-                        update_log.append("update_time : ").append(Tools.logTime(AppUtils.log_formatter, lastchapter.time)).append(" \\\n");
-                        update_log.append("system_time : ").append(Tools.logTime(AppUtils.log_formatter, System.currentTimeMillis())).append(" \\\n");
-                        DataCache.saveUpdateLog(update_log.toString());
-                    }
-                }
-                // 没有返回更新章节的书籍更新book.last_updateUpdateTime, 有更新的书籍更新对应信息
-                BookDaoHelper.getInstance().updateBook(book);
-
-                return resUpdate;
-            }
-        }, 60 * 1000, 0, true);
     }
 
     public static void getDefaultBook(final Context context, DataServiceCallBack dataServiceCallBack)

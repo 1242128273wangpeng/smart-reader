@@ -14,8 +14,10 @@ import net.lzbook.kit.data.bean.BookUpdateTaskData;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.db.BookChapterDao;
 import net.lzbook.kit.data.db.BookDaoHelper;
-import net.lzbook.kit.net.volley.request.VolleyDataService;
-import net.lzbook.kit.request.own.OtherRequestService;
+import net.lzbook.kit.data.update.UpdateBean;
+import net.lzbook.kit.net.custom.service.NetService;
+import net.lzbook.kit.request.DataCache;
+import net.lzbook.kit.request.own.OWNParser;
 import net.lzbook.kit.tasks.BaseAsyncTask;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
@@ -24,6 +26,7 @@ import net.lzbook.kit.utils.CheckNovelUpdHelper;
 import net.lzbook.kit.utils.FrameBookHelper.DownloadFinishReceiver;
 import net.lzbook.kit.utils.OpenUDID;
 import net.lzbook.kit.utils.ResourceUtil;
+import net.lzbook.kit.utils.Tools;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,6 +54,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Random;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 public class CheckNovelUpdateService extends Service {
     public static final String ACTION_CHKUPDATE = AppUtils.getPackageName() + ".action_check_update";
@@ -262,7 +274,7 @@ public class CheckNovelUpdateService extends Service {
             return;
         }
         final ArrayList<com.quduquxie.bean.Book> booksToUpdateOfQG = new ArrayList<com.quduquxie.bean.Book>();
-        ArrayList<Book> booksToUpdateOfOWN = new ArrayList<Book>();
+        final ArrayList<Book> booksToUpdateOfOWN = new ArrayList<Book>();
         for (Book book : books) {
             book.last_checkupdatetime = System.currentTimeMillis();
             if (mBookDaoHelper == null) {
@@ -283,8 +295,8 @@ public class CheckNovelUpdateService extends Service {
                 checkOnCancel(data, updateResult);
                 return;
             }
-            RequestUpdateTask requestUpdateTask = new RequestUpdateTask(getApplicationContext(), updateResult, data, booksToUpdateOfOWN);
-            requestUpdateTask.execute2();
+
+            ownBookUpdate(booksToUpdateOfOWN, data, updateResult);
         } else {
             UPDATE_OWN_SUCCESS = true;
         }
@@ -316,6 +328,79 @@ public class CheckNovelUpdateService extends Service {
         } else {
             UPDATE_QG_SUCCESS = true;
         }
+    }
+
+    private void ownBookUpdate(ArrayList<Book> booksToUpdateOfOWN, final BookUpdateTaskData data, final BookUpdateResult updateResult) {
+        final ArrayList<Book> ownBookclone = (ArrayList<Book>) booksToUpdateOfOWN.clone();
+        final HashMap<String, Book> bookItems = getBookItems(ownBookclone);
+        Observable.create(new ObservableOnSubscribe<HashMap<String, String>>() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<HashMap<String, String>> e) throws Exception {
+                AppLog.e(TAG, "开始更新自有的书籍...");
+                HashMap<String, String> parameter = new HashMap<>();
+                parameter.put("data", arrToJson(ownBookclone));
+                e.onNext(parameter);
+                e.onComplete();
+                AppLog.d(TAG, "subscribe run on " + Thread.currentThread().getName());
+            }
+        }).flatMap(new Function<HashMap<String, String>, Observable<UpdateBean>>() {
+            @Override
+            public Observable<UpdateBean> apply(@NonNull HashMap<String, String> parameter) throws Exception {
+                return NetService.INSTANCE.getUserService().getUpdatedZnBooks(parameter);
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(Schedulers.io()).subscribe(new Observer<UpdateBean>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+                AppLog.e("checkUpdate", "开始拉取更新接口");
+                AppLog.d(TAG, "onSubscribe run on " + Thread.currentThread().getName());
+            }
+
+            @Override
+            public void onNext(@NonNull UpdateBean s) {
+                AppLog.d(TAG, "onNext run on " + Thread.currentThread().getName());
+                UPDATE_OWN_SUCCESS = true;
+                ArrayList<BookUpdate> bookUpdateLists;
+                try {
+                    ArrayList<BookUpdate> resultLists = OWNParser.parserBookUpdateInfo(s, bookItems);
+                    if (resultLists != null && resultLists.size() > 0) {
+                        bookUpdateLists = new ArrayList<>();
+                        for (int i = 0; i < resultLists.size(); i++) {
+                            BookUpdate bookUpdate = changeChapters(bookItems, resultLists.get(i));
+                            if (bookUpdate != null) {
+                                bookUpdateLists.add(bookUpdate);
+                            }
+                        }
+                        if (bookUpdateLists.size() > 0) {
+                            updateTotalCount = updateTotalCount + bookUpdateLists.size();
+                            hasUpdatedCount = hasUpdatedCount + bookUpdateLists.size();
+                            if (bookUpdateLists.size() > 0) {
+                                AppLog.e(TAG, "RequestUpdateSuccess: " + bookUpdateLists.toString());
+                                mUpdateBooks.addAll(bookUpdateLists);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                AppLog.e(TAG, "自有书籍更新失败" + e);
+                updateResult.items = null;
+                UPDATE_OWN_SUCCESS = true;
+                if (data.mCallBack != null) {
+                    checkOnSuccess(data, updateResult);
+                }
+                AppLog.d(TAG, "onError run on " + Thread.currentThread().getName());
+            }
+
+            @Override
+            public void onComplete() {
+                checkOnSuccess(data, updateResult);
+                AppLog.d(TAG, "onComplete run on " + Thread.currentThread().getName());
+            }
+        });
     }
 
     /**
@@ -647,100 +732,85 @@ public class CheckNovelUpdateService extends Service {
         }
     }
 
-    public class RequestUpdateTask extends BaseAsyncTask<Void, Void, Void> {
-        private Context context;
-        private BookUpdateResult bookUpdateResult;
-        private BookUpdateTaskData bookUpdateTaskData;
-        private ArrayList<Book> books;
-
-        public RequestUpdateTask(Context context, BookUpdateResult bookUpdateResult, BookUpdateTaskData bookUpdateTaskData, ArrayList<Book> books) {
-            this.context = context;
-            this.bookUpdateResult = bookUpdateResult;
-            this.bookUpdateTaskData = bookUpdateTaskData;
-            this.books = books;
+    private HashMap<String, Book> getBookItems(ArrayList<Book> books) {
+        HashMap<String, Book> map = new HashMap<>();
+        for (int i = 0; i < books.size(); i++) {
+            map.put(books.get(i).book_id, books.get(i));
         }
+        return map;
+    }
 
-        @Override
-        public Void doInBackground(Void... params) {
-            try {
-                AppLog.e("checkUpdate", "开始更新自有的书籍...");
-                HashMap<String, String> parameter = new HashMap<>();
-                HashMap<String, Book> bookItems = getBookItems(books);
-                parameter.put("data", arrToJson(books));
-                OtherRequestService.doBookUpdate(context, parameter, bookItems, new VolleyDataService.DataServiceCallBack() {
-
-                    @Override
-                    public void onSuccess(Object result) {
-                        UPDATE_OWN_SUCCESS = true;
-                        AppLog.e("checkUpdate", "自有书籍更新成功" + result);
-
-                        ArrayList<BookUpdate> updateBooks = (ArrayList<BookUpdate>) result;
-                        if (result != null && updateBooks.size() > 0) {
-                            updateTotalCount = updateTotalCount + updateBooks.size();
-                            hasUpdatedCount = hasUpdatedCount + updateBooks.size();
-                            if (result != null && updateBooks.size() > 0) {
-                                AppLog.e(TAG, "RequestUpdateSuccess: " + updateBooks.toString());
-                                mUpdateBooks.addAll(updateBooks);
-                            }
-                            checkOnSuccess(bookUpdateTaskData, bookUpdateResult);
-                        } else {
-                            checkOnSuccess(bookUpdateTaskData, bookUpdateResult);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Exception error) {
-                        AppLog.e("checkUpdate", "自有书籍更新失败" + error);
-                        bookUpdateResult.items = null;
-                        UPDATE_OWN_SUCCESS = true;
-                        if (bookUpdateTaskData.mCallBack != null) {
-                            checkOnSuccess(bookUpdateTaskData, bookUpdateResult);
-                        }
-                    }
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        public String arrToJson(ArrayList<Book> books) {
-            String jsonresult = "";
-            try {
-                JSONArray jsonarray = new JSONArray();
-                for (int i = 0; i < books.size(); i++) {
-                    Book book = books.get(i);
-                    BookChapterDao bookChapterDao = new BookChapterDao(getApplicationContext(), book.book_id);
-                    Chapter lastChapter = bookChapterDao.getLastChapter();
-                    if (lastChapter == null) {
-                        AppLog.e(TAG, "arrToJson lastChapter = null 检测书籍更时发现该书籍的目录为空!!!");
-                        continue;
-                    }
-                    JSONObject jsonObj = new JSONObject();
-                    jsonObj.put("book_id", book.book_id);
-                    jsonObj.put("book_source_id", book.book_source_id);
-                    jsonObj.put("last_chapter_id", lastChapter.chapter_id);
-                    jsonObj.put("list_version", book.list_version);
-                    jsonObj.put("c_version", book.c_version);
-                    jsonObj.put("add_bookshelf_time", book.insert_time);
-
-                    jsonarray.put(jsonObj);
-                }
-                jsonresult = jsonarray.toString();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            AppLog.d(TAG, "arrToJson 生成的json串为:" + jsonresult);
-            return jsonresult;
-        }
-
-        private HashMap<String, Book> getBookItems(ArrayList<Book> books) {
-            HashMap<String, Book> map = new HashMap<>();
+    public String arrToJson(ArrayList<Book> books) {
+        String jsonresult = "";
+        try {
+            JSONArray jsonarray = new JSONArray();
             for (int i = 0; i < books.size(); i++) {
-                map.put(books.get(i).book_id, books.get(i));
+                Book book = books.get(i);
+                BookChapterDao bookChapterDao = new BookChapterDao(getApplicationContext(), book.book_id);
+                Chapter lastChapter = bookChapterDao.getLastChapter();
+                if (lastChapter == null) {
+                    AppLog.e(TAG, "arrToJson lastChapter = null 检测书籍更时发现该书籍的目录为空!!!");
+                    continue;
+                }
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("book_id", book.book_id);
+                jsonObj.put("book_source_id", book.book_source_id);
+                jsonObj.put("last_chapter_id", lastChapter.chapter_id);
+                jsonObj.put("list_version", book.list_version);
+                jsonObj.put("c_version", book.c_version);
+                jsonObj.put("add_bookshelf_time", book.insert_time);
+
+                jsonarray.put(jsonObj);
             }
-            return map;
+            jsonresult = jsonarray.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+        AppLog.d(TAG, "arrToJson 生成的json串为:" + jsonresult);
+        return jsonresult;
+    }
+
+    public BookUpdate changeChapters(HashMap<String, Book> bookItems, BookUpdate bookUpdate) {
+        Book book = bookItems.get(bookUpdate.book_id);
+        BookUpdate resUpdate = null;
+        if (!bookUpdate.chapterList.isEmpty()) {
+            BookChapterDao bookChapterDao = new BookChapterDao(BaseBookApplication.getGlobalContext(), book.book_id);
+            // 增加更新章节
+            bookChapterDao.insertBookChapter(bookUpdate.chapterList);
+            // 更新书架信息
+            Chapter lastchapter = bookUpdate.chapterList.get(bookUpdate.chapterList.size() - 1);
+            book.chapter_count = bookChapterDao.getCount();
+            book.last_updatetime_native = lastchapter.time;
+            book.last_chapter_name = lastchapter.chapter_name;
+            book.last_sort = lastchapter.sort;
+            book.gsort = lastchapter.gsort;
+            book.update_status = 1;
+
+            // 返回bookUpdate
+            resUpdate = new BookUpdate();
+            resUpdate.book_name = book.name;
+            resUpdate.book_id = book.book_id;
+            resUpdate.last_chapter_name = lastchapter.chapter_name;
+            resUpdate.update_count = bookUpdate.chapterList.size();
+
+            if (Constants.DEVELOPER_MODE) {
+                StringBuilder update_log = new StringBuilder();
+                update_log.append("book_id : ").append(book.book_id).append(" \\\n");
+                update_log.append("book_source_id : ").append(book.book_source_id).append(" \\\n");
+                update_log.append("book_name : ").append(bookUpdate.book_name).append(" \\\n");
+                update_log.append("update_count_service : ").append(bookUpdate.chapterList.size()).append(" \\\n");
+                update_log.append("update_count_local : ").append(book.chapter_count).append(" \\\n");
+                update_log.append("last_chapter_name_service : ").append(lastchapter.chapter_name).append(" \\\n");
+                update_log.append("last_chapter_name_local : ").append(book.name).append(" \\\n");
+                update_log.append("update_time : ").append(Tools.logTime(AppUtils.log_formatter, lastchapter.time)).append(" \\\n");
+                update_log.append("system_time : ").append(Tools.logTime(AppUtils.log_formatter, System.currentTimeMillis())).append(" \\\n");
+                DataCache.saveUpdateLog(update_log.toString());
+            }
+        }
+        // 没有返回更新章节的书籍更新book.last_updateUpdateTime, 有更新的书籍更新对应信息
+        BookDaoHelper.getInstance().updateBook(book);
+
+        return resUpdate;
     }
 
 }
