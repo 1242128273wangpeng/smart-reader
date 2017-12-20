@@ -1,5 +1,7 @@
 package net.lzbook.kit.data.bean;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +14,7 @@ public class CoverPage implements Serializable {
     public Object error_log;
     public Object params;
 
+    @SerializedName("book_vo")
     public BookVoBean bookVo;
     public List<SourcesBean> sources;
 
@@ -68,7 +71,11 @@ public class CoverPage implements Serializable {
         ////获取自有数据来源时URL
         public String url;
         ////小说更新状态
-        public int status;
+
+        public int book_status;
+
+        @SerializedName("status")
+        public String bookStatus;
 
         public String book_id;
         public String book_source_id;
@@ -79,7 +86,10 @@ public class CoverPage implements Serializable {
         public String extra_parameter;
         public String last_chapter_name;
 
-        //章节数
+        @SerializedName("last_chapter")
+        public LastChapter lastChapter;
+
+        //章节序列号
         public int serial_number;
         public long update_time;
         public int word_count;
@@ -95,7 +105,7 @@ public class CoverPage implements Serializable {
 
             BookVoBean that = (BookVoBean) o;
 
-            if (status != that.status) return false;
+            if (book_status != (that.book_status)) return false;
             if (dex != that.dex) return false;
             if (serial_number != that.serial_number) return false;
             if (update_time != that.update_time) return false;
@@ -128,7 +138,7 @@ public class CoverPage implements Serializable {
             result = 31 * result + (labels != null ? labels.hashCode() : 0);
             result = 31 * result + (img_url != null ? img_url.hashCode() : 0);
             result = 31 * result + (url != null ? url.hashCode() : 0);
-            result = 31 * result + status;
+            result = 31 * result + book_status;
             result = 31 * result + (book_id != null ? book_id.hashCode() : 0);
             result = 31 * result + (book_source_id != null ? book_source_id.hashCode() : 0);
             result = 31 * result + (host != null ? host.hashCode() : 0);
@@ -151,7 +161,7 @@ public class CoverPage implements Serializable {
                     ", labels='" + labels + '\'' +
                     ", img_url='" + img_url + '\'' +
                     ", url='" + url + '\'' +
-                    ", status=" + status +
+                    ", status=" + book_status +
                     ", book_id='" + book_id + '\'' +
                     ", book_source_id='" + book_source_id + '\'' +
                     ", host='" + host + '\'' +
@@ -238,6 +248,55 @@ public class CoverPage implements Serializable {
                     ", wordCount=" + wordCount +
                     ", dex=" + dex +
                     '}';
+        }
+    }
+
+    public class LastChapter {
+
+        private String id;
+        private String name;
+        private long update_time;
+
+        public long getUpdate_time() {
+            return update_time;
+        }
+
+        public void setUpdate_time(long update_time) {
+            this.update_time = update_time;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            LastChapter that = (LastChapter) o;
+
+            if (id != null ? !id.equals(that.id) : that.id != null) return false;
+            return name != null ? name.equals(that.name) : that.name == null;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = id != null ? id.hashCode() : 0;
+            result = 31 * result + (name != null ? name.hashCode() : 0);
+            return result;
         }
     }
 }

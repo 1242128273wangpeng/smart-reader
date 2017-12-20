@@ -17,6 +17,7 @@ import android.widget.Toast
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.DownloadManagerActivity
 import com.intelligent.reader.activity.ReadingActivity
+import com.intelligent.reader.cover.*
 import com.intelligent.reader.presenter.IPresenter
 import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.receiver.DownBookClickReceiver
@@ -30,13 +31,11 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.*
 import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.data.db.BookDaoHelper
+import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.request.RequestExecutor
 import net.lzbook.kit.request.RequestFactory
-import net.lzbook.kit.utils.AppLog
-import net.lzbook.kit.utils.BookCoverUtil
-import net.lzbook.kit.utils.NetWorkUtils
-import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.*
 import java.lang.ref.WeakReference
 import java.util.HashMap
 
@@ -46,7 +45,134 @@ import java.util.HashMap
 
 class CataloguesPresenter(var act: Activity, var book: Book, var requestItem: RequestItem, var cataloguesContract: CataloguesContract,
                           val onClickListener: View.OnClickListener, val fromCover: Boolean)
-    : BookCoverUtil.OnDownloadState, BookCoverUtil.OnDownLoadService, DownloadService.OnDownloadListener {
+    : BookCoverUtil.OnDownloadState, BookCoverUtil.OnDownLoadService, DownloadService.OnDownloadListener, BookCoverViewModel.BookChapterViewCallback {
+
+
+    var activity: WeakReference<Activity>? = null
+    var chapterList: ArrayList<Chapter> = ArrayList<Chapter>()
+    var bookmarkList: ArrayList<Bookmark> = ArrayList<Bookmark>()
+    private var requestFactory: RequestFactory? = null
+    val MESSAGE_FETCH_CATALOG = 0
+    val MESSAGE_FETCH_BOOKMARK = MESSAGE_FETCH_CATALOG + 1
+    val MESSAGE_FETCH_ERROR = MESSAGE_FETCH_BOOKMARK + 1
+    private val DELAY_OVERLAY = MESSAGE_FETCH_ERROR + 1
+    var mBookDaoHelper: BookDaoHelper? = null
+    var downloadService: DownloadService? = null
+    val DOWNLOAD_STATE_FINISH = 1;
+    val DOWNLOAD_STATE_LOCKED = 2;
+    val DOWNLOAD_STATE_NOSTART = 3;
+    val DOWNLOAD_STATE_OTHER = 4;
+    var bookCoverUtil: BookCoverUtil? = null
+    var bookDaoHelper: BookDaoHelper? = null
+    var mBookCoverViewModel: BookCoverViewModel? = null
+
+
+    init {
+        activity = WeakReference(act)
+        requestFactory = RequestFactory()
+        mBookDaoHelper = BookDaoHelper.getInstance()
+
+        mBookCoverViewModel = BookCoverViewModel(BookCoverRepositoryFactory.getInstance(BookCoverOtherRepository.getInstance(NetService.userService),
+                BookCoverQGRepository.getInstance(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())), BookCoverLocalRepository.getInstance(BaseBookApplication.getGlobalContext())))
+        mBookCoverViewModel?.setBookChapterViewCallback(this)
+
+
+        downloadService = BaseBookApplication.getDownloadService()
+        if (downloadService == null) {
+            BookHelper.reStartDownloadService()
+        } else {
+            downloadService?.setUiContext(BaseBookApplication.getGlobalContext())
+            downloadService?.setOnDownloadListener(this@CataloguesPresenter)
+        }
+
+        bookCoverUtil = BookCoverUtil(activity!!.get(), onClickListener)
+        bookCoverUtil?.registReceiver()
+        bookCoverUtil?.setOnDownloadState(this)
+        bookCoverUtil?.setOnDownLoadService(this)
+
+
+    }
+
+    private val sc = object : ServiceConnection {
+
+        override fun onServiceDisconnected(name: ComponentName) {}
+
+        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+            downloadService = (service as DownloadService.MyBinder).service
+            BaseBookApplication.setDownloadService(downloadService)
+            downloadService!!.setUiContext(BaseBookApplication.getGlobalContext())
+            downloadService!!.setOnDownloadListener(this@CataloguesPresenter)
+        }
+    }
+
+    override fun notificationCallBack(preNTF: Notification, book_id: String) {
+        var pending: PendingIntent? = null
+        var intent: Intent? = null
+        if (book_id != (-1).toString() + "") {
+            intent = Intent(activity!!.get(), DownBookClickReceiver::class.java)
+            intent!!.action = DownBookClickReceiver.action
+            intent.putExtra("book_id", book_id)
+            pending = PendingIntent.getBroadcast(BaseBookApplication.getGlobalContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        } else {
+            intent = Intent(activity!!.get(), DownloadManagerActivity::class.java)
+            pending = PendingIntent.getActivity(BaseBookApplication.getGlobalContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+        preNTF.contentIntent = pending
+    }
+
+    fun requestCatalogList() {
+        val chapterDao = BookChapterDao(activity!!.get(), book.book_id)
+        chapterList = chapterDao.queryBookChapter()
+
+        if (chapterList != null && chapterList.size != 0) {
+            cataloguesContract!!.requestCatalogSuccess(chapterList)
+        } else {
+            getRequest()
+        }
+    }
+
+    //model层回调成功 和 失败
+    override fun onFail(msg: String?) {
+        cataloguesContract?.requestCatalogError()
+    }
+
+    override fun onChapterList(chapters: MutableList<Chapter>?) {
+        if (chapters == null) {
+            showToastShort("获取数据失败")
+        } else {
+            this.chapterList = chapters as ArrayList<Chapter>
+            cataloguesContract!!.requestCatalogSuccess(chapterList)
+        }
+    }
+
+    override fun onBookMarkList(bookmarks: MutableList<Bookmark>?) {
+
+        bookmarkList = (bookmarks as ArrayList<Bookmark>?)!!
+
+        if (bookmarks != null) {
+            cataloguesContract.notifyDataChange(false, bookmarkList)
+        }
+    }
+
+
+    fun loadBookMark() {
+        mBookCoverViewModel!!.getBookMarkList(requestItem.book_id)
+    }
+
+    //请求书籍目录
+    fun getRequest() {
+//        if (requestItem != null) {
+//            if (Constants.SG_SOURCE == requestItem.host) {
+//                myHandler.sendEmptyMessage(RequestExecutor.REQUEST_CATALOG_ERROR)
+//            } else {
+//                requestFactory!!.requestExecutor(requestItem).requestCatalogList(activity!!.get(), myHandler, requestItem)
+//            }
+//        }
+        if (requestItem != null) {
+            mBookCoverViewModel!!.getChapterList(requestItem)
+        }
+    }
+
     override fun changeState() {
         changeDownLoadButtonText()
     }
@@ -182,7 +308,7 @@ class CataloguesPresenter(var act: Activity, var book: Book, var requestItem: Re
         if (isCatalog) {
             if (chapterList != null && !chapterList.isEmpty()) {
                 val isChapterExist: Boolean
-                val tempChapter = chapterList[position]
+                val tempChapter = chapterList.get(position)
                 if (requestItem.host == Constants.QG_SOURCE) {
                     requestItem.channel_code = 1
                     isChapterExist = DataCache.isChapterExists(tempChapter.chapter_id, tempChapter.book_id)
@@ -196,7 +322,7 @@ class CataloguesPresenter(var act: Activity, var book: Book, var requestItem: Re
                 }
 
                 bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
-                bundle.putInt("sequence", chapterList[position].sequence)
+                bundle.putInt("sequence", chapterList.get(position).sequence)
 
                 val data1 = HashMap<String, String>()
                 data1.put("bookid", requestItem.book_id)
@@ -205,7 +331,7 @@ class CataloguesPresenter(var act: Activity, var book: Book, var requestItem: Re
             }
         } else {
             if (bookmarkList != null) {
-                val bookmark = bookmarkList[position]
+                val bookmark = bookmarkList.get(position)
                 if (bookmark != null) {
                     bundle.putInt("sequence", bookmark.sequence)
                     bundle.putInt("offset", bookmark.offset)
@@ -272,98 +398,6 @@ class CataloguesPresenter(var act: Activity, var book: Book, var requestItem: Re
     }
 
 
-    var activity: WeakReference<Activity>? = null
-    var chapterList: ArrayList<Chapter> = ArrayList<Chapter>()
-    var bookmarkList: ArrayList<Bookmark> = ArrayList<Bookmark>()
-    private var requestFactory: RequestFactory? = null
-    val MESSAGE_FETCH_CATALOG = 0
-    val MESSAGE_FETCH_BOOKMARK = MESSAGE_FETCH_CATALOG + 1
-    val MESSAGE_FETCH_ERROR = MESSAGE_FETCH_BOOKMARK + 1
-    private val DELAY_OVERLAY = MESSAGE_FETCH_ERROR + 1
-    var mBookDaoHelper: BookDaoHelper? = null
-    var downloadService: DownloadService? = null
-    val DOWNLOAD_STATE_FINISH = 1;
-    val DOWNLOAD_STATE_LOCKED = 2;
-    val DOWNLOAD_STATE_NOSTART = 3;
-    val DOWNLOAD_STATE_OTHER = 4;
-    var bookCoverUtil: BookCoverUtil? = null
-    var bookDaoHelper: BookDaoHelper? = null
-
-    init {
-        activity = WeakReference(act)
-        requestFactory = RequestFactory()
-        mBookDaoHelper = BookDaoHelper.getInstance()
-
-        downloadService = BaseBookApplication.getDownloadService()
-        if (downloadService == null) {
-            BookHelper.reStartDownloadService()
-        } else {
-            downloadService?.setUiContext(BaseBookApplication.getGlobalContext())
-            downloadService?.setOnDownloadListener(this@CataloguesPresenter)
-        }
-
-        bookCoverUtil = BookCoverUtil(activity!!.get(), onClickListener)
-        bookCoverUtil?.registReceiver()
-        bookCoverUtil?.setOnDownloadState(this)
-        bookCoverUtil?.setOnDownLoadService(this)
-
-
-    }
-
-    private val sc = object : ServiceConnection {
-
-        override fun onServiceDisconnected(name: ComponentName) {}
-
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            downloadService = (service as DownloadService.MyBinder).service
-            BaseBookApplication.setDownloadService(downloadService)
-            downloadService!!.setUiContext(BaseBookApplication.getGlobalContext())
-            downloadService!!.setOnDownloadListener(this@CataloguesPresenter)
-        }
-    }
-
-    override fun notificationCallBack(preNTF: Notification, book_id: String) {
-        var pending: PendingIntent? = null
-        var intent: Intent? = null
-        if (book_id != (-1).toString() + "") {
-            intent = Intent(activity!!.get(), DownBookClickReceiver::class.java)
-            intent!!.action = DownBookClickReceiver.action
-            intent.putExtra("book_id", book_id)
-            pending = PendingIntent.getBroadcast(BaseBookApplication.getGlobalContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        } else {
-            intent = Intent(activity!!.get(), DownloadManagerActivity::class.java)
-            pending = PendingIntent.getActivity(BaseBookApplication.getGlobalContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        }
-        preNTF.contentIntent = pending
-    }
-
-    fun requestCatalogList() {
-        val chapterDao = BookChapterDao(activity!!.get(), book.book_id)
-        chapterList = chapterDao.queryBookChapter()
-
-        if (chapterList != null && chapterList.size != 0) {
-            if (myHandler != null)
-                myHandler.obtainMessage(RequestExecutor.REQUEST_CATALOG_SUCCESS).sendToTarget()
-        } else {
-            getRequest()
-        }
-    }
-
-    fun loadBookMark() {
-        myHandler?.obtainMessage(MESSAGE_FETCH_BOOKMARK)?.sendToTarget()
-    }
-
-    //请求书籍目录
-    fun getRequest() {
-        if (requestItem != null) {
-            if (Constants.SG_SOURCE == requestItem.host) {
-                myHandler.sendEmptyMessage(RequestExecutor.REQUEST_CATALOG_ERROR)
-            } else {
-                requestFactory!!.requestExecutor(requestItem).requestCatalogList(activity!!.get(), myHandler, requestItem)
-            }
-        }
-    }
-
     fun removeHandler() {
         myHandler?.removeCallbacksAndMessages(null)
     }
@@ -376,10 +410,12 @@ class CataloguesPresenter(var act: Activity, var book: Book, var requestItem: Re
     }
 
     fun delayOverLayHandler() {
-        if (myHandler != null) {
-            myHandler.removeMessages(DELAY_OVERLAY)
-            myHandler.sendEmptyMessageDelayed(DELAY_OVERLAY, 1500)
-        }
+        cataloguesContract.handOverLay()
+
+//        if (myHandler != null) {
+//            myHandler.removeMessages(DELAY_OVERLAY)
+//            myHandler.sendEmptyMessageDelayed(DELAY_OVERLAY, 1500)
+//        }
     }
 
     fun onEventReceive(bookmark: Bookmark) {
@@ -427,40 +463,13 @@ class CataloguesPresenter(var act: Activity, var book: Book, var requestItem: Re
         })
     }
 
-    //设置标签
-    private fun setBookMark() {
-        if (bookmarkList == null) {
-            bookmarkList = java.util.ArrayList<Bookmark>()
-        } else {
-            bookmarkList.clear()
-        }
-
-        if (mBookDaoHelper != null && book != null) {
-            val list = mBookDaoHelper!!.getBookMarks(book.book_id)
-            if (list != null && list.size > 0 && bookmarkList != null) {
-                for (mark in list) {
-                    bookmarkList.add(mark)
-                }
-            }
-            cataloguesContract.notifyDataChange(false, bookmarkList)
-        }
-    }
 
 
     private val myHandler = object : Handler() {
         override fun handleMessage(msg: Message) {
             val cataloguesActivity = activity!!.get() ?: return
             when (msg.what) {
-                MESSAGE_FETCH_BOOKMARK -> {
-                    setBookMark()
-                }
-
-                RequestExecutor.REQUEST_CATALOG_ERROR -> cataloguesContract?.requestCatalogError()
-                RequestExecutor.REQUEST_CATALOG_SUCCESS -> getDataSuccess(msg)
-
                 DELAY_OVERLAY -> cataloguesContract.handOverLay()
-                RequestExecutor.REQUEST_QG_CATALOG_SUCCESS -> getDataSuccess(msg)
-                RequestExecutor.REQUEST_QG_CATALOG_ERROR -> cataloguesContract?.requestCatalogError()
             }
         }
     }

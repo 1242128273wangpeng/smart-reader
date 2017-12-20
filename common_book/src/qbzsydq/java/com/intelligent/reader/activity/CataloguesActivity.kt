@@ -168,13 +168,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         bookmark_empty = findViewById(R.id.rl_layout_empty_online) as LinearLayout
         bookmark_empty!!.visibility = View.GONE
 
-        //        bookmark_empty_image = (ImageView) findViewById(R.id.bookmark_empty_image);
-        //        if ("night".equals(ResourceUtil.mode)) {
-        //            bookmark_empty_image.setImageDrawable(getResources().getDrawable(R.drawable.icon_bookmark_empty_night));
-        //        } else {
-        //            bookmark_empty_image.setImageDrawable(getResources().getDrawable(R.drawable.icon_bookmark_empty_light));
-        //        }
-
         bookmark_empty_message = findViewById(R.id.mask_no_text) as TextView
         catalog_empty_refresh = findViewById(R.id.catalog_empty_refresh) as TextView
 

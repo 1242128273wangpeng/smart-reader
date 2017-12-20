@@ -12,9 +12,11 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.intelligent.reader.R
+import com.intelligent.reader.cover.*
 import com.intelligent.reader.presenter.coverPage.CoverPageContract
 import com.intelligent.reader.presenter.coverPage.CoverPagePresenter
 import kotlinx.android.synthetic.kdzsydq.act_book_cover.*
+import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
@@ -22,14 +24,15 @@ import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.CoverPage
 import net.lzbook.kit.data.bean.RequestItem
-import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.NetWorkUtils
-import net.lzbook.kit.utils.StatServiceUtils
-import net.lzbook.kit.utils.Tools
+import net.lzbook.kit.net.custom.service.NetService
+import net.lzbook.kit.net.custom.service.UserService
+import net.lzbook.kit.utils.*
 import java.util.*
 import java.util.concurrent.Callable
 
 class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageContract {
+
+
     private var mBackground = 0
     private var mTextColor = 0
     private var loadingPage: LoadingPage? = null
@@ -38,11 +41,14 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private var requestItem: RequestItem? = null
 
     private var mCoverPagePresenter: CoverPagePresenter? = null
+    private var mBookCoverViewModel: BookCoverViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         StatServiceUtils.statAppBtnClick(this, StatServiceUtils.cover_into)
         setContentView(R.layout.act_book_cover)
+
+
         initData(intent)
         initListener()
 
@@ -95,7 +101,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 mCoverPagePresenter!!.getBookCoverInfo(false)
             }
 
-//            mBookCoverViewModel.getCoverDetail(requestItem.book_id, requestItem.book_source_id, requestItem.host)
 
             requestItem!!.channel_code = 2
         }
@@ -379,6 +384,13 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             setRemoveBtn()
         } else {
             setAddShelfBtn()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (mCoverPagePresenter != null) {
+            mCoverPagePresenter!!.unSub()
         }
     }
 }

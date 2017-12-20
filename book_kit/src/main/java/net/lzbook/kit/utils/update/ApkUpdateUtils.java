@@ -1,15 +1,20 @@
 package net.lzbook.kit.utils.update;
 
+import com.google.gson.JsonObject;
+
 import net.lzbook.kit.R;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.MyDialog;
+import net.lzbook.kit.net.custom.service.NetService;
 import net.lzbook.kit.net.volley.request.Parser;
 import net.lzbook.kit.net.volley.request.VolleyDataService;
 import net.lzbook.kit.request.UrlUtils;
+import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.encrypt.URLBuilderIntterface;
+import net.lzbook.kit.utils.ToastUtils;
 
 import org.json.JSONException;
 
@@ -30,6 +35,12 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 /**
  * Created by Administrator on 2016/9/21.
  */
@@ -47,36 +58,47 @@ public class ApkUpdateUtils {
 //        versionName = versionName.substring(0,3);
         params.put("versionName", versionName);
 
-        String url = UrlUtils.buildUrl(URLBuilderIntterface.APP_CHECK, params);
-        VolleyDataService.publicCode(url, null, new VolleyDataService.DataServiceCallBack() {
-            @Override
-            public void onSuccess(Object result) {
-                final ApkUpdateInfo apkUpdateInfo = (ApkUpdateInfo) result;
-                handler.post(new Runnable() {
+        NetService.INSTANCE.getUserService().checkAppUpdate(params)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<JsonObject>() {
                     @Override
-                    public void run() {
-                        if ("SettingActivity".equals(from)) {
-                            type = 1;
-                            doUpdateFromSettingACT(apkUpdateInfo);
-                        } else if ("HomeActivity".equals(from)) {
-                            type = 2;
-                            doUpdate(apkUpdateInfo);
+                    public void onSubscribe(@NonNull Disposable d) {
+                        AppLog.e("ApkUpdateUtils", "开始检查是否需要升级应用");
+                    }
+
+                    @Override
+                    public void onNext(@NonNull JsonObject result) {
+                        try {
+                            ApkUpdateInfo apkUpdateInfo = new ApkUpdateInfo(result.toString());
+                            final ApkUpdateInfo finalApkUpdateInfo = apkUpdateInfo;
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if ("SettingActivity".equals(from)) {
+                                        type = 2;
+                                        doUpdateFromSettingACT(finalApkUpdateInfo);
+                                    } else if ("HomeActivity".equals(from)) {
+                                        type = 1;
+                                        doUpdate(finalApkUpdateInfo);
+                                    }
+                                }
+                            });
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
-                });
-            }
 
-            @Override
-            public void onError(Exception error) {
-                Toast.makeText(context, "网络不给力哦", Toast.LENGTH_LONG).show();
-            }
-        }, new Parser() {
-            @Override
-            public Object parserMethod(String response) throws JSONException, Exception {
-                ApkUpdateInfo apkUpdateInfo = new ApkUpdateInfo(response);
-                return apkUpdateInfo;
-            }
-        });
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        ToastUtils.showToastNoRepeat("网络不给力哦");
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     public void doUpdate(ApkUpdateInfo apkUpdateInfo) {

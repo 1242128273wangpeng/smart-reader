@@ -110,7 +110,7 @@ public class BookCoverQGRepository implements BookCoverRepository {
         bookVoBean.name = bookMode.model.name;
         bookVoBean.author = bookMode.model.penname;
         if (!TextUtils.isEmpty(bookMode.model.attribute_book)) {
-            bookVoBean.status = bookMode.model.attribute_book.equals("serialize") ? 1 : 2;
+            bookVoBean.book_status = bookMode.model.attribute_book.equals("serialize") ? 1 : 2;
         }
         bookVoBean.last_chapter_name = bookMode.model.id_last_chapter_name;
         bookVoBean.serial_number = bookMode.model.id_last_chapter_serial_number;//总章数

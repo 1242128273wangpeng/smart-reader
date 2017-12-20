@@ -299,7 +299,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 }
             }
 
-            if (1 == bookVo.status) {
+            if (1 == bookVo.book_status) {
                 if (book_cover_category2!!.visibility != View.VISIBLE) {
                     book_cover_status!!.text = "—" + getString(R.string.book_cover_state_writing)
                 } else {
@@ -326,13 +326,11 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                     } else {
                         book_cover_status!!.setTextColor(resources.getColor(R.color.color_brown_e2bd8d))
                     }
-
                 }
             }
 
             if (book_cover_update_time != null) {
-                book_cover_update_time!!.text = Tools.compareTime(AppUtils.formatter, bookVo
-                        .update_time)
+                book_cover_update_time!!.text = Tools.compareTime(AppUtils.formatter, bookVo.update_time)
             }
 
             if (book_cover_last_chapter != null && bookVo != null && !TextUtils.isEmpty(bookVo.last_chapter_name)) {

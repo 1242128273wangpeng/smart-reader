@@ -54,14 +54,14 @@ public class OWNParser {
         bookVo.labels = bookVoObject.getString("labels");
         bookVo.img_url = bookVoObject.getString("img_url");
         bookVo.url = bookVoObject.getString("url");
-
-        if (!bookVoObject.isNull("status")) {
-            if ("SERIALIZE".equals(bookVoObject.getString("status"))) {
-                bookVo.status = 1;
-            } else if ("FINISH".equals(bookVoObject.getString("status"))) {
-                bookVo.status = 2;
-            }
-        }
+//
+//        if (!bookVoObject.isNull("status")) {
+//            if ("SERIALIZE".equals(bookVoObject.getString("status"))) {
+//                bookVo.status = 1;
+//            } else if ("FINISH".equals(bookVoObject.getString("status"))) {
+//                bookVo.status = 2;
+//            }
+//        }
 
         if (!bookVoObject.isNull("source")) {
             JSONObject sourceObject = bookVoObject.getJSONObject("source");

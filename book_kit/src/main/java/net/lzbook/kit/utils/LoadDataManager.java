@@ -1,5 +1,7 @@
 package net.lzbook.kit.utils;
 
+import com.google.gson.JsonObject;
+
 import com.quduquxie.bean.BookListMode;
 import com.quduquxie.network.DataService;
 import com.quduquxie.network.DataServiceNew;
@@ -7,13 +9,17 @@ import com.quduquxie.utils.DataUtil;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.NoBodyEntity;
 import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.BookEvent;
 import net.lzbook.kit.data.bean.ChapterErrorBean;
 import net.lzbook.kit.data.db.BookDaoHelper;
+import net.lzbook.kit.net.custom.service.NetService;
 import net.lzbook.kit.net.volley.request.VolleyDataService;
+import net.lzbook.kit.request.own.OWNParser;
 import net.lzbook.kit.request.own.OtherRequestService;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
@@ -21,9 +27,18 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import de.greenrobot.event.EventBus;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class LoadDataManager {
 
@@ -40,15 +55,43 @@ public class LoadDataManager {
     //初始化书架，添加默认书籍
     public void addDefaultBooks() {
 
-        AddDefaultBooksTask addDefaultBooksTask = new AddDefaultBooksTask();
-        addDefaultBooksTask.execute();
+        Observable<JsonObject> defaultBook = NetService.INSTANCE.getUserService().getDefaultBook();
+        defaultBook.subscribeOn(Schedulers.io()).observeOn(Schedulers.io()).subscribe(new Consumer<JsonObject>() {
+            @Override
+            public void accept(@NonNull JsonObject jsonObject) throws Exception {
+                try {
+                    ArrayList<Book> iBooks = OWNParser.parserOwnDefaultBook(jsonObject.toString(), BaseBookApplication.getGlobalContext());
+                    if (iBooks != null && iBooks.size() > 0) {
+                        saveDefaultBooks(iBooks);
+                        sharedPreferencesUtils.putBoolean(Constants.ADD_DEFAULT_BOOKS, true);
+                        EventBus.getDefault().postSticky(new BookEvent(BookEvent.DEFAULTBOOK_UPDATED));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
 
     }
 
-    public void updateShelfBooks() {
+    /**
+     * 数据库存入加入默认书籍
+     */
+    private void saveDefaultBooks(ArrayList<Book> iBooks) {
+        BookDaoHelper daoHelper = BookDaoHelper.getInstance();
+        for (Book iBook : iBooks) {
+            if (!daoHelper.isBookSubed(iBook.book_id)) {
+                if (daoHelper.insertBook(iBook)) {
+                    AppLog.i(TAG, "iBook.last_updateSucessTime = " + iBook.last_updateSucessTime);
+                }
+            }
+        }
+    }
 
-        UpdateBooksTask updateBooksTask = new UpdateBooksTask();
-        updateBooksTask.execute();
+    public void updateShelfBooks() {
+        //智能书籍完结和连载状态的更新
+        updateZNBookState();
 
         //青果书籍完结和连载状态的更新
         final BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
@@ -108,146 +151,75 @@ public class LoadDataManager {
         });
     }
 
-    public void startRequestDynamic(DynamicServiceCallBack cb) {
 
-        UpdateDynamicParTask addDefaultBooksTask = new UpdateDynamicParTask();
-        addDefaultBooksTask.execute(cb);
+    private void updateZNBookState() {
+        final BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
+        ArrayList<Book> books = bookDaoHelper.getOwnBooksList();
+        if (books == null || books.isEmpty()) {
+            return;
+        }
+        HashMap<String, String> parameter = new HashMap<>();
+        StringBuffer idBuffer = new StringBuffer();
+        StringBuffer sourceBuffer = new StringBuffer();
+        for (int i = 0; i < books.size(); i++) {
+            Book book = books.get(i);
+            if (!TextUtils.isEmpty(book.book_id) && !TextUtils.isEmpty(book.book_source_id)) {
+                if (i == books.size() - 1) {
+                    idBuffer.append(book.book_id);
+                    sourceBuffer.append(book.book_source_id);
+                } else {
+                    idBuffer.append(book.book_id + "$$");
+                    sourceBuffer.append(book.book_source_id + "$$");
+                }
+            }
+        }
+        parameter.put("book_ids", idBuffer.toString());
+        parameter.put("book_source_ids", sourceBuffer.toString());
 
     }
 
+
+    //阅读页错误反馈
     public void submitBookError(ChapterErrorBean chapterErrorBean) {
 
-        ErrorSubmitTask errorSubmitTask = new ErrorSubmitTask();
-        errorSubmitTask.execute(chapterErrorBean);
+        HashMap<String, String> data = new HashMap<>();
+        data.put("bookSourceId", chapterErrorBean.bookSourceId);
+        data.put("bookName", chapterErrorBean.bookName);
+        data.put("author", chapterErrorBean.author);
+        data.put("bookChapterId", chapterErrorBean.bookChapterId);
+        data.put("chapterId", chapterErrorBean.chapterId);
+        data.put("chapterName", chapterErrorBean.chapterName);
+        data.put("serial", String.valueOf(chapterErrorBean.serial));
+        data.put("host", chapterErrorBean.host);
+        data.put("type", String.valueOf(chapterErrorBean.type));
 
-    }
 
-    /**
-     * 动态参数请求的回调
-     **/
-    public interface DynamicServiceCallBack {
-        /**
-         * 成功的回调
-         */
-        void onDynamicReceived(JSONObject result);
-
-        /**
-         * 失败的回调,包含以下情况
-         * 1.请求超时
-         * 2.返回空数据
-         * 3.返回数据中success为false
-         */
-        void onError(Exception error);
-    }
-
-    private class AddDefaultBooksTask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                OtherRequestService.getDefaultBook(context, new VolleyDataService.DataServiceCallBack() {
+        Observable<NoBodyEntity> send = NetService.INSTANCE.getUserService().sendFeedBack(data);
+        send.observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<NoBodyEntity>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                    }
+                    @Override
+                    public void onNext(@NonNull NoBodyEntity noBodyEntity) {
+                    }
 
                     @Override
-                    public void onSuccess(Object result) {
-                        ArrayList<Book> iBooks = (ArrayList<Book>) result;
-                        if (iBooks != null && iBooks.size() > 0) {
-                            sharedPreferencesUtils.putBoolean(Constants.ADD_DEFAULT_BOOKS, true);
-                            EventBus.getDefault().postSticky(new BookEvent(BookEvent.DEFAULTBOOK_UPDATED));
+                    public void onError(@NonNull Throwable e) {
+                        try {
+                            e.toString();
+                        } finally {
+                            e.printStackTrace();
                         }
                     }
 
                     @Override
-                    public void onError(Exception error) {
+                    public void onComplete() {
 
                     }
                 });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
 
-    private class UpdateBooksTask extends AsyncTask<Void, Void, Void> {
 
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                OtherRequestService.updateShelfBooks(context, new VolleyDataService.DataServiceCallBack() {
-
-                    @Override
-                    public void onSuccess(Object result) {
-                        ArrayList<Book> iBooks = (ArrayList<Book>) result;
-                        if (iBooks != null && iBooks.size() > 0) {
-                            AppLog.i(TAG, "UpdateBooksTask onSuccess");
-                        }
-                    }
-
-                    @Override
-                    public void onError(Exception error) {
-
-                    }
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
-
-    private class UpdateDynamicParTask extends AsyncTask<DynamicServiceCallBack, Void, Void> {
-
-        @Override
-        protected Void doInBackground(final DynamicServiceCallBack... params) {
-            try {
-                OtherRequestService.requestDynamicPar(new VolleyDataService.DataServiceCallBack() {
-
-                    @Override
-                    public void onSuccess(final Object result) {
-                        if (result != null) {
-                            if (params[0] != null) {
-                                new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        params[0].onDynamicReceived((JSONObject) result);
-                                    }
-                                }).start();
-                            }
-                        } else {
-                            if (params[0] != null) {
-                                params[0].onError(null);
-                            }
-                        }
-
-                    }
-
-                    @Override
-                    public void onError(Exception error) {
-                        if (params[0] != null) {
-                            params[0].onError(error);
-                        }
-                    }
-                });
-            } catch (Exception e) {
-                if (params[0] != null) {
-                    params[0].onError(null);
-                }
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
-
-    private class ErrorSubmitTask extends AsyncTask<ChapterErrorBean, Void, Void> {
-
-        @Override
-        protected Void doInBackground(ChapterErrorBean... params) {
-            try {
-                OtherRequestService.sendChapterErrorData(params[0]);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
     }
 }

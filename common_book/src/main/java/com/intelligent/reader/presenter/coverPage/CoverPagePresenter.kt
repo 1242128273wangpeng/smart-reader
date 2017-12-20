@@ -55,13 +55,15 @@ import kotlin.collections.ArrayList
 
 class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: CoverPageContract,
                          val activity: Activity, val onClickListener: View.OnClickListener)
-    : BookCoverUtil.OnDownloadState, BookCoverUtil.OnDownLoadService, DownloadService.OnDownloadListener {
+    : BookCoverUtil.OnDownloadState, BookCoverUtil.OnDownLoadService, DownloadService.OnDownloadListener
+        , BookCoverViewModel.BookCoverViewCallback {
 
     var downloadService: DownloadService? = null
     var bookVo: CoverPage.BookVoBean? = null
     var bookCoverUtil: BookCoverUtil? = null
     var bookDaoHelper: BookDaoHelper? = null
     var preferences: SharedPreferences? = null
+    var isNeedShowMoreTags: Boolean = false
     var currentSource: CoverPage.SourcesBean? = null
     var books = ArrayList<Book>()
     val markIndexs = ArrayList<Int>()
@@ -79,9 +81,9 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
 
     init {
         preferences = BaseBookApplication.getGlobalContext().getSharedPreferences("onlineconfig_agent_online_setting_" + AppUtils.getPackageName(), 0);
-//        mBookCoverViewModel  = BookCoverViewModel(BookCoverRepositoryFactory.getInstance(BookCoverOtherRepository.getInstance(NetService.userService),
-//                BookCoverQGRepository.getInstance(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())), BookCoverLocalRepository.getInstance(BaseBookApplication.getGlobalContext())))
-//        mBookCoverViewModel?.setBookCoverViewCallback(this)
+        mBookCoverViewModel = BookCoverViewModel(BookCoverRepositoryFactory.getInstance(BookCoverOtherRepository.getInstance(NetService.userService),
+                BookCoverQGRepository.getInstance(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())), BookCoverLocalRepository.getInstance(BaseBookApplication.getGlobalContext())))
+        mBookCoverViewModel?.setBookCoverViewCallback(this)
 
         if (bookDaoHelper == null) {
             bookDaoHelper = BookDaoHelper.getInstance()
@@ -184,6 +186,16 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
             }
         }
     }
+
+    //model层回调成功  和 失败
+    override fun onCoverDetail(coverPage: CoverPage?) {
+        handleOK(coverPage!!, coverPage!!.bookVo.host == Constants.QG_SOURCE, isNeedShowMoreTags)
+    }
+
+    override fun onFail(msg: String?) {
+        coverPageContract.showCoverError()
+    }
+
 
     /**
      * 进入阅读页
@@ -466,22 +478,15 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
     }
 
     /**
+     *
+     * 获取书籍封面信息
      * isNeedShowMoreTags 是否需要显示多个标签，目前只有免费小说书城，其他都是单个标签
      */
 
     fun getBookCoverInfo(isNeedShowMoreTags: Boolean) {
-        if (Constants.QG_SOURCE == requestItem.host) {//青果
-            requestItem.channel_code = 1
-            RequestManager.init(activity)
-            val udid = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())
-            DataService.getBookInfo(activity, requestItem.book_id, myHandler, RequestExecutor.REQUEST_COVER_QG_SUCCESS, RequestExecutor
-                    .REQUEST_COVER_QG_ERROR, udid)
-        } else {//自有
-            if (Constants.SG_SOURCE == requestItem.host || requestItem.book_id == null || requestItem.book_source_id == null) {
-                coverPageContract!!.showCoverError()
-            } else {
-                getBookInfo(isNeedShowMoreTags)
-            }
+        this.isNeedShowMoreTags = isNeedShowMoreTags
+        if (requestItem != null) {
+            mBookCoverViewModel!!.getCoverDetail(requestItem.book_id, requestItem.book_source_id, requestItem.host)
         }
     }
 
@@ -601,7 +606,8 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
     fun handleOK(objects: Any, isQG: Boolean, isNeedShowMoreTags: Boolean) {
 
         if (isQG) {//如果是青果的数据，就先进行一次类型转换
-            bookVo = parseToBookVoBean(objects as BookMode)
+            bookVo = (objects as CoverPage).bookVo
+
             coverPageContract!!.showArrow(false, true)
 
         } else {
@@ -665,43 +671,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
         changeDownLoadButtonText()
     }
 
-    private fun parseToBookVoBean(bookMode: BookMode): CoverPage.BookVoBean? {
-        //防止青果后端书籍出错导致的封面页崩溃问题
-        if (bookMode.model == null) {
-            coverPageContract!!.showCoverError()
-            return null
-        }
-        val bookVoBean = CoverPage.BookVoBean()
-        bookVoBean.book_source_id = Constants.QG_SOURCE
-        bookVoBean.host = Constants.QG_SOURCE
-        bookVoBean.book_id = bookMode.model.id_book
-        bookVoBean.name = bookMode.model.name
-        bookVoBean.author = bookMode.model.penname
-        if (!TextUtils.isEmpty(bookMode.model.attribute_book)) {
-            bookVoBean.status = if (bookMode.model.attribute_book == "serialize") 1 else 2
-        }
-        bookVoBean.last_chapter_name = bookMode.model.id_last_chapter_name
-        bookVoBean.serial_number = bookMode.model.id_last_chapter_serial_number//总章数
-        bookVoBean.img_url = bookMode.model.image_book
-        bookVoBean.labels = bookMode.model.category
-        bookVoBean.desc = bookMode.model.description
-        bookVoBean.update_time = bookMode.model.id_last_chapter_create_time
-        bookVoBean.wordCountDescp = bookMode.model.word_count.toString() + ""
-        bookVoBean.readerCountDescp = bookMode.model.follow_count.toString() + ""
-        bookVoBean.score = java.lang.Double.valueOf(bookMode.model.score.toString() + "")!!
-        return bookVoBean
-    }
 
-
-    internal var myHandler: Handler = object : Handler() {
-        override fun handleMessage(msg: Message) {
-            when (msg.what) {
-                RequestExecutor.REQUEST_COVER_QG_SUCCESS -> handleOK(msg.obj, true, false)
-                RequestExecutor.REQUEST_COVER_QG_ERROR -> coverPageContract!!.showCoverError()
-                REQUEST_COVER_ERROR -> coverPageContract!!.showCoverError()
-            }
-        }
-    }
 
     fun goToBookSearchActivity(view: View) {
         val intent = Intent()
@@ -858,36 +828,6 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
         changeDownLoadButtonText()
     }
 
-    /**
-     * 获取书籍封面信息
-     */
-    fun getBookInfo(isNeedShowMoreTags: Boolean) {
-        if (requestItem != null && requestItem.book_id != null && requestItem.book_source_id != null) {
-            NetService.userService.requestBookCover(requestItem.book_id, requestItem.book_source_id)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : Observer<String> {
-                        override fun onSubscribe(d: Disposable) {
-
-                        }
-
-                        override fun onNext(value: String) {
-                            handleOK(OWNParser.parserOwnCoverInfo(value), false, isNeedShowMoreTags)
-
-                        }
-
-                        override fun onError(e: Throwable) {
-                            coverPageContract.showCoverError()
-
-                        }
-
-                        override fun onComplete() {
-
-                        }
-                    })
-        }
-
-    }
 
     /**
      * 获取推荐的书
@@ -1047,6 +987,11 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
             }
         }
         return ""
+    }
+
+    //解绑
+    fun unSub() {
+        mBookCoverViewModel?.unSubscribe()
     }
 
 }

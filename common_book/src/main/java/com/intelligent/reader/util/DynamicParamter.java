@@ -1,5 +1,7 @@
 package com.intelligent.reader.util;
 
+import com.google.gson.JsonObject;
+
 import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
 import com.baidu.mobstat.SendStrategyEnum;
@@ -27,6 +29,11 @@ import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class DynamicParamter {
 
@@ -116,21 +123,48 @@ public class DynamicParamter {
 
 
     public void setDynamicParamter() {
-        LoadDataManager loadDataManager = new LoadDataManager(context);
-        loadDataManager.startRequestDynamic(new LoadDataManager.DynamicServiceCallBack() {
-            @Override
-            public void onDynamicReceived(JSONObject result) {
-                isReloadDynamic = false;
-                parserJSONObject(result, true);
-                AppLog.d("own_patamater", "onDataReceived value :" + result.toString());
-            }
 
-            @Override
-            public void onError(Exception error) {
-                isReloadDynamic = true;
-                setUMDynamicParamter();
-            }
-        });
+        NetService.INSTANCE.getUserService().getDynamicParams()
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(new Observer<JsonObject>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(@NonNull JsonObject jsonObject) {
+                        if (!TextUtils.isEmpty(jsonObject.toString())) {
+                            try {
+                                JSONObject js = new JSONObject(jsonObject.toString());
+                                if (js.getBoolean("success")) {
+                                    final JSONObject map = js.getJSONObject("map");
+                                    if (map != null) {
+                                        isReloadDynamic = false;
+                                        parserJSONObject(map, true);
+                                    } else {
+                                        isReloadDynamic = true;
+                                        setUMDynamicParamter();
+                                    }
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        isReloadDynamic = true;
+                        setUMDynamicParamter();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                });
+
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         UrlUtils.setBookNovelDeployHost(sp.getString(Constants.NOVEL_HOST, ""));
@@ -944,7 +978,6 @@ public class DynamicParamter {
             } catch (Exception e) {
             }
         }
-
 
 
         //书架页广告间隔频率设置

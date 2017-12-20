@@ -2,6 +2,7 @@ package com.intelligent.reader.cover;
 
 import com.intelligent.reader.repository.BookCoverRepository;
 
+import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.Bookmark;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.CoverPage;
@@ -49,16 +50,19 @@ public class BookCoverOtherRepository implements BookCoverRepository {
         return mApi.getCoverDetail(bookId, sourceId).map(new Function<CoverPage, CoverPage>() {
             @Override
             public CoverPage apply(CoverPage coverPage) throws Exception {
-//                if (Book.STATE_SERIAL.equals(coverPage.bookVo.bookStatus)) {
-//                    coverPage.bookVo.book_status = Book.SERIAL;
-//                } else {
-//                    coverPage.bookVo.book_status = Book.FINISH;
-//                }
-//                coverPage.bookVo.flag = coverPage.vip_flag;
-//                coverPage.bookVo.last_chapter_name = coverPage.bookVo.lastChapter.getName();
+                if ("SERIALIZE".equals(coverPage.bookVo.bookStatus)) {
+                    coverPage.bookVo.book_status = 1;
+                } else {
+                    coverPage.bookVo.book_status = 2;
+                }
+                coverPage.bookVo.update_time = coverPage.bookVo.lastChapter.getUpdate_time();
+
+                coverPage.bookVo.last_chapter_name = coverPage.bookVo.lastChapter.getName();
                 return coverPage;
             }
         });
+
+
     }
 
     @Override

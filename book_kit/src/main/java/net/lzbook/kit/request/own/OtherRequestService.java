@@ -368,24 +368,4 @@ public class OtherRequestService extends VolleyDataService {
         publicCode(url, data, null, null);
     }
 
-    /**
-     * 发送阅读页反馈信息(章节错误报告)
-     */
-    public static void sendChapterErrorData(ChapterErrorBean chapterErrorBean) {
-        HashMap<String, String> data = new HashMap<>();
-        data.put("bookSourceId", chapterErrorBean.bookSourceId);
-        data.put("bookName", chapterErrorBean.bookName);
-        data.put("author", chapterErrorBean.author);
-        data.put("bookChapterId", chapterErrorBean.bookChapterId);
-        data.put("chapterId", chapterErrorBean.chapterId);
-        data.put("chapterName", chapterErrorBean.chapterName);
-        data.put("serial", String.valueOf(chapterErrorBean.serial));
-        data.put("host", chapterErrorBean.host);
-        data.put("type", String.valueOf(chapterErrorBean.type));
-
-        String uri = URLBuilderIntterface.CHAPTER_ERROR_FEEDBACK;
-        String url = UrlUtils.buildUrl(uri, data);
-        publicCode(url, null, null, null);
-        AppLog.d(TAG, "url = " + url);
-    }
 }

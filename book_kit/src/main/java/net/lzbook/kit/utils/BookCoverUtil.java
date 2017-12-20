@@ -154,7 +154,7 @@ public class BookCoverUtil {
                 book.chapter_count = coverResult.serial_number;
                 book.last_chapter_name = coverResult.last_chapter_name;
                 book.img_url = coverResult.img_url;
-                book.status = coverResult.status;
+                book.status = coverResult.book_status;
                 book.site = coverResult.host;
                 book.dex = coverResult.dex;
                 book.last_updatetime_native = coverResult.update_time;
@@ -182,7 +182,7 @@ public class BookCoverUtil {
         info.setLast_chapter_name(book.last_chapter_name);
         info.setImg_url(book.img_url);
         info.setSite(book.host);
-        info.setStatus(book.status);
+        info.setStatus(book.book_status);
         info.setDesc(book.desc);
         info.setLast_brow_time(System.currentTimeMillis());
 
