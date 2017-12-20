@@ -11,15 +11,17 @@ import android.view.ViewGroup.LayoutParams
 import android.widget.*
 import com.intelligent.reader.R
 import com.intelligent.reader.fragment.CatalogMarkFragment
-import com.intelligent.reader.presenter.read.CatalogMarkPresenter
-import com.intelligent.reader.presenter.read.ReadOptionPresenter
-import com.intelligent.reader.presenter.read.ReadPreInterface
-import com.intelligent.reader.presenter.read.ReadPresenter
+import com.intelligent.reader.presenter.read.*
+import com.intelligent.reader.read.help.IReadPageChange
+import com.intelligent.reader.read.mode.ReadInfo
+import com.intelligent.reader.read.mode.ReadViewEnums
 import com.intelligent.reader.read.page.*
 import com.intelligent.reader.reader.ReaderViewModel
 import iyouqu.theme.FrameActivity
 import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.data.bean.Chapter
+import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.data.bean.ReadStatus
 import net.lzbook.kit.data.bean.Source
 import net.lzbook.kit.utils.AppLog
@@ -30,15 +32,13 @@ import java.util.*
  * ReadingActivity
  * 小说阅读页
  */
+class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener, ReadSettingView.OnReadSettingListener, ReadPreInterface.View, IReadPageChange {
 
-class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener, ReadSettingView.OnReadSettingListener, ReadPreInterface.View {
     private val mTAG = ReadingActivity::class.java.simpleName
     var downloadService: DownloadService? = null
-    internal var readLength = 0
     private var pageView: PageInterface? = null
     // 系统存储设置
     private var auto_menu: AutoReadMenu? = null
-    private var inflater: LayoutInflater? = null
     private var readSettingView: ReadSettingView? = null
     private var ll_guide_layout: View? = null
     private var sharedPreferencesUtils: SharedPreferencesUtils? = null
@@ -47,28 +47,16 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     private var novel_basePageView: ReaderViewWidget? = null
     private var mCatlogMarkDrawer: DrawerLayout? = null
     private var mCatalogMarkFragment: CatalogMarkFragment? = null
+    private var mReadInfo:ReadInfo?=null
     private val mDrawerListener = object : DrawerLayout.DrawerListener {
-        override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+        override fun onDrawerSlide(drawerView: View, slideOffset: Float) = Unit
+        //解锁， 可滑动关闭
+        override fun onDrawerOpened(drawerView: View) = mCatlogMarkDrawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED)!!
 
-        }
+        //锁定不可滑出
+        override fun onDrawerClosed(drawerView: View) = mCatlogMarkDrawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)!!
 
-        override fun onDrawerOpened(drawerView: View) {
-            //解锁， 可滑动关闭
-            if (mCatlogMarkDrawer != null) {
-                mCatlogMarkDrawer!!.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED)
-            }
-        }
-
-        override fun onDrawerClosed(drawerView: View) {
-            //锁定不可滑出
-            if (mCatlogMarkDrawer != null) {
-                mCatlogMarkDrawer!!.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-            }
-        }
-
-        override fun onDrawerStateChanged(newState: Int) {
-
-        }
+        override fun onDrawerStateChanged(newState: Int) = Unit
     }
     private var mReadPresenter: ReadPresenter? = null
     private var mOptionHeader: ReadOptionHeader? = null
@@ -78,24 +66,15 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         AppLog.e(mTAG, "onCreate")
         window.setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED)
         window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
-        inflater = LayoutInflater.from(applicationContext)
-
-        mReadPresenter = ReadPresenter(this)
-        mReadPresenter!!.onCreateInit(savedInstanceState)
-
+        initReadPresenter()
+        mReadPresenter?.onCreateInit(savedInstanceState)
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        inflater = LayoutInflater.from(applicationContext)
-
-        if (mReadPresenter == null) {
-            mReadPresenter = ReadPresenter(this)
-        }
-        mReadPresenter!!.onNewIntent(intent)
-
+        initReadPresenter()
+        mReadPresenter ?: BaseReadPresenter(this).onNewIntent(intent)
     }
-
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
@@ -103,32 +82,28 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
             setContentView(R.layout.act_read)
         }
         mCatlogMarkDrawer = findViewById(R.id.read_catalog_mark_drawer) as DrawerLayout
-
-        mCatlogMarkDrawer!!.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-        mCatlogMarkDrawer!!.addDrawerListener(mDrawerListener)
+        mCatlogMarkDrawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        mCatlogMarkDrawer?.addDrawerListener(mDrawerListener)
         mCatalogMarkFragment = supportFragmentManager.findFragmentById(R.id.read_catalog_mark_layout) as CatalogMarkFragment
-        mCatlogMarkDrawer!!.addDrawerListener(mCatalogMarkFragment!!)
+        mCatlogMarkDrawer?.addDrawerListener(mCatalogMarkFragment!!)
         mOptionHeader = findViewById(R.id.option_header) as ReadOptionHeader
-
-        if (mReadPresenter == null) {
-            mReadPresenter = ReadPresenter(this)
-        }
-        mReadPresenter!!.onConfigurationChanged(mCatalogMarkFragment!!, mOptionHeader!!)
+        mReadPresenter ?: BaseReadPresenter(this).onConfigurationChanged(mCatalogMarkFragment!!, mOptionHeader!!)
     }
 
     override fun initView(fac: ReaderViewModel) {
         reading_content = findViewById(R.id.reading_content) as RelativeLayout
         readSettingView = findViewById(R.id.readSettingView) as ReadSettingView
-        readSettingView!!.setOnReadSettingListener(this)
+        readSettingView?.setOnReadSettingListener(this)
         novel_basePageView = findViewById(R.id.novel_basePageView) as ReaderViewWidget
-        if (Constants.isSlideUp) {
-            pageView = ScrollPageView(applicationContext)
+        pageView = if (Constants.isSlideUp) {
+            ScrollPageView(applicationContext)
         } else {
-            pageView = PageView(applicationContext)
+            PageView(applicationContext)
         }
         novel_basePageView?.removeAllViews()
-        novel_basePageView?.addView(pageView as View?, FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-                LayoutParams.MATCH_PARENT))
+//        novel_basePageView?.addView(pageView as View?, FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+//                LayoutParams.MATCH_PARENT))
+
         mReadPresenter?.initData(pageView!!)
         readSettingView?.setDataFactory(fac, readStatus!!, mThemeHelper)
         readSettingView?.currentThemeMode = mReadPresenter?.currentThemeMode
@@ -138,8 +113,17 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         ll_guide_layout = findViewById(R.id.ll_guide_layout)
         initGuide()
 
-        readSettingView!!.setNovelMode(Constants.MODE)
-        readStatus!!.source_ids = readStatus!!.book.site
+        readSettingView?.setNovelMode(Constants.MODE)
+        readStatus?.source_ids = readStatus?.book?.site
+        //add ReadInfo
+        mReadInfo = ReadInfo(readStatus?.book!!,readStatus?.sequence!!,ReadViewEnums.Animation.slide)
+        novel_basePageView?.initReaderViewFactory()
+        novel_basePageView?.entrance(mReadInfo!!)
+        novel_basePageView?.setIReadPageChange(this)
+    }
+
+    private fun initReadPresenter() {
+        if (mReadPresenter == null) mReadPresenter = ReadPresenter(this)
     }
 
     private fun initGuide() {
@@ -148,7 +132,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
             val iv_guide_reading = findViewById(R.id.iv_guide_reading) as ImageView
             ll_guide_layout!!.visibility = View.VISIBLE
             iv_guide_reading.visibility = View.VISIBLE
-
             ll_guide_layout!!.setOnClickListener {
                 sharedPreferencesUtils!!.putBoolean(mReadPresenter!!.versionCode.toString() + Constants.READING_GUIDE_TAG, true)
                 iv_guide_reading.visibility = View.GONE
@@ -157,143 +140,85 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         }
     }
 
-    fun freshPage() {
-        if (mReadPresenter != null) {
-            mReadPresenter!!.freshPage()
-        }
-    }
+    fun freshPage() = mReadPresenter?.freshPage()
 
     //自动阅读
-    fun dealManualDialogShow() {
+    fun dealManualDialogShow() = mReadPresenter?.dealManualDialogShow()
 
-        if (mReadPresenter != null) {
-            mReadPresenter!!.dealManualDialogShow()
-        }
-    }
+    fun searchChapterCallBack(sourcesList: ArrayList<Source>) = mReadPresenter?.searchChapterCallBack(sourcesList)
 
-    fun searchChapterCallBack(sourcesList: ArrayList<Source>) {
-        if (mReadPresenter != null) {
-            mReadPresenter!!.searchChapterCallBack(sourcesList)
-        }
-    }
+    public override fun restoreBrightness() = super.restoreBrightness()
 
-    public override fun restoreBrightness() {
-        super.restoreBrightness()
-    }
+    public override fun setReaderDisplayBrightness() =  super.setReaderDisplayBrightness()
 
-    public override fun setReaderDisplayBrightness() {
-        super.setReaderDisplayBrightness()
-    }
-
-    fun changeSourceCallBack() {
-        if (mReadPresenter != null) {
-            mReadPresenter!!.changeSourceCallBack()
-        }
-    }
+    fun changeSourceCallBack() = mReadPresenter?.changeSourceCallBack()
 
     /**
      * 跳章
      */
-    fun jumpChapterCallBack() {
-        if (mReadPresenter != null) {
-            mReadPresenter!!.jumpChapterCallBack()
-        }
-    }
+    fun jumpChapterCallBack() = mReadPresenter?.jumpChapterCallBack()
 
     /**
      * 隐藏topmenu
      */
-    fun dismissTopMenu() {
-        if (mReadPresenter != null)
-            mReadPresenter!!.dismissTopMenu()
-    }
+    fun dismissTopMenu() = mReadPresenter?.dismissTopMenu()
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
-        if (mReadPresenter != null) {
-            if (mReadPresenter!!.dispatchKeyEvent(event)) {
-                return true
-            }
+        return when(mReadPresenter?.dispatchKeyEvent(event)){
+            true -> true
+            else -> super.dispatchKeyEvent(event)
         }
-        return super.dispatchKeyEvent(event)
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_MENU) {
-            if (mReadPresenter != null) {
-                mReadPresenter!!.onKeyDown()
+        return when(keyCode == KeyEvent.KEYCODE_MENU){
+            true -> {
+                mReadPresenter?.onKeyDown()
+                true
             }
-            return true
+            else -> super.onKeyDown(keyCode, event)
         }
-
-        return super.onKeyDown(keyCode, event)
     }
 
     override fun onBackPressed() {
-
-        if (mCatlogMarkDrawer != null && mCatlogMarkDrawer!!.isDrawerOpen(GravityCompat.START)) {
-            mCatlogMarkDrawer!!.closeDrawers()
+        if (mCatlogMarkDrawer!!.isDrawerOpen(GravityCompat.START)) {
+            mCatlogMarkDrawer?.closeDrawers()
             return
         }
-
-        var isFinish = false
-
-        if (mReadPresenter != null) {
-            isFinish = mReadPresenter!!.onBackPressed()
-        }
-
+        val isFinish = mReadPresenter?.onBackPressed() ?: false
         if (isFinish && !isFinishing) {
             super.onBackPressed()
         }
     }
 
-
     override fun onResume() {
         super.onResume()
         AppLog.d("ReadingActivity", "onResume:" + Constants.isFullWindowRead)
-
         // 设置全屏
-        if (!Constants.isFullWindowRead) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
-        } else {
-            //            getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN, WindowManager.LayoutParams
-            //                    .FLAG_LAYOUT_INSET_DECOR);
-            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        when (!Constants.isFullWindowRead) {
+            true -> window.addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
+            false -> window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }
-        if (mReadPresenter != null) {
-            mReadPresenter!!.onResume()
-        }
-
+        mReadPresenter?.onResume()
     }
 
-    override fun shouldReceiveCacheEvent(): Boolean {
-        return false
-    }
+    override fun shouldReceiveCacheEvent(): Boolean = false
 
-    override fun shouldShowNightShadow(): Boolean {
-        return false
-    }
+    override fun shouldShowNightShadow(): Boolean = false
 
     override fun onStart() {
         super.onStart()
-        if (mReadPresenter != null) {
-            mReadPresenter!!.onStart()
-        }
+        mReadPresenter?.onStart()
     }
 
     override fun onPause() {
         super.onPause()
-        if (mReadPresenter != null) {
-            mReadPresenter!!.onPause()
-        }
+        mReadPresenter?.onPause()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-
-        if (mReadPresenter != null) {
-            mReadPresenter!!.onWindowFocusChanged(hasFocus)
-        }
-
+        mReadPresenter?.onWindowFocusChanged(hasFocus)
         if (hasFocus) {
             window.decorView.postDelayed({ window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY }, 1500)
         }
@@ -301,189 +226,86 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onStop() {
         super.onStop()
-        if (mReadPresenter == null) {
-            mReadPresenter!!.onStop()
-        }
+        mReadPresenter?.onStop()
     }
 
     override fun onDestroy() {
-
-        if (mCatlogMarkDrawer != null) {
-            mCatlogMarkDrawer!!.removeDrawerListener(mDrawerListener)
-            if (mCatalogMarkFragment != null)
-                mCatlogMarkDrawer!!.removeDrawerListener(mCatalogMarkFragment!!)
-        }
+        mCatlogMarkDrawer?.removeDrawerListener(mDrawerListener)
+        mCatlogMarkDrawer?.removeDrawerListener(mCatalogMarkFragment!!)
 
         AppLog.e(mTAG, "onDestroy")
 
+        novel_basePageView?.removeAllViews()
+        novel_basePageView = null
 
-        if (novel_basePageView != null) {
-            novel_basePageView!!.removeAllViews()
-            novel_basePageView = null
-        }
+        readSettingView?.recycleResource()
+        readSettingView = null
 
-        if (readSettingView != null) {
-            readSettingView!!.recycleResource()
-            readSettingView = null
-        }
+        auto_menu?.setOnAutoMemuListener(null)
+        auto_menu?.recycleResource()
+        auto_menu = null
 
-        if (auto_menu != null) {
-            auto_menu!!.setOnAutoMemuListener(null)
-            auto_menu!!.recycleResource()
-            auto_menu = null
-        }
+        reading_content?.removeAllViews()
+        reading_content = null
+        ll_guide_layout = null
 
-        if (reading_content != null) {
-            reading_content!!.removeAllViews()
-            reading_content = null
-        }
-
-        if (ll_guide_layout != null) {
-            ll_guide_layout = null
-        }
-
-        if (mReadPresenter != null) {
-            mReadPresenter!!.onDestroy()
-        }
+        mReadPresenter?.onDestroy()
         super.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        var state: Bundle? = null
-        if (mReadPresenter != null) {
-            state = mReadPresenter!!.onSaveInstanceState(outState)
-        }
-        if (state != null) {
-            super.onSaveInstanceState(outState)
-        }
+        if (mReadPresenter?.onSaveInstanceState(outState) != null) super.onSaveInstanceState(outState)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        if (mReadPresenter != null) {
-            mReadPresenter!!.onActivityResult(requestCode, resultCode, data)
-        }
-    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) = mReadPresenter?.onActivityResult(requestCode, resultCode, data)!!
 
-    override fun speedUp() {
-        if (mReadPresenter != null) {
-            mReadPresenter!!.speedUp()
-        }
-    }
+    override fun speedUp() = mReadPresenter?.speedUp()!!
 
-    override fun speedDown() {
-        if (mReadPresenter != null) {
-            mReadPresenter!!.speedDown()
-        }
-    }
+    override fun speedDown() = mReadPresenter?.speedDown()!!
 
-    override fun autoStop() {
-        if (mReadPresenter != null) {
-            mReadPresenter!!.autoStop()
-        }
-    }
+    override fun autoStop() = mReadPresenter?.autoStop()!!
 
     override fun onReadCatalog() {
-        if (mReadPresenter != null) {
-            mReadPresenter!!.onReadCatalog()
-        }
-        mCatlogMarkDrawer!!.openDrawer(GravityCompat.START)
+        mReadPresenter?.onReadCatalog()
+        mCatlogMarkDrawer?.openDrawer(GravityCompat.START)
     }
 
-    override fun onReadChangeSource() {
-        if (mReadPresenter != null) {
-            mReadPresenter!!.onReadChangeSource()
-        }
-    }
+    override fun onReadChangeSource() = mReadPresenter?.onReadChangeSource()!!
 
-    override fun onReadCache() {
-        if (mReadPresenter != null) {
-            mReadPresenter!!.onReadCache()
-        }
-    }
+    override fun onReadCache() = mReadPresenter?.onReadCache()!!
 
-    override fun onReadAuto() {
-        if (mReadPresenter != null) {
-            mReadPresenter!!.onReadAuto()
-        }
-    }
+    override fun onReadAuto() = mReadPresenter?.onReadAuto()!!
 
-    override fun onChangeMode(mode: Int) {
-        if (mReadPresenter != null) {
-            mReadPresenter!!.onChangeMode(mode)
-        }
-    }
+    override fun onChangeMode(mode: Int) = mReadPresenter?.onChangeMode(mode)!!
 
-    override fun onChangeScreenMode() {
-        if (mReadPresenter != null) {
-            mReadPresenter!!.changeScreenMode()
-        }
-    }
+    override fun onChangeScreenMode() = mReadPresenter?.changeScreenMode()!!
 
-    fun addTextLength(l: Int) {
-        readLength += l
-    }
+    override fun onRedrawPage() = mReadPresenter?.onRedrawPage()!!
 
-    override fun onRedrawPage() {
-        if (mReadPresenter != null) {
-            mReadPresenter!!.onRedrawPage()
-        }
-    }
+    override fun onJumpChapter() = mReadPresenter?.onJumpChapter()!!
 
-    override fun onJumpChapter() {
-        if (mReadPresenter != null) {
-            mReadPresenter!!.onJumpChapter()
-        }
-    }
+    override fun onJumpPreChapter() = mReadPresenter?.onJumpPreChapter()!!
 
-    override fun onJumpPreChapter() {
-        if (mReadPresenter != null) {
-            mReadPresenter!!.onJumpPreChapter()
-        }
-    }
+    override fun onJumpNextChapter() = mReadPresenter?.onJumpNextChapter()!!
 
-    override fun onJumpNextChapter() {
-        if (mReadPresenter != null) {
-            mReadPresenter!!.onJumpNextChapter()
-        }
-    }
+    override fun onReadFeedBack() = mReadPresenter?.onReadFeedBack()!!
 
-    override fun onReadFeedBack() {
-        if (mReadPresenter != null) {
-            mReadPresenter!!.onReadFeedBack()
-        }
-    }
+    override fun onChageNightMode() = mReadPresenter?.onChageNightMode()!!
 
-    override fun onChageNightMode() {
-        if (mReadPresenter != null) {
-            mReadPresenter!!.onChageNightMode()
-        }
-    }
-
-    fun goBackToHome() {
-        if (mReadPresenter != null) {
-            mReadPresenter!!.goBackToHome()
-        }
-    }
+    fun goBackToHome() = mReadPresenter?.goBackToHome()
 
     override fun initPresenter(optionPresenter: ReadOptionPresenter?, markPresenter: CatalogMarkPresenter?) {
-        mCatalogMarkFragment!!.presenter = markPresenter
-        mOptionHeader!!.presenter = optionPresenter
+        mCatalogMarkFragment?.presenter = markPresenter
+        mOptionHeader?.presenter = optionPresenter
     }
 
     override fun setReadStatus(readSta: ReadStatus) {
         readStatus = readSta
     }
 
-    fun showMenu(isShow: Boolean) {
-        if (mReadPresenter != null) {
-            mReadPresenter!!.showMenu(isShow)
-        }
-    }
+    fun showMenu(isShow: Boolean) = mReadPresenter?.showMenu(isShow)!!
 
-    override fun showSetMenu(isShow: Boolean) {
-        if (readSettingView != null)
-            readSettingView!!.showSetMenu(isShow)
-    }
+    override fun showSetMenu(isShow: Boolean) = readSettingView?.showSetMenu(isShow)!!
 
     override fun full(isFull: Boolean) {
         if (isFull) {
@@ -495,126 +317,80 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     }
 
     override fun initSettingGuide() {
-        if (sharedPreferencesUtils != null && !sharedPreferencesUtils!!.getBoolean(mReadPresenter!!.versionCode.toString() + Constants
-                .READING_SETING_GUIDE_TAG)) {
-            ll_guide_layout!!.visibility = View.VISIBLE
-
+        if (sharedPreferencesUtils != null && sharedPreferencesUtils?.getBoolean(mReadPresenter?.versionCode.toString() + Constants
+                .READING_SETING_GUIDE_TAG) == false) {
+            ll_guide_layout?.visibility = View.VISIBLE
             val iv_guide_setting_bookmark = findViewById(R.id.iv_guide_setting_bookmark) as ImageView
-
             iv_guide_setting_bookmark.visibility = View.VISIBLE
-
-            ll_guide_layout!!.setOnClickListener {
-                sharedPreferencesUtils!!.putBoolean(mReadPresenter!!.versionCode.toString() + Constants.READING_SETING_GUIDE_TAG, true)
-                ll_guide_layout!!.visibility = View.GONE
+            ll_guide_layout?.setOnClickListener {
+                sharedPreferencesUtils?.putBoolean(mReadPresenter?.versionCode.toString() + Constants.READING_SETING_GUIDE_TAG, true)
+                ll_guide_layout?.visibility = View.GONE
             }
         }
     }
 
-    override fun setMode() {
-        if (readSettingView != null) {
-            readSettingView!!.setMode()
-        }
-    }
+    override fun setMode() = readSettingView?.setMode()!!
 
     override fun showAutoMenu(isShow: Boolean) {
-        if (auto_menu != null) {
-            if (isShow) {
-                auto_menu!!.visibility = View.VISIBLE
-            } else {
-                auto_menu!!.visibility = View.GONE
-            }
+        when (isShow) {
+            true -> auto_menu?.visibility = View.VISIBLE
+            false -> auto_menu?.visibility = View.GONE
         }
     }
 
     override fun resetPageView(pageView: PageInterface) {
-        if (novel_basePageView != null) {
-            novel_basePageView!!.removeAllViews()
-            novel_basePageView!!.addView(pageView as View, FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-                    LayoutParams.MATCH_PARENT))
-        }
+        novel_basePageView?.removeAllViews()
+        novel_basePageView?.addView(pageView as View, FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
     }
 
-    override fun initShowCacheState() {
-        if (readSettingView != null) {
-            readSettingView!!.initShowCacheState()
-        }
-    }
+    override fun initShowCacheState() = readSettingView?.initShowCacheState()!!
 
-    override fun changeChapter() {
-        if (readSettingView != null) {
-            readSettingView!!.changeChapter()
-        }
-    }
+    override fun changeChapter() = readSettingView?.changeChapter()!!
 
     override fun checkModeChange() {
-        if (isModeChange) {
-            setMode()
-        }
+        if (isModeChange) setMode()
     }
 
-    override fun getAutoMenuShowState(): Boolean {
-        if (auto_menu != null) {
-            return auto_menu!!.isShown
-        }
-        return false
-    }
+    override fun getAutoMenuShowState(): Boolean = auto_menu?.isShown ?: false
 
     override fun showStopAutoHint() {
-        val view = inflater!!.inflate(R.layout.autoread_textview, null) as TextView
+        val view = View.inflate(this, R.layout.autoread_textview, null) as TextView
         val toast = Toast(applicationContext)
         toast.view = view
         toast.duration = Toast.LENGTH_SHORT
         toast.setGravity(Gravity.CENTER, 0, 0)
         toast.show()
-        auto_menu!!.visibility = View.GONE
+        auto_menu?.visibility = View.GONE
     }
 
     override fun initCatlogView() {
-        val main = layoutInflater.inflate(R.layout.act_read, null)
-        setContentView(main)
+        setContentView(R.layout.act_read)
         mCatlogMarkDrawer = findViewById(R.id.read_catalog_mark_drawer) as DrawerLayout
-
-        mCatlogMarkDrawer!!.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-        mCatlogMarkDrawer!!.addDrawerListener(mDrawerListener)
-
+        mCatlogMarkDrawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        mCatlogMarkDrawer?.addDrawerListener(mDrawerListener)
         mCatalogMarkFragment = supportFragmentManager.findFragmentById(R.id.read_catalog_mark_layout) as CatalogMarkFragment
         mOptionHeader = findViewById(R.id.option_header) as ReadOptionHeader
-
-        mCatlogMarkDrawer!!.addDrawerListener(mCatalogMarkFragment!!)
-
-        if (mReadPresenter != null) {
-            mReadPresenter!!.initCatalogPresenter(mCatalogMarkFragment!!, mOptionHeader!!)
-        }
+        mCatlogMarkDrawer?.addDrawerListener(mCatalogMarkFragment!!)
+        mReadPresenter?.initCatalogPresenter(mCatalogMarkFragment!!, mOptionHeader!!)
     }
 
     override fun onNewInitView(): Boolean {
         mCatlogMarkDrawer = findViewById(R.id.read_catalog_mark_drawer) as DrawerLayout?
-        if (mCatlogMarkDrawer == null) {
+        if (mCatlogMarkDrawer == null || mCatalogMarkFragment == null || mOptionHeader == null) {
             finish()
             return false
         }
-
-        mCatlogMarkDrawer!!.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-        mCatlogMarkDrawer!!.addDrawerListener(mDrawerListener)
-
+        mCatlogMarkDrawer?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        mCatlogMarkDrawer?.addDrawerListener(mDrawerListener)
         mCatalogMarkFragment = supportFragmentManager.findFragmentById(R.id.read_catalog_mark_layout) as CatalogMarkFragment
-        if (mCatalogMarkFragment == null) {
-            finish()
-            return false
-        }
         mOptionHeader = findViewById(R.id.option_header) as ReadOptionHeader
-
-        if (mOptionHeader == null) {
-            finish()
-            return false
-        }
-        mCatlogMarkDrawer!!.addDrawerListener(mCatalogMarkFragment!!)
-
-
-        if (mReadPresenter != null) {
-            mReadPresenter!!.initCatalogPresenter(mCatalogMarkFragment!!, mOptionHeader!!)
-        }
+        mCatlogMarkDrawer?.addDrawerListener(mCatalogMarkFragment!!)
+        mReadPresenter?.initCatalogPresenter(mCatalogMarkFragment!!, mOptionHeader!!)
         return true
+    }
+
+    override fun loadChapterSuccess(what: Int,chapter:Chapter, chapterList: ArrayList<ArrayList<NovelLineBean>>) {
+        novel_basePageView?.setLoadChapter(what,chapter,chapterList)
     }
 
     companion object {
@@ -628,4 +404,18 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         val NEED_LOGIN = 8
         private var readStatus: ReadStatus? = null
     }
+
+    //IReadPageChange
+    override fun onLoadChapter(type: ReadViewEnums.MsgType, sequence: Int, isShowLoadPage: Boolean,pageIndex:ReadViewEnums.PageIndex) {
+        mReadPresenter?.onLoadChapter(type.Msg,sequence,isShowLoadPage,pageIndex)
+    }
+
+    override fun showMenu() {
+
+    }
+
+    override fun loadAD() {
+
+    }
+
 }

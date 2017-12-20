@@ -60,14 +60,12 @@ public class NovelHelper {
     public boolean isShown = false;
     private OnHelperCallBack helperCallBack;
     private WeakReference<Activity> actReference;
-    private Handler handler;
     private ReadStatus readStatus;
     private PageInterface pageView;
 
-    public NovelHelper(Activity activity, ReadStatus readStatus, Handler handler) {
+    public NovelHelper(Activity activity, ReadStatus readStatus) {
         this.actReference = new WeakReference<>(activity);
         this.readStatus = readStatus;
-        this.handler = handler;
     }
 
     public void setPageView(PageInterface pageView) {
@@ -375,7 +373,7 @@ public class NovelHelper {
         }
     }
 
-    private ArrayList<ArrayList<NovelLineBean>> initTextContent2(String content) {
+    public ArrayList<ArrayList<NovelLineBean>> initTextContent2(String content) {
         float chapterHeight = 75 * readStatus.screenScaledDensity;
         float hideHeight = 15 * readStatus.screenScaledDensity;
 
@@ -751,15 +749,19 @@ public class NovelHelper {
      * context
      * currentChapter
      * mBook
+     * @return true: NORMAL  false: ERROR
      */
-    public synchronized void getChapterContent(Activity activity, Chapter currentChapter, Book mBook, boolean isResize) {
-        if (mBook == null)
-            return;
+    public synchronized boolean getChapterContent(Activity activity, Chapter currentChapter, Book mBook) {
+        if (mBook == null||readStatus ==null)
+            return false;
         // 更新chapter状态
         BaseBookHelper.setChapterStatus(currentChapter);
         if (currentChapter != null && readStatus != null) {
             if (currentChapter.status != Chapter.Status.CONTENT_NORMAL) {
-                handler.sendEmptyMessage(5);
+//                handler.sendEmptyMessage(5);
+                if (helperCallBack != null) {
+                    helperCallBack.changSource();
+                }
             }
             readStatus.chapterName = currentChapter.chapter_name;
         }
@@ -770,11 +772,6 @@ public class NovelHelper {
             readStatus.bookSource = mBook.name;
         }
 
-        if (!isResize && mBook != null && mBook.book_type == 0 && activity != null && activity instanceof ReadingActivity
-                && currentChapter != null && currentChapter.content != null) {
-            ((ReadingActivity) activity).addTextLength(currentChapter.content.length());
-        }
-
         if (currentChapter != null) {
             switch (currentChapter.status) {
                 case CONTENT_EMPTY:
@@ -782,19 +779,18 @@ public class NovelHelper {
                 case SOURCE_ERROR:
                     if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE && mBook.book_type == 0) {
                         Toast.makeText(activity, R.string.err_no_net, Toast.LENGTH_SHORT).show();
-                        readStatus.mLineList = initTextContent2("");
-                        break;
+//                        readStatus.mLineList = initTextContent2("");
                     }
-                    readStatus.mLineList = initTextContent2("");
-                    break;
+//                    readStatus.mLineList = initTextContent2("");
+                    return true;
                 case CONTENT_NORMAL:
-                    readStatus.mLineList = initTextContent2(currentChapter.content);
-                    break;
+//                    readStatus.mLineList = initTextContent2(currentChapter.content);
+                    return true;
                 default:
                     break;
             }
         }
-
+        return false;
     }
 
     public void setOnHelperCallBack(OnHelperCallBack callBack) {
@@ -815,34 +811,6 @@ public class NovelHelper {
         }
     }
 
-    /**
-     * loading 页面显示原网页地址
-     */
-    private void setLoadingCurl(int time, Chapter currentChapter, LoadingPage loadingPage) throws InterruptedException {
-        if (currentChapter != null && !TextUtils.isEmpty(currentChapter.curl)) {
-            //if (readStatus.book.dex == 1 && !TextUtils.isEmpty(currentChapter.curl)) {
-            AppLog.e("setNovelSource", "SetNovelSource: " + currentChapter.curl);
-            loadingPage.setNovelSource(currentChapter.curl);
-            Thread.sleep(time);
-            /*} else if (readStatus.book.dex == 0 && !TextUtils.isEmpty(currentChapter.curl1)) {
-                AppLog.e("setNovelSource", "SetNovelSource: " + currentChapter.curl1);
-                loadingPage.setNovelSource(currentChapter.curl1);
-                Thread.sleep(time);
-            }*/
-        }
-    }
-
-    private LoadingPage getCustomLoadingPage() {
-        Activity activity = actReference.get();
-        if (activity == null) {
-            return null;
-        }
-        LoadingPage loadingPage = new LoadingPage(activity, true, "", LoadingPage.setting_result);
-        loadingPage.setCustomBackgroud();
-
-        return loadingPage;
-    }
-
     public interface OnHelperCallBack {
 
         void jumpNextChapter();
@@ -856,5 +824,7 @@ public class NovelHelper {
         void deleteBook();
 
         void openAutoReading(boolean open);
+
+        void changSource();
     }
 }

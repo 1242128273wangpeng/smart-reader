@@ -160,4 +160,15 @@ public class BitmapManager {
         System.gc();
     }
 
+    public synchronized Bitmap createBitmap() {
+        Bitmap bitmap;
+        try {
+            bitmap = Bitmap.createBitmap(myWidth, myHeight, Bitmap.Config.RGB_565);
+        } catch (OutOfMemoryError e) {
+            System.gc();
+            System.runFinalization();
+            bitmap = Bitmap.createBitmap(myWidth, myHeight, Bitmap.Config.RGB_565);
+        }
+        return bitmap;
+    }
 }

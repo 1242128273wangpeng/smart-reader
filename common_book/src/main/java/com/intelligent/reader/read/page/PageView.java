@@ -142,7 +142,7 @@ public class PageView extends View implements PageInterface {
         // 创建绘制当前页以及下一页的画布canvas
         mCurPageCanvas = new Canvas(mCurPageBitmap);
         mNextPageCanvas = new Canvas(mNextPageBitmap);
-        drawTextHelper = new DrawTextHelper(getResources(), mActivity);
+        drawTextHelper = new DrawTextHelper(getResources());
 
         moveThreshold = AppUtils.dip2px(mContext, kMoveThresholdDP);
         turnThreshold = AppUtils.dip2px(mContext, kTurnThresholdDP);
@@ -201,7 +201,7 @@ public class PageView extends View implements PageInterface {
         }
         if (!isAutoReadMode()) {
             if (mCurPageCanvas != null && drawTextHelper != null) {
-                mOperationPaint = drawTextHelper.drawText(mCurPageCanvas, pageLines, mActivity);
+                mOperationPaint = drawTextHelper.drawText(mCurPageCanvas, pageLines);
             }
         }
 
@@ -220,7 +220,7 @@ public class PageView extends View implements PageInterface {
      */
     public void drawNextPage() {
         nextPageContent = pageLines = novelHelper.getPageContent();
-        drawTextHelper.drawText(mNextPageCanvas, pageLines, mActivity);
+        drawTextHelper.drawText(mNextPageCanvas, pageLines);
         if (count == 1 && readStatus != null) {
             readStatus.lastSequenceRemark = readStatus.sequence + 1;
             readStatus.lastCurrentPageRemark = readStatus.currentPage;
@@ -248,7 +248,7 @@ public class PageView extends View implements PageInterface {
         System.gc();
         if (!isAutoReadMode()) {
             if (mCurPageCanvas != null) {
-                mOperationPaint = drawTextHelper.drawText(mCurPageCanvas, pageLines, mActivity);
+                mOperationPaint = drawTextHelper.drawText(mCurPageCanvas, pageLines);
             }
         }
 
@@ -257,8 +257,8 @@ public class PageView extends View implements PageInterface {
     public void setBackground() {
         if (!isAutoReadMode()) {
             drawTextHelper.resetBackBitmap();
-            drawTextHelper.drawText(mCurPageCanvas, pageLines, mActivity);
-            drawTextHelper.drawText(mNextPageCanvas, pageLines, mActivity);
+            drawTextHelper.drawText(mCurPageCanvas, pageLines);
+            drawTextHelper.drawText(mNextPageCanvas, pageLines);
 
             invalidate();
         }
@@ -281,7 +281,7 @@ public class PageView extends View implements PageInterface {
      */
     public void refreshCurrentPage() {
 
-        drawTextHelper.drawText(mCurPageCanvas, pageLines, mActivity);
+        drawTextHelper.drawText(mCurPageCanvas, pageLines);
     }
 
     @Override

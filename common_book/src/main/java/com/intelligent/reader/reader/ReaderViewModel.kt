@@ -196,7 +196,7 @@ class ReaderViewModel : DisposableAndroidViewModel {
                         chapters.isSuccess = true
                         // 自动切源需要就更新目录
                         if (chapters.flag == 1 && !TextUtils.isEmpty(chapters.content)) {
-                            mReaderRepository!!.updateBookCurrentChapter(chapters.book_id, chapters, chapters.sequence)
+                            mReaderRepository?.updateBookCurrentChapter(chapters.book_id, chapters, chapters.sequence)
                         }
                     }
                     mReaderRepository?.writeChapterCache(chapters, false)

@@ -5,6 +5,7 @@ import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.read.page.PageInterface;
 import com.intelligent.reader.util.DisplayUtils;
 
+import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.NovelLineBean;
 import net.lzbook.kit.data.bean.ReadStatus;
@@ -64,7 +65,6 @@ public class DrawTextHelper {
     private float percent;
     private String timeText;
 
-    private Activity mActivity;
 
     private Paint nightPaint;
     private SensitiveWords readSensitiveWord;
@@ -82,10 +82,8 @@ public class DrawTextHelper {
         mIconBitmap = null;
     }
 
-    public DrawTextHelper(Resources res, Activity mActivity) {
+    public DrawTextHelper(Resources res) {
         this.resources = res;
-        this.mActivity = mActivity;
-
         this.readSensitiveWord = SensitiveWords.getReadSensitiveWords();
         if (readSensitiveWord != null && readSensitiveWord.list.size() > 0) {
             readSensitiveWords = readSensitiveWord.getList();
@@ -385,7 +383,7 @@ public class DrawTextHelper {
         return pageHeight;
     }
 
-    public synchronized Paint drawText(Canvas canvas, List<NovelLineBean> pageLines, Activity activity) {
+    public synchronized Paint drawText(Canvas canvas, List<NovelLineBean> pageLines) {
         mPaint.setTextSize(Constants.FONT_SIZE * readStatus.screenScaledDensity);//设置字体大小
         duanPaint.setTextSize(1 * readStatus.screenScaledDensity);//设置画笔字体大小1x屏幕密度
         FontMetrics fm = mPaint.getFontMetrics();//字体测量类
