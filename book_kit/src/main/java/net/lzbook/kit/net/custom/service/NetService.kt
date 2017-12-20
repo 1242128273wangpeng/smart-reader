@@ -4,7 +4,6 @@ import net.lzbook.kit.net.GsonDataFilterFactory
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.net.custom.CommonParamsInterceptor
 import net.lzbook.kit.net.custom.StringConverterFactory
-import net.lzbook.kit.user.RecommendService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

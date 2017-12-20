@@ -19,22 +19,15 @@ import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.BaseBookHelper;
 import net.lzbook.kit.utils.NetWorkUtils;
-import net.lzbook.kit.utils.StatServiceUtils;
 import net.lzbook.kit.utils.ToastUtils;
-
-import org.json.JSONException;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -48,46 +41,13 @@ import java.util.Map;
 public class RepairHelp {
     private static final String TAG = RepairHelp.class.getSimpleName();
 
-    public static synchronized void parserData(UpdateBean repairData) {
+    public static synchronized void parserData(UpdateBean.DataBean repairData) {
         if (repairData == null) {
             return;
         }
 
-        final List<UpdateBean.FixBookBean> fix_books = repairData.getFix_book();
-
-
-
-        final List<UpdateBean.FixContentBean> fix_contents = repairData.getFix_content();
-//        if (fix_contents != null){
-//            for (int i = 0; i < fix_contents.size(); i++){
-//                UpdateBean.FixContentBean cBean = fix_contents.get(i);
-//
-//                fixBook.book_id = cBean.getBook_id();
-//                fixBook.book_source_id = cBean.getBook_source_id();
-//                fixBook.list_version = cBean.getList_version();
-//                fixBook.c_version = cBean.getC_version();
-//                ArrayList<Chapter> chapters = new ArrayList<>();
-//                List<UpdateBean.FixContentBean.ChaptersBean> chaptersBeens = cBean.getChapters();
-//                if (chaptersBeens != null){
-//                    for (int j = 0; j < chaptersBeens.size(); j++){
-//                        UpdateBean.FixContentBean.ChaptersBean bean = chaptersBeens.get(j);
-//                        Chapter c = new Chapter();
-//                        c.chapter_id = bean.getId();
-//                        c.book_source_id = bean.getBook_souce_id();
-//                        c.chapter_name = bean.getName();
-//                        c.sort = bean.getSerial_number();
-//                        c.site = bean.getHost();
-//                        c.curl = bean.getUrl();
-//                        c.chapter_status = bean.getStatus();
-//                        c.time = bean.getUpdate_time();
-//                        c.word_count = bean.getWord_count();
-//                        chapters.add(c);
-//                    }
-//                }
-//                fixBook.chapters = chapters;
-//                mFixContentBooks.add(fixBook);
-//            }
-//        }
+        final List<UpdateBean.DataBean.FixBookBean> fix_books = repairData.getFix_book();
+        final List<UpdateBean.DataBean.FixContentBean> fix_contents = repairData.getFix_content();
 
         if (fix_books != null && !fix_books.isEmpty()) {
             new Thread(new Runnable() {
@@ -108,12 +68,12 @@ public class RepairHelp {
         }
     }
 
-    private static void saveFixBook(List<UpdateBean.FixBookBean> fix_books) {
+    private static void saveFixBook(List<UpdateBean.DataBean.FixBookBean> fix_books) {
         BookDaoHelper instance = BookDaoHelper.getInstance();
         if (instance == null) {
             return;
         }
-        for (UpdateBean.FixBookBean fixBookBean : fix_books) {
+        for (UpdateBean.DataBean.FixBookBean fixBookBean : fix_books) {
             Book book = instance.getBook(fixBookBean.getBook_id(), 0);
             if (!TextUtils.isEmpty(book.book_id)) {
                 if (book.list_version == -1 || book.c_version == -1) {
@@ -134,8 +94,8 @@ public class RepairHelp {
         }
     }
 
-    private static void fixChapterContent(List<UpdateBean.FixContentBean> fix_contents) {
-        for (UpdateBean.FixContentBean fixContentBook : fix_contents) {
+    private static void fixChapterContent(List<UpdateBean.DataBean.FixContentBean> fix_contents) {
+        for (UpdateBean.DataBean.FixContentBean fixContentBook : fix_contents) {
             if (fixContentBook.getChapters() != null && !fixContentBook.getChapters().isEmpty()) {
                 if (TextUtils.isEmpty(fixContentBook.getBook_id())) {
                     continue;
@@ -143,7 +103,7 @@ public class RepairHelp {
                 BookChapterDao chapterDao = new BookChapterDao(BaseBookApplication.getGlobalContext(), fixContentBook.getBook_id());
                 FixContentState fixState = new FixContentState();
                 boolean isNoChapterID = false;
-                for (UpdateBean.FixContentBean.ChaptersBean c : fixContentBook.getChapters()) {
+                for (UpdateBean.DataBean.FixContentBean.ChaptersBean c : fixContentBook.getChapters()) {
                     //1.修复章节表
                     if (TextUtils.isEmpty(c.getId())) {
                         fixState.addMsgState(false);

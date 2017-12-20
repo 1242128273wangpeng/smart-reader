@@ -1,7 +1,5 @@
 package net.lzbook.kit.request.own;
 
-import com.google.gson.Gson;
-
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.BookUpdate;
@@ -461,42 +459,35 @@ public class OWNParser {
         return null;
     }
 
-    public static ArrayList<BookUpdate> parserBookUpdateInfo(String json, HashMap<String, Book> bookItems) throws Exception {
-        ArrayList<BookUpdate> lists = new ArrayList<>();
-        AppLog.i(TAG, "parserBookUpdateInfo checkRes" + json);
-        JSONObject jsonObject = new JSONObject(json);
-        if (20000 != jsonObject.getInt("respCode")) {
+    public static ArrayList<BookUpdate> parserBookUpdateInfo(UpdateBean s, HashMap<String, Book> bookItems) throws Exception {
+        ArrayList<BookUpdate> resultLists = new ArrayList<>();
+        if (!UpdateBean.REQUEST_SUCCESS.equals(s.getRespCode())) {
             return null;
         }
 
-        JSONObject jsonData = jsonObject.getJSONObject("data");
-
-        UpdateBean updateBean = new Gson().fromJson(jsonData.toString(), UpdateBean.class);
-
-        AppLog.i(TAG, "parserBookUpdateInfo updateBean" + updateBean.toString());
-
-        List<UpdateBean.UpdateBookBean> items = updateBean.getUpdate_book();
-
-        if (items != null) {
-            for (int i = 0; i < items.size(); i++) {
-                UpdateBean.UpdateBookBean itemsBean = items.get(i);
-                BookUpdate bookUpdate = new BookUpdate();
-                Book book;
+        List<UpdateBean.DataBean.UpdateBookBean> updateBooks = s.getData().getUpdate_book();
+        if (updateBooks != null) {
+            BookUpdate bookUpdate;
+            for (int i = 0; i < updateBooks.size(); i++) {
+                UpdateBean.DataBean.UpdateBookBean itemsBean = updateBooks.get(i);
+                bookUpdate = new BookUpdate();
+                Book book = null;
                 if (TextUtils.isEmpty(itemsBean.getBook_id())) {
                     continue;
                 } else {
                     book = bookItems.get(itemsBean.getBook_id());
                     bookUpdate.book_id = itemsBean.getBook_id();
                 }
+
                 if (book == null) {
                     continue;
                 }
 
                 ArrayList<Chapter> chapterList = new ArrayList<>();
-                List<UpdateBean.UpdateBookBean.ChaptersBeanX> chapters = itemsBean.getChapters();
+                List<UpdateBean.DataBean.UpdateBookBean.ChaptersBeanX> chapters = itemsBean.getChapters();
                 if (chapters != null) {
                     for (int j = 0; j < chapters.size(); j++) {
-                        UpdateBean.UpdateBookBean.ChaptersBeanX c = chapters.get(j);
+                        UpdateBean.DataBean.UpdateBookBean.ChaptersBeanX c = chapters.get(j);
                         Chapter chapter = new Chapter();
                         chapter.book_id = book.book_id;
                         chapter.parameter = book.parameter;
@@ -517,15 +508,14 @@ public class OWNParser {
                         chapterList.add(chapter);
                     }
                     bookUpdate.chapterList = chapterList;
-                    lists.add(bookUpdate);
+                    resultLists.add(bookUpdate);
                 }
 
             }
         }
 
-        RepairHelp.parserData(updateBean);
-
-        return lists;
+        RepairHelp.parserData(s.getData());
+        return resultLists;
     }
 
     public static ParseJarBean parserJarUpdateInfo(String json) throws JSONException {

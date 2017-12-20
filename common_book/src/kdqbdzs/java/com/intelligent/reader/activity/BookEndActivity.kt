@@ -1,6 +1,5 @@
 package com.intelligent.reader.activity
 
-import com.dingyueads.sdk.NativeInit
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.SourceAdapter
 import com.intelligent.reader.presenter.bookEnd.BookEndContract
