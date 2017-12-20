@@ -21,11 +21,6 @@ class VerticalReaderView : RecyclerView, IReadView {
 
     }
 
-    override fun onSizeChanged(width: Int, height: Int, oldw: Int, oldh: Int) {
-        super.onSizeChanged(width, height, oldw, oldh)
-
-    }
-
     override fun freshTime(time: CharSequence?) {
 
     }
@@ -38,7 +33,7 @@ class VerticalReaderView : RecyclerView, IReadView {
 
     }
 
-    override fun setLoadChapter(msg:Int, chapter: Chapter, chapterList: ArrayList<ArrayList<NovelLineBean>>?) {
+    override fun setLoadChapter(msg: Int, chapter: Chapter, chapterList: ArrayList<ArrayList<NovelLineBean>>?) {
     }
 
     override fun setLoadAd(view: View) {
