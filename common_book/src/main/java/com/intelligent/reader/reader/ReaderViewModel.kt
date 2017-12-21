@@ -369,8 +369,8 @@ class ReaderViewModel : DisposableAndroidViewModel {
                     val chapter = getChapter(ReadingActivity.MSG_LOAD_NEXT_CHAPTER, readStatus?.sequence!! + 1)
                     if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
                         if (chapter != null) {
-                            if (!TextUtils.isEmpty(chapter?.content)) {
-                                if (chapter?.content.length <= Constants.CONTENT_ERROR_COUNT) {
+                            if (!TextUtils.isEmpty(chapter.content)) {
+                                if (chapter.content.length <= Constants.CONTENT_ERROR_COUNT) {
                                     readStatus?.isLoading = true
                                     mReadDataListener?.getChapter(ReadingActivity.MSG_LOAD_NEXT_CHAPTER, readStatus?.sequence!! + 1)
                                 } else {

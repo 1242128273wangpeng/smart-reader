@@ -1,23 +1,23 @@
 package com.intelligent.reader.read.adapter
 
-import android.content.res.Resources
 import android.view.View
 import android.view.ViewGroup
-import com.intelligent.reader.read.help.DrawTextHelper
+import com.intelligent.reader.read.mode.ReadCursor
 import com.intelligent.reader.read.mode.ReadViewEnums
 import com.intelligent.reader.read.page.HorizontalPage
 import com.intelligent.reader.view.PagerAdapter
 import com.intelligent.reader.view.ViewPager
+import net.lzbook.kit.utils.AppLog
 
 /**
  * 水平阅读 adapter
  * Created by wt on 2017/12/20.
  */
-class HorizontalAdapter(resources: Resources) :PagerAdapter(){
+class HorizontalAdapter(private var noticePageListener: HorizontalPage.NoticePageListener): PagerAdapter() {
 
     var mCurrentView: View? = null
-    var drawTextHelper: DrawTextHelper = DrawTextHelper(resources)
     var index: Int = -1
+    var cursor:ReadCursor? = null
 
     fun getPrimaryItem(): View? {
         return mCurrentView
@@ -38,11 +38,14 @@ class HorizontalAdapter(resources: Resources) :PagerAdapter(){
         container.removeView(view)
     }
 
-    override fun instantiateItem(container: ViewGroup?, position: Int): Any {
-        val itemView = HorizontalPage(container!!.context)
+    override fun instantiateItem(container: ViewGroup, position: Int): Any {
+        val itemView = HorizontalPage(container.context,noticePageListener)
         //添加view
         itemView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        itemView.drawPage(drawTextHelper)
+        if (cursor!= null) {
+            AppLog.e("cursor: ",cursor.toString())
+            itemView.setCursor(cursor!!,false)
+        }
         addPageTag(itemView, position)
         container.addView(itemView)
         return itemView
@@ -69,17 +72,16 @@ class HorizontalAdapter(resources: Resources) :PagerAdapter(){
         when (tag) {
             ReadViewEnums.PageIndex.next -> {//如果移除的是下页 -> 往上翻 设置新tag
                 val preView = vp.findViewWithTag(ReadViewEnums.PageIndex.previous)
-                preView?.tag = (preView?.tag as ReadViewEnums.PageIndex).previous
-                val curView = vp.findViewWithTag(ReadViewEnums.PageIndex.current)
-                curView?.tag = (curView?.tag as ReadViewEnums.PageIndex).previous
-            }
-            ReadViewEnums.PageIndex.previous -> {//如果移除的是上页 -> 往下翻 设置新tag
-                val nextView = vp.findViewWithTag(ReadViewEnums.PageIndex.next)
-                nextView?.tag = (nextView?.tag as ReadViewEnums.PageIndex).next
+                preView?.tag = (preView?.tag as ReadViewEnums.PageIndex).next
                 val curView = vp.findViewWithTag(ReadViewEnums.PageIndex.current)
                 curView?.tag = (curView?.tag as ReadViewEnums.PageIndex).next
             }
+            ReadViewEnums.PageIndex.previous -> {//如果移除的是上页 -> 往下翻 设置新tag
+                val nextView = vp.findViewWithTag(ReadViewEnums.PageIndex.next)
+                nextView?.tag = (nextView?.tag as ReadViewEnums.PageIndex).previous
+                val curView = vp.findViewWithTag(ReadViewEnums.PageIndex.current)
+                curView?.tag = (curView?.tag as ReadViewEnums.PageIndex).previous
+            }
         }
     }
-
 }

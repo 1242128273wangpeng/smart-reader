@@ -48,7 +48,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     private var novel_basePageView: ReaderViewWidget? = null
     private var mCatlogMarkDrawer: DrawerLayout? = null
     private var mCatalogMarkFragment: CatalogMarkFragment? = null
-    private var mReadInfo: ReadInfo?=null
     private val mDrawerListener = object : DrawerLayout.DrawerListener {
         override fun onDrawerSlide(drawerView: View, slideOffset: Float) = Unit
         //解锁， 可滑动关闭
@@ -117,9 +116,8 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         readSettingView?.setNovelMode(Constants.MODE)
         readStatus?.source_ids = readStatus?.book?.site
         //add ReadInfo
-        mReadInfo = ReadInfo(readStatus?.book!!,readStatus?.sequence!!, ReadViewEnums.Animation.slide)
         novel_basePageView?.initReaderViewFactory()
-        novel_basePageView?.entrance(mReadInfo!!)
+        novel_basePageView?.entrance(ReadInfo(readStatus?.book!!,readStatus!!, ReadViewEnums.Animation.slide))
         novel_basePageView?.setIReadPageChange(this)
     }
 
