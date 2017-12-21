@@ -8,5 +8,9 @@ import net.lzbook.kit.data.bean.Book
  */
 data class ReadCursor(
         var curBook: Book,
-        var sequence:Int
-)
+        var sequence: Int,
+        var pageIdex: Int
+) {
+    var pageIdexSum: Int? = null
+    var pageStatus: ReadViewEnums.PageIndex? = null
+}
