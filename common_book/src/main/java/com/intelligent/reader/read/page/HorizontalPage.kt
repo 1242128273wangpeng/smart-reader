@@ -12,6 +12,10 @@ import com.intelligent.reader.read.help.DrawTextHelper
 import com.intelligent.reader.read.help.ReadSeparateHelper
 import com.intelligent.reader.read.mode.ReadCursor
 import com.intelligent.reader.read.mode.ReadViewEnums
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Flowable
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.data.bean.Chapter
 import java.util.*
 
@@ -93,21 +97,47 @@ class HorizontalPage : View {
         this.cursor = cursor
         val provider = DataProvider.getInstance()
         //判断预加载
-        val chapterKeyArray = provider.chapterMap.keys.toIntArray()
-        Arrays.sort(chapterKeyArray)
-        if (chapterKeyArray.isNotEmpty() and (cursor.sequence >= chapterKeyArray.last())) {//预加载
-            //如果请求6章，最后内存是6 循环请求1次、如果请求7章，最后内存是6 循环请求2次
-            for (i in chapterKeyArray.last()..cursor.sequence + 1) {
-                DataProvider.getInstance().loadChapter(cursor.curBook, i, ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener {
-                    override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex)  = Unit
-                    override fun loadDataError(message: String) = Unit
-                })
+        var dis:Disposable = Flowable.create<IntArray>({
+            val chapterKeyArray = provider.chapterMap.keys.toIntArray()
+            Arrays.sort(chapterKeyArray)
+            if (chapterKeyArray.isNotEmpty() and (cursor.sequence >= chapterKeyArray.last())){//预加载
+                val quest: IntArray = intArrayOf(cursor.sequence,chapterKeyArray.last(),0)//0预先加载下一章
+                it.onNext(quest)
+            }else if(chapterKeyArray.isNotEmpty() and (cursor.sequence <= chapterKeyArray.first())){
+                val quest: IntArray = intArrayOf(cursor.sequence,chapterKeyArray.last(),1)//1预先加载上一章
+                it.onNext(quest)
             }
-            if(chapterKeyArray.size>4){//清除内存缓存
-                provider.chapterMap.remove(chapterKeyArray.first())
-            }
-        }
-
+        },BackpressureStrategy.BUFFER)
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+            .subscribe {
+                when(it.last()){//如果请求6章，最后内存是6 循环请求1次、如果请求7章，最后内存是6 循环请求2次
+                    0->{
+                        for (i in it[1]..it.first()) {
+                            DataProvider.getInstance().loadChapter(cursor.curBook, i, ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener {
+                                override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex){
+                                    if(it.size>4){//清除内存缓存
+                                        provider.chapterMap.remove(it.first())
+                                    }
+                                }
+                                override fun loadDataError(message: String) = Unit
+                            })
+                        }
+                    }
+                    1->{
+                        for (i in it.first()..it[1]) {
+                            DataProvider.getInstance().loadChapter(cursor.curBook, i, ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener {
+                                override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex){
+                                    if(it.size>4){//清除内存缓存
+                                        provider.chapterMap.remove(it.last())
+                                    }
+                                }
+                                override fun loadDataError(message: String) = Unit
+                            })
+                        }
+                    }
+                }
+          }
         //判断item 需要的章节是否在缓存
         val chapter = provider.chapterMap[cursor.sequence]
         if (chapter != null) {//加载数据
@@ -128,6 +158,7 @@ class HorizontalPage : View {
             if (entrance) {//通知其他页面加载，矫正坐标
                 noticePageListener?.curPageChangSuccess(cursor.pageIdex, chapterList.size)//当前页数和当前总页数
             }
+            cursor.readStatus.currentPage = cursor.pageIdex//画页码
             this.cursor!!.pageIdexSum = chapterList.size//确定总长度
             val pageList = if (cursor.pageIdex == -1) {//分页前不知道上一章长度
                 this.cursor!!.pageIdex = chapterList.size//确定长度
