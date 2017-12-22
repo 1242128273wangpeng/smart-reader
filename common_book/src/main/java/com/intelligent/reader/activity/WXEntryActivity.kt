@@ -1,4 +1,4 @@
-package cn.txtzsydsq.reader.wxapi
+package cn.qbzsydsq.reader.wxapi
 
 import android.app.Activity
 import android.content.Intent
