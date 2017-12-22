@@ -42,7 +42,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     //滑动监听
     private var mListener: OnPageChangeListener = object : ViewPager.OnPageChangeListener {
         private var lastValue: Float = 0.toFloat()
-        private var index: Int = 0
+        private var index: Int = Int.MAX_VALUE/2
         override fun onPageScrollStateChanged(state: Int) = Unit
 
         override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
@@ -57,8 +57,8 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 
         override fun onPageSelected(position: Int) {
             //建立新的游标
-            var newSequence = 0
-            var newPageIndex = 0
+            val newSequence: Int
+            val newPageIndex:Int
             //判断方向
             when {
                 //向上翻页
@@ -77,11 +77,11 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                                 newPageIndex = preCousor.pageIdex -1
                             }
                         }
+                        //设置游标
+                        val newCursor = ReadCursor(curCursor!!.curBook,newSequence,newPageIndex,ReadViewEnums.PageIndex.previous,mReadInfo!!.mReadStatus)
+                        (adapter as HorizontalAdapter).cursor = newCursor
+                        index = position
                     }
-                    //设置游标
-                    val newCursor = ReadCursor(curCursor!!.curBook,newSequence,newPageIndex,ReadViewEnums.PageIndex.previous,mReadInfo!!.mReadStatus)
-                    (adapter as HorizontalAdapter).cursor = newCursor
-                    index = position
                 }
                 //向下翻页
                 //获取下页游标，因为下页即将成为当页
@@ -99,11 +99,11 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                                 newPageIndex  = nextCousor.pageIdex +1
                             }
                         }
+                        //设置游标
+                        val newCursor = ReadCursor(curCursor!!.curBook,newSequence,newPageIndex,ReadViewEnums.PageIndex.next,mReadInfo!!.mReadStatus)
+                        (adapter as HorizontalAdapter).cursor = newCursor
+                        index = position
                     }
-                    //设置游标
-                    val newCursor = ReadCursor(curCursor!!.curBook,newSequence,newPageIndex,ReadViewEnums.PageIndex.next,mReadInfo!!.mReadStatus)
-                    (adapter as HorizontalAdapter).cursor = newCursor
-                    index = position
                 }
             }
         }

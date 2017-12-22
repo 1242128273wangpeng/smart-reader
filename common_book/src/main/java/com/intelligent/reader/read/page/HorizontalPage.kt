@@ -22,6 +22,12 @@ import net.lzbook.kit.data.bean.Chapter
  * 3、子类要维护页面状态 loading success error
  * 4、状态改变通知父类 （ 页面状态 章节状态 ） ？父类游标
  * 5、父类检查 三个item 的状态 tag 做出整体的判断
+ * 页面状态逻辑
+ * 默认loding
+ * 如果当前页为loading 禁止vp滑动
+ * error
+ * 重新加载数据
+ *
  * Created by wt on 2017/12/14.
  */
 class HorizontalPage : View {
@@ -80,11 +86,13 @@ class HorizontalPage : View {
     /**
      * 一般模式
      * 1、判断缓存
-     * 2、展示数据
+     * 2、预加载数据
+     * 3、展示数据
      * @param cursor
      * @param entrance true：入口模式进入
      */
     fun setCursor(cursor: ReadCursor,entrance:Boolean) {
+        this.cursor = cursor
         val provider = DataProvider.getInstance()
         //判断item 需要的章节是否在缓存
         val chapter = provider.chapterMap[cursor.sequence]
@@ -92,9 +100,10 @@ class HorizontalPage : View {
             drawPage(cursor, chapter,entrance)
         }else {//拉取数据
             //显示loading状态
-            DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener {
+            DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener {
                 override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) {
-                    drawPage(cursor, c,entrance)
+                    val chapter = provider.chapterMap[cursor.sequence]
+                    drawPage(cursor, chapter!!,entrance)
                     //显示success状态
                 }
                 override fun loadDataError(message: String) {
@@ -109,7 +118,6 @@ class HorizontalPage : View {
      */
     private fun drawPage(cursor: ReadCursor, chapter: Chapter,entrance: Boolean) {
         cursor.readStatus.chapterName = chapter.chapter_name
-        this.cursor = cursor
         val chapterList = ReadSeparateHelper.getInstance(cursor.readStatus).initTextSeparateContent(chapter.content)//分页
         if (!chapterList.isEmpty() and (cursor.pageIdex <= chapterList.size)) {//集合不为空，角标小于集合长度
             if (entrance) {//通知其他页面加载，矫正坐标
