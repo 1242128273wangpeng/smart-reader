@@ -1362,14 +1362,14 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                 setBatteryBackground(R.drawable.reading_batty_night2)
             }
             61 -> {
-                setTextColor(readReference?.get()?.getResources()!!.getColor(R.color.reading_text_color_night))
-                setPageBackColor(readReference?.get()?.getResources()!!.getColor(R.color.reading_backdrop_night))
+                setTextColor(readReference?.get()?.resources!!.getColor(R.color.reading_text_color_night))
+                setPageBackColor(readReference?.get()?.resources!!.getColor(R.color.reading_backdrop_night))
 
                 setBackground()
                 setBatteryBackground(R.drawable.reading_batty_night2)
             }
             else -> {
-                setTextColor(readReference?.get()?.getResources()!!.getColor(R.color.reading_text_color_first))
+                setTextColor(readReference?.get()?.resources!!.getColor(R.color.reading_text_color_first))
                 setPageBackColor(Color.parseColor("#C2B282"))
 
                 setBackground()
@@ -1688,7 +1688,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         var intent: Intent? = null
         if (book_id != (-1).toString() + "") {
             intent = Intent(readReference?.get(), DownBookClickReceiver::class.java)
-            intent!!.action = DownBookClickReceiver.action
+            intent.action = DownBookClickReceiver.action
             intent.putExtra("book_id", book_id)
             pending = PendingIntent.getBroadcast(readReference?.get()?.getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         } else {
@@ -2181,7 +2181,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     inner class CacheUpdateReceiver(weak: WeakReference<ReadingActivity>) : BroadcastReceiver() {
         private val mActivityWeakReference: WeakReference<ReadingActivity> = weak
         override fun onReceive(context: Context, intent: Intent) {
-            val book = intent.getSerializableExtra(Constants.REQUEST_ITEM) as Book ?: return
+            val book= intent.getSerializableExtra(Constants.REQUEST_ITEM) as Book
             if (Constants.QG_SOURCE != book.site) {
                 if (mActivityWeakReference.get() != null && readStatus!!.book.book_id == book.book_id) {
                     val bundle = Bundle()

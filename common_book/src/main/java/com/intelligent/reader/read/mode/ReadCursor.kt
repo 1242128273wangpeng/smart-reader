@@ -1,6 +1,8 @@
 package com.intelligent.reader.read.mode
 
+import com.google.gson.Gson
 import net.lzbook.kit.data.bean.Book
+import net.lzbook.kit.data.bean.ReadStatus
 
 /**
  * 阅读游标
@@ -8,9 +10,13 @@ import net.lzbook.kit.data.bean.Book
  */
 data class ReadCursor(
         var curBook: Book,
-        var sequence: Int,
-        var pageIdex: Int
+        var sequence: Int,//章节
+        var pageIdex: Int,//页数
+        var pageStatus: ReadViewEnums.PageIndex?,//view tag
+        var readStatus: ReadStatus
 ) {
     var pageIdexSum: Int? = null
-    var pageStatus: ReadViewEnums.PageIndex? = null
+    override fun toString(): String {
+        return Gson().toJson(this)
+    }
 }
