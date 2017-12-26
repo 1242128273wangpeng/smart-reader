@@ -123,13 +123,13 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
     @Override
     public void init(Activity activity, ReadStatus readStatus, NovelHelper novelHelper) {
         this.mActivity = activity;
-        View view = LayoutInflater.from(mContext).inflate(R.layout.scroll_page, this);
-        page_list = (FListView) view.findViewById(R.id.page_list);
-        novel_time = (TextView) view.findViewById(R.id.novel_time);
-        novel_chapter = (TextView) view.findViewById(R.id.novel_chapter);
-        novel_title = (TextView) view.findViewById(R.id.novel_title);
-        novel_page = (TextView) view.findViewById(R.id.novel_page);
-        novel_content_battery_view = (BatteryView) view.findViewById(R.id.novel_content_battery_view);
+//        View view = LayoutInflater.from(mContext).inflate(R.layout.scroll_page, this);
+//        page_list = (FListView) view.findViewById(R.id.page_list);
+//        novel_time = (TextView) view.findViewById(R.id.novel_time);
+//        novel_chapter = (TextView) view.findViewById(R.id.novel_chapter);
+//        novel_title = (TextView) view.findViewById(R.id.novel_title);
+//        novel_page = (TextView) view.findViewById(R.id.novel_page);
+//        novel_content_battery_view = (BatteryView) view.findViewById(R.id.novel_content_battery_view);
         mOriginTv = (TextView) findViewById(R.id.origin_tv);
         mTransCodingTv = (TextView) findViewById(R.id.trans_coding_tv);
         mOriginTv.setOnClickListener(this);

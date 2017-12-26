@@ -245,6 +245,13 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     override fun onClickMenu(isShow: Boolean) {
         mReadPageChange?.showMenu(isShow)
     }
+    override fun loadOrigin() {
+        ToastUtils.showToastNoRepeat("loadOrigin")
+    }
+
+    override fun loadTransCoding() {
+        ToastUtils.showToastNoRepeat("loadTransCoding")
+    }
 
 //==================================================IReadPageChange=========================================
     private var mReadPageChange: IReadPageChange? = null
@@ -279,19 +286,28 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     //时间
     override fun freshTime(time: CharSequence?) {
         this.time = time.toString()
-        adapter.notifyDataSetChanged()
+        for (i in 0 until childCount){
+            val childAtView = getChildAt(i) as HorizontalPage
+            childAtView.setTimes(this.time)
+        }
     }
 
     //电量
     override fun freshBattery(percent: Float) {
         this.percent = percent
-        adapter.notifyDataSetChanged()
+        for (i in 0 until childCount){
+            val childAtView = getChildAt(i) as HorizontalPage
+            childAtView.setBattery(this.percent)
+        }
     }
 
     //设置背景颜色
     override fun setBackground(background: Int) {
-        this.color = color
-        adapter.notifyDataSetChanged()
+        this.color = background
+        for (i in 0 until childCount){
+            val childAtView = getChildAt(i) as HorizontalPage
+            childAtView.setBackGroud(this.color)
+        }
     }
 
     //设置阅读信息

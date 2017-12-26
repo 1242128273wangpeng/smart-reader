@@ -5,26 +5,22 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.widget.Button
 import android.widget.FrameLayout
-import android.widget.ProgressBar
+import com.intelligent.reader.R
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.animation.BitmapManager
 import com.intelligent.reader.read.help.DrawTextHelper
 import com.intelligent.reader.read.help.ReadSeparateHelper
 import com.intelligent.reader.read.mode.ReadCursor
 import com.intelligent.reader.read.mode.ReadViewEnums
-import io.reactivex.BackpressureStrategy
-import io.reactivex.Flowable
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
-import net.lzbook.kit.R
+import kotlinx.android.synthetic.main.error_page2.view.*
+import kotlinx.android.synthetic.main.read_bottom.view.*
+import kotlinx.android.synthetic.main.read_top.view.*
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Chapter
-import net.lzbook.kit.utils.ToastUtils
-import java.util.*
+
 
 /**
  * 水平滑动item
@@ -49,7 +45,11 @@ class HorizontalPage : FrameLayout {
     private lateinit var loadView:View
     private lateinit var errorView:View
     private lateinit var pageView:HorizontalItemPage
+    private lateinit var readTop:View
+    private lateinit var readBottom:View
 
+    var percent = 0.0f
+    var time = ""
     var mCurPageBitmap: Bitmap? = null
     var mCurrentCanvas: Canvas? = null
     var mCursor: ReadCursor? = null
@@ -65,15 +65,89 @@ class HorizontalPage : FrameLayout {
         init()
     }
 
-    private fun init() {
-        mDrawTextHelper = DrawTextHelper(context.resources)
-        loadView = LayoutInflater.from(context).inflate(R.layout.loading_page_reading, null)
-        errorView = LayoutInflater.from(context).inflate(R.layout.error_page2, null)
-        pageView = HorizontalItemPage(context)
-        addView(loadView)
-        addView(errorView)
-        addView(pageView)
-        errorView.visibility = View.GONE
+     fun init() {
+         mDrawTextHelper = DrawTextHelper(context.resources)
+         loadView = inflate(context,R.layout.loading_page_reading, null)
+         errorView = inflate(context, R.layout.error_page2, null)
+         readTop = inflate(context, R.layout.read_top, null)
+         readBottom = inflate(context, R.layout.read_bottom, null)
+
+         pageView = HorizontalItemPage(context)
+         val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+         layoutParams.gravity = bottom
+         readBottom.layoutParams = layoutParams
+         errorView.visibility = View.GONE
+         addView(pageView)
+         addView(readTop)
+         addView(readBottom)
+         addView(loadView)
+         addView(errorView)
+         setupView()
+    }
+
+    private fun setupView(){
+
+        //原网页
+        origin_tv.setOnClickListener {
+            noticePageListener?.loadOrigin()
+        }
+        //转码声明
+        trans_coding_tv.setOnClickListener {
+            noticePageListener?.loadTransCoding()
+        }
+        //设置TextColor
+        var colorInt = com.intelligent.reader.R.color.reading_operation_text_color_first
+        when {
+            Constants.MODE == 51 -> // night1
+                colorInt = com.intelligent.reader.R.color.reading_operation_text_color_first
+            Constants.MODE == 52 -> // day
+                colorInt = com.intelligent.reader.R.color.reading_operation_text_color_second
+            Constants.MODE == 53 -> // eye
+                colorInt = com.intelligent.reader.R.color.reading_operation_text_color_third
+            Constants.MODE == 54 -> // powersave
+                colorInt = com.intelligent.reader.R.color.reading_operation_text_color_fourth
+            Constants.MODE == 55 -> // color -4
+                colorInt = com.intelligent.reader.R.color.reading_operation_text_color_fifth
+            Constants.MODE == 56 -> // color -5
+                colorInt = com.intelligent.reader.R.color.reading_operation_text_color_sixth
+            Constants.MODE == 61 -> // night2
+                colorInt = com.intelligent.reader.R.color.reading_operation_text_color_night
+        }
+        novel_time.setTextColor(resources.getColor(colorInt))
+        origin_tv.setTextColor(resources.getColor(colorInt))
+        trans_coding_tv.setTextColor(resources.getColor(colorInt))
+        novel_page.setTextColor(resources.getColor(colorInt))
+        novel_chapter.setTextColor(resources.getColor(colorInt))
+        novel_title.setTextColor(resources.getColor(colorInt))
+    }
+
+    /**
+     * @param title 章节标题
+     * @param chapterProgress 章节进度
+     * @param pageProgress 页进度
+     */
+    fun setTopAndBottomViewContext(title:String,chapterProgress:String,pageProgress:String){
+        novel_title.text = title
+        novel_chapter.text = chapterProgress
+        novel_page.text = pageProgress
+    }
+
+    fun setBackGroud(color:Int){
+        //电池背景
+        novel_content_battery_view.setBackgroundColor(color)
+        pageView.setBackgroundColor(color)
+    }
+
+    fun setTimes(time:String){
+        this.time = time
+        //时间
+        novel_time.text = time
+    }
+
+    fun setBattery(percent:Float){
+        this.percent = percent
+        //电池
+        novel_content_battery_view.setBattery(percent)
     }
 
     fun setCursor(cursor: ReadCursor){
@@ -87,6 +161,8 @@ class HorizontalPage : FrameLayout {
         fun onClickLeft()
         fun onClickRight()
         fun onClickMenu(isShow: Boolean)
+        fun loadOrigin()
+        fun loadTransCoding()
     }
 
     inner class HorizontalItemPage:View{
@@ -117,7 +193,7 @@ class HorizontalPage : FrameLayout {
                     viewState = ReadViewEnums.ViewState.error
                     loadView.visibility = View.GONE
                     errorView.visibility = View.VISIBLE
-                    errorView.findViewById(R.id.loading_error_reload).setOnClickListener({
+                    errorView.loading_error_reload.setOnClickListener({
                         entrance(cursor)
                         loadView.visibility = View.VISIBLE
                         errorView.visibility = View.GONE
@@ -176,6 +252,10 @@ class HorizontalPage : FrameLayout {
                 postInvalidate()
                 viewState = ReadViewEnums.ViewState.success
                 loadView.visibility = View.GONE
+                //设置top and bottom
+                val pageProgress = ""+(cursor.readStatus.sequence + 1) + "/" + cursor.readStatus.chapterCount + "章"
+                val chapterProgress = "本章第" + cursor.readStatus.currentPage + "/" + cursor.readStatus.pageCount
+                setTopAndBottomViewContext(cursor.readStatus.chapterName,chapterProgress,pageProgress)
             }
         }
 
