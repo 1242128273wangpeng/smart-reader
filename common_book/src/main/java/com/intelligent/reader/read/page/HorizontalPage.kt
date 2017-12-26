@@ -5,7 +5,11 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.ProgressBar
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.animation.BitmapManager
 import com.intelligent.reader.read.help.DrawTextHelper
@@ -16,6 +20,7 @@ import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import net.lzbook.kit.R
 import net.lzbook.kit.data.bean.Chapter
 import java.util.*
 
@@ -35,12 +40,19 @@ import java.util.*
  *
  * Created by wt on 2017/12/14.
  */
-class HorizontalPage : View {
+class HorizontalPage : FrameLayout {
+
     private val paint: Paint = Paint()
+    private var mDrawTextHelper: DrawTextHelper? = null
+    private lateinit var loadView:View
+    private lateinit var errorView:View
+    private lateinit var pageView:HorizontalItemPage
+
     var mCurPageBitmap: Bitmap? = null
     var mCurrentCanvas: Canvas? = null
-    private var mDrawTextHelper: DrawTextHelper? = null
-    var cursor: ReadCursor? = null
+    var mCursor: ReadCursor? = null
+    var viewState:ReadViewEnums.ViewState = ReadViewEnums.ViewState.loading
+    var viewNotify:ReadViewEnums.NotifyStateState = ReadViewEnums.NotifyStateState.none
 
     constructor(context: Context, noticePageListener: NoticePageListener) : this(context, null, noticePageListener)
 
@@ -53,129 +65,113 @@ class HorizontalPage : View {
 
     private fun init() {
         mDrawTextHelper = DrawTextHelper(context.resources)
+        loadView = LayoutInflater.from(context).inflate(R.layout.loading_page_reading, null)
+        errorView = LayoutInflater.from(context).inflate(R.layout.error_page2, null)
+        pageView = HorizontalItemPage(context)
+        addView(loadView)
+        addView(errorView)
+        addView(pageView)
+        errorView.visibility = View.GONE
     }
 
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
-        if (mCurPageBitmap != null) {
-            if (!mCurPageBitmap!!.isRecycled) canvas.drawBitmap(mCurPageBitmap, 0f, 0f, paint)
-        }
-    }
-
-    /**
-     * 入口模式
-     * 加载3章至内存
-     */
-    fun entrance(cursor: ReadCursor) {
-        DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener {
-            override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) {
-                //当前章拉去成功 执行一般方法
-                //true 通知其他页面加载
-                setCursor(cursor, true)
-            }
-            override fun loadDataError(message: String) = Unit
-        })
-        DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener {
-            override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
-            override fun loadDataError(message: String) = Unit
-        })
-        DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.next, object : DataProvider.ReadDataListener {
-            override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
-            override fun loadDataError(message: String) = Unit
-        })
-    }
-
-    /**
-     * 一般模式
-     * 1、判断缓存
-     * 2、预加载数据
-     * 3、展示数据
-     * @param cursor
-     * @param entrance true：入口模式进入
-     */
-    fun setCursor(cursor: ReadCursor, entrance: Boolean) {
-        this.cursor = cursor
-        val provider = DataProvider.getInstance()
-        //判断预加载
-        var dis:Disposable = Flowable.create<IntArray>({
-            val chapterKeyArray = provider.chapterMap.keys.toIntArray()
-            Arrays.sort(chapterKeyArray)
-            if (chapterKeyArray.isNotEmpty() and (cursor.sequence >= chapterKeyArray.last())){//预加载
-                val quest: IntArray = intArrayOf(cursor.sequence,chapterKeyArray.last(),0)//0预先加载下一章
-                it.onNext(quest)
-            }else if(chapterKeyArray.isNotEmpty() and (cursor.sequence <= chapterKeyArray.first())){
-                val quest: IntArray = intArrayOf(cursor.sequence,chapterKeyArray.last(),1)//1预先加载上一章
-                it.onNext(quest)
-            }
-        },BackpressureStrategy.BUFFER)
-            .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.io())
-            .subscribe {
-                when(it.last()){//如果请求6章，最后内存是6 循环请求1次、如果请求7章，最后内存是6 循环请求2次
-                    0->{
-                        for (i in it[1]..it.first()) {
-                            DataProvider.getInstance().loadChapter(cursor.curBook, i, ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener {
-                                override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex){
-                                    if(it.size>4){//清除内存缓存
-                                        provider.chapterMap.remove(it.first())
-                                    }
-                                }
-                                override fun loadDataError(message: String) = Unit
-                            })
-                        }
-                    }
-                    1->{
-                        for (i in it.first()..it[1]) {
-                            DataProvider.getInstance().loadChapter(cursor.curBook, i, ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener {
-                                override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex){
-                                    if(it.size>4){//清除内存缓存
-                                        provider.chapterMap.remove(it.last())
-                                    }
-                                }
-                                override fun loadDataError(message: String) = Unit
-                            })
-                        }
-                    }
-                }
-          }
-        //判断item 需要的章节是否在缓存
-        val chapter = provider.chapterMap[cursor.sequence]
-        if (chapter != null) {//加载数据
-            drawPage(cursor, chapter, entrance)
-        } else {//无缓存数据
-            entrance(cursor)
-        }
-    }
-
-    /**
-     * 画页面
-     * @param entrance true：入口模式进入
-     */
-    private fun drawPage(cursor: ReadCursor, chapter: Chapter, entrance: Boolean) {
-        cursor.readStatus.chapterName = chapter.chapter_name
-        val chapterList = ReadSeparateHelper.getInstance(cursor.readStatus).initTextSeparateContent(chapter.content)//分页
-        if (!chapterList.isEmpty() and (cursor.pageIdex <= chapterList.size)) {//集合不为空，角标小于集合长度
-            if (entrance) {//通知其他页面加载，矫正坐标
-                noticePageListener?.curPageChangSuccess(cursor.pageIdex, chapterList.size)//当前页数和当前总页数
-            }
-            cursor.readStatus.currentPage = cursor.pageIdex//画页码
-            this.cursor!!.pageIdexSum = chapterList.size//确定总长度
-            val pageList = if (cursor.pageIdex == -1) {//分页前不知道上一章长度
-                this.cursor!!.pageIdex = chapterList.size//确定长度
-                chapterList[chapterList.size - 1]
-            } else {
-                chapterList[cursor.pageIdex - 1]
-            }
-            mCurPageBitmap = BitmapManager.getInstance().createBitmap()
-            mCurrentCanvas = Canvas(mCurPageBitmap)
-            mDrawTextHelper?.drawText(mCurrentCanvas, pageList)
-            postInvalidate()
-        }
+    fun setCursor(cursor: ReadCursor){
+        pageView.setCursor(cursor)
     }
 
     var noticePageListener: NoticePageListener? = null
 
     interface NoticePageListener {
-        fun curPageChangSuccess(pageIndex: Int, pageSum: Int)
+        fun pageChangSuccess(cursor:ReadCursor,notify:ReadViewEnums.NotifyStateState)
+    }
+
+    inner class HorizontalItemPage:View{
+
+        constructor(context: Context) : this(context, null)
+        constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
+        constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+
+        override fun onDraw(canvas: Canvas) {
+            super.onDraw(canvas)
+            if (mCurPageBitmap != null) {
+                if (!mCurPageBitmap!!.isRecycled) canvas.drawBitmap(mCurPageBitmap, 0f, 0f, paint)
+            }
+        }
+        /**
+         * 入口模式
+         * 加载3章至内存
+         */
+        fun entrance(cursor: ReadCursor) {
+            DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener {
+                override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) {
+                    //当前章拉去成功 执行一般方法
+                    //true 通知其他页面加载
+                    setCursor(cursor)
+                }
+                override fun loadDataError(message: String){
+                    //Error
+                    viewState = ReadViewEnums.ViewState.error
+                    loadView.visibility = View.GONE
+                    errorView.visibility = View.VISIBLE
+                    errorView.findViewById(R.id.loading_error_reload).setOnClickListener({
+                        entrance(cursor)
+                        loadView.visibility = View.VISIBLE
+                        errorView.visibility = View.GONE
+                        viewState = ReadViewEnums.ViewState.loading
+                    })
+                }
+            })
+            DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener {
+                override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
+                override fun loadDataError(message: String) = Unit
+            })
+            DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.next, object : DataProvider.ReadDataListener {
+                override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
+                override fun loadDataError(message: String) = Unit
+            })
+        }
+
+        /**
+         * 一般模式
+         * 1、判断缓存
+         * 2、预加载数据
+         * 3、展示数据
+         * @param cursor
+         */
+        fun setCursor(cursor: ReadCursor) {
+            mCursor = cursor
+            val provider = DataProvider.getInstance()
+            //判断item 需要的章节是否在缓存
+            val chapter = provider.chapterMap[cursor.sequence]
+            if (chapter != null) {//加载数据
+                drawPage(cursor, chapter)
+            } else {//无缓存数据
+                entrance(cursor)
+            }
+        }
+
+        /**
+         * 画页面
+         */
+        private fun drawPage(cursor: ReadCursor, chapter: Chapter) {
+            cursor.readStatus.chapterName = chapter.chapter_name
+            val chapterList = ReadSeparateHelper.getInstance(cursor.readStatus).initTextSeparateContent(chapter.content)//分页
+            if (!chapterList.isEmpty() and (cursor.pageIndex <= chapterList.size)) {//集合不为空，角标小于集合长度
+                mCursor!!.pageIdexSum = chapterList.size//确定总长度
+                noticePageListener?.pageChangSuccess(mCursor!!,viewNotify)//游标通知回调
+                cursor.readStatus.currentPage = cursor.pageIndex//画页码
+                val pageList = if (cursor.pageIndex == -1) {//分页前不知道上一章长度
+                    mCursor!!.pageIndex = chapterList.size//确定长度
+                    chapterList[chapterList.size - 1]
+                } else {
+                    chapterList[cursor.pageIndex - 1]
+                }
+                mCurPageBitmap = BitmapManager.getInstance().createBitmap()
+                mCurrentCanvas = Canvas(mCurPageBitmap)
+                mDrawTextHelper?.drawText(mCurrentCanvas, pageList)
+                postInvalidate()
+                viewState = ReadViewEnums.ViewState.success
+                loadView.visibility = View.GONE
+            }
+        }
     }
 }

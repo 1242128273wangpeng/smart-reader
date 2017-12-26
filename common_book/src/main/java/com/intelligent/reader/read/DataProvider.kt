@@ -16,12 +16,14 @@ import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.Chapter
+import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.OpenUDID
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by wt on 2017/12/20.
@@ -40,6 +42,7 @@ class DataProvider : DisposableAndroidViewModel() {
     var chapterList: ArrayList<Chapter>? = null
     //分页后缓存容器
     val chapterMap: HashMap<Int, Chapter> = HashMap()
+
     //工厂
     var mReaderRepository: ReaderRepository = ReaderRepositoryFactory.getInstance(ReaderOwnRepository.getInstance())
     var mBookCoverRepository: BookCoverRepository = BookCoverRepositoryFactory.getInstance(BookCoverOtherRepository.getInstance(NetService.userService)

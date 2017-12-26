@@ -43,7 +43,7 @@ class HorizontalAdapter(private var noticePageListener: HorizontalPage.NoticePag
         itemView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         if (cursor!= null) {
             AppLog.e("cursor: ",cursor.toString())
-            itemView.setCursor(cursor!!,false)
+            itemView.setCursor(cursor!!)
         }
         addPageTag(container as ViewPager,itemView, position)
         container.addView(itemView)

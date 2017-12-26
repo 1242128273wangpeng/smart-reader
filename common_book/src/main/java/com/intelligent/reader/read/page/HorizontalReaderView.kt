@@ -24,10 +24,10 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 
     //记录上一次x坐标
     private var beforeX: Float = 0.toFloat()
-    //ViewPager是否能滑动
-    val isCanScroll: Boolean = true
+    //ViewPager是否能滑动 -1:都不能 0：都能 1 左 2 右
+    var isCanScroll: Int = 0
     //禁止滑动方向 true:禁止左滑 false:禁止右滑
-    val isLeftSlip: Boolean = true
+    var isLeftSlip: Boolean = true
     //宽、高、时间、电量、颜色
     private var w: Int = 0
     private var h: Int = 0
@@ -43,7 +43,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     private var mListener: OnPageChangeListener = object : ViewPager.OnPageChangeListener {
         private var lastValue: Float = 0.toFloat()
         private var index: Int = Int.MAX_VALUE/2
-        override fun onPageScrollStateChanged(state: Int) = Unit
+        override fun onPageScrollStateChanged(state: Int)=Unit
 
         override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
             if (positionOffset == 0.0f) return
@@ -56,56 +56,19 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         }
 
         override fun onPageSelected(position: Int) {
-            //建立新的游标
-            val newSequence: Int
-            val newPageIndex:Int
             //判断方向
             when {
-                //向上翻页
-                //获取上页游标，因为上页即将成为当页
-                //改变adapter游标
+                //1、向上翻页/向下翻页
+                //2、获取游标
+                //3、改变adapter游标
                 index > position -> {
-                    val preView = findViewWithTag(ReadViewEnums.PageIndex.previous)
-                    if(preView != null){
-                        val preCousor = (preView as HorizontalPage).cursor!!
-                        when(preCousor.pageIdex){
-                            1->{//如果当前页是1：加载上一章最后页
-                                newSequence = preCousor.sequence -1
-                                newPageIndex = -1
-                            }else ->{//其他情况： -1页
-                                newSequence = preCousor.sequence
-                                newPageIndex = preCousor.pageIdex -1
-                            }
-                        }
-                        //设置游标
-                        val newCursor = ReadCursor(curCursor!!.curBook,newSequence,newPageIndex,ReadViewEnums.PageIndex.previous,mReadInfo!!.mReadStatus)
-                        (adapter as HorizontalAdapter).cursor = newCursor
-                        index = position
-                    }
+                    checkViewState("Pre",ReadViewEnums.NotifyStateState.left)
                 }
-                //向下翻页
-                //获取下页游标，因为下页即将成为当页
-                //改变adapter游标
                 index < position -> {
-                    val nextView = findViewWithTag(ReadViewEnums.PageIndex.next)
-                    if(nextView != null){
-                        val nextCousor = (nextView as HorizontalPage).cursor!!
-                        when(nextCousor.pageIdex){
-                            nextCousor.pageIdexSum ->{//如果当前页是最后页：加载下一章1页
-                                newSequence = nextCousor.sequence +1
-                                newPageIndex = 1
-                            }else ->{//其他情况： +1页
-                                newSequence = nextCousor.sequence
-                                newPageIndex  = nextCousor.pageIdex +1
-                            }
-                        }
-                        //设置游标
-                        val newCursor = ReadCursor(curCursor!!.curBook,newSequence,newPageIndex,ReadViewEnums.PageIndex.next,mReadInfo!!.mReadStatus)
-                        (adapter as HorizontalAdapter).cursor = newCursor
-                        index = position
-                    }
+                    checkViewState("Next",ReadViewEnums.NotifyStateState.right)
                 }
             }
+            index = position
         }
     }
 
@@ -118,7 +81,158 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         addOnPageChangeListener(mListener)
     }
 
+    /**
+     * 检查ItemView状态
+     * @param whichView
+     * @param notify
+     */
+    fun checkViewState(whichView:String,notify: ReadViewEnums.NotifyStateState){
+        //1、获取View
+        val view = when(whichView) {
+            "Pre"-> findViewWithTag(ReadViewEnums.PageIndex.previous)
+            "Next" -> findViewWithTag(ReadViewEnums.PageIndex.next)
+            else -> findViewWithTag(ReadViewEnums.PageIndex.current)
+        }
+        //2、判断View状态
+        when((view as HorizontalPage).viewState){
+            ReadViewEnums.ViewState.loading ->{
+                //改变View的NotifyStateState，
+                // success后，通知其他页updata
+                isCanScroll = -1
 
+                view.viewNotify = notify
+                if (notify == ReadViewEnums.NotifyStateState.all){
+                    view.setCursor(curCursor!!)
+                }
+            }
+            ReadViewEnums.ViewState.success->{//
+                //获取旧游标
+                val mCousor = view.mCursor!!
+                //顺序
+                val newSequence: Int = when(notify){
+                    ReadViewEnums.NotifyStateState.left -> {
+                        when(mCousor.pageIndex){
+                            1->{//如果当前页是1：加载上一章最后页
+                                mCousor.sequence -1
+                            }else ->{//其他情况： -1页
+                                mCousor.sequence
+                            }
+                        }
+                    }
+                    ReadViewEnums.NotifyStateState.right -> {
+                        when(mCousor.pageIndex){
+                            mCousor.pageIdexSum ->{//如果当前页是最后页：加载下一章1页
+                                mCousor.sequence +1
+                            }else ->{//其他情况： +1页
+                                mCousor.sequence
+                            }
+                        }
+                    }
+                    else -> 0
+                }
+                //页码
+                val newPageIndex:Int = when(notify){
+                    ReadViewEnums.NotifyStateState.left -> {
+                        when(mCousor.pageIndex){
+                            1->{//如果当前页是1：加载上一章最后页
+                                -1
+                            }else ->{//其他情况： -1页
+                                mCousor.pageIndex -1
+                            }
+                        }
+                    }
+                    ReadViewEnums.NotifyStateState.right -> {
+                        when(mCousor.pageIndex){
+                            mCousor.pageIdexSum ->{//如果当前页是最后页：加载下一章1页
+                                1
+                            }else ->{//其他情况： +1页
+                                mCousor.pageIndex +1
+                            }
+                        }
+                    }
+                    else -> 1
+                }
+                //设置新游标
+                val newCursor = ReadCursor(curCursor!!.curBook,newSequence,newPageIndex,0,ReadViewEnums.PageIndex.previous,mReadInfo!!.mReadStatus)
+                (adapter as HorizontalAdapter).cursor = newCursor
+            }
+            ReadViewEnums.ViewState.error->{//
+
+            }
+        }
+    }
+    /**
+     * 通知更所有页
+     */
+    private fun allViewUpdata(cursor: ReadCursor){
+        preViewUpdata(cursor)
+        nextViewUpdata(cursor)
+    }
+    /**
+     * 通知更新下页
+     */
+    private fun nextViewUpdata(cursor: ReadCursor) {
+        val nextView = findViewWithTag(ReadViewEnums.PageIndex.next)
+        if (nextView != null) {
+            var newNextSequence = cursor.sequence
+            var newNextPageIndex = cursor.pageIndex
+            when (newNextPageIndex) {
+                cursor.pageIdexSum -> {//如果当前页是最后页：加载下一章1页
+                    newNextSequence++
+                    newNextPageIndex = 1
+                }
+                else -> {//其他情况： +1页
+                    newNextPageIndex++
+                }
+            }
+            val nextCursor = ReadCursor(curCursor!!.curBook, newNextSequence, newNextPageIndex, 0, ReadViewEnums.PageIndex.previous, mReadInfo!!.mReadStatus)
+            (nextView as HorizontalPage).viewNotify = ReadViewEnums.NotifyStateState.none
+            nextView.setCursor(nextCursor)
+        }
+    }
+
+    /**
+     * 通知更新前页
+     */
+    private fun preViewUpdata(cursor: ReadCursor) {
+        val preView = findViewWithTag(ReadViewEnums.PageIndex.previous)
+        if (preView != null) {
+            var newPreSequence = cursor.sequence
+            var newPrePageIndex = cursor.pageIndex
+            when (newPrePageIndex) {
+                1 -> {//如果当前页是1：加载上一章最后页
+                    newPreSequence--
+                    newPrePageIndex = -1
+                }
+                else -> {//其他情况： -1页
+                    newPrePageIndex--
+                }
+            }
+            val preCursor = ReadCursor(curCursor!!.curBook, newPreSequence, newPrePageIndex, 0, ReadViewEnums.PageIndex.previous, mReadInfo!!.mReadStatus)
+            (preView as HorizontalPage).viewNotify = ReadViewEnums.NotifyStateState.none
+            preView.setCursor(preCursor)
+        }
+    }
+//================================================NoticePageListener================================
+    /**
+     * 通知其他页更新数据
+     */
+    override fun pageChangSuccess(cursor: ReadCursor,notify: ReadViewEnums.NotifyStateState) {
+        when(notify){
+            ReadViewEnums.NotifyStateState.all->{
+                allViewUpdata(cursor)
+            }
+            ReadViewEnums.NotifyStateState.left->{
+                preViewUpdata(cursor)
+            }
+            ReadViewEnums.NotifyStateState.right->{
+                nextViewUpdata(cursor)
+            }
+            else -> {
+                isCanScroll = 0
+            }
+        }
+    }
 //==================================================IReadPageChange=========================================
     private var mReadPageChange: IReadPageChange? = null
 
@@ -133,52 +247,14 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         this.mReadInfo = mReadInfo
         Handler().postDelayed({
             //通知当前item游标
-            var curPage = mReadInfo.mReadStatus.currentPage +1
-            curCursor = ReadCursor(mReadInfo.curBook,mReadInfo.mReadStatus.sequence,curPage,ReadViewEnums.PageIndex.current,mReadInfo.mReadStatus)
-            val curView = (adapter as HorizontalAdapter).getPrimaryItem()
-            (curView as HorizontalPage).entrance(curCursor!!)
-        },200)
+            val curPage = mReadInfo.mReadStatus.currentPage +1
+            curCursor = ReadCursor(mReadInfo.curBook,mReadInfo.mReadStatus.sequence,curPage,0,ReadViewEnums.PageIndex.current,mReadInfo.mReadStatus)
+            checkViewState("Cur",ReadViewEnums.NotifyStateState.all)
 
+        },200)
         //设置字体颜色
         mReadPageChange?.onLoadChapter(ReadViewEnums.MsgType.MSG_LOAD_CUR_CHAPTER, mReadInfo.mReadStatus.currentPage - 1, false, ReadViewEnums.PageIndex.current)
     }
-    /**
-     * 入口章节加载成功，通知其他页更新数据
-     *
-     */
-    override fun curPageChangSuccess(pageIndex:Int,pageSum:Int) {
-        val preView = findViewWithTag(ReadViewEnums.PageIndex.previous)
-        if(preView != null){
-            var newPreSequence = curCursor?.sequence?:0
-            var newPrePageIndex = pageIndex
-            when(pageIndex){
-                1->{//如果当前页是1：加载上一章最后页
-                    newPreSequence--
-                    newPrePageIndex = -1
-                }else ->{//其他情况： -1页
-                    newPrePageIndex--
-                }
-            }
-            val preCursor = ReadCursor(curCursor!!.curBook,newPreSequence,newPrePageIndex,ReadViewEnums.PageIndex.previous,mReadInfo!!.mReadStatus)
-            (preView as HorizontalPage).setCursor(preCursor,false)
-        }
-        val nextView = findViewWithTag(ReadViewEnums.PageIndex.next)
-        if(nextView != null){
-            var newNextSequence = curCursor?.sequence?:0
-            var newNextPageIndex = pageIndex
-            when(pageIndex){
-                pageSum ->{//如果当前页是最后页：加载下一章1页
-                    newNextSequence++
-                    newNextPageIndex = 1
-                }else ->{//其他情况： +1页
-                    newNextPageIndex++
-                }
-            }
-            val nextCursor = ReadCursor(curCursor!!.curBook,newNextSequence,newNextPageIndex,ReadViewEnums.PageIndex.previous,mReadInfo!!.mReadStatus)
-            (nextView as HorizontalPage).setCursor(nextCursor,false)
-        }
-    }
-
 
     //布局发生变化
     override fun onSizeChanged(width: Int, height: Int, oldw: Int, oldh: Int) {
@@ -223,10 +299,10 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     //==================================================TouchEvent=========================================
     //-----禁止左滑-------左滑：上一次坐标 > 当前坐标
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        if (isCanScroll) {
-            return super.dispatchTouchEvent(ev)
-        } else {
-            return prohibitionOfSlidingTouchEvent(ev)
+        return when(isCanScroll){
+            -1-> true
+            0 -> super.dispatchTouchEvent(ev)
+            else -> prohibitionOfSlidingTouchEvent(ev)
         }
     }
 
