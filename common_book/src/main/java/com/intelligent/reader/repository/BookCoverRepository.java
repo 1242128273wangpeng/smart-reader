@@ -33,7 +33,7 @@ public interface BookCoverRepository {
     /**
      * 获取书籍目录
      */
-    Observable<List<Chapter>> getChapterList(RequestItem requestItem);
+    Observable<ArrayList<Chapter>> getChapterList(RequestItem requestItem);
 
     /**
      * 书籍是否加入书架

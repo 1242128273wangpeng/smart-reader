@@ -66,7 +66,7 @@ public class BookCoverOtherRepository implements BookCoverRepository {
     }
 
     @Override
-    public Observable<List<Chapter>> getChapterList(final RequestItem requestItem) {
+    public Observable<ArrayList<Chapter>> getChapterList(final RequestItem requestItem) {
 
         return mApi.getChapterList(requestItem.book_id, requestItem.book_source_id, requestItem);
     }

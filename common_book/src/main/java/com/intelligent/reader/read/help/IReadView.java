@@ -57,4 +57,10 @@ public interface IReadView {
      * @param view 广告view
      */
     void setLoadAd(View view);
+
+//    /**
+//     * 设置字体颜色
+//     * @param color
+//     */
+//    void setTextColor(int color);
 }

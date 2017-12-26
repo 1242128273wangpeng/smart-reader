@@ -113,12 +113,13 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         ll_guide_layout = findViewById(R.id.ll_guide_layout)
         initGuide()
 
-        readSettingView?.setNovelMode(Constants.MODE)
         readStatus?.source_ids = readStatus?.book?.site
         //add ReadInfo
         novel_basePageView?.initReaderViewFactory()
-        novel_basePageView?.entrance(ReadInfo(readStatus?.book!!,readStatus!!, ReadViewEnums.Animation.slide))
+        novel_basePageView?.entrance(ReadInfo(readStatus?.book!!, readStatus!!, ReadViewEnums.Animation.list))
         novel_basePageView?.setIReadPageChange(this)
+
+        readSettingView?.setNovelMode(Constants.MODE)
     }
 
     private fun initReadPresenter() {
@@ -148,7 +149,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     public override fun restoreBrightness() = super.restoreBrightness()
 
-    public override fun setReaderDisplayBrightness() =  super.setReaderDisplayBrightness()
+    public override fun setReaderDisplayBrightness() = super.setReaderDisplayBrightness()
 
     fun changeSourceCallBack() = mReadPresenter?.changeSourceCallBack()
 
@@ -163,14 +164,14 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     fun dismissTopMenu() = mReadPresenter?.dismissTopMenu()
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
-        return when(mReadPresenter?.dispatchKeyEvent(event)){
+        return when (mReadPresenter?.dispatchKeyEvent(event)) {
             true -> true
             else -> super.dispatchKeyEvent(event)
         }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        return when(keyCode == KeyEvent.KEYCODE_MENU){
+        return when (keyCode == KeyEvent.KEYCODE_MENU) {
             true -> {
                 mReadPresenter?.onKeyDown()
                 true
@@ -275,11 +276,16 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onReadAuto() = mReadPresenter?.onReadAuto()!!
 
-    override fun onChangeMode(mode: Int) = mReadPresenter?.onChangeMode(mode)!!
+    override fun onChangeMode(mode: Int) {
+        mReadPresenter?.onChangeMode(mode)
+        novel_basePageView?.setBackground(0)
+    }
 
     override fun onChangeScreenMode() = mReadPresenter?.changeScreenMode()!!
 
-    override fun onRedrawPage() = mReadPresenter?.onRedrawPage()!!
+    override fun onRedrawPage() {
+        mReadPresenter?.onRedrawPage()
+    }
 
     override fun onJumpChapter() = mReadPresenter?.onJumpChapter()!!
 
@@ -387,7 +393,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     }
 
     override fun loadChapterSuccess(what: Int, chapter: Chapter, chapterList: ArrayList<ArrayList<NovelLineBean>>) {
-        novel_basePageView?.setLoadChapter(what,chapter,chapterList)
+        novel_basePageView?.setLoadChapter(what, chapter, chapterList)
     }
 
     companion object {
@@ -403,8 +409,8 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     }
 
     //IReadPageChange
-    override fun onLoadChapter(type: ReadViewEnums.MsgType, sequence: Int, isShowLoadPage: Boolean,pageIndex:ReadViewEnums.PageIndex) {
-        mReadPresenter?.onLoadChapter(type.Msg,sequence,isShowLoadPage,pageIndex)
+    override fun onLoadChapter(type: ReadViewEnums.MsgType, sequence: Int, isShowLoadPage: Boolean, pageIndex: ReadViewEnums.PageIndex) {
+        mReadPresenter?.onLoadChapter(type.Msg, sequence, isShowLoadPage, pageIndex)
     }
 
     override fun showMenu(isShow: Boolean) {
