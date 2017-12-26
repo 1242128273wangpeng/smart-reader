@@ -57,13 +57,28 @@ class DataProvider : DisposableAndroidViewModel() {
         val requestItem = RequestItem.fromBook(book)
         when (type) {
             ReadViewEnums.PageIndex.current -> {
-                getChapterList(book,requestItem, sequence,type,mReadDataListener)
+                getChapterList(book, requestItem, sequence, type, mReadDataListener)
             }
             ReadViewEnums.PageIndex.next -> {
-                getChapterList(book,requestItem, sequence + 1,type,mReadDataListener)
+                getChapterList(book, requestItem, sequence + 1, type, mReadDataListener)
             }
             ReadViewEnums.PageIndex.previous -> {
-                getChapterList(book,requestItem, sequence - 1,type,mReadDataListener)
+                getChapterList(book, requestItem, sequence - 1, type, mReadDataListener)
+            }
+        }
+    }
+
+    fun loadChapter2(book: Book, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
+        val requestItem = RequestItem.fromBook(book)
+        when (type) {
+            ReadViewEnums.PageIndex.current -> {
+                getChapterList(book, requestItem, sequence, type, mReadDataListener)
+            }
+            ReadViewEnums.PageIndex.next -> {
+                getChapterList(book, requestItem, sequence, type, mReadDataListener)
+            }
+            ReadViewEnums.PageIndex.previous -> {
+                getChapterList(book, requestItem, sequence, type, mReadDataListener)
             }
         }
     }
@@ -71,15 +86,16 @@ class DataProvider : DisposableAndroidViewModel() {
     /**
      * 获取书籍目录 //复用BookCoverRepositoyFactory
      */
-    fun getChapterList(book: Book, requestItem: RequestItem, sequence: Int,type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
+    fun getChapterList(book: Book, requestItem: RequestItem, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
         if (NetWorkUtils.getNetWorkType(BaseBookApplication.getGlobalContext()) == NetWorkUtils.NETWORK_NONE) {
             val bookChapterDao = BookChapterDao(BaseBookApplication.getGlobalContext(), requestItem.book_id)
             val chapterList = bookChapterDao.queryBookChapter()
+            this.chapterList = chapterList
             if (chapterList.size != 0) {
-                    requestSingleChapter(book,chapterList,sequence,type,mReadDataListener)
+                requestSingleChapter(book, chapterList, sequence, type, mReadDataListener)
                 return
             } else {
-                    mReadDataListener.loadDataError("拉取章节时无网络")
+                mReadDataListener.loadDataError("拉取章节时无网络")
                 return
             }
         }
@@ -92,13 +108,18 @@ class DataProvider : DisposableAndroidViewModel() {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ chapters ->
-                            requestSingleChapter(book,chapters,sequence,type,mReadDataListener)
-                        }, { throwable ->
+                            this.chapterList = chapters
+                            if (chapters.size != 0) {
+                                requestSingleChapter(book, chapters, sequence, type, mReadDataListener)
+                            } else {
+                                mReadDataListener.loadDataError("拉取章节时无网络")
+                            }
+                        }, { _ ->
                             mReadDataListener.loadDataError("拉取章节时无网络")
                         }))
     }
 
-    private fun requestSingleChapter(book: Book,chapters: List<Chapter>,sequence:Int,type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
+    private fun requestSingleChapter(book: Book, chapters: List<Chapter>, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
         val chapter = chapters[sequence]
         addDisposable(mReaderRepository.requestSingleChapter(book.site, chapter)
                 .subscribeOn(Schedulers.io())
@@ -119,8 +140,11 @@ class DataProvider : DisposableAndroidViewModel() {
                 }))
     }
 
-    interface ReadDataListener {
-        fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex)
-        fun loadDataError(message: String)
+    abstract class ReadDataListener {
+        open fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) {
+        }
+
+        open fun loadDataError(message: String) {
+        }
     }
 }

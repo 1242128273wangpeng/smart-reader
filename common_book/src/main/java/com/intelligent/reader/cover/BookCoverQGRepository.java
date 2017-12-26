@@ -62,7 +62,7 @@ public class BookCoverQGRepository implements BookCoverRepository {
     }
 
     @Override
-    public Observable<List<Chapter>> getChapterList(RequestItem requestItem) {
+    public Observable<ArrayList<Chapter>> getChapterList(RequestItem requestItem) {
         return getChapterListData(requestItem.book_id);
     }
 
@@ -148,14 +148,14 @@ public class BookCoverQGRepository implements BookCoverRepository {
     /**
      * 书籍目录
      */
-    private Observable<List<Chapter>> getChapterListData(final String bookId) {
+    private Observable<ArrayList<Chapter>> getChapterListData(final String bookId) {
         return Observable.create(new ObservableOnSubscribe<List<com.quduquxie.bean.Chapter>>() {
             @Override
             public void subscribe(ObservableEmitter<List<com.quduquxie.bean.Chapter>> e) throws Exception {
                 e.onNext(DataService.getChapterList(null, bookId, 1, Integer.MAX_VALUE - 1, mUdId));
                 e.onComplete();
             }
-        }).map(new Function<List<com.quduquxie.bean.Chapter>, List<Chapter>>() {
+        }).map(new Function<List<com.quduquxie.bean.Chapter>, ArrayList<Chapter>>() {
             @Override
             public ArrayList<Chapter> apply(List<com.quduquxie.bean.Chapter> chapters) throws Exception {
                 return BeanParser.buildOWNChapterList(chapters, 0, chapters.size());

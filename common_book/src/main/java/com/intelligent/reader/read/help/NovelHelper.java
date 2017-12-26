@@ -3,6 +3,7 @@ package com.intelligent.reader.read.help;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.ReadingActivity;
 import com.intelligent.reader.adapter.SourceAdapter;
+import com.intelligent.reader.read.page.PageContentView;
 import com.intelligent.reader.read.page.PageInterface;
 import com.intelligent.reader.reader.ReaderViewModel;
 
@@ -749,10 +750,11 @@ public class NovelHelper {
      * context
      * currentChapter
      * mBook
+     *
      * @return true: NORMAL  false: ERROR
      */
     public synchronized boolean getChapterContent(Activity activity, Chapter currentChapter, Book mBook) {
-        if (mBook == null||readStatus ==null)
+        if (mBook == null || readStatus == null)
             return false;
         // 更新chapter状态
         BaseBookHelper.setChapterStatus(currentChapter);
@@ -791,6 +793,93 @@ public class NovelHelper {
             }
         }
         return false;
+    }
+
+    public ArrayList<NovelLineBean> getChapterNameList(String chapterName) {
+        String splitTag = "章";
+        ArrayList<NovelLineBean> newChapterList = new ArrayList<>();
+
+        if (TextUtils.isEmpty(chapterName)) {
+            newChapterList.add(new NovelLineBean("无章节名", 0, 0, false, null));
+            return newChapterList;
+        }
+
+        if (chapterName.contains(splitTag)) {
+            String[] chapterNumAndName = chapterName.split(splitTag);
+            for (int i = 0; i < chapterNumAndName.length; i++) {
+                if (i == 0) {
+                    newChapterList.add(new NovelLineBean(chapterNumAndName[i] + splitTag, 0, 0, false, null));
+                } else {
+                    newChapterList.add(new NovelLineBean(chapterNumAndName[i].trim(), 0, 0, false, null));
+                }
+            }
+        } else {
+            newChapterList.add(new NovelLineBean(chapterName + splitTag, 0, 0, false, null));
+            newChapterList.add(new NovelLineBean(chapterName, 0, 0, false, null));
+        }
+
+        return newChapterList;
+    }
+
+    public int getPageHeight(List<NovelLineBean> pageLines) {
+        TextPaint contentPaint = new TextPaint();
+        TextPaint duanPaint = new TextPaint();
+        TextPaint textPaint = new TextPaint();
+        contentPaint.setTextSize(Constants.FONT_SIZE * readStatus.screenScaledDensity);
+        duanPaint.setTextSize(1 * readStatus.screenScaledDensity);
+        textPaint.setTextSize(Constants.FONT_CHAPTER_SIZE * readStatus.screenScaledDensity);
+        int chapterBetweenHeight = (int) (100 * readStatus.screenScaledDensity);
+        boolean lastPage = false;
+
+        // 页面总高度
+        int pageHeight = 0;
+
+        // 章节文字Fm
+        FontMetrics chapterFm;
+        // 章节文字高度
+        float chapterFontHeight = 0;
+
+        // 正文文字Fm
+        FontMetrics contentFm = contentPaint.getFontMetrics();
+        float lineSpace = Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE * readStatus.screenScaledDensity;
+        // 正文文字高度
+        float contentHeight = contentFm.descent - contentFm.ascent + lineSpace;
+        // 段落高度
+        float paragraphHeight = Constants.READ_PARAGRAPH_SPACE * lineSpace;
+
+        // 正文绘制起始高度
+        float contentDrawY = -contentFm.ascent;
+
+        if (PageContentView.CHAPTER_HOME_PAGE.equals(pageLines.get(0).getLineContent().trim())) {
+            contentDrawY += 3 * 15 * readStatus.screenScaledDensity;
+            contentDrawY += Constants.READ_CONTENT_PAGE_TOP_SPACE * readStatus.screenDensity;
+
+            // 章节头与正文间距
+            contentDrawY += 65 * readStatus.screenScaledDensity;
+        }
+
+        if (pageLines.get(0).isLastPage()) {
+            lastPage = true;
+        }
+
+        if (!pageLines.isEmpty()) {
+            for (int i = 0; i < pageLines.size(); i++) {
+                if (!PageContentView.CHAPTER_HOME_PAGE.equals(pageLines.get(i).getLineContent().trim())) {
+                    NovelLineBean text = pageLines.get(i);
+                    if (text != null && !TextUtils.isEmpty(text.getLineContent()) && text.getLineContent().equals(" ")) {
+                        contentDrawY += paragraphHeight;
+                    } else {
+                        contentDrawY += contentHeight;
+                    }
+                }
+            }
+            pageHeight = (int) (contentDrawY - lineSpace * 2);
+        }
+
+        if (lastPage) {
+            pageHeight += chapterBetweenHeight;
+        }
+        return pageHeight;
     }
 
     public void setOnHelperCallBack(OnHelperCallBack callBack) {

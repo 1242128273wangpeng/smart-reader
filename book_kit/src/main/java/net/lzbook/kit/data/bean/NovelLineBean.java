@@ -16,6 +16,14 @@ public class NovelLineBean implements Serializable {
     private boolean lastIsPunct;
     private ArrayList<Float> arrLenths;
 
+    private int sequence;
+
+    private String chapterName;
+
+    private boolean lastPage;
+
+    private int position;
+
     public ArrayList<Float> getArrLenths() {
         return arrLenths;
     }
@@ -40,6 +48,8 @@ public class NovelLineBean implements Serializable {
         this.type = type;
     }
 
+    public NovelLineBean(){}
+
     public NovelLineBean(String lineContent, float lineLength, int completeLine, boolean lastIsPunct, ArrayList<Float> arrLenths) {
         this.lineContent = lineContent;
         this.lineLength = lineLength;
@@ -62,6 +72,38 @@ public class NovelLineBean implements Serializable {
 
     public void setLineLength(float lineLength) {
         this.lineLength = lineLength;
+    }
+
+    public int getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(int sequence) {
+        this.sequence = sequence;
+    }
+
+    public String getChapterName() {
+        return chapterName;
+    }
+
+    public void setChapterName(String chapterName) {
+        this.chapterName = chapterName;
+    }
+
+    public boolean isLastPage() {
+        return lastPage;
+    }
+
+    public void setLastPage(boolean lastPage) {
+        this.lastPage = lastPage;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 
     @Override
