@@ -11,7 +11,8 @@ import net.lzbook.kit.data.bean.ReadStatus
 data class ReadCursor(
         var curBook: Book,
         var sequence: Int,//章节
-        var pageIdex: Int,//页数
+        var pageIndex: Int,//页数
+        var offset: Int,//字符位移
         var pageStatus: ReadViewEnums.PageIndex?,//view tag
         var readStatus: ReadStatus
 ) {

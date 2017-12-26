@@ -43,7 +43,7 @@ class HorizontalAdapter(private var noticePageListener: HorizontalPage.NoticePag
         itemView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         if (cursor!= null) {
             AppLog.e("cursor: ",cursor.toString())
-            itemView.setCursor(cursor!!,false)
+            itemView.setCursor(cursor!!)
         }
         addPageTag(container as ViewPager,itemView, position)
         container.addView(itemView)
@@ -57,15 +57,15 @@ class HorizontalAdapter(private var noticePageListener: HorizontalPage.NoticePag
         when{
             index>position->{
                 val preView = vp.findViewWithTag(ReadViewEnums.PageIndex.previous)
-                preView?.tag = (preView?.tag as ReadViewEnums.PageIndex).next//previous -> current
                 val curView = vp.findViewWithTag(ReadViewEnums.PageIndex.current)
+                preView?.tag = (preView?.tag as ReadViewEnums.PageIndex).next//previous -> current
                 curView?.tag = (curView?.tag as ReadViewEnums.PageIndex).next//current -> next
                 itemView.tag = ReadViewEnums.PageIndex.previous//add -> previous
             }
             index<position->{
                 val nextView = vp.findViewWithTag(ReadViewEnums.PageIndex.next)
-                nextView?.tag = (nextView?.tag as ReadViewEnums.PageIndex).previous//next -> current
                 val curView = vp.findViewWithTag(ReadViewEnums.PageIndex.current)
+                nextView?.tag = (nextView?.tag as ReadViewEnums.PageIndex).previous//next -> current
                 curView?.tag = (curView?.tag as ReadViewEnums.PageIndex).previous//current -> previous
                 itemView.tag = ReadViewEnums.PageIndex.next//add -> next
             }

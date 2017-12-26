@@ -43,7 +43,13 @@ public interface ReadViewEnums {
             IsHorizontal = isHorizontal;
         }
     }
-
+    //页面状态
+    enum ViewState{
+        loading,success,error
+    }    //页面状态
+    enum NotifyStateState{
+        all,left,right,none
+    }
     //动画类型
      enum Animation {
         //滑动覆盖
