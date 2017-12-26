@@ -302,8 +302,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         readStatus = readSta
     }
 
-    fun showMenu(isShow: Boolean) = mReadPresenter?.showMenu(isShow)!!
-
     override fun showSetMenu(isShow: Boolean) = readSettingView?.showSetMenu(isShow)!!
 
     override fun full(isFull: Boolean) {
@@ -409,8 +407,8 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         mReadPresenter?.onLoadChapter(type.Msg,sequence,isShowLoadPage,pageIndex)
     }
 
-    override fun showMenu() {
-
+    override fun showMenu(isShow: Boolean) {
+        mReadPresenter?.showMenu(isShow)
     }
 
     override fun loadAD() {

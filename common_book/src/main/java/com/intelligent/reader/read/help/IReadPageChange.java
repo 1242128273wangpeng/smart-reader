@@ -20,7 +20,7 @@ public interface IReadPageChange {
     /**
      * 显示菜单
      */
-    void showMenu();
+    void showMenu(Boolean isShow);
     /**
      * 加载广告
      */

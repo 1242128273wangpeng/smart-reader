@@ -14,6 +14,7 @@ import com.intelligent.reader.view.ViewPager
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.ToastUtils
 import java.util.ArrayList
 
 /**
@@ -233,6 +234,18 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             }
         }
     }
+    override fun onClickLeft() {
+        ToastUtils.showToastNoRepeat("Left")
+    }
+
+    override fun onClickRight() {
+        ToastUtils.showToastNoRepeat("Right")
+    }
+
+    override fun onClickMenu(isShow: Boolean) {
+        mReadPageChange?.showMenu(isShow)
+    }
+
 //==================================================IReadPageChange=========================================
     private var mReadPageChange: IReadPageChange? = null
 
@@ -298,11 +311,11 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 
     //==================================================TouchEvent=========================================
     //-----禁止左滑-------左滑：上一次坐标 > 当前坐标
-    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
         return when(isCanScroll){
             -1-> true
-            0 -> super.dispatchTouchEvent(ev)
-            else -> prohibitionOfSlidingTouchEvent(ev)
+            0 -> super.dispatchTouchEvent(event)
+            else -> prohibitionOfSlidingTouchEvent(event)
         }
     }
 

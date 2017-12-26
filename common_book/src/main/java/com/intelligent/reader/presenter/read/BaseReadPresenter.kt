@@ -1251,12 +1251,12 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
      * 显示隐藏菜单
      */
     fun showMenu(isShow: Boolean) {
-        if (pageView == null) {
-            return
-        }
-        if (pageView!!.isAutoReadMode && isShow) {
-            return
-        }
+//        if (pageView == null) {
+//            return
+//        }
+//        if (pageView!!.isAutoReadMode && isShow) {
+//            return
+//        }
         clearOtherPanel()
         if (isShow) {
             full(false)

@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
@@ -22,6 +23,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.R
 import net.lzbook.kit.data.bean.Chapter
+import net.lzbook.kit.utils.ToastUtils
 import java.util.*
 
 /**
@@ -82,6 +84,9 @@ class HorizontalPage : FrameLayout {
 
     interface NoticePageListener {
         fun pageChangSuccess(cursor:ReadCursor,notify:ReadViewEnums.NotifyStateState)
+        fun onClickLeft()
+        fun onClickRight()
+        fun onClickMenu(isShow: Boolean)
     }
 
     inner class HorizontalItemPage:View{
@@ -171,6 +176,68 @@ class HorizontalPage : FrameLayout {
                 postInvalidate()
                 viewState = ReadViewEnums.ViewState.success
                 loadView.visibility = View.GONE
+            }
+        }
+
+        private var lastTouchY: Int = 0
+        private var startTouchTime: Long = 0
+        private var startTouchX: Int = 0
+        private var startTouchY: Int = 0
+        private var isShowMenu:Boolean = true
+
+        override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+            val tmpX = event.x.toInt()
+            val tmpY = event.y.toInt()
+            when(event.action) {
+                MotionEvent.ACTION_DOWN->{
+                    lastTouchY = tmpY
+                    startTouchTime = System.currentTimeMillis()
+                    startTouchX = tmpX
+                    startTouchY = tmpY
+                    return true
+                }
+                MotionEvent.ACTION_CANCEL ->{
+                    startTouchTime = 0
+                    return true
+                }
+                MotionEvent.ACTION_UP ->{
+                    val touchTime = System.currentTimeMillis() - startTouchTime
+                    val distance = Math.sqrt(Math.pow((startTouchX - tmpX).toDouble(), 2.0) + Math.pow((startTouchY - tmpY).toDouble(), 2.0)).toInt()
+                    if (touchTime < 100 && distance < 30 || distance < 10) {
+                        if(onClick(event)) return true
+                    }
+                    startTouchTime = 0
+                }
+                MotionEvent.ACTION_MOVE ->{
+                    if (!isShowMenu){
+                        noticePageListener?.onClickMenu(isShowMenu)
+                        isShowMenu = true
+                    }
+                }
+            }
+            return super.dispatchTouchEvent(event)
+        }
+
+        private var time: Long = 0
+        private fun onClick(event: MotionEvent) : Boolean{
+            if (System.currentTimeMillis() - time < 500) {//动画时间
+                return false
+            }
+            time = System.currentTimeMillis()
+            val x = event.x.toInt()
+            val y = event.y.toInt()
+            val h4 = height / 4
+            val w3 = width / 3
+            return if (x <= w3) {
+                noticePageListener?.onClickLeft()
+                true
+            } else if (x >= width - w3 || y >= height - h4 && x >= w3) {
+                noticePageListener?.onClickRight()
+                true
+            } else {
+                noticePageListener?.onClickMenu(isShowMenu)
+                isShowMenu = !isShowMenu
+                true
             }
         }
     }

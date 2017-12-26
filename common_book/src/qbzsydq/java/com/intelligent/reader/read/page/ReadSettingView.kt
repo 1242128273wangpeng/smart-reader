@@ -87,11 +87,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
         Constants.PAGE_MODE = sharedPreferences!!.getInt("page_mode", 0)
 
-        if (isAutoBrightness) {
-            autoBrightness = true
-        } else {
-            autoBrightness = false
-        }
+        autoBrightness = isAutoBrightness
 
         this.addView(LayoutInflater.from(context).inflate(R.layout.read_option_bottom, null))
         this.addView(LayoutInflater.from(context).inflate(R.layout.read_option_detail, null))
@@ -141,11 +137,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         initPageMode()
         setFontSize()
 
-        if (context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            read_landscape.isChecked = true
-        } else {
-            read_landscape.isChecked = false
-        }
+        read_landscape.isChecked = context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
         read_full.isChecked = sharedPreferences!!.getBoolean("full_screen_read", false)
 
         resetBtn()
@@ -266,19 +258,10 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
     fun showSetMenu(show: Boolean) {
         if (show) {
-            if (Constants.FONT_SIZE > 10) {
-                read_setting_reduce_text!!.isEnabled = true
-            } else {
-                read_setting_reduce_text!!.isEnabled = false
-            }
-            if (Constants.FONT_SIZE < 30) {
-                read_setting_increase_text!!.isEnabled = true
-            } else {
-                read_setting_increase_text!!.isEnabled = false
-            }
+            read_setting_reduce_text!!.isEnabled = Constants.FONT_SIZE > 10
+            read_setting_increase_text!!.isEnabled = Constants.FONT_SIZE < 30
             novel_bottom_options.visibility = View.VISIBLE
             novel_bottom_options.startAnimation(popUpInAnimation)
-
 
             refreshJumpPreBtnState()
 
@@ -293,7 +276,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             }
 
 
-            if (themeHelper!!.isNight()) {
+            if (themeHelper!!.isNight) {
                 txt_night.text = "白天"
                 ibtn_night.setImageResource(R.drawable.read_option_day_selector)
             } else {
@@ -443,7 +426,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             }
             R.id.novel_night//夜间模式
             -> {
-                if (themeHelper!!.isNight()) {
+                if (themeHelper!!.isNight) {
                     txt_night.text = "夜间"
                     ibtn_night.setImageResource(R.drawable.read_option_night_selector)
                 } else {
@@ -780,7 +763,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             return
         setBrightBtn()
 
-        val prefetchThumb = getResources().getDrawable(
+        val prefetchThumb = resources.getDrawable(
                 ResourceUtil.getResourceId(context, Constants.DRAWABLE, "_sliderbar"))
         prefetchThumb.bounds = Rect(0, 0, prefetchThumb.intrinsicWidth, prefetchThumb.intrinsicHeight)
 
