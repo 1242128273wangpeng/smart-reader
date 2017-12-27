@@ -19,6 +19,7 @@ import com.intelligent.reader.read.help.IReadPageChange
 import com.intelligent.reader.read.help.IReadView
 import com.intelligent.reader.read.help.NovelHelper
 import com.intelligent.reader.read.help.ReadSeparateHelper
+import com.intelligent.reader.read.mode.NovelPageBean
 import com.intelligent.reader.read.mode.ReadInfo
 import com.intelligent.reader.read.mode.ReadViewEnums
 import com.intelligent.reader.util.ThemeUtil
@@ -49,7 +50,7 @@ class VerticalReaderView : FrameLayout, IReadView {
 
     private var mCurrentPage = 0
 
-    private lateinit var mOriginDataList: CopyOnWriteArrayList<ArrayList<NovelLineBean>>
+    private lateinit var mOriginDataList: CopyOnWriteArrayList<NovelPageBean>
 
     private val CHAPTER_WAITING: Int = 0
 
@@ -220,14 +221,14 @@ class VerticalReaderView : FrameLayout, IReadView {
             ReadViewEnums.PageIndex.previous -> {
                 if (!checkLoadChapterValid(chapter.sequence)) return
                 mReadInfo.mReadStatus.chapterName = chapter.chapter_name
-                val preChapterContent = ReadSeparateHelper.getInstance(mReadInfo.mReadStatus).initTextSeparateContent(chapter.content)
+                val preChapterContent = ReadSeparateHelper.getInstance(mReadInfo.mReadStatus).initTextSeparateContent(chapter.content,chapter.chapter_name)
                 setChapterPagePosition(chapter.sequence, chapter.chapter_name, preChapterContent)
                 addChapterBetweenAdView(preChapterContent, chapter.sequence, chapter.sequence + 1)
                 val scrollIndex = mAdapter.addPreChapter(preChapterContent)
 
                 // 加载上一章的操作是否来自加载视图，防止加载数据时列表视图往上跳转
                 val firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition()
-                if (mOriginDataList[firstVisibleItemPosition][0].sequence == PagerScrollAdapter.HEADER_ITEM_TYPE && scrollIndex != -1) {
+                if (mOriginDataList[firstVisibleItemPosition].lines[0].sequence == PagerScrollAdapter.HEADER_ITEM_TYPE && scrollIndex != -1) {
                     page_rv.scrollToPosition(scrollIndex + 1)
                 }
                 addBookHomePage(chapter)
@@ -251,7 +252,7 @@ class VerticalReaderView : FrameLayout, IReadView {
 
                 if (!checkLoadChapterValid(chapter.sequence)) return
                 mReadInfo.mReadStatus.chapterName = chapter.chapter_name
-                mOriginDataList.addAll(ReadSeparateHelper.getInstance(mReadInfo.mReadStatus).initTextSeparateContent(chapter.content))
+                mOriginDataList.addAll(ReadSeparateHelper.getInstance(mReadInfo.mReadStatus).initTextSeparateContent(chapter.content,chapter.chapter_name))
                 setChapterPagePosition(chapter.sequence, chapter.chapter_name, mOriginDataList)
                 addChapterBetweenAdView(chapter.sequence, chapter.sequence + 1)
                 mAdapter.setChapter(mOriginDataList)
@@ -287,7 +288,7 @@ class VerticalReaderView : FrameLayout, IReadView {
                     mReadInfo.mReadStatus.sequence = 0
                 }
                 mReadInfo.mReadStatus.chapterName = chapter.chapter_name
-                val nextChapterContent = ReadSeparateHelper.getInstance(mReadInfo.mReadStatus).initTextSeparateContent(chapter.content)
+                val nextChapterContent = ReadSeparateHelper.getInstance(mReadInfo.mReadStatus).initTextSeparateContent(chapter.content,chapter.chapter_name)
                 setChapterPagePosition(chapter.sequence, chapter.chapter_name, nextChapterContent)
                 addChapterBetweenAdView(nextChapterContent, chapter.sequence, chapter.sequence + 1)
                 mAdapter.addNextChapter(nextChapterContent)
@@ -307,7 +308,7 @@ class VerticalReaderView : FrameLayout, IReadView {
 
     private fun addBookHomePage(chapter: Chapter) {
         if (chapter.sequence == 0 && checkLoadChapterValid(-1)) {
-            mAdapter.addPreChapter(arrayListOf(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";sequence = -1 })))
+            mAdapter.addPreChapter(arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";sequence = -1 }),0)))
             mAdapter.showHeaderView(false)
         }
     }
@@ -316,17 +317,17 @@ class VerticalReaderView : FrameLayout, IReadView {
     private fun setCurrentChapterInfo(position: Int) {
         if (mOriginDataList.size > 0
                 && mOriginDataList.size > position
-                && mOriginDataList[position].size > 0) {
-            if (mOriginDataList[position][0].sequence != PagerScrollAdapter.HEADER_ITEM_TYPE
-                    && mOriginDataList[position][0].sequence != PagerScrollAdapter.FOOTER_ITEM_TYPE
-                    && mOriginDataList[position][0].sequence != PagerScrollAdapter.AD_ITEM_TYPE) {
-                mReadInfo.mReadStatus.chapterName = mOriginDataList[position][0].chapterName
+                && mOriginDataList[position].lines.size > 0) {
+            if (mOriginDataList[position].lines[0].sequence != PagerScrollAdapter.HEADER_ITEM_TYPE
+                    && mOriginDataList[position].lines[0].sequence != PagerScrollAdapter.FOOTER_ITEM_TYPE
+                    && mOriginDataList[position].lines[0].sequence != PagerScrollAdapter.AD_ITEM_TYPE) {
+                mReadInfo.mReadStatus.chapterName = mOriginDataList[position].lines[0].chapterName
                 novel_title.text = mReadInfo.mReadStatus.chapterName
-                novel_chapter.text = "${mOriginDataList[position][0].sequence + 1} / ${mReadInfo.mReadStatus.chapterCount} 章"
-                novel_page.text = "本章第${(getCurrentChapterPage(position) + 1)} / ${getCurrentChapterPageCount(mOriginDataList[position][0].sequence)}"
+                novel_chapter.text = "${mOriginDataList[position].lines[0].sequence + 1} / ${mReadInfo.mReadStatus.chapterCount} 章"
+                novel_page.text = "本章第${(getCurrentChapterPage(position) + 1)} / ${getCurrentChapterPageCount(mOriginDataList[position].lines[0].sequence)}"
 
                 mReadInfo.mReadStatus.currentPage = getCurrentChapterPage(position)
-                mReadInfo.mReadStatus.sequence = mOriginDataList[position][0].sequence
+                mReadInfo.mReadStatus.sequence = mOriginDataList[position].lines[0].sequence
                 mCurrentPage = mReadInfo.mReadStatus.currentPage
             }
 
@@ -354,7 +355,7 @@ class VerticalReaderView : FrameLayout, IReadView {
         var valid = true
         if (mOriginDataList.size > 0) {
             foo@ for (pages in mOriginDataList) {
-                for (content in pages) {
+                for (content in pages.lines) {
                     if (content.sequence == sequence) {
                         valid = false
                         break@foo
@@ -369,9 +370,9 @@ class VerticalReaderView : FrameLayout, IReadView {
      * 当前显示位置章节页数
      */
     private fun getCurrentChapterPage(position: Int): Int {
-        return if (mOriginDataList.size > 0 && mOriginDataList[position].size > 0) {
+        return if (mOriginDataList.size > 0 && mOriginDataList[position].lines.size > 0) {
             // 只需从任意位置获取位置
-            mOriginDataList[position][0].position
+            mOriginDataList[position].lines[0].position
         } else 0
     }
 
@@ -382,8 +383,8 @@ class VerticalReaderView : FrameLayout, IReadView {
         var chapterPageCount = 0
         if (mOriginDataList.size > 0) {
             for (chapterPageList in mOriginDataList) {
-                if (chapterPageList.size > 0) {
-                    if (chapterPageList[0].sequence == sequence) {
+                if (chapterPageList.lines.size > 0) {
+                    if (chapterPageList.lines[0].sequence == sequence) {
                         chapterPageCount++
                     }
                 }
@@ -395,12 +396,12 @@ class VerticalReaderView : FrameLayout, IReadView {
     /**
      * 计算章节页数下标
      */
-    private fun setChapterPagePosition(sequence: Int, chapterName: String, chapterContent: List<List<NovelLineBean>>?) {
+    private fun setChapterPagePosition(sequence: Int, chapterName: String, chapterContent: List<NovelPageBean>?) {
         if (chapterContent == null || chapterContent.isEmpty()) {
             return
         }
         for (i in chapterContent.indices) {
-            val pageContent = chapterContent[i]
+            val pageContent = chapterContent[i].lines
             for (content in pageContent) {
                 content.position = i
                 if (i == chapterContent.size - 1) {
@@ -415,7 +416,7 @@ class VerticalReaderView : FrameLayout, IReadView {
     /**
      * 添加章节间广告
      */
-    private fun addChapterBetweenAdView(chapterContent: ArrayList<ArrayList<NovelLineBean>>, sequence: Int, sequence2: Int) {
+    private fun addChapterBetweenAdView(chapterContent: ArrayList<NovelPageBean>, sequence: Int, sequence2: Int) {
 //        if (mOnReaderViewControlCallback != null &&
 //                mOnReaderViewControlCallback?.onLoadChapterBetweenAdView(sequence, sequence2) != null) {
 //            chapterContent.addAll(arrayListOf(arrayListOf(NovelLineBean().apply { setSequence(PagerScrollAdapter.AD_ITEM_TYPE) })))

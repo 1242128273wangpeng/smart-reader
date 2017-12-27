@@ -2,10 +2,8 @@ package com.intelligent.reader.read.help;
 
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.read.page.PageInterface;
 import com.intelligent.reader.util.DisplayUtils;
 
-import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.NovelLineBean;
 import net.lzbook.kit.data.bean.ReadStatus;
@@ -13,7 +11,6 @@ import net.lzbook.kit.data.bean.SensitiveWords;
 import net.lzbook.kit.utils.AppLog;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -771,12 +768,13 @@ public class DrawTextHelper {
         if (readStatus.sequence != -1 && !Constants.isSlideUp) {
 //            drawHeadBackground(canvas);
 //            drawFootBackground(canvas);
-            drawOrigin(canvas);
-            drawTransCoding(canvas);
-            drawChapterNum(canvas);
-            drawBattery(canvas);
-            drawTime(canvas);
-            drawPageNum(canvas);
+            //17.12.26注释
+//            drawOrigin(canvas);
+//            drawTransCoding(canvas);
+//            drawChapterNum(canvas);
+//            drawBattery(canvas);
+//            drawTime(canvas);
+//            drawPageNum(canvas);
             return footPaint;
         }
         return null;

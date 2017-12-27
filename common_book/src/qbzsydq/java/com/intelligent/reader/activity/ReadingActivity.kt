@@ -1,6 +1,9 @@
 package com.intelligent.reader.activity
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.Configuration
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -13,6 +16,7 @@ import com.intelligent.reader.R
 import com.intelligent.reader.fragment.CatalogMarkFragment
 import com.intelligent.reader.presenter.read.*
 import com.intelligent.reader.read.help.IReadPageChange
+import com.intelligent.reader.read.help.ReadSeparateHelper
 import com.intelligent.reader.read.mode.ReadInfo
 import com.intelligent.reader.read.mode.ReadViewEnums
 import com.intelligent.reader.read.page.*
@@ -36,6 +40,7 @@ import java.util.*
 class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener, ReadSettingView.OnReadSettingListener, ReadPreInterface.View, IReadPageChange {
 
     private val mTAG = ReadingActivity::class.java.simpleName
+    private var batteryPercent: Float = 0.toFloat()
     var downloadService: DownloadService? = null
     private var pageView: PageInterface? = null
     // 系统存储设置
@@ -88,6 +93,10 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         mCatlogMarkDrawer?.addDrawerListener(mCatalogMarkFragment!!)
         mOptionHeader = findViewById(R.id.option_header) as ReadOptionHeader
         mReadPresenter ?: BaseReadPresenter(this).onConfigurationChanged(mCatalogMarkFragment!!, mOptionHeader!!)
+        // 注册一个电量广播
+        registerReceiver(mBatInfoReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+        pageView?.freshBattery(batteryPercent)
+
     }
 
     override fun initView(fac: ReaderViewModel) {
@@ -116,9 +125,10 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         readStatus?.source_ids = readStatus?.book?.site
         //add ReadInfo
         novel_basePageView?.initReaderViewFactory()
-        novel_basePageView?.entrance(ReadInfo(readStatus?.book!!, readStatus!!, ReadViewEnums.Animation.list))
+        novel_basePageView?.entrance(ReadInfo(readStatus?.book!!, readStatus!!, ReadViewEnums.Animation.slide))
         novel_basePageView?.setIReadPageChange(this)
-
+        //初始化 ReadSeparateHelper
+        ReadSeparateHelper.getInstance(readStatus)
         readSettingView?.setNovelMode(Constants.MODE)
     }
 
@@ -200,6 +210,8 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
             false -> window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }
         mReadPresenter?.onResume()
+        // 注册一个电量广播类型
+        registerReceiver(mBatInfoReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
     }
 
     override fun shouldReceiveCacheEvent(): Boolean = false
@@ -250,6 +262,13 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         ll_guide_layout = null
 
         mReadPresenter?.onDestroy()
+
+
+        try {
+            unregisterReceiver(mBatInfoReceiver)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         super.onDestroy()
     }
 
@@ -419,5 +438,22 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun loadAD() {
 
+    }
+    override fun freshTime(time_text: CharSequence?) {
+        novel_basePageView?.freshTime(time_text)
+    }
+    //广播
+    /**
+     * 接受电量改变广播
+     */
+    private val mBatInfoReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == Intent.ACTION_BATTERY_CHANGED) {
+                val level = intent.getIntExtra("level", 0)
+                val scale = intent.getIntExtra("scale", 100)
+                batteryPercent = level.toFloat() / scale.toFloat()
+                novel_basePageView?.freshBattery(batteryPercent)
+            }
+        }
     }
 }

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.*
 import com.intelligent.reader.R
 import com.intelligent.reader.read.help.NovelHelper
+import com.intelligent.reader.read.mode.NovelPageBean
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.data.bean.ReadStatus
@@ -23,11 +24,11 @@ import java.util.concurrent.CopyOnWriteArrayList
 class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val mNovelHelper: NovelHelper, var allChapterList: ArrayList<Chapter>?) :
         RecyclerView.Adapter<PagerScrollAdapter.ReaderPagerHolder>() {
 
-    private var chapterList: CopyOnWriteArrayList<ArrayList<NovelLineBean>>
+    private var chapterList: CopyOnWriteArrayList<NovelPageBean>
 
-    private var headerViewList: ArrayList<ArrayList<NovelLineBean>>
+    private var headerViewList: ArrayList<NovelPageBean>
 
-    private var footViewList: ArrayList<ArrayList<NovelLineBean>>
+    private var footViewList: ArrayList<NovelPageBean>
 
     private var textColor: Int = 0
 
@@ -62,8 +63,8 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
 
     init {
         chapterList = CopyOnWriteArrayList()
-        headerViewList = arrayListOf(arrayListOf(NovelLineBean().apply { sequence = HEADER_ITEM_TYPE }))
-        footViewList = arrayListOf(arrayListOf(NovelLineBean().apply { sequence = FOOTER_ITEM_TYPE }))
+        headerViewList = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { sequence = HEADER_ITEM_TYPE }),0))
+        footViewList = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { sequence = FOOTER_ITEM_TYPE }),0))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
@@ -77,40 +78,40 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
             }
 
     override fun onBindViewHolder(holder: PagerScrollAdapter.ReaderPagerHolder, position: Int) {
-        holder.bindHolder(chapterList[position])
+        holder.bindHolder(chapterList[position].lines)
     }
 
     override fun getItemCount() = chapterList.size
 
-    override fun getItemViewType(position: Int) = chapterList[position][0].sequence
+    override fun getItemViewType(position: Int) = chapterList[position].lines[0].sequence
 
 
-    fun setChapter(data: CopyOnWriteArrayList<ArrayList<NovelLineBean>>) {
+    fun setChapter(data: CopyOnWriteArrayList<NovelPageBean>) {
         chapterList = data
         showHeaderView(true)
         showFootView(true)
         notifyDataSetChanged()
     }
 
-    private fun addAllChapter(location: Int, data: ArrayList<ArrayList<NovelLineBean>>): Int {
+    private fun addAllChapter(location: Int, data: ArrayList<NovelPageBean>): Int {
         if (chapterList.size == 0) return -1
         (chapterList.addAll(location, data))
         notifyItemRangeInserted(location, data.size)
         return data.size
     }
 
-    private fun removeChapter(location: Int, data: ArrayList<ArrayList<NovelLineBean>>) {
+    private fun removeChapter(location: Int, data: ArrayList<NovelPageBean>) {
         chapterList.removeAll(data)
         notifyItemRangeRemoved(location, data.size)
     }
 
-    fun addPreChapter(data: ArrayList<ArrayList<NovelLineBean>>): Int =
+    fun addPreChapter(data: java.util.ArrayList<NovelPageBean>): Int =
             addAllChapter(headerViewList.size, data)
 
-    fun addNextChapter(data: ArrayList<ArrayList<NovelLineBean>>): Int =
+    fun addNextChapter(data: java.util.ArrayList<NovelPageBean>): Int =
             addAllChapter(chapterList.size - footViewList.size, data)
 
-    private fun addAllChapter(data: ArrayList<ArrayList<NovelLineBean>>) {
+    private fun addAllChapter(data: ArrayList<NovelPageBean>) {
         val lastIndex = chapterList.size
         chapterList.addAll(data)
         notifyItemRangeInserted(lastIndex, data.size)
@@ -139,7 +140,7 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
         notifyDataSetChanged()
     }
 
-    fun getAllData(): CopyOnWriteArrayList<ArrayList<NovelLineBean>> = chapterList
+    fun getAllData(): CopyOnWriteArrayList<NovelPageBean> = chapterList
 
     fun setTextColor(textColor: Int) {
         this.textColor = textColor

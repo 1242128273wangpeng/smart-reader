@@ -8,13 +8,15 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.TextView
 import com.intelligent.reader.R
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.animation.BitmapManager
 import com.intelligent.reader.read.help.DrawTextHelper
-import com.intelligent.reader.read.help.ReadSeparateHelper
 import com.intelligent.reader.read.mode.ReadCursor
 import com.intelligent.reader.read.mode.ReadViewEnums
+import com.intelligent.reader.util.ThemeUtil
+import kotlinx.android.synthetic.main.book_home_page_layout.view.*
 import kotlinx.android.synthetic.main.error_page2.view.*
 import kotlinx.android.synthetic.main.read_bottom.view.*
 import kotlinx.android.synthetic.main.read_top.view.*
@@ -47,6 +49,7 @@ class HorizontalPage : FrameLayout {
     private lateinit var pageView:HorizontalItemPage
     private lateinit var readTop:View
     private lateinit var readBottom:View
+    private lateinit var homePage:View
 
     var percent = 0.0f
     var time = ""
@@ -62,6 +65,7 @@ class HorizontalPage : FrameLayout {
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, noticePageListener: NoticePageListener) : super(context, attrs, defStyleAttr) {
         this.noticePageListener = noticePageListener
+        this.noticePageListener?.getPercentAndTime()
         init()
     }
 
@@ -71,22 +75,20 @@ class HorizontalPage : FrameLayout {
          errorView = inflate(context, R.layout.error_page2, null)
          readTop = inflate(context, R.layout.read_top, null)
          readBottom = inflate(context, R.layout.read_bottom, null)
+         homePage = inflate(context,R.layout.book_home_page_layout, null)
 
          pageView = HorizontalItemPage(context)
          val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
          layoutParams.gravity = bottom
          readBottom.layoutParams = layoutParams
-         errorView.visibility = View.GONE
          addView(pageView)
          addView(readTop)
          addView(readBottom)
          addView(loadView)
-         addView(errorView)
          setupView()
     }
 
     private fun setupView(){
-
         //原网页
         origin_tv.setOnClickListener {
             noticePageListener?.loadOrigin()
@@ -133,9 +135,10 @@ class HorizontalPage : FrameLayout {
     }
 
     fun setBackGroud(color:Int){
+        //pageView
+        ThemeUtil.getModePrimaryBackground(resources, pageView)
         //电池背景
-        novel_content_battery_view.setBackgroundColor(color)
-        pageView.setBackgroundColor(color)
+        ThemeUtil.getModePrimaryBackground(resources, novel_content_battery_view)
     }
 
     fun setTimes(time:String){
@@ -147,7 +150,7 @@ class HorizontalPage : FrameLayout {
     fun setBattery(percent:Float){
         this.percent = percent
         //电池
-        novel_content_battery_view.setBattery(percent)
+        novel_content_battery_view.setBattery(this.percent)
     }
 
     fun setCursor(cursor: ReadCursor){
@@ -163,6 +166,7 @@ class HorizontalPage : FrameLayout {
         fun onClickMenu(isShow: Boolean)
         fun loadOrigin()
         fun loadTransCoding()
+        fun getPercentAndTime()
     }
 
     inner class HorizontalItemPage:View{
@@ -190,15 +194,16 @@ class HorizontalPage : FrameLayout {
                 }
                 override fun loadDataError(message: String){
                     //Error
+                    addView(errorView)
                     viewState = ReadViewEnums.ViewState.error
                     loadView.visibility = View.GONE
-                    errorView.visibility = View.VISIBLE
                     errorView.loading_error_reload.setOnClickListener({
                         entrance(cursor)
                         loadView.visibility = View.VISIBLE
-                        errorView.visibility = View.GONE
                         viewState = ReadViewEnums.ViewState.loading
+                        removeView(errorView)
                     })
+                    errorView.loading_error_setting.visibility = GONE
                 }
             })
             DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener() {
@@ -220,13 +225,39 @@ class HorizontalPage : FrameLayout {
          */
         fun setCursor(cursor: ReadCursor) {
             mCursor = cursor
-            val provider = DataProvider.getInstance()
-            //判断item 需要的章节是否在缓存
-            val chapter = provider.chapterMap[cursor.sequence]
-            if (chapter != null) {//加载数据
-                drawPage(cursor, chapter)
-            } else {//无缓存数据
-                entrance(cursor)
+            if(cursor.sequence == -1){//封面页
+                addView(homePage)
+                //封面页
+                homePage.book_name_tv.text = cursor.curBook.name
+                homePage.book_auth_tv.text = cursor.curBook.author
+                homePage.slogan_tv.setTextView(2f, context.resources.getString(R.string.slogan))
+                homePage.product_name_tv.setTextView(1f, context.resources.getString(R.string.app_name))
+                //封面字颜色
+                homePage.book_name_tv.setTextColor(ThemeUtil.modeLoadTextColor)
+                homePage.book_auth_tv.setTextColor(ThemeUtil.modeLoadTextColor)
+                homePage.slogan_tv.setTextColor(ThemeUtil.modeLoadTextColor)
+                homePage.product_name_tv.setTextColor(ThemeUtil.modeLoadTextColor)
+                postInvalidate()
+                //改变状态
+                mCursor!!.sequence = -1
+                viewState = ReadViewEnums.ViewState.start
+                loadView.visibility = View.GONE
+                readTop.visibility = View.GONE
+                readBottom.visibility = View.GONE
+            }else {//普通页
+                //判断
+                if((DataProvider.getInstance().chapterList.isNotEmpty()) and (mCursor!!.sequence > DataProvider.getInstance().chapterList.size-1)){
+                    viewState = ReadViewEnums.ViewState.end
+                    return
+                }
+                //判断item 需要的章节是否在缓存
+                val chapter = DataProvider.getInstance().chapterMap[cursor.sequence]
+                if (chapter != null) {//加载数据
+
+                    drawPage(cursor, chapter)
+                } else {//无缓存数据
+                    entrance(cursor)
+                }
             }
         }
 
@@ -235,10 +266,9 @@ class HorizontalPage : FrameLayout {
          */
         private fun drawPage(cursor: ReadCursor, chapter: Chapter) {
             cursor.readStatus.chapterName = chapter.chapter_name
-            val chapterList = ReadSeparateHelper.getInstance(cursor.readStatus).initTextSeparateContent(chapter.content)//分页
+            val chapterList = DataProvider.getInstance().chapterSeparate[cursor.sequence]!!
             if (!chapterList.isEmpty() and (cursor.pageIndex <= chapterList.size)) {//集合不为空，角标小于集合长度
                 mCursor!!.pageIdexSum = chapterList.size//确定总长度
-                noticePageListener?.pageChangSuccess(mCursor!!,viewNotify)//游标通知回调
                 cursor.readStatus.currentPage = cursor.pageIndex//画页码
                 val pageList = if (cursor.pageIndex == -1) {//分页前不知道上一章长度
                     mCursor!!.pageIndex = chapterList.size//确定长度
@@ -248,13 +278,18 @@ class HorizontalPage : FrameLayout {
                 }
                 mCurPageBitmap = BitmapManager.getInstance().createBitmap()
                 mCurrentCanvas = Canvas(mCurPageBitmap)
-                mDrawTextHelper?.drawText(mCurrentCanvas, pageList)
+                mDrawTextHelper?.drawText(mCurrentCanvas, pageList.lines)
                 postInvalidate()
-                viewState = ReadViewEnums.ViewState.success
+                viewState = if ((mCursor!!.sequence== DataProvider.getInstance().chapterList!!.size-1)and(mCursor!!.pageIndex == mCursor!!.pageIdexSum)){//判断这本书的最后一页
+                    ReadViewEnums.ViewState.end
+                }else{
+                    noticePageListener?.pageChangSuccess(mCursor!!,viewNotify)//游标通知回调
+                    ReadViewEnums.ViewState.success
+                }
                 loadView.visibility = View.GONE
                 //设置top and bottom
-                val pageProgress = ""+(cursor.readStatus.sequence + 1) + "/" + cursor.readStatus.chapterCount + "章"
-                val chapterProgress = "本章第" + cursor.readStatus.currentPage + "/" + cursor.readStatus.pageCount
+                val chapterProgress = ""+(cursor.sequence + 1) + "/" + cursor.readStatus.chapterCount + "章"
+                val pageProgress = "本章第" + cursor.pageIndex + "/" + cursor.pageIdexSum
                 setTopAndBottomViewContext(cursor.readStatus.chapterName,chapterProgress,pageProgress)
             }
         }

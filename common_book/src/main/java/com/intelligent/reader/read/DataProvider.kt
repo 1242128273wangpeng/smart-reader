@@ -6,6 +6,8 @@ import com.intelligent.reader.cover.BookCoverLocalRepository
 import com.intelligent.reader.cover.BookCoverOtherRepository
 import com.intelligent.reader.cover.BookCoverQGRepository
 import com.intelligent.reader.cover.BookCoverRepositoryFactory
+import com.intelligent.reader.read.help.ReadSeparateHelper
+import com.intelligent.reader.read.mode.NovelPageBean
 import com.intelligent.reader.read.mode.ReadViewEnums
 import com.intelligent.reader.reader.ReaderOwnRepository
 import com.intelligent.reader.reader.ReaderRepositoryFactory
@@ -16,7 +18,6 @@ import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.Chapter
-import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.net.custom.service.NetService
@@ -39,9 +40,12 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     //目录
-    var chapterList: ArrayList<Chapter>? = null
-    //分页后缓存容器
+    var chapterList: ArrayList<Chapter> = ArrayList()
+    //分页前缓存容器
     val chapterMap: HashMap<Int, Chapter> = HashMap()
+
+    //分页后缓存容器
+    val chapterSeparate:HashMap<Int,ArrayList<NovelPageBean>> = HashMap()
 
     //工厂
     var mReaderRepository: ReaderRepository = ReaderRepositoryFactory.getInstance(ReaderOwnRepository.getInstance())
@@ -134,6 +138,7 @@ class DataProvider : DisposableAndroidViewModel() {
                     }
                     mReaderRepository.writeChapterCache(c, false)
                     chapterMap.put(sequence, c)
+                    chapterSeparate.put(sequence,ReadSeparateHelper.getInstance().initTextSeparateContent(c.content,c.chapter_name))
                     mReadDataListener.loadDataSuccess(c, type)
                 }, { throwable ->
                     mReadDataListener.loadDataError(throwable.message.toString())

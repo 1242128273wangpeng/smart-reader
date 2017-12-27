@@ -45,7 +45,7 @@ public interface ReadViewEnums {
     }
     //页面状态
     enum ViewState{
-        loading,success,error
+        loading,success,error,start,end
     }    //页面状态
     enum NotifyStateState{
         all,left,right,none

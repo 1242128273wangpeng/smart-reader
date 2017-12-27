@@ -4,6 +4,8 @@ import android.graphics.Paint;
 import android.text.TextPaint;
 import android.text.TextUtils;
 
+import com.intelligent.reader.read.mode.NovelPageBean;
+
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.NovelLineBean;
 import net.lzbook.kit.data.bean.ReadStatus;
@@ -22,8 +24,13 @@ public class ReadSeparateHelper {
 
     private ReadSeparateHelper (){
     }
+
     private static class Singleton {
         private static final ReadSeparateHelper INSTANCE = new ReadSeparateHelper();
+    }
+
+    public static final ReadSeparateHelper getInstance() {
+        return Singleton.INSTANCE;
     }
 
     public static final ReadSeparateHelper getInstance(ReadStatus mReadStatus) {
@@ -31,7 +38,7 @@ public class ReadSeparateHelper {
         return Singleton.INSTANCE;
     }
 
-    public ArrayList<ArrayList<NovelLineBean>> initTextSeparateContent(String content) {
+    public ArrayList<NovelPageBean> initTextSeparateContent(String content , String chapterName) {
         float chapterHeight = 75 * readStatus.screenScaledDensity;
         float hideHeight = 15 * readStatus.screenScaledDensity;
 
@@ -67,8 +74,8 @@ public class ReadSeparateHelper {
             sb.append("chapter_homepage \n");
             sb.append("chapter_homepage \n");
 
-            if (!TextUtils.isEmpty(readStatus.chapterName)) {
-                readStatus.chapterNameList = getNovelText(mchapterPaint, readStatus.chapterName, width
+            if (!TextUtils.isEmpty(chapterName)) {
+                readStatus.chapterNameList = getNovelText(mchapterPaint, chapterName, width
                         - readStatus.screenDensity * 10);
             }
 
@@ -111,7 +118,7 @@ public class ReadSeparateHelper {
                 sb.append("\u3000\u3000" + temp + "\n");
             }
         }
-        String text = "";
+        String text ;
         if (readStatus.sequence == -1) {
             readStatus.bookNameList = getNovelText(mbookNamePaint, readStatus.bookName, width);
             String homeText = "txtzsydsq_homepage\n";
@@ -133,9 +140,10 @@ public class ReadSeparateHelper {
         float textSpace = 0.0f;
         long textLength = 0;
         boolean can = true;
-        ArrayList<NovelLineBean> pageLines = new ArrayList<NovelLineBean>();
-        ArrayList<ArrayList<NovelLineBean>> lists = new ArrayList<ArrayList<NovelLineBean>>();
-        lists.add(pageLines);
+        ArrayList<NovelLineBean> pageLines = new ArrayList<>();
+        ArrayList<NovelPageBean> lists = new ArrayList<>();
+        NovelPageBean mNovelPageBean = new NovelPageBean(pageLines,pageLines.size());
+        lists.add(mNovelPageBean);
         int chapterNameSize = 0;
         if (readStatus.chapterNameList != null) {
             chapterNameSize = readStatus.chapterNameList.size();
@@ -143,7 +151,7 @@ public class ReadSeparateHelper {
         if (chapterNameSize > 1) {
             textSpace += chapterHeight;
         }
-
+        int offsetSum = 0;
         float lastLineHeight;
         for (int i = 0; i < size; i++) {
             boolean isDuan = false;
@@ -163,16 +171,20 @@ public class ReadSeparateHelper {
             }
 
             if (textSpace < height) {
+                offsetSum+=pageLines.size();
                 pageLines.add(lineText);
             } else {
                 if (isDuan) {// 开始是空行
                     textSpace -= m_duan;
                     pageLines.add(lineText);
+                    offsetSum+=pageLines.size();
                 } else {
                     pageLines = new ArrayList<NovelLineBean>();
                     textSpace = lastLineHeight;
                     pageLines.add(lineText);
-                    lists.add(pageLines);
+                    offsetSum+=pageLines.size();
+                    mNovelPageBean = new NovelPageBean(pageLines,offsetSum);
+                    lists.add(mNovelPageBean);//
                 }
                 // }
             }

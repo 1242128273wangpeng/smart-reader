@@ -10,7 +10,9 @@ import com.intelligent.reader.read.help.*
 import com.intelligent.reader.read.mode.ReadCursor
 import com.intelligent.reader.read.mode.ReadInfo
 import com.intelligent.reader.read.mode.ReadViewEnums
+import com.intelligent.reader.util.ThemeUtil
 import com.intelligent.reader.view.ViewPager
+import kotlinx.android.synthetic.main.vertical_pager_layout.view.*
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.utils.AppLog
@@ -40,10 +42,12 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     var curCursor:ReadCursor? = null
     //滑动方向
     private var direction = ReadViewEnums.Direction.leftToRight
+    //当前坐标
+    private var index: Int = Int.MAX_VALUE/2
     //滑动监听
     private var mListener: OnPageChangeListener = object : ViewPager.OnPageChangeListener {
         private var lastValue: Float = 0.toFloat()
-        private var index: Int = Int.MAX_VALUE/2
+
         override fun onPageScrollStateChanged(state: Int)=Unit
 
         override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
@@ -100,7 +104,6 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                 //改变View的NotifyStateState，
                 // success后，通知其他页updata
                 isCanScroll = -1
-
                 view.viewNotify = notify
                 if (notify == ReadViewEnums.NotifyStateState.all){
                     view.setCursor(curCursor!!)
@@ -109,7 +112,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             ReadViewEnums.ViewState.success->{//
                 //获取旧游标
                 val mCousor = view.mCursor!!
-                //顺序
+                //章节顺序
                 val newSequence: Int = when(notify){
                     ReadViewEnums.NotifyStateState.left -> {
                         when(mCousor.pageIndex){
@@ -131,6 +134,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                     }
                     else -> 0
                 }
+
                 //页码
                 val newPageIndex:Int = when(notify){
                     ReadViewEnums.NotifyStateState.left -> {
@@ -159,6 +163,14 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             }
             ReadViewEnums.ViewState.error->{//
 
+            }
+            ReadViewEnums.ViewState.start->{//封面开始
+                isCanScroll = 1
+                isLeftSlip = false
+            }
+            ReadViewEnums.ViewState.end->{//结束
+                isCanScroll = 1
+                isLeftSlip = true
             }
         }
     }
@@ -234,25 +246,54 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             }
         }
     }
+
+    /**
+     * 点击屏幕左边后翻页
+     */
     override fun onClickLeft() {
-        ToastUtils.showToastNoRepeat("Left")
+        //当前页是封面页禁止点击
+        if ((findViewWithTag(ReadViewEnums.PageIndex.current) != null) and ((findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState == ReadViewEnums.ViewState.start)) return
+        checkViewState("Pre",ReadViewEnums.NotifyStateState.left)
+        setCurrentItem(index-1,true)
     }
 
+    /**
+     * 点击屏幕右边后翻页
+     */
     override fun onClickRight() {
-        ToastUtils.showToastNoRepeat("Right")
+        //当前页是最后一页禁止点击
+        if ((findViewWithTag(ReadViewEnums.PageIndex.current) != null) and ((findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState == ReadViewEnums.ViewState.end)) return
+        checkViewState("Next",ReadViewEnums.NotifyStateState.right)
+        setCurrentItem(index+1,true)
     }
 
+    /**
+     * 点击屏幕中间区域显示菜单
+     */
     override fun onClickMenu(isShow: Boolean) {
         mReadPageChange?.showMenu(isShow)
     }
+
+    /**
+     * 点击原网页
+     */
     override fun loadOrigin() {
         ToastUtils.showToastNoRepeat("loadOrigin")
     }
-
+    /**
+     * 点击源码声明
+     */
     override fun loadTransCoding() {
         ToastUtils.showToastNoRepeat("loadTransCoding")
     }
 
+    /**
+     * 获取时间 和 电量
+     */
+    override fun getPercentAndTime() {
+        freshTime(time)
+        freshBattery(percent)
+    }
 //==================================================IReadPageChange=========================================
     private var mReadPageChange: IReadPageChange? = null
 
@@ -303,10 +344,9 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 
     //设置背景颜色
     override fun setBackground(background: Int) {
-        this.color = background
         for (i in 0 until childCount){
             val childAtView = getChildAt(i) as HorizontalPage
-            childAtView.setBackGroud(this.color)
+            childAtView.setBackGroud(background)
         }
     }
 

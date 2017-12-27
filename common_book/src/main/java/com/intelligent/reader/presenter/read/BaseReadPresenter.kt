@@ -182,7 +182,6 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     var myNovelHelper: NovelHelper? = null
     protected var autoSpeed: Int = 0
     protected var auto_menu: AutoReadMenu? = null
-    protected var batteryPercent: Float = 0.toFloat()
     protected var is_dot_orientation = false// 横竖屏打点
      var current_mode: Int = 0
      var time_text: CharSequence? = null
@@ -209,22 +208,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     init {
         readReference = WeakReference(act)
     }
-    /**
-     * 接受电量改变广播
-     */
-    private val mBatInfoReceiver = object : BroadcastReceiver() {
 
-        override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == Intent.ACTION_BATTERY_CHANGED) {
-                if (pageView != null) {
-                    val level = intent.getIntExtra("level", 0)
-                    val scale = intent.getIntExtra("scale", 100)
-                    batteryPercent = level.toFloat() / scale.toFloat()
-                    pageView?.freshBattery(batteryPercent)
-                }
-            }
-        }
-    }
     private var mCacheUpdateReceiver: CacheUpdateReceiver? = null
     private var mReadOptionPresenter: ReadOptionPresenter? = null
     private var mCatalogMarkPresenter: CatalogMarkPresenter? = null
@@ -391,9 +375,6 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         }
         setMode()
         readStatus?.chapterCount = readStatus?.book?.chapter_count
-        // 注册一个接受广播类型
-        readReference?.get()?.registerReceiver(mBatInfoReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
-        pageView?.freshBattery(batteryPercent)
 
         changeMode(Constants.MODE)
     }
@@ -837,7 +818,8 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                         try {
                             if (pageView != null) {
                                 time_text = DateFormat.format("k:mm", mCalendar)
-                                pageView!!.freshTime(time_text)
+//                                pageView!!.freshTime(time_text)
+                                view?.freshTime(time_text)
                             }
                         } catch (e: Exception) {
                             e.printStackTrace()
@@ -1463,8 +1445,6 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 
     fun onResume() {
 
-        // 注册一个接受广播类型
-        readReference?.get()?.registerReceiver(mBatInfoReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
         // 设置全屏
         if (isFromCover && Constants.IS_LANDSCAPE) {
             return
@@ -1552,15 +1532,6 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 //            mNovelLoader?.cancel(true)
 //        }
 
-        if (mBatInfoReceiver != null) {
-            try {
-                readReference?.get()?.unregisterReceiver(mBatInfoReceiver)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
-        }
-
         mTimerStopped = true
 
         if (this.sp != null) {
@@ -1625,7 +1596,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     }
 
     private fun goToBookOver() {
-        if (readReference == null || readReference!!.get() == null || readReference!!.get()!!.isFinishing()) {
+        if (readReference == null || readReference!!.get() == null || readReference!!.get()!!.isFinishing) {
             return
         }
 
@@ -1690,10 +1661,10 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             intent = Intent(readReference?.get(), DownBookClickReceiver::class.java)
             intent.action = DownBookClickReceiver.action
             intent.putExtra("book_id", book_id)
-            pending = PendingIntent.getBroadcast(readReference?.get()?.getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            pending = PendingIntent.getBroadcast(readReference?.get()?.applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         } else {
             intent = Intent(readReference?.get(), DownloadManagerActivity::class.java)
-            pending = PendingIntent.getActivity(readReference?.get()?.getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            pending = PendingIntent.getActivity(readReference?.get()?.applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
         preNTF.contentIntent = pending
     }
@@ -1782,12 +1753,12 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             temp = pageView
             pageView = ScrollPageView(readReference?.get())
             view?.resetPageView(pageView!!)
-            pageView!!.init(readReference?.get(), readStatus, myNovelHelper)
-            pageView!!.setCallBack(this)
-            pageView!!.setViewModel(mReaderViewModel)
+            pageView?.init(readReference?.get(), readStatus, myNovelHelper)
+            pageView?.setCallBack(this)
+            pageView?.setViewModel(mReaderViewModel)
             myNovelHelper?.setPageView(pageView)
-            pageView!!.freshTime(time_text)
-            pageView!!.freshBattery(batteryPercent)
+            pageView?.freshTime(time_text)
+//            pageView?.freshBattery(batteryPercent)
             changeMode(current_mode)
 
             temp?.clear()
@@ -1855,13 +1826,12 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             pageView!!.setViewModel(mReaderViewModel)
             myNovelHelper?.setPageView(pageView)
             pageView!!.freshTime(time_text)
-            pageView!!.freshBattery(batteryPercent)
+//            pageView!!.freshBattery(batteryPercent)
             pageView!!.drawCurrentPage()
             changeMode(current_mode)
             temp?.clear()
         }
         pageView?.startAutoRead()
-        showMenu(false)
         showMenu(false)
     }
 

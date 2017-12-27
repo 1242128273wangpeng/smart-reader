@@ -33,5 +33,7 @@ interface ReadPreInterface {
         fun initCatlogView()
         fun onNewInitView(): Boolean
         fun loadChapterSuccess(what: Int,chapter:Chapter,chapterList: ArrayList<ArrayList<NovelLineBean>>)
+        //刷新时间
+        fun freshTime(time_text: CharSequence?)
     }
 }
