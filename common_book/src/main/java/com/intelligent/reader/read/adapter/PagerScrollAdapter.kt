@@ -201,7 +201,7 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
         }
 
         private fun addAdView(pageLines: List<NovelLineBean>) {
-            var lineData = pageLines[pageLines.size - 1]
+            val lineData = pageLines[pageLines.size - 1]
             ad_fl.removeAllViews()
             if (pageLines[0].isLastPage && lineData.adView != null) {
                 ad_fl.visibility = View.VISIBLE

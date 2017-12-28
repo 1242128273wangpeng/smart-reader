@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -27,7 +26,6 @@ import com.intelligent.reader.util.ThemeUtil
 import kotlinx.android.synthetic.main.vertical_pager_layout.view.*
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
-import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.ToastUtils
 import java.util.*
@@ -334,13 +332,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 mReadInfo.mReadStatus.sequence = mOriginDataList[position].lines[0].sequence
                 mCurrentPage = mReadInfo.mReadStatus.currentPage
             }
-
 //            mOnReaderViewControlCallback?.onPageChange(mReadInfo.mReadStatus.sequence, mReadInfo.mReadStatus.currentPage)
-//
-//            // 建议在RecycleView停止滚动时更新视图，目前暂时先放在这 暂无其他来源
-//            if (mOriginDataList[position][0].isLastPage) {
-//                mAdapter.addAdViewToChapterLastPage(mOnReaderViewControlCallback?.onLoadChapterLastPageAdView(mReadStatus.sequence, mReadStatus.currentPage), position)
-//            }
         }
         if (mReadInfo.mReadStatus.sequence == -1) {
             novel_title_layout.visibility = View.INVISIBLE
@@ -460,7 +452,6 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
         mDataProvider.loadAd(context, object : DataProvider.OnLoadReaderAdCallback {
             override fun onLoadAd(adView: ViewGroup) {
                 lineData?.adView = adView
-//                mAdapter.addAdViewToChapterLastPage(adView, 0)
             }
         })
     }
