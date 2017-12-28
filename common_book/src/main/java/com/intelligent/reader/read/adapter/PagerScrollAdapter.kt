@@ -21,14 +21,15 @@ import java.util.concurrent.CopyOnWriteArrayList
  * @mail jun_li@dingyuegroup.cn
  * @data 2017/11/2 14:35
  */
-class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val mNovelHelper: NovelHelper, var allChapterList: ArrayList<Chapter>?) :
-        RecyclerView.Adapter<PagerScrollAdapter.ReaderPagerHolder>() {
+class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val mNovelHelper: NovelHelper) : RecyclerView.Adapter<PagerScrollAdapter.ReaderPagerHolder>() {
 
     private var chapterList: CopyOnWriteArrayList<NovelPageBean>
 
     private var headerViewList: ArrayList<NovelPageBean>
 
     private var footViewList: ArrayList<NovelPageBean>
+
+    private var allChapterList: ArrayList<Chapter>? = null
 
     private var textColor: Int = 0
 
@@ -53,18 +54,14 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
 
     private var mOnLoadViewClickListener: OnLoadViewClickListener? = null
 
-    private var mChapterLastPageAdView: View? = null
-
-    private var mOldChapterLastPageAdView: View? = null
-
     private var mChapterBetweenAdView: View? = null
 
     private var mOldChapterBetweenAdView: View? = null
 
     init {
         chapterList = CopyOnWriteArrayList()
-        headerViewList = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { sequence = HEADER_ITEM_TYPE }),0))
-        footViewList = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { sequence = FOOTER_ITEM_TYPE }),0))
+        headerViewList = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { sequence = HEADER_ITEM_TYPE }), 0))
+        footViewList = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { sequence = FOOTER_ITEM_TYPE }), 0))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
@@ -157,13 +154,6 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
         this.mOnLoadViewClickListener = onLoadViewClickListener
     }
 
-    fun addAdViewToChapterLastPage(adView: View?, position: Int) {
-        mChapterLastPageAdView = adView
-        if (mChapterLastPageAdView != null) {
-            notifyItemRangeChanged(position, 1)
-        }
-    }
-
     fun addAdViewToChapterBetween(adView: View?) {
         mChapterBetweenAdView = adView
     }
@@ -177,10 +167,11 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
      */
     internal inner class PagerHolder(itemView: View) : PagerScrollAdapter.ReaderPagerHolder(itemView) {
         init {
-            text = itemView.findViewById(R.id.text) as PageContentView
+            text = itemView.findViewById(R.id.read_content_text) as PageContentView
             chapter_info_rl = itemView.findViewById(R.id.chapter_info_rl) as RelativeLayout
             chapter_num_tv = itemView.findViewById(R.id.chapter_num_tv) as TextView
             chapter_name_tv = itemView.findViewById(R.id.chapter_name_tv) as TextView
+            ad_fl = itemView.findViewById(R.id.ad_fl) as FrameLayout
         }
 
         override fun bindHolder(pageLines: List<NovelLineBean>) {
@@ -200,29 +191,33 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
                 }
             }
 
-
-            if (itemView is RelativeLayout) {
-                val adView = itemView.getChildAt(2)
-                if (adView != null) itemView.removeViewAt(2)
-                if (pageLines[0].isLastPage && mChapterLastPageAdView != null && mOldChapterLastPageAdView != mChapterLastPageAdView) {
-                    val layoutParams = mChapterLastPageAdView!!.layoutParams
-                    if (layoutParams is RelativeLayout.LayoutParams) {
-                        layoutParams.addRule(RelativeLayout.BELOW, R.id.text)
-                        mChapterLastPageAdView!!.layoutParams = layoutParams
-                    }
-                    itemView.addView(mChapterLastPageAdView, 2)
-                    mOldChapterLastPageAdView = mChapterLastPageAdView
-                    itemView.layoutParams.height = mNovelHelper.getPageHeight(pageLines) + mChapterLastPageAdView!!.layoutParams.height
-                } else {
-                    itemView.layoutParams.height = mNovelHelper.getPageHeight(pageLines)
-                }
-            }
+            addAdView(pageLines)
 
             text.setReaderStatus(mReadStatus)
             text.setContent(pageLines)
             chapter_num_tv.setTextColor(textColor)
             chapter_name_tv.setTextColor(textColor)
             text.setTextColor(textColor)
+        }
+
+        private fun addAdView(pageLines: List<NovelLineBean>) {
+            var lineData = pageLines[pageLines.size - 1]
+            ad_fl.removeAllViews()
+            if (pageLines[0].isLastPage && lineData.adView != null) {
+                ad_fl.visibility = View.VISIBLE
+                val layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 600)
+                if (lineData.adView.parent != null) {
+                    (lineData.adView.tag as ViewGroup).removeAllViews()
+                }
+                if (lineData.adView.parent == null) {
+                    lineData.adView.tag = ad_fl
+                    ad_fl.addView(lineData.adView, layoutParams)
+                }
+                itemView.layoutParams.height = mNovelHelper.getPageHeight(pageLines) + layoutParams.height
+            } else {
+                ad_fl.visibility = View.GONE
+                itemView.layoutParams.height = mNovelHelper.getPageHeight(pageLines)
+            }
         }
     }
 

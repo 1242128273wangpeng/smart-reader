@@ -15,6 +15,7 @@ import android.widget.*
 import com.intelligent.reader.R
 import com.intelligent.reader.fragment.CatalogMarkFragment
 import com.intelligent.reader.presenter.read.*
+import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.help.IReadPageChange
 import com.intelligent.reader.read.help.ReadSeparateHelper
 import com.intelligent.reader.read.mode.ReadInfo
@@ -125,7 +126,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         readStatus?.source_ids = readStatus?.book?.site
         //add ReadInfo
         novel_basePageView?.initReaderViewFactory()
-        novel_basePageView?.entrance(ReadInfo(readStatus?.book!!, readStatus!!, ReadViewEnums.Animation.slide))
+        novel_basePageView?.entrance(ReadInfo(readStatus?.book!!, readStatus!!, ReadViewEnums.Animation.list))
         novel_basePageView?.setIReadPageChange(this)
         //初始化 ReadSeparateHelper
         ReadSeparateHelper.getInstance(readStatus)
@@ -226,6 +227,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     override fun onPause() {
         super.onPause()
         mReadPresenter?.onPause()
+        DataProvider.getInstance().unSubscribe()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {

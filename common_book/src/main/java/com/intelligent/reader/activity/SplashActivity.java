@@ -240,40 +240,40 @@ public class SplashActivity extends FrameActivity {
     private void initSplashAd() {
         if (ad_view != null) {
 
-            PlatformSDK.adapp().dycmSplashAd(this, ad_view, new AbstractCallback() {
-                @Override
-                public void onResult(boolean adswitch, String jsonResult) {
-                    if (adswitch) {
-                        try {
-                            JSONObject jsonObject = new JSONObject(jsonResult);
-                            if (jsonObject.has("state_code")) {
-                                switch (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                                    case AD_REQ_SUCCESS://广告请求成功
-                                        DyLogUtils.dd("AD_REQ_SUCCESS" + jsonResult);
-                                        break;
-                                    case AD_REQ_FAILED://广告请求失败
-                                        DyLogUtils.dd("AD_REQ_FAILED" + jsonResult);
-                                        handler.sendEmptyMessage(0);
-                                        break;
-                                    case AD_DISMISSED_CODE://开屏页面关闭
-                                        handler.sendEmptyMessage(0);
-                                        break;
-                                    case AD_ONCLICKED_CODE://开屏页面点击
-                                        DyLogUtils.dd("AD_ONCLICKED_CODE" + jsonResult);
-                                        break;
-                                    case AD_ONTICK_CODE://剩余显示时间
-                                        DyLogUtils.dd("AD_ONTICK_CODE" + jsonResult);
-                                        break;
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
+//            PlatformSDK.adapp().dycmSplashAd(this, ad_view, new AbstractCallback() {
+//                @Override
+//                public void onResult(boolean adswitch, String jsonResult) {
+//                    if (adswitch) {
+//                        try {
+//                            JSONObject jsonObject = new JSONObject(jsonResult);
+//                            if (jsonObject.has("state_code")) {
+//                                switch (ResultCode.parser(jsonObject.getInt("state_code"))) {
+//                                    case AD_REQ_SUCCESS://广告请求成功
+//                                        DyLogUtils.dd("AD_REQ_SUCCESS" + jsonResult);
+//                                        break;
+//                                    case AD_REQ_FAILED://广告请求失败
+//                                        DyLogUtils.dd("AD_REQ_FAILED" + jsonResult);
+//                                        handler.sendEmptyMessage(0);
+//                                        break;
+//                                    case AD_DISMISSED_CODE://开屏页面关闭
+//                                        handler.sendEmptyMessage(0);
+//                                        break;
+//                                    case AD_ONCLICKED_CODE://开屏页面点击
+//                                        DyLogUtils.dd("AD_ONCLICKED_CODE" + jsonResult);
+//                                        break;
+//                                    case AD_ONTICK_CODE://剩余显示时间
+//                                        DyLogUtils.dd("AD_ONTICK_CODE" + jsonResult);
+//                                        break;
+//                                }
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                    } else {
                         handler.sendEmptyMessage(0);
-                    }
-                }
-            });
+//                    }
+//                }
+//            });
         }
     }
 
