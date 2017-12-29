@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.read_top.view.*
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
+import net.lzbook.kit.utils.AppLog
 
 
 /**
@@ -249,7 +250,6 @@ class HorizontalPage : FrameLayout {
                 loadView.visibility = View.GONE
                 readTop.visibility = View.GONE
                 readBottom.visibility = View.GONE
-                noticePageListener?.pageChangSuccess(mCursor!!,ReadViewEnums.NotifyStateState.none)
             }else {//普通页
                 //判断超过章节数
                 if((DataProvider.getInstance().chapterList.isNotEmpty()) and (mCursor!!.sequence > DataProvider.getInstance().chapterList.size-1)){
