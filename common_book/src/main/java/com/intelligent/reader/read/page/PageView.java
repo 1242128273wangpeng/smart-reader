@@ -150,7 +150,7 @@ public class PageView extends View implements PageInterface {
         pageWidth = readStatus.screenWidth;
         pageHeight = readStatus.screenHeight;
 
-        drawTextHelper.getRect();
+//        drawTextHelper.getRect();
 //        mOperationPaint = drawTextHelper.drawText(mCurPageCanvas, pageLines, mActivity);
 
 //        postInvalidate();

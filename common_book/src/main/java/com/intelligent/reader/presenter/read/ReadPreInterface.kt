@@ -35,5 +35,7 @@ interface ReadPreInterface {
         fun loadChapterSuccess(what: Int,chapter:Chapter,chapterList: ArrayList<ArrayList<NovelLineBean>>)
         //刷新时间
         fun freshTime(time_text: CharSequence?)
+        //刷新电池
+        fun setBackground()
     }
 }

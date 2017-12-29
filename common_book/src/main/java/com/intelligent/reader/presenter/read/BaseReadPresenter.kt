@@ -767,13 +767,13 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
      * 初始化view
      */
     fun initData(v: PageInterface) {
-        pageView = v
-        resources = readReference?.get()?.resources
-        pageView?.setViewModel(mReaderViewModel)
-        pageView?.init(readReference?.get(), readStatus, myNovelHelper)
-        pageView?.setCallBack(this)
-        pageView?.setOnOperationClickListener(this)
-        myNovelHelper?.setPageView(pageView)
+//        pageView = v
+//        resources = readReference?.get()?.resources
+//        pageView?.setViewModel(mReaderViewModel)
+//        pageView?.init(readReference?.get(), readStatus, myNovelHelper)
+//        pageView?.setCallBack(this)
+//        pageView?.setOnOperationClickListener(this)
+//        myNovelHelper?.setPageView(pageView)
     }
 
     /**
@@ -1147,12 +1147,12 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         if (act === null) {
             return
         }
-        if (act.resources!!.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        if (act.resources!!.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_portrait_btn)
             val data = HashMap<String, String>()
             data.put("type", "2")
             StartLogClickUtil.upLoadEventLog(readReference?.get(), StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.HPMODEL, data)
-            act.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+            act.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             screen_mode.putInt("screen_mode", Configuration.ORIENTATION_PORTRAIT)
             Constants.IS_LANDSCAPE = false
         } else if (act.resources!!.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -1303,7 +1303,6 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             51 -> {
                 setTextColor(readReference?.get()?.getResources()!!.getColor(R.color.reading_text_color_first))
                 setPageBackColor(readReference?.get()?.getResources()!!.getColor(R.color.reading_backdrop_first))
-
                 setBackground()
                 setBatteryBackground(R.drawable.reading_batty_day)
             }
@@ -1358,6 +1357,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                 setBatteryBackground(R.drawable.reading_batty_day)
             }
         }
+        view?.setBackground()
     }
 
     private fun setTextColor(color: Int) {
@@ -1858,13 +1858,13 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     fun onJumpPreChapter() {
         readStatus!!.currentPage = 1
         mReaderViewModel!!.toChapterStart = true
-        mReaderViewModel!!.previous()
-        if (Constants.isSlideUp) {
-            pageView!!.getChapter(false)
-        } else {
-            pageView!!.drawCurrentPage()
-            pageView!!.drawNextPage()
-        }
+//        mReaderViewModel!!.previous()
+//        if (Constants.isSlideUp) {
+//            pageView!!.getChapter(false)
+//        } else {
+//            pageView!!.drawCurrentPage()
+//            pageView!!.drawNextPage()
+//        }
         changeMarkState()
 
         if (!pageView!!.isAutoReadMode) {
@@ -1886,13 +1886,13 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 
     fun onJumpNextChapter() {
         readStatus!!.currentPage = readStatus!!.pageCount
-        mReaderViewModel!!.next()
-        if (Constants.isSlideUp) {
-            pageView!!.getChapter(false)
-        } else {
-            pageView!!.drawCurrentPage()
-            pageView!!.drawNextPage()
-        }
+//        mReaderViewModel!!.next()
+//        if (Constants.isSlideUp) {
+//            pageView?.getChapter(false)
+//        } else {
+//            pageView!!.drawCurrentPage()
+//            pageView!!.drawNextPage()
+//        }
         changeMarkState()
 
         if (!pageView!!.isAutoReadMode()) {

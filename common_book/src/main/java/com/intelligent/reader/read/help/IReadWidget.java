@@ -7,6 +7,8 @@ import com.intelligent.reader.read.mode.ReadInfo;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.NovelLineBean;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 
 /**
@@ -33,9 +35,8 @@ public interface IReadWidget {
     void freshBattery(float percent);
     /**
      * 设置背景颜色
-     * @param background 颜色值
      */
-    void setBackground(int background);
+    void setBackground();
     /**
      * 设置阅读信息
      * @param mReadInfo 新阅读信息
@@ -60,4 +61,8 @@ public interface IReadWidget {
      * @param view 广告view
      */
     void setLoadAd(View view);
+    /**
+     * 设置SettingView重画
+     */
+    void onRedrawPage();
 }

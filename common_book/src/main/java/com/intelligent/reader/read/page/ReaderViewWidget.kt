@@ -86,10 +86,9 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
 
     /**
      * 设置背景颜色
-     * @param background 颜色值
      */
-    override fun setBackground(background: Int) {
-        mReaderView?.setBackground(background)
+    override fun setBackground() {
+        mReaderView?.setBackground()
     }
 
     /**
@@ -122,5 +121,12 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
      */
     override fun setLoadAd(view: View?) {
         mReaderView?.setLoadAd(view)
+    }
+
+    /**
+     * 重画item页面
+     */
+    override fun onRedrawPage(){
+        mReaderView?.onRedrawPage()
     }
 }

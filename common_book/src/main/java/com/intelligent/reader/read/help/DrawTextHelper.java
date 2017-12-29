@@ -437,7 +437,7 @@ public class DrawTextHelper {
             float distance = (textHeight - (height)) / n;
             m_iFontHeight = m_iFontHeight - distance;
         }
-        drawBackground(canvas);//行背景
+//        drawBackground(canvas);//行背景
 
 
         if (pageLines != null && !pageLines.isEmpty()) {

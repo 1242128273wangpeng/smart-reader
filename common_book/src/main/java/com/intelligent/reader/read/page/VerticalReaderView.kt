@@ -497,10 +497,6 @@ class VerticalReaderView : FrameLayout, IReadView {
         novel_content_battery_view.setBattery(percent)
     }
 
-    override fun setBackground(background: Int) {
-        setBackground()
-    }
-
     override fun setLoadChapter(msg: Int, chapter: Chapter, chapterList: ArrayList<ArrayList<NovelLineBean>>?) {
     }
 
@@ -508,11 +504,14 @@ class VerticalReaderView : FrameLayout, IReadView {
 
     }
 
+    override fun onRedrawPage() {
+
+    }
 
     override fun setReadInfo(mReadInfo: ReadInfo?) {
     }
 
-    private fun setBackground() {
+    override fun setBackground() {
         ThemeUtil.getModePrimaryBackground(resources, this)
         novel_time.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
         origin_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))

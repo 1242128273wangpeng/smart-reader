@@ -31,9 +31,8 @@ public interface IReadView {
     void freshBattery(float percent);
     /**
      * 设置背景颜色
-     * @param background 颜色值
      */
-    void setBackground(int background);
+    void setBackground();
     /**
      * 设置阅读信息
      * @param mReadInfo 新阅读信息
@@ -63,4 +62,6 @@ public interface IReadView {
 //     * @param color
 //     */
 //    void setTextColor(int color);
+
+    void onRedrawPage();
 }

@@ -13,6 +13,7 @@ import com.intelligent.reader.R
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.animation.BitmapManager
 import com.intelligent.reader.read.help.DrawTextHelper
+import com.intelligent.reader.read.mode.NovelPageBean
 import com.intelligent.reader.read.mode.ReadCursor
 import com.intelligent.reader.read.mode.ReadViewEnums
 import com.intelligent.reader.util.ThemeUtil
@@ -22,6 +23,7 @@ import kotlinx.android.synthetic.main.read_bottom.view.*
 import kotlinx.android.synthetic.main.read_top.view.*
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Chapter
+import net.lzbook.kit.data.bean.NovelLineBean
 
 
 /**
@@ -65,7 +67,8 @@ class HorizontalPage : FrameLayout {
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, noticePageListener: NoticePageListener) : super(context, attrs, defStyleAttr) {
         this.noticePageListener = noticePageListener
-        this.noticePageListener?.getPercentAndTime()
+        time = this.noticePageListener!!.getCurTime()
+        percent = this.noticePageListener!!.getCurPercent()
         init()
     }
 
@@ -76,16 +79,13 @@ class HorizontalPage : FrameLayout {
          readTop = inflate(context, R.layout.read_top, null)
          readBottom = inflate(context, R.layout.read_bottom, null)
          homePage = inflate(context,R.layout.book_home_page_layout, null)
-
          pageView = HorizontalItemPage(context)
-         val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-         layoutParams.gravity = bottom
-         readBottom.layoutParams = layoutParams
          addView(pageView)
          addView(readTop)
          addView(readBottom)
          addView(loadView)
          setupView()
+
     }
 
     private fun setupView(){
@@ -121,6 +121,9 @@ class HorizontalPage : FrameLayout {
         novel_page.setTextColor(resources.getColor(colorInt))
         novel_chapter.setTextColor(resources.getColor(colorInt))
         novel_title.setTextColor(resources.getColor(colorInt))
+        setBackGroud()
+        setTimes(time)
+        setBattery(percent)
     }
 
     /**
@@ -134,7 +137,7 @@ class HorizontalPage : FrameLayout {
         novel_page.text = pageProgress
     }
 
-    fun setBackGroud(color:Int){
+    fun setBackGroud(){
         //pageView
         ThemeUtil.getModePrimaryBackground(resources, pageView)
         //电池背景
@@ -166,7 +169,8 @@ class HorizontalPage : FrameLayout {
         fun onClickMenu(isShow: Boolean)
         fun loadOrigin()
         fun loadTransCoding()
-        fun getPercentAndTime()
+        fun getCurPercent():Float
+        fun getCurTime():String
     }
 
     inner class HorizontalItemPage:View{
@@ -226,6 +230,7 @@ class HorizontalPage : FrameLayout {
         fun setCursor(cursor: ReadCursor) {
             mCursor = cursor
             if(cursor.sequence == -1){//封面页
+                removeView(homePage)
                 addView(homePage)
                 //封面页
                 homePage.book_name_tv.text = cursor.curBook.name
@@ -244,8 +249,9 @@ class HorizontalPage : FrameLayout {
                 loadView.visibility = View.GONE
                 readTop.visibility = View.GONE
                 readBottom.visibility = View.GONE
+                noticePageListener?.pageChangSuccess(mCursor!!,ReadViewEnums.NotifyStateState.none)
             }else {//普通页
-                //判断
+                //判断超过章节数
                 if((DataProvider.getInstance().chapterList.isNotEmpty()) and (mCursor!!.sequence > DataProvider.getInstance().chapterList.size-1)){
                     viewState = ReadViewEnums.ViewState.end
                     return
@@ -253,7 +259,6 @@ class HorizontalPage : FrameLayout {
                 //判断item 需要的章节是否在缓存
                 val chapter = DataProvider.getInstance().chapterMap[cursor.sequence]
                 if (chapter != null) {//加载数据
-
                     drawPage(cursor, chapter)
                 } else {//无缓存数据
                     entrance(cursor)
@@ -265,35 +270,56 @@ class HorizontalPage : FrameLayout {
          * 画页面
          */
         private fun drawPage(cursor: ReadCursor, chapter: Chapter) {
+            //获取数据
             cursor.readStatus.chapterName = chapter.chapter_name
             val chapterList = DataProvider.getInstance().chapterSeparate[cursor.sequence]!!
-            if (!chapterList.isEmpty() and (cursor.pageIndex <= chapterList.size)) {//集合不为空，角标小于集合长度
-                mCursor!!.pageIdexSum = chapterList.size//确定总长度
-                cursor.readStatus.currentPage = cursor.pageIndex//画页码
-                val pageList = if (cursor.pageIndex == -1) {//分页前不知道上一章长度
-                    mCursor!!.pageIndex = chapterList.size//确定长度
-                    chapterList[chapterList.size - 1]
-                } else {
-                    chapterList[cursor.pageIndex - 1]
+            if (!chapterList.isEmpty()) {//集合不为空，角标小于集合长度
+                val pageIndex = findPageIndexByOffset(cursor.offset,chapterList)
+                val pageSum = chapterList.size
+                if (pageIndex <= chapterList.size){
+                    //过滤其他页内容
+                    val pageList = findNovelPageBeanByOffset(cursor.offset,chapterList)
+                    //画本页内容
+                    BitmapManager.getInstance().setSize(cursor.readStatus.screenWidth,cursor.readStatus.screenHeight)
+                    mCurPageBitmap = BitmapManager.getInstance().createBitmap()
+                    mCurrentCanvas = Canvas(mCurPageBitmap)
+                    mDrawTextHelper?.drawText(mCurrentCanvas, pageList.lines)
+                    postInvalidate()
+                    //改状态、游标状态
+                    loadView.visibility = View.GONE
+                    mCursor!!.lastOffset = chapterList.last().offset
+                    mCursor!!.offset = pageList.offset
+                    mCursor!!.nextOffset = if (pageIndex < chapterList.size) chapterList[pageIndex].offset else 0
+                    viewState = if ((mCursor!!.sequence== DataProvider.getInstance().chapterList.size-1)and(pageIndex == pageSum)){//判断这本书的最后一页
+                        ReadViewEnums.ViewState.end
+                    }else{
+                        noticePageListener?.pageChangSuccess(mCursor!!,viewNotify)//游标通知回调
+                        ReadViewEnums.ViewState.success
+                    }
+
+                    //设置top and bottom
+                    val chapterProgress = ""+(cursor.sequence + 1) + "/" + cursor.readStatus.chapterCount + "章"
+                    val pageProgress = "本章第$pageIndex/$pageSum"
+                    setTopAndBottomViewContext(cursor.readStatus.chapterName,chapterProgress,pageProgress)
                 }
-                mCurPageBitmap = BitmapManager.getInstance().createBitmap()
-                mCurrentCanvas = Canvas(mCurPageBitmap)
-                mDrawTextHelper?.drawText(mCurrentCanvas, pageList.lines)
-                postInvalidate()
-                viewState = if ((mCursor!!.sequence== DataProvider.getInstance().chapterList!!.size-1)and(mCursor!!.pageIndex == mCursor!!.pageIdexSum)){//判断这本书的最后一页
-                    ReadViewEnums.ViewState.end
-                }else{
-                    noticePageListener?.pageChangSuccess(mCursor!!,viewNotify)//游标通知回调
-                    ReadViewEnums.ViewState.success
-                }
-                loadView.visibility = View.GONE
-                //设置top and bottom
-                val chapterProgress = ""+(cursor.sequence + 1) + "/" + cursor.readStatus.chapterCount + "章"
-                val pageProgress = "本章第" + cursor.pageIndex + "/" + cursor.pageIdexSum
-                setTopAndBottomViewContext(cursor.readStatus.chapterName,chapterProgress,pageProgress)
             }
         }
-
+        //通过偏移量获取章节
+        private fun findNovelPageBeanByOffset(offset:Int,chapterSeparate:ArrayList<NovelPageBean>):NovelPageBean{
+            //过滤集合 小于offset的最后一个元素
+            val filter = chapterSeparate.filter {
+                it.offset<=offset
+            }
+            return filter.last()
+        }
+        //通过偏移量获取页码Index
+        private fun findPageIndexByOffset(offset:Int,chapterSeparate:ArrayList<NovelPageBean>):Int{
+            val filter = chapterSeparate.filter {
+                it.offset<=offset
+            }
+            return filter.size
+        }
+        //点击事件
         private var lastTouchY: Int = 0
         private var startTouchTime: Long = 0
         private var startTouchX: Int = 0
@@ -355,5 +381,9 @@ class HorizontalPage : FrameLayout {
                 true
             }
         }
+    }
+
+    fun onReSeparate() {
+        DataProvider.getInstance().onReSeparate()
     }
 }

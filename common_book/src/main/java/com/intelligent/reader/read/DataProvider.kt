@@ -145,6 +145,12 @@ class DataProvider : DisposableAndroidViewModel() {
                 }))
     }
 
+    fun onReSeparate() {
+        for (it in chapterMap) {
+            chapterSeparate.put(it.key,ReadSeparateHelper.getInstance().initTextSeparateContent(it.value.content,it.value.chapter_name))
+        }
+    }
+
     abstract class ReadDataListener {
         open fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) {
         }

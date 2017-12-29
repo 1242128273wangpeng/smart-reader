@@ -163,12 +163,13 @@ public class BitmapManager {
     public synchronized Bitmap createBitmap() {
         Bitmap bitmap;
         try {
-            bitmap = Bitmap.createBitmap(myWidth, myHeight, Bitmap.Config.RGB_565);
+            bitmap = Bitmap.createBitmap(myWidth, myHeight, Bitmap.Config.ARGB_4444);
         } catch (OutOfMemoryError e) {
             System.gc();
             System.runFinalization();
-            bitmap = Bitmap.createBitmap(myWidth, myHeight, Bitmap.Config.RGB_565);
+            bitmap = Bitmap.createBitmap(myWidth, myHeight, Bitmap.Config.ARGB_4444);
         }
+        bitmap.setHasAlpha(true);
         return bitmap;
     }
 }

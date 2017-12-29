@@ -11,12 +11,12 @@ import net.lzbook.kit.data.bean.ReadStatus
 data class ReadCursor(
         var curBook: Book,
         var sequence: Int,//章节
-        var pageIndex: Int,//页数
         var offset: Int,//字符位移
         var pageStatus: ReadViewEnums.PageIndex?,//view tag
         var readStatus: ReadStatus
 ) {
-    var pageIdexSum: Int? = null
+    var lastOffset: Int? = null
+    var nextOffset: Int = 0
     override fun toString(): String {
         return Gson().toJson(this)
     }

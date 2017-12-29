@@ -881,20 +881,21 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         }
         time = System.currentTimeMillis()
         readSettingHelper!!.savePageAnimation(mode)
-        if (mode == 3 && Constants.PAGE_MODE != 3 || mode != 3 && Constants.PAGE_MODE == 3) {
-            val intent = Intent(context, ReadingActivity::class.java)
-            val bundle = Bundle()
-            bundle.putSerializable("book", readStatus!!.book)
-            bundle.putInt("sequence", readStatus!!.sequence)
-            bundle.putInt("nid", readStatus!!.nid)
-            bundle.putInt("offset", readStatus!!.offset)
-            bundle.putString("thememode", currentThemeMode)
-            intent.putExtras(bundle)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-
-            context!!.startActivity(intent)
-        }
+//        if (mode == 3 && Constants.PAGE_MODE != 3 || mode != 3 && Constants.PAGE_MODE == 3) {
+//            val intent = Intent(context, ReadingActivity::class.java)
+//            val bundle = Bundle()
+//            bundle.putSerializable("book", readStatus!!.book)
+//            bundle.putInt("sequence", readStatus!!.sequence)
+//            bundle.putInt("nid", readStatus!!.nid)
+//            bundle.putInt("offset", readStatus!!.offset)
+//            bundle.putString("thememode", currentThemeMode)
+//            intent.putExtras(bundle)
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+//
+//            context!!.startActivity(intent)
+//        }
         Constants.PAGE_MODE = mode
+        listener?.changeAnimMode(mode)
     }
 
     fun setInterLinearSpaceMode() {
@@ -1126,6 +1127,8 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         fun onReadFeedBack()
 
         fun onChageNightMode()
+
+        fun changeAnimMode(mode: Int)
     }
 
     companion object {

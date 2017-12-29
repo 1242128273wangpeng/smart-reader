@@ -15,6 +15,7 @@ import android.widget.*
 import com.intelligent.reader.R
 import com.intelligent.reader.fragment.CatalogMarkFragment
 import com.intelligent.reader.presenter.read.*
+import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.help.IReadPageChange
 import com.intelligent.reader.read.help.ReadSeparateHelper
 import com.intelligent.reader.read.mode.ReadInfo
@@ -53,6 +54,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     private var novel_basePageView: ReaderViewWidget? = null
     private var mCatlogMarkDrawer: DrawerLayout? = null
     private var mCatalogMarkFragment: CatalogMarkFragment? = null
+    private lateinit var animation: ReadViewEnums.Animation
     private val mDrawerListener = object : DrawerLayout.DrawerListener {
         override fun onDrawerSlide(drawerView: View, slideOffset: Float) = Unit
         //解锁， 可滑动关闭
@@ -124,8 +126,12 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
         readStatus?.source_ids = readStatus?.book?.site
         //add ReadInfo
+        animation = when (Constants.PAGE_MODE) {
+            3 -> ReadViewEnums.Animation.list
+            else -> ReadViewEnums.Animation.slide
+        }
         novel_basePageView?.initReaderViewFactory()
-        novel_basePageView?.entrance(ReadInfo(readStatus?.book!!, readStatus!!, ReadViewEnums.Animation.slide))
+        novel_basePageView?.entrance(ReadInfo(readStatus?.book!!, readStatus!!, animation))
         novel_basePageView?.setIReadPageChange(this)
         //初始化 ReadSeparateHelper
         ReadSeparateHelper.getInstance(readStatus)
@@ -226,6 +232,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     override fun onPause() {
         super.onPause()
         mReadPresenter?.onPause()
+        DataProvider.getInstance().unSubscribe()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -283,7 +290,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     override fun speedDown() = mReadPresenter?.speedDown()!!
 
     override fun autoStop() = mReadPresenter?.autoStop()!!
-
+    //ReadSettingView start
     override fun onReadCatalog() {
         mReadPresenter?.onReadCatalog()
         mCatlogMarkDrawer?.openDrawer(GravityCompat.START)
@@ -297,25 +304,56 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onChangeMode(mode: Int) {
         mReadPresenter?.onChangeMode(mode)
-        novel_basePageView?.setBackground(0)
     }
 
     override fun onChangeScreenMode() = mReadPresenter?.changeScreenMode()!!
 
-    override fun onRedrawPage() {
-        mReadPresenter?.onRedrawPage()
+    override fun onRedrawPage() = novel_basePageView?.onRedrawPage()!!
+
+    override fun onJumpChapter() {
+        readStatus!!.sequence = readStatus!!.novel_progress
+        novel_basePageView?.entrance(ReadInfo(readStatus?.book!!, readStatus!!, animation))
     }
 
-    override fun onJumpChapter() = mReadPresenter?.onJumpChapter()!!
+    override fun onJumpPreChapter() {
+        if (readStatus!!.sequence == 0) {
+            showToastShort(net.lzbook.kit.R.string.is_first_chapter)
+            return
+        }
+        mReadPresenter?.onJumpPreChapter()!!
+        readStatus!!.currentPage = 1
+        readStatus!!.sequence--
+        novel_basePageView?.entrance(ReadInfo(readStatus?.book!!, readStatus!!, animation))
+    }
 
-    override fun onJumpPreChapter() = mReadPresenter?.onJumpPreChapter()!!
-
-    override fun onJumpNextChapter() = mReadPresenter?.onJumpNextChapter()!!
+    override fun onJumpNextChapter() {
+        if (readStatus?.book?.book_type != 0) {
+            showToastShort(net.lzbook.kit.R.string.last_chapter_tip)
+            return
+        }
+        mReadPresenter?.onJumpNextChapter()!!
+        readStatus!!.currentPage = 1
+        readStatus!!.sequence++
+        novel_basePageView?.entrance(ReadInfo(readStatus?.book!!, readStatus!!, ReadViewEnums.Animation.slide))
+    }
 
     override fun onReadFeedBack() = mReadPresenter?.onReadFeedBack()!!
 
     override fun onChageNightMode() = mReadPresenter?.onChageNightMode()!!
+    //0 滑动 1 仿真 2 平移 3 上下
+    override fun changeAnimMode(mode: Int) {
+        if (((mode == 3) and (animation != ReadViewEnums.Animation.list)) or ((animation == ReadViewEnums.Animation.list) and (mode != 3))) {
+            novel_basePageView?.entrance(ReadInfo(readStatus?.book!!, readStatus!!, animation))
+        }
+        animation = when (mode) {
+            0 -> ReadViewEnums.Animation.slide
+            1 -> ReadViewEnums.Animation.curl
+            2 -> ReadViewEnums.Animation.shift
+            else -> ReadViewEnums.Animation.list
+        }
+    }
 
+    //ReadSettingView end
     fun goBackToHome() = mReadPresenter?.goBackToHome()
 
     override fun initPresenter(optionPresenter: ReadOptionPresenter?, markPresenter: CatalogMarkPresenter?) {
@@ -439,8 +477,13 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     override fun loadAD() {
 
     }
+
     override fun freshTime(time_text: CharSequence?) {
         novel_basePageView?.freshTime(time_text)
+    }
+
+    override fun setBackground() {
+        novel_basePageView?.setBackground()
     }
     //广播
     /**
