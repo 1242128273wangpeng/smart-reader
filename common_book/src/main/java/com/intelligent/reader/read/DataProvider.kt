@@ -1,6 +1,13 @@
 package com.intelligent.reader.read
 
+import android.app.Activity
+import android.content.Context
 import android.text.TextUtils
+import android.view.ViewGroup
+import com.dycm_adsdk.PlatformSDK
+import com.dycm_adsdk.callback.AbstractCallback
+import com.dycm_adsdk.callback.ResultCode
+import com.dycm_adsdk.utils.DyLogUtils
 import com.intelligent.reader.DisposableAndroidViewModel
 import com.intelligent.reader.cover.BookCoverLocalRepository
 import com.intelligent.reader.cover.BookCoverOtherRepository
@@ -23,6 +30,8 @@ import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.OpenUDID
+import org.json.JSONException
+import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -85,6 +94,33 @@ class DataProvider : DisposableAndroidViewModel() {
                 getChapterList(book, requestItem, sequence, type, mReadDataListener)
             }
         }
+    }
+
+    /**
+     * 获取段末广告 8-1
+     */
+    fun loadAd(context: Context, callback: OnLoadReaderAdCallback) {
+        PlatformSDK.adapp().dycmNativeAd(context as Activity, "8-1", null, object : AbstractCallback() {
+            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
+                super.onResult(adswitch, views, jsonResult)
+                if (!adswitch) {
+                    return
+                }
+                try {
+                    val jsonObject = JSONObject(jsonResult)
+                    if (jsonObject.has("state_code")) {
+                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+                            ResultCode.AD_REQ_SUCCESS
+                            -> callback.onLoadAd(views[0])
+                            else -> {
+                            }
+                        }
+                    }
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+            }
+        })
     }
 
     /**
@@ -157,5 +193,9 @@ class DataProvider : DisposableAndroidViewModel() {
 
         open fun loadDataError(message: String) {
         }
+    }
+
+    interface OnLoadReaderAdCallback {
+        fun onLoadAd(adView: ViewGroup)
     }
 }

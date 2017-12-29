@@ -1,5 +1,7 @@
 package net.lzbook.kit.data.bean;
 
+import android.view.ViewGroup;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -23,6 +25,8 @@ public class NovelLineBean implements Serializable {
     private boolean lastPage;
 
     private int position;
+
+    private ViewGroup adView;
 
     public ArrayList<Float> getArrLenths() {
         return arrLenths;
@@ -48,7 +52,8 @@ public class NovelLineBean implements Serializable {
         this.type = type;
     }
 
-    public NovelLineBean(){}
+    public NovelLineBean() {
+    }
 
     public NovelLineBean(String lineContent, float lineLength, int completeLine, boolean lastIsPunct, ArrayList<Float> arrLenths) {
         this.lineContent = lineContent;
@@ -104,6 +109,14 @@ public class NovelLineBean implements Serializable {
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    public ViewGroup getAdView() {
+        return adView;
+    }
+
+    public void setAdView(ViewGroup adView) {
+        this.adView = adView;
     }
 
     @Override

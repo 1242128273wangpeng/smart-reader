@@ -304,6 +304,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onChangeMode(mode: Int) {
         mReadPresenter?.onChangeMode(mode)
+        novel_basePageView?.setBackground()
     }
 
     override fun onChangeScreenMode() = mReadPresenter?.changeScreenMode()!!

@@ -35,11 +35,16 @@
     </RelativeLayout>
 
     <com.intelligent.reader.read.page.PageContentView
-            android:id="@id/text"
+            android:id="@id/read_content_text"
             android:layout_width="match_parent"
             android:layout_below="@+id/chapter_info_rl"
             android:layout_height="wrap_content"/>
 
-
+    <FrameLayout
+            android:id="@+id/ad_fl"
+            android:layout_below="@+id/read_content_text"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content"/>
 </RelativeLayout>
     

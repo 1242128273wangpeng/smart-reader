@@ -3,7 +3,7 @@
     <!-- PullToRefreshGridview-->
     <item type="id"
           name="gridview"/>
-    
+
     <item name="tag_first"
           type="id"/>
     <item name="tag_second"
@@ -19,4 +19,5 @@
     <item type="id"
           name="footprint_item_desc"/>
 
+    <item type="id" name="read_content_text"/>
 </resources>
