@@ -144,7 +144,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         }
     }
 
-    var disposable:ArrayList<Disposable> = ArrayList()
+    var disposable: ArrayList<Disposable> = ArrayList()
     protected val TAG = BaseReadPresenter::class.java.simpleName
 
     override var view: ReadPreInterface.View? = act
@@ -178,13 +178,13 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     protected var mBookDaoHelper: BookDaoHelper? = null
     protected var screen_moding = false
     protected var isFromCover = true
-//    private var myNovelHelper: NovelHelper? = null
+    //    private var myNovelHelper: NovelHelper? = null
     var myNovelHelper: NovelHelper? = null
     protected var autoSpeed: Int = 0
     protected var auto_menu: AutoReadMenu? = null
     protected var is_dot_orientation = false// 横竖屏打点
-     var current_mode: Int = 0
-     var time_text: CharSequence? = null
+    var current_mode: Int = 0
+    var time_text: CharSequence? = null
     var versionCode: Int = 0
         get() = 0
     protected var isAcvNovelActive = true
@@ -212,7 +212,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     private var mCacheUpdateReceiver: CacheUpdateReceiver? = null
     private var mReadOptionPresenter: ReadOptionPresenter? = null
     private var mCatalogMarkPresenter: CatalogMarkPresenter? = null
-       private val sc = object : ServiceConnection {
+    private val sc = object : ServiceConnection {
 
         override fun onServiceDisconnected(name: ComponentName) {}
 
@@ -227,11 +227,11 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         AppLog.e(TAG, "onCreate")
 
         sp = PreferenceManager.getDefaultSharedPreferences(readReference?.get()?.applicationContext)
-        Constants.isFullWindowRead = sp?.getBoolean("read_fullwindow", true)?:true
-        Constants.PAGE_MODE = sp?.getInt("page_mode", 0)?:0
-        Constants.FULL_SCREEN_READ = sp?.getBoolean("full_screen_read", false)?:false
+        Constants.isFullWindowRead = sp?.getBoolean("read_fullwindow", true) ?: true
+        Constants.PAGE_MODE = sp?.getInt("page_mode", 0) ?: 0
+        Constants.FULL_SCREEN_READ = sp?.getBoolean("full_screen_read", false) ?: false
         Constants.isSlideUp = Constants.PAGE_MODE == 3
-        Constants.isVolumeTurnover = sp?.getBoolean("sound_turnover", true)?:true
+        Constants.isVolumeTurnover = sp?.getBoolean("sound_turnover", true) ?: true
         AppLog.e("getAdsStatus", "novel_onCreate")
         versionCode = AppUtils.getVersionCode()
         AppLog.e(TAG, "versionCode: " + versionCode)
@@ -290,8 +290,8 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         showMenu(false)
         AppLog.d("ReadingActivity", "onNewIntent:")
         this.sp = PreferenceManager.getDefaultSharedPreferences(readReference?.get()?.applicationContext)
-        Constants.isFullWindowRead = sp?.getBoolean("read_fullwindow", true)?:true
-        Constants.PAGE_MODE = sp?.getInt("page_mode", 0)?:0
+        Constants.isFullWindowRead = sp?.getBoolean("read_fullwindow", true) ?: true
+        Constants.PAGE_MODE = sp?.getInt("page_mode", 0) ?: 0
         Constants.isSlideUp = Constants.PAGE_MODE == 3
         versionCode = AppUtils.getVersionCode()
         AppLog.e(TAG, "versionCode: " + versionCode)
@@ -499,9 +499,10 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                         override fun onChapterList(result: List<Chapter>) {
                             if (readReference?.get() != null && !readReference?.get()?.isFinishing!!) {
                                 val chapterList = result as ArrayList<Chapter>
-                                sendChapter(what, requestItem, temp_sequence, chapterList,ReadViewEnums.PageIndex.current)
+                                sendChapter(what, requestItem, temp_sequence, chapterList, ReadViewEnums.PageIndex.current)
                             }
                         }
+
                         override fun onFail(msg: String) {
                             if (loadingPage != null) {
                                 loadingPage!!.onError()
@@ -510,7 +511,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                     })
                     mReaderViewModel?.getChapterList(requestItem)
                 } else {
-                    sendChapter(what, requestItem, temp_sequence, mReaderViewModel?.chapterList,ReadViewEnums.PageIndex.current)
+                    sendChapter(what, requestItem, temp_sequence, mReaderViewModel?.chapterList, ReadViewEnums.PageIndex.current)
                 }
             }
             null
@@ -518,7 +519,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     }
 
 
-    open fun sendChapter(what: Int, requestItem: RequestItem, temp_sequence: Int, chapterList: ArrayList<Chapter>?,pageIndex: ReadViewEnums.PageIndex) {
+    open fun sendChapter(what: Int, requestItem: RequestItem, temp_sequence: Int, chapterList: ArrayList<Chapter>?, pageIndex: ReadViewEnums.PageIndex) {
         try {
             if (chapterList == null) {
                 return
@@ -533,7 +534,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                 result.chapter_name = ""
                 result.content = ""
                 //                mHandler.obtainMessage(what, result).sendToTarget();
-                obtainWhat(what, result,pageIndex)
+                obtainWhat(what, result, pageIndex)
                 setLoadingCurl(500)
                 return
             }
@@ -544,8 +545,9 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                 mReaderViewModel?.requestSingleChapter(requestItem.host, result, object : ReaderViewModel.BookSingleChapterCallback {
                     override fun onPayChapter(chapter: Chapter) {
                         loadingPage?.onSuccess()
-                        obtainWhat(what, chapter,pageIndex)
+                        obtainWhat(what, chapter, pageIndex)
                     }
+
                     override fun onFail(msg: String) {}
                 })
             }
@@ -588,7 +590,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         }
     }
 
-     open fun obtainWhat(what: Int, chapter: Chapter,pageIndex:ReadViewEnums.PageIndex) {
+    open fun obtainWhat(what: Int, chapter: Chapter, pageIndex: ReadViewEnums.PageIndex) {
         if (mReaderViewModel == null) {
             return
         }
@@ -656,7 +658,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             pageView?.drawNextPage()
             pageView?.getChapter(true)
         }
-         mReaderViewModel?.mReadDataListener?.initBookStateDeal()
+        mReaderViewModel?.mReadDataListener?.initBookStateDeal()
     }
 
 
@@ -738,7 +740,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         modeSp = readReference?.get()?.getSharedPreferences("config", Context.MODE_PRIVATE)
         // 设置字体
         if (sp?.contains("novel_font_size")!!) {
-            Constants.FONT_SIZE = sp?.getInt("novel_font_size", 18)?:18
+            Constants.FONT_SIZE = sp?.getInt("novel_font_size", 18) ?: 18
         } else {
             Constants.FONT_SIZE = 18
         }
@@ -783,7 +785,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         if (downloadService == null) {
             reStartDownloadService(readReference?.get()!!)
             downloadService = BaseBookApplication.getDownloadService()
-        }else {
+        } else {
             downloadService!!.setOnDownloadListener(this)
         }
     }
@@ -1041,7 +1043,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         readReference?.get()?.finish()
     }
 
-    override fun openAutoReading(open: Boolean) =  onReadAuto()
+    override fun openAutoReading(open: Boolean) = onReadAuto()
     override fun changSource() {
         openSourcePage()
     }
@@ -1357,9 +1359,9 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 
     private fun setBackground() = pageView?.setBackground()
 
-    private fun setBatteryBackground(resourceId: Int) =  pageView?.changeBatteryBg(resourceId)
+    private fun setBatteryBackground(resourceId: Int) = pageView?.changeBatteryBg(resourceId)
 
-    private fun setPageBackColor(color: Int) =  pageView?.setPageBackColor(color)
+    private fun setPageBackColor(color: Int) = pageView?.setPageBackColor(color)
 
     fun dispatchKeyEvent(event: KeyEvent): Boolean {
         // 小说音量键翻页
@@ -1832,7 +1834,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 
     fun onRedrawPage() {
         if (pageView is ScrollPageView && (pageView as ScrollPageView).tempChapter != null) {
-            myNovelHelper?.getChapterContent(readReference?.get(), (pageView as ScrollPageView).tempChapter,readStatus!!.book)
+            myNovelHelper?.getChapterContent(readReference?.get(), (pageView as ScrollPageView).tempChapter, readStatus!!.book)
         } else {
             myNovelHelper?.getChapterContent(readReference?.get(), mReaderViewModel?.currentChapter, readStatus!!.book)
         }
@@ -2036,7 +2038,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
-                            readReference?.get()?.showToastShort("已发送")
+                        readReference?.get()?.showToastShort("已发送")
                     })
             disposable.add(time)
 //            handler.postDelayed({ readReference?.get()?.showToastShort("已发送") }, 1000)
@@ -2142,7 +2144,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     inner class CacheUpdateReceiver(weak: WeakReference<ReadingActivity>) : BroadcastReceiver() {
         private val mActivityWeakReference: WeakReference<ReadingActivity> = weak
         override fun onReceive(context: Context, intent: Intent) {
-            val book= intent.getSerializableExtra(Constants.REQUEST_ITEM) as Book
+            val book = intent.getSerializableExtra(Constants.REQUEST_ITEM) as Book
             if (Constants.QG_SOURCE != book.site) {
                 if (mActivityWeakReference.get() != null && readStatus!!.book.book_id == book.book_id) {
                     val bundle = Bundle()
