@@ -25,10 +25,7 @@ import com.intelligent.reader.reader.ReaderViewModel
 import iyouqu.theme.FrameActivity
 import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.Chapter
-import net.lzbook.kit.data.bean.NovelLineBean
-import net.lzbook.kit.data.bean.ReadStatus
-import net.lzbook.kit.data.bean.Source
+import net.lzbook.kit.data.bean.*
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.SharedPreferencesUtils
 import java.util.*
@@ -125,6 +122,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         initGuide()
 
         readStatus?.source_ids = readStatus?.book?.site
+        DataProvider.getInstance().context = this
         //add ReadInfo
         animation = when (Constants.PAGE_MODE) {
             3 -> ReadViewEnums.Animation.list
@@ -226,6 +224,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onStart() {
         super.onStart()
+        mReadPresenter?.initTime()
         mReadPresenter?.onStart()
     }
 
@@ -312,10 +311,15 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     override fun onRedrawPage() = novel_basePageView?.onRedrawPage()!!
 
     override fun onJumpChapter() {
-        readStatus!!.sequence = readStatus!!.novel_progress
+
+    }
+    //目录跳章
+    fun onJumpChapter(intent: Intent) {
+        readStatus!!.sequence = intent.getIntExtra("sequence", 0)
+        readStatus!!.book = intent.getSerializableExtra("book") as Book?
         novel_basePageView?.entrance(ReadInfo(readStatus?.book!!, readStatus!!, animation))
     }
-
+    //上一章
     override fun onJumpPreChapter() {
         if (readStatus!!.sequence == 0) {
             showToastShort(net.lzbook.kit.R.string.is_first_chapter)
@@ -323,10 +327,11 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         }
         mReadPresenter?.onJumpPreChapter()!!
         readStatus!!.currentPage = 1
+        readStatus!!.offset = 0
         readStatus!!.sequence--
         novel_basePageView?.entrance(ReadInfo(readStatus?.book!!, readStatus!!, animation))
     }
-
+    //下一章
     override fun onJumpNextChapter() {
         if (readStatus?.book?.book_type != 0) {
             showToastShort(net.lzbook.kit.R.string.last_chapter_tip)
@@ -334,8 +339,9 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         }
         mReadPresenter?.onJumpNextChapter()!!
         readStatus!!.currentPage = 1
+        readStatus!!.offset = 0
         readStatus!!.sequence++
-        novel_basePageView?.entrance(ReadInfo(readStatus?.book!!, readStatus!!, ReadViewEnums.Animation.slide))
+        novel_basePageView?.entrance(ReadInfo(readStatus?.book!!, readStatus!!, animation))
     }
 
     override fun onReadFeedBack() = mReadPresenter?.onReadFeedBack()!!

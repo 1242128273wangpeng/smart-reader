@@ -1,14 +1,12 @@
 package com.intelligent.reader.read.page
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
+import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.TextView
 import com.intelligent.reader.R
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.animation.BitmapManager
@@ -21,10 +19,11 @@ import kotlinx.android.synthetic.main.book_home_page_layout.view.*
 import kotlinx.android.synthetic.main.error_page2.view.*
 import kotlinx.android.synthetic.main.read_bottom.view.*
 import kotlinx.android.synthetic.main.read_top.view.*
+import kotlinx.android.synthetic.qbzsydq.read_option_header.view.*
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Chapter
-import net.lzbook.kit.data.bean.NovelLineBean
-import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.data.bean.ReadStatus
+import net.lzbook.kit.utils.AppUtils
 
 
 /**
@@ -230,39 +229,17 @@ class HorizontalPage : FrameLayout {
          */
         fun setCursor(cursor: ReadCursor) {
             mCursor = cursor
-            if(cursor.sequence == -1){//封面页
-                removeView(homePage)
-                addView(homePage)
-                //封面页
-                homePage.book_name_tv.text = cursor.curBook.name
-                homePage.book_auth_tv.text = cursor.curBook.author
-                homePage.slogan_tv.setTextView(2f, context.resources.getString(R.string.slogan))
-                homePage.product_name_tv.setTextView(1f, context.resources.getString(R.string.app_name))
-                //封面字颜色
-                homePage.book_name_tv.setTextColor(ThemeUtil.modeLoadTextColor)
-                homePage.book_auth_tv.setTextColor(ThemeUtil.modeLoadTextColor)
-                homePage.slogan_tv.setTextColor(ThemeUtil.modeLoadTextColor)
-                homePage.product_name_tv.setTextColor(ThemeUtil.modeLoadTextColor)
-                postInvalidate()
-                //改变状态
-                mCursor!!.sequence = -1
-                viewState = ReadViewEnums.ViewState.start
-                loadView.visibility = View.GONE
-                readTop.visibility = View.GONE
-                readBottom.visibility = View.GONE
-            }else {//普通页
-                //判断超过章节数
-                if((DataProvider.getInstance().chapterList.isNotEmpty()) and (mCursor!!.sequence > DataProvider.getInstance().chapterList.size-1)){
-                    viewState = ReadViewEnums.ViewState.end
-                    return
-                }
-                //判断item 需要的章节是否在缓存
-                val chapter = DataProvider.getInstance().chapterMap[cursor.sequence]
-                if (chapter != null) {//加载数据
-                    drawPage(cursor, chapter)
-                } else {//无缓存数据
-                    entrance(cursor)
-                }
+            //判断超过章节数
+            if((DataProvider.getInstance().chapterList.isNotEmpty()) and (mCursor!!.sequence > DataProvider.getInstance().chapterList.size-1)){
+                viewState = ReadViewEnums.ViewState.end
+                return
+            }
+            //判断item 需要的章节是否在缓存
+            val chapter = DataProvider.getInstance().chapterMap[cursor.sequence]
+            if (chapter != null) {//加载数据
+                drawPage(cursor, chapter)
+            } else {//无缓存数据
+                entrance(cursor)
             }
         }
 
@@ -276,33 +253,69 @@ class HorizontalPage : FrameLayout {
             if (!chapterList.isEmpty()) {//集合不为空，角标小于集合长度
                 val pageIndex = findPageIndexByOffset(cursor.offset,chapterList)
                 val pageSum = chapterList.size
-                if (pageIndex <= chapterList.size){
+                if (pageIndex <= pageSum){
                     //过滤其他页内容
-                    val pageList = findNovelPageBeanByOffset(cursor.offset,chapterList)
-                    //画本页内容
-                    BitmapManager.getInstance().setSize(cursor.readStatus.screenWidth,cursor.readStatus.screenHeight)
-                    mCurPageBitmap = BitmapManager.getInstance().createBitmap()
-                    mCurrentCanvas = Canvas(mCurPageBitmap)
-                    mDrawTextHelper?.drawText(mCurrentCanvas, pageList.lines)
-                    postInvalidate()
-                    //改状态、游标状态
-                    loadView.visibility = View.GONE
-                    mCursor!!.lastOffset = chapterList.last().offset
-                    mCursor!!.offset = pageList.offset
-                    mCursor!!.nextOffset = if (pageIndex < chapterList.size) chapterList[pageIndex].offset else 0
-                    viewState = if ((mCursor!!.sequence== DataProvider.getInstance().chapterList.size-1)and(pageIndex == pageSum)){//判断这本书的最后一页
-                        ReadViewEnums.ViewState.end
-                    }else{
-                        noticePageListener?.pageChangSuccess(mCursor!!,viewNotify)//游标通知回调
-                        ReadViewEnums.ViewState.success
+                    val mNovelPageBean = findNovelPageBeanByOffset(cursor.offset,chapterList)
+                    if (cursor.sequence == -1){//封面页
+                        setupHomePage(cursor)
+                    }else {
+                        if (mNovelPageBean.isAd) {//广告页
+                            showAdBigger(mNovelPageBean)
+                        }else{//普通页
+                            //画之前清空内容
+                            removeView(homePage)
+                            mCurrentCanvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+                            //画本页内容
+                            BitmapManager.getInstance().setSize(cursor.readStatus.screenWidth,cursor.readStatus.screenHeight)
+                            mCurPageBitmap = BitmapManager.getInstance().createBitmap()
+                            mCurrentCanvas = Canvas(mCurPageBitmap)
+                            val topMargin = mDrawTextHelper?.drawText(mCurrentCanvas, mNovelPageBean.lines)
+                            postInvalidate()
+                            //判断展示Banner广告
+                            if (height - topMargin!!.toInt()>height/5){
+                                showAdBanner(topMargin)
+                            }
+                        }
+                        //改状态、游标状态
+                        loadView.visibility = View.GONE
+                        mCursor!!.lastOffset = chapterList.last().offset
+                        mCursor!!.offset = mNovelPageBean.offset
+                        mCursor!!.nextOffset = if (pageIndex < chapterList.size) chapterList[pageIndex].offset else 0
+                        viewState = if ((mCursor!!.sequence== DataProvider.getInstance().chapterList.size-1)and(pageIndex == pageSum)){//判断这本书的最后一页
+                            ReadViewEnums.ViewState.end
+                        }else{
+                            noticePageListener?.pageChangSuccess(mCursor!!,viewNotify)//游标通知回调
+                            ReadViewEnums.ViewState.success
+                        }
+                        //设置top and bottom
+                        val chapterProgress = ""+(cursor.sequence + 1) + "/" + cursor.readStatus.chapterCount + "章"
+                        val pageProgress = "本章第$pageIndex/$pageSum"
+                        setTopAndBottomViewContext(cursor.readStatus.chapterName,chapterProgress,pageProgress)
                     }
-
-                    //设置top and bottom
-                    val chapterProgress = ""+(cursor.sequence + 1) + "/" + cursor.readStatus.chapterCount + "章"
-                    val pageProgress = "本章第$pageIndex/$pageSum"
-                    setTopAndBottomViewContext(cursor.readStatus.chapterName,chapterProgress,pageProgress)
                 }
             }
+        }
+        //封面页
+        private fun setupHomePage(cursor:ReadCursor){
+            removeView(homePage)
+            addView(homePage)
+            //封面页
+            homePage.book_name_tv.text = cursor.curBook.name
+            homePage.book_auth_tv.text = cursor.curBook.author
+            homePage.slogan_tv.setTextView(2f, context.resources.getString(R.string.slogan))
+            homePage.product_name_tv.setTextView(1f, context.resources.getString(R.string.app_name))
+            //封面字颜色
+            homePage.book_name_tv.setTextColor(ThemeUtil.modeLoadTextColor)
+            homePage.book_auth_tv.setTextColor(ThemeUtil.modeLoadTextColor)
+            homePage.slogan_tv.setTextColor(ThemeUtil.modeLoadTextColor)
+            homePage.product_name_tv.setTextColor(ThemeUtil.modeLoadTextColor)
+            postInvalidate()
+            //改变状态
+            mCursor!!.sequence = -1
+            viewState = ReadViewEnums.ViewState.start
+            loadView.visibility = View.GONE
+            readTop.visibility = View.GONE
+            readBottom.visibility = View.GONE
         }
         //通过偏移量获取章节
         private fun findNovelPageBeanByOffset(offset:Int,chapterSeparate:ArrayList<NovelPageBean>):NovelPageBean{
@@ -319,6 +332,31 @@ class HorizontalPage : FrameLayout {
             }
             return filter.size
         }
+        //展示Banner广告
+        private fun showAdBanner(topMargins: Float){
+            if (mCursor!!.isShowAdBanner) {
+                mCursor!!.isShowAdBanner = false
+                //获取剩余高度，展示广告
+                DataProvider.getInstance().loadAd(context,object: DataProvider.OnLoadReaderAdCallback {
+                    override fun onLoadAd(adView: ViewGroup) {
+                        val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+                        val marginTop = AppUtils.dip2px(context, topMargins)
+                        val margin = AppUtils.dip2px(context, 10f)
+                        param.setMargins(margin,marginTop,margin,margin)
+                        addView(adView, param)
+                    }
+                })
+            }
+        }
+
+        //展示Bigger广告
+        private fun showAdBigger(mNovelPageBean: NovelPageBean) {
+            val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            val margin = AppUtils.dip2px(context, 10f)
+            param.setMargins(margin,margin,margin,margin)
+            addView(mNovelPageBean.adView, param)
+        }
+
         //点击事件
         private var lastTouchY: Int = 0
         private var startTouchTime: Long = 0

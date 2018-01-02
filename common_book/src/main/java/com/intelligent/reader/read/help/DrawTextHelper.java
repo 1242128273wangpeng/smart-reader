@@ -380,7 +380,7 @@ public class DrawTextHelper {
         return pageHeight;
     }
 
-    public synchronized Paint drawText(Canvas canvas, List<NovelLineBean> pageLines) {
+    public synchronized float drawText(Canvas canvas, List<NovelLineBean> pageLines) {
         mPaint.setTextSize(Constants.FONT_SIZE * readStatus.screenScaledDensity);//设置字体大小
         duanPaint.setTextSize(1 * readStatus.screenScaledDensity);//设置画笔字体大小1x屏幕密度
         FontMetrics fm = mPaint.getFontMetrics();//字体测量类
@@ -480,7 +480,8 @@ public class DrawTextHelper {
         if (!Constants.isSlideUp) {
             mOperationPaint = drawFoot(canvas);
         }
-        return mOperationPaint;
+//        return mOperationPaint;
+        return total_y;
     }
 
     /**

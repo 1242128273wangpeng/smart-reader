@@ -161,10 +161,10 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: ReaderVi
         bundle.putSerializable("book", readStatus.book)
         val intent = Intent()
         intent.putExtras(bundle)
-
-        intent.setClass(activity, ReadingActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        activity.startActivity(intent)
+        (activity as ReadingActivity).onJumpChapter(intent)
+//        intent.setClass(activity, ReadingActivity::class.java)
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+//        activity.startActivity(intent)
 
         val data = java.util.HashMap<String, String>()
         data.put("bookid", readStatus.book_id)

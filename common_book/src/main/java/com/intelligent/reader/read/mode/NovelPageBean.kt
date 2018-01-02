@@ -1,5 +1,6 @@
 package com.intelligent.reader.read.mode
 
+import android.view.ViewGroup
 import net.lzbook.kit.data.bean.NovelLineBean
 
 /**
@@ -9,4 +10,7 @@ import net.lzbook.kit.data.bean.NovelLineBean
 data class NovelPageBean(
     var lines:ArrayList<NovelLineBean>,
     var offset:Int
-)
+){
+    var adView: ViewGroup? = null
+    var isAd: Boolean = false
+}

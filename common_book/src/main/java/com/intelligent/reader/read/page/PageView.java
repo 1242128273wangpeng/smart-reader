@@ -201,7 +201,7 @@ public class PageView extends View implements PageInterface {
         }
         if (!isAutoReadMode()) {
             if (mCurPageCanvas != null && drawTextHelper != null) {
-                mOperationPaint = drawTextHelper.drawText(mCurPageCanvas, pageLines);
+//                mOperationPaint = drawTextHelper.drawText(mCurPageCanvas, pageLines);
             }
         }
 
@@ -248,7 +248,7 @@ public class PageView extends View implements PageInterface {
         System.gc();
         if (!isAutoReadMode()) {
             if (mCurPageCanvas != null) {
-                mOperationPaint = drawTextHelper.drawText(mCurPageCanvas, pageLines);
+//                mOperationPaint = drawTextHelper.drawText(mCurPageCanvas, pageLines);
             }
         }
 

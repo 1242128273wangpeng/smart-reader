@@ -34,6 +34,7 @@ class HorizontalAdapter(private var noticePageListener: HorizontalPage.NoticePag
         val view = `object` as View
         (view as HorizontalPage).mCurPageBitmap?.recycle()
         view.mCurPageBitmap = null
+        view.removeAllViews()
         container.removeView(view)
     }
 

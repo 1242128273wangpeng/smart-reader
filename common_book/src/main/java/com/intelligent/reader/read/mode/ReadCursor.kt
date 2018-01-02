@@ -15,8 +15,9 @@ data class ReadCursor(
         var pageStatus: ReadViewEnums.PageIndex?,//view tag
         var readStatus: ReadStatus
 ) {
-    var lastOffset: Int? = null
+    var lastOffset: Int = 0
     var nextOffset: Int = 0
+    var isShowAdBanner = false
     override fun toString(): String {
         return Gson().toJson(this)
     }

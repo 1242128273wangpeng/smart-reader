@@ -301,15 +301,17 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     //入口
     override fun entrance(mReadInfo: ReadInfo) {
         this.mReadInfo = mReadInfo
+        val sequence = mReadInfo.mReadStatus.sequence
         Handler().postDelayed({
             //更改当前view状态
             (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState = ReadViewEnums.ViewState.loading
             if(this.mReadInfo!!.mReadStatus.sequence == -1){
                 this.mReadInfo!!.mReadStatus.sequence =0
-                curCursor = ReadCursor(mReadInfo.curBook,mReadInfo.mReadStatus.sequence,0,ReadViewEnums.PageIndex.current,mReadInfo.mReadStatus)
+                curCursor = ReadCursor(mReadInfo.curBook,sequence,mReadInfo.mReadStatus.offset,ReadViewEnums.PageIndex.current,mReadInfo.mReadStatus)
                 checkViewState("Cur",ReadViewEnums.NotifyStateState.all)
+
             }else{
-                curCursor = ReadCursor(mReadInfo.curBook,mReadInfo.mReadStatus.sequence,0,ReadViewEnums.PageIndex.current,mReadInfo.mReadStatus)
+                curCursor = ReadCursor(mReadInfo.curBook,sequence,mReadInfo.mReadStatus.offset,ReadViewEnums.PageIndex.current,mReadInfo.mReadStatus)
                 checkViewState("Cur",ReadViewEnums.NotifyStateState.all)
             }
         },200)
@@ -352,7 +354,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 
     //设置阅读信息
     override fun setReadInfo(mReadInfo: ReadInfo?) {
-        this.mReadInfo = mReadInfo
+
     }
 
     //章节回调

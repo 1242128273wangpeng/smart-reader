@@ -798,32 +798,23 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     /**
      * 初始化时间显示
      */
-    private fun initTime() {
+    public fun initTime() {
         mTimerStopped = false
         if (mCalendar == null) {
             mCalendar = Calendar.getInstance()
         }
 
 //周期发送
+        time_text = DateFormat.format("k:mm", mCalendar)
+        view?.freshTime(time_text)
         val now = SystemClock.uptimeMillis()
-        val next = now + (30000 - now % 1000)
-        val time = Observable.interval(next, TimeUnit.MILLISECONDS)
+        val time = Observable.interval(1, TimeUnit.MINUTES)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                        if (mTimerStopped || pageView == null) {
-                            return@subscribe
-                        }
                         mCalendar?.timeInMillis = System.currentTimeMillis()
-                        try {
-                            if (pageView != null) {
-                                time_text = DateFormat.format("k:mm", mCalendar)
-//                                pageView!!.freshTime(time_text)
-                                view?.freshTime(time_text)
-                            }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
+                        time_text = DateFormat.format("k:mm", mCalendar)
+                        view?.freshTime(time_text)
                 })
         disposable.add(time)
     }
@@ -1895,10 +1886,10 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 //        }
         changeMarkState()
 
-        if (!pageView!!.isAutoReadMode()) {
+//        if (!pageView!!.isAutoReadMode()) {
             Constants.manualReadedCount++
             dealManualDialogShow()
-        }
+//        }
 
         val data = HashMap<String, String>()
         if (readStatus != null) {

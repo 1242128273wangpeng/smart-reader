@@ -25,6 +25,7 @@ import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.Chapter
+import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.net.custom.service.NetService
@@ -47,7 +48,10 @@ class DataProvider : DisposableAndroidViewModel() {
     private object Provider {
         val INSTANCE = DataProvider()
     }
-
+    //上下文
+    var context:Context ?= null
+    //是否显示广告
+    var isShowAd:Boolean = false
     //目录
     var chapterList: ArrayList<Chapter> = ArrayList()
     //分页前缓存容器
@@ -122,6 +126,74 @@ class DataProvider : DisposableAndroidViewModel() {
             }
         })
     }
+    /**
+     * 获取段末广告 8-1
+     */
+    fun loadAd() {
+        PlatformSDK.adapp().dycmNativeAd(context as Activity, "5-1", null, object : AbstractCallback() {
+            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
+                super.onResult(adswitch, views, jsonResult)
+                if (!adswitch) {
+                    return
+                }
+                try {
+                    val jsonObject = JSONObject(jsonResult)
+                    if (jsonObject.has("state_code")) {
+                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+                            ResultCode.AD_REQ_SUCCESS
+                            -> {
+                                for (mutableEntry in chapterSeparate) {
+                                    //加广告
+                                    if (!mutableEntry.value.last().isAd) {
+                                        val offset = mutableEntry.value.last().offset + mutableEntry.value.last().lines.last().lineContent.length+1
+                                        mutableEntry.value.add(NovelPageBean(arrayListOf(),offset).apply { isAd = true;adView = views[0] })
+                                        //插入广告
+                                        if (mutableEntry.value.size>=16) {
+                                            PlatformSDK.adapp().dycmNativeAd(context as Activity, "5-1", null, object : AbstractCallback() {
+                                                override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
+                                                    super.onResult(adswitch, views, jsonResult)
+                                                    if (!adswitch) {
+                                                        return
+                                                    }
+                                                    try {
+                                                        val jo = JSONObject(jsonResult)
+                                                        if (jo.has("state_code")) {
+                                                            when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+                                                                ResultCode.AD_REQ_SUCCESS -> {
+                                                                    val offset2 = mutableEntry.value[7].offset + mutableEntry.value[7].lines.last().lineContent.length+1
+                                                                    mutableEntry.value.add(8,NovelPageBean(arrayListOf(),offset2).apply { isAd = true;adView = views[0] })
+                                                                    for (i in 9 until mutableEntry.value.size-1) {
+                                                                        //其他页offset向后偏移 1 length
+                                                                        mutableEntry.value[i].offset = offset+1
+                                                                    }
+                                                                    loadAd()
+                                                                }
+                                                                else -> {
+                                                                }
+                                                            }
+                                                        }
+                                                    } catch (e: JSONException) {
+                                                        e.printStackTrace()
+                                                    }
+                                                }
+                                            })
+                                            return
+                                        }
+                                        loadAd()
+                                        return
+                                    }
+                                }
+                            }
+                            else -> {
+                            }
+                        }
+                    }
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+            }
+        })
+    }
 
     /**
      * 获取书籍目录 //复用BookCoverRepositoyFactory
@@ -160,30 +232,116 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     private fun requestSingleChapter(book: Book, chapters: List<Chapter>, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
+        if(sequence == -1) {//封面页
+            chapterSeparate.put(sequence,arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }),1)))
+            chapterMap.put(-1,Chapter())
+            mReadDataListener.loadDataSuccess(Chapter(), type)
+            return
+        }
         val chapter = chapters[sequence]
+
         addDisposable(mReaderRepository.requestSingleChapter(book.site, chapter)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ c ->
-                    if (!TextUtils.isEmpty(chapter.content)) {
-                        c.isSuccess = true
-                        // 自动切源需要就更新目录
-                        if (c.flag == 1 && !TextUtils.isEmpty(c.content)) {
-                            mReaderRepository.updateBookCurrentChapter(c.book_id, c, c.sequence)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ c ->
+                if (!TextUtils.isEmpty(chapter.content)) {
+                    c.isSuccess = true
+                    // 自动切源需要就更新目录
+                    if (c.flag == 1 && !TextUtils.isEmpty(c.content)) {
+                        mReaderRepository.updateBookCurrentChapter(c.book_id, c, c.sequence)
+                    }
+                }
+                mReaderRepository.writeChapterCache(c, false)
+                chapterMap.put(sequence, c)
+                chapterSeparate.put(sequence, ReadSeparateHelper.getInstance().initTextSeparateContent(c.content, c.chapter_name))
+                mReadDataListener.loadDataSuccess(c, type)
+                //加章末广告
+                if (isShowAd){
+//                    loadAd()
+                    loadAd(sequence)
+                }
+            }, { throwable ->
+                mReadDataListener.loadDataError(throwable.message.toString())
+            }))
+    }
+
+    private fun loadAd(sequence: Int) {
+        PlatformSDK.adapp().dycmNativeAd(context as Activity, "5-1", null, object : AbstractCallback() {
+            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
+                super.onResult(adswitch, views, jsonResult)
+                if (!adswitch) {
+                    return
+                }
+                try {
+                    val jo = JSONObject(jsonResult)
+                    if (jo.has("state_code")) {
+                        when (ResultCode.parser(jo.getInt("state_code"))) {
+                            ResultCode.AD_REQ_SUCCESS -> {
+                                val arrayList = chapterSeparate[sequence]
+                                if ((arrayList != null ) and (!arrayList!!.last().isAd)) {
+                                    val offset = arrayList.last().lines.last().lineContent.length+1
+                                    arrayList.add(NovelPageBean(arrayListOf(),offset).apply { isAd = true;adView = views[0] })
+                                    if (arrayList.size>=16) {
+                                        PlatformSDK.adapp().dycmNativeAd(context as Activity, "5-1", null, object : AbstractCallback() {
+                                            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
+                                                super.onResult(adswitch, views, jsonResult)
+                                                if (!adswitch) {
+                                                    return
+                                                }
+                                                try {
+                                                    val jsonObject = JSONObject(jsonResult)
+                                                    if (jsonObject.has("state_code")) {
+                                                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+                                                            ResultCode.AD_REQ_SUCCESS -> {
+                                                                val offset2 = arrayList[7].offset + arrayList[7].lines.last().lineContent.length+1
+                                                                arrayList.add(8,NovelPageBean(arrayListOf(),offset2).apply { isAd = true;adView = views[0] })
+                                                                for (i in 9 until arrayList.size-1) {
+                                                                    //其他页offset向后偏移 1 length
+                                                                    arrayList[i].offset = offset2+1
+                                                                }
+                                                            }
+                                                            else -> {
+                                                            }
+                                                        }
+                                                    }
+                                                } catch (e: JSONException) {
+                                                    e.printStackTrace()
+                                                }
+                                            }
+                                        })
+                                    }
+                                }
+                            }
+                            else -> {
+                            }
                         }
                     }
-                    mReaderRepository.writeChapterCache(c, false)
-                    chapterMap.put(sequence, c)
-                    chapterSeparate.put(sequence,ReadSeparateHelper.getInstance().initTextSeparateContent(c.content,c.chapter_name))
-                    mReadDataListener.loadDataSuccess(c, type)
-                }, { throwable ->
-                    mReadDataListener.loadDataError(throwable.message.toString())
-                }))
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+            }
+        })
     }
 
     fun onReSeparate() {
         for (it in chapterMap) {
-            chapterSeparate.put(it.key,ReadSeparateHelper.getInstance().initTextSeparateContent(it.value.content,it.value.chapter_name))
+            if (it.key!=-1) {
+                val lastPageBean = chapterSeparate[it.key]!!.last()
+                val middleBean = chapterSeparate[it.key]!![9]
+                val mPageBeanList = ReadSeparateHelper.getInstance().initTextSeparateContent(it.value.content, it.value.chapter_name)
+                if (lastPageBean.isAd){//最后广告
+                    mPageBeanList.add(lastPageBean)
+                }
+                //中间广告 符合条件
+                if ((mPageBeanList.size>=16) and middleBean.isAd){
+                    mPageBeanList.add(8,middleBean)
+                }else if ((mPageBeanList.size>=16) and !middleBean.isAd){
+
+                }
+                chapterSeparate.put(it.key, mPageBeanList)
+            }else {
+                chapterSeparate.put(-1,arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }),1)))
+            }
         }
     }
 
@@ -198,4 +356,6 @@ class DataProvider : DisposableAndroidViewModel() {
     interface OnLoadReaderAdCallback {
         fun onLoadAd(adView: ViewGroup)
     }
+
+
 }
