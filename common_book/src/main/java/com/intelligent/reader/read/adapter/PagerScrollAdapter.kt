@@ -10,6 +10,7 @@ import android.widget.*
 import com.intelligent.reader.R
 import com.intelligent.reader.read.help.NovelHelper
 import com.intelligent.reader.read.mode.NovelPageBean
+import com.intelligent.reader.read.mode.ReadViewEnums
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.data.bean.ReadStatus
@@ -54,10 +55,6 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
 
     private var mOnLoadViewClickListener: OnLoadViewClickListener? = null
 
-    private var mChapterBetweenAdView: View? = null
-
-    private var mOldChapterBetweenAdView: View? = null
-
     init {
         chapterList = CopyOnWriteArrayList()
         headerViewList = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { sequence = HEADER_ITEM_TYPE }), 0))
@@ -90,7 +87,7 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
         notifyDataSetChanged()
     }
 
-    private fun addAllChapter(location: Int, data: ArrayList<NovelPageBean>): Int {
+    fun addAllChapter(location: Int, data: ArrayList<NovelPageBean>): Int {
         if (chapterList.size == 0) return -1
         (chapterList.addAll(location, data))
         notifyItemRangeInserted(location, data.size)
@@ -113,6 +110,16 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
         chapterList.addAll(data)
         notifyItemRangeInserted(lastIndex, data.size)
     }
+
+    fun getNotifyIndexByLoadChapter(index: ReadViewEnums.PageIndex, data: ArrayList<NovelPageBean>): Int =
+            when (index) {
+                ReadViewEnums.PageIndex.previous -> {
+                    data.size
+                }
+                else -> {
+                    chapterList.size - footViewList.size
+                }
+            }
 
     fun showHeaderView(show: Boolean) {
         if (show) {
@@ -152,10 +159,6 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
 
     fun setOnLoadViewClickListener(onLoadViewClickListener: OnLoadViewClickListener) {
         this.mOnLoadViewClickListener = onLoadViewClickListener
-    }
-
-    fun addAdViewToChapterBetween(adView: View?) {
-        mChapterBetweenAdView = adView
     }
 
     fun setChapterCatalog(chapterListL: java.util.ArrayList<Chapter>?) {
@@ -315,12 +318,8 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
         }
 
         override fun bindHolder(pageLines: List<NovelLineBean>) {
-            if (mChapterBetweenAdView != null && mOldChapterBetweenAdView != mChapterBetweenAdView) {
-                ad_fl.removeAllViews()
-                ad_fl.addView(mChapterBetweenAdView)
-                mOldChapterBetweenAdView = mChapterBetweenAdView
-                ad_fl.layoutParams.height = mChapterBetweenAdView!!.layoutParams.height
-            }
+//                ad_fl.removeAllViews()
+//                ad_fl.addView(mChapterBetweenAdView)
         }
 
     }

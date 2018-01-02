@@ -30,6 +30,7 @@ import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.OpenUDID
+import net.lzbook.kit.utils.ToastUtils
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
@@ -54,7 +55,7 @@ class DataProvider : DisposableAndroidViewModel() {
     val chapterMap: HashMap<Int, Chapter> = HashMap()
 
     //分页后缓存容器
-    val chapterSeparate:HashMap<Int,ArrayList<NovelPageBean>> = HashMap()
+    val chapterSeparate: HashMap<Int, ArrayList<NovelPageBean>> = HashMap()
 
     //工厂
     var mReaderRepository: ReaderRepository = ReaderRepositoryFactory.getInstance(ReaderOwnRepository.getInstance())
@@ -96,11 +97,8 @@ class DataProvider : DisposableAndroidViewModel() {
         }
     }
 
-    /**
-     * 获取段末广告 8-1
-     */
-    fun loadAd(context: Context, callback: OnLoadReaderAdCallback) {
-        PlatformSDK.adapp().dycmNativeAd(context as Activity, "8-1", null, object : AbstractCallback() {
+    private fun loadAd(context: Context, type: String, callback: OnLoadReaderAdCallback) {
+        PlatformSDK.adapp().dycmNativeAd(context as Activity, type, null, object : AbstractCallback() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
                 if (!adswitch) {
@@ -111,7 +109,10 @@ class DataProvider : DisposableAndroidViewModel() {
                     if (jsonObject.has("state_code")) {
                         when (ResultCode.parser(jsonObject.getInt("state_code"))) {
                             ResultCode.AD_REQ_SUCCESS
-                            -> callback.onLoadAd(views[0])
+                            -> {
+                                callback.onLoadAd(views[0])
+                                ToastUtils.showToastNoRepeat(type)
+                            }
                             else -> {
                             }
                         }
@@ -121,6 +122,20 @@ class DataProvider : DisposableAndroidViewModel() {
                 }
             }
         })
+    }
+
+    /**
+     * 获取段末广告 8-1
+     */
+    fun loadChapterLastPageAd(context: Context, callback: OnLoadReaderAdCallback) {
+        loadAd(context, "8-1", callback)
+    }
+
+    /**
+     * 获取章节间广告 5-1
+     */
+    fun loadChapterBetweenAd(context: Context, callback: OnLoadReaderAdCallback) {
+        loadAd(context, "5-1", callback)
     }
 
     /**
@@ -174,7 +189,7 @@ class DataProvider : DisposableAndroidViewModel() {
                     }
                     mReaderRepository.writeChapterCache(c, false)
                     chapterMap.put(sequence, c)
-                    chapterSeparate.put(sequence,ReadSeparateHelper.getInstance().initTextSeparateContent(c.content,c.chapter_name))
+                    chapterSeparate.put(sequence, ReadSeparateHelper.getInstance().initTextSeparateContent(c.content, c.chapter_name))
                     mReadDataListener.loadDataSuccess(c, type)
                 }, { throwable ->
                     mReadDataListener.loadDataError(throwable.message.toString())
@@ -183,7 +198,7 @@ class DataProvider : DisposableAndroidViewModel() {
 
     fun onReSeparate() {
         for (it in chapterMap) {
-            chapterSeparate.put(it.key,ReadSeparateHelper.getInstance().initTextSeparateContent(it.value.content,it.value.chapter_name))
+            chapterSeparate.put(it.key, ReadSeparateHelper.getInstance().initTextSeparateContent(it.value.content, it.value.chapter_name))
         }
     }
 
