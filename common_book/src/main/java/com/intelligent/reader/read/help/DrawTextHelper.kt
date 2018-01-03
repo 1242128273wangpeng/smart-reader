@@ -307,6 +307,7 @@ class DrawTextHelper(private val resources: Resources) {
 
         val chapterNameList = pageBean.chapterNameLines
         var hasContent = false
+        var lastY: Float = 0.0f
         val pageLines = pageBean.lines
         // 章节头
         if (chapterNameList != null && !chapterNameList.isEmpty()) {
@@ -339,8 +340,10 @@ class DrawTextHelper(private val resources: Resources) {
                         if (" " != text.lineContent && "chapter_homepage  " != text.lineContent) {
                             if (text.type == 1) {
                                 drawLineIntervalText(canvas, text, text.indexY)
+                                lastY = text.indexY
                             } else {
                                 canvas?.drawText(text.lineContent, ReadConfig.mLineStart, text.indexY, ReadConfig.mPaint!!)
+                                lastY = text.indexY
                             }
                         }
                     }
@@ -350,7 +353,7 @@ class DrawTextHelper(private val resources: Resources) {
             }
         }
         if (hasContent) {
-            return pageLines[pageLines.size - 1].indexY
+            return lastY
         }
         return ReadConfig.screenHeight.toFloat()
     }
