@@ -140,7 +140,7 @@ class ReadSeparateHelper private constructor() {
         var can = true
         var pageLines = ArrayList<NovelLineBean>()
         val lists = ArrayList<NovelPageBean>()
-        var mNovelPageBean = NovelPageBean(pageLines, pageLines.size, readStatus!!.chapterNameList)
+        var mNovelPageBean = NovelPageBean(pageLines, pageLines.size, readStatus!!.chapterNameList.clone() as ArrayList<NovelLineBean>)
         lists.add(mNovelPageBean)
         var chapterNameSize = 0
         if (readStatus!!.chapterNameList != null) {
