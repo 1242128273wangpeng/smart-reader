@@ -110,7 +110,7 @@ class DrawTextHelper(private val resources: Resources) {
     }
 
     //上下滑动
-    @Synchronized fun drawText(canvas: Canvas, pageLines: List<NovelLineBean>?, chapterNameList: ArrayList<NovelLineBean>): Float {
+    @Synchronized fun drawVerticalText(canvas: Canvas, pageBean: NovelPageBean): Float {
         readStatus.currentPageConentLength = 0
         val fm = ReadConfig.mPaint!!.fontMetrics
 
@@ -122,6 +122,9 @@ class DrawTextHelper(private val resources: Resources) {
         var pageHeight = 0f
 
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+
+        val pageLines = pageBean.lines
+        val chapterNameList = pageBean.chapterNameLines
 
         if (pageLines != null && !pageLines.isEmpty()) {
 
