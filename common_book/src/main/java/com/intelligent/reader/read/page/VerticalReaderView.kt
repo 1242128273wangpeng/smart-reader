@@ -30,6 +30,7 @@ import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.ToastUtils
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
+import kotlin.collections.ArrayList
 
 class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadViewClickListener {
 
@@ -315,7 +316,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
 
     private fun addBookHomePage(chapter: Chapter) {
         if (chapter.sequence == 0 && checkLoadChapterValid(-1)) {
-            mAdapter.addPreChapter(arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";sequence = -1 }), 0)))
+            mAdapter.addPreChapter(arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";sequence = -1 }), 0, ArrayList())))
             mAdapter.showHeaderView(false)
         }
     }
@@ -442,7 +443,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     private fun loadAdViewToChapterBetween(chapterContent: ArrayList<NovelPageBean>, index: ReadViewEnums.PageIndex) {
         mDataProvider.loadChapterBetweenAd(context, object : DataProvider.OnLoadReaderAdCallback {
             override fun onLoadAd(adView: ViewGroup) {
-                val adData = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { sequence = PagerScrollAdapter.AD_ITEM_TYPE;setAdView(adView) }), 0))
+                val adData = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { sequence = PagerScrollAdapter.AD_ITEM_TYPE;setAdView(adView) }), 0 , arrayListOf()))
                 chapterContent.addAll(adData)
                 mAdapter.addAllChapter(mAdapter.getNotifyIndexByLoadChapter(index, adData), adData)
             }

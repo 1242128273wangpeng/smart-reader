@@ -29,6 +29,7 @@ import net.lzbook.kit.data.bean.*
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.SharedPreferencesUtils
 import java.util.*
+import kotlin.properties.Delegates
 
 
 /**
@@ -476,7 +477,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         val MSG_JUMP_CHAPTER = 6
         val ERROR = 7
         val NEED_LOGIN = 8
-        private var readStatus: ReadStatus? = null
+        private var readStatus: ReadStatus by Delegates.notNull<ReadStatus>()
     }
 
     //IReadPageChange

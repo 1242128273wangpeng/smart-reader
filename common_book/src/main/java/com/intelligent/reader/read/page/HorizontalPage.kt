@@ -19,10 +19,8 @@ import kotlinx.android.synthetic.main.book_home_page_layout.view.*
 import kotlinx.android.synthetic.main.error_page2.view.*
 import kotlinx.android.synthetic.main.read_bottom.view.*
 import kotlinx.android.synthetic.main.read_top.view.*
-import kotlinx.android.synthetic.qbzsydq.read_option_header.view.*
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Chapter
-import net.lzbook.kit.data.bean.ReadStatus
 import net.lzbook.kit.utils.AppUtils
 
 
@@ -269,7 +267,7 @@ class HorizontalPage : FrameLayout {
                             BitmapManager.getInstance().setSize(cursor.readStatus.screenWidth,cursor.readStatus.screenHeight)
                             mCurPageBitmap = BitmapManager.getInstance().createBitmap()
                             mCurrentCanvas = Canvas(mCurPageBitmap)
-                            val topMargin = mDrawTextHelper?.drawText(mCurrentCanvas, mNovelPageBean.lines)
+                            val topMargin = mDrawTextHelper?.drawText(mCurrentCanvas, mNovelPageBean)
                             postInvalidate()
                             //判断展示Banner广告
                             if (height - topMargin!!.toInt()>height/5){

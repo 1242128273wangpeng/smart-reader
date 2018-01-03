@@ -1,7 +1,9 @@
-package com.intelligent.reader.read.mode
+package net.lzbook.kit.data.bean
 
+import android.graphics.Paint
 import net.lzbook.kit.data.bean.NovelLineBean
 import java.util.ArrayList
+import kotlin.properties.Delegates
 
 /**
  * 阅读器配置
@@ -42,4 +44,16 @@ object ReadConfig {
     var bookName:String? = null
     //小说作者
     var bookAuthor: String? = null
+    //内容宽度
+    var mWidth: Float = 0.0f
+    //内容起始绘制位置
+    var mLineStart: Float = 0.0f
+    // 绘制文字的画笔
+    var mPaint: Paint? = null
+    // 行间距
+    var mLineSpace: Float = 0.0f
+    // 文字行高度(包括文字高度和行间距)
+    var mFontHeight: Float = 0.0f
+    // 段间距
+    var mDuan: Float = 0.0f
 }

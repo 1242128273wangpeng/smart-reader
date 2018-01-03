@@ -57,8 +57,8 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
 
     init {
         chapterList = CopyOnWriteArrayList()
-        headerViewList = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { sequence = HEADER_ITEM_TYPE }), 0))
-        footViewList = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { sequence = FOOTER_ITEM_TYPE }), 0))
+        headerViewList = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { sequence = HEADER_ITEM_TYPE }), 0, ArrayList()))
+        footViewList = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { sequence = FOOTER_ITEM_TYPE }), 0, ArrayList()))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =

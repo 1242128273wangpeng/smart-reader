@@ -1,4 +1,4 @@
-package com.intelligent.reader.read.help;
+package net.lzbook.kit.constants;
 
 /**
  * Created by yuchao on 2017/10/19 0019.

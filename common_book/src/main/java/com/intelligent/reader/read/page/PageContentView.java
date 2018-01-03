@@ -1,6 +1,6 @@
 package com.intelligent.reader.read.page;
 
-import com.intelligent.reader.read.help.ReadConstants;
+import net.lzbook.kit.constants.ReadConstants;
 
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.NovelLineBean;

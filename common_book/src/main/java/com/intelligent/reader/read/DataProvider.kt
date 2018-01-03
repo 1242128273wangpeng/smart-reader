@@ -146,7 +146,7 @@ class DataProvider : DisposableAndroidViewModel() {
                                     //加广告
                                     if (!mutableEntry.value.last().isAd) {
                                         val offset = mutableEntry.value.last().offset + mutableEntry.value.last().lines.last().lineContent.length+1
-                                        mutableEntry.value.add(NovelPageBean(arrayListOf(),offset).apply { isAd = true;adView = views[0] })
+                                        mutableEntry.value.add(NovelPageBean(arrayListOf(),offset, ArrayList()).apply { isAd = true;adView = views[0] })
                                         //插入广告
                                         if (mutableEntry.value.size>=16) {
                                             PlatformSDK.adapp().dycmNativeAd(context as Activity, "5-1", null, object : AbstractCallback() {
@@ -161,7 +161,7 @@ class DataProvider : DisposableAndroidViewModel() {
                                                             when (ResultCode.parser(jsonObject.getInt("state_code"))) {
                                                                 ResultCode.AD_REQ_SUCCESS -> {
                                                                     val offset2 = mutableEntry.value[7].offset + mutableEntry.value[7].lines.last().lineContent.length+1
-                                                                    mutableEntry.value.add(8,NovelPageBean(arrayListOf(),offset2).apply { isAd = true;adView = views[0] })
+                                                                    mutableEntry.value.add(8,NovelPageBean(arrayListOf(),offset2, arrayListOf()).apply { isAd = true;adView = views[0] })
                                                                     for (i in 9 until mutableEntry.value.size-1) {
                                                                         //其他页offset向后偏移 1 length
                                                                         mutableEntry.value[i].offset = offset+1
@@ -247,7 +247,7 @@ class DataProvider : DisposableAndroidViewModel() {
 
     private fun requestSingleChapter(book: Book, chapters: List<Chapter>, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
         if(sequence == -1) {//封面页
-            chapterSeparate.put(sequence,arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }),1)))
+            chapterSeparate.put(sequence,arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }),1, arrayListOf())))
             chapterMap.put(-1,Chapter())
             mReadDataListener.loadDataSuccess(Chapter(), type)
             return
@@ -267,7 +267,7 @@ class DataProvider : DisposableAndroidViewModel() {
                     }
                     mReaderRepository.writeChapterCache(c, false)
                     chapterMap.put(sequence, c)
-                    chapterSeparate.put(sequence, ReadSeparateHelper.getInstance().initTextSeparateContent(c.content, c.chapter_name))
+                    chapterSeparate.put(sequence, ReadSeparateHelper.instance.initTextSeparateContent(c.content, c.chapter_name))
                     mReadDataListener.loadDataSuccess(c, type)
                     //加章末广告
                     if (isShowAd){
@@ -294,7 +294,7 @@ class DataProvider : DisposableAndroidViewModel() {
                                 val arrayList = chapterSeparate[sequence]
                                 if ((arrayList != null ) and (!arrayList!!.last().isAd)) {
                                     val offset = arrayList.last().offset + arrayList.last().lines.sumBy { it.lineContent.length }+1
-                                    arrayList.add(NovelPageBean(arrayListOf(),offset).apply { isAd = true;adView = views[0] })
+                                    arrayList.add(NovelPageBean(arrayListOf(),offset, arrayListOf()).apply { isAd = true;adView = views[0] })
                                     if (arrayList.size>=16) {
                                         PlatformSDK.adapp().dycmNativeAd(context as Activity, "5-1", null, object : AbstractCallback() {
                                             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
@@ -308,7 +308,7 @@ class DataProvider : DisposableAndroidViewModel() {
                                                         when (ResultCode.parser(jsonObject.getInt("state_code"))) {
                                                             ResultCode.AD_REQ_SUCCESS -> {
                                                                 val offset2 = arrayList[7].offset + arrayList[7].lines.sumBy { it.lineContent.length }+1
-                                                                arrayList.add(8,NovelPageBean(arrayListOf(),offset2).apply { isAd = true;adView = views[0] })
+                                                                arrayList.add(8,NovelPageBean(arrayListOf(),offset2, arrayListOf()).apply { isAd = true;adView = views[0] })
                                                                 for (i in 9 until arrayList.size-1) {
                                                                     //其他页offset向后偏移 1 length
                                                                     arrayList[i].offset = offset2+1
@@ -341,7 +341,7 @@ class DataProvider : DisposableAndroidViewModel() {
         for (it in chapterMap) {
             if (it.key!=-1) {
                 val lastPageBean = chapterSeparate[it.key]!!.last()
-                val mPageBeanList = ReadSeparateHelper.getInstance().initTextSeparateContent(it.value.content, it.value.chapter_name)
+                val mPageBeanList = ReadSeparateHelper.instance.initTextSeparateContent(it.value.content, it.value.chapter_name)
                 if (lastPageBean.isAd){//最后广告
                     mPageBeanList.add(lastPageBean)
                 }
@@ -357,7 +357,7 @@ class DataProvider : DisposableAndroidViewModel() {
 
                 chapterSeparate.put(it.key, mPageBeanList)
             }else {
-                chapterSeparate.put(-1,arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }),1)))
+                chapterSeparate.put(-1,arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }),1, arrayListOf())))
             }
         }
     }

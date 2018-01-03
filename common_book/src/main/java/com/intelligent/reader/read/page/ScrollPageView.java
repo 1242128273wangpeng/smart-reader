@@ -689,7 +689,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
 
     @Override
     public void setTextColor(int color) {
-        drawTextHelper.setTextColor(color);
+//        drawTextHelper.setTextColor(color);
     }
 
     @Override
@@ -700,7 +700,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
 
     @Override
     public void setBackground() {
-        drawTextHelper.resetBackBitmap();
+//        drawTextHelper.resetBackBitmap();
         drawBackground();
         drawHeadFootText();
         if (adapter != null) {
@@ -741,7 +741,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
         }
 
         if (drawTextHelper != null) {
-            drawTextHelper.clear();
+//            drawTextHelper.clear();
         }
         if (adapter != null) {
             adapter = null;

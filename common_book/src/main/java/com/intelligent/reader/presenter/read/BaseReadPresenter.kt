@@ -35,6 +35,7 @@ import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.read.help.CallBack
 import com.intelligent.reader.read.help.DrawTextHelper
 import com.intelligent.reader.read.help.NovelHelper
+import net.lzbook.kit.data.bean.ReadConfig
 import com.intelligent.reader.read.mode.ReadViewEnums
 import com.intelligent.reader.read.page.*
 import com.intelligent.reader.reader.ReaderOwnRepository
@@ -42,7 +43,6 @@ import com.intelligent.reader.reader.ReaderRepositoryFactory
 import com.intelligent.reader.reader.ReaderViewModel
 import com.intelligent.reader.receiver.DownBookClickReceiver
 import com.intelligent.reader.util.EventBookStore
-import com.intelligent.reader.view.DropWindow
 import iyouqu.theme.ThemeMode
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -404,6 +404,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         } else {
             // 从bundle中获取
             readStatus?.sequence = bundle?.getInt("sequence", 0)
+            ReadConfig.sequence = bundle?.getInt("sequence", 0)?:0
             val requestItem = bundle?.getSerializable(Constants.REQUEST_ITEM)
             if (requestItem != null) {
                 readStatus!!.setRequestItem(requestItem as RequestItem)
@@ -412,6 +413,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             readStatus?.book = bundle?.getSerializable("book") as Book?
             readStatus?.book_id = if (readStatus!!.book == null) "" else readStatus!!.book.book_id
             currentThemeMode = bundle?.getString("thememode", readReference?.get()?.mThemeHelper?.getMode())
+            ReadConfig.bookName = readStatus?.book?.name
             AppLog.e(TAG, "getState2" + readStatus!!.sequence)
         }
 
@@ -1561,7 +1563,6 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 
         BitmapManager.getInstance().clearBitmap()
 
-        DrawTextHelper.clean()
         //
         for (d in disposable) {
             d.dispose()

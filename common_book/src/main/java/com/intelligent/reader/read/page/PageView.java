@@ -196,7 +196,7 @@ public class PageView extends View implements PageInterface {
 
     public void freshTime(CharSequence time) {
         if (time != null && time.length() > 0 && drawTextHelper != null) {
-            drawTextHelper.setTimeText(time.toString());
+//            drawTextHelper.setTimeText(time.toString());
             timeText = time.toString();
         }
         if (!isAutoReadMode()) {
@@ -211,7 +211,7 @@ public class PageView extends View implements PageInterface {
     public void freshBattery(float percent) {
         this.percent = percent;
         if (drawTextHelper != null && mCurPageCanvas != null) {
-            drawTextHelper.setPercent(percent, mCurPageCanvas);
+//            drawTextHelper.setPercent(percent, mCurPageCanvas);
         }
     }
 
@@ -220,7 +220,7 @@ public class PageView extends View implements PageInterface {
      */
     public void drawNextPage() {
         nextPageContent = pageLines = novelHelper.getPageContent();
-        drawTextHelper.drawText(mNextPageCanvas, pageLines);
+//        drawTextHelper.drawText(mNextPageCanvas, pageLines);
         if (count == 1 && readStatus != null) {
             readStatus.lastSequenceRemark = readStatus.sequence + 1;
             readStatus.lastCurrentPageRemark = readStatus.currentPage;
@@ -240,11 +240,11 @@ public class PageView extends View implements PageInterface {
     }
 
     public void setTextColor(int color) {
-        drawTextHelper.setTextColor(color);
+//        drawTextHelper.setTextColor(color);
     }
 
     public void changeBatteryBg(int res) {
-        drawTextHelper.changeBattyBitmp(res);
+//        drawTextHelper.changeBattyBitmp(res);
         System.gc();
         if (!isAutoReadMode()) {
             if (mCurPageCanvas != null) {
@@ -256,9 +256,9 @@ public class PageView extends View implements PageInterface {
 
     public void setBackground() {
         if (!isAutoReadMode()) {
-            drawTextHelper.resetBackBitmap();
-            drawTextHelper.drawText(mCurPageCanvas, pageLines);
-            drawTextHelper.drawText(mNextPageCanvas, pageLines);
+//            drawTextHelper.resetBackBitmap();
+//            drawTextHelper.drawText(mCurPageCanvas, pageLines);
+//            drawTextHelper.drawText(mNextPageCanvas, pageLines);
 
             invalidate();
         }
@@ -281,7 +281,7 @@ public class PageView extends View implements PageInterface {
      */
     public void refreshCurrentPage() {
 
-        drawTextHelper.drawText(mCurPageCanvas, pageLines);
+//        drawTextHelper.drawText(mCurPageCanvas, pageLines);
     }
 
     @Override
@@ -687,7 +687,7 @@ public class PageView extends View implements PageInterface {
             myBitmapManager.clearBitmap();
         }
         if (drawTextHelper != null) {
-            drawTextHelper.clear();
+//            drawTextHelper.clear();
         }
         if (null != autoReadImpl) {
             autoReadImpl.close();

@@ -1,7 +1,6 @@
 package com.intelligent.reader.read.help;
 
 import com.intelligent.reader.R;
-import com.intelligent.reader.activity.ReadingActivity;
 import com.intelligent.reader.adapter.SourceAdapter;
 import com.intelligent.reader.read.page.PageContentView;
 import com.intelligent.reader.read.page.PageInterface;
@@ -9,9 +8,9 @@ import com.intelligent.reader.reader.ReaderViewModel;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.download.DownloadState;
-import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.constants.ReadConstants;
 import net.lzbook.kit.data.NullCallBack;
 import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.BookTask;
@@ -31,7 +30,6 @@ import net.lzbook.kit.utils.Tools;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Paint.FontMetrics;
-import android.os.Handler;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.view.Gravity;
