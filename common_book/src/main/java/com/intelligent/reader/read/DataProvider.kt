@@ -53,7 +53,7 @@ class DataProvider : DisposableAndroidViewModel() {
     //上下文
     var context: Context? = null
     //是否显示广告
-    var isShowAd: Boolean = false
+    var isShowAd: Boolean = true
     //目录
     var chapterList: ArrayList<Chapter> = ArrayList()
     //分页前缓存容器

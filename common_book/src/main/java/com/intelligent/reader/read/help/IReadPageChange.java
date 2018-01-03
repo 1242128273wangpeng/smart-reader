@@ -23,10 +23,6 @@ public interface IReadPageChange {
     void showMenu(Boolean isShow);
 
     /**
-     * 设置当前页 sequence and offset
-     */
-    void setCurPageInfo(int sequence,int offset);
-    /**
      * 加载广告
      */
     void loadAD();

@@ -274,7 +274,6 @@ class HorizontalPage : FrameLayout {
                             postInvalidate()
                             //判断展示Banner广告
                             if (cursor.readStatus.screenHeight - topMargin!!.toInt()>cursor.readStatus.screenHeight/5){
-                                AppLog.e("topMargin: ",""+topMargin)
                                 showAdBanner(topMargin)
                             }
                         }
@@ -356,6 +355,7 @@ class HorizontalPage : FrameLayout {
 
         //展示Bigger广告
         private fun showAdBigger(mNovelPageBean: NovelPageBean) {
+            removeView(mNovelPageBean.adView)
             val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             val margin = AppUtils.dip2px(context, 10f)
             param.setMargins(margin,margin,margin,margin)

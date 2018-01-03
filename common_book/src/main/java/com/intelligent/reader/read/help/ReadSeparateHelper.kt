@@ -13,6 +13,7 @@ import net.lzbook.kit.constants.ReadConstants
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.data.bean.ReadStatus
+import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.Tools
 
 import java.util.ArrayList
@@ -207,13 +208,16 @@ class ReadSeparateHelper private constructor() {
             ReadConfig.mPaint!!.isDither = true
         }
 
+        ReadConfig.mPaint!!.textSize = Constants.FONT_SIZE * readStatus!!.screenScaledDensity
         val fm = ReadConfig.mPaint!!.fontMetrics
 
-        ReadConfig.mPaint!!.textSize = Constants.FONT_SIZE * readStatus!!.screenScaledDensity
         ReadConfig.mLineSpace = Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE.toFloat() * readStatus!!.screenScaledDensity
         ReadConfig.mFontHeight = fm.descent - fm.ascent + ReadConfig.mLineSpace
         ReadConfig.mDuan = Constants.READ_PARAGRAPH_SPACE * ReadConfig.mLineSpace
-
+        AppLog.w("mLineSpace = ",""+ReadConfig.mLineSpace)
+        AppLog.w("mFontHeight = ",""+ReadConfig.mFontHeight)
+        AppLog.w("mDuan = ",""+ReadConfig.mDuan)
+        AppLog.w("==========================","====================================================")
         return fm
     }
 

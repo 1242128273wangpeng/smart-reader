@@ -13,6 +13,7 @@ import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.view.ViewPager
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
+import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.ToastUtils
 import java.util.ArrayList
@@ -291,9 +292,8 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         val curView = findViewWithTag(ReadViewEnums.PageIndex.current)
         curView as HorizontalPage
         if (curView.mCursor!=null){
-            val sequence = curView.mCursor!!.sequence
-            val offset = curView.mCursor!!.offset + curView.CursorOffset
-            mReadPageChange?.setCurPageInfo(sequence,offset)
+            ReadConfig.sequence = curView.mCursor!!.sequence
+            ReadConfig.offset = curView.mCursor!!.offset + curView.CursorOffset
         }
     }
 //==================================================IReadPageChange=========================================
