@@ -350,7 +350,14 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     //0 滑动 1 仿真 2 平移 3 上下
     override fun changeAnimMode(mode: Int) {
         if (((mode == 3) and (animation != ReadViewEnums.Animation.list)) or ((animation == ReadViewEnums.Animation.list) and (mode != 3))) {
+            animation = when (mode) {
+                0 -> ReadViewEnums.Animation.slide
+                1 -> ReadViewEnums.Animation.curl
+                2 -> ReadViewEnums.Animation.shift
+                else -> ReadViewEnums.Animation.list
+            }
             novel_basePageView?.entrance(ReadInfo(readStatus?.book!!, readStatus!!, animation))
+            novel_basePageView?.setIReadPageChange(this)
         }
         animation = when (mode) {
             0 -> ReadViewEnums.Animation.slide

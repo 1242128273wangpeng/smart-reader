@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import com.dycm_adsdk.PlatformSDK
 import com.dycm_adsdk.callback.AbstractCallback
 import com.dycm_adsdk.callback.ResultCode
-import com.dycm_adsdk.utils.DyLogUtils
 import com.intelligent.reader.DisposableAndroidViewModel
 import com.intelligent.reader.cover.BookCoverLocalRepository
 import com.intelligent.reader.cover.BookCoverOtherRepository
@@ -101,7 +100,7 @@ class DataProvider : DisposableAndroidViewModel() {
         }
     }
 
-    private fun loadAd(context: Context, type: String, callback: OnLoadReaderAdCallback) {
+     fun loadAd(context: Context, type: String, callback: OnLoadReaderAdCallback) {
         PlatformSDK.adapp().dycmNativeAd(context as Activity, type, null, object : AbstractCallback() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
@@ -294,7 +293,7 @@ class DataProvider : DisposableAndroidViewModel() {
                             ResultCode.AD_REQ_SUCCESS -> {
                                 val arrayList = chapterSeparate[sequence]
                                 if ((arrayList != null ) and (!arrayList!!.last().isAd)) {
-                                    val offset = arrayList.last().lines.last().lineContent.length+1
+                                    val offset = arrayList.last().offset + arrayList.last().lines.sumBy { it.lineContent.length }+1
                                     arrayList.add(NovelPageBean(arrayListOf(),offset).apply { isAd = true;adView = views[0] })
                                     if (arrayList.size>=16) {
                                         PlatformSDK.adapp().dycmNativeAd(context as Activity, "5-1", null, object : AbstractCallback() {
@@ -308,7 +307,7 @@ class DataProvider : DisposableAndroidViewModel() {
                                                     if (jsonObject.has("state_code")) {
                                                         when (ResultCode.parser(jsonObject.getInt("state_code"))) {
                                                             ResultCode.AD_REQ_SUCCESS -> {
-                                                                val offset2 = arrayList[7].offset + arrayList[7].lines.last().lineContent.length+1
+                                                                val offset2 = arrayList[7].offset + arrayList[7].lines.sumBy { it.lineContent.length }+1
                                                                 arrayList.add(8,NovelPageBean(arrayListOf(),offset2).apply { isAd = true;adView = views[0] })
                                                                 for (i in 9 until arrayList.size-1) {
                                                                     //其他页offset向后偏移 1 length
@@ -340,20 +339,22 @@ class DataProvider : DisposableAndroidViewModel() {
 
     fun onReSeparate() {
         for (it in chapterMap) {
-            chapterSeparate.put(it.key, ReadSeparateHelper.getInstance().initTextSeparateContent(it.value.content, it.value.chapter_name))
             if (it.key!=-1) {
                 val lastPageBean = chapterSeparate[it.key]!!.last()
-                val middleBean = chapterSeparate[it.key]!![9]
                 val mPageBeanList = ReadSeparateHelper.getInstance().initTextSeparateContent(it.value.content, it.value.chapter_name)
                 if (lastPageBean.isAd){//最后广告
                     mPageBeanList.add(lastPageBean)
                 }
                 //中间广告 符合条件
-                if ((mPageBeanList.size>=16) and middleBean.isAd){
-                    mPageBeanList.add(8,middleBean)
-                }else if ((mPageBeanList.size>=16) and !middleBean.isAd){
+                if(chapterSeparate[it.key]!!.size>9){
+                    val middleBean = chapterSeparate[it.key]!![9]
+                    if ((mPageBeanList.size>=16) and middleBean.isAd){
+                        mPageBeanList.add(8,middleBean)
+                    }else if ((mPageBeanList.size>=16) and !middleBean.isAd){
 
+                    }
                 }
+
                 chapterSeparate.put(it.key, mPageBeanList)
             }else {
                 chapterSeparate.put(-1,arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }),1)))

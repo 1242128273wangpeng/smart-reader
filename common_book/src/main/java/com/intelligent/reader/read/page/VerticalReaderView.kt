@@ -145,6 +145,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
 
         loadPreChapter(mReadInfo.mReadStatus.sequence - 1)
         loadNextChapter(mReadInfo.mReadStatus.sequence + 1)
+        setBackground()
     }
 
     /**

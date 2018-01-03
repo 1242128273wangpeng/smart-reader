@@ -337,7 +337,7 @@ class HorizontalPage : FrameLayout {
             if (mCursor!!.isShowAdBanner) {
                 mCursor!!.isShowAdBanner = false
                 //获取剩余高度，展示广告
-                DataProvider.getInstance().loadAd(context,object: DataProvider.OnLoadReaderAdCallback {
+                DataProvider.getInstance().loadAd(context,"8-1",object: DataProvider.OnLoadReaderAdCallback {
                     override fun onLoadAd(adView: ViewGroup) {
                         val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
                         val marginTop = AppUtils.dip2px(context, topMargins)
