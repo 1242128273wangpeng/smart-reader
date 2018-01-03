@@ -29,7 +29,6 @@ import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.ToastUtils
 import java.util.concurrent.CopyOnWriteArrayList
-import kotlin.collections.ArrayList
 
 class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadViewClickListener {
 
@@ -322,12 +321,13 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
 
     @SuppressLint("SetTextI18n")
     private fun setCurrentChapterInfo(position: Int) {
-        if (mOriginDataList.size > 0
-                && mOriginDataList.size > position
-                && mOriginDataList[position].lines.size > 0) {
+
+        if (mOriginDataList.size > 0 && mOriginDataList.size > position && mOriginDataList[position].lines.size > 0) {
+
             if (mOriginDataList[position].lines[0].sequence != PagerScrollAdapter.HEADER_ITEM_TYPE
                     && mOriginDataList[position].lines[0].sequence != PagerScrollAdapter.FOOTER_ITEM_TYPE
                     && mOriginDataList[position].lines[0].sequence != PagerScrollAdapter.AD_ITEM_TYPE) {
+
                 mReadInfo.mReadStatus.chapterName = mOriginDataList[position].lines[0].chapterName
                 novel_title.text = mReadInfo.mReadStatus.chapterName
                 novel_chapter.text = "${mOriginDataList[position].lines[0].sequence + 1} / ${mReadInfo.mReadStatus.chapterCount} 章"
@@ -339,6 +339,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
             }
 //            mOnReaderViewControlCallback?.onPageChange(mReadInfo.mReadStatus.sequence, mReadInfo.mReadStatus.currentPage)
         }
+
         if (mReadInfo.mReadStatus.sequence == -1) {
             novel_title_layout.visibility = View.INVISIBLE
             novel_bottom.visibility = View.INVISIBLE
@@ -442,7 +443,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     private fun loadAdViewToChapterBetween(chapterContent: ArrayList<NovelPageBean>, index: ReadViewEnums.PageIndex) {
         mDataProvider.loadChapterBetweenAd(context, object : DataProvider.OnLoadReaderAdCallback {
             override fun onLoadAd(adView: ViewGroup) {
-                val adData = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { sequence = PagerScrollAdapter.AD_ITEM_TYPE;setAdView(adView) }), 0 , arrayListOf()))
+                val adData = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { sequence = PagerScrollAdapter.AD_ITEM_TYPE; }), 0, arrayListOf()).apply { isAd = true;this.adView = adView })
                 chapterContent.addAll(adData)
                 mAdapter.addAllChapter(mAdapter.getNotifyIndexByLoadChapter(index, adData), adData)
             }

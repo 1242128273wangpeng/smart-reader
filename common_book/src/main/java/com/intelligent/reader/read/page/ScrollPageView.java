@@ -1004,19 +1004,19 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
                 }
             }
             getCurrentSequence(position + 1);
-            switch (type) {
-                case 0:
-                    Bitmap mCurPageBitmap = (Bitmap) hodler.page.getTag(R.id.tag_bitmap);
-                    Canvas mCurrentCanvas = (Canvas) hodler.page.getTag(R.id.tag_canvas);
-                    float pageHeight = drawTextHelper.drawText(mCurrentCanvas, chapterContent.get(position), chapterNameList);
-                    if (pageHeight != 0.0f) {
-                        hodler.page.getLayoutParams().height = (int) pageHeight;
-                    } else {
-                        hodler.page.getLayoutParams().height = readStatus.screenHeight;
-                    }
-                    hodler.page.drawPage(mCurPageBitmap);
-                    break;
-            }
+//            switch (type) {
+//                case 0:
+//                    Bitmap mCurPageBitmap = (Bitmap) hodler.page.getTag(R.id.tag_bitmap);
+//                    Canvas mCurrentCanvas = (Canvas) hodler.page.getTag(R.id.tag_canvas);
+//                    float pageHeight = drawTextHelper.drawText(mCurrentCanvas, chapterContent.get(position), chapterNameList);
+//                    if (pageHeight != 0.0f) {
+//                        hodler.page.getLayoutParams().height = (int) pageHeight;
+//                    } else {
+//                        hodler.page.getLayoutParams().height = readStatus.screenHeight;
+//                    }
+//                    hodler.page.drawPage(mCurPageBitmap);
+//                    break;
+//            }
             return convertView;
         }
 
