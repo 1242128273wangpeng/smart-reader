@@ -171,35 +171,35 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
     internal inner class PagerHolder(itemView: View) : PagerScrollAdapter.ReaderPagerHolder(itemView) {
         init {
             text = itemView.findViewById(R.id.read_content_text) as PageContentView
-            chapter_info_rl = itemView.findViewById(R.id.chapter_info_rl) as RelativeLayout
-            chapter_num_tv = itemView.findViewById(R.id.chapter_num_tv) as TextView
-            chapter_name_tv = itemView.findViewById(R.id.chapter_name_tv) as TextView
+//            chapter_info_rl = itemView.findViewById(R.id.chapter_info_rl) as RelativeLayout
+//            chapter_num_tv = itemView.findViewById(R.id.chapter_num_tv) as TextView
+//            chapter_name_tv = itemView.findViewById(R.id.chapter_name_tv) as TextView
             ad_fl = itemView.findViewById(R.id.ad_fl) as FrameLayout
         }
 
         override fun bindHolder(pageLines: NovelPageBean) {
             val pageTag = pageLines.lines[0].lineContent
-            if (!TextUtils.isEmpty(pageTag) &&
-                    PageContentView.CHAPTER_HOME_PAGE == pageTag.trim()) {
-                chapter_info_rl.visibility = View.VISIBLE
-            } else {
-                chapter_info_rl.visibility = View.GONE
-            }
-
-            mNovelHelper.getChapterNameList(pageLines.lines[0].chapterName).forEachIndexed { index, novelLineBean ->
-                if (index == 0) {
-                    chapter_num_tv.text = novelLineBean.lineContent
-                } else {
-                    chapter_name_tv.text = novelLineBean.lineContent
-                }
-            }
+//            if (!TextUtils.isEmpty(pageTag) &&
+//                    PageContentView.CHAPTER_HOME_PAGE == pageTag.trim()) {
+//                chapter_info_rl.visibility = View.VISIBLE
+//            } else {
+//                chapter_info_rl.visibility = View.GONE
+//            }
+//
+//            mNovelHelper.getChapterNameList(pageLines.lines[0].chapterName).forEachIndexed { index, novelLineBean ->
+//                if (index == 0) {
+//                    chapter_num_tv.text = novelLineBean.lineContent
+//                } else {
+//                    chapter_name_tv.text = novelLineBean.lineContent
+//                }
+//            }
 
             addAdView(pageLines.lines)
 
             text.setReaderStatus(mReadStatus)
             text.setContent(pageLines)
-            chapter_num_tv.setTextColor(textColor)
-            chapter_name_tv.setTextColor(textColor)
+//            chapter_num_tv.setTextColor(textColor)
+//            chapter_name_tv.setTextColor(textColor)
             text.setTextColor(textColor)
         }
 
@@ -337,9 +337,9 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
 
     abstract class ReaderPagerHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         lateinit var text: PageContentView
-        lateinit var chapter_info_rl: RelativeLayout
-        lateinit var chapter_num_tv: TextView
-        lateinit var chapter_name_tv: TextView
+//        lateinit var chapter_info_rl: RelativeLayout
+//        lateinit var chapter_num_tv: TextView
+//        lateinit var chapter_name_tv: TextView
 
         lateinit var book_name_tv: TextView
         lateinit var book_auth_tv: TextView
