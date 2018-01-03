@@ -311,7 +311,7 @@ class DataProvider : DisposableAndroidViewModel() {
                                                                 arrayList.add(8,NovelPageBean(arrayListOf(),offset2, arrayListOf()).apply { isAd = true;adView = views[0] })
                                                                 for (i in 9 until arrayList.size-1) {
                                                                     //其他页offset向后偏移 1 length
-                                                                    arrayList[i].offset = offset2+1
+                                                                    arrayList[i].offset = arrayList[i-1].offset+1
                                                                 }
                                                             }
                                                             else -> {
