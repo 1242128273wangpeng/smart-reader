@@ -14,7 +14,7 @@ import com.intelligent.reader.cover.BookCoverQGRepository
 import com.intelligent.reader.cover.BookCoverRepositoryFactory
 import com.intelligent.reader.read.help.ReadSeparateHelper
 import com.intelligent.reader.read.mode.NovelPageBean
-import com.intelligent.reader.read.mode.ReadViewEnums
+import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.reader.ReaderOwnRepository
 import com.intelligent.reader.reader.ReaderRepositoryFactory
 import com.intelligent.reader.repository.BookCoverRepository
@@ -101,7 +101,33 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
      fun loadAd(context: Context, type: String, callback: OnLoadReaderAdCallback) {
-        PlatformSDK.adapp().dycmNativeAd(context as Activity, type, null, object : AbstractCallback() {
+        PlatformSDK.adapp().dycmNativeAd(context as Activity, type,null, object : AbstractCallback() {
+            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
+                super.onResult(adswitch, views, jsonResult)
+                if (!adswitch) {
+                    return
+                }
+                try {
+                    val jsonObject = JSONObject(jsonResult)
+                    if (jsonObject.has("state_code")) {
+                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+                            ResultCode.AD_REQ_SUCCESS
+                            -> {
+                                callback.onLoadAd(views[0])
+                                ToastUtils.showToastNoRepeat(type)
+                            }
+                            else -> {
+                            }
+                        }
+                    }
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+            }
+        })
+    }
+    fun loadAd(context: Context, type: String,w:Int,h:Int, callback: OnLoadReaderAdCallback) {
+        PlatformSDK.adapp().dycmNativeAd(context as Activity, type,w,h, object : AbstractCallback() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
                 if (!adswitch) {

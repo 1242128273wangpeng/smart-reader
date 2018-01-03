@@ -1,4 +1,4 @@
-package com.intelligent.reader.read.mode;
+package net.lzbook.kit.data.bean;
 
 /**
  * 阅读枚举

@@ -9,10 +9,8 @@ import com.intelligent.reader.read.adapter.HorizontalAdapter
 import com.intelligent.reader.read.help.*
 import com.intelligent.reader.read.mode.ReadCursor
 import com.intelligent.reader.read.mode.ReadInfo
-import com.intelligent.reader.read.mode.ReadViewEnums
-import com.intelligent.reader.util.ThemeUtil
+import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.view.ViewPager
-import kotlinx.android.synthetic.main.vertical_pager_layout.view.*
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.utils.AppLog
@@ -67,10 +65,10 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                 //2、获取游标
                 //3、改变adapter游标
                 index > position -> {
-                    checkViewState("Pre",ReadViewEnums.NotifyStateState.left)
+                    checkViewState("Pre", ReadViewEnums.NotifyStateState.left)
                 }
                 index < position -> {
-                    checkViewState("Next",ReadViewEnums.NotifyStateState.right)
+                    checkViewState("Next", ReadViewEnums.NotifyStateState.right)
                 }
             }
             index = position
@@ -158,7 +156,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                     else -> 1
                 }
                 //设置新游标
-                val newCursor = ReadCursor(curCursor!!.curBook,newSequence,newOffset,ReadViewEnums.PageIndex.previous,mReadInfo!!.mReadStatus)
+                val newCursor = ReadCursor(curCursor!!.curBook,newSequence,newOffset, ReadViewEnums.PageIndex.previous,mReadInfo!!.mReadStatus)
                 (adapter as HorizontalAdapter).cursor = newCursor
             }
             ReadViewEnums.ViewState.error->{//
@@ -251,7 +249,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     override fun onClickLeft() {
         //当前页是封面页禁止点击
         if ((findViewWithTag(ReadViewEnums.PageIndex.current) != null) and ((findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState == ReadViewEnums.ViewState.start)) return
-        checkViewState("Pre",ReadViewEnums.NotifyStateState.left)
+        checkViewState("Pre", ReadViewEnums.NotifyStateState.left)
         setCurrentItem(index-1,true)
     }
 
@@ -261,7 +259,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     override fun onClickRight() {
         //当前页是最后一页禁止点击
         if ((findViewWithTag(ReadViewEnums.PageIndex.current) != null) and ((findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState == ReadViewEnums.ViewState.end)) return
-        checkViewState("Next",ReadViewEnums.NotifyStateState.right)
+        checkViewState("Next", ReadViewEnums.NotifyStateState.right)
         setCurrentItem(index+1,true)
     }
 
@@ -289,6 +287,15 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 
     override fun getCurTime(): String = time
 
+    override fun currentViewSuccess() {
+        val curView = findViewWithTag(ReadViewEnums.PageIndex.current)
+        curView as HorizontalPage
+        if (curView.mCursor!=null){
+            val sequence = curView.mCursor!!.sequence
+            val offset = curView.mCursor!!.offset + curView.CursorOffset
+            mReadPageChange?.setCurPageInfo(sequence,offset)
+        }
+    }
 //==================================================IReadPageChange=========================================
     private var mReadPageChange: IReadPageChange? = null
 
@@ -302,17 +309,18 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     override fun entrance(mReadInfo: ReadInfo) {
         this.mReadInfo = mReadInfo
         val sequence = mReadInfo.mReadStatus.sequence
+        val offset = mReadInfo.mReadStatus.offset
         Handler().postDelayed({
             //更改当前view状态
             (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState = ReadViewEnums.ViewState.loading
             if(this.mReadInfo!!.mReadStatus.sequence == -1){
                 this.mReadInfo!!.mReadStatus.sequence =0
-                curCursor = ReadCursor(mReadInfo.curBook,sequence,mReadInfo.mReadStatus.offset,ReadViewEnums.PageIndex.current,mReadInfo.mReadStatus)
-                checkViewState("Cur",ReadViewEnums.NotifyStateState.all)
+                curCursor = ReadCursor(mReadInfo.curBook,sequence,offset, ReadViewEnums.PageIndex.current,mReadInfo.mReadStatus)
+                checkViewState("Cur", ReadViewEnums.NotifyStateState.all)
 
             }else{
-                curCursor = ReadCursor(mReadInfo.curBook,sequence,mReadInfo.mReadStatus.offset,ReadViewEnums.PageIndex.current,mReadInfo.mReadStatus)
-                checkViewState("Cur",ReadViewEnums.NotifyStateState.all)
+                curCursor = ReadCursor(mReadInfo.curBook,sequence,offset, ReadViewEnums.PageIndex.current,mReadInfo.mReadStatus)
+                checkViewState("Cur", ReadViewEnums.NotifyStateState.all)
             }
         },200)
         //设置字体颜色
@@ -373,7 +381,11 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         curView.onReSeparate()
         curView.setCursor(curView.mCursor!!)
     }
-
+    //跳章
+    override fun onJumpChapter(sequence: Int) {
+        this.mReadInfo!!.mReadStatus.sequence = sequence
+        entrance(this.mReadInfo!!)
+    }
     //==================================================TouchEvent=========================================
     //-----禁止左滑-------左滑：上一次坐标 > 当前坐标
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {

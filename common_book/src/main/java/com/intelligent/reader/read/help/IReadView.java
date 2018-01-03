@@ -64,4 +64,9 @@ public interface IReadView {
 //    void setTextColor(int color);
 
     void onRedrawPage();
+    /**
+     * 跳章
+     * @param sequence 章序号
+     */
+    void onJumpChapter(int sequence);
 }

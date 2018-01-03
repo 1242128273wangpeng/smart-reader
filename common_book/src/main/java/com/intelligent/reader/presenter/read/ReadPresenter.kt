@@ -1,7 +1,7 @@
 package com.intelligent.reader.presenter.read
 
 import com.intelligent.reader.activity.ReadingActivity
-import com.intelligent.reader.read.mode.ReadViewEnums
+import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.reader.ReaderViewModel
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.constants.Constants

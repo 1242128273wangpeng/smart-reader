@@ -10,7 +10,7 @@ import android.widget.*
 import com.intelligent.reader.R
 import com.intelligent.reader.read.help.NovelHelper
 import com.intelligent.reader.read.mode.NovelPageBean
-import com.intelligent.reader.read.mode.ReadViewEnums
+import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.data.bean.ReadStatus

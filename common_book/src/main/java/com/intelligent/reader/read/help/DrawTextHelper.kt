@@ -6,7 +6,7 @@ import com.intelligent.reader.read.mode.NovelPageBean
 
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.NovelLineBean
-import net.lzbook.kit.data.bean.ReadConfig
+
 import net.lzbook.kit.data.bean.ReadStatus
 import net.lzbook.kit.data.bean.SensitiveWords
 import net.lzbook.kit.utils.AppLog
@@ -18,6 +18,7 @@ import android.graphics.Paint
 import android.graphics.Paint.FontMetrics
 import android.graphics.PorterDuff
 import android.text.TextUtils
+import net.lzbook.kit.data.bean.ReadConfig
 
 import java.util.ArrayList
 

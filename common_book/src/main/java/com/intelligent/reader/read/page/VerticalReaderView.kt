@@ -21,14 +21,13 @@ import com.intelligent.reader.read.help.NovelHelper
 import com.intelligent.reader.read.help.ReadSeparateHelper
 import com.intelligent.reader.read.mode.NovelPageBean
 import com.intelligent.reader.read.mode.ReadInfo
-import com.intelligent.reader.read.mode.ReadViewEnums
+import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.util.ThemeUtil
 import kotlinx.android.synthetic.main.vertical_pager_layout.view.*
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.ToastUtils
-import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.collections.ArrayList
 
@@ -546,6 +545,10 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
 
     override fun onRedrawPage() {
         getChapterData(mReadInfo.mReadStatus.sequence, ReadViewEnums.PageIndex.current, true)
+    }
+
+    override fun onJumpChapter(sequence: Int) {
+
     }
 
     override fun setReadInfo(mReadInfo: ReadInfo?) {

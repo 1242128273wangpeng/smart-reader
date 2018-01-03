@@ -10,7 +10,7 @@ import com.intelligent.reader.read.help.IReadPageChange
 import com.intelligent.reader.read.help.IReadView
 import com.intelligent.reader.read.help.IReadWidget
 import com.intelligent.reader.read.mode.ReadInfo
-import com.intelligent.reader.read.mode.ReadViewEnums
+import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
 import java.util.ArrayList
@@ -128,5 +128,9 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
      */
     override fun onRedrawPage(){
         mReaderView?.onRedrawPage()
+    }
+
+    override fun onJumpChapter(sequence:Int){
+        mReaderView?.onJumpChapter(sequence)
     }
 }

@@ -3,11 +3,10 @@ package com.intelligent.reader.read.adapter
 import android.view.View
 import android.view.ViewGroup
 import com.intelligent.reader.read.mode.ReadCursor
-import com.intelligent.reader.read.mode.ReadViewEnums
+import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.read.page.HorizontalPage
 import com.intelligent.reader.view.PagerAdapter
 import com.intelligent.reader.view.ViewPager
-import net.lzbook.kit.utils.AppLog
 
 /**
  * 水平阅读 adapter
@@ -26,6 +25,7 @@ class HorizontalAdapter(private var noticePageListener: HorizontalPage.NoticePag
     override fun setPrimaryItem(container: ViewGroup, position: Int, `object`: Any) {
         mCurrentView = `object` as View
         mCurrentView?.tag = ReadViewEnums.PageIndex.current
+        noticePageListener.currentViewSuccess()
     }
 
     override fun isViewFromObject(view: View?, `object`: Any?): Boolean = view == `object`

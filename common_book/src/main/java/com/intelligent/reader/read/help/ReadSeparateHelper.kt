@@ -5,9 +5,10 @@ import android.text.TextPaint
 import android.text.TextUtils
 
 import com.intelligent.reader.read.mode.NovelPageBean
+import net.lzbook.kit.data.bean.ReadConfig
 
 import net.lzbook.kit.constants.ReadConstants
-import net.lzbook.kit.data.bean.ReadConfig
+
 
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.NovelLineBean

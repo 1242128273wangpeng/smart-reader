@@ -13,7 +13,7 @@ import com.intelligent.reader.read.animation.BitmapManager
 import com.intelligent.reader.read.help.DrawTextHelper
 import com.intelligent.reader.read.mode.NovelPageBean
 import com.intelligent.reader.read.mode.ReadCursor
-import com.intelligent.reader.read.mode.ReadViewEnums
+import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.util.ThemeUtil
 import kotlinx.android.synthetic.main.book_home_page_layout.view.*
 import kotlinx.android.synthetic.main.error_page2.view.*
@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.read_bottom.view.*
 import kotlinx.android.synthetic.main.read_top.view.*
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Chapter
+import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
 
 
@@ -51,13 +52,14 @@ class HorizontalPage : FrameLayout {
     private lateinit var readBottom:View
     private lateinit var homePage:View
 
+    var CursorOffset = 0
     var percent = 0.0f
     var time = ""
     var mCurPageBitmap: Bitmap? = null
     var mCurrentCanvas: Canvas? = null
     var mCursor: ReadCursor? = null
-    var viewState:ReadViewEnums.ViewState = ReadViewEnums.ViewState.loading
-    var viewNotify:ReadViewEnums.NotifyStateState = ReadViewEnums.NotifyStateState.none
+    var viewState: ReadViewEnums.ViewState = ReadViewEnums.ViewState.loading
+    var viewNotify: ReadViewEnums.NotifyStateState = ReadViewEnums.NotifyStateState.none
 
     constructor(context: Context, noticePageListener: NoticePageListener) : this(context, null, noticePageListener)
 
@@ -161,7 +163,7 @@ class HorizontalPage : FrameLayout {
     var noticePageListener: NoticePageListener? = null
 
     interface NoticePageListener {
-        fun pageChangSuccess(cursor:ReadCursor,notify:ReadViewEnums.NotifyStateState)
+        fun pageChangSuccess(cursor:ReadCursor,notify: ReadViewEnums.NotifyStateState)
         fun onClickLeft()
         fun onClickRight()
         fun onClickMenu(isShow: Boolean)
@@ -169,6 +171,7 @@ class HorizontalPage : FrameLayout {
         fun loadTransCoding()
         fun getCurPercent():Float
         fun getCurTime():String
+        fun currentViewSuccess()
     }
 
     inner class HorizontalItemPage:View{
@@ -270,7 +273,8 @@ class HorizontalPage : FrameLayout {
                             val topMargin = mDrawTextHelper?.drawText(mCurrentCanvas, mNovelPageBean)
                             postInvalidate()
                             //判断展示Banner广告
-                            if (height - topMargin!!.toInt()>height/5){
+                            if (cursor.readStatus.screenHeight - topMargin!!.toInt()>cursor.readStatus.screenHeight/5){
+                                AppLog.e("topMargin: ",""+topMargin)
                                 showAdBanner(topMargin)
                             }
                         }
@@ -284,6 +288,13 @@ class HorizontalPage : FrameLayout {
                         }else{
                             noticePageListener?.pageChangSuccess(mCursor!!,viewNotify)//游标通知回调
                             ReadViewEnums.ViewState.success
+                        }
+                        //游标添加广告后的偏移量
+                        when {
+                            (pageSum>=16) and (pageIndex>=9) and (pageIndex != pageSum) -> CursorOffset == -1
+                            (pageSum>=16) and (pageIndex>=9) and (pageIndex == pageSum) -> CursorOffset == -2
+                            (pageSum<16) and (pageIndex == pageSum) -> CursorOffset == -1
+                            else -> CursorOffset =0
                         }
                         //设置top and bottom
                         val chapterProgress = ""+(cursor.sequence + 1) + "/" + cursor.readStatus.chapterCount + "章"
@@ -332,19 +343,15 @@ class HorizontalPage : FrameLayout {
         }
         //展示Banner广告
         private fun showAdBanner(topMargins: Float){
-            if (mCursor!!.isShowAdBanner) {
-                mCursor!!.isShowAdBanner = false
-                //获取剩余高度，展示广告
-                DataProvider.getInstance().loadAd(context,"8-1",object: DataProvider.OnLoadReaderAdCallback {
-                    override fun onLoadAd(adView: ViewGroup) {
-                        val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-                        val marginTop = AppUtils.dip2px(context, topMargins)
-                        val margin = AppUtils.dip2px(context, 10f)
-                        param.setMargins(margin,marginTop,margin,margin)
-                        addView(adView, param)
-                    }
-                })
-            }
+            DataProvider.getInstance().loadAd(context,"8-1",mCursor!!.readStatus.screenWidth,mCursor!!.readStatus.screenHeight - topMargins.toInt(),object: DataProvider.OnLoadReaderAdCallback {
+                override fun onLoadAd(adView: ViewGroup) {
+                    val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+                    val marginTop = AppUtils.dip2px(context, topMargins)
+                    val margin = AppUtils.dip2px(context, 10f)
+                    param.setMargins(margin,marginTop,margin,margin)
+                    addView(adView, param)
+                }
+            })
         }
 
         //展示Bigger广告

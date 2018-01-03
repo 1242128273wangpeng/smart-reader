@@ -1,15 +1,19 @@
 package net.lzbook.kit.data.bean
 
 import android.graphics.Paint
-import net.lzbook.kit.data.bean.NovelLineBean
+import net.lzbook.kit.constants.Constants
 import java.util.ArrayList
-import kotlin.properties.Delegates
 
 /**
  * 阅读器配置
  * Created by wt on 2017/12/26.
  */
 object ReadConfig {
+    //动画模式
+    var animation = when (Constants.PAGE_MODE) {
+        3 -> ReadViewEnums.Animation.list
+        else -> ReadViewEnums.Animation.slide
+    }
     //屏幕宽度
     var screenWidth: Int = 0
     //屏幕高度

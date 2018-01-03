@@ -2,6 +2,7 @@ package com.intelligent.reader.read.mode
 
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.ReadStatus
+import net.lzbook.kit.data.bean.ReadViewEnums
 
 /**
  * 阅读信息
@@ -10,6 +11,6 @@ import net.lzbook.kit.data.bean.ReadStatus
 data class ReadInfo(
         var curBook:Book,//Book
         var mReadStatus:ReadStatus,
-        var animaEnums:ReadViewEnums.Animation//动画模式
+        var animaEnums: ReadViewEnums.Animation//动画模式
 )
 

@@ -33,10 +33,10 @@ import com.intelligent.reader.presenter.IPresenter
 import com.intelligent.reader.read.animation.BitmapManager
 import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.read.help.CallBack
-import com.intelligent.reader.read.help.DrawTextHelper
 import com.intelligent.reader.read.help.NovelHelper
 import net.lzbook.kit.data.bean.ReadConfig
-import com.intelligent.reader.read.mode.ReadViewEnums
+
+import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.read.page.*
 import com.intelligent.reader.reader.ReaderOwnRepository
 import com.intelligent.reader.reader.ReaderRepositoryFactory
@@ -731,9 +731,13 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             display.getRealSize(realSize)
             readStatus?.screenWidth = realSize.x
             readStatus?.screenHeight = realSize.y
+            ReadConfig.screenWidth = realSize.x
+            ReadConfig.screenHeight = realSize.y
         } else {
             readStatus?.screenWidth = dm.widthPixels
             readStatus?.screenHeight = dm.heightPixels
+            ReadConfig.screenWidth = dm.widthPixels
+            ReadConfig.screenHeight = dm.heightPixels
         }
 
         readStatus?.screenDensity = dm.density
@@ -764,7 +768,6 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         })
         mReaderViewModel?.mReadDataListener = this
         mReaderViewModel?.readStatus = readStatus
-
     }
 
     /**
@@ -1485,12 +1488,12 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         LocalBroadcastManager.getInstance(readReference?.get()).registerReceiver(mCacheUpdateReceiver, intentFilter)
     }
 
-    fun onPause() {
+    fun onPause(mCurPageSequence: Int, mCurPageOffset: Int) {
         isFromCover = false
         if (isSubed) {
             if (readStatus!!.book.book_type == 0) {
-                myNovelHelper?.saveBookmark(mReaderViewModel?.chapterList, readStatus?.book_id, readStatus!!.sequence,
-                        readStatus!!.offset, mBookDaoHelper)
+                myNovelHelper?.saveBookmark(mReaderViewModel?.chapterList, readStatus?.book_id, mCurPageSequence,
+                        mCurPageOffset, mBookDaoHelper)
                 // 统计阅读章节数
                 val spUtils = SharedPreferencesUtils(PreferenceManager
                         .getDefaultSharedPreferences(readReference?.get()))

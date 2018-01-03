@@ -1,6 +1,6 @@
 package com.intelligent.reader.read.help;
 
-import com.intelligent.reader.read.mode.ReadViewEnums;
+import net.lzbook.kit.data.bean.ReadViewEnums;
 
 /**
  *
@@ -21,6 +21,11 @@ public interface IReadPageChange {
      * 显示菜单
      */
     void showMenu(Boolean isShow);
+
+    /**
+     * 设置当前页 sequence and offset
+     */
+    void setCurPageInfo(int sequence,int offset);
     /**
      * 加载广告
      */

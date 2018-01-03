@@ -65,4 +65,10 @@ public interface IReadWidget {
      * 设置SettingView重画
      */
     void onRedrawPage();
+
+    /**
+     * 跳章
+     * @param sequence 章序号
+     */
+    void onJumpChapter(int sequence);
 }
