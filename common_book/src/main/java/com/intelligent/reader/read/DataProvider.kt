@@ -51,7 +51,7 @@ class DataProvider : DisposableAndroidViewModel() {
     //上下文
     var context:Context ?= null
     //是否显示广告
-    var isShowAd:Boolean = false
+    var isShowAd:Boolean = true
     //目录
     var chapterList: ArrayList<Chapter> = ArrayList()
     //分页前缓存容器
@@ -362,17 +362,17 @@ class DataProvider : DisposableAndroidViewModel() {
         }
     }
 
-    abstract class ReadDataListener {
-        open fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) {
-        }
-
-        open fun loadDataError(message: String) {
-        }
+abstract class ReadDataListener {
+    open fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) {
     }
 
-    interface OnLoadReaderAdCallback {
-        fun onLoadAd(adView: ViewGroup)
+    open fun loadDataError(message: String) {
     }
+}
+
+interface OnLoadReaderAdCallback {
+    fun onLoadAd(adView: ViewGroup)
+}
 
 
 }
