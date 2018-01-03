@@ -110,7 +110,8 @@ class DrawTextHelper(private val resources: Resources) {
     }
 
     //上下滑动
-    @Synchronized fun drawVerticalText(canvas: Canvas, pageBean: NovelPageBean): Float {
+    @Synchronized
+    fun drawVerticalText(canvas: Canvas, pageBean: NovelPageBean): Float {
         readStatus.currentPageConentLength = 0
         val fm = ReadConfig.mPaint!!.fontMetrics
 
@@ -121,16 +122,11 @@ class DrawTextHelper(private val resources: Resources) {
         var total_y = -fm.ascent
         var pageHeight = 0f
 
-        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-
         val pageLines = pageBean.lines
         val chapterNameList = pageBean.chapterNameLines
 
-        if (pageLines != null && !pageLines.isEmpty()) {
-
-            if (pageLines[0].lineContent.startsWith("txtzsydsq_homepage")) {// 封面页
-                //                pageHeight = drawHomePage(canvas);
-            } else if (pageLines[0].lineContent.startsWith("chapter_homepage")) {// 章节首页
+        if (!pageLines.isEmpty()) {
+            if (pageLines[0].lineContent.startsWith("chapter_homepage")) {// 章节首页
                 pageHeight = drawChapterPage(canvas, pageLines, chapterNameList)
             } else {
                 for (i in pageLines.indices) {
@@ -159,7 +155,8 @@ class DrawTextHelper(private val resources: Resources) {
         return pageHeight
     }
 
-    @Synchronized fun drawText(canvas: Canvas?, pageBean: NovelPageBean): Float {
+    @Synchronized
+    fun drawText(canvas: Canvas?, pageBean: NovelPageBean): Float {
         val pageLines = pageBean.lines
 
         if (pageLines != null && !pageLines.isEmpty()) {

@@ -72,7 +72,7 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
             }
 
     override fun onBindViewHolder(holder: PagerScrollAdapter.ReaderPagerHolder, position: Int) {
-        holder.bindHolder(chapterList[position].lines)
+        holder.bindHolder(chapterList[position])
     }
 
     override fun getItemCount() = chapterList.size
@@ -177,8 +177,8 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
             ad_fl = itemView.findViewById(R.id.ad_fl) as FrameLayout
         }
 
-        override fun bindHolder(pageLines: List<NovelLineBean>) {
-            val pageTag = pageLines[0].lineContent
+        override fun bindHolder(pageLines: NovelPageBean) {
+            val pageTag = pageLines.lines[0].lineContent
             if (!TextUtils.isEmpty(pageTag) &&
                     PageContentView.CHAPTER_HOME_PAGE == pageTag.trim()) {
                 chapter_info_rl.visibility = View.VISIBLE
@@ -186,7 +186,7 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
                 chapter_info_rl.visibility = View.GONE
             }
 
-            mNovelHelper.getChapterNameList(pageLines[0].chapterName).forEachIndexed { index, novelLineBean ->
+            mNovelHelper.getChapterNameList(pageLines.lines[0].chapterName).forEachIndexed { index, novelLineBean ->
                 if (index == 0) {
                     chapter_num_tv.text = novelLineBean.lineContent
                 } else {
@@ -194,7 +194,7 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
                 }
             }
 
-            addAdView(pageLines)
+            addAdView(pageLines.lines)
 
             text.setReaderStatus(mReadStatus)
             text.setContent(pageLines)
@@ -228,6 +228,7 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
      * 书籍封面Holder
      */
     internal inner class HomePagerHolder(itemView: View) : PagerScrollAdapter.ReaderPagerHolder(itemView) {
+
         init {
             book_name_tv = itemView.findViewById(R.id.book_name_tv) as TextView
             book_auth_tv = itemView.findViewById(R.id.book_auth_tv) as TextView
@@ -235,7 +236,7 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
             product_name_tv = itemView.findViewById(R.id.product_name_tv) as SpacingTextView
         }
 
-        override fun bindHolder(pageLines: List<NovelLineBean>) {
+        override fun bindHolder(pageLines: NovelPageBean) {
             book_name_tv.text = mReadStatus.book.name
             book_auth_tv.text = mReadStatus.book.author
             slogan_tv.setTextView(2f, context.resources.getString(R.string.slogan))
@@ -261,7 +262,7 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
             loading_error_reload = itemView.findViewById(R.id.loading_error_reload) as Button
         }
 
-        override fun bindHolder(pageLines: List<NovelLineBean>) {
+        override fun bindHolder(pageLines: NovelPageBean) {
             tv_loading_progress.setTextColor(textColor)
             load_chapter_name_tv.setTextColor(textColor)
             load_chapter_num_tv.setTextColor(textColor)
@@ -282,7 +283,7 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
                 }
             }
             loading_error_reload.setOnClickListener {
-                mOnLoadViewClickListener?.onLoadViewClick(pageLines[0].sequence)
+                mOnLoadViewClickListener?.onLoadViewClick(pageLines.lines[0].sequence)
                 setLoadingState()
             }
             when (loadViewStatus) {
@@ -317,9 +318,19 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
             ad_fl = itemView.findViewById(R.id.ad_fl) as FrameLayout
         }
 
-        override fun bindHolder(pageLines: List<NovelLineBean>) {
-//                ad_fl.removeAllViews()
-//                ad_fl.addView(mChapterBetweenAdView)
+        override fun bindHolder(pageLines: NovelPageBean) {
+            ad_fl.removeAllViews()
+
+            if (pageLines.isAd && pageLines.adView != null) {
+                val layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                if (pageLines.adView!!.parent != null) {
+                    (pageLines.adView!!.tag as ViewGroup).removeAllViews()
+                }
+                if (pageLines.adView!!.parent == null) {
+                    pageLines.adView!!.tag = ad_fl
+                    ad_fl.addView(pageLines.adView, layoutParams)
+                }
+            }
         }
 
     }
@@ -344,7 +355,7 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
 
 
         lateinit var ad_fl: FrameLayout
-        abstract fun bindHolder(pageLines: List<NovelLineBean>)
+        abstract fun bindHolder(pageLines: NovelPageBean)
     }
 
     interface OnLoadViewClickListener {

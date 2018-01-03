@@ -1,5 +1,8 @@
 package com.intelligent.reader.read.page;
 
+import com.intelligent.reader.read.help.DrawTextHelper;
+import com.intelligent.reader.read.mode.NovelPageBean;
+
 import net.lzbook.kit.constants.ReadConstants;
 
 import net.lzbook.kit.constants.Constants;
@@ -40,7 +43,7 @@ public class PageContentView extends View {
 
     private ReadStatus readStatus;
 
-    private List<NovelLineBean> pageLines;
+    private NovelPageBean mPageLines;
 
     private SensitiveWords readSensitiveWord;
 
@@ -51,6 +54,8 @@ public class PageContentView extends View {
     private int mTextColor;
 
     private int mTextContentHeight;
+
+    private DrawTextHelper mDrawTextHelper;
 
     public static final String CHAPTER_HOME_PAGE = "chapter_homepage";
     public static final String BOOK_HOME_PAGE = "txtzsydsq_homepage";
@@ -72,6 +77,9 @@ public class PageContentView extends View {
 
 
     private void init() {
+
+        mDrawTextHelper = new DrawTextHelper(getResources());
+
         mTextColor = Color.BLACK;
         mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
         mPaint.setColor(mTextColor);
@@ -103,39 +111,42 @@ public class PageContentView extends View {
         this.readStatus = readStatus;
     }
 
-    public void setContent(List<NovelLineBean> pageLines) {
-        this.pageLines = pageLines;
-        mPaint.setTextSize(Constants.FONT_SIZE * readStatus.screenScaledDensity);
-        duanPaint.setTextSize(1 * readStatus.screenScaledDensity);
-        Paint.FontMetrics fm = mPaint.getFontMetrics();
-        float lineSpace = Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE * readStatus.screenScaledDensity;
-        float m_iFontHeight = fm.descent - fm.ascent + lineSpace;
-        float m_duan = Constants.READ_PARAGRAPH_SPACE * lineSpace;
+    public void setContent(NovelPageBean pageLines) {
+        mPageLines = pageLines;
+        invalidate();
+//        this.pageLines = pageLines;
+//        mPaint.setTextSize(Constants.FONT_SIZE * readStatus.screenScaledDensity);
+//        duanPaint.setTextSize(1 * readStatus.screenScaledDensity);
+//        Paint.FontMetrics fm = mPaint.getFontMetrics();
+//        float lineSpace = Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE * readStatus.screenScaledDensity;
+//        float m_iFontHeight = fm.descent - fm.ascent + lineSpace;
+//        float m_duan = Constants.READ_PARAGRAPH_SPACE * lineSpace;
+//
+//        float total_y = -fm.ascent;
+//        if (pageLines != null && !pageLines.isEmpty()) {
+//            for (int i = 0; i < pageLines.size(); i++) {
+//                if (!CHAPTER_HOME_PAGE.equals(pageLines.get(i).getLineContent().trim())) {
+//                    NovelLineBean text = pageLines.get(i);
+//                    if (Constants.isShielding && !noReadSensitive) {
+//                        for (String word : readSensitiveWords) {
+//                            text.setLineContent(text.getLineContent().replace(word, getChangeWord(word.length())));
+//                        }
+//                    }
+//                    if(!TextUtils.isEmpty(text.getLineContent())) {
+//                        if (text.getLineContent().equals(" ")) {
+//                            total_y += m_duan;
+//                        } else {
+//                            total_y += m_iFontHeight;
+//                            readStatus.currentPageConentLength += text.getLineContent().length();
+//                        }
+//                    }
+//                }
+//                mTextContentHeight = (int) (total_y + fm.ascent);
+//            }
+//            AppLog.d("onDraw", "mTextContentHeight : " + mTextContentHeight);
+        requestLayout();
+//        }
 
-        float total_y = -fm.ascent;
-        if (pageLines != null && !pageLines.isEmpty()) {
-            for (int i = 0; i < pageLines.size(); i++) {
-                if (!CHAPTER_HOME_PAGE.equals(pageLines.get(i).getLineContent().trim())) {
-                    NovelLineBean text = pageLines.get(i);
-                    if (Constants.isShielding && !noReadSensitive) {
-                        for (String word : readSensitiveWords) {
-                            text.setLineContent(text.getLineContent().replace(word, getChangeWord(word.length())));
-                        }
-                    }
-                    if(!TextUtils.isEmpty(text.getLineContent())) {
-                        if (text.getLineContent().equals(" ")) {
-                            total_y += m_duan;
-                        } else {
-                            total_y += m_iFontHeight;
-                            readStatus.currentPageConentLength += text.getLineContent().length();
-                        }
-                    }
-                }
-                mTextContentHeight = (int) (total_y + fm.ascent);
-            }
-            AppLog.d("onDraw", "mTextContentHeight : " + mTextContentHeight);
-            requestLayout();
-        }
     }
 
     @Override
@@ -154,43 +165,45 @@ public class PageContentView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        Paint.FontMetrics fm = mPaint.getFontMetrics();
-        mWidth = readStatus.screenWidth - readStatus.screenDensity * Constants.READ_CONTENT_PAGE_LEFT_SPACE * 2;
-        mLineStart = Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity;
+//        Paint.FontMetrics fm = mPaint.getFontMetrics();
+//        mWidth = readStatus.screenWidth - readStatus.screenDensity * Constants.READ_CONTENT_PAGE_LEFT_SPACE * 2;
+//        mLineStart = Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus.screenScaledDensity;
+//
+//        float lineSpace = Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE * readStatus.screenScaledDensity;
+//        float m_iFontHeight = fm.descent - fm.ascent + lineSpace;
+//        float m_duan = Constants.READ_PARAGRAPH_SPACE * lineSpace;
+//
+//        float total_y = -fm.ascent;
+//
+//        canvas.save();
+//        if (pageLines != null && !pageLines.isEmpty()) {
+//            for (int i = 0; i < pageLines.size(); i++) {
+//                if (!CHAPTER_HOME_PAGE.equals(pageLines.get(i).getLineContent().trim())) {
+//                    NovelLineBean text = pageLines.get(i);
+//                    if (Constants.isShielding && !noReadSensitive) {
+//                        for (String word : readSensitiveWords) {
+//                            text.setLineContent(text.getLineContent().replace(word, getChangeWord(word.length())));
+//                        }
+//                    }
+//                    if (text != null && !TextUtils.isEmpty(text.getLineContent()) && text.getLineContent().equals(" ")) {
+//                        total_y += m_duan;
+//                    } else {
+//                        if (text.getType() == 1) {
+//                            drawLineIntervalText(canvas, text, total_y);
+//                        } else {
+//                            canvas.drawText(text.getLineContent(), mLineStart, total_y, mPaint);
+//                        }
+//
+//                        total_y += m_iFontHeight;
+//                        readStatus.currentPageConentLength += text.getLineContent().length();
+//                    }
+//                }
+//                mTextContentHeight = (int) (total_y + fm.ascent);
+//            }
+//        }
+//        canvas.restore();
 
-        float lineSpace = Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE * readStatus.screenScaledDensity;
-        float m_iFontHeight = fm.descent - fm.ascent + lineSpace;
-        float m_duan = Constants.READ_PARAGRAPH_SPACE * lineSpace;
-
-        float total_y = -fm.ascent;
-
-        canvas.save();
-        if (pageLines != null && !pageLines.isEmpty()) {
-            for (int i = 0; i < pageLines.size(); i++) {
-                if (!CHAPTER_HOME_PAGE.equals(pageLines.get(i).getLineContent().trim())) {
-                    NovelLineBean text = pageLines.get(i);
-                    if (Constants.isShielding && !noReadSensitive) {
-                        for (String word : readSensitiveWords) {
-                            text.setLineContent(text.getLineContent().replace(word, getChangeWord(word.length())));
-                        }
-                    }
-                    if (text != null && !TextUtils.isEmpty(text.getLineContent()) && text.getLineContent().equals(" ")) {
-                        total_y += m_duan;
-                    } else {
-                        if (text.getType() == 1) {
-                            drawLineIntervalText(canvas, text, total_y);
-                        } else {
-                            canvas.drawText(text.getLineContent(), mLineStart, total_y, mPaint);
-                        }
-
-                        total_y += m_iFontHeight;
-                        readStatus.currentPageConentLength += text.getLineContent().length();
-                    }
-                }
-                mTextContentHeight = (int) (total_y + fm.ascent);
-            }
-        }
-        canvas.restore();
+        mTextContentHeight = (int)mDrawTextHelper.drawVerticalText(canvas, mPageLines);
     }
 
     private String getChangeWord(int len) {

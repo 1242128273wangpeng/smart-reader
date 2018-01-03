@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.dycm_adsdk.PlatformSDK
 import com.dycm_adsdk.callback.AbstractCallback
 import com.dycm_adsdk.callback.ResultCode
+import com.dycm_adsdk.constant.AdMarkPostion
 import com.intelligent.reader.DisposableAndroidViewModel
 import com.intelligent.reader.cover.BookCoverLocalRepository
 import com.intelligent.reader.cover.BookCoverOtherRepository
@@ -48,10 +49,11 @@ class DataProvider : DisposableAndroidViewModel() {
     private object Provider {
         val INSTANCE = DataProvider()
     }
+
     //上下文
-    var context:Context ?= null
+    var context: Context? = null
     //是否显示广告
-    var isShowAd:Boolean = true
+    var isShowAd: Boolean = false
     //目录
     var chapterList: ArrayList<Chapter> = ArrayList()
     //分页前缓存容器
@@ -100,8 +102,17 @@ class DataProvider : DisposableAndroidViewModel() {
         }
     }
 
-     fun loadAd(context: Context, type: String, callback: OnLoadReaderAdCallback) {
-        PlatformSDK.adapp().dycmNativeAd(context as Activity, type, null, object : AbstractCallback() {
+    fun loadAd(context: Context, type: String, callback: OnLoadReaderAdCallback) {
+
+        var adViewHeight = 800
+
+        if (type == AdMarkPostion.READING_MIDDLE_POSITION) {
+            adViewHeight = 800
+        } else if (type == AdMarkPostion.READING_POSITION) {
+            adViewHeight = 1080
+        }
+
+        PlatformSDK.adapp().dycmNativeAd(context as Activity, type, adViewHeight, 1920, object : AbstractCallback() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
                 if (!adswitch) {
@@ -114,7 +125,6 @@ class DataProvider : DisposableAndroidViewModel() {
                             ResultCode.AD_REQ_SUCCESS
                             -> {
                                 callback.onLoadAd(views[0])
-                                ToastUtils.showToastNoRepeat(type)
                             }
                             else -> {
                             }
@@ -126,6 +136,7 @@ class DataProvider : DisposableAndroidViewModel() {
             }
         })
     }
+
     /**
      * 获取段末广告 8-1
      */
@@ -145,10 +156,10 @@ class DataProvider : DisposableAndroidViewModel() {
                                 for (mutableEntry in chapterSeparate) {
                                     //加广告
                                     if (!mutableEntry.value.last().isAd) {
-                                        val offset = mutableEntry.value.last().offset + mutableEntry.value.last().lines.last().lineContent.length+1
-                                        mutableEntry.value.add(NovelPageBean(arrayListOf(),offset, ArrayList()).apply { isAd = true;adView = views[0] })
+                                        val offset = mutableEntry.value.last().offset + mutableEntry.value.last().lines.last().lineContent.length + 1
+                                        mutableEntry.value.add(NovelPageBean(arrayListOf(), offset, ArrayList()).apply { isAd = true;adView = views[0] })
                                         //插入广告
-                                        if (mutableEntry.value.size>=16) {
+                                        if (mutableEntry.value.size >= 16) {
                                             PlatformSDK.adapp().dycmNativeAd(context as Activity, "5-1", null, object : AbstractCallback() {
                                                 override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                                                     super.onResult(adswitch, views, jsonResult)
@@ -160,11 +171,11 @@ class DataProvider : DisposableAndroidViewModel() {
                                                         if (jo.has("state_code")) {
                                                             when (ResultCode.parser(jsonObject.getInt("state_code"))) {
                                                                 ResultCode.AD_REQ_SUCCESS -> {
-                                                                    val offset2 = mutableEntry.value[7].offset + mutableEntry.value[7].lines.last().lineContent.length+1
-                                                                    mutableEntry.value.add(8,NovelPageBean(arrayListOf(),offset2, arrayListOf()).apply { isAd = true;adView = views[0] })
-                                                                    for (i in 9 until mutableEntry.value.size-1) {
+                                                                    val offset2 = mutableEntry.value[7].offset + mutableEntry.value[7].lines.last().lineContent.length + 1
+                                                                    mutableEntry.value.add(8, NovelPageBean(arrayListOf(), offset2, arrayListOf()).apply { isAd = true;adView = views[0] })
+                                                                    for (i in 9 until mutableEntry.value.size - 1) {
                                                                         //其他页offset向后偏移 1 length
-                                                                        mutableEntry.value[i].offset = offset+1
+                                                                        mutableEntry.value[i].offset = offset + 1
                                                                     }
                                                                     loadAd()
                                                                 }
@@ -199,14 +210,14 @@ class DataProvider : DisposableAndroidViewModel() {
      * 获取段末广告 8-1
      */
     fun loadChapterLastPageAd(context: Context, callback: OnLoadReaderAdCallback) {
-        loadAd(context, "8-1", callback)
+        loadAd(context, AdMarkPostion.READING_MIDDLE_POSITION, callback)
     }
 
     /**
      * 获取章节间广告 5-1
      */
     fun loadChapterBetweenAd(context: Context, callback: OnLoadReaderAdCallback) {
-        loadAd(context, "5-1", callback)
+        loadAd(context, AdMarkPostion.READING_POSITION, callback)
     }
 
     /**
@@ -246,9 +257,9 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     private fun requestSingleChapter(book: Book, chapters: List<Chapter>, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
-        if(sequence == -1) {//封面页
-            chapterSeparate.put(sequence,arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }),1, arrayListOf())))
-            chapterMap.put(-1,Chapter())
+        if (sequence == -1) {//封面页
+            chapterSeparate.put(sequence, arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf())))
+            chapterMap.put(-1, Chapter())
             mReadDataListener.loadDataSuccess(Chapter(), type)
             return
         }
@@ -270,8 +281,8 @@ class DataProvider : DisposableAndroidViewModel() {
                     chapterSeparate.put(sequence, ReadSeparateHelper.instance.initTextSeparateContent(c.content, c.chapter_name))
                     mReadDataListener.loadDataSuccess(c, type)
                     //加章末广告
-                    if (isShowAd){
-        //                    loadAd()
+                    if (isShowAd) {
+                        //                    loadAd()
                         loadAd(sequence)
                     }
                 }, { throwable ->
@@ -292,10 +303,10 @@ class DataProvider : DisposableAndroidViewModel() {
                         when (ResultCode.parser(jo.getInt("state_code"))) {
                             ResultCode.AD_REQ_SUCCESS -> {
                                 val arrayList = chapterSeparate[sequence]
-                                if ((arrayList != null ) and (!arrayList!!.last().isAd)) {
-                                    val offset = arrayList.last().offset + arrayList.last().lines.sumBy { it.lineContent.length }+1
-                                    arrayList.add(NovelPageBean(arrayListOf(),offset, arrayListOf()).apply { isAd = true;adView = views[0] })
-                                    if (arrayList.size>=16) {
+                                if ((arrayList != null) and (!arrayList!!.last().isAd)) {
+                                    val offset = arrayList.last().offset + arrayList.last().lines.sumBy { it.lineContent.length } + 1
+                                    arrayList.add(NovelPageBean(arrayListOf(), offset, arrayListOf()).apply { isAd = true;adView = views[0] })
+                                    if (arrayList.size >= 16) {
                                         PlatformSDK.adapp().dycmNativeAd(context as Activity, "5-1", null, object : AbstractCallback() {
                                             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                                                 super.onResult(adswitch, views, jsonResult)
@@ -307,11 +318,11 @@ class DataProvider : DisposableAndroidViewModel() {
                                                     if (jsonObject.has("state_code")) {
                                                         when (ResultCode.parser(jsonObject.getInt("state_code"))) {
                                                             ResultCode.AD_REQ_SUCCESS -> {
-                                                                val offset2 = arrayList[7].offset + arrayList[7].lines.sumBy { it.lineContent.length }+1
-                                                                arrayList.add(8,NovelPageBean(arrayListOf(),offset2, arrayListOf()).apply { isAd = true;adView = views[0] })
-                                                                for (i in 9 until arrayList.size-1) {
+                                                                val offset2 = arrayList[7].offset + arrayList[7].lines.sumBy { it.lineContent.length } + 1
+                                                                arrayList.add(8, NovelPageBean(arrayListOf(), offset2, arrayListOf()).apply { isAd = true;adView = views[0] })
+                                                                for (i in 9 until arrayList.size - 1) {
                                                                     //其他页offset向后偏移 1 length
-                                                                    arrayList[i].offset = arrayList[i-1].offset+1
+                                                                    arrayList[i].offset = arrayList[i - 1].offset + 1
                                                                 }
                                                             }
                                                             else -> {
@@ -339,40 +350,40 @@ class DataProvider : DisposableAndroidViewModel() {
 
     fun onReSeparate() {
         for (it in chapterMap) {
-            if (it.key!=-1) {
+            if (it.key != -1) {
                 val lastPageBean = chapterSeparate[it.key]!!.last()
                 val mPageBeanList = ReadSeparateHelper.instance.initTextSeparateContent(it.value.content, it.value.chapter_name)
-                if (lastPageBean.isAd){//最后广告
+                if (lastPageBean.isAd) {//最后广告
                     mPageBeanList.add(lastPageBean)
                 }
                 //中间广告 符合条件
-                if(chapterSeparate[it.key]!!.size>9){
+                if (chapterSeparate[it.key]!!.size > 9) {
                     val middleBean = chapterSeparate[it.key]!![9]
-                    if ((mPageBeanList.size>=16) and middleBean.isAd){
-                        mPageBeanList.add(8,middleBean)
-                    }else if ((mPageBeanList.size>=16) and !middleBean.isAd){
+                    if ((mPageBeanList.size >= 16) and middleBean.isAd) {
+                        mPageBeanList.add(8, middleBean)
+                    } else if ((mPageBeanList.size >= 16) and !middleBean.isAd) {
 
                     }
                 }
 
                 chapterSeparate.put(it.key, mPageBeanList)
-            }else {
-                chapterSeparate.put(-1,arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }),1, arrayListOf())))
+            } else {
+                chapterSeparate.put(-1, arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf())))
             }
         }
     }
 
-abstract class ReadDataListener {
-    open fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) {
+    abstract class ReadDataListener {
+        open fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) {
+        }
+
+        open fun loadDataError(message: String) {
+        }
     }
 
-    open fun loadDataError(message: String) {
+    interface OnLoadReaderAdCallback {
+        fun onLoadAd(adView: ViewGroup)
     }
-}
-
-interface OnLoadReaderAdCallback {
-    fun onLoadAd(adView: ViewGroup)
-}
 
 
 }
