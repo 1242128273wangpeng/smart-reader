@@ -646,11 +646,8 @@ public class NovelHelper {
     /**
      * 保存书签
      */
-    public void saveBookmark(ArrayList<Chapter> chapterList, String book_id, int sequence, int offset,
+    public void saveBookmark(String book_id, int sequence, int offset,
                              BookDaoHelper mBookDaoHelper) {
-        if (chapterList == null || actReference.get() == null) {
-            return;
-        }
 
         Book book = new Book();
         book.book_id = book_id;

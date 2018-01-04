@@ -127,10 +127,10 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         DataProvider.getInstance().context = this
         //add ReadInfo
         ReadConfig.animation = when (Constants.PAGE_MODE) {
-            1 -> ReadViewEnums.Animation.slide
+            1 -> ReadViewEnums.Animation.curl
             2 -> ReadViewEnums.Animation.shift
             3 -> ReadViewEnums.Animation.list
-            else -> ReadViewEnums.Animation.curl
+            else -> ReadViewEnums.Animation.slide
         }
         novel_basePageView?.initReaderViewFactory()
         novel_basePageView?.entrance(ReadInfo(readStatus.book!!, readStatus, ReadConfig.animation))
@@ -234,7 +234,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onPause() {
         super.onPause()
-        mReadPresenter?.onPause(mCurPageSequence,mCurPageOffset)
+        mReadPresenter?.onPause(ReadConfig.sequence,ReadConfig.offset)
         DataProvider.getInstance().unSubscribe()
     }
 
@@ -310,7 +310,10 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         novel_basePageView?.setBackground()
     }
 
-    override fun onChangeScreenMode() = mReadPresenter?.changeScreenMode()!!
+    override fun onChangeScreenMode() {
+        mReadPresenter?.changeScreenMode()!!
+        novel_basePageView?.onRedrawPage()!!
+    }
 
     override fun onRedrawPage() = novel_basePageView?.onRedrawPage()!!
 
@@ -322,8 +325,8 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         readStatus.sequence = intent.getIntExtra("sequence", 0)
         readStatus.book = intent.getSerializableExtra("book") as Book?
 //        novel_basePageView?.entrance(ReadInfo(readStatus.book!!, readStatus, animation))
-        mCurPageSequence = intent.getIntExtra("sequence", 0)
-        novel_basePageView?.onJumpChapter(mCurPageSequence)
+        ReadConfig.sequence = intent.getIntExtra("sequence", 0)
+        novel_basePageView?.onJumpChapter(ReadConfig.sequence)
     }
     //上一章
     override fun onJumpPreChapter() {
@@ -336,7 +339,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         readStatus.offset = 0
         readStatus.sequence--
 //        novel_basePageView?.entrance(ReadInfo(readStatus.book!!, readStatus, animation))
-        novel_basePageView?.onJumpChapter(--mCurPageSequence)
+        novel_basePageView?.onJumpChapter(--ReadConfig.sequence)
     }
     //下一章
     override fun onJumpNextChapter() {
@@ -349,7 +352,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         readStatus.offset = 0
         readStatus.sequence++
 //        novel_basePageView?.entrance(ReadInfo(readStatus.book!!, readStatus, animation))
-        novel_basePageView?.onJumpChapter(++mCurPageSequence)
+        novel_basePageView?.onJumpChapter(++ReadConfig.sequence)
     }
 
     override fun onReadFeedBack() = mReadPresenter?.onReadFeedBack()!!
@@ -494,14 +497,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun showMenu(isShow: Boolean) {
         mReadPresenter?.showMenu(isShow)
-    }
-
-    var mCurPageSequence: Int = -1
-    var mCurPageOffset: Int = 0
-
-    override fun setCurPageInfo(sequence: Int, offset: Int) {
-        mCurPageSequence = sequence
-        mCurPageOffset = offset
     }
 
     override fun loadAD() {

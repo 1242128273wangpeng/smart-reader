@@ -1492,7 +1492,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         isFromCover = false
         if (isSubed) {
             if (readStatus!!.book.book_type == 0) {
-                myNovelHelper?.saveBookmark(mReaderViewModel?.chapterList, readStatus?.book_id, mCurPageSequence,
+                myNovelHelper?.saveBookmark( readStatus?.book_id, mCurPageSequence,
                         mCurPageOffset, mBookDaoHelper)
                 // 统计阅读章节数
                 val spUtils = SharedPreferencesUtils(PreferenceManager
