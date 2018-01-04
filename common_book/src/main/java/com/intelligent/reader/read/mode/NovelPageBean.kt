@@ -14,4 +14,5 @@ data class NovelPageBean(
 ){
     var adView: ViewGroup? = null
     var isAd: Boolean = false
+    var height: Float = 0.0f
 }

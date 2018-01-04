@@ -6,7 +6,7 @@ import com.intelligent.reader.read.mode.NovelPageBean
 
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.NovelLineBean
-
+import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadStatus
 import net.lzbook.kit.data.bean.SensitiveWords
 import net.lzbook.kit.utils.AppLog
@@ -16,9 +16,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Paint.FontMetrics
-import android.graphics.PorterDuff
 import android.text.TextUtils
-import net.lzbook.kit.data.bean.ReadConfig
 
 import java.util.ArrayList
 
@@ -112,48 +110,34 @@ class DrawTextHelper(private val resources: Resources) {
 
     //上下滑动
     @Synchronized
-    fun drawVerticalText(canvas: Canvas, pageBean: NovelPageBean): Float {
+    fun drawVerticalText(canvas: Canvas, pageBean: NovelPageBean) {
         readStatus.currentPageConentLength = 0
-        val fm = ReadConfig.mPaint!!.fontMetrics
-
-        val lineSpace = Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE.toFloat() * readStatus.screenScaledDensity
-        val m_iFontHeight = fm.descent - fm.ascent + lineSpace
-        val m_duan = Constants.READ_PARAGRAPH_SPACE * lineSpace
-
-        var total_y = -fm.ascent
-        var pageHeight = 0f
 
         val pageLines = pageBean.lines
         val chapterNameList = pageBean.chapterNameLines
 
-        if (!pageLines.isEmpty()) {
-            if (pageLines[0].lineContent.startsWith("chapter_homepage")) {// 章节首页
-                pageHeight = drawChapterPage(canvas, pageLines, chapterNameList)
+        if (pageLines != null && !pageLines.isEmpty()) {
+
+            if (pageLines[0].lineContent.startsWith("txtzsydsq_homepage")) {// 封面页
+                //                pageHeight = drawHomePage(canvas);
+            } else if (pageLines[0].lineContent.startsWith("chapter_homepage")) {// 章节首页
+                drawChapterPage(canvas, pageLines, chapterNameList)
             } else {
                 for (i in pageLines.indices) {
                     val text = pageLines[i]
                     replaceSensitiveWords(text)
-                    if (text != null && !TextUtils.isEmpty(text.lineContent) && text.lineContent == " ") {
-                        total_y += m_duan
-                    } else {
-
+                    if (" " != text.lineContent) {
                         if (text.type == 1) {
-                            drawLineIntervalText(canvas, text, total_y)
+                            drawLineIntervalText(canvas, text, text.indexY)
                         } else {
-                            canvas.drawText(text.lineContent, ReadConfig.mLineStart, total_y, ReadConfig.mPaint!!)
+                            canvas.drawText(text.lineContent, ReadConfig.mLineStart, text.indexY, ReadConfig.mPaint!!)
                         }
 
-                        total_y += m_iFontHeight
                         readStatus.currentPageConentLength += text.lineContent.length
-                    }
-                    if (i == pageLines.size - 1) {
-                        pageHeight = total_y + fm.ascent
                     }
                 }
             }
-            return pageHeight
         }
-        return pageHeight
     }
 
     @Synchronized
@@ -209,21 +193,12 @@ class DrawTextHelper(private val resources: Resources) {
     }
 
     //上下滑动首页
-    private fun drawChapterPage(canvas: Canvas, pageLines: List<NovelLineBean>, chapterNameList: ArrayList<NovelLineBean>?): Float {
+    private fun drawChapterPage(canvas: Canvas, pageLines: List<NovelLineBean>, chapterNameList: ArrayList<NovelLineBean>?) {
         textPaint.textSize = Constants.FONT_CHAPTER_SIZE * readStatus.screenScaledDensity
         var fm_chapter: FontMetrics
         var m_iFontHeight_chapter: Float
 
-        val fm = ReadConfig.mPaint!!.fontMetrics
-
-        val lineSpace = Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE.toFloat() * readStatus.screenScaledDensity
-        val m_iFontHeight = fm.descent - fm.ascent + lineSpace
-        val m_duan = Constants.READ_PARAGRAPH_SPACE * lineSpace
-
-        // 正文行首与顶部间距
-        var total_y = -fm.ascent
         val y_chapter: Float
-        var pageHeight = 0f
 
         // 章节头顶部间距
         y_chapter = 39 * readStatus.screenScaledDensity
@@ -251,14 +226,6 @@ class DrawTextHelper(private val resources: Resources) {
                 }
             }
 
-            total_y += 3f * 15f * readStatus.screenScaledDensity
-            total_y += Constants.READ_CONTENT_PAGE_TOP_SPACE * readStatus.screenDensity
-
-            // 章节头与正文间距
-            if (size_c > 1) {
-                total_y += 75 * readStatus.screenScaledDensity
-            }
-
             var i = 0
             val j = pageLines.size
             while (i < j) {
@@ -266,31 +233,20 @@ class DrawTextHelper(private val resources: Resources) {
                     val text = pageLines[i]
                     replaceSensitiveWords(text)
                     if (text != null && !TextUtils.isEmpty(text.lineContent)) {
-                        if (text.lineContent == " ") {
-                            total_y += m_duan
-                        } else if (text.lineContent == "chapter_homepage  ") {
-
-                        } else {
-
+                        if (text.lineContent != " " && text.lineContent != "chapter_homepage  ") {
                             if (text.type == 1) {
-                                drawLineIntervalText(canvas, text, total_y)
+                                drawLineIntervalText(canvas, text, text.indexY)
                             } else {
-                                canvas.drawText(text.lineContent, ReadConfig.mLineStart, total_y, ReadConfig.mPaint!!)
+                                canvas.drawText(text.lineContent, ReadConfig.mLineStart, text.indexY, ReadConfig.mPaint!!)
                             }
 
-                            total_y += m_iFontHeight
                             readStatus.currentPageConentLength += text.lineContent.length
                         }
                     }
                 }
-
-                if (i == pageLines.size - 1) {
-                    pageHeight = total_y + fm.ascent
-                }
                 i++
             }
         }
-        return pageHeight
     }
 
     /*

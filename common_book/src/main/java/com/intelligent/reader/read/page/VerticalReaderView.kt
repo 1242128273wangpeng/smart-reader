@@ -222,7 +222,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
             ReadViewEnums.PageIndex.previous -> {
                 if (!checkLoadChapterValid(chapter.sequence)) return
                 mReadInfo.mReadStatus.chapterName = chapter.chapter_name
-                val preChapterContent = ReadSeparateHelper.getInstance(mReadInfo.mReadStatus).initTextSeparateContent(chapter.content, chapter.chapter_name)
+                val preChapterContent = ReadSeparateHelper.instance.initTextSeparateContent(chapter.content, chapter.chapter_name)
                 setChapterPagePosition(chapter.sequence, chapter.chapter_name, preChapterContent)
                 loadAdViewToChapterLastPage(preChapterContent)
                 val scrollIndex = mAdapter.addPreChapter(preChapterContent)
@@ -255,7 +255,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
 
                 if (!checkLoadChapterValid(chapter.sequence)) return
                 mReadInfo.mReadStatus.chapterName = chapter.chapter_name
-                val currentChapterContent = ReadSeparateHelper.getInstance(mReadInfo.mReadStatus).initTextSeparateContent(chapter.content, chapter.chapter_name)
+                val currentChapterContent = ReadSeparateHelper.instance.initTextSeparateContent(chapter.content, chapter.chapter_name)
                 mOriginDataList.addAll(currentChapterContent)
                 setChapterPagePosition(chapter.sequence, chapter.chapter_name, mOriginDataList)
                 loadAdViewToChapterLastPage(mOriginDataList)
@@ -293,7 +293,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                     mReadInfo.mReadStatus.sequence = 0
                 }
                 mReadInfo.mReadStatus.chapterName = chapter.chapter_name
-                val nextChapterContent = ReadSeparateHelper.getInstance(mReadInfo.mReadStatus).initTextSeparateContent(chapter.content, chapter.chapter_name)
+                val nextChapterContent = ReadSeparateHelper.instance.initTextSeparateContent(chapter.content, chapter.chapter_name)
                 setChapterPagePosition(chapter.sequence, chapter.chapter_name, nextChapterContent)
                 loadAdViewToChapterLastPage(nextChapterContent)
                 mAdapter.addNextChapter(nextChapterContent)
