@@ -150,21 +150,18 @@ class DrawTextHelper(private val resources: Resources) {
             } else if (pageLines[0].lineContent.startsWith("chapter_homepage")) {// 章节首页
                 return drawChapterPage(canvas, pageBean)
             } else {
-                var lastY: Float = 0.0f
                 for (i in pageLines.indices) {
                     val text = pageLines[i]
                     replaceSensitiveWords(text)
                     if (" " != text.lineContent) {
                         if (text.type == 1) {
                             drawLineIntervalText(canvas, text, text.indexY)//开始画行
-                            lastY = text.indexY
                         } else {
                             canvas?.drawText(text.lineContent, ReadConfig.mLineStart, text.indexY, ReadConfig.mPaint!!)//每段最后一行
-                            lastY = text.indexY
                         }
                     }
                 }
-                return lastY
+                return pageBean.height
             }
         }
         return ReadConfig.screenHeight.toFloat()
@@ -264,7 +261,6 @@ class DrawTextHelper(private val resources: Resources) {
 
         val chapterNameList = pageBean.chapterNameLines
         var hasContent = false
-        var lastY: Float = 0.0f
         val pageLines = pageBean.lines
         // 章节头
         if (chapterNameList != null && !chapterNameList.isEmpty()) {
@@ -297,10 +293,8 @@ class DrawTextHelper(private val resources: Resources) {
                         if (" " != text.lineContent && "chapter_homepage  " != text.lineContent) {
                             if (text.type == 1) {
                                 drawLineIntervalText(canvas, text, text.indexY)
-                                lastY = text.indexY
                             } else {
                                 canvas?.drawText(text.lineContent, ReadConfig.mLineStart, text.indexY, ReadConfig.mPaint!!)
-                                lastY = text.indexY
                             }
                         }
                     }
@@ -310,7 +304,7 @@ class DrawTextHelper(private val resources: Resources) {
             }
         }
         if (hasContent) {
-            return lastY
+            return pageBean.height
         }
         return ReadConfig.screenHeight.toFloat()
     }
