@@ -235,7 +235,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     override fun onPause() {
         super.onPause()
         mReadPresenter?.onPause(ReadConfig.sequence,ReadConfig.offset)
-        DataProvider.getInstance().unSubscribe()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -272,7 +271,9 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         ll_guide_layout = null
 
         mReadPresenter?.onDestroy()
-
+        DataProvider.getInstance().unSubscribe()
+        DataProvider.getInstance().chapterMap.clear()
+        DataProvider.getInstance().chapterSeparate.clear()
 
         try {
             unregisterReceiver(mBatInfoReceiver)
@@ -497,6 +498,10 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun showMenu(isShow: Boolean) {
         mReadPresenter?.showMenu(isShow)
+    }
+
+    override fun goToBookOver(){
+        mReadPresenter?.goToBookOver()
     }
 
     override fun loadAD() {

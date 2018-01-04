@@ -26,4 +26,9 @@ public interface IReadPageChange {
      * 加载广告
      */
     void loadAD();
+
+    /**
+     * 跳转BookEnd
+     */
+    void goToBookOver();
 }

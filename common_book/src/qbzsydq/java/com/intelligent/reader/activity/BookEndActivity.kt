@@ -11,18 +11,19 @@ import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.ReadStatus
 import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.bean.Source
-import net.lzbook.kit.utils.ResourceUtil
 
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.text.Html
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.TextView
-import android.widget.Toast
+import android.view.ViewGroup
+import android.widget.*
+import com.dycm_adsdk.PlatformSDK
+import com.dycm_adsdk.callback.AbstractCallback
+import com.dycm_adsdk.callback.ResultCode
+import org.json.JSONException
+import org.json.JSONObject
 
 import java.util.ArrayList
 import java.util.concurrent.Callable
@@ -31,8 +32,8 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
     private var iv_back_bookstore: View? = null
     private var iv_back: View? = null
     private var iv_title_right: View? = null
-    private var ad_view: ImageView? = null
-    private var ad_view_logo: ImageView? = null
+//    private var ad_view: ImageView? = null
+//    private var ad_view_logo: ImageView? = null
     private var textView_endInfo: TextView? = null
     private var book: Book? = null
     private var bookName: String? = null
@@ -59,7 +60,34 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
             mBookEndPresenter = BookEndPresenter(this, this, requestItem!!, readStatus!!, bookName!!, book_id!!, category!!)
         }
         loadSource()
+        initAD()
+    }
 
+    private fun initAD() {
+        val adview = findViewById(R.id.ad_view) as RelativeLayout
+        PlatformSDK.adapp().dycmNativeAd(this, "9-1",null, object : AbstractCallback() {
+            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
+                super.onResult(adswitch, views, jsonResult)
+                if (!adswitch) {
+                    return
+                }
+                try {
+                    val jsonObject = JSONObject(jsonResult)
+                    if (jsonObject.has("state_code")) {
+                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+                            ResultCode.AD_REQ_SUCCESS
+                            -> {
+                                adview.addView(views[0])
+                            }
+                            else -> {
+                            }
+                        }
+                    }
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+            }
+        })
     }
 
     private fun loadSource() {
@@ -87,9 +115,9 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
         iv_title_right = findViewById(R.id.iv_title_right)
         iv_back = findViewById(R.id.iv_back)
         iv_back_bookstore = findViewById(R.id.iv_back_bookstore)
-        ad_view = findViewById(R.id.ad_view) as ImageView
-        ad_view_logo = findViewById(R.id.ad_view_logo) as ImageView
-        ad_view_logo!!.visibility = View.GONE
+//        ad_view = findViewById(R.id.ad_view) as ImageView
+//        ad_view_logo = findViewById(R.id.ad_view_logo) as ImageView
+//        ad_view_logo!!.visibility = View.GONE
         textView_endInfo = findViewById(R.id.textView_endInfo) as TextView
         textView_endInfo!!.text = Html.fromHtml(resources.getString(R.string.book_end_info))
         name_bookend = findViewById(R.id.name_bookend) as TextView
@@ -97,7 +125,7 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
         iv_title_right!!.setOnClickListener(this)
         iv_back!!.setOnClickListener(this)
         iv_back_bookstore!!.setOnClickListener(this)
-        ad_view!!.setOnClickListener(this)
+//        ad_view!!.setOnClickListener(this)
 
 
     }
@@ -142,11 +170,11 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
                 finish()
             }
             R.id.iv_back -> finish()
-            R.id.ad_view -> {
-                if (Constants.DEVELOPER_MODE) {
-                    Toast.makeText(this@BookEndActivity, "你点击了广告", Toast.LENGTH_SHORT).show()
-                }
-            }
+//            R.id.ad_view -> {
+//                if (Constants.DEVELOPER_MODE) {
+//                    Toast.makeText(this@BookEndActivity, "你点击了广告", Toast.LENGTH_SHORT).show()
+//                }
+//            }
         }
     }
 
@@ -185,32 +213,32 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
 
     /*****************************以下广告相关 */
     override fun showAdViewLogo(rationName: String) {
-        if ("广点通" == rationName) {
-            ad_view_logo!!.setImageResource(R.drawable.icon_ad_gdt)
-        } else if ("百度" == rationName) {
-            ad_view_logo!!.setImageResource(R.drawable.icon_ad_bd)
-        } else if ("360" == rationName) {
-            ad_view_logo!!.setImageResource(R.drawable.icon_ad_360)
-        } else {
-            ad_view_logo!!.setImageResource(R.drawable.icon_ad_default)
-        }
+//        if ("广点通" == rationName) {
+//            ad_view_logo!!.setImageResource(R.drawable.icon_ad_gdt)
+//        } else if ("百度" == rationName) {
+//            ad_view_logo!!.setImageResource(R.drawable.icon_ad_bd)
+//        } else if ("360" == rationName) {
+//            ad_view_logo!!.setImageResource(R.drawable.icon_ad_360)
+//        } else {
+//            ad_view_logo!!.setImageResource(R.drawable.icon_ad_default)
+//        }
 
     }
 
     override fun showAdImgSuccess(bitmap: Bitmap) {
-        ad_view!!.visibility = View.VISIBLE
-        ad_view!!.setImageBitmap(bitmap)
-        if ("night" == ResourceUtil.mode) {
-            ad_view!!.setAlpha(80)
-        }
+//        ad_view!!.visibility = View.VISIBLE
+//        ad_view!!.setImageBitmap(bitmap)
+//        if ("night" == ResourceUtil.mode) {
+//            ad_view!!.setAlpha(80)
+//        }
 
-        ad_view_logo!!.visibility = View.VISIBLE
+//        ad_view_logo!!.visibility = View.VISIBLE
 
     }
 
 
     override fun showAdImgError() {
-        ad_view!!.visibility = View.GONE
+//        ad_view!!.visibility = View.GONE
     }
 
     /*****************************以上广告相关 */

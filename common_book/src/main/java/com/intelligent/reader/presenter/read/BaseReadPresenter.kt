@@ -1592,7 +1592,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 
     }
 
-    private fun goToBookOver() {
+     fun goToBookOver() {
         if (readReference == null || readReference!!.get() == null || readReference!!.get()!!.isFinishing) {
             return
         }
@@ -1600,7 +1600,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         val intent = Intent(readReference?.get(), BookEndActivity::class.java)
         val bundle = Bundle()
         bundle.putSerializable(Constants.REQUEST_ITEM, readStatus!!.getRequestItem())
-        bundle.putString("bookName", readStatus!!.bookName)
+        bundle.putString("bookName", readStatus!!.book.name)
         bundle.putString("book_id", readStatus!!.book_id)
         bundle.putString("book_category", readStatus!!.book.category)
         bundle.putSerializable("book", readStatus!!.book)

@@ -358,7 +358,8 @@ class HorizontalPage : FrameLayout {
             removeView(mNovelPageBean.adView)
             val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             val margin = AppUtils.dip2px(context, 10f)
-            param.setMargins(margin,margin,margin,margin)
+            val topMargin = AppUtils.dip2px(context, 40f)
+            param.setMargins(margin,topMargin,margin,margin)
             addView(mNovelPageBean.adView, param)
         }
 
@@ -414,9 +415,11 @@ class HorizontalPage : FrameLayout {
             val w3 = width / 3
             return if (x <= w3) {
                 noticePageListener?.onClickLeft()
+                noticePageListener?.onClickMenu(false)
                 true
             } else if (x >= width - w3 || y >= height - h4 && x >= w3) {
                 noticePageListener?.onClickRight()
+                noticePageListener?.onClickMenu(false)
                 true
             } else {
                 noticePageListener?.onClickMenu(isShowMenu)
