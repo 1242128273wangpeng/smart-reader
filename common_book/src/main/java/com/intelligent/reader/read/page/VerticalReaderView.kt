@@ -406,11 +406,11 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
             val pageContent = chapterContent[i].lines
             for (content in pageContent) {
                 content.position = i
-                if (i == chapterContent.size - 1) {
-                    content.isLastPage = true
-                }
                 content.chapterName = chapterName
                 content.sequence = sequence
+            }
+            if (i == chapterContent.size - 1) {
+                chapterContent[i].isLastPage = true
             }
         }
     }

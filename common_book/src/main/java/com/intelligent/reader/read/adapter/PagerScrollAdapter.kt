@@ -34,6 +34,10 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
 
     private var textColor: Int = 0
 
+    private val LAST_PAGE_EXTEND_HEIGHT = 300
+
+    private val AD_VIEW_HEIGHT = 600
+
     // 书籍封面页
     private val BOOK_HOME_ITEM_TYPE = -1
 
@@ -182,19 +186,25 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
         }
 
         private fun addAdView(pageLines: NovelPageBean) {
+
             val lineData = pageLines.lines[pageLines.lines.size - 1]
             ad_fl.removeAllViews()
-            if (pageLines.lines[0].isLastPage && lineData.adView != null) {
-                ad_fl.visibility = View.VISIBLE
-                val layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 600)
-                if (lineData.adView.parent != null) {
-                    (lineData.adView.tag as ViewGroup).removeAllViews()
-                }
-                if (lineData.adView.parent == null) {
+
+            if (pageLines.isLastPage) {
+                if (lineData.adView != null) {
+                    ad_fl.visibility = View.VISIBLE
+                    val adViewLayoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, AD_VIEW_HEIGHT)
+
+                    if (lineData.adView.parent != null) {
+                        (lineData.adView.tag as ViewGroup).removeAllViews()
+                    }
                     lineData.adView.tag = ad_fl
-                    ad_fl.addView(lineData.adView, layoutParams)
+                    ad_fl.addView(lineData.adView, adViewLayoutParams)
+                    itemView.layoutParams.height = (pageLines.height + adViewLayoutParams.height).toInt() + LAST_PAGE_EXTEND_HEIGHT
+                } else {
+                    itemView.layoutParams.height = pageLines.height.toInt() + LAST_PAGE_EXTEND_HEIGHT
                 }
-                itemView.layoutParams.height = (pageLines.height + layoutParams.height).toInt()
+
             } else {
                 ad_fl.visibility = View.GONE
                 itemView.layoutParams.height = pageLines.height.toInt()

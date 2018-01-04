@@ -8,11 +8,12 @@ import net.lzbook.kit.data.bean.NovelLineBean
  * Created by wt on 2017/12/27.
  */
 data class NovelPageBean(
-    var lines:ArrayList<NovelLineBean>,
-    var offset:Int,
-    var chapterNameLines:ArrayList<NovelLineBean>
-){
+        var lines: ArrayList<NovelLineBean>,
+        var offset: Int,
+        var chapterNameLines: ArrayList<NovelLineBean>
+) {
     var adView: ViewGroup? = null
     var isAd: Boolean = false
     var height: Float = 0.0f
+    var isLastPage: Boolean = false
 }
