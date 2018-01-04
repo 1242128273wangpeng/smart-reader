@@ -433,7 +433,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
             return
         }
 
-        mDataProvider.loadChapterLastPageAd(context, object : DataProvider.OnLoadReaderAdCallback {
+        mDataProvider.loadChapterLastPageAd(context.applicationContext, object : DataProvider.OnLoadReaderAdCallback {
             override fun onLoadAd(adView: ViewGroup) {
                 lineData?.adView = adView
             }
@@ -441,9 +441,10 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     }
 
     private fun loadAdViewToChapterBetween(chapterContent: ArrayList<NovelPageBean>, index: ReadViewEnums.PageIndex) {
-        mDataProvider.loadChapterBetweenAd(context, object : DataProvider.OnLoadReaderAdCallback {
+        mDataProvider.loadChapterBetweenAd(context.applicationContext, object : DataProvider.OnLoadReaderAdCallback {
             override fun onLoadAd(adView: ViewGroup) {
-                val adData = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { sequence = PagerScrollAdapter.AD_ITEM_TYPE; }), 0, arrayListOf()).apply { isAd = true;this.adView = adView })
+                val adData = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { sequence = PagerScrollAdapter.AD_ITEM_TYPE; }), 0,
+                        arrayListOf()).apply { isAd = true;this.adView = adView })
                 chapterContent.addAll(adData)
                 mAdapter.addAllChapter(mAdapter.getNotifyIndexByLoadChapter(index, adData), adData)
             }
@@ -525,6 +526,10 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 }
                 content.adView = null
             }
+            if (pageContent.adView != null && pageContent.adView?.tag != null) {
+                pageContent.adView?.tag = null
+            }
+            pageContent.adView = null
         }
     }
 

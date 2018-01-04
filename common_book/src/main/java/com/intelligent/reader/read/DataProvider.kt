@@ -112,7 +112,7 @@ class DataProvider : DisposableAndroidViewModel() {
             adViewHeight = 1080
         }
 
-        PlatformSDK.adapp().dycmNativeAd(context as Activity, type, adViewHeight, 1920, object : AbstractCallback() {
+        PlatformSDK.adapp().dycmNativeAd(context, type, adViewHeight, 1920, object : AbstractCallback() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
                 if (!adswitch) {
@@ -125,7 +125,6 @@ class DataProvider : DisposableAndroidViewModel() {
                             ResultCode.AD_REQ_SUCCESS
                             -> {
                                 callback.onLoadAd(views[0])
-                                ToastUtils.showToastNoRepeat(type)
                             }
                             else -> {
                             }
