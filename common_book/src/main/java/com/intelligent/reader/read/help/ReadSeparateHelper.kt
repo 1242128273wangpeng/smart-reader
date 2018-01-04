@@ -13,7 +13,7 @@ import net.lzbook.kit.constants.ReadConstants
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.data.bean.ReadStatus
-import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.utils.Tools
 
 import java.util.ArrayList
@@ -44,7 +44,7 @@ class ReadSeparateHelper private constructor() {
         val chapterHeight = 75 * readStatus!!.screenScaledDensity
         val hideHeight = 15 * readStatus!!.screenScaledDensity
 
-        val fm = initPaint()
+        initPaint()
 
         val mchapterPaint = TextPaint()
         mchapterPaint.textSize = 20 * readStatus!!.screenScaledDensity
@@ -59,13 +59,8 @@ class ReadSeparateHelper private constructor() {
         ReadConfig.mWidth = readStatus!!.screenWidth - readStatus!!.screenDensity * Constants.READ_CONTENT_PAGE_LEFT_SPACE.toFloat() * 2f
         ReadConfig.mLineStart = Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus!!.screenScaledDensity
 
-        val lineSpace = Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE.toFloat() * readStatus!!.screenScaledDensity
-        val lineHeight = fm.descent - fm.ascent + lineSpace
-        val m_duan = Constants.READ_PARAGRAPH_SPACE * lineSpace
-
-        if (Constants.IS_LANDSCAPE) {
-            ReadConfig.mWidth = readStatus!!.screenWidth - readStatus!!.screenDensity * Constants.READ_CONTENT_PAGE_LEFT_SPACE.toFloat() * 2f
-        }
+        val lineHeight = ReadConfig.mFontHeight
+        val m_duan = ReadConfig.mDuan
 
         // 添加转换提示
         val sb = StringBuilder()
@@ -200,25 +195,20 @@ class ReadSeparateHelper private constructor() {
         return lists
     }
 
-    private fun initPaint(): Paint.FontMetrics {
+    private fun initPaint() {
         if (ReadConfig.mPaint == null) {
             ReadConfig.mPaint = Paint(Paint.FILTER_BITMAP_FLAG)
             ReadConfig.mPaint!!.style = Paint.Style.FILL
             ReadConfig.mPaint!!.isAntiAlias = true
             ReadConfig.mPaint!!.isDither = true
         }
-
         ReadConfig.mPaint!!.textSize = Constants.FONT_SIZE * readStatus!!.screenScaledDensity
+
         val fm = ReadConfig.mPaint!!.fontMetrics
 
         ReadConfig.mLineSpace = Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE.toFloat() * readStatus!!.screenScaledDensity
         ReadConfig.mFontHeight = fm.descent - fm.ascent + ReadConfig.mLineSpace
         ReadConfig.mDuan = Constants.READ_PARAGRAPH_SPACE * ReadConfig.mLineSpace
-        AppLog.w("mLineSpace = ",""+ReadConfig.mLineSpace)
-        AppLog.w("mFontHeight = ",""+ReadConfig.mFontHeight)
-        AppLog.w("mDuan = ",""+ReadConfig.mDuan)
-        AppLog.w("==========================","====================================================")
-        return fm
     }
 
     private fun addLineIndexY(lists: ArrayList<NovelPageBean>?) {
@@ -229,19 +219,62 @@ class ReadSeparateHelper private constructor() {
             val lineBeans = bean.lines
             if (lineBeans != null && !lineBeans.isEmpty()) {
                 // 页的开始行是段间距,移除该段间距
-                if (" " == lineBeans[0].lineContent) {
+                if (" " == lineBeans[0].lineContent && ReadViewEnums.Animation.list != ReadConfig.animation) {
                     lineBeans.removeAt(0)
                 }
                 if (lineBeans[0].lineContent.startsWith("txtzsydsq_homepage")) {// 封面页
                     // 封面页原生实现不需要添加y坐标
                 } else if (lineBeans[0].lineContent.startsWith("chapter_homepage")) {// 章节首页
-                    disFirstPageHeight(bean)
+                    if (ReadViewEnums.Animation.list == ReadConfig.animation){
+                        disVerticalFirstPage(bean)
+                    }else{
+                        disFirstPageHeight(bean)
+                    }
                 } else {// 章节内容
-                    disPageHeight(lineBeans)
+                    if (ReadViewEnums.Animation.list == ReadConfig.animation){
+                        disVerticalPage(bean)
+                    }else{
+                        disPageHeight(bean)
+                    }
                 }
             }
         }
 
+    }
+
+    private fun disVerticalFirstPage(bean: NovelPageBean) {
+        val fm = ReadConfig.mPaint!!.fontMetrics
+        var total_y = -fm.ascent + 3f * 15f * readStatus!!.screenScaledDensity + Constants.READ_CONTENT_PAGE_TOP_SPACE * readStatus!!.screenDensity
+        if (bean.chapterNameLines != null && bean.chapterNameLines.size > 1) {
+            total_y += 75 * readStatus!!.screenScaledDensity
+        }
+
+        val lineBeans = bean.lines
+        for (b in lineBeans) {
+            if (" " == b.lineContent) {
+                total_y += ReadConfig.mDuan
+            } else if ("chapter_homepage  " != b.lineContent) {
+                b.indexY = total_y
+                total_y += ReadConfig.mFontHeight
+            }
+        }
+        bean.height = total_y + fm.ascent
+    }
+
+    private fun disVerticalPage(bean: NovelPageBean) {
+        val fm = ReadConfig.mPaint!!.fontMetrics
+        var total_y = -fm.ascent
+
+        val lineBeans = bean.lines
+        for (b in lineBeans) {
+            if (" " == b.lineContent) {
+                total_y += ReadConfig.mDuan
+            } else {
+                b.indexY = total_y
+                total_y += ReadConfig.mFontHeight
+            }
+        }
+        bean.height = total_y + fm.ascent
     }
 
     private fun disFirstPageHeight(bean: NovelPageBean) {
@@ -303,9 +336,10 @@ class ReadSeparateHelper private constructor() {
                 total_y += m_iFontHeight
             }
         }
+        bean.height = total_y + fm.ascent
     }
 
-    private fun disPageHeight(lineBeans: ArrayList<NovelLineBean>) {
+    private fun disPageHeight(bean: NovelPageBean) {
         var textHeight = 0f
         var duan = 0f//段落
         var lastIsDuan = false
@@ -314,6 +348,7 @@ class ReadSeparateHelper private constructor() {
         val height = readStatus!!.screenHeight - readStatus!!.screenDensity * Constants.READ_CONTENT_PAGE_TOP_SPACE.toFloat() * 2f + ReadConfig.mLineSpace
 
         // 计算页字符内容所占的高度
+        var lineBeans = bean.lines
         val size = lineBeans.size
         for (i in 0..size - 1) {
             val text = lineBeans[i].lineContent
@@ -357,6 +392,7 @@ class ReadSeparateHelper private constructor() {
                 total_y += m_iFontHeight
             }
         }
+        bean.height = total_y + fm.ascent
     }
 
     /**
