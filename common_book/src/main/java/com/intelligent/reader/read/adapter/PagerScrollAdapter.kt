@@ -2,7 +2,6 @@ package com.intelligent.reader.read.page
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -176,9 +175,7 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
 
         override fun bindHolder(pageLines: NovelPageBean) {
             addAdView(pageLines)
-            text.setReaderStatus(mReadStatus)
             text.setContent(pageLines)
-            text.setTextColor(textColor)
         }
 
         private fun addAdView(pageLines: NovelPageBean) {

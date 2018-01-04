@@ -3,24 +3,15 @@ package com.intelligent.reader.read.page;
 import com.intelligent.reader.read.help.DrawTextHelper;
 import com.intelligent.reader.read.mode.NovelPageBean;
 
-import net.lzbook.kit.constants.ReadConstants;
 
-import net.lzbook.kit.data.bean.NovelLineBean;
-import net.lzbook.kit.data.bean.ReadStatus;
-import net.lzbook.kit.data.bean.SensitiveWords;
 import net.lzbook.kit.utils.AppLog;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
+
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.View;
-
-import java.util.ArrayList;
-import java.util.List;
+import android.view.View;;
 
 /**
  * @author lijun Lee
@@ -31,32 +22,14 @@ import java.util.List;
 
 public class PageContentView extends View {
 
-    private Paint mPaint;
 
-    private Paint duanPaint;
-
-    private float mWidth;
-
-    private float mLineStart;
-
-    private ReadStatus readStatus;
-
-    private NovelPageBean mPageLines;
-
-    private SensitiveWords readSensitiveWord;
-
-    private List<String> readSensitiveWords;
-
-    private boolean noReadSensitive = false;
-
-    private int mTextColor;
+    private NovelPageBean mPageBean;
 
     private int mTextContentHeight;
 
     private DrawTextHelper mDrawTextHelper;
 
     public static final String CHAPTER_HOME_PAGE = "chapter_homepage";
-    public static final String BOOK_HOME_PAGE = "txtzsydsq_homepage";
 
     public PageContentView(Context context) {
         super(context);
@@ -75,44 +48,13 @@ public class PageContentView extends View {
 
 
     private void init() {
-
         mDrawTextHelper = new DrawTextHelper(getResources());
-
-        mTextColor = Color.BLACK;
-        mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
-        mPaint.setColor(mTextColor);
-        mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setAntiAlias(true);
-        mPaint.setDither(true);
-
-        duanPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
-        duanPaint.setStyle(Paint.Style.FILL);
-        duanPaint.setAntiAlias(true);
-        duanPaint.setDither(true);
-
-        this.readSensitiveWord = SensitiveWords.getReadSensitiveWords();
-        if (readSensitiveWord != null && readSensitiveWord.list.size() > 0) {
-            readSensitiveWords = readSensitiveWord.getList();
-            noReadSensitive = false;
-        } else {
-            noReadSensitive = true;
-        }
-
-    }
-
-    public void setTextColor(int textColor) {
-        mTextColor = textColor;
-        mPaint.setColor(mTextColor);
-    }
-
-    public void setReaderStatus(ReadStatus readStatus) {
-        this.readStatus = readStatus;
     }
 
     public void setContent(NovelPageBean pageLines) {
-        mPageLines = pageLines;
+        mPageBean = pageLines;
         invalidate();
-        mTextContentHeight = (int)mPageLines.getHeight();
+        mTextContentHeight = (int) mPageBean.getHeight();
         AppLog.d("PageContentView", "setContent mTextContentHeight: " + mTextContentHeight);
         requestLayout();
     }
@@ -133,7 +75,7 @@ public class PageContentView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        mDrawTextHelper.drawVerticalText(canvas, mPageLines);
+        mDrawTextHelper.drawVerticalText(canvas, mPageBean);
         AppLog.d("PageContentView", "onDraw mTextContentHeight: " + mTextContentHeight);
     }
 
