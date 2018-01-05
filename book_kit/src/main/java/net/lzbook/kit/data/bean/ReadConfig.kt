@@ -11,6 +11,8 @@ import java.util.ArrayList
 object ReadConfig {
     //动画模式
     var animation = when (Constants.PAGE_MODE) {
+        1 -> ReadViewEnums.Animation.curl
+        2 -> ReadViewEnums.Animation.shift
         3 -> ReadViewEnums.Animation.list
         else -> ReadViewEnums.Animation.slide
     }
@@ -34,20 +36,6 @@ object ReadConfig {
     var READ_CONTENT_PAGE_LEFT_SPACE = 20//4-20
     //阅读页内容上下页边距
     val READ_CONTENT_PAGE_TOP_SPACE = 45//20-40
-    //阅读位置偏移量
-    var offset = 0
-    //阅读位置偏移量
-    var sequence = 0
-    //章节名
-    var chapterName:String? = null
-    //单页内容
-    var chapterNameList: ArrayList<NovelLineBean>? = null
-    //WTF
-    var bookNameList: ArrayList<NovelLineBean>? = null
-    //小说名
-    var bookName:String? = null
-    //小说作者
-    var bookAuthor: String? = null
     //内容宽度
     var mWidth: Float = 0.0f
     //内容起始绘制位置

@@ -45,7 +45,11 @@ public interface ReadViewEnums {
     }
     //页面状态
     enum ViewState{
-        loading,success,error,start,end
+        loading(0),success(0),error(0),start(0),end(0);
+        public int Tag = 0;
+        ViewState(int tag) {
+            Tag = tag;
+        }
     }    //页面状态
     enum NotifyStateState{
         all,left,right,none

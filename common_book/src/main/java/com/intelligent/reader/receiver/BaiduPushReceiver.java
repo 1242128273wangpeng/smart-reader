@@ -134,7 +134,7 @@ public class BaiduPushReceiver extends PushMessageReceiver {
 //                ComponentName componentName = new ComponentName(taskInfo.topActivity.getPackageName(), taskInfo.topActivity.getClassName());
 //                Intent intent = new Intent();
 //                if (className.equals(context.getApplicationContext().getPackageName() + ".activity.ReadingActivity")) {
-//                    ReadStatus readStatus = (BookApplication.getGlobalContext()).getReadStatus();
+//                    ReadState readStatus = (BookApplication.getGlobalContext()).getReadStatus();
 //                    AppLog.i(TAG, "--------->" + readStatus.sequence + "::" + readStatus.offset + "::" + readStatus.book);
 //                    Bundle bundle = new Bundle();
 //                    bundle.putInt("sequence", readStatus.sequence);

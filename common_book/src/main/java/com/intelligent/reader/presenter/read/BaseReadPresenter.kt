@@ -34,6 +34,7 @@ import com.intelligent.reader.read.animation.BitmapManager
 import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.read.help.CallBack
 import com.intelligent.reader.read.help.NovelHelper
+import com.intelligent.reader.read.mode.ReadState
 import net.lzbook.kit.data.bean.ReadConfig
 
 import net.lzbook.kit.data.bean.ReadViewEnums
@@ -404,7 +405,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         } else {
             // 从bundle中获取
             readStatus?.sequence = bundle?.getInt("sequence", 0)
-            ReadConfig.sequence = bundle?.getInt("sequence", 0)?:0
+            ReadState.sequence = bundle?.getInt("sequence", 0)?:0
             val requestItem = bundle?.getSerializable(Constants.REQUEST_ITEM)
             if (requestItem != null) {
                 readStatus!!.setRequestItem(requestItem as RequestItem)
@@ -413,7 +414,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             readStatus?.book = bundle?.getSerializable("book") as Book?
             readStatus?.book_id = if (readStatus!!.book == null) "" else readStatus!!.book.book_id
             currentThemeMode = bundle?.getString("thememode", readReference?.get()?.mThemeHelper?.getMode())
-            ReadConfig.bookName = readStatus?.book?.name
+            ReadState.bookName = readStatus?.book?.name
             AppLog.e(TAG, "getState2" + readStatus!!.sequence)
         }
 

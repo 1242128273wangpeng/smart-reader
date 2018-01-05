@@ -2,6 +2,7 @@ package com.intelligent.reader.read
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Color
 import android.text.TextUtils
 import android.view.ViewGroup
 import com.dycm_adsdk.PlatformSDK
@@ -15,6 +16,7 @@ import com.intelligent.reader.cover.BookCoverQGRepository
 import com.intelligent.reader.cover.BookCoverRepositoryFactory
 import com.intelligent.reader.read.help.ReadSeparateHelper
 import com.intelligent.reader.read.mode.NovelPageBean
+import com.intelligent.reader.read.mode.ReadState
 import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.reader.ReaderOwnRepository
 import com.intelligent.reader.reader.ReaderRepositoryFactory
@@ -29,6 +31,7 @@ import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.net.custom.service.NetService
+import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.OpenUDID
 import net.lzbook.kit.utils.ToastUtils
@@ -54,8 +57,6 @@ class DataProvider : DisposableAndroidViewModel() {
     var context: Context? = null
     //是否显示广告
     var isShowAd: Boolean = true
-    //目录
-    var chapterList: ArrayList<Chapter> = ArrayList()
     //分页前缓存容器
     val chapterMap: HashMap<Int, Chapter> = HashMap()
 
@@ -137,7 +138,7 @@ class DataProvider : DisposableAndroidViewModel() {
         })
     }
     fun loadAd(context: Context, type: String,w:Int,h:Int, callback: OnLoadReaderAdCallback) {
-        PlatformSDK.adapp().dycmNativeAd(context as Activity, type,w,h, object : AbstractCallback() {
+        PlatformSDK.adapp().dycmNativeAd(context as Activity, type,h,w, object : AbstractCallback() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
                 if (!adswitch) {
@@ -148,9 +149,7 @@ class DataProvider : DisposableAndroidViewModel() {
                     if (jsonObject.has("state_code")) {
                         when (ResultCode.parser(jsonObject.getInt("state_code"))) {
                             ResultCode.AD_REQ_SUCCESS
-                            -> {
-                                callback.onLoadAd(views[0])
-                            }
+                            -> callback.onLoadAd(views[0])
                             else -> {
                             }
                         }
@@ -180,10 +179,16 @@ class DataProvider : DisposableAndroidViewModel() {
      * 获取书籍目录 //复用BookCoverRepositoyFactory
      */
     fun getChapterList(book: Book, requestItem: RequestItem, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
+        if (sequence <= -1) {//封面页
+            chapterSeparate.put(sequence, arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf())))
+            chapterMap.put(-1, Chapter())
+            mReadDataListener.loadDataSuccess(Chapter(), type)
+            return
+        }
         if (NetWorkUtils.getNetWorkType(BaseBookApplication.getGlobalContext()) == NetWorkUtils.NETWORK_NONE) {
             val bookChapterDao = BookChapterDao(BaseBookApplication.getGlobalContext(), requestItem.book_id)
             val chapterList = bookChapterDao.queryBookChapter()
-            this.chapterList = chapterList
+            ReadState.chapterList = chapterList
             if (chapterList.size != 0) {
                 requestSingleChapter(book, chapterList, sequence, type, mReadDataListener)
                 return
@@ -201,9 +206,9 @@ class DataProvider : DisposableAndroidViewModel() {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ chapters ->
-                            this.chapterList = chapters
+                            ReadState.chapterList = chapters
                             if (chapters.size != 0) {
-                                requestSingleChapter(book, chapters, sequence, type, mReadDataListener)
+                                requestSingleChapter(book, ReadState.chapterList, sequence, type, mReadDataListener)
                             } else {
                                 mReadDataListener.loadDataError("拉取章节时无网络")
                             }
@@ -213,14 +218,8 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     private fun requestSingleChapter(book: Book, chapters: List<Chapter>, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
-        if (sequence == -1) {//封面页
-            chapterSeparate.put(sequence, arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf())))
-            chapterMap.put(-1, Chapter())
-            mReadDataListener.loadDataSuccess(Chapter(), type)
-            return
-        }
         val chapter = chapters[sequence]
-
+        AppLog.e("book",book.toString())
         addDisposable(mReaderRepository.requestSingleChapter(book.site, chapter)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

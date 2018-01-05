@@ -20,6 +20,7 @@ import com.intelligent.reader.read.help.IReadPageChange
 import com.intelligent.reader.read.help.ReadSeparateHelper
 import net.lzbook.kit.data.bean.ReadConfig
 import com.intelligent.reader.read.mode.ReadInfo
+import com.intelligent.reader.read.mode.ReadState
 import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.read.page.*
 import com.intelligent.reader.reader.ReaderViewModel
@@ -234,7 +235,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onPause() {
         super.onPause()
-        mReadPresenter?.onPause(ReadConfig.sequence,ReadConfig.offset)
+        mReadPresenter?.onPause(ReadState.sequence,ReadState.offset)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -313,7 +314,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onChangeScreenMode() {
         mReadPresenter?.changeScreenMode()!!
-        novel_basePageView?.onRedrawPage()!!
     }
 
     override fun onRedrawPage() = novel_basePageView?.onRedrawPage()!!
@@ -326,8 +326,8 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         readStatus.sequence = intent.getIntExtra("sequence", 0)
         readStatus.book = intent.getSerializableExtra("book") as Book?
 //        novel_basePageView?.entrance(ReadInfo(readStatus.book!!, readStatus, animation))
-        ReadConfig.sequence = intent.getIntExtra("sequence", 0)
-        novel_basePageView?.onJumpChapter(ReadConfig.sequence)
+        ReadState.sequence = intent.getIntExtra("sequence", 0)
+        novel_basePageView?.onJumpChapter(ReadState.sequence)
     }
     //上一章
     override fun onJumpPreChapter() {
@@ -340,7 +340,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         readStatus.offset = 0
         readStatus.sequence--
 //        novel_basePageView?.entrance(ReadInfo(readStatus.book!!, readStatus, animation))
-        novel_basePageView?.onJumpChapter(--ReadConfig.sequence)
+        novel_basePageView?.onJumpChapter(--ReadState.sequence)
     }
     //下一章
     override fun onJumpNextChapter() {
@@ -353,7 +353,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         readStatus.offset = 0
         readStatus.sequence++
 //        novel_basePageView?.entrance(ReadInfo(readStatus.book!!, readStatus, animation))
-        novel_basePageView?.onJumpChapter(++ReadConfig.sequence)
+        novel_basePageView?.onJumpChapter(++ReadState.sequence)
     }
 
     override fun onReadFeedBack() = mReadPresenter?.onReadFeedBack()!!

@@ -10,6 +10,7 @@ import com.intelligent.reader.read.adapter.HorizontalAdapter
 import com.intelligent.reader.read.help.*
 import com.intelligent.reader.read.mode.ReadCursor
 import com.intelligent.reader.read.mode.ReadInfo
+import com.intelligent.reader.read.mode.ReadState
 import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.view.ViewPager
 import net.lzbook.kit.data.bean.Chapter
@@ -143,14 +144,13 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         val keyList = provider.chapterMap.keys.toList().sorted()
         when(whichOrientation) {
             "Pre"-> {
-                if (ReadConfig.sequence <= keyList.first()){
+                if (ReadState.sequence <= keyList.first()){
                     //保留前三
-                    if(keyList.size>=3){
-                        keyList.filter { it > keyList[2] }.forEach { provider.chapterMap.remove(it) }
-                    }
+                    if(keyList.size>=3)  keyList.filter { it > keyList[2] }.forEach { provider.chapterMap.remove(it) }
                     //加载缓存
-                    for (i in 0 ..  keyList.first() - ReadConfig.sequence){
-                        DataProvider.getInstance().loadChapter(mReadInfo!!.curBook, ReadConfig.sequence+i, ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener() {
+                    for (i in 0 ..  keyList.first() - ReadState.sequence){
+                        if(ReadState.sequence-i<-1) continue
+                        DataProvider.getInstance().loadChapter(mReadInfo!!.curBook, ReadState.sequence-i, ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener() {
                             override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
                             override fun loadDataError(message: String) = Unit
                         })
@@ -158,13 +158,12 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                 }
             }
             "Next" -> {
-                if (ReadConfig.sequence>=keyList.last()){
+                if (ReadState.sequence>=keyList.last()){
                     //保留后三
-                    if(keyList.size>=3){
-                        keyList.filter { it < keyList[keyList.size-3] }.forEach { provider.chapterMap.remove(it) }
-                    }
-                    for (i in 0 ..ReadConfig.sequence - keyList.first()){
-                        DataProvider.getInstance().loadChapter(mReadInfo!!.curBook, ReadConfig.sequence+i, ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener() {
+                    if(keyList.size>=3) keyList.filter { it < keyList[keyList.size-3] }.forEach { provider.chapterMap.remove(it) }
+                    for (i in 0 ..ReadState.sequence - keyList.first()){
+                        if(ReadState.sequence+i > ReadState.chapterList.size) continue
+                        DataProvider.getInstance().loadChapter(mReadInfo!!.curBook, ReadState.sequence+i, ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener() {
                             override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
                             override fun loadDataError(message: String) = Unit
                         })
@@ -293,7 +292,20 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                 nextViewUpdata(cursor)
             }
             ReadViewEnums.NotifyStateState.none->{
-                isCanScroll = 0
+                val viewState = (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState
+                if(viewState == ReadViewEnums.ViewState.start){
+                    if(viewState.Tag == 1){
+                        viewState.Tag = 0
+                        nextViewUpdata(cursor)
+                        AppLog.e("none","start")
+                    }else {
+                        AppLog.e("none","start2")
+                        isCanScroll = 1
+                        isLeftSlip = false
+                    }
+                }else {
+                    isCanScroll = 0
+                }
             }
         }
     }
@@ -346,8 +358,8 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         val curView = findViewWithTag(ReadViewEnums.PageIndex.current)
         curView as HorizontalPage
         if (curView.mCursor!=null){
-            ReadConfig.sequence = curView.mCursor!!.sequence
-            ReadConfig.offset = curView.mCursor!!.offset + curView.CursorOffset
+            ReadState.sequence = curView.mCursor!!.sequence
+            ReadState.offset = curView.mCursor!!.offset + curView.CursorOffset
         }
     }
 //==================================================IReadPageChange=========================================
@@ -362,20 +374,22 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     //入口
     override fun entrance(mReadInfo: ReadInfo) {
         this.mReadInfo = mReadInfo
-        val sequence = mReadInfo.mReadStatus.sequence
+        val sequence = ReadState.sequence
         val offset = mReadInfo.mReadStatus.offset
         Handler().postDelayed({
             //更改当前view状态
             (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState = ReadViewEnums.ViewState.loading
-            if(this.mReadInfo!!.mReadStatus.sequence == -1){
-                this.mReadInfo!!.mReadStatus.sequence =0
-                curCursor = ReadCursor(mReadInfo.curBook,sequence,offset, ReadViewEnums.PageIndex.current,mReadInfo.mReadStatus)
-                checkViewState("Cur", ReadViewEnums.NotifyStateState.all)
-
-            }else{
-                curCursor = ReadCursor(mReadInfo.curBook,sequence,offset, ReadViewEnums.PageIndex.current,mReadInfo.mReadStatus)
-                checkViewState("Cur", ReadViewEnums.NotifyStateState.all)
-            }
+            curCursor = ReadCursor(mReadInfo.curBook,sequence,offset, ReadViewEnums.PageIndex.current,mReadInfo.mReadStatus)
+            checkViewState("Cur", ReadViewEnums.NotifyStateState.all)
+//            if(this.mReadInfo!!.mReadStatus.sequence == -1){
+//                this.mReadInfo!!.mReadStatus.sequence =0
+//                curCursor = ReadCursor(mReadInfo.curBook,sequence,offset, ReadViewEnums.PageIndex.current,mReadInfo.mReadStatus)
+//                checkViewState("Cur", ReadViewEnums.NotifyStateState.all)
+//
+//            }else{
+//                curCursor = ReadCursor(mReadInfo.curBook,sequence,offset, ReadViewEnums.PageIndex.current,mReadInfo.mReadStatus)
+//                checkViewState("Cur", ReadViewEnums.NotifyStateState.all)
+//            }
         },200)
         //设置字体颜色
         mReadPageChange?.onLoadChapter(ReadViewEnums.MsgType.MSG_LOAD_CUR_CHAPTER, mReadInfo.mReadStatus.currentPage - 1, false, ReadViewEnums.PageIndex.current)

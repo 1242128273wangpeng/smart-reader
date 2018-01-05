@@ -71,7 +71,7 @@ class ReadPresenter(act: ReadingActivity) : BaseReadPresenter(act) {
      * 统一处理加载章节请求后逻辑
      * @param what Msg
      * @param chapter 章节
-     * @param pageIndex 状态 //Next、Previous 改变 ReadStatus 状态  Cur不改变 ReadStatus 状态
+     * @param pageIndex 状态 //Next、Previous 改变 ReadState 状态  Cur不改变 ReadState 状态
      */
     override fun obtainWhat(what: Int, chapter: Chapter,pageIndex: ReadViewEnums.PageIndex) {
         when(pageIndex){

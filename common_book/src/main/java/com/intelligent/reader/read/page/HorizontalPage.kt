@@ -13,6 +13,7 @@ import com.intelligent.reader.read.animation.BitmapManager
 import com.intelligent.reader.read.help.DrawTextHelper
 import com.intelligent.reader.read.mode.NovelPageBean
 import com.intelligent.reader.read.mode.ReadCursor
+import com.intelligent.reader.read.mode.ReadState
 import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.util.ThemeUtil
 import kotlinx.android.synthetic.main.book_home_page_layout.view.*
@@ -191,6 +192,7 @@ class HorizontalPage : FrameLayout {
          * 加载3章至内存
          */
         fun entrance(cursor: ReadCursor) {
+            cursor.curBook.sequence = cursor.sequence
             DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
                 override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) {
                     //当前章拉去成功 执行一般方法
@@ -209,6 +211,7 @@ class HorizontalPage : FrameLayout {
                         removeView(errorView)
                     })
                     errorView.loading_error_setting.visibility = GONE
+                    noticePageListener?.pageChangSuccess(mCursor!!,viewNotify)//游标通知回调
                 }
             })
             DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener() {
@@ -229,9 +232,10 @@ class HorizontalPage : FrameLayout {
          * @param cursor
          */
         fun setCursor(cursor: ReadCursor) {
+            AppLog.e("cursor",""+cursor.sequence)
             mCursor = cursor
             //判断超过章节数
-            if((DataProvider.getInstance().chapterList.isNotEmpty()) and (mCursor!!.sequence > DataProvider.getInstance().chapterList.size-1)){
+            if((ReadState.chapterList.isNotEmpty()) and (mCursor!!.sequence > ReadState.chapterList.size-1)){
                 viewState = ReadViewEnums.ViewState.end
                 return
             }
@@ -239,7 +243,7 @@ class HorizontalPage : FrameLayout {
             val chapter = DataProvider.getInstance().chapterMap[cursor.sequence]
             if (chapter != null) {//加载数据
                 drawPage(cursor, chapter)
-            } else {//无缓存数据
+                cursor       } else {//无缓存数据
                 entrance(cursor)
             }
         }
@@ -256,10 +260,20 @@ class HorizontalPage : FrameLayout {
                 val pageSum = chapterList.size
                 if (pageIndex <= pageSum){
                     //过滤其他页内容
-                    val mNovelPageBean = findNovelPageBeanByOffset(cursor.offset,chapterList)
                     if (cursor.sequence == -1){//封面页
                         setupHomePage(cursor)
+                        val start = ReadViewEnums.ViewState.start
+                        start.Tag = when (viewNotify) {
+                            ReadViewEnums.NotifyStateState.all -> 1
+                            else -> 0
+                        }
+                        mCursor!!.offset = 1
+                        mCursor!!.lastOffset = 1
+                        CursorOffset = -1
+                        viewState = start
+                        noticePageListener?.pageChangSuccess(mCursor!!,ReadViewEnums.NotifyStateState.none)//游标通知回调
                     }else {
+                        val mNovelPageBean = findNovelPageBeanByOffset(cursor.offset,chapterList)
                         if (mNovelPageBean.isAd) {//广告页
                             showAdBigger(mNovelPageBean)
                         }else{//普通页
@@ -282,7 +296,7 @@ class HorizontalPage : FrameLayout {
                         mCursor!!.lastOffset = chapterList.last().offset
                         mCursor!!.offset = mNovelPageBean.offset
                         mCursor!!.nextOffset = if (pageIndex < chapterList.size) chapterList[pageIndex].offset else 0
-                        viewState = if ((mCursor!!.sequence== DataProvider.getInstance().chapterList.size-1)and(pageIndex == pageSum)){//判断这本书的最后一页
+                        viewState = if ((mCursor!!.sequence== ReadState.chapterList.size-1)and(pageIndex == pageSum)){//判断这本书的最后一页
                             ReadViewEnums.ViewState.end
                         }else{
                             noticePageListener?.pageChangSuccess(mCursor!!,viewNotify)//游标通知回调
@@ -344,10 +358,9 @@ class HorizontalPage : FrameLayout {
         private fun showAdBanner(topMargins: Float){
             DataProvider.getInstance().loadAd(context,"8-1",mCursor!!.readStatus.screenWidth,mCursor!!.readStatus.screenHeight - topMargins.toInt(),object: DataProvider.OnLoadReaderAdCallback {
                 override fun onLoadAd(adView: ViewGroup) {
-                    val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-                    val marginTop = AppUtils.dip2px(context, topMargins)
+                    val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT)
                     val margin = AppUtils.dip2px(context, 10f)
-                    param.setMargins(margin,marginTop,margin,margin)
+                    param.setMargins(margin,topMargins.toInt(),margin,margin)
                     addView(adView, param)
                 }
             })

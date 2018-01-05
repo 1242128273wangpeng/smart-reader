@@ -18,7 +18,6 @@ data class ReadCursor(
 ) {
     var lastOffset: Int = 0
     var nextOffset: Int = 0
-    var isShowAdBanner = false
     override fun toString(): String {
         return Gson().toJson(this)
     }

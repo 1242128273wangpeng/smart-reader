@@ -21,6 +21,7 @@ import com.intelligent.reader.read.help.NovelHelper
 import com.intelligent.reader.read.help.ReadSeparateHelper
 import com.intelligent.reader.read.mode.NovelPageBean
 import com.intelligent.reader.read.mode.ReadInfo
+import com.intelligent.reader.read.mode.ReadState
 import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.util.ThemeUtil
 import kotlinx.android.synthetic.main.vertical_pager_layout.view.*
@@ -250,7 +251,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                     mOriginDataList.clear()
                     mAdapter.clearData()
                 }
-                mCatalogList = mDataProvider.chapterList
+                mCatalogList = ReadState.chapterList
                 mAdapter.setChapterCatalog(mCatalogList)
 
                 if (!checkLoadChapterValid(chapter.sequence)) return
