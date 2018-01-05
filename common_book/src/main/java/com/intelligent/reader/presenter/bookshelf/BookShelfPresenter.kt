@@ -42,42 +42,40 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
      * 查询书籍列表
      */
     fun queryBookListAndAd(activity: Activity, isShowAd: Boolean) {
-        updateBookList()
+        var adNum = updateBookList()
         if (isShowAd)
-            updateAd(activity)
+            updateAd(activity, adNum)
     }
 
-    fun updateBookList() {
+    fun updateBookList(): Int {
         val bookList = bookDaoHelper.booksOnLineList
         Collections.sort(bookList, FrameBookHelper.MultiComparator())
         iBookList.clear()
         iBookList.addAll(bookList)
+        var adCount = PlatformSDK.config().getAdCount()
         if (aDViews.isNotEmpty()) {
+            val size = iBookList.size
             var index = 0
             var book1 = Book()
             book1.book_type = -2
             book1.sequence = index++
             iBookList.add(0, book1)
-            if (iBookList.size > 7 && aDViews.size > 1) {
+            var i: Int = 1
+            while (size > adCount * i){
                 book1 = Book()
                 book1.book_type = -2
                 book1.sequence = index++
-                iBookList.add(5, book1)
-            }
-
-            if (iBookList.size > 12 && aDViews.size > 2) {
-                book1 = Book()
-                book1.book_type = -2
-                book1.sequence = index++
-                iBookList.add(10, book1)
+                iBookList.add(adCount * i, book1)
+                i++
             }
         }
         runOnMain {
             view?.onBookListQuery(bookList)
         }
+        return bookList.size / adCount + 1
     }
 
-    fun updateAd(activity: Activity) {
+    fun updateAd(activity: Activity, num: Int) {
         PlatformSDK.adapp().dycmNativeAd(activity, "1-1", RelativeLayout(activity), object : AbstractCallback() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
                 DyLogUtils.dd("NativeActivity:" + jsonResult!!)
@@ -96,30 +94,20 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
                                     if (iBookList.isEmpty()) {
                                         return
                                     }
+                                    val size = iBookList.size
                                     var index = 0
                                     var book1 = Book()
                                     book1.book_type = -2
                                     book1.sequence = index++
                                     iBookList.add(0, book1)
-                                    if (iBookList.size > 3) {
+                                    var adCount = PlatformSDK.config().getAdCount()
+                                    var i: Int = 1
+                                    while (size > adCount * i){
                                         book1 = Book()
                                         book1.book_type = -2
                                         book1.sequence = index++
-                                        iBookList.add(2, book1)
-                                    }
-
-                                    if (iBookList.size > 5) {
-                                        book1 = Book()
-                                        book1.book_type = -2
-                                        book1.sequence = index++
-                                        iBookList.add(4, book1)
-                                    }
-
-                                    if (iBookList.size > 7) {
-                                        book1 = Book()
-                                        book1.book_type = -2
-                                        book1.sequence = index++
-                                        iBookList.add(6, book1)
+                                        iBookList.add(adCount * i, book1)
+                                        i++
                                     }
 
                                     runOnMain {
@@ -129,6 +117,15 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
                                     DyLogUtils.e("ADSDK", "请求成功")
                                 }
 
+                            }
+                            ResultCode.AD_REPAIR_SUCCESS//补充
+                            -> {
+                                if(views != null){
+                                    aDViews.addAll(views)
+                                    runOnMain {
+                                        view?.onAdRefresh()
+                                    }
+                                }
                             }
                             ResultCode.AD_REQ_FAILED//请示失败
                             -> {
@@ -140,7 +137,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
                 }
 
             }
-        }, 8)
+        }, num)
     }
 
     fun handleSuccessUpdate(result: BookUpdateResult) {
