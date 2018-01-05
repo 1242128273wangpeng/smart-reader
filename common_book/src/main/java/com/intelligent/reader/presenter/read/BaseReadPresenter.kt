@@ -1107,12 +1107,12 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                 return
             }
             showMenu(false)
-            getCustomLoadingPage()
-            loadingPage?.loading {
-                mReaderViewModel!!.getBookSource(readStatus!!.book_id)
+//            getCustomLoadingPage()
+//            loadingPage?.loading {
+//                mReaderViewModel!!.getBookSource(readStatus!!.book_id)
 //                OtherRequestService.requestBookSourceChange(dataFactory?.mHandler, ReadingActivity.MSG_SEARCH_CHAPTER, -144, readStatus!!.book_id)
-                null
-            }
+//                null
+//            }
 //            dataFactory?.loadingError(loadingPage)
         }
     }

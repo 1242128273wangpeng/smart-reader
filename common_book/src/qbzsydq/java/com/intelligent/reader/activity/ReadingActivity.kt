@@ -25,6 +25,7 @@ import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.read.page.*
 import com.intelligent.reader.reader.ReaderViewModel
 import iyouqu.theme.FrameActivity
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.*
@@ -54,6 +55,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     private var novel_basePageView: ReaderViewWidget? = null
     private var mCatlogMarkDrawer: DrawerLayout? = null
     private var mCatalogMarkFragment: CatalogMarkFragment? = null
+    private val startReadTime = System.currentTimeMillis()
 
     private val mDrawerListener = object : DrawerLayout.DrawerListener {
         override fun onDrawerSlide(drawerView: View, slideOffset: Float) = Unit
@@ -511,8 +513,22 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         mReadPresenter?.onTransCodingClick()
     }
 
-    override fun loadAD() {
-
+    override fun addLog() {
+        val book = intent.getSerializableExtra("book") as Book
+        val endTime = System.currentTimeMillis()
+        val bookId = book.book_id
+        val chapterId = DataProvider.getInstance().chapterMap[ReadState.sequence]?.chapter_id
+        val sourceIds = book.book_source_id
+        val channelCode = when(book.site) {
+            Constants.QG_SOURCE -> "1"
+            else -> "2"
+        }
+        val pageCount = ReadState.pageCount.toString()
+        val currentPage = (ReadState.currentPage -1).toString()
+        val currentPageContentLength = ReadState.contentLength.toString()
+        //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
+        StartLogClickUtil.upLoadReadContent(bookId,chapterId, sourceIds, pageCount,currentPage,currentPageContentLength, "2",
+                startReadTime.toString() , endTime.toString(), (endTime - startReadTime).toString(), "false", channelCode)
     }
 
     override fun freshTime(time_text: CharSequence?) {
@@ -522,6 +538,8 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     override fun setBackground() {
         novel_basePageView?.setBackground()
     }
+
+
     //广播
     /**
      * 接受电量改变广播

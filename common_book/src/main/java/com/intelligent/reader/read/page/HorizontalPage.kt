@@ -61,6 +61,9 @@ class HorizontalPage : FrameLayout {
     var mCursor: ReadCursor? = null
     var viewState: ReadViewEnums.ViewState = ReadViewEnums.ViewState.loading
     var viewNotify: ReadViewEnums.NotifyStateState = ReadViewEnums.NotifyStateState.none
+    var pageIndex:Int = 0
+    var pageSum:Int = 0
+    var contentLength:Int = 0
 
     constructor(context: Context, noticePageListener: NoticePageListener) : this(context, null, noticePageListener)
 
@@ -243,7 +246,7 @@ class HorizontalPage : FrameLayout {
             val chapter = DataProvider.getInstance().chapterMap[cursor.sequence]
             if (chapter != null) {//加载数据
                 drawPage(cursor, chapter)
-                cursor       } else {//无缓存数据
+            } else {//无缓存数据
                 entrance(cursor)
             }
         }
@@ -256,8 +259,8 @@ class HorizontalPage : FrameLayout {
             cursor.readStatus.chapterName = chapter.chapter_name
             val chapterList = DataProvider.getInstance().chapterSeparate[cursor.sequence]!!
             if (!chapterList.isEmpty()) {//集合不为空，角标小于集合长度
-                val pageIndex = findPageIndexByOffset(cursor.offset,chapterList)
-                val pageSum = chapterList.size
+                pageIndex = findPageIndexByOffset(cursor.offset,chapterList)
+                pageSum = chapterList.size
                 if (pageIndex <= pageSum){
                     //过滤其他页内容
                     if (cursor.sequence == -1){//封面页
@@ -274,6 +277,7 @@ class HorizontalPage : FrameLayout {
                         noticePageListener?.pageChangSuccess(mCursor!!,ReadViewEnums.NotifyStateState.none)//游标通知回调
                     }else {
                         val mNovelPageBean = findNovelPageBeanByOffset(cursor.offset,chapterList)
+                        contentLength = mNovelPageBean.contentLength
                         if (mNovelPageBean.isAd) {//广告页
                             showAdBigger(mNovelPageBean)
                         }else{//普通页

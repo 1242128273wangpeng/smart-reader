@@ -19,4 +19,10 @@ object ReadState {
     var bookName:String? = null
     //小说作者
     var bookAuthor: String? = null
+    //总页数
+    var pageCount:Int = 0
+    //当前页数
+    var currentPage:Int = 0
+    //当前页总长度
+    var contentLength:Int = 0
 }

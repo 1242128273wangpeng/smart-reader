@@ -15,9 +15,7 @@ import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.view.ViewPager
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
-import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.utils.AppLog
-import net.lzbook.kit.utils.ToastUtils
 import java.util.*
 
 /**
@@ -72,6 +70,8 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                     checkChapterCache("Pre")
                 }
                 index < position -> {
+                    //log埋点
+                    if(ReadState.sequence>=0) mReadPageChange?.addLog()
                     checkViewState("Next", ReadViewEnums.NotifyStateState.right)
                     checkChapterCache("Next")
                 }
@@ -311,7 +311,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     }
 
     /**
-     * 点击屏幕左边后翻页
+     * 点击屏幕左边前翻页
      */
     override fun onClickLeft() {
         //当前页是封面页禁止点击
@@ -357,9 +357,13 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     override fun currentViewSuccess() {
         val curView = findViewWithTag(ReadViewEnums.PageIndex.current)
         curView as HorizontalPage
-        if (curView.mCursor!=null){
-            ReadState.sequence = curView.mCursor!!.sequence
-            ReadState.offset = curView.mCursor!!.offset + curView.CursorOffset
+        val mCursor = curView.mCursor
+        if (mCursor!=null){
+            ReadState.sequence = mCursor.sequence
+            ReadState.offset = mCursor.offset + curView.CursorOffset
+            ReadState.currentPage = curView.pageIndex
+            ReadState.pageCount = curView.pageSum
+            ReadState.contentLength = curView.contentLength
         }
     }
 //==================================================IReadPageChange=========================================

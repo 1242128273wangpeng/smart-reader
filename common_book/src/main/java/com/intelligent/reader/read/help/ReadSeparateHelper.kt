@@ -118,7 +118,6 @@ object ReadSeparateHelper {
         val size = contentList.size
         var textSpace = 0.0f
         var textLength: Long = 0
-        var can = true
         var pageLines = ArrayList<NovelLineBean>()
         val lists = ArrayList<NovelPageBean>()
         var mNovelPageBean = NovelPageBean(pageLines, pageLines.size, novelText)
@@ -128,6 +127,7 @@ object ReadSeparateHelper {
             textSpace += chapterHeight
         }
         var offsetSum = 0
+        var contentLength = 0
         var lastLineHeight: Float
         for (i in 0..size - 1) {
             var isDuan = false
@@ -222,17 +222,19 @@ object ReadSeparateHelper {
         if (bean.chapterNameLines != null && bean.chapterNameLines.size > 1) {
             total_y += 75 * ReadConfig.screenScaledDensity
         }
-
         val lineBeans = bean.lines
+        var contentLength = 0
         for (b in lineBeans) {
             if (" " == b.lineContent) {
                 total_y += ReadConfig.mDuan
             } else if ("chapter_homepage  " != b.lineContent) {
                 b.indexY = total_y
                 total_y += ReadConfig.mFontHeight
+                contentLength += b.lineContent.length
             }
         }
         bean.height = total_y + fm.ascent
+        bean.contentLength = contentLength
     }
 
     private fun disVerticalPage(bean: NovelPageBean) {
@@ -240,15 +242,18 @@ object ReadSeparateHelper {
         var total_y = -fm.ascent
 
         val lineBeans = bean.lines
+        var contentLength = 0
         for (b in lineBeans) {
             if (" " == b.lineContent) {
                 total_y += ReadConfig.mDuan
             } else {
                 b.indexY = total_y
                 total_y += ReadConfig.mFontHeight
+                contentLength += b.lineContent.length
             }
         }
         bean.height = total_y + fm.ascent
+        bean.contentLength = contentLength
     }
 
     private fun disFirstPageHeight(bean: NovelPageBean) {
@@ -301,16 +306,18 @@ object ReadSeparateHelper {
             val distance = (textHeight - height) / n
             m_iFontHeight = fm.descent - fm.ascent + Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE.toFloat() * ReadConfig.screenScaledDensity - distance
         }
-
+        var contentLength = 0
         for (b in lineBeans) {
             if (" " == b.lineContent) {
                 total_y += m_duan
             } else if ("chapter_homepage  " != b.lineContent) {
                 b.indexY = total_y
                 total_y += m_iFontHeight
+                contentLength += b.lineContent.length
             }
         }
         bean.height = total_y + fm.ascent
+        bean.contentLength = contentLength
     }
 
     private fun disPageHeight(bean: NovelPageBean) {
@@ -357,16 +364,18 @@ object ReadSeparateHelper {
         }
 
         var total_y = Constants.READ_CONTENT_PAGE_TOP_SPACE * ReadConfig.screenDensity - fm.ascent
-
+        var contentLength = 0
         for (b in lineBeans) {
             if (" " == b.lineContent) {
                 total_y += m_duan
             } else {
                 b.indexY = total_y
                 total_y += m_iFontHeight
+                contentLength += b.lineContent.length
             }
         }
         bean.height = total_y + fm.ascent
+        bean.contentLength = contentLength
     }
 
     /**
