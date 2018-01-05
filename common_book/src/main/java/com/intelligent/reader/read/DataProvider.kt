@@ -220,6 +220,7 @@ class DataProvider : DisposableAndroidViewModel() {
     private fun requestSingleChapter(book: Book, chapters: List<Chapter>, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
         val chapter = chapters[sequence]
         AppLog.e("book",book.toString())
+        AppLog.e("book",""+sequence)
         addDisposable(mReaderRepository.requestSingleChapter(book.site, chapter)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -233,7 +234,7 @@ class DataProvider : DisposableAndroidViewModel() {
                     }
                     mReaderRepository.writeChapterCache(c, false)
                     chapterMap.put(sequence, c)
-                    chapterSeparate.put(sequence, ReadSeparateHelper.instance.initTextSeparateContent(c.content, c.chapter_name))
+                    chapterSeparate.put(sequence, ReadSeparateHelper.initTextSeparateContent(c.content, c.chapter_name))
                     mReadDataListener.loadDataSuccess(c, type)
                     //加章末广告
                     if (isShowAd) {
@@ -307,7 +308,7 @@ class DataProvider : DisposableAndroidViewModel() {
         for (it in chapterMap) {
             if (it.key != -1) {
                 val lastPageBean = chapterSeparate[it.key]!!.last()
-                val mPageBeanList = ReadSeparateHelper.instance.initTextSeparateContent(it.value.content, it.value.chapter_name)
+                val mPageBeanList = ReadSeparateHelper.initTextSeparateContent(it.value.content, it.value.chapter_name)
                 if (lastPageBean.isAd) {//最后广告
                     mPageBeanList.add(lastPageBean)
                 }

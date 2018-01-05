@@ -5,6 +5,7 @@ import android.text.TextPaint
 import android.text.TextUtils
 
 import com.intelligent.reader.read.mode.NovelPageBean
+import com.intelligent.reader.read.mode.ReadState
 import net.lzbook.kit.data.bean.ReadConfig
 
 import net.lzbook.kit.constants.ReadConstants
@@ -23,13 +24,8 @@ import java.util.ArrayList
  * Created by wt on 2017/12/20.
  */
 
-class ReadSeparateHelper private constructor() {
+object ReadSeparateHelper {
 
-    private var readStatus: ReadStatus? = null
-
-    private object Singleton {
-        val INSTANCE = ReadSeparateHelper()
-    }
 
     /**
      * 章节内容分行
@@ -41,61 +37,61 @@ class ReadSeparateHelper private constructor() {
      */
     fun initTextSeparateContent(content: String, chapterName: String): ArrayList<NovelPageBean> {
         var content = content
-        val chapterHeight = 75 * readStatus!!.screenScaledDensity
-        val hideHeight = 15 * readStatus!!.screenScaledDensity
+        val chapterHeight = 75 * ReadConfig.screenScaledDensity
+        val hideHeight = 15 * ReadConfig.screenScaledDensity
 
         initPaint()
 
         val mchapterPaint = TextPaint()
-        mchapterPaint.textSize = 20 * readStatus!!.screenScaledDensity
+        mchapterPaint.textSize = 20 * ReadConfig.screenScaledDensity
 
         val mbookNamePaint = TextPaint()
         mbookNamePaint.isAntiAlias = true
-        mbookNamePaint.textSize = Constants.FONT_CHAPTER_SIZE * readStatus!!.screenScaledDensity
+        mbookNamePaint.textSize = Constants.FONT_CHAPTER_SIZE * ReadConfig.screenScaledDensity
 
         // 显示文字区域高度
-        val height = readStatus!!.screenHeight - readStatus!!.screenDensity * Constants.READ_CONTENT_PAGE_TOP_SPACE.toFloat() * 2f
+        val height = ReadConfig.screenHeight - ReadConfig.screenDensity * Constants.READ_CONTENT_PAGE_TOP_SPACE.toFloat() * 2f
 
-        ReadConfig.mWidth = readStatus!!.screenWidth - readStatus!!.screenDensity * Constants.READ_CONTENT_PAGE_LEFT_SPACE.toFloat() * 2f
-        ReadConfig.mLineStart = Constants.READ_CONTENT_PAGE_LEFT_SPACE * readStatus!!.screenScaledDensity
+        ReadConfig.mWidth = ReadConfig.screenWidth - ReadConfig.screenDensity * Constants.READ_CONTENT_PAGE_LEFT_SPACE.toFloat() * 2f
+        ReadConfig.mLineStart = Constants.READ_CONTENT_PAGE_LEFT_SPACE * ReadConfig.screenScaledDensity
 
         val lineHeight = ReadConfig.mFontHeight
         val m_duan = ReadConfig.mDuan
 
         // 添加转换提示
         val sb = StringBuilder()
-        if (readStatus!!.sequence != -1) {
-            sb.append("chapter_homepage \n")
-            sb.append("chapter_homepage \n")
-            sb.append("chapter_homepage \n")
 
-            if (!TextUtils.isEmpty(chapterName)) {
-                readStatus!!.chapterNameList = getNovelText(mchapterPaint, chapterName, ReadConfig.mWidth - readStatus!!.screenDensity * 10)
-                val chapterNumAndName = readStatus!!.chapterNameList[0].lineContent.split("章".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                val newChapterList = ArrayList<NovelLineBean>()
+        sb.append("chapter_homepage \n")
+        sb.append("chapter_homepage \n")
+        sb.append("chapter_homepage \n")
+        var novelText:ArrayList<NovelLineBean> = arrayListOf()
+        if (!TextUtils.isEmpty(chapterName)) {
+            novelText = getNovelText(mchapterPaint, chapterName, ReadConfig.mWidth - ReadConfig.screenDensity * 10)
+            val chapterNumAndName = novelText[0].lineContent.split("章".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val newChapterList = ArrayList<NovelLineBean>()
 
-                for (i in chapterNumAndName.indices) {
-                    if (i == 0) {
-                        newChapterList.add(NovelLineBean(chapterNumAndName[i] + "章", 0f, 0, false, null))
-                    } else {
-                        newChapterList.add(NovelLineBean(chapterNumAndName[i].trim { it <= ' ' }, 0f, 0, false, null))
-                    }
-                }
-                if (readStatus!!.chapterNameList.size > 1) {
-                    readStatus!!.chapterNameList.removeAt(0)
-                    newChapterList.addAll(readStatus!!.chapterNameList)
-                }
-                readStatus!!.chapterNameList = newChapterList
-
-                if (readStatus!!.chapterNameList.size > 2) {
-                    val temp = ArrayList<NovelLineBean>()
-                    for (i in 0..1) {
-                        temp.add(readStatus!!.chapterNameList[i])
-                    }
-                    readStatus!!.chapterNameList = temp
+            for (i in chapterNumAndName.indices) {
+                if (i == 0) {
+                    newChapterList.add(NovelLineBean(chapterNumAndName[i] + "章", 0f, 0, false, null))
+                } else {
+                    newChapterList.add(NovelLineBean(chapterNumAndName[i].trim { it <= ' ' }, 0f, 0, false, null))
                 }
             }
+            if (novelText.size > 1) {
+                novelText.removeAt(0)
+                newChapterList.addAll(novelText)
+            }
+            novelText = newChapterList
+
+            if (novelText.size > 2) {
+                val temp = ArrayList<NovelLineBean>()
+                for (i in 0..1) {
+                    temp.add(novelText[i])
+                }
+                novelText = temp
+            }
         }
+
 
         // 去除章节开头特殊符号
         if (content.startsWith(" \"")) {
@@ -111,21 +107,11 @@ class ReadSeparateHelper private constructor() {
                 sb.append("\u3000\u3000" + tmp + "\n")
             }
         }
-        val text: String
-        if (readStatus!!.sequence == -1) {
-            readStatus!!.bookNameList = getNovelText(mbookNamePaint, readStatus!!.bookName, ReadConfig.mWidth)
-            val homeText = "txtzsydsq_homepage\n"
-            val s = StringBuilder()
-            s.append(homeText)
-            s.append(sb)
-            text = s.toString()
-        } else {
-            text = sb.toString()
-        }
-        if (readStatus!!.offset > text.length) {
-            readStatus!!.offset = 0
-        } else if (readStatus!!.offset < 0) {
-            readStatus!!.offset = 0
+        val text = sb.toString()
+        if (ReadState.offset > text.length) {
+            ReadState.offset = 0
+        } else if (ReadState.offset < 0) {
+            ReadState.offset = 0
         }
 
         val contentList = getNovelText(ReadConfig.mPaint!!, text, ReadConfig.mWidth)
@@ -135,12 +121,9 @@ class ReadSeparateHelper private constructor() {
         var can = true
         var pageLines = ArrayList<NovelLineBean>()
         val lists = ArrayList<NovelPageBean>()
-        var mNovelPageBean = NovelPageBean(pageLines, pageLines.size, readStatus!!.chapterNameList.clone() as ArrayList<NovelLineBean>)
+        var mNovelPageBean = NovelPageBean(pageLines, pageLines.size, novelText)
         lists.add(mNovelPageBean)
-        var chapterNameSize = 0
-        if (readStatus!!.chapterNameList != null) {
-            chapterNameSize = readStatus!!.chapterNameList.size
-        }
+        var chapterNameSize = novelText.size
         if (chapterNameSize > 1) {
             textSpace += chapterHeight
         }
@@ -181,16 +164,7 @@ class ReadSeparateHelper private constructor() {
                 }
                 // }
             }
-            if (textLength >= readStatus!!.offset && can) {
-                readStatus!!.currentPage = lists.size
-                can = false
-            }
         }
-        readStatus!!.pageCount = lists.size
-        if (readStatus!!.currentPage == 0) {
-            readStatus!!.currentPage = 1
-        }
-
         addLineIndexY(lists)
         return lists
     }
@@ -202,11 +176,11 @@ class ReadSeparateHelper private constructor() {
             ReadConfig.mPaint!!.isAntiAlias = true
             ReadConfig.mPaint!!.isDither = true
         }
-        ReadConfig.mPaint!!.textSize = Constants.FONT_SIZE * readStatus!!.screenScaledDensity
+        ReadConfig.mPaint!!.textSize = Constants.FONT_SIZE * ReadConfig.screenScaledDensity
 
         val fm = ReadConfig.mPaint!!.fontMetrics
 
-        ReadConfig.mLineSpace = Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE.toFloat() * readStatus!!.screenScaledDensity
+        ReadConfig.mLineSpace = Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE.toFloat() * ReadConfig.screenScaledDensity
         ReadConfig.mFontHeight = fm.descent - fm.ascent + ReadConfig.mLineSpace
         ReadConfig.mDuan = Constants.READ_PARAGRAPH_SPACE * ReadConfig.mLineSpace
     }
@@ -244,9 +218,9 @@ class ReadSeparateHelper private constructor() {
 
     private fun disVerticalFirstPage(bean: NovelPageBean) {
         val fm = ReadConfig.mPaint!!.fontMetrics
-        var total_y = -fm.ascent + 3f * 15f * readStatus!!.screenScaledDensity + Constants.READ_CONTENT_PAGE_TOP_SPACE * readStatus!!.screenDensity
+        var total_y = -fm.ascent + 3f * 15f * ReadConfig.screenScaledDensity + Constants.READ_CONTENT_PAGE_TOP_SPACE * ReadConfig.screenDensity
         if (bean.chapterNameLines != null && bean.chapterNameLines.size > 1) {
-            total_y += 75 * readStatus!!.screenScaledDensity
+            total_y += 75 * ReadConfig.screenScaledDensity
         }
 
         val lineBeans = bean.lines
@@ -279,7 +253,7 @@ class ReadSeparateHelper private constructor() {
 
     private fun disFirstPageHeight(bean: NovelPageBean) {
         val fm = ReadConfig.mPaint!!.fontMetrics
-        var total_y = -fm.ascent + 3f * 15f * readStatus!!.screenScaledDensity
+        var total_y = -fm.ascent + 3f * 15f * ReadConfig.screenScaledDensity
         val font_height = fm.descent - fm.ascent
         var textHeight = 0f
         var duan = 0f
@@ -309,15 +283,15 @@ class ReadSeparateHelper private constructor() {
 
         var height: Float
         if (Constants.isSlideUp) {
-            height = readStatus!!.screenHeight - 96 * readStatus!!.screenScaledDensity + ReadConfig.mLineSpace - font_height
+            height = ReadConfig.screenHeight - 96 * ReadConfig.screenScaledDensity + ReadConfig.mLineSpace - font_height
         } else {
-            height = readStatus!!.screenHeight.toFloat() - readStatus!!.screenDensity * Constants.READ_CONTENT_PAGE_TOP_SPACE.toFloat() * 2f - 3f * 15f * readStatus!!.screenScaledDensity + ReadConfig.mLineSpace
-            total_y += Constants.READ_CONTENT_PAGE_TOP_SPACE * readStatus!!.screenDensity
+            height = ReadConfig.screenHeight.toFloat() - ReadConfig.screenDensity * Constants.READ_CONTENT_PAGE_TOP_SPACE.toFloat() * 2f - 3f * 15f * ReadConfig.screenScaledDensity + ReadConfig.mLineSpace
+            total_y += Constants.READ_CONTENT_PAGE_TOP_SPACE * ReadConfig.screenDensity
         }
 
         if (bean.chapterNameLines != null && bean.chapterNameLines.size > 1) {
-            total_y += 75 * readStatus!!.screenScaledDensity
-            height -= 75 * readStatus!!.screenScaledDensity
+            total_y += 75 * ReadConfig.screenScaledDensity
+            height -= 75 * ReadConfig.screenScaledDensity
         }
         if (height - textHeight > 2 && height - textHeight < 3 * (fm.descent - fm.ascent)) {
             val distanceExtra = height - textHeight
@@ -325,7 +299,7 @@ class ReadSeparateHelper private constructor() {
         } else if (textHeight - height > 2) {
             val n = Math.floor(((height - duan) / m_iFontHeight).toDouble()).toInt()// 行数
             val distance = (textHeight - height) / n
-            m_iFontHeight = fm.descent - fm.ascent + Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE.toFloat() * readStatus!!.screenScaledDensity - distance
+            m_iFontHeight = fm.descent - fm.ascent + Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE.toFloat() * ReadConfig.screenScaledDensity - distance
         }
 
         for (b in lineBeans) {
@@ -345,7 +319,7 @@ class ReadSeparateHelper private constructor() {
         var lastIsDuan = false
         var m_iFontHeight = ReadConfig.mFontHeight
         var m_duan = ReadConfig.mDuan
-        val height = readStatus!!.screenHeight - readStatus!!.screenDensity * Constants.READ_CONTENT_PAGE_TOP_SPACE.toFloat() * 2f + ReadConfig.mLineSpace
+        val height = ReadConfig.screenHeight - ReadConfig.screenDensity * Constants.READ_CONTENT_PAGE_TOP_SPACE.toFloat() * 2f + ReadConfig.mLineSpace
 
         // 计算页字符内容所占的高度
         var lineBeans = bean.lines
@@ -382,7 +356,7 @@ class ReadSeparateHelper private constructor() {
             m_iFontHeight = m_iFontHeight - distance
         }
 
-        var total_y = Constants.READ_CONTENT_PAGE_TOP_SPACE * readStatus!!.screenDensity - fm.ascent
+        var total_y = Constants.READ_CONTENT_PAGE_TOP_SPACE * ReadConfig.screenDensity - fm.ascent
 
         for (b in lineBeans) {
             if (" " == b.lineContent) {
@@ -506,16 +480,5 @@ class ReadSeparateHelper private constructor() {
             }
         }
         return false
-    }
-
-    companion object {
-
-        val instance: ReadSeparateHelper
-            get() = Singleton.INSTANCE
-
-        fun getInstance(mReadStatus: ReadStatus): ReadSeparateHelper {
-            Singleton.INSTANCE.readStatus = mReadStatus
-            return Singleton.INSTANCE
-        }
     }
 }

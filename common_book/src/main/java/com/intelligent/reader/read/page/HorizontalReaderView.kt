@@ -341,13 +341,13 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
      * 点击原网页
      */
     override fun loadOrigin() {
-        ToastUtils.showToastNoRepeat("loadOrigin")
+        mReadPageChange?.onOriginClick()
     }
     /**
      * 点击源码声明
      */
     override fun loadTransCoding() {
-        ToastUtils.showToastNoRepeat("loadTransCoding")
+        mReadPageChange?.onTransCodingClick()
     }
 
     override fun getCurPercent(): Float = percent

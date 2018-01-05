@@ -136,8 +136,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         novel_basePageView?.initReaderViewFactory()
         novel_basePageView?.entrance(ReadInfo(readStatus.book!!, readStatus, ReadConfig.animation))
         novel_basePageView?.setIReadPageChange(this)
-        //初始化 ReadSeparateHelper
-        ReadSeparateHelper.getInstance(readStatus)
         readSettingView?.setNovelMode(Constants.MODE)
     }
 
@@ -328,6 +326,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 //        novel_basePageView?.entrance(ReadInfo(readStatus.book!!, readStatus, animation))
         ReadState.sequence = intent.getIntExtra("sequence", 0)
         novel_basePageView?.onJumpChapter(ReadState.sequence)
+        mCatlogMarkDrawer?.closeDrawers()
     }
     //上一章
     override fun onJumpPreChapter() {
@@ -502,6 +501,14 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun goToBookOver(){
         mReadPresenter?.goToBookOver()
+    }
+
+    override fun onOriginClick() {
+        mReadPresenter?.onOriginClick()
+    }
+
+    override fun onTransCodingClick() {
+        mReadPresenter?.onTransCodingClick()
     }
 
     override fun loadAD() {

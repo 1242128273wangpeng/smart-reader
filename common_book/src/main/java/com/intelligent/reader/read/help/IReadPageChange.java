@@ -31,4 +31,13 @@ public interface IReadPageChange {
      * 跳转BookEnd
      */
     void goToBookOver();
+
+    /**
+     * 原网页点击事件
+     */
+    void onOriginClick();
+    /**
+     * 转码声明点击事件
+     */
+    void onTransCodingClick();
 }
