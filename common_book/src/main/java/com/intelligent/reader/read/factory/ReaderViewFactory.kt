@@ -1,6 +1,7 @@
 package com.intelligent.reader.read.factory
 
 import android.content.Context
+import com.intelligent.reader.read.animation.ShiftTransformer
 import com.intelligent.reader.read.help.IReadView
 import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.read.page.HorizontalReaderView
@@ -16,9 +17,20 @@ class ReaderViewFactory(val context: Context)  {
      * @param anim 动画模式
      * @return 获取IReadView对象
      */
-    fun getView(anim: ReadViewEnums.Animation): IReadView = if (anim == ReadViewEnums.Animation.list) {
-        VerticalReaderView(context)
-    } else {
-        HorizontalReaderView(context)
+    fun getView(anim: ReadViewEnums.Animation): IReadView {
+        return when (anim) {
+            ReadViewEnums.Animation.list -> {
+                VerticalReaderView(context)
+            }
+            ReadViewEnums.Animation.shift ->{
+                HorizontalReaderView(context, ShiftTransformer())
+            }
+            ReadViewEnums.Animation.curl ->{
+                HorizontalReaderView(context)
+            }
+            else -> {
+                HorizontalReaderView(context)
+            }
+        }
     }
 }

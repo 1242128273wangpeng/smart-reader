@@ -83,7 +83,7 @@ class DataProvider : DisposableAndroidViewModel() {
                 getChapterList(book, requestItem, sequence + 1, type, mReadDataListener)
             }
             ReadViewEnums.PageIndex.previous -> {
-                getChapterList(book, requestItem, sequence - 1, type, mReadDataListener)
+                getChapterList(book, requestItem, Math.max( -1, sequence - 1), type, mReadDataListener)
             }
         }
     }
@@ -212,7 +212,8 @@ class DataProvider : DisposableAndroidViewModel() {
                             } else {
                                 mReadDataListener.loadDataError("拉取章节时无网络")
                             }
-                        }, { _ ->
+                        }, { e ->
+                            e.printStackTrace()
                             mReadDataListener.loadDataError("拉取章节时无网络")
                         }))
     }

@@ -5,6 +5,7 @@ import android.os.Handler
 import android.util.AttributeSet
 import android.view.View
 import android.view.MotionEvent
+import com.intelligent.reader.R
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.adapter.HorizontalAdapter
 import com.intelligent.reader.read.help.*
@@ -15,7 +16,6 @@ import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.view.ViewPager
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
-import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.ToastUtils
 import java.util.*
@@ -81,9 +81,17 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     }
 
     //构造
-    constructor(context: Context?) : this(context, null)
+    constructor(context: Context) : this(context, null)
+    constructor(context: Context, transformer: PageTransformer?) : this(context, transformer, null)
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+    constructor(context: Context, transformer: PageTransformer?, attrs: AttributeSet?) : super(context, attrs) {
+        if(transformer != null) {
+            setPageTransformer(true, transformer)
+
+            setShadowDrawable(R.drawable.page_shadow)
+            setShadowWidth(50)
+        }
+
         adapter = HorizontalAdapter(this)
         setCurrentItem(Int.MAX_VALUE / 2, false)
         addOnPageChangeListener(mListener)

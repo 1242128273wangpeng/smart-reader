@@ -176,7 +176,9 @@ public class ViewPager extends ViewGroup {
     private PagerObserver mObserver;
 
     private int mPageMargin;
+    private int mShadowWidth;
     private Drawable mMarginDrawable;
+    private Drawable mShadowDrawable;
     private int mTopPageBounds;
     private int mBottomPageBounds;
 
@@ -907,6 +909,11 @@ public class ViewPager extends ViewGroup {
         requestLayout();
     }
 
+    public void setShadowWidth(int shadowWidth) {
+        mShadowWidth = shadowWidth;
+        requestLayout();
+    }
+
     /**
      * Return the margin between pages.
      *
@@ -928,6 +935,11 @@ public class ViewPager extends ViewGroup {
         invalidate();
     }
 
+    public void setShadowDrawable(Drawable d) {
+        mShadowDrawable = d;
+        invalidate();
+    }
+
     /**
      * Set a drawable that will be used to fill the margin between pages.
      *
@@ -935,6 +947,10 @@ public class ViewPager extends ViewGroup {
      */
     public void setPageMarginDrawable(@DrawableRes int resId) {
         setPageMarginDrawable(ContextCompat.getDrawable(getContext(), resId));
+    }
+
+    public void setShadowDrawable(@DrawableRes int resId) {
+        setShadowDrawable(ContextCompat.getDrawable(getContext(), resId));
     }
 
     @Override
@@ -2486,6 +2502,8 @@ public class ViewPager extends ViewGroup {
             // Keep animating
             ViewCompat.postInvalidateOnAnimation(this);
         }
+
+        drawShadow(canvas);
     }
 
     @Override
@@ -2523,6 +2541,46 @@ public class ViewPager extends ViewGroup {
                     mMarginDrawable.setBounds(Math.round(drawAt), mTopPageBounds,
                             Math.round(drawAt + mPageMargin), mBottomPageBounds);
                     mMarginDrawable.draw(canvas);
+                }
+
+                if (drawAt > scrollX + width) {
+                    break; // No more visible, no sense in continuing
+                }
+            }
+        }
+    }
+
+    private void drawShadow(Canvas canvas){
+        // Draw the margin drawable between pages if needed.
+        if (mShadowWidth > 0 && mShadowDrawable != null && mItems.size() > 0 && mAdapter != null) {
+            final int scrollX = getScrollX();
+            final int width = getWidth();
+
+            final float marginOffset = (float) mShadowWidth / width;
+            int itemIndex = 0;
+            ItemInfo ii = mItems.get(0);
+            float offset = ii.offset;
+            final int itemCount = mItems.size();
+            final int firstPos = ii.position;
+            for (int pos = firstPos; pos <= getCurrentItem(); pos++) {
+                while (pos > ii.position && itemIndex < itemCount) {
+                    ii = mItems.get(++itemIndex);
+                }
+
+                float drawAt;
+                if (pos == ii.position) {
+                    drawAt = (ii.offset + ii.widthFactor) * width;
+                    offset = ii.offset + ii.widthFactor + marginOffset;
+                } else {
+                    float widthFactor = mAdapter.getPageWidth(pos);
+                    drawAt = (offset + widthFactor) * width;
+                    offset += widthFactor + marginOffset;
+                }
+
+                if (drawAt > scrollX) {
+                    mShadowDrawable.setBounds(Math.round(drawAt), mTopPageBounds,
+                            Math.round(drawAt + mShadowWidth), mBottomPageBounds);
+                    mShadowDrawable.draw(canvas);
                 }
 
                 if (drawAt > scrollX + width) {

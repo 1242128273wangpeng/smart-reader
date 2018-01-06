@@ -46,12 +46,12 @@ class HorizontalPage : FrameLayout {
 
     private val paint: Paint = Paint()
     private var mDrawTextHelper: DrawTextHelper? = null
-    private lateinit var loadView:View
-    private lateinit var errorView:View
-    private lateinit var pageView:HorizontalItemPage
-    private lateinit var readTop:View
-    private lateinit var readBottom:View
-    private lateinit var homePage:View
+    private lateinit var loadView: View
+    private lateinit var errorView: View
+    private lateinit var pageView: HorizontalItemPage
+    private lateinit var readTop: View
+    private lateinit var readBottom: View
+    private lateinit var homePage: View
 
     var CursorOffset = 0
     var percent = 0.0f
@@ -73,23 +73,23 @@ class HorizontalPage : FrameLayout {
         init()
     }
 
-     fun init() {
-         mDrawTextHelper = DrawTextHelper(context.resources)
-         loadView = inflate(context,R.layout.loading_page_reading, null)
-         errorView = inflate(context, R.layout.error_page2, null)
-         readTop = inflate(context, R.layout.read_top, null)
-         readBottom = inflate(context, R.layout.read_bottom, null)
-         homePage = inflate(context,R.layout.book_home_page_layout, null)
-         pageView = HorizontalItemPage(context)
-         addView(pageView)
-         addView(readTop)
-         addView(readBottom)
-         addView(loadView)
-         setupView()
+    fun init() {
+        mDrawTextHelper = DrawTextHelper(context.resources)
+        loadView = inflate(context, R.layout.loading_page_reading, null)
+        errorView = inflate(context, R.layout.error_page2, null)
+        readTop = inflate(context, R.layout.read_top, null)
+        readBottom = inflate(context, R.layout.read_bottom, null)
+        homePage = inflate(context, R.layout.book_home_page_layout, null)
+        pageView = HorizontalItemPage(context)
+        addView(pageView)
+        addView(readTop)
+        addView(readBottom)
+        addView(loadView)
+        setupView()
 
     }
 
-    private fun setupView(){
+    private fun setupView() {
         //原网页
         origin_tv.setOnClickListener {
             noticePageListener?.loadOrigin()
@@ -132,50 +132,50 @@ class HorizontalPage : FrameLayout {
      * @param chapterProgress 章节进度
      * @param pageProgress 页进度
      */
-    fun setTopAndBottomViewContext(title:String,chapterProgress:String,pageProgress:String){
+    fun setTopAndBottomViewContext(title: String, chapterProgress: String, pageProgress: String) {
         novel_title.text = title
         novel_chapter.text = chapterProgress
         novel_page.text = pageProgress
     }
 
-    fun setBackGroud(){
+    fun setBackGroud() {
         //pageView
         ThemeUtil.getModePrimaryBackground(resources, pageView)
         //电池背景
         ThemeUtil.getModePrimaryBackground(resources, novel_content_battery_view)
     }
 
-    fun setTimes(time:String){
+    fun setTimes(time: String) {
         this.time = time
         //时间
         novel_time.text = time
     }
 
-    fun setBattery(percent:Float){
+    fun setBattery(percent: Float) {
         this.percent = percent
         //电池
         novel_content_battery_view.setBattery(this.percent)
     }
 
-    fun setCursor(cursor: ReadCursor){
+    fun setCursor(cursor: ReadCursor) {
         pageView.setCursor(cursor)
     }
 
     var noticePageListener: NoticePageListener? = null
 
     interface NoticePageListener {
-        fun pageChangSuccess(cursor:ReadCursor,notify: ReadViewEnums.NotifyStateState)
+        fun pageChangSuccess(cursor: ReadCursor, notify: ReadViewEnums.NotifyStateState)
         fun onClickLeft()
         fun onClickRight()
         fun onClickMenu(isShow: Boolean)
         fun loadOrigin()
         fun loadTransCoding()
-        fun getCurPercent():Float
-        fun getCurTime():String
+        fun getCurPercent(): Float
+        fun getCurTime(): String
         fun currentViewSuccess()
     }
 
-    inner class HorizontalItemPage:View{
+    inner class HorizontalItemPage : View {
 
         constructor(context: Context) : this(context, null)
         constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -187,6 +187,7 @@ class HorizontalPage : FrameLayout {
                 if (!mCurPageBitmap!!.isRecycled) canvas.drawBitmap(mCurPageBitmap, 0f, 0f, paint)
             }
         }
+
         /**
          * 入口模式
          * 加载3章至内存
@@ -199,7 +200,8 @@ class HorizontalPage : FrameLayout {
                     //true 通知其他页面加载
                     setCursor(cursor)
                 }
-                override fun loadDataError(message: String){
+
+                override fun loadDataError(message: String) {
                     //Error
                     addView(errorView)
                     viewState = ReadViewEnums.ViewState.error
@@ -211,7 +213,7 @@ class HorizontalPage : FrameLayout {
                         removeView(errorView)
                     })
                     errorView.loading_error_setting.visibility = GONE
-                    noticePageListener?.pageChangSuccess(mCursor!!,viewNotify)//游标通知回调
+                    noticePageListener?.pageChangSuccess(mCursor!!, viewNotify)//游标通知回调
                 }
             })
             DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener() {
@@ -232,10 +234,10 @@ class HorizontalPage : FrameLayout {
          * @param cursor
          */
         fun setCursor(cursor: ReadCursor) {
-            AppLog.e("cursor",""+cursor.sequence)
+            AppLog.e("cursor", "" + cursor.sequence)
             mCursor = cursor
             //判断超过章节数
-            if((ReadState.chapterList.isNotEmpty()) and (mCursor!!.sequence > ReadState.chapterList.size-1)){
+            if ((ReadState.chapterList.isNotEmpty()) and (mCursor!!.sequence > ReadState.chapterList.size - 1)) {
                 viewState = ReadViewEnums.ViewState.end
                 return
             }
@@ -243,7 +245,8 @@ class HorizontalPage : FrameLayout {
             val chapter = DataProvider.getInstance().chapterMap[cursor.sequence]
             if (chapter != null) {//加载数据
                 drawPage(cursor, chapter)
-                cursor       } else {//无缓存数据
+                cursor
+            } else {//无缓存数据
                 entrance(cursor)
             }
         }
@@ -256,11 +259,11 @@ class HorizontalPage : FrameLayout {
             cursor.readStatus.chapterName = chapter.chapter_name
             val chapterList = DataProvider.getInstance().chapterSeparate[cursor.sequence]!!
             if (!chapterList.isEmpty()) {//集合不为空，角标小于集合长度
-                val pageIndex = findPageIndexByOffset(cursor.offset,chapterList)
+                val pageIndex = findPageIndexByOffset(cursor.offset, chapterList)
                 val pageSum = chapterList.size
-                if (pageIndex <= pageSum){
+                if (pageIndex <= pageSum) {
                     //过滤其他页内容
-                    if (cursor.sequence == -1){//封面页
+                    if (cursor.sequence == -1) {//封面页
                         setupHomePage(cursor)
                         val start = ReadViewEnums.ViewState.start
                         start.Tag = when (viewNotify) {
@@ -271,23 +274,23 @@ class HorizontalPage : FrameLayout {
                         mCursor!!.lastOffset = 1
                         CursorOffset = -1
                         viewState = start
-                        noticePageListener?.pageChangSuccess(mCursor!!,ReadViewEnums.NotifyStateState.none)//游标通知回调
-                    }else {
-                        val mNovelPageBean = findNovelPageBeanByOffset(cursor.offset,chapterList)
+                        noticePageListener?.pageChangSuccess(mCursor!!, ReadViewEnums.NotifyStateState.none)//游标通知回调
+                    } else {
+                        val mNovelPageBean = findNovelPageBeanByOffset(cursor.offset, chapterList)
                         if (mNovelPageBean.isAd) {//广告页
                             showAdBigger(mNovelPageBean)
-                        }else{//普通页
+                        } else {//普通页
                             //画之前清空内容
                             removeView(homePage)
                             mCurrentCanvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
                             //画本页内容
-                            BitmapManager.getInstance().setSize(cursor.readStatus.screenWidth,cursor.readStatus.screenHeight)
+                            BitmapManager.getInstance().setSize(cursor.readStatus.screenWidth, cursor.readStatus.screenHeight)
                             mCurPageBitmap = BitmapManager.getInstance().createBitmap()
                             mCurrentCanvas = Canvas(mCurPageBitmap)
                             val topMargin = mDrawTextHelper?.drawText(mCurrentCanvas, mNovelPageBean)
                             postInvalidate()
                             //判断展示Banner广告
-                            if (cursor.readStatus.screenHeight - topMargin!!.toInt()>cursor.readStatus.screenHeight/5){
+                            if (cursor.readStatus.screenHeight - topMargin!!.toInt() > cursor.readStatus.screenHeight / 5) {
                                 showAdBanner(topMargin)
                             }
                         }
@@ -296,29 +299,30 @@ class HorizontalPage : FrameLayout {
                         mCursor!!.lastOffset = chapterList.last().offset
                         mCursor!!.offset = mNovelPageBean.offset
                         mCursor!!.nextOffset = if (pageIndex < chapterList.size) chapterList[pageIndex].offset else 0
-                        viewState = if ((mCursor!!.sequence== ReadState.chapterList.size-1)and(pageIndex == pageSum)){//判断这本书的最后一页
+                        viewState = if ((mCursor!!.sequence == ReadState.chapterList.size - 1) and (pageIndex == pageSum)) {//判断这本书的最后一页
                             ReadViewEnums.ViewState.end
-                        }else{
-                            noticePageListener?.pageChangSuccess(mCursor!!,viewNotify)//游标通知回调
+                        } else {
+                            noticePageListener?.pageChangSuccess(mCursor!!, viewNotify)//游标通知回调
                             ReadViewEnums.ViewState.success
                         }
                         //游标添加广告后的偏移量
                         when {
-                            (pageSum>=16) and (pageIndex>=9) and (pageIndex != pageSum) -> CursorOffset == -1
-                            (pageSum>=16) and (pageIndex>=9) and (pageIndex == pageSum) -> CursorOffset == -2
-                            (pageSum<16) and (pageIndex == pageSum) -> CursorOffset == -1
-                            else -> CursorOffset =0
+                            (pageSum >= 16) and (pageIndex >= 9) and (pageIndex != pageSum) -> CursorOffset == -1
+                            (pageSum >= 16) and (pageIndex >= 9) and (pageIndex == pageSum) -> CursorOffset == -2
+                            (pageSum < 16) and (pageIndex == pageSum) -> CursorOffset == -1
+                            else -> CursorOffset = 0
                         }
                         //设置top and bottom
-                        val chapterProgress = ""+(cursor.sequence + 1) + "/" + cursor.readStatus.chapterCount + "章"
+                        val chapterProgress = "" + (cursor.sequence + 1) + "/" + cursor.readStatus.chapterCount + "章"
                         val pageProgress = "本章第$pageIndex/$pageSum"
-                        setTopAndBottomViewContext(cursor.readStatus.chapterName,chapterProgress,pageProgress)
+                        setTopAndBottomViewContext(cursor.readStatus.chapterName, chapterProgress, pageProgress)
                     }
                 }
             }
         }
+
         //封面页
-        private fun setupHomePage(cursor:ReadCursor){
+        private fun setupHomePage(cursor: ReadCursor) {
             removeView(homePage)
             addView(homePage)
             //封面页
@@ -339,28 +343,31 @@ class HorizontalPage : FrameLayout {
             readTop.visibility = View.GONE
             readBottom.visibility = View.GONE
         }
+
         //通过偏移量获取章节
-        private fun findNovelPageBeanByOffset(offset:Int,chapterSeparate:ArrayList<NovelPageBean>):NovelPageBean{
+        private fun findNovelPageBeanByOffset(offset: Int, chapterSeparate: ArrayList<NovelPageBean>): NovelPageBean {
             //过滤集合 小于offset的最后一个元素
             val filter = chapterSeparate.filter {
-                it.offset<=offset
+                it.offset <= offset
             }
             return filter.last()
         }
+
         //通过偏移量获取页码Index
-        private fun findPageIndexByOffset(offset:Int,chapterSeparate:ArrayList<NovelPageBean>):Int{
+        private fun findPageIndexByOffset(offset: Int, chapterSeparate: ArrayList<NovelPageBean>): Int {
             val filter = chapterSeparate.filter {
-                it.offset<=offset
+                it.offset <= offset
             }
             return filter.size
         }
+
         //展示Banner广告
-        private fun showAdBanner(topMargins: Float){
-            DataProvider.getInstance().loadAd(context,"8-1",mCursor!!.readStatus.screenWidth,mCursor!!.readStatus.screenHeight - topMargins.toInt(),object: DataProvider.OnLoadReaderAdCallback {
+        private fun showAdBanner(topMargins: Float) {
+            DataProvider.getInstance().loadAd(context, "8-1", mCursor!!.readStatus.screenWidth, mCursor!!.readStatus.screenHeight - topMargins.toInt(), object : DataProvider.OnLoadReaderAdCallback {
                 override fun onLoadAd(adView: ViewGroup) {
-                    val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT)
+                    val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
                     val margin = AppUtils.dip2px(context, 10f)
-                    param.setMargins(margin,topMargins.toInt(),margin,margin)
+                    param.setMargins(margin, topMargins.toInt(), margin, margin)
                     addView(adView, param)
                 }
             })
@@ -369,10 +376,15 @@ class HorizontalPage : FrameLayout {
         //展示Bigger广告
         private fun showAdBigger(mNovelPageBean: NovelPageBean) {
             removeView(mNovelPageBean.adView)
+            if (mNovelPageBean.adView != null
+                    && mNovelPageBean.adView!!.parent != null
+                    && mNovelPageBean.adView!!.parent is ViewGroup) {
+                (mNovelPageBean.adView!!.parent as ViewGroup).removeView(mNovelPageBean.adView)
+            }
             val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             val margin = AppUtils.dip2px(context, 10f)
             val topMargin = AppUtils.dip2px(context, 40f)
-            param.setMargins(margin,topMargin,margin,margin)
+            param.setMargins(margin, topMargin, margin, margin)
             addView(mNovelPageBean.adView, param)
         }
 
@@ -381,33 +393,33 @@ class HorizontalPage : FrameLayout {
         private var startTouchTime: Long = 0
         private var startTouchX: Int = 0
         private var startTouchY: Int = 0
-        private var isShowMenu:Boolean = true
+        private var isShowMenu: Boolean = true
 
         override fun dispatchTouchEvent(event: MotionEvent): Boolean {
             val tmpX = event.x.toInt()
             val tmpY = event.y.toInt()
-            when(event.action) {
-                MotionEvent.ACTION_DOWN->{
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
                     lastTouchY = tmpY
                     startTouchTime = System.currentTimeMillis()
                     startTouchX = tmpX
                     startTouchY = tmpY
                     return true
                 }
-                MotionEvent.ACTION_CANCEL ->{
+                MotionEvent.ACTION_CANCEL -> {
                     startTouchTime = 0
                     return true
                 }
-                MotionEvent.ACTION_UP ->{
+                MotionEvent.ACTION_UP -> {
                     val touchTime = System.currentTimeMillis() - startTouchTime
                     val distance = Math.sqrt(Math.pow((startTouchX - tmpX).toDouble(), 2.0) + Math.pow((startTouchY - tmpY).toDouble(), 2.0)).toInt()
                     if (touchTime < 100 && distance < 30 || distance < 10) {
-                        if(onClick(event)) return true
+                        if (onClick(event)) return true
                     }
                     startTouchTime = 0
                 }
-                MotionEvent.ACTION_MOVE ->{
-                    if (!isShowMenu){
+                MotionEvent.ACTION_MOVE -> {
+                    if (!isShowMenu) {
                         noticePageListener?.onClickMenu(isShowMenu)
                         isShowMenu = true
                     }
@@ -417,7 +429,7 @@ class HorizontalPage : FrameLayout {
         }
 
         private var time: Long = 0
-        private fun onClick(event: MotionEvent) : Boolean{
+        private fun onClick(event: MotionEvent): Boolean {
             if (System.currentTimeMillis() - time < 500) {//动画时间
                 return false
             }
