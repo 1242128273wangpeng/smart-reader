@@ -3,15 +3,14 @@ package com.intelligent.reader.read.page;
 import com.intelligent.reader.read.help.DrawTextHelper;
 import com.intelligent.reader.read.mode.NovelPageBean;
 
-
 import net.lzbook.kit.utils.AppLog;
 
 import android.content.Context;
 import android.graphics.Canvas;
-
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.View;;
+import android.view.View;
+
 
 /**
  * @author lijun Lee

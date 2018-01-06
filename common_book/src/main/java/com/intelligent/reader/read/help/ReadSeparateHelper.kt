@@ -64,7 +64,7 @@ object ReadSeparateHelper {
         sb.append("chapter_homepage \n")
         sb.append("chapter_homepage \n")
         sb.append("chapter_homepage \n")
-        var novelText:ArrayList<NovelLineBean> = arrayListOf()
+        var novelText: ArrayList<NovelLineBean> = arrayListOf()
         if (!TextUtils.isEmpty(chapterName)) {
             novelText = getNovelText(mchapterPaint, chapterName, ReadConfig.mWidth - ReadConfig.screenDensity * 10)
             val chapterNumAndName = novelText[0].lineContent.split("章".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
@@ -199,15 +199,15 @@ object ReadSeparateHelper {
                 if (lineBeans[0].lineContent.startsWith("txtzsydsq_homepage")) {// 封面页
                     // 封面页原生实现不需要添加y坐标
                 } else if (lineBeans[0].lineContent.startsWith("chapter_homepage")) {// 章节首页
-                    if (ReadViewEnums.Animation.list == ReadConfig.animation){
+                    if (ReadViewEnums.Animation.list == ReadConfig.animation) {
                         disVerticalFirstPage(bean)
-                    }else{
+                    } else {
                         disFirstPageHeight(bean)
                     }
                 } else {// 章节内容
-                    if (ReadViewEnums.Animation.list == ReadConfig.animation){
+                    if (ReadViewEnums.Animation.list == ReadConfig.animation) {
                         disVerticalPage(bean)
-                    }else{
+                    } else {
                         disPageHeight(bean)
                     }
                 }
@@ -489,5 +489,12 @@ object ReadSeparateHelper {
             }
         }
         return false
+    }
+
+    fun getCurrentPage(offest: Int, currentChapter: ArrayList<NovelPageBean>): Int {
+        val filter = currentChapter.filter {
+            it.offset <= offest
+        }
+        return if(filter.size - 1 > 0) return filter.size - 1 else 1
     }
 }
