@@ -17,7 +17,6 @@ import com.intelligent.reader.view.ViewPager
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.utils.AppLog
-import net.lzbook.kit.utils.ToastUtils
 import java.util.*
 
 /**
@@ -72,6 +71,8 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                     checkChapterCache("Pre")
                 }
                 index < position -> {
+                    //log埋点
+                    if(ReadState.sequence>=0) mReadPageChange?.addLog()
                     checkViewState("Next", ReadViewEnums.NotifyStateState.right)
                     checkChapterCache("Next")
                 }
@@ -303,23 +304,31 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                 val viewState = (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState
                 if(viewState == ReadViewEnums.ViewState.start){
                     if(viewState.Tag == 1){
-                        viewState.Tag = 0
+                        viewState.Tag = -1
                         nextViewUpdata(cursor)
                         AppLog.e("none","start")
-                    }else {
-                        AppLog.e("none","start2")
-                        isCanScroll = 1
-                        isLeftSlip = false
                     }
-                }else {
-                    isCanScroll = 0
                 }
+//                val viewState = (mItems[1].`object`  as HorizontalPage).viewState
+//                if(viewState == ReadViewEnums.ViewState.start){
+//                    if(viewState.Tag == 1){
+//                        viewState.Tag = -1
+//                        nextViewUpdata(cursor)
+//                        AppLog.e("none","start")
+//                    }else if(viewState.Tag == -1){
+//                        AppLog.e("none","start2")
+//                        isCanScroll = 1
+//                        isLeftSlip = false
+//                    }
+//                }else {
+                    isCanScroll = 0
+//                }
             }
         }
     }
 
     /**
-     * 点击屏幕左边后翻页
+     * 点击屏幕左边前翻页
      */
     override fun onClickLeft() {
         //当前页是封面页禁止点击
@@ -349,13 +358,13 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
      * 点击原网页
      */
     override fun loadOrigin() {
-        ToastUtils.showToastNoRepeat("loadOrigin")
+        mReadPageChange?.onOriginClick()
     }
     /**
      * 点击源码声明
      */
     override fun loadTransCoding() {
-        ToastUtils.showToastNoRepeat("loadTransCoding")
+        mReadPageChange?.onTransCodingClick()
     }
 
     override fun getCurPercent(): Float = percent
@@ -365,9 +374,24 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     override fun currentViewSuccess() {
         val curView = findViewWithTag(ReadViewEnums.PageIndex.current)
         curView as HorizontalPage
-        if (curView.mCursor!=null){
-            ReadState.sequence = curView.mCursor!!.sequence
-            ReadState.offset = curView.mCursor!!.offset + curView.CursorOffset
+        val mCursor = curView.mCursor
+        if (mCursor!=null){
+            ReadState.sequence = mCursor.sequence
+            ReadState.offset = mCursor.offset + curView.CursorOffset
+            ReadState.currentPage = curView.pageIndex
+            ReadState.pageCount = curView.pageSum
+            ReadState.contentLength = curView.contentLength
+            when(curView.viewState) {
+                 ReadViewEnums.ViewState.start -> {
+                    isCanScroll = 1
+                    isLeftSlip = false
+                }
+                ReadViewEnums.ViewState.end -> {
+                    isCanScroll = 1
+                    isLeftSlip = true
+                }
+                else -> isCanScroll = 0
+            }
         }
     }
 //==================================================IReadPageChange=========================================
@@ -389,15 +413,6 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState = ReadViewEnums.ViewState.loading
             curCursor = ReadCursor(mReadInfo.curBook,sequence,offset, ReadViewEnums.PageIndex.current,mReadInfo.mReadStatus)
             checkViewState("Cur", ReadViewEnums.NotifyStateState.all)
-//            if(this.mReadInfo!!.mReadStatus.sequence == -1){
-//                this.mReadInfo!!.mReadStatus.sequence =0
-//                curCursor = ReadCursor(mReadInfo.curBook,sequence,offset, ReadViewEnums.PageIndex.current,mReadInfo.mReadStatus)
-//                checkViewState("Cur", ReadViewEnums.NotifyStateState.all)
-//
-//            }else{
-//                curCursor = ReadCursor(mReadInfo.curBook,sequence,offset, ReadViewEnums.PageIndex.current,mReadInfo.mReadStatus)
-//                checkViewState("Cur", ReadViewEnums.NotifyStateState.all)
-//            }
         },200)
         //设置字体颜色
         mReadPageChange?.onLoadChapter(ReadViewEnums.MsgType.MSG_LOAD_CUR_CHAPTER, mReadInfo.mReadStatus.currentPage - 1, false, ReadViewEnums.PageIndex.current)

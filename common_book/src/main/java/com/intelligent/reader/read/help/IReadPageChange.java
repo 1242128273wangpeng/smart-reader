@@ -23,12 +23,20 @@ public interface IReadPageChange {
     void showMenu(Boolean isShow);
 
     /**
-     * 加载广告
-     */
-    void loadAD();
-
-    /**
      * 跳转BookEnd
      */
     void goToBookOver();
+
+    /**
+     * 原网页点击事件
+     */
+    void onOriginClick();
+    /**
+     * 转码声明点击事件
+     */
+    void onTransCodingClick();
+    /*
+     * 打点统计
+     */
+    void addLog();
 }

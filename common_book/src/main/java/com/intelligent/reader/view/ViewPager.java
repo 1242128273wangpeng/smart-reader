@@ -136,12 +136,12 @@ public class ViewPager extends ViewGroup {
      */
     private int mExpectedAdapterCount;
 
-    static class ItemInfo {
-        Object object;
-        int position;
-        boolean scrolling;
-        float widthFactor;
-        float offset;
+    public static class ItemInfo {
+        public Object object;
+        public int position;
+        public boolean scrolling;
+        public float widthFactor;
+        public float offset;
     }
 
     private static final Comparator<ItemInfo> COMPARATOR = new Comparator<ItemInfo>(){
@@ -159,7 +159,7 @@ public class ViewPager extends ViewGroup {
         }
     };
 
-    private final ArrayList<ItemInfo> mItems = new ArrayList<ItemInfo>();
+    public final ArrayList<ItemInfo> mItems = new ArrayList<ItemInfo>();
     private final ItemInfo mTempItem = new ItemInfo();
 
     private final Rect mTempRect = new Rect();

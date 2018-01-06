@@ -31,10 +31,8 @@ import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.net.custom.service.NetService
-import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.OpenUDID
-import net.lzbook.kit.utils.ToastUtils
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
@@ -220,7 +218,6 @@ class DataProvider : DisposableAndroidViewModel() {
 
     private fun requestSingleChapter(book: Book, chapters: List<Chapter>, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
         val chapter = chapters[sequence]
-        AppLog.e("book",book.toString())
         addDisposable(mReaderRepository.requestSingleChapter(book.site, chapter)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -234,7 +231,7 @@ class DataProvider : DisposableAndroidViewModel() {
                     }
                     mReaderRepository.writeChapterCache(c, false)
                     chapterMap.put(sequence, c)
-                    chapterSeparate.put(sequence, ReadSeparateHelper.instance.initTextSeparateContent(c.content, c.chapter_name))
+                    chapterSeparate.put(sequence, ReadSeparateHelper.initTextSeparateContent(c.content, c.chapter_name))
                     mReadDataListener.loadDataSuccess(c, type)
                     //加章末广告
                     if (isShowAd) {
@@ -308,7 +305,7 @@ class DataProvider : DisposableAndroidViewModel() {
         for (it in chapterMap) {
             if (it.key != -1) {
                 val lastPageBean = chapterSeparate[it.key]!!.last()
-                val mPageBeanList = ReadSeparateHelper.instance.initTextSeparateContent(it.value.content, it.value.chapter_name)
+                val mPageBeanList = ReadSeparateHelper.initTextSeparateContent(it.value.content, it.value.chapter_name)
                 if (lastPageBean.isAd) {//最后广告
                     mPageBeanList.add(lastPageBean)
                 }

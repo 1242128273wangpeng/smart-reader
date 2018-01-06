@@ -24,6 +24,7 @@ import android.widget.Toast
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.read.help.ReadSettingHelper
+import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.reader.ReaderViewModel
 import iyouqu.theme.FrameActivity
 import iyouqu.theme.ThemeHelper
@@ -494,7 +495,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     }
 
     private fun refreshJumpPreBtnState() {
-        if (readStatus!!.sequence <= 0) {
+        if (ReadState.sequence <= 0) {
             novel_jump_previous.isClickable = false
             novel_jump_previous.isEnabled = false
             novel_jump_previous.alpha = 0.3f

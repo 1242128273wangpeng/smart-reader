@@ -740,9 +740,10 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             ReadConfig.screenWidth = dm.widthPixels
             ReadConfig.screenHeight = dm.heightPixels
         }
-
         readStatus?.screenDensity = dm.density
         readStatus?.screenScaledDensity = dm.scaledDensity
+        ReadConfig.screenDensity = dm.density
+        ReadConfig.screenScaledDensity = dm.scaledDensity
         // 保存字体、亮度、阅读模式
         modeSp = readReference?.get()?.getSharedPreferences("config", Context.MODE_PRIVATE)
         // 设置字体
@@ -1106,12 +1107,12 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                 return
             }
             showMenu(false)
-            getCustomLoadingPage()
-            loadingPage?.loading {
-                mReaderViewModel!!.getBookSource(readStatus!!.book_id)
+//            getCustomLoadingPage()
+//            loadingPage?.loading {
+//                mReaderViewModel!!.getBookSource(readStatus!!.book_id)
 //                OtherRequestService.requestBookSourceChange(dataFactory?.mHandler, ReadingActivity.MSG_SEARCH_CHAPTER, -144, readStatus!!.book_id)
-                null
-            }
+//                null
+//            }
 //            dataFactory?.loadingError(loadingPage)
         }
     }
@@ -1865,10 +1866,10 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 //        }
         changeMarkState()
 
-        if (!pageView!!.isAutoReadMode) {
+//        if (!pageView!!.isAutoReadMode) {
             Constants.manualReadedCount++
             dealManualDialogShow()
-        }
+//        }
 
         val data = HashMap<String, String>()
         if (readStatus != null) {

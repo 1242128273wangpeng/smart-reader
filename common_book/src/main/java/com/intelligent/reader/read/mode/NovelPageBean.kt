@@ -16,4 +16,5 @@ data class NovelPageBean(
     var isAd: Boolean = false
     var height: Float = 0.0f
     var isLastPage: Boolean = false
+    var contentLength:Int = 0
 }
