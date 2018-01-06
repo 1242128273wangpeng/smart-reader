@@ -96,11 +96,10 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         mCatalogMarkFragment = supportFragmentManager.findFragmentById(R.id.read_catalog_mark_layout) as CatalogMarkFragment
         mCatlogMarkDrawer?.addDrawerListener(mCatalogMarkFragment!!)
         mOptionHeader = findViewById(R.id.option_header) as ReadOptionHeader
-        mReadPresenter ?: BaseReadPresenter(this).onConfigurationChanged(mCatalogMarkFragment!!, mOptionHeader!!)
+        mReadPresenter?.onConfigurationChanged(mCatalogMarkFragment!!, mOptionHeader!!)
         // 注册一个电量广播
         registerReceiver(mBatInfoReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
-        pageView?.freshBattery(batteryPercent)
-
+//        pageView?.freshBattery(batteryPercent)
     }
 
     override fun initView(fac: ReaderViewModel) {
@@ -332,14 +331,14 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     }
     //上一章
     override fun onJumpPreChapter() {
-        if (readStatus.sequence == 0) {
+        if (ReadState.sequence == 0) {
             showToastShort(net.lzbook.kit.R.string.is_first_chapter)
             return
         }
         mReadPresenter?.onJumpPreChapter()!!
-        readStatus.currentPage = 1
-        readStatus.offset = 0
-        readStatus.sequence--
+//        readStatus.currentPage = 1
+//        readStatus.offset = 0
+//        readStatus.sequence--
 //        novel_basePageView?.entrance(ReadInfo(readStatus.book!!, readStatus, animation))
         novel_basePageView?.onJumpChapter(--ReadState.sequence)
     }

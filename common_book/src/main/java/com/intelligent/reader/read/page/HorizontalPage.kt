@@ -317,6 +317,7 @@ class HorizontalPage : FrameLayout {
                         val chapterProgress = ""+(cursor.sequence + 1) + "/" + cursor.readStatus.chapterCount + "章"
                         val pageProgress = "本章第$pageIndex/$pageSum"
                         setTopAndBottomViewContext(cursor.readStatus.chapterName,chapterProgress,pageProgress)
+                        noticePageListener?.currentViewSuccess()
                     }
                 }
             }

@@ -25,4 +25,5 @@ object ReadState {
     var currentPage:Int = 0
     //当前页总长度
     var contentLength:Int = 0
+
 }
