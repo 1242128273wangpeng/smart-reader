@@ -102,7 +102,12 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
         page_rv.layoutManager = mLayoutManager
         mDataProvider = DataProvider.getInstance()
         mOriginDataList = CopyOnWriteArrayList()
-
+        origin_tv.setOnClickListener {
+            mReadPageChange?.onOriginClick()
+        }
+        trans_coding_tv.setOnClickListener {
+            mReadPageChange?.onTransCodingClick()
+        }
         page_rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -110,12 +115,12 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 if (mLastVisiblePosition != linearLayoutManager.findLastVisibleItemPosition()) {
                     mLastVisiblePosition = linearLayoutManager.findLastVisibleItemPosition()
                     setCurrentChapterInfo(mLastVisiblePosition)
-                    mReadInfo.mReadStatus.currentPage = mLastVisiblePosition
+                    ReadState.currentPage = mLastVisiblePosition
                 }
                 if (mLastVisiblePosition < (mOriginDataList.size * PRE_LOAD_CHAPTER_SCROLL_SCALE)) {
-                    loadPreChapter(mReadInfo.mReadStatus.sequence - 1)
+                    loadPreChapter(ReadState.sequence - 1)
                 } else if (mLastVisiblePosition > (mOriginDataList.size * NEXT_LOAD_CHAPTER_SCROLL_SCALE)) {
-                    loadNextChapter(mReadInfo.mReadStatus.sequence + 1)
+                    loadNextChapter(ReadState.sequence + 1)
                 }
                 mCanScrollVertically = recyclerView.canScrollVertically(1)
             }
@@ -123,17 +128,20 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     }
 
     override fun entrance(readInfo: ReadInfo) {
-        mReadInfo = readInfo
+        if (mOriginDataList.size > 0) {
+            mOriginDataList.clear()
+        }
 
+        mReadInfo = readInfo
         mNovelHelper = NovelHelper(context as Activity, mReadInfo.mReadStatus)
         mAdapter = PagerScrollAdapter(context, mReadInfo.mReadStatus, mNovelHelper)
         mAdapter.setOnLoadViewClickListener(this)
         page_rv.adapter = mAdapter
 
-        setCurrentChapterInfo(mReadInfo.mReadStatus.currentPage - 1)
+//        setCurrentChapterInfo(ReadState.currentPage - 1)
 
-        if (mReadInfo.mReadStatus.sequence == -1) {
-            mReadInfo.mReadStatus.sequence = 0
+        if (ReadState.sequence == -1) {
+            ReadState.sequence = 0
             mFirstRead = true
         }
 
@@ -141,10 +149,10 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
             mReadInfo.mReadStatus.chapterCount = size
         }
 
-        getChapterData(mReadInfo.mReadStatus.sequence, ReadViewEnums.PageIndex.current, false)
+        getChapterData(ReadState.sequence, ReadViewEnums.PageIndex.current, false)
 
-        loadPreChapter(mReadInfo.mReadStatus.sequence - 1)
-        loadNextChapter(mReadInfo.mReadStatus.sequence + 1)
+        loadPreChapter(ReadState.sequence - 1)
+        loadNextChapter(ReadState.sequence + 1)
         setBackground()
     }
 
@@ -222,7 +230,6 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
          */
             ReadViewEnums.PageIndex.previous -> {
                 if (!checkLoadChapterValid(chapter.sequence)) return
-                mReadInfo.mReadStatus.chapterName = chapter.chapter_name
                 val preChapterContent = ReadSeparateHelper.initTextSeparateContent(chapter.content, chapter.chapter_name)
                 setChapterPagePosition(chapter.sequence, chapter.chapter_name, preChapterContent)
                 loadAdViewToChapterLastPage(preChapterContent)
@@ -255,28 +262,28 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 mAdapter.setChapterCatalog(mCatalogList)
 
                 if (!checkLoadChapterValid(chapter.sequence)) return
-                mReadInfo.mReadStatus.chapterName = chapter.chapter_name
                 val currentChapterContent = ReadSeparateHelper.initTextSeparateContent(chapter.content, chapter.chapter_name)
+                ReadState.currentPage = ReadSeparateHelper.getCurrentPage(ReadState.offset, currentChapterContent)
                 mOriginDataList.addAll(currentChapterContent)
                 setChapterPagePosition(chapter.sequence, chapter.chapter_name, mOriginDataList)
                 loadAdViewToChapterLastPage(mOriginDataList)
                 mAdapter.setChapter(mOriginDataList)
                 loadAdViewToChapterBetween(currentChapterContent, ReadViewEnums.PageIndex.current)
                 addBookHomePage(chapter)
-                if (mReadInfo.mReadStatus.sequence == 0 && mReadInfo.mReadStatus.currentPage == 1) {
+                if (ReadState.sequence == 0 && ReadState.currentPage == 1) {
                     if (mFirstRead) {
                         page_rv.scrollToPosition(0)
                     } else {
                         page_rv.scrollToPosition(1)
                     }
                 } else {
-                    val position = mReadInfo.mReadStatus.currentPage
-                    if (mReadInfo.mReadStatus.currentPage > 1) {
-                        page_rv.scrollToPosition(position + 1)
-                        mReadInfo.mReadStatus.currentPage = position
-                    } else if (mReadInfo.mReadStatus.currentPage == 1) {
+                    val position = ReadState.currentPage
+                    if (ReadState.currentPage > 1) {
+                        page_rv.scrollToPosition(position)
+                        ReadState.currentPage = position
+                    } else if (ReadState.currentPage == 1) {
                         page_rv.scrollToPosition(1)
-                        mReadInfo.mReadStatus.currentPage = 1
+                        ReadState.currentPage = 1
                     }
                 }
                 if (chapter.sequence == mReadInfo.mReadStatus.chapterCount - 1) {
@@ -290,10 +297,9 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
          */
             ReadViewEnums.PageIndex.next -> {
                 if (!checkLoadChapterValid(chapter.sequence)) return
-                if (mReadInfo.mReadStatus.sequence == -1) {
-                    mReadInfo.mReadStatus.sequence = 0
+                if (ReadState.sequence == -1) {
+                    ReadState.sequence = 0
                 }
-                mReadInfo.mReadStatus.chapterName = chapter.chapter_name
                 val nextChapterContent = ReadSeparateHelper.initTextSeparateContent(chapter.content, chapter.chapter_name)
                 setChapterPagePosition(chapter.sequence, chapter.chapter_name, nextChapterContent)
                 loadAdViewToChapterLastPage(nextChapterContent)
@@ -334,14 +340,17 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 novel_chapter.text = "${mOriginDataList[position].lines[0].sequence + 1} / ${mReadInfo.mReadStatus.chapterCount} 章"
                 novel_page.text = "本章第${(getCurrentChapterPage(position) + 1)} / ${getCurrentChapterPageCount(mOriginDataList[position].lines[0].sequence)}"
 
-                mReadInfo.mReadStatus.currentPage = getCurrentChapterPage(position)
-                mReadInfo.mReadStatus.sequence = mOriginDataList[position].lines[0].sequence
-                mCurrentPage = mReadInfo.mReadStatus.currentPage
+                ReadState.currentPage = getCurrentChapterPage(position)
+                ReadState.sequence = mOriginDataList[position].lines[0].sequence
+                mCurrentPage = ReadState.currentPage
             }
-//            mOnReaderViewControlCallback?.onPageChange(mReadInfo.mReadStatus.sequence, mReadInfo.mReadStatus.currentPage)
+            mReadPageChange?.addLog()
+
+            ReadState.offset = mOriginDataList[position].offset
+            ReadState.sequence = mOriginDataList[position].lines[0].sequence
         }
 
-        if (mReadInfo.mReadStatus.sequence == -1) {
+        if (ReadState.sequence == -1) {
             novel_title_layout.visibility = View.INVISIBLE
             novel_bottom.visibility = View.INVISIBLE
         } else {
@@ -417,7 +426,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     }
 
     /**
-     * 添加广告(章节末、段尾) 5-1 8-1
+     * 添加广告 段尾  8-1
      */
     private fun loadAdViewToChapterLastPage(chapterContent: List<NovelPageBean>) {
         var lineData: NovelLineBean? = null
@@ -434,15 +443,18 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
             return
         }
 
-        mDataProvider.loadChapterLastPageAd(context.applicationContext, object : DataProvider.OnLoadReaderAdCallback {
+        mDataProvider.loadChapterLastPageAd(context, object : DataProvider.OnLoadReaderAdCallback {
             override fun onLoadAd(adView: ViewGroup) {
                 lineData?.adView = adView
             }
         })
     }
 
+    /**
+     * 添加广告 章节间  8-1
+     */
     private fun loadAdViewToChapterBetween(chapterContent: ArrayList<NovelPageBean>, index: ReadViewEnums.PageIndex) {
-        mDataProvider.loadChapterBetweenAd(context.applicationContext, object : DataProvider.OnLoadReaderAdCallback {
+        mDataProvider.loadChapterBetweenAd(context, object : DataProvider.OnLoadReaderAdCallback {
             override fun onLoadAd(adView: ViewGroup) {
                 val adData = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { sequence = PagerScrollAdapter.AD_ITEM_TYPE; }), 0,
                         arrayListOf()).apply { isAd = true;this.adView = adView })
@@ -478,13 +490,11 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 // 底部
                 if (mLastY - event.y > 20) {
                     if (!mCanScrollVertically) {
-//                        if (mReadDataFactory is ReadDataFactory) {
-//                            (mReadDataFactory as ReadDataFactory).gotoOver()
-//                        }
+                        mReadPageChange?.goToBookOver()
                     }
                     // 顶部
                 } else if (mLastY - event.y < -20) {
-                    if (mReadInfo.mReadStatus.sequence == -1) {
+                    if (ReadState.sequence == -1) {
                         ToastUtils.showToastNoRepeat(resources.getString(R.string.is_first_chapter))
                     }
                 }
@@ -496,10 +506,10 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     override fun onLoadViewClick(type: Int) {
         when (type) {
             PagerScrollAdapter.HEADER_ITEM_TYPE -> {
-                loadPreChapter(mReadInfo.mReadStatus.sequence - 1)
+                loadPreChapter(ReadState.sequence - 1)
             }
             PagerScrollAdapter.FOOTER_ITEM_TYPE -> {
-                loadNextChapter(mReadInfo.mReadStatus.sequence + 1)
+                loadNextChapter(ReadState.sequence + 1)
             }
         }
     }
@@ -551,11 +561,11 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     }
 
     override fun onRedrawPage() {
-        getChapterData(mReadInfo.mReadStatus.sequence, ReadViewEnums.PageIndex.current, true)
+        getChapterData(ReadState.sequence, ReadViewEnums.PageIndex.current, true)
     }
 
     override fun onJumpChapter(sequence: Int) {
-
+        getChapterData(sequence, ReadViewEnums.PageIndex.current, true)
     }
 
     override fun setReadInfo(mReadInfo: ReadInfo?) {

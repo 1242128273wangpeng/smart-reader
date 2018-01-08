@@ -348,6 +348,8 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         readStatus.offset = 0
         readStatus.sequence++
 //        novel_basePageView?.entrance(ReadInfo(readStatus.book!!, readStatus, animation))
+        ReadState.offset = 0
+        ReadState.currentPage = 0
         novel_basePageView?.onJumpChapter(++ReadState.sequence)
     }
 

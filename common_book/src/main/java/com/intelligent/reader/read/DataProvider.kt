@@ -101,7 +101,7 @@ class DataProvider : DisposableAndroidViewModel() {
         }
     }
 
-    fun loadAd(context: Context, type: String, callback: OnLoadReaderAdCallback) {
+    private fun loadAd(context: Context, type: String, callback: OnLoadReaderAdCallback) {
 
         var adViewHeight = 800
 
