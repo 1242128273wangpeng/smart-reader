@@ -220,6 +220,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         mReadPresenter?.onResume()
         // 注册一个电量广播类型
         registerReceiver(mBatInfoReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+        novel_basePageView?.onResume()
     }
 
     override fun shouldReceiveCacheEvent(): Boolean = false
@@ -235,6 +236,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     override fun onPause() {
         super.onPause()
         mReadPresenter?.onPause(ReadState.sequence,ReadState.offset)
+        novel_basePageView?.onPause()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -274,7 +276,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         DataProvider.getInstance().unSubscribe()
         DataProvider.getInstance().chapterMap.clear()
         DataProvider.getInstance().chapterSeparate.clear()
-
         try {
             unregisterReceiver(mBatInfoReceiver)
         } catch (e: Exception) {
@@ -283,43 +284,37 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         super.onDestroy()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        if (mReadPresenter?.onSaveInstanceState(outState) != null) super.onSaveInstanceState(outState)
-    }
+    override fun onSaveInstanceState(outState: Bundle) = if (mReadPresenter?.onSaveInstanceState(outState) != null) super.onSaveInstanceState(outState) else Unit
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) = mReadPresenter?.onActivityResult(requestCode, resultCode, data)!!
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) = mReadPresenter?.onActivityResult(requestCode, resultCode, data)?:Unit
 
-    override fun speedUp() = mReadPresenter?.speedUp()!!
+    override fun speedUp() = mReadPresenter?.speedUp()?:Unit
 
-    override fun speedDown() = mReadPresenter?.speedDown()!!
+    override fun speedDown() = mReadPresenter?.speedDown()?:Unit
 
-    override fun autoStop() = mReadPresenter?.autoStop()!!
+    override fun autoStop() = mReadPresenter?.autoStop()?:Unit
     //ReadSettingView start
     override fun onReadCatalog() {
         mReadPresenter?.onReadCatalog()
         mCatlogMarkDrawer?.openDrawer(GravityCompat.START)
     }
 
-    override fun onReadChangeSource() = mReadPresenter?.onReadChangeSource()!!
+    override fun onReadChangeSource() = mReadPresenter?.onReadChangeSource()?:Unit
 
-    override fun onReadCache() = mReadPresenter?.onReadCache()!!
+    override fun onReadCache() = mReadPresenter?.onReadCache()?:Unit
 
-    override fun onReadAuto() = mReadPresenter?.onReadAuto()!!
+    override fun onReadAuto() = mReadPresenter?.onReadAuto()?:Unit
 
     override fun onChangeMode(mode: Int) {
         mReadPresenter?.onChangeMode(mode)
         novel_basePageView?.setBackground()
     }
 
-    override fun onChangeScreenMode() {
-        mReadPresenter?.changeScreenMode()!!
-    }
+    override fun onChangeScreenMode() = mReadPresenter?.changeScreenMode()?:Unit
 
-    override fun onRedrawPage() = novel_basePageView?.onRedrawPage()!!
+    override fun onRedrawPage() = novel_basePageView?.onRedrawPage()?:Unit
 
-    override fun onJumpChapter() {
-
-    }
+    override fun onJumpChapter() = Unit
     //目录跳章
     fun onJumpChapter(intent: Intent) {
         readStatus.sequence = intent.getIntExtra("sequence", 0)
@@ -335,7 +330,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
             showToastShort(net.lzbook.kit.R.string.is_first_chapter)
             return
         }
-        mReadPresenter?.onJumpPreChapter()!!
+        mReadPresenter?.onJumpPreChapter()?:Unit
 //        readStatus.currentPage = 1
 //        readStatus.offset = 0
 //        readStatus.sequence--
@@ -356,27 +351,17 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         novel_basePageView?.onJumpChapter(++ReadState.sequence)
     }
 
-    override fun onReadFeedBack() = mReadPresenter?.onReadFeedBack()!!
+    override fun onReadFeedBack() = mReadPresenter?.onReadFeedBack()?:Unit
 
-    override fun onChageNightMode() = mReadPresenter?.onChageNightMode()!!
+    override fun onChageNightMode() = mReadPresenter?.onChageNightMode()?:Unit
     //0 滑动 1 仿真 2 平移 3 上下
     override fun changeAnimMode(mode: Int) {
         if (((mode == 3) and (ReadConfig.animation != ReadViewEnums.Animation.list)) or ((ReadConfig.animation == ReadViewEnums.Animation.list) and (mode != 3))) {
-            ReadConfig.animation = when (mode) {
-                0 -> ReadViewEnums.Animation.slide
-                1 -> ReadViewEnums.Animation.curl
-                2 -> ReadViewEnums.Animation.shift
-                else -> ReadViewEnums.Animation.list
-            }
+            novel_basePageView?.changeAnimMode(mode)
             novel_basePageView?.entrance(ReadInfo(readStatus.book, readStatus, ReadConfig.animation))
             novel_basePageView?.setIReadPageChange(this)
         }
-        ReadConfig.animation = when (mode) {
-            0 -> ReadViewEnums.Animation.slide
-            1 -> ReadViewEnums.Animation.curl
-            2 -> ReadViewEnums.Animation.shift
-            else -> ReadViewEnums.Animation.list
-        }
+        novel_basePageView?.changeAnimMode(mode)
     }
 
     //ReadSettingView end
@@ -391,7 +376,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         readStatus = readSta
     }
 
-    override fun showSetMenu(isShow: Boolean) = readSettingView?.showSetMenu(isShow)!!
+    override fun showSetMenu(isShow: Boolean) = readSettingView?.showSetMenu(isShow)?:Unit
 
     override fun full(isFull: Boolean) {
         if (isFull) {
@@ -415,27 +400,20 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         }
     }
 
-    override fun setMode() = readSettingView?.setMode()!!
+    override fun setMode() = readSettingView?.setMode()?:Unit
 
-    override fun showAutoMenu(isShow: Boolean) {
-        when (isShow) {
-            true -> auto_menu?.visibility = View.VISIBLE
-            false -> auto_menu?.visibility = View.GONE
-        }
-    }
+    override fun showAutoMenu(isShow: Boolean) = if (isShow) auto_menu?.visibility = View.VISIBLE else auto_menu?.visibility = View.GONE
 
     override fun resetPageView(pageView: PageInterface) {
         novel_basePageView?.removeAllViews()
         novel_basePageView?.addView(pageView as View, FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
     }
 
-    override fun initShowCacheState() = readSettingView?.initShowCacheState()!!
+    override fun initShowCacheState() = readSettingView?.initShowCacheState()?:Unit
 
-    override fun changeChapter() = readSettingView?.changeChapter()!!
+    override fun changeChapter() = readSettingView?.changeChapter()?:Unit
 
-    override fun checkModeChange() {
-        if (isModeChange) setMode()
-    }
+    override fun checkModeChange() =  if (isModeChange) setMode() else Unit
 
     override fun getAutoMenuShowState(): Boolean = auto_menu?.isShown ?: false
 
@@ -492,25 +470,15 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     }
 
     //IReadPageChange
-    override fun onLoadChapter(type: ReadViewEnums.MsgType, sequence: Int, isShowLoadPage: Boolean, pageIndex: ReadViewEnums.PageIndex) {
-        mReadPresenter?.onLoadChapter(type.Msg, sequence, isShowLoadPage, pageIndex)
-    }
+    override fun onLoadChapter(type: ReadViewEnums.MsgType, sequence: Int, isShowLoadPage: Boolean, pageIndex: ReadViewEnums.PageIndex)= mReadPresenter?.onLoadChapter(type.Msg, sequence, isShowLoadPage, pageIndex)?:Unit
 
-    override fun showMenu(isShow: Boolean) {
-        mReadPresenter?.showMenu(isShow)
-    }
+    override fun showMenu(isShow: Boolean) = mReadPresenter?.showMenu(isShow)?:Unit
 
-    override fun goToBookOver(){
-        mReadPresenter?.goToBookOver()
-    }
+    override fun goToBookOver() = mReadPresenter?.goToBookOver()?:Unit
 
-    override fun onOriginClick() {
-        mReadPresenter?.onOriginClick()
-    }
+    override fun onOriginClick() = mReadPresenter?.onOriginClick()?:Unit
 
-    override fun onTransCodingClick() {
-        mReadPresenter?.onTransCodingClick()
-    }
+    override fun onTransCodingClick() = mReadPresenter?.onTransCodingClick()?:Unit
 
     override fun addLog() {
         val book = intent.getSerializableExtra("book") as Book
@@ -530,14 +498,9 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
                 startReadTime.toString() , endTime.toString(), (endTime - startReadTime).toString(), "false", channelCode)
     }
 
-    override fun freshTime(time_text: CharSequence?) {
-        novel_basePageView?.freshTime(time_text)
-    }
+    override fun freshTime(time_text: CharSequence?) = novel_basePageView?.freshTime(time_text)?:Unit
 
-    override fun setBackground() {
-        novel_basePageView?.setBackground()
-    }
-
+    override fun setBackground() = novel_basePageView?.setBackground()?:Unit
 
     //广播
     /**

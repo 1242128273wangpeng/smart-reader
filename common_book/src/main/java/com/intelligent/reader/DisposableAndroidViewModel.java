@@ -17,7 +17,7 @@ public class DisposableAndroidViewModel {
         mDisposable = new CompositeDisposable();
     }
 
-    protected void addDisposable(Disposable d) {
+    public void addDisposable(Disposable d) {
         mDisposable.add(d);
     }
 

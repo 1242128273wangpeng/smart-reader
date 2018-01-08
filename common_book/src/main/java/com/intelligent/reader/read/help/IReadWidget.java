@@ -71,4 +71,10 @@ public interface IReadWidget {
      * @param sequence 章序号
      */
     void onJumpChapter(int sequence);
+
+    void changeAnimMode(int mode);
+
+    void onResume();
+
+    void onPause();
 }

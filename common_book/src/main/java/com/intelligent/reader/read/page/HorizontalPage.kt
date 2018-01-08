@@ -46,12 +46,12 @@ class HorizontalPage : FrameLayout {
 
     private val paint: Paint = Paint()
     private var mDrawTextHelper: DrawTextHelper? = null
-    private lateinit var loadView: View
-    private lateinit var errorView: View
-    private lateinit var pageView: HorizontalItemPage
-    private lateinit var readTop: View
-    private lateinit var readBottom: View
-    private lateinit var homePage: View
+    private var loadView: View
+    private var errorView: View
+    private var pageView: HorizontalItemPage
+    private var readTop: View
+    private var readBottom: View
+    private var homePage: View
 
     var CursorOffset = 0
     var percent = 0.0f
@@ -73,10 +73,10 @@ class HorizontalPage : FrameLayout {
         this.noticePageListener = noticePageListener
         time = this.noticePageListener!!.getCurTime()
         percent = this.noticePageListener!!.getCurPercent()
-        init()
+        isDrawingCacheEnabled = true
     }
 
-    fun init() {
+    init {
         mDrawTextHelper = DrawTextHelper(context.resources)
         loadView = inflate(context, R.layout.loading_page_reading, null)
         errorView = inflate(context, R.layout.error_page2, null)
@@ -89,7 +89,6 @@ class HorizontalPage : FrameLayout {
         addView(readBottom)
         addView(loadView)
         setupView()
-
     }
 
     private fun setupView() {
@@ -160,16 +159,14 @@ class HorizontalPage : FrameLayout {
         novel_content_battery_view.setBattery(this.percent)
     }
 
-    fun setCursor(cursor: ReadCursor) {
-        pageView.setCursor(cursor)
-    }
+    fun setCursor(cursor: ReadCursor) = pageView.setCursor(cursor)
 
     var noticePageListener: NoticePageListener? = null
 
     interface NoticePageListener {
         fun pageChangSuccess(cursor: ReadCursor, notify: ReadViewEnums.NotifyStateState)
-        fun onClickLeft()
-        fun onClickRight()
+        fun onClickLeft(smoothScroll: Boolean)
+        fun onClickRight(smoothScroll: Boolean)
         fun onClickMenu(isShow: Boolean)
         fun loadOrigin()
         fun loadTransCoding()
@@ -237,7 +234,6 @@ class HorizontalPage : FrameLayout {
          * @param cursor
          */
         fun setCursor(cursor: ReadCursor) {
-            AppLog.e("cursor", "" + cursor.sequence)
             mCursor = cursor
             //判断超过章节数
             if ((ReadState.chapterList.isNotEmpty()) and (mCursor!!.sequence > ReadState.chapterList.size - 1)) {
@@ -316,7 +312,7 @@ class HorizontalPage : FrameLayout {
                             else -> CursorOffset = 0
                         }
                         //设置top and bottom
-                        val chapterProgress = "" + (cursor.sequence + 1) + "/" + cursor.readStatus.chapterCount + "章"
+                        val chapterProgress = "" + (cursor.sequence.plus(1)) + "/" + cursor.readStatus.chapterCount + "章"
                         val pageProgress = "本章第$pageIndex/$pageSum"
                         setTopAndBottomViewContext(cursor.readStatus.chapterName,chapterProgress,pageProgress)
                         noticePageListener?.currentViewSuccess()
@@ -415,8 +411,8 @@ class HorizontalPage : FrameLayout {
                     return true
                 }
                 MotionEvent.ACTION_UP -> {
-                    val touchTime = System.currentTimeMillis() - startTouchTime
-                    val distance = Math.sqrt(Math.pow((startTouchX - tmpX).toDouble(), 2.0) + Math.pow((startTouchY - tmpY).toDouble(), 2.0)).toInt()
+                    val touchTime = System.currentTimeMillis().minus(startTouchTime)
+                    val distance = Math.sqrt(Math.pow(startTouchX.minus(tmpX).toDouble(), 2.0).plus(Math.pow(startTouchY.minus(tmpY).toDouble(), 2.0)))
                     if (touchTime < 100 && distance < 30 || distance < 10) {
                         if (onClick(event)) return true
                     }
@@ -428,6 +424,8 @@ class HorizontalPage : FrameLayout {
                         isShowMenu = true
                     }
                 }
+                MotionEvent.ACTION_POINTER_DOWN-> return true
+                MotionEvent.ACTION_POINTER_UP-> return true
             }
             return super.dispatchTouchEvent(event)
         }
@@ -443,11 +441,11 @@ class HorizontalPage : FrameLayout {
             val h4 = height / 4
             val w3 = width / 3
             return if (x <= w3) {
-                noticePageListener?.onClickLeft()
+                noticePageListener?.onClickLeft(true)
                 noticePageListener?.onClickMenu(false)
                 true
-            } else if (x >= width - w3 || y >= height - h4 && x >= w3) {
-                noticePageListener?.onClickRight()
+            } else if (x >= width.minus(w3)|| y >= height.minus(h4) && x >= w3) {
+                noticePageListener?.onClickRight(true)
                 noticePageListener?.onClickMenu(false)
                 true
             } else {
@@ -458,7 +456,5 @@ class HorizontalPage : FrameLayout {
         }
     }
 
-    fun onReSeparate() {
-        DataProvider.getInstance().onReSeparate()
-    }
+    fun onReSeparate() = DataProvider.getInstance().onReSeparate()
 }

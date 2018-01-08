@@ -411,6 +411,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                 readStatus!!.setRequestItem(requestItem as RequestItem)
             }
             readStatus?.offset = bundle?.getInt("offset", 0)
+            ReadState.offset = bundle?.getInt("offset", 0)?:0
             readStatus?.book = bundle?.getSerializable("book") as Book?
             readStatus?.book_id = if (readStatus!!.book == null) "" else readStatus!!.book.book_id
             currentThemeMode = bundle?.getString("thememode", readReference?.get()?.mThemeHelper?.getMode())
@@ -745,6 +746,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         ReadConfig.screenDensity = dm.density
         ReadConfig.screenScaledDensity = dm.scaledDensity
         // 保存字体、亮度、阅读模式
+        modeSp = readReference?.get()?.getSharedPreferences("config", Context.MODE_PRIVATE)
         modeSp = readReference?.get()?.getSharedPreferences("config", Context.MODE_PRIVATE)
         // 设置字体
         if (sp?.contains("novel_font_size")!!) {

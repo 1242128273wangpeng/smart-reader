@@ -1,6 +1,8 @@
 package com.intelligent.reader.util;
 
+import android.content.Context;
 import android.content.res.Resources;
+import android.view.WindowManager;
 
 /**
  * Desc px sp dp单位转换
@@ -51,5 +53,28 @@ public class DisplayUtils {
     public static int sp2px(Resources resources, float spValue) {
         final float fontScale = resources.getDisplayMetrics().scaledDensity;
         return (int) (spValue * fontScale + 0.5f);
+    }
+
+    /**
+     * 获取屏幕高
+     *
+     * @return
+     */
+    @SuppressWarnings("deprecation")
+    public static int getScreenHeight(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        int height = wm.getDefaultDisplay().getHeight();
+        return height;
+    }
+    /**
+     * 获取屏幕宽
+     *
+     * @return
+     */
+    @SuppressWarnings("deprecation")
+    public static int getScreenWight(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        int width = wm.getDefaultDisplay().getWidth();
+        return width;
     }
 }
