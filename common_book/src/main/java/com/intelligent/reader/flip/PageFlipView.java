@@ -70,6 +70,7 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
             if (mPageFlip != null) mPageFlip.deleteUnusedTextures();
         }
         isFangzhen = fangzhen;
+        setVisibility(isFangzhen? VISIBLE : GONE);
     }
 
     public PageRender getmPageRender() {
@@ -90,7 +91,7 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
         // load preferences
         SharedPreferences pref = PreferenceManager
                 .getDefaultSharedPreferences(context);
-        mDuration = pref.getInt(Constants.PREF_DURATION, 2000);
+        mDuration = pref.getInt(Constants.PREF_DURATION, 600);
         int pixelsOfMesh = pref.getInt(Constants.PREF_MESH_PIXELS, 10);
         boolean isAuto = pref.getBoolean(Constants.PREF_PAGE_MODE, false);
 
@@ -111,6 +112,7 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
                 mHandler, mPageNo);
         //setting
         setEGLContextClientVersion(2);
+        setPreserveEGLContextOnPause(true);
         setEGLConfigChooser(8,8,8,0,16,0);
         setEGLWindowSurfaceFactory(new DefaultWindowSurfaceFactory());
         getHolder().setFormat(PixelFormat.TRANSLUCENT);//设置透明
@@ -362,7 +364,7 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
                             // message
                             if (mPageRender != null &&
                                     mPageRender.onEndedDrawing(msg.arg1)) {
-//                                requestRender();
+                                requestRender();
                             }
                         } finally {
                             mDrawLock.unlock();

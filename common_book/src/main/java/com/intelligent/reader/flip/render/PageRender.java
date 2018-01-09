@@ -45,10 +45,6 @@ public abstract class PageRender implements OnPageFlipListener {
 
     int mPageNo;
     int mDrawCommand;
-    public Bitmap mBitmap;
-    public Bitmap mPreBitmap;
-    Canvas mCanvas;
-    Bitmap mBackgroundBitmap;
     Context mContext;
     public Handler mHandler;
     public PageFlip mPageFlip;
@@ -59,7 +55,6 @@ public abstract class PageRender implements OnPageFlipListener {
         mPageFlip = pageFlip;
         mPageNo = pageNo;
         mDrawCommand = DRAW_FULL_PAGE;
-        mCanvas = new Canvas();
         mPageFlip.setListener(this);
         mHandler = handler;
     }
@@ -77,14 +72,7 @@ public abstract class PageRender implements OnPageFlipListener {
      * Release resources
      */
     public void release() {
-        if (mBitmap != null) {
-            mBitmap.recycle();
-            mBitmap = null;
-        }
-
         mPageFlip.setListener(null);
-        mCanvas = null;
-        mBackgroundBitmap = null;
     }
 
     /**

@@ -561,6 +561,13 @@ public class Page {
      * @param b Bitmap object for creating texture
      */
     public void setFirstTexture(Bitmap b) {
+        if(b == null)
+            return;
+
+        if (mTexIDs[FIRST_TEXTURE_ID] > INVALID_TEXTURE_ID) {
+            mUnusedTexIDs[mUnusedTexSize++] = mTexIDs[FIRST_TEXTURE_ID];
+        }
+
         // compute mask color
         int color = PageFlipUtils.computeAverageColor(b, 30);
         maskColor[FIRST_TEXTURE_ID][0] = Color.red(color) / 255.0f;
@@ -582,6 +589,12 @@ public class Page {
      * @param b Bitmap object for creating texture
      */
     public void setSecondTexture(Bitmap b) {
+        if(b == null)
+            return;
+        if (mTexIDs[SECOND_TEXTURE_ID] > INVALID_TEXTURE_ID) {
+            mUnusedTexIDs[mUnusedTexSize++] = mTexIDs[SECOND_TEXTURE_ID];
+        }
+
         // compute mask color
         int color = PageFlipUtils.computeAverageColor(b, 30);
         maskColor[SECOND_TEXTURE_ID][0] = Color.red(color) / 255.0f;

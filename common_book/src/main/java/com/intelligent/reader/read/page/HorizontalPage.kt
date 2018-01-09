@@ -73,6 +73,10 @@ class HorizontalPage : FrameLayout {
         time = this.noticePageListener!!.getCurTime()
         percent = this.noticePageListener!!.getCurPercent()
         isDrawingCacheEnabled = true
+
+        drawingCacheQuality = DRAWING_CACHE_QUALITY_LOW
+        isChildrenDrawnWithCacheEnabled = true
+        isChildrenDrawnWithCacheEnabled = true
     }
 
     init {

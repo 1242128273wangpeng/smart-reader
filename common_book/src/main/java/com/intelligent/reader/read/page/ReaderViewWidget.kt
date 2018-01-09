@@ -2,6 +2,9 @@ package com.intelligent.reader.read.page
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.os.Build
 import android.util.AttributeSet
 import android.view.GestureDetector
@@ -25,6 +28,7 @@ import net.lzbook.kit.data.bean.ReadViewEnums
 import java.util.*
 import android.view.WindowManager
 import kotlinx.android.synthetic.main.layout_custom_dialog.view.*
+import net.lzbook.kit.utils.runOnMain
 
 
 /**
@@ -47,20 +51,50 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    private var num = Integer.MAX_VALUE / 2 - 1
+    private var num = Integer.MAX_VALUE / 2
 
     private var mLoadBitmaplistener = SinglePageRender.LoadBitmapListener {
+
         if ((mTextureView != null) and (mTextureView!!.isFangzhen) and (mReaderView is HorizontalReaderView)) {
-            when {
-                num < it -> {
-                    num = it
-                    return@LoadBitmapListener (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.next).drawingCache
+
+            var bitmap: Bitmap? = null
+            var isFinishCache = false
+
+            runOnMain {
+                bitmap = when {
+                    num < it -> {
+                        val view = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.next)
+                        view.getDrawingCache(true)
+                    }
+                    num > it -> {
+                        val view = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.previous)
+                        view.getDrawingCache(true)
+                    }
+                    else -> {
+                        val view = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current)
+                        view.getDrawingCache(true)
+                    }
                 }
-                num > it -> {
-                    num = it
-                    return@LoadBitmapListener (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.previous).drawingCache
+                synchronized((this@ReaderViewWidget as Object)) {
+                    println("this@ReaderViewWidget as Object).notify")
+                    (this@ReaderViewWidget as Object).notify()
+                }
+                isFinishCache = true
+            }
+
+
+            synchronized((this@ReaderViewWidget as Object)) {
+                if (!isFinishCache) {
+                    try {
+                        println("this@ReaderViewWidget as Object).wait")
+                        (this@ReaderViewWidget as Object).wait(100)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
             }
+
+            return@LoadBitmapListener bitmap
         }
         BitmapManager.getInstance().createBitmap()
     }
@@ -70,8 +104,6 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
             if (mReaderView is HorizontalReaderView) {
                 if (isFlow == false) {
                     mTextureView?.onDrawNextFrame(true)
-                } else {
-                    (mReaderView as HorizontalReaderView).onClickRight(false)
                 }
                 isFlow = true
             }
@@ -81,8 +113,6 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
             if (mReaderView is HorizontalReaderView) {
                 if (isFlow == true) {
                     mTextureView?.onDrawNextFrame(false)
-                } else {
-                    (mReaderView as HorizontalReaderView).onClickLeft(false)
                 }
                 isFlow = false
             }
@@ -95,19 +125,21 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
         }
 
         override fun backward(mPageNo: Int) {
+            num = mPageNo
+            (mReaderView as HorizontalReaderView).onClickLeft(false)
+
             if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 0f
         }
 
         override fun forward(mPageNo: Int) {
-            if (num < mPageNo) {//重置
-                num = mPageNo
-                (mReaderView as HorizontalReaderView).onClickRight(false)
-            }
+
+            (mReaderView as HorizontalReaderView).onClickRight(false)
+            num = mPageNo
             if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 0f
         }
 
         override fun restore(mPageNo: Int) {
-            (mReaderView as HorizontalReaderView).onClickLeft(false)
+            num = mPageNo
             if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 0f
         }
     }
@@ -124,12 +156,12 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
         //翻页动画结束监听
         (mTextureView?.getmPageRender() as SinglePageRender).setPageFlipStateListenerListener(mPageFlipStateListener)
         mTextureView?.setBeginLisenter(mBeginLisenter)
-        addView(mTextureView,FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT)
+        addView(mTextureView, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
         mTextureView?.alpha = 0f
-        if (Build.VERSION.SDK_INT < 16){
+        if (Build.VERSION.SDK_INT < 16) {
             (content as Activity).window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        } else{
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        } else {
             mTextureView?.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
@@ -229,10 +261,12 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
     }
 
     override fun onResume() {
-        mTextureView?.onResume()
+        mTextureView?.visibility = View.VISIBLE
     }
 
-    override fun onPause() = mTextureView?.onPause() ?: Unit
+    override fun onPause() {
+        mTextureView?.visibility = View.GONE
+    }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
         return when (mTextureView?.isFangzhen ?: false) {
@@ -259,7 +293,9 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
     }
 
     private var mGestureDetector = GestureDetector(context, object : GestureDetector.OnGestureListener {
+
         override fun onDown(e: MotionEvent): Boolean {
+
             mTextureView?.onFingerDown(e.x, e.y)
             //翻页显示
             if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 1.0f
@@ -269,7 +305,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
             return true
         }
 
-        override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+        override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
             mTextureView?.onFingerMove(e2.x, e2.y)
             return true
         }
