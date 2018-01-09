@@ -134,7 +134,7 @@ public class SinglePageRender extends PageRender {
 
     @Override
     public void onDrawNextFrame(boolean isFlow) {
-//        //重新画
+        //重新画
         mPageFlip.deleteUnusedTextures();
         Page page = mPageFlip.getFirstPage();
 //        if (isFlow) {
@@ -294,6 +294,7 @@ public class SinglePageRender extends PageRender {
             public void run() {
                 Bitmap background = listener.loadBitmap(number);
                 Rect rect = new Rect(0, 0, width, height);
+                mCanvas.drawBitmap(background, null, rect, p);
                 mCanvas.drawBitmap(background, null, rect, p);
             }
         });

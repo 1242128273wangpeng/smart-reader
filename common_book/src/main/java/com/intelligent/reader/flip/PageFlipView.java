@@ -17,24 +17,25 @@ package com.intelligent.reader.flip;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
+import android.graphics.PixelFormat;
+import android.opengl.GLSurfaceView;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 
-import com.intelligent.reader.activity.ReadingActivity;
 import com.intelligent.reader.flip.base.PageFlip;
 import com.intelligent.reader.flip.base.PageFlipException;
+import com.intelligent.reader.flip.base.DefaultWindowSurfaceFactory;
 import com.intelligent.reader.flip.render.PageRender;
 import com.intelligent.reader.flip.render.SinglePageRender;
-import com.intelligent.reader.flip.texture.BaseGLTextureView;
-import com.intelligent.reader.flip.texture.GLViewRenderer;
 import com.intelligent.reader.util.DisplayUtils;
 
 import java.util.concurrent.locks.ReentrantLock;
+
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
 
 /**
  * Page flip view
@@ -42,7 +43,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author eschao
  */
 
-public class PageFlipView extends BaseGLTextureView implements GLViewRenderer {
+public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     private final static String TAG = "PageFlipView";
 
@@ -59,14 +60,14 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer {
         return isFangzhen;
     }
 
-    public void setBeginLisenter(PageFlip.BeginListener beginLisenter){
+    public void setBeginLisenter(PageFlip.BeginListener beginLisenter) {
         mPageFlip.setBeginListener(beginLisenter);
     }
 
     public void setFangzhen(boolean fangzhen) {
         if (!fangzhen) {
-            mPageRender.release();
-            mPageFlip.deleteUnusedTextures();
+//            if (mPageRender != null) mPageRender.release();
+            if (mPageFlip != null) mPageFlip.deleteUnusedTextures();
         }
         isFangzhen = fangzhen;
     }
@@ -89,7 +90,7 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer {
         // load preferences
         SharedPreferences pref = PreferenceManager
                 .getDefaultSharedPreferences(context);
-        mDuration = pref.getInt(Constants.PREF_DURATION, 3000);
+        mDuration = pref.getInt(Constants.PREF_DURATION, 2000);
         int pixelsOfMesh = pref.getInt(Constants.PREF_MESH_PIXELS, 10);
         boolean isAuto = pref.getBoolean(Constants.PREF_PAGE_MODE, false);
 
@@ -104,13 +105,18 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer {
         mPageFlip.setShadowColorOfFoldBase(0.1f, 0.7f, 0.5f, 0.3f);//
         // init others
 //        mPageNo  = Integer.MAX_VALUE/4;
-        mPageNo = Integer.MAX_VALUE/2;
+        mPageNo = Integer.MAX_VALUE / 2;
         mDrawLock = new ReentrantLock();
         mPageRender = new SinglePageRender(context, mPageFlip,
                 mHandler, mPageNo);
+        //setting
+        setEGLContextClientVersion(2);
+        setEGLConfigChooser(8,8,8,0,16,0);
+        setEGLWindowSurfaceFactory(new DefaultWindowSurfaceFactory());
+        getHolder().setFormat(PixelFormat.TRANSLUCENT);//设置透明
         // configure render
         setRenderer(this);
-//        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
     }
 
     /**
@@ -247,59 +253,6 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer {
         }
     }
 
-    @Override
-    public void onSurfaceCreated() {
-        try {
-            mPageFlip.onSurfaceCreated();
-        } catch (PageFlipException e) {
-            Log.e(TAG, "Failed to run PageFlipFlipRender:onSurfaceCreated");
-        }
-    }
-
-    @Override
-    public void onSurfaceChanged(int width, int height) {
-        try {
-            mPageFlip.onSurfaceChanged(width, height);
-
-            // if there is the second page, create double page render when need
-            int pageNo = mPageRender.getPageNo();
-            if (mPageFlip.getSecondPage() != null && width > height) {
-//                if (!(mPageRender instanceof DoublePagesRender)) {
-//                    mPageRender.release();
-//                    mPageRender = new DoublePagesRender(getContext(),
-//                            mPageFlip,
-//                            mHandler,
-//                            pageNo);
-//                }
-            }
-            // if there is only one page, create single page render when need
-            else if (!(mPageRender instanceof SinglePageRender)) {
-                mPageRender.release();
-                mPageRender = new SinglePageRender(getContext(),
-                        mPageFlip,
-                        mHandler,
-                        pageNo);
-            }
-
-            // let page render handle surface change
-            mPageRender.onSurfaceChanged(width, height);
-        } catch (PageFlipException e) {
-            Log.e(TAG, "Failed to run PageFlipFlipRender:onSurfaceChanged");
-        }
-    }
-
-    @Override
-    public void onDrawFrame() {
-        try {
-            mDrawLock.lock();
-            if (mPageRender != null) {
-                mPageRender.onDrawFrame();
-            }
-        } finally {
-            mDrawLock.unlock();
-        }
-    }
-
     public void onDrawNextFrame(boolean isFlow) {
         try {
             mDrawLock.lock();
@@ -310,6 +263,7 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer {
             mDrawLock.unlock();
         }
     }
+
     public void onReDrawFrame() {
         try {
             mDrawLock.lock();
@@ -320,79 +274,56 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer {
             mDrawLock.unlock();
         }
     }
-//    /**
-//     * Draw frame
-//     *
-//     * @param gl OpenGL handle
-//     */
-//    @Override
-//    public void onDrawFrame(GL10 gl) {
-//        try {
-//            mDrawLock.lock();
-//            if (mPageRender != null) {
-//                mPageRender.onDrawFrame();
-//            }
-//        }
-//        finally {
-//            mDrawLock.unlock();
-//        }
-//    }
-//
-//    /**
-//     * Handle surface is changed
-//     *
-//     * @param gl OpenGL handle
-//     * @param width new width of surface
-//     * @param height new height of surface
-//     */
-//    @Override
-//    public void onSurfaceChanged(GL10 gl, int width, int height) {
-//        try {
-//            mPageFlip.onSurfaceChanged(width, height);
-//
-//            // if there is the second page, create double page render when need
-//            int pageNo = mPageRender.getPageNo();
-//            if (mPageFlip.getSecondPage() != null && width > height) {
-//                if (!(mPageRender instanceof DoublePagesRender)) {
-//                    mPageRender.release();
-//                    mPageRender = new DoublePagesRender(getContext(),
-//                                                        mPageFlip,
-//                                                        mHandler,
-//                                                        pageNo);
-//                }
-//            }
-//            // if there is only one page, create single page render when need
-//            else if(!(mPageRender instanceof SinglePageRender)) {
-//                mPageRender.release();
-//                mPageRender = new SinglePageRender(getContext(),
-//                                                   mPageFlip,
-//                                                   mHandler,
-//                                                   pageNo);
-//            }
-//
-//            // let page render handle surface change
-//            mPageRender.onSurfaceChanged(width, height);
-//        }
-//        catch (PageFlipException e) {
-//            Log.e(TAG, "Failed to run PageFlipFlipRender:onSurfaceChanged");
-//        }
-//    }
-//
-//    /**
-//     * Handle surface is created
-//     *
-//     * @param gl OpenGL handle
-//     * @param config EGLConfig object
-//     */
-//    @Override
-//    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-//        try {
-//            mPageFlip.onSurfaceCreated();
-//        }
-//        catch (PageFlipException e) {
-//            Log.e(TAG, "Failed to run PageFlipFlipRender:onSurfaceCreated");
-//        }
-//    }
+
+    /**
+     * Draw frame
+     *
+     * @param gl OpenGL handle
+     */
+    @Override
+    public void onDrawFrame(GL10 gl) {
+        try {
+            mDrawLock.lock();
+            if (mPageRender != null) {
+                mPageRender.onDrawFrame();
+            }
+        } finally {
+            mDrawLock.unlock();
+        }
+    }
+
+    /**
+     * Handle surface is changed
+     *
+     * @param gl     OpenGL handle
+     * @param width  new width of surface
+     * @param height new height of surface
+     */
+    @Override
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
+        try {
+            mPageFlip.onSurfaceChanged(width, height);
+            // let page render handle surface change
+            mPageRender.onSurfaceChanged(width, height);
+        } catch (PageFlipException e) {
+            Log.e(TAG, "Failed to run PageFlipFlipRender:onSurfaceChanged");
+        }
+    }
+
+    /**
+     * Handle surface is created
+     *
+     * @param gl     OpenGL handle
+     * @param config EGLConfig object
+     */
+    @Override
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+        try {
+            mPageFlip.onSurfaceCreated();
+        } catch (PageFlipException e) {
+            Log.e(TAG, "Failed to run PageFlipFlipRender:onSurfaceCreated");
+        }
+    }
 
     /**
      * Create message handler to cope with messages from page render,

@@ -1095,10 +1095,8 @@ public class PageFlip {
      * Delete unused textures
      */
     public void deleteUnusedTextures() {
-        mPages[FIRST_PAGE].deleteUnusedTextures();
-        if (mPages[SECOND_PAGE] != null) {
-            mPages[SECOND_PAGE].deleteUnusedTextures();
-        }
+        if (mPages[FIRST_PAGE] != null) mPages[FIRST_PAGE].deleteUnusedTextures();
+        if (mPages[SECOND_PAGE] != null) mPages[SECOND_PAGE].deleteUnusedTextures();
     }
 
     /**

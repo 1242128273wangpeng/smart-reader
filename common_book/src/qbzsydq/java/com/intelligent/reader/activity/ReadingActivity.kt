@@ -17,7 +17,6 @@ import com.intelligent.reader.fragment.CatalogMarkFragment
 import com.intelligent.reader.presenter.read.*
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.help.IReadPageChange
-import com.intelligent.reader.read.help.ReadSeparateHelper
 import net.lzbook.kit.data.bean.ReadConfig
 import com.intelligent.reader.read.mode.ReadInfo
 import com.intelligent.reader.read.mode.ReadState

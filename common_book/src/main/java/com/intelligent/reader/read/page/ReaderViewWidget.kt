@@ -1,11 +1,12 @@
 package com.intelligent.reader.read.page
 
+import android.app.Activity
 import android.content.Context
+import android.os.Build
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.flip.PageFlipView
@@ -17,13 +18,15 @@ import com.intelligent.reader.read.help.IReadPageChange
 import com.intelligent.reader.read.help.IReadView
 import com.intelligent.reader.read.help.IReadWidget
 import com.intelligent.reader.read.mode.ReadInfo
-import com.intelligent.reader.util.StatServiceUtils
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.utils.AppLog
 import java.util.*
+import android.view.WindowManager
+import kotlinx.android.synthetic.main.layout_custom_dialog.view.*
+
 
 /**
  * 阅读容器
@@ -112,19 +115,28 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
     private fun initGLSufaceView() {
         removeView(mTextureView)
         if (mTextureView == null) mTextureView = PageFlipView(context)
-        mTextureView?.isOpaque = false
-        mTextureView?.alpha = 0f
-        mTextureView?.isFangzhen = when (animaEnums) {
-            ReadViewEnums.Animation.curl -> true
-            else -> false
-        }
+        mTextureView?.setZOrderOnTop(true)
         //加载Bitmap数据监听
         (mTextureView?.getmPageRender() as SinglePageRender).setListener(mLoadBitmaplistener)
         //翻页动画结束监听
         (mTextureView?.getmPageRender() as SinglePageRender).setPageFlipStateListenerListener(mPageFlipStateListener)
         mTextureView?.setBeginLisenter(mBeginLisenter)
-        addView(mTextureView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
-        mTextureView?.createGLThread()
+        addView(mTextureView,FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT)
+        mTextureView?.alpha = 0f
+        if (Build.VERSION.SDK_INT < 16){
+            (content as Activity).window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        } else{
+            mTextureView?.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                    View.SYSTEM_UI_FLAG_IMMERSIVE or
+                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        }
+        mTextureView?.isFangzhen = when (animaEnums) {
+            ReadViewEnums.Animation.curl -> true
+            else -> false
+        }
     }
 
     /**
@@ -214,7 +226,6 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
     }
 
     override fun onResume() {
-        mTextureView?.createGLThread()
         mTextureView?.onResume()
     }
 
@@ -248,7 +259,8 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
             mTextureView?.onFingerDown(e.x, e.y)
             AppLog.e("mGestureDetector",e.action.toString())
             //翻页显示
-            if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 1f
+            if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 1.0f
+
             //Menu隐藏
             if (context is ReadingActivity) (context as ReadingActivity).showMenu(false)
             return true
@@ -256,6 +268,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
 
         override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
             mTextureView?.onFingerMove(e2.x, e2.y)
+            AppLog.e("mGestureDetector",e2.action.toString())
             return true
         }
 

@@ -2,7 +2,6 @@ package com.intelligent.reader.read.page
 
 import android.content.Context
 import android.os.Handler
-import android.text.format.DateFormat
 import android.util.AttributeSet
 import android.view.View
 import android.view.MotionEvent
@@ -16,13 +15,11 @@ import com.intelligent.reader.read.mode.ReadState
 import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.view.ViewPager
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.utils.AppLog
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 /**
  * 水平滑动PageView容器
