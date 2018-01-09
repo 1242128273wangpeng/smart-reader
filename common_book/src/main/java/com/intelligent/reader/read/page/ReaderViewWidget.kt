@@ -22,7 +22,6 @@ import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
-import net.lzbook.kit.utils.AppLog
 import java.util.*
 import android.view.WindowManager
 import kotlinx.android.synthetic.main.layout_custom_dialog.view.*
@@ -53,7 +52,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
     private var mLoadBitmaplistener = SinglePageRender.LoadBitmapListener {
         if ((mTextureView != null) and (mTextureView!!.isFangzhen) and (mReaderView is HorizontalReaderView)) {
             when {
-                num <  it-> {
+                num < it -> {
                     num = it
                     return@LoadBitmapListener (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.next).drawingCache
                 }
@@ -65,23 +64,24 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
         }
         BitmapManager.getInstance().createBitmap()
     }
-    var isFlow:Boolean? = null
+    var isFlow: Boolean? = null
     private var mBeginLisenter = object : PageFlip.BeginListener {
-        override fun beginNext(){
-            if (mReaderView is HorizontalReaderView){
-                if (isFlow == false){
+        override fun beginNext() {
+            if (mReaderView is HorizontalReaderView) {
+                if (isFlow == false) {
                     mTextureView?.onDrawNextFrame(true)
-                }else {
+                } else {
                     (mReaderView as HorizontalReaderView).onClickRight(false)
                 }
                 isFlow = true
             }
         }
-        override fun beginPre(){
-            if (mReaderView is HorizontalReaderView){
-                if (isFlow == true){
+
+        override fun beginPre() {
+            if (mReaderView is HorizontalReaderView) {
+                if (isFlow == true) {
                     mTextureView?.onDrawNextFrame(false)
-                }else {
+                } else {
                     (mReaderView as HorizontalReaderView).onClickLeft(false)
                 }
                 isFlow = false
@@ -90,20 +90,23 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
     }
 
     private var mPageFlipStateListener = object : SinglePageRender.PageFlipStateListener {
-        override fun gone(){
+        override fun gone() {
             if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 0f
         }
-        override fun backward(mPageNo: Int){
+
+        override fun backward(mPageNo: Int) {
             if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 0f
         }
-        override fun forward(mPageNo: Int){
-            if(num < mPageNo)  {//重置
+
+        override fun forward(mPageNo: Int) {
+            if (num < mPageNo) {//重置
                 num = mPageNo
                 (mReaderView as HorizontalReaderView).onClickRight(false)
             }
             if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 0f
         }
-        override fun restore(mPageNo: Int){
+
+        override fun restore(mPageNo: Int) {
             (mReaderView as HorizontalReaderView).onClickLeft(false)
             if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 0f
         }
@@ -241,7 +244,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
                 if ((event.action == MotionEvent.ACTION_DOWN) and !((x <= w3) or (x >= width - w3) or (y >= height - h4 && x >= w3))) {
                     //Menu
                     super.dispatchTouchEvent(event)
-                }else {
+                } else {
                     //仿真+
                     if (event.action == MotionEvent.ACTION_UP) {
                         mTextureView?.onFingerUp(event.x, event.y)
@@ -254,10 +257,10 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
             false -> super.dispatchTouchEvent(event)
         }
     }
+
     private var mGestureDetector = GestureDetector(context, object : GestureDetector.OnGestureListener {
         override fun onDown(e: MotionEvent): Boolean {
             mTextureView?.onFingerDown(e.x, e.y)
-            AppLog.e("mGestureDetector",e.action.toString())
             //翻页显示
             if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 1.0f
 
@@ -268,7 +271,6 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
 
         override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
             mTextureView?.onFingerMove(e2.x, e2.y)
-            AppLog.e("mGestureDetector",e2.action.toString())
             return true
         }
 

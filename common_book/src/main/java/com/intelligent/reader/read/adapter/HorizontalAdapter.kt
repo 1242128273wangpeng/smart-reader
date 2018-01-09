@@ -31,9 +31,7 @@ class HorizontalAdapter(private var noticePageListener: HorizontalPage.NoticePag
     override fun isViewFromObject(view: View?, `object`: Any?): Boolean = view == `object`
     override fun getCount(): Int = Int.MAX_VALUE
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any?) {
-        val view = `object` as View
-        (view as HorizontalPage).mCurPageBitmap?.recycle()
-        view.mCurPageBitmap = null
+        val view = `object` as HorizontalPage
         view.removeAllViews()
         container.removeView(view)
     }

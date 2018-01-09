@@ -92,7 +92,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         if (transformer != null) {
             setPageTransformer(true, transformer)
             setShadowDrawable(R.drawable.page_shadow)
-            setShadowWidth(50)
+            setShadowWidth(40)
         }
 
         adapter = HorizontalAdapter(this)
