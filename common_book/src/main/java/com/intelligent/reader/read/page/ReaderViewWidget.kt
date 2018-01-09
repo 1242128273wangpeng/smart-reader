@@ -50,7 +50,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
     private var mLoadBitmaplistener = SinglePageRender.LoadBitmapListener {
         if ((mTextureView != null) and (mTextureView!!.isFangzhen) and (mReaderView is HorizontalReaderView)) {
             when {
-                num <  it-> {
+                num < it -> {
                     num = it
                     return@LoadBitmapListener (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.next).drawingCache
                 }
@@ -62,23 +62,24 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
         }
         BitmapManager.getInstance().createBitmap()
     }
-    var isFlow:Boolean? = null
+    var isFlow: Boolean? = null
     private var mBeginLisenter = object : PageFlip.BeginListener {
-        override fun beginNext(){
-            if (mReaderView is HorizontalReaderView){
-                if (isFlow == false){
+        override fun beginNext() {
+            if (mReaderView is HorizontalReaderView) {
+                if (isFlow == false) {
                     mTextureView?.onDrawNextFrame(true)
-                }else {
+                } else {
                     (mReaderView as HorizontalReaderView).onClickRight(false)
                 }
                 isFlow = true
             }
         }
-        override fun beginPre(){
-            if (mReaderView is HorizontalReaderView){
-                if (isFlow == true){
+
+        override fun beginPre() {
+            if (mReaderView is HorizontalReaderView) {
+                if (isFlow == true) {
                     mTextureView?.onDrawNextFrame(false)
-                }else {
+                } else {
                     (mReaderView as HorizontalReaderView).onClickLeft(false)
                 }
                 isFlow = false
@@ -87,20 +88,23 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
     }
 
     private var mPageFlipStateListener = object : SinglePageRender.PageFlipStateListener {
-        override fun gone(){
+        override fun gone() {
             if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 0f
         }
-        override fun backward(mPageNo: Int){
+
+        override fun backward(mPageNo: Int) {
             if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 0f
         }
-        override fun forward(mPageNo: Int){
-            if(num < mPageNo)  {//重置
+
+        override fun forward(mPageNo: Int) {
+            if (num < mPageNo) {//重置
                 num = mPageNo
                 (mReaderView as HorizontalReaderView).onClickRight(false)
             }
             if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 0f
         }
-        override fun restore(mPageNo: Int){
+
+        override fun restore(mPageNo: Int) {
             (mReaderView as HorizontalReaderView).onClickLeft(false)
             if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 0f
         }
@@ -110,21 +114,23 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
      * 初始化GLSufaceView
      */
     private fun initGLSufaceView() {
-        removeView(mTextureView)
-        if (mTextureView == null) mTextureView = PageFlipView(context)
-        mTextureView?.isOpaque = false
-        mTextureView?.alpha = 0f
-        mTextureView?.isFangzhen = when (animaEnums) {
-            ReadViewEnums.Animation.curl -> true
-            else -> false
+        if (ReadViewEnums.Animation.curl == animaEnums) {
+            if (mTextureView == null) {
+                mTextureView = PageFlipView(context)
+            } else {
+                removeView(mTextureView)
+            }
+            mTextureView?.isOpaque = false
+            mTextureView?.alpha = 0f
+            mTextureView?.isFangzhen = true
+            //加载Bitmap数据监听
+            (mTextureView?.getmPageRender() as SinglePageRender).setListener(mLoadBitmaplistener)
+            //翻页动画结束监听
+            (mTextureView?.getmPageRender() as SinglePageRender).setPageFlipStateListenerListener(mPageFlipStateListener)
+            mTextureView?.setBeginLisenter(mBeginLisenter)
+            addView(mTextureView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+            mTextureView?.createGLThread()
         }
-        //加载Bitmap数据监听
-        (mTextureView?.getmPageRender() as SinglePageRender).setListener(mLoadBitmaplistener)
-        //翻页动画结束监听
-        (mTextureView?.getmPageRender() as SinglePageRender).setPageFlipStateListenerListener(mPageFlipStateListener)
-        mTextureView?.setBeginLisenter(mBeginLisenter)
-        addView(mTextureView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
-        mTextureView?.createGLThread()
     }
 
     /**
@@ -230,7 +236,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
                 if ((event.action == MotionEvent.ACTION_DOWN) and !((x <= w3) or (x >= width - w3) or (y >= height - h4 && x >= w3))) {
                     //Menu
                     super.dispatchTouchEvent(event)
-                }else {
+                } else {
                     //仿真+
                     if (event.action == MotionEvent.ACTION_UP) {
                         mTextureView?.onFingerUp(event.x, event.y)
@@ -243,10 +249,11 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
             false -> super.dispatchTouchEvent(event)
         }
     }
+
     private var mGestureDetector = GestureDetector(context, object : GestureDetector.OnGestureListener {
         override fun onDown(e: MotionEvent): Boolean {
             mTextureView?.onFingerDown(e.x, e.y)
-            AppLog.e("mGestureDetector",e.action.toString())
+            AppLog.e("mGestureDetector", e.action.toString())
             //翻页显示
             if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 1f
             //Menu隐藏

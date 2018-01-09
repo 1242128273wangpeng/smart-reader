@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.read_bottom.view.*
 import kotlinx.android.synthetic.main.read_top.view.*
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Chapter
+import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
 
@@ -56,8 +57,6 @@ class HorizontalPage : FrameLayout {
     var CursorOffset = 0
     var percent = 0.0f
     var time = ""
-    var mCurPageBitmap: Bitmap? = null
-    var mCurrentCanvas: Canvas? = null
     var mCursor: ReadCursor? = null
     var viewState: ReadViewEnums.ViewState = ReadViewEnums.ViewState.loading
     var viewNotify: ReadViewEnums.NotifyStateState = ReadViewEnums.NotifyStateState.none
@@ -183,8 +182,8 @@ class HorizontalPage : FrameLayout {
 
         override fun onDraw(canvas: Canvas) {
             super.onDraw(canvas)
-            if (mCurPageBitmap != null) {
-                if (!mCurPageBitmap!!.isRecycled) canvas.drawBitmap(mCurPageBitmap, 0f, 0f, paint)
+            if(mNovelPageBean != null) {
+                mDrawTextHelper?.drawText(canvas, mNovelPageBean!!)
             }
         }
 
@@ -249,6 +248,8 @@ class HorizontalPage : FrameLayout {
             }
         }
 
+        private var mNovelPageBean: NovelPageBean? = null
+
         /**
          * 画页面
          */
@@ -274,29 +275,28 @@ class HorizontalPage : FrameLayout {
                         viewState = start
                         noticePageListener?.pageChangSuccess(mCursor!!,ReadViewEnums.NotifyStateState.none)//游标通知回调
                     }else {
-                        val mNovelPageBean = findNovelPageBeanByOffset(cursor.offset,chapterList)
-                        contentLength = mNovelPageBean.contentLength
-                        if (mNovelPageBean.isAd) {//广告页
-                            showAdBigger(mNovelPageBean)
+                        mNovelPageBean = findNovelPageBeanByOffset(cursor.offset,chapterList)
+                        contentLength = mNovelPageBean!!.contentLength
+                        if (mNovelPageBean!!.isAd) {//广告页
+                            showAdBigger(mNovelPageBean!!)
                         } else {//普通页
                             //画之前清空内容
                             removeView(homePage)
-                            mCurrentCanvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
                             //画本页内容
                             BitmapManager.getInstance().setSize(cursor.readStatus.screenWidth, cursor.readStatus.screenHeight)
-                            mCurPageBitmap = BitmapManager.getInstance().createBitmap()
-                            mCurrentCanvas = Canvas(mCurPageBitmap)
-                            val topMargin = mDrawTextHelper?.drawText(mCurrentCanvas, mNovelPageBean)
+
+                            val topMargin = if (mNovelPageBean?.lines?.isEmpty() == true) mNovelPageBean!!.height else ReadConfig.screenHeight.toFloat()
+
                             postInvalidate()
                             //判断展示Banner广告
-                            if (cursor.readStatus.screenHeight - topMargin!!.toInt() > cursor.readStatus.screenHeight / 5) {
+                            if (cursor.readStatus.screenHeight - topMargin > cursor.readStatus.screenHeight / 5) {
                                 showAdBanner(topMargin)
                             }
                         }
                         //改状态、游标状态
                         loadView.visibility = View.GONE
                         mCursor!!.lastOffset = chapterList.last().offset
-                        mCursor!!.offset = mNovelPageBean.offset
+                        mCursor!!.offset = mNovelPageBean!!.offset
                         mCursor!!.nextOffset = if (pageIndex < chapterList.size) chapterList[pageIndex].offset else 0
                         viewState = if ((mCursor!!.sequence == ReadState.chapterList.size - 1) and (pageIndex == pageSum)) {//判断这本书的最后一页
                             ReadViewEnums.ViewState.end
