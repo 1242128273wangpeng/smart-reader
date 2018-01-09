@@ -15,10 +15,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.intelligent.reader.R
 import com.intelligent.reader.read.DataProvider
-import com.intelligent.reader.read.help.IReadPageChange
-import com.intelligent.reader.read.help.IReadView
-import com.intelligent.reader.read.help.NovelHelper
-import com.intelligent.reader.read.help.ReadSeparateHelper
+import com.intelligent.reader.read.help.*
 import com.intelligent.reader.read.mode.NovelPageBean
 import com.intelligent.reader.read.mode.ReadInfo
 import com.intelligent.reader.read.mode.ReadState
@@ -589,4 +586,8 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     override fun setIReadPageChange(mReadPageChange: IReadPageChange?) {
         this.mReadPageChange = mReadPageChange
     }
+
+    override fun setHorizontalEventListener(mHorizontalEvent: HorizontalEvent?) {
+    }
+
 }

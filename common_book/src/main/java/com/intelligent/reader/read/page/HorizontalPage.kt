@@ -63,6 +63,7 @@ class HorizontalPage : FrameLayout {
     var pageIndex:Int = 0
     var pageSum:Int = 0
     var contentLength:Int = 0
+    var noticePageListener: NoticePageListener? = null
 
     constructor(context: Context, noticePageListener: NoticePageListener) : this(context, null, noticePageListener)
 
@@ -160,8 +161,6 @@ class HorizontalPage : FrameLayout {
 
     fun setCursor(cursor: ReadCursor) = pageView.setCursor(cursor)
 
-    var noticePageListener: NoticePageListener? = null
-
     interface NoticePageListener {
         fun pageChangSuccess(cursor: ReadCursor, notify: ReadViewEnums.NotifyStateState)
         fun onClickLeft(smoothScroll: Boolean)
@@ -172,6 +171,7 @@ class HorizontalPage : FrameLayout {
         fun getCurPercent(): Float
         fun getCurTime(): String
         fun currentViewSuccess()
+        fun myDispatchTouchEvent(event:MotionEvent)
     }
 
     inner class HorizontalItemPage : View {
@@ -396,6 +396,7 @@ class HorizontalPage : FrameLayout {
         private var isShowMenu: Boolean = true
 
         override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+            AppLog.e("dispatchTouchEvent",event.action.toString()+"x = "+event.x+" y = "+event.y)
             val tmpX = event.x.toInt()
             val tmpY = event.y.toInt()
             when (event.action) {
@@ -404,24 +405,31 @@ class HorizontalPage : FrameLayout {
                     startTouchTime = System.currentTimeMillis()
                     startTouchX = tmpX
                     startTouchY = tmpY
+                    if (onClick(event)) return true
+                    if (ReadConfig.animation == ReadViewEnums.Animation.curl){
+                        noticePageListener?.myDispatchTouchEvent(event)
+                        return true
+                    }
                     return true
                 }
                 MotionEvent.ACTION_CANCEL -> {
-                    startTouchTime = 0
+                    startTouchTime = System.currentTimeMillis()
                     return true
                 }
                 MotionEvent.ACTION_UP -> {
-                    val touchTime = System.currentTimeMillis().minus(startTouchTime)
-                    val distance = Math.sqrt(Math.pow(startTouchX.minus(tmpX).toDouble(), 2.0).plus(Math.pow(startTouchY.minus(tmpY).toDouble(), 2.0)))
-                    if (touchTime < 100 && distance < 30 || distance < 10) {
-                        if (onClick(event)) return true
+                    if (ReadConfig.animation == ReadViewEnums.Animation.curl){
+                        noticePageListener?.myDispatchTouchEvent(event)
+                        return true
                     }
-                    startTouchTime = 0
                 }
                 MotionEvent.ACTION_MOVE -> {
                     if (!isShowMenu) {
                         noticePageListener?.onClickMenu(isShowMenu)
                         isShowMenu = true
+                    }
+                    if (ReadConfig.animation == ReadViewEnums.Animation.curl){
+                        noticePageListener?.myDispatchTouchEvent(event)
+                        return true
                     }
                 }
                 MotionEvent.ACTION_POINTER_DOWN-> return true
@@ -430,12 +438,7 @@ class HorizontalPage : FrameLayout {
             return super.dispatchTouchEvent(event)
         }
 
-        private var time: Long = 0
         private fun onClick(event: MotionEvent): Boolean {
-            if (System.currentTimeMillis() - time < 500) {//动画时间
-                return false
-            }
-            time = System.currentTimeMillis()
             val x = event.x.toInt()
             val y = event.y.toInt()
             val h4 = height / 4
@@ -443,11 +446,11 @@ class HorizontalPage : FrameLayout {
             return if (x <= w3) {
                 noticePageListener?.onClickLeft(true)
                 noticePageListener?.onClickMenu(false)
-                true
+                false
             } else if (x >= width.minus(w3)|| y >= height.minus(h4) && x >= w3) {
                 noticePageListener?.onClickRight(true)
                 noticePageListener?.onClickMenu(false)
-                true
+                false
             } else {
                 noticePageListener?.onClickMenu(isShowMenu)
                 isShowMenu = !isShowMenu

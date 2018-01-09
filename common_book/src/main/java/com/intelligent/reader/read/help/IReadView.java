@@ -69,4 +69,6 @@ public interface IReadView {
      * @param sequence 章序号
      */
     void onJumpChapter(int sequence);
+
+    void setHorizontalEventListener(HorizontalEvent mHorizontalEvent);
 }

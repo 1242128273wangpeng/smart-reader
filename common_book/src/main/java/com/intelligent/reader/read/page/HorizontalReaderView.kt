@@ -388,6 +388,12 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         }
     }
 
+    var mHorizontalEvent:HorizontalEvent? = null
+
+    override fun myDispatchTouchEvent(event: MotionEvent) {
+        mHorizontalEvent?.myDispatchTouchEvent(event)
+    }
+
     //==================================================IReadPageChange=========================================
     private var mReadPageChange: IReadPageChange? = null
 
@@ -474,6 +480,9 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         entrance(this.mReadInfo!!)
     }
 
+    override fun setHorizontalEventListener(mHorizontalEvent: HorizontalEvent?) {
+        this.mHorizontalEvent = mHorizontalEvent
+    }
     //==================================================TouchEvent=========================================
     //-----禁止左滑-------左滑：上一次坐标 > 当前坐标
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {

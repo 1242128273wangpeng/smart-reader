@@ -24,14 +24,16 @@ import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
 import java.util.*
 import android.view.WindowManager
+import com.intelligent.reader.read.help.HorizontalEvent
 import kotlinx.android.synthetic.main.layout_custom_dialog.view.*
+import net.lzbook.kit.utils.AppLog
 
 
 /**
  * 阅读容器
  * Created by wt on 2017/12/13.
  */
-class ReaderViewWidget : FrameLayout, IReadWidget {
+class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
     private var mReaderViewFactory: ReaderViewFactory? = null
 
@@ -136,10 +138,12 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
                     View.SYSTEM_UI_FLAG_IMMERSIVE or
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
         }
-        mTextureView?.isFangzhen = when (animaEnums) {
-            ReadViewEnums.Animation.curl -> true
-            else -> false
-        }
+        mTextureView?.isFangzhen = true
+        ReadConfig.animation = ReadViewEnums.Animation.curl
+//        mTextureView?.isFangzhen = when (animaEnums) {
+//            ReadViewEnums.Animation.curl -> true
+//            else -> false
+//        }
     }
 
     /**
@@ -158,6 +162,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
             if (mReaderView != null) addView(mReaderView as View)//添加
             animaEnums = mReadInfo.animaEnums//记录动画模式
             initGLSufaceView()
+            mReaderView?.setHorizontalEventListener(this)
         }
         mReaderView?.entrance(mReadInfo)
     }
@@ -234,34 +239,16 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
 
     override fun onPause() = mTextureView?.onPause() ?: Unit
 
-    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
-        return when (mTextureView?.isFangzhen ?: false) {
-            true -> {
-                val x = event.x.toInt()
-                val y = event.y.toInt()
-                val h4 = height / 4
-                val w3 = width / 3
-                if ((event.action == MotionEvent.ACTION_DOWN) and !((x <= w3) or (x >= width - w3) or (y >= height - h4 && x >= w3))) {
-                    //Menu
-                    super.dispatchTouchEvent(event)
-                } else {
-                    //仿真+
-                    if (event.action == MotionEvent.ACTION_UP) {
-                        mTextureView?.onFingerUp(event.x, event.y)
-                        true
-                    } else {
-                        mGestureDetector.onTouchEvent(event)
-                    }
-                }
-            }
-            false -> super.dispatchTouchEvent(event)
-        }
+    override fun myDispatchTouchEvent(event: MotionEvent) {
+        AppLog.e("event",event.action.toString())
+        mGestureDetector.onTouchEvent(event)
     }
 
     private var mGestureDetector = GestureDetector(context, object : GestureDetector.OnGestureListener {
         override fun onDown(e: MotionEvent): Boolean {
             mTextureView?.onFingerDown(e.x, e.y)
             //翻页显示
+            AppLog.e("down",e.action.toString())
             if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 1.0f
 
             //Menu隐藏
