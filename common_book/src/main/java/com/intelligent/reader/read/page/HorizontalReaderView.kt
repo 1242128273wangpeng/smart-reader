@@ -208,13 +208,14 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     private fun nextViewUpdata(cursor: ReadCursor) {
         val nextView = findViewWithTag(ReadViewEnums.PageIndex.next)
         if (nextView != null) {
-            val newNextSequence = cursor.sequence
+            val newNextSequence: Int
             val newOffset = when (cursor.offset) {
                 cursor.lastOffset -> {//如果当前页是最后页：加载下一章1页
-                    newNextSequence.inc()
+                    newNextSequence = cursor.sequence.plus(1)
                     0
                 }
                 else -> {//其他情况： +1页
+                    newNextSequence = cursor.sequence
                     cursor.nextOffset
                 }
             }
@@ -372,7 +373,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         val mCursor = curView.mCursor
         if (mCursor != null) {
             ReadState.sequence = mCursor.sequence
-            ReadState.offset = mCursor.offset.plus(curView.CursorOffset)
+            ReadState.offset = mCursor.offset.plus(curView.mCursorOffset)
             ReadState.currentPage = curView.pageIndex
             ReadState.pageCount = curView.pageSum
             ReadState.contentLength = curView.contentLength
