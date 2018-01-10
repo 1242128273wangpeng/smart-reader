@@ -1,6 +1,7 @@
 package com.intelligent.reader.read.page;
 
 import com.intelligent.reader.R;
+import com.intelligent.reader.app.BookApplication;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
@@ -28,7 +29,6 @@ public class AutoReadMenu extends LinearLayout implements OnClickListener {
     private TextView autoread_stop;
     private Context mContext;
     private OnAutoMemuListener autoMemuListener;
-    private View view;
 
     public AutoReadMenu(Context context) {
         super(context);
@@ -50,20 +50,13 @@ public class AutoReadMenu extends LinearLayout implements OnClickListener {
     }
 
     private void init() {
-
-        view = LayoutInflater.from(mContext).inflate(R.layout.autoread_menu, null);
-        autoread_up = (TextView) view.findViewById(R.id.autoread_up);
-        autoread_down = (TextView) view.findViewById(R.id.autoread_down);
-        autoread_rate = (TextView) view.findViewById(R.id.autoread_rate);
-        autoread_stop = (TextView) view.findViewById(R.id.autoread_stop);
-        autoread_label = (TextView) view.findViewById(R.id.autoread_label);
-
-
-        setRateValue(BaseBookApplication.getGlobalContext().getReadStatus().autoReadSpeed());
-
+        LayoutInflater.from(mContext).inflate(R.layout.autoread_menu, this);
+        autoread_up = (TextView) findViewById(R.id.autoread_up);
+        autoread_down = (TextView) findViewById(R.id.autoread_down);
+        autoread_rate = (TextView) findViewById(R.id.autoread_rate);
+        autoread_stop = (TextView) findViewById(R.id.autoread_stop);
+        autoread_label = (TextView) findViewById(R.id.autoread_label);
         initListener();
-
-        addView(view);
     }
 
     private void initListener() {
@@ -72,8 +65,8 @@ public class AutoReadMenu extends LinearLayout implements OnClickListener {
         autoread_stop.setOnClickListener(this);
     }
 
-    private void setRateValue(int value) {
-        autoread_rate.setText(String.valueOf(value));
+    public void setRateValue() {
+        autoread_rate.setText(String.valueOf(BaseBookApplication.getGlobalContext().getReadStatus().autoReadSpeed()));
     }
 
     @Override
@@ -83,14 +76,14 @@ public class AutoReadMenu extends LinearLayout implements OnClickListener {
             StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_auto_read_speed_up);
             if (autoMemuListener != null) {
                 autoMemuListener.speedUp();
-                setRateValue(BaseBookApplication.getGlobalContext().getReadStatus().autoReadSpeed());
+                setRateValue();
             }
 
         } else if (i == R.id.autoread_down) {
             StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_auto_read_speed_down);
             if (autoMemuListener != null) {
                 autoMemuListener.speedDown();
-                setRateValue(BaseBookApplication.getGlobalContext().getReadStatus().autoReadSpeed());
+                setRateValue();
             }
 
         } else if (i == R.id.autoread_stop) {

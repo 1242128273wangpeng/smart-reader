@@ -145,7 +145,7 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: ReaderVi
     }
 
     override fun gotoChapter(activity: Activity, chapter: Chapter) {
-        var isChapterExist = false
+        val isChapterExist: Boolean
         if (requestItem.host == Constants.QG_SOURCE) {
             isChapterExist = DataCache.isChapterExists(chapter.chapter_id, chapter.book_id)
         } else {
@@ -155,22 +155,14 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: ReaderVi
             BaseBookApplication.getGlobalContext().toastShort(R.string.no_net)
             return
         }
-        var bundle = Bundle()
-        bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
-        bundle.putInt("sequence", chapter.sequence)
-        bundle.putSerializable("book", readStatus.book)
-        val intent = Intent()
-        intent.putExtras(bundle)
-        (activity as ReadingActivity).onJumpChapter(intent)
-//        intent.setClass(activity, ReadingActivity::class.java)
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-//        activity.startActivity(intent)
+
+        readStatus.sequence = chapter.sequence
+        (activity as ReadingActivity).onJumpChapter(chapter.sequence)
+
 
         val data = java.util.HashMap<String, String>()
         data.put("bookid", readStatus.book_id)
-        if (dataFactory != null && dataFactory.currentChapter != null) {
-            data.put("chapterid", dataFactory!!.currentChapter!!.chapter_id)
-        }
+        data.put("chapterid", chapter.chapter_id)
         StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CATALOG1, data)
 
     }

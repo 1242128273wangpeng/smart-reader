@@ -164,12 +164,6 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
 //        view.bookmark_main.layoutManager = LinearLayoutManager(activity)
         view!!.bookmark_main.addItemDecoration(dividerBookmark)
 
-        if (RepairHelp.isShowFixBtn(activity, (BookApplication.getGlobalContext())?.readStatus?.book_id)) {
-            view!!.iv_fixbook.visibility = View.VISIBLE
-        } else {
-            view!!.iv_fixbook.visibility = View.GONE
-        }
-
         view!!.iv_fixbook.setOnClickListener { v ->
             RepairHelp.fixBook(activity, presenter?.getBook(), RepairHelp.FixCallBack {
                 if (activity != null && !activity.isFinishing) {
@@ -293,6 +287,14 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
 
 
         return view
+    }
+
+    fun fixBook() {
+        if (RepairHelp.isShowFixBtn(activity, (BookApplication.getGlobalContext())?.readStatus?.book_id)) {
+            view!!.iv_fixbook.visibility = View.VISIBLE
+        } else {
+            view!!.iv_fixbook.visibility = View.GONE
+        }
     }
 
     override fun onDestroyView() {

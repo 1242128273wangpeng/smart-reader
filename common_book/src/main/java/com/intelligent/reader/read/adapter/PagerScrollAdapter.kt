@@ -5,14 +5,18 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import com.intelligent.reader.R
-import com.intelligent.reader.read.help.NovelHelper
+import com.intelligent.reader.read.help.ReadSeparateHelper
 import com.intelligent.reader.read.mode.NovelPageBean
-import net.lzbook.kit.data.bean.ReadViewEnums
+import com.intelligent.reader.read.mode.ReadState
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.data.bean.ReadStatus
+import net.lzbook.kit.data.bean.ReadViewEnums
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
@@ -21,7 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList
  * @mail jun_li@dingyuegroup.cn
  * @data 2017/11/2 14:35
  */
-class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val mNovelHelper: NovelHelper) : RecyclerView.Adapter<PagerScrollAdapter.ReaderPagerHolder>() {
+class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus) : RecyclerView.Adapter<PagerScrollAdapter.ReaderPagerHolder>() {
 
     private var chapterList: CopyOnWriteArrayList<NovelPageBean>
 
@@ -254,12 +258,13 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
 
             var loadSequence = 0
             if (type == HEADER_ITEM_TYPE) {
-                loadSequence = mReadStatus.sequence - 1
+                loadSequence = ReadState.sequence - 1
             } else {
-                loadSequence = mReadStatus.sequence + 1
+                loadSequence = ReadState.sequence + 1
             }
-            if (allChapterList != null && allChapterList!!.size > 0) {
-                mNovelHelper.getChapterNameList(allChapterList!![loadSequence].chapter_name).forEachIndexed { index, novelLineBean ->
+
+            allChapterList?.let {
+                ReadSeparateHelper.getChapterNameList(it[loadSequence].chapter_name).forEachIndexed { index, novelLineBean ->
                     if (index == 0) {
                         load_chapter_num_tv.text = novelLineBean.lineContent
                     } else {
@@ -267,6 +272,7 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus, val 
                     }
                 }
             }
+
             loading_error_reload.setOnClickListener {
                 mOnLoadViewClickListener?.onLoadViewClick(pageLines.lines[0].sequence)
                 setLoadingState()

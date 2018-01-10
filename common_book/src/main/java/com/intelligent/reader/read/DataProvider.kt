@@ -55,6 +55,7 @@ class DataProvider : DisposableAndroidViewModel() {
     var context: Context? = null
     //是否显示广告
     var isShowAd: Boolean = true
+
     //分页前缓存容器
     val chapterMap: HashMap<Int, Chapter> = HashMap()
 
@@ -63,6 +64,7 @@ class DataProvider : DisposableAndroidViewModel() {
 
     //工厂
     var mReaderRepository: ReaderRepository = ReaderRepositoryFactory.getInstance(ReaderOwnRepository.getInstance())
+
     var mBookCoverRepository: BookCoverRepository = BookCoverRepositoryFactory.getInstance(BookCoverOtherRepository.getInstance(NetService.userService)
             , BookCoverQGRepository.getInstance(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()))
             , BookCoverLocalRepository.getInstance(BaseBookApplication.getGlobalContext()))
@@ -81,7 +83,7 @@ class DataProvider : DisposableAndroidViewModel() {
                 getChapterList(book, requestItem, sequence + 1, type, mReadDataListener)
             }
             ReadViewEnums.PageIndex.previous -> {
-                getChapterList(book, requestItem, Math.max( -1, sequence - 1), type, mReadDataListener)
+                getChapterList(book, requestItem, Math.max(-1, sequence - 1), type, mReadDataListener)
             }
         }
     }
@@ -135,8 +137,9 @@ class DataProvider : DisposableAndroidViewModel() {
             }
         })
     }
-    fun loadAd(context: Context, type: String,w:Int,h:Int, callback: OnLoadReaderAdCallback) {
-        PlatformSDK.adapp().dycmNativeAd(context as Activity, type,h,w, object : AbstractCallback() {
+
+    fun loadAd(context: Context, type: String, w: Int, h: Int, callback: OnLoadReaderAdCallback) {
+        PlatformSDK.adapp().dycmNativeAd(context as Activity, type, h, w, object : AbstractCallback() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
                 if (!adswitch) {
@@ -231,6 +234,7 @@ class DataProvider : DisposableAndroidViewModel() {
                     }
                     mReaderRepository.writeChapterCache(c, false)
                     chapterMap.put(sequence, c)
+                    ReadState.chapterId = c.chapter_id
                     chapterSeparate.put(sequence, ReadSeparateHelper.initTextSeparateContent(c.content, c.chapter_name))
                     mReadDataListener.loadDataSuccess(c, type)
                     //加章末广告
@@ -338,5 +342,18 @@ class DataProvider : DisposableAndroidViewModel() {
         fun onLoadAd(adView: ViewGroup)
     }
 
-
+    fun relase() {
+        chapterMap.clear()
+        val iter = chapterSeparate.entries.iterator()
+        while (iter.hasNext()) {
+            val chapterList = iter.next().value
+            for (page in chapterList) {
+                if (page.adView != null && page.adView!!.tag != null) {
+                    page.adView!!.tag = null
+                }
+                page.adView = null
+            }
+        }
+        chapterSeparate.clear()
+    }
 }
