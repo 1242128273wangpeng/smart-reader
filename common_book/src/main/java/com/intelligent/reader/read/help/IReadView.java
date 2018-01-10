@@ -4,6 +4,7 @@ import android.view.View;
 import com.intelligent.reader.read.mode.ReadInfo;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.NovelLineBean;
+import net.lzbook.kit.data.bean.ReadViewEnums;
 
 import java.util.ArrayList;
 
@@ -69,6 +70,12 @@ public interface IReadView {
      * @param sequence 章序号
      */
     void onJumpChapter(int sequence);
+
+    /**
+     * 切换动画
+     * @param animation
+     */
+    void onAnimationChange(ReadViewEnums.Animation animation);
 
     void setHorizontalEventListener(HorizontalEvent mHorizontalEvent);
 }

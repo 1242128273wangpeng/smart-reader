@@ -24,6 +24,8 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.View;
 
 import com.intelligent.reader.flip.base.PageFlip;
 import com.intelligent.reader.flip.base.PageFlipException;
@@ -87,7 +89,7 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
         // load preferences
         SharedPreferences pref = PreferenceManager
                 .getDefaultSharedPreferences(context);
-        mDuration = pref.getInt(Constants.PREF_DURATION, 600);
+        mDuration = pref.getInt(Constants.PREF_DURATION, 800);
         int pixelsOfMesh = pref.getInt(Constants.PREF_MESH_PIXELS, 10);
         boolean isAuto = pref.getBoolean(Constants.PREF_PAGE_MODE, false);
 
@@ -206,7 +208,6 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
                 }
             }
         });
-        requestRender();
     }
 
     /**
@@ -233,10 +234,11 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
                     }
 
                 }
+
+                requestRender();
             }
         });
 
-        requestRender();
     }
 
     /**
@@ -257,10 +259,11 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
                     }
 
                 }
+
+                requestRender();
             }
         });
 
-        requestRender();
     }
 
     public void onDrawNextFrame(boolean isFlow) {
@@ -317,8 +320,14 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
             mPageFlip.onSurfaceCreated();
             mPageFlip.onSurfaceChanged(ReadConfig.INSTANCE.getScreenWidth(), ReadConfig.INSTANCE.getScreenHeight());
         } catch (PageFlipException e) {
+            e.printStackTrace();
             Log.e(TAG, "Failed to run PageFlipFlipRender:onSurfaceCreated");
         }
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        super.surfaceDestroyed(holder);
     }
 
     /**
@@ -347,10 +356,7 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
                         onFingerUp(DisplayUtils.getScreenWight(getContext()) / 2 - 500, DisplayUtils.getScreenHeight(getContext()) / 2);
                     case PageRender.MSG_ENDED_SET_PAGE:
 
-                        if (mPageRender != null &&
-                                mPageRender.onEndedDrawing(msg.arg1)) {
-                            requestRender();
-                        }
+                        requestRender();
 
                         break;
                     default:

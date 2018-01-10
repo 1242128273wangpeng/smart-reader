@@ -3,6 +3,7 @@ package com.intelligent.reader.read.page
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.graphics.Rect
 import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -563,6 +564,10 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
 
     override fun onJumpChapter(sequence: Int) {
         getChapterData(sequence, ReadViewEnums.PageIndex.current, true)
+    }
+
+    override fun onAnimationChange(animation: ReadViewEnums.Animation){
+
     }
 
     override fun setReadInfo(mReadInfo: ReadInfo?) {

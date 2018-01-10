@@ -8,6 +8,8 @@ import android.view.MotionEvent
 import com.intelligent.reader.R
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.adapter.HorizontalAdapter
+import com.intelligent.reader.read.animation.ShiftTransformer
+import com.intelligent.reader.read.animation.SlideTransformer
 import com.intelligent.reader.read.help.*
 import com.intelligent.reader.read.mode.ReadCursor
 import com.intelligent.reader.read.mode.ReadInfo
@@ -88,14 +90,16 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     //构造
     constructor(context: Context) : this(context, null)
 
-    constructor(context: Context, transformer: PageTransformer?) : this(context, transformer, null)
 
-    constructor(context: Context, transformer: PageTransformer?, attrs: AttributeSet?) : super(context, attrs) {
-        if (transformer != null) {
-            setPageTransformer(true, transformer)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+
+        if (ReadConfig.animation == ReadViewEnums.Animation.shift) {
+
             setShadowDrawable(R.drawable.page_shadow)
             setShadowWidth(40)
+            setPageTransformer(true, ShiftTransformer())
         }
+
 
         adapter = HorizontalAdapter(this)
         setCurrentItem(Int.MAX_VALUE.div(2), false)
@@ -482,9 +486,22 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         entrance(this.mReadInfo!!)
     }
 
+
+    override fun onAnimationChange(animation: ReadViewEnums.Animation) {
+        if (ReadConfig.animation == ReadViewEnums.Animation.shift) {
+            setShadowDrawable(R.drawable.page_shadow)
+            setShadowWidth(40)
+            setPageTransformer(true, ShiftTransformer())
+        }else{
+            setShadowDrawable(null)
+            setPageTransformer(true, SlideTransformer())
+        }
+    }
+
     override fun setHorizontalEventListener(mHorizontalEvent: HorizontalEvent?) {
         this.mHorizontalEvent = mHorizontalEvent
     }
+
     //==================================================TouchEvent=========================================
     //-----禁止左滑-------左滑：上一次坐标 > 当前坐标
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {

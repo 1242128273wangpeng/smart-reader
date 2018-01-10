@@ -128,25 +128,36 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
     private var mPageFlipStateListener = object : SinglePageRender.PageFlipStateListener {
         override fun gone() {
+            AppLog.e(ReaderViewWidget.tag, "gone")
 //            if (mTextureView!!.isFangzhen) mTextureView!!.visibility = View.INVISIBLE
         }
 
         override fun backward(mPageNo: Int) {
+            AppLog.e(ReaderViewWidget.tag, "onClickLeft")
             num = mPageNo
             (mReaderView as HorizontalReaderView).onClickLeft(false)
 
-            if (mTextureView!!.isFangzhen) mTextureView!!.visibility = View.INVISIBLE
+            //等待ViewPager切换完页面再隐藏
+            runOnMain {
+                if (mTextureView!!.isFangzhen) mTextureView!!.visibility = View.INVISIBLE
+            }
         }
 
         override fun forward(mPageNo: Int) {
+            AppLog.e(ReaderViewWidget.tag, "forward")
             num = mPageNo
             (mReaderView as HorizontalReaderView).onClickRight(false)
-            if (mTextureView!!.isFangzhen) mTextureView!!.visibility = View.INVISIBLE
+            runOnMain {
+                if (mTextureView!!.isFangzhen) mTextureView!!.visibility = View.INVISIBLE
+            }
         }
 
         override fun restore(mPageNo: Int) {
+            AppLog.e(ReaderViewWidget.tag, "restore")
             num = mPageNo
-            if (mTextureView!!.isFangzhen) mTextureView!!.visibility = View.INVISIBLE
+            runOnMain {
+                if (mTextureView!!.isFangzhen) mTextureView!!.visibility = View.INVISIBLE
+            }
         }
     }
 
@@ -157,7 +168,8 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
         removeView(mTextureView)
         if (mTextureView == null) {
             mTextureView = PageFlipView(context)
-            mTextureView!!.visibility = if (ReadViewEnums.Animation.curl == animaEnums) View.VISIBLE else View.GONE
+
+            mTextureView!!.visibility = View.INVISIBLE
         }
         //加载Bitmap数据监听
         (mTextureView?.getmPageRender() as SinglePageRender).setListener(mLoadBitmaplistener)
@@ -266,18 +278,21 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
             2 -> ReadViewEnums.Animation.shift
             else -> ReadViewEnums.Animation.list
         }
+
+
+        mReaderView?.onAnimationChange(ReadConfig.animation)
     }
 
     override fun onResume() {
-        if(animaEnums == ReadViewEnums.Animation.curl) {
-            mTextureView?.visibility = View.INVISIBLE
-        }
+//        if(animaEnums == ReadViewEnums.Animation.curl) {
+//            mTextureView?.visibility = View.VISIBLE
+//        }
     }
 
     override fun onPause() {
-        if(animaEnums == ReadViewEnums.Animation.curl) {
-            mTextureView?.visibility = View.GONE
-        }
+//        if(animaEnums == ReadViewEnums.Animation.curl) {
+//            mTextureView?.visibility = View.GONE
+//        }
     }
 
     override fun myDispatchTouchEvent(event: MotionEvent) {
@@ -290,15 +305,23 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
     }
 
     private var mGestureDetector = GestureDetector(context, object : GestureDetector.OnGestureListener {
+
         override fun onDown(e: MotionEvent): Boolean {
+            AppLog.e(ReaderViewWidget.tag, "mGestureDetector onDown")
             //Menu隐藏
             if (context is ReadingActivity) (context as ReadingActivity).showMenu(false)
-            //翻页显示
-            AppLog.e("down",e.action.toString())
-            if (mTextureView!!.isFangzhen) mTextureView!!.visibility = View.VISIBLE
-            mTextureView?.onFingerDown(e.x, e.y)
 
-            return true
+
+            if (mTextureView!!.visibility != View.VISIBLE){
+
+                //翻页显示
+                mTextureView!!.visibility = View.VISIBLE
+
+                mTextureView?.onFingerDown(e.x, e.y)
+                return true
+            }
+
+            return false
         }
 
         override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {

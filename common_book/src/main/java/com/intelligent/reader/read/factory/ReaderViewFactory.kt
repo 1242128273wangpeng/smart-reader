@@ -22,12 +22,6 @@ class ReaderViewFactory(val context: Context)  {
             ReadViewEnums.Animation.list -> {
                 VerticalReaderView(context)
             }
-            ReadViewEnums.Animation.shift ->{
-                HorizontalReaderView(context, ShiftTransformer())
-            }
-            ReadViewEnums.Animation.curl ->{
-                HorizontalReaderView(context)
-            }
             else -> {
                 HorizontalReaderView(context)
             }

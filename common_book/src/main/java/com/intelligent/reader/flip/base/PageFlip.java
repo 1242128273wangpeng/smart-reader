@@ -62,7 +62,7 @@ public class PageFlip {
     private final static float WIDTH_RATIO_OF_CLICK_TO_FLIP = 0.5f;
 
     // width ratio of triggering restore flip
-    private final static float WIDTH_RATIO_OF_RESTORE_FLIP = 0.4f;
+    private final static float WIDTH_RATIO_OF_RESTORE_FLIP = 0.25f;
 
     // folder page shadow color buffer size
     private final static int FOLD_TOP_EDGE_SHADOW_VEX_COUNT = 22;
@@ -651,17 +651,19 @@ public class PageFlip {
      *         False means the movement should be ignored.
      */
     public boolean onFingerMove(float touchX, float touchY) {
+
+        touchX = mViewRect.toOpenGLX(touchX);
+        touchY = mViewRect.toOpenGLY(touchY);
+
         if(mOrientation == Orientation.NONE){
-            if(touchX > mLastTouchP.x){
-                mOrientation = Orientation.LEFT;
+            if(touchX < mStartTouchP.x){
+                mOrientation = Orientation.RIGHT;
                 beginListener.beginNext();
             }else{
-                mOrientation = Orientation.RIGHT;
+                mOrientation = Orientation.LEFT;
                 beginListener.beginPre();
             }
         }
-        touchX = mViewRect.toOpenGLX(touchX);
-        touchY = mViewRect.toOpenGLY(touchY);
 
         // compute moving distance (dx, dy)
         float dy = (touchY - mStartTouchP.y);
@@ -821,7 +823,7 @@ public class PageFlip {
         // backward flipping
         else if (mFlipState == PageFlipState.BACKWARD_FLIP) {
             // if not over middle x, change from backward to forward to restore
-            if (!page.isXInRange(touchX, 0.5f)) {
+            if (!page.isXInRange(touchX, 1 - WIDTH_RATIO_OF_RESTORE_FLIP)) {
                 mFlipState = PageFlipState.RESTORE_FLIP;
                 end.set((int)(diagonalP.x - page.width), (int)originP.y);
             }
@@ -835,6 +837,8 @@ public class PageFlip {
         else if (mFlipState == PageFlipState.BEGIN_FLIP) {
             mIsVertical = false;
             mFlipState = PageFlipState.END_FLIP;
+
+
             page.setOriginAndDiagonalPoints(hasSecondPage, -touchY);
 
             // if enable clicking to flip, compute scroller points for animation
@@ -842,15 +846,23 @@ public class PageFlip {
                 //down points 动画计算
                 computeScrollPointsForClickingFlip(touchX, start, end);
             }
+
+           if(mFlipState == PageFlipState.FORWARD_FLIP){
+                beginListener.beginNext();
+           }else{
+               beginListener.beginPre();
+           }
+
         }
 
         // start scroller for animating
         if (mFlipState == PageFlipState.FORWARD_FLIP ||
             mFlipState == PageFlipState.BACKWARD_FLIP ||
             mFlipState == PageFlipState.RESTORE_FLIP) {
+            int dur = duration * Math.abs(end.x - start.x) / getSurfaceWidth();
             mScroller.startScroll(start.x, start.y,
                                   end.x - start.x, end.y - start.y,
-                                  duration);
+                    dur);
             return true;
         }
 

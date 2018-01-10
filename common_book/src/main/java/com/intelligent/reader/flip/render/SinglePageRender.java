@@ -228,7 +228,7 @@ public class SinglePageRender extends PageRender {
 
         // create bitmap and canvas for page
         //mBackgroundBitmap = background;
-        Page page = mPageFlip.getFirstPage();
+//        Page page = mPageFlip.getFirstPage();
 //        LoadBitmapTask.get(mContext).set(width, height, 1);
     }
 
@@ -256,6 +256,8 @@ public class SinglePageRender extends PageRender {
                 if (state == PageFlipState.END_WITH_BACKWARD) {
                     // don't do anything on page number since mPageNo is always
                     // represents the FIRST_TEXTURE no;
+
+                    mPageFlip.getFirstPage().setSecondTextureWithFirst();
                     mPageNo--;
                     if (mPageFlipStateListener != null) {
                         mPageFlipStateListener.backward(mPageNo);
@@ -275,7 +277,7 @@ public class SinglePageRender extends PageRender {
                 }
 
                 mDrawCommand = DRAW_FULL_PAGE;
-                return true;
+                return false;
             }
         } else if (what == DRAW_FULL_PAGE) {
             mPageFlipStateListener.gone();
@@ -321,7 +323,6 @@ public class SinglePageRender extends PageRender {
      */
     public boolean canFlipBackward() {
         if (mPageNo > 1) {
-            mPageFlip.getFirstPage().setSecondTextureWithFirst();
             return true;
         } else {
             return false;
