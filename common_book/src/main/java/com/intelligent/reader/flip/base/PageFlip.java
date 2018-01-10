@@ -584,6 +584,8 @@ public class PageFlip {
      * @param touchY y of finger down point
      */
     public void onFingerDown(float touchX, float touchY) {
+        mOrientation = Orientation.NONE;
+
         // covert to OpenGL coordinate
         touchX = mViewRect.toOpenGLX(touchX);
         touchY = mViewRect.toOpenGLY(touchY);
@@ -611,19 +613,21 @@ public class PageFlip {
             mStartTouchP.set(touchX, touchY);
             mTouchP.set(touchX, touchY);
             mFlipState = PageFlipState.BEGIN_FLIP;
-            if (touchX>0) {//下页
-                if (beginListener != null) {
-                    beginListener.beginNext();
-                }
-            }else {//上页
-                if (beginListener != null) {
-                    beginListener.beginPre();
-                }
-            }
+//            if (touchX>0) {//下页
+//                if (beginListener != null) {
+//                    beginListener.beginNext();
+//                }
+//            }else {//上页
+//                if (beginListener != null) {
+//                    beginListener.beginPre();
+//                }
+//            }
         }
     }
 
     private BeginListener beginListener;
+
+    private Orientation mOrientation = Orientation.NONE;
 
     public void setBeginListener(BeginListener beginListener) {
         this.beginListener = beginListener;
@@ -632,6 +636,10 @@ public class PageFlip {
     public interface BeginListener{
         void beginNext();//准备向下翻
         void beginPre();//准备向上翻
+    }
+
+    public enum Orientation{
+        LEFT, RIGHT, NONE
     }
 
     /**
@@ -643,6 +651,15 @@ public class PageFlip {
      *         False means the movement should be ignored.
      */
     public boolean onFingerMove(float touchX, float touchY) {
+        if(mOrientation == Orientation.NONE){
+            if(touchX > mLastTouchP.x){
+                mOrientation = Orientation.LEFT;
+                beginListener.beginNext();
+            }else{
+                mOrientation = Orientation.RIGHT;
+                beginListener.beginPre();
+            }
+        }
         touchX = mViewRect.toOpenGLX(touchX);
         touchY = mViewRect.toOpenGLY(touchY);
 

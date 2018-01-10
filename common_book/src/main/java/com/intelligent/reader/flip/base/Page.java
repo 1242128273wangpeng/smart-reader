@@ -556,6 +556,24 @@ public class Page {
     }
 
     /**
+     * Delete all textures
+     */
+    public void invalidAllTextures() {
+        if (mTexIDs[FIRST_TEXTURE_ID] > INVALID_TEXTURE_ID) {
+            mUnusedTexIDs[mUnusedTexSize++] = mTexIDs[FIRST_TEXTURE_ID];
+        }
+        if (mTexIDs[SECOND_TEXTURE_ID] > INVALID_TEXTURE_ID) {
+            mUnusedTexIDs[mUnusedTexSize++] = mTexIDs[SECOND_TEXTURE_ID];
+        }
+        if (mTexIDs[BACK_TEXTURE_ID] > INVALID_TEXTURE_ID) {
+            mUnusedTexIDs[mUnusedTexSize++] = mTexIDs[BACK_TEXTURE_ID];
+        }
+        mTexIDs[FIRST_TEXTURE_ID] = INVALID_TEXTURE_ID;
+        mTexIDs[SECOND_TEXTURE_ID] = INVALID_TEXTURE_ID;
+        mTexIDs[BACK_TEXTURE_ID] = INVALID_TEXTURE_ID;
+    }
+
+    /**
      * Set the first texture with given bitmap
      *
      * @param b Bitmap object for creating texture

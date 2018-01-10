@@ -86,11 +86,16 @@ public class SinglePageRender extends PageRender {
      */
     public void onDrawFrame() {
         Page page = mPageFlip.getFirstPage();
+        page.deleteUnusedTextures();
         // 2. handle drawing command triggered from finger moving and animating 处理滑动命令
         if (mDrawCommand == DRAW_MOVING_FRAME ||
                 mDrawCommand == DRAW_ANIMATING_FRAME) {
             // is forward flip 向前滑动
             if (mPageFlip.getFlipState() == PageFlipState.FORWARD_FLIP) {
+                if (!page.isFirstTextureSet()) {
+//                drawPage(--mPageNo, 1);
+                    page.setFirstTexture(listener.loadBitmap(mPageNo));
+                }
                 // check if second texture of first page is valid, if not,//第一页第二页是否有效
                 // create new one
                 if (!page.isSecondTextureSet()) {
@@ -139,7 +144,9 @@ public class SinglePageRender extends PageRender {
         // we can continue to calculate next animation frame if need.
         // Remember: the drawing operation is always in GL thread instead of
         // main thread
+
         sendMessage();
+
     }
 
     @Override
@@ -157,16 +164,16 @@ public class SinglePageRender extends PageRender {
 //                page.setFirstTexture(mBitmap);
 //            }
 //        }
-        if (isFlow) {
-            page.setFirstTextureWithSecond();
-            page.setSecondTexture(listener.loadBitmap(mPageNo + 1));
-        } else {
-            page.setSecondTextureWithFirst();
-            page.setFirstTexture(listener.loadBitmap(mPageNo - 1));
-        }
+//        if (isFlow) {
+//            page.setFirstTextureWithSecond();
+//            page.setSecondTexture(listener.loadBitmap(mPageNo + 1));
+//        } else {
+//            page.setSecondTextureWithFirst();
+//            page.setFirstTexture(listener.loadBitmap(mPageNo - 1));
+//        }
 
-
-        mPageFlip.deleteUnusedTextures();
+        page.invalidAllTextures();
+//        mPageFlip.deleteUnusedTextures();
         setPageMessage();
     }
 

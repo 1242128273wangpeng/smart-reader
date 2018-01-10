@@ -28,6 +28,7 @@ import net.lzbook.kit.data.bean.ReadViewEnums
 import java.util.*
 import android.view.WindowManager
 import kotlinx.android.synthetic.main.layout_custom_dialog.view.*
+import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.runOnMain
 
 
@@ -36,6 +37,9 @@ import net.lzbook.kit.utils.runOnMain
  * Created by wt on 2017/12/13.
  */
 class ReaderViewWidget : FrameLayout, IReadWidget {
+    companion object {
+        val tag = "ReaderViewWidget"
+    }
 
     private var mReaderViewFactory: ReaderViewFactory? = null
 
@@ -64,15 +68,15 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
                 bitmap = when {
                     num < it -> {
                         val view = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.next)
-                        view.getDrawingCache(true)
+                        view.drawingCache
                     }
                     num > it -> {
                         val view = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.previous)
-                        view.getDrawingCache(true)
+                        view.drawingCache
                     }
                     else -> {
                         val view = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current)
-                        view.getDrawingCache(true)
+                        view.drawingCache
                     }
                 }
                 synchronized((this@ReaderViewWidget as Object)) {
@@ -86,8 +90,8 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
             synchronized((this@ReaderViewWidget as Object)) {
                 if (!isFinishCache) {
                     try {
-                        println("this@ReaderViewWidget as Object).wait")
-                        (this@ReaderViewWidget as Object).wait(100)
+                        println("this@ReaderViewWidget as Object).wait ${Thread.currentThread().name}")
+                        (this@ReaderViewWidget as Object).wait()
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -121,24 +125,26 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
 
     private var mPageFlipStateListener = object : SinglePageRender.PageFlipStateListener {
         override fun gone() {
+            AppLog.e(ReaderViewWidget.tag, "gone")
             if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 0f
         }
 
         override fun backward(mPageNo: Int) {
+            AppLog.e(ReaderViewWidget.tag, "onClickLeft")
             num = mPageNo
             (mReaderView as HorizontalReaderView).onClickLeft(false)
-
             if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 0f
         }
 
         override fun forward(mPageNo: Int) {
-
-            (mReaderView as HorizontalReaderView).onClickRight(false)
+            AppLog.e(ReaderViewWidget.tag, "forward")
             num = mPageNo
+            (mReaderView as HorizontalReaderView).onClickRight(false)
             if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 0f
         }
 
         override fun restore(mPageNo: Int) {
+            AppLog.e(ReaderViewWidget.tag, "restore")
             num = mPageNo
             if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 0f
         }
@@ -149,7 +155,11 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
      */
     private fun initGLSufaceView() {
         removeView(mTextureView)
-        if (mTextureView == null) mTextureView = PageFlipView(context)
+        if (mTextureView == null) {
+            mTextureView = PageFlipView(context)
+
+            mTextureView!!.visibility = if (ReadViewEnums.Animation.curl == animaEnums) View.VISIBLE else View.GONE
+        }
         mTextureView?.setZOrderOnTop(true)
         //加载Bitmap数据监听
         (mTextureView?.getmPageRender() as SinglePageRender).setListener(mLoadBitmaplistener)
@@ -261,11 +271,15 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
     }
 
     override fun onResume() {
-        mTextureView?.visibility = View.VISIBLE
+        if(animaEnums == ReadViewEnums.Animation.curl) {
+            mTextureView?.visibility = View.VISIBLE
+        }
     }
 
     override fun onPause() {
-        mTextureView?.visibility = View.GONE
+        if(animaEnums == ReadViewEnums.Animation.curl) {
+            mTextureView?.visibility = View.GONE
+        }
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
@@ -295,6 +309,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget {
     private var mGestureDetector = GestureDetector(context, object : GestureDetector.OnGestureListener {
 
         override fun onDown(e: MotionEvent): Boolean {
+            AppLog.e(ReaderViewWidget.tag, "mGestureDetector onDown")
 
             mTextureView?.onFingerDown(e.x, e.y)
             //翻页显示
