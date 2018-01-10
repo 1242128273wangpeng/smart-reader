@@ -45,16 +45,15 @@ import net.lzbook.kit.utils.AppUtils
  */
 class HorizontalPage : FrameLayout {
 
-    private val paint: Paint = Paint()
     private var mDrawTextHelper: DrawTextHelper? = null
-    private var loadView: View
-    private var errorView: View
-    private var pageView: HorizontalItemPage
-    private var readTop: View
-    private var readBottom: View
-    private var homePage: View
+    private lateinit var loadView: View
+    private lateinit var errorView: View
+    private lateinit var pageView: HorizontalItemPage
+    private lateinit var readTop: View
+    private lateinit var readBottom: View
+    private lateinit var homePage: View
 
-    var CursorOffset = 0
+    var mCursorOffset = 0
     var percent = 0.0f
     var time = ""
     var mCursor: ReadCursor? = null
@@ -74,13 +73,13 @@ class HorizontalPage : FrameLayout {
         time = this.noticePageListener!!.getCurTime()
         percent = this.noticePageListener!!.getCurPercent()
         isDrawingCacheEnabled = true
-
         drawingCacheQuality = DRAWING_CACHE_QUALITY_LOW
         isChildrenDrawnWithCacheEnabled = true
         isChildrenDrawnWithCacheEnabled = true
+        init()
     }
 
-    init {
+    private fun init(){
         mDrawTextHelper = DrawTextHelper(context.resources)
         loadView = inflate(context, R.layout.loading_page_reading, null)
         errorView = inflate(context, R.layout.error_page2, null)
@@ -275,7 +274,7 @@ class HorizontalPage : FrameLayout {
                         }
                         mCursor!!.offset = 1
                         mCursor!!.lastOffset = 1
-                        CursorOffset = -1
+                        mCursorOffset = -1
                         viewState = start
                         noticePageListener?.pageChangSuccess(mCursor!!,ReadViewEnums.NotifyStateState.none)//游标通知回调
                     }else {
@@ -310,10 +309,10 @@ class HorizontalPage : FrameLayout {
                         }
                         //游标添加广告后的偏移量
                         when {
-                            (pageSum >= 16) and (pageIndex >= 9) and (pageIndex != pageSum) -> CursorOffset == -1
-                            (pageSum >= 16) and (pageIndex >= 9) and (pageIndex == pageSum) -> CursorOffset == -2
-                            (pageSum < 16) and (pageIndex == pageSum) -> CursorOffset == -1
-                            else -> CursorOffset = 0
+                            (pageSum >= 16) and (pageIndex >= 9) and (pageIndex != pageSum) -> mCursorOffset == -1
+                            (pageSum >= 16) and (pageIndex >= 9) and (pageIndex == pageSum) -> mCursorOffset == -2
+                            (pageSum < 16) and (pageIndex == pageSum) -> mCursorOffset == -1
+                            else -> mCursorOffset = 0
                         }
                         //设置top and bottom
                         val chapterProgress = "" + (cursor.sequence.plus(1)) + "/" + cursor.readStatus.chapterCount + "章"
@@ -335,10 +334,10 @@ class HorizontalPage : FrameLayout {
             homePage.slogan_tv.setTextView(2f, context.resources.getString(R.string.slogan))
             homePage.product_name_tv.setTextView(1f, context.resources.getString(R.string.app_name))
             //封面字颜色
-            homePage.book_name_tv.setTextColor(ThemeUtil.modeLoadTextColor)
-            homePage.book_auth_tv.setTextColor(ThemeUtil.modeLoadTextColor)
-            homePage.slogan_tv.setTextColor(ThemeUtil.modeLoadTextColor)
-            homePage.product_name_tv.setTextColor(ThemeUtil.modeLoadTextColor)
+            homePage.book_name_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
+            homePage.book_auth_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
+            homePage.slogan_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
+            homePage.product_name_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
             postInvalidate()
             //改变状态
             mCursor!!.sequence = -1

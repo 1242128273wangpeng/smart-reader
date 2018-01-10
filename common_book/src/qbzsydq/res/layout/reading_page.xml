@@ -5,7 +5,7 @@
                 android:layout_height="match_parent">
 
     <com.intelligent.reader.read.page.ReaderViewWidget
-            android:id="@+id/novel_basePageView"
+            android:id="@+id/readerWidget"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
