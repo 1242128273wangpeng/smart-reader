@@ -52,7 +52,6 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
     Handler mHandler;
     PageFlip mPageFlip;
     PageRender mPageRender;
-    ReentrantLock mDrawLock;
 
     private boolean isFangzhen;
 
@@ -70,7 +69,6 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
             if (mPageFlip != null) mPageFlip.deleteUnusedTextures();
         }
         isFangzhen = fangzhen;
-        setVisibility(isFangzhen? VISIBLE : GONE);
     }
 
     public PageRender getmPageRender() {
@@ -98,18 +96,17 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
                 .setPixelsOfMesh(pixelsOfMesh)
                 .enableAutoPage(isAuto);
 //        setEGLContextClientVersion(2);
-        mPageFlip.setShadowColorOfFoldBase(0.1f, 0.7f, 0.5f, 0.3f);//
+        mPageFlip.setShadowColorOfFoldBase(0.1f, 0.5f, 0.3f, 0.01f);//
         // init others
 //        mPageNo  = Integer.MAX_VALUE/4;
         mPageNo = Integer.MAX_VALUE / 2;
-        mDrawLock = new ReentrantLock();
         mPageRender = new SinglePageRender(context, mPageFlip,
                 mHandler, mPageNo);
         //setting
         setVisibility(GONE);
         setEGLContextClientVersion(2);
         setPreserveEGLContextOnPause(true);
-        setEGLConfigChooser(8,8,8,0,16,0);
+        setEGLConfigChooser(8, 8, 8, 0, 16, 0);
         setEGLWindowSurfaceFactory(new DefaultWindowSurfaceFactory());
         setZOrderOnTop(true);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);//设置透明
@@ -195,13 +192,18 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
      * @param x finger x coordinate
      * @param y finger y coordinate
      */
-    public void onFingerDown(float x, float y) {
-        // if the animation is going, we should ignore this event to avoid
-        // mess drawing on screen
-        if (!mPageFlip.isAnimating() &&
-                mPageFlip.getFirstPage() != null) {
-            mPageFlip.onFingerDown(x, y);
-        }
+    public void onFingerDown(final float x, final float y) {
+        queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                // if the animation is going, we should ignore this event to avoid
+                // mess drawing on screen
+                if (!mPageFlip.isAnimating() &&
+                        mPageFlip.getFirstPage() != null) {
+                    mPageFlip.onFingerDown(x, y);
+                }
+            }
+        });
     }
 
     /**
@@ -210,25 +212,28 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
      * @param x finger x coordinate
      * @param y finger y coordinate
      */
-    public void onFingerMove(float x, float y) {
-        if (mPageFlip.isAnimating()) {
-            // nothing to do during animating
-        } else if (mPageFlip.canAnimate(x, y)) {
-            // if the point is out of current page, try to start animating
-            onFingerUp(x, y);
-        }
-        // move page by finger
-        else if (mPageFlip.onFingerMove(x, y)) {
-            try {
-                mDrawLock.lock();
-                if (mPageRender != null &&
-                        mPageRender.onFingerMove(x, y)) {
-                    requestRender();
+    public void onFingerMove(final float x, final float y) {
+        queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                if (mPageFlip.isAnimating()) {
+                    // nothing to do during animating
+                } else if (mPageFlip.canAnimate(x, y)) {
+                    // if the point is out of current page, try to start animating
+                    onFingerUp(x, y);
                 }
-            } finally {
-                mDrawLock.unlock();
+                // move page by finger
+                else if (mPageFlip.onFingerMove(x, y)) {
+
+                    if (mPageRender != null &&
+                            mPageRender.onFingerMove(x, y)) {
+                    }
+
+                }
             }
-        }
+        });
+
+        requestRender();
     }
 
     /**
@@ -237,40 +242,33 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
      * @param x finger x coordinate
      * @param y finger y coordinate
      */
-    public void onFingerUp(float x, float y) {
-        if (!mPageFlip.isAnimating()) {
-            mPageFlip.onFingerUp(x, y, mDuration);
-            try {
-                mDrawLock.lock();
-                if (mPageRender != null &&
-                        mPageRender.onFingerUp(x, y)) {
-                    requestRender();
+    public void onFingerUp(final float x, final float y) {
+        queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                if (!mPageFlip.isAnimating()) {
+                    mPageFlip.onFingerUp(x, y, mDuration);
+
+                    if (mPageRender != null &&
+                            mPageRender.onFingerUp(x, y)) {
+                    }
+
                 }
-            } finally {
-                mDrawLock.unlock();
             }
-        }
+        });
+
+        requestRender();
     }
 
     public void onDrawNextFrame(boolean isFlow) {
-        try {
-            mDrawLock.lock();
-            if (mPageRender != null) {
-                mPageRender.onDrawNextFrame(isFlow);
-            }
-        } finally {
-            mDrawLock.unlock();
+        if (mPageRender != null) {
+            mPageRender.onDrawNextFrame(isFlow);
         }
     }
 
     public void onReDrawFrame() {
-        try {
-            mDrawLock.lock();
-            if (mPageRender != null) {
-                mPageRender.onReDrawFrame();
-            }
-        } finally {
-            mDrawLock.unlock();
+        if (mPageRender != null) {
+            mPageRender.onReDrawFrame();
         }
     }
 
@@ -281,13 +279,8 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
      */
     @Override
     public void onDrawFrame(GL10 gl) {
-        try {
-            mDrawLock.lock();
-            if (mPageRender != null) {
-                mPageRender.onDrawFrame();
-            }
-        } finally {
-            mDrawLock.unlock();
+        if (mPageRender != null) {
+            mPageRender.onDrawFrame();
         }
     }
 
@@ -331,19 +324,13 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
      */
     private void newHandler() {
         mHandler = new Handler() {
-            public void handleMessage(Message msg) {
+            public void handleMessage(final Message msg) {
                 switch (msg.what) {
                     case PageRender.MSG_ENDED_DRAWING_FRAME:
-                        try {
-                            mDrawLock.lock();
-                            // notify page render to handle ended drawing
-                            // message
-                            if (mPageRender != null &&
-                                    mPageRender.onEndedDrawing(msg.arg1)) {
-                                requestRender();
-                            }
-                        } finally {
-                            mDrawLock.unlock();
+
+                        if (mPageRender != null &&
+                                mPageRender.onEndedDrawing(msg.arg1)) {
+                            requestRender();
                         }
                         break;
                     case PageRender.MSG_ENDED_FLIP_DOWN:
@@ -355,17 +342,12 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
                         onFingerDown(DisplayUtils.getScreenWight(getContext()) / 2 - 500, DisplayUtils.getScreenHeight(getContext()) / 2);
                         onFingerUp(DisplayUtils.getScreenWight(getContext()) / 2 - 500, DisplayUtils.getScreenHeight(getContext()) / 2);
                     case PageRender.MSG_ENDED_SET_PAGE:
-                        try {
-                            mDrawLock.lock();
-                            // notify page render to handle ended drawing
-                            // message
-                            if (mPageRender != null &&
-                                    mPageRender.onEndedDrawing(msg.arg1)) {
-                                requestRender();
-                            }
-                        } finally {
-                            mDrawLock.unlock();
+
+                        if (mPageRender != null &&
+                                mPageRender.onEndedDrawing(msg.arg1)) {
+                            requestRender();
                         }
+
                         break;
                     default:
                         break;

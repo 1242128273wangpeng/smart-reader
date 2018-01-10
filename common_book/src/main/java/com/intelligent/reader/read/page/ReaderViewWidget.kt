@@ -29,8 +29,9 @@ import java.util.*
 import android.view.WindowManager
 import com.intelligent.reader.read.help.HorizontalEvent
 import kotlinx.android.synthetic.main.layout_custom_dialog.view.*
-import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.runOnMain
+
 
 
 /**
@@ -38,6 +39,10 @@ import net.lzbook.kit.utils.AppLog
  * Created by wt on 2017/12/13.
  */
 class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
+
+    companion object {
+        val tag = "ReaderViewWidget"
+    }
 
     private var mReaderViewFactory: ReaderViewFactory? = null
 
@@ -66,15 +71,15 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
                 bitmap = when {
                     num < it -> {
                         val view = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.next)
-                        view.getDrawingCache(true)
+                        view.drawingCache
                     }
                     num > it -> {
                         val view = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.previous)
-                        view.getDrawingCache(true)
+                        view.drawingCache
                     }
                     else -> {
                         val view = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current)
-                        view.getDrawingCache(true)
+                        view.drawingCache
                     }
                 }
                 synchronized((this@ReaderViewWidget as Object)) {
@@ -88,8 +93,8 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
             synchronized((this@ReaderViewWidget as Object)) {
                 if (!isFinishCache) {
                     try {
-                        println("this@ReaderViewWidget as Object).wait")
-                        (this@ReaderViewWidget as Object).wait(100)
+                        println("this@ReaderViewWidget as Object).wait ${Thread.currentThread().name}")
+                        (this@ReaderViewWidget as Object).wait()
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -135,8 +140,8 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
         override fun forward(mPageNo: Int) {
 
-            (mReaderView as HorizontalReaderView).onClickRight(false)
             num = mPageNo
+            (mReaderView as HorizontalReaderView).onClickRight(false)
             if (mTextureView!!.isFangzhen) mTextureView!!.visibility = View.INVISIBLE
         }
 
@@ -151,7 +156,10 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
      */
     private fun initGLSufaceView() {
         removeView(mTextureView)
-        if (mTextureView == null) mTextureView = PageFlipView(context)
+        if (mTextureView == null) {
+            mTextureView = PageFlipView(context)
+            mTextureView!!.visibility = if (ReadViewEnums.Animation.curl == animaEnums) View.VISIBLE else View.GONE
+        }
         //加载Bitmap数据监听
         (mTextureView?.getmPageRender() as SinglePageRender).setListener(mLoadBitmaplistener)
         //翻页动画结束监听
@@ -262,11 +270,15 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
     }
 
     override fun onResume() {
-        mTextureView?.visibility = View.INVISIBLE
+        if(animaEnums == ReadViewEnums.Animation.curl) {
+            mTextureView?.visibility = View.INVISIBLE
+        }
     }
 
     override fun onPause() {
-        mTextureView?.visibility = View.GONE
+        if(animaEnums == ReadViewEnums.Animation.curl) {
+            mTextureView?.visibility = View.GONE
+        }
     }
 
     override fun myDispatchTouchEvent(event: MotionEvent) {
@@ -282,7 +294,6 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
         override fun onDown(e: MotionEvent): Boolean {
             //翻页显示
             AppLog.e("down",e.action.toString())
-
             if (mTextureView!!.isFangzhen) mTextureView!!.visibility = View.VISIBLE
             mTextureView?.onFingerDown(e.x, e.y)
 
