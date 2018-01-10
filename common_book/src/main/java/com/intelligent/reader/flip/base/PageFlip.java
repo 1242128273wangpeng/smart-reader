@@ -805,7 +805,7 @@ public class PageFlip {
         else if (mFlipState == PageFlipState.BACKWARD_FLIP) {
             // if not over middle x, change from backward to forward to restore
             if (!page.isXInRange(touchX, 0.5f)) {
-                mFlipState = PageFlipState.FORWARD_FLIP;
+                mFlipState = PageFlipState.RESTORE_FLIP;
                 end.set((int)(diagonalP.x - page.width), (int)originP.y);
             }
             else {

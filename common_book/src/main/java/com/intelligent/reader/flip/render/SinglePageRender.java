@@ -85,8 +85,6 @@ public class SinglePageRender extends PageRender {
      * Draw frame 画布局
      */
     public void onDrawFrame() {
-        // 1. delete unused textures
-        mPageFlip.deleteUnusedTextures();
         Page page = mPageFlip.getFirstPage();
         // 2. handle drawing command triggered from finger moving and animating 处理滑动命令
         if (mDrawCommand == DRAW_MOVING_FRAME ||
@@ -96,14 +94,19 @@ public class SinglePageRender extends PageRender {
                 // check if second texture of first page is valid, if not,//第一页第二页是否有效
                 // create new one
                 if (!page.isSecondTextureSet()) {
-                    drawPage(mPageNo + 1, 1);
-                    page.setSecondTexture(mBitmap);
+//                    drawPage(mPageNo + 1, 1);
+                    page.setSecondTexture(listener.loadBitmap(mPageNo + 1));
                 }
             }
             // in backward flip, check first texture of first page is valid 向后翻页 检查第一个页是否有效
-            else if (!page.isFirstTextureSet()) {
-                drawPage(--mPageNo, 1);
-                page.setFirstTexture(mBitmap);
+            else {
+                if (!page.isFirstTextureSet()) {
+//                drawPage(--mPageNo, 1);
+                    page.setFirstTexture(listener.loadBitmap(mPageNo - 1));
+                }
+                if (!page.isSecondTextureSet()) {
+                    page.setSecondTexture(listener.loadBitmap(mPageNo));
+                }
             }
 
             // draw frame for page flip 翻页
@@ -122,8 +125,15 @@ public class SinglePageRender extends PageRender {
 //                sendMessageDown();
 //                return;
 //            }
+
+            if (!page.isFirstTextureSet()) {
+                page.setFirstTexture(listener.loadBitmap(mPageNo));
+            }
+
             mPageFlip.drawPageFrame();
         }
+
+        page.deleteUnusedTextures();
 
         // 3. send message to main thread to notify drawing is ended so that
         // we can continue to calculate next animation frame if need.
@@ -135,7 +145,6 @@ public class SinglePageRender extends PageRender {
     @Override
     public void onDrawNextFrame(boolean isFlow) {
         //重新画
-        mPageFlip.deleteUnusedTextures();
         Page page = mPageFlip.getFirstPage();
 //        if (isFlow) {
 //            if (!page.isSecondTextureSet()) {
@@ -149,19 +158,15 @@ public class SinglePageRender extends PageRender {
 //            }
 //        }
         if (isFlow) {
-            page.setSecondTextureWithFirst();
-            page.setBackTexture(null);
-            drawPage(++mPageNo, 1);
-            page.mTexIDs[0] = 2;
-            page.mTexIDs[1] = -1;
-            page.setSecondTexture(mBitmap);
-        }else {
             page.setFirstTextureWithSecond();
-            drawPage(--mPageNo, 1);
-            page.mTexIDs[0] = 0;
-            page.setFirstTexture(mBitmap);
-            page.setBackTexture(mBitmap);
+            page.setSecondTexture(listener.loadBitmap(mPageNo + 1));
+        } else {
+            page.setSecondTextureWithFirst();
+            page.setFirstTexture(listener.loadBitmap(mPageNo - 1));
         }
+
+
+        mPageFlip.deleteUnusedTextures();
         setPageMessage();
     }
 
@@ -170,11 +175,13 @@ public class SinglePageRender extends PageRender {
         //重新画
         mPageFlip.deleteUnusedTextures();
         Page page = mPageFlip.getFirstPage();
-        drawPage(mPageNo, 1);
-        page.setFirstTexture(mBitmap);
-        page.setSecondTexture(mBitmap);
+//        drawPage(mPageNo, 1);
+        Bitmap loadBitmap = listener.loadBitmap(mPageNo);
+        page.setFirstTexture(loadBitmap);
+        page.setSecondTexture(listener.loadBitmap(mPageNo + 1));
         sendMessage();
     }
+
     public void sendMessage() {
         Message msg = Message.obtain();
         msg.what = MSG_ENDED_DRAWING_FRAME;
@@ -195,6 +202,7 @@ public class SinglePageRender extends PageRender {
         msg.arg1 = mDrawCommand;
         mHandler.sendMessage(msg);
     }
+
     public void setPageMessage() {
         Message msg = Message.obtain();
         msg.what = MSG_ENDED_SET_PAGE;
@@ -210,20 +218,10 @@ public class SinglePageRender extends PageRender {
      */
     public void onSurfaceChanged(int width, int height) {
         // recycle bitmap resources if need
-        if (mBackgroundBitmap != null) {
-            mBackgroundBitmap.recycle();
-        }
-
-        if (mBitmap != null) {
-            mBitmap.recycle();
-        }
 
         // create bitmap and canvas for page
         //mBackgroundBitmap = background;
         Page page = mPageFlip.getFirstPage();
-        mBitmap = Bitmap.createBitmap((int) page.width(), (int) page.height(),
-                Bitmap.Config.ARGB_8888);
-        mCanvas.setBitmap(mBitmap);
 //        LoadBitmapTask.get(mContext).set(width, height, 1);
     }
 
@@ -251,6 +249,7 @@ public class SinglePageRender extends PageRender {
                 if (state == PageFlipState.END_WITH_BACKWARD) {
                     // don't do anything on page number since mPageNo is always
                     // represents the FIRST_TEXTURE no;
+                    mPageNo--;
                     if (mPageFlipStateListener != null) {
                         mPageFlipStateListener.backward(mPageNo);
                     }
@@ -271,7 +270,7 @@ public class SinglePageRender extends PageRender {
                 mDrawCommand = DRAW_FULL_PAGE;
                 return true;
             }
-        }else if (what == DRAW_FULL_PAGE){
+        } else if (what == DRAW_FULL_PAGE) {
             mPageFlipStateListener.gone();
         }
         return false;
@@ -282,23 +281,23 @@ public class SinglePageRender extends PageRender {
      *
      * @param number page number
      */
-    private void drawPage(final int number, int type) {
-        AppLog.e("number",number+"");
-        final int width = mCanvas.getWidth();
-        final int height = mCanvas.getHeight();
-        final Paint p = new Paint();
-        p.setFilterBitmap(true);
+//    private void drawPage(final int number, int type) {
+//        AppLog.e("number",number+"");
+//        final int width = mCanvas.getWidth();
+//        final int height = mCanvas.getHeight();
+//        final Paint p = new Paint();
+//        p.setFilterBitmap(true);
+//
+//        mHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                Bitmap background = listener.loadBitmap(number);
+//                Rect rect = new Rect(0, 0, width, height);
+//                mCanvas.drawBitmap(background, null, rect, p);
+//            }
+//        });
+//    }
 
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                Bitmap background = listener.loadBitmap(number);
-                Rect rect = new Rect(0, 0, width, height);
-                mCanvas.drawBitmap(background, null, rect, p);
-                mCanvas.drawBitmap(background, null, rect, p);
-            }
-        });
-    }
     /**
      * If page can flip forward
      *
