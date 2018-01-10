@@ -1,5 +1,6 @@
 package com.intelligent.reader.read.mode
 
+import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.Chapter
 
 /**
@@ -13,17 +14,20 @@ object ReadState {
     var offset = 0
     //目录
     var chapterList: ArrayList<Chapter> = ArrayList()
+    //chapterId
+    var chapterId: String? = null
     //章节名
-    var chapterName:String? = null
+    var chapterName: String? = null
     //小说名
-    var bookName:String? = null
+    var bookName: String? = null
     //小说作者
     var bookAuthor: String? = null
     //总页数
-    var pageCount:Int = 0
+    var pageCount: Int = 0
     //当前页数
-    var currentPage:Int = 0
+    var currentPage: Int = 0
     //当前页总长度
-    var contentLength:Int = 0
+    var contentLength: Int = 0
 
+    var book: Book? = null
 }

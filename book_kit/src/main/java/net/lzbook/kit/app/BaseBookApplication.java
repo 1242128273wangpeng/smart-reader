@@ -100,8 +100,6 @@ public abstract class BaseBookApplication extends Application {
 
         Thread.setDefaultUncaughtExceptionHandler(new StatisticUncaughtExceptionHandler(parent));
 
-
-
         Constants.SHOW_LOG = ExtensionsKt.msDebuggAble =(getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)!= 0;
         //分割dex防止方法数过多
         MultiDex.install(this);

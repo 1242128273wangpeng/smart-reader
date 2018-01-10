@@ -1,7 +1,6 @@
 package com.intelligent.reader.read.page
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
@@ -19,11 +18,11 @@ import com.intelligent.reader.read.help.*
 import com.intelligent.reader.read.mode.NovelPageBean
 import com.intelligent.reader.read.mode.ReadInfo
 import com.intelligent.reader.read.mode.ReadState
-import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.util.ThemeUtil
 import kotlinx.android.synthetic.main.vertical_pager_layout.view.*
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
+import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.ToastUtils
 import java.util.concurrent.CopyOnWriteArrayList
@@ -40,11 +39,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
 
     private lateinit var mLayoutManager: WrapContentLinearLayoutManager
 
-    private lateinit var mNovelHelper: NovelHelper
-
     private var mCatalogList: ArrayList<Chapter>? = null
-
-    private var mCurrentPage = 0
 
     private lateinit var mOriginDataList: CopyOnWriteArrayList<NovelPageBean>
 
@@ -130,12 +125,9 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
         }
 
         mReadInfo = readInfo
-        mNovelHelper = NovelHelper(context as Activity, mReadInfo.mReadStatus)
-        mAdapter = PagerScrollAdapter(context, mReadInfo.mReadStatus, mNovelHelper)
+        mAdapter = PagerScrollAdapter(context, mReadInfo.mReadStatus)
         mAdapter.setOnLoadViewClickListener(this)
         page_rv.adapter = mAdapter
-
-//        setCurrentChapterInfo(ReadState.currentPage - 1)
 
         if (ReadState.sequence == -1) {
             ReadState.sequence = 0
@@ -175,7 +167,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
      * 下翻页
      */
     private fun loadNextChapter(sequence: Int) {
-        if ((!checkLoadChapterValid(sequence)) || sequence > mReadInfo.mReadStatus.chapterCount - 1) return
+        if ((!checkLoadChapterValid(sequence)) || sequence > ReadState.chapterList.size - 1) return
         if (mChapterLoadStat == CHAPTER_WAITING && checkLoadChapterValid(sequence)) {
             mChapterLoadStat = CHAPTER_LOADING
             loadChapterState {
@@ -334,17 +326,15 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
 
                 mReadInfo.mReadStatus.chapterName = mOriginDataList[position].lines[0].chapterName
                 novel_title.text = mReadInfo.mReadStatus.chapterName
-                novel_chapter.text = "${mOriginDataList[position].lines[0].sequence + 1} / ${mReadInfo.mReadStatus.chapterCount} 章"
+                novel_chapter.text = "${mOriginDataList[position].lines[0].sequence + 1} / ${ReadState.chapterList.size} 章"
                 novel_page.text = "本章第${(getCurrentChapterPage(position) + 1)} / ${getCurrentChapterPageCount(mOriginDataList[position].lines[0].sequence)}"
 
                 ReadState.currentPage = getCurrentChapterPage(position)
+                ReadState.offset = mOriginDataList[position].offset
                 ReadState.sequence = mOriginDataList[position].lines[0].sequence
-                mCurrentPage = ReadState.currentPage
             }
-            mReadPageChange?.addLog()
 
-            ReadState.offset = mOriginDataList[position].offset
-            ReadState.sequence = mOriginDataList[position].lines[0].sequence
+            mReadPageChange?.addLog()
         }
 
         if (ReadState.sequence == -1) {
@@ -423,7 +413,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     }
 
     /**
-     * 添加广告 段尾  8-1
+     * 添加广告 段尾  5-1
      */
     private fun loadAdViewToChapterLastPage(chapterContent: List<NovelPageBean>) {
         var lineData: NovelLineBean? = null
@@ -539,6 +529,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
             }
             pageContent.adView = null
         }
+        mOriginDataList.clear()
     }
 
 

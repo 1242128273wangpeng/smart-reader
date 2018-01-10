@@ -497,4 +497,30 @@ object ReadSeparateHelper {
         }
         return if(filter.size - 1 > 0) return filter.size - 1 else 1
     }
+
+    fun getChapterNameList(chapterName: String): ArrayList<NovelLineBean> {
+        val splitTag = "章"
+        val newChapterList = ArrayList<NovelLineBean>()
+
+        if (TextUtils.isEmpty(chapterName)) {
+            newChapterList.add(NovelLineBean("无章节名", 0f, 0, false, null))
+            return newChapterList
+        }
+
+        if (chapterName.contains(splitTag)) {
+            val chapterNumAndName = chapterName.split(splitTag.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            for (i in chapterNumAndName.indices) {
+                if (i == 0) {
+                    newChapterList.add(NovelLineBean(chapterNumAndName[i] + splitTag, 0f, 0, false, null))
+                } else {
+                    newChapterList.add(NovelLineBean(chapterNumAndName[i].trim { it <= ' ' }, 0f, 0, false, null))
+                }
+            }
+        } else {
+            newChapterList.add(NovelLineBean(chapterName + splitTag, 0f, 0, false, null))
+            newChapterList.add(NovelLineBean(chapterName, 0f, 0, false, null))
+        }
+
+        return newChapterList
+    }
 }

@@ -416,8 +416,6 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             curCursor = ReadCursor(mReadInfo.curBook, sequence, offset, ReadViewEnums.PageIndex.current, mReadInfo.mReadStatus)
             checkViewState("Cur", ReadViewEnums.NotifyStateState.all)
         }, 200)
-        //设置字体颜色
-        mReadPageChange?.onLoadChapter(ReadViewEnums.MsgType.MSG_LOAD_CUR_CHAPTER, mReadInfo.mReadStatus.currentPage - 1, false, ReadViewEnums.PageIndex.current)
     }
 
     //布局发生变化
