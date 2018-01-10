@@ -16,6 +16,7 @@ import com.intelligent.reader.R
 import com.intelligent.reader.fragment.CatalogMarkFragment
 import com.intelligent.reader.presenter.read.*
 import com.intelligent.reader.read.DataProvider
+import com.intelligent.reader.read.animation.BitmapManager
 import com.intelligent.reader.read.help.IReadPageChange
 import net.lzbook.kit.data.bean.ReadConfig
 import com.intelligent.reader.read.mode.ReadInfo
@@ -114,7 +115,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         novel_basePageView?.removeAllViews()
 //        novel_basePageView?.addView(pageView as View?, FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
 //                LayoutParams.MATCH_PARENT))
-
+        BitmapManager.getInstance().setSize(readStatus.screenWidth,readStatus.screenHeight)
         mReadPresenter?.initData(pageView!!)
         readSettingView?.setDataFactory(fac, readStatus, mThemeHelper)
         readSettingView?.currentThemeMode = mReadPresenter?.currentThemeMode

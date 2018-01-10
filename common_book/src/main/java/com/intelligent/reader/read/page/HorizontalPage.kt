@@ -393,47 +393,23 @@ class HorizontalPage : FrameLayout {
         }
 
         //点击事件
-        private var lastTouchY: Int = 0
-        private var startTouchTime: Long = 0
-        private var startTouchX: Int = 0
-        private var startTouchY: Int = 0
         private var isShowMenu: Boolean = true
 
         override fun dispatchTouchEvent(event: MotionEvent): Boolean {
-            AppLog.e("dispatchTouchEvent",event.action.toString()+"x = "+event.x+" y = "+event.y)
-            val tmpX = event.x.toInt()
-            val tmpY = event.y.toInt()
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    lastTouchY = tmpY
-                    startTouchTime = System.currentTimeMillis()
-                    startTouchX = tmpX
-                    startTouchY = tmpY
                     if (onClick(event)) return true
-                    if (ReadConfig.animation == ReadViewEnums.Animation.curl){
-                        noticePageListener?.myDispatchTouchEvent(event)
-                        return true
-                    }
-                    return true
                 }
                 MotionEvent.ACTION_CANCEL -> {
-                    startTouchTime = System.currentTimeMillis()
                     return true
                 }
                 MotionEvent.ACTION_UP -> {
-                    if (ReadConfig.animation == ReadViewEnums.Animation.curl){
-                        noticePageListener?.myDispatchTouchEvent(event)
-                        return true
-                    }
+
                 }
                 MotionEvent.ACTION_MOVE -> {
                     if (!isShowMenu) {
                         noticePageListener?.onClickMenu(isShowMenu)
                         isShowMenu = true
-                    }
-                    if (ReadConfig.animation == ReadViewEnums.Animation.curl){
-                        noticePageListener?.myDispatchTouchEvent(event)
-                        return true
                     }
                 }
                 MotionEvent.ACTION_POINTER_DOWN-> return true
@@ -442,7 +418,12 @@ class HorizontalPage : FrameLayout {
             return super.dispatchTouchEvent(event)
         }
 
+        private var time: Long = 0
         private fun onClick(event: MotionEvent): Boolean {
+            if (System.currentTimeMillis() - time < 500) {//动画时间
+                return false
+            }
+            time = System.currentTimeMillis()
             val x = event.x.toInt()
             val y = event.y.toInt()
             val h4 = height / 4
@@ -450,11 +431,11 @@ class HorizontalPage : FrameLayout {
             return if (x <= w3) {
                 noticePageListener?.onClickLeft(true)
                 noticePageListener?.onClickMenu(false)
-                false
+                true
             } else if (x >= width.minus(w3)|| y >= height.minus(h4) && x >= w3) {
                 noticePageListener?.onClickRight(true)
                 noticePageListener?.onClickMenu(false)
-                false
+                true
             } else {
                 noticePageListener?.onClickMenu(isShowMenu)
                 isShowMenu = !isShowMenu

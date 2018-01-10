@@ -123,26 +123,26 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
     private var mPageFlipStateListener = object : SinglePageRender.PageFlipStateListener {
         override fun gone() {
-            if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 0f
+            if (mTextureView!!.isFangzhen) mTextureView!!.visibility = View.INVISIBLE
         }
 
         override fun backward(mPageNo: Int) {
             num = mPageNo
             (mReaderView as HorizontalReaderView).onClickLeft(false)
 
-            if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 0f
+            if (mTextureView!!.isFangzhen) mTextureView!!.visibility = View.INVISIBLE
         }
 
         override fun forward(mPageNo: Int) {
 
             (mReaderView as HorizontalReaderView).onClickRight(false)
             num = mPageNo
-            if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 0f
+            if (mTextureView!!.isFangzhen) mTextureView!!.visibility = View.INVISIBLE
         }
 
         override fun restore(mPageNo: Int) {
             num = mPageNo
-            if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 0f
+            if (mTextureView!!.isFangzhen) mTextureView!!.visibility = View.INVISIBLE
         }
     }
 
@@ -152,14 +152,12 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
     private fun initGLSufaceView() {
         removeView(mTextureView)
         if (mTextureView == null) mTextureView = PageFlipView(context)
-        mTextureView?.setZOrderOnTop(true)
         //加载Bitmap数据监听
         (mTextureView?.getmPageRender() as SinglePageRender).setListener(mLoadBitmaplistener)
         //翻页动画结束监听
         (mTextureView?.getmPageRender() as SinglePageRender).setPageFlipStateListenerListener(mPageFlipStateListener)
         mTextureView?.setBeginLisenter(mBeginLisenter)
         addView(mTextureView, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
-        mTextureView?.alpha = 0f
         if (Build.VERSION.SDK_INT < 16) {
             (content as Activity).window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN)
@@ -264,7 +262,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
     }
 
     override fun onResume() {
-        mTextureView?.visibility = View.VISIBLE
+        mTextureView?.visibility = View.INVISIBLE
     }
 
     override fun onPause() {
@@ -273,17 +271,20 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
     override fun myDispatchTouchEvent(event: MotionEvent) {
         AppLog.e("event",event.action.toString())
-        mGestureDetector.onTouchEvent(event)
+        if (event.action == MotionEvent.ACTION_UP) {
+            mTextureView?.onFingerUp(event.x,event.y)
+        }else {
+            mGestureDetector.onTouchEvent(event)
+        }
     }
 
     private var mGestureDetector = GestureDetector(context, object : GestureDetector.OnGestureListener {
-
         override fun onDown(e: MotionEvent): Boolean {
-
-            mTextureView?.onFingerDown(e.x, e.y)
             //翻页显示
             AppLog.e("down",e.action.toString())
-            if (mTextureView!!.isFangzhen) mTextureView!!.alpha = 1.0f
+
+            if (mTextureView!!.isFangzhen) mTextureView!!.visibility = View.VISIBLE
+            mTextureView?.onFingerDown(e.x, e.y)
 
             //Menu隐藏
             if (context is ReadingActivity) (context as ReadingActivity).showMenu(false)

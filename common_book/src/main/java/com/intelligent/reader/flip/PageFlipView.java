@@ -77,11 +77,6 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
         return mPageRender;
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return super.onTouchEvent(event);
-    }
-
     public PageFlipView(final Context context) {
         super(context);
 
@@ -111,10 +106,12 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
         mPageRender = new SinglePageRender(context, mPageFlip,
                 mHandler, mPageNo);
         //setting
+        setVisibility(GONE);
         setEGLContextClientVersion(2);
         setPreserveEGLContextOnPause(true);
         setEGLConfigChooser(8,8,8,0,16,0);
         setEGLWindowSurfaceFactory(new DefaultWindowSurfaceFactory());
+        setZOrderOnTop(true);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);//设置透明
         // configure render
         setRenderer(this);

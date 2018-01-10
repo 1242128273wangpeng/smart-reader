@@ -18,6 +18,7 @@ import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
+import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.utils.AppLog
 import java.util.*
 
@@ -488,7 +489,22 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
         return when (isCanScroll) {
             -1 -> true
-            0 -> super.dispatchTouchEvent(event)
+            0 -> {
+                val x = event.x.toInt()
+                val y = event.y.toInt()
+                val h4 = height / 4
+                val w3 = width / 3
+                if (ReadConfig.animation == ReadViewEnums.Animation.curl){
+                    if (!((x <= w3) or (x >= width.minus(w3)|| y >= height.minus(h4) && x >= w3)) and (event.action == MotionEvent.ACTION_DOWN)){
+                        super.dispatchTouchEvent(event)
+                    }else {
+                        mHorizontalEvent?.myDispatchTouchEvent(event)
+                        return true
+                    }
+                }else {
+                    super.dispatchTouchEvent(event)
+                }
+            }
             else -> prohibitionOfSlidingTouchEvent(event)
         }
     }
