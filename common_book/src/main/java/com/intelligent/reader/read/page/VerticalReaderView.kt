@@ -367,6 +367,25 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     }
 
     /**
+     * 章节内广告是否重复
+     */
+    @Synchronized
+    private fun checkLoadAdValid(chapterContent: ArrayList<NovelPageBean>): Boolean {
+        var valid = true
+        if (chapterContent.size > 0) {
+            foo@ for (pages in chapterContent) {
+                for (content in pages.lines) {
+                    if (content.sequence == PagerScrollAdapter.AD_ITEM_TYPE) {
+                        valid = false
+                        break@foo
+                    }
+                }
+            }
+        }
+        return valid
+    }
+
+    /**
      * 当前显示位置章节页数
      */
     private fun getCurrentChapterPage(position: Int): Int {
@@ -444,6 +463,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     private fun loadAdViewToChapterBetween(chapterContent: ArrayList<NovelPageBean>, index: ReadViewEnums.PageIndex) {
         mDataProvider.loadChapterBetweenAd(context, object : DataProvider.OnLoadReaderAdCallback {
             override fun onLoadAd(adView: ViewGroup) {
+                if (!checkLoadAdValid(chapterContent)) return
                 val adData = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { sequence = PagerScrollAdapter.AD_ITEM_TYPE; }), 0,
                         arrayListOf()).apply { isAd = true;this.adView = adView })
                 chapterContent.addAll(adData)
