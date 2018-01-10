@@ -20,6 +20,7 @@ import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.AppUtils
 import java.util.*
 
 /**
@@ -389,7 +390,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         }
     }
 
-    var mHorizontalEvent:HorizontalEvent? = null
+    private var mHorizontalEvent:HorizontalEvent? = null
 
     override fun myDispatchTouchEvent(event: MotionEvent) {
         mHorizontalEvent?.myDispatchTouchEvent(event)
@@ -497,9 +498,12 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                 if (ReadConfig.animation == ReadViewEnums.Animation.curl){
                     if (!((x <= w3) or (x >= width.minus(w3)|| y >= height.minus(h4) && x >= w3)) and (event.action == MotionEvent.ACTION_DOWN)){
                         super.dispatchTouchEvent(event)
-                    }else {
+                        false
+                    }else if(y<AppUtils.dip2px(context,26f)){
+                        super.dispatchTouchEvent(event)
+                    }else{
                         mHorizontalEvent?.myDispatchTouchEvent(event)
-                        return true
+                        true
                     }
                 }else {
                     super.dispatchTouchEvent(event)

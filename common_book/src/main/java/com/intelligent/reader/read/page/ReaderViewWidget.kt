@@ -128,7 +128,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
     private var mPageFlipStateListener = object : SinglePageRender.PageFlipStateListener {
         override fun gone() {
-            if (mTextureView!!.isFangzhen) mTextureView!!.visibility = View.INVISIBLE
+//            if (mTextureView!!.isFangzhen) mTextureView!!.visibility = View.INVISIBLE
         }
 
         override fun backward(mPageNo: Int) {
@@ -139,7 +139,6 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
         }
 
         override fun forward(mPageNo: Int) {
-
             num = mPageNo
             (mReaderView as HorizontalReaderView).onClickRight(false)
             if (mTextureView!!.isFangzhen) mTextureView!!.visibility = View.INVISIBLE
@@ -292,13 +291,13 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
     private var mGestureDetector = GestureDetector(context, object : GestureDetector.OnGestureListener {
         override fun onDown(e: MotionEvent): Boolean {
+            //Menu隐藏
+            if (context is ReadingActivity) (context as ReadingActivity).showMenu(false)
             //翻页显示
             AppLog.e("down",e.action.toString())
             if (mTextureView!!.isFangzhen) mTextureView!!.visibility = View.VISIBLE
             mTextureView?.onFingerDown(e.x, e.y)
 
-            //Menu隐藏
-            if (context is ReadingActivity) (context as ReadingActivity).showMenu(false)
             return true
         }
 

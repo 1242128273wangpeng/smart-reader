@@ -32,6 +32,9 @@ import com.intelligent.reader.flip.render.PageRender;
 import com.intelligent.reader.flip.render.SinglePageRender;
 import com.intelligent.reader.util.DisplayUtils;
 
+import net.lzbook.kit.data.bean.ReadConfig;
+import net.lzbook.kit.utils.AppUtils;
+
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -103,7 +106,6 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
         mPageRender = new SinglePageRender(context, mPageFlip,
                 mHandler, mPageNo);
         //setting
-        setVisibility(GONE);
         setEGLContextClientVersion(2);
         setPreserveEGLContextOnPause(true);
         setEGLConfigChooser(8, 8, 8, 0, 16, 0);
@@ -204,6 +206,7 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
                 }
             }
         });
+        requestRender();
     }
 
     /**
@@ -293,13 +296,13 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
      */
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        try {
-            mPageFlip.onSurfaceChanged(width, height);
+//        try {
+//            mPageFlip.onSurfaceChanged(width, height);
             // let page render handle surface change
-            mPageRender.onSurfaceChanged(width, height);
-        } catch (PageFlipException e) {
-            Log.e(TAG, "Failed to run PageFlipFlipRender:onSurfaceChanged");
-        }
+//            mPageRender.onSurfaceChanged(width, height);
+//        } catch (PageFlipException e) {
+//            Log.e(TAG, "Failed to run PageFlipFlipRender:onSurfaceChanged");
+//        }
     }
 
     /**
@@ -312,6 +315,7 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         try {
             mPageFlip.onSurfaceCreated();
+            mPageFlip.onSurfaceChanged(ReadConfig.INSTANCE.getScreenWidth(), ReadConfig.INSTANCE.getScreenHeight());
         } catch (PageFlipException e) {
             Log.e(TAG, "Failed to run PageFlipFlipRender:onSurfaceCreated");
         }

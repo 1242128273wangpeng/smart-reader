@@ -398,13 +398,18 @@ class HorizontalPage : FrameLayout {
         override fun dispatchTouchEvent(event: MotionEvent): Boolean {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    if (onClick(event)) return true
+                    if (ReadConfig.animation == ReadViewEnums.Animation.curl){
+                        if (onClick(event)) return true
+                    }
+                    return true
                 }
                 MotionEvent.ACTION_CANCEL -> {
                     return true
                 }
                 MotionEvent.ACTION_UP -> {
-
+                    if (ReadConfig.animation != ReadViewEnums.Animation.curl){
+                        if (onClick(event)) return true
+                    }
                 }
                 MotionEvent.ACTION_MOVE -> {
                     if (!isShowMenu) {
