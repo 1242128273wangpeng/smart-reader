@@ -33,7 +33,6 @@ import com.intelligent.reader.cover.BookCoverQGRepository
 import com.intelligent.reader.cover.BookCoverRepositoryFactory
 import com.intelligent.reader.fragment.CatalogMarkFragment
 import com.intelligent.reader.presenter.IPresenter
-import com.intelligent.reader.read.animation.BitmapManager
 import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.read.help.CallBack
 import com.intelligent.reader.read.help.NovelHelper
@@ -349,10 +348,10 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         }
     }
 
-    fun onConfigurationChanged(catalogMarkFragment: CatalogMarkFragment?, optionHeader: ReadOptionHeader) {
+    fun onConfigurationChanged(catalogMarkFragment: CatalogMarkFragment?, optionHeader: ReadOptionHeader,count:Int) {
         this.lastMode = -1
         // 初始化窗口基本信息
-        pageView?.clear()
+//        pageView?.clear()
         initWindow()
         AppLog.e(TAG, "onConfigurationChanged")
 
@@ -366,7 +365,13 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 
         initBookState()
         // 初始化view
-        view?.initView(mReaderViewModel!!)
+        if (count == 0){
+            view?.initView(mReaderViewModel!!)
+        }else {
+            //重绘屏幕
+            view?.onChangedScreen()
+        }
+
         // 初始化监听器
         initListener()
         getBookContent()
@@ -1349,7 +1354,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                 setBatteryBackground(R.drawable.reading_batty_day)
             }
         }
-        view?.setBackground()
+//        view?.setBackground()
     }
 
     private fun setTextColor(color: Int) {

@@ -15,6 +15,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
+import com.integralads.avid.library.inmobi.session.internal.InternalAvidVideoAdSession
 import com.intelligent.reader.R
 import com.intelligent.reader.fragment.CatalogMarkFragment
 import com.intelligent.reader.presenter.read.CatalogMarkPresenter
@@ -86,11 +87,13 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         read_catalog_mark_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-        mReadPresenter.onConfigurationChanged(mCatalogMarkFragment, option_header)
+        mReadPresenter.onConfigurationChanged(mCatalogMarkFragment, option_header,readerWidget.childCount)
     }
 
     override fun initView(fac: ReaderViewModel) {
         readSettingView.setOnReadSettingListener(this)
+        readSettingView.setDataFactory(fac, readStatus, mThemeHelper)
+        readSettingView.currentThemeMode = mReadPresenter.currentThemeMode
 
         read_catalog_mark_drawer.addDrawerListener(mDrawerListener)
         mCatalogMarkFragment?.let {
@@ -99,8 +102,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
         readerWidget.removeAllViews()
         BitmapManager.getInstance().setSize(readStatus.screenWidth,readStatus.screenHeight)
-        readSettingView.setDataFactory(fac, readStatus, mThemeHelper)
-        readSettingView.currentThemeMode = mReadPresenter.currentThemeMode
         auto_menu.setOnAutoMemuListener(this)
 
         readStatus.source_ids = readStatus.book?.site
@@ -307,7 +308,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     }
 
     //目录跳章
-    fun onJumpChapter(sequence: Int) {
+    override fun onJumpChapter(sequence: Int) {
         ReadState.sequence = sequence
         ReadState.currentPage = 0
         ReadState.offset = 0
@@ -478,6 +479,9 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         readerWidget.setBackground()
     }
 
+    override fun onChangedScreen() {
+        onRedrawPage()
+    }
 
     /**
      * 接受电量改变广播

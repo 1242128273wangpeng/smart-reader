@@ -967,23 +967,18 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             novel_hint_layout.visibility = View.VISIBLE
             novel_hint_layout.alpha = 1F
             anim?.cancel()
-
-
             anim = novel_hint_layout.animate()
             anim!!.alpha(0F)
             anim!!.duration = 1000
             anim!!.startDelay = 1000
-
             anim!!.start()
-
-            val resizeProgress = progress * (readStatus!!.chapterCount - 1) / 100
-
-            if (mReaderViewModel!!.chapterList != null && !mReaderViewModel!!.chapterList!!.isEmpty()
-                    && resizeProgress < mReaderViewModel!!.chapterList!!.size && resizeProgress >= 0) {
+            val resizeProgress = progress.times(ReadState.chapterList.size.minus(1)).div(100)
+            if (!ReadState.chapterList.isEmpty()
+                    && resizeProgress < ReadState.chapterList.size && resizeProgress >= 0) {
                 readStatus!!.novel_progress = resizeProgress
                 changeBottomSettingView(SETTING_OPTION)
-                novel_hint_chapter!!.text = mReaderViewModel!!.chapterList!!.get(resizeProgress).chapter_name
-                novel_hint_sequence!!.text = (resizeProgress + 1).toString() + "/" + readStatus!!.chapterCount
+                novel_hint_chapter.text = ReadState.chapterList[resizeProgress].chapter_name
+                novel_hint_sequence.text = resizeProgress.plus(1).toString() + "/" + ReadState.chapterList.size
             }
 
         } else if (fromUser && seekBar.id == R.id.read_setting_brightness_progress) {
@@ -1018,7 +1013,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     override fun onStartTrackingTouch(seekBar: SeekBar) {}
 
     fun getQGChapterId(sequence: Int): String? {
-        for (chapter in mReaderViewModel!!.chapterList!!) {
+        for (chapter in ReadState.chapterList) {
             if (chapter.sequence == sequence) {
                 return chapter.chapter_id
             }
@@ -1033,12 +1028,14 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             if (readStatus!!.novel_progress == readStatus!!.sequence) {// 本章不跳
                 return
             }
+            val resizeProgress = seekBar.progress.times(ReadState.chapterList.size.minus(1)).div(100)
+            AppLog.e("resizeProgress",resizeProgress.toString())
             if (Constants.QG_SOURCE == readStatus!!.book.site) {
                 val chapterId = getQGChapterId(readStatus!!.novel_progress)
                 val b = com.quduquxie.network.DataCache.isChapterExists(chapterId, readStatus!!.book_id)
                 if (b) {
                     if (listener != null) {
-                        listener!!.onJumpChapter()
+                        listener!!.onJumpChapter(resizeProgress)
                     }
                 } else {
                     if (NetWorkUtils.getNetWorkType(BaseBookApplication.getGlobalContext()) == NetWorkUtils.NETWORK_NONE) {
@@ -1046,14 +1043,14 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                         return
                     } else {
                         if (listener != null) {
-                            listener!!.onJumpChapter()
+                            listener!!.onJumpChapter(resizeProgress)
                         }
                     }
                 }
             } else {
                 if (DataCache.isChapterExists(readStatus!!.novel_progress, readStatus!!.book_id)) {
                     if (listener != null) {
-                        listener!!.onJumpChapter()
+                        listener!!.onJumpChapter(resizeProgress)
                     }
                 } else {
                     if (NetWorkUtils.getNetWorkType(BaseBookApplication.getGlobalContext()) == NetWorkUtils.NETWORK_NONE) {
@@ -1061,7 +1058,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                         return
                     } else {
                         if (listener != null) {
-                            listener!!.onJumpChapter()
+                            listener!!.onJumpChapter(resizeProgress)
                         }
                     }
                 }
@@ -1120,6 +1117,8 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         fun onRedrawPage()
 
         fun onJumpChapter()
+
+        fun onJumpChapter(int: Int)
 
         fun onJumpPreChapter()
 

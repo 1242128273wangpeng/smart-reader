@@ -37,5 +37,7 @@ interface ReadPreInterface {
         fun freshTime(time_text: CharSequence?)
         //刷新电池
         fun setBackground()
+        //
+        fun onChangedScreen()
     }
 }
