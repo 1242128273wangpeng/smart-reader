@@ -362,6 +362,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun initPresenter(optionPresenter: ReadOptionPresenter?, markPresenter: CatalogMarkPresenter?) {
         mCatalogMarkFragment?.presenter = markPresenter
+        option_header.presenter = optionPresenter
     }
 
     override fun setReadStatus(readSta: ReadStatus) {

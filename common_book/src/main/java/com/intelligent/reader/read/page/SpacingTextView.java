@@ -54,6 +54,13 @@ public class SpacingTextView extends View {
         mTextPaint.setDither(true);
     }
 
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        screenWidth = w;
+        invalidate();
+    }
+
     public void setTextSize(float textSize) {
         this.textSize = textSize;
         mTextPaint.setTextSize(DisplayUtils.px2dp(getResources(), this.textSize));
@@ -76,6 +83,11 @@ public class SpacingTextView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawSpacingText(canvas, text, spacing);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     private void drawSpacingText(Canvas canvas, String text, float spacing) {
