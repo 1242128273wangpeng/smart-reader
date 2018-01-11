@@ -972,7 +972,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             anim!!.duration = 1000
             anim!!.startDelay = 1000
             anim!!.start()
-            val resizeProgress = progress.times(ReadState.chapterList.size.minus(1)).div(100)
+            val resizeProgress = progress.times(ReadState.chapterList.size).div(100)
             if (!ReadState.chapterList.isEmpty()
                     && resizeProgress < ReadState.chapterList.size && resizeProgress >= 0) {
                 readStatus!!.novel_progress = resizeProgress
@@ -1028,8 +1028,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             if (readStatus!!.novel_progress == readStatus!!.sequence) {// 本章不跳
                 return
             }
-            val resizeProgress = seekBar.progress.times(ReadState.chapterList.size.minus(1)).div(100)
-            AppLog.e("resizeProgress",resizeProgress.toString())
+            val resizeProgress = seekBar.progress.times(ReadState.chapterList.size).div(100)
             if (Constants.QG_SOURCE == readStatus!!.book.site) {
                 val chapterId = getQGChapterId(readStatus!!.novel_progress)
                 val b = com.quduquxie.network.DataCache.isChapterExists(chapterId, readStatus!!.book_id)
@@ -1118,7 +1117,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
         fun onJumpChapter()
 
-        fun onJumpChapter(int: Int)
+        fun onJumpChapter(sequence: Int)
 
         fun onJumpPreChapter()
 
