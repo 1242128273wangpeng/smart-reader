@@ -87,7 +87,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         read_catalog_mark_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-        mReadPresenter.onConfigurationChanged(mCatalogMarkFragment, option_header,readerWidget.childCount)
+        mReadPresenter.onConfigurationChanged(mCatalogMarkFragment, option_header, readerWidget.childCount)
     }
 
     override fun initView(fac: ReaderViewModel) {
@@ -101,7 +101,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         }
 
         readerWidget.removeAllViews()
-        BitmapManager.getInstance().setSize(readStatus.screenWidth,readStatus.screenHeight)
+        BitmapManager.getInstance().setSize(readStatus.screenWidth, readStatus.screenHeight)
         auto_menu.setOnAutoMemuListener(this)
 
         readStatus.source_ids = readStatus.book?.site
@@ -346,7 +346,11 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onReadFeedBack() = mReadPresenter.onReadFeedBack()
 
-    override fun onChageNightMode() = mReadPresenter.onChageNightMode()
+    override fun onChageNightMode() {
+        mReadPresenter.onChageNightMode()
+        readerWidget.setBackground()
+    }
+
     //0 滑动 1 仿真 2 平移 3 上下
     override fun changeAnimMode(mode: Int) {
         if (((mode == 3) and (ReadConfig.animation != ReadViewEnums.Animation.list)) or ((ReadConfig.animation == ReadViewEnums.Animation.list) and (mode != 3))) {

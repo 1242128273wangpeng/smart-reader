@@ -113,6 +113,7 @@ class DrawTextHelper(private val resources: Resources) {
     fun drawVerticalText(canvas: Canvas, pageBean: NovelPageBean) {
         readStatus.currentPageConentLength = 0
 
+        setPaintColor(ReadConfig.mPaint!!, 1)
         val pageLines = pageBean.lines
         val chapterNameList = pageBean.chapterNameLines
 
@@ -201,6 +202,7 @@ class DrawTextHelper(private val resources: Resources) {
         y_chapter = 39 * readStatus.screenScaledDensity
 
         setPaintColor(textPaint, 1)
+        setPaintColor(ReadConfig.mPaint!!, 1)
 
         val size_c: Int
 
@@ -257,6 +259,7 @@ class DrawTextHelper(private val resources: Resources) {
         y_chapter = 65 * readStatus.screenScaledDensity
 
         setPaintColor(textPaint, 1)
+        setPaintColor(ReadConfig.mPaint!!, 1)
         val size_c: Int
 
         val chapterNameList = pageBean.chapterNameLines
