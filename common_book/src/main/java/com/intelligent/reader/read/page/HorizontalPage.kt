@@ -148,6 +148,8 @@ class HorizontalPage : FrameLayout {
         ThemeUtil.getModePrimaryBackground(resources, pageView)
         //电池背景
         ThemeUtil.getModePrimaryBackground(resources, novel_content_battery_view)
+        //封面页
+        ThemeUtil.getModePrimaryBackground(resources, homePage)
     }
 
     fun setTimes(time: String) {

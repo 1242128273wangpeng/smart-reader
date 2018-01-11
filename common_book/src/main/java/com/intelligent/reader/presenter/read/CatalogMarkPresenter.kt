@@ -7,6 +7,7 @@ import com.intelligent.reader.R
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.net.NetOwnBook
 import com.intelligent.reader.read.help.BookHelper
+import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.reader.ReaderViewModel
 import com.quduquxie.network.DataCache
 import com.quduquxie.network.DataService
@@ -157,7 +158,7 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: ReaderVi
         }
 
         readStatus.sequence = chapter.sequence
-        (activity as ReadingActivity).onJumpChapter(chapter.sequence)
+        (activity as ReadingActivity).onJumpChapter(chapter.sequence,0)
 
 
         val data = java.util.HashMap<String, String>()
@@ -180,7 +181,11 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: ReaderVi
 
         intent.setClass(activity, ReadingActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        activity.startActivity(intent)
+        if (activity is ReadingActivity){
+            activity.onJumpChapter(mark.sequence,mark.offset)
+        }else {
+            activity.startActivity(intent)
+        }
 
         val data = java.util.HashMap<String, String>()
         data.put("bookid", readStatus.book_id)

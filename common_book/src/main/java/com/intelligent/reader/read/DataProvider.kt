@@ -338,6 +338,15 @@ class DataProvider : DisposableAndroidViewModel() {
         }
     }
 
+    fun findCurrentPageNovelLineBean():List<NovelLineBean>{
+        var currentNovelLineBean = arrayListOf<NovelLineBean>()
+        var mNovelPageBean = chapterSeparate[ReadState.sequence]
+        if (mNovelPageBean != null) {
+            currentNovelLineBean = mNovelPageBean[ReadState.currentPage - 1].lines
+        }
+        return currentNovelLineBean
+    }
+
     interface OnLoadReaderAdCallback {
         fun onLoadAd(adView: ViewGroup)
     }

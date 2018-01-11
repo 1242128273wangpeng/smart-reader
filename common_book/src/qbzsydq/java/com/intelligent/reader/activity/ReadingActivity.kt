@@ -106,7 +106,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
         readStatus.source_ids = readStatus.book?.site
         DataProvider.getInstance().context = this
-
+        ReadState.book = readStatus.book
         //add ReadInfo
         ReadConfig.animation = when (Constants.PAGE_MODE) {
             1 -> ReadViewEnums.Animation.curl
@@ -308,10 +308,10 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     }
 
     //目录跳章
-    override fun onJumpChapter(sequence: Int) {
+    override fun onJumpChapter(sequence: Int,offset:Int) {
         ReadState.sequence = sequence
         ReadState.currentPage = 0
-        ReadState.offset = 0
+        ReadState.offset = offset
         readerWidget.onJumpChapter(ReadState.sequence)
         read_catalog_mark_drawer.closeDrawers()
     }

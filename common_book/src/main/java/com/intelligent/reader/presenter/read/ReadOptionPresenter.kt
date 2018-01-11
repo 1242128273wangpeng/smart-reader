@@ -14,7 +14,9 @@ import android.widget.Toast
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
 import com.intelligent.reader.activity.ReadingActivity
+import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.help.BookHelper
+import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.reader.ReaderViewModel
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.DownloadState
@@ -237,12 +239,12 @@ class ReadOptionPresenter : ReadOption.Presenter {
     //LoadingPage
     fun getCustomLoadingPage() {
         var curl = ""
-        if (mReaderViewModel!!.readStatus!!.sequence == -1) {
-            curl = mReaderViewModel!!.readStatus!!.firstChapterCurl
+        if (mReaderViewModel.readStatus!!.sequence == -1) {
+            curl = mReaderViewModel.readStatus!!.firstChapterCurl
             //dataFactory
-        } else if (mReaderViewModel!!.currentChapter != null && !TextUtils.isEmpty(mReaderViewModel!!.currentChapter!!.curl)) {
+        } else if (mReaderViewModel.currentChapter != null && !TextUtils.isEmpty(mReaderViewModel.currentChapter!!.curl)) {
             //if (readStatus.book.dex == 1 && !TextUtils.isEmpty(currentChapter.curl)) {
-            curl = mReaderViewModel!!.currentChapter!!.curl
+            curl = mReaderViewModel.currentChapter!!.curl
             /*} else if (readStatus.book.dex == 0 && !TextUtils.isEmpty(currentChapter.curl1)) {
                 curl = currentChapter.curl1;
             }*/
@@ -256,63 +258,62 @@ class ReadOptionPresenter : ReadOption.Presenter {
 
     override fun bookMark(): Int {
         StatServiceUtils.statAppBtnClick(activity.get(), StatServiceUtils.rb_click_add_book_mark_btn)
-        return addOptionMark(bookDaoHelper, mReaderViewModel, font_count, readStatus.book.book_type)
+        return addOptionMark(bookDaoHelper, font_count, readStatus.book.book_type)
     }
 
     /**
      * 添加手动书签
      */
-    fun addOptionMark(mBookDaoHelper: BookDaoHelper?, mReaderViewModel: ReaderViewModel?,
-                      font_count: Int, type: Int): Int {
-        if (activity.get() == null) {
+    fun addOptionMark(mBookDaoHelper: BookDaoHelper?,font_count: Int, type: Int): Int {
+        if (activity.get() == null||mBookDaoHelper == null || readStatus == null) {
             return 0
         }
-
-        if (mBookDaoHelper == null || mReaderViewModel == null || readStatus == null) {
-            return 0
-        }
-        if (!mBookDaoHelper.isBookMarkExist(readStatus.book_id, readStatus.sequence, readStatus.offset, type)) {
+        if (!mBookDaoHelper.isBookMarkExist(ReadState.book!!.book_id, ReadState.sequence, ReadState.offset, type)) {
             var logMap = HashMap<String, String>()
             logMap.put("type", "1")
             StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.BOOKMARKEDIT, logMap)
 
-            if (!mBookDaoHelper.isBookSubed(readStatus.book_id)) {
-                if (!mBookDaoHelper.insertBook(readStatus.book)) {
+            if (!mBookDaoHelper.isBookSubed(ReadState.book!!.book_id)) {
+                if (!mBookDaoHelper.insertBook(ReadState.book)) {
                     return 0
                 }
             }
-            if (mReaderViewModel.currentChapter == null || getPageContent() == null) {
+
+            val chapter = DataProvider.getInstance().chapterMap[ReadState.sequence]
+            if (chapter == null ||  DataProvider.getInstance().findCurrentPageNovelLineBean().isEmpty()) {
                 return 0
             }
 
             val bookMark = Bookmark()
-            val requestItem = readStatus.getRequestItem()
+//            val requestItem = readStatus.getRequestItem()
 
-            bookMark.book_id = requestItem.book_id
-            bookMark.book_source_id = requestItem.book_source_id
-            bookMark.parameter = requestItem.parameter
-            bookMark.extra_parameter = requestItem.extra_parameter
-            bookMark.sequence = if (readStatus.sequence + 1 > readStatus.chapterCount) readStatus.chapterCount else readStatus.sequence
-            bookMark.offset = readStatus.offset
-            bookMark.sort = mReaderViewModel!!.currentChapter!!.sort
+            bookMark.book_id = ReadState.book!!.book_id
+            bookMark.book_source_id = ReadState.book!!.book_source_id
+            bookMark.parameter = ReadState.book!!.parameter
+            bookMark.extra_parameter = ReadState.book!!.extra_parameter
+            bookMark.sequence = if (ReadState.sequence + 1 > ReadState.chapterList.size) ReadState.chapterList.size else ReadState.sequence
+            bookMark.offset = ReadState.offset
+            bookMark.sort = chapter.sort
             bookMark.last_time = System.currentTimeMillis()
             //if (readStatus.book.dex == 1) {
-            bookMark.book_url = mReaderViewModel!!.currentChapter!!.curl
+            bookMark.book_url = chapter.curl
             /*} else if (readStatus.book.dex == 0) {
                 bookMark.book_url = dataFactory.currentChapter.curl1;
             }*/
-            bookMark.chapter_name = mReaderViewModel!!.currentChapter!!.chapter_name
-            val content = getPageContent()
+            bookMark.chapter_name = chapter.chapter_name
+            //获取本页内容
+            val content = DataProvider.getInstance().findCurrentPageNovelLineBean()
+
             val sb = StringBuilder()
-            if (readStatus.sequence == -1) {
-                bookMark.chapter_name = "《" + readStatus.book.name + "》书籍封面页"
-            } else if (readStatus.currentPage == 1 && content.size - 3 >= 0) {
-                for (i in 3..content.size - 1) {
-                    sb.append(content.get(i).lineContent)
+            if (ReadState.sequence == -1) {
+                bookMark.chapter_name = "《" + ReadState.book!!.name + "》书籍封面页"
+            } else if (ReadState.currentPage == 1 && ReadState.pageCount - 3 >= 0) {
+                for (i in 3 until content.size) {
+                    sb.append(content[i].lineContent)
                 }
             } else {
                 for (i in content.indices) {
-                    sb.append(content.get(i).lineContent)
+                    sb.append(content[i].lineContent)
                 }
             }
 
@@ -327,57 +328,54 @@ class ReadOptionPresenter : ReadOption.Presenter {
             }
             bookMark.chapter_content = content_text
             mBookDaoHelper.insertBookMark(bookMark, type)
-
             return 1
         } else {
             var logMap = HashMap<String, String>()
             logMap.put("type", "2")
             StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.BOOKMARKEDIT, logMap)
-            mBookDaoHelper.deleteBookMark(readStatus.book_id, readStatus.sequence, readStatus.offset, type)
-
+            mBookDaoHelper.deleteBookMark(ReadState.book!!.book_id, ReadState.sequence, ReadState.offset, type)
             return 2
-
         }
     }
 
-    @Synchronized
-    fun getPageContent(): List<NovelLineBean> {
-        if (readStatus.mLineList == null) {
-            return listOf()
-        }
-        if (readStatus.currentPage == 0) {
-            readStatus.currentPage = 1
-        }
-        if (readStatus.currentPage > readStatus.pageCount) {
-            readStatus.currentPage = readStatus.pageCount
-        }
-        readStatus.offset = 0
-        // AppLog.d("initTextContent2", "readStatus.currentPage:" +
-        // readStatus.currentPage);
-        var pageContent: ArrayList<NovelLineBean>? = null
-        if (readStatus.currentPage - 1 < readStatus.mLineList.size) {
-            pageContent = readStatus.mLineList[readStatus.currentPage - 1]
-        } else {
-            pageContent = ArrayList<NovelLineBean>()
-        }
-
-        var i = 0
-        while (i < readStatus.currentPage - 1 && i < readStatus.mLineList.size) {
-            val pageList = readStatus.mLineList[i]
-            val size = pageList.size
-            // AppLog.d("initTextContent2", "size:" + size);
-            for (j in 0..size - 1) {
-                val string = pageList[j].lineContent
-                if (!TextUtils.isEmpty(string)) {
-                    readStatus.offset += string.length
-                }
-            }
-            i++
-        }
-        readStatus.offset++
-        return pageContent ?: listOf()
-
-    }
+//    @Synchronized
+//    fun getPageContent(): List<NovelLineBean> {
+//        if (readStatus.mLineList == null) {
+//            return listOf()
+//        }
+//        if (readStatus.currentPage == 0) {
+//            readStatus.currentPage = 1
+//        }
+//        if (readStatus.currentPage > readStatus.pageCount) {
+//            readStatus.currentPage = readStatus.pageCount
+//        }
+//        readStatus.offset = 0
+//        // AppLog.d("initTextContent2", "readStatus.currentPage:" +
+//        // readStatus.currentPage);
+//        var pageContent: ArrayList<NovelLineBean>? = null
+//        if (readStatus.currentPage - 1 < readStatus.mLineList.size) {
+//            pageContent = readStatus.mLineList[readStatus.currentPage - 1]
+//        } else {
+//            pageContent = ArrayList<NovelLineBean>()
+//        }
+//
+//        var i = 0
+//        while (i < readStatus.currentPage - 1 && i < readStatus.mLineList.size) {
+//            val pageList = readStatus.mLineList[i]
+//            val size = pageList.size
+//            // AppLog.d("initTextContent2", "size:" + size);
+//            for (j in 0 until size) {
+//                val string = pageList[j].lineContent
+//                if (!TextUtils.isEmpty(string)) {
+//                    readStatus.offset += string.length
+//                }
+//            }
+//            i++
+//        }
+//        readStatus.offset++
+//        return pageContent ?: listOf()
+//
+//    }
 
     override fun bookInfo() {
         StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.BOOKDETAIL)

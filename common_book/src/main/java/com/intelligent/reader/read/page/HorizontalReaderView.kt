@@ -235,13 +235,14 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     private fun preViewUpdata(cursor: ReadCursor) {
         val preView = findViewWithTag(ReadViewEnums.PageIndex.previous)
         if (preView != null) {
-            val newPreSequence = cursor.sequence
+            val newPreSequence: Int
             val newOffset = when (cursor.offset) {
                 0 -> {//如果当前页是1：加载上一章最后页
-                    newPreSequence.dec()
+                    newPreSequence  = cursor.sequence.minus(1)
                     Int.MAX_VALUE
                 }
                 else -> {//其他情况： -1页
+                    newPreSequence = cursor.sequence
                     cursor.offset.minus(1)
                 }
             }
@@ -414,7 +415,8 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     override fun entrance(mReadInfo: ReadInfo) {
         this.mReadInfo = mReadInfo
         val sequence = ReadState.sequence
-        val offset = mReadInfo.mReadStatus.offset
+        val offset = ReadState.offset
+        DataProvider.getInstance().onReSeparate()
         Handler().postDelayed({
             //更改当前view状态
             (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState = ReadViewEnums.ViewState.loading
@@ -481,7 +483,6 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 
     //跳章
     override fun onJumpChapter(sequence: Int) {
-        this.mReadInfo!!.mReadStatus.sequence = sequence
         entrance(this.mReadInfo!!)
     }
 
