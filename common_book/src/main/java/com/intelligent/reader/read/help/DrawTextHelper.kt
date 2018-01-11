@@ -144,7 +144,7 @@ class DrawTextHelper(private val resources: Resources) {
     @Synchronized
     fun drawText(canvas: Canvas?, pageBean: NovelPageBean): Float {
         val pageLines = pageBean.lines
-
+        setPaintColor(ReadConfig.mPaint!!, 1)
         if (pageLines != null && !pageLines.isEmpty()) {
             if (pageLines[0].lineContent.startsWith("txtzsydsq_homepage")) {// 封面页
                 return ReadConfig.screenHeight.toFloat()
