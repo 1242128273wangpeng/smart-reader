@@ -116,6 +116,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                     loadNextChapter(ReadState.sequence + 1)
                 }
                 mCanScrollVertically = recyclerView.canScrollVertically(1)
+                mReadPageChange?.showMenu(false)
             }
         })
     }
@@ -433,7 +434,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     }
 
     /**
-     * 添加广告 段尾  5-1
+     * 添加广告 段尾  8-1
      */
     private fun loadAdViewToChapterLastPage(chapterContent: List<NovelPageBean>) {
         var lineData: NovelLineBean? = null
@@ -458,7 +459,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     }
 
     /**
-     * 添加广告 章节间  8-1
+     * 添加广告 章节间  5-1
      */
     private fun loadAdViewToChapterBetween(chapterContent: ArrayList<NovelPageBean>, index: ReadViewEnums.PageIndex) {
         mDataProvider.loadChapterBetweenAd(context, object : DataProvider.OnLoadReaderAdCallback {
@@ -593,8 +594,8 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
         novel_page.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
         novel_chapter.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
         novel_title.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
-        mAdapter.setTextColor(resources.getColor(ThemeUtil.modeLoadTextColor))
         novel_content_battery_view.invalidate()
+        mAdapter.setTextColor(resources.getColor(ThemeUtil.modeLoadTextColor))
     }
 
     private var mReadPageChange: IReadPageChange? = null

@@ -13,6 +13,7 @@ import com.intelligent.reader.R
 import com.intelligent.reader.read.help.ReadSeparateHelper
 import com.intelligent.reader.read.mode.NovelPageBean
 import com.intelligent.reader.read.mode.ReadState
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.data.bean.ReadStatus
@@ -39,7 +40,9 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus) : Re
 
     private val LAST_PAGE_EXTEND_HEIGHT = 300
 
-    private val AD_VIEW_HEIGHT = 600
+    private val AD_PORTRAIT_VIEW_HEIGHT = 600
+
+    private val AD_LANDSCAPE_VIEW_HEIGHT = 800
 
     // 书籍封面页
     private val BOOK_HOME_ITEM_TYPE = -1
@@ -194,7 +197,8 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus) : Re
             if (pageLines.isLastPage) {
                 if (lineData.adView != null) {
                     ad_fl.visibility = View.VISIBLE
-                    val adViewLayoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, AD_VIEW_HEIGHT)
+                    val adViewLayoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            if (Constants.IS_LANDSCAPE) AD_LANDSCAPE_VIEW_HEIGHT else AD_PORTRAIT_VIEW_HEIGHT)
 
                     if (lineData.adView.parent != null) {
                         (lineData.adView.tag as ViewGroup).removeAllViews()

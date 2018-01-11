@@ -25,6 +25,7 @@ import com.intelligent.reader.repository.ReaderRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
@@ -173,7 +174,13 @@ class DataProvider : DisposableAndroidViewModel() {
      * 获取章节间广告 5-1
      */
     fun loadChapterBetweenAd(context: Context, callback: OnLoadReaderAdCallback) {
-        loadAd(context, AdMarkPostion.READING_POSITION, callback)
+        val adTyep: String
+        if (Constants.IS_LANDSCAPE) {
+            adTyep = AdMarkPostion.SUPPLY_READING_SPACE
+        } else {
+            adTyep = AdMarkPostion.READING_POSITION
+        }
+        loadAd(context, adTyep, callback)
     }
 
     /**
