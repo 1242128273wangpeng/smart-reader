@@ -54,11 +54,11 @@ public class BookCoverLocalRepository implements BookCoverRepository {
     }
 
     @Override
-    public Observable<ArrayList<Chapter>> getChapterList(RequestItem requestItem) {
+    public Observable<List<Chapter>> getChapterList(RequestItem requestItem) {
         final BookChapterDao bookChapterDao = new BookChapterDao(mContext, requestItem.book_id);
-        return Observable.create(new ObservableOnSubscribe<ArrayList<Chapter>>() {
+        return Observable.create(new ObservableOnSubscribe<List<Chapter>>() {
             @Override
-            public void subscribe(ObservableEmitter<ArrayList<Chapter>> e) throws Exception {
+            public void subscribe(ObservableEmitter<List<Chapter>> e) throws Exception {
                 e.onNext(bookChapterDao.queryBookChapter());
                 e.onComplete();
             }

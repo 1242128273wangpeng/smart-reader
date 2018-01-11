@@ -175,7 +175,7 @@ interface UserService {
      * 目录页面章节信息拉取
      */
     @GET(COVER + "/{book_id}/{book_source_id}/chapter")
-    fun getChapterList(@Path("book_id") bookId: String, @Path("book_source_id") book_source_id: String, @RequestTag book: RequestItem): Observable<ArrayList<Chapter>>
+    fun getChapterList(@Path("book_id") bookId: String, @Path("book_source_id") book_source_id: String, @RequestTag book: RequestItem): Observable<List<Chapter>>
 
     /**
      * 单章购买请求

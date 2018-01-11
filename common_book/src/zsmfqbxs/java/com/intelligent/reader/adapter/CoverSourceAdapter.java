@@ -64,7 +64,12 @@ public class CoverSourceAdapter extends BaseAdapter {
         } else {
             viewHolder.book_bestSource_text.setVisibility(View.GONE);
         }
-        viewHolder.book_source_chapter_name.setText(source.last_chapter_name);
+        if(source.bookSourceVO != null){
+            viewHolder.book_source_chapter_name.setVisibility(View.VISIBLE);
+            viewHolder.book_source_chapter_name.setText(source.bookSourceVO.lastChapterName);
+        }else{
+            viewHolder.book_source_chapter_name.setVisibility(View.GONE);
+        }
         viewHolder.book_source_update_time.setText(Tools.compareTime(AppUtils.formatter, source.update_time));
         return convertView;
     }

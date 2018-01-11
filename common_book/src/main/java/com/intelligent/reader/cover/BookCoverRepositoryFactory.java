@@ -70,7 +70,7 @@ public class BookCoverRepositoryFactory implements BookCoverRepository {
     }
 
     @Override
-    public Observable<ArrayList<Chapter>> getChapterList(RequestItem requestItem) {
+    public Observable<List<Chapter>> getChapterList(RequestItem requestItem) {
         // 已加入书架，且书籍目录存在本地数据库
         if (mCoverBookLocalRepository.isBookSubscribe(requestItem.book_id)) {
             mChapterComeFromLocal = true;

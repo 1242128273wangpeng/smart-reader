@@ -214,7 +214,7 @@ class DataProvider : DisposableAndroidViewModel() {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ chapters ->
-                            ReadState.chapterList = chapters
+                            ReadState.chapterList = chapters as ArrayList<Chapter>
                             if (chapters.size != 0) {
                                 requestSingleChapter(book, ReadState.chapterList, sequence, type, mReadDataListener)
                             } else {

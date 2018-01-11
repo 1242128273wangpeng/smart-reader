@@ -1,15 +1,14 @@
 package com.intelligent.reader.cover;
 
+import android.support.annotation.NonNull;
+
 import com.intelligent.reader.repository.BookCoverRepository;
 
-import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.Bookmark;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.CoverPage;
 import net.lzbook.kit.data.bean.RequestItem;
 import net.lzbook.kit.net.custom.service.UserService;
-
-import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +57,14 @@ public class BookCoverOtherRepository implements BookCoverRepository {
                 coverPage.bookVo.update_time = coverPage.bookVo.lastChapter.getUpdate_time();
 
                 coverPage.bookVo.last_chapter_name = coverPage.bookVo.lastChapter.getName();
+                coverPage.bookVo.serial_number = coverPage.bookVo.lastChapter.getSerial_number();
+                if (coverPage.sources != null && coverPage.sources.size() > 0) {
+                    coverPage.bookVo.wordCountDescp = coverPage.sources.get(0).wordCountDescp;
+                    coverPage.bookVo.readerCountDescp = coverPage.sources.get(0).readerCountDescp;
+                    coverPage.bookVo.score = coverPage.sources.get(0).score;
+
+                }
+
                 return coverPage;
             }
         });
@@ -66,7 +73,7 @@ public class BookCoverOtherRepository implements BookCoverRepository {
     }
 
     @Override
-    public Observable<ArrayList<Chapter>> getChapterList(final RequestItem requestItem) {
+    public Observable<List<Chapter>> getChapterList(final RequestItem requestItem) {
 
         return mApi.getChapterList(requestItem.book_id, requestItem.book_source_id, requestItem);
     }

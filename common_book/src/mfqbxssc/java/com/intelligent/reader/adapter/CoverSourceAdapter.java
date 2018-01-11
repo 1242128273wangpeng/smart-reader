@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -52,7 +51,7 @@ public class CoverSourceAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             convertView = LayoutInflater.from(context).inflate(R.layout.item_book_end_serial_chapter, parent, false);
             viewHolder.book_source_name = (TextView) convertView.findViewById(R.id.site_text);
-            viewHolder.iv_bestSource = (ImageView) convertView.findViewById(R.id.iv_bestSource);
+            viewHolder.book_bestSource_text = (TextView) convertView.findViewById(R.id.bestSource_text);
             viewHolder.book_source_chapter_name = (TextView) convertView.findViewById(R.id.new_text);
             viewHolder.book_source_update_time = (TextView) convertView.findViewById(R.id.time_text);
             convertView.setTag(viewHolder);
@@ -61,11 +60,16 @@ public class CoverSourceAdapter extends BaseAdapter {
         }
         viewHolder.book_source_name.setText("来源" + (position + 1) + ": " + source.host);
         if (position == 0) {
-            viewHolder.iv_bestSource.setVisibility(View.VISIBLE);
+            viewHolder.book_bestSource_text.setVisibility(View.VISIBLE);
         } else {
-            viewHolder.iv_bestSource.setVisibility(View.GONE);
+            viewHolder.book_bestSource_text.setVisibility(View.GONE);
         }
-        viewHolder.book_source_chapter_name.setText(source.last_chapter_name);
+        if(source.bookSourceVO != null){
+            viewHolder.book_source_chapter_name.setVisibility(View.VISIBLE);
+            viewHolder.book_source_chapter_name.setText(source.bookSourceVO.lastChapterName);
+        }else{
+            viewHolder.book_source_chapter_name.setVisibility(View.GONE);
+        }
         viewHolder.book_source_update_time.setText(Tools.compareTime(AppUtils.formatter, source.update_time));
         return convertView;
     }
@@ -74,6 +78,6 @@ public class CoverSourceAdapter extends BaseAdapter {
         public TextView book_source_name;
         public TextView book_source_chapter_name;
         public TextView book_source_update_time;
-        public ImageView iv_bestSource;
+        public TextView book_bestSource_text;
     }
 }

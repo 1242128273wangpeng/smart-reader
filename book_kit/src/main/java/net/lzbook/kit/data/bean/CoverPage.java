@@ -183,17 +183,21 @@ public class CoverPage implements Serializable {
         public String book_id;
         public String book_source_id;
         public String host;
-        public Object url;
+        public String url;
         public String terminal;
         public HashMap<String, String> source;
         public long update_time;
         public String last_chapter_name;
         public Object wordCount;
+
+        public BookSourceVOBean bookSourceVO;
+        public LastChapterBeanX last_chapter;
         public int dex;
         public String wordCountDescp;
         public String readerCountDescp;
         public double score;
         public String labels;
+        private Object last_vipChapter;
 
         @Override
         public boolean equals(Object o) {
@@ -251,11 +255,111 @@ public class CoverPage implements Serializable {
         }
     }
 
+    public static class BookSourceVOBean {
+
+        public String id;
+        public String bookId;
+        public String bookName;
+        public String authorName;
+        public String description;
+        public String serialStatus;
+        public String label;
+        public String sourceImageUrl;
+        public String imageId;
+        public AttributeBean attribute;
+        public String host;
+        public String url;
+        public String terminal;
+        public String bookChapterMd5;
+        public String bookChapterId;
+        public String lastChapterId;
+        public String lastChapterName;
+        public long lastSerialNumber;
+        public long v;
+        public long updateTime;
+        public long createTime;
+        public int chapterCount;
+        public int chapterBlankCount;
+        public int chapterShortCount;
+        public int wordCount;
+        public String wordCountDescp;
+        public int readerCount;
+        public String readerCountDescp;
+        public int dex;
+        public int hot;
+        public double score;
+        public int vip;
+        public double chapterPrice;
+        public double bookprice;
+        public double selfPrice;
+        public double selfBookPrice;
+
+        public static class AttributeBean {
+            private String gid;
+            private String nid;
+
+            public String getGid() {
+                return gid;
+            }
+
+            public void setGid(String gid) {
+                this.gid = gid;
+            }
+
+            public String getNid() {
+                return nid;
+            }
+
+            public void setNid(String nid) {
+                this.nid = nid;
+            }
+        }
+    }
+
+    public static class LastChapterBeanX {
+
+        public IdBean id;
+        public Object bookChapterId;
+        public String name;
+        public int serialNumber;
+        public String host;
+        public String url;
+        public String url1;
+        public String terminal;
+        public String status;
+        public String bookChapterMd5;
+        public long updateTime;
+        public long createTime;
+        public String bookSourceId;
+        public int wordCount;
+
+        public static class IdBean {
+
+            public int timestamp;
+            public int machineIdentifier;
+            public int processIdentifier;
+            public int counter;
+            public int timeSecond;
+            public long time;
+            public long date;
+
+        }
+    }
+
     public class LastChapter {
 
         private String id;
         private String name;
         private long update_time;
+        private int serial_number;
+
+        public int getSerial_number() {
+            return serial_number;
+        }
+
+        public void setSerial_number(int serial_number) {
+            this.serial_number = serial_number;
+        }
 
         public long getUpdate_time() {
             return update_time;
