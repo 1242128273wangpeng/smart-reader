@@ -61,6 +61,8 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     private var themeHelper: ThemeHelper? = null
     var currentThemeMode: String? = null
 
+    private var isChecked: Boolean = false
+
     private var time: Long = 0
 
     constructor(context: Context) : super(context) {
@@ -1035,7 +1037,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 val b = com.quduquxie.network.DataCache.isChapterExists(chapterId, readStatus!!.book_id)
                 if (b) {
                     if (listener != null) {
-                        listener!!.onJumpChapter(resizeProgress,offset)
+                        listener!!.onJumpChapter(resizeProgress, offset)
                     }
                 } else {
                     if (NetWorkUtils.getNetWorkType(BaseBookApplication.getGlobalContext()) == NetWorkUtils.NETWORK_NONE) {
@@ -1043,14 +1045,14 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                         return
                     } else {
                         if (listener != null) {
-                            listener!!.onJumpChapter(resizeProgress,offset)
+                            listener!!.onJumpChapter(resizeProgress, offset)
                         }
                     }
                 }
             } else {
                 if (DataCache.isChapterExists(readStatus!!.novel_progress, readStatus!!.book_id)) {
                     if (listener != null) {
-                        listener!!.onJumpChapter(resizeProgress,offset)
+                        listener!!.onJumpChapter(resizeProgress, offset)
                     }
                 } else {
                     if (NetWorkUtils.getNetWorkType(BaseBookApplication.getGlobalContext()) == NetWorkUtils.NETWORK_NONE) {
@@ -1058,7 +1060,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                         return
                     } else {
                         if (listener != null) {
-                            listener!!.onJumpChapter(resizeProgress,offset)
+                            listener!!.onJumpChapter(resizeProgress, offset)
                         }
                     }
                 }
@@ -1118,7 +1120,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
         fun onJumpChapter()
 
-        fun onJumpChapter(sequence: Int,offset:Int)
+        fun onJumpChapter(sequence: Int, offset: Int)
 
         fun onJumpPreChapter()
 
@@ -1130,6 +1132,8 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
         fun changeAnimMode(mode: Int)
     }
+
+    fun isChecked() = isChecked
 
     companion object {
 

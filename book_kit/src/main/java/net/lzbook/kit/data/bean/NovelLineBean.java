@@ -9,6 +9,7 @@ import android.text.TextUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by yuchao on 2017/9/15 0015.
@@ -32,6 +33,8 @@ public class NovelLineBean implements Serializable {
     private int position;
 
     private float indexY;
+
+    private List<SelectionChar> line;
 
     private ViewGroup adView;
 
@@ -165,6 +168,15 @@ public class NovelLineBean implements Serializable {
 
     public void setAdView(ViewGroup adView) {
         this.adView = adView;
+    }
+
+
+    public List<SelectionChar> getLine() {
+        return line;
+    }
+
+    public void setLine(List<SelectionChar> line) {
+        this.line = line;
     }
 
     @Override

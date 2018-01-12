@@ -108,7 +108,6 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 if (mLastVisiblePosition != linearLayoutManager.findLastVisibleItemPosition()) {
                     mLastVisiblePosition = linearLayoutManager.findLastVisibleItemPosition()
                     setCurrentChapterInfo(mLastVisiblePosition)
-                    ReadState.currentPage = mLastVisiblePosition
                 }
                 if (mLastVisiblePosition < (mOriginDataList.size * PRE_LOAD_CHAPTER_SCROLL_SCALE)) {
                     loadPreChapter(ReadState.sequence - 1)
@@ -116,7 +115,6 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                     loadNextChapter(ReadState.sequence + 1)
                 }
                 mCanScrollVertically = recyclerView.canScrollVertically(1)
-                mReadPageChange?.showMenu(false)
             }
         })
     }
@@ -271,7 +269,6 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                     val position = ReadState.currentPage
                     if (ReadState.currentPage > 1) {
                         page_rv.scrollToPosition(position)
-                        ReadState.currentPage = position
                     } else if (ReadState.currentPage == 1) {
                         page_rv.scrollToPosition(1)
                         ReadState.currentPage = 1
