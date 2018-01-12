@@ -66,6 +66,7 @@ class HorizontalPage : FrameLayout {
     var pageSum: Int = 0
     var contentLength: Int = 0
     var noticePageListener: NoticePageListener? = null
+    var mNovelPageBean: NovelPageBean? = null
 
     constructor(context: Context, noticePageListener: NoticePageListener) : this(context, null, noticePageListener)
 
@@ -254,8 +255,6 @@ class HorizontalPage : FrameLayout {
                 entrance(cursor)
             }
         }
-
-        private var mNovelPageBean: NovelPageBean? = null
 
         /**
          * 画页面
