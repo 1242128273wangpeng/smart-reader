@@ -331,6 +331,8 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 ReadState.currentPage = getCurrentChapterPage(position)
                 ReadState.offset = mOriginDataList[position].offset
                 ReadState.sequence = mOriginDataList[position].lines[0].sequence
+                ReadState.pageCount = getCurrentChapterPageCount(mOriginDataList[position].lines[0].sequence)
+                ReadState.contentLength = mOriginDataList[position].contentLength
             }
 
             mReadPageChange?.addLog()
@@ -575,7 +577,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
         getChapterData(sequence, ReadViewEnums.PageIndex.current, true)
     }
 
-    override fun onAnimationChange(animation: ReadViewEnums.Animation){
+    override fun onAnimationChange(animation: ReadViewEnums.Animation) {
 
     }
 
