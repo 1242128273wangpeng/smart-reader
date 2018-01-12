@@ -17,8 +17,7 @@ package com.intelligent.reader.flip.render;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Paint;
-import android.graphics.Rect;
+import android.opengl.GLES20;
 import android.os.Handler;
 import android.os.Message;
 
@@ -26,7 +25,7 @@ import com.intelligent.reader.flip.base.Page;
 import com.intelligent.reader.flip.base.PageFlip;
 import com.intelligent.reader.flip.base.PageFlipState;
 
-import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.data.bean.ReadViewEnums.PageIndex;
 
 
 /**
@@ -46,15 +45,15 @@ import net.lzbook.kit.utils.AppLog;
 
 public class SinglePageRender extends PageRender {
     public interface LoadBitmapListener {
-        Bitmap loadBitmap(int number);
+        Bitmap loadBitmap(PageIndex index);
     }
 
     public interface PageFlipStateListener {
-        void backward(int mPageNo);
+        void backward();
 
-        void forward(int mPageNo);
+        void forward();
 
-        void restore(int mPageNo);
+        void restore();
 
         void gone();
     }
@@ -77,8 +76,8 @@ public class SinglePageRender extends PageRender {
      * @see {@link #PageRender (Context, PageFlip, Handler, int)}
      */
     public SinglePageRender(Context context, PageFlip pageFlip,
-                            Handler handler, int pageNo) {
-        super(context, pageFlip, handler, pageNo);
+                            Handler handler) {
+        super(context, pageFlip, handler);
     }
 
     /**
@@ -94,23 +93,23 @@ public class SinglePageRender extends PageRender {
             if (mPageFlip.getFlipState() == PageFlipState.FORWARD_FLIP) {
                 if (!page.isFirstTextureSet()) {
 //                drawPage(--mPageNo, 1);
-                    page.setFirstTexture(listener.loadBitmap(mPageNo));
+                    page.setFirstTexture(listener.loadBitmap(PageIndex.current));
                 }
                 // check if second texture of first page is valid, if not,//第一页第二页是否有效
                 // create new one
                 if (!page.isSecondTextureSet()) {
 //                    drawPage(mPageNo + 1, 1);
-                    page.setSecondTexture(listener.loadBitmap(mPageNo + 1));
+                    page.setSecondTexture(listener.loadBitmap(PageIndex.next));
                 }
             }
             // in backward flip, check first texture of first page is valid 向后翻页 检查第一个页是否有效
             else {
                 if (!page.isFirstTextureSet()) {
 //                drawPage(--mPageNo, 1);
-                    page.setFirstTexture(listener.loadBitmap(mPageNo - 1));
+                    page.setFirstTexture(listener.loadBitmap(PageIndex.previous));
                 }
                 if (!page.isSecondTextureSet()) {
-                    page.setSecondTexture(listener.loadBitmap(mPageNo));
+                    page.setSecondTexture(listener.loadBitmap(PageIndex.current));
                 }
             }
 
@@ -132,10 +131,12 @@ public class SinglePageRender extends PageRender {
 //            }
 
             if (!page.isFirstTextureSet()) {
-                page.setFirstTexture(listener.loadBitmap(mPageNo));
+                page.setFirstTexture(listener.loadBitmap(PageIndex.current));
             }
 
             mPageFlip.drawPageFrame();
+
+//            GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         }
 
         page.deleteUnusedTextures();
@@ -165,28 +166,35 @@ public class SinglePageRender extends PageRender {
 //            }
 //        }
 //        if (isFlow) {
-//            page.setFirstTextureWithSecond();
-//            page.setSecondTexture(listener.loadBitmap(mPageNo + 1));
+//            if(page.isSecondTextureSet()) {
+//                page.setFirstTextureWithSecond();
+//            }else{
+//                page.setFirstTexture(listener.loadBitmap(PageIndex.current));
+//            }
+//            page.setSecondTexture(listener.loadBitmap(PageIndex.next));
 //        } else {
-//            page.setSecondTextureWithFirst();
-//            page.setFirstTexture(listener.loadBitmap(mPageNo - 1));
+//            if(page.isFirstTextureSet()) {
+//                page.setSecondTextureWithFirst();
+//            }else{
+//                page.setSecondTexture(listener.loadBitmap(PageIndex.current));
+//            }
+//            page.setFirstTexture(listener.loadBitmap(PageIndex.previous));
 //        }
 
-        page.invalidAllTextures();
-//        mPageFlip.deleteUnusedTextures();
+//
+//        if(isFlow){
+//            page.setFirstTextureWithSecond();
+//        }else{
+//            page.setSecondTextureWithFirst();
+//        }
+        mPageFlip.getFirstPage().deleteAllTextures();
+        mPageFlip.deleteUnusedTextures();
         setPageMessage();
     }
 
     @Override
     public void onReDrawFrame() {
         //重新画
-        mPageFlip.deleteUnusedTextures();
-        Page page = mPageFlip.getFirstPage();
-//        drawPage(mPageNo, 1);
-        Bitmap loadBitmap = listener.loadBitmap(mPageNo);
-        page.setFirstTexture(loadBitmap);
-        page.setSecondTexture(listener.loadBitmap(mPageNo + 1));
-        sendMessage();
     }
 
     public void sendMessage() {
@@ -256,23 +264,19 @@ public class SinglePageRender extends PageRender {
                 if (state == PageFlipState.END_WITH_BACKWARD) {
                     // don't do anything on page number since mPageNo is always
                     // represents the FIRST_TEXTURE no;
-
-                    mPageFlip.getFirstPage().setSecondTextureWithFirst();
-                    mPageNo--;
                     if (mPageFlipStateListener != null) {
-                        mPageFlipStateListener.backward(mPageNo);
+                        mPageFlipStateListener.backward();
                     }
                 }
                 // update page number and switch textures for forward flip
                 else if (state == PageFlipState.END_WITH_FORWARD) {
                     mPageFlip.getFirstPage().setFirstTextureWithSecond();
-                    mPageNo++;
                     if (mPageFlipStateListener != null) {
-                        mPageFlipStateListener.forward(mPageNo);
+                        mPageFlipStateListener.forward();
                     }
                 } else if (state == PageFlipState.END_WITH_RESTORE) {
                     if (mPageFlipStateListener != null) {
-                        mPageFlipStateListener.restore(mPageNo);
+                        mPageFlipStateListener.restore();
                     }
                 }
 
@@ -313,7 +317,7 @@ public class SinglePageRender extends PageRender {
      * @return true if it can flip forward
      */
     public boolean canFlipForward() {
-        return (mPageNo < MAX_PAGES);
+        return true;
     }
 
     /**
@@ -322,10 +326,6 @@ public class SinglePageRender extends PageRender {
      * @return true if it can flip backward
      */
     public boolean canFlipBackward() {
-        if (mPageNo > 1) {
-            return true;
-        } else {
-            return false;
-        }
+        return true;
     }
 }

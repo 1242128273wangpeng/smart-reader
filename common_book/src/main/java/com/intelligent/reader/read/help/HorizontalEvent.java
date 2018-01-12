@@ -7,5 +7,5 @@ import android.view.MotionEvent;
  */
 
 public interface HorizontalEvent {
-    void myDispatchTouchEvent(MotionEvent event);
+    boolean myDispatchTouchEvent(MotionEvent event);
 }

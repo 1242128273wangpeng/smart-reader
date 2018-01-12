@@ -41,7 +41,7 @@ import net.lzbook.kit.utils.runOnMain
 class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
     companion object {
-        val tag = "ReaderViewWidget"
+        val tag = "PageFlipView"
     }
 
     private var mReaderViewFactory: ReaderViewFactory? = null
@@ -58,30 +58,20 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    private var num = Integer.MAX_VALUE / 2
-
     private var mLoadBitmaplistener = SinglePageRender.LoadBitmapListener {
-
+        index ->
         if ((mTextureView != null) and (mTextureView!!.isFangzhen) and (mReaderView is HorizontalReaderView)) {
 
             var bitmap: Bitmap? = null
             var isFinishCache = false
 
             runOnMain {
-                bitmap = when {
-                    num < it -> {
-                        val view = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.next)
-                        view.drawingCache
-                    }
-                    num > it -> {
-                        val view = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.previous)
-                        view.drawingCache
-                    }
-                    else -> {
-                        val view = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current)
-                        view.drawingCache
-                    }
-                }
+
+                println("${ReaderViewWidget.tag} load ${index.name}")
+                val view = (mReaderView as HorizontalReaderView).findViewWithTag(index) as HorizontalPage
+//                view.destroyDrawingCache()
+                bitmap = view.drawingCache
+
                 synchronized((this@ReaderViewWidget as Object)) {
                     println("this@ReaderViewWidget as Object).notify")
                     (this@ReaderViewWidget as Object).notify()
@@ -132,32 +122,32 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 //            if (mTextureView!!.isFangzhen) mTextureView!!.visibility = View.INVISIBLE
         }
 
-        override fun backward(mPageNo: Int) {
-            AppLog.e(ReaderViewWidget.tag, "onClickLeft")
-            num = mPageNo
-            (mReaderView as HorizontalReaderView).onClickLeft(false)
-
+        private fun invisibelSurface(){
             //等待ViewPager切换完页面再隐藏
             runOnMain {
-                if (mTextureView!!.isFangzhen) mTextureView!!.visibility = View.INVISIBLE
+
+                if(mTextureView!!.visibility == View.VISIBLE && mTextureView!!.surfaceAviable) {
+                    mTextureView!!.visibility = View.INVISIBLE
+                }
             }
         }
 
-        override fun forward(mPageNo: Int) {
+        override fun backward() {
+            AppLog.e(ReaderViewWidget.tag, "backward")
+            (mReaderView as HorizontalReaderView).onClickLeft(false)
+
+            invisibelSurface()
+        }
+
+        override fun forward() {
             AppLog.e(ReaderViewWidget.tag, "forward")
-            num = mPageNo
             (mReaderView as HorizontalReaderView).onClickRight(false)
-            runOnMain {
-                if (mTextureView!!.isFangzhen) mTextureView!!.visibility = View.INVISIBLE
-            }
+            invisibelSurface()
         }
 
-        override fun restore(mPageNo: Int) {
+        override fun restore() {
             AppLog.e(ReaderViewWidget.tag, "restore")
-            num = mPageNo
-            runOnMain {
-                if (mTextureView!!.isFangzhen) mTextureView!!.visibility = View.INVISIBLE
-            }
+            invisibelSurface()
         }
     }
 
@@ -205,11 +195,15 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
     override fun entrance(mReadInfo: ReadInfo) {
         if (animaEnums != mReadInfo.animaEnums) { //如果阅读模式发生变化
             if (mReaderView != null) removeView(mReaderView as View)//移除
+
             mReaderView = mReaderViewFactory?.getView(mReadInfo.animaEnums)//创建
+            (mReaderView as View).isClickable = false
             if (mReaderView != null) addView(mReaderView as View)//添加
             animaEnums = mReadInfo.animaEnums//记录动画模式
-            initGLSufaceView()
             mReaderView?.setHorizontalEventListener(this)
+
+            initGLSufaceView()
+
         }
         mReaderView?.entrance(mReadInfo)
     }
@@ -295,13 +289,23 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 //        }
     }
 
-    override fun myDispatchTouchEvent(event: MotionEvent) {
-        AppLog.e("event",event.action.toString())
-        if (event.action == MotionEvent.ACTION_UP) {
-            mTextureView?.onFingerUp(event.x,event.y)
-        }else {
-            mGestureDetector.onTouchEvent(event)
+    private var isDownActioned = false
+
+    override fun myDispatchTouchEvent(event: MotionEvent):Boolean {
+//        AppLog.e("event",event.action.toString())
+        if (event.actionMasked == MotionEvent.ACTION_UP  || event.actionMasked == MotionEvent.ACTION_CANCEL) {
+//            mTextureView!!.visibility = View.INVISIBLE
+            mTextureView?.post {
+                mTextureView?.onFingerUp(event.x, event.y)
+            }
+
+//            if (mTextureView!!.visibility != View.VISIBLE){
+//                //翻页显示
+//                mTextureView!!.visibility = View.VISIBLE
+//            }
+            isDownActioned = false
         }
+        return mGestureDetector.onTouchEvent(event)
     }
 
     private var mGestureDetector = GestureDetector(context, object : GestureDetector.OnGestureListener {
@@ -312,20 +316,32 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
             if (context is ReadingActivity) (context as ReadingActivity).showMenu(false)
 
 
-            if (mTextureView!!.visibility != View.VISIBLE){
+            if (mTextureView!!.visibility != View.VISIBLE && !mTextureView!!.surfaceAviable){
 
                 //翻页显示
                 mTextureView!!.visibility = View.VISIBLE
 
-                mTextureView?.onFingerDown(e.x, e.y)
-                return true
             }
-
-            return false
+            mTextureView!!.post{
+                mTextureView?.onFingerDown(e.x, e.y)
+            }
+            isDownActioned = true
+            return true
         }
 
         override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
-            mTextureView?.onFingerMove(e2.x, e2.y)
+            if(isDownActioned) {
+                mTextureView?.post {
+                    mTextureView?.onFingerMove(e2.x, e2.y)
+                }
+            }else{
+                onDown(e2)
+            }
+
+//            if (mTextureView!!.visibility != View.VISIBLE){
+//                //翻页显示
+//                mTextureView!!.visibility = View.VISIBLE
+//            }
             return true
         }
 

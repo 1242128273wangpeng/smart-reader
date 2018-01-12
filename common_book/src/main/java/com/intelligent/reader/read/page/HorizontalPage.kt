@@ -3,11 +3,13 @@ package com.intelligent.reader.read.page
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.intelligent.reader.R
+import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.animation.BitmapManager
 import com.intelligent.reader.read.help.DrawTextHelper
@@ -25,6 +27,7 @@ import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
+import kotlin.properties.Delegates
 
 
 /**
@@ -59,9 +62,9 @@ class HorizontalPage : FrameLayout {
     var mCursor: ReadCursor? = null
     var viewState: ReadViewEnums.ViewState = ReadViewEnums.ViewState.loading
     var viewNotify: ReadViewEnums.NotifyStateState = ReadViewEnums.NotifyStateState.none
-    var pageIndex:Int = 0
-    var pageSum:Int = 0
-    var contentLength:Int = 0
+    var pageIndex: Int = 0
+    var pageSum: Int = 0
+    var contentLength: Int = 0
     var noticePageListener: NoticePageListener? = null
 
     constructor(context: Context, noticePageListener: NoticePageListener) : this(context, null, noticePageListener)
@@ -73,13 +76,13 @@ class HorizontalPage : FrameLayout {
         time = this.noticePageListener!!.getCurTime()
         percent = this.noticePageListener!!.getCurPercent()
         isDrawingCacheEnabled = true
-        drawingCacheQuality = DRAWING_CACHE_QUALITY_LOW
+        drawingCacheQuality = View.DRAWING_CACHE_QUALITY_LOW
         isChildrenDrawnWithCacheEnabled = true
         isChildrenDrawnWithCacheEnabled = true
         init()
     }
 
-    private fun init(){
+    private fun init() {
         mDrawTextHelper = DrawTextHelper(context.resources)
         loadView = inflate(context, R.layout.loading_page_reading, null)
         errorView = inflate(context, R.layout.error_page2, null)
@@ -176,7 +179,6 @@ class HorizontalPage : FrameLayout {
         fun getCurPercent(): Float
         fun getCurTime(): String
         fun currentViewSuccess()
-        fun myDispatchTouchEvent(event:MotionEvent)
     }
 
     inner class HorizontalItemPage : View {
@@ -187,7 +189,7 @@ class HorizontalPage : FrameLayout {
 
         override fun onDraw(canvas: Canvas) {
             super.onDraw(canvas)
-            if(mNovelPageBean != null) {
+            if (mNovelPageBean != null) {
                 mDrawTextHelper?.drawText(canvas, mNovelPageBean!!)
             }
         }
@@ -263,9 +265,9 @@ class HorizontalPage : FrameLayout {
             cursor.readStatus.chapterName = chapter.chapter_name
             val chapterList = DataProvider.getInstance().chapterSeparate[cursor.sequence]!!
             if (!chapterList.isEmpty()) {//集合不为空，角标小于集合长度
-                pageIndex = findPageIndexByOffset(cursor.offset,chapterList)
+                pageIndex = findPageIndexByOffset(cursor.offset, chapterList)
                 pageSum = chapterList.size
-                if (pageIndex <= pageSum){
+                if (pageIndex <= pageSum) {
                     //过滤其他页内容
                     if (cursor.sequence == -1) {//封面页
                         setupHomePage(cursor)
@@ -278,9 +280,9 @@ class HorizontalPage : FrameLayout {
                         mCursor!!.lastOffset = 1
                         mCursorOffset = -1
                         viewState = start
-                        noticePageListener?.pageChangSuccess(mCursor!!,ReadViewEnums.NotifyStateState.none)//游标通知回调
-                    }else {
-                        mNovelPageBean = findNovelPageBeanByOffset(cursor.offset,chapterList)
+                        noticePageListener?.pageChangSuccess(mCursor!!, ReadViewEnums.NotifyStateState.none)//游标通知回调
+                    } else {
+                        mNovelPageBean = findNovelPageBeanByOffset(cursor.offset, chapterList)
                         contentLength = mNovelPageBean!!.contentLength
                         if (mNovelPageBean!!.isAd) {//广告页
                             showAdBigger(mNovelPageBean!!)
@@ -319,7 +321,7 @@ class HorizontalPage : FrameLayout {
                         //设置top and bottom
                         val chapterProgress = "" + (cursor.sequence.plus(1)) + "/" + cursor.readStatus.chapterCount + "章"
                         val pageProgress = "本章第$pageIndex/$pageSum"
-                        setTopAndBottomViewContext(cursor.readStatus.chapterName,chapterProgress,pageProgress)
+                        setTopAndBottomViewContext(cursor.readStatus.chapterName, chapterProgress, pageProgress)
                         noticePageListener?.currentViewSuccess()
                     }
                 }
@@ -393,62 +395,75 @@ class HorizontalPage : FrameLayout {
             addView(mNovelPageBean.adView, param)
         }
 
-        //点击事件
-        private var isShowMenu: Boolean = true
 
-        override fun dispatchTouchEvent(event: MotionEvent): Boolean {
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    if (ReadConfig.animation == ReadViewEnums.Animation.curl){
-                        if (onClick(event)) return true
-                    }
-                    return true
-                }
-                MotionEvent.ACTION_CANCEL -> {
-                    return true
-                }
-                MotionEvent.ACTION_UP -> {
-                    if (ReadConfig.animation != ReadViewEnums.Animation.curl){
-                        if (onClick(event)) return true
-                    }
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    if (!isShowMenu) {
-                        noticePageListener?.onClickMenu(isShowMenu)
-                        isShowMenu = true
-                    }
-                }
-                MotionEvent.ACTION_POINTER_DOWN-> return true
-                MotionEvent.ACTION_POINTER_UP-> return true
-            }
-            return super.dispatchTouchEvent(event)
+        private var isShowMenu: Boolean = false
+
+        override fun onTouchEvent(event: MotionEvent): Boolean {
+            return mGestureDetector.onTouchEvent(event)
         }
 
-        private var time: Long = 0
-        private fun onClick(event: MotionEvent): Boolean {
-            if (System.currentTimeMillis() - time < 500) {//动画时间
-                return false
-            }
-            time = System.currentTimeMillis()
+        private val mGestureDetector by lazy {
+            val detector = GestureDetector(context, object : GestureDetector.OnGestureListener {
+                private var time: Long = 0
+
+                override fun onDown(event: MotionEvent): Boolean {
+                    if(System.currentTimeMillis() - time < 500) {
+                        return false
+                    }
+                    time = System.currentTimeMillis()
+
+                    if(ReadConfig.animation == ReadViewEnums.Animation.curl) {
+                        return isTouchMenuArea(event)
+                    }else{
+                        return true
+                    }
+                }
+
+                override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+                    return true
+                }
+
+                override fun onLongPress(e: MotionEvent) = Unit
+
+                override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean = false
+
+                override fun onShowPress(e: MotionEvent) = Unit
+
+                override fun onSingleTapUp(e: MotionEvent): Boolean {
+                    if(isShowMenu) {
+                        noticePageListener?.onClickMenu(false)
+                        isShowMenu = false
+                    }else {
+
+                        if (isTouchMenuArea(e)) {
+                            noticePageListener?.onClickMenu(true)
+                            isShowMenu = true
+                        }else{
+                            if(e.x < width/2){
+                                //left
+                                noticePageListener?.onClickLeft(true)
+                            }else{
+                                noticePageListener?.onClickRight(true)
+                            }
+                        }
+                    }
+                    return true
+                }
+            })
+            detector.setIsLongpressEnabled(false)
+            detector
+        }
+
+        private fun isTouchMenuArea(event: MotionEvent): Boolean {
             val x = event.x.toInt()
             val y = event.y.toInt()
             val h4 = height / 4
             val w3 = width / 3
-            return if (x <= w3) {
-                noticePageListener?.onClickLeft(true)
-                noticePageListener?.onClickMenu(false)
-                true
-            } else if (x >= width.minus(w3)|| y >= height.minus(h4) && x >= w3) {
-                noticePageListener?.onClickRight(true)
-                noticePageListener?.onClickMenu(false)
-                true
-            } else {
-                noticePageListener?.onClickMenu(isShowMenu)
-                isShowMenu = !isShowMenu
-                true
-            }
+            return (x > w3) && !(x >= width.minus(w3) || y >= height.minus(h4) && x >= w3)
         }
     }
+
+
 
     fun onReSeparate() = DataProvider.getInstance().onReSeparate()
 }

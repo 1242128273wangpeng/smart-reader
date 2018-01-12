@@ -43,29 +43,18 @@ public abstract class PageRender implements OnPageFlipListener {
 
     final static int MAX_PAGES = Integer.MAX_VALUE;
 
-    int mPageNo;
     int mDrawCommand;
     Context mContext;
     public Handler mHandler;
     public PageFlip mPageFlip;
 
     public PageRender(Context context, PageFlip pageFlip,
-                      Handler handler, int pageNo) {
+                      Handler handler) {
         mContext = context;
         mPageFlip = pageFlip;
-        mPageNo = pageNo;
         mDrawCommand = DRAW_FULL_PAGE;
         mPageFlip.setListener(this);
         mHandler = handler;
-    }
-
-    /**
-     * Get page number
-     *
-     * @return page number
-     */
-    public int getPageNo() {
-        return mPageNo;
     }
 
     /**

@@ -37,6 +37,7 @@ import com.intelligent.reader.util.DisplayUtils;
 import net.lzbook.kit.data.bean.ReadConfig;
 import net.lzbook.kit.utils.AppUtils;
 
+import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -52,13 +53,16 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
 
     private final static String TAG = "PageFlipView";
 
-    int mPageNo;
+
     int mDuration;
     Handler mHandler;
     PageFlip mPageFlip;
     PageRender mPageRender;
 
+    private boolean isDownActioned = false;
+
     private boolean isFangzhen;
+    public volatile boolean surfaceAviable = false;
 
     public boolean isFangzhen() {
         return isFangzhen;
@@ -103,10 +107,8 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
 //        setEGLContextClientVersion(2);
         mPageFlip.setShadowColorOfFoldBase(0.1f, 0.5f, 0.3f, 0.01f);//
         // init others
-//        mPageNo  = Integer.MAX_VALUE/4;
-        mPageNo = Integer.MAX_VALUE / 2;
         mPageRender = new SinglePageRender(context, mPageFlip,
-                mHandler, mPageNo);
+                mHandler);
         //setting
         setEGLContextClientVersion(2);
         setPreserveEGLContextOnPause(true);
@@ -190,24 +192,39 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
         return mPageFlip.getPixelsOfMesh();
     }
 
+    private ArrayList<Runnable> mbeforeEventQueue = new ArrayList<Runnable>();
+
     /**
      * Handle finger down event
      *
      * @param x finger x coordinate
      * @param y finger y coordinate
      */
-    public void onFingerDown(final float x, final float y) {
-        queueEvent(new Runnable() {
+    public synchronized void onFingerDown(final float x, final float y) {
+        Runnable event = new Runnable() {
             @Override
             public void run() {
                 // if the animation is going, we should ignore this event to avoid
                 // mess drawing on screen
-                if (!mPageFlip.isAnimating() &&
+                if (!isDownActioned && !mPageFlip.isAnimating() &&
                         mPageFlip.getFirstPage() != null) {
                     mPageFlip.onFingerDown(x, y);
+                    isDownActioned = true;
+                    log("down");
+                } else {
+                    log("down miss");
                 }
             }
-        });
+        };
+        if(getVisibility() == VISIBLE && surfaceAviable) {
+            queueEvent(event);
+        }else{
+            mbeforeEventQueue.add(event);
+        }
+    }
+
+    private void log(String msg){
+        android.util.Log.w("PageFlipView", msg);
     }
 
     /**
@@ -216,15 +233,20 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
      * @param x finger x coordinate
      * @param y finger y coordinate
      */
-    public void onFingerMove(final float x, final float y) {
-        queueEvent(new Runnable() {
+    public synchronized void onFingerMove(final float x, final float y) {
+
+        Runnable event = new Runnable() {
             @Override
             public void run() {
+                if(!isDownActioned)
+                    return;
                 if (mPageFlip.isAnimating()) {
                     // nothing to do during animating
+                    log("onFingerMove isAnimating");
                 } else if (mPageFlip.canAnimate(x, y)) {
                     // if the point is out of current page, try to start animating
                     onFingerUp(x, y);
+                    log("onFingerMove canAnimate");
                 }
                 // move page by finger
                 else if (mPageFlip.onFingerMove(x, y)) {
@@ -233,11 +255,20 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
                             mPageRender.onFingerMove(x, y)) {
                     }
 
+                    log("onFingerMove");
+                }else {
+                    log("onFingerMove miss");
                 }
 
                 requestRender();
             }
-        });
+        };
+
+        if(getVisibility() == VISIBLE && surfaceAviable) {
+            queueEvent(event);
+        }else{
+            mbeforeEventQueue.add(event);
+        }
 
     }
 
@@ -247,23 +278,36 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
      * @param x finger x coordinate
      * @param y finger y coordinate
      */
-    public void onFingerUp(final float x, final float y) {
-        queueEvent(new Runnable() {
+    public synchronized void onFingerUp(final float x, final float y) {
+
+        Runnable event = new Runnable() {
             @Override
             public void run() {
-                if (!mPageFlip.isAnimating()) {
-                    mPageFlip.onFingerUp(x, y, mDuration);
+                if(isDownActioned) {
 
-                    if (mPageRender != null &&
-                            mPageRender.onFingerUp(x, y)) {
+                    if (!mPageFlip.isAnimating()) {
+                        mPageFlip.onFingerUp(x, y, mDuration);
+
+                        if (mPageRender != null &&
+                                mPageRender.onFingerUp(x, y)) {
+                        }
+                        log("onFingerUp");
+                    } else {
+                        log("onFingerUp miss");
                     }
 
+                    requestRender();
                 }
 
-                requestRender();
+                isDownActioned = false;
             }
-        });
+        };
 
+        if(getVisibility() == VISIBLE && surfaceAviable) {
+            queueEvent(event);
+        }else{
+            mbeforeEventQueue.add(event);
+        }
     }
 
     public void onDrawNextFrame(boolean isFlow) {
@@ -285,6 +329,7 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
      */
     @Override
     public void onDrawFrame(GL10 gl) {
+        surfaceAviable = true;
         if (mPageRender != null) {
             mPageRender.onDrawFrame();
         }
@@ -298,7 +343,13 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
      * @param height new height of surface
      */
     @Override
-    public void onSurfaceChanged(GL10 gl, int width, int height) {
+    public synchronized void onSurfaceChanged(GL10 gl, int width, int height) {
+        if(!mbeforeEventQueue.isEmpty()){
+            for (Runnable event : mbeforeEventQueue){
+                queueEvent(event);
+            }
+            mbeforeEventQueue.clear();
+        }
 //        try {
 //            mPageFlip.onSurfaceChanged(width, height);
             // let page render handle surface change
@@ -328,6 +379,7 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         super.surfaceDestroyed(holder);
+        surfaceAviable = false;
     }
 
     /**

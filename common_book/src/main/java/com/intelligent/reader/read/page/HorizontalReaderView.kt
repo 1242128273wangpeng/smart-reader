@@ -93,7 +93,8 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
 
-        if (ReadConfig.animation == ReadViewEnums.Animation.shift) {
+        if (ReadConfig.animation == ReadViewEnums.Animation.shift
+                || ReadConfig.animation == ReadViewEnums.Animation.curl) {
 
             setShadowDrawable(R.drawable.page_shadow)
             setShadowWidth(40)
@@ -396,11 +397,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         }
     }
 
-    private var mHorizontalEvent:HorizontalEvent? = null
-
-    override fun myDispatchTouchEvent(event: MotionEvent) {
-        mHorizontalEvent?.myDispatchTouchEvent(event)
-    }
+    private var mHorizontalEvent: HorizontalEvent? = null
 
     //==================================================IReadPageChange=========================================
     private var mReadPageChange: IReadPageChange? = null
@@ -492,7 +489,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             setShadowDrawable(R.drawable.page_shadow)
             setShadowWidth(40)
             setPageTransformer(true, ShiftTransformer())
-        }else{
+        } else {
             setShadowDrawable(null)
             setPageTransformer(true, SlideTransformer())
         }
@@ -504,30 +501,20 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 
     //==================================================TouchEvent=========================================
     //-----禁止左滑-------左滑：上一次坐标 > 当前坐标
-    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+
         return when (isCanScroll) {
             -1 -> true
             0 -> {
-                val x = event.x.toInt()
-                val y = event.y.toInt()
-                val h4 = height / 4
-                val w3 = width / 3
-                if (ReadConfig.animation == ReadViewEnums.Animation.curl){
-                    if (!((x <= w3) or (x >= width.minus(w3)|| y >= height.minus(h4) && x >= w3)) and (event.action == MotionEvent.ACTION_DOWN)){
-                        super.dispatchTouchEvent(event)
-                        false
-                    }else if(y<AppUtils.dip2px(context,26f)){
-                        super.dispatchTouchEvent(event)
-                    }else{
-                        mHorizontalEvent?.myDispatchTouchEvent(event)
-                        true
-                    }
-                }else {
-                    super.dispatchTouchEvent(event)
+                if (ReadConfig.animation == ReadViewEnums.Animation.curl) {
+                    mHorizontalEvent!!.myDispatchTouchEvent(event)
+                } else {
+                    super.onTouchEvent(event)
                 }
             }
             else -> prohibitionOfSlidingTouchEvent(event)
         }
+
     }
 
     /**
@@ -554,6 +541,6 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                 beforeX = ev.x//手指移动时，再把当前的坐标作为下一次的‘上次坐标’，解决上述问题
             }
         }
-        return super.dispatchTouchEvent(ev)
+        return super.onTouchEvent(ev)
     }
 }
