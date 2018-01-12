@@ -121,9 +121,11 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: ReaderVi
         view?.setChangeAble(false)
         if (type == 1) {
             val data = java.util.HashMap<String, String>()
-            data.put("bookid", readStatus.book_id)
-            if (dataFactory != null && dataFactory.currentChapter != null) {
-                data.put("chapterid", dataFactory!!.currentChapter!!.chapter_id)
+            ReadState.book?.let {
+                data.put("bookid", it.book_id)
+            }
+            ReadState.chapterId?.let {
+                data.put("chapterid", it)
             }
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.BOOKMARK, data)
         }

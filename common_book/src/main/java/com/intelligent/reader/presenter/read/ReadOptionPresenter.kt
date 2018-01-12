@@ -88,8 +88,8 @@ class ReadOptionPresenter : ReadOption.Presenter {
     override fun showMore() {
         val data = java.util.HashMap<String, String>()
         data.put("bookid", readStatus.book_id)
-        if (mReaderViewModel != null && mReaderViewModel.currentChapter != null) {
-            data.put("chapterid", mReaderViewModel!!.currentChapter!!.chapter_id)
+        ReadState.chapterId?.let {
+            data.put("chapterid", it)
         }
         StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.MORE1, data)
     }
@@ -264,8 +264,8 @@ class ReadOptionPresenter : ReadOption.Presenter {
     /**
      * 添加手动书签
      */
-    fun addOptionMark(mBookDaoHelper: BookDaoHelper?,font_count: Int, type: Int): Int {
-        if (activity.get() == null||mBookDaoHelper == null || readStatus == null) {
+    fun addOptionMark(mBookDaoHelper: BookDaoHelper?, font_count: Int, type: Int): Int {
+        if (activity.get() == null || mBookDaoHelper == null || readStatus == null) {
             return 0
         }
         if (!mBookDaoHelper.isBookMarkExist(ReadState.book!!.book_id, ReadState.sequence, ReadState.offset, type)) {
@@ -280,7 +280,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
             }
 
             val chapter = DataProvider.getInstance().chapterMap[ReadState.sequence]
-            if (chapter == null ||  DataProvider.getInstance().findCurrentPageNovelLineBean().isEmpty()) {
+            if (chapter == null || DataProvider.getInstance().findCurrentPageNovelLineBean().isEmpty()) {
                 return 0
             }
 

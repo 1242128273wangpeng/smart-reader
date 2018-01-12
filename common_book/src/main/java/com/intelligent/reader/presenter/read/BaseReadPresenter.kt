@@ -348,7 +348,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         }
     }
 
-    fun onConfigurationChanged(catalogMarkFragment: CatalogMarkFragment?, optionHeader: ReadOptionHeader,count:Int) {
+    fun onConfigurationChanged(catalogMarkFragment: CatalogMarkFragment?, optionHeader: ReadOptionHeader, count: Int) {
         this.lastMode = -1
         // 初始化窗口基本信息
 //        pageView?.clear()
@@ -365,9 +365,9 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 
         initBookState()
         // 初始化view
-        if (count == 0){
+        if (count == 0) {
             view?.initView(mReaderViewModel!!)
-        }else {
+        } else {
             //重绘屏幕
             view?.onChangedScreen()
         }
@@ -874,6 +874,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         }
 
     }
+
     //换源回调
     fun searchChapterCallBack(sourcesList: ArrayList<Source>?) {
         if (sourcesList?.isNotEmpty() == true) {
@@ -1781,12 +1782,14 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             showMenu(false)
         }
         val data = HashMap<String, String>()
-        if (readStatus != null) {
-            data.put("bookid", readStatus!!.book_id)
+
+        ReadState.book?.let {
+            data.put("bookid", it.book_id)
         }
-        if (mReaderViewModel != null && mReaderViewModel?.currentChapter != null) {
-            data.put("chapterid", mReaderViewModel!!.currentChapter!!.book_id)
+        ReadState.chapterId?.let {
+            data.put("chapterid", it)
         }
+
         StartLogClickUtil.upLoadEventLog(readReference?.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CATALOG, data)
     }
 
@@ -1870,12 +1873,11 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 
     private fun jumpNextChapterLog(type: Int) {
         val data = HashMap<String, String>()
-        if (readStatus != null) {
-            data.put("bookid", readStatus!!.book_id)
+        ReadState.book?.let {
+            data.put("bookid", it.book_id)
         }
-
-        if (mReaderViewModel != null && mReaderViewModel!!.currentChapter != null) {
-            data.put("chapterid", mReaderViewModel!!.currentChapter!!.chapter_id)
+        ReadState.chapterId?.let {
+            data.put("chapterid", it)
         }
         data.put("type", type.toString())
         StartLogClickUtil.upLoadEventLog(readReference?.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CHAPTERTURN, data)

@@ -702,18 +702,20 @@ public class Page {
      * Draw full page with given texture id
      */
     private void drawFullPage(VertexProgram program, int textureID) {
-        glBindTexture(GL_TEXTURE_2D, textureID);
-        glUniform1i(program.mTextureLoc, 0);
+        if(textureID > INVALID_TEXTURE_ID) {
+            glBindTexture(GL_TEXTURE_2D, textureID);
+            glUniform1i(program.mTextureLoc, 0);
 
-        glVertexAttribPointer(program.mVertexPosLoc, 3, GL_FLOAT, false, 0,
-                              mFullPageVexBuf);
-        glEnableVertexAttribArray(program.mVertexPosLoc);
+            glVertexAttribPointer(program.mVertexPosLoc, 3, GL_FLOAT, false, 0,
+                    mFullPageVexBuf);
+            glEnableVertexAttribArray(program.mVertexPosLoc);
 
-        glVertexAttribPointer(program.mTexCoordLoc, 2, GL_FLOAT, false, 0,
-                              mFullPageTexCoordsBuf);
-        glEnableVertexAttribArray(program.mTexCoordLoc);
+            glVertexAttribPointer(program.mTexCoordLoc, 2, GL_FLOAT, false, 0,
+                    mFullPageTexCoordsBuf);
+            glEnableVertexAttribArray(program.mTexCoordLoc);
 
-        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+            glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+        }
     }
 
     /**
