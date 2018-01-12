@@ -39,5 +39,7 @@ interface ReadPreInterface {
         fun setBackground()
         //
         fun onChangedScreen()
+
+        fun readOptionHeaderDismiss()
     }
 }

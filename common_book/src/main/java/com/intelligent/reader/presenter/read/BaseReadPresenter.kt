@@ -763,11 +763,11 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         mReaderViewModel?.setReaderBookSourceViewCallback(object : ReaderViewModel.ReaderBookSourceViewCallback {
             override fun onBookSource(sourceItem: SourceItem) {
                 searchChapterCallBack(sourceItem.sourceList)
-                loadingPage?.onSuccess()
+                view?.readOptionHeaderDismiss()
             }
 
             override fun onBookSourceFail(msg: String?) {
-                loadingPage?.onSuccess()
+                view?.readOptionHeaderDismiss()
             }
         })
         mReaderViewModel?.mReadDataListener = this
@@ -874,9 +874,9 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         }
 
     }
-
+    //换源回调
     fun searchChapterCallBack(sourcesList: ArrayList<Source>?) {
-        if (myNovelHelper != null && mReaderViewModel != null && mReaderViewModel!!.currentChapter != null && !TextUtils.isEmpty(mReaderViewModel!!.currentChapter!!.curl) && sourcesList != null) {
+        if (sourcesList?.isNotEmpty() == true) {
             //if (readStatus.book.dex == 1 && !TextUtils.isEmpty(dataFactory.currentChapter.curl) && sourcesList != null) {
             myNovelHelper?.showSourceDialog(mReaderViewModel, mReaderViewModel?.currentChapter?.curl, sourcesList)
             /*} else if (readStatus.book.dex == 0 && !TextUtils.isEmpty(dataFactory.currentChapter.curl1) && sourcesList != null) {

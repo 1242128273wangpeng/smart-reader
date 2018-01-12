@@ -43,7 +43,6 @@ import kotlin.collections.HashMap
  */
 class ReadOptionPresenter : ReadOption.Presenter {
 
-
     private val font_count = 50
 
     override var view: ReadOption.View? = null
@@ -224,11 +223,12 @@ class ReadOptionPresenter : ReadOption.Presenter {
             //先这样实现吧...
             if (activity.get() is ReadingActivity) {
                 (activity.get() as ReadingActivity).showMenu(false)
+
             }
 
             getCustomLoadingPage()
             loadingPage!!.loading(Callable<Void> {
-                mReaderViewModel!!.getBookSource(readStatus!!.book_id)
+                mReaderViewModel.getBookSource(ReadState.book!!.book_id)
 //                OtherRequestService.requestBookSourceChange(dataFactory.mHandler, ReadingActivity.MSG_SEARCH_CHAPTER, -144, readStatus.book_id)
                 null
             })
@@ -432,15 +432,17 @@ class ReadOptionPresenter : ReadOption.Presenter {
     }
 
     override fun back() {
-
         //先这样实现吧...
         if (activity.get() is ReadingActivity) {
             (activity.get() as ReadingActivity).goBackToHome()
         }
-
     }
 
     override fun updateStatus() {
         view?.updateStatus(readStatus, mReaderViewModel, bookDaoHelper)
+    }
+
+    override fun dismissLoadingPage() {
+        loadingPage?.onSuccess()
     }
 }

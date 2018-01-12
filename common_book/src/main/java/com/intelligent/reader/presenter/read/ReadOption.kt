@@ -23,6 +23,7 @@ interface ReadOption {
         fun updateStatus()
 
         fun openWeb()
+        fun dismissLoadingPage()
     }
 
 

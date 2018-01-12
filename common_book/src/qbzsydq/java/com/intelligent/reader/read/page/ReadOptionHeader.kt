@@ -198,5 +198,7 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
             }
         }
     }
-
+    fun dismissLoadingPage(){
+        presenter?.dismissLoadingPage()
+    }
 }

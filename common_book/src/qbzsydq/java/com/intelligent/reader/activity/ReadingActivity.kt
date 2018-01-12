@@ -15,7 +15,6 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
-import com.integralads.avid.library.inmobi.session.internal.InternalAvidVideoAdSession
 import com.intelligent.reader.R
 import com.intelligent.reader.fragment.CatalogMarkFragment
 import com.intelligent.reader.presenter.read.CatalogMarkPresenter
@@ -488,6 +487,9 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         onRedrawPage()
     }
 
+    override fun readOptionHeaderDismiss(){
+        option_header.dismissLoadingPage()
+    }
     /**
      * 接受电量改变广播
      */
@@ -500,4 +502,5 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
             }
         }
     }
+
 }

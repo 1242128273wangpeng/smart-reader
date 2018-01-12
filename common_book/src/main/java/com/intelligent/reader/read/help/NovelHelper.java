@@ -247,7 +247,6 @@ public class NovelHelper {
             }
         });
 
-
         change_source_original_web.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

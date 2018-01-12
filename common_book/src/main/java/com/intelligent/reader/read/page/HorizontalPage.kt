@@ -290,7 +290,7 @@ class HorizontalPage : FrameLayout {
                             //画本页内容
                             BitmapManager.getInstance().setSize(cursor.readStatus.screenWidth, cursor.readStatus.screenHeight)
 
-                            val topMargin = if (mNovelPageBean?.lines?.isEmpty() == true) mNovelPageBean!!.height else ReadConfig.screenHeight.toFloat()
+                            val topMargin = if (mNovelPageBean?.lines?.isNotEmpty() == true) mNovelPageBean!!.height else ReadConfig.screenHeight.toFloat()
 
                             postInvalidate()
                             //判断展示Banner广告
