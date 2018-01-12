@@ -125,13 +125,9 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
             //等待ViewPager切换完页面再隐藏
             runOnMain {
                 var curView = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage
-                if (curView.mNovelPageBean!!.isAd) {
+                if (curView.hasAd) {
                     if(mTextureView!!.visibility == View.VISIBLE && mTextureView!!.surfaceAviable) {
                         mTextureView!!.visibility = View.INVISIBLE
-                    }
-                }else {
-                    if(mTextureView!!.visibility == View.INVISIBLE && mTextureView!!.surfaceAviable) {
-                        mTextureView!!.visibility = View.VISIBLE
                     }
                 }
             }

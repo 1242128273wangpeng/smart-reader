@@ -67,6 +67,7 @@ class HorizontalPage : FrameLayout {
     var contentLength: Int = 0
     var noticePageListener: NoticePageListener? = null
     var mNovelPageBean: NovelPageBean? = null
+    var hasAd = false
 
     constructor(context: Context, noticePageListener: NoticePageListener) : this(context, null, noticePageListener)
 
@@ -282,6 +283,7 @@ class HorizontalPage : FrameLayout {
                         noticePageListener?.pageChangSuccess(mCursor!!, ReadViewEnums.NotifyStateState.none)//游标通知回调
                     } else {
                         mNovelPageBean = findNovelPageBeanByOffset(cursor.offset, chapterList)
+                        hasAd = mNovelPageBean!!.isAd
                         contentLength = mNovelPageBean!!.contentLength
                         if (mNovelPageBean!!.isAd) {//广告页
                             showAdBigger(mNovelPageBean!!)
@@ -292,10 +294,10 @@ class HorizontalPage : FrameLayout {
                             BitmapManager.getInstance().setSize(cursor.readStatus.screenWidth, cursor.readStatus.screenHeight)
 
                             val topMargin = if (mNovelPageBean?.lines?.isNotEmpty() == true) mNovelPageBean!!.height else ReadConfig.screenHeight.toFloat()
-
                             postInvalidate()
                             //判断展示Banner广告
                             if (cursor.readStatus.screenHeight - topMargin > cursor.readStatus.screenHeight / 5) {
+                                hasAd = true
                                 showAdBanner(topMargin)
                             }
                         }
