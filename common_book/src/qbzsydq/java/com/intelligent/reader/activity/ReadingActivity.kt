@@ -387,6 +387,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         if (!mSharedPreferencesUtils.getBoolean(mReadPresenter.versionCode.toString() + Constants
                 .READING_SETING_GUIDE_TAG)) {
             ll_guide_layout.visibility = View.VISIBLE
+            ll_guide_layout.visibility = View.VISIBLE
             iv_guide_setting_bookmark.visibility = View.VISIBLE
             ll_guide_layout.setOnClickListener {
                 mSharedPreferencesUtils.putBoolean(mReadPresenter.versionCode.toString() + Constants.READING_SETING_GUIDE_TAG, true)

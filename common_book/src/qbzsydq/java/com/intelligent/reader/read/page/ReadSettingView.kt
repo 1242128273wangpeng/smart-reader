@@ -976,11 +976,16 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             anim!!.start()
             val resizeProgress = progress.times(ReadState.chapterList.size).div(100)
             if (!ReadState.chapterList.isEmpty()
-                    && resizeProgress < ReadState.chapterList.size && resizeProgress >= 0) {
+                    && resizeProgress <= ReadState.chapterList.size && resizeProgress >= 0) {
                 readStatus!!.novel_progress = resizeProgress
                 changeBottomSettingView(SETTING_OPTION)
-                novel_hint_chapter.text = ReadState.chapterList[resizeProgress].chapter_name
-                novel_hint_sequence.text = resizeProgress.plus(1).toString() + "/" + ReadState.chapterList.size
+                if (resizeProgress == 0) {
+                    novel_hint_chapter.text = ReadState.chapterList[resizeProgress].chapter_name
+                    novel_hint_sequence.text = resizeProgress.plus(1).toString() + "/" + ReadState.chapterList.size
+                }else{
+                    novel_hint_chapter.text = ReadState.chapterList[resizeProgress-1].chapter_name
+                    novel_hint_sequence.text = resizeProgress.toString() + "/" + ReadState.chapterList.size
+                }
             }
 
         } else if (fromUser && seekBar.id == R.id.read_setting_brightness_progress) {
