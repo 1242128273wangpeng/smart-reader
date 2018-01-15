@@ -414,8 +414,7 @@ public class Page {
         // In single page mode, the back texture is same with the first texture
         if (mTexIDs[BACK_TEXTURE_ID] == INVALID_TEXTURE_ID) {
             return mTexIDs[FIRST_TEXTURE_ID];
-        }
-        else {
+        } else {
             return mTexIDs[BACK_TEXTURE_ID];
         }
     }
@@ -429,14 +428,14 @@ public class Page {
      */
     boolean contains(float x, float y) {
         return left < right && bottom < top &&
-               left <= x && x < right &&
-               bottom <= y && y < top;
+                left <= x && x < right &&
+                bottom <= y && y < top;
     }
 
     /**
      * Is given x coordinate in specified page range?
      *
-     * @param x x coordinate
+     * @param x     x coordinate
      * @param ratio range ratio based on page width, start from OriginP.x
      * @return True if x is in specified range
      */
@@ -462,8 +461,7 @@ public class Page {
         mApexOrderIndex = 0;
         if (originP.x < right && originP.y < 0) {
             mApexOrderIndex = 3;
-        }
-        else {
+        } else {
             if (originP.y > 0) {
                 mApexOrderIndex++;
             }
@@ -477,15 +475,14 @@ public class Page {
      * Set original point and diagonal point
      *
      * @param hasSecondPage has the second page in double pages mode?
-     * @param dy relative finger movement on Y axis
+     * @param dy            relative finger movement on Y axis
      * @return self
      */
     Page setOriginAndDiagonalPoints(boolean hasSecondPage, float dy) {
         if (hasSecondPage && left < 0) {
             originP.x = left;
             diagonalP.x = right;
-        }
-        else {
+        } else {
             originP.x = right;
             diagonalP.x = left;
         }
@@ -493,8 +490,7 @@ public class Page {
         if (dy > 0) {
             originP.y = bottom;
             diagonalP.y = top;
-        }
-        else {
+        } else {
             originP.y = top;
             diagonalP.y = bottom;
         }
@@ -555,22 +551,16 @@ public class Page {
         mTexIDs[BACK_TEXTURE_ID] = INVALID_TEXTURE_ID;
     }
 
-    /**
-     * Delete all textures
-     */
-    public void invalidAllTextures() {
+    public void deleteFirstTexture(){
         if (mTexIDs[FIRST_TEXTURE_ID] > INVALID_TEXTURE_ID) {
             mUnusedTexIDs[mUnusedTexSize++] = mTexIDs[FIRST_TEXTURE_ID];
         }
+    }
+
+    public void deleteSecondTexture(){
         if (mTexIDs[SECOND_TEXTURE_ID] > INVALID_TEXTURE_ID) {
             mUnusedTexIDs[mUnusedTexSize++] = mTexIDs[SECOND_TEXTURE_ID];
         }
-        if (mTexIDs[BACK_TEXTURE_ID] > INVALID_TEXTURE_ID) {
-            mUnusedTexIDs[mUnusedTexSize++] = mTexIDs[BACK_TEXTURE_ID];
-        }
-        mTexIDs[FIRST_TEXTURE_ID] = INVALID_TEXTURE_ID;
-        mTexIDs[SECOND_TEXTURE_ID] = INVALID_TEXTURE_ID;
-        mTexIDs[BACK_TEXTURE_ID] = INVALID_TEXTURE_ID;
     }
 
     /**
@@ -579,7 +569,7 @@ public class Page {
      * @param b Bitmap object for creating texture
      */
     public void setFirstTexture(Bitmap b) {
-        if(b == null)
+        if (b == null)
             return;
 
         if (mTexIDs[FIRST_TEXTURE_ID] > INVALID_TEXTURE_ID) {
@@ -607,7 +597,7 @@ public class Page {
      * @param b Bitmap object for creating texture
      */
     public void setSecondTexture(Bitmap b) {
-        if(b == null)
+        if (b == null)
             return;
         if (mTexIDs[SECOND_TEXTURE_ID] > INVALID_TEXTURE_ID) {
             mUnusedTexIDs[mUnusedTexSize++] = mTexIDs[SECOND_TEXTURE_ID];
@@ -641,8 +631,7 @@ public class Page {
                 mUnusedTexIDs[mUnusedTexSize++] = mTexIDs[BACK_TEXTURE_ID];
             }
             mTexIDs[BACK_TEXTURE_ID] = INVALID_TEXTURE_ID;
-        }
-        else {
+        } else {
             // compute mask color
             int color = PageFlipUtils.computeAverageColor(b, 50);
             maskColor[BACK_TEXTURE_ID][0] = Color.red(color) / 255.0f;
@@ -660,27 +649,27 @@ public class Page {
     /**
      * Draw front page when page is flipping
      *
-     * @param program GL shader program
+     * @param program  GL shader program
      * @param vertexes Vertexes of the curled front page
      */
     public void drawFrontPage(VertexProgram program,
                               Vertexes vertexes) {
         // 1. draw unfold part and curled part with the first texture
         glUniformMatrix4fv(program.mMVPMatrixLoc, 1, false,
-                           VertexProgram.MVPMatrix, 0);
+                VertexProgram.MVPMatrix, 0);
         glBindTexture(GL_TEXTURE_2D, mTexIDs[FIRST_TEXTURE_ID]);
         glUniform1i(program.mTextureLoc, 0);
         vertexes.drawWith(GL_TRIANGLE_STRIP,
-                          program.mVertexPosLoc,
-                          program.mTexCoordLoc,
-                          0, mFrontVertexSize);
+                program.mVertexPosLoc,
+                program.mTexCoordLoc,
+                0, mFrontVertexSize);
 
         // 2. draw the second texture
         glBindTexture(GL_TEXTURE_2D, mTexIDs[SECOND_TEXTURE_ID]);
         glUniform1i(program.mTextureLoc, 0);
         glDrawArrays(GL_TRIANGLE_STRIP,
-                     mFrontVertexSize,
-                     vertexes.mVertexesSize - mFrontVertexSize);
+                mFrontVertexSize,
+                vertexes.mVertexesSize - mFrontVertexSize);
     }
 
     /**
@@ -692,8 +681,7 @@ public class Page {
     public void drawFullPage(VertexProgram program, boolean isFirst) {
         if (isFirst) {
             drawFullPage(program, mTexIDs[FIRST_TEXTURE_ID]);
-        }
-        else {
+        } else {
             drawFullPage(program, mTexIDs[SECOND_TEXTURE_ID]);
         }
     }
@@ -702,20 +690,18 @@ public class Page {
      * Draw full page with given texture id
      */
     private void drawFullPage(VertexProgram program, int textureID) {
-        if(textureID > INVALID_TEXTURE_ID) {
-            glBindTexture(GL_TEXTURE_2D, textureID);
-            glUniform1i(program.mTextureLoc, 0);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glUniform1i(program.mTextureLoc, 0);
 
-            glVertexAttribPointer(program.mVertexPosLoc, 3, GL_FLOAT, false, 0,
-                    mFullPageVexBuf);
-            glEnableVertexAttribArray(program.mVertexPosLoc);
+        glVertexAttribPointer(program.mVertexPosLoc, 3, GL_FLOAT, false, 0,
+                mFullPageVexBuf);
+        glEnableVertexAttribArray(program.mVertexPosLoc);
 
-            glVertexAttribPointer(program.mTexCoordLoc, 2, GL_FLOAT, false, 0,
-                    mFullPageTexCoordsBuf);
-            glEnableVertexAttribArray(program.mTexCoordLoc);
+        glVertexAttribPointer(program.mTexCoordLoc, 2, GL_FLOAT, false, 0,
+                mFullPageTexCoordsBuf);
+        glEnableVertexAttribArray(program.mTexCoordLoc);
 
-            glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-        }
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     }
 
     /**
@@ -724,12 +710,12 @@ public class Page {
     private void createVertexesBuffer() {
         // 4 vertexes for full page
         mFullPageVexBuf = ByteBuffer.allocateDirect(48)
-                                    .order(ByteOrder.nativeOrder())
-                                    .asFloatBuffer();
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
 
         mFullPageTexCoordsBuf = ByteBuffer.allocateDirect(32)
-                                          .order(ByteOrder.nativeOrder())
-                                          .asFloatBuffer();
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
 
         mApexes = new float[12];
         mApexTexCoords = new float[8];
@@ -751,18 +737,18 @@ public class Page {
      * There is only one case to draw when page is flipping vertically
      * </p>
      * <ul>
-     *      <li>Page is flipping from right -> left</li>
-     *      <li>Origin point: 3</li>
-     *      <li>Diagonal point: 1</li>
-     *      <li>xFoldP1.y: fY, xFoldP2.x: fX</li>
-     *      <li>Drawing front part with the first texture(GL_TRIANGLE_STRIP):
-     *      fX -> fY -> 4 -> 1</li>
-     *      <li>Drawing back part with the second texture(GL_TRIANGLE_STRIP):
-     *      3 -> 2 -> fX -> fY</li>
+     * <li>Page is flipping from right -> left</li>
+     * <li>Origin point: 3</li>
+     * <li>Diagonal point: 1</li>
+     * <li>xFoldP1.y: fY, xFoldP2.x: fX</li>
+     * <li>Drawing front part with the first texture(GL_TRIANGLE_STRIP):
+     * fX -> fY -> 4 -> 1</li>
+     * <li>Drawing back part with the second texture(GL_TRIANGLE_STRIP):
+     * 3 -> 2 -> fX -> fY</li>
      * </ul>
      *
      * @param frontVertexes vertexes for drawing font part of page
-     * @param xFoldP1 fold point on X axis
+     * @param xFoldP1       fold point on X axis
      */
     public void buildVertexesOfPageWhenVertical(Vertexes frontVertexes,
                                                 PointF xFoldP1) {
@@ -796,7 +782,7 @@ public class Page {
             int m = k * 3;
             int n = k << 1;
             frontVertexes.addVertex(mApexes[m], mApexes[m + 1], 0,
-                                    mApexTexCoords[n], mApexTexCoords[n + 1]);
+                    mApexTexCoords[n], mApexTexCoords[n + 1]);
         }
 
         // the vertex size for drawing front of fold page and first texture
@@ -815,7 +801,7 @@ public class Page {
             int m = k * 3;
             int n = k << 1;
             frontVertexes.addVertex(mApexes[m], mApexes[m + 1], -1,
-                                    mApexTexCoords[n], mApexTexCoords[n + 1]);
+                    mApexTexCoords[n], mApexTexCoords[n + 1]);
         }
     }
 
@@ -825,9 +811,9 @@ public class Page {
      * details</p>
      *
      * @param frontVertexes vertexes for drawing front part of page
-     * @param xFoldP1 fold point on X axis
-     * @param yFoldP1 fold point on Y axis
-     * @param kValue tan value of page curling angle
+     * @param xFoldP1       fold point on X axis
+     * @param yFoldP1       fold point on Y axis
+     * @param kValue        tan value of page curling angle
      */
     public void buildVertexesOfPageWhenSlope(Vertexes frontVertexes,
                                              PointF xFoldP1,
@@ -847,13 +833,12 @@ public class Page {
 
         // compute yFoldY point
         mYFoldP.set(originP.x, yFoldP1.y, 0, originP.texX, textureY(yFoldP1.y));
-        if (Math.abs(yFoldP1.y) > halfH)  {
+        if (Math.abs(yFoldP1.y) > halfH) {
             index++;
             mYFoldP.x = originP.x + kValue * (yFoldP1.y - diagonalP.y);
             if (isXOutsidePage(mYFoldP.x)) {
                 index++;
-            }
-            else {
+            } else {
                 mYFoldP.y = diagonalP.y;
                 mYFoldP.texX = textureX(mYFoldP.x);
                 mYFoldP.texY = diagonalP.texY;
@@ -877,7 +862,7 @@ public class Page {
             int m = k * 3;
             int n = k << 1;
             frontVertexes.addVertex(mApexes[m], mApexes[m + 1], 0,
-                                    mApexTexCoords[n], mApexTexCoords[n + 1]);
+                    mApexTexCoords[n], mApexTexCoords[n + 1]);
         }
 
         // the vertex size for drawing front of fold page and first texture
@@ -896,7 +881,7 @@ public class Page {
             int m = k * 3;
             int n = k << 1;
             frontVertexes.addVertex(mApexes[m], mApexes[m + 1], -1,
-                                    mApexTexCoords[n], mApexTexCoords[n + 1]);
+                    mApexTexCoords[n], mApexTexCoords[n + 1]);
         }
     }
 
@@ -914,11 +899,11 @@ public class Page {
      *     4              1
      * </pre>
      * <ul>
-     *      <li>Page is flipping from right -> left</li>
-     *      <li>Origin point: 3</li>
-     *      <li>Diagonal point: 1</li>
-     *      <li>xFoldP1.y: fY, xFoldP2.x: fX</li>
-     *      <li>Drawing order: 3 -> 2 -> 4 -> 1</li>
+     * <li>Page is flipping from right -> left</li>
+     * <li>Origin point: 3</li>
+     * <li>Diagonal point: 1</li>
+     * <li>xFoldP1.y: fY, xFoldP2.x: fX</li>
+     * <li>Drawing order: 3 -> 2 -> 4 -> 1</li>
      * </ul>
      */
     private void buildVertexesOfFullPage() {

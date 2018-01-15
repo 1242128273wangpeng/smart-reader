@@ -1037,11 +1037,12 @@ public class ViewPager extends ViewGroup {
         int duration;
         velocity = Math.abs(velocity);
         if (velocity > 0) {
-            duration = 4 * Math.round(1000 * Math.abs(distance / velocity));
+            duration = 6 * Math.round(1000 * Math.abs(distance / velocity));
         } else {
-            final float pageWidth = width * mAdapter.getPageWidth(mCurItem);
-            final float pageDelta = (float) Math.abs(dx) / (pageWidth + mPageMargin);
-            duration = (int) ((pageDelta + 1) * 100);
+//            final float pageWidth = width * mAdapter.getPageWidth(mCurItem);
+//            final float pageDelta = (float) Math.abs(dx) / (pageWidth + mPageMargin);
+//            duration = (int) ((pageDelta + 1) * 100);
+            duration = MAX_SETTLE_DURATION;
         }
         duration = Math.min(duration, MAX_SETTLE_DURATION);
 

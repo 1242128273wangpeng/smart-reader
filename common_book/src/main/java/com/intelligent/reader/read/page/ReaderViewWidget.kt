@@ -116,10 +116,6 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
     }
 
     private var mPageFlipStateListener = object : SinglePageRender.PageFlipStateListener {
-        override fun gone() {
-            AppLog.e(ReaderViewWidget.tag, "gone")
-//            if (mTextureView!!.isFangzhen) mTextureView!!.visibility = View.INVISIBLE
-        }
 
         private fun invisibelSurface(){
             //等待ViewPager切换完页面再隐藏
@@ -128,10 +124,6 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
                 if (curView.mNovelPageBean!!.isAd) {
                     if(mTextureView!!.visibility == View.VISIBLE && mTextureView!!.surfaceAviable) {
                         mTextureView!!.visibility = View.INVISIBLE
-                    }
-                }else {
-                    if(mTextureView!!.visibility == View.INVISIBLE && mTextureView!!.surfaceAviable) {
-                        mTextureView!!.visibility = View.VISIBLE
                     }
                 }
             }
@@ -164,7 +156,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
         if (mTextureView == null) {
             mTextureView = PageFlipView(context)
 
-            mTextureView!!.visibility = View.INVISIBLE
+//            mTextureView!!.visibility = View.INVISIBLE
         }
         //加载Bitmap数据监听
         (mTextureView?.getmPageRender() as SinglePageRender).setListener(mLoadBitmaplistener)

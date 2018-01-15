@@ -114,7 +114,8 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
         setPreserveEGLContextOnPause(true);
         setEGLConfigChooser(8, 8, 8, 0, 16, 0);
         setEGLWindowSurfaceFactory(new DefaultWindowSurfaceFactory());
-        setZOrderOnTop(true);
+//        setZOrderOnTop(true);
+        setZOrderMediaOverlay(true);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);//设置透明
         // configure render
         setRenderer(this);
@@ -395,8 +396,9 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
 
                         if (mPageRender != null &&
                                 mPageRender.onEndedDrawing(msg.arg1)) {
-                            requestRender();
+
                         }
+                        requestRender();
                         break;
                     case PageRender.MSG_ENDED_FLIP_DOWN:
                         //翻下页

@@ -718,7 +718,8 @@ public class PageFlip {
         // in moving, compute the TouchXY
         if (mFlipState == PageFlipState.FORWARD_FLIP ||
                 mFlipState == PageFlipState.BACKWARD_FLIP ||
-                mFlipState == PageFlipState.RESTORE_FLIP) {
+                mFlipState == PageFlipState.BACKWARD_RESTORE_FLIP ||
+                mFlipState == PageFlipState.FORWARD_RESTORE_FLIP) {
 
             // check if page is flipping vertically
             mIsVertical = Math.abs(dy) <= 1f;
@@ -810,7 +811,7 @@ public class PageFlip {
             // can't going forward, restore current page
             if (page.isXInRange(touchX, WIDTH_RATIO_OF_RESTORE_FLIP)) {
                 end.x = (int) originP.x;
-                mFlipState = PageFlipState.RESTORE_FLIP;
+                mFlipState = PageFlipState.FORWARD_RESTORE_FLIP;
             } else if (hasSecondPage && originP.x < 0) {
                 end.x = (int) (diagonalP.x + page.width);
             } else {
@@ -822,7 +823,7 @@ public class PageFlip {
         else if (mFlipState == PageFlipState.BACKWARD_FLIP) {
             // if not over middle x, change from backward to forward to restore
             if (!page.isXInRange(touchX, 1 - WIDTH_RATIO_OF_RESTORE_FLIP)) {
-                mFlipState = PageFlipState.RESTORE_FLIP;
+                mFlipState = PageFlipState.BACKWARD_RESTORE_FLIP;
                 end.set((int) (diagonalP.x - page.width), (int) originP.y);
             } else {
                 mMaxT2OAngleTan = (mTouchP.y - originP.y) /
@@ -858,7 +859,8 @@ public class PageFlip {
         // start scroller for animating
         if (mFlipState == PageFlipState.FORWARD_FLIP ||
                 mFlipState == PageFlipState.BACKWARD_FLIP ||
-                mFlipState == PageFlipState.RESTORE_FLIP) {
+                mFlipState == PageFlipState.FORWARD_RESTORE_FLIP ||
+                mFlipState == PageFlipState.BACKWARD_RESTORE_FLIP) {
             int dur = duration * Math.abs(end.x - start.x) / getSurfaceWidth();
             mScroller.startScroll(start.x, start.y,
                     end.x - start.x, end.y - start.y,
@@ -967,7 +969,7 @@ public class PageFlip {
             // for backward and restore flip, compute x to check if it can
             // continue to flip
             if (mFlipState == PageFlipState.BACKWARD_FLIP ||
-                    mFlipState == PageFlipState.RESTORE_FLIP) {
+                    mFlipState == PageFlipState.FORWARD_RESTORE_FLIP || mFlipState == PageFlipState.BACKWARD_RESTORE_FLIP) {
                 mTouchP.y = (mTouchP.x - originP.x) * mKValue + originP.y;
                 isAnimating = Math.abs(mTouchP.x - originP.x) > 10;
             }
@@ -1061,8 +1063,10 @@ public class PageFlip {
             mFlipState = PageFlipState.END_WITH_FORWARD;
         } else if (mFlipState == PageFlipState.BACKWARD_FLIP) {
             mFlipState = PageFlipState.END_WITH_BACKWARD;
-        } else if (mFlipState == PageFlipState.RESTORE_FLIP) {
-            mFlipState = PageFlipState.END_WITH_RESTORE;
+        } else if (mFlipState == PageFlipState.FORWARD_RESTORE_FLIP) {
+            mFlipState = PageFlipState.END_WITH_RESTORE_FORWARD;
+        } else if (mFlipState == PageFlipState.BACKWARD_RESTORE_FLIP) {
+            mFlipState = PageFlipState.END_WITH_RESTORE_BACKWARD;
         }
     }
 
@@ -1074,7 +1078,8 @@ public class PageFlip {
     public boolean isStartedFlip() {
         return mFlipState == PageFlipState.BACKWARD_FLIP ||
                 mFlipState == PageFlipState.FORWARD_FLIP ||
-                mFlipState == PageFlipState.RESTORE_FLIP;
+                mFlipState == PageFlipState.FORWARD_RESTORE_FLIP ||
+                mFlipState == PageFlipState.BACKWARD_RESTORE_FLIP;
     }
 
     /**
@@ -1084,7 +1089,8 @@ public class PageFlip {
      */
     public boolean isEndedFlip() {
         return mFlipState == PageFlipState.END_FLIP ||
-                mFlipState == PageFlipState.END_WITH_RESTORE ||
+                mFlipState == PageFlipState.END_WITH_RESTORE_FORWARD ||
+                mFlipState == PageFlipState.END_WITH_RESTORE_BACKWARD ||
                 mFlipState == PageFlipState.END_WITH_BACKWARD ||
                 mFlipState == PageFlipState.END_WITH_FORWARD;
     }

@@ -54,8 +54,6 @@ public class SinglePageRender extends PageRender {
         void forward();
 
         void restore();
-
-        void gone();
     }
 
     private LoadBitmapListener listener;
@@ -187,9 +185,9 @@ public class SinglePageRender extends PageRender {
 //        }else{
 //            page.setSecondTextureWithFirst();
 //        }
-        mPageFlip.getFirstPage().deleteAllTextures();
-        mPageFlip.deleteUnusedTextures();
-        setPageMessage();
+//        mPageFlip.getFirstPage().deleteAllTextures();
+//        mPageFlip.deleteUnusedTextures();
+//        setPageMessage();
     }
 
     @Override
@@ -274,7 +272,12 @@ public class SinglePageRender extends PageRender {
                     if (mPageFlipStateListener != null) {
                         mPageFlipStateListener.forward();
                     }
-                } else if (state == PageFlipState.END_WITH_RESTORE) {
+                } else if (state == PageFlipState.END_WITH_RESTORE_FORWARD) {
+                    if (mPageFlipStateListener != null) {
+                        mPageFlipStateListener.restore();
+                    }
+                }else if(state == PageFlipState.END_WITH_RESTORE_BACKWARD){
+                    mPageFlip.getFirstPage().setFirstTextureWithSecond();
                     if (mPageFlipStateListener != null) {
                         mPageFlipStateListener.restore();
                     }
@@ -283,8 +286,6 @@ public class SinglePageRender extends PageRender {
                 mDrawCommand = DRAW_FULL_PAGE;
                 return false;
             }
-        } else if (what == DRAW_FULL_PAGE) {
-            mPageFlipStateListener.gone();
         }
         return false;
     }
