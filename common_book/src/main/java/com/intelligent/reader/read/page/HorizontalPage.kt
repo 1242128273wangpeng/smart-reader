@@ -27,6 +27,7 @@ import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
+import java.util.*
 import kotlin.properties.Delegates
 
 
@@ -46,7 +47,7 @@ import kotlin.properties.Delegates
  *
  * Created by wt on 2017/12/14.
  */
-class HorizontalPage : FrameLayout {
+class HorizontalPage : FrameLayout,Observer {
 
     private var mDrawTextHelper: DrawTextHelper? = null
     private lateinit var loadView: View
@@ -57,8 +58,6 @@ class HorizontalPage : FrameLayout {
     private lateinit var homePage: View
 
     var mCursorOffset = 0
-    var percent = 0.0f
-    var time = ""
     var mCursor: ReadCursor? = null
     var viewState: ReadViewEnums.ViewState = ReadViewEnums.ViewState.loading
     var viewNotify: ReadViewEnums.NotifyStateState = ReadViewEnums.NotifyStateState.none
@@ -75,8 +74,6 @@ class HorizontalPage : FrameLayout {
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, noticePageListener: NoticePageListener) : super(context, attrs, defStyleAttr) {
         this.noticePageListener = noticePageListener
-        time = this.noticePageListener!!.getCurTime()
-        percent = this.noticePageListener!!.getCurPercent()
         isDrawingCacheEnabled = true
         drawingCacheQuality = View.DRAWING_CACHE_QUALITY_LOW
         isChildrenDrawnWithCacheEnabled = true
@@ -109,22 +106,15 @@ class HorizontalPage : FrameLayout {
             noticePageListener?.loadTransCoding()
         }
         //设置TextColor
-        var colorInt = com.intelligent.reader.R.color.reading_operation_text_color_first
-        when {
-            Constants.MODE == 51 -> // night1
-                colorInt = com.intelligent.reader.R.color.reading_operation_text_color_first
-            Constants.MODE == 52 -> // day
-                colorInt = com.intelligent.reader.R.color.reading_operation_text_color_second
-            Constants.MODE == 53 -> // eye
-                colorInt = com.intelligent.reader.R.color.reading_operation_text_color_third
-            Constants.MODE == 54 -> // powersave
-                colorInt = com.intelligent.reader.R.color.reading_operation_text_color_fourth
-            Constants.MODE == 55 -> // color -4
-                colorInt = com.intelligent.reader.R.color.reading_operation_text_color_fifth
-            Constants.MODE == 56 -> // color -5
-                colorInt = com.intelligent.reader.R.color.reading_operation_text_color_sixth
-            Constants.MODE == 61 -> // night2
-                colorInt = com.intelligent.reader.R.color.reading_operation_text_color_night
+        var colorInt =  when(ReadConfig.MODE) {
+            51 -> net.lzbook.kit.R.color.reading_operation_text_color_first
+            52 -> net.lzbook.kit.R.color.reading_text_color_second
+            53 -> net.lzbook.kit.R.color.reading_text_color_third
+            54 -> net.lzbook.kit.R.color.reading_text_color_fourth
+            55 -> net.lzbook.kit.R.color.reading_text_color_fifth
+            56 -> net.lzbook.kit.R.color.reading_text_color_sixth
+            61 -> net.lzbook.kit.R.color.reading_text_color_night
+            else -> net.lzbook.kit.R.color.reading_operation_text_color_first
         }
         novel_time.setTextColor(resources.getColor(colorInt))
         origin_tv.setTextColor(resources.getColor(colorInt))
@@ -133,8 +123,6 @@ class HorizontalPage : FrameLayout {
         novel_chapter.setTextColor(resources.getColor(colorInt))
         novel_title.setTextColor(resources.getColor(colorInt))
         setBackGroud()
-        setTimes(time)
-        setBattery(percent)
     }
 
     /**
@@ -157,18 +145,6 @@ class HorizontalPage : FrameLayout {
         ThemeUtil.getModePrimaryBackground(resources, homePage)
     }
 
-    fun setTimes(time: String) {
-        this.time = time
-        //时间
-        novel_time.text = time
-    }
-
-    fun setBattery(percent: Float) {
-        this.percent = percent
-        //电池
-        novel_content_battery_view.setBattery(this.percent)
-    }
-
     fun setCursor(cursor: ReadCursor) = pageView.setCursor(cursor)
 
     interface NoticePageListener {
@@ -178,8 +154,6 @@ class HorizontalPage : FrameLayout {
         fun onClickMenu(isShow: Boolean)
         fun loadOrigin()
         fun loadTransCoding()
-        fun getCurPercent(): Float
-        fun getCurTime(): String
         fun currentViewSuccess()
     }
 
@@ -464,7 +438,30 @@ class HorizontalPage : FrameLayout {
         }
     }
 
-
-
     fun onReSeparate() = DataProvider.getInstance().onReSeparate()
+
+    fun onRedrawPage(){
+        if (tag == ReadViewEnums.PageIndex.current) {
+            onReSeparate()
+            viewNotify = ReadViewEnums.NotifyStateState.all
+            onReSeparate()
+            setCursor(mCursor!!)
+        }
+    }
+    /**
+     * 被观察者变化了
+     */
+    override fun update(o: Observable, arg: Any) {
+        when (arg as String){
+            "READ_INTERLINEAR_SPACE"->{
+                onRedrawPage()
+            }
+            "FONT_SIZE"->{
+                onRedrawPage()
+            }
+            "MODE"->{
+                setBackGroud()
+            }
+        }
+    }
 }

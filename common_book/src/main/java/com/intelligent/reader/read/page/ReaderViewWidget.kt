@@ -210,48 +210,16 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
     }
 
     /**
-     * 设置时间
-     * @param time 时间
-     */
-    override fun freshTime(time: CharSequence?) = mReaderView?.freshTime(time) ?: Unit
-
-
-    /**
-     * 设置电池
-     * @param percent 电量
-     */
-    override fun freshBattery(percent: Float) = mReaderView?.freshBattery(percent) ?: Unit
-
-    /**
      * 设置背景颜色
      */
     override fun setBackground() = mReaderView?.setBackground() ?: Unit
 
 
     /**
-     * 设置阅读信息
-     * @param mReadInfo 新阅读信息
-     */
-    override fun setReadInfo(mReadInfo: ReadInfo) = mReaderView?.setReadInfo(mReadInfo) ?: Unit
-
-    /**
      * 设置 IReadView 实现 View 的变化监听
      * @param mReadPageChange 监听对象
      */
     override fun setIReadPageChange(mReadPageChange: IReadPageChange?) = mReaderView?.setIReadPageChange(mReadPageChange) ?: Unit
-
-    /**
-     * 返回章节
-     * @param chapter 监听对象
-     */
-    override fun setLoadChapter(msg: Int, chapter: Chapter, chapterList: ArrayList<ArrayList<NovelLineBean>>?) =
-            mReaderView?.setLoadChapter(msg, chapter, chapterList) ?: Unit
-
-    /**
-     * 返回广告
-     * @param view 广告view
-     */
-    override fun setLoadAd(view: View?) = mReaderView?.setLoadAd(view) ?: Unit
 
     /**
      * 重画item页面
@@ -276,18 +244,6 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
 
         mReaderView?.onAnimationChange(ReadConfig.animation)
-    }
-
-    override fun onResume() {
-//        if(animaEnums == ReadViewEnums.Animation.curl) {
-//            mTextureView?.visibility = View.VISIBLE
-//        }
-    }
-
-    override fun onPause() {
-//        if(animaEnums == ReadViewEnums.Animation.curl) {
-//            mTextureView?.visibility = View.GONE
-//        }
     }
 
     private var isDownActioned = false

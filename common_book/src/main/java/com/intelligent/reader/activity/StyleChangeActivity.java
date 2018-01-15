@@ -5,6 +5,7 @@ import com.intelligent.reader.R;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.bean.ReadConfig;
 import net.lzbook.kit.utils.StatServiceUtils;
 
 import android.content.Intent;
@@ -104,14 +105,14 @@ public class StyleChangeActivity extends BaseCacheableActivity implements RadioG
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             SharedPreferences.Editor edit = sharedPreferences.edit();
             if (ThemeMode.NIGHT.equals(currentThemeMode)) {
-                edit.putInt("current_night_mode", Constants.MODE);
+                edit.putInt("current_night_mode", ReadConfig.INSTANCE.getMODE());
             }
             if (mThemeHelper.isNight()) {
-                Constants.MODE = sharedPreferences.getInt("current_night_mode", 61);
+                ReadConfig.INSTANCE.setMODE(sharedPreferences.getInt("current_night_mode", 61));
             } else {
-                Constants.MODE = sharedPreferences.getInt("current_light_mode", 51);
+                ReadConfig.INSTANCE.setMODE(sharedPreferences.getInt("current_light_mode", 51));
             }
-            edit.putInt("content_mode", Constants.MODE);
+            edit.putInt("content_mode", ReadConfig.INSTANCE.getMODE());
             edit.apply();
             //通过Intent传递是否切换了主题的信息给设置页面
             Intent intent = new Intent(StyleChangeActivity.this, SettingActivity.class);

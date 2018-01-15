@@ -14,6 +14,7 @@ import net.lzbook.kit.book.view.SwitchButton;
 import net.lzbook.kit.cache.DataCleanManager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.BookTask;
+import net.lzbook.kit.data.bean.ReadConfig;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.user.bean.LoginResp;
 import net.lzbook.kit.utils.AppUtils;
@@ -647,16 +648,16 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         SharedPreferences.Editor edit = sharedPreferences.edit();
         if (isChecked) {
             tv_night_shift.setText(R.string.mode_day);
-            edit.putInt("current_light_mode", Constants.MODE);
-            Constants.MODE = 61;
+            edit.putInt("current_light_mode", ReadConfig.INSTANCE.getMODE());
+            ReadConfig.INSTANCE.setMODE(61);
             mThemeHelper.setMode(ThemeMode.NIGHT);
         } else {
             tv_night_shift.setText(R.string.mode_night);
-            edit.putInt("current_night_mode", Constants.MODE);
-            Constants.MODE = sharedPreferences.getInt("current_light_mode", 51);
+            edit.putInt("current_night_mode",ReadConfig.INSTANCE.getMODE());
+            ReadConfig.INSTANCE.setMODE(sharedPreferences.getInt("current_light_mode", 51));
             mThemeHelper.setMode(ThemeMode.THEME1);
         }
-        edit.putInt("content_mode", Constants.MODE);
+        edit.putInt("content_mode", ReadConfig.INSTANCE.getMODE());
         edit.apply();
         nightShift(isChecked, true);
     }

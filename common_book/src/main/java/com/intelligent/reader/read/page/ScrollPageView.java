@@ -12,6 +12,7 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.NovelLineBean;
+import net.lzbook.kit.data.bean.ReadConfig;
 import net.lzbook.kit.data.bean.ReadStatus;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
@@ -674,7 +675,7 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
 
     @Override
     public void freshBattery(float percent) {
-        novel_content_battery_view.setBattery(percent);
+//        novel_content_battery_view.setBattery(percent);
     }
 
     @Override
@@ -791,22 +792,22 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
     }
 
     private void drawBackground() {
-        if (Constants.MODE == 51) {// 牛皮纸
+        if (ReadConfig.INSTANCE.getMODE() == 51) {// 牛皮纸
             setBackgroundResource(R.drawable.read_page_bg_default);
         } else {
             // 通过新的画布，将矩形画新的bitmap上去
             int color_int = R.color.reading_backdrop_first;
-            if (Constants.MODE == 52) {// day
+            if (ReadConfig.INSTANCE.getMODE() == 52) {// day
                 color_int = R.color.reading_backdrop_second;
-            } else if (Constants.MODE == 53) {// eye
+            } else if (ReadConfig.INSTANCE.getMODE() == 53) {// eye
                 color_int = R.color.reading_backdrop_third;
-            } else if (Constants.MODE == 54) {// powersave
+            } else if (ReadConfig.INSTANCE.getMODE() == 54) {// powersave
                 color_int = R.color.reading_backdrop_fourth;
-            } else if (Constants.MODE == 55) {// color -4
+            } else if (ReadConfig.INSTANCE.getMODE() == 55) {// color -4
                 color_int = R.color.reading_backdrop_fifth;
-            } else if (Constants.MODE == 56) {// color -5
+            } else if (ReadConfig.INSTANCE.getMODE() == 56) {// color -5
                 color_int = R.color.reading_backdrop_sixth;
-            } else if (Constants.MODE == 61) {//night3
+            } else if (ReadConfig.INSTANCE.getMODE() == 61) {//night3
                 color_int = R.color.reading_backdrop_night;
             }
             setBackgroundColor(getResources().getColor(color_int));
@@ -815,19 +816,19 @@ public class ScrollPageView extends LinearLayout implements PageInterface, View.
 
     private void drawHeadFootText() {
         int color_int = R.color.reading_operation_text_color_first;
-        if (Constants.MODE == 51) {// night1
+        if (ReadConfig.INSTANCE.getMODE() == 51) {// night1
             color_int = R.color.reading_operation_text_color_first;
-        } else if (Constants.MODE == 52) {// day
+        } else if (ReadConfig.INSTANCE.getMODE() == 52) {// day
             color_int = R.color.reading_operation_text_color_second;
-        } else if (Constants.MODE == 53) {// eye
+        } else if (ReadConfig.INSTANCE.getMODE() == 53) {// eye
             color_int = R.color.reading_operation_text_color_third;
-        } else if (Constants.MODE == 54) {// powersave
+        } else if (ReadConfig.INSTANCE.getMODE() == 54) {// powersave
             color_int = R.color.reading_operation_text_color_fourth;
-        } else if (Constants.MODE == 55) {// color -4
+        } else if (ReadConfig.INSTANCE.getMODE() == 55) {// color -4
             color_int = R.color.reading_operation_text_color_fifth;
-        } else if (Constants.MODE == 56) {// color -5
+        } else if (ReadConfig.INSTANCE.getMODE() == 56) {// color -5
             color_int = R.color.reading_operation_text_color_sixth;
-        } else if (Constants.MODE == 61) {// night2
+        } else if (ReadConfig.INSTANCE.getMODE() == 61) {// night2
             color_int = R.color.reading_operation_text_color_night;
         }
 

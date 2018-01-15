@@ -117,7 +117,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         readerWidget.initReaderViewFactory()
         readerWidget.entrance(ReadInfo(readStatus.book!!, readStatus, ReadConfig.animation))
         readerWidget.setIReadPageChange(this)
-        readSettingView.setNovelMode(Constants.MODE)
+        readSettingView.setNovelMode(ReadConfig.MODE)
 
         initGuide()
     }
@@ -212,9 +212,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
             false -> window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }
         mReadPresenter.onResume()
-//        // 注册一个电量广播类型
-        registerReceiver(mBatInfoReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
-        readerWidget.onResume()
     }
 
     override fun shouldReceiveCacheEvent(): Boolean = false
@@ -223,14 +220,12 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onStart() {
         super.onStart()
-        mReadPresenter.initTime()
         mReadPresenter.onStart()
     }
 
     override fun onPause() {
         super.onPause()
         mReadPresenter.onPause(ReadState.sequence, ReadState.offset)
-        readerWidget.onPause()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -259,8 +254,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         mReadPresenter.onDestroy()
         DataProvider.getInstance().unSubscribe()
         DataProvider.getInstance().relase()
-
-        unregisterReceiver(mBatInfoReceiver)
         super.onDestroy()
     }
 
@@ -429,10 +422,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         auto_menu.visibility = View.GONE
     }
 
-    override fun loadChapterSuccess(what: Int, chapter: Chapter, chapterList: ArrayList<ArrayList<NovelLineBean>>) {
-//        readerWidget.setLoadChapter(what, chapter, chapterList)
-    }
-
     companion object {
         private var readStatus: ReadStatus by Delegates.notNull()
     }
@@ -476,10 +465,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
                 startReadTime.toString(), endTime.toString(), (endTime - startReadTime).toString(), "false", channelCode)
     }
 
-    override fun freshTime(time_text: CharSequence?) {
-        readerWidget.freshTime(time_text)
-    }
-
     override fun setBackground() {
         readerWidget.setBackground()
     }
@@ -491,17 +476,4 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     override fun readOptionHeaderDismiss(){
         option_header.dismissLoadingPage()
     }
-    /**
-     * 接受电量改变广播
-     */
-    private val mBatInfoReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == Intent.ACTION_BATTERY_CHANGED) {
-                val level = intent.getIntExtra("level", 0)
-                val scale = intent.getIntExtra("scale", 100)
-                readerWidget.freshBattery(level.toFloat() / scale.toFloat())
-            }
-        }
-    }
-
 }

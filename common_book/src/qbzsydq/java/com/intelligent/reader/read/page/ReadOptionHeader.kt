@@ -136,8 +136,8 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
         }
 
         // 初始化动画
-        menuDownInAnimation = AnimationUtils.loadAnimation(context.getApplicationContext(), R.anim.menu_push_down_in)
-        menuUpOutAnimation = AnimationUtils.loadAnimation(context.getApplicationContext(), R.anim.menu_push_up_out)
+        menuDownInAnimation = AnimationUtils.loadAnimation(context.applicationContext, R.anim.menu_push_down_in)
+        menuUpOutAnimation = AnimationUtils.loadAnimation(context.applicationContext, R.anim.menu_push_up_out)
 
         this.visibility = View.GONE
     }
@@ -151,24 +151,17 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
     }
 
     override fun updateStatus(readStatus: ReadStatus, mReaderViewModel: ReaderViewModel, bookDaoHelper: BookDaoHelper) {
-        var typeChangeMark = 0
-        if (bookDaoHelper != null && bookDaoHelper.isBookMarkExist(readStatus.book_id, readStatus.sequence,
-                readStatus.offset, readStatus.book.book_type)) {
-            isMarkPage = true
-        } else {
-            isMarkPage = false
-        }
-
+        var typeChangeMark:Int
+        isMarkPage = bookDaoHelper.isBookMarkExist(readStatus.book_id, readStatus.sequence,readStatus.offset, readStatus.book.book_type)
 
         if (novel_bookmark != null && novel_bookmark.visibility == View.VISIBLE) {
-            if (isMarkPage) {
+            typeChangeMark = if (isMarkPage) {
                 /*novel_bookmark.setImageResource(R.drawable.read_bookmarked);*/
-                typeChangeMark = R.mipmap.read_bookmarked
+                R.mipmap.read_bookmarked
             } else {
                 /*novel_bookmark.setImageDrawable(resources.getDrawable(ResourceUtil.getResourceId(this, Constants
-                        .DRAWABLE, "_bookmark_selector")));*/
-                typeChangeMark = R.mipmap.read_bookmark
-
+                            .DRAWABLE, "_bookmark_selector")));*/
+                R.mipmap.read_bookmark
             }
             novel_bookmark.setImageResource(typeChangeMark)
         }
@@ -184,9 +177,9 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
                 novel_source_url.text = "青果阅读"
                 novel_source_url.visibility = View.VISIBLE
             } else {
-                if (mReaderViewModel != null && mReaderViewModel.currentChapter != null && !TextUtils.isEmpty(mReaderViewModel!!.currentChapter!!.curl)) {
+                if (mReaderViewModel.currentChapter != null && !TextUtils.isEmpty(mReaderViewModel.currentChapter!!.curl)) {
                     //if (readStatus.book.dex == 1 && !TextUtils.isEmpty(dataFactory.currentChapter.curl)) {
-                    novel_source_url.text = UrlUtils.buildContentUrl(mReaderViewModel!!.currentChapter!!.curl)
+                    novel_source_url.text = UrlUtils.buildContentUrl(mReaderViewModel.currentChapter!!.curl)
                     novel_source_url.visibility = View.VISIBLE
                     /*} else if (readStatus.book.dex == 0 && !TextUtils.isEmpty(dataFactory.currentChapter.curl1)) {
                         novel_source_url.setText("来源于：" + dataFactory.currentChapter.curl1);

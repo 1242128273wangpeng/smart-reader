@@ -3,10 +3,12 @@ package com.intelligent.reader.read.adapter
 import android.view.View
 import android.view.ViewGroup
 import com.intelligent.reader.read.mode.ReadCursor
+import com.intelligent.reader.read.mode.ReadState
 import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.read.page.HorizontalPage
 import com.intelligent.reader.view.PagerAdapter
 import com.intelligent.reader.view.ViewPager
+import net.lzbook.kit.data.bean.ReadConfig
 
 /**
  * 水平阅读 adapter
@@ -31,9 +33,10 @@ class HorizontalAdapter(private var noticePageListener: HorizontalPage.NoticePag
     override fun isViewFromObject(view: View?, `object`: Any?): Boolean = view == `object`
     override fun getCount(): Int = Int.MAX_VALUE
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any?) {
-        val view = `object` as HorizontalPage
-        view.removeAllViews()
-        container.removeView(view)
+        val itemView = `object` as HorizontalPage
+        itemView.removeAllViews()
+        container.removeView(itemView)
+        ReadConfig.unregistObserver(itemView)
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
@@ -45,6 +48,7 @@ class HorizontalAdapter(private var noticePageListener: HorizontalPage.NoticePag
         }
         addPageTag(container as ViewPager,itemView, position)
         container.addView(itemView)
+        ReadConfig.registObserver(itemView)
         itemView.viewTreeObserver.dispatchOnPreDraw()
         return itemView
     }

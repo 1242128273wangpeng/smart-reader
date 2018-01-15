@@ -325,7 +325,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         if (BaseBookApplication.getDownloadService() == null) {
             BookHelper.reStartDownloadService()
         }
-        changeMode(Constants.MODE)
+        changeMode(ReadConfig.MODE)
     }
 
     /**
@@ -381,7 +381,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         setMode()
         readStatus?.chapterCount = readStatus?.book?.chapter_count
 
-        changeMode(Constants.MODE)
+        changeMode(ReadConfig.MODE)
     }
 
     private fun getSavedState(savedInstanceState: Bundle?) {
@@ -750,9 +750,9 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         modeSp = readReference?.get()?.getSharedPreferences("config", Context.MODE_PRIVATE)
         // 设置字体
         if (sp?.contains("novel_font_size")!!) {
-            Constants.FONT_SIZE = sp?.getInt("novel_font_size", 18) ?: 18
+            ReadConfig.FONT_SIZE = sp?.getInt("novel_font_size", 18) ?: 18
         } else {
-            Constants.FONT_SIZE = 18
+            ReadConfig.FONT_SIZE = 18
         }
 
         //ViewModel
@@ -807,30 +807,6 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     }
 
     /**
-     * 初始化时间显示
-     */
-    public fun initTime() {
-        mTimerStopped = false
-        if (mCalendar == null) {
-            mCalendar = Calendar.getInstance()
-        }
-
-//周期发送
-        time_text = DateFormat.format("k:mm", mCalendar)
-        view?.freshTime(time_text)
-        val now = SystemClock.uptimeMillis()
-        val time = Observable.interval(1, TimeUnit.MINUTES)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    mCalendar?.timeInMillis = System.currentTimeMillis()
-                    time_text = DateFormat.format("k:mm", mCalendar)
-                    view?.freshTime(time_text)
-                })
-        disposable.add(time)
-    }
-
-    /**
      * 刷新页面
      */
     private fun refreshPage() {
@@ -841,7 +817,6 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
      * 预加载
      */
     private fun downloadNovel() {
-
         if (mBookDaoHelper!!.isBookSubed(readStatus!!.book_id)) {
             var num = BookHelper.CHAPTER_CACHE_COUNT
             val max = readStatus!!.chapterCount - 1 - readStatus!!.sequence
@@ -1715,7 +1690,6 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         view?.initShowCacheState()
         // 初始化时间显示
         refreshPage()
-        initTime()
 
         // 刷新页面
         // 刷新内容显示
@@ -1968,23 +1942,23 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 
         if (readReference?.get()?.mThemeHelper!!.isNight()) {
             //夜间模式只有一种背景， 不能存储
-            //            edit.putInt("current_night_mode", Constants.MODE);
-            Constants.MODE = sharedPreferences.getInt("current_light_mode", 51)
+            //            edit.putInt("current_night_mode", ReadConfig.MODE);
+            ReadConfig.MODE = sharedPreferences.getInt("current_light_mode", 51)
             readReference?.get()?.mThemeHelper?.setMode(ThemeMode.THEME1)
             data.put("type", "2")
             StartLogClickUtil.upLoadEventLog(readReference?.get()?.getApplicationContext(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.NIGHTMODE1, data)
         } else {
-            edit.putInt("current_light_mode", Constants.MODE)
-            //            Constants.MODE = sharedPreferences.getInt("current_night_mode", 61);
+            edit.putInt("current_light_mode", ReadConfig.MODE)
+            //            ReadConfig.MODE = sharedPreferences.getInt("current_night_mode", 61);
             //夜间模式只有一种背景
-            Constants.MODE = 61
+            ReadConfig.MODE = 61
             readReference?.get()?.mThemeHelper?.setMode(ThemeMode.NIGHT)
             data.put("type", "1")
             StartLogClickUtil.upLoadEventLog(readReference?.get()?.getApplicationContext(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.NIGHTMODE1, data)
         }
-        edit.putInt("content_mode", Constants.MODE)
+        edit.putInt("content_mode", ReadConfig.MODE)
         edit.apply()
-        changeMode(Constants.MODE)
+        changeMode(ReadConfig.MODE)
         //        Intent intent = new Intent(this, ReadingActivity.class);
         //        Bundle bundle = new Bundle();
         //        bundle.putInt("sequence", readStatus.sequence);
