@@ -6,6 +6,7 @@ import com.intelligent.reader.read.page.PreviewPageView;
 
 import net.lzbook.kit.book.view.SwitchButton;
 import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.bean.ReadConfig;
 import net.lzbook.kit.data.bean.SettingItems;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.ResourceUtil;
@@ -290,28 +291,28 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
             case R.id.reading_spacing_0_2:
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.me_set_click_read_row_1);
                 if (reading_spacing_0_2.isChecked()) {
-                    Constants.READ_INTERLINEAR_SPACE = 0.2f;
+                    ReadConfig.INSTANCE.setREAD_INTERLINEAR_SPACE(0.2f);
                     setInterLinearSpaceMode();
                 }
                 break;
             case R.id.reading_spacing_0_5:
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.me_set_click_read_row_2);
                 if (reading_spacing_0_5.isChecked()) {
-                    Constants.READ_INTERLINEAR_SPACE = 0.5f;
+                    ReadConfig.INSTANCE.setREAD_INTERLINEAR_SPACE(0.5f);
                     setInterLinearSpaceMode();
                 }
                 break;
             case R.id.reading_spacing_1_0:
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.me_set_click_read_row_3);
                 if (reading_spacing_1_0.isChecked()) {
-                    Constants.READ_INTERLINEAR_SPACE = 1.0f;
+                    ReadConfig.INSTANCE.setREAD_INTERLINEAR_SPACE(1.0f);
                     setInterLinearSpaceMode();
                 }
                 break;
             case R.id.reading_spacing_1_5:
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.me_set_click_read_row_4);
                 if (reading_spacing_1_5.isChecked()) {
-                    Constants.READ_INTERLINEAR_SPACE = 1.5f;
+                    ReadConfig.INSTANCE.setREAD_INTERLINEAR_SPACE(1.5f);
                     setInterLinearSpaceMode();
                 }
                 break;
@@ -345,35 +346,35 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
 
         NumberFormat numFormat = NumberFormat.getNumberInstance();
         numFormat.setMaximumFractionDigits(2);
-        Constants.READ_INTERLINEAR_SPACE = sharedPreferences.getInt("read_interlinear_space", 3) * 0.1f;//阅读页行间距
+        ReadConfig.INSTANCE.setREAD_INTERLINEAR_SPACE(sharedPreferences.getInt("read_interlinear_space", 3) * 0.1f);//阅读页行间距
         try {
-            Constants.READ_INTERLINEAR_SPACE = Float.valueOf(numFormat.format(Constants.READ_INTERLINEAR_SPACE));
+            ReadConfig.INSTANCE.setREAD_INTERLINEAR_SPACE(Float.valueOf(numFormat.format(ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE())));
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-        AppLog.d("ReadSettingView", "Constants.READ_INTERLINEAR_SPACE " + Constants.READ_INTERLINEAR_SPACE);
-        Constants.READ_PARAGRAPH_SPACE = sharedPreferences.getInt("read_paragraph_space", 10) * 0.1f;//阅读页段间距
+        AppLog.d("ReadSettingView", "ReadConfig.READ_INTERLINEAR_SPACE " + ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE());
+        ReadConfig.INSTANCE.setREAD_PARAGRAPH_SPACE(sharedPreferences.getInt("read_paragraph_space", 10) * 0.1f);//阅读页段间距
         try {
-            Constants.READ_PARAGRAPH_SPACE = Float.valueOf(numFormat.format(Constants.READ_PARAGRAPH_SPACE));
+            ReadConfig.INSTANCE.setREAD_PARAGRAPH_SPACE(Float.valueOf(numFormat.format(ReadConfig.INSTANCE.getREAD_PARAGRAPH_SPACE())));
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-        Constants.READ_CONTENT_PAGE_TOP_SPACE = sharedPreferences.getInt("read_content_page_top_space", 45); //阅读页内容上下页边距
-        Constants.READ_CONTENT_PAGE_LEFT_SPACE = sharedPreferences.getInt("read_content_page_left_space", 20); //阅读页内容页左右边距
+        ReadConfig.INSTANCE.setREAD_CONTENT_PAGE_TOP_SPACE(sharedPreferences.getInt("read_content_page_top_space", 45)); //阅读页内容上下页边距
+        ReadConfig.INSTANCE.setREAD_CONTENT_PAGE_LEFT_SPACE(sharedPreferences.getInt("read_content_page_left_space", 20)); //阅读页内容页左右边距
 
         // 老版本左右边距修正
-        if (Constants.READ_CONTENT_PAGE_LEFT_SPACE != 20) {
-            Constants.READ_CONTENT_PAGE_LEFT_SPACE = 20;
+        if (ReadConfig.INSTANCE.getREAD_CONTENT_PAGE_LEFT_SPACE() != 20) {
+            ReadConfig.INSTANCE.setREAD_CONTENT_PAGE_LEFT_SPACE(20);
             sharedPreferences.edit().putInt("read_content_page_left_space", 20).apply();
         }
 
-        AppLog.d("ReadSettingView", "isCustomSpaceSetted_Constants.READ_INTERLINEAR_SPACE " + Constants.READ_INTERLINEAR_SPACE);
-        if (Constants.READ_INTERLINEAR_SPACE == 0.5f || Constants.READ_INTERLINEAR_SPACE == 0.2f || Constants.READ_INTERLINEAR_SPACE == 1.0f || Constants.READ_INTERLINEAR_SPACE == 1.5f) {
-            AppLog.d("ReadSettingView", "READ_CONTENT_PAGE_LEFT_SPACE—— " + Constants.READ_CONTENT_PAGE_LEFT_SPACE);
-            AppLog.d("ReadSettingView", "READ_CONTENT_PAGE_TOP_SPACE—— " + Constants.READ_CONTENT_PAGE_TOP_SPACE);
-            AppLog.d("ReadSettingView", "READ_PARAGRAPH_SPACE—— " + Constants.READ_PARAGRAPH_SPACE);
-            if (Constants.READ_CONTENT_PAGE_LEFT_SPACE == 20 && Constants.READ_CONTENT_PAGE_TOP_SPACE == 45
-                    && Constants.READ_PARAGRAPH_SPACE == 1.0f) {
+        AppLog.d("ReadSettingView", "isCustomSpaceSetted_ReadConfig.READ_INTERLINEAR_SPACE " + ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE());
+        if (ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE() == 0.5f || ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE() == 0.2f || ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE() == 1.0f || ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE() == 1.5f) {
+            AppLog.d("ReadSettingView", "READ_CONTENT_PAGE_LEFT_SPACE—— " + ReadConfig.INSTANCE.getREAD_CONTENT_PAGE_LEFT_SPACE());
+            AppLog.d("ReadSettingView", "READ_CONTENT_PAGE_TOP_SPACE—— " + ReadConfig.INSTANCE.getREAD_CONTENT_PAGE_TOP_SPACE());
+            AppLog.d("ReadSettingView", "READ_PARAGRAPH_SPACE—— " + ReadConfig.INSTANCE.getREAD_PARAGRAPH_SPACE());
+            if (ReadConfig.INSTANCE.getREAD_CONTENT_PAGE_LEFT_SPACE() == 20 && (ReadConfig.INSTANCE.getREAD_CONTENT_PAGE_TOP_SPACE()) == 45
+                    && ReadConfig.INSTANCE.getREAD_PARAGRAPH_SPACE() == 1.0f) {
 
                 isCustomReadingSpace = false;
                 switchSpaceState();
@@ -444,9 +445,9 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
 
         editor.apply();
 
-        Constants.READ_PARAGRAPH_SPACE = 1.0f;
-        Constants.READ_CONTENT_PAGE_TOP_SPACE = 45;
-        Constants.READ_CONTENT_PAGE_LEFT_SPACE = 20;
+        ReadConfig.INSTANCE.setREAD_PARAGRAPH_SPACE(1.0f);
+        ReadConfig.INSTANCE.setREAD_CONTENT_PAGE_TOP_SPACE(45);
+        ReadConfig.INSTANCE.setREAD_CONTENT_PAGE_LEFT_SPACE(20);
         isCustomReadingSpace = false;
 
         if (previewPageView != null) {
@@ -462,22 +463,22 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
         }
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        if (Constants.READ_INTERLINEAR_SPACE == 0.2f) {
+        if (ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE() == 0.2f) {
             reading_setting_row_spacing_group.check(R.id.reading_spacing_0_2);
             editor.putInt("read_interlinear_space", 2);
             editor.apply();
 
-        } else if (Constants.READ_INTERLINEAR_SPACE == 0.3f) {
+        } else if (ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE() == 0.3f) {
             reading_setting_row_spacing_group.check(R.id.reading_spacing_0_5);
             editor.putInt("read_interlinear_space", 3);
             editor.apply();
 
-        } else if (Constants.READ_INTERLINEAR_SPACE == 0.4f) {
+        } else if (ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE() == 0.4f) {
             reading_setting_row_spacing_group.check(R.id.reading_spacing_1_0);
             editor.putInt("read_interlinear_space", 4);
             editor.apply();
 
-        } else if (Constants.READ_INTERLINEAR_SPACE == 0.5f) {
+        } else if (ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE() == 0.5f) {
             reading_setting_row_spacing_group.check(R.id.reading_spacing_1_5);
             editor.putInt("read_interlinear_space", 5);
             editor.apply();
@@ -521,7 +522,7 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
     }
 
     public void setNovelMode(int index) {
-        if (Constants.MODE == 55 || Constants.MODE == 58) {
+        if (ReadConfig.INSTANCE.getMODE() == 55 || ReadConfig.INSTANCE.getMODE() == 58) {
             restoreBright();
         }
         switch (index) {
@@ -623,12 +624,12 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
      * 减小字体
      */
     private void decreaseFont() {
-        if (Constants.FONT_SIZE > 10) {
-            if (Constants.FONT_SIZE == 30) {
+        if (ReadConfig.INSTANCE.getFONT_SIZE() > 10) {
+            if (ReadConfig.INSTANCE.getFONT_SIZE() == 30) {
                 reading_setting_increase_text.setEnabled(true);
             }
-            Constants.FONT_SIZE -= 2;
-            if (Constants.FONT_SIZE <= 10) {
+            ReadConfig.INSTANCE.setFONT_SIZE(ReadConfig.INSTANCE.getFONT_SIZE()-2) ;
+            if (ReadConfig.INSTANCE.getFONT_SIZE() <= 10) {
                 reading_setting_reduce_text.setEnabled(false);
             }
             setFontSize();
@@ -641,12 +642,12 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
      * 增大字体
      */
     private void increaseFont() {
-        if (Constants.FONT_SIZE < 30) {
-            if (Constants.FONT_SIZE == 10) {
+        if (ReadConfig.INSTANCE.getFONT_SIZE() < 30) {
+            if (ReadConfig.INSTANCE.getFONT_SIZE() == 10) {
                 reading_setting_reduce_text.setEnabled(true);
             }
-            Constants.FONT_SIZE += 2;
-            if (Constants.FONT_SIZE >= 30) {
+            ReadConfig.INSTANCE.setFONT_SIZE(ReadConfig.INSTANCE.getFONT_SIZE()+2);
+            if (ReadConfig.INSTANCE.getFONT_SIZE() >= 30) {
                 reading_setting_increase_text.setEnabled(false);
             }
             setFontSize();
@@ -657,7 +658,7 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
 
     private void setFontSize() {
         if (reading_setting_text_size != null) {
-            reading_setting_text_size.setText(String.valueOf(Constants.FONT_SIZE));
+            reading_setting_text_size.setText(String.valueOf(ReadConfig.INSTANCE.getFONT_SIZE()));
         }
 
         if (previewPageView != null) {

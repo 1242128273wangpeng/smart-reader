@@ -11,9 +11,7 @@ import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.constants.ReadConstants
 
 
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.NovelLineBean
-import net.lzbook.kit.data.bean.ReadStatus
 import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.utils.Tools
 
@@ -45,15 +43,11 @@ object ReadSeparateHelper {
         val mchapterPaint = TextPaint()
         mchapterPaint.textSize = 20 * ReadConfig.screenScaledDensity
 
-        val mbookNamePaint = TextPaint()
-        mbookNamePaint.isAntiAlias = true
-        mbookNamePaint.textSize = Constants.FONT_CHAPTER_SIZE * ReadConfig.screenScaledDensity
-
         // 显示文字区域高度
-        val height = ReadConfig.screenHeight - ReadConfig.screenDensity * Constants.READ_CONTENT_PAGE_TOP_SPACE.toFloat() * 2f
+        val height = ReadConfig.screenHeight - ReadConfig.screenDensity * ReadConfig.READ_CONTENT_PAGE_TOP_SPACE.toFloat() * 2f
 
-        ReadConfig.mWidth = ReadConfig.screenWidth - ReadConfig.screenDensity * Constants.READ_CONTENT_PAGE_LEFT_SPACE.toFloat() * 2f
-        ReadConfig.mLineStart = Constants.READ_CONTENT_PAGE_LEFT_SPACE * ReadConfig.screenScaledDensity
+        ReadConfig.mWidth = ReadConfig.screenWidth - ReadConfig.screenDensity * ReadConfig.READ_CONTENT_PAGE_LEFT_SPACE.toFloat() * 2f
+        ReadConfig.mLineStart = ReadConfig.READ_CONTENT_PAGE_LEFT_SPACE * ReadConfig.screenScaledDensity
 
         val lineHeight = ReadConfig.mFontHeight
         val m_duan = ReadConfig.mDuan
@@ -176,13 +170,13 @@ object ReadSeparateHelper {
             ReadConfig.mPaint!!.isAntiAlias = true
             ReadConfig.mPaint!!.isDither = true
         }
-        ReadConfig.mPaint!!.textSize = Constants.FONT_SIZE * ReadConfig.screenScaledDensity
+        ReadConfig.mPaint!!.textSize = ReadConfig.FONT_SIZE * ReadConfig.screenScaledDensity
 
         val fm = ReadConfig.mPaint!!.fontMetrics
 
-        ReadConfig.mLineSpace = Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE.toFloat() * ReadConfig.screenScaledDensity
+        ReadConfig.mLineSpace = ReadConfig.READ_INTERLINEAR_SPACE * ReadConfig.FONT_SIZE.toFloat() * ReadConfig.screenScaledDensity
         ReadConfig.mFontHeight = fm.descent - fm.ascent + ReadConfig.mLineSpace
-        ReadConfig.mDuan = Constants.READ_PARAGRAPH_SPACE * ReadConfig.mLineSpace
+        ReadConfig.mDuan = ReadConfig.READ_PARAGRAPH_SPACE * ReadConfig.mLineSpace
     }
 
     private fun addLineIndexY(lists: ArrayList<NovelPageBean>?) {
@@ -218,7 +212,7 @@ object ReadSeparateHelper {
 
     private fun disVerticalFirstPage(bean: NovelPageBean) {
         val fm = ReadConfig.mPaint!!.fontMetrics
-        var total_y = -fm.ascent + 3f * 15f * ReadConfig.screenScaledDensity + Constants.READ_CONTENT_PAGE_TOP_SPACE * ReadConfig.screenDensity
+        var total_y = -fm.ascent + 3f * 15f * ReadConfig.screenScaledDensity + ReadConfig.READ_CONTENT_PAGE_TOP_SPACE * ReadConfig.screenDensity
         if (bean.chapterNameLines != null && bean.chapterNameLines.size > 1) {
             total_y += 75 * ReadConfig.screenScaledDensity
         }
@@ -287,12 +281,10 @@ object ReadSeparateHelper {
         }
 
         var height: Float
-        if (Constants.isSlideUp) {
-            height = ReadConfig.screenHeight - 96 * ReadConfig.screenScaledDensity + ReadConfig.mLineSpace - font_height
-        } else {
-            height = ReadConfig.screenHeight.toFloat() - ReadConfig.screenDensity * Constants.READ_CONTENT_PAGE_TOP_SPACE.toFloat() * 2f - 3f * 15f * ReadConfig.screenScaledDensity + ReadConfig.mLineSpace
-            total_y += Constants.READ_CONTENT_PAGE_TOP_SPACE * ReadConfig.screenDensity
-        }
+
+        height = ReadConfig.screenHeight.toFloat() - ReadConfig.screenDensity * ReadConfig.READ_CONTENT_PAGE_TOP_SPACE.toFloat() * 2f - 3f * 15f * ReadConfig.screenScaledDensity + ReadConfig.mLineSpace
+        total_y += ReadConfig.READ_CONTENT_PAGE_TOP_SPACE * ReadConfig.screenDensity
+
 
         if (bean.chapterNameLines != null && bean.chapterNameLines.size > 1) {
             total_y += 75 * ReadConfig.screenScaledDensity
@@ -304,7 +296,7 @@ object ReadSeparateHelper {
         } else if (textHeight - height > 2) {
             val n = Math.floor(((height - duan) / m_iFontHeight).toDouble()).toInt()// 行数
             val distance = (textHeight - height) / n
-            m_iFontHeight = fm.descent - fm.ascent + Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE.toFloat() * ReadConfig.screenScaledDensity - distance
+            m_iFontHeight = fm.descent - fm.ascent + ReadConfig.READ_INTERLINEAR_SPACE * ReadConfig.FONT_SIZE.toFloat() * ReadConfig.screenScaledDensity - distance
         }
         var contentLength = 0
         for (b in lineBeans) {
@@ -326,7 +318,7 @@ object ReadSeparateHelper {
         var lastIsDuan = false
         var m_iFontHeight = ReadConfig.mFontHeight
         var m_duan = ReadConfig.mDuan
-        val height = ReadConfig.screenHeight - ReadConfig.screenDensity * Constants.READ_CONTENT_PAGE_TOP_SPACE.toFloat() * 2f + ReadConfig.mLineSpace
+        val height = ReadConfig.screenHeight - ReadConfig.screenDensity * ReadConfig.READ_CONTENT_PAGE_TOP_SPACE.toFloat() * 2f + ReadConfig.mLineSpace
 
         // 计算页字符内容所占的高度
         var lineBeans = bean.lines
@@ -363,7 +355,7 @@ object ReadSeparateHelper {
             m_iFontHeight = m_iFontHeight - distance
         }
 
-        var total_y = Constants.READ_CONTENT_PAGE_TOP_SPACE * ReadConfig.screenDensity - fm.ascent
+        var total_y = ReadConfig.READ_CONTENT_PAGE_TOP_SPACE * ReadConfig.screenDensity - fm.ascent
         var contentLength = 0
         for (b in lineBeans) {
             if (" " == b.lineContent) {

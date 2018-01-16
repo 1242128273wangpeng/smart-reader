@@ -3,7 +3,6 @@ package com.intelligent.reader.read.page
 import android.content.Context
 import android.os.Handler
 import android.util.AttributeSet
-import android.view.View
 import android.view.MotionEvent
 import com.intelligent.reader.R
 import com.intelligent.reader.read.DataProvider
@@ -40,8 +39,6 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     //宽、高、时间、电量、颜色
     private var w: Int = 0
     private var h: Int = 0
-    private var percent: Float = 0f
-    private var time: String = ""
 
     var mReadInfo: ReadInfo? = null
     //当前游标
@@ -369,10 +366,6 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
      */
     override fun loadTransCoding() = mReadPageChange?.onTransCodingClick() ?: Unit
 
-    override fun getCurPercent(): Float = percent
-
-    override fun getCurTime(): String = time
-
     override fun currentViewSuccess() {
         val curView = findViewWithTag(ReadViewEnums.PageIndex.current)
         curView as HorizontalPage
@@ -422,60 +415,20 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         }, 200)
     }
 
-    //布局发生变化
-    override fun onSizeChanged(width: Int, height: Int, oldw: Int, oldh: Int) {
-        super.onSizeChanged(width, height, oldw, oldh)
-        w = width
-        h = height
-    }
-
-    //时间
-    override fun freshTime(time: CharSequence?) {
-        this.time = time.toString()
-        for (i in 0 until childCount) {
-            val childAtView = getChildAt(i) as HorizontalPage
-            childAtView.setTimes(this.time)
-        }
-    }
-
-    //电量
-    override fun freshBattery(percent: Float) {
-        this.percent = percent
-        for (i in 0 until childCount) {
-            val childAtView = getChildAt(i) as HorizontalPage
-            childAtView.setBattery(this.percent)
-        }
-    }
-
     //设置背景颜色
     override fun setBackground() {
-        for (i in 0 until childCount) {
-            val childAtView = getChildAt(i) as HorizontalPage
-            childAtView.setBackGroud()
-        }
-    }
-
-    //设置阅读信息
-    override fun setReadInfo(mReadInfo: ReadInfo?) {
-
-    }
-
-    //章节回调
-    override fun setLoadChapter(msg: Int, chapter: Chapter, chapterList: ArrayList<ArrayList<NovelLineBean>>?) {
-        AppLog.w("chapter", "" + (chapterList?.size ?: -1))
-    }
-
-    //广告回调
-    override fun setLoadAd(view: View?) {
-
+//        for (i in 0 until childCount) {
+//            val childAtView = getChildAt(i) as HorizontalPage
+//            childAtView.setBackGroud()
+//        }
     }
 
     //重画
     override fun onRedrawPage() {
-        val curView = findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage
-        curView.viewNotify = ReadViewEnums.NotifyStateState.all
-        curView.onReSeparate()
-        curView.setCursor(curView.mCursor!!)
+//        val curView = findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage
+//        curView.viewNotify = ReadViewEnums.NotifyStateState.all
+//        curView.onReSeparate()
+//        curView.setCursor(curView.mCursor!!)
     }
 
     //跳章

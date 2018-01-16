@@ -75,7 +75,7 @@
                 android:scrollbars="none"
                 android:src="@drawable/reading_batty_day"/>
 
-        <TextView
+        <com.intelligent.reader.read.page.TimeTextView
                 android:id="@+id/novel_time"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

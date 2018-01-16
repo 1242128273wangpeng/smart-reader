@@ -21,17 +21,16 @@
 
         <com.intelligent.reader.read.page.BatteryView
             android:id="@+id/novel_content_battery_view"
-            android:layout_width="20dp"
+            android:layout_width="16dp"
             android:layout_height="11dp"
             android:layout_centerVertical="true"
-            android:paddingTop="2.0dip"
             android:scrollbars="none"
-            android:src="@drawable/reading_batty_day" />
+            android:src="@drawable/reading_batty_day"/>
 
-        <TextView
+        <com.intelligent.reader.read.page.TimeTextView
             android:id="@+id/novel_time"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="6dp"
             android:layout_toRightOf="@+id/novel_content_battery_view"

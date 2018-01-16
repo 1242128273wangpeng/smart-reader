@@ -54,7 +54,6 @@ import java.util.Map;
  */
 public class NovelHelper {
     public static final String empty_page_ad = "empty_page_ad";
-    public static final String empty_page_ad_inChapter = "empty_inChapter_ad";
     private static final String TAG = "NovelHelper";
     public boolean isShown = false;
     private OnHelperCallBack helperCallBack;
@@ -371,166 +370,6 @@ public class NovelHelper {
         }
     }
 
-    public ArrayList<ArrayList<NovelLineBean>> initTextContent2(String content) {
-        float chapterHeight = 75 * readStatus.screenScaledDensity;
-        float hideHeight = 15 * readStatus.screenScaledDensity;
-
-        TextPaint mTextPaint = new TextPaint();
-        mTextPaint.setAntiAlias(true);
-        mTextPaint.setTextSize(Constants.FONT_SIZE * readStatus.screenScaledDensity);
-        FontMetrics fm = mTextPaint.getFontMetrics();
-
-        TextPaint mchapterPaint = new TextPaint();
-        mchapterPaint.setTextSize(20 * readStatus.screenScaledDensity);
-
-        TextPaint mbookNamePaint = new TextPaint();
-        mbookNamePaint.setAntiAlias(true);
-        mbookNamePaint.setTextSize(Constants.FONT_CHAPTER_SIZE * readStatus.screenScaledDensity);
-
-        // 显示文字区域高度
-        float height = readStatus.screenHeight - readStatus.screenDensity * Constants.READ_CONTENT_PAGE_TOP_SPACE * 2;
-
-        float width = readStatus.screenWidth - readStatus.screenDensity * Constants.READ_CONTENT_PAGE_LEFT_SPACE * 2;
-
-        float lineSpace = Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE * readStatus.screenScaledDensity;
-        float lineHeight = fm.descent - fm.ascent + lineSpace;
-        float m_duan = Constants.READ_PARAGRAPH_SPACE * lineSpace;
-
-        if (Constants.IS_LANDSCAPE) {
-            width = readStatus.screenWidth - readStatus.screenDensity * Constants.READ_CONTENT_PAGE_LEFT_SPACE * 2;
-        }
-
-        // 添加转换提示
-        StringBuilder sb = new StringBuilder();
-        if (readStatus.sequence != -1) {
-            sb.append("chapter_homepage \n");
-            sb.append("chapter_homepage \n");
-            sb.append("chapter_homepage \n");
-
-            if (!TextUtils.isEmpty(readStatus.chapterName)) {
-                readStatus.chapterNameList = getNovelText(mchapterPaint, readStatus.chapterName, width
-                        - readStatus.screenDensity * 10);
-            }
-
-
-            String[] chapterNumAndName = readStatus.chapterNameList.get(0).getLineContent().split("章");
-            ArrayList<NovelLineBean> newChapterList = new ArrayList<>();
-
-            for (int i = 0; i < chapterNumAndName.length; i++) {
-                if (i == 0) {
-                    newChapterList.add(new NovelLineBean(chapterNumAndName[i] + "章", 0, 0, false, null));
-                } else {
-                    newChapterList.add(new NovelLineBean(chapterNumAndName[i].trim(), 0, 0, false, null));
-                }
-            }
-            if (readStatus.chapterNameList.size() > 1) {
-                readStatus.chapterNameList.remove(0);
-                newChapterList.addAll(readStatus.chapterNameList);
-            }
-            readStatus.chapterNameList = newChapterList;
-
-            if (readStatus.chapterNameList.size() > 2) {
-                ArrayList<NovelLineBean> temp = new ArrayList<NovelLineBean>();
-                for (int i = 0; i < 2; i++) {
-                    temp.add(readStatus.chapterNameList.get(i));
-                }
-                readStatus.chapterNameList = temp;
-            }
-        }
-
-        // 去除章节开头特殊符号
-        if (content.startsWith(" \"")) {
-            content = content.replaceFirst(" \"", "");
-        } else if (content.startsWith("\"")) {
-            content = content.replaceFirst("\"", "");
-        }
-
-        String[] contents = content.split("\n");
-        for (String temp : contents) {
-            temp = temp.replaceAll("\\s+", "");
-            if (!"".equals(temp)) {
-                sb.append("\u3000\u3000" + temp + "\n");
-            }
-        }
-        String text = "";
-        if (readStatus.sequence == -1) {
-            readStatus.bookNameList = getNovelText(mbookNamePaint, readStatus.bookName, width);
-            String homeText = "txtzsydsq_homepage\n";
-            StringBuilder s = new StringBuilder();
-            s.append(homeText);
-            s.append(sb);
-            text = s.toString();
-        } else {
-            text = sb.toString();
-        }
-        if (readStatus.offset > text.length()) {
-            readStatus.offset = 0;
-        } else if (readStatus.offset < 0) {
-            readStatus.offset = 0;
-        }
-
-        ArrayList<NovelLineBean> contentList = getNovelText(mTextPaint, text, width);
-        final int size = contentList.size();
-        float textSpace = 0.0f;
-        long textLength = 0;
-        boolean can = true;
-        ArrayList<NovelLineBean> pageLines = new ArrayList<NovelLineBean>();
-        ArrayList<ArrayList<NovelLineBean>> lists = new ArrayList<ArrayList<NovelLineBean>>();
-        lists.add(pageLines);
-        int chapterNameSize = 0;
-        if (readStatus.chapterNameList != null) {
-            chapterNameSize = readStatus.chapterNameList.size();
-        }
-        if (chapterNameSize > 1) {
-            textSpace += chapterHeight;
-        }
-
-        float lastLineHeight;
-        for (int i = 0; i < size; i++) {
-            boolean isDuan = false;
-            NovelLineBean lineText = contentList.get(i);
-            if (lineText.getLineContent().equals(" ")) {// 段间距
-                isDuan = true;
-                textSpace += m_duan;
-                lastLineHeight = m_duan;
-            } else if (lineText.getLineContent().equals("chapter_homepage  ")) {
-                textSpace += hideHeight;
-                textLength += lineText.getLineContent().length();
-                lastLineHeight = hideHeight;
-            } else {
-                textSpace += lineHeight;
-                textLength += lineText.getLineContent().length();
-                lastLineHeight = lineHeight;
-            }
-
-            if (textSpace < height) {
-                pageLines.add(lineText);
-            } else {
-                if (isDuan) {// 开始是空行
-                    textSpace -= m_duan;
-                    pageLines.add(lineText);
-                } else {
-                    pageLines = new ArrayList<NovelLineBean>();
-                    textSpace = lastLineHeight;
-                    pageLines.add(lineText);
-                    lists.add(pageLines);
-                }
-                // }
-            }
-            if (textLength >= readStatus.offset && can) {
-                readStatus.currentPage = lists.size();
-                can = false;
-            }
-        }
-
-        readStatus.pageCount = lists.size();
-        if (readStatus.currentPage == 0) {
-            readStatus.currentPage = 1;
-        }
-
-        return lists;
-    }
-
     /**
      * getNovelText
      * 划分章节内容
@@ -679,8 +518,6 @@ public class NovelHelper {
             readStatus.currentPage = readStatus.pageCount;
         }
         readStatus.offset = 0;
-        // AppLog.d("initTextContent2", "readStatus.currentPage:" +
-        // readStatus.currentPage);
         ArrayList<NovelLineBean> pageContent = null;
         if (readStatus.currentPage - 1 < readStatus.mLineList.size()) {
             pageContent = readStatus.mLineList.get(readStatus.currentPage - 1);
@@ -722,12 +559,9 @@ public class NovelHelper {
         }
         readStatus.offset = 0;
         int count = readStatus.mLineList.size();
-        // AppLog.d("initTextContent2", "readStatus.currentPage:" +
-        // readStatus.currentPage);
         for (int i = 0; i < readStatus.currentPage - 1 && i < count; i++) {
             ArrayList<NovelLineBean> pageList = readStatus.mLineList.get(i);
             final int size = pageList.size();
-            // AppLog.d("initTextContent2", "size:" + size);
             for (int j = 0; j < size; j++) {
                 NovelLineBean string = pageList.get(j);
                 if (string != null && !TextUtils.isEmpty(string.getLineContent())) {
@@ -754,7 +588,6 @@ public class NovelHelper {
         BaseBookHelper.setChapterStatus(currentChapter);
         if (currentChapter != null && readStatus != null) {
             if (currentChapter.status != Chapter.Status.CONTENT_NORMAL) {
-//                handler.sendEmptyMessage(5);
                 if (helperCallBack != null) {
                     helperCallBack.changSource();
                 }
@@ -775,105 +608,15 @@ public class NovelHelper {
                 case SOURCE_ERROR:
                     if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE && mBook.book_type == 0) {
                         Toast.makeText(activity, R.string.err_no_net, Toast.LENGTH_SHORT).show();
-//                        readStatus.mLineList = initTextContent2("");
                     }
-//                    readStatus.mLineList = initTextContent2("");
                     return true;
                 case CONTENT_NORMAL:
-//                    readStatus.mLineList = initTextContent2(currentChapter.content);
                     return true;
                 default:
                     break;
             }
         }
         return false;
-    }
-
-    public ArrayList<NovelLineBean> getChapterNameList(String chapterName) {
-        String splitTag = "章";
-        ArrayList<NovelLineBean> newChapterList = new ArrayList<>();
-
-        if (TextUtils.isEmpty(chapterName)) {
-            newChapterList.add(new NovelLineBean("无章节名", 0, 0, false, null));
-            return newChapterList;
-        }
-
-        if (chapterName.contains(splitTag)) {
-            String[] chapterNumAndName = chapterName.split(splitTag);
-            for (int i = 0; i < chapterNumAndName.length; i++) {
-                if (i == 0) {
-                    newChapterList.add(new NovelLineBean(chapterNumAndName[i] + splitTag, 0, 0, false, null));
-                } else {
-                    newChapterList.add(new NovelLineBean(chapterNumAndName[i].trim(), 0, 0, false, null));
-                }
-            }
-        } else {
-            newChapterList.add(new NovelLineBean(chapterName + splitTag, 0, 0, false, null));
-            newChapterList.add(new NovelLineBean(chapterName, 0, 0, false, null));
-        }
-
-        return newChapterList;
-    }
-
-    public int getPageHeight(List<NovelLineBean> pageLines) {
-        TextPaint contentPaint = new TextPaint();
-        TextPaint duanPaint = new TextPaint();
-        TextPaint textPaint = new TextPaint();
-        contentPaint.setTextSize(Constants.FONT_SIZE * readStatus.screenScaledDensity);
-        duanPaint.setTextSize(1 * readStatus.screenScaledDensity);
-        textPaint.setTextSize(Constants.FONT_CHAPTER_SIZE * readStatus.screenScaledDensity);
-        int chapterBetweenHeight = (int) (100 * readStatus.screenScaledDensity);
-        boolean lastPage = false;
-
-        // 页面总高度
-        int pageHeight = 0;
-
-        // 章节文字Fm
-        FontMetrics chapterFm;
-        // 章节文字高度
-        float chapterFontHeight = 0;
-
-        // 正文文字Fm
-        FontMetrics contentFm = contentPaint.getFontMetrics();
-        float lineSpace = Constants.READ_INTERLINEAR_SPACE * Constants.FONT_SIZE * readStatus.screenScaledDensity;
-        // 正文文字高度
-        float contentHeight = contentFm.descent - contentFm.ascent + lineSpace;
-        // 段落高度
-        float paragraphHeight = Constants.READ_PARAGRAPH_SPACE * lineSpace;
-
-        // 正文绘制起始高度
-        float contentDrawY = -contentFm.ascent;
-
-        if (PageContentView.CHAPTER_HOME_PAGE.equals(pageLines.get(0).getLineContent().trim())) {
-            contentDrawY += 3 * 15 * readStatus.screenScaledDensity;
-            contentDrawY += Constants.READ_CONTENT_PAGE_TOP_SPACE * readStatus.screenDensity;
-
-            // 章节头与正文间距
-            contentDrawY += 65 * readStatus.screenScaledDensity;
-        }
-
-        if (pageLines.get(0).isLastPage()) {
-            lastPage = true;
-        }
-
-        if (!pageLines.isEmpty()) {
-            for (int i = 0; i < pageLines.size(); i++) {
-                if (!PageContentView.CHAPTER_HOME_PAGE.equals(pageLines.get(i).getLineContent().trim())) {
-                    NovelLineBean text = pageLines.get(i);
-                    if (text != null && !TextUtils.isEmpty(text.getLineContent()) && text.getLineContent().equals(" ")) {
-                        contentDrawY += paragraphHeight;
-                    } else {
-                        contentDrawY += contentHeight;
-                    }
-                }
-            }
-            pageHeight = (int) (contentDrawY - lineSpace * 2);
-        }
-
-        if (lastPage) {
-            pageHeight += chapterBetweenHeight;
-        }
-        return pageHeight;
     }
 
     public void setOnHelperCallBack(OnHelperCallBack callBack) {

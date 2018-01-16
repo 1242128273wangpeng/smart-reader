@@ -553,22 +553,6 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
         mOriginDataList.clear()
     }
 
-
-    override fun freshTime(time: CharSequence?) {
-        novel_time.text = time
-    }
-
-    override fun freshBattery(percent: Float) {
-        novel_content_battery_view.setBattery(percent)
-    }
-
-    override fun setLoadChapter(msg: Int, chapter: Chapter, chapterList: ArrayList<ArrayList<NovelLineBean>>?) {
-    }
-
-    override fun setLoadAd(view: View) {
-
-    }
-
     override fun onRedrawPage() {
         getChapterData(ReadState.sequence, ReadViewEnums.PageIndex.current, true)
     }
@@ -581,19 +565,13 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
 
     }
 
-    override fun setReadInfo(mReadInfo: ReadInfo?) {
-    }
-
     override fun setBackground() {
         ThemeUtil.getModePrimaryBackground(resources, this)
-        novel_time.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
         origin_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
         trans_coding_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
-        novel_time.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
         novel_page.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
         novel_chapter.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
         novel_title.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
-        novel_content_battery_view.invalidate()
         mAdapter.setTextColor(resources.getColor(ThemeUtil.modeLoadTextColor))
     }
 

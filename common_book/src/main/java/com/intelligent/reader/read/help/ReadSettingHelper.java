@@ -1,6 +1,7 @@
 package com.intelligent.reader.read.help;
 
 import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.bean.ReadConfig;
 
 import android.app.Activity;
 import android.content.Context;
@@ -46,9 +47,9 @@ public class ReadSettingHelper implements ReadSettingInterface {
 
         editor.apply();
 
-        Constants.READ_PARAGRAPH_SPACE = 1.0f;
-        Constants.READ_CONTENT_PAGE_TOP_SPACE = 45;
-        Constants.READ_CONTENT_PAGE_LEFT_SPACE = 20;
+        ReadConfig.INSTANCE.setREAD_PARAGRAPH_SPACE(1.0f);
+        ReadConfig.INSTANCE.setREAD_CONTENT_PAGE_TOP_SPACE(45);
+        ReadConfig.INSTANCE.setREAD_CONTENT_PAGE_LEFT_SPACE(20);
     }
 
     /**
@@ -94,8 +95,8 @@ public class ReadSettingHelper implements ReadSettingInterface {
             this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         }
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        Constants.MODE = index;
-        editor.putInt("content_mode", Constants.MODE);
+        ReadConfig.INSTANCE.setMODE(index);
+        editor.putInt("content_mode", ReadConfig.INSTANCE.getMODE());
         editor.apply();
     }
 
@@ -116,7 +117,7 @@ public class ReadSettingHelper implements ReadSettingInterface {
         }
         // 保存字体
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("novel_font_size", Constants.FONT_SIZE);
+        editor.putInt("novel_font_size", ReadConfig.INSTANCE.getFONT_SIZE());
         editor.apply();
     }
 
@@ -128,45 +129,5 @@ public class ReadSettingHelper implements ReadSettingInterface {
         SharedPreferences.Editor edit = sharedPreferences.edit();
         edit.putBoolean("auto_brightness", false);
         edit.apply();
-    }
-
-    public int getDefaultChangeMode() {
-        int default_change_mode = 61;
-        switch (Constants.MODE) {
-            case 51:
-                default_change_mode = 61;
-                break;
-            case 52:
-                default_change_mode = 56;
-                break;
-            case 53:
-                default_change_mode = 57;
-                break;
-            case 54:
-                default_change_mode = 55;
-                break;
-            case 55:
-                default_change_mode = 54;
-                break;
-            case 56:
-                default_change_mode = 52;
-                break;
-            case 57:
-                default_change_mode = 53;
-                break;
-            case 58:
-                default_change_mode = 51;
-                break;
-            case 59:
-                default_change_mode = 61;
-                break;
-            case 60:
-                default_change_mode = 61;
-                break;
-            case 61:
-                default_change_mode = 61;
-                break;
-        }
-        return default_change_mode;
     }
 }
