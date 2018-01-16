@@ -14,10 +14,7 @@ import com.intelligent.reader.read.help.ReadSeparateHelper
 import com.intelligent.reader.read.mode.NovelPageBean
 import com.intelligent.reader.read.mode.ReadState
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.Chapter
-import net.lzbook.kit.data.bean.NovelLineBean
-import net.lzbook.kit.data.bean.ReadStatus
-import net.lzbook.kit.data.bean.ReadViewEnums
+import net.lzbook.kit.data.bean.*
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
@@ -198,7 +195,7 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus) : Re
                 if (lineData.adView != null) {
                     ad_fl.visibility = View.VISIBLE
                     val adViewLayoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                            if (Constants.IS_LANDSCAPE) AD_LANDSCAPE_VIEW_HEIGHT else AD_PORTRAIT_VIEW_HEIGHT)
+                            if (ReadConfig.IS_LANDSCAPE) AD_LANDSCAPE_VIEW_HEIGHT else AD_PORTRAIT_VIEW_HEIGHT)
 
                     if (lineData.adView.parent != null) {
                         (lineData.adView.tag as ViewGroup).removeAllViews()

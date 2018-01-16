@@ -20,7 +20,6 @@ interface ReadPreInterface {
         fun showSetMenu(isShow: Boolean)
         // 全屏切换
         fun full(isFull: Boolean)
-
         fun initSettingGuide()
         fun setMode()
         fun showAutoMenu(isShow: Boolean)
@@ -32,10 +31,6 @@ interface ReadPreInterface {
         fun showStopAutoHint()
         fun initCatlogView()
         fun onNewInitView(): Boolean
-        fun setBackground()
-
-        fun onChangedScreen()
-
         fun readOptionHeaderDismiss()
     }
 }

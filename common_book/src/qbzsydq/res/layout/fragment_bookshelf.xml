@@ -27,7 +27,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginBottom="@dimen/dimen_margin_30"
             android:layout_marginRight="@dimen/dimen_margin_10"
-            android:visibility="gone"/>
+            android:src="@drawable/icon_bookshelf_download"/>
 
     <LinearLayout
             android:id="@+id/bookshelf_empty"

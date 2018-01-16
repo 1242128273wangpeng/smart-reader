@@ -1,9 +1,6 @@
 package com.intelligent.reader.activity
 
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.res.Configuration
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -24,7 +21,6 @@ import com.intelligent.reader.presenter.read.ReadPresenter
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.animation.BitmapManager
 import com.intelligent.reader.read.help.IReadPageChange
-import net.lzbook.kit.data.bean.ReadConfig
 import com.intelligent.reader.read.mode.ReadInfo
 import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.read.page.AutoReadMenu
@@ -79,7 +75,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         read_catalog_mark_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-
         mReadPresenter.onNewIntent(intent)
     }
 
@@ -87,6 +82,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         super.onConfigurationChanged(newConfig)
         read_catalog_mark_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         mReadPresenter.onConfigurationChanged(mCatalogMarkFragment, option_header, readerWidget.childCount)
+        ReadConfig.IS_LANDSCAPE = (newConfig.orientation != Configuration.ORIENTATION_PORTRAIT)
     }
 
     override fun initView(fac: ReaderViewModel) {
@@ -198,6 +194,9 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
             read_catalog_mark_drawer.closeDrawers()
             return
         }
+
+        readSettingView.dismissMenu()
+
         val isFinish = mReadPresenter.onBackPressed()
         if (isFinish && !isFinishing) {
             super.onBackPressed()
@@ -254,6 +253,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         mReadPresenter.onDestroy()
         DataProvider.getInstance().unSubscribe()
         DataProvider.getInstance().relase()
+        ReadConfig.unregistObserverAll()
         super.onDestroy()
     }
 
@@ -284,27 +284,20 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onChangeMode(mode: Int) {
         mReadPresenter.onChangeMode(mode)
-        readerWidget.setBackground()
+//        readerWidget.setBackground()
     }
 
     override fun onChangeScreenMode() {
         mReadPresenter.changeScreenMode()
-    }
-
-    override fun onRedrawPage() {
-        readerWidget.onRedrawPage()
-    }
-
-    override fun onJumpChapter() {
-
+        readSettingView.dismissMenu()
     }
 
     //目录跳章
-    override fun onJumpChapter(sequence: Int,offset:Int) {
+    override fun onJumpChapter(sequence: Int, offset: Int) {
         ReadState.sequence = sequence
         ReadState.currentPage = 0
         ReadState.offset = offset
-        readerWidget.onJumpChapter(ReadState.sequence)
+        ReadConfig.jump = true
         read_catalog_mark_drawer.closeDrawers()
     }
 
@@ -314,25 +307,23 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
             showToastShort(net.lzbook.kit.R.string.is_first_chapter)
             return
         }
-
+        ReadState.sequence--
         ReadState.currentPage = 0
         ReadState.offset = 0
-        readerWidget.onJumpChapter(--ReadState.sequence)
-
+        ReadConfig.jump = true
         mReadPresenter.onJumpPreChapter()
     }
 
     //下一章
     override fun onJumpNextChapter() {
-        if (readStatus.book?.book_type != 0) {
+        if (ReadState.book?.book_type != 0) {
             showToastShort(net.lzbook.kit.R.string.last_chapter_tip)
             return
         }
-
+        ReadState.sequence++
         ReadState.offset = 0
         ReadState.currentPage = 0
-        readerWidget.onJumpChapter(++ReadState.sequence)
-
+        ReadConfig.jump = true
         mReadPresenter.onJumpNextChapter()
     }
 
@@ -340,7 +331,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onChageNightMode() {
         mReadPresenter.onChageNightMode()
-        readerWidget.setBackground()
     }
 
     //0 滑动 1 仿真 2 平移 3 上下
@@ -351,6 +341,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
             readerWidget.setIReadPageChange(this)
         }
         readerWidget.changeAnimMode(mode)
+        readSettingView.dismissMenu()
     }
 
     //ReadSettingView end
@@ -365,7 +356,9 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         readStatus = readSta
     }
 
-    override fun showSetMenu(isShow: Boolean) = readSettingView.showSetMenu(isShow)
+    override fun showSetMenu(isShow: Boolean) {
+
+    }
 
     override fun full(isFull: Boolean) {
         if (isFull) {
@@ -426,12 +419,14 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         private var readStatus: ReadStatus by Delegates.notNull()
     }
 
-    //IReadPageChange
-    override fun onLoadChapter(type: ReadViewEnums.MsgType, sequence: Int, isShowLoadPage: Boolean, pageIndex: ReadViewEnums.PageIndex) {
-
-    }
-
     override fun showMenu(isShow: Boolean) {
+        if (isShow) {
+            if (!readSettingView.isChecked()) {
+                readSettingView.showMenu()
+            }
+        } else {
+            readSettingView.dismissMenu()
+        }
         mReadPresenter.showMenu(isShow)
     }
 
@@ -465,15 +460,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
                 startReadTime.toString(), endTime.toString(), (endTime - startReadTime).toString(), "false", channelCode)
     }
 
-    override fun setBackground() {
-        readerWidget.setBackground()
-    }
-
-    override fun onChangedScreen() {
-        onRedrawPage()
-    }
-
-    override fun readOptionHeaderDismiss(){
+    override fun readOptionHeaderDismiss() {
         option_header.dismissLoadingPage()
     }
 }

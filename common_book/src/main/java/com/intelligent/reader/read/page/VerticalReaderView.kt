@@ -20,17 +20,18 @@ import com.intelligent.reader.read.mode.NovelPageBean
 import com.intelligent.reader.read.mode.ReadInfo
 import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.util.ThemeUtil
+import kotlinx.android.synthetic.main.loading_page_reading.view.*
 import kotlinx.android.synthetic.main.vertical_pager_layout.view.*
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
+import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.ToastUtils
+import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 
-class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadViewClickListener {
-
-    private val TAG: String = "VerticalReaderView"
+class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadViewClickListener, Observer {
 
     private lateinit var mReadInfo: ReadInfo
 
@@ -143,6 +144,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
         loadPreChapter(ReadState.sequence - 1)
         loadNextChapter(ReadState.sequence + 1)
         setBackground()
+        showLoadPage()
     }
 
     /**
@@ -190,11 +192,13 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
 
             override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) {
                 handleChapter(c, type, reLoad)
+                dismissLoadPage()
             }
 
             override fun loadDataError(message: String) {
                 mChapterLoadStat = CHAPTER_WAITING
                 mAdapter.setLoadViewState(PagerScrollAdapter.LOAD_VIEW_FAIL_STATE)
+                dismissLoadPage()
             }
         })
     }
@@ -535,8 +539,14 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
         }
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        ReadConfig.registObserver(this)
+    }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
+        ReadConfig.unregistObserver(this)
         for (i in mOriginDataList.indices) {
             val pageContent = mOriginDataList[i]
             for (content in pageContent.lines) {
@@ -553,11 +563,12 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
         mOriginDataList.clear()
     }
 
-    override fun onRedrawPage() {
+    private fun onRedrawPage() {
         getChapterData(ReadState.sequence, ReadViewEnums.PageIndex.current, true)
+        showLoadPage()
     }
 
-    override fun onJumpChapter(sequence: Int) {
+    private fun onJumpChapter(sequence: Int) {
         getChapterData(sequence, ReadViewEnums.PageIndex.current, true)
     }
 
@@ -565,7 +576,17 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
 
     }
 
-    override fun setBackground() {
+    private fun showLoadPage() {
+        page_rv.visibility = GONE
+        load_page.visibility = View.VISIBLE
+    }
+
+    private fun dismissLoadPage() {
+        page_rv.visibility = VISIBLE
+        load_page.visibility = GONE
+    }
+
+    private fun setBackground() {
         ThemeUtil.getModePrimaryBackground(resources, this)
         origin_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
         trans_coding_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
@@ -573,6 +594,19 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
         novel_chapter.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
         novel_title.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
         mAdapter.setTextColor(resources.getColor(ThemeUtil.modeLoadTextColor))
+
+        ThemeUtil.getModePrimaryBackground(resources, load_page)
+        tv_loading_progress.setTextColor(resources.getColor(ThemeUtil.modeLoadTextColor))
+    }
+
+    override fun update(o: Observable?, arg: Any?) {
+        when (arg as String) {
+            "READ_INTERLINEAR_SPACE" -> onRedrawPage()
+            "FONT_SIZE" -> onRedrawPage()
+            "SCREEN" -> onRedrawPage()
+            "MODE" -> setBackground()
+            "JUMP" -> onJumpChapter(ReadState.sequence)
+        }
     }
 
     private var mReadPageChange: IReadPageChange? = null

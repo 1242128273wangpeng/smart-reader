@@ -2,11 +2,13 @@ package com.intelligent.reader.activity;
 
 import com.intelligent.reader.R;
 import com.intelligent.reader.read.help.ReadSettingHelper;
+import com.intelligent.reader.read.mode.ReadState;
 import com.intelligent.reader.read.page.PreviewPageView;
 
 import net.lzbook.kit.book.view.SwitchButton;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.ReadConfig;
+import net.lzbook.kit.data.bean.ReadStatus;
 import net.lzbook.kit.data.bean.SettingItems;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.ResourceUtil;
@@ -169,10 +171,10 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
     private void setOrientation() {
         if (sharedPreferences.getInt("screen_mode", 1) == Configuration.ORIENTATION_PORTRAIT) {
             reading_setting_direction_group.check(R.id.reading_direction_portrait);
-            Constants.IS_LANDSCAPE = false;
+            ReadConfig.INSTANCE.setIS_LANDSCAPE(false);
         } else if (sharedPreferences.getInt("screen_mode", 1) == Configuration.ORIENTATION_LANDSCAPE && this.getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
             reading_setting_direction_group.check(R.id.reading_direction_landscape);
-            Constants.IS_LANDSCAPE = true;
+            ReadConfig.INSTANCE.setIS_LANDSCAPE(true);
         }
     }
 
@@ -412,9 +414,9 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
 
         if (id == R.id.reading_direction_landscape) {
             screen_mode.putInt("screen_mode", Configuration.ORIENTATION_LANDSCAPE);
-            Constants.IS_LANDSCAPE = true;
+            ReadConfig.INSTANCE.setIS_LANDSCAPE(true);
         } else if (id == R.id.reading_direction_portrait) {
-            Constants.IS_LANDSCAPE = false;
+            ReadConfig.INSTANCE.setIS_LANDSCAPE(false);
             screen_mode.putInt("screen_mode", Configuration.ORIENTATION_PORTRAIT);
         }
         screen_mode.apply();

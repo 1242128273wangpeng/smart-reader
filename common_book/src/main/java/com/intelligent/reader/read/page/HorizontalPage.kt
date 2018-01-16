@@ -9,26 +9,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.intelligent.reader.R
-import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.read.DataProvider
-import com.intelligent.reader.read.animation.BitmapManager
+import com.intelligent.reader.read.exception.ReadCustomException
 import com.intelligent.reader.read.help.DrawTextHelper
 import com.intelligent.reader.read.mode.NovelPageBean
 import com.intelligent.reader.read.mode.ReadCursor
 import com.intelligent.reader.read.mode.ReadState
+import com.intelligent.reader.read.util.ReadQueryUtil
 import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.util.ThemeUtil
 import kotlinx.android.synthetic.main.book_home_page_layout.view.*
 import kotlinx.android.synthetic.main.error_page2.view.*
 import kotlinx.android.synthetic.main.read_bottom.view.*
 import kotlinx.android.synthetic.main.read_top.view.*
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.ReadConfig
-import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
 import java.util.*
-import kotlin.properties.Delegates
+import kotlin.collections.ArrayList
 
 
 /**
@@ -47,7 +45,7 @@ import kotlin.properties.Delegates
  *
  * Created by wt on 2017/12/14.
  */
-class HorizontalPage : FrameLayout,Observer {
+class HorizontalPage : FrameLayout, Observer {
 
     private var mDrawTextHelper: DrawTextHelper? = null
     private lateinit var loadView: View
@@ -106,15 +104,15 @@ class HorizontalPage : FrameLayout,Observer {
             noticePageListener?.loadTransCoding()
         }
         //设置TextColor
-        var colorInt =  when(ReadConfig.MODE) {
-            51 -> net.lzbook.kit.R.color.reading_operation_text_color_first
-            52 -> net.lzbook.kit.R.color.reading_text_color_second
-            53 -> net.lzbook.kit.R.color.reading_text_color_third
-            54 -> net.lzbook.kit.R.color.reading_text_color_fourth
-            55 -> net.lzbook.kit.R.color.reading_text_color_fifth
-            56 -> net.lzbook.kit.R.color.reading_text_color_sixth
-            61 -> net.lzbook.kit.R.color.reading_text_color_night
-            else -> net.lzbook.kit.R.color.reading_operation_text_color_first
+        var colorInt = when (ReadConfig.MODE) {
+            51 -> R.color.reading_operation_text_color_first
+            52 -> R.color.reading_text_color_second
+            53 -> R.color.reading_text_color_third
+            54 -> R.color.reading_text_color_fourth
+            55 -> R.color.reading_text_color_fifth
+            56 -> R.color.reading_text_color_sixth
+            61 -> R.color.reading_text_color_night
+            else -> R.color.reading_operation_text_color_first
         }
         novel_time.setTextColor(resources.getColor(colorInt))
         origin_tv.setTextColor(resources.getColor(colorInt))
@@ -147,6 +145,31 @@ class HorizontalPage : FrameLayout,Observer {
 
     fun setCursor(cursor: ReadCursor) = pageView.setCursor(cursor)
 
+    fun onReSeparate() = DataProvider.getInstance().onReSeparate()
+
+    fun onRedrawPage() {
+        if (tag == ReadViewEnums.PageIndex.current) {
+            onReSeparate()
+            viewNotify = when (mCursor!!.sequence) {
+                -1 -> ReadViewEnums.NotifyStateState.right
+                else -> ReadViewEnums.NotifyStateState.all
+            }
+            setCursor(mCursor!!)
+        }
+    }
+
+    fun onJumpChapter() = if (tag == ReadViewEnums.PageIndex.current) noticePageListener?.onJumpChapter()?:Unit else Unit
+
+    override fun update(o: Observable, arg: Any) {
+        when (arg as String) {
+            "READ_INTERLINEAR_SPACE" -> onRedrawPage()
+            "FONT_SIZE" -> onRedrawPage()
+            "SCREEN" -> onRedrawPage()
+            "MODE" -> setupView()
+            "JUMP" -> onJumpChapter()
+        }
+    }
+
     interface NoticePageListener {
         fun pageChangSuccess(cursor: ReadCursor, notify: ReadViewEnums.NotifyStateState)
         fun onClickLeft(smoothScroll: Boolean)
@@ -155,6 +178,7 @@ class HorizontalPage : FrameLayout,Observer {
         fun loadOrigin()
         fun loadTransCoding()
         fun currentViewSuccess()
+        fun onJumpChapter()
     }
 
     inner class HorizontalItemPage : View {
@@ -184,17 +208,7 @@ class HorizontalPage : FrameLayout,Observer {
                 }
 
                 override fun loadDataError(message: String) {
-                    //Error
-                    addView(errorView)
-                    viewState = ReadViewEnums.ViewState.error
-                    loadView.visibility = View.GONE
-                    errorView.loading_error_reload.setOnClickListener({
-                        entrance(cursor)
-                        loadView.visibility = View.VISIBLE
-                        viewState = ReadViewEnums.ViewState.loading
-                        removeView(errorView)
-                    })
-                    errorView.loading_error_setting.visibility = GONE
+                    showErrorView(cursor)
                     noticePageListener?.pageChangSuccess(mCursor!!, viewNotify)//游标通知回调
                 }
             })
@@ -225,81 +239,93 @@ class HorizontalPage : FrameLayout,Observer {
             //判断item 需要的章节是否在缓存
             val chapter = DataProvider.getInstance().chapterMap[cursor.sequence]
             if (chapter != null) {//加载数据
-                drawPage(cursor, chapter)
+                preDrawPage(cursor, chapter)
             } else {//无缓存数据
                 entrance(cursor)
             }
         }
 
         /**
-         * 画页面
+         * 画页面前准备
          */
-        private fun drawPage(cursor: ReadCursor, chapter: Chapter) {
+        private fun preDrawPage(cursor: ReadCursor, chapter: Chapter) {
             //获取数据
             cursor.readStatus.chapterName = chapter.chapter_name
             val chapterList = DataProvider.getInstance().chapterSeparate[cursor.sequence]!!
-            if (!chapterList.isEmpty()) {//集合不为空，角标小于集合长度
-                pageIndex = findPageIndexByOffset(cursor.offset, chapterList)
-                pageSum = chapterList.size
-                if (pageIndex <= pageSum) {
-                    //过滤其他页内容
-                    if (cursor.sequence == -1) {//封面页
-                        setupHomePage(cursor)
-                        val start = ReadViewEnums.ViewState.start
-                        start.Tag = when (viewNotify) {
-                            ReadViewEnums.NotifyStateState.all -> 1
-                            else -> 0
-                        }
-                        mCursor!!.offset = 1
-                        mCursor!!.lastOffset = 1
-                        mCursorOffset = -1
-                        viewState = start
-                        noticePageListener?.pageChangSuccess(mCursor!!, ReadViewEnums.NotifyStateState.none)//游标通知回调
-                    } else {
-                        mNovelPageBean = findNovelPageBeanByOffset(cursor.offset, chapterList)
-                        hasAd = mNovelPageBean!!.isAd
-                        contentLength = mNovelPageBean!!.contentLength
-                        if (mNovelPageBean!!.isAd) {//广告页
-                            showAdBigger(mNovelPageBean!!)
-                        } else {//普通页
-                            //画之前清空内容
-                            removeView(homePage)
-                            //画本页内容
-                            BitmapManager.getInstance().setSize(cursor.readStatus.screenWidth, cursor.readStatus.screenHeight)
-
-                            val topMargin = if (mNovelPageBean?.lines?.isNotEmpty() == true) mNovelPageBean!!.height else ReadConfig.screenHeight.toFloat()
-                            postInvalidate()
-                            //判断展示Banner广告
-                            if (cursor.readStatus.screenHeight - topMargin > cursor.readStatus.screenHeight / 5) {
-                                hasAd = true
-                                showAdBanner(topMargin)
-                            }
-                        }
-                        //改状态、游标状态
-                        loadView.visibility = View.GONE
-                        mCursor!!.lastOffset = chapterList.last().offset
-                        mCursor!!.offset = mNovelPageBean!!.offset
-                        mCursor!!.nextOffset = if (pageIndex < chapterList.size) chapterList[pageIndex].offset else 0
-                        viewState = if ((mCursor!!.sequence == ReadState.chapterList.size - 1) and (pageIndex == pageSum)) {//判断这本书的最后一页
-                            ReadViewEnums.ViewState.end
-                        } else {
-                            noticePageListener?.pageChangSuccess(mCursor!!, viewNotify)//游标通知回调
-                            ReadViewEnums.ViewState.success
-                        }
-                        //游标添加广告后的偏移量
-                        when {
-                            (pageSum >= 16) and (pageIndex >= 9) and (pageIndex != pageSum) -> mCursorOffset == -1
-                            (pageSum >= 16) and (pageIndex >= 9) and (pageIndex == pageSum) -> mCursorOffset == -2
-                            (pageSum < 16) and (pageIndex == pageSum) -> mCursorOffset == -1
-                            else -> mCursorOffset = 0
-                        }
-                        //设置top and bottom
-                        val chapterProgress = "" + (cursor.sequence.plus(1)) + "/" + cursor.readStatus.chapterCount + "章"
-                        val pageProgress = "本章第$pageIndex/$pageSum"
-                        setTopAndBottomViewContext(cursor.readStatus.chapterName, chapterProgress, pageProgress)
-                        noticePageListener?.currentViewSuccess()
+            try {
+                pageIndex = ReadQueryUtil.findPageIndexByOffset(cursor.offset, chapterList)
+            } catch (e: ReadCustomException.PageIndexException) {
+                showErrorView(mCursor!!)
+                return
+            }
+            pageSum = chapterList.size
+            if (pageIndex <= pageSum) {
+                //过滤其他页内容
+                if (cursor.sequence == -1) {//封面页
+                    setupHomePage(cursor)
+                    val start = ReadViewEnums.ViewState.start
+                    start.Tag = when (viewNotify) {
+                        ReadViewEnums.NotifyStateState.all -> 1
+                        else -> 0
                     }
+                    mCursor!!.offset = 1
+                    mCursor!!.lastOffset = 1
+                    mCursorOffset = -1
+                    viewState = start
+                    noticePageListener?.pageChangSuccess(mCursor!!, ReadViewEnums.NotifyStateState.none)//游标通知回调
+                } else {
+                    try {
+                        mNovelPageBean = ReadQueryUtil.findNovelPageBeanByOffset(cursor.offset, chapterList)
+                    }catch (e: ReadCustomException.PageOffsetException){
+                        showErrorView(mCursor!!)
+                        return
+                    }
+                    hasAd = mNovelPageBean!!.isAd
+                    contentLength = mNovelPageBean!!.contentLength
+                    if (mNovelPageBean!!.isAd) {//广告页
+                        showAdBigger(mNovelPageBean!!)
+                    } else {//普通页
+                        //画之前清空内容
+                        removeView(homePage)
+                        postInvalidate()
+                        //判断展示Banner广告
+                        val topMargin = if (mNovelPageBean?.lines?.isNotEmpty() == true) mNovelPageBean!!.height else ReadConfig.screenHeight.toFloat()
+                        if (cursor.readStatus.screenHeight - topMargin > cursor.readStatus.screenHeight / 5) {
+                            hasAd = true
+                            showAdBanner(topMargin)
+                        }
+                    }
+                    changeCursorState(chapterList)
+
+                    //设置top and bottom
+                    val chapterProgress = "" + (cursor.sequence.plus(1)) + "/" + cursor.readStatus.chapterCount + "章"
+                    val pageProgress = "本章第$pageIndex/$pageSum"
+                    setTopAndBottomViewContext(cursor.readStatus.chapterName, chapterProgress, pageProgress)
+                    noticePageListener?.currentViewSuccess()
                 }
+            }
+
+        }
+
+        private fun changeCursorState(chapterList: ArrayList<NovelPageBean>) {
+            //改状态、游标状态
+            loadView.visibility = View.GONE
+            mCursor!!.lastOffset = chapterList.last().offset
+            mCursor!!.offset = mNovelPageBean!!.offset
+            mCursor!!.nextOffset = if (pageIndex < chapterList.size) chapterList[pageIndex].offset else 0
+
+            viewState = if ((mCursor!!.sequence == ReadState.chapterList.size - 1) and (pageIndex == pageSum)) {//判断这本书的最后一页
+                ReadViewEnums.ViewState.end
+            } else {
+                noticePageListener?.pageChangSuccess(mCursor!!, viewNotify)//游标通知回调
+                ReadViewEnums.ViewState.success
+            }
+            //游标添加广告后的偏移量
+            mCursorOffset = when {
+                (pageSum >= 16) and (pageIndex >= 9) and (pageIndex != pageSum) -> -1
+                (pageSum >= 16) and (pageIndex >= 9) and (pageIndex == pageSum) -> -2
+                (pageSum < 16) and (pageIndex == pageSum) -> -1
+                else -> 0
             }
         }
 
@@ -324,23 +350,6 @@ class HorizontalPage : FrameLayout,Observer {
             loadView.visibility = View.GONE
             readTop.visibility = View.GONE
             readBottom.visibility = View.GONE
-        }
-
-        //通过偏移量获取章节
-        private fun findNovelPageBeanByOffset(offset: Int, chapterSeparate: ArrayList<NovelPageBean>): NovelPageBean {
-            //过滤集合 小于offset的最后一个元素
-            val filter = chapterSeparate.filter {
-                it.offset <= offset
-            }
-            return filter.last()
-        }
-
-        //通过偏移量获取页码Index
-        private fun findPageIndexByOffset(offset: Int, chapterSeparate: ArrayList<NovelPageBean>): Int {
-            val filter = chapterSeparate.filter {
-                it.offset <= offset
-            }
-            return filter.size
         }
 
         //展示Banner广告
@@ -370,6 +379,19 @@ class HorizontalPage : FrameLayout,Observer {
             addView(mNovelPageBean.adView, param)
         }
 
+        private fun showErrorView(cursor: ReadCursor) {
+            //Error
+            addView(errorView)
+            viewState = ReadViewEnums.ViewState.error
+            loadView.visibility = View.GONE
+            errorView.loading_error_reload.setOnClickListener({
+                entrance(cursor)
+                loadView.visibility = View.VISIBLE
+                viewState = ReadViewEnums.ViewState.loading
+                removeView(errorView)
+            })
+            errorView.loading_error_setting.visibility = FrameLayout.GONE
+        }
 
         private var isShowMenu: Boolean = false
 
@@ -382,14 +404,14 @@ class HorizontalPage : FrameLayout,Observer {
                 private var time: Long = 0
 
                 override fun onDown(event: MotionEvent): Boolean {
-                    if(System.currentTimeMillis() - time < 500) {
+                    if (System.currentTimeMillis() - time < 500) {
                         return false
                     }
                     time = System.currentTimeMillis()
 
-                    if(ReadConfig.animation == ReadViewEnums.Animation.curl) {
+                    if (ReadConfig.animation == ReadViewEnums.Animation.curl) {
                         return isTouchMenuArea(event)
-                    }else{
+                    } else {
                         return true
                     }
                 }
@@ -405,19 +427,18 @@ class HorizontalPage : FrameLayout,Observer {
                 override fun onShowPress(e: MotionEvent) = Unit
 
                 override fun onSingleTapUp(e: MotionEvent): Boolean {
-                    if(isShowMenu) {
+                    if (isShowMenu) {
                         noticePageListener?.onClickMenu(false)
                         isShowMenu = false
-                    }else {
-
+                    } else {
                         if (isTouchMenuArea(e)) {
                             noticePageListener?.onClickMenu(true)
                             isShowMenu = true
-                        }else{
-                            if(e.x < width/2){
+                        } else {
+                            if (e.x < width / 2) {
                                 //left
                                 noticePageListener?.onClickLeft(true)
-                            }else{
+                            } else {
                                 noticePageListener?.onClickRight(true)
                             }
                         }
@@ -435,33 +456,6 @@ class HorizontalPage : FrameLayout,Observer {
             val h4 = height / 4
             val w3 = width / 3
             return (x > w3) && !(x >= width.minus(w3) || y >= height.minus(h4) && x >= w3)
-        }
-    }
-
-    fun onReSeparate() = DataProvider.getInstance().onReSeparate()
-
-    fun onRedrawPage(){
-        if (tag == ReadViewEnums.PageIndex.current) {
-            onReSeparate()
-            viewNotify = ReadViewEnums.NotifyStateState.all
-            onReSeparate()
-            setCursor(mCursor!!)
-        }
-    }
-    /**
-     * 被观察者变化了
-     */
-    override fun update(o: Observable, arg: Any) {
-        when (arg as String){
-            "READ_INTERLINEAR_SPACE"->{
-                onRedrawPage()
-            }
-            "FONT_SIZE"->{
-                onRedrawPage()
-            }
-            "MODE"->{
-                setBackGroud()
-            }
         }
     }
 }
