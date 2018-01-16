@@ -57,6 +57,11 @@
             android:layout_above="@+id/novel_bottom"
             android:layout_below="@+id/novel_title_layout"/>
 
+    <include
+            android:id="@+id/load_page"
+            android:visibility="gone"
+            layout="@layout/loading_page_reading"/>
+
     <RelativeLayout
             android:id="@+id/novel_bottom"
             android:layout_width="match_parent"

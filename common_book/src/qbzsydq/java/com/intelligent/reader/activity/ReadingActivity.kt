@@ -194,6 +194,9 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
             read_catalog_mark_drawer.closeDrawers()
             return
         }
+
+        readSettingView.dismissMenu()
+
         val isFinish = mReadPresenter.onBackPressed()
         if (isFinish && !isFinishing) {
             super.onBackPressed()
@@ -290,7 +293,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     }
 
     //目录跳章
-    override fun onJumpChapter(sequence: Int,offset:Int) {
+    override fun onJumpChapter(sequence: Int, offset: Int) {
         ReadState.sequence = sequence
         ReadState.currentPage = 0
         ReadState.offset = offset
@@ -354,7 +357,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         readStatus = readSta
     }
 
-    override fun showSetMenu(isShow: Boolean){
+    override fun showSetMenu(isShow: Boolean) {
 
     }
 
@@ -423,8 +426,8 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     }
 
     override fun showMenu(isShow: Boolean) {
-        if(isShow) {
-            if(!readSettingView.isChecked()) {
+        if (isShow) {
+            if (!readSettingView.isChecked()) {
                 readSettingView.showMenu()
             }
         } else {
@@ -463,7 +466,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
                 startReadTime.toString(), endTime.toString(), (endTime - startReadTime).toString(), "false", channelCode)
     }
 
-    override fun readOptionHeaderDismiss(){
+    override fun readOptionHeaderDismiss() {
         option_header.dismissLoadingPage()
     }
 }
