@@ -60,7 +60,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     private var themeHelper: ThemeHelper? = null
     var currentThemeMode: String? = null
 
-    private var isChecked: Boolean = false
+    private var mIsChecked: Boolean = false
 
     private var time: Long = 0
 
@@ -258,44 +258,43 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         }
     }
 
-    fun showSetMenu(show: Boolean) {
-        if (show) {
-            read_setting_reduce_text!!.isEnabled = ReadConfig.FONT_SIZE > 10
-            read_setting_increase_text!!.isEnabled = ReadConfig.FONT_SIZE < 30
-            novel_bottom_options.visibility = View.VISIBLE
-            novel_bottom_options.startAnimation(popUpInAnimation)
+    fun showMenu() {
+        read_setting_reduce_text!!.isEnabled = ReadConfig.FONT_SIZE > 10
+        read_setting_increase_text!!.isEnabled = ReadConfig.FONT_SIZE < 30
+        novel_bottom_options.visibility = View.VISIBLE
+        novel_bottom_options.startAnimation(popUpInAnimation)
 
-            refreshJumpPreBtnState()
+        refreshJumpPreBtnState()
 
-            if (novel_jump_layout != null) {
-                if (readStatus!!.chapterCount - 1 <= 0 || readStatus!!.chapterCount - 1 < readStatus!!.sequence) {
-                    novel_jump_progress!!.progress = 0
-                } else {
-                    val index = Math.max(readStatus!!.sequence, 0)
-                    novel_jump_progress!!.progress = index * 100 / (readStatus!!.chapterCount - 1)
-                }
-                showChapterProgress()
-            }
-
-
-            if (themeHelper!!.isNight) {
-                txt_night.text = "白天"
-                ibtn_night.setImageResource(R.drawable.read_option_day_selector)
+        if (novel_jump_layout != null) {
+            if (readStatus!!.chapterCount - 1 <= 0 || readStatus!!.chapterCount - 1 < readStatus!!.sequence) {
+                novel_jump_progress!!.progress = 0
             } else {
-                txt_night.text = "夜间"
-                ibtn_night.setImageResource(R.drawable.read_option_night_selector)
+                val index = Math.max(readStatus!!.sequence, 0)
+                novel_jump_progress!!.progress = index * 100 / (readStatus!!.chapterCount - 1)
             }
-
-        } else {
-            if (novel_bottom_options != null && novel_bottom_options!!.isShown) {
-                novel_bottom_options!!.startAnimation(popDownOutAnimation)
-            }
-            popDownOutAnimation!!.onEnd {
-                novel_bottom_options!!.visibility = View.GONE
-            }
-            read_setting_detail!!.visibility = View.GONE
-            //dismissNovelHintLayout();
+            showChapterProgress()
         }
+
+        if (themeHelper!!.isNight) {
+            txt_night.text = "白天"
+            ibtn_night.setImageResource(R.drawable.read_option_day_selector)
+        } else {
+            txt_night.text = "夜间"
+            ibtn_night.setImageResource(R.drawable.read_option_night_selector)
+        }
+        mIsChecked = true
+    }
+
+    fun dismissMenu() {
+        if (novel_bottom_options != null && novel_bottom_options!!.isShown) {
+            novel_bottom_options!!.startAnimation(popDownOutAnimation)
+        }
+        popDownOutAnimation?.onEnd {
+            novel_bottom_options!!.visibility = View.GONE
+        }
+        read_setting_detail!!.visibility = View.GONE
+        mIsChecked = false
     }
 
     private fun showChapterProgress() {
@@ -646,7 +645,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
     fun setNovelMode(index: Int) {
         when (index) {
-            51 ->  read_setting_backdrop_group?.check(R.id.read_backdrop_first)
+            51 -> read_setting_backdrop_group?.check(R.id.read_backdrop_first)
             52 -> read_setting_backdrop_group?.check(R.id.read_backdrop_second)
             53 -> read_setting_backdrop_group?.check(R.id.read_backdrop_third)
             54 -> read_setting_backdrop_group?.check(R.id.read_backdrop_fourth)
@@ -659,7 +658,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             }
             else -> Unit
         }
-        if (index in 51..56){
+        if (index in 51..56) {
             readSettingHelper?.setReadMode(index)
             changeMode(index)
         }
@@ -1026,6 +1025,9 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         this.listener = listener
     }
 
+    fun isChecked() = mIsChecked
+
+
     interface OnReadSettingListener {
         fun onReadCatalog()
 
@@ -1053,8 +1055,6 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
         fun changeAnimMode(mode: Int)
     }
-
-    fun isChecked() = isChecked
 
     companion object {
 

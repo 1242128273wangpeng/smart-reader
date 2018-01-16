@@ -560,11 +560,11 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
         mOriginDataList.clear()
     }
 
-    fun onRedrawPage() {
+    private fun onRedrawPage() {
         getChapterData(ReadState.sequence, ReadViewEnums.PageIndex.current, true)
     }
 
-    fun onJumpChapter(sequence: Int) {
+    private fun onJumpChapter(sequence: Int) {
         getChapterData(sequence, ReadViewEnums.PageIndex.current, true)
     }
 
@@ -572,7 +572,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
 
     }
 
-    fun setBackground() {
+    private fun setBackground() {
         ThemeUtil.getModePrimaryBackground(resources, this)
         origin_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
         trans_coding_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
