@@ -1215,14 +1215,14 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             full(false)
             changeMarkState()
             mReadOptionPresenter?.view?.show(true)
-            view?.showSetMenu(isShow)
+//            view?.showSetMenu(isShow)
             readStatus!!.isMenuShow = true
             view?.initSettingGuide()
         } else {
             full(true)
             readStatus!!.isMenuShow = false
             mReadOptionPresenter!!.view!!.show(false)
-            view?.showSetMenu(isShow)
+//            view?.showSetMenu(isShow)
             readStatus!!.isMenuShow = false
         }
     }

@@ -1,9 +1,6 @@
 package com.intelligent.reader.activity
 
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.res.Configuration
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -24,7 +21,6 @@ import com.intelligent.reader.presenter.read.ReadPresenter
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.animation.BitmapManager
 import com.intelligent.reader.read.help.IReadPageChange
-import net.lzbook.kit.data.bean.ReadConfig
 import com.intelligent.reader.read.mode.ReadInfo
 import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.read.page.AutoReadMenu
@@ -198,6 +194,9 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
             read_catalog_mark_drawer.closeDrawers()
             return
         }
+
+        readSettingView.dismissMenu()
+
         val isFinish = mReadPresenter.onBackPressed()
         if (isFinish && !isFinishing) {
             super.onBackPressed()
@@ -290,10 +289,11 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onChangeScreenMode() {
         mReadPresenter.changeScreenMode()
+        readSettingView.dismissMenu()
     }
 
     //目录跳章
-    override fun onJumpChapter(sequence: Int,offset:Int) {
+    override fun onJumpChapter(sequence: Int, offset: Int) {
         ReadState.sequence = sequence
         ReadState.currentPage = 0
         ReadState.offset = offset
@@ -341,6 +341,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
             readerWidget.setIReadPageChange(this)
         }
         readerWidget.changeAnimMode(mode)
+        readSettingView.dismissMenu()
     }
 
     //ReadSettingView end
@@ -355,7 +356,9 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         readStatus = readSta
     }
 
-    override fun showSetMenu(isShow: Boolean) = readSettingView.showSetMenu(isShow)
+    override fun showSetMenu(isShow: Boolean) {
+
+    }
 
     override fun full(isFull: Boolean) {
         if (isFull) {
@@ -417,6 +420,13 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     }
 
     override fun showMenu(isShow: Boolean) {
+        if (isShow) {
+            if (!readSettingView.isChecked()) {
+                readSettingView.showMenu()
+            }
+        } else {
+            readSettingView.dismissMenu()
+        }
         mReadPresenter.showMenu(isShow)
     }
 
@@ -450,7 +460,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
                 startReadTime.toString(), endTime.toString(), (endTime - startReadTime).toString(), "false", channelCode)
     }
 
-    override fun readOptionHeaderDismiss(){
+    override fun readOptionHeaderDismiss() {
         option_header.dismissLoadingPage()
     }
 }
