@@ -331,7 +331,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onChageNightMode() {
         mReadPresenter.onChageNightMode()
-//        readerWidget.setBackground()
     }
 
     //0 滑动 1 仿真 2 平移 3 上下
@@ -415,11 +414,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     companion object {
         private var readStatus: ReadStatus by Delegates.notNull()
-    }
-
-    //IReadPageChange
-    override fun onLoadChapter(type: ReadViewEnums.MsgType, sequence: Int, isShowLoadPage: Boolean, pageIndex: ReadViewEnums.PageIndex) {
-
     }
 
     override fun showMenu(isShow: Boolean) {
