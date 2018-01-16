@@ -18,11 +18,8 @@ import com.intelligent.reader.view.ViewPager
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.data.bean.Chapter
-import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.utils.AppLog
-import net.lzbook.kit.utils.AppUtils
-import java.util.*
 
 /**
  * 水平滑动PageView容器
@@ -389,8 +386,10 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             }
         }
     }
-
-    private var mHorizontalEvent: HorizontalEvent? = null
+    //跳章
+    override fun onJumpChapter() {
+        entrance(this.mReadInfo!!)
+    }
 
     //==================================================IReadPageChange=========================================
     private var mReadPageChange: IReadPageChange? = null
@@ -415,28 +414,6 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         }, 200)
     }
 
-    //设置背景颜色
-    override fun setBackground() {
-//        for (i in 0 until childCount) {
-//            val childAtView = getChildAt(i) as HorizontalPage
-//            childAtView.setBackGroud()
-//        }
-    }
-
-    //重画
-    override fun onRedrawPage() {
-//        val curView = findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage
-//        curView.viewNotify = ReadViewEnums.NotifyStateState.all
-//        curView.onReSeparate()
-//        curView.setCursor(curView.mCursor!!)
-    }
-
-    //跳章
-    override fun onJumpChapter(sequence: Int) {
-        entrance(this.mReadInfo!!)
-    }
-
-
     override fun onAnimationChange(animation: ReadViewEnums.Animation) {
         if (ReadConfig.animation == ReadViewEnums.Animation.shift) {
             setShadowDrawable(R.drawable.page_shadow)
@@ -448,28 +425,29 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         }
     }
 
+    //==================================================TouchEvent=========================================
+
+    private var mHorizontalEvent: HorizontalEvent? = null
+
     override fun setHorizontalEventListener(mHorizontalEvent: HorizontalEvent?) {
         this.mHorizontalEvent = mHorizontalEvent
     }
-
-    //==================================================TouchEvent=========================================
     //-----禁止左滑-------左滑：上一次坐标 > 当前坐标
     override fun onTouchEvent(event: MotionEvent): Boolean {
-
-        return when (isCanScroll) {
-            -1 -> true
-            0 -> {
-                if (ReadConfig.animation == ReadViewEnums.Animation.curl) {
-                    mHorizontalEvent!!.myDispatchTouchEvent(event)
-                } else {
-                    super.onTouchEvent(event)
-                }
-            }
-            else -> prohibitionOfSlidingTouchEvent(event)
+        return if (ReadConfig.animation == ReadViewEnums.Animation.curl) {
+            mHorizontalEvent!!.myDispatchTouchEvent(event)
+        } else {
+            super.onTouchEvent(event)
         }
-
     }
 
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        return when (isCanScroll) {
+            -1 -> true
+            0 -> return super.dispatchTouchEvent(event)
+            else -> prohibitionOfSlidingTouchEvent(event)
+        }
+    }
     /**
      * 禁止单方向滑动事件
      */

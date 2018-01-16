@@ -196,23 +196,20 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
     override fun entrance(mReadInfo: ReadInfo) {
         if (animaEnums != mReadInfo.animaEnums) { //如果阅读模式发生变化
             if (mReaderView != null) removeView(mReaderView as View)//移除
-
             mReaderView = mReaderViewFactory?.getView(mReadInfo.animaEnums)//创建
             (mReaderView as View).isClickable = false
             if (mReaderView != null) addView(mReaderView as View)//添加
             animaEnums = mReadInfo.animaEnums//记录动画模式
             mReaderView?.setHorizontalEventListener(this)
-
             initGLSufaceView()
-
         }
         mReaderView?.entrance(mReadInfo)
     }
 
-    /**
-     * 设置背景颜色
-     */
-    override fun setBackground() = mReaderView?.setBackground() ?: Unit
+//    /**
+//     * 设置背景颜色
+//     */
+//    override fun setBackground() = mReaderView?.setBackground() ?: Unit
 
 
     /**
@@ -221,15 +218,15 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
      */
     override fun setIReadPageChange(mReadPageChange: IReadPageChange?) = mReaderView?.setIReadPageChange(mReadPageChange) ?: Unit
 
-    /**
-     * 重画item页面
-     */
-    override fun onRedrawPage() = mReaderView?.onRedrawPage() ?: Unit
-
-    /**
-     * 跳章
-     */
-    override fun onJumpChapter(sequence: Int) = mReaderView?.onJumpChapter(sequence) ?: Unit
+//    /**
+//     * 重画item页面
+//     */
+//    override fun onRedrawPage() = mReaderView?.onRedrawPage() ?: Unit
+//
+//    /**
+//     * 跳章
+//     */
+//    override fun onJumpChapter(sequence: Int) = mReaderView?.onJumpChapter(sequence) ?: Unit
 
     override fun changeAnimMode(mode: Int) {
         ReadConfig.animation = when (mode) {

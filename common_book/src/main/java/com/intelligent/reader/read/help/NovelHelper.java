@@ -16,6 +16,7 @@ import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.BookTask;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.NovelLineBean;
+import net.lzbook.kit.data.bean.ReadConfig;
 import net.lzbook.kit.data.bean.ReadStatus;
 import net.lzbook.kit.data.bean.Source;
 import net.lzbook.kit.data.db.BookChapterDao;
@@ -220,7 +221,7 @@ public class NovelHelper {
         final SourceAdapter sourceListAdapter = new SourceAdapter(activity, sources);
         change_source_list.setAdapter(sourceListAdapter);
 
-        if (Constants.IS_LANDSCAPE) {
+        if (ReadConfig.INSTANCE.getIS_LANDSCAPE()) {
             if (sources.size() > 1) {
                 change_source_list.getLayoutParams().height = activity.getResources().getDimensionPixelOffset(R.dimen.dimen_view_height_80);
             }

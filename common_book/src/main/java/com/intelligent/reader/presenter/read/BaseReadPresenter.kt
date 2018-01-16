@@ -257,7 +257,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                 }
             }
         })
-        if (isFromCover && Constants.IS_LANDSCAPE) {
+        if (isFromCover && ReadConfig.IS_LANDSCAPE) {
             return
         }
         view?.initCatlogView()
@@ -308,7 +308,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         initWindow()
         setOrientation()
         getSavedState(intent.extras)
-        if (isFromCover && Constants.IS_LANDSCAPE) {
+        if (isFromCover && ReadConfig.IS_LANDSCAPE) {
             return
         }
 
@@ -369,7 +369,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             view?.initView(mReaderViewModel!!)
         } else {
             //重绘屏幕
-            view?.onChangedScreen()
+//            view?.onChangedScreen()
         }
 
         // 初始化监听器
@@ -435,14 +435,14 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                     is_dot_orientation = true
                 }
                 readReference?.get()?.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-                Constants.IS_LANDSCAPE = false
+                ReadConfig.IS_LANDSCAPE = false
             } else if (sp?.getInt("screen_mode", 3) == Configuration.ORIENTATION_LANDSCAPE && readReference?.get()?.getResources()!!
                     .getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
                 if (!is_dot_orientation) {
                     is_dot_orientation = true
                 }
                 readReference?.get()?.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-                Constants.IS_LANDSCAPE = true
+                ReadConfig.IS_LANDSCAPE = true
             } else {
                 if (!is_dot_orientation) {
                     is_dot_orientation = true
@@ -1133,7 +1133,6 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             StartLogClickUtil.upLoadEventLog(readReference?.get(), StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.HPMODEL, data)
             act.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             screen_mode.putInt("screen_mode", Configuration.ORIENTATION_PORTRAIT)
-            Constants.IS_LANDSCAPE = false
         } else if (act.resources!!.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_landscape_btn)
             val data = HashMap<String, String>()
@@ -1142,7 +1141,6 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             act.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             isFromCover = false
             screen_mode.putInt("screen_mode", Configuration.ORIENTATION_LANDSCAPE)
-            Constants.IS_LANDSCAPE = true
         }
         screen_mode.apply()
     }
@@ -1419,7 +1417,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     fun onResume() {
 
         // 设置全屏
-        if (isFromCover && Constants.IS_LANDSCAPE) {
+        if (isFromCover && ReadConfig.IS_LANDSCAPE) {
             return
         }
         view?.checkModeChange()
@@ -1884,7 +1882,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                 }
             }
 
-            if (Constants.IS_LANDSCAPE) {
+            if (ReadConfig.IS_LANDSCAPE) {
                 myDialog!!.findViewById(R.id.sv_feedback).layoutParams.height = readReference?.get()?.getResources()!!.getDimensionPixelOffset(R.dimen.dimen_view_height_160)
             } else {
                 myDialog!!.findViewById(R.id.sv_feedback).layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT

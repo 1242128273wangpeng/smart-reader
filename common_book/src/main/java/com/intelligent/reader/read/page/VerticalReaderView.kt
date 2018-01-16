@@ -23,12 +23,14 @@ import com.intelligent.reader.util.ThemeUtil
 import kotlinx.android.synthetic.main.vertical_pager_layout.view.*
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
+import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.ToastUtils
+import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 
-class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadViewClickListener {
+class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadViewClickListener,Observer {
 
     private val TAG: String = "VerticalReaderView"
 
@@ -535,8 +537,13 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
         }
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        ReadConfig.registObserver(this)
+    }
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
+        ReadConfig.unregistObserver(this)
         for (i in mOriginDataList.indices) {
             val pageContent = mOriginDataList[i]
             for (content in pageContent.lines) {
@@ -553,11 +560,11 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
         mOriginDataList.clear()
     }
 
-    override fun onRedrawPage() {
+    fun onRedrawPage() {
         getChapterData(ReadState.sequence, ReadViewEnums.PageIndex.current, true)
     }
 
-    override fun onJumpChapter(sequence: Int) {
+    fun onJumpChapter(sequence: Int) {
         getChapterData(sequence, ReadViewEnums.PageIndex.current, true)
     }
 
@@ -565,7 +572,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
 
     }
 
-    override fun setBackground() {
+    fun setBackground() {
         ThemeUtil.getModePrimaryBackground(resources, this)
         origin_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
         trans_coding_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
@@ -573,6 +580,16 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
         novel_chapter.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
         novel_title.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
         mAdapter.setTextColor(resources.getColor(ThemeUtil.modeLoadTextColor))
+    }
+
+    override fun update(o: Observable?, arg: Any?) {
+        when (arg as String) {
+            "READ_INTERLINEAR_SPACE" -> onRedrawPage()
+            "FONT_SIZE" -> onRedrawPage()
+            "SCREEN" -> onRedrawPage()
+            "MODE" -> setBackground()
+            "JUMP" -> onJumpChapter(ReadState.sequence)
+        }
     }
 
     private var mReadPageChange: IReadPageChange? = null

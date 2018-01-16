@@ -53,6 +53,24 @@ object ReadConfig :Observable(){
                 notifyObservers("MODE")
             }
         }
+    //横竖屏切换
+    var IS_LANDSCAPE = false
+        set(value) {
+            if (field != value) {
+                field = value
+                setChanged()
+                notifyObservers("SCREEN")
+            }
+        }
+    //跳章 改为true 则为跳章
+    var jump:Boolean = false
+        set(value) {
+            if (value) {
+                setChanged()
+                notifyObservers("JUMP")
+            }
+        }
+
     // 阅读页默认字体大小
     val FONT_CHAPTER_DEFAULT = 18
     //阅读页面章节首页字体

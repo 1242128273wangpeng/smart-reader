@@ -17,7 +17,6 @@ import com.intelligent.reader.cover.BookCoverRepositoryFactory
 import com.intelligent.reader.read.help.ReadSeparateHelper
 import com.intelligent.reader.read.mode.NovelPageBean
 import com.intelligent.reader.read.mode.ReadState
-import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.reader.ReaderOwnRepository
 import com.intelligent.reader.reader.ReaderRepositoryFactory
 import com.intelligent.reader.repository.BookCoverRepository
@@ -26,10 +25,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.Book
-import net.lzbook.kit.data.bean.Chapter
-import net.lzbook.kit.data.bean.NovelLineBean
-import net.lzbook.kit.data.bean.RequestItem
+import net.lzbook.kit.data.bean.*
 import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.utils.NetWorkUtils
@@ -175,7 +171,7 @@ class DataProvider : DisposableAndroidViewModel() {
      */
     fun loadChapterBetweenAd(context: Context, callback: OnLoadReaderAdCallback) {
         val adTyep: String
-        if (Constants.IS_LANDSCAPE) {
+        if (ReadConfig.IS_LANDSCAPE) {
             adTyep = AdMarkPostion.SUPPLY_READING_SPACE
         } else {
             adTyep = AdMarkPostion.READING_POSITION

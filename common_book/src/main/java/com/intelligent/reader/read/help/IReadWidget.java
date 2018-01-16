@@ -16,28 +16,11 @@ public interface IReadWidget {
     void entrance(ReadInfo mReadInfo);
 
     /**
-     * 设置背景颜色
-     */
-    void setBackground();
-
-    /**
      * 设置 IReadView 实现 View 的变化监听
      *
      * @param mReadPageChange 监听对象
      */
     void setIReadPageChange(IReadPageChange mReadPageChange);
-
-    /**
-     * 设置SettingView重画
-     */
-    void onRedrawPage();
-
-    /**
-     * 跳章
-     *
-     * @param sequence 章序号
-     */
-    void onJumpChapter(int sequence);
 
     void changeAnimMode(int mode);
 }

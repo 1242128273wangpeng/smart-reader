@@ -558,15 +558,10 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             }
             readSettingHelper?.saveFontSize()
             setFontSize()
-            val temp_offset = readStatus!!.offset
-            if (listener != null) {
-                listener?.onRedrawPage()
-            }
-            readStatus!!.offset = temp_offset
         }
         val data = java.util.HashMap<String, String>()
         data.put("type", "2")
-        data.put("FONT", Constants.FONT_SIZE.toString())
+        data.put("FONT", ReadConfig.FONT_SIZE.toString())
         StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.WORDSIZE, data)
     }
 
@@ -585,12 +580,6 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             readSettingHelper!!.saveFontSize()
 
             setFontSize()
-
-            val temp_offset = readStatus!!.offset
-            if (listener != null) {
-                listener!!.onRedrawPage()
-            }
-            readStatus!!.offset = temp_offset
         }
         val data = java.util.HashMap<String, String>()
         data.put("type", "1")
@@ -843,13 +832,6 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         readSettingHelper!!.saveLinearSpace()
 
         isCustomReadingSpace = false
-
-        val temp_offset = readStatus!!.offset
-        // 重新绘制页面
-        if (listener != null) {
-            listener!!.onRedrawPage()
-        }
-        readStatus!!.offset = temp_offset
     }
 
     // 根据页间距默认值判断是否为自定义间距
@@ -1057,9 +1039,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
         fun onChangeScreenMode()
 
-        fun onRedrawPage()
 
-        fun onJumpChapter()
 
         fun onJumpChapter(sequence: Int, offset: Int)
 

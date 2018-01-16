@@ -79,7 +79,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         read_catalog_mark_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-
         mReadPresenter.onNewIntent(intent)
     }
 
@@ -87,6 +86,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         super.onConfigurationChanged(newConfig)
         read_catalog_mark_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         mReadPresenter.onConfigurationChanged(mCatalogMarkFragment, option_header, readerWidget.childCount)
+        ReadConfig.IS_LANDSCAPE = (newConfig.orientation != Configuration.ORIENTATION_PORTRAIT)
     }
 
     override fun initView(fac: ReaderViewModel) {
@@ -254,6 +254,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         mReadPresenter.onDestroy()
         DataProvider.getInstance().unSubscribe()
         DataProvider.getInstance().relase()
+        ReadConfig.unregistObserverAll()
         super.onDestroy()
     }
 
@@ -284,19 +285,11 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onChangeMode(mode: Int) {
         mReadPresenter.onChangeMode(mode)
-        readerWidget.setBackground()
+//        readerWidget.setBackground()
     }
 
     override fun onChangeScreenMode() {
         mReadPresenter.changeScreenMode()
-    }
-
-    override fun onRedrawPage() {
-        readerWidget.onRedrawPage()
-    }
-
-    override fun onJumpChapter() {
-
     }
 
     //目录跳章
@@ -304,7 +297,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         ReadState.sequence = sequence
         ReadState.currentPage = 0
         ReadState.offset = offset
-        readerWidget.onJumpChapter(ReadState.sequence)
+        ReadConfig.jump = true
         read_catalog_mark_drawer.closeDrawers()
     }
 
@@ -314,25 +307,23 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
             showToastShort(net.lzbook.kit.R.string.is_first_chapter)
             return
         }
-
+        ReadState.sequence--
         ReadState.currentPage = 0
         ReadState.offset = 0
-        readerWidget.onJumpChapter(--ReadState.sequence)
-
+        ReadConfig.jump = true
         mReadPresenter.onJumpPreChapter()
     }
 
     //下一章
     override fun onJumpNextChapter() {
-        if (readStatus.book?.book_type != 0) {
+        if (ReadState.book?.book_type != 0) {
             showToastShort(net.lzbook.kit.R.string.last_chapter_tip)
             return
         }
-
+        ReadState.sequence++
         ReadState.offset = 0
         ReadState.currentPage = 0
-        readerWidget.onJumpChapter(++ReadState.sequence)
-
+        ReadConfig.jump = true
         mReadPresenter.onJumpNextChapter()
     }
 
@@ -340,7 +331,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onChageNightMode() {
         mReadPresenter.onChageNightMode()
-        readerWidget.setBackground()
+//        readerWidget.setBackground()
     }
 
     //0 滑动 1 仿真 2 平移 3 上下
@@ -463,14 +454,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
         StartLogClickUtil.upLoadReadContent(bookId, chapterId, sourceIds, pageCount, currentPage, currentPageContentLength, "2",
                 startReadTime.toString(), endTime.toString(), (endTime - startReadTime).toString(), "false", channelCode)
-    }
-
-    override fun setBackground() {
-        readerWidget.setBackground()
-    }
-
-    override fun onChangedScreen() {
-        onRedrawPage()
     }
 
     override fun readOptionHeaderDismiss(){
