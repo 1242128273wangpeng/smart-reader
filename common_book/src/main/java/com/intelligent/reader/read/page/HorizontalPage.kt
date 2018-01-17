@@ -227,6 +227,7 @@ class HorizontalPage : FrameLayout, Observer {
 
     private fun showErrorView(cursor: ReadCursor) {
         //Error
+        removeView(errorView)
         addView(errorView)
         viewState = ReadViewEnums.ViewState.error
         loadView.visibility = View.GONE

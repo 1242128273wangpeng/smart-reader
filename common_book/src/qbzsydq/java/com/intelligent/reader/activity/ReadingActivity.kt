@@ -21,7 +21,6 @@ import com.intelligent.reader.presenter.read.ReadPresenter
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.animation.BitmapManager
 import com.intelligent.reader.read.help.IReadPageChange
-import com.intelligent.reader.read.mode.ReadInfo
 import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.read.page.AutoReadMenu
 import com.intelligent.reader.read.page.PageInterface
@@ -111,7 +110,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         }
 
         readerWidget.initReaderViewFactory()
-        readerWidget.entrance(ReadInfo(readStatus.book!!, readStatus, ReadConfig.animation))
+        readerWidget.entrance()
         readerWidget.setIReadPageChange(this)
         readSettingView.setNovelMode(ReadConfig.MODE)
 
@@ -337,7 +336,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     override fun changeAnimMode(mode: Int) {
         if (((mode == 3) and (ReadConfig.animation != ReadViewEnums.Animation.list)) or ((ReadConfig.animation == ReadViewEnums.Animation.list) and (mode != 3))) {
             readerWidget.changeAnimMode(mode)
-            readerWidget.entrance(ReadInfo(readStatus.book, readStatus, ReadConfig.animation))
+            readerWidget.entrance()
             readerWidget.setIReadPageChange(this)
         }
         readerWidget.changeAnimMode(mode)

@@ -265,13 +265,12 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         novel_bottom_options.startAnimation(popUpInAnimation)
 
         refreshJumpPreBtnState()
-
+        novel_jump_progress.max = ReadState.chapterList.size -1
         if (novel_jump_layout != null) {
-            if (readStatus!!.chapterCount - 1 <= 0 || readStatus!!.chapterCount - 1 < readStatus!!.sequence) {
+            if (ReadState.chapterList.size < 1 || ReadState.sequence < 1) {
                 novel_jump_progress!!.progress = 0
             } else {
-                val index = Math.max(readStatus!!.sequence, 0)
-                novel_jump_progress!!.progress = index * 100 / (readStatus!!.chapterCount - 1)
+                novel_jump_progress!!.progress = ReadState.sequence
             }
             showChapterProgress()
         }
@@ -891,17 +890,21 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             anim?.duration = 1000
             anim?.startDelay = 1000
             anim?.start()
-            val resizeProgress = progress.times(ReadState.chapterList.size).div(100)
+//            val resizeProgress = progress.times(ReadState.chapterList.size).div(100)
             if (!ReadState.chapterList.isEmpty()
-                    && resizeProgress <= ReadState.chapterList.size && resizeProgress >= 0) {
-                readStatus!!.novel_progress = resizeProgress
+                    && progress <= ReadState.chapterList.size && progress >= 0) {
+//                readStatus!!.novel_progress = resizeProgress
                 changeBottomSettingView(SETTING_OPTION)
-                if (resizeProgress == 0) {
-                    novel_hint_chapter.text = ReadState.chapterList[resizeProgress].chapter_name
-                    novel_hint_sequence.text = resizeProgress.plus(1).toString() + "/" + ReadState.chapterList.size
-                } else {
-                    novel_hint_chapter.text = ReadState.chapterList[resizeProgress - 1].chapter_name
-                    novel_hint_sequence.text = resizeProgress.toString() + "/" + ReadState.chapterList.size
+                AppLog.e("progress1", progress.toString())
+                if (progress == 0) {
+                    novel_hint_chapter.text = ReadState.chapterList[progress].chapter_name
+                    novel_hint_sequence.text = progress.plus(1).toString() + "/" + ReadState.chapterList.size
+                } else if(progress == ReadState.chapterList.size-1){
+                    novel_hint_chapter.text = ReadState.chapterList[ReadState.chapterList.size - 1].chapter_name
+                    novel_hint_sequence.text = ReadState.chapterList.size.toString() + "/" + ReadState.chapterList.size
+                } else{
+                    novel_hint_chapter.text = ReadState.chapterList[progress - 1].chapter_name
+                    novel_hint_sequence.text = progress.toString() + "/" + ReadState.chapterList.size
                 }
             }
 
@@ -952,7 +955,11 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             if (readStatus!!.novel_progress == readStatus!!.sequence) {// 本章不跳
                 return
             }
-            val resizeProgress = seekBar.progress.times(ReadState.chapterList.size).div(100)
+            var resizeProgress = when(seekBar.progress) {
+                0  -> 0
+                else -> seekBar.progress - 1
+            }
+            AppLog.e("progress2", resizeProgress.toString())
             var offset = 0
             if (Constants.QG_SOURCE == readStatus!!.book.site) {
                 val chapterId = getQGChapterId(readStatus!!.novel_progress)
@@ -1040,7 +1047,6 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         fun onChangeMode(mode: Int)
 
         fun onChangeScreenMode()
-
 
 
         fun onJumpChapter(sequence: Int, offset: Int)

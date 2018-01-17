@@ -11,7 +11,6 @@ import com.intelligent.reader.read.animation.ShiftTransformer
 import com.intelligent.reader.read.animation.SlideTransformer
 import com.intelligent.reader.read.help.*
 import com.intelligent.reader.read.mode.ReadCursor
-import com.intelligent.reader.read.mode.ReadInfo
 import com.intelligent.reader.read.mode.ReadState
 import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.view.ViewPager
@@ -34,7 +33,6 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     //禁止滑动方向 true:禁止左滑 false:禁止右滑
     var isLeftSlip: Boolean = true
 
-    var mReadInfo: ReadInfo? = null
     //当前游标
     var curCursor: ReadCursor? = null
     //滑动方向
@@ -161,10 +159,12 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                         //加载缓存
                         for (i in 0..keyList.first().minus(ReadState.sequence)) {
                             if (ReadState.sequence.minus(i) < -1) continue
-                            DataProvider.getInstance().loadChapter(mReadInfo!!.curBook, ReadState.sequence.minus(i), ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener() {
-                                override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
-                                override fun loadDataError(message: String) = Unit
-                            })
+                            ReadState.book?.let {
+                                DataProvider.getInstance().loadChapter(it, ReadState.sequence.minus(i), ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener() {
+                                    override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
+                                    override fun loadDataError(message: String) = Unit
+                                })
+                            }
                         }
                     }
                 }
@@ -174,10 +174,12 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                         if (keyList.size >= 3) keyList.filter { it < keyList[keyList.size - 3] }.forEach { provider.chapterMap.remove(it) }
                         for (i in 0..ReadState.sequence.minus(keyList.first())) {
                             if (ReadState.sequence.plus(i) > ReadState.chapterList.size) continue
-                            DataProvider.getInstance().loadChapter(mReadInfo!!.curBook, ReadState.sequence.plus(i), ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener() {
-                                override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
-                                override fun loadDataError(message: String) = Unit
-                            })
+                            ReadState.book?.let {
+                                DataProvider.getInstance().loadChapter(it, ReadState.sequence.plus(i), ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener() {
+                                    override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
+                                    override fun loadDataError(message: String) = Unit
+                                })
+                            }
                         }
                     }
                 }
@@ -385,7 +387,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     }
     //跳章
     override fun onJumpChapter() {
-        entrance(this.mReadInfo!!)
+        entrance()
     }
 
     //==================================================IReadPageChange=========================================
@@ -398,17 +400,18 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 //==================================================IReadView重写方法=========================================
 
     //入口
-    override fun entrance(mReadInfo: ReadInfo) {
-        this.mReadInfo = mReadInfo
-        val sequence = ReadState.sequence
-        val offset = ReadState.offset
-        DataProvider.getInstance().onReSeparate()
-        Handler().postDelayed({
-            //更改当前view状态
-            (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState = ReadViewEnums.ViewState.loading
-            curCursor = ReadCursor(mReadInfo.curBook, sequence, offset, ReadViewEnums.PageIndex.current)
-            checkViewState("Cur", ReadViewEnums.NotifyStateState.all)
-        }, 200)
+    override fun entrance() {
+        ReadState.book?.let {
+            val sequence = ReadState.sequence
+            val offset = ReadState.offset
+            DataProvider.getInstance().onReSeparate()
+            Handler().postDelayed({
+                //更改当前view状态
+                (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState = ReadViewEnums.ViewState.loading
+                curCursor = ReadCursor(it, sequence, offset, ReadViewEnums.PageIndex.current)
+                checkViewState("Cur", ReadViewEnums.NotifyStateState.all)
+            }, 200)
+        }
     }
 
     override fun onAnimationChange(animation: ReadViewEnums.Animation) {

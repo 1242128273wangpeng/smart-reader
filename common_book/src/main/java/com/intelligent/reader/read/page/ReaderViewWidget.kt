@@ -20,7 +20,6 @@ import com.intelligent.reader.read.help.HorizontalEvent
 import com.intelligent.reader.read.help.IReadPageChange
 import com.intelligent.reader.read.help.IReadView
 import com.intelligent.reader.read.help.IReadWidget
-import com.intelligent.reader.read.mode.ReadInfo
 import kotlinx.android.synthetic.main.layout_custom_dialog.view.*
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
@@ -181,19 +180,18 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
     /**
      * 入口
-     * @param mReadInfo 阅读信息
      */
-    override fun entrance(mReadInfo: ReadInfo) {
-        if (animaEnums != mReadInfo.animaEnums) { //如果阅读模式发生变化
+    override fun entrance() {
+        if (animaEnums != ReadConfig.animation) { //如果阅读模式发生变化
             if (mReaderView != null) removeView(mReaderView as View)//移除
-            mReaderView = mReaderViewFactory?.getView(mReadInfo.animaEnums)//创建
+            mReaderView = mReaderViewFactory?.getView(ReadConfig.animation)//创建
             (mReaderView as View).isClickable = false
             if (mReaderView != null) addView(mReaderView as View)//添加
-            animaEnums = mReadInfo.animaEnums//记录动画模式
+            animaEnums = ReadConfig.animation//记录动画模式
             mReaderView?.setHorizontalEventListener(this)
             initGLSufaceView()
         }
-        mReaderView?.entrance(mReadInfo)
+        mReaderView?.entrance()
     }
 
     override fun onPause() {

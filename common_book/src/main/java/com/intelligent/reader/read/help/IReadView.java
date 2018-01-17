@@ -1,12 +1,6 @@
 package com.intelligent.reader.read.help;
 
-import com.intelligent.reader.read.mode.ReadInfo;
-
-import net.lzbook.kit.data.bean.Chapter;
-import net.lzbook.kit.data.bean.NovelLineBean;
 import net.lzbook.kit.data.bean.ReadViewEnums;
-
-import java.util.ArrayList;
 
 /**
  * 子容器接口
@@ -17,9 +11,8 @@ public interface IReadView {
     /**
      * 入口 调用初始化操作：首次进入、字体大小改变、行间距改变、换源、跳章
      *
-     * @param mReadInfo 阅读信息
      */
-    void entrance(ReadInfo mReadInfo);
+    void entrance();
 
     /**
      * 设置 IReadView 实现 View 的变化监听

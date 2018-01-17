@@ -2,7 +2,6 @@ package com.intelligent.reader.read.page
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Rect
 import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -17,7 +16,6 @@ import com.intelligent.reader.R
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.help.*
 import com.intelligent.reader.read.mode.NovelPageBean
-import com.intelligent.reader.read.mode.ReadInfo
 import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.util.ThemeUtil
 import kotlinx.android.synthetic.main.loading_page_reading.view.*
@@ -32,8 +30,6 @@ import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 
 class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadViewClickListener, Observer {
-
-    private lateinit var mReadInfo: ReadInfo
 
     private lateinit var mAdapter: PagerScrollAdapter
 
@@ -120,12 +116,11 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
         })
     }
 
-    override fun entrance(readInfo: ReadInfo) {
+    override fun entrance() {
         if (mOriginDataList.size > 0) {
             mOriginDataList.clear()
         }
 
-        mReadInfo = readInfo
         mAdapter = PagerScrollAdapter(context)
         mAdapter.setOnLoadViewClickListener(this)
         page_rv.adapter = mAdapter
@@ -184,19 +179,20 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     }
 
     private fun getChapterData(sequence: Int, index: ReadViewEnums.PageIndex, reLoad: Boolean) {
-        mDataProvider.loadChapter2(mReadInfo.curBook, sequence, index, object : DataProvider.ReadDataListener() {
+        ReadState.book?.let {
+            mDataProvider.loadChapter2(it, sequence, index, object : DataProvider.ReadDataListener() {
+                override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) {
+                    handleChapter(c, type, reLoad)
+                    dismissLoadPage()
+                }
 
-            override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) {
-                handleChapter(c, type, reLoad)
-                dismissLoadPage()
-            }
-
-            override fun loadDataError(message: String) {
-                mChapterLoadStat = CHAPTER_WAITING
-                mAdapter.setLoadViewState(PagerScrollAdapter.LOAD_VIEW_FAIL_STATE)
-                dismissLoadPage()
-            }
-        })
+                override fun loadDataError(message: String) {
+                    mChapterLoadStat = CHAPTER_WAITING
+                    mAdapter.setLoadViewState(PagerScrollAdapter.LOAD_VIEW_FAIL_STATE)
+                    dismissLoadPage()
+                }
+            })
+        }
     }
 
     private fun handleChapter(chapter: Chapter, index: ReadViewEnums.PageIndex, reLoad: Boolean) {
