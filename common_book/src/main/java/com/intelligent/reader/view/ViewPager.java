@@ -201,11 +201,11 @@ public class ViewPager extends ViewGroup {
     private boolean mIsUnableToDrag;
     private int mDefaultGutterSize;
     private int mGutterSize;
-    private int mTouchSlop;
+    protected int mTouchSlop;
     /**
      * Position of the last motion event.
      */
-    private float mLastMotionX;
+    protected float mLastMotionX;
     private float mLastMotionY;
     private float mInitialMotionX;
     private float mInitialMotionY;

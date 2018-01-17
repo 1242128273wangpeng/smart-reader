@@ -1989,7 +1989,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
                         readReference?.get()?.showToastShort("已发送")
-                    })
+                    }, {e-> e.printStackTrace()})
             disposable.add(time)
 //            handler.postDelayed({ readReference?.get()?.showToastShort("已发送") }, 1000)
             return
@@ -2025,7 +2025,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     readReference?.get()?.showToastShort("已发送")
-                })
+                }, {e-> e.printStackTrace()})
         disposable.add(time)
     }
 

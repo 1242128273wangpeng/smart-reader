@@ -64,7 +64,6 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer {
     private boolean isDownActioned = false;
 
     private boolean isFangzhen;
-    public volatile boolean surfaceAviable = false;
 
     public boolean isFangzhen() {
         return isFangzhen;
@@ -219,11 +218,11 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer {
                 }
             }
         };
-        if(getAlpha() == 1.0f && surfaceAviable) {
+//        if(getAlpha() == 1.0f) {
             queueEvent(event);
-        }else{
-            mbeforeEventQueue.add(event);
-        }
+//        }else{
+//            mbeforeEventQueue.add(event);
+//        }
     }
 
     private void log(String msg){
@@ -241,8 +240,10 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer {
         Runnable event = new Runnable() {
             @Override
             public void run() {
-                if(!isDownActioned)
+                if(!isDownActioned) {
+                    log("onFingerMove miss not downActioned");
                     return;
+                }
                 if (mPageFlip.isAnimating()) {
                     // nothing to do during animating
                     log("onFingerMove isAnimating");
@@ -267,11 +268,11 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer {
             }
         };
 
-        if(getAlpha() == 1.0f && surfaceAviable) {
+//        if(getAlpha() == 1.0f) {
             queueEvent(event);
-        }else{
-            mbeforeEventQueue.add(event);
-        }
+//        }else{
+//            mbeforeEventQueue.add(event);
+//        }
 
     }
 
@@ -300,17 +301,19 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer {
                     }
 
                     requestRender();
+                }else{
+                    log("onFingerUp miss not downActioned");
                 }
 
                 isDownActioned = false;
             }
         };
 
-        if(getAlpha() == 1.0f && surfaceAviable) {
+//        if(getAlpha() == 1.0f) {
             queueEvent(event);
-        }else{
-            mbeforeEventQueue.add(event);
-        }
+//        }else{
+//            mbeforeEventQueue.add(event);
+//        }
     }
 
     public void onDrawNextFrame(boolean isFlow) {
@@ -366,7 +369,6 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer {
     public void onSurfaceCreated() {
         try {
             mPageFlip.onSurfaceCreated();
-            mPageFlip.onSurfaceChanged(ReadConfig.INSTANCE.getScreenWidth(), ReadConfig.INSTANCE.getScreenHeight());
         } catch (PageFlipException e) {
             e.printStackTrace();
             Log.e(TAG, "Failed to run PageFlipFlipRender:onSurfaceCreated");
@@ -375,6 +377,12 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer {
 
     @Override
     public void onSurfaceChanged(int width, int height) {
+        try {
+            mPageFlip.onSurfaceChanged(width, height);
+        } catch (PageFlipException e) {
+            e.printStackTrace();
+            Log.e(TAG, "Failed to run PageFlipFlipRender:onSurfaceChanged");
+        }
         if(!mbeforeEventQueue.isEmpty()){
             for (Runnable event : mbeforeEventQueue){
                 queueEvent(event);
@@ -385,13 +393,11 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer {
 
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-        surfaceAviable = false;
         return super.onSurfaceTextureDestroyed(surface);
     }
 
     @Override
     public void onDrawFrame() {
-        surfaceAviable = true;
         if (mPageRender != null) {
             mPageRender.onDrawFrame();
         }
