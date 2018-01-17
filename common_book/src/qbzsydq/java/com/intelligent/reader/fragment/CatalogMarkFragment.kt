@@ -24,6 +24,7 @@ import com.intelligent.reader.adapter.ListRecyclerAdapter
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.presenter.read.CatalogMark
 import com.intelligent.reader.read.help.BookHelper
+import com.intelligent.reader.read.mode.ReadState
 import com.quduquxie.network.DataCache
 import kotlinx.android.synthetic.qbzsydq.item_read_bookmark.view.*
 import kotlinx.android.synthetic.qbzsydq.pop_catalog_mark_delete.view.*
@@ -91,7 +92,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
                     txtColor = R.color.read_item_catalog_uncached_chapter_text_color
                 }
 //
-                if (chapter.chapter_name?.equals(BaseBookApplication.getGlobalContext().readStatus?.chapterName) ?: false) {
+                if (chapter.chapter_name?.equals(ReadState.chapterName) == true) {
                     txtColor = R.color.read_item_catalog_current_chapter_text_color
                 }
 

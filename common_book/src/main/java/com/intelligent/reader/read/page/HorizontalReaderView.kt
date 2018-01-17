@@ -33,9 +33,6 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     var isCanScroll: Int = 0
     //禁止滑动方向 true:禁止左滑 false:禁止右滑
     var isLeftSlip: Boolean = true
-    //宽、高、时间、电量、颜色
-    private var w: Int = 0
-    private var h: Int = 0
 
     var mReadInfo: ReadInfo? = null
     //当前游标
@@ -132,7 +129,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                 //offset
                 val newOffset: Int = getNewOffset(notify, mCousor)
                 //设置新游标
-                val newCursor = ReadCursor(curCursor!!.curBook, newSequence, newOffset, ReadViewEnums.PageIndex.previous, mReadInfo!!.mReadStatus)
+                val newCursor = ReadCursor(curCursor!!.curBook, newSequence, newOffset, ReadViewEnums.PageIndex.previous)
                 (adapter as HorizontalAdapter).cursor = newCursor
             }
             ReadViewEnums.ViewState.error -> {//
@@ -218,7 +215,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                     cursor.nextOffset
                 }
             }
-            val nextCursor = ReadCursor(curCursor!!.curBook, newNextSequence, newOffset, ReadViewEnums.PageIndex.previous, mReadInfo!!.mReadStatus)
+            val nextCursor = ReadCursor(curCursor!!.curBook, newNextSequence, newOffset, ReadViewEnums.PageIndex.previous)
             (nextView as HorizontalPage).viewNotify = ReadViewEnums.NotifyStateState.none
             nextView.setCursor(nextCursor)
         }
@@ -241,7 +238,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                     cursor.offset.minus(1)
                 }
             }
-            val preCursor = ReadCursor(curCursor!!.curBook, newPreSequence, newOffset, ReadViewEnums.PageIndex.previous, mReadInfo!!.mReadStatus)
+            val preCursor = ReadCursor(curCursor!!.curBook, newPreSequence, newOffset, ReadViewEnums.PageIndex.previous)
             (preView as HorizontalPage).viewNotify = ReadViewEnums.NotifyStateState.none
             preView.setCursor(preCursor)
         }
@@ -409,7 +406,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         Handler().postDelayed({
             //更改当前view状态
             (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState = ReadViewEnums.ViewState.loading
-            curCursor = ReadCursor(mReadInfo.curBook, sequence, offset, ReadViewEnums.PageIndex.current, mReadInfo.mReadStatus)
+            curCursor = ReadCursor(mReadInfo.curBook, sequence, offset, ReadViewEnums.PageIndex.current)
             checkViewState("Cur", ReadViewEnums.NotifyStateState.all)
         }, 200)
     }

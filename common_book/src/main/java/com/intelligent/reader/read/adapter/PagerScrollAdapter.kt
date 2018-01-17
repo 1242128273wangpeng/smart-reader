@@ -23,7 +23,7 @@ import java.util.concurrent.CopyOnWriteArrayList
  * @mail jun_li@dingyuegroup.cn
  * @data 2017/11/2 14:35
  */
-class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus) : RecyclerView.Adapter<PagerScrollAdapter.ReaderPagerHolder>() {
+class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrollAdapter.ReaderPagerHolder>() {
 
     private var chapterList: CopyOnWriteArrayList<NovelPageBean>
 
@@ -227,8 +227,8 @@ class PagerScrollAdapter(val context: Context, val mReadStatus: ReadStatus) : Re
         }
 
         override fun bindHolder(pageLines: NovelPageBean) {
-            book_name_tv.text = mReadStatus.book.name
-            book_auth_tv.text = mReadStatus.book.author
+            book_name_tv.text = ReadState.book?.name
+            book_auth_tv.text = ReadState.book?.author
             slogan_tv.setTextView(2f, context.resources.getString(R.string.slogan))
             product_name_tv.setTextView(1f, context.resources.getString(R.string.app_name))
 

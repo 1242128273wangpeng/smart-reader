@@ -2,6 +2,7 @@ package com.intelligent.reader.read.help;
 
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.SourceAdapter;
+import com.intelligent.reader.read.mode.ReadState;
 import com.intelligent.reader.read.page.PageContentView;
 import com.intelligent.reader.read.page.PageInterface;
 import com.intelligent.reader.reader.ReaderViewModel;
@@ -593,7 +594,7 @@ public class NovelHelper {
                     helperCallBack.changSource();
                 }
             }
-            readStatus.chapterName = currentChapter.chapter_name;
+            ReadState.INSTANCE.setChapterName(currentChapter.chapter_name);
         }
         if (readStatus != null) {
             readStatus.bookName = mBook.name;

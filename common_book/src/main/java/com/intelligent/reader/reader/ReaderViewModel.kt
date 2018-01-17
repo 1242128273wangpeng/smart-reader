@@ -2,6 +2,7 @@ package com.intelligent.reader.reader
 
 import android.text.TextUtils
 import com.intelligent.reader.DisposableAndroidViewModel
+import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.repository.BookCoverRepository
 import com.intelligent.reader.repository.ReaderRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -52,7 +53,7 @@ class ReaderViewModel : DisposableAndroidViewModel {
         tempPageCount = readStatus?.pageCount!!
         tempSequence = readStatus?.sequence!!
         tempOffset = readStatus?.offset!!
-        tempChapterName = readStatus?.chapterName
+        tempChapterName = ReadState.chapterName
         tempChapterNameList = readStatus?.chapterNameList
         tempNextChapter = nextChapter
         tempCurrentChapter = currentChapter
@@ -65,7 +66,8 @@ class ReaderViewModel : DisposableAndroidViewModel {
         readStatus?.pageCount = tempPageCount
         readStatus?.sequence = tempSequence
         readStatus?.offset = tempOffset
-        readStatus?.chapterName = tempChapterName
+        ReadState.chapterName = tempChapterName
+//        readStatus?.chapterName = tempChapterName
 //        readStatus?.mCurrentChapter = currentChapter
         readStatus?.chapterNameList = tempChapterNameList
         nextChapter = tempNextChapter

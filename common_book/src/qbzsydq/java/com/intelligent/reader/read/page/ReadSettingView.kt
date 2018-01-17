@@ -301,7 +301,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         if (readStatus!!.sequence == -1) {
         } else {
             if (novel_hint_chapter != null) {
-                novel_hint_chapter!!.text = if (TextUtils.isEmpty(readStatus!!.chapterName)) "" else readStatus!!.chapterName
+                novel_hint_chapter!!.text = if (TextUtils.isEmpty(ReadState.chapterName)) "" else ReadState.chapterName
             }
             if (novel_hint_sequence != null) {
                 novel_hint_sequence!!.text = (readStatus!!.sequence + 1).toString() + "/" + readStatus!!.chapterCount + "章"
