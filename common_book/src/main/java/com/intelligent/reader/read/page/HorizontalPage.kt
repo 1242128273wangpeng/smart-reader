@@ -66,6 +66,7 @@ class HorizontalPage : FrameLayout, Observer {
     var noticePageListener: NoticePageListener? = null
     var mNovelPageBean: NovelPageBean? = null
     var hasAd = false
+    var hasBigAd = false
 
     constructor(context: Context, noticePageListener: NoticePageListener) : this(context, null, noticePageListener)
 
@@ -159,13 +160,38 @@ class HorizontalPage : FrameLayout, Observer {
         }
     }
 
+    private fun onScreenChange(){
+        onRedrawPage()
+        //改变当前页面广告类型
+        if ((mNovelPageBean != null) and hasBigAd) {
+            val adType = if (ReadConfig.IS_LANDSCAPE){
+                if (pageIndex == pageSum) "6-1" else "6-2"
+            }else {
+                if (pageIndex == pageSum) "5-1" else "5-2"
+            }
+            DataProvider.getInstance().loadAd(context,adType,object: DataProvider.OnLoadReaderAdCallback {
+                override fun onLoadAd(adView: ViewGroup) {
+                    removeView(mNovelPageBean!!.adView)
+
+                    mNovelPageBean!!.adView = adView
+                    val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+                    val margin = AppUtils.dip2px(context, 10f)
+                    val topMargin = AppUtils.dip2px(context, 40f)
+                    val bottomMargin = AppUtils.dip2px(context, 30f)
+                    param.setMargins(margin, topMargin, margin, bottomMargin)
+                    addView(mNovelPageBean!!.adView,param)
+                }
+            })
+        }
+    }
+
     fun onJumpChapter() = if (tag == ReadViewEnums.PageIndex.current) noticePageListener?.onJumpChapter()?:Unit else Unit
 
     override fun update(o: Observable, arg: Any) {
         when (arg as String) {
             "READ_INTERLINEAR_SPACE" -> onRedrawPage()
             "FONT_SIZE" -> onRedrawPage()
-            "SCREEN" -> onRedrawPage()
+            "SCREEN" -> onScreenChange()
             "MODE" -> setupView()
             "JUMP" -> onJumpChapter()
         }
@@ -245,7 +271,21 @@ class HorizontalPage : FrameLayout, Observer {
                 entrance(cursor)
             }
         }
-
+        //展示Bigger广告
+         fun showAdBigger(mNovelPageBean: NovelPageBean) {
+            removeView(mNovelPageBean.adView)
+            if (mNovelPageBean.adView != null
+                    && mNovelPageBean.adView!!.parent != null
+                    && mNovelPageBean.adView!!.parent is ViewGroup) {
+                (mNovelPageBean.adView!!.parent as ViewGroup).removeView(mNovelPageBean.adView)
+            }
+            val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            val margin = AppUtils.dip2px(context, 10f)
+            val topMargin = AppUtils.dip2px(context, 40f)
+            val bottomMargin = AppUtils.dip2px(context, 30f)
+            param.setMargins(margin, topMargin, margin, bottomMargin)
+            addView(mNovelPageBean.adView, param)
+        }
         /**
          * 画页面前准备
          */
@@ -282,6 +322,7 @@ class HorizontalPage : FrameLayout, Observer {
                         return
                     }
                     hasAd = mNovelPageBean!!.isAd
+                    hasBigAd = mNovelPageBean!!.isAd
                     contentLength = mNovelPageBean!!.contentLength
                     if (mNovelPageBean!!.isAd) {//广告页
                         showAdBigger(mNovelPageBean!!)
@@ -363,58 +404,6 @@ class HorizontalPage : FrameLayout, Observer {
                     addView(adView, param)
                 }
             })
-        }
-
-        //展示Bigger广告
-        private fun showAdBigger(mNovelPageBean: NovelPageBean) {
-            removeView(mNovelPageBean.adView)
-            if (mNovelPageBean.adView != null
-                    && mNovelPageBean.adView!!.parent != null
-                    && mNovelPageBean.adView!!.parent is ViewGroup) {
-                (mNovelPageBean.adView!!.parent as ViewGroup).removeView(mNovelPageBean.adView)
-            }
-            val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-            val margin = AppUtils.dip2px(context, 10f)
-            val topMargin = AppUtils.dip2px(context, 40f)
-            param.setMargins(margin, topMargin, margin, margin)
-            addView(mNovelPageBean.adView, param)
-        }
-        private var adViewGroup:ViewGroup? = null
-
-        override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-            super.onSizeChanged(w, h, oldw, oldh)
-            if (mNovelPageBean!=null){
-                if (mNovelPageBean!!.isAd){
-                    if (oldw>w){//横屏
-                        removeView(mNovelPageBean!!.adView)
-                        if(mCursor!!.offset< mCursor!!.lastOffset){
-                            DataProvider.getInstance().loadAd(context, "6-2", object : DataProvider.OnLoadReaderAdCallback {
-                                override fun onLoadAd(adView: ViewGroup) {
-                                    adViewGroup = adView
-                                    val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-                                    addView(adViewGroup, param)
-                                }
-                            })
-                        }else {
-                            DataProvider.getInstance().loadAd(context, "6-1", object : DataProvider.OnLoadReaderAdCallback {
-                                override fun onLoadAd(adView: ViewGroup) {
-                                    adViewGroup = adView
-                                    val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-                                    addView(adViewGroup, param)
-                                }
-                            })
-                        }
-
-                    }else {//竖屏
-                        if (mNovelPageBean!=null){
-                            if (mNovelPageBean!!.isAd){
-                                if (adViewGroup!=null) removeView(adViewGroup)
-                                showAdBigger(mNovelPageBean!!)
-                            }
-                        }
-                    }
-                }
-            }
         }
 
         private fun showErrorView(cursor: ReadCursor) {

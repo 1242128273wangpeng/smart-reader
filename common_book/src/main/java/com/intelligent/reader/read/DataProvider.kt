@@ -251,7 +251,9 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     private fun loadAd(sequence: Int) {
-        PlatformSDK.adapp().dycmNativeAd(context as Activity, "5-1", null, object : AbstractCallback() {
+        val adType1 = if (ReadConfig.IS_LANDSCAPE) "6-1" else "5-1"
+        val adType2 =if (ReadConfig.IS_LANDSCAPE) "6-2" else "6-2"
+        PlatformSDK.adapp().dycmNativeAd(context as Activity, adType1, null, object : AbstractCallback() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
                 if (!adswitch) {
@@ -267,7 +269,7 @@ class DataProvider : DisposableAndroidViewModel() {
                                     val offset = arrayList.last().offset + arrayList.last().lines.sumBy { it.lineContent.length } + 1
                                     arrayList.add(NovelPageBean(arrayListOf(), offset, arrayListOf()).apply { isAd = true;adView = views[0] })
                                     if (arrayList.size >= 16) {
-                                        PlatformSDK.adapp().dycmNativeAd(context as Activity, "5-2", null, object : AbstractCallback() {
+                                        PlatformSDK.adapp().dycmNativeAd(context as Activity, adType2, null, object : AbstractCallback() {
                                             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                                                 super.onResult(adswitch, views, jsonResult)
                                                 if (!adswitch) {
