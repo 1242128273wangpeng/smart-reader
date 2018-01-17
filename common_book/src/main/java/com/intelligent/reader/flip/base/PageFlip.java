@@ -101,6 +101,7 @@ public class PageFlip {
     private PointF mLastTouchP;
     // the first touch point when finger down on the screen
     private PointF mStartTouchP;
+    private PointF mDownTouchP;
     // the middle point between touch point and origin point
     private PointF mMiddleP;
 
@@ -235,6 +236,7 @@ public class PageFlip {
         mTouchP = new PointF();
         mLastTouchP = new PointF();
         mStartTouchP = new PointF();
+        mDownTouchP = new PointF();
 
         // init shadow width
         mFoldEdgesShadowWidth = new ShadowWidth(5, 30, 0.25f);
@@ -608,6 +610,7 @@ public class PageFlip {
             mMaxT2DAngleTan = 0f;
             mLastTouchP.set(touchX, touchY);
             mStartTouchP.set(touchX, touchY);
+            mDownTouchP.set(touchX, touchY);
             mTouchP.set(touchX, touchY);
             mFlipState = PageFlipState.BEGIN_FLIP;
 //            if (touchX>0) {//下页
@@ -809,7 +812,9 @@ public class PageFlip {
         // forward flipping
         if (mFlipState == PageFlipState.FORWARD_FLIP) {
             // can't going forward, restore current page
-            if (page.isXInRange(touchX, WIDTH_RATIO_OF_RESTORE_FLIP)) {
+
+            float abs = Math.abs(touchX - mDownTouchP.x);
+            if (getSurfaceWidth() * WIDTH_RATIO_OF_RESTORE_FLIP > abs) {
                 end.x = (int) originP.x;
                 mFlipState = PageFlipState.FORWARD_RESTORE_FLIP;
             } else if (hasSecondPage && originP.x < 0) {
@@ -822,7 +827,8 @@ public class PageFlip {
         // backward flipping
         else if (mFlipState == PageFlipState.BACKWARD_FLIP) {
             // if not over middle x, change from backward to forward to restore
-            if (!page.isXInRange(touchX, 1 - WIDTH_RATIO_OF_RESTORE_FLIP)) {
+            float abs = Math.abs(touchX - mDownTouchP.x);
+            if (getSurfaceWidth() * WIDTH_RATIO_OF_RESTORE_FLIP > abs) {
                 mFlipState = PageFlipState.BACKWARD_RESTORE_FLIP;
                 end.set((int) (diagonalP.x - page.width), (int) originP.y);
             } else {
@@ -862,6 +868,7 @@ public class PageFlip {
                 mFlipState == PageFlipState.FORWARD_RESTORE_FLIP ||
                 mFlipState == PageFlipState.BACKWARD_RESTORE_FLIP) {
             int dur = duration * Math.abs(end.x - start.x) / getSurfaceWidth();
+            Log.e("PageFlip", "startScroll " + dur);
             mScroller.startScroll(start.x, start.y,
                     end.x - start.x, end.y - start.y,
                     dur);

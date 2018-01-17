@@ -434,7 +434,7 @@ class HorizontalPage : FrameLayout, Observer {
                 }
 
                 override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
-                    return true
+                    return false
                 }
 
                 override fun onLongPress(e: MotionEvent) = Unit

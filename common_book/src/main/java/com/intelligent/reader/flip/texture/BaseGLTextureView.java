@@ -42,7 +42,6 @@ public class BaseGLTextureView extends TextureView implements TextureView.Surfac
     private SurfaceTextureListener surfaceTextureListener;
     private GLThread.OnCreateGLContextListener onCreateGLContextListener;
 
-    private boolean hasCreateGLThreadCalledOnce = false;
     private boolean surfaceAvailable = false;
     private GLViewRenderer renderer;
 
@@ -109,7 +108,6 @@ public class BaseGLTextureView extends TextureView implements TextureView.Surfac
         // Surface will be destroyed when we return
         mGLThread.surfaceDestroyed();
         mGLThread.requestExitAndWait();
-        hasCreateGLThreadCalledOnce = false;
         surfaceAvailable = false;
         mGLThread = null;
     }
@@ -191,13 +189,8 @@ public class BaseGLTextureView extends TextureView implements TextureView.Surfac
                     .setSurface(surface)
                     .setEGLConfigChooser(new GLThread.SimpleEGLConfigChooser(true,2))
                     .setRenderer(renderer);
-            if (hasCreateGLThreadCalledOnce) {
-                createGLThread();//创建线程
-            }
+            createGLThread();//创建线程
 
-        } else {
-            mGLThread.setSurface(surface);
-            freshSurface(width, height);
         }
         if (surfaceTextureListener != null) {
             surfaceTextureListener.onSurfaceTextureAvailable(surface, width, height);
@@ -205,7 +198,6 @@ public class BaseGLTextureView extends TextureView implements TextureView.Surfac
     }
 
     public void createGLThread() {
-        hasCreateGLThreadCalledOnce = true;
         if (!surfaceAvailable) {
             return;
         }
@@ -239,8 +231,9 @@ public class BaseGLTextureView extends TextureView implements TextureView.Surfac
 
     @Override
     public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-        surfaceChanged(width, height);
-        surfaceRedrawNeeded();
+//        mGLThread.setSurface(surface);
+//        surfaceChanged(width, height);
+//        surfaceRedrawNeeded();
         if (surfaceTextureListener != null) {
             surfaceTextureListener.onSurfaceTextureSizeChanged(surface, width, height);
         }

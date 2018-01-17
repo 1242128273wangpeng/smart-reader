@@ -441,10 +441,20 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         }
     }
 
+    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
+        if (ReadConfig.animation == ReadViewEnums.Animation.curl
+                && MotionEvent.ACTION_MOVE == ev?.actionMasked){
+            return mTouchSlop <= Math.abs(ev.x - mLastMotionX)
+        }
+        return super.onInterceptTouchEvent(ev)
+    }
+
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
         return when (isCanScroll) {
             -1 -> true
-            0 -> return super.dispatchTouchEvent(event)
+            0 -> {
+                return super.dispatchTouchEvent(event)
+            }
             else -> prohibitionOfSlidingTouchEvent(event)
         }
     }

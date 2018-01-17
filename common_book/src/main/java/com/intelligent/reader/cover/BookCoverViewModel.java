@@ -109,6 +109,11 @@ public class BookCoverViewModel extends DisposableAndroidViewModel {
                             mBookChapterViewCallback.onBookMarkList(bookmarks);
                         }
                     }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+                    }
                 });
         addDisposable(disposable);
     }

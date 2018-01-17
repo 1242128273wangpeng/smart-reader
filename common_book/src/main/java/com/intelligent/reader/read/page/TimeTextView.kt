@@ -41,7 +41,7 @@ class TimeTextView : TextView {
                 .subscribe({
                     mCalendar.timeInMillis = System.currentTimeMillis()
                     text = DateFormat.format("k:mm", mCalendar)
-                })
+                }, {e-> e.printStackTrace()})
         setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
     }
 
