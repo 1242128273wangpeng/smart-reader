@@ -400,7 +400,6 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             getReaderState(bundle)
 
             readStatus?.book_id = if (readStatus!!.book == null) "" else readStatus!!.book.book_id
-            ReadState.bookName = readStatus?.book?.name
             AppLog.e(TAG, "getState2" + readStatus!!.sequence)
         }
 

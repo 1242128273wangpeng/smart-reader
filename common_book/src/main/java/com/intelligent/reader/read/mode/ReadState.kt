@@ -18,10 +18,6 @@ object ReadState {
     var chapterId: String? = null
     //章节名
     var chapterName: String? = null
-    //小说名
-    var bookName: String? = null
-    //小说作者
-    var bookAuthor: String? = null
     //总页数
     var pageCount: Int = 0
     //当前页数

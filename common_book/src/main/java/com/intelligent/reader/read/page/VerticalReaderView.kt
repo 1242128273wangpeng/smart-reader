@@ -126,17 +126,13 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
         }
 
         mReadInfo = readInfo
-        mAdapter = PagerScrollAdapter(context, mReadInfo.mReadStatus)
+        mAdapter = PagerScrollAdapter(context)
         mAdapter.setOnLoadViewClickListener(this)
         page_rv.adapter = mAdapter
 
         if (ReadState.sequence == -1) {
             ReadState.sequence = 0
             mFirstRead = true
-        }
-
-        mCatalogList?.apply {
-            mReadInfo.mReadStatus.chapterCount = size
         }
 
         getChapterData(ReadState.sequence, ReadViewEnums.PageIndex.current, false)
@@ -278,7 +274,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                         ReadState.currentPage = 1
                     }
                 }
-                if (chapter.sequence == mReadInfo.mReadStatus.chapterCount - 1) {
+                if (chapter.sequence == ReadState.chapterList.size - 1) {
                     mAdapter.showFootView(false)
                 }
                 mChapterLoadStat = CHAPTER_WAITING
@@ -298,7 +294,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 mAdapter.addNextChapter(nextChapterContent)
                 loadAdViewToChapterBetween(nextChapterContent, ReadViewEnums.PageIndex.next)
                 addBookHomePage(chapter)
-                if (chapter.sequence == mReadInfo.mReadStatus.chapterCount - 1) {
+                if (chapter.sequence == ReadState.chapterList.size - 1) {
                     mAdapter.showFootView(false)
                 }
                 mChapterLoadStat = CHAPTER_WAITING
