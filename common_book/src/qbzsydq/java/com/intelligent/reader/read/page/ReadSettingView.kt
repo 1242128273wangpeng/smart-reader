@@ -957,6 +957,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             }
             var resizeProgress = when(seekBar.progress) {
                 0  -> 0
+                ReadState.chapterList.size-1 -> ReadState.chapterList.size
                 else -> seekBar.progress - 1
             }
             AppLog.e("progress2", resizeProgress.toString())
