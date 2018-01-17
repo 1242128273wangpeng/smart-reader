@@ -122,7 +122,12 @@ class HorizontalPage : FrameLayout, Observer {
         novel_page.setTextColor(resources.getColor(colorInt))
         novel_chapter.setTextColor(resources.getColor(colorInt))
         novel_title.setTextColor(resources.getColor(colorInt))
-        setBackGroud()
+        //pageView
+        ThemeUtil.getModePrimaryBackground(resources, pageView)
+        //电池背景
+        ThemeUtil.getModePrimaryBackground(resources, novel_content_battery_view)
+        //封面页
+        ThemeUtil.getModePrimaryBackground(resources, homePage)
     }
 
     /**
@@ -136,18 +141,9 @@ class HorizontalPage : FrameLayout, Observer {
         novel_page.text = pageProgress
     }
 
-    fun setBackGroud() {
-        //pageView
-        ThemeUtil.getModePrimaryBackground(resources, pageView)
-        //电池背景
-        ThemeUtil.getModePrimaryBackground(resources, novel_content_battery_view)
-        //封面页
-        ThemeUtil.getModePrimaryBackground(resources, homePage)
-    }
-
     fun setCursor(cursor: ReadCursor) = pageView.setCursor(cursor)
 
-    fun onReSeparate() = DataProvider.getInstance().onReSeparate()
+    private fun onReSeparate() = DataProvider.getInstance().onReSeparate()
 
     fun onRedrawPage() {
         if (tag == ReadViewEnums.PageIndex.current) {
@@ -160,32 +156,88 @@ class HorizontalPage : FrameLayout, Observer {
         }
     }
 
-    private fun onScreenChange(){
+    private fun onScreenChange() {
         onRedrawPage()
-        //改变当前页面广告类型
+        checkAdBiggerView()
+    }
+
+    private fun onJumpChapter() = if (tag == ReadViewEnums.PageIndex.current) noticePageListener?.onJumpChapter() ?: Unit else Unit
+
+    //段末广告 8-1
+    private fun checkAdBanner(topMargins: Float) {
+        DataProvider.getInstance().loadAd(context, "8-1", mCursor!!.readStatus.screenWidth, mCursor!!.readStatus.screenHeight - topMargins.toInt(), object : DataProvider.OnLoadReaderAdCallback {
+            override fun onLoadAd(adView: ViewGroup) {
+                val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+                val margin = AppUtils.dip2px(context, 10f)
+                param.setMargins(margin, topMargins.toInt(), margin, margin)
+                addView(adView, param)
+            }
+        })
+    }
+
+    //广告页 5-1 5-2 6-1 6-2
+    private fun checkAdBiggerView() {
         if ((mNovelPageBean != null) and hasBigAd) {
-            val adType = if (ReadConfig.IS_LANDSCAPE){
+            val adType = if (ReadConfig.IS_LANDSCAPE) {
                 if (pageIndex == pageSum) "6-1" else "6-2"
-            }else {
+            } else {
                 if (pageIndex == pageSum) "5-1" else "5-2"
             }
-            DataProvider.getInstance().loadAd(context,adType,object: DataProvider.OnLoadReaderAdCallback {
+            DataProvider.getInstance().loadAd(context, adType, object : DataProvider.OnLoadReaderAdCallback {
                 override fun onLoadAd(adView: ViewGroup) {
-                    removeView(mNovelPageBean!!.adView)
-
-                    mNovelPageBean!!.adView = adView
-                    val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-                    val margin = AppUtils.dip2px(context, 10f)
-                    val topMargin = AppUtils.dip2px(context, 40f)
-                    val bottomMargin = AppUtils.dip2px(context, 30f)
-                    param.setMargins(margin, topMargin, margin, bottomMargin)
-                    addView(mNovelPageBean!!.adView,param)
+                    if (mNovelPageBean!!.adView != null && mNovelPageBean!!.adView!!.parent != null) {
+                        removeView(mNovelPageBean!!.adView)
+                    } else {
+                        mNovelPageBean!!.adView = adView
+                        val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+                        val leftMargin = AppUtils.dip2px(context, 10f)
+                        val rightMargin = AppUtils.dip2px(context, 10f)
+                        val topMargin = AppUtils.dip2px(context, 40f)
+                        val bottomMargin = AppUtils.dip2px(context, 30f)
+                        param.setMargins(leftMargin, topMargin, rightMargin, bottomMargin)
+                        addView(mNovelPageBean!!.adView, param)
+                    }
                 }
             })
         }
     }
 
-    fun onJumpChapter() = if (tag == ReadViewEnums.PageIndex.current) noticePageListener?.onJumpChapter()?:Unit else Unit
+    //封面页
+    private fun setupHomePage(cursor: ReadCursor) {
+        removeView(homePage)
+        addView(homePage)
+        //封面页
+        homePage.book_name_tv.text = cursor.curBook.name
+        homePage.book_auth_tv.text = cursor.curBook.author
+        homePage.slogan_tv.setTextView(2f, context.resources.getString(R.string.slogan))
+        homePage.product_name_tv.setTextView(1f, context.resources.getString(R.string.app_name))
+        //封面字颜色
+        homePage.book_name_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
+        homePage.book_auth_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
+        homePage.slogan_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
+        homePage.product_name_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
+        postInvalidate()
+        //改变状态
+        mCursor!!.sequence = -1
+        viewState = ReadViewEnums.ViewState.start
+        loadView.visibility = View.GONE
+        readTop.visibility = View.GONE
+        readBottom.visibility = View.GONE
+    }
+
+    private fun showErrorView(cursor: ReadCursor) {
+        //Error
+        addView(errorView)
+        viewState = ReadViewEnums.ViewState.error
+        loadView.visibility = View.GONE
+        errorView.loading_error_reload.setOnClickListener({
+            pageView.entrance(cursor)
+            loadView.visibility = View.VISIBLE
+            viewState = ReadViewEnums.ViewState.loading
+            removeView(errorView)
+        })
+        errorView.loading_error_setting.visibility = FrameLayout.GONE
+    }
 
     override fun update(o: Observable, arg: Any) {
         when (arg as String) {
@@ -271,21 +323,7 @@ class HorizontalPage : FrameLayout, Observer {
                 entrance(cursor)
             }
         }
-        //展示Bigger广告
-         fun showAdBigger(mNovelPageBean: NovelPageBean) {
-            removeView(mNovelPageBean.adView)
-            if (mNovelPageBean.adView != null
-                    && mNovelPageBean.adView!!.parent != null
-                    && mNovelPageBean.adView!!.parent is ViewGroup) {
-                (mNovelPageBean.adView!!.parent as ViewGroup).removeView(mNovelPageBean.adView)
-            }
-            val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-            val margin = AppUtils.dip2px(context, 10f)
-            val topMargin = AppUtils.dip2px(context, 40f)
-            val bottomMargin = AppUtils.dip2px(context, 30f)
-            param.setMargins(margin, topMargin, margin, bottomMargin)
-            addView(mNovelPageBean.adView, param)
-        }
+
         /**
          * 画页面前准备
          */
@@ -317,7 +355,7 @@ class HorizontalPage : FrameLayout, Observer {
                 } else {
                     try {
                         mNovelPageBean = ReadQueryUtil.findNovelPageBeanByOffset(cursor.offset, chapterList)
-                    }catch (e: ReadCustomException.PageOffsetException){
+                    } catch (e: ReadCustomException.PageOffsetException) {
                         showErrorView(mCursor!!)
                         return
                     }
@@ -325,7 +363,7 @@ class HorizontalPage : FrameLayout, Observer {
                     hasBigAd = mNovelPageBean!!.isAd
                     contentLength = mNovelPageBean!!.contentLength
                     if (mNovelPageBean!!.isAd) {//广告页
-                        showAdBigger(mNovelPageBean!!)
+                        checkAdBiggerView()
                     } else {//普通页
                         //画之前清空内容
                         removeView(homePage)
@@ -334,7 +372,7 @@ class HorizontalPage : FrameLayout, Observer {
                         val topMargin = if (mNovelPageBean?.lines?.isNotEmpty() == true) mNovelPageBean!!.height else ReadConfig.screenHeight.toFloat()
                         if (cursor.readStatus.screenHeight - topMargin > cursor.readStatus.screenHeight / 5) {
                             hasAd = true
-                            showAdBanner(topMargin)
+                            checkAdBanner(topMargin)
                         }
                     }
                     changeCursorState(chapterList)
@@ -369,55 +407,6 @@ class HorizontalPage : FrameLayout, Observer {
                 (pageSum < 16) and (pageIndex == pageSum) -> -1
                 else -> 0
             }
-        }
-
-        //封面页
-        private fun setupHomePage(cursor: ReadCursor) {
-            removeView(homePage)
-            addView(homePage)
-            //封面页
-            homePage.book_name_tv.text = cursor.curBook.name
-            homePage.book_auth_tv.text = cursor.curBook.author
-            homePage.slogan_tv.setTextView(2f, context.resources.getString(R.string.slogan))
-            homePage.product_name_tv.setTextView(1f, context.resources.getString(R.string.app_name))
-            //封面字颜色
-            homePage.book_name_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
-            homePage.book_auth_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
-            homePage.slogan_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
-            homePage.product_name_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
-            postInvalidate()
-            //改变状态
-            mCursor!!.sequence = -1
-            viewState = ReadViewEnums.ViewState.start
-            loadView.visibility = View.GONE
-            readTop.visibility = View.GONE
-            readBottom.visibility = View.GONE
-        }
-
-        //展示Banner广告
-        private fun showAdBanner(topMargins: Float) {
-            DataProvider.getInstance().loadAd(context, "8-1", mCursor!!.readStatus.screenWidth, mCursor!!.readStatus.screenHeight - topMargins.toInt(), object : DataProvider.OnLoadReaderAdCallback {
-                override fun onLoadAd(adView: ViewGroup) {
-                    val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-                    val margin = AppUtils.dip2px(context, 10f)
-                    param.setMargins(margin, topMargins.toInt(), margin, margin)
-                    addView(adView, param)
-                }
-            })
-        }
-
-        private fun showErrorView(cursor: ReadCursor) {
-            //Error
-            addView(errorView)
-            viewState = ReadViewEnums.ViewState.error
-            loadView.visibility = View.GONE
-            errorView.loading_error_reload.setOnClickListener({
-                entrance(cursor)
-                loadView.visibility = View.VISIBLE
-                viewState = ReadViewEnums.ViewState.loading
-                removeView(errorView)
-            })
-            errorView.loading_error_setting.visibility = FrameLayout.GONE
         }
 
         private var isShowMenu: Boolean = false

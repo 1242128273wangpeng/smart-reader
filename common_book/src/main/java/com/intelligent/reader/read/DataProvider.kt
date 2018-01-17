@@ -251,63 +251,19 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     private fun loadAd(sequence: Int) {
-        val adType1 = if (ReadConfig.IS_LANDSCAPE) "6-1" else "5-1"
-        val adType2 =if (ReadConfig.IS_LANDSCAPE) "6-2" else "6-2"
-        PlatformSDK.adapp().dycmNativeAd(context as Activity, adType1, null, object : AbstractCallback() {
-            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
-                super.onResult(adswitch, views, jsonResult)
-                if (!adswitch) {
-                    return
-                }
-                try {
-                    val jo = JSONObject(jsonResult)
-                    if (jo.has("state_code")) {
-                        when (ResultCode.parser(jo.getInt("state_code"))) {
-                            ResultCode.AD_REQ_SUCCESS -> {
-                                val arrayList = chapterSeparate[sequence]
-                                if ((arrayList != null) and (!arrayList!!.last().isAd)) {
-                                    val offset = arrayList.last().offset + arrayList.last().lines.sumBy { it.lineContent.length } + 1
-                                    arrayList.add(NovelPageBean(arrayListOf(), offset, arrayListOf()).apply { isAd = true;adView = views[0] })
-                                    if (arrayList.size >= 16) {
-                                        PlatformSDK.adapp().dycmNativeAd(context as Activity, adType2, null, object : AbstractCallback() {
-                                            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
-                                                super.onResult(adswitch, views, jsonResult)
-                                                if (!adswitch) {
-                                                    return
-                                                }
-                                                try {
-                                                    val jsonObject = JSONObject(jsonResult)
-                                                    if (jsonObject.has("state_code")) {
-                                                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                                                            ResultCode.AD_REQ_SUCCESS -> {
-                                                                val offset2 = arrayList[7].offset + arrayList[7].lines.sumBy { it.lineContent.length } + 1
-                                                                arrayList.add(8, NovelPageBean(arrayListOf(), offset2, arrayListOf()).apply { isAd = true;adView = views[0] })
-                                                                for (i in 9 until arrayList.size - 1) {
-                                                                    //其他页offset向后偏移 1 length
-                                                                    arrayList[i].offset = arrayList[i - 1].offset + 1
-                                                                }
-                                                            }
-                                                            else -> {
-                                                            }
-                                                        }
-                                                    }
-                                                } catch (e: JSONException) {
-                                                    e.printStackTrace()
-                                                }
-                                            }
-                                        })
-                                    }
-                                }
-                            }
-                            else -> {
-                            }
-                        }
-                    }
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                }
+        val arrayList = chapterSeparate[sequence]
+        if ((arrayList != null) and (!arrayList!!.last().isAd)) {
+            val offset = arrayList.last().offset + arrayList.last().lines.sumBy { it.lineContent.length } + 1
+            arrayList.add(NovelPageBean(arrayListOf(), offset, arrayListOf()).apply { isAd = true})
+        }
+        if (arrayList.size >= 16) {
+            val offset2 = arrayList[7].offset + arrayList[7].lines.sumBy { it.lineContent.length } + 1
+            arrayList.add(8, NovelPageBean(arrayListOf(), offset2, arrayListOf()).apply { isAd = true;})
+            for (i in 9 until arrayList.size - 1) {
+                //其他页offset向后偏移 1 length
+                arrayList[i].offset = arrayList[i - 1].offset + 1
             }
-        })
+        }
     }
 
     fun onReSeparate() {
