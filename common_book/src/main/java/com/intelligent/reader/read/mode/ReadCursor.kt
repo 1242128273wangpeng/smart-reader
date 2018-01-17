@@ -13,8 +13,7 @@ data class ReadCursor(
         var curBook: Book,
         var sequence: Int,//章节
         var offset: Int,//字符位移
-        var pageStatus: ReadViewEnums.PageIndex?,//view tag
-        var readStatus: ReadStatus
+        var pageStatus: ReadViewEnums.PageIndex?//view tag
 ) {
     var lastOffset: Int = 0
     var nextOffset: Int = 0

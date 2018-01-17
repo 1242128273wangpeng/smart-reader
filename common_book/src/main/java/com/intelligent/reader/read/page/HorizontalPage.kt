@@ -165,7 +165,7 @@ class HorizontalPage : FrameLayout, Observer {
 
     //段末广告 8-1
     private fun checkAdBanner(topMargins: Float) {
-        DataProvider.getInstance().loadAd(context, "8-1", mCursor!!.readStatus.screenWidth, mCursor!!.readStatus.screenHeight - topMargins.toInt(), object : DataProvider.OnLoadReaderAdCallback {
+        DataProvider.getInstance().loadAd(context, "8-1", ReadConfig.screenWidth, ReadConfig.screenHeight - topMargins.toInt(), object : DataProvider.OnLoadReaderAdCallback {
             override fun onLoadAd(adView: ViewGroup) {
                 val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
                 val margin = AppUtils.dip2px(context, 10f)
@@ -329,7 +329,7 @@ class HorizontalPage : FrameLayout, Observer {
          */
         private fun preDrawPage(cursor: ReadCursor, chapter: Chapter) {
             //获取数据
-            cursor.readStatus.chapterName = chapter.chapter_name
+            ReadState.chapterName = chapter.chapter_name
             val chapterList = DataProvider.getInstance().chapterSeparate[cursor.sequence]!!
             try {
                 pageIndex = ReadQueryUtil.findPageIndexByOffset(cursor.offset, chapterList)
@@ -370,7 +370,7 @@ class HorizontalPage : FrameLayout, Observer {
                         postInvalidate()
                         //判断展示Banner广告
                         val topMargin = if (mNovelPageBean?.lines?.isNotEmpty() == true) mNovelPageBean!!.height else ReadConfig.screenHeight.toFloat()
-                        if (cursor.readStatus.screenHeight - topMargin > cursor.readStatus.screenHeight / 5) {
+                        if (ReadConfig.screenHeight - topMargin > ReadConfig.screenHeight / 5) {
                             hasAd = true
                             checkAdBanner(topMargin)
                         }
@@ -378,9 +378,9 @@ class HorizontalPage : FrameLayout, Observer {
                     changeCursorState(chapterList)
 
                     //设置top and bottom
-                    val chapterProgress = "" + (cursor.sequence.plus(1)) + "/" + cursor.readStatus.chapterCount + "章"
+                    val chapterProgress = "" + (cursor.sequence.plus(1)) + "/" + ReadState.chapterList.size + "章"
                     val pageProgress = "本章第$pageIndex/$pageSum"
-                    setTopAndBottomViewContext(cursor.readStatus.chapterName, chapterProgress, pageProgress)
+                    setTopAndBottomViewContext(ReadState.chapterName?:"", chapterProgress, pageProgress)
                     noticePageListener?.currentViewSuccess()
                 }
             }

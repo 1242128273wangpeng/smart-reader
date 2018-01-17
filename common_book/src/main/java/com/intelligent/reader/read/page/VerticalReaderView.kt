@@ -327,8 +327,8 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                     && mOriginDataList[position].lines[0].sequence != PagerScrollAdapter.FOOTER_ITEM_TYPE
                     && mOriginDataList[position].lines[0].sequence != PagerScrollAdapter.AD_ITEM_TYPE) {
 
-                mReadInfo.mReadStatus.chapterName = mOriginDataList[position].lines[0].chapterName
-                novel_title.text = mReadInfo.mReadStatus.chapterName
+                ReadState.chapterName = mOriginDataList[position].lines[0].chapterName
+                novel_title.text = ReadState.chapterName
                 novel_chapter.text = "${mOriginDataList[position].lines[0].sequence + 1} / ${ReadState.chapterList.size} 章"
                 novel_page.text = "本章第${(getCurrentChapterPage(position) + 1)} / ${getCurrentChapterPageCount(mOriginDataList[position].lines[0].sequence)}"
 
