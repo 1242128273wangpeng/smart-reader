@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.read_bottom.view.*
 import kotlinx.android.synthetic.main.read_top.view.*
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.ReadConfig
+import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
 import java.util.*
 import kotlin.collections.ArrayList
@@ -377,6 +378,43 @@ class HorizontalPage : FrameLayout, Observer {
             val topMargin = AppUtils.dip2px(context, 40f)
             param.setMargins(margin, topMargin, margin, margin)
             addView(mNovelPageBean.adView, param)
+        }
+        private var adViewGroup:ViewGroup? = null
+
+        override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+            super.onSizeChanged(w, h, oldw, oldh)
+            if (mNovelPageBean!=null){
+                if (mNovelPageBean!!.isAd){
+                    if (oldw>w){//横屏
+                        removeView(mNovelPageBean!!.adView)
+                        if(mCursor!!.offset< mCursor!!.lastOffset){
+                            DataProvider.getInstance().loadAd(context, "6-2", object : DataProvider.OnLoadReaderAdCallback {
+                                override fun onLoadAd(adView: ViewGroup) {
+                                    adViewGroup = adView
+                                    val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+                                    addView(adViewGroup, param)
+                                }
+                            })
+                        }else {
+                            DataProvider.getInstance().loadAd(context, "6-1", object : DataProvider.OnLoadReaderAdCallback {
+                                override fun onLoadAd(adView: ViewGroup) {
+                                    adViewGroup = adView
+                                    val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+                                    addView(adViewGroup, param)
+                                }
+                            })
+                        }
+
+                    }else {//竖屏
+                        if (mNovelPageBean!=null){
+                            if (mNovelPageBean!!.isAd){
+                                if (adViewGroup!=null) removeView(adViewGroup)
+                                showAdBigger(mNovelPageBean!!)
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private fun showErrorView(cursor: ReadCursor) {

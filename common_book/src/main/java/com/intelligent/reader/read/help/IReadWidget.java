@@ -23,4 +23,6 @@ public interface IReadWidget {
     void setIReadPageChange(IReadPageChange mReadPageChange);
 
     void changeAnimMode(int mode);
+
+    void onPause();
 }

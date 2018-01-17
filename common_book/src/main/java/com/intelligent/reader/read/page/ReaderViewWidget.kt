@@ -3,13 +3,12 @@ package com.intelligent.reader.read.page
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
 import android.os.Build
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import android.view.WindowManager
 import android.widget.FrameLayout
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.flip.PageFlipView
@@ -17,21 +16,16 @@ import com.intelligent.reader.flip.base.PageFlip
 import com.intelligent.reader.flip.render.SinglePageRender
 import com.intelligent.reader.read.animation.BitmapManager
 import com.intelligent.reader.read.factory.ReaderViewFactory
+import com.intelligent.reader.read.help.HorizontalEvent
 import com.intelligent.reader.read.help.IReadPageChange
 import com.intelligent.reader.read.help.IReadView
 import com.intelligent.reader.read.help.IReadWidget
 import com.intelligent.reader.read.mode.ReadInfo
-import net.lzbook.kit.data.bean.Chapter
-import net.lzbook.kit.data.bean.NovelLineBean
+import kotlinx.android.synthetic.main.layout_custom_dialog.view.*
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
-import java.util.*
-import android.view.WindowManager
-import com.intelligent.reader.read.help.HorizontalEvent
-import kotlinx.android.synthetic.main.layout_custom_dialog.view.*
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.runOnMain
-
 
 
 /**
@@ -122,8 +116,8 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
             runOnMain {
                 var curView = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage
                 if (curView.hasAd) {
-                    if(mTextureView!!.visibility == View.VISIBLE && mTextureView!!.surfaceAviable) {
-                        mTextureView!!.visibility = View.INVISIBLE
+                    if(mTextureView!!.alpha == 1.0f && mTextureView!!.surfaceAviable) {
+                        mTextureView!!.alpha = 0f
                     }
                 }
             }
@@ -155,9 +149,8 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
         removeView(mTextureView)
         if (mTextureView == null) {
             mTextureView = PageFlipView(context)
-
-//            mTextureView!!.visibility = View.INVISIBLE
         }
+        mTextureView!!.alpha = 0f
         //加载Bitmap数据监听
         (mTextureView?.getmPageRender() as SinglePageRender).setListener(mLoadBitmaplistener)
         //翻页动画结束监听
@@ -178,6 +171,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
             ReadViewEnums.Animation.curl -> true
             else -> false
         }
+        mTextureView?.createGLThread()
     }
 
     /**
@@ -202,10 +196,13 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
         mReaderView?.entrance(mReadInfo)
     }
 
-//    /**
-//     * 设置背景颜色
-//     */
-//    override fun setBackground() = mReaderView?.setBackground() ?: Unit
+    override fun onPause() {
+        if(mTextureView!=null){
+            if (!mTextureView!!.checkGLThreadCreate()) {
+                mTextureView?.createGLThread()
+            }
+        }
+    }
 
 
     /**
@@ -213,16 +210,6 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
      * @param mReadPageChange 监听对象
      */
     override fun setIReadPageChange(mReadPageChange: IReadPageChange?) = mReaderView?.setIReadPageChange(mReadPageChange) ?: Unit
-
-//    /**
-//     * 重画item页面
-//     */
-//    override fun onRedrawPage() = mReaderView?.onRedrawPage() ?: Unit
-//
-//    /**
-//     * 跳章
-//     */
-//    override fun onJumpChapter(sequence: Int) = mReaderView?.onJumpChapter(sequence) ?: Unit
 
     override fun changeAnimMode(mode: Int) {
         ReadConfig.animation = when (mode) {
@@ -234,8 +221,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
             2 -> ReadViewEnums.Animation.shift
             else -> ReadViewEnums.Animation.list
         }
-
-
+        if (mode!=1) mTextureView!!.alpha = 0f
         mReaderView?.onAnimationChange(ReadConfig.animation)
     }
 
@@ -266,12 +252,12 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
             if (context is ReadingActivity) (context as ReadingActivity).showMenu(false)
 
 
-            if (mTextureView!!.visibility != View.VISIBLE && !mTextureView!!.surfaceAviable){
+//            if (mTextureView!!.alpha != 1.0f && !mTextureView!!.surfaceAviable){
 
                 //翻页显示
-                mTextureView!!.visibility = View.VISIBLE
+                mTextureView!!.alpha = 1.0f
 
-            }
+//            }
             mTextureView!!.post{
                 mTextureView?.onFingerDown(e.x, e.y)
             }

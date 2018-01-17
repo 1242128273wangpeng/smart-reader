@@ -224,6 +224,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onPause() {
         super.onPause()
+        readerWidget.onPause()
         mReadPresenter.onPause(ReadState.sequence, ReadState.offset)
     }
 
@@ -284,7 +285,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onChangeMode(mode: Int) {
         mReadPresenter.onChangeMode(mode)
-//        readerWidget.setBackground()
     }
 
     override fun onChangeScreenMode() {

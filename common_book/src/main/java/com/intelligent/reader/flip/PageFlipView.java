@@ -18,6 +18,7 @@ package com.intelligent.reader.flip;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
+import android.graphics.SurfaceTexture;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
 import android.os.Message;
@@ -32,6 +33,8 @@ import com.intelligent.reader.flip.base.PageFlipException;
 import com.intelligent.reader.flip.base.DefaultWindowSurfaceFactory;
 import com.intelligent.reader.flip.render.PageRender;
 import com.intelligent.reader.flip.render.SinglePageRender;
+import com.intelligent.reader.flip.texture.BaseGLTextureView;
+import com.intelligent.reader.flip.texture.GLViewRenderer;
 import com.intelligent.reader.util.DisplayUtils;
 
 import net.lzbook.kit.data.bean.ReadConfig;
@@ -49,10 +52,9 @@ import javax.microedition.khronos.opengles.GL10;
  * @author eschao
  */
 
-public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Renderer {
+public class PageFlipView extends BaseGLTextureView implements GLViewRenderer {
 
     private final static String TAG = "PageFlipView";
-
 
     int mDuration;
     Handler mHandler;
@@ -110,16 +112,16 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
         mPageRender = new SinglePageRender(context, mPageFlip,
                 mHandler);
         //setting
-        setEGLContextClientVersion(2);
-        setPreserveEGLContextOnPause(true);
-        setEGLConfigChooser(8, 8, 8, 0, 16, 0);
-        setEGLWindowSurfaceFactory(new DefaultWindowSurfaceFactory());
+//        setEGLContextClientVersion(2);
+//        setPreserveEGLContextOnPause(true);
+//        setEGLConfigChooser(8, 8, 8, 0, 16, 0);
+//        setEGLWindowSurfaceFactory(new DefaultWindowSurfaceFactory());
 //        setZOrderOnTop(true);
-        setZOrderMediaOverlay(true);
-        getHolder().setFormat(PixelFormat.TRANSLUCENT);//设置透明
+//        setZOrderMediaOverlay(true);
+//        getHolder().setFormat(PixelFormat.TRANSLUCENT);//设置透明
         // configure render
         setRenderer(this);
-        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+//        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
     }
 
     /**
@@ -217,7 +219,7 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
                 }
             }
         };
-        if(getVisibility() == VISIBLE && surfaceAviable) {
+        if(getAlpha() == 1.0f && surfaceAviable) {
             queueEvent(event);
         }else{
             mbeforeEventQueue.add(event);
@@ -265,7 +267,7 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
             }
         };
 
-        if(getVisibility() == VISIBLE && surfaceAviable) {
+        if(getAlpha() == 1.0f && surfaceAviable) {
             queueEvent(event);
         }else{
             mbeforeEventQueue.add(event);
@@ -304,7 +306,7 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
             }
         };
 
-        if(getVisibility() == VISIBLE && surfaceAviable) {
+        if(getAlpha() == 1.0f && surfaceAviable) {
             queueEvent(event);
         }else{
             mbeforeEventQueue.add(event);
@@ -321,66 +323,6 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
         if (mPageRender != null) {
             mPageRender.onReDrawFrame();
         }
-    }
-
-    /**
-     * Draw frame
-     *
-     * @param gl OpenGL handle
-     */
-    @Override
-    public void onDrawFrame(GL10 gl) {
-        surfaceAviable = true;
-        if (mPageRender != null) {
-            mPageRender.onDrawFrame();
-        }
-    }
-
-    /**
-     * Handle surface is changed
-     *
-     * @param gl     OpenGL handle
-     * @param width  new width of surface
-     * @param height new height of surface
-     */
-    @Override
-    public synchronized void onSurfaceChanged(GL10 gl, int width, int height) {
-        if(!mbeforeEventQueue.isEmpty()){
-            for (Runnable event : mbeforeEventQueue){
-                queueEvent(event);
-            }
-            mbeforeEventQueue.clear();
-        }
-//        try {
-//            mPageFlip.onSurfaceChanged(width, height);
-            // let page render handle surface change
-//            mPageRender.onSurfaceChanged(width, height);
-//        } catch (PageFlipException e) {
-//            Log.e(TAG, "Failed to run PageFlipFlipRender:onSurfaceChanged");
-//        }
-    }
-
-    /**
-     * Handle surface is created
-     *
-     * @param gl     OpenGL handle
-     * @param config EGLConfig object
-     */
-    @Override
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        try {
-            mPageFlip.onSurfaceCreated();
-            mPageFlip.onSurfaceChanged(ReadConfig.INSTANCE.getScreenWidth(), ReadConfig.INSTANCE.getScreenHeight());
-        } catch (PageFlipException e) {
-            e.printStackTrace();
-            Log.e(TAG, "Failed to run PageFlipFlipRender:onSurfaceCreated");
-        }
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-        super.surfaceDestroyed(holder);
-        surfaceAviable = false;
     }
 
     /**
@@ -420,4 +362,38 @@ public class PageFlipView extends GLSurfaceView implements GLSurfaceView.Rendere
         };
     }
 
+    @Override
+    public void onSurfaceCreated() {
+        try {
+            mPageFlip.onSurfaceCreated();
+            mPageFlip.onSurfaceChanged(ReadConfig.INSTANCE.getScreenWidth(), ReadConfig.INSTANCE.getScreenHeight());
+        } catch (PageFlipException e) {
+            e.printStackTrace();
+            Log.e(TAG, "Failed to run PageFlipFlipRender:onSurfaceCreated");
+        }
+    }
+
+    @Override
+    public void onSurfaceChanged(int width, int height) {
+        if(!mbeforeEventQueue.isEmpty()){
+            for (Runnable event : mbeforeEventQueue){
+                queueEvent(event);
+            }
+            mbeforeEventQueue.clear();
+        }
+    }
+
+    @Override
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+        surfaceAviable = false;
+        return super.onSurfaceTextureDestroyed(surface);
+    }
+
+    @Override
+    public void onDrawFrame() {
+        surfaceAviable = true;
+        if (mPageRender != null) {
+            mPageRender.onDrawFrame();
+        }
+    }
 }
