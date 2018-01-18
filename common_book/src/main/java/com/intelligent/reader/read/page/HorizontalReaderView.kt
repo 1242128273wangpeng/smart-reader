@@ -151,39 +151,41 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         val threadObserve = Observable.create<String>({
             val provider = DataProvider.getInstance()
             val keyList = provider.chapterMap.keys.toList().sorted()
-            when (whichOrientation) {
-                "Pre" -> {
-                    if (ReadState.sequence <= keyList.first()) {
-                        //保留前三
-                        if (keyList.size >= 3) keyList.filter { it > keyList[2] }.forEach { provider.chapterMap.remove(it) }
-                        //加载缓存
-                        for (i in 0..keyList.first().minus(ReadState.sequence)) {
-                            if (ReadState.sequence.minus(i) < -1) continue
-                            ReadState.book?.let {
-                                DataProvider.getInstance().loadChapter(it, ReadState.sequence.minus(i), ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener() {
-                                    override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
-                                    override fun loadDataError(message: String) = Unit
-                                })
+            if (keyList.isNotEmpty()) {
+                when (whichOrientation) {
+                    "Pre" -> {
+                        if (ReadState.sequence <= keyList.first()) {
+                            //保留前三
+                            if (keyList.size >= 3) keyList.filter { it > keyList[2] }.forEach { provider.chapterMap.remove(it) }
+                            //加载缓存
+                            for (i in 0..keyList.first().minus(ReadState.sequence)) {
+                                if (ReadState.sequence.minus(i) < -1) continue
+                                ReadState.book?.let {
+                                    DataProvider.getInstance().loadChapter(it, ReadState.sequence.minus(i), ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener() {
+                                        override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
+                                        override fun loadDataError(message: String) = Unit
+                                    })
+                                }
                             }
                         }
                     }
-                }
-                "Next" -> {
-                    if (ReadState.sequence >= keyList.last()) {
-                        //保留后三
-                        if (keyList.size >= 3) keyList.filter { it < keyList[keyList.size - 3] }.forEach { provider.chapterMap.remove(it) }
-                        for (i in 0..ReadState.sequence.minus(keyList.first())) {
-                            if (ReadState.sequence.plus(i) > ReadState.chapterList.size) continue
-                            ReadState.book?.let {
-                                DataProvider.getInstance().loadChapter(it, ReadState.sequence.plus(i), ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener() {
-                                    override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
-                                    override fun loadDataError(message: String) = Unit
-                                })
+                    "Next" -> {
+                        if (ReadState.sequence >= keyList.last()) {
+                            //保留后三
+                            if (keyList.size >= 3) keyList.filter { it < keyList[keyList.size - 3] }.forEach { provider.chapterMap.remove(it) }
+                            for (i in 0..ReadState.sequence.minus(keyList.first())) {
+                                if (ReadState.sequence.plus(i) > ReadState.chapterList.size) continue
+                                ReadState.book?.let {
+                                    DataProvider.getInstance().loadChapter(it, ReadState.sequence.plus(i), ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener() {
+                                        override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
+                                        override fun loadDataError(message: String) = Unit
+                                    })
+                                }
                             }
                         }
                     }
-                }
-                else -> {
+                    else -> {
+                    }
                 }
             }
             it.onNext("")
@@ -232,7 +234,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             val newPreSequence: Int
             val newOffset = when (cursor.offset) {
                 0 -> {//如果当前页是1：加载上一章最后页
-                    newPreSequence  = cursor.sequence.minus(1)
+                    newPreSequence = cursor.sequence.minus(1)
                     Int.MAX_VALUE
                 }
                 else -> {//其他情况： -1页
@@ -385,6 +387,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             }
         }
     }
+
     //跳章
     override fun onJumpChapter() {
         entrance()
@@ -432,6 +435,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     override fun setHorizontalEventListener(mHorizontalEvent: HorizontalEvent?) {
         this.mHorizontalEvent = mHorizontalEvent
     }
+
     //-----禁止左滑-------左滑：上一次坐标 > 当前坐标
     override fun onTouchEvent(event: MotionEvent): Boolean {
         return if (ReadConfig.animation == ReadViewEnums.Animation.curl) {
@@ -443,7 +447,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
         if (ReadConfig.animation == ReadViewEnums.Animation.curl
-                && MotionEvent.ACTION_MOVE == ev?.actionMasked){
+                && MotionEvent.ACTION_MOVE == ev?.actionMasked) {
             return mTouchSlop <= Math.abs(ev.x - mLastMotionX)
         }
         return super.onInterceptTouchEvent(ev)
@@ -458,6 +462,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             else -> prohibitionOfSlidingTouchEvent(event)
         }
     }
+
     /**
      * 禁止单方向滑动事件
      */
@@ -466,11 +471,11 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             MotionEvent.ACTION_DOWN//按下
             -> {
                 beforeX = ev.x
-                if (isLeftSlip) mReadPageChange?.goToBookOver()//跳bookend
             }
             MotionEvent.ACTION_MOVE -> {//移动
                 val motionValue = ev.x - beforeX
                 if (isLeftSlip) {
+                    mReadPageChange?.goToBookOver()//跳bookend
                     if (motionValue < 0) {//禁止左滑
                         return true
                     }

@@ -21,6 +21,7 @@ import com.intelligent.reader.reader.ReaderOwnRepository
 import com.intelligent.reader.reader.ReaderRepositoryFactory
 import com.intelligent.reader.repository.BookCoverRepository
 import com.intelligent.reader.repository.ReaderRepository
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
@@ -30,6 +31,7 @@ import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.OpenUDID
+import net.lzbook.kit.utils.runOnMain
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
@@ -208,7 +210,7 @@ class DataProvider : DisposableAndroidViewModel() {
                             mBookCoverRepository.saveBookChapterList(chapters, requestItem)
                         }
                         .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .observeOn(Schedulers.io())
                         .subscribe({ chapters ->
                             ReadState.chapterList = chapters as ArrayList<Chapter>
                             if (chapters.size != 0) {
@@ -226,7 +228,7 @@ class DataProvider : DisposableAndroidViewModel() {
         val chapter = chapters[sequence]
         addDisposable(mReaderRepository.requestSingleChapter(book.site, chapter)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .subscribe({ c ->
                     if (!TextUtils.isEmpty(chapter.content)) {
                         c.isSuccess = true
@@ -239,12 +241,12 @@ class DataProvider : DisposableAndroidViewModel() {
                     chapterMap.put(sequence, c)
                     ReadState.chapterId = c.chapter_id
                     chapterSeparate.put(sequence, ReadSeparateHelper.initTextSeparateContent(c.content, c.chapter_name))
-                    mReadDataListener.loadDataSuccess(c, type)
                     //加章末广告
                     if (isShowAd) {
                         //                    loadAd()
                         loadAd(sequence)
                     }
+                    mReadDataListener.loadDataSuccess(c, type)
                 }, { throwable ->
                     mReadDataListener.loadDataError(throwable.message.toString())
                 }))

@@ -957,7 +957,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             }
             var resizeProgress = when(seekBar.progress) {
                 0  -> 0
-                ReadState.chapterList.size-1 -> ReadState.chapterList.size
+                ReadState.chapterList.size-1 -> ReadState.chapterList.size -1
                 else -> seekBar.progress - 1
             }
             AppLog.e("progress2", resizeProgress.toString())
@@ -1064,7 +1064,6 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     }
 
     companion object {
-
         private val SETTING_OPTION = 1
         private val SETTING_DETAIL = SETTING_OPTION + 1
     }

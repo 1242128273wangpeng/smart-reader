@@ -26,6 +26,7 @@ import kotlinx.android.synthetic.main.loading_page_reading.view.*
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.runOnMain
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -241,6 +242,7 @@ class HorizontalPage : FrameLayout, Observer {
             removeView(errorView)
         })
         errorView.loading_error_setting.visibility = FrameLayout.GONE
+        noticePageListener?.pageChangSuccess(mCursor!!, viewNotify)//游标通知回调
     }
 
     override fun update(o: Observable, arg: Any) {
@@ -277,35 +279,38 @@ class HorizontalPage : FrameLayout, Observer {
                 mDrawTextHelper?.drawText(canvas, mNovelPageBean!!)
             }
         }
-
+        var entranceArray = arrayOf(false, false, false)
         /**
          * 入口模式
          * 加载3章至内存
          */
         fun entrance(cursor: ReadCursor) {
+            entranceArray = arrayOf(false, false, false)
             cursor.curBook.sequence = cursor.sequence
             DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
-                override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) {
-                    //当前章拉去成功 执行一般方法
-                    //true 通知其他页面加载
-                    setCursor(cursor)
-                }
-
-                override fun loadDataError(message: String) {
-                    showErrorView(cursor)
-                    noticePageListener?.pageChangSuccess(mCursor!!, viewNotify)//游标通知回调
-                }
+                override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex)  = checkEntrance(cursor,0)
+                override fun loadDataError(message: String) = showErrorView(cursor)
             })
             DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener() {
-                override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
-                override fun loadDataError(message: String) = Unit
+                override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = checkEntrance(cursor,1)
+                override fun loadDataError(message: String) = checkEntrance(cursor,1)
             })
             DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.next, object : DataProvider.ReadDataListener() {
-                override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
-                override fun loadDataError(message: String) = Unit
+                override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = checkEntrance(cursor,2)
+                override fun loadDataError(message: String) = checkEntrance(cursor,2)
             })
         }
 
+        fun checkEntrance(cursor: ReadCursor,index:Int){
+            //当前章拉去成功 执行一般方法
+            //true 通知其他页面加载
+            entranceArray[index] = true
+            if (entranceArray.all {it}){
+                runOnMain {
+                    setCursor(cursor)
+                }
+            }
+        }
         /**
          * 一般模式
          * 1、判断缓存
