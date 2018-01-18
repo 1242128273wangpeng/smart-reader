@@ -17,34 +17,23 @@ package com.intelligent.reader.flip;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.PixelFormat;
 import android.graphics.SurfaceTexture;
-import android.opengl.GLSurfaceView;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.View;
 
 import com.intelligent.reader.flip.base.PageFlip;
 import com.intelligent.reader.flip.base.PageFlipException;
-import com.intelligent.reader.flip.base.DefaultWindowSurfaceFactory;
 import com.intelligent.reader.flip.render.PageRender;
 import com.intelligent.reader.flip.render.SinglePageRender;
 import com.intelligent.reader.flip.texture.BaseGLTextureView;
 import com.intelligent.reader.flip.texture.GLViewRenderer;
 import com.intelligent.reader.util.DisplayUtils;
 
-import net.lzbook.kit.data.bean.ReadConfig;
-import net.lzbook.kit.utils.AppUtils;
-
 import java.util.ArrayList;
-import java.util.concurrent.locks.ReentrantLock;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * Page flip view
@@ -52,7 +41,7 @@ import javax.microedition.khronos.opengles.GL10;
  * @author eschao
  */
 
-public class PageFlipView extends BaseGLTextureView implements GLViewRenderer {
+public class PageFlipView extends BaseGLTextureView implements GLViewRenderer,Observer {
 
     private final static String TAG = "PageFlipView";
 
@@ -401,5 +390,35 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer {
         if (mPageRender != null) {
             mPageRender.onDrawFrame();
         }
+    }
+
+    @Override
+    public void update(Observable o, final Object arg) {
+        if (isFangzhen()){
+            if ("READ_INTERLINEAR_SPACE".equals(arg)){
+                onChangTexture();
+            } else if ("FONT_SIZE".equals(arg)){
+                onChangTexture();
+            }else if("MODE".equals(arg)){
+                onChangTexture();
+            } else if("JUMP".equals(arg)){
+                onChangTexture();
+            }
+        }
+    }
+
+    public void onChangTexture() {
+        post(new Runnable() {
+            @Override
+            public void run() {
+                setAlpha(0f);
+            }
+        });
+        queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                mPageRender.mPageFlip.getFirstPage().deleteAllTextures();
+            }
+        });
     }
 }

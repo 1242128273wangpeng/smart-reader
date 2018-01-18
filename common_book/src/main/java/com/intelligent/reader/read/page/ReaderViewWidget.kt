@@ -25,6 +25,7 @@ import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.runOnMain
+import java.util.*
 
 
 /**
@@ -116,10 +117,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
             runOnMain {
                 var curView = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage
                 if (curView.hasAd) {
-                    mTextureView!!.alpha = 0f
-                    mTextureView!!.queueEvent {
-                        mTextureView!!.getmPageRender().mPageFlip.firstPage.deleteAllTextures()
-                    }
+                    mTextureView?.onChangTexture()
                 }
             }
         }
@@ -148,31 +146,28 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
      */
     private fun initGLSufaceView() {
         removeView(mTextureView)
-        if (mTextureView == null) {
-            mTextureView = PageFlipView(context)
+        mTextureView?.let {
+            ReadConfig.unregistObserver(it)
         }
-        mTextureView!!.alpha = 0f
-        //加载Bitmap数据监听
-        (mTextureView?.getmPageRender() as SinglePageRender).setListener(mLoadBitmaplistener)
-        //翻页动画结束监听
-        (mTextureView?.getmPageRender() as SinglePageRender).setPageFlipStateListenerListener(mPageFlipStateListener)
-        mTextureView?.setBeginLisenter(mBeginLisenter)
-        addView(mTextureView, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
-        if (Build.VERSION.SDK_INT < 16) {
-            (content as Activity).window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        } else {
-            mTextureView?.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                    View.SYSTEM_UI_FLAG_IMMERSIVE or
-                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        if (animaEnums == ReadViewEnums.Animation.curl) {
+            if (mTextureView == null) {
+                mTextureView = PageFlipView(context)
+            }
+            mTextureView?.alpha = 0f
+            //加载Bitmap数据监听
+            (mTextureView?.getmPageRender() as SinglePageRender).setListener(mLoadBitmaplistener)
+            //翻页动画结束监听
+            (mTextureView?.getmPageRender() as SinglePageRender).setPageFlipStateListenerListener(mPageFlipStateListener)
+            mTextureView?.setBeginLisenter(mBeginLisenter)
+            addView(mTextureView, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+            mTextureView?.let {
+                ReadConfig.registObserver(it)
+            }
+            mTextureView?.isFangzhen = when (animaEnums) {
+                ReadViewEnums.Animation.curl -> true
+                else -> false
+            }
         }
-        mTextureView?.isFangzhen = when (animaEnums) {
-            ReadViewEnums.Animation.curl -> true
-            else -> false
-        }
-//        mTextureView?.createGLThread()
     }
 
     /**
@@ -189,8 +184,8 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
             mReaderView = mReaderViewFactory?.getView(ReadConfig.animation)//创建
             (mReaderView as View).isClickable = false
             if (mReaderView != null) addView(mReaderView as View)//添加
-            animaEnums = ReadConfig.animation//记录动画模式
             mReaderView?.setHorizontalEventListener(this)
+            animaEnums = ReadConfig.animation//记录动画模式
             initGLSufaceView()
         }
         mReaderView?.entrance()
@@ -199,7 +194,6 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
     override fun onPause() {
         mTextureView?.alpha = 0f
     }
-
 
     /**
      * 设置 IReadView 实现 View 的变化监听

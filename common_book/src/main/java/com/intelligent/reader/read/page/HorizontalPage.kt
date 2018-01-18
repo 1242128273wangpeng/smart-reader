@@ -241,6 +241,7 @@ class HorizontalPage : FrameLayout, Observer {
     }
 
     override fun update(o: Observable, arg: Any) {
+        destroyDrawingCache()
         when (arg as String) {
             "READ_INTERLINEAR_SPACE" -> onRedrawPage()
             "FONT_SIZE" -> onRedrawPage()
