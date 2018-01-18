@@ -20,12 +20,15 @@ import com.intelligent.reader.read.help.HorizontalEvent
 import com.intelligent.reader.read.help.IReadPageChange
 import com.intelligent.reader.read.help.IReadView
 import com.intelligent.reader.read.help.IReadWidget
+import com.intelligent.reader.util.DisplayUtils
 import kotlinx.android.synthetic.main.layout_custom_dialog.view.*
+import kotlinx.android.synthetic.qbzsydq.serial_chapter_item.view.*
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.runOnMain
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 /**
@@ -216,48 +219,69 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
     }
 
     private var isDownActioned = false
+    var eventList: ArrayList<MotionEvent> = arrayListOf()
 
     override fun myDispatchTouchEvent(event: MotionEvent): Boolean {
         AppLog.e("touch", event.action.toString())
-
-        when (event.actionMasked) {
-            MotionEvent.ACTION_DOWN -> {
-                isDownActioned = true
-                if (context is ReadingActivity) (context as ReadingActivity).showMenu(false)
-
-                if (mTextureView!!.alpha != 1.0f) {
-                    //翻页显示
-                    mTextureView!!.alpha = 1.0f
-                }
-
-                mTextureView?.onFingerDown(event.x, event.y)
+        if (ReadConfig.FULL_SCREEN_READ) {
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                eventList.add(event)
+                AppLog.e("event", event.action.toString())
+                return true
             }
-
-            MotionEvent.ACTION_MOVE -> {
-                if(isDownActioned) {
-                    mTextureView?.onFingerMove(event.x, event.y)
-                }else{
-                    isDownActioned = true
-                    if (context is ReadingActivity) (context as ReadingActivity).showMenu(false)
-
-                    if (mTextureView!!.alpha != 1.0f) {
-                        //翻页显示
-                        mTextureView!!.alpha = 1.0f
-                    }
-                    mTextureView?.onFingerDown(event.x, event.y)
+            if (eventList.isNotEmpty()) {
+                if (event.action == MotionEvent.ACTION_UP) {
+                    //执行操作
+                    val x = ReadConfig.screenWidth.minus(100).toFloat()
+                    val y = ReadConfig.screenHeight.div(2).toFloat()
+                    onCurlDown(x, y)
+                    onCurlUp(x, y)
+                    return true
+                } else if (event.action == MotionEvent.ACTION_CANCEL){
+                    onCurlDown(eventList.last().x, eventList.last().y)
                 }
             }
-
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                if(isDownActioned) {
-                    isDownActioned = false
-                    mTextureView?.onFingerUp(event.x, event.y)
-                }
-            }
-
+            eventList.clear()
         }
-
+        //
+        when (event.actionMasked) {
+            MotionEvent.ACTION_DOWN -> onCurlDown(event.x, event.y)
+            MotionEvent.ACTION_MOVE -> onCurlMove(event.x, event.y)
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> onCurlUp(event.x, event.y)
+        }
         return true
     }
 
+    private fun onCurlDown(x: Float, y: Float) {
+        isDownActioned = true
+        if (context is ReadingActivity) (context as ReadingActivity).showMenu(false)
+
+        if (mTextureView!!.alpha != 1.0f) {
+            //翻页显示
+            mTextureView!!.alpha = 1.0f
+        }
+        mTextureView?.onFingerDown(x, y)
+    }
+
+    private fun onCurlUp(x: Float, y: Float) {
+        if (isDownActioned) {
+            isDownActioned = false
+            mTextureView?.onFingerUp(x, y)
+        }
+    }
+
+    private fun onCurlMove(x: Float, y: Float) {
+        if (isDownActioned) {
+            mTextureView?.onFingerMove(x, y)
+        } else {
+            isDownActioned = true
+            if (context is ReadingActivity) (context as ReadingActivity).showMenu(false)
+
+            if (mTextureView!!.alpha != 1.0f) {
+                //翻页显示
+                mTextureView!!.alpha = 1.0f
+            }
+            mTextureView?.onFingerDown(x, y)
+        }
+    }
 }

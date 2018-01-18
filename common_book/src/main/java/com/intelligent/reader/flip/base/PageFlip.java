@@ -547,7 +547,9 @@ public class PageFlip {
         mVertexProgram.initMatrix(-mViewRect.halfW, mViewRect.halfW,
                 -mViewRect.halfH, mViewRect.halfH);
         computeMaxMeshCount();
+        mIsVertical = width>height;
         createPages();
+        computeVertexesAndBuildPage();
     }
 
     /**

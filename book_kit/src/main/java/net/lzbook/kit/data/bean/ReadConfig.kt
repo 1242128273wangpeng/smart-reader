@@ -70,6 +70,8 @@ object ReadConfig :Observable(){
                 notifyObservers("JUMP")
             }
         }
+    //全屏翻页
+    var FULL_SCREEN_READ = false
 
     // 阅读页默认字体大小
     val FONT_CHAPTER_DEFAULT = 18

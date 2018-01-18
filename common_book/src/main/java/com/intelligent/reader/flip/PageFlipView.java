@@ -50,7 +50,6 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer,Ob
     PageFlip mPageFlip;
     PageRender mPageRender;
 
-    private boolean isDownActioned = false;
 
     private boolean isFangzhen;
 
@@ -197,10 +196,9 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer,Ob
             public void run() {
                 // if the animation is going, we should ignore this event to avoid
                 // mess drawing on screen
-                if (!isDownActioned && !mPageFlip.isAnimating() &&
+                if ( !mPageFlip.isAnimating() &&
                         mPageFlip.getFirstPage() != null) {
                     mPageFlip.onFingerDown(x, y);
-                    isDownActioned = true;
                     log("down");
                 } else {
                     log("down miss");
@@ -229,10 +227,6 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer,Ob
         Runnable event = new Runnable() {
             @Override
             public void run() {
-                if(!isDownActioned) {
-                    log("onFingerMove miss not downActioned");
-                    return;
-                }
                 if (mPageFlip.isAnimating()) {
                     // nothing to do during animating
                     log("onFingerMove isAnimating");
@@ -276,25 +270,17 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer,Ob
         Runnable event = new Runnable() {
             @Override
             public void run() {
-                if(isDownActioned) {
+                if (!mPageFlip.isAnimating()) {
+                    mPageFlip.onFingerUp(x, y, mDuration);
 
-                    if (!mPageFlip.isAnimating()) {
-                        mPageFlip.onFingerUp(x, y, mDuration);
-
-                        if (mPageRender != null &&
-                                mPageRender.onFingerUp(x, y)) {
-                        }
-                        log("onFingerUp");
-                    } else {
-                        log("onFingerUp miss");
+                    if (mPageRender != null &&
+                            mPageRender.onFingerUp(x, y)) {
                     }
-
-                    requestRender();
-                }else{
-                    log("onFingerUp miss not downActioned");
+                    log("onFingerUp");
+                } else {
+                    log("onFingerUp miss");
                 }
-
-                isDownActioned = false;
+                requestRender();
             }
         };
 
@@ -338,6 +324,7 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer,Ob
                         //翻下页
                         onFingerDown(DisplayUtils.getScreenWight(getContext()) / 2 + 500, DisplayUtils.getScreenHeight(getContext()) / 2);
                         onFingerUp(DisplayUtils.getScreenWight(getContext()) / 2 + 500, DisplayUtils.getScreenHeight(getContext()) / 2);
+
                     case PageRender.MSG_ENDED_FLIP_UP:
                         //翻下页
                         onFingerDown(DisplayUtils.getScreenWight(getContext()) / 2 - 500, DisplayUtils.getScreenHeight(getContext()) / 2);
@@ -420,5 +407,9 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer,Ob
                 mPageRender.mPageFlip.getFirstPage().deleteAllTextures();
             }
         });
+    }
+
+    public void nextPage() {
+        ((SinglePageRender)mPageRender).sendMessageDown();
     }
 }

@@ -93,7 +93,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         mCatalogMarkFragment?.let {
             read_catalog_mark_drawer.addDrawerListener(it)
         }
-
+        read_catalog_mark_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         readerWidget.removeAllViews()
         BitmapManager.getInstance().setSize(readStatus.screenWidth, readStatus.screenHeight)
         auto_menu.setOnAutoMemuListener(this)

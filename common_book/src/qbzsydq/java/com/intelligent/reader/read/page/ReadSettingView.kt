@@ -479,9 +479,9 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
                 sharedPreferences?.edit()?.putBoolean("full_screen_read", read_full.isChecked)?.apply()
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_fullscreen_read_btn)
-                Constants.FULL_SCREEN_READ = read_full.isChecked
+                ReadConfig.FULL_SCREEN_READ = read_full.isChecked
                 val data = java.util.HashMap<String, String>()
-                if (Constants.FULL_SCREEN_READ) {
+                if (ReadConfig.FULL_SCREEN_READ) {
                     data.put("type", "1")
                 } else {
                     data.put("type", "2")

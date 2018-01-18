@@ -22,9 +22,9 @@ import kotlinx.android.synthetic.main.book_home_page_layout.view.*
 import kotlinx.android.synthetic.main.error_page2.view.*
 import kotlinx.android.synthetic.main.read_bottom.view.*
 import kotlinx.android.synthetic.main.read_top.view.*
+import kotlinx.android.synthetic.main.loading_page_reading.view.*
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.ReadConfig
-import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
 import java.util.*
 import kotlin.collections.ArrayList
@@ -122,12 +122,15 @@ class HorizontalPage : FrameLayout, Observer {
         novel_page.setTextColor(resources.getColor(colorInt))
         novel_chapter.setTextColor(resources.getColor(colorInt))
         novel_title.setTextColor(resources.getColor(colorInt))
+        tv_loading_progress.setTextColor(resources.getColor(colorInt))
         //pageView
         ThemeUtil.getModePrimaryBackground(resources, pageView)
         //电池背景
         ThemeUtil.getModePrimaryBackground(resources, novel_content_battery_view)
         //封面页
         ThemeUtil.getModePrimaryBackground(resources, homePage)
+        //进度条
+        ThemeUtil.getModePrimaryBackground(resources, loadView)
     }
 
     /**
@@ -382,7 +385,7 @@ class HorizontalPage : FrameLayout, Observer {
                     //设置top and bottom
                     val chapterProgress = "" + (cursor.sequence.plus(1)) + "/" + ReadState.chapterList.size + "章"
                     val pageProgress = "本章第$pageIndex/$pageSum"
-                    setTopAndBottomViewContext(ReadState.chapterName?:"", chapterProgress, pageProgress)
+                    setTopAndBottomViewContext(ReadState.chapterName ?: "", chapterProgress, pageProgress)
                     noticePageListener?.currentViewSuccess()
                 }
             }
@@ -455,7 +458,12 @@ class HorizontalPage : FrameLayout, Observer {
                         } else {
                             if (e.x < width / 2) {
                                 //left
-                                noticePageListener?.onClickLeft(true)
+                                if (ReadConfig.FULL_SCREEN_READ) {
+                                    noticePageListener?.onClickRight(true)
+                                }else {
+                                    noticePageListener?.onClickLeft(true)
+                                }
+
                             } else {
                                 noticePageListener?.onClickRight(true)
                             }
