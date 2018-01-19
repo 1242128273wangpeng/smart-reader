@@ -25,6 +25,7 @@ import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.read.page.AutoReadMenu
 import com.intelligent.reader.read.page.PageInterface
 import com.intelligent.reader.read.page.ReadSettingView
+import com.intelligent.reader.read.page.ReaderViewWidget
 import com.intelligent.reader.reader.ReaderViewModel
 import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.qbzsydq.act_read.*
@@ -33,6 +34,7 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.*
 import net.lzbook.kit.utils.SharedPreferencesUtils
+import net.lzbook.kit.utils.ToastUtils
 import java.util.*
 import kotlin.properties.Delegates
 
@@ -41,7 +43,7 @@ import kotlin.properties.Delegates
  * ReadingActivity
  * 小说阅读页
  */
-class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener, ReadSettingView.OnReadSettingListener, ReadPreInterface.View, IReadPageChange {
+class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener, ReadSettingView.OnReadSettingListener, ReadPreInterface.View, IReadPageChange, ReaderViewWidget.OnAutoReadCallback {
 
     // 系统存储设置
     private lateinit var mSharedPreferencesUtils: SharedPreferencesUtils
@@ -88,6 +90,8 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         readSettingView.setOnReadSettingListener(this)
         readSettingView.setDataFactory(fac, readStatus, mThemeHelper)
         readSettingView.currentThemeMode = mReadPresenter.currentThemeMode
+
+        readerWidget.setOnAutoReadCallback(this)
 
         read_catalog_mark_drawer.addDrawerListener(mDrawerListener)
         mCatalogMarkFragment?.let {
@@ -154,7 +158,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         return true
     }
 
-    fun freshPage() = mReadPresenter.freshPage()
+//    fun freshPage() = mReadPresenter.freshPage()
 
     //自动阅读
     fun dealManualDialogShow() = mReadPresenter.dealManualDialogShow()
@@ -191,6 +195,13 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     override fun onBackPressed() {
         if (read_catalog_mark_drawer.isDrawerOpen(GravityCompat.START)) {
             read_catalog_mark_drawer.closeDrawers()
+            return
+        }
+
+        if (readerWidget.isAutoRead) {
+            readerWidget.stopAutoRead()
+            auto_menu.visibility = View.GONE
+            ToastUtils.showToastNoRepeat("已退出自动阅读")
             return
         }
 
@@ -264,11 +275,12 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) = mReadPresenter.onActivityResult(requestCode, resultCode, data)
 
-    override fun speedUp() = mReadPresenter.speedUp()
+    override fun setAutoSpeed(autoReadSpeed: Double) = readerWidget.setAutoReadSpeed(autoReadSpeed)
 
-    override fun speedDown() = mReadPresenter.speedDown()
-
-    override fun autoStop() {}
+    override fun autoStop() {
+        readerWidget.stopAutoRead()
+        ToastUtils.showToastNoRepeat("已退出自动阅读")
+    }
 
     //ReadSettingView start
     override fun onReadCatalog() {
@@ -280,7 +292,10 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onReadCache() = mReadPresenter.onReadCache()
 
-    override fun onReadAuto() {}
+    override fun onReadAuto() {
+        readerWidget.startAutoRead()
+        readSettingView.dismissMenu()
+    }
 
     override fun onChangeMode(mode: Int) {
         mReadPresenter.onChangeMode(mode)
@@ -439,6 +454,14 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onTransCodingClick() {
         mReadPresenter.onTransCodingClick()
+    }
+
+    override fun onAutoReadResume() {
+        auto_menu.visibility = View.GONE
+    }
+
+    override fun onAutoReadStop() {
+        auto_menu.visibility = View.VISIBLE
     }
 
     override fun addLog() {

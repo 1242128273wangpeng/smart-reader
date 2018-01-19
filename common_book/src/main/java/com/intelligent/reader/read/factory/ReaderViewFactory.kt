@@ -17,15 +17,12 @@ class ReaderViewFactory(val context: Context)  {
      * @param anim 动画模式
      * @return 获取IReadView对象
      */
-    fun getView(anim: ReadViewEnums.Animation): IReadView {
-        return when (anim) {
-            ReadViewEnums.Animation.list -> {
-
-                VerticalReaderView(context)
-            }
-            else -> {
-                HorizontalReaderView(context)
-            }
+    fun getView(anim: ReadViewEnums.Animation): IReadView = when (anim) {
+        ReadViewEnums.Animation.list -> {
+            VerticalReaderView(context)
+        }
+        else -> {
+            HorizontalReaderView(context)
         }
     }
 }

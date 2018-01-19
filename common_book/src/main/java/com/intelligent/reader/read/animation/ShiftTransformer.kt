@@ -1,5 +1,6 @@
 package com.intelligent.reader.read.animation
 
+import android.util.Log
 import android.view.View
 import com.intelligent.reader.view.ViewPager
 
@@ -22,5 +23,4 @@ class ShiftTransformer : ViewPager.PageTransformer {
             view.translationX = 0f
         }
     }
-
 }

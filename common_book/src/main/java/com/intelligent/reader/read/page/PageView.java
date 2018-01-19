@@ -894,6 +894,7 @@ public class PageView extends View implements PageInterface {
 
         private double remainLen;
 
+        @SuppressLint("HandlerLeak")
         private Handler handler = new Handler() {
 
             @Override
@@ -909,7 +910,7 @@ public class PageView extends View implements PageInterface {
                         return;
                     }
 
-                    double stepLen = pageHeight * readStatus.autoReadFactor() / (10 * kAutoReadFrequency);
+                    double stepLen = pageHeight * 0.5 / (10 * kAutoReadFrequency);
                     remainLen += stepLen;
                     int inc = (int) remainLen;
                     if (inc > 0) {

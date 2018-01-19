@@ -237,7 +237,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         readStatus = ReadStatus(readReference?.get()?.applicationContext)
         BookApplication.getGlobalContext().readStatus = readStatus
         view?.setReadStatus(readStatus!!)
-        autoSpeed = readStatus?.autoReadSpeed()!!
+//        autoSpeed = readStatus?.autoReadSpeed()!!
         myNovelHelper = NovelHelper(readReference?.get(), readStatus)
         myNovelHelper?.setOnHelperCallBack(this)
         downloadService = BaseBookApplication.getDownloadService()
@@ -300,7 +300,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         readStatus = ReadStatus(readReference?.get()?.getApplicationContext())
         BookApplication.getGlobalContext().readStatus = readStatus
         view?.setReadStatus(readStatus!!)
-        autoSpeed = readStatus!!.autoReadSpeed()
+//        autoSpeed = readStatus!!.autoReadSpeed()
         myNovelHelper = NovelHelper(readReference?.get(), readStatus)
         myNovelHelper?.setOnHelperCallBack(this)
 
@@ -652,9 +652,9 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             myNovelHelper!!.getChapterContent(readReference?.get(), mReaderViewModel?.currentChapter, mReaderViewModel?.readStatus?.book)
         }
         // 刷新页面
-        if (mReaderViewModel?.mReadDataListener != null) {
-            mReaderViewModel?.mReadDataListener!!.freshPage()
-        }
+//        if (mReaderViewModel?.mReadDataListener != null) {
+//            mReaderViewModel?.mReadDataListener!!.freshPage()
+//        }
 
         if (pageView != null) {
             pageView?.drawCurrentPage()
@@ -1387,10 +1387,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             return false
         }
         // 显示菜单
-        if (readStatus != null && readStatus!!.isMenuShow) {
-            showMenu(false)
-            return false
-        }
+        showMenu(false)
 
         if (mBookDaoHelper != null && readStatus != null) {
             isSubed = mBookDaoHelper!!.isBookSubed(readStatus!!.book_id)
@@ -1665,9 +1662,9 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 //        }
     }
 
-    override fun freshPage() {
-        refreshPage()
-    }
+//    override fun freshPage() {
+//        refreshPage()
+//    }
 
     override fun gotoOver() {
         goToBookOver()
@@ -1703,35 +1700,35 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         }
     }
 
-    fun speedUp() {
-        readStatus!!.setAutoReadSpeed(++autoSpeed)
-        autoSpeed = readStatus!!.autoReadSpeed()
-    }
+//    fun speedUp() {
+//        readStatus!!.setAutoReadSpeed(++autoSpeed)
+//        autoSpeed = readStatus!!.autoReadSpeed()
+//    }
 
-    fun speedDown() {
-        readStatus!!.setAutoReadSpeed(--autoSpeed)
-        autoSpeed = readStatus!!.autoReadSpeed()
-    }
+//    fun speedDown() {
+//        readStatus!!.setAutoReadSpeed(--autoSpeed)
+//        autoSpeed = readStatus!!.autoReadSpeed()
+//    }
 
     fun autoStop() {
         pageView?.exitAutoRead()
 
-        if (isSlideToAuto) {
-            val temp: PageInterface?
-            Constants.isSlideUp = true
-            temp = pageView
-            pageView = ScrollPageView(readReference?.get())
-            view?.resetPageView(pageView!!)
-            pageView?.init(readReference?.get(), readStatus, myNovelHelper)
-            pageView?.setCallBack(this)
-            pageView?.setViewModel(mReaderViewModel)
-            myNovelHelper?.setPageView(pageView)
-            pageView?.freshTime(time_text)
-//            pageView?.freshBattery(batteryPercent)
-            changeMode(current_mode)
-
-            temp?.clear()
-        }
+//        if (isSlideToAuto) {
+//            val temp: PageInterface?
+//            Constants.isSlideUp = true
+//            temp = pageView
+//            pageView = ScrollPageView(readReference?.get())
+//            view?.resetPageView(pageView!!)
+//            pageView?.init(readReference?.get(), readStatus, myNovelHelper)
+//            pageView?.setCallBack(this)
+//            pageView?.setViewModel(mReaderViewModel)
+//            myNovelHelper?.setPageView(pageView)
+//            pageView?.freshTime(time_text)
+////            pageView?.freshBattery(batteryPercent)
+//            changeMode(current_mode)
+//
+//            temp?.clear()
+//        }
         view?.showStopAutoHint()
     }
 
@@ -1807,15 +1804,15 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     }
 
     fun onRedrawPage() {
-        if (pageView is ScrollPageView && (pageView as ScrollPageView).tempChapter != null) {
-            myNovelHelper?.getChapterContent(readReference?.get(), (pageView as ScrollPageView).tempChapter, readStatus!!.book)
-        } else {
-            myNovelHelper?.getChapterContent(readReference?.get(), mReaderViewModel?.currentChapter, readStatus!!.book)
-        }
-        refreshPage()
-        pageView?.drawCurrentPage()
-        pageView?.drawNextPage()
-        pageView?.getChapter(true)
+//        if (pageView is ScrollPageView && (pageView as ScrollPageView).tempChapter != null) {
+//            myNovelHelper?.getChapterContent(readReference?.get(), (pageView as ScrollPageView).tempChapter, readStatus!!.book)
+//        } else {
+//            myNovelHelper?.getChapterContent(readReference?.get(), mReaderViewModel?.currentChapter, readStatus!!.book)
+//        }
+//        refreshPage()
+//        pageView?.drawCurrentPage()
+//        pageView?.drawNextPage()
+//        pageView?.getChapter(true)
     }
 
     fun onJumpChapter() {
@@ -1988,7 +1985,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
                         readReference?.get()?.showToastShort("已发送")
-                    }, {e-> e.printStackTrace()})
+                    }, { e -> e.printStackTrace() })
             disposable.add(time)
 //            handler.postDelayed({ readReference?.get()?.showToastShort("已发送") }, 1000)
             return
@@ -2024,7 +2021,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     readReference?.get()?.showToastShort("已发送")
-                }, {e-> e.printStackTrace()})
+                }, { e -> e.printStackTrace() })
         disposable.add(time)
     }
 

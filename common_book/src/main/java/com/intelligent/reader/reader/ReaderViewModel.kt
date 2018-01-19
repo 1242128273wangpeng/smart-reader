@@ -313,15 +313,6 @@ class ReaderViewModel : DisposableAndroidViewModel {
     }
 
 
-    //刷新 方便上下阅读时调用
-    fun freshPage() {
-    }
-
-    fun clean() {
-
-
-    }
-
     interface ReaderRecommendViewCallback {
 
         fun onRecommendBook(recommanded: RecommendBooksEndResp)
@@ -358,7 +349,7 @@ class ReaderViewModel : DisposableAndroidViewModel {
     }
 
     interface ReadDataListener {
-        fun freshPage()
+//        fun freshPage()
         fun gotoOver()
         fun showToast(str: Int)
         fun downLoadNovelMore()

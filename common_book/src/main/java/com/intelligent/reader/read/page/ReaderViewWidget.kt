@@ -1,14 +1,10 @@
 package com.intelligent.reader.read.page
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
-import android.os.Build
 import android.util.AttributeSet
-import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import android.view.WindowManager
 import android.widget.FrameLayout
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.flip.PageFlipView
@@ -20,15 +16,10 @@ import com.intelligent.reader.read.help.HorizontalEvent
 import com.intelligent.reader.read.help.IReadPageChange
 import com.intelligent.reader.read.help.IReadView
 import com.intelligent.reader.read.help.IReadWidget
-import com.intelligent.reader.util.DisplayUtils
-import kotlinx.android.synthetic.main.layout_custom_dialog.view.*
-import kotlinx.android.synthetic.qbzsydq.serial_chapter_item.view.*
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.runOnMain
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 /**
@@ -47,7 +38,11 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
     private var mTextureView: PageFlipView? = null
 
+    private var mAutoReadView: AutoReadView? = null
+
     private var animaEnums: ReadViewEnums.Animation? = null
+
+    private var mAutoReadSpeed = 0.0
 
     constructor(context: Context) : this(context, null)
 
@@ -173,6 +168,67 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
         }
     }
 
+    private fun initAutoReadView() {
+        removeView(mAutoReadView)
+        if (animaEnums != ReadViewEnums.Animation.list) {
+            if (mAutoReadView == null) {
+                mAutoReadView = AutoReadView(context)
+                mAutoReadView?.setAutoReadSpeed(mAutoReadSpeed)
+            }
+            mAutoReadView?.setOnAutoReadViewLoadCallback(object : AutoReadView.OnAutoReadViewLoadCallback {
+
+                override fun onStart() {
+                    mTextureView?.visibility = View.INVISIBLE
+                    mAutoReadView?.visibility = View.VISIBLE
+                }
+
+                override fun onResume() {
+                    mOnAutoReadCallback?.onAutoReadResume()
+                }
+
+                override fun onStop() {
+                    mTextureView?.visibility = View.VISIBLE
+                    mAutoReadView?.visibility = View.INVISIBLE
+                }
+
+                override fun onPause() {
+                    mOnAutoReadCallback?.onAutoReadStop()
+                }
+
+                override fun onNextPage() {
+                    if (mReaderView is HorizontalReaderView) {
+                        (mReaderView as HorizontalReaderView).onClickRight(false)
+                    }
+                }
+
+                override fun loadBitmap(index: ReadViewEnums.PageIndex): Bitmap? {
+                    if (mReaderView is HorizontalReaderView) {
+                        val view = (mReaderView as HorizontalReaderView).findViewWithTag(index) as HorizontalPage
+                        if (view.hasAd) {
+                            view.destroyDrawingCache()
+                        }
+                        return view.drawingCache
+                    }
+                    return null
+                }
+
+            })
+            addView(mAutoReadView, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+        }
+    }
+
+    override fun startAutoRead() {
+        mAutoReadView?.startAutoRead()
+    }
+
+    override fun stopAutoRead() {
+        mAutoReadView?.closeAutoRead()
+    }
+
+    override fun isAutoRead(): Boolean {
+        return mAutoReadView?.isAutoRead() ?: false
+    }
+
     /**
      * 初始化ReaderViewFactory
      */
@@ -190,12 +246,14 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
             mReaderView?.setHorizontalEventListener(this)
             animaEnums = ReadConfig.animation//记录动画模式
             initGLSufaceView()
+            initAutoReadView()
         }
         mReaderView?.entrance()
     }
 
     override fun onPause() {
         mTextureView?.alpha = 0f
+        mAutoReadView?.closeAutoRead()
     }
 
     /**
@@ -283,5 +341,21 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
             }
             mTextureView?.onFingerDown(x, y)
         }
+    }
+
+    private var mOnAutoReadCallback: OnAutoReadCallback? = null
+
+    fun setOnAutoReadCallback(onAutoReadCallback: OnAutoReadCallback) {
+        this.mOnAutoReadCallback = onAutoReadCallback
+    }
+
+    fun setAutoReadSpeed(autoReadSpeed: Double) {
+        mAutoReadSpeed = autoReadSpeed
+        mAutoReadView?.setAutoReadSpeed(mAutoReadSpeed)
+    }
+
+    interface OnAutoReadCallback {
+        fun onAutoReadResume()
+        fun onAutoReadStop()
     }
 }

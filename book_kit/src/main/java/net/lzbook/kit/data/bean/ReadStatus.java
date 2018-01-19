@@ -90,44 +90,44 @@ public class ReadStatus {
     public String firstChapterCurl = "";
 
 
-    //自动阅读速度
-    private int _autoReadSpeed;
-    private SharedPreferences preferences;
+//    //自动阅读速度
+//    private int _autoReadSpeed;
+//    private SharedPreferences preferences;
 
     public ReadStatus(Context context) {
-        preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        _autoReadSpeed = preferences.getInt(kKeyAutoReadSpeed, kDefaultAutoReadSpeed);
+//        preferences = PreferenceManager.getDefaultSharedPreferences(context);
+//        _autoReadSpeed = preferences.getInt(kKeyAutoReadSpeed, kDefaultAutoReadSpeed);
     }
 
-    public int autoReadSpeed() {
-        return _autoReadSpeed;
-    }
+//    public int autoReadSpeed() {
+//        return _autoReadSpeed;
+//    }
 
-    public void setAutoReadSpeed(int speed) {
-        if (speed == _autoReadSpeed || speed < kMinAutoReadSpeed || speed > kMaxAutoReadSpeed) {
-            return;
-        }
+//    public void setAutoReadSpeed(int speed) {
+//        if (speed == _autoReadSpeed || speed < kMinAutoReadSpeed || speed > kMaxAutoReadSpeed) {
+//            return;
+//        }
+//
+//        _autoReadSpeed = speed;
+//        if (preferences != null) {
+//            Editor editor = preferences.edit();
+//            editor.putInt(kKeyAutoReadSpeed, _autoReadSpeed);
+//            editor.apply();
+//        }
+//    }
 
-        _autoReadSpeed = speed;
-        if (preferences != null) {
-            Editor editor = preferences.edit();
-            editor.putInt(kKeyAutoReadSpeed, _autoReadSpeed);
-            editor.apply();
-        }
-    }
-
-    public double autoReadFactor() {
-        if (_autoReadSpeed == kDefaultAutoReadSpeed) {
-            return 1;
-        }
-
-        double d = _autoReadSpeed * 1.0 / kDefaultAutoReadSpeed;
-        if (_autoReadSpeed < kDefaultAutoReadSpeed) {
-            return Math.sqrt(d);
-        } else {
-            return d * d;
-        }
-    }
+//    public double autoReadFactor() {
+//        if (_autoReadSpeed == kDefaultAutoReadSpeed) {
+//            return 1;
+//        }
+//
+//        double d = _autoReadSpeed * 1.0 / kDefaultAutoReadSpeed;
+//        if (_autoReadSpeed < kDefaultAutoReadSpeed) {
+//            return Math.sqrt(d);
+//        } else {
+//            return d * d;
+//        }
+//    }
 
     public RequestItem getRequestItem() {
         if (this.requestItem == null) {
@@ -152,9 +152,9 @@ public class ReadStatus {
         }
     }
     public void recycleResource() {
-        if (this.preferences != null) {
-            this.preferences = null;
-        }
+//        if (this.preferences != null) {
+//            this.preferences = null;
+//        }
 
         if (this.mLineList != null) {
             this.mLineList.clear();
@@ -199,7 +199,7 @@ public class ReadStatus {
         if (width_nativead != that.width_nativead) return false;
         if (height_nativead != that.height_nativead) return false;
         if (height_middle_nativead != that.height_middle_nativead) return false;
-        if (_autoReadSpeed != that._autoReadSpeed) return false;
+//        if (_autoReadSpeed != that._autoReadSpeed) return false;
         if (requestItem != null ? !requestItem.equals(that.requestItem) : that.requestItem != null)
             return false;
         /*if (requestConfig != null ? !requestConfig.equals(that.requestConfig) : that.requestConfig != null)
@@ -220,8 +220,8 @@ public class ReadStatus {
         if (chapterNameList != null ? !chapterNameList.equals(that.chapterNameList) : that.chapterNameList != null)
             return false;
         if (book != null ? !book.equals(that.book) : that.book != null) return false;
-        if (preferences != null ? !preferences.equals(that.preferences) : that.preferences != null)
-            return false;
+//        if (preferences != null ? !preferences.equals(that.preferences) : that.preferences != null)
+//            return false;
         if (firstChapterCurl != null ? !firstChapterCurl.equals(that.firstChapterCurl) : that.firstChapterCurl != null)
             return false;
 
@@ -259,8 +259,8 @@ public class ReadStatus {
         result = 31 * result + width_nativead;
         result = 31 * result + height_nativead;
         result = 31 * result + height_middle_nativead;
-        result = 31 * result + _autoReadSpeed;
-        result = 31 * result + (preferences != null ? preferences.hashCode() : 0);
+//        result = 31 * result + _autoReadSpeed;
+//        result = 31 * result + (preferences != null ? preferences.hashCode() : 0);
         result = 31 * result + (firstChapterCurl != null ? firstChapterCurl.hashCode() : 0);
         return result;
     }
@@ -297,8 +297,8 @@ public class ReadStatus {
                 ", width_nativead=" + width_nativead +
                 ", height_nativead=" + height_nativead +
                 ", height_middle_nativead=" + height_middle_nativead +
-                ", _autoReadSpeed=" + _autoReadSpeed +
-                ", preferences=" + preferences +
+//                ", _autoReadSpeed=" + _autoReadSpeed +
+//                ", preferences=" + preferences +
                 ", firstChapterCurl='" + firstChapterCurl + '\'' +
                 '}';
     }

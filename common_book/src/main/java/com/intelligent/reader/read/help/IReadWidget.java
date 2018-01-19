@@ -21,4 +21,10 @@ public interface IReadWidget {
     void changeAnimMode(int mode);
 
     void onPause();
+
+    void startAutoRead();
+
+    void stopAutoRead();
+
+    boolean isAutoRead();
 }
