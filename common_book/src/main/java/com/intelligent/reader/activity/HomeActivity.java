@@ -527,4 +527,9 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
             StartLogClickUtil.upLoadApps(HomeActivity.this, s);
         }
     }
+
+    @Override
+    public boolean supportSlideBack() {
+        return false;
+    }
 }

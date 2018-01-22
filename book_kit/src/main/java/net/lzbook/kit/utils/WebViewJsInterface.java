@@ -35,4 +35,7 @@ public interface WebViewJsInterface {
 
     //统计信息
     void collectInfo(String urlData);
+
+    //获得H5页面ViewPager边界
+    void getH5ViewPagerInfo(String x, String y, String width, String height);
 }

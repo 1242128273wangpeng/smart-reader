@@ -1,13 +1,13 @@
 package net.lzbook.kit.utils;
 
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.request.UrlUtils;
-
 import android.content.Context;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
+
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.request.UrlUtils;
 
 import java.util.Map;
 
@@ -28,6 +28,7 @@ public class JSInterfaceHelper implements WebViewJsInterface {
     Handler handler;
     OnInsertBook insertBook;
     OnDeleteBook deleteBook;
+    OnH5PagerInfoListener pagerInfo;
     String strings;
     private boolean isLogin = false;
 
@@ -77,6 +78,10 @@ public class JSInterfaceHelper implements WebViewJsInterface {
 
     public void setOnOpenAd(onOpenAd ad) {
         this.ad = ad;
+    }
+
+    public void setOnH5PagerInfo(OnH5PagerInfoListener info) {
+        this.pagerInfo = info;
     }
 
     @Override
@@ -276,6 +281,14 @@ public class JSInterfaceHelper implements WebViewJsInterface {
 
     @Override
     @JavascriptInterface
+    public void getH5ViewPagerInfo(String x, String y, String width, String height) {
+        if (this.pagerInfo != null) {
+            this.pagerInfo.onH5PagerInfo(Integer.parseInt(x), Integer.parseInt(y), Integer.parseInt(width), Integer.parseInt(height));
+        }
+    }
+
+    @Override
+    @JavascriptInterface
     public void enterCategory(final String gid, final String nid,
                               final String name, final String lastSort) {
         if (gid == null || nid == null || lastSort == null || name == null)
@@ -378,6 +391,10 @@ public class JSInterfaceHelper implements WebViewJsInterface {
     public interface OnCloseWebviewListener {
         void onCloseWebview();
 
+    }
+
+    public interface OnH5PagerInfoListener {
+        void onH5PagerInfo(int x, int y, int width, int height);
     }
 
 

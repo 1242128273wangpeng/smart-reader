@@ -430,4 +430,9 @@ public class SplashActivity extends FrameActivity {
     public boolean shouldShowNightShadow() {
         return false;
     }
+
+    @Override
+    public boolean supportSlideBack() {
+        return false;
+    }
 }

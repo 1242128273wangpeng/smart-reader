@@ -19,11 +19,12 @@ import android.provider.Settings
 import android.support.v4.content.LocalBroadcastManager
 import android.text.TextUtils
 import android.text.format.DateFormat
-import android.view.InflateException
-import android.view.KeyEvent
-import android.view.View
+import android.view.*
 import android.widget.*
 import com.bumptech.glide.Glide
+import com.dycm_adsdk.PlatformSDK
+import com.dycm_adsdk.callback.AbstractCallback
+import com.dycm_adsdk.callback.ResultCode
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.*
 import com.intelligent.reader.app.BookApplication
@@ -61,6 +62,8 @@ import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.UnsupportedEncodingException
 import java.lang.ref.WeakReference
 import java.net.URLEncoder
@@ -270,7 +273,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         if (BaseBookApplication.getDownloadService() == null) {
             BookHelper.reStartDownloadService()
         }
-
+        startRestInterval()
     }
 
     fun initCatalogPresenter(catalogMarkFragment: CatalogMarkFragment?, optionHeader: ReadOptionHeader) {
@@ -2104,6 +2107,70 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                     mActivityWeakReference?.get()?.startActivity(fresh)
                 }
             }
+        }
+    }
+
+    var timeDispost: Disposable? = null
+    var intervalDispost: Disposable? = null
+
+    fun startRestInterval() {
+        if (intervalDispost == null) {
+            intervalDispost = Observable.interval(30, TimeUnit.MINUTES)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        restAd()
+                    }, { e -> e.printStackTrace() })
+            intervalDispost?.let {
+                disposable.add(it)
+            }
+        }
+    }
+
+    fun startRestTimer() {
+        if (timeDispost == null) {
+            timeDispost = Observable.timer(1, TimeUnit.MINUTES)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        restAd()
+                    }, { e -> e.printStackTrace() })
+            timeDispost?.let {
+                disposable.add(it)
+            }
+        }
+    }
+
+    var mDialog: MyDialog? = null
+
+    fun restAd() {
+        mDialog = MyDialog(readReference?.get(), R.layout.reading_resttime, Gravity.CENTER, false)
+        mDialog?.let {
+            val rest_ad = it.findViewById(R.id.rest_ad) as RelativeLayout//容器
+            it.findViewById(R.id.iv_close).setOnClickListener { mDialog?.dismiss() }
+            //广告 3-1
+            PlatformSDK.adapp().dycmNativeAd(mDialog?.context, "3-1", rest_ad, object : AbstractCallback() {
+                override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
+                    super.onResult(adswitch, views, jsonResult)
+                    if (!adswitch) return
+                    try {
+                        val jsonObject = JSONObject(jsonResult)
+                        if (jsonObject.has("state_code")) {
+                            when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+                                ResultCode.AD_REQ_SUCCESS -> {
+                                    rest_ad.addView(views?.get(0))
+                                    rest_ad.postInvalidate()
+                                }
+                                ResultCode.AD_REQ_FAILED -> {
+                                }
+                            }
+                        }
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
+                    }
+                }
+            })
+            mDialog?.show()
         }
     }
 }
