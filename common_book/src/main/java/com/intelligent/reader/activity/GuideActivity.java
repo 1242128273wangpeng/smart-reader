@@ -154,4 +154,8 @@ public class GuideActivity extends FrameActivity implements GuideFragment.Fragme
             }
         });
     }
+    @Override
+    public boolean supportSlideBack() {
+        return false;
+    }
 }
