@@ -278,7 +278,7 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
                 mLoadDataManager.updateShelfBooks();
         } else if (event.getMsg().equals(BookEvent.PULL_BOOK_STATUS)) {
             if (bookView != null) {
-                bookView.updateBook();
+                bookView.updateUI();
             }
         }
     }

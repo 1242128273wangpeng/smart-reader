@@ -29,16 +29,6 @@
             android:layout_marginRight="@dimen/dimen_margin_10"
             android:visibility="gone"/>
 
-    <FrameLayout
-        android:background="@drawable/icon_bookshelf_download"
-        android:id="@+id/book_shelf_ad"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="@dimen/dimen_margin_30"
-        android:layout_marginRight="@dimen/dimen_margin_10"/>
-
     <LinearLayout
             android:id="@+id/bookshelf_empty"
             android:layout_width="match_parent"
