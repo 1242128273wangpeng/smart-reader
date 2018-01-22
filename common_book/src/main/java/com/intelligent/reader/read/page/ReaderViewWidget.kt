@@ -272,7 +272,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
             2 -> ReadViewEnums.Animation.shift
             else -> ReadViewEnums.Animation.list
         }
-        if (mode != 1) mTextureView!!.alpha = 0f
+        if (mode != 1) mTextureView?.alpha = 0f
         mReaderView?.onAnimationChange(ReadConfig.animation)
     }
 
