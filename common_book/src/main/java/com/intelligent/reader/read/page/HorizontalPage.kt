@@ -8,6 +8,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import com.dycm_adsdk.PlatformSDK
 import com.intelligent.reader.R
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.exception.ReadCustomException
@@ -169,14 +170,16 @@ class HorizontalPage : FrameLayout, Observer {
 
     //段末广告 8-1
     private fun checkAdBanner(topMargins: Float) {
-        DataProvider.getInstance().loadAd(context, "8-1", ReadConfig.screenWidth, ReadConfig.screenHeight - topMargins.toInt(), object : DataProvider.OnLoadReaderAdCallback {
-            override fun onLoadAd(adView: ViewGroup) {
-                val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-                val margin = AppUtils.dip2px(context, 10f)
-                param.setMargins(margin, topMargins.toInt(), margin, margin)
-                addView(adView, param)
-            }
-        })
+        if (PlatformSDK.config().getAdSwitch("5-1")) {
+            DataProvider.getInstance().loadAd(context, "8-1", ReadConfig.screenWidth, ReadConfig.screenHeight - topMargins.toInt(), object : DataProvider.OnLoadReaderAdCallback {
+                override fun onLoadAd(adView: ViewGroup) {
+                    val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+                    val margin = AppUtils.dip2px(context, 10f)
+                    param.setMargins(margin, topMargins.toInt(), margin, margin)
+                    addView(adView, param)
+                }
+            })
+        }
     }
 
     //广告页 5-1 5-2 6-1 6-2
