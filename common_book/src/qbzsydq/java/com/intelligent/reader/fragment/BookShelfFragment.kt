@@ -1,6 +1,5 @@
 package com.intelligent.reader.fragment
 
-import android.bluetooth.le.AdvertiseCallback
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -12,12 +11,8 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
 import com.dycm_adsdk.PlatformSDK
 import com.dycm_adsdk.callback.AbstractCallback
-import com.dycm_adsdk.callback.AdResultCallBack
 import com.dycm_adsdk.callback.ResultCode
 import com.intelligent.reader.BuildConfig
 import com.intelligent.reader.R
@@ -186,19 +181,20 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.TOBOOKCITY)
         }
         //悬浮广告 1-2
-        PlatformSDK.adapp().dycmNativeAd(activity,"1-2", book_shelf_ad,object: AbstractCallback(){
+        PlatformSDK.adapp().dycmNativeAd(activity, "1-2", book_shelf_ad, object : AbstractCallback() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
-                if(!adswitch)return
+                if (!adswitch) return
                 try {
-                    val jsonObject  = JSONObject(jsonResult)
+                    val jsonObject = JSONObject(jsonResult)
                     if (jsonObject.has("state_code")) {
                         when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                            ResultCode.AD_REQ_SUCCESS ->{
-                                 book_shelf_ad.addView(views?.get(0))
-                                 book_shelf_ad.postInvalidate()
-                             }
-                            ResultCode.AD_REQ_FAILED ->{}
+                            ResultCode.AD_REQ_SUCCESS -> {
+                                book_shelf_ad.addView(views?.get(0))
+                                book_shelf_ad.postInvalidate()
+                            }
+                            ResultCode.AD_REQ_FAILED -> {
+                            }
                         }
                     }
                 } catch (e: JSONException) {

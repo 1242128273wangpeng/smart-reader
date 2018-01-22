@@ -5,16 +5,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
-import android.view.*
-import android.widget.*
-import com.dycm_adsdk.PlatformSDK
-import com.dycm_adsdk.callback.AbstractCallback
-import com.dycm_adsdk.callback.ResultCode
+import android.view.Gravity
+import android.view.KeyEvent
+import android.view.View
+import android.view.WindowManager
+import android.widget.TextView
+import android.widget.Toast
 import com.intelligent.reader.R
 import com.intelligent.reader.fragment.CatalogMarkFragment
 import com.intelligent.reader.presenter.read.CatalogMarkPresenter
@@ -33,16 +33,15 @@ import com.intelligent.reader.reader.ReaderViewModel
 import com.logcat.sdk.LogEncapManager
 import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.qbzsydq.act_read.*
-import kotlinx.android.synthetic.qbzsydq.fragment_bookshelf.*
 import kotlinx.android.synthetic.qbzsydq.reading_page.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.*
-import net.lzbook.kit.utils.*
-import org.json.JSONException
-import org.json.JSONObject
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.OpenUDID
+import net.lzbook.kit.utils.SharedPreferencesUtils
+import net.lzbook.kit.utils.ToastUtils
 import java.util.*
 import kotlin.properties.Delegates
 
@@ -446,10 +445,11 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     companion object {
         private var readStatus: ReadStatus by Delegates.notNull()
     }
+
     private fun setUIOptions() {
         window.decorView.systemUiVisibility = if (ReadConfig.animation == ReadViewEnums.Animation.curl) {
-             UI_OPTIONS_LOW_PROFILE
-        }else{
+            UI_OPTIONS_LOW_PROFILE
+        } else {
             UI_OPTIONS_IMMERSIVE_STICKY
         }
     }
@@ -463,8 +463,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
             } else {
                 window.decorView.systemUiVisibility = UI_OPTIONS_IMMERSIVE_STICKY
             }
-        }
-        else{
+        } else {
             window.decorView.systemUiVisibility = UI_OPTIONS_LOW_PROFILE
         }
 
@@ -497,6 +496,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     override fun onAutoReadStop() {
         auto_menu.visibility = View.VISIBLE
     }
+
     var oldchapterId = ""
     override fun addLog() {
         val book = intent.getSerializableExtra("book") as Book
@@ -515,7 +515,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         chapterId?.let {
             if (oldchapterId != it) {
                 oldchapterId = it
-                sendPVData(bookId,chapterId,sourceIds,channelCode,pageCount)
+                sendPVData(bookId, chapterId, sourceIds, channelCode, pageCount)
             }
         }
 
@@ -525,13 +525,13 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         Constants.endReadTime = System.currentTimeMillis() / 1000L
         val params = HashMap<String, String>()
         params.put("book_id", bookId)
-        params.put("book_source_id",sourceIds)
-        params.put("chapter_id",chapterId.toString())
+        params.put("book_source_id", sourceIds)
+        params.put("chapter_id", chapterId.toString())
         params.put("channel_code", channelCode)
         params.put("chapter_read", "1")
         params.put("chapter_pages", pageCount)
-        params.put("start_time",startReadTime.toString() )
-        params.put("end_time",System.currentTimeMillis().toString())
+        params.put("start_time", startReadTime.toString())
+        params.put("end_time", System.currentTimeMillis().toString())
         params.put("udid", OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()))
         params.put("app_package", AppUtils.getPackageName())
         params.put("app_version", AppUtils.getVersionName())
@@ -555,7 +555,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
                 /**
                  * 接受在阅读页，监听按下电源键的广播处理
                  */
-                 mReadPresenter.startRestTimer()
+                mReadPresenter.startRestTimer()
             }
         }
     }
