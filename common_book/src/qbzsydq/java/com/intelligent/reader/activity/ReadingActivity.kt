@@ -6,7 +6,10 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
-import android.view.*
+import android.view.Gravity
+import android.view.KeyEvent
+import android.view.View
+import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
 import com.intelligent.reader.R
@@ -68,12 +71,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
         auto_menu.setRateValue()
         mCatalogMarkFragment?.fixBook()
-
-        //监听NavigationBar的隐藏时布局的改变
-        val content = findViewById(Window.ID_ANDROID_CONTENT)
-        content.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
-            if (bottom > oldBottom) mReadPresenter.onRedrawPage()
-        }
     }
 
     override fun onNewIntent(intent: Intent) {
