@@ -12,7 +12,9 @@
     <style name="Theme.DesignDemo"
            parent="Base.Theme.DesignDemo">
         <!-- 设置activity切换动画 -->
-        <item name="android:windowAnimationStyle">@style/activityAnimation</item>
+        <!--<item name="android:windowAnimationStyle">@style/activityAnimationTranslucent</item>-->
+        <!--<item name="android:windowIsTranslucent">true</item>-->
+
         <!--<item name="android:windowTranslucentNavigation">true</item>-->
     </style>
 </resources>

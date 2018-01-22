@@ -197,7 +197,7 @@
                 android:name=".activity.LoginActivity"
                 android:launchMode="singleTop"
                 android:screenOrientation="portrait"
-                android:theme="@style/AppTheme">
+                android:theme="@style/AppThemeTranslucent">
 
         </activity>
         <activity
@@ -209,7 +209,7 @@
         <activity
                 android:name=".activity.CataloguesActivity"
                 android:screenOrientation="portrait"
-                android:theme="@style/AppTheme"/>
+                android:theme="@style/AppThemeTranslucent"/>
         <!-- 关于 -->
 
 
@@ -217,31 +217,31 @@
         <activity
                 android:name=".activity.ReadingSettingActivity"
                 android:screenOrientation="portrait"
-                android:theme="@style/AppTheme"/>
+                android:theme="@style/AppThemeTranslucent"/>
 
         <!-- 更多设置 -->
         <activity
                 android:name=".activity.SettingMoreActivity"
                 android:screenOrientation="portrait"
-                android:theme="@style/AppTheme"/>
+                android:theme="@style/AppThemeTranslucent"/>
 
         <!-- 设置页 -->
         <activity
                 android:name=".activity.SettingActivity"
                 android:screenOrientation="portrait"
-                android:theme="@style/AppTheme"/>
+                android:theme="@style/AppThemeTranslucent"/>
 
         <!-- 免责声明页 -->
         <activity
                 android:name=".activity.DisclaimerActivity"
                 android:screenOrientation="portrait"
-                android:theme="@style/AppTheme"/>
+                android:theme="@style/AppThemeTranslucent"/>
 
         <!-- 下载apk失败页面 -->
         <activity
                 android:name=".activity.DownloadErrorActivity"
                 android:screenOrientation="portrait"
-                android:theme="@style/AppTheme"/>
+                android:theme="@style/AppThemeTranslucent"/>
 
         <!-- 找书页面 -->
         <activity
@@ -250,13 +250,13 @@
                 android:windowSoftInputMode="adjustNothing"
                 android:launchMode="singleTop"
                 android:screenOrientation="portrait"
-                android:theme="@style/AppTheme"/>
+                android:theme="@style/AppThemeTranslucent"/>
         <activity
                 android:name=".activity.StyleChangeActivity"
                 android:configChanges="keyboard"
                 android:launchMode="singleTop"
                 android:screenOrientation="portrait"
-                android:theme="@style/AppTheme"/>
+                android:theme="@style/AppThemeTranslucent"/>
 
 
         <!-- 推送 -->
@@ -359,22 +359,22 @@
 
                 android:label="@string/title_activity_act_book_cover"
                 android:screenOrientation="portrait"
-                android:theme="@style/AppTheme"/>
+                android:theme="@style/AppThemeTranslucent"/>
         <activity
                 android:name=".activity.FootprintActivity"
                 android:screenOrientation="portrait"
-                android:theme="@style/AppTheme"/>
+                android:theme="@style/AppThemeTranslucent"/>
         <activity
                 android:name=".activity.BookEndActivity"
                 android:launchMode="singleTask"
                 android:label="@string/title_activity_act_book_over"
                 android:screenOrientation="portrait"
-                android:theme="@style/AppTheme"/>
+                android:theme="@style/AppThemeTranslucent"/>
         <activity
                 android:name=".activity.DownloadManagerActivity"
                 android:launchMode="singleTop"
                 android:screenOrientation="portrait"
-                android:theme="@style/AppTheme"/>
+                android:theme="@style/AppThemeTranslucent"/>
         <activity
                 android:name=".activity.GuideActivity"
                 android:screenOrientation="portrait"
@@ -384,12 +384,12 @@
                 android:configChanges="keyboard"
                 android:launchMode="singleTop"
                 android:screenOrientation="portrait"
-                android:theme="@style/AppTheme"/>
+                android:theme="@style/AppThemeTranslucent"/>
         <activity
                 android:name=".activity.SwitchModeActivity"
                 android:launchMode="singleTop"
                 android:screenOrientation="portrait"
-                android:theme="@style/AppTheme"/>
+                android:theme="@style/AppThemeTranslucent"/>
 
         <activity
                 android:name=".activity.GoToCoverOrReadActivity"

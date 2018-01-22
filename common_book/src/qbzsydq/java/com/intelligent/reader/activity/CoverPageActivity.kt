@@ -199,13 +199,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     }
 
 
-    override fun onBackPressed() {
-        val data = HashMap<String, String>()
-        data.put("type", "2")
-        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data)
-        finish()
-    }
-
     override fun onDestroy() {
         try {
             setContentView(R.layout.empty)

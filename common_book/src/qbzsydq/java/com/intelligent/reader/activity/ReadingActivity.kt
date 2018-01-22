@@ -544,6 +544,10 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         option_header.dismissLoadingPage()
     }
 
+    override fun supportSlideBack(): Boolean {
+        return false
+    }
+
     private val mPowerOffReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action
