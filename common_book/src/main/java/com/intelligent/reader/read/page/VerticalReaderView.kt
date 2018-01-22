@@ -26,6 +26,7 @@ import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.ToastUtils
+import net.lzbook.kit.utils.runOnMain
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -182,14 +183,18 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
         ReadState.book?.let {
             mDataProvider.loadChapter2(it, sequence, index, object : DataProvider.ReadDataListener() {
                 override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) {
-                    handleChapter(c, type, reLoad)
-                    dismissLoadPage()
+                    runOnMain {
+                        handleChapter(c, type, reLoad)
+                        dismissLoadPage()
+                    }
                 }
 
                 override fun loadDataError(message: String) {
-                    mChapterLoadStat = CHAPTER_WAITING
-                    mAdapter.setLoadViewState(PagerScrollAdapter.LOAD_VIEW_FAIL_STATE)
-                    dismissLoadPage()
+                    runOnMain {
+                        mChapterLoadStat = CHAPTER_WAITING
+                        mAdapter.setLoadViewState(PagerScrollAdapter.LOAD_VIEW_FAIL_STATE)
+                        dismissLoadPage()
+                    }
                 }
             })
         }
