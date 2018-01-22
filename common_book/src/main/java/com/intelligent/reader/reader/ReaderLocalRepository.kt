@@ -38,6 +38,7 @@ class ReaderLocalRepository(context: Context) : ReaderRepository {
             chapter?.content = com.quduquxie.network.DataCache.getChapterFromCache(chapter?.chapter_id, chapter?.book_id)
             chapter?.isSuccess = true
             it.onNext(chapter!!)
+            it.onComplete()
         })
     }
 

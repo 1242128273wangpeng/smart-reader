@@ -68,6 +68,12 @@ public abstract class FrameActivity extends AppCompatActivity {
             | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 
+    public static int UI_OPTIONS_NORMAL = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            | View.SYSTEM_UI_FLAG_VISIBLE;
+
+    public static int UI_OPTIONS_LOW_PROFILE = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            | View.SYSTEM_UI_FLAG_LOW_PROFILE;
+
 
     @SuppressLint("NewApi")
     public void onCreate(Bundle paramBundle) {

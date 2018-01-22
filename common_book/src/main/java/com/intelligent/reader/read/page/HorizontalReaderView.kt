@@ -5,6 +5,7 @@ import android.os.Handler
 import android.util.AttributeSet
 import android.view.MotionEvent
 import com.intelligent.reader.R
+import com.intelligent.reader.flip.base.ShadowColor
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.adapter.HorizontalAdapter
 import com.intelligent.reader.read.animation.ShiftTransformer
@@ -25,6 +26,8 @@ import net.lzbook.kit.utils.AppLog
  * Created by wt on 2017/12/2.
  */
 class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageListener {
+
+    private val SHADOW_WIDTH = 30
 
     //记录上一次滑动x坐标
     private var beforeX: Float = 0.toFloat()
@@ -73,6 +76,9 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                 }
             }
             index = position
+
+
+            isClickable = true
         }
     }
 
@@ -82,12 +88,12 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
 
-        if (ReadConfig.animation == ReadViewEnums.Animation.shift
-                || ReadConfig.animation == ReadViewEnums.Animation.curl) {
-
+        if (ReadConfig.animation == ReadViewEnums.Animation.slide) {
             setShadowDrawable(R.drawable.page_shadow)
-            setShadowWidth(40)
+            setShadowWidth(SHADOW_WIDTH)
             setPageTransformer(true, ShiftTransformer())
+        }else{
+            setPageTransformer(true, SlideTransformer())
         }
 
 
@@ -189,6 +195,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                 }
             }
             it.onNext("")
+            it.onComplete()
         }).subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io()).subscribe()
         DataProvider.getInstance().addDisposable(threadObserve)
@@ -418,9 +425,9 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     }
 
     override fun onAnimationChange(animation: ReadViewEnums.Animation) {
-        if (ReadConfig.animation == ReadViewEnums.Animation.shift) {
+        if (ReadConfig.animation == ReadViewEnums.Animation.slide) {
             setShadowDrawable(R.drawable.page_shadow)
-            setShadowWidth(40)
+            setShadowWidth(SHADOW_WIDTH)
             setPageTransformer(true, ShiftTransformer())
         } else {
             setShadowDrawable(null)
@@ -454,6 +461,12 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+
+//        if(!mScroller.isFinished) {
+//            mScroller.abortAnimation()
+//            return false
+//        }
+
         return when (isCanScroll) {
             -1 -> true
             0 -> {

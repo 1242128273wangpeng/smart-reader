@@ -170,7 +170,7 @@ public class ViewPager extends ViewGroup {
     private Parcelable mRestoredAdapterState = null;
     private ClassLoader mRestoredClassLoader = null;
 
-    private Scroller mScroller;
+    protected Scroller mScroller;
     private boolean mIsScrollStarted;
 
     private PagerObserver mObserver;
@@ -628,8 +628,10 @@ public class ViewPager extends ViewGroup {
      * @param smoothScroll True to smoothly scroll to the new item, false to transition immediately
      */
     public void setCurrentItem(int item, boolean smoothScroll) {
-        mPopulatePending = false;
-        setCurrentItemInternal(item, smoothScroll, false);
+        if(mScroller.isFinished()) {
+            mPopulatePending = false;
+            setCurrentItemInternal(item, smoothScroll, false);
+        }
     }
 
     public int getCurrentItem() {

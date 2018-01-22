@@ -746,7 +746,6 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         ReadConfig.screenScaledDensity = dm.scaledDensity
         // 保存字体、亮度、阅读模式
         modeSp = readReference?.get()?.getSharedPreferences("config", Context.MODE_PRIVATE)
-        modeSp = readReference?.get()?.getSharedPreferences("config", Context.MODE_PRIVATE)
         // 设置字体
         if (sp?.contains("novel_font_size")!!) {
             ReadConfig.FONT_SIZE = sp?.getInt("novel_font_size", 18) ?: 18
@@ -1209,20 +1208,22 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
      * 显示隐藏菜单
      */
     fun showMenu(isShow: Boolean) {
-        clearOtherPanel()
-        if (isShow) {
-            full(false)
-            changeMarkState()
-            mReadOptionPresenter?.view?.show(true)
+        if(readStatus!!.isMenuShow != isShow) {
+            clearOtherPanel()
+            if (isShow) {
+                full(false)
+                changeMarkState()
+                mReadOptionPresenter?.view?.show(true)
 //            view?.showSetMenu(isShow)
-            readStatus!!.isMenuShow = true
-            view?.initSettingGuide()
-        } else {
-            full(true)
-            readStatus!!.isMenuShow = false
-            mReadOptionPresenter!!.view!!.show(false)
+                readStatus!!.isMenuShow = true
+                view?.initSettingGuide()
+            } else {
+                full(true)
+                readStatus!!.isMenuShow = false
+                mReadOptionPresenter!!.view!!.show(false)
 //            view?.showSetMenu(isShow)
-            readStatus!!.isMenuShow = false
+                readStatus!!.isMenuShow = false
+            }
         }
     }
 
@@ -1387,7 +1388,10 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             return false
         }
         // 显示菜单
-        showMenu(false)
+        if (readStatus != null && readStatus!!.isMenuShow) {
+            showMenu(false)
+            return true
+        }
 
         if (mBookDaoHelper != null && readStatus != null) {
             isSubed = mBookDaoHelper!!.isBookSubed(readStatus!!.book_id)

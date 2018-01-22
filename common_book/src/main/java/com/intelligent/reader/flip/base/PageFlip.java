@@ -15,6 +15,8 @@
  */
 package com.intelligent.reader.flip.base;
 
+import net.lzbook.kit.data.bean.ReadConfig;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
@@ -85,6 +87,9 @@ public class PageFlip {
     private final static int PAGE_SIZE = 2;
     private final static int SINGLE_PAGE_MODE = 0;
     private final static int AUTO_PAGE_MODE = 1;
+
+    private final static int BASE_DURATION = 800;
+
 
     // view size
     private GLViewRect mViewRect;
@@ -596,14 +601,6 @@ public class PageFlip {
         boolean isContained = false;
         if (mPages[FIRST_PAGE].contains(touchX, touchY)) {
             isContained = true;
-        } else if (mPages[SECOND_PAGE] != null &&
-                mPages[SECOND_PAGE].contains(touchX, touchY)) {
-            // in double pages, the first page is always active page which touch
-            // event is happening on
-            isContained = true;
-            Page p = mPages[SECOND_PAGE];
-            mPages[SECOND_PAGE] = mPages[FIRST_PAGE];
-            mPages[FIRST_PAGE] = p;
         }
 
         // point is contained, ready to flip
@@ -627,19 +624,9 @@ public class PageFlip {
         }
     }
 
-    private BeginListener beginListener;
 
     private Orientation mOrientation = Orientation.NONE;
 
-    public void setBeginListener(BeginListener beginListener) {
-        this.beginListener = beginListener;
-    }
-
-    public interface BeginListener {
-        void beginNext();//准备向下翻
-
-        void beginPre();//准备向上翻
-    }
 
     public enum Orientation {
         LEFT, RIGHT, NONE
@@ -661,10 +648,8 @@ public class PageFlip {
         if (mOrientation == Orientation.NONE) {
             if (touchX < mStartTouchP.x) {
                 mOrientation = Orientation.RIGHT;
-                beginListener.beginNext();
             } else {
                 mOrientation = Orientation.LEFT;
-                beginListener.beginPre();
             }
         }
 
@@ -677,8 +662,8 @@ public class PageFlip {
         final GLPoint diagonalP = page.diagonalP;
 
         // begin to move
-        if (mFlipState == PageFlipState.BEGIN_FLIP &&
-                (Math.abs(dx) > mViewRect.width * 0.05f)) {
+        if (mFlipState == PageFlipState.BEGIN_FLIP /*&&
+                (Math.abs(dx) > mViewRect.width * 0.05f)*/) {
             // set OriginP and DiagonalP points
             page.setOriginAndDiagonalPoints(mPages[SECOND_PAGE] != null, dy);
 
@@ -797,30 +782,29 @@ public class PageFlip {
      *
      * @param touchX   x of finger moving point
      * @param touchY   y of finger moving point
-     * @param duration millisecond for page flip animation
      * @return true if animation is started or animation is not triggered
      */
-    public boolean onFingerUp(float touchX, float touchY, int duration) {
+    public boolean onFingerUp(float touchX, float touchY, boolean forceFlip) {
+
+
         touchX = mViewRect.toOpenGLX(touchX);
         touchY = mViewRect.toOpenGLY(touchY);
+
+        float absDx = Math.abs(touchX - mDownTouchP.x);
 
         final Page page = mPages[FIRST_PAGE];
         final GLPoint originP = page.originP;
         final GLPoint diagonalP = page.diagonalP;
-        final boolean hasSecondPage = mPages[SECOND_PAGE] != null;
+
         Point start = new Point((int) mTouchP.x, (int) mTouchP.y);
         Point end = new Point(0, 0);
 
         // forward flipping
         if (mFlipState == PageFlipState.FORWARD_FLIP) {
             // can't going forward, restore current page
-
-            float abs = Math.abs(touchX - mDownTouchP.x);
-            if (getSurfaceWidth() * WIDTH_RATIO_OF_RESTORE_FLIP > abs) {
+            if (!forceFlip && getSurfaceWidth() * WIDTH_RATIO_OF_RESTORE_FLIP > absDx) {
                 end.x = (int) originP.x;
                 mFlipState = PageFlipState.FORWARD_RESTORE_FLIP;
-            } else if (hasSecondPage && originP.x < 0) {
-                end.x = (int) (diagonalP.x + page.width);
             } else {
                 end.x = (int) (diagonalP.x - page.width);
             }
@@ -829,8 +813,7 @@ public class PageFlip {
         // backward flipping
         else if (mFlipState == PageFlipState.BACKWARD_FLIP) {
             // if not over middle x, change from backward to forward to restore
-            float abs = Math.abs(touchX - mDownTouchP.x);
-            if (getSurfaceWidth() * WIDTH_RATIO_OF_RESTORE_FLIP > abs) {
+            if (!forceFlip && getSurfaceWidth() * WIDTH_RATIO_OF_RESTORE_FLIP > absDx) {
                 mFlipState = PageFlipState.BACKWARD_RESTORE_FLIP;
                 end.set((int) (diagonalP.x - page.width), (int) originP.y);
             } else {
@@ -845,18 +828,16 @@ public class PageFlip {
             mFlipState = PageFlipState.END_FLIP;
 
 
-            page.setOriginAndDiagonalPoints(hasSecondPage, -touchY);
+            page.setOriginAndDiagonalPoints(false, -touchY);
 
             // if enable clicking to flip, compute scroller points for animation
-            if (mIsClickToFlip && Math.abs(touchX - mStartTouchP.x) < 2) {
+            if (mIsClickToFlip /*&& Math.abs(touchX - mStartTouchP.x) < 2*/) {
                 //down points 动画计算
                 computeScrollPointsForClickingFlip(touchX, start, end);
             }
 
             if (mFlipState == PageFlipState.FORWARD_FLIP) {
-                beginListener.beginNext();
             } else {
-                beginListener.beginPre();
                 if (page.isFirstTextureSet()) {
                     page.setSecondTextureWithFirst();
                 }
@@ -869,7 +850,10 @@ public class PageFlip {
                 mFlipState == PageFlipState.BACKWARD_FLIP ||
                 mFlipState == PageFlipState.FORWARD_RESTORE_FLIP ||
                 mFlipState == PageFlipState.BACKWARD_RESTORE_FLIP) {
-            int dur = duration * Math.abs(end.x - start.x) / getSurfaceWidth();
+            int dur = BASE_DURATION * Math.abs(end.x - start.x) / getSurfaceWidth();
+            if(mFlipState == PageFlipState.BACKWARD_RESTORE_FLIP){
+                dur /= 2;
+            }
             Log.e("PageFlip", "startScroll " + dur);
             mScroller.startScroll(start.x, start.y,
                     end.x - start.x, end.y - start.y,
@@ -906,7 +890,6 @@ public class PageFlip {
         Page page = mPages[FIRST_PAGE];
         GLPoint originP = page.originP;
         GLPoint diagonalP = page.diagonalP;
-        final boolean hasSecondPage = mPages[SECOND_PAGE] != null;
 
         // forward and backward flip have different degree
         float tanOfForwardAngle = MAX_TAN_OF_FORWARD_FLIP;
@@ -918,7 +901,7 @@ public class PageFlip {
         }
 
         // backward flip
-        if (!hasSecondPage &&
+        if (!ReadConfig.INSTANCE.getFULL_SCREEN_READ() &&
                 x < diagonalP.x + page.width * mWidthRationOfClickToFlip &&
                 mListener != null &&
                 mListener.canFlipBackward()) {
@@ -931,7 +914,8 @@ public class PageFlip {
         // forward flip
         else if (mListener != null &&
                 mListener.canFlipForward() &&
-                page.isXInRange(x, mWidthRationOfClickToFlip)) {
+                (ReadConfig.INSTANCE.getFULL_SCREEN_READ()
+                        || page.isXInRange(x, mWidthRationOfClickToFlip))) {
             mFlipState = PageFlipState.FORWARD_FLIP;
             mKValue = tanOfForwardAngle;
 
@@ -946,14 +930,9 @@ public class PageFlip {
             start.y = (int) (originP.y + (start.x - originP.x) * mKValue);
 
             // compute end.x
-            // left page in double page mode
-            if (hasSecondPage && originP.x < 0) {
-                end.x = (int) (diagonalP.x + page.width);
-            }
             // right page in double page mode
-            else {
-                end.x = (int) (diagonalP.x - page.width);
-            }
+            end.x = (int) (diagonalP.x - page.width);
+
             end.y = (int) (originP.y);
         }
     }
@@ -1060,6 +1039,7 @@ public class PageFlip {
      * @return true if page is flipping
      */
     public boolean isAnimating() {
+        mScroller.computeScrollOffset();
         return !mScroller.isFinished();
     }
 

@@ -62,6 +62,7 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: ReaderVi
             val chapterList = chapterDao.queryBookChapter()
             if (chapterList != null && chapterList.size > 0) {
                 emitter?.onNext(chapterList)
+                emitter?.onComplete()
             } else {
                 if (Constants.SG_SOURCE.equals(requestItem.host)) {
                     emitter?.onError(Exception("error"))
@@ -74,17 +75,20 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: ReaderVi
                             val list = BeanParser.buildOWNChapterList(chapters, 0, chapters!!.size)
                             if (list != null && list.size > 0) {
                                 emitter?.onNext(list)
+                                emitter?.onComplete()
                             } else {
                                 emitter?.onError(Exception("error"))
                             }
                         } catch (e: Exception) {
                             e.printStackTrace()
+                            emitter?.onError(e)
                         }
 
                     } else {
                         NetOwnBook.requestOwnCatalogList(readStatus.book).subscribekt(
                                 onNext = { t ->
                                     emitter?.onNext(t)
+                                    emitter?.onComplete()
                                 },
                                 onError = { err ->
                                     emitter?.onError(err)
@@ -137,6 +141,7 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: ReaderVi
             val list = mBookDaoHelper.getBookMarks(readStatus.book_id)
 
             emitter?.onNext(list)
+            emitter?.onComplete()
         }.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribekt(onNext = { ret ->
@@ -206,6 +211,7 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: ReaderVi
             mBookDaoHelper.deleteBookMark(mark.book_id, mark.sequence, mark.offset, 0)
 
             e?.onNext(true)
+            e?.onComplete()
         }.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribekt(onNext = {
@@ -219,6 +225,7 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: ReaderVi
             mBookDaoHelper.deleteBookMark(readStatus.book_id)
 
             e?.onNext(true)
+            e?.onComplete()
         }.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribekt(onNext = {

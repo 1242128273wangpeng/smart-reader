@@ -202,6 +202,7 @@
         </activity>
         <activity
                 android:name=".activity.ReadingActivity"
+                android:hardwareAccelerated="true"
                 android:launchMode="singleTask"
                 android:configChanges="orientation|keyboardHidden|screenSize"
                 android:screenOrientation="nosensor"

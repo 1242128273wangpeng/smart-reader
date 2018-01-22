@@ -32,24 +32,35 @@ class HorizontalAdapter(private var noticePageListener: HorizontalPage.NoticePag
 
     override fun isViewFromObject(view: View?, `object`: Any?): Boolean = view == `object`
     override fun getCount(): Int = Int.MAX_VALUE
+
+    var destroyedItem:HorizontalPage? = null
+
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any?) {
         val itemView = `object` as HorizontalPage
-        itemView.removeAllViews()
+        itemView.tag = null
         container.removeView(itemView)
         ReadConfig.unregistObserver(itemView)
+        destroyedItem = itemView
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val itemView = HorizontalPage(container.context,noticePageListener)
-        //添加view
+        var itemView = destroyedItem
+        destroyedItem = null
+
+        //每次创建很耗时
+        if(itemView == null) {
+            itemView = HorizontalPage(container.context, noticePageListener)
+            //添加view
+        }
+
         itemView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+
         if (cursor!= null) {
             itemView.setCursor(cursor!!)
         }
         addPageTag(container as ViewPager,itemView, position)
         container.addView(itemView)
         ReadConfig.registObserver(itemView)
-        itemView.viewTreeObserver.dispatchOnPreDraw()
         return itemView
     }
 

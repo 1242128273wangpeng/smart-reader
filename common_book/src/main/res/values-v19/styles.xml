@@ -4,7 +4,7 @@
     <style name="Theme.Start"
            parent="@style/AppTheme">
         <item name="android:windowBackground">@drawable/splash_icons</item>
-        <item name="android:windowTranslucentNavigation">true</item>
+        <!--<item name="android:windowTranslucentNavigation">true</item>-->
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
     </style>
@@ -13,6 +13,6 @@
            parent="Base.Theme.DesignDemo">
         <!-- 设置activity切换动画 -->
         <item name="android:windowAnimationStyle">@style/activityAnimation</item>
-        <item name="android:windowTranslucentNavigation">true</item>
+        <!--<item name="android:windowTranslucentNavigation">true</item>-->
     </style>
 </resources>
