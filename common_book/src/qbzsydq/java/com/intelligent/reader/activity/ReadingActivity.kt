@@ -1,6 +1,9 @@
 package com.intelligent.reader.activity
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.Configuration
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -27,12 +30,16 @@ import com.intelligent.reader.read.page.PageInterface
 import com.intelligent.reader.read.page.ReadSettingView
 import com.intelligent.reader.read.page.ReaderViewWidget
 import com.intelligent.reader.reader.ReaderViewModel
+import com.logcat.sdk.LogEncapManager
 import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.qbzsydq.act_read.*
 import kotlinx.android.synthetic.qbzsydq.reading_page.*
+import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.*
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.OpenUDID
 import net.lzbook.kit.utils.SharedPreferencesUtils
 import net.lzbook.kit.utils.ToastUtils
 import java.util.*
@@ -54,6 +61,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     private val startReadTime = System.currentTimeMillis()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.act_read)
@@ -67,16 +75,16 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
         mReadPresenter = ReadPresenter(this)
         mReadPresenter.onCreateInit(savedInstanceState)
-
-
         auto_menu.setRateValue()
         mCatalogMarkFragment?.fixBook()
+        registerReceiver(mPowerOffReceiver, IntentFilter(Intent.ACTION_SCREEN_OFF))
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         read_catalog_mark_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         mReadPresenter.onNewIntent(intent)
+        registerReceiver(mPowerOffReceiver, IntentFilter(Intent.ACTION_SCREEN_OFF))
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -265,6 +273,11 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         DataProvider.getInstance().unSubscribe()
         DataProvider.getInstance().relase()
         ReadConfig.unregistObserverAll()
+        try {
+            unregisterReceiver(mPowerOffReceiver)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         super.onDestroy()
     }
 
@@ -433,7 +446,27 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         private var readStatus: ReadStatus by Delegates.notNull()
     }
 
+    private fun setUIOptions() {
+        window.decorView.systemUiVisibility = if (ReadConfig.animation == ReadViewEnums.Animation.curl) {
+            UI_OPTIONS_LOW_PROFILE
+        } else {
+            UI_OPTIONS_IMMERSIVE_STICKY
+        }
+    }
+
+    private val immersiveRunable = Runnable { setUIOptions() }
     override fun showMenu(isShow: Boolean) {
+        if (ReadConfig.animation != ReadViewEnums.Animation.curl) {
+            if (isShow) {
+                window.decorView.handler.removeCallbacks(immersiveRunable)
+                window.decorView.systemUiVisibility = UI_OPTIONS_NORMAL
+            } else {
+                window.decorView.systemUiVisibility = UI_OPTIONS_IMMERSIVE_STICKY
+            }
+        } else {
+            window.decorView.systemUiVisibility = UI_OPTIONS_LOW_PROFILE
+        }
+
         if (isShow) {
             if (!readSettingView.isChecked()) {
                 readSettingView.showMenu()
@@ -464,22 +497,47 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         auto_menu.visibility = View.VISIBLE
     }
 
+    var oldchapterId = ""
     override fun addLog() {
         val book = intent.getSerializableExtra("book") as Book
         val endTime = System.currentTimeMillis()
         val bookId = book.book_id
         val chapterId = ReadState.chapterId
-        val sourceIds = book.book_source_id
-        val channelCode = when (book.site) {
-            Constants.QG_SOURCE -> "1"
-            else -> "2"
-        }
+        val sourceIds = if (Constants.QG_SOURCE == book.site) book.book_id else book.book_source_id
+        val channelCode = if (Constants.QG_SOURCE == book.site) "1" else "2"
         val pageCount = ReadState.pageCount.toString()
         val currentPage = (ReadState.currentPage - 1).toString()
         val currentPageContentLength = ReadState.contentLength.toString()
         //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
         StartLogClickUtil.upLoadReadContent(bookId, chapterId, sourceIds, pageCount, currentPage, currentPageContentLength, "2",
                 startReadTime.toString(), endTime.toString(), (endTime - startReadTime).toString(), "false", channelCode)
+        //
+        chapterId?.let {
+            if (oldchapterId != it) {
+                oldchapterId = it
+                sendPVData(bookId, chapterId, sourceIds, channelCode, pageCount)
+            }
+        }
+
+    }
+
+    private fun sendPVData(bookId: String, chapterId: String?, sourceIds: String, channelCode: String, pageCount: String) {
+        Constants.endReadTime = System.currentTimeMillis() / 1000L
+        val params = HashMap<String, String>()
+        params.put("book_id", bookId)
+        params.put("book_source_id", sourceIds)
+        params.put("chapter_id", chapterId.toString())
+        params.put("channel_code", channelCode)
+        params.put("chapter_read", "1")
+        params.put("chapter_pages", pageCount)
+        params.put("start_time", startReadTime.toString())
+        params.put("end_time", System.currentTimeMillis().toString())
+        params.put("udid", OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()))
+        params.put("app_package", AppUtils.getPackageName())
+        params.put("app_version", AppUtils.getVersionName())
+        params.put("app_version_code", AppUtils.getVersionCode().toString())
+        params.put("app_channel_id", AppUtils.getChannelId())
+        LogEncapManager.getInstance().sendLog(params, "zn_pv")
     }
 
     override fun readOptionHeaderDismiss() {
@@ -488,5 +546,17 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun supportSlideBack(): Boolean {
         return false
+    }
+
+    private val mPowerOffReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action
+            if (Intent.ACTION_SCREEN_OFF == action) {
+                /**
+                 * 接受在阅读页，监听按下电源键的广播处理
+                 */
+                mReadPresenter.startRestTimer()
+            }
+        }
     }
 }

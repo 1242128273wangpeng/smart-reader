@@ -154,14 +154,17 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             if (keyList.isNotEmpty()) {
                 when (whichOrientation) {
                     "Pre" -> {
-                        if (ReadState.sequence <= keyList.first()) {
-                            //保留前三
-                            if (keyList.size >= 3) keyList.filter { it > keyList[2] }.forEach { provider.chapterMap.remove(it) }
-                            //加载缓存
-                            for (i in 0..keyList.first().minus(ReadState.sequence)) {
-                                if (ReadState.sequence.minus(i) < -1) continue
+                        //保留前三
+                        if (keyList.size >= 3) keyList.filter { it > keyList[2] }.forEach {
+                            provider.chapterMap.remove(it)
+                            provider.chapterSeparate.remove(it)
+                        }
+                        //加载缓存
+                        for (i in 0..2) {
+                            if (ReadState.sequence.minus(i) < -1) continue
+                            if (provider.chapterSeparate[ReadState.sequence.minus(i)] == null) {
                                 ReadState.book?.let {
-                                    DataProvider.getInstance().loadChapter(it, ReadState.sequence.minus(i), ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener() {
+                                    DataProvider.getInstance().loadChapter(it, ReadState.sequence.minus(i), ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
                                         override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
                                         override fun loadDataError(message: String) = Unit
                                     })
@@ -170,13 +173,16 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                         }
                     }
                     "Next" -> {
-                        if (ReadState.sequence >= keyList.last()) {
-                            //保留后三
-                            if (keyList.size >= 3) keyList.filter { it < keyList[keyList.size - 3] }.forEach { provider.chapterMap.remove(it) }
-                            for (i in 0..ReadState.sequence.minus(keyList.first())) {
-                                if (ReadState.sequence.plus(i) > ReadState.chapterList.size) continue
+                        //保留后三
+                        if (keyList.size >= 3) keyList.filter { it < keyList[keyList.size - 3] }.forEach {
+                            provider.chapterMap.remove(it)
+                            provider.chapterSeparate.remove(it)
+                        }
+                        for (i in 0..2) {
+                            if (ReadState.sequence.plus(i) > ReadState.chapterList.size) continue
+                            if (provider.chapterSeparate[ReadState.sequence.plus(i)] == null) {
                                 ReadState.book?.let {
-                                    DataProvider.getInstance().loadChapter(it, ReadState.sequence.plus(i), ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener() {
+                                    DataProvider.getInstance().loadChapter(it, ReadState.sequence.plus(i), ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
                                         override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
                                         override fun loadDataError(message: String) = Unit
                                     })
