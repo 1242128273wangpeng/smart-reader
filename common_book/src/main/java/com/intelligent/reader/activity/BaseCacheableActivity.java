@@ -1,13 +1,5 @@
 package com.intelligent.reader.activity;
 
-import com.intelligent.reader.R;
-import com.intelligent.reader.read.help.BookHelper;
-
-import net.lzbook.kit.book.view.MyDialog;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.Book;
-import net.lzbook.kit.utils.AppLog;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -18,6 +10,14 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
+
+import com.intelligent.reader.R;
+import com.intelligent.reader.read.help.BookHelper;
+
+import net.lzbook.kit.book.view.MyDialog;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.bean.Book;
+import net.lzbook.kit.utils.AppLog;
 
 import java.lang.ref.WeakReference;
 
@@ -49,8 +49,8 @@ public class BaseCacheableActivity extends FrameActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
 
         if (shouldReceiveCacheEvent()) {
             if (mCacheUpdateReceiver == null) {
@@ -72,8 +72,8 @@ public class BaseCacheableActivity extends FrameActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
 
         if (shouldReceiveCacheEvent()) {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(mCacheUpdateReceiver);

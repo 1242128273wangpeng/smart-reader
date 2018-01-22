@@ -1,17 +1,5 @@
 package com.intelligent.reader.activity;
 
-import com.baidu.mobstat.StatService;
-import com.intelligent.reader.R;
-
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.view.LoadingPage;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.RequestItem;
-import net.lzbook.kit.request.UrlUtils;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.CustomWebClient;
-import net.lzbook.kit.utils.JSInterfaceHelper;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -20,7 +8,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.view.KeyEvent;
+import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -28,6 +17,20 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.baidu.mobstat.StatService;
+import com.intelligent.reader.R;
+import com.intelligent.reader.util.PagerDesc;
+
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.book.view.LoadingPage;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.bean.RequestItem;
+import net.lzbook.kit.request.UrlUtils;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.CustomWebClient;
+import net.lzbook.kit.utils.JSInterfaceHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,6 +69,10 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     private JSInterfaceHelper jsInterfaceHelper;
     private Handler handler;
     private SharedPreferences mSharedPreferences;
+    private String fromType = "";
+    private PagerDesc mPagerDesc;
+    private int h5Margin;
+    private boolean isSupport = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,7 +95,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             names.add(currentTitle);
         }
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
+        fromType = mSharedPreferences.getString(Constants.FINDBOOK_SEARCH, "other");
         initView();
 
         initJSHelp();
@@ -145,6 +152,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             find_book_detail_back.setOnClickListener(this);
         }
         find_book_detail_search.setOnClickListener(this);
+        addTouchListener();
     }
 
     @Override
@@ -240,13 +248,16 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-
-            clickBackBtn();
-            return true;
+    public void onBackPressed() {
+        if (urls.size() - backClickCount <= 1) {
+            super.onBackPressed();
         } else {
-            return super.onKeyDown(keyCode, event);
+            backClickCount++;
+            int nowIndex = urls.size() - 1 - backClickCount;
+
+            currentUrl = urls.get(nowIndex);
+            currentTitle = names.get(nowIndex);
+            loadWebData(currentUrl, currentTitle);
         }
     }
 
@@ -341,6 +352,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                     if (loadingpage != null) {
                         loadingpage.onSuccessGone();
                     }
+                    addCheckSlide(find_detail_content);
                 }
             });
         }
@@ -416,18 +428,44 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             @Override
             public void doAnotherWeb(String url, String name) {
                 AppLog.e(TAG, "doAnotherWeb");
-                try {
-                    currentUrl = url;
-                    currentTitle = name;
-                    urls.add(currentUrl);
-                    names.add(currentTitle);
-                    loadWebData(currentUrl, name);
+                String packageName = AppUtils.getPackageName();
+
+                if ("cc.kdqbxs.reader".equals(packageName)|| "cc.quanbennovel".equals(packageName) || "cn.txtkdxsdq.reader".equals(packageName)) {
+                    try {
+                        Intent intent = new Intent();
+                        intent.setClass(FindBookDetail.this, FindBookDetail.class);
+                        intent.putExtra("url", url);
+                        intent.putExtra("title", name);
+                        startActivity(intent);
+                        AppLog.e(TAG, "EnterAnotherWeb");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        currentUrl = url;
+                        currentTitle = name;
+                        urls.add(currentUrl);
+                        names.add(currentTitle);
+                        loadWebData(currentUrl, name);
 //                    setTitle(name);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
+
             }
         });
+
+        if (isNeedInterceptSlide()) {
+            jsInterfaceHelper.setOnH5PagerInfo(new JSInterfaceHelper.OnH5PagerInfoListener() {
+                @Override
+                public void onH5PagerInfo(int x, int y, int width, int height) {
+                    mPagerDesc = new PagerDesc(y, x, x + width, y + height);
+                }
+            });
+
+        }
     }
 
     private void setTitle(final String name) {
@@ -624,4 +662,64 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         return;
     }
 
+    private void addCheckSlide(WebView find_detail_content) {
+        if (find_detail_content != null && isNeedInterceptSlide()) {
+            find_detail_content.loadUrl("javascript:getViewPagerInfo()");
+        }
+    }
+
+    private boolean isNeedInterceptSlide() {
+        String packageName = AppUtils.getPackageName();
+        if (("cc.kdqbxs.reader".equals(packageName) || "cc.quanbennovel".equals(packageName) || "cn.txtkdxsdq.reader".equals(packageName)) && !TextUtils.isEmpty(currentTitle) && (currentTitle.contains("男频") || currentTitle.contains("女频"))) {
+            return true;
+        }
+        return false;
+    }
+
+    private void addTouchListener() {
+        if (find_detail_content != null && isNeedInterceptSlide()) {
+            find_detail_content.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    float y = event.getRawY();
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            if (find_detail_content != null) {
+                                int[] loction = new int[2];
+                                find_detail_content.getLocationOnScreen(loction);
+                                h5Margin = loction[1];
+                            }
+                            if (null != mPagerDesc) {
+                                int top = mPagerDesc.getTop();
+                                int bottom = top + (mPagerDesc.getBottom() - mPagerDesc.getTop());
+                                DisplayMetrics metric = getResources().getDisplayMetrics();
+                                top = (int) (top * metric.density) + h5Margin;
+                                bottom = (int) (bottom * metric.density) + h5Margin;
+                                if (y > top && y < bottom) {
+                                    isSupport = false;
+                                } else {
+                                    isSupport = true;
+                                }
+                            }
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            isSupport = true;
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            break;
+                        default:
+                            isSupport = true;
+                            break;
+                    }
+                    return false;
+                }
+            });
+        }
+    }
+
+
+    @Override
+    public boolean supportSlideBack() {
+        return isSupport;
+    }
 }
