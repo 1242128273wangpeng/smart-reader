@@ -1,5 +1,24 @@
 package com.intelligent.reader.activity;
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.preference.PreferenceManager;
+import android.util.TypedValue;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.bumptech.glide.Glide;
 import com.intelligent.reader.R;
@@ -12,7 +31,6 @@ import net.lzbook.kit.book.view.ConsumeEvent;
 import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.book.view.SwitchButton;
 import net.lzbook.kit.cache.DataCleanManager;
-import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.BookTask;
 import net.lzbook.kit.data.bean.ReadConfig;
 import net.lzbook.kit.user.UserManager;
@@ -22,36 +40,12 @@ import net.lzbook.kit.utils.StatServiceUtils;
 import net.lzbook.kit.utils.UIHelper;
 import net.lzbook.kit.utils.update.ApkUpdateUtils;
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.graphics.PixelFormat;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.preference.PreferenceManager;
-import android.support.annotation.AttrRes;
-import android.util.TypedValue;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import de.greenrobot.event.EventBus;
-import iyouqu.theme.StatusBarCompat;
 import iyouqu.theme.ThemeMode;
 
 
@@ -618,20 +612,33 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         goBackToHome();
     }
 
     public void goBackToHome() {
         if (!currentThemeMode.equals(mThemeHelper.getMode()) || isStyleChanged) {
-            Intent themIntent = new Intent(SettingActivity.this, HomeActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_SWITCH_THEME);
-            themIntent.putExtras(bundle);
-            startActivity(themIntent);
+            if (getSwipeBackHelper() == null || !getSwipeBackHelper().isSliding()) {//滑动返回已结束
+                onThemeSwitch();
+            }
         } else {
-            finish();
+            super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onSlideFinishAnimEnd() {
+        super.onSlideFinishAnimEnd();
+        if (!currentThemeMode.equals(mThemeHelper.getMode()) || isStyleChanged) {
+            onThemeSwitch();
+        }
+    }
+
+    private void onThemeSwitch() {
+        Intent themIntent = new Intent(SettingActivity.this, HomeActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_SWITCH_THEME);
+        themIntent.putExtras(bundle);
+        startActivity(themIntent);
     }
 
     private void dismissDialog() {

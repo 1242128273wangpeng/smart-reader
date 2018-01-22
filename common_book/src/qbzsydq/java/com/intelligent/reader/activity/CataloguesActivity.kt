@@ -497,12 +497,8 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         }
     }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            exitAndUpdate()
-            return true
-        }
-        return super.onKeyDown(keyCode, event)
+    override fun onBackPressed() {
+        exitAndUpdate()
     }
 
     private fun exitAndUpdate() {
@@ -511,7 +507,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
             val intent = Intent(this, SplashActivity::class.java)
             startActivity(intent)
         }
-        exit()
+        super.onBackPressed()
     }
 
     private fun exit() {

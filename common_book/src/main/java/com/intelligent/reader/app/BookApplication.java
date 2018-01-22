@@ -1,5 +1,9 @@
 package com.intelligent.reader.app;
 
+import android.content.Context;
+import android.util.Log;
+import android.widget.Toast;
+
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.alibaba.sdk.android.feedback.util.ErrorCode;
 import com.alibaba.sdk.android.feedback.util.FeedbackErrorCallback;
@@ -10,11 +14,9 @@ import com.squareup.leakcanary.RefWatcher;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.ReplaceConstants;
 
-import android.content.Context;
-import android.util.Log;
-import android.widget.Toast;
-
 import java.util.concurrent.Callable;
+
+import swipeback.ActivityLifecycleHelper;
 
 
 public class BookApplication extends BaseBookApplication {
@@ -56,5 +58,6 @@ public class BookApplication extends BaseBookApplication {
                 sRefWatcher = RefWatcher.DISABLED;
             }
         }
+        registerActivityLifecycleCallbacks(ActivityLifecycleHelper.build());
     }
 }

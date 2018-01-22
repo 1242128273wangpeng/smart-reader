@@ -292,4 +292,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
         AppLog.d(TAG, "onOffLineFinish")
     }
 
+    override fun supportSlideBack(): Boolean {
+        return !isTaskRoot && !removeHelper.isRemoveMode
+    }
 }

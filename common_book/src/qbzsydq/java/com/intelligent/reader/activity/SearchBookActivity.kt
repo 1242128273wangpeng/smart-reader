@@ -413,12 +413,9 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
     }
 
     override fun onBackPressed() {
-        val data = HashMap<String, String>()
-        data.put("type", "2")
-        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data)
-        backAction()
+        isBackPressed = true
+        super.onBackPressed()
     }
-
 
     private fun showSearchViews() {
         if (NetWorkUtils.getNetWorkType(this) == NetWorkUtils.NETWORK_NONE) {

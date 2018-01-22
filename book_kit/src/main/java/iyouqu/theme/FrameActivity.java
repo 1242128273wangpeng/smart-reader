@@ -1,19 +1,11 @@
 package iyouqu.theme;
 
-import com.baidu.mobstat.StatService;
-
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.utils.ATManager;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.ResourceUtil;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -24,9 +16,11 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
@@ -34,11 +28,24 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.baidu.mobstat.StatService;
+
+import net.lzbook.kit.R;
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.utils.ATManager;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.ResourceUtil;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class FrameActivity extends AppCompatActivity {
+import swipeback.SwipeBackHelper;
+
+public abstract class FrameActivity extends AppCompatActivity implements SwipeBackHelper.SlideBackManager,
+        SwipeBackHelper.SlideAnimListener {
     protected final static int commonLockTime = 5 * 60 * 1000;
     // 全局亮度
     public static int mSystemBrightness = 0;
@@ -68,6 +75,12 @@ public abstract class FrameActivity extends AppCompatActivity {
             | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 
+
+    private SwipeBackHelper swipeBackHelper;
+
+    public SwipeBackHelper getSwipeBackHelper() {
+        return swipeBackHelper;
+    }
 
     @SuppressLint("NewApi")
     public void onCreate(Bundle paramBundle) {
@@ -103,7 +116,10 @@ public abstract class FrameActivity extends AppCompatActivity {
         Map<String, String> data = new HashMap<>();
         data.put("type", "2");
         StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
-        finish();
+
+        if (swipeBackHelper != null && swipeBackHelper.isSliding()) return;//滑动返回未结束
+
+        super.onBackPressed();
     }
 
     public void hasGetPackageName() {
@@ -152,7 +168,7 @@ public abstract class FrameActivity extends AppCompatActivity {
     }
 
 
-    protected void nightShift(boolean flag, boolean animate) {
+    public void nightShift(boolean flag, boolean animate) {
 //        mThemeHelper.showAnimation(this);
 //        mThemeHelper.toggleThemeSetting(this);
 //        StatusBarCompat.compat(this);
@@ -165,6 +181,7 @@ public abstract class FrameActivity extends AppCompatActivity {
                 mNightShadowView.setAlpha(Constants.NIGHT_SHADOW_ALPHA);
                 mNightShadowView.setClickable(false);
                 mNightShadowView.setFocusable(false);
+                mNightShadowView.setId(R.id.night_shadow_view);
 
             }
 
@@ -506,15 +523,71 @@ public abstract class FrameActivity extends AppCompatActivity {
         super.finish();
         ATManager.removeActivity(this);
         toast = null;
+
+        if (isTaskRoot()) {
+            overridePendingTransition(R.anim.slide_left_in, 0);
+        } else {
+            overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
+        }
     }
 
     @Override
     protected void onDestroy() {
+        if (swipeBackHelper != null) {
+            swipeBackHelper.finishSwipeImmediately();
+            swipeBackHelper = null;
+        }
+
         super.onDestroy();
 //        getWindow().getDecorView().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
 //        if(getWindow().getDecorView() instanceof  ViewGroup){
 //            ((ViewGroup)getWindow().getDecorView()).removeAllViews();
 //        }
         ATManager.removeActivity(this);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (swipeBackHelper == null) {
+            swipeBackHelper = new SwipeBackHelper(this, this);
+        }
+        return swipeBackHelper.processTouchEvent(ev) || super.dispatchTouchEvent(ev);
+    }
+
+    @NonNull
+    @Override
+    public Activity getSlideActivity() {
+        return this;
+    }
+
+    @Override
+    public boolean supportSlideBack() {
+        return true;
+    }
+
+    @Override
+    public boolean canBeSlideBack() {
+        return true;
+    }
+
+    @Override
+    public void startActivity(Intent intent) {
+        super.startActivity(intent);
+        overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_in);
+    }
+
+    @Override
+    public void onSlideAnimStart() {
+
+    }
+
+    @Override
+    public void onSlideCancelAnimEnd() {
+
+    }
+
+    @Override
+    public void onSlideFinishAnimEnd() {
+
     }
 }
