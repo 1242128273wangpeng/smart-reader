@@ -142,11 +142,11 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         read_landscape.isChecked = context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
         read_full.isChecked = sharedPreferences!!.getBoolean("full_screen_read", false)
 
-        resetBtn()
+        resetBtn(Constants.isSlideUp)
 
     }
 
-    private fun resetBtn() {
+    private fun resetBtn(isSlideUp: Boolean) {
         if (Constants.PAGE_MODE == 3) {
             read_full.isEnabled = false
             read_full.isClickable = false
@@ -157,14 +157,17 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             read_full.alpha = 1f
         }
 
-        if (Constants.isSlideUp) {
+        if (isSlideUp) {
             read_autoRead.isClickable = false
             read_autoRead.isEnabled = false
             read_autoRead.alpha = 0.3f
+            Constants.isSlideUp = true
         } else {
             read_autoRead.isClickable = true
             read_autoRead.isEnabled = true
             read_autoRead.alpha = 1f
+            Constants.isSlideUp
+            Constants.isSlideUp = false
         }
     }
 
@@ -186,7 +189,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
                 read_setting_backdrop_group.setOnCheckedChangeListener(null)
 
-                resetBtn()
+                resetBtn(Constants.isSlideUp)
 
                 if (ReadConfig.MODE == 61) {
                     read_setting_backdrop_group.clearCheck()
@@ -783,6 +786,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 data.put("type", "1")
                 StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.PAGETURN, data)
                 changePageMode(0)
+                resetBtn(false)
             }
             R.id.read_animation_simulation -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_flip_page_02)
@@ -790,6 +794,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 data.put("type", "3")
                 StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.PAGETURN, data)
                 changePageMode(1)
+                resetBtn(false)
             }
             R.id.read_animation_translation -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_flip_page_03)
@@ -797,6 +802,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 data.put("type", "2")
                 StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.PAGETURN, data)
                 changePageMode(2)
+                resetBtn(false)
             }
             R.id.read_animation_updown -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_flip_page_04)
@@ -804,6 +810,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 data.put("type", "4")
                 StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.PAGETURN, data)
                 changePageMode(3)
+                resetBtn(true)
             }
             else -> {
             }

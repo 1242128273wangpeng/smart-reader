@@ -10,6 +10,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import com.intelligent.reader.read.mode.ReadState
+import net.lzbook.kit.R
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ReadViewEnums
 
@@ -86,10 +87,14 @@ class AutoReadView : View {
         mSrcRect = Rect()
         mDsfRect = Rect()
 
+        getDividerBitmap()
+    }
+
+    private fun getDividerBitmap() {
         if (Constants.MODE == 55 || Constants.MODE == 58) {
-            mDividerBmp = BitmapFactory.decodeResource(resources, net.lzbook.kit.R.drawable.content_auto_read_night)
+            mDividerBmp = BitmapFactory.decodeResource(resources, R.drawable.content_auto_read_night)
         } else {
-            mDividerBmp = BitmapFactory.decodeResource(resources, net.lzbook.kit.R.drawable.content_auto_read_day)
+            mDividerBmp = BitmapFactory.decodeResource(resources, R.drawable.content_auto_read_day)
         }
     }
 
@@ -104,6 +109,10 @@ class AutoReadView : View {
 
         mNextPageBitmap = mOnAutoReadViewLoadCallback?.loadBitmap(ReadViewEnums.PageIndex.next)
         mCurrentPageBitmap = mOnAutoReadViewLoadCallback?.loadBitmap(ReadViewEnums.PageIndex.current)
+
+        if (mDividerBmp.isRecycled) {
+            getDividerBitmap()
+        }
 
         postAutoReadTimer()
 
