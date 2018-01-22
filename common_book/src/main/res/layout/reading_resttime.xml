@@ -46,33 +46,9 @@
     </FrameLayout>
     
     <RelativeLayout
+            android:id="@+id/rest_ad"
             android:layout_width="214dp"
             android:layout_height="321dp">
-        
-        <ImageView
-                android:id="@+id/iv_reset_ad"
-                android:layout_width="214dp"
-                android:layout_height="321dp"
-                android:paddingBottom="@dimen/padding_0"
-                android:paddingLeft="@dimen/padding_0"
-                android:paddingRight="@dimen/padding_0"/>
-        
-        <ImageView
-                android:id="@+id/iv_reset_ad_logo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"/>
-        
-        <ImageView
-                android:id="@+id/iv_reset_ad_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:src="@drawable/mob_adicon"
-                android:visibility="invisible"/>
-    
     </RelativeLayout>
     
     <RelativeLayout
