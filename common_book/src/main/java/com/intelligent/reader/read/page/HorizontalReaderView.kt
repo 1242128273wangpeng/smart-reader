@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Handler
 import android.util.AttributeSet
 import android.view.MotionEvent
+import android.view.ViewTreeObserver
 import com.intelligent.reader.R
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.adapter.HorizontalAdapter
@@ -424,12 +425,18 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             val sequence = ReadState.sequence
             val offset = ReadState.offset
             DataProvider.getInstance().onReSeparate()
-            Handler().postDelayed({
-                //更改当前view状态
-                (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState = ReadViewEnums.ViewState.loading
-                curCursor = ReadCursor(it, sequence, offset, ReadViewEnums.PageIndex.current)
-                checkViewState("Cur", ReadViewEnums.NotifyStateState.all)
-            }, 500)
+
+            viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+                override fun onPreDraw(): Boolean {
+                    viewTreeObserver.removeOnPreDrawListener(this)
+                    //更改当前view状态
+                    (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState = ReadViewEnums.ViewState.loading
+                    curCursor = ReadCursor(it, sequence, offset, ReadViewEnums.PageIndex.current)
+                    checkViewState("Cur", ReadViewEnums.NotifyStateState.all)
+                    return true
+                }
+            })
+
         }
     }
 

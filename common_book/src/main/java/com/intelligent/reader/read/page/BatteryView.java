@@ -115,7 +115,8 @@ public class BatteryView extends ImageView {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
-        if (mBatInfoReceiver.listeners.isEmpty()) {
+        if (mBatInfoReceiver == null) {
+            mBatInfoReceiver = new BatteryReceiver();
             getContext().registerReceiver(mBatInfoReceiver,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         }
 
@@ -128,15 +129,16 @@ public class BatteryView extends ImageView {
 
         mBatInfoReceiver.listeners.remove(this);
 
-        if(mBatInfoReceiver.listeners.isEmpty()){
+        if(mBatInfoReceiver.listeners.isEmpty() && mBatInfoReceiver != null){
             getContext().unregisterReceiver(mBatInfoReceiver);
+            mBatInfoReceiver = null;
         }
     }
 
     /**
      * 接受电量改变广播
      */
-    private static BatteryReceiver mBatInfoReceiver = new BatteryReceiver();
+    private static BatteryReceiver mBatInfoReceiver = null;
 
     static class BatteryReceiver extends BroadcastReceiver{
         public HashSet<BatteryView> listeners = new HashSet<>();
