@@ -40,6 +40,7 @@ public abstract class PageRender implements OnPageFlipListener {
     final static int DRAW_MOVING_FRAME = 0;
     final static int DRAW_ANIMATING_FRAME = 1;
     final static int DRAW_FULL_PAGE = 2;
+    final static int DRAW_DELETE_AFTER_FIRST_PAGE = 3;
 
     final static int MAX_PAGES = Integer.MAX_VALUE;
 
@@ -52,7 +53,7 @@ public abstract class PageRender implements OnPageFlipListener {
                       Handler handler) {
         mContext = context;
         mPageFlip = pageFlip;
-        mDrawCommand = DRAW_FULL_PAGE;
+        mDrawCommand = DRAW_DELETE_AFTER_FIRST_PAGE;
         mPageFlip.setListener(this);
         mHandler = handler;
     }

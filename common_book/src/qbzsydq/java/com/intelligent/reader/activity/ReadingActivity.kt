@@ -64,6 +64,9 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setUIOptions()
+
         setContentView(R.layout.act_read)
 
         mCatalogMarkFragment = supportFragmentManager.findFragmentById(R.id.read_catalog_mark_layout) as? CatalogMarkFragment
@@ -82,6 +85,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        setUIOptions()
         read_catalog_mark_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         mReadPresenter.onNewIntent(intent)
         registerReceiver(mPowerOffReceiver, IntentFilter(Intent.ACTION_SCREEN_OFF))
@@ -89,6 +93,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
+        setUIOptions()
         read_catalog_mark_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         mReadPresenter.onConfigurationChanged(mCatalogMarkFragment, option_header, readerWidget.childCount)
         ReadConfig.IS_LANDSCAPE = (newConfig.orientation != Configuration.ORIENTATION_PORTRAIT)
@@ -114,19 +119,20 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         DataProvider.getInstance().context = this
         ReadState.book = readStatus.book
         //add ReadInfo
-        ReadConfig.animation = when (Constants.PAGE_MODE) {
-            1 -> ReadViewEnums.Animation.curl
-            2 -> ReadViewEnums.Animation.shift
-            3 -> ReadViewEnums.Animation.list
-            else -> ReadViewEnums.Animation.slide
-        }
 
-        readerWidget.initReaderViewFactory()
-        readerWidget.entrance()
         readerWidget.setIReadPageChange(this)
+        readerWidget.entrance()
         readSettingView.setNovelMode(ReadConfig.MODE)
 
         initGuide()
+    }
+
+    private fun setUIOptions() {
+        if (ReadConfig.animation == ReadViewEnums.Animation.list) {
+            window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_LOW_PROFILE
+        } else {
+            window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
+        }
     }
 
     private fun initGuide() {
@@ -251,6 +257,12 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         if (hasFocus) {
             window.decorView.postDelayed({ window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY }, 1500)
         }
+
+        if (hasFocus && !readStatus.isMenuShow) {
+            window.decorView.postDelayed(immersiveRunable, 1500)
+        } else if (ReadConfig.animation == ReadViewEnums.Animation.list) {
+            window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_LOW_PROFILE
+        }
     }
 
     override fun onStop() {
@@ -362,13 +374,9 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     //0 滑动 1 仿真 2 平移 3 上下
     override fun changeAnimMode(mode: Int) {
-        if (((mode == 3) and (ReadConfig.animation != ReadViewEnums.Animation.list)) or ((ReadConfig.animation == ReadViewEnums.Animation.list) and (mode != 3))) {
-            readerWidget.changeAnimMode(mode)
-            readerWidget.entrance()
-            readerWidget.setIReadPageChange(this)
-        }
+
         readerWidget.changeAnimMode(mode)
-        readSettingView.dismissMenu()
+        showMenu(false)
     }
 
     //ReadSettingView end
@@ -446,25 +454,21 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         private var readStatus: ReadStatus by Delegates.notNull()
     }
 
-    private fun setUIOptions() {
-        window.decorView.systemUiVisibility = if (ReadConfig.animation == ReadViewEnums.Animation.curl) {
-            UI_OPTIONS_LOW_PROFILE
-        } else {
-            UI_OPTIONS_IMMERSIVE_STICKY
-        }
-    }
-
     private val immersiveRunable = Runnable { setUIOptions() }
+
     override fun showMenu(isShow: Boolean) {
-        if (ReadConfig.animation != ReadViewEnums.Animation.curl) {
+
+        if (ReadConfig.animation != ReadViewEnums.Animation.list) {
             if (isShow) {
                 window.decorView.handler.removeCallbacks(immersiveRunable)
-                window.decorView.systemUiVisibility = UI_OPTIONS_NORMAL
+                window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_NORMAL
             } else {
-                window.decorView.systemUiVisibility = UI_OPTIONS_IMMERSIVE_STICKY
+                window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
             }
         } else {
-            window.decorView.systemUiVisibility = UI_OPTIONS_LOW_PROFILE
+
+            window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_LOW_PROFILE
+
         }
 
         if (isShow) {

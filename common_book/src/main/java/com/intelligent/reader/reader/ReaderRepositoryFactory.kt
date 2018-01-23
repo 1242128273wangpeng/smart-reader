@@ -53,7 +53,10 @@ class ReaderRepositoryFactory private constructor(readerOwnRepository: ReaderRep
             if (isNeedDownContent(chapter, downloadFlag)) {//是否需要下载
                 return mReaderOwnRepository.requestSingleChapter(host, chapter)
             } else {
-                return Observable.create({ it.onNext(chapter) })
+                return Observable.create({
+                    it.onNext(chapter)
+                    it.onComplete()
+                })
             }
         }
     }
