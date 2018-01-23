@@ -2124,7 +2124,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 
     fun startRestInterval() {
         if (intervalDispost == null) {
-            intervalDispost = Observable.interval(30, TimeUnit.MINUTES)
+            intervalDispost = Observable.interval(PlatformSDK.config().switch_sec.toLong(), TimeUnit.MINUTES)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
@@ -2138,7 +2138,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 
     fun startRestTimer() {
         if (timeDispost == null) {
-            timeDispost = Observable.timer(1, TimeUnit.MINUTES)
+            timeDispost = Observable.timer(PlatformSDK.config().restAd_sec.toLong(), TimeUnit.MINUTES)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
@@ -2153,33 +2153,33 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     var mDialog: MyDialog? = null
 
     fun restAd() {
-        mDialog = MyDialog(readReference?.get(), R.layout.reading_resttime, Gravity.CENTER, false)
-        mDialog?.let {
-            val rest_ad = it.findViewById(R.id.rest_ad) as RelativeLayout//容器
-            it.findViewById(R.id.iv_close).setOnClickListener { mDialog?.dismiss() }
-            //广告 3-1
-            PlatformSDK.adapp().dycmNativeAd(mDialog?.context, "3-1", rest_ad, object : AbstractCallback() {
-                override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
-                    super.onResult(adswitch, views, jsonResult)
-                    if (!adswitch) return
-                    try {
-                        val jsonObject = JSONObject(jsonResult)
-                        if (jsonObject.has("state_code")) {
-                            when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                                ResultCode.AD_REQ_SUCCESS -> {
+        PlatformSDK.adapp().dycmNativeAd(readReference?.get(), "3-1", null, object : AbstractCallback() {
+            override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
+                super.onResult(adswitch, views, jsonResult)
+                if (!adswitch) return
+                try {
+                    val jsonObject = JSONObject(jsonResult)
+                    if (jsonObject.has("state_code")) {
+                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+                            ResultCode.AD_REQ_SUCCESS -> {
+                                mDialog = MyDialog(readReference?.get(), R.layout.reading_resttime, Gravity.CENTER, false)
+                                mDialog?.let {
+                                    val rest_ad = it.findViewById(R.id.rest_ad) as RelativeLayout//容器
+                                    it.findViewById(R.id.iv_close).setOnClickListener { mDialog?.dismiss() }
+                                    //广告 3-1
                                     rest_ad.addView(views?.get(0))
                                     rest_ad.postInvalidate()
-                                }
-                                ResultCode.AD_REQ_FAILED -> {
+                                    mDialog?.show()
                                 }
                             }
+                            ResultCode.AD_REQ_FAILED -> {
+                            }
                         }
-                    } catch (e: JSONException) {
-                        e.printStackTrace()
                     }
+                } catch (e: JSONException) {
+                    e.printStackTrace()
                 }
-            })
-            mDialog?.show()
-        }
+            }
+        })
     }
 }

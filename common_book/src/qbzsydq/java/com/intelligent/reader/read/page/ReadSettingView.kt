@@ -956,7 +956,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         val numFormat = NumberFormat.getNumberInstance()
         numFormat.maximumFractionDigits = 2
         if (seekBar.id == R.id.novel_jump_progress) {
-            if (readStatus!!.novel_progress == readStatus!!.sequence) {// 本章不跳
+            if (seekBar.progress == ReadState.sequence) {// 本章不跳
                 return
             }
             var resizeProgress = when (seekBar.progress) {
