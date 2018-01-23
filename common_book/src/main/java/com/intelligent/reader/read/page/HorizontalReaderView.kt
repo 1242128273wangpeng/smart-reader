@@ -396,6 +396,8 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                     isCanScroll = 1
                     isLeftSlip = true
                 }
+                ReadViewEnums.ViewState.loading ->  isCanScroll = -1
+                ReadViewEnums.ViewState.error -> isCanScroll = -1
                 else -> isCanScroll = 0
             }
         }
@@ -474,7 +476,13 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 //        }
 
         return when (isCanScroll) {
-            -1 -> true
+            -1 -> {
+                if(event.action == MotionEvent.ACTION_MOVE){
+                    true
+                }else {
+                    return super.dispatchTouchEvent(event)
+                }
+            }
             0 -> {
                 return super.dispatchTouchEvent(event)
             }

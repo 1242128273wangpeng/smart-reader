@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.error_page2.view.*
 import kotlinx.android.synthetic.main.read_bottom.view.*
 import kotlinx.android.synthetic.main.read_top.view.*
 import kotlinx.android.synthetic.main.loading_page_reading.view.*
+import kotlinx.android.synthetic.qbzsydq.read_option_header.view.*
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.utils.AppUtils
@@ -103,44 +104,6 @@ class HorizontalPage : FrameLayout, Observer {
         addView(loadView)
     }
 
-//    override fun draw(canvas: Canvas?) {
-//        if(ReadConfig.animation == ReadViewEnums.Animation.curl) {
-//            initDrawCacheBitmap()
-//            super.draw(innerCanvas)
-//            canvas?.drawBitmap(drawCacheBitmap, 0F, 0F, null);
-//        }else{
-//            super.draw(canvas)
-//        }
-//    }
-//
-//    private fun initDrawCacheBitmap() {
-//        if (drawCacheBitmap == null) {
-//            drawCacheBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
-//            innerCanvas = Canvas(drawCacheBitmap)
-//        }
-//    }
-//
-//    override fun getDrawingCache(): Bitmap {
-//        if(ReadConfig.animation == ReadViewEnums.Animation.curl) {
-//            if (drawCacheBitmap == null) {
-//                initDrawCacheBitmap()
-//                draw(innerCanvas)
-//            }
-//            return drawCacheBitmap!!
-//        }else{
-//            return super.getDrawingCache()
-//        }
-//    }
-//
-//    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-//        super.onSizeChanged(w, h, oldw, oldh)
-//        drawCacheBitmap = null
-//    }
-
-    override fun setVisibility(visibility: Int) {
-        super.setVisibility(visibility)
-    }
-
     private fun setupView() {
         //原网页
         origin_tv.setOnClickListener {
@@ -179,6 +142,7 @@ class HorizontalPage : FrameLayout, Observer {
         ThemeUtil.getModePrimaryBackground(resources, homePage)
         //进度条
         ThemeUtil.getModePrimaryBackground(resources, loadView)
+
     }
 
     override fun onDetachedFromWindow() {
@@ -313,6 +277,8 @@ class HorizontalPage : FrameLayout, Observer {
         //Error
         removeView(errorView)
         addView(errorView)
+        ThemeUtil.getModePrimaryBackground(resources, errorView)
+
         viewState = ReadViewEnums.ViewState.error
         loadView.visibility = View.GONE
         errorView.loading_error_reload.setOnClickListener({
@@ -372,7 +338,7 @@ class HorizontalPage : FrameLayout, Observer {
             cursor.curBook.sequence = cursor.sequence
             DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
                 override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex)  = checkEntrance(cursor,0)
-                override fun loadDataError(message: String) = showErrorView(cursor)
+                override fun loadDataError(message: String) =  runOnMain {showErrorView(cursor)}
             })
             DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener() {
                 override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = checkEntrance(cursor,1)

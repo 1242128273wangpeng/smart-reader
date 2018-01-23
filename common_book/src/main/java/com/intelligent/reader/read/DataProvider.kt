@@ -237,7 +237,7 @@ class DataProvider : DisposableAndroidViewModel() {
                         }
                     }
                     mReaderRepository.writeChapterCache(c, false)
-                    if (c.content.isNotEmpty()) {
+                    if (c.content != "null" && c.content.isNotEmpty()) {
                         chapterMap.put(sequence, c)
                         ReadState.chapterId = c.chapter_id
                         chapterSeparate.put(sequence, ReadSeparateHelper.initTextSeparateContent(c.content, c.chapter_name))
