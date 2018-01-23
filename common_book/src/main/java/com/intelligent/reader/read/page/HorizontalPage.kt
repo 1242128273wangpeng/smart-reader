@@ -31,6 +31,7 @@ import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.runOnMain
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.properties.Delegates
 
 
 /**
@@ -58,6 +59,7 @@ class HorizontalPage : FrameLayout, Observer {
     private lateinit var readTop: View
     private lateinit var readBottom: View
     private lateinit var homePage: View
+    private lateinit var mAdFrameLayout: FrameLayout
 
     var mCursorOffset = 0
     var mCursor: ReadCursor? = null
@@ -66,10 +68,13 @@ class HorizontalPage : FrameLayout, Observer {
     var pageIndex: Int = 0
     var pageSum: Int = 0
     var contentLength: Int = 0
-    var noticePageListener: NoticePageListener? = null
-    var mNovelPageBean: NovelPageBean? = null
     var hasAd = false
     var hasBigAd = false
+    var noticePageListener: NoticePageListener? = null
+    var mNovelPageBean: NovelPageBean? = null
+
+//    var drawCacheBitmap:Bitmap? = null
+//    var innerCanvas:Canvas? = null
 
     constructor(context: Context, noticePageListener: NoticePageListener) : this(context, null, noticePageListener)
 
@@ -79,8 +84,6 @@ class HorizontalPage : FrameLayout, Observer {
         this.noticePageListener = noticePageListener
         isDrawingCacheEnabled = true
         drawingCacheQuality = View.DRAWING_CACHE_QUALITY_LOW
-        isChildrenDrawnWithCacheEnabled = true
-        isChildrenDrawnWithCacheEnabled = true
         init()
     }
 
@@ -92,11 +95,50 @@ class HorizontalPage : FrameLayout, Observer {
         readBottom = inflate(context, R.layout.read_bottom, null)
         homePage = inflate(context, R.layout.book_home_page_layout, null)
         pageView = HorizontalItemPage(context)
+        mAdFrameLayout = FrameLayout(context)
         addView(pageView)
+        addView(mAdFrameLayout, LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT))
         addView(readTop)
         addView(readBottom)
         addView(loadView)
-        setupView()
+    }
+
+//    override fun draw(canvas: Canvas?) {
+//        if(ReadConfig.animation == ReadViewEnums.Animation.curl) {
+//            initDrawCacheBitmap()
+//            super.draw(innerCanvas)
+//            canvas?.drawBitmap(drawCacheBitmap, 0F, 0F, null);
+//        }else{
+//            super.draw(canvas)
+//        }
+//    }
+//
+//    private fun initDrawCacheBitmap() {
+//        if (drawCacheBitmap == null) {
+//            drawCacheBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
+//            innerCanvas = Canvas(drawCacheBitmap)
+//        }
+//    }
+//
+//    override fun getDrawingCache(): Bitmap {
+//        if(ReadConfig.animation == ReadViewEnums.Animation.curl) {
+//            if (drawCacheBitmap == null) {
+//                initDrawCacheBitmap()
+//                draw(innerCanvas)
+//            }
+//            return drawCacheBitmap!!
+//        }else{
+//            return super.getDrawingCache()
+//        }
+//    }
+//
+//    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+//        super.onSizeChanged(w, h, oldw, oldh)
+//        drawCacheBitmap = null
+//    }
+
+    override fun setVisibility(visibility: Int) {
+        super.setVisibility(visibility)
     }
 
     private fun setupView() {
@@ -119,13 +161,16 @@ class HorizontalPage : FrameLayout, Observer {
             61 -> R.color.reading_text_color_night
             else -> R.color.reading_operation_text_color_first
         }
-        novel_time.setTextColor(resources.getColor(colorInt))
-        origin_tv.setTextColor(resources.getColor(colorInt))
-        trans_coding_tv.setTextColor(resources.getColor(colorInt))
-        novel_page.setTextColor(resources.getColor(colorInt))
-        novel_chapter.setTextColor(resources.getColor(colorInt))
-        novel_title.setTextColor(resources.getColor(colorInt))
-        tv_loading_progress.setTextColor(resources.getColor(colorInt))
+
+        val textColor = resources.getColor(colorInt)
+
+        novel_time.setTextColor(textColor)
+        origin_tv.setTextColor(textColor)
+        trans_coding_tv.setTextColor(textColor)
+        novel_page.setTextColor(textColor)
+        novel_chapter.setTextColor(textColor)
+        novel_title.setTextColor(textColor)
+        tv_loading_progress.setTextColor(textColor)
         //pageView
         ThemeUtil.getModePrimaryBackground(resources, pageView)
         //电池背景
@@ -134,6 +179,26 @@ class HorizontalPage : FrameLayout, Observer {
         ThemeUtil.getModePrimaryBackground(resources, homePage)
         //进度条
         ThemeUtil.getModePrimaryBackground(resources, loadView)
+    }
+
+    override fun onDetachedFromWindow() {
+        mAdFrameLayout.removeAllViews()
+
+        removeView(homePage)
+        readTop.visibility = View.VISIBLE
+        readBottom.visibility = View.VISIBLE
+
+        mCursorOffset = 0
+        mCursor = null
+        viewState = ReadViewEnums.ViewState.loading
+        viewNotify = ReadViewEnums.NotifyStateState.none
+        pageIndex = 0
+        pageSum = 0
+        contentLength = 0
+        hasAd = false
+        hasBigAd = false
+        mNovelPageBean = null
+        super.onDetachedFromWindow()
     }
 
     /**
@@ -147,7 +212,10 @@ class HorizontalPage : FrameLayout, Observer {
         novel_page.text = pageProgress
     }
 
-    fun setCursor(cursor: ReadCursor) = pageView.setCursor(cursor)
+    fun setCursor(cursor: ReadCursor){
+        setupView()
+        pageView.setCursor(cursor)
+    }
 
     private fun onReSeparate() = DataProvider.getInstance().onReSeparate()
 
@@ -163,6 +231,7 @@ class HorizontalPage : FrameLayout, Observer {
     }
 
     private fun onScreenChange() {
+        mAdFrameLayout.removeAllViews()
         onRedrawPage()
         checkAdBiggerView()
     }
@@ -174,10 +243,14 @@ class HorizontalPage : FrameLayout, Observer {
         if (PlatformSDK.config().getAdSwitch("5-1")) {
             DataProvider.getInstance().loadAd(context, "8-1", ReadConfig.screenWidth, ReadConfig.screenHeight - topMargins.toInt(), object : DataProvider.OnLoadReaderAdCallback {
                 override fun onLoadAd(adView: ViewGroup) {
+                    //已经销毁了
+                    if(mNovelPageBean == null)
+                        return
                     val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
                     val margin = AppUtils.dip2px(context, 10f)
                     param.setMargins(margin, topMargins.toInt(), margin, margin)
-                    addView(adView, param)
+                    mAdFrameLayout.removeAllViews()
+                    mAdFrameLayout.addView(adView, param)
                 }
             })
         }
@@ -193,8 +266,11 @@ class HorizontalPage : FrameLayout, Observer {
             }
             DataProvider.getInstance().loadAd(context, adType, object : DataProvider.OnLoadReaderAdCallback {
                 override fun onLoadAd(adView: ViewGroup) {
+                    //已经销毁了
+                    if(mNovelPageBean == null)
+                        return
                     if (mNovelPageBean!!.adView != null && mNovelPageBean!!.adView!!.parent != null) {
-                        removeView(mNovelPageBean!!.adView)
+                        mAdFrameLayout.removeView(mNovelPageBean!!.adView)
                     } else {
                         mNovelPageBean!!.adView = adView
                         val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
@@ -203,7 +279,7 @@ class HorizontalPage : FrameLayout, Observer {
                         val topMargin = AppUtils.dip2px(context, 40f)
                         val bottomMargin = AppUtils.dip2px(context, 30f)
                         param.setMargins(leftMargin, topMargin, rightMargin, bottomMargin)
-                        addView(mNovelPageBean!!.adView, param)
+                        mAdFrameLayout.addView(mNovelPageBean!!.adView, param)
                     }
                 }
             })
@@ -244,6 +320,9 @@ class HorizontalPage : FrameLayout, Observer {
             loadView.visibility = View.VISIBLE
             viewState = ReadViewEnums.ViewState.loading
             removeView(errorView)
+            post {
+                destroyDrawingCache()
+            }
         })
         errorView.loading_error_setting.visibility = FrameLayout.GONE
         noticePageListener?.pageChangSuccess(mCursor!!, viewNotify)//游标通知回调
@@ -312,6 +391,7 @@ class HorizontalPage : FrameLayout, Observer {
             if (entranceArray.all {it}){
                 runOnMain {
                     setCursor(cursor)
+                    this@HorizontalPage.destroyDrawingCache()
                 }
             }
         }
@@ -426,6 +506,7 @@ class HorizontalPage : FrameLayout, Observer {
             }
         }
 
+
         private var isShowMenu: Boolean = false
 
         override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -450,6 +531,10 @@ class HorizontalPage : FrameLayout, Observer {
                 }
 
                 override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+                    if (isShowMenu) {
+                        noticePageListener?.onClickMenu(false)
+                        isShowMenu = false
+                    }
                     return false
                 }
 

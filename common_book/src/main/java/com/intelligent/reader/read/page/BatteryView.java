@@ -13,9 +13,12 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import net.lzbook.kit.data.bean.ReadConfig;
 
+import java.util.HashSet;
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class BatteryView extends ImageView {
 
-    Paint mPaint;
+    static Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);;
 
     Bitmap mBitmap;
 
@@ -23,15 +26,16 @@ public class BatteryView extends ImageView {
     int mBitmapHeight = 0;
     private int left;
 
-    private int top;
+    private static int top;
 
-    private float percent;
+    private static float percent;
 
-    private float right;
-    private float bottom;
+    private static float right;
+    private static float bottom;
+
+    private static boolean isChecked = false;
 
     private Resources resources;
-    private boolean mAttached;
 
     public BatteryView(Context context) {
         super(context);
@@ -67,40 +71,42 @@ public class BatteryView extends ImageView {
         }
         mPaint.setColor(resources.getColor(color_int));
         canvas.drawRect(left + 1, getPaddingTop() + top + 1, (right - (left + 1)) * percent + (left + 1),
-                getPaddingTop() + bottom, mPaint);
+                getPaddingBottom() + bottom, mPaint);
     }
 
     private void getRect() {
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mBitmap = ((BitmapDrawable) getDrawable()).getBitmap();
-        mBitmapWidth = mBitmap.getWidth();
-        mBitmapHeight = mBitmap.getHeight();
-        for (int i = 0; i < mBitmapWidth; i++) {
-            int color = mBitmap.getPixel(i, mBitmapHeight / 2);
-            if (color == 0) {
-                this.left = i;
-                break;
+        if(!isChecked) {
+            isChecked = true;
+            mBitmap = ((BitmapDrawable) getDrawable()).getBitmap();
+            mBitmapWidth = mBitmap.getWidth();
+            mBitmapHeight = mBitmap.getHeight();
+            for (int i = 0; i < mBitmapWidth; i++) {
+                int color = mBitmap.getPixel(i, mBitmapHeight / 2);
+                if (color == 0) {
+                    this.left = i;
+                    break;
+                }
             }
-        }
-        for (int i = mBitmapWidth - 1; i >= 0; i--) {
-            int color = mBitmap.getPixel(i, mBitmapHeight / 2);
-            if (color == 0) {
-                this.right = i;
-                break;
+            for (int i = mBitmapWidth - 1; i >= 0; i--) {
+                int color = mBitmap.getPixel(i, mBitmapHeight / 2);
+                if (color == 0) {
+                    this.right = i;
+                    break;
+                }
             }
-        }
-        for (int i = 0; i < mBitmapHeight; i++) {
-            int color = mBitmap.getPixel(mBitmapWidth / 2, i);
-            if (color == 0) {
-                this.top = i;
-                break;
+            for (int i = 0; i < mBitmapHeight; i++) {
+                int color = mBitmap.getPixel(mBitmapWidth / 2, i);
+                if (color == 0) {
+                    this.top = i;
+                    break;
+                }
             }
-        }
-        for (int i = mBitmapHeight - 1; i >= 0; i--) {
-            int color = mBitmap.getPixel(mBitmapWidth / 2, i);
-            if (color == 0) {
-                this.bottom = i;
-                break;
+            for (int i = mBitmapHeight - 1; i >= 0; i--) {
+                int color = mBitmap.getPixel(mBitmapWidth / 2, i);
+                if (color == 0) {
+                    this.bottom = i;
+                    break;
+                }
             }
         }
     }
@@ -108,17 +114,21 @@ public class BatteryView extends ImageView {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (!mAttached) {
-            mAttached = true;
+
+        if (mBatInfoReceiver.listeners.isEmpty()) {
             getContext().registerReceiver(mBatInfoReceiver,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         }
+
+        mBatInfoReceiver.listeners.add(this);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (mAttached) {
-            mAttached = false;
+
+        mBatInfoReceiver.listeners.remove(this);
+
+        if(mBatInfoReceiver.listeners.isEmpty()){
             getContext().unregisterReceiver(mBatInfoReceiver);
         }
     }
@@ -126,15 +136,20 @@ public class BatteryView extends ImageView {
     /**
      * 接受电量改变广播
      */
-    private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver() {
+    private static BatteryReceiver mBatInfoReceiver = new BatteryReceiver();
+
+    static class BatteryReceiver extends BroadcastReceiver{
+        public HashSet<BatteryView> listeners = new HashSet<>();
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction() == Intent.ACTION_BATTERY_CHANGED) {
                 float level = intent.getIntExtra("level", 0);
                 float scale = intent.getIntExtra("scale", 100);
                 percent = level / scale;
-                invalidate();
+                for (BatteryView batteryView: listeners) {
+                    batteryView.postInvalidate();
+                }
             }
         }
-    };
+    }
 }

@@ -18,35 +18,49 @@ import java.util.concurrent.TimeUnit
  */
 class TimeTextView : TextView {
 
-    private var period: Long = 30
-
     private var mCalendar = Calendar.getInstance()
 
-    private var timeDispost: Disposable? = null
+    private var isAttach = false
+
+    inner class ChangeTimeRunnable: Runnable {
+        override fun run() {
+            mCalendar.timeInMillis = System.currentTimeMillis()
+            text = DateFormat.format("k:mm", mCalendar)
+            if(isAttach) {
+                postDelayed(changeTimeRunnable, 30000)
+            }
+        }
+    }
+
+    private val changeTimeRunnable = ChangeTimeRunnable()
+
 
     constructor(context: Context) : this(context, null)
 
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr){
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+
+    override fun onAttachedToWindow() {
+        isAttach = true
+        super.onAttachedToWindow()
         init()
     }
 
     fun init (){
         if (mCalendar == null)  mCalendar = Calendar.getInstance()
+        mCalendar.timeInMillis = System.currentTimeMillis()
         text = DateFormat.format("k:mm", mCalendar)
-        timeDispost = Observable.interval(period, TimeUnit.SECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    mCalendar.timeInMillis = System.currentTimeMillis()
-                    text = DateFormat.format("k:mm", mCalendar)
-                }, {e-> e.printStackTrace()})
+
         setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
+
+        postDelayed(changeTimeRunnable, 30000)
     }
 
     override fun onDetachedFromWindow() {
+        isAttach = false
         super.onDetachedFromWindow()
-        timeDispost?.dispose()
+        handler.removeCallbacks(changeTimeRunnable)
     }
+
 }

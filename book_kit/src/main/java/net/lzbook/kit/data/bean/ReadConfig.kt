@@ -10,12 +10,13 @@ import java.util.*
  */
 object ReadConfig :Observable(){
     //动画模式
-    var animation = when (Constants.PAGE_MODE) {
-        1 -> ReadViewEnums.Animation.curl
-        2 -> ReadViewEnums.Animation.shift
-        3 -> ReadViewEnums.Animation.list
-        else -> ReadViewEnums.Animation.slide
-    }
+    val animation:ReadViewEnums.Animation
+        get() =  when (Constants.PAGE_MODE) {
+            1 -> ReadViewEnums.Animation.curl
+            2 -> ReadViewEnums.Animation.shift
+            3 -> ReadViewEnums.Animation.list
+            else -> ReadViewEnums.Animation.slide
+        }
     //屏幕宽度
     var screenWidth: Int = 0
     //屏幕高度
