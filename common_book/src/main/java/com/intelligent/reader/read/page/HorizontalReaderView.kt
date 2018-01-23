@@ -5,20 +5,21 @@ import android.os.Handler
 import android.util.AttributeSet
 import android.view.MotionEvent
 import com.intelligent.reader.R
-import com.intelligent.reader.flip.base.ShadowColor
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.adapter.HorizontalAdapter
 import com.intelligent.reader.read.animation.ShiftTransformer
 import com.intelligent.reader.read.animation.SlideTransformer
-import com.intelligent.reader.read.help.*
+import com.intelligent.reader.read.help.HorizontalEvent
+import com.intelligent.reader.read.help.IReadPageChange
+import com.intelligent.reader.read.help.IReadView
 import com.intelligent.reader.read.mode.ReadCursor
 import com.intelligent.reader.read.mode.ReadState
-import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.view.ViewPager
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.ReadConfig
+import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.utils.AppLog
 
 /**
@@ -92,7 +93,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             setShadowDrawable(R.drawable.page_shadow)
             setShadowWidth(SHADOW_WIDTH)
             setPageTransformer(true, ShiftTransformer())
-        }else{
+        } else {
             setPageTransformer(true, SlideTransformer())
         }
 
@@ -396,7 +397,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                     isCanScroll = 1
                     isLeftSlip = true
                 }
-                ReadViewEnums.ViewState.loading ->  isCanScroll = -1
+                ReadViewEnums.ViewState.loading -> isCanScroll = -1
                 ReadViewEnums.ViewState.error -> isCanScroll = -1
                 else -> isCanScroll = 0
             }
@@ -477,9 +478,9 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 
         return when (isCanScroll) {
             -1 -> {
-                if(event.action == MotionEvent.ACTION_MOVE){
+                if (event.action == MotionEvent.ACTION_MOVE) {
                     true
-                }else {
+                } else {
                     return super.dispatchTouchEvent(event)
                 }
             }
@@ -498,6 +499,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             MotionEvent.ACTION_DOWN//按下
             -> {
                 beforeX = ev.x
+                return super.dispatchTouchEvent(ev)
             }
             MotionEvent.ACTION_MOVE -> {//移动
                 val motionValue = ev.x - beforeX
@@ -512,6 +514,9 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                     }
                 }
                 beforeX = ev.x//手指移动时，再把当前的坐标作为下一次的‘上次坐标’，解决上述问题
+            }
+            MotionEvent.ACTION_UP -> {
+                return super.dispatchTouchEvent(ev)
             }
         }
         return super.onTouchEvent(ev)

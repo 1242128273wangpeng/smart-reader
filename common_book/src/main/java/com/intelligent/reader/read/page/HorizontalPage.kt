@@ -1,8 +1,7 @@
 package com.intelligent.reader.read.page
 
 import android.content.Context
-import android.graphics.*
-import android.text.TextUtils
+import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -18,21 +17,18 @@ import com.intelligent.reader.read.mode.NovelPageBean
 import com.intelligent.reader.read.mode.ReadCursor
 import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.read.util.ReadQueryUtil
-import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.util.ThemeUtil
 import kotlinx.android.synthetic.main.book_home_page_layout.view.*
 import kotlinx.android.synthetic.main.error_page2.view.*
+import kotlinx.android.synthetic.main.loading_page_reading.view.*
 import kotlinx.android.synthetic.main.read_bottom.view.*
 import kotlinx.android.synthetic.main.read_top.view.*
-import kotlinx.android.synthetic.main.loading_page_reading.view.*
-import kotlinx.android.synthetic.qbzsydq.read_option_header.view.*
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.ReadConfig
+import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.runOnMain
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.properties.Delegates
 
 
 /**
@@ -114,18 +110,7 @@ class HorizontalPage : FrameLayout, Observer {
             noticePageListener?.loadTransCoding()
         }
         //设置TextColor
-        var colorInt = when (ReadConfig.MODE) {
-            51 -> R.color.reading_operation_text_color_first
-            52 -> R.color.reading_text_color_second
-            53 -> R.color.reading_text_color_third
-            54 -> R.color.reading_text_color_fourth
-            55 -> R.color.reading_text_color_fifth
-            56 -> R.color.reading_text_color_sixth
-            61 -> R.color.reading_text_color_night
-            else -> R.color.reading_operation_text_color_first
-        }
-
-        val textColor = resources.getColor(colorInt)
+        val textColor = getColor()
 
         novel_time.setTextColor(textColor)
         origin_tv.setTextColor(textColor)
@@ -142,7 +127,21 @@ class HorizontalPage : FrameLayout, Observer {
         ThemeUtil.getModePrimaryBackground(resources, homePage)
         //进度条
         ThemeUtil.getModePrimaryBackground(resources, loadView)
+    }
 
+    private fun getColor():Int{
+        //设置TextColor
+        var colorInt = when (ReadConfig.MODE) {
+            51 -> R.color.reading_operation_text_color_first
+            52 -> R.color.reading_text_color_second
+            53 -> R.color.reading_text_color_third
+            54 -> R.color.reading_text_color_fourth
+            55 -> R.color.reading_text_color_fifth
+            56 -> R.color.reading_text_color_sixth
+            61 -> R.color.reading_text_color_night
+            else -> R.color.reading_operation_text_color_first
+        }
+        return resources.getColor(colorInt)
     }
 
     override fun onDetachedFromWindow() {
@@ -260,10 +259,11 @@ class HorizontalPage : FrameLayout, Observer {
         homePage.slogan_tv.setTextView(2f, context.resources.getString(R.string.slogan))
         homePage.product_name_tv.setTextView(1f, context.resources.getString(R.string.app_name))
         //封面字颜色
-        homePage.book_name_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
-        homePage.book_auth_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
-        homePage.slogan_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
-        homePage.product_name_tv.setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
+        var colorInt = getColor()
+        homePage.book_name_tv.setTextColor(resources.getColor(colorInt))
+        homePage.book_auth_tv.setTextColor(resources.getColor(colorInt))
+        homePage.slogan_tv.setTextColor(resources.getColor(colorInt))
+        homePage.product_name_tv.setTextColor(resources.getColor(colorInt))
         postInvalidate()
         //改变状态
         mCursor!!.sequence = -1
@@ -291,7 +291,7 @@ class HorizontalPage : FrameLayout, Observer {
             }
         })
         errorView.loading_error_setting.visibility = FrameLayout.GONE
-        noticePageListener?.pageChangSuccess(mCursor!!, viewNotify)//游标通知回调
+        noticePageListener?.pageChangSuccess(cursor, viewNotify)//游标通知回调
     }
 
     override fun update(o: Observable, arg: Any) {
@@ -334,6 +334,7 @@ class HorizontalPage : FrameLayout, Observer {
          * 加载3章至内存
          */
         fun entrance(cursor: ReadCursor) {
+            mCursor = cursor
             entranceArray = arrayOf(false, false, false)
             cursor.curBook.sequence = cursor.sequence
             DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
