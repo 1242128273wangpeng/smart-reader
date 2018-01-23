@@ -211,7 +211,7 @@ class AutoReadView : View {
         }
     }
 
-    private var mStartTouchTime = System.currentTimeMillis()
+    private var mStartTouchTime = 0L
 
     private var mStartEventY = 0
 
@@ -219,24 +219,31 @@ class AutoReadView : View {
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
 
+        val tmpY = event.y.toInt()
+        val tmpX = event.x.toInt()
+
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                mStartEventY = event.y.toInt()
-                mStartEventX = event.x.toInt()
+                mStartEventY = tmpY
+                mStartEventX = tmpX
+                if (visibility != INVISIBLE) {
+                    mStartTouchTime = System.currentTimeMillis()
+                }
             }
             MotionEvent.ACTION_CANCEL -> {
                 mStartTouchTime = 0
                 return true
             }
             MotionEvent.ACTION_MOVE -> {
-                if (mInvalidatable) {
-                    mAutoReadHandler.changeReadPosition(event.y.toInt() - mStartEventY)
+                if (tmpY != mStartEventY && mInvalidatable) {
+                    mAutoReadHandler.changeReadPosition(tmpY - mStartEventY)
+                    mStartEventY = tmpY
                 }
                 return true
             }
             MotionEvent.ACTION_UP -> {
                 val touchTime = System.currentTimeMillis() - mStartTouchTime
-                val distance = Math.sqrt(Math.pow((mStartEventX - event.x.toInt()).toDouble(), 2.0) + Math.pow((mStartEventY - event.y.toInt()).toDouble(), 2.0)).toInt()
+                val distance = Math.sqrt(Math.pow((mStartEventX - tmpX).toDouble(), 2.0) + Math.pow((mStartEventY - tmpY).toDouble(), 2.0)).toInt()
                 if (touchTime < 100 && distance < 30 || distance < 10) {
                     onAutoMenu()
                 }
@@ -273,6 +280,12 @@ class AutoReadView : View {
 
         override fun handleMessage(msg: Message?) {
             super.handleMessage(msg)
+
+            if (0L != mStartTouchTime) {
+                postAutoReadTimer()
+                return
+            }
+
             val stepLen = mHeight * mAutoReadSpeed / (10 * autoReadFrequency)
             remainLen += stepLen
             val moveIndex = remainLen.toInt()
@@ -321,6 +334,7 @@ class AutoReadView : View {
 
     fun setAutoReadSpeed(autoReadSpeed: Double) {
         mAutoReadSpeed = autoReadSpeed
+        post { }
     }
 
     interface OnAutoReadViewLoadCallback {

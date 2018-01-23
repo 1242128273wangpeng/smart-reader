@@ -195,6 +195,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
             })
             addView(mAutoReadView, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+            mAutoReadView?.visibility = View.INVISIBLE
         }
     }
 

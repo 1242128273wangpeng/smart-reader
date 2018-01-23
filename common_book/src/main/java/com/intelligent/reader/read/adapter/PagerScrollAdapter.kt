@@ -49,9 +49,9 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
         val LOAD_VIEW_LOADING_STATE = 0
         val LOAD_VIEW_FAIL_STATE = 1
 
-        val HEADER_ITEM_TYPE = 100000
-        val FOOTER_ITEM_TYPE = 200000
-        val AD_ITEM_TYPE = 300000
+        val HEADER_ITEM_TYPE = 1000000
+        val FOOTER_ITEM_TYPE = 2000000
+        val AD_ITEM_TYPE = 3000000
     }
 
     private var loadViewStatus = LOAD_VIEW_LOADING_STATE
@@ -64,8 +64,8 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
 
     init {
         chapterList = CopyOnWriteArrayList()
-        headerViewList = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { sequence = HEADER_ITEM_TYPE }), 0, ArrayList()))
-        footViewList = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { sequence = FOOTER_ITEM_TYPE }), 0, ArrayList()))
+        headerViewList = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { sequence = HEADER_ITEM_TYPE;sequenceType = HEADER_ITEM_TYPE }), 0, ArrayList()))
+        footViewList = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { sequence = FOOTER_ITEM_TYPE;sequenceType = FOOTER_ITEM_TYPE }), 0, ArrayList()))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =

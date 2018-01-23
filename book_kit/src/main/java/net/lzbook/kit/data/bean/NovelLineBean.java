@@ -26,6 +26,8 @@ public class NovelLineBean implements Serializable {
 
     private int sequence;
 
+    private int sequenceType;
+
     private String chapterName;
 
     private boolean lastPage;
@@ -74,7 +76,7 @@ public class NovelLineBean implements Serializable {
     }
 
     private void initDrawIndex(ArrayList<Float> arrLenths) {
-        if (arrLenths == null || arrLenths.isEmpty() || TextUtils.isEmpty(lineContent)){
+        if (arrLenths == null || arrLenths.isEmpty() || TextUtils.isEmpty(lineContent)) {
             return;
         }
         int length = lineContent.length();
@@ -86,7 +88,7 @@ public class NovelLineBean implements Serializable {
         }
         float marg = (ReadConfig.INSTANCE.getMWidth() - lineLength) / charNum;
         float star;
-        if (!mArrLenths.isEmpty()){
+        if (!mArrLenths.isEmpty()) {
             mArrLenths.clear();
         }
         for (int i = 0; i < length; i++) {
@@ -177,6 +179,14 @@ public class NovelLineBean implements Serializable {
 
     public void setLine(List<SelectionChar> line) {
         this.line = line;
+    }
+
+    public int getSequenceType() {
+        return sequenceType;
+    }
+
+    public void setSequenceType(int sequenceType) {
+        this.sequenceType = sequenceType;
     }
 
     @Override
