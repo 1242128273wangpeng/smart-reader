@@ -2,7 +2,6 @@ package com.intelligent.reader.read
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.Color
 import android.text.TextUtils
 import android.view.ViewGroup
 import com.dycm_adsdk.PlatformSDK
@@ -238,32 +237,39 @@ class DataProvider : DisposableAndroidViewModel() {
                         }
                     }
                     mReaderRepository.writeChapterCache(c, false)
-                    chapterMap.put(sequence, c)
-                    ReadState.chapterId = c.chapter_id
-                    chapterSeparate.put(sequence, ReadSeparateHelper.initTextSeparateContent(c.content, c.chapter_name))
-                    //加章末广告
-                    if (isShowAd) {
-                        //                    loadAd()
-                        loadAd(sequence)
+                    if (c.content != "null" && c.content.isNotEmpty()) {
+                        chapterMap.put(sequence, c)
+                        ReadState.chapterId = c.chapter_id
+                        chapterSeparate.put(sequence, ReadSeparateHelper.initTextSeparateContent(c.content, c.chapter_name))
+                        //加章末广告
+                        if (isShowAd) {
+                            //                    loadAd()
+                            loadAd(sequence)
+                        }
+                        mReadDataListener.loadDataSuccess(c, type)
+                    }else {
+                        mReadDataListener.loadDataError("章节内容为空")
                     }
-                    mReadDataListener.loadDataSuccess(c, type)
                 }, { throwable ->
                     mReadDataListener.loadDataError(throwable.message.toString())
                 }))
     }
 
     private fun loadAd(sequence: Int) {
-        val arrayList = chapterSeparate[sequence]
-        if ((arrayList != null) and (!arrayList!!.last().isAd)) {
-            val offset = arrayList.last().offset + arrayList.last().lines.sumBy { it.lineContent.length } + 1
-            arrayList.add(NovelPageBean(arrayListOf(), offset, arrayListOf()).apply { isAd = true})
-        }
-        if (arrayList.size >= 16) {
-            val offset2 = arrayList[7].offset + arrayList[7].lines.sumBy { it.lineContent.length } + 1
-            arrayList.add(8, NovelPageBean(arrayListOf(), offset2, arrayListOf()).apply { isAd = true;})
-            for (i in 9 until arrayList.size - 1) {
-                //其他页offset向后偏移 1 length
-                arrayList[i].offset = arrayList[i - 1].offset + 1
+        var isShowAd = PlatformSDK.config().getAdSwitch("5-1") and PlatformSDK.config().getAdSwitch("5-2") and PlatformSDK.config().getAdSwitch("6-1") and PlatformSDK.config().getAdSwitch("6-2")
+        if(isShowAd){
+            val arrayList = chapterSeparate[sequence]
+            if ((arrayList != null) and (!arrayList!!.last().isAd)) {
+                val offset = arrayList.last().offset + arrayList.last().lines.sumBy { it.lineContent.length } + 1
+                arrayList.add(NovelPageBean(arrayListOf(), offset, arrayListOf()).apply { isAd = true})
+            }
+            if (arrayList.size >= 16) {
+                val offset2 = arrayList[7].offset + arrayList[7].lines.sumBy { it.lineContent.length } + 1
+                arrayList.add(8, NovelPageBean(arrayListOf(), offset2, arrayListOf()).apply { isAd = true;})
+                for (i in 9 until arrayList.size - 1) {
+                    //其他页offset向后偏移 1 length
+                    arrayList[i].offset = arrayList[i - 1].offset + 1
+                }
             }
         }
     }

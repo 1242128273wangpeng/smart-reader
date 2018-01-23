@@ -1,5 +1,8 @@
 package net.lzbook.kit.data.bean;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -13,6 +16,7 @@ public class Chapter implements Serializable {
     //是否自动切源
     public int flag;
     //章节名称列表
+
     public ArrayList<NovelLineBean> chapterNameList;
 
     //升级后使用的字段
@@ -61,6 +65,9 @@ public class Chapter implements Serializable {
     public String chapter_id;
     public String book_source_id;
     public String chapter_status;
+
+    public Chapter() {
+    }
 
     public boolean equals(Object object) {
         if (this == object) return true;

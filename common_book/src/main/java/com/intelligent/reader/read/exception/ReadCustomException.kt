@@ -6,4 +6,5 @@ package com.intelligent.reader.read.exception
 class ReadCustomException{
     open class PageIndexException(msg: String) : Exception(msg)
     open class PageOffsetException(msg: String) : Exception(msg)
+    open class PageContentException(msg: String) : Exception(msg)
 }

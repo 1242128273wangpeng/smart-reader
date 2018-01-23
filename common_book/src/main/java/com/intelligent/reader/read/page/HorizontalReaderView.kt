@@ -9,15 +9,17 @@ import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.adapter.HorizontalAdapter
 import com.intelligent.reader.read.animation.ShiftTransformer
 import com.intelligent.reader.read.animation.SlideTransformer
-import com.intelligent.reader.read.help.*
+import com.intelligent.reader.read.help.HorizontalEvent
+import com.intelligent.reader.read.help.IReadPageChange
+import com.intelligent.reader.read.help.IReadView
 import com.intelligent.reader.read.mode.ReadCursor
 import com.intelligent.reader.read.mode.ReadState
-import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.view.ViewPager
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.ReadConfig
+import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.utils.AppLog
 
 /**
@@ -25,6 +27,8 @@ import net.lzbook.kit.utils.AppLog
  * Created by wt on 2017/12/2.
  */
 class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageListener {
+
+    private val SHADOW_WIDTH = 30
 
     //记录上一次滑动x坐标
     private var beforeX: Float = 0.toFloat()
@@ -73,6 +77,9 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                 }
             }
             index = position
+
+
+            isClickable = true
         }
     }
 
@@ -82,12 +89,12 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
 
-        if (ReadConfig.animation == ReadViewEnums.Animation.shift
-                || ReadConfig.animation == ReadViewEnums.Animation.curl) {
-
+        if (ReadConfig.animation == ReadViewEnums.Animation.slide) {
             setShadowDrawable(R.drawable.page_shadow)
-            setShadowWidth(40)
+            setShadowWidth(SHADOW_WIDTH)
             setPageTransformer(true, ShiftTransformer())
+        } else {
+            setPageTransformer(true, SlideTransformer())
         }
 
 
@@ -195,6 +202,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                 }
             }
             it.onNext("")
+            it.onComplete()
         }).subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io()).subscribe()
         DataProvider.getInstance().addDisposable(threadObserve)
@@ -389,6 +397,8 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                     isCanScroll = 1
                     isLeftSlip = true
                 }
+                ReadViewEnums.ViewState.loading -> isCanScroll = -1
+                ReadViewEnums.ViewState.error -> isCanScroll = -1
                 else -> isCanScroll = 0
             }
         }
@@ -419,14 +429,14 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                 (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState = ReadViewEnums.ViewState.loading
                 curCursor = ReadCursor(it, sequence, offset, ReadViewEnums.PageIndex.current)
                 checkViewState("Cur", ReadViewEnums.NotifyStateState.all)
-            }, 200)
+            }, 500)
         }
     }
 
     override fun onAnimationChange(animation: ReadViewEnums.Animation) {
-        if (ReadConfig.animation == ReadViewEnums.Animation.shift) {
+        if (ReadConfig.animation == ReadViewEnums.Animation.slide) {
             setShadowDrawable(R.drawable.page_shadow)
-            setShadowWidth(40)
+            setShadowWidth(SHADOW_WIDTH)
             setPageTransformer(true, ShiftTransformer())
         } else {
             setShadowDrawable(null)
@@ -460,8 +470,20 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+
+//        if(!mScroller.isFinished) {
+//            mScroller.abortAnimation()
+//            return false
+//        }
+
         return when (isCanScroll) {
-            -1 -> true
+            -1 -> {
+                if (event.action == MotionEvent.ACTION_MOVE) {
+                    true
+                } else {
+                    return super.dispatchTouchEvent(event)
+                }
+            }
             0 -> {
                 return super.dispatchTouchEvent(event)
             }
@@ -477,6 +499,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             MotionEvent.ACTION_DOWN//按下
             -> {
                 beforeX = ev.x
+                return super.dispatchTouchEvent(ev)
             }
             MotionEvent.ACTION_MOVE -> {//移动
                 val motionValue = ev.x - beforeX
@@ -491,6 +514,9 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                     }
                 }
                 beforeX = ev.x//手指移动时，再把当前的坐标作为下一次的‘上次坐标’，解决上述问题
+            }
+            MotionEvent.ACTION_UP -> {
+                return super.dispatchTouchEvent(ev)
             }
         }
         return super.onTouchEvent(ev)

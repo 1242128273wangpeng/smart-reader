@@ -13,11 +13,13 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
-import android.os.SystemClock
 import android.preference.PreferenceManager
 import android.provider.Settings
 import android.support.v4.content.LocalBroadcastManager
 import android.text.TextUtils
+import android.view.InflateException
+import android.view.KeyEvent
+import android.view.View
 import android.text.format.DateFormat
 import android.view.*
 import android.widget.*
@@ -38,7 +40,10 @@ import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.read.help.CallBack
 import com.intelligent.reader.read.help.NovelHelper
 import com.intelligent.reader.read.mode.ReadState
-import com.intelligent.reader.read.page.*
+import com.intelligent.reader.read.page.AutoReadMenu
+import com.intelligent.reader.read.page.PageInterface
+import com.intelligent.reader.read.page.PageView
+import com.intelligent.reader.read.page.ReadOptionHeader
 import com.intelligent.reader.reader.ReaderOwnRepository
 import com.intelligent.reader.reader.ReaderRepositoryFactory
 import com.intelligent.reader.reader.ReaderViewModel
@@ -749,7 +754,6 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         ReadConfig.screenScaledDensity = dm.scaledDensity
         // 保存字体、亮度、阅读模式
         modeSp = readReference?.get()?.getSharedPreferences("config", Context.MODE_PRIVATE)
-        modeSp = readReference?.get()?.getSharedPreferences("config", Context.MODE_PRIVATE)
         // 设置字体
         if (sp?.contains("novel_font_size")!!) {
             ReadConfig.FONT_SIZE = sp?.getInt("novel_font_size", 18) ?: 18
@@ -1212,20 +1216,22 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
      * 显示隐藏菜单
      */
     fun showMenu(isShow: Boolean) {
-        clearOtherPanel()
-        if (isShow) {
-            full(false)
-            changeMarkState()
-            mReadOptionPresenter?.view?.show(true)
+        if(readStatus!!.isMenuShow != isShow) {
+            clearOtherPanel()
+            if (isShow) {
+                full(false)
+                changeMarkState()
+                mReadOptionPresenter?.view?.show(true)
 //            view?.showSetMenu(isShow)
-            readStatus!!.isMenuShow = true
-            view?.initSettingGuide()
-        } else {
-            full(true)
-            readStatus!!.isMenuShow = false
-            mReadOptionPresenter!!.view!!.show(false)
+                readStatus!!.isMenuShow = true
+                view?.initSettingGuide()
+            } else {
+                full(true)
+                readStatus!!.isMenuShow = false
+                mReadOptionPresenter!!.view!!.show(false)
 //            view?.showSetMenu(isShow)
-            readStatus!!.isMenuShow = false
+                readStatus!!.isMenuShow = false
+            }
         }
     }
 
@@ -1390,7 +1396,10 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             return false
         }
         // 显示菜单
-        showMenu(false)
+        if (readStatus != null && readStatus!!.isMenuShow) {
+            showMenu(false)
+            return true
+        }
 
         if (mBookDaoHelper != null && readStatus != null) {
             isSubed = mBookDaoHelper!!.isBookSubed(readStatus!!.book_id)
@@ -2115,7 +2124,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 
     fun startRestInterval() {
         if (intervalDispost == null) {
-            intervalDispost = Observable.interval(30, TimeUnit.MINUTES)
+            intervalDispost = Observable.interval(PlatformSDK.config().switch_sec.toLong(), TimeUnit.MINUTES)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
@@ -2129,7 +2138,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 
     fun startRestTimer() {
         if (timeDispost == null) {
-            timeDispost = Observable.timer(1, TimeUnit.MINUTES)
+            timeDispost = Observable.timer(PlatformSDK.config().restAd_sec.toLong(), TimeUnit.MINUTES)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
@@ -2144,33 +2153,33 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     var mDialog: MyDialog? = null
 
     fun restAd() {
-        mDialog = MyDialog(readReference?.get(), R.layout.reading_resttime, Gravity.CENTER, false)
-        mDialog?.let {
-            val rest_ad = it.findViewById(R.id.rest_ad) as RelativeLayout//容器
-            it.findViewById(R.id.iv_close).setOnClickListener { mDialog?.dismiss() }
-            //广告 3-1
-            PlatformSDK.adapp().dycmNativeAd(mDialog?.context, "3-1", rest_ad, object : AbstractCallback() {
-                override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
-                    super.onResult(adswitch, views, jsonResult)
-                    if (!adswitch) return
-                    try {
-                        val jsonObject = JSONObject(jsonResult)
-                        if (jsonObject.has("state_code")) {
-                            when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                                ResultCode.AD_REQ_SUCCESS -> {
+        PlatformSDK.adapp().dycmNativeAd(readReference?.get(), "3-1", null, object : AbstractCallback() {
+            override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
+                super.onResult(adswitch, views, jsonResult)
+                if (!adswitch) return
+                try {
+                    val jsonObject = JSONObject(jsonResult)
+                    if (jsonObject.has("state_code")) {
+                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+                            ResultCode.AD_REQ_SUCCESS -> {
+                                mDialog = MyDialog(readReference?.get(), R.layout.reading_resttime, Gravity.CENTER, false)
+                                mDialog?.let {
+                                    val rest_ad = it.findViewById(R.id.rest_ad) as RelativeLayout//容器
+                                    it.findViewById(R.id.iv_close).setOnClickListener { mDialog?.dismiss() }
+                                    //广告 3-1
                                     rest_ad.addView(views?.get(0))
                                     rest_ad.postInvalidate()
-                                }
-                                ResultCode.AD_REQ_FAILED -> {
+                                    mDialog?.show()
                                 }
                             }
+                            ResultCode.AD_REQ_FAILED -> {
+                            }
                         }
-                    } catch (e: JSONException) {
-                        e.printStackTrace()
                     }
+                } catch (e: JSONException) {
+                    e.printStackTrace()
                 }
-            })
-            mDialog?.show()
-        }
+            }
+        })
     }
 }

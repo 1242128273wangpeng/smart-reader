@@ -262,41 +262,45 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     }
 
     fun showMenu() {
-        read_setting_reduce_text!!.isEnabled = ReadConfig.FONT_SIZE > 10
-        read_setting_increase_text!!.isEnabled = ReadConfig.FONT_SIZE < 30
-        novel_bottom_options.visibility = View.VISIBLE
-        novel_bottom_options.startAnimation(popUpInAnimation)
+        if (!mIsChecked) {
+            read_setting_reduce_text!!.isEnabled = ReadConfig.FONT_SIZE > 10
+            read_setting_increase_text!!.isEnabled = ReadConfig.FONT_SIZE < 30
+            novel_bottom_options.visibility = View.VISIBLE
+            novel_bottom_options.startAnimation(popUpInAnimation)
 
-        refreshJumpPreBtnState()
-        novel_jump_progress.max = ReadState.chapterList.size -1
-        if (novel_jump_layout != null) {
-            if (ReadState.chapterList.size < 1 || ReadState.sequence < 1) {
-                novel_jump_progress!!.progress = 0
-            } else {
-                novel_jump_progress!!.progress = ReadState.sequence
+            refreshJumpPreBtnState()
+            novel_jump_progress.max = ReadState.chapterList.size - 1
+            if (novel_jump_layout != null) {
+                if (ReadState.chapterList.size < 1 || ReadState.sequence < 1) {
+                    novel_jump_progress!!.progress = 0
+                } else {
+                    novel_jump_progress!!.progress = ReadState.sequence
+                }
+                showChapterProgress()
             }
-            showChapterProgress()
-        }
 
-        if (themeHelper!!.isNight) {
-            txt_night.text = "白天"
-            ibtn_night.setImageResource(R.drawable.read_option_day_selector)
-        } else {
-            txt_night.text = "夜间"
-            ibtn_night.setImageResource(R.drawable.read_option_night_selector)
+            if (themeHelper!!.isNight) {
+                txt_night.text = "白天"
+                ibtn_night.setImageResource(R.drawable.read_option_day_selector)
+            } else {
+                txt_night.text = "夜间"
+                ibtn_night.setImageResource(R.drawable.read_option_night_selector)
+            }
+            mIsChecked = true
         }
-        mIsChecked = true
     }
 
     fun dismissMenu() {
-        if (novel_bottom_options != null && novel_bottom_options!!.isShown) {
-            novel_bottom_options!!.startAnimation(popDownOutAnimation)
+        if (mIsChecked) {
+            if (novel_bottom_options != null && novel_bottom_options!!.isShown) {
+                novel_bottom_options!!.startAnimation(popDownOutAnimation)
+            }
+            popDownOutAnimation?.onEnd {
+                novel_bottom_options!!.visibility = View.GONE
+            }
+            read_setting_detail!!.visibility = View.GONE
+            mIsChecked = false
         }
-        popDownOutAnimation?.onEnd {
-            novel_bottom_options!!.visibility = View.GONE
-        }
-        read_setting_detail!!.visibility = View.GONE
-        mIsChecked = false
     }
 
     private fun showChapterProgress() {
@@ -906,10 +910,10 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 if (progress == 0) {
                     novel_hint_chapter.text = ReadState.chapterList[progress].chapter_name
                     novel_hint_sequence.text = progress.plus(1).toString() + "/" + ReadState.chapterList.size
-                } else if(progress == ReadState.chapterList.size-1){
+                } else if (progress == ReadState.chapterList.size - 1) {
                     novel_hint_chapter.text = ReadState.chapterList[ReadState.chapterList.size - 1].chapter_name
                     novel_hint_sequence.text = ReadState.chapterList.size.toString() + "/" + ReadState.chapterList.size
-                } else{
+                } else {
                     novel_hint_chapter.text = ReadState.chapterList[progress - 1].chapter_name
                     novel_hint_sequence.text = progress.toString() + "/" + ReadState.chapterList.size
                 }
@@ -959,12 +963,12 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         val numFormat = NumberFormat.getNumberInstance()
         numFormat.maximumFractionDigits = 2
         if (seekBar.id == R.id.novel_jump_progress) {
-            if (readStatus!!.novel_progress == readStatus!!.sequence) {// 本章不跳
+            if (seekBar.progress == ReadState.sequence) {// 本章不跳
                 return
             }
-            var resizeProgress = when(seekBar.progress) {
-                0  -> 0
-                ReadState.chapterList.size-1 -> ReadState.chapterList.size -1
+            var resizeProgress = when (seekBar.progress) {
+                0 -> 0
+                ReadState.chapterList.size - 1 -> ReadState.chapterList.size - 1
                 else -> seekBar.progress - 1
             }
             AppLog.e("progress2", resizeProgress.toString())
