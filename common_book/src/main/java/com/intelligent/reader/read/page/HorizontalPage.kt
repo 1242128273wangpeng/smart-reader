@@ -2,6 +2,7 @@ package com.intelligent.reader.read.page
 
 import android.content.Context
 import android.graphics.*
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -343,9 +344,9 @@ class HorizontalPage : FrameLayout, Observer {
         private fun preDrawPage(cursor: ReadCursor, chapter: Chapter) {
             //获取数据
             ReadState.chapterName = chapter.chapter_name
-            val chapterList = DataProvider.getInstance().chapterSeparate[cursor.sequence]!!
+            val chapterList = DataProvider.getInstance().chapterSeparate[cursor.sequence]
             try {
-                pageIndex = ReadQueryUtil.findPageIndexByOffset(cursor.offset, chapterList)
+                pageIndex = ReadQueryUtil.findPageIndexByOffset(cursor.offset, chapterList!!)
             } catch (e: ReadCustomException.PageIndexException) {
                 showErrorView(mCursor!!)
                 return
@@ -368,6 +369,9 @@ class HorizontalPage : FrameLayout, Observer {
                 } else {
                     try {
                         mNovelPageBean = ReadQueryUtil.findNovelPageBeanByOffset(cursor.offset, chapterList)
+//                        if (mNovelPageBean.) {
+//                            throw ReadCustomException.PageContentException("内容为空")
+//                        }
                     } catch (e: ReadCustomException.PageOffsetException) {
                         showErrorView(mCursor!!)
                         return

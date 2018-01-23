@@ -419,7 +419,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                 (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState = ReadViewEnums.ViewState.loading
                 curCursor = ReadCursor(it, sequence, offset, ReadViewEnums.PageIndex.current)
                 checkViewState("Cur", ReadViewEnums.NotifyStateState.all)
-            }, 200)
+            }, 500)
         }
     }
 

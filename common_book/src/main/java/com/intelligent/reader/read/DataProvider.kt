@@ -237,15 +237,19 @@ class DataProvider : DisposableAndroidViewModel() {
                         }
                     }
                     mReaderRepository.writeChapterCache(c, false)
-                    chapterMap.put(sequence, c)
-                    ReadState.chapterId = c.chapter_id
-                    chapterSeparate.put(sequence, ReadSeparateHelper.initTextSeparateContent(c.content, c.chapter_name))
-                    //加章末广告
-                    if (isShowAd) {
-                        //                    loadAd()
-                        loadAd(sequence)
+                    if (c.content.isNotEmpty()) {
+                        chapterMap.put(sequence, c)
+                        ReadState.chapterId = c.chapter_id
+                        chapterSeparate.put(sequence, ReadSeparateHelper.initTextSeparateContent(c.content, c.chapter_name))
+                        //加章末广告
+                        if (isShowAd) {
+                            //                    loadAd()
+                            loadAd(sequence)
+                        }
+                        mReadDataListener.loadDataSuccess(c, type)
+                    }else {
+                        mReadDataListener.loadDataError("章节内容为空")
                     }
-                    mReadDataListener.loadDataSuccess(c, type)
                 }, { throwable ->
                     mReadDataListener.loadDataError(throwable.message.toString())
                 }))
