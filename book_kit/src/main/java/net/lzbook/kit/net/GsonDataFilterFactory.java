@@ -45,22 +45,18 @@ public class GsonDataFilterFactory extends Converter.Factory {
     @Nullable
     @Override
     public Converter<Response, ?> responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
-        TypeAdapter<?> adapter = gson.getAdapter(TypeToken.get(type));
         //List<Chapter>
         Type listChapterType = Types.newParameterizedType(List.class, Chapter.class);
-        //请求之后返回的结构什么都不返回
-        Type stringNoneInfo = Types.newParameterizedType(NoBodyEntity.class, NoBodyEntity.class);
-        //List<Chapter>
-        Type chapterContent = Types.newParameterizedType(Chapter.class);
+
         //SourceItem
-        if (listChapterType.equals(type)) {
-            return new BookResponeBodyCoverter<>(gson, adapter);
+        if (listChapterType.equals(type) || type.toString().equals(listChapterType.toString())) {
+            return new BookResponeBodyCoverter<>();
         } else if (SourceItem.class.equals(type)) {
             return new BookSourceBodyConverter();
         } else if (NoBodyEntity.class.equals(type)) {
-            return new NoneResponceBodyCoverter<>(gson, adapter);
+            return new NoneResponceBodyCoverter<>();
         } else if (Chapter.class.equals(type)) {
-            return new ChapterContentResponeBodyCoverter(gson, adapter);
+            return new ChapterContentResponeBodyCoverter();
         }
         return null;
     }

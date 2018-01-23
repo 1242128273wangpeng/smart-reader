@@ -16,13 +16,6 @@ import retrofit2.Converter;
 
 public class NoneResponceBodyCoverter<T> implements Converter<Response, NoBodyEntity> {
 
-    private Gson gson;
-    private TypeAdapter<T> adapter;
-
-    NoneResponceBodyCoverter(Gson gson, TypeAdapter<T> adapter) {
-        this.gson = gson;
-        this.adapter = adapter;
-    }
 
     @Override
     public NoBodyEntity convert(Response value) throws IOException {

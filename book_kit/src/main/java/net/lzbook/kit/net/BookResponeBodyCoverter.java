@@ -21,14 +21,6 @@ import retrofit2.Converter;
 
 public class BookResponeBodyCoverter<T> implements Converter<Response, List<Chapter>> {
 
-    private final Gson gson;
-    private TypeAdapter<T> adapter;
-
-    BookResponeBodyCoverter(Gson gson, TypeAdapter<T> adapter) {
-        this.gson = gson;
-        this.adapter = adapter;
-    }
-
     @Override
     public List<Chapter> convert(Response value) throws IOException {
         RequestItem tag = (RequestItem) value.request().tag();

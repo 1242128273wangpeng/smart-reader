@@ -259,11 +259,11 @@ class HorizontalPage : FrameLayout, Observer {
         homePage.slogan_tv.setTextView(2f, context.resources.getString(R.string.slogan))
         homePage.product_name_tv.setTextView(1f, context.resources.getString(R.string.app_name))
         //封面字颜色
-        var colorInt = getColor()
-        homePage.book_name_tv.setTextColor(resources.getColor(colorInt))
-        homePage.book_auth_tv.setTextColor(resources.getColor(colorInt))
-        homePage.slogan_tv.setTextColor(resources.getColor(colorInt))
-        homePage.product_name_tv.setTextColor(resources.getColor(colorInt))
+        var color = getColor()
+        homePage.book_name_tv.setTextColor(color)
+        homePage.book_auth_tv.setTextColor(color)
+        homePage.slogan_tv.setTextColor(color)
+        homePage.product_name_tv.setTextColor(color)
         postInvalidate()
         //改变状态
         mCursor!!.sequence = -1

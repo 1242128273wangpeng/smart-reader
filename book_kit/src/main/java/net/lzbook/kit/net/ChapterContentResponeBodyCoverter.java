@@ -22,14 +22,6 @@ import retrofit2.Converter;
 
 public class ChapterContentResponeBodyCoverter implements Converter<Response, Chapter> {
 
-    private final Gson gson;
-    private TypeAdapter adapter;
-
-    ChapterContentResponeBodyCoverter(Gson gson, TypeAdapter adapter) {
-        this.gson = gson;
-        this.adapter = adapter;
-    }
-
     @Override
     public Chapter convert(Response value) throws IOException {
         Chapter chapter = (Chapter) value.request().tag();
