@@ -279,7 +279,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
                 }
             }
 
-            val chapter = DataProvider.getInstance().chapterMap[ReadState.sequence]
+            val chapter = DataProvider.getInstance().chapterLruCache[ReadState.sequence].chapter
             if (chapter == null || DataProvider.getInstance().findCurrentPageNovelLineBean().isEmpty()) {
                 return 0
             }

@@ -170,6 +170,7 @@ class HorizontalPage : FrameLayout, Observer {
     private fun onReSeparate() = DataProvider.getInstance().onReSeparate()
 
     fun onRedrawPage() {
+        mAdFrameLayout.removeAllViews()
         if (tag == ReadViewEnums.PageIndex.current) {
             onReSeparate()
             viewNotify = when (mCursor!!.sequence) {
@@ -364,8 +365,9 @@ class HorizontalPage : FrameLayout, Observer {
                 return
             }
             //判断item 需要的章节是否在缓存
-            val chapter = DataProvider.getInstance().chapterMap[cursor.sequence]
-            if (chapter != null) {//加载数据
+            val novelChapter = DataProvider.getInstance().chapterLruCache[cursor.sequence]
+            if (novelChapter != null) {//加载数据
+                val chapter = novelChapter.chapter
                 preDrawPage(cursor, chapter)
             } else {//无缓存数据
                 entrance(cursor)
@@ -378,10 +380,10 @@ class HorizontalPage : FrameLayout, Observer {
         private fun preDrawPage(cursor: ReadCursor, chapter: Chapter) {
             //获取数据
             ReadState.chapterName = chapter.chapter_name
-            val chapterList = DataProvider.getInstance().chapterSeparate[cursor.sequence]
+            val chapterList = DataProvider.getInstance().chapterLruCache[cursor.sequence].separateList
             try {
-                pageIndex = ReadQueryUtil.findPageIndexByOffset(cursor.offset, chapterList!!)
-            } catch (e: ReadCustomException.PageIndexException) {
+                pageIndex = ReadQueryUtil.findPageIndexByOffset(cursor.offset, chapterList)
+            } catch (e: Exception) {
                 showErrorView(mCursor!!)
                 return
             }
