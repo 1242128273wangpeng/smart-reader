@@ -101,7 +101,7 @@ class DataProvider : DisposableAndroidViewModel() {
         }
     }
 
-     fun loadAd(context: Context, type: String, callback: OnLoadReaderAdCallback) {
+    fun loadAd(context: Context, type: String, callback: OnLoadReaderAdCallback) {
 
         var adViewHeight = 800
 
@@ -161,23 +161,79 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     /**
-     * 获取段末广告 8-1
+     * 获取段末广告 6-3
      */
     fun loadChapterLastPageAd(context: Context, callback: OnLoadReaderAdCallback) {
-        loadAd(context, AdMarkPostion.READING_MIDDLE_POSITION, callback)
+        // 上下滑动模式，横屏无段末广告
+        if (ReadConfig.IS_LANDSCAPE) return
+//        loadAd(context, AdMarkPostion.LANDSCAPE_SLIDEUP_POPUPAD, callback)
+
+        PlatformSDK.adapp().dycmNativeAd(context, AdMarkPostion.LANDSCAPE_SLIDEUP_POPUPAD, 600, 1080, object : AbstractCallback() {
+            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
+                super.onResult(adswitch, views, jsonResult)
+                if (!adswitch) {
+                    return
+                }
+                try {
+                    val jsonObject = JSONObject(jsonResult)
+                    if (jsonObject.has("state_code")) {
+                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+                            ResultCode.AD_REQ_SUCCESS
+                            -> {
+                                callback.onLoadAd(views[0])
+                            }
+                            else -> {
+                            }
+                        }
+                    }
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+            }
+        })
     }
 
     /**
-     * 获取章节间广告 5-1
+     * 获取章节间广告 5-3 6-3
      */
     fun loadChapterBetweenAd(context: Context, callback: OnLoadReaderAdCallback) {
         val adTyep: String
+        val AdHeight: Int
+        val AdWidth: Int
         if (ReadConfig.IS_LANDSCAPE) {
-            adTyep = AdMarkPostion.SUPPLY_READING_SPACE
+            adTyep = AdMarkPostion.LANDSCAPE_SLIDEUP_POPUPAD
+            AdHeight = 1280
+            AdWidth = 1920
         } else {
-            adTyep = AdMarkPostion.READING_POSITION
+            adTyep = AdMarkPostion.SLIDEUP_POPUPAD_POSITION
+            AdHeight = 1920
+            AdWidth = 1280
         }
-        loadAd(context, adTyep, callback)
+//        loadAd(context, adTyep, callback)
+
+        PlatformSDK.adapp().dycmNativeAd(context, adTyep, AdHeight, AdWidth, object : AbstractCallback() {
+            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
+                super.onResult(adswitch, views, jsonResult)
+                if (!adswitch) {
+                    return
+                }
+                try {
+                    val jsonObject = JSONObject(jsonResult)
+                    if (jsonObject.has("state_code")) {
+                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+                            ResultCode.AD_REQ_SUCCESS
+                            -> {
+                                callback.onLoadAd(views[0])
+                            }
+                            else -> {
+                            }
+                        }
+                    }
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+            }
+        })
     }
 
     /**
@@ -247,7 +303,7 @@ class DataProvider : DisposableAndroidViewModel() {
                             loadAd(sequence)
                         }
                         mReadDataListener.loadDataSuccess(c, type)
-                    }else {
+                    } else {
                         mReadDataListener.loadDataError("章节内容为空")
                     }
                 }, { throwable ->
@@ -257,15 +313,15 @@ class DataProvider : DisposableAndroidViewModel() {
 
     private fun loadAd(sequence: Int) {
         var isShowAd = PlatformSDK.config().getAdSwitch("5-1") and PlatformSDK.config().getAdSwitch("5-2") and PlatformSDK.config().getAdSwitch("6-1") and PlatformSDK.config().getAdSwitch("6-2")
-        if(isShowAd){
+        if (isShowAd) {
             val arrayList = chapterSeparate[sequence]
             if ((arrayList != null) and (!arrayList!!.last().isAd)) {
                 val offset = arrayList.last().offset + arrayList.last().lines.sumBy { it.lineContent.length } + 1
-                arrayList.add(NovelPageBean(arrayListOf(), offset, arrayListOf()).apply { isAd = true})
+                arrayList.add(NovelPageBean(arrayListOf(), offset, arrayListOf()).apply { isAd = true })
             }
             if (arrayList.size >= 16) {
                 val offset2 = arrayList[7].offset + arrayList[7].lines.sumBy { it.lineContent.length } + 1
-                arrayList.add(8, NovelPageBean(arrayListOf(), offset2, arrayListOf()).apply { isAd = true;})
+                arrayList.add(8, NovelPageBean(arrayListOf(), offset2, arrayListOf()).apply { isAd = true; })
                 for (i in 9 until arrayList.size - 1) {
                     //其他页offset向后偏移 1 length
                     arrayList[i].offset = arrayList[i - 1].offset + 1
@@ -307,7 +363,7 @@ class DataProvider : DisposableAndroidViewModel() {
         }
     }
 
-    fun findCurrentPageNovelLineBean():List<NovelLineBean>{
+    fun findCurrentPageNovelLineBean(): List<NovelLineBean> {
         var currentNovelLineBean = arrayListOf<NovelLineBean>()
         var mNovelPageBean = chapterSeparate[ReadState.sequence]
         if (mNovelPageBean != null) {
@@ -315,6 +371,8 @@ class DataProvider : DisposableAndroidViewModel() {
         }
         return currentNovelLineBean
     }
+
+    abstract class OnLoadAdViewCallback(val loadAdBySequence: Int) : OnLoadReaderAdCallback
 
     interface OnLoadReaderAdCallback {
         fun onLoadAd(adView: ViewGroup)

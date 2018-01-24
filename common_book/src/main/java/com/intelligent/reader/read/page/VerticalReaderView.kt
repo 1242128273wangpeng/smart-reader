@@ -156,6 +156,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 }
             }
         }
+        Log.d("Vertical", "loadPreChapter sequence: " + sequence)
     }
 
     /**
@@ -224,8 +225,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 val preChapterContent = ReadSeparateHelper.initTextSeparateContent(chapter.content, chapter.chapter_name)
                 setChapterPagePosition(chapter.sequence, chapter.chapter_name, preChapterContent)
                 loadAdViewToChapterLastPage(preChapterContent)
-                val scrollIndex = mAdapter.addPreChapter(preChapterContent)
-//                loadAdViewToChapterBetween(preChapterContent, ReadViewEnums.PageIndex.previous)
+                val scrollIndex = mAdapter.addPreChapter(chapter.sequence, preChapterContent)
                 loadAdViewToChapterBetween(chapter.sequence, ReadViewEnums.PageIndex.previous)
                 // 加载上一章的操作是否来自加载视图，防止加载数据时列表视图往上跳转
                 val firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition()
@@ -258,8 +258,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 mOriginDataList.addAll(currentChapterContent)
                 setChapterPagePosition(chapter.sequence, chapter.chapter_name, mOriginDataList)
                 loadAdViewToChapterLastPage(mOriginDataList)
-                mAdapter.setChapter(mOriginDataList)
-//                loadAdViewToChapterBetween(currentChapterContent, ReadViewEnums.PageIndex.current)
+                mAdapter.setChapter(chapter.sequence, mOriginDataList)
                 loadAdViewToChapterBetween(chapter.sequence, ReadViewEnums.PageIndex.current)
                 addBookHomePage(chapter)
                 if (ReadState.sequence == 0 && ReadState.currentPage == 1) {
@@ -294,9 +293,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 val nextChapterContent = ReadSeparateHelper.initTextSeparateContent(chapter.content, chapter.chapter_name)
                 setChapterPagePosition(chapter.sequence, chapter.chapter_name, nextChapterContent)
                 loadAdViewToChapterLastPage(nextChapterContent)
-                mAdapter.addNextChapter(nextChapterContent)
-
-                // nextChapterContent, ReadViewEnums.PageIndex.next
+                mAdapter.addNextChapter(chapter.sequence, nextChapterContent)
                 loadAdViewToChapterBetween(chapter.sequence, ReadViewEnums.PageIndex.next)
                 addBookHomePage(chapter)
                 if (chapter.sequence == ReadState.chapterList.size - 1) {
@@ -314,7 +311,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
 
     private fun addBookHomePage(chapter: Chapter) {
         if (chapter.sequence == 0 && checkLoadChapterValid(-1)) {
-            mAdapter.addPreChapter(arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";sequence = -1 }), 0, ArrayList())))
+            mAdapter.addPreChapter(-1, arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";sequence = -1;sequenceType = -1 }), 0, ArrayList())))
             mAdapter.showHeaderView(false)
         }
     }
@@ -361,7 +358,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
         if (mOriginDataList.size > 0) {
             foo@ for (pages in mOriginDataList) {
                 for (content in pages.lines) {
-                    if (content.sequence == sequence) {
+                    if (content.sequenceType == sequence) {
                         valid = false
                         break@foo
                     }
@@ -375,18 +372,8 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
      * 章节内广告是否重复
      */
     @Synchronized
-    private fun checkLoadAdValid(sequence: Int): Int {
-//        var index = 0
-//        foo@ for (i in mAdapter.getAllData().indices) {
-//            if (mAdapter.getAllData()[i].lines[0].sequence == sequence) {
-//                index = i
-//                break@foo
-//            }
-//        }
-//        Log.d("Vertical","checkLoadAdValid index : " + index)
-//        Log.d("Vertical", "checkLoadAdValid : sequence " + sequence + " AdLastIndex : " + index + mAdapter.getAllData().filter { it.lines[0].sequence == sequence }.lastIndex)
-        return mAdapter.getAllData().filter { it.lines[0].sequenceType == sequence }.filter { it.adView != null }.size
-    }
+    private fun checkLoadAdValid(sequence: Int): Int =
+            mAdapter.getAllData().filter { it.lines[0].sequenceType == sequence }.filter { it.adView != null }.size
 
     /**
      * 当前显示位置章节页数
@@ -437,7 +424,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     }
 
     /**
-     * 添加广告 段尾  8-1
+     * 添加广告 段尾  6-3
      */
     private fun loadAdViewToChapterLastPage(chapterContent: List<NovelPageBean>) {
         var lineData: NovelLineBean? = null
@@ -462,16 +449,25 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     }
 
     /**
-     * 添加广告 章节间  5-1   chapterContent: ArrayList<NovelPageBean>,
+     * 添加广告 章节间  5-3   chapterContent: ArrayList<NovelPageBean>,
      */
     private fun loadAdViewToChapterBetween(sequence: Int, index: ReadViewEnums.PageIndex) {
-        mDataProvider.loadChapterBetweenAd(context, object : DataProvider.OnLoadReaderAdCallback {
+//        mDataProvider.loadChapterBetweenAd(context, object : DataProvider.OnLoadReaderAdCallback {
+//            override fun onLoadAd(adView: ViewGroup) {
+//                if (sequence == -1 && checkLoadAdValid(sequence) != 0) return
+//                val adData = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { this.sequence = PagerScrollAdapter.AD_ITEM_TYPE; this.sequenceType = sequence }), 0,
+//                        arrayListOf()).apply { isAd = true;this.adView = adView })
+//                mAdapter.addAllChapter(mAdapter.getNotifyIndexByLoadChapter(index, adData), adData)
+//            }
+//        })
+
+        mDataProvider.loadChapterBetweenAd(context, object : DataProvider.OnLoadAdViewCallback(sequence) {
             override fun onLoadAd(adView: ViewGroup) {
-                if (checkLoadAdValid(sequence) != 0) return
-                val adData = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { this.sequence = PagerScrollAdapter.AD_ITEM_TYPE; this.sequenceType = sequence }), 0,
-                        arrayListOf()).apply { isAd = true;this.adView = adView })
-//                chapterContent.addAll(adData)
-                mAdapter.addAllChapter(mAdapter.getNotifyIndexByLoadChapter(index, adData), adData)
+                if (loadAdBySequence == -1 && checkLoadAdValid(loadAdBySequence) != 0) return
+                val adData = NovelPageBean(arrayListOf(NovelLineBean().apply { this.sequence = PagerScrollAdapter.AD_ITEM_TYPE; this.sequenceType = sequence }), 0,
+                        arrayListOf()).apply { isAd = true;this.adView = adView }
+                mAdapter.addAdViewToTheChapterLast(loadAdBySequence, adData)
+                mAdapter.clearUselessChapter(index)
             }
         })
     }
