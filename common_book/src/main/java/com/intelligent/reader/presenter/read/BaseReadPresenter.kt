@@ -1492,6 +1492,12 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     }
 
     fun onDestroy() {
+        if (intervalRunnable != null) {
+            Handler().removeCallbacksAndMessages(intervalRunnable)
+        }
+        if (timeRunnable != null) {
+            Handler().removeCallbacksAndMessages(timeRunnable)
+        }
 //        if (mNovelLoader != null && mNovelLoader!!.status == AsyncTask.Status.RUNNING) {
 //            mNovelLoader!!.cancel(true)
 //        }
@@ -2120,19 +2126,15 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         }
     }
 
-    var intervalDispost: Disposable? = null
-
+    var intervalRunnable:Runnable ?= null
     fun startRestInterval() {
-        if (intervalDispost == null) {
-            intervalDispost = Observable.interval(PlatformSDK.config().switch_sec.toLong(), TimeUnit.MINUTES)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        restAd()
-                    }, { e -> e.printStackTrace() })
-            intervalDispost?.let {
-                disposable.add(it)
+        var runtime:Long = PlatformSDK.config().switch_sec.times(60000).toLong()
+        if (intervalRunnable == null) {
+            intervalRunnable = Runnable {
+                restAd()
+                Handler().postDelayed(intervalRunnable,runtime)
             }
+            Handler().postDelayed(intervalRunnable,runtime)
         }
     }
 
@@ -2154,6 +2156,9 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     var mDialog: MyDialog? = null
 
     fun restAd() {
+        if (mDialog!=null && mDialog!!.isShowing) {
+            return
+        }
         PlatformSDK.adapp().dycmNativeAd(readReference?.get(), "3-1", null, object : AbstractCallback() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
