@@ -13,8 +13,10 @@ import com.intelligent.reader.R
 import com.intelligent.reader.read.help.ReadSeparateHelper
 import com.intelligent.reader.read.mode.NovelPageBean
 import com.intelligent.reader.read.mode.ReadState
-import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.*
+import net.lzbook.kit.data.bean.Chapter
+import net.lzbook.kit.data.bean.NovelLineBean
+import net.lzbook.kit.data.bean.ReadConfig
+import net.lzbook.kit.data.bean.ReadViewEnums
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
@@ -33,6 +35,8 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
 
     private var allChapterList: ArrayList<Chapter>? = null
 
+    private val mLoadedChapter = CopyOnWriteArrayList<Int>()
+
     private var textColor: Int = 0
 
     private val LAST_PAGE_EXTEND_HEIGHT = 300
@@ -40,6 +44,8 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
     private val AD_PORTRAIT_VIEW_HEIGHT = 600
 
     private val AD_LANDSCAPE_VIEW_HEIGHT = 800
+
+    private val CLEAR_USERLESS_MAX_SIZE = 6
 
     // 书籍封面页
     private val BOOK_HOME_ITEM_TYPE = -1
@@ -87,8 +93,9 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
     override fun getItemViewType(position: Int) = chapterList[position].lines[0].sequence
 
 
-    fun setChapter(data: CopyOnWriteArrayList<NovelPageBean>) {
+    fun setChapter(sequence: Int, data: CopyOnWriteArrayList<NovelPageBean>) {
         chapterList = data
+        mLoadedChapter.add(sequence)
         showHeaderView(true)
         showFootView(true)
         notifyDataSetChanged()
@@ -106,11 +113,39 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
         notifyItemRangeRemoved(location, data.size)
     }
 
-    fun addPreChapter(data: java.util.ArrayList<NovelPageBean>): Int =
-            addAllChapter(headerViewList.size, data)
+    fun addPreChapter(sequence: Int, data: java.util.ArrayList<NovelPageBean>): Int {
+        if (sequence != -1) {
+            mLoadedChapter.add(0, sequence)
+        }
+        return addAllChapter(headerViewList.size, data)
+    }
 
-    fun addNextChapter(data: java.util.ArrayList<NovelPageBean>): Int =
-            addAllChapter(chapterList.size - footViewList.size, data)
+
+    fun addNextChapter(sequence: Int, data: java.util.ArrayList<NovelPageBean>): Int {
+        mLoadedChapter.add(sequence)
+        return addAllChapter(chapterList.size - footViewList.size, data)
+    }
+
+    /**
+     * 清理超过阅读范围的数据，缓解内存过高
+     */
+    fun clearUselessChapter(type: ReadViewEnums.PageIndex) {
+        if (mLoadedChapter.size > CLEAR_USERLESS_MAX_SIZE) {
+            val lastData = getAllData().filter { (it.lines[0].sequenceType != HEADER_ITEM_TYPE && it.lines[0].sequenceType != FOOTER_ITEM_TYPE) }
+                    .filter { it.lines[0].sequenceType == mLoadedChapter.last() }
+            if (type == ReadViewEnums.PageIndex.previous) {
+                getAllData().removeAll(lastData)
+                notifyItemRangeRemoved(chapterList.size - footViewList.size, lastData.size)
+                mLoadedChapter.remove(mLoadedChapter.last())
+            } else {
+                val firstData = getAllData().filter { (it.lines[0].sequenceType != HEADER_ITEM_TYPE && it.lines[0].sequenceType != FOOTER_ITEM_TYPE) }
+                        .filter { it.lines[0].sequenceType == mLoadedChapter.first() }
+                getAllData().removeAll(firstData)
+                notifyItemRangeRemoved(headerViewList.size, firstData.size)
+                mLoadedChapter.remove(mLoadedChapter.first())
+            }
+        }
+    }
 
     private fun addAllChapter(data: ArrayList<NovelPageBean>) {
         val lastIndex = chapterList.size
@@ -127,6 +162,19 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
                     chapterList.size - footViewList.size
                 }
             }
+
+    fun addAdViewToTheChapterLast(sequence: Int, adData: NovelPageBean) {
+        var sequenceIndex = 0
+        foo@ for (i in getAllData().indices) {
+            if (getAllData()[i].lines[0].sequenceType == sequence) {
+                sequenceIndex = i
+                break@foo
+            }
+        }
+        val addAdViewIndex = sequenceIndex + getAllData().filter { it.lines[0].sequenceType == sequence }.size
+        getAllData().add(addAdViewIndex, adData)
+        notifyItemRangeInserted(addAdViewIndex, 1)
+    }
 
     fun showHeaderView(show: Boolean) {
         if (show) {
@@ -351,3 +399,4 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
         fun onLoadViewClick(type: Int)
     }
 }
+

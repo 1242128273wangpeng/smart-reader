@@ -160,23 +160,79 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     /**
-     * 获取段末广告 8-1
+     * 获取段末广告 6-3
      */
     fun loadChapterLastPageAd(context: Context, callback: OnLoadReaderAdCallback) {
-        loadAd(context, AdMarkPostion.READING_MIDDLE_POSITION, callback)
+        // 上下滑动模式，横屏无段末广告
+        if (ReadConfig.IS_LANDSCAPE) return
+//        loadAd(context, AdMarkPostion.LANDSCAPE_SLIDEUP_POPUPAD, callback)
+
+        PlatformSDK.adapp().dycmNativeAd(context, AdMarkPostion.LANDSCAPE_SLIDEUP_POPUPAD, 600, 1080, object : AbstractCallback() {
+            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
+                super.onResult(adswitch, views, jsonResult)
+                if (!adswitch) {
+                    return
+                }
+                try {
+                    val jsonObject = JSONObject(jsonResult)
+                    if (jsonObject.has("state_code")) {
+                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+                            ResultCode.AD_REQ_SUCCESS
+                            -> {
+                                callback.onLoadAd(views[0])
+                            }
+                            else -> {
+                            }
+                        }
+                    }
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+            }
+        })
     }
 
     /**
-     * 获取章节间广告 5-1
+     * 获取章节间广告 5-3 6-3
      */
     fun loadChapterBetweenAd(context: Context, callback: OnLoadReaderAdCallback) {
         val adTyep: String
+        val AdHeight: Int
+        val AdWidth: Int
         if (ReadConfig.IS_LANDSCAPE) {
-            adTyep = AdMarkPostion.SUPPLY_READING_SPACE
+            adTyep = AdMarkPostion.LANDSCAPE_SLIDEUP_POPUPAD
+            AdHeight = 1280
+            AdWidth = 1920
         } else {
-            adTyep = AdMarkPostion.READING_POSITION
+            adTyep = AdMarkPostion.SLIDEUP_POPUPAD_POSITION
+            AdHeight = 1920
+            AdWidth = 1280
         }
-        loadAd(context, adTyep, callback)
+//        loadAd(context, adTyep, callback)
+
+        PlatformSDK.adapp().dycmNativeAd(context, adTyep, AdHeight, AdWidth, object : AbstractCallback() {
+            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
+                super.onResult(adswitch, views, jsonResult)
+                if (!adswitch) {
+                    return
+                }
+                try {
+                    val jsonObject = JSONObject(jsonResult)
+                    if (jsonObject.has("state_code")) {
+                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+                            ResultCode.AD_REQ_SUCCESS
+                            -> {
+                                callback.onLoadAd(views[0])
+                            }
+                            else -> {
+                            }
+                        }
+                    }
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+            }
+        })
     }
 
     /**
@@ -303,6 +359,8 @@ class DataProvider : DisposableAndroidViewModel() {
         val mNovelPageBean = chapterLruCache[ReadState.sequence].separateList
         return mNovelPageBean[ReadState.currentPage - 1].lines
     }
+
+    abstract class OnLoadAdViewCallback(val loadAdBySequence: Int) : OnLoadReaderAdCallback
 
     interface OnLoadReaderAdCallback {
         fun onLoadAd(adView: ViewGroup)
