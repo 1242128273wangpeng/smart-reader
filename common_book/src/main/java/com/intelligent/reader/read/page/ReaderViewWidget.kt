@@ -3,6 +3,7 @@ package com.intelligent.reader.read.page
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.PointF
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.VelocityTracker
@@ -11,6 +12,7 @@ import android.view.ViewConfiguration
 import android.widget.FrameLayout
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.flip.PageFlipView
+import com.intelligent.reader.flip.base.PageFlipState
 import com.intelligent.reader.flip.render.SinglePageRender
 import com.intelligent.reader.read.factory.ReaderViewFactory
 import com.intelligent.reader.read.help.HorizontalEvent
@@ -33,7 +35,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
         val tag = "PageFlipView"
     }
 
-    private val mReaderViewFactory by lazy{
+    private val mReaderViewFactory by lazy {
         ReaderViewFactory(context)
     }
 
@@ -53,41 +55,6 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    private var mLoadBitmaplistener = SinglePageRender.LoadBitmapListener { index ->
-
-        var bitmap: Bitmap? = null
-        var isFinishCache = false
-
-        runOnMain {
-            println("${ReaderViewWidget.tag} load ${index.name}")
-            val view = (mReaderView as HorizontalReaderView).findViewWithTag(index) as HorizontalPage
-            if (view.hasAd) {
-                view.destroyDrawingCache()
-            }
-            bitmap = view.drawingCache
-
-            synchronized((this@ReaderViewWidget as Object)) {
-                println("this@ReaderViewWidget as Object).notify")
-                (this@ReaderViewWidget as Object).notify()
-            }
-            isFinishCache = true
-        }
-
-
-        synchronized((this@ReaderViewWidget as Object)) {
-            if (!isFinishCache) {
-                try {
-                    println("this@ReaderViewWidget as Object).wait ${Thread.currentThread().name}")
-                    (this@ReaderViewWidget as Object).wait()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        }
-
-        return@LoadBitmapListener bitmap
-    }
-
 
     private var mPageFlipStateListener = object : SinglePageRender.PageFlipStateListener {
 
@@ -95,10 +62,10 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
             //等待ViewPager切换完页面再隐藏
             var curView = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage
 //            runOnMain {
-                if (curView.hasAd) {
-                    mTextureView?.alpha = 0F
+//            if (curView.hasAd) {
+            mTextureView?.alpha = 0F
 //                    mTextureView?.onChangTexture()
-                }
+//            }
 //            }
             return curView.hasAd
         }
@@ -122,8 +89,12 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
         }
     }
 
-    private val mMaximumVelocity by lazy{
+    private val mMaximumVelocity by lazy {
         ViewConfiguration.get(context).scaledMaximumFlingVelocity.toFloat()
+    }
+
+    private val mTouchSlop by lazy {
+        ViewConfiguration.get(context).scaledPagingTouchSlop
     }
 
     /**
@@ -135,10 +106,8 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
             if (mTextureView == null) {
                 mTextureView = PageFlipView(context)
             }
-            if(mTextureView!!.parent == null) {
+            if (mTextureView!!.parent == null) {
                 mTextureView?.alpha = 0f
-                //加载Bitmap数据监听
-                (mTextureView?.getmPageRender() as SinglePageRender).setListener(mLoadBitmaplistener)
                 //翻页动画结束监听
                 (mTextureView?.getmPageRender() as SinglePageRender).setPageFlipStateListenerListener(mPageFlipStateListener)
                 addView(mTextureView, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
@@ -216,13 +185,13 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
      */
     override fun entrance() {
 
-        if(mReaderView != null){
+        if (mReaderView != null) {
             removeView(mReaderView as View)
         }
-        if(mTextureView != null){
+        if (mTextureView != null) {
             removeView(mTextureView)
         }
-        if(mAutoReadView != null){
+        if (mAutoReadView != null) {
             removeView(mAutoReadView)
         }
 
@@ -244,9 +213,9 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
 
     override fun changeAnimMode(mode: Int) {
-        if(lastPageAnimation != ReadConfig.animation){
-            if(lastPageAnimation == ReadViewEnums.Animation.list
-                    || ReadConfig.animation == ReadViewEnums.Animation.list){
+        if (lastPageAnimation != ReadConfig.animation) {
+            if (lastPageAnimation == ReadViewEnums.Animation.list
+                    || ReadConfig.animation == ReadViewEnums.Animation.list) {
                 entrance()
             }
         }
@@ -277,15 +246,14 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
      * 设置 IReadView 实现 View 的变化监听
      * @param mReadPageChange 监听对象
      */
-    override fun setIReadPageChange(readPageChange: IReadPageChange?){
+    override fun setIReadPageChange(readPageChange: IReadPageChange?) {
         mReadPageChange = readPageChange
         mReaderView?.setIReadPageChange(mReadPageChange)
     }
 
 
-
     private var isDownActioned = false
-    var eventList: ArrayList<MotionEvent> = arrayListOf()
+
 
     private var velocityTracker: VelocityTracker? = null
 
@@ -326,9 +294,18 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
         return true
     }
 
+    private val downPointF = PointF()
+
+
     private fun onCurlDown(x: Float, y: Float) {
         isDownActioned = true
+
+        downPointF.x = x
+        downPointF.y = y
+
         if (context is ReadingActivity) (context as ReadingActivity).showMenu(false)
+
+//        setFlipCurrentAsFirstTexture()
 
         mTextureView?.onFingerDown(x, y)
     }
@@ -337,10 +314,15 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
         if (isDownActioned) {
             isDownActioned = false
 
-//            if (mTextureView!!.alpha != 1.0f) {
-//                //翻页显示
-//                mTextureView!!.alpha = 1.0f
-//            }
+            if (mTextureView!!.getmPageRender().mPageFlip.flipState == PageFlipState.BEGIN_FLIP) {
+                if (x < width / 2) {
+                    //left
+                    flipPreviousPage()
+                } else {
+                    //right
+                    flipNextPage()
+                }
+            }
 
             velocityTracker?.computeCurrentVelocity(1000, mMaximumVelocity)
             mTextureView?.onFingerUp(x, y, velocityTracker!!.xVelocity)
@@ -353,23 +335,58 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
         if (isDownActioned) {
 
-//            if (mTextureView!!.alpha != 1.0f) {
-//                //翻页显示
-//                mTextureView!!.alpha = 1.0f
-//            }
+            if (Math.abs(downPointF.x - x) >= mTouchSlop) {
+                //perpare texture
+                if (downPointF.x - x < 0) {
+                    //left
+                    flipPreviousPage()
+                } else {
+                    //right
+                    flipNextPage()
+                }
 
-            mTextureView?.onFingerMove(x, y)
+
+                mTextureView?.onFingerMove(x, y)
+            }
         } else {
             isDownActioned = true
+            downPointF.x = x
+            downPointF.y = y
             if (context is ReadingActivity) (context as ReadingActivity).showMenu(false)
 
-//            if (mTextureView!!.alpha != 1.0f) {
-//                //翻页显示
-//                mTextureView!!.alpha = 1.0f
-//            }
+//            setFlipCurrentAsFirstTexture()
             mTextureView?.onFingerDown(x, y)
         }
     }
+
+    private fun flipPreviousPage() {
+        synchronized(mTextureView as Object) {
+            mTextureView!!.firstTexture = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.previous).drawingCache
+
+            mTextureView!!.secondTexture = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current).drawingCache
+        }
+    }
+
+    private fun flipNextPage() {
+        synchronized(mTextureView as Object) {
+            mTextureView!!.firstTexture = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current).drawingCache
+
+            mTextureView!!.secondTexture = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.next).drawingCache
+        }
+    }
+
+//    private fun setFlipCurrentAsFirstTexture() {
+//        if (!mTextureView!!.getmPageRender().mPageFlip.firstPage.isFirstTextureSet) {
+//            val horizontalPage = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage
+//            if (horizontalPage.hasAd || horizontalPage.hasBigAd) {
+//                horizontalPage.destroyDrawingCache()
+//            }
+//            val current = horizontalPage.drawingCache
+//            mTextureView!!.queueEvent {
+//                mTextureView!!.getmPageRender().mPageFlip.firstPage.setFirstTexture(current)
+//            }
+//        }
+//    }
 
     private var mOnAutoReadCallback: OnAutoReadCallback? = null
 

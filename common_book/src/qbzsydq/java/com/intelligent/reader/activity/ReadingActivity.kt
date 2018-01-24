@@ -15,7 +15,9 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
+import com.intelligent.reader.BuildConfig
 import com.intelligent.reader.R
+import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.CatalogMarkFragment
 import com.intelligent.reader.presenter.read.CatalogMarkPresenter
 import com.intelligent.reader.presenter.read.ReadOptionPresenter
@@ -291,6 +293,10 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
             e.printStackTrace()
         }
         super.onDestroy()
+
+        if (BuildConfig.DEBUG) {
+            BookApplication.getRefWatcher().watch(this)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
