@@ -68,6 +68,18 @@ public class SplashActivity extends FrameActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        PlatformSDK.lifecycle().onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        PlatformSDK.lifecycle().onResume();
+    }
+
     public static void installShotCut(Context ctt) {
         // deleteCallShortcut(ctt);
         Intent shortcut = new Intent(

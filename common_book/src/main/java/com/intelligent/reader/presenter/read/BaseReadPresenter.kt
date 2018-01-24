@@ -1217,7 +1217,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
      * 显示隐藏菜单
      */
     fun showMenu(isShow: Boolean) {
-        if(readStatus!!.isMenuShow != isShow) {
+        if (readStatus!!.isMenuShow != isShow) {
             clearOtherPanel()
             if (isShow) {
                 full(false)
@@ -1546,10 +1546,10 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 //        BitmapManager.getInstance().clearBitmap()
 //
 //        //
-//        for (d in disposable) {
-//            d.dispose()
-//        }
-//        disposable.clear()
+        for (d in disposable) {
+            d.dispose()
+        }
+        disposable.clear()
     }
 
     fun onSaveInstanceState(outState: Bundle): Bundle? {

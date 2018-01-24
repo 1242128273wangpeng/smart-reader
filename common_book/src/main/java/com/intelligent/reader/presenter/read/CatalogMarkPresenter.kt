@@ -165,7 +165,7 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: ReaderVi
         }
 
         readStatus.sequence = chapter.sequence
-        (activity as ReadingActivity).onJumpChapter(chapter.sequence,0)
+        (activity as ReadingActivity).onJumpChapter(chapter.sequence, 0)
 
 
         val data = java.util.HashMap<String, String>()
@@ -188,9 +188,9 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: ReaderVi
 
         intent.setClass(activity, ReadingActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        if (activity is ReadingActivity){
-            activity.onJumpChapter(mark.sequence,mark.offset)
-        }else {
+        if (activity is ReadingActivity) {
+            activity.onJumpChapter(mark.sequence, mark.offset)
+        } else {
             activity.startActivity(intent)
         }
 
