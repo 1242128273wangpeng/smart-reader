@@ -12,6 +12,7 @@ import android.graphics.Point
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.os.IBinder
 import android.preference.PreferenceManager
 import android.provider.Settings
@@ -1216,7 +1217,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
      * 显示隐藏菜单
      */
     fun showMenu(isShow: Boolean) {
-        if(readStatus!!.isMenuShow != isShow) {
+        if (readStatus!!.isMenuShow != isShow) {
             clearOtherPanel()
             if (isShow) {
                 full(false)
@@ -1491,6 +1492,12 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     }
 
     fun onDestroy() {
+        if (intervalRunnable != null) {
+            Handler().removeCallbacksAndMessages(intervalRunnable)
+        }
+        if (timeRunnable != null) {
+            Handler().removeCallbacksAndMessages(timeRunnable)
+        }
 //        if (mNovelLoader != null && mNovelLoader!!.status == AsyncTask.Status.RUNNING) {
 //            mNovelLoader!!.cancel(true)
 //        }
@@ -1545,10 +1552,10 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 //        BitmapManager.getInstance().clearBitmap()
 //
 //        //
-//        for (d in disposable) {
-//            d.dispose()
-//        }
-//        disposable.clear()
+        for (d in disposable) {
+            d.dispose()
+        }
+        disposable.clear()
     }
 
     fun onSaveInstanceState(outState: Bundle): Bundle? {
@@ -2119,40 +2126,39 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         }
     }
 
-    var timeDispost: Disposable? = null
-    var intervalDispost: Disposable? = null
-
+    var intervalRunnable:Runnable ?= null
     fun startRestInterval() {
-        if (intervalDispost == null) {
-            intervalDispost = Observable.interval(PlatformSDK.config().switch_sec.toLong(), TimeUnit.MINUTES)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        restAd()
-                    }, { e -> e.printStackTrace() })
-            intervalDispost?.let {
-                disposable.add(it)
+        var runtime:Long = PlatformSDK.config().switch_sec.times(60000).toLong()
+        if (intervalRunnable == null) {
+            intervalRunnable = Runnable {
+                restAd()
+                Handler().postDelayed(intervalRunnable,runtime)
             }
+            Handler().postDelayed(intervalRunnable,runtime)
         }
     }
 
+    var timeRunnable:Runnable ?= null
     fun startRestTimer() {
-        if (timeDispost == null) {
-            timeDispost = Observable.timer(PlatformSDK.config().restAd_sec.toLong(), TimeUnit.MINUTES)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        restAd()
-                    }, { e -> e.printStackTrace() })
-            timeDispost?.let {
-                disposable.add(it)
+        if (timeRunnable == null) {
+            timeRunnable = Runnable {
+                restAd()
             }
+            var runtime:Long = PlatformSDK.config().restAd_sec.times(60000).toLong()
+            Handler().postDelayed(timeRunnable,runtime)
+            Handler().postDelayed({
+                Handler().removeCallbacksAndMessages(timeRunnable)
+                timeRunnable = null
+            },runtime.plus(100))
         }
     }
 
     var mDialog: MyDialog? = null
 
     fun restAd() {
+        if (mDialog!=null && mDialog!!.isShowing) {
+            return
+        }
         PlatformSDK.adapp().dycmNativeAd(readReference?.get(), "3-1", null, object : AbstractCallback() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)

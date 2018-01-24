@@ -11,6 +11,9 @@ import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
+
+import com.intelligent.reader.read.util.ReadQueryUtil;
+
 import net.lzbook.kit.data.bean.ReadConfig;
 
 import java.util.HashSet;
@@ -53,23 +56,8 @@ public class BatteryView extends ImageView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        int color_int = net.lzbook.kit.R.color.reading_operation_text_color_first;
-        if (ReadConfig.INSTANCE.getMODE() == 51) {
-            color_int = net.lzbook.kit.R.color.reading_operation_text_color_first;
-        } else if (ReadConfig.INSTANCE.getMODE()== 52) {
-            color_int = net.lzbook.kit.R.color.reading_text_color_second;
-        } else if (ReadConfig.INSTANCE.getMODE()== 53) {
-            color_int = net.lzbook.kit.R.color.reading_text_color_third;
-        } else if (ReadConfig.INSTANCE.getMODE() == 54) {
-            color_int = net.lzbook.kit.R.color.reading_text_color_fourth;
-        } else if (ReadConfig.INSTANCE.getMODE() == 55) {
-            color_int = net.lzbook.kit.R.color.reading_text_color_fifth;
-        } else if (ReadConfig.INSTANCE.getMODE() == 56) {
-            color_int = net.lzbook.kit.R.color.reading_text_color_sixth;
-        } else if (ReadConfig.INSTANCE.getMODE() == 61) {
-            color_int = net.lzbook.kit.R.color.reading_text_color_night;
-        }
-        mPaint.setColor(resources.getColor(color_int));
+        int color_int = ReadQueryUtil.INSTANCE.getColor(resources);
+        mPaint.setColor(color_int);
         canvas.drawRect(left + 1, getPaddingTop() + top + 1, (right - (left + 1)) * percent + (left + 1),
                 getPaddingBottom() + bottom, mPaint);
     }

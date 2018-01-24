@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Handler
 import android.util.AttributeSet
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewTreeObserver
 import com.intelligent.reader.R
 import com.intelligent.reader.read.DataProvider
@@ -17,6 +18,7 @@ import com.intelligent.reader.read.mode.ReadCursor
 import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.view.ViewPager
 import io.reactivex.Observable
+import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.ReadConfig
@@ -156,56 +158,40 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
      *  检查缓存
      */
     private fun checkChapterCache(whichOrientation: String) {
-        val threadObserve = Observable.create<String>({
+        val threadObserve = Observable.create<Int> ({
+            it.onNext(1)
+            it.onComplete()
+        }).subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io()).subscribe({
             val provider = DataProvider.getInstance()
-            val keyList = provider.chapterMap.keys.toList().sorted()
-            if (keyList.isNotEmpty()) {
+            var sequence: Int = -2
+            loop@ for (i in 1..3) {
                 when (whichOrientation) {
                     "Pre" -> {
-                        //保留前三
-                        if (keyList.size >= 3) keyList.filter { it > keyList[2] }.forEach {
-                            provider.chapterMap.remove(it)
-                            provider.chapterSeparate.remove(it)
-                        }
-                        //加载缓存
-                        for (i in 0..2) {
-                            if (ReadState.sequence.minus(i) < -1) continue
-                            if (provider.chapterSeparate[ReadState.sequence.minus(i)] == null) {
-                                ReadState.book?.let {
-                                    DataProvider.getInstance().loadChapter(it, ReadState.sequence.minus(i), ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
-                                        override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
-                                        override fun loadDataError(message: String) = Unit
-                                    })
-                                }
-                            }
+                        if (ReadState.sequence.minus(i) < -1) continue@loop
+                        if (provider.chapterLruCache[ReadState.sequence.minus(i)] == null) {
+                            sequence = ReadState.sequence.minus(i)
                         }
                     }
+
                     "Next" -> {
-                        //保留后三
-                        if (keyList.size >= 3) keyList.filter { it < keyList[keyList.size - 3] }.forEach {
-                            provider.chapterMap.remove(it)
-                            provider.chapterSeparate.remove(it)
-                        }
-                        for (i in 0..2) {
-                            if (ReadState.sequence.plus(i) > ReadState.chapterList.size) continue
-                            if (provider.chapterSeparate[ReadState.sequence.plus(i)] == null) {
-                                ReadState.book?.let {
-                                    DataProvider.getInstance().loadChapter(it, ReadState.sequence.plus(i), ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
-                                        override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
-                                        override fun loadDataError(message: String) = Unit
-                                    })
-                                }
-                            }
+                        if (ReadState.sequence.plus(i) > ReadState.chapterList.size) continue@loop
+                        if (provider.chapterLruCache[ReadState.sequence.plus(i)] == null) {
+                            sequence = ReadState.sequence.plus(i)
                         }
                     }
-                    else -> {
+                }
+                //加载下两章
+                if (sequence != -2) {
+                    ReadState.book?.let {
+                        provider.loadChapter(it, sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
+                            override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
+                            override fun loadDataError(message: String) = Unit
+                        })
                     }
                 }
             }
-            it.onNext("")
-            it.onComplete()
-        }).subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io()).subscribe()
+        })
         DataProvider.getInstance().addDisposable(threadObserve)
     }
 
@@ -430,7 +416,11 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                 override fun onPreDraw(): Boolean {
                     viewTreeObserver.removeOnPreDrawListener(this)
                     //更改当前view状态
-                    (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState = ReadViewEnums.ViewState.loading
+                    var curView: View
+                    do {
+                        curView = findViewWithTag(ReadViewEnums.PageIndex.current)
+                    } while (curView == null)
+                    (curView as HorizontalPage).viewState = ReadViewEnums.ViewState.loading
                     curCursor = ReadCursor(it, sequence, offset, ReadViewEnums.PageIndex.current)
                     checkViewState("Cur", ReadViewEnums.NotifyStateState.all)
                     return true

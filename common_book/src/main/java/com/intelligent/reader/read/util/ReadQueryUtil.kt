@@ -1,7 +1,10 @@
 package com.intelligent.reader.read.util
 
+import android.content.res.Resources
+import com.intelligent.reader.R
 import com.intelligent.reader.read.exception.ReadCustomException
 import com.intelligent.reader.read.mode.NovelPageBean
+import net.lzbook.kit.data.bean.ReadConfig
 import java.util.*
 
 /**
@@ -26,5 +29,35 @@ object ReadQueryUtil {
             it.offset <= offset
         }
         return filter.last()
+    }
+
+    fun getColor(resources:Resources):Int{
+        //设置TextColor
+        var colorInt = when (ReadConfig.MODE) {
+            51 -> R.color.reading_operation_text_color_first
+            52 -> R.color.reading_text_color_second
+            53 -> R.color.reading_text_color_third
+            54 -> R.color.reading_text_color_fourth
+            55 -> R.color.reading_text_color_fifth
+            56 -> R.color.reading_text_color_sixth
+            61 -> R.color.reading_text_color_night
+            else -> R.color.reading_operation_text_color_first
+        }
+        return resources.getColor(colorInt)
+    }
+
+    fun getHomePageColor(resources:Resources):Int{
+        //设置TextColor
+        var colorInt = when (ReadConfig.MODE) {
+            51 -> R.color.reading_text_color_first
+            52 -> R.color.reading_text_color_second
+            53 -> R.color.reading_text_color_third
+            54 -> R.color.reading_text_color_fourth
+            55 -> R.color.reading_text_color_fifth
+            56 -> R.color.reading_text_color_sixth
+            61 -> R.color.reading_text_color_night
+            else -> R.color.reading_text_color_first
+        }
+        return resources.getColor(colorInt)
     }
 }
