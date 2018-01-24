@@ -12,6 +12,7 @@ import android.graphics.Point
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.os.IBinder
 import android.preference.PreferenceManager
 import android.provider.Settings
@@ -2119,7 +2120,6 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         }
     }
 
-    var timeDispost: Disposable? = null
     var intervalDispost: Disposable? = null
 
     fun startRestInterval() {
@@ -2136,17 +2136,18 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         }
     }
 
+    var timeRunnable:Runnable ?= null
     fun startRestTimer() {
-        if (timeDispost == null) {
-            timeDispost = Observable.timer(PlatformSDK.config().restAd_sec.toLong(), TimeUnit.MINUTES)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        restAd()
-                    }, { e -> e.printStackTrace() })
-            timeDispost?.let {
-                disposable.add(it)
+        if (timeRunnable == null) {
+            timeRunnable = Runnable {
+                restAd()
             }
+            var runtime:Long = PlatformSDK.config().restAd_sec.times(60000).toLong()
+            Handler().postDelayed(timeRunnable,runtime)
+            Handler().postDelayed({
+                Handler().removeCallbacksAndMessages(timeRunnable)
+                timeRunnable = null
+            },runtime.plus(100))
         }
     }
 

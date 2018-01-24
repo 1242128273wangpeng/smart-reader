@@ -3,6 +3,7 @@ package com.intelligent.reader.read
 import android.app.Activity
 import android.content.Context
 import android.text.TextUtils
+import android.util.LruCache
 import android.view.ViewGroup
 import com.dycm_adsdk.PlatformSDK
 import com.dycm_adsdk.callback.AbstractCallback
@@ -14,27 +15,24 @@ import com.intelligent.reader.cover.BookCoverOtherRepository
 import com.intelligent.reader.cover.BookCoverQGRepository
 import com.intelligent.reader.cover.BookCoverRepositoryFactory
 import com.intelligent.reader.read.help.ReadSeparateHelper
+import com.intelligent.reader.read.mode.NovelChapter
 import com.intelligent.reader.read.mode.NovelPageBean
 import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.reader.ReaderOwnRepository
 import com.intelligent.reader.reader.ReaderRepositoryFactory
 import com.intelligent.reader.repository.BookCoverRepository
 import com.intelligent.reader.repository.ReaderRepository
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.kyview.InitConfiguration
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.*
 import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.OpenUDID
-import net.lzbook.kit.utils.runOnMain
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Created by wt on 2017/12/20.
@@ -53,12 +51,13 @@ class DataProvider : DisposableAndroidViewModel() {
     var context: Context? = null
     //是否显示广告
     var isShowAd: Boolean = true
-
-    //分页前缓存容器
-    val chapterMap: HashMap<Int, Chapter> = HashMap()
-
-    //分页后缓存容器
-    val chapterSeparate: HashMap<Int, ArrayList<NovelPageBean>> = HashMap()
+    var countCacheSize: Int = 4
+//    //分页前缓存容器
+//    val chapterMap: HashMap<Int, Chapter> = HashMap()
+//    //分页后缓存容器
+//    val chapterSeparate: HashMap<Int, ArrayList<NovelPageBean>> = HashMap()
+    var chapterKey = arrayListOf<Int>()
+    val chapterLruCache: LruCache<Int, NovelChapter> = LruCache(countCacheSize)
 
     //工厂
     var mReaderRepository: ReaderRepository = ReaderRepositoryFactory.getInstance(ReaderOwnRepository.getInstance())
@@ -241,8 +240,10 @@ class DataProvider : DisposableAndroidViewModel() {
      */
     fun getChapterList(book: Book, requestItem: RequestItem, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
         if (sequence <= -1) {//封面页
-            chapterSeparate.put(sequence, arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf())))
-            chapterMap.put(-1, Chapter())
+            chapterLruCache.put(sequence, NovelChapter(Chapter(),arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf()))))
+//            chapterSeparate.put(sequence, arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf())))
+//            chapterMap.put(-1, Chapter())
+            chapterKey.add(sequence)
             mReadDataListener.loadDataSuccess(Chapter(), type)
             return
         }
@@ -294,12 +295,11 @@ class DataProvider : DisposableAndroidViewModel() {
                     }
                     mReaderRepository.writeChapterCache(c, false)
                     if (c.content != "null" && c.content.isNotEmpty()) {
-                        chapterMap.put(sequence, c)
                         ReadState.chapterId = c.chapter_id
-                        chapterSeparate.put(sequence, ReadSeparateHelper.initTextSeparateContent(c.content, c.chapter_name))
+                        chapterLruCache.put(sequence, NovelChapter(c,ReadSeparateHelper.initTextSeparateContent(c.content, c.chapter_name)))
+                        chapterKey.add(sequence)
                         //加章末广告
                         if (isShowAd) {
-                            //                    loadAd()
                             loadAd(sequence)
                         }
                         mReadDataListener.loadDataSuccess(c, type)
@@ -314,8 +314,9 @@ class DataProvider : DisposableAndroidViewModel() {
     private fun loadAd(sequence: Int) {
         var isShowAd = PlatformSDK.config().getAdSwitch("5-1") and PlatformSDK.config().getAdSwitch("5-2") and PlatformSDK.config().getAdSwitch("6-1") and PlatformSDK.config().getAdSwitch("6-2")
         if (isShowAd) {
-            val arrayList = chapterSeparate[sequence]
-            if ((arrayList != null) and (!arrayList!!.last().isAd)) {
+//            val arrayList = chapterSeparate[sequence]
+            val arrayList = chapterLruCache[sequence].separateList
+            if (!arrayList.last().isAd) {
                 val offset = arrayList.last().offset + arrayList.last().lines.sumBy { it.lineContent.length } + 1
                 arrayList.add(NovelPageBean(arrayListOf(), offset, arrayListOf()).apply { isAd = true })
             }
@@ -331,26 +332,15 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     fun onReSeparate() {
-        for (it in chapterMap) {
-            if (it.key != -1) {
-                val lastPageBean = chapterSeparate[it.key]!!.last()
-                val mPageBeanList = ReadSeparateHelper.initTextSeparateContent(it.value.content, it.value.chapter_name)
-                if (lastPageBean.isAd) {//最后广告
-                    mPageBeanList.add(lastPageBean)
+        for (it in chapterKey){
+            if (chapterLruCache[it] != null) {
+                if (it != -1) {
+                    chapterLruCache[it].separateList =  ReadSeparateHelper.initTextSeparateContent(chapterLruCache[it].chapter.content, chapterLruCache[it].chapter.chapter_name)
+                    loadAd(it)
+                }else {
+                    chapterLruCache.put(-1, NovelChapter(Chapter(),arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf()))))
+                    chapterKey.add(-1)
                 }
-                //中间广告 符合条件
-                if (chapterSeparate[it.key]!!.size > 9) {
-                    val middleBean = chapterSeparate[it.key]!![9]
-                    if ((mPageBeanList.size >= 16) and middleBean.isAd) {
-                        mPageBeanList.add(8, middleBean)
-                    } else if ((mPageBeanList.size >= 16) and !middleBean.isAd) {
-
-                    }
-                }
-
-                chapterSeparate.put(it.key, mPageBeanList)
-            } else {
-                chapterSeparate.put(-1, arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf())))
             }
         }
     }
@@ -364,12 +354,10 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     fun findCurrentPageNovelLineBean(): List<NovelLineBean> {
-        var currentNovelLineBean = arrayListOf<NovelLineBean>()
-        var mNovelPageBean = chapterSeparate[ReadState.sequence]
-        if (mNovelPageBean != null) {
-            currentNovelLineBean = mNovelPageBean[ReadState.currentPage - 1].lines
-        }
-        return currentNovelLineBean
+//        var currentNovelLineBean = arrayListOf<NovelLineBean>()
+//        var mNovelPageBean = chapterSeparate[ReadState.sequence]
+        val mNovelPageBean = chapterLruCache[ReadState.sequence].separateList
+        return mNovelPageBean[ReadState.currentPage - 1].lines
     }
 
     abstract class OnLoadAdViewCallback(val loadAdBySequence: Int) : OnLoadReaderAdCallback
@@ -379,17 +367,21 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     fun relase() {
-        chapterMap.clear()
-        val iter = chapterSeparate.entries.iterator()
-        while (iter.hasNext()) {
-            val chapterList = iter.next().value
-            for (page in chapterList) {
-                if (page.adView != null && page.adView!!.tag != null) {
-                    page.adView!!.tag = null
-                }
-                page.adView = null
-            }
+        chapterKey.forEach {
+            chapterLruCache.remove(it)
         }
-        chapterSeparate.clear()
+        chapterKey.clear()
+//        chapterMap.clear()
+//        val iter = chapterSeparate.entries.iterator()
+//        while (iter.hasNext()) {
+//            val chapterList = iter.next().value
+//            for (page in chapterList) {
+//                if (page.adView != null && page.adView!!.tag != null) {
+//                    page.adView!!.tag = null
+//                }
+//                page.adView = null
+//            }
+//        }
+//        chapterSeparate.clear()
     }
 }
