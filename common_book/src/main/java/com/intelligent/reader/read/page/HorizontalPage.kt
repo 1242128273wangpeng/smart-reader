@@ -8,6 +8,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.RelativeLayout
 import com.dycm_adsdk.PlatformSDK
 import com.intelligent.reader.R
 import com.intelligent.reader.read.DataProvider
@@ -23,6 +24,7 @@ import kotlinx.android.synthetic.main.error_page2.view.*
 import kotlinx.android.synthetic.main.loading_page_reading.view.*
 import kotlinx.android.synthetic.main.read_bottom.view.*
 import kotlinx.android.synthetic.main.read_top.view.*
+import net.lzbook.kit.book.download.DesUtils
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
@@ -90,7 +92,7 @@ class HorizontalPage : FrameLayout, Observer {
         errorView = inflate(context, R.layout.error_page2, null)
         readTop = inflate(context, R.layout.read_top, null)
         readBottom = inflate(context, R.layout.read_bottom, null)
-        homePage = inflate(context, R.layout.book_home_page_layout, null)
+        homePage = inflate(context, R.layout.book_home_page2_layout, null)
         pageView = HorizontalItemPage(context)
         mAdFrameLayout = FrameLayout(context)
         addView(pageView)
@@ -110,7 +112,7 @@ class HorizontalPage : FrameLayout, Observer {
             noticePageListener?.loadTransCoding()
         }
         //设置TextColor
-        val textColor = getColor()
+        val textColor = ReadQueryUtil.getColor(resources)
 
         novel_time.setTextColor(textColor)
         origin_tv.setTextColor(textColor)
@@ -127,21 +129,6 @@ class HorizontalPage : FrameLayout, Observer {
         ThemeUtil.getModePrimaryBackground(resources, homePage)
         //进度条
         ThemeUtil.getModePrimaryBackground(resources, loadView)
-    }
-
-    private fun getColor():Int{
-        //设置TextColor
-        var colorInt = when (ReadConfig.MODE) {
-            51 -> R.color.reading_operation_text_color_first
-            52 -> R.color.reading_text_color_second
-            53 -> R.color.reading_text_color_third
-            54 -> R.color.reading_text_color_fourth
-            55 -> R.color.reading_text_color_fifth
-            56 -> R.color.reading_text_color_sixth
-            61 -> R.color.reading_text_color_night
-            else -> R.color.reading_operation_text_color_first
-        }
-        return resources.getColor(colorInt)
     }
 
     override fun onDetachedFromWindow() {
@@ -183,6 +170,7 @@ class HorizontalPage : FrameLayout, Observer {
     private fun onReSeparate() = DataProvider.getInstance().onReSeparate()
 
     fun onRedrawPage() {
+        mAdFrameLayout.removeAllViews()
         if (tag == ReadViewEnums.PageIndex.current) {
             onReSeparate()
             viewNotify = when (mCursor!!.sequence) {
@@ -259,7 +247,7 @@ class HorizontalPage : FrameLayout, Observer {
         homePage.slogan_tv.setTextView(2f, context.resources.getString(R.string.slogan))
         homePage.product_name_tv.setTextView(1f, context.resources.getString(R.string.app_name))
         //封面字颜色
-        var color = getColor()
+        var color = ReadQueryUtil.getHomePageColor(resources)
         homePage.book_name_tv.setTextColor(color)
         homePage.book_auth_tv.setTextColor(color)
         homePage.slogan_tv.setTextColor(color)
@@ -377,8 +365,9 @@ class HorizontalPage : FrameLayout, Observer {
                 return
             }
             //判断item 需要的章节是否在缓存
-            val chapter = DataProvider.getInstance().chapterMap[cursor.sequence]
-            if (chapter != null) {//加载数据
+            val novelChapter = DataProvider.getInstance().chapterLruCache[cursor.sequence]
+            if (novelChapter != null) {//加载数据
+                val chapter = novelChapter.chapter
                 preDrawPage(cursor, chapter)
             } else {//无缓存数据
                 entrance(cursor)
@@ -391,10 +380,10 @@ class HorizontalPage : FrameLayout, Observer {
         private fun preDrawPage(cursor: ReadCursor, chapter: Chapter) {
             //获取数据
             ReadState.chapterName = chapter.chapter_name
-            val chapterList = DataProvider.getInstance().chapterSeparate[cursor.sequence]
+            val chapterList = DataProvider.getInstance().chapterLruCache[cursor.sequence].separateList
             try {
-                pageIndex = ReadQueryUtil.findPageIndexByOffset(cursor.offset, chapterList!!)
-            } catch (e: ReadCustomException.PageIndexException) {
+                pageIndex = ReadQueryUtil.findPageIndexByOffset(cursor.offset, chapterList)
+            } catch (e: Exception) {
                 showErrorView(mCursor!!)
                 return
             }
