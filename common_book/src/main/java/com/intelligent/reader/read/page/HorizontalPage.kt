@@ -466,7 +466,11 @@ class HorizontalPage : FrameLayout, Observer {
         private var isShowMenu: Boolean = false
 
         override fun onTouchEvent(event: MotionEvent): Boolean {
-            return mGestureDetector.onTouchEvent(event)
+            return if (viewState == ReadViewEnums.ViewState.loading||viewState == ReadViewEnums.ViewState.error){
+                return false
+            }else{
+                mGestureDetector.onTouchEvent(event)
+            }
         }
 
         private val mGestureDetector by lazy {

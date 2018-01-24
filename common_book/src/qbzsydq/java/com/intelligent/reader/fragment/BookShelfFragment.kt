@@ -26,6 +26,7 @@ import com.intelligent.reader.util.BookShelfRemoveHelper
 import com.intelligent.reader.util.ShelfGridLayoutManager
 import com.intelligent.reader.view.BookDeleteDialog
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.layout_head.view.*
 import kotlinx.android.synthetic.qbzsydq.fragment_bookshelf.*
@@ -437,7 +438,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
 
     private fun showToastDelay(textId: Int) {
         if (!isAdded) return
-        Flowable.timer(2000, TimeUnit.MILLISECONDS)
+        Observable.timer(2000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     if (activity != null && !activity.isFinishing) {
@@ -448,7 +449,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
 
     private fun showToastDelay(text: String) {
         if (!isAdded) return
-        Flowable.timer(2000, TimeUnit.MILLISECONDS)
+        Observable.timer(2000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     if (activity != null && !activity.isFinishing) {

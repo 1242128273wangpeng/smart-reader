@@ -290,6 +290,12 @@ public class SplashActivity extends FrameActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        PlatformSDK.lifecycle().onResume();
+    }
+
+    @Override
     protected void onRestart() {
         super.onRestart();
     }
@@ -297,6 +303,12 @@ public class SplashActivity extends FrameActivity {
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        PlatformSDK.lifecycle().onPause();
     }
 
     @Override
