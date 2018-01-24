@@ -256,9 +256,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (hasFocus) {
-            window.decorView.postDelayed({ window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY }, 1500)
-        }
 
         if (hasFocus && !readStatus.isMenuShow) {
             window.decorView.postDelayed(immersiveRunable, 1500)
@@ -315,6 +312,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     //ReadSettingView start
     override fun onReadCatalog() {
+        showMenu(false)
         mReadPresenter.onReadCatalog()
         read_catalog_mark_drawer.openDrawer(GravityCompat.START)
     }

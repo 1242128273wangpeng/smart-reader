@@ -337,10 +337,10 @@ class DataProvider : DisposableAndroidViewModel() {
                 if (it != -1) {
                     chapterLruCache[it].separateList =  ReadSeparateHelper.initTextSeparateContent(chapterLruCache[it].chapter.content, chapterLruCache[it].chapter.chapter_name)
                     loadAd(it)
-                }else {
+                }/*else {
                     chapterLruCache.put(-1, NovelChapter(Chapter(),arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf()))))
                     chapterKey.add(-1)
-                }
+                }*/
             }
         }
     }
