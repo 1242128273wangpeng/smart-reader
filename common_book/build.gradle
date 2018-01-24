@@ -339,7 +339,7 @@ N多网	        blf1298_10885_001
             shrinkResources false
 
             //便于执行monkey, 跑monkey时 这是为true
-            buildConfigField "boolean", "IS_LEAKCANARY_DISABLE", "true"
+            buildConfigField "boolean", "IS_LEAKCANARY_DISABLE", "false"
 
             fixChannelAppName(getOwner())
             addManifestPlaceholders([CHANNEL_NAME: 'blf1298_11974_001'])
