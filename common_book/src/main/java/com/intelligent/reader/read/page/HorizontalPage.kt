@@ -83,7 +83,6 @@ class HorizontalPage : FrameLayout, Observer {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, noticePageListener: NoticePageListener) : super(context, attrs, defStyleAttr) {
         this.noticePageListener = noticePageListener
         isDrawingCacheEnabled = true
-        drawingCacheQuality = View.DRAWING_CACHE_QUALITY_LOW
         init()
     }
 
@@ -103,8 +102,8 @@ class HorizontalPage : FrameLayout, Observer {
         addView(loadView)
     }
 
-    override fun getDrawingCache(): Bitmap {
-        if(hasAd || hasBigAd){
+    override fun getDrawingCache(): Bitmap? {
+        if(ReadViewEnums.PageIndex.current.equals(tag) && (hasAd || hasBigAd)){
             destroyDrawingCache()
         }
         return super.getDrawingCache()

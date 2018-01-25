@@ -369,7 +369,8 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
     private fun flipNextPage() {
         synchronized(mTextureView as Object) {
-            mTextureView!!.firstTexture = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current).drawingCache
+            if(!mTextureView!!.hasFirstTexture())
+                mTextureView!!.firstTexture = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current).drawingCache
 
             mTextureView!!.secondTexture = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.next).drawingCache
         }
