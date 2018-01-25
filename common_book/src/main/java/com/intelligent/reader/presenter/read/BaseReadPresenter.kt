@@ -210,7 +210,6 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     protected var myDialog: MyDialog? = null
     protected var type = -1
     var currentThemeMode: String? = null
-        get() = null
     private var lastMode = -1
 
     init {

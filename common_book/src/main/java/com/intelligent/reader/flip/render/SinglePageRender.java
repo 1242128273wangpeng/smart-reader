@@ -43,9 +43,6 @@ import net.lzbook.kit.data.bean.ReadViewEnums.PageIndex;
  */
 
 public class SinglePageRender extends PageRender {
-    public interface LoadBitmapListener {
-        Bitmap loadBitmap(PageIndex index);
-    }
 
     public interface PageFlipStateListener {
         boolean backward();
@@ -55,13 +52,8 @@ public class SinglePageRender extends PageRender {
         boolean restore();
     }
 
-    private LoadBitmapListener listener;
 
     private PageFlipStateListener mPageFlipStateListener;
-
-    public void setListener(LoadBitmapListener listener) {
-        this.listener = listener;
-    }
 
     public void setPageFlipStateListenerListener(PageFlipStateListener mPageFlipStateListener) {
         this.mPageFlipStateListener = mPageFlipStateListener;
@@ -85,35 +77,11 @@ public class SinglePageRender extends PageRender {
     public void onDrawFrame() {
         Page page = mPageFlip.getFirstPage();
         page.deleteUnusedTextures();
-
-
-
         // 2. handle drawing command triggered from finger moving and animating 处理滑动命令
         if (mDrawCommand == DRAW_MOVING_FRAME ||
                 mDrawCommand == DRAW_ANIMATING_FRAME) {
             // is forward flip 向前滑动
-            if (mPageFlip.getFlipState() == PageFlipState.FORWARD_FLIP) {
-                if (!page.isFirstTextureSet()) {
-//                drawPage(--mPageNo, 1);
-                    page.setFirstTexture(listener.loadBitmap(PageIndex.current));
-                }
-                // check if second texture of first page is valid, if not,//第一页第二页是否有效
-                // create new one
-                if (!page.isSecondTextureSet()) {
-//                    drawPage(mPageNo + 1, 1);
-                    page.setSecondTexture(listener.loadBitmap(PageIndex.next));
-                }
-            }
-            // in backward flip, check first texture of first page is valid 向后翻页 检查第一个页是否有效
-            else {
-                if (!page.isFirstTextureSet()) {
-//                drawPage(--mPageNo, 1);
-                    page.setFirstTexture(listener.loadBitmap(PageIndex.previous));
-                }
-                if (!page.isSecondTextureSet()) {
-                    page.setSecondTexture(listener.loadBitmap(PageIndex.current));
-                }
-            }
+
 
             // draw frame for page flip 翻页
             mPageFlip.drawFlipFrame();
@@ -132,10 +100,6 @@ public class SinglePageRender extends PageRender {
         // draw stationary page without flipping 没有翻转的 画静止页
         else if (mDrawCommand == DRAW_FULL_PAGE || mDrawCommand == DRAW_DELETE_AFTER_FIRST_PAGE) {
 
-            if (!page.isFirstTextureSet()) {
-                page.setFirstTexture(listener.loadBitmap(PageIndex.current));
-            }
-
             mPageFlip.drawPageFrame();
 
             isShouldShow = false;
@@ -143,13 +107,12 @@ public class SinglePageRender extends PageRender {
 //            GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         }
 
-
-        page.deleteUnusedTextures();
-
         // 3. send message to main thread to notify drawing is ended so that
         // we can continue to calculate next animation frame if need.
         // Remember: the drawing operation is always in GL thread instead of
         // main thread
+
+        page.deleteUnusedTextures();
 
         sendMessage();
 
@@ -158,7 +121,7 @@ public class SinglePageRender extends PageRender {
     @Override
     public void onDrawNextFrame(boolean isFlow) {
         //重新画
-        Page page = mPageFlip.getFirstPage();
+//        Page page = mPageFlip.getFirstPage();
 //        if (isFlow) {
 //            if (!page.isSecondTextureSet()) {
 //                drawPage(++mPageNo, 1);

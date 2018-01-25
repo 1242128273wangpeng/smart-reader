@@ -694,9 +694,9 @@ public class PageFlip {
                 dx = (touchX - mStartTouchP.x);
                 mFlipState = PageFlipState.BACKWARD_FLIP;
 
-                if (page.isFirstTextureSet()) {
-                    page.setSecondTextureWithFirst();
-                }
+//                if (page.isFirstTextureSet()) {
+//                    page.setSecondTextureWithFirst();
+//                }
             } else if (mListener != null &&
                     mListener.canFlipForward() &&
                     (dx < 0 && originP.x > 0 || dx > 0 && originP.x < 0)) {
@@ -836,12 +836,12 @@ public class PageFlip {
                 computeScrollPointsForClickingFlip(touchX, start, end);
             }
 
-            if (mFlipState == PageFlipState.FORWARD_FLIP) {
-            } else {
-                if (page.isFirstTextureSet()) {
-                    page.setSecondTextureWithFirst();
-                }
-            }
+//            if (mFlipState == PageFlipState.FORWARD_FLIP) {
+//            } else {
+//                if (page.isFirstTextureSet()) {
+//                    page.setSecondTextureWithFirst();
+//                }
+//            }
 
         }
 
@@ -854,6 +854,7 @@ public class PageFlip {
             if(mFlipState == PageFlipState.BACKWARD_RESTORE_FLIP){
                 dur /= 2;
             }
+
             Log.e("PageFlip", "startScroll " + dur);
             mScroller.startScroll(start.x, start.y,
                     end.x - start.x, end.y - start.y,
@@ -1095,27 +1096,6 @@ public class PageFlip {
         return mPages[FIRST_PAGE];
     }
 
-    /**
-     * Get the second page
-     * <p>
-     * Second page is only valid in double page mode, if it is null, that means
-     * there is only one page for whole screen whatever the screen is portrait
-     * or landscape
-     * </p>
-     *
-     * @return the second page, null if no second page
-     */
-    public Page getSecondPage() {
-        return mPages[SECOND_PAGE];
-    }
-
-    /**
-     * Delete unused textures
-     */
-    public void deleteUnusedTextures() {
-        if (mPages[FIRST_PAGE] != null) mPages[FIRST_PAGE].deleteUnusedTextures();
-        if (mPages[SECOND_PAGE] != null) mPages[SECOND_PAGE].deleteUnusedTextures();
-    }
 
     /**
      * Draw flipping frame 画翻转

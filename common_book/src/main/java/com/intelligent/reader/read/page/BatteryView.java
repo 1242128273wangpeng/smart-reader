@@ -103,24 +103,34 @@ public class BatteryView extends ImageView {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
-        if (mBatInfoReceiver == null) {
-            mBatInfoReceiver = new BatteryReceiver();
-            getContext().registerReceiver(mBatInfoReceiver,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        }
+        post(new Runnable() {
+            @Override
+            public void run() {
+                if (mBatInfoReceiver == null) {
+                    mBatInfoReceiver = new BatteryReceiver();
+                    getContext().registerReceiver(mBatInfoReceiver,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+                }
 
-        mBatInfoReceiver.listeners.add(this);
+                mBatInfoReceiver.listeners.add(BatteryView.this);
+            }
+        });
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-
-        mBatInfoReceiver.listeners.remove(this);
-
-        if(mBatInfoReceiver.listeners.isEmpty() && mBatInfoReceiver != null){
-            getContext().unregisterReceiver(mBatInfoReceiver);
-            mBatInfoReceiver = null;
-        }
+        post(new Runnable() {
+            @Override
+            public void run() {
+                if(mBatInfoReceiver != null && !mBatInfoReceiver.listeners.isEmpty()){
+                    mBatInfoReceiver.listeners.remove(BatteryView.this);
+                    if(mBatInfoReceiver.listeners.isEmpty()) {
+                        getContext().unregisterReceiver(mBatInfoReceiver);
+                        mBatInfoReceiver = null;
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -138,6 +148,7 @@ public class BatteryView extends ImageView {
                 percent = level / scale;
                 for (BatteryView batteryView: listeners) {
                     batteryView.postInvalidate();
+                    batteryView.destroyDrawingCache();
                 }
             }
         }

@@ -55,6 +55,7 @@ public class BookCoverViewModel extends DisposableAndroidViewModel {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
                         if (mBookCoverViewCallback != null) {
                             mBookCoverViewCallback.onFail(throwable.getMessage());
                         }

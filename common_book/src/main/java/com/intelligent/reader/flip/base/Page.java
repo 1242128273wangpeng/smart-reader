@@ -254,9 +254,7 @@ public class Page {
                              INVALID_TEXTURE_ID,
                              INVALID_TEXTURE_ID};
         mUnusedTexSize = 0;
-        mUnusedTexIDs = new int[] {INVALID_TEXTURE_ID,
-                                   INVALID_TEXTURE_ID,
-                                   INVALID_TEXTURE_ID};
+        mUnusedTexIDs = new int[20];
 
         createVertexesBuffer();
         buildVertexesOfFullPage();
@@ -569,7 +567,7 @@ public class Page {
      * @param b Bitmap object for creating texture
      */
     public void setFirstTexture(Bitmap b) {
-        if (b == null)
+        if (b == null || b.isRecycled())
             return;
 
         if (mTexIDs[FIRST_TEXTURE_ID] > INVALID_TEXTURE_ID) {
@@ -597,7 +595,7 @@ public class Page {
      * @param b Bitmap object for creating texture
      */
     public void setSecondTexture(Bitmap b) {
-        if (b == null)
+        if (b == null || b.isRecycled())
             return;
         if (mTexIDs[SECOND_TEXTURE_ID] > INVALID_TEXTURE_ID) {
             mUnusedTexIDs[mUnusedTexSize++] = mTexIDs[SECOND_TEXTURE_ID];
