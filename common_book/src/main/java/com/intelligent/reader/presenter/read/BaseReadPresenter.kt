@@ -329,7 +329,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     private fun initBookState() {
         // 判断是否订阅
         mBookDaoHelper = BookDaoHelper.getInstance()
-        
+
         isSubed = mBookDaoHelper!!.isBookSubed(ReadState.book_id)
         AppLog.e(TAG, "初始化书籍状态: " + ReadState.book_id)
         bookChapterDao = BookChapterDao(readReference?.get()?.applicationContext, ReadState.book_id)
@@ -404,8 +404,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     private fun getReaderState(readerState: Bundle?) {
         readerState?.let {
             ReadState.sequence = it.getInt("sequence", 0)
-            ReadState.sequence = it.getInt("sequence", 0)
-     
+
             // 书签偏移量
             ReadState.offset = it.getInt("offset", 0)
             // 获取本书
