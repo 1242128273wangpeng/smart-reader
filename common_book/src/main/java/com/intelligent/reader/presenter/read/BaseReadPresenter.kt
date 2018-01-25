@@ -419,6 +419,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     private fun getReaderState(readerState: Bundle?) {
         readerState?.let {
             readStatus?.sequence = it.getInt("sequence", 0)
+            ReadState.sequence = it.getInt("sequence", 0)
             val requestItem = it.getSerializable(Constants.REQUEST_ITEM) as RequestItem?
             if (requestItem != null) {
                 readStatus!!.setRequestItem(requestItem)
@@ -427,6 +428,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             ReadState.offset = it.getInt("offset", 0)
             // 获取本书
             readStatus?.book = it.getSerializable("book") as Book?
+            ReadState.book = it.getSerializable("book") as Book?
 
             currentThemeMode = it.getString("thememode", readReference?.get()?.mThemeHelper?.mode)
         }
