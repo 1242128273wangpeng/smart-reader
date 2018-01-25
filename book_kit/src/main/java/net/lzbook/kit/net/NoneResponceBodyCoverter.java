@@ -1,8 +1,5 @@
 package net.lzbook.kit.net;
 
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
-
 import net.lzbook.kit.data.NoBodyEntity;
 
 import java.io.IOException;

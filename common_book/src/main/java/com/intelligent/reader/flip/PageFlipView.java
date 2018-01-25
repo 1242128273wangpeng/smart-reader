@@ -17,6 +17,7 @@ package com.intelligent.reader.flip;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.os.Handler;
 import android.os.Message;
@@ -35,6 +36,8 @@ import com.intelligent.reader.util.DisplayUtils;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+
+import kotlin.jvm.Volatile;
 
 /**
  * Page flip view
@@ -101,6 +104,12 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, O
         mFlingDistance = (int) (MIN_DISTANCE_FOR_FLING * density);
     }
 
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        setAlpha(0F);
+        super.onSizeChanged(w, h, oldw, oldh);
+    }
+
     /**
      * Is auto page mode enabled?
      *
@@ -160,6 +169,17 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, O
     private boolean downActioned = false;
     private float downX = 0F;
 
+    public volatile Bitmap firstTexture = null;
+    public volatile Bitmap secondTexture = null;
+
+    public synchronized boolean hasFirstTexture(){
+        return firstTexture != null || getmPageRender().mPageFlip.getFirstPage().isFirstTextureSet();
+    }
+
+    public synchronized boolean hasSecondTexture(){
+        return secondTexture != null || getmPageRender().mPageFlip.getFirstPage().isSecondTextureSet();
+    }
+
     /**
      * Handle finger down event
      *
@@ -203,6 +223,9 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, O
             queueEvent(new Runnable() {
                 @Override
                 public void run() {
+
+                    fillTextures();
+
                     if (mPageFlip.onFingerMove(x, y)) {
 
                         if (mPageRender != null &&
@@ -232,6 +255,7 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, O
             queueEvent(new Runnable() {
                            @Override
                            public void run() {
+                               fillTextures();
 
                                boolean forceFlip = Math.abs(velocity) > mMinimumVelocity;
                                forceFlip = forceFlip && mFlingDistance < Math.abs(downX - x);
@@ -249,6 +273,18 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, O
         }
 
         downActioned = false;
+    }
+
+    private synchronized void fillTextures() {
+        if(firstTexture != null && !firstTexture.isRecycled()){
+            mPageFlip.getFirstPage().setFirstTexture(firstTexture);
+            firstTexture = null;
+        }
+
+        if(secondTexture != null && !secondTexture.isRecycled()){
+            mPageFlip.getFirstPage().setSecondTexture(secondTexture);
+            secondTexture = null;
+        }
     }
 
     public void onDrawNextFrame(boolean isFlow) {

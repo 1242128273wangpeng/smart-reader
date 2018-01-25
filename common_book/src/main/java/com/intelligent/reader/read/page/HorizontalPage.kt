@@ -1,6 +1,7 @@
 package com.intelligent.reader.read.page
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.GestureDetector
@@ -100,6 +101,13 @@ class HorizontalPage : FrameLayout, Observer {
         addView(readTop)
         addView(readBottom)
         addView(loadView)
+    }
+
+    override fun getDrawingCache(): Bitmap {
+        if(hasAd || hasBigAd){
+            destroyDrawingCache()
+        }
+        return super.getDrawingCache()
     }
 
     private fun setupView() {

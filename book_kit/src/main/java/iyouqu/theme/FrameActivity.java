@@ -551,6 +551,8 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
 //            ((ViewGroup)getWindow().getDecorView()).removeAllViews();
 //        }
         ATManager.removeActivity(this);
+
+
     }
 
     @Override

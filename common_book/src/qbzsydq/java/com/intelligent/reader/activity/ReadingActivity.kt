@@ -15,7 +15,9 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
+import com.intelligent.reader.BuildConfig
 import com.intelligent.reader.R
+import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.CatalogMarkFragment
 import com.intelligent.reader.presenter.read.CatalogMarkPresenter
 import com.intelligent.reader.presenter.read.ReadOptionPresenter
@@ -254,9 +256,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (hasFocus) {
-            window.decorView.postDelayed({ window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY }, 1500)
-        }
 
         if (hasFocus && !readStatus.isMenuShow) {
             window.decorView.postDelayed(immersiveRunable, 1500)
@@ -291,6 +290,10 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
             e.printStackTrace()
         }
         super.onDestroy()
+
+        if (BuildConfig.DEBUG) {
+            BookApplication.getRefWatcher().watch(this)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -309,6 +312,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     //ReadSettingView start
     override fun onReadCatalog() {
+        showMenu(false)
         mReadPresenter.onReadCatalog()
         read_catalog_mark_drawer.openDrawer(GravityCompat.START)
     }

@@ -1,8 +1,6 @@
 package net.lzbook.kit.net;
 
 import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
-import com.google.gson.reflect.TypeToken;
 
 import net.lzbook.kit.data.NoBodyEntity;
 import net.lzbook.kit.data.bean.Chapter;
@@ -64,7 +62,6 @@ public class GsonDataFilterFactory extends Converter.Factory {
     @Nullable
     @Override
     public Converter<?, RequestBody> requestBodyConverter(Type type, Annotation[] parameterAnnotations, Annotation[] methodAnnotations, Retrofit retrofit) {
-        TypeAdapter<?> adapter = gson.getAdapter(TypeToken.get(type));
-        return new BookRequestBodyConverter<>(gson, adapter);
+        return new BookRequestBodyConverter<>();
     }
 }

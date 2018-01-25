@@ -26,6 +26,8 @@ class TimeTextView : TextView {
         override fun run() {
             mCalendar.timeInMillis = System.currentTimeMillis()
             text = DateFormat.format("k:mm", mCalendar)
+
+            destroyDrawingCache()
             if(isAttach) {
                 postDelayed(changeTimeRunnable, 30000)
             }
