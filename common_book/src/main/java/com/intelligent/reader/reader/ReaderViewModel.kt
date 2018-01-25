@@ -27,54 +27,15 @@ class ReaderViewModel : DisposableAndroidViewModel {
     //===============================================ReadDataFactory===================================================
     var toChapterStart: Boolean = false
     //阅读状态
-    var readStatus: ReadStatus? = null
     //
-    var tempCurrentPage: Int = 0
-    var tempPageCount: Int = 0
-    var tempSequence: Int = 0
-    var tempOffset: Int = 0
-    var tempChapterName: String? = null
     //
     var chapterList: ArrayList<Chapter>? = null
     var nextChapter: Chapter? = null
     var preChapter: Chapter? = null
-    var currentChapter: Chapter? = null
     //
-    var tempChapterNameList: ArrayList<NovelLineBean>? = null
-    var tempNextChapter: Chapter? = null
-    var tempPreviousChapter: Chapter? = null
-    var tempCurrentChapter: Chapter? = null
-    var tempLineList: ArrayList<ArrayList<NovelLineBean>>? = null
     //接口回调
     var mReadDataListener: ReadDataListener? = null
 
-    fun saveData() {
-        tempCurrentPage = readStatus?.currentPage!!
-        tempPageCount = readStatus?.pageCount!!
-        tempSequence = readStatus?.sequence!!
-        tempOffset = readStatus?.offset!!
-        tempChapterName = ReadState.chapterName
-        tempChapterNameList = readStatus?.chapterNameList
-        tempNextChapter = nextChapter
-        tempCurrentChapter = currentChapter
-        tempPreviousChapter = preChapter
-        tempLineList = readStatus?.mLineList
-    }
-
-    fun restore() {
-        readStatus?.currentPage = tempCurrentPage
-        readStatus?.pageCount = tempPageCount
-        readStatus?.sequence = tempSequence
-        readStatus?.offset = tempOffset
-        ReadState.chapterName = tempChapterName
-//        readStatus?.chapterName = tempChapterName
-//        readStatus?.mCurrentChapter = currentChapter
-        readStatus?.chapterNameList = tempChapterNameList
-        nextChapter = tempNextChapter
-        currentChapter = tempCurrentChapter
-        preChapter = tempPreviousChapter
-        readStatus?.mLineList = tempLineList
-    }
 //===============================================Repository Factory===================================================
 
     var mReaderRepository: ReaderRepository? = null
@@ -117,8 +78,12 @@ class ReaderViewModel : DisposableAndroidViewModel {
         addDisposable(mReaderRepository!!.getBookSource(bookId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ mReaderBookSourceViewCallback?.onBookSource(it) },
-                        { mReaderBookSourceViewCallback?.onBookSourceFail(it.message) }))
+                .subscribe({
+                    mReaderBookSourceViewCallback?.onBookSource(it)
+                },
+                        {
+                            mReaderBookSourceViewCallback?.onBookSourceFail(it.message)
+                        }))
     }
 
 
@@ -144,21 +109,21 @@ class ReaderViewModel : DisposableAndroidViewModel {
 
         addDisposable(
                 mBookCoverRepository!!.getChapterList(requestItem)
-                .doOnNext { chapters ->
-                    // 已被订阅则加入数据库
-                    mBookCoverRepository?.saveBookChapterList(chapters, requestItem)
-                }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ chapters ->
-                    if (mBookChapterViewCallback != null) {
-                        mBookChapterViewCallback?.onChapterList(chapters)
-                    }
-                }, { throwable ->
-                    if (mBookChapterViewCallback != null) {
-                        mBookChapterViewCallback?.onFail(throwable.message.toString())
-                    }
-                }))
+                        .doOnNext { chapters ->
+                            // 已被订阅则加入数据库
+                            mBookCoverRepository?.saveBookChapterList(chapters, requestItem)
+                        }
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({ chapters ->
+                            if (mBookChapterViewCallback != null) {
+                                mBookChapterViewCallback?.onChapterList(chapters)
+                            }
+                        }, { throwable ->
+                            if (mBookChapterViewCallback != null) {
+                                mBookChapterViewCallback?.onFail(throwable.message.toString())
+                            }
+                        }))
     }
 
     /**
@@ -203,111 +168,14 @@ class ReaderViewModel : DisposableAndroidViewModel {
 
     }
 
-    fun getChapterByAuto(what: Int, sequence: Int): Chapter? {
-        var sequence = sequence
-        if (chapterList == null || chapterList?.isEmpty()!!) {
-            chapterList = BookChapterDao(BaseBookApplication.getGlobalContext(), readStatus?.book_id).queryBookChapter()
-            return null
-        }
-        if (sequence < 0) {
-            sequence = 0
-        } else if (sequence >= chapterList?.size!!) {
-            sequence = chapterList?.size!! - 1
-        }
-        var chapter: Chapter? = chapterList?.get(sequence)
-        try {
-            val content = DataCache.getChapterFromCache(chapter!!.sequence, chapter.book_id)
-            if (!TextUtils.isEmpty(content) && !("null" == content || "isChapterExists" == content)) {
-                chapter.content = content
-                chapter.isSuccess = true
-            } else {
-                chapter = null
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return chapter
-    }
-
-    fun getChapter(what: Int, sequence: Int): Chapter? {
-        var sq = sequence
-        if (chapterList == null || chapterList!!.isEmpty()) {
-            chapterList = BookChapterDao(BaseBookApplication.getGlobalContext(), readStatus?.book_id).queryBookChapter()
-            return null
-        }
-        if (sequence < 0) {
-            sq = 0
-        } else if (sequence >= chapterList!!.size) {
-            sq = chapterList!!.size - 1
-        }
-        var chapter: Chapter? = chapterList!!.get(sq)
-        try {
-            val content = DataCache.getChapterFromCache(chapter!!.sequence, chapter.book_id)
-            if (!TextUtils.isEmpty(content) && !("null" == content || "isChapterExists" == content)) {
-                chapter.content = content
-                chapter.isSuccess = true
-            } else {
-                chapter = null
-                mReadDataListener?.getChapter(what, sequence)
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return chapter
-    }
-
-    fun getPreviousChapter(): Chapter? {
-        return preChapter
-    }
-
-    fun getNextsChapter(): Chapter? {
-        return nextChapter
-    }
 
     operator fun next(): Boolean {
-        saveData()
         var isPrepared = false
         return isPrepared
     }
 
-    private fun sendPVData() {
-        Constants.endReadTime = System.currentTimeMillis() / 1000L
-        val params = HashMap<String, String>()
-        params.put("book_id", readStatus?.book_id!!)
-        val book_source_id: String
-        if (Constants.QG_SOURCE == readStatus?.book?.site) {
-            book_source_id = readStatus?.book?.book_id!!
-        } else {
-            book_source_id = readStatus?.book?.book_source_id!!
-        }
-        params.put("book_source_id", book_source_id)
-        if (currentChapter != null) {
-            params.put("chapter_id", currentChapter!!.chapter_id)
-        }
-        val channelCode: String
-        if (Constants.QG_SOURCE == readStatus?.book?.site) {
-            channelCode = "1"
-        } else {
-            channelCode = "2"
-        }
-        params.put("channel_code", channelCode)
-        params.put("chapter_read", "1")
-        params.put("chapter_pages", readStatus?.pageCount.toString())
-        params.put("start_time", Constants.startReadTime.toString())
-        params.put("end_time", Constants.endReadTime.toString())
-
-//        StatisticManager.getStatisticManager().sendReadPvData(params)
-    }
-
-    fun nextByAutoRead(): Boolean {
-        saveData()
-        var isPrepared = false
-
-        return isPrepared
-    }
 
     fun previous(): Boolean {
-        saveData()
         var isPrepared = false
         return isPrepared
     }
@@ -349,8 +217,9 @@ class ReaderViewModel : DisposableAndroidViewModel {
     }
 
     interface ReadDataListener {
-//        fun freshPage()
+        //        fun freshPage()
         fun gotoOver()
+
         fun showToast(str: Int)
         fun downLoadNovelMore()
         fun initBookStateDeal()

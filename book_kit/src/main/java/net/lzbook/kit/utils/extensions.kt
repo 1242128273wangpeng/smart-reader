@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.support.annotation.AttrRes
 import android.support.annotation.IdRes
+import android.support.annotation.StringRes
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
@@ -107,7 +108,7 @@ fun Context.toastShort(msg: String?, debug: Boolean = true) {
 
 }
 
-fun Context.toastShort(@IdRes id: Int, debug: Boolean = true) {
+fun Context.toastShort(@StringRes id: Int, debug: Boolean = true) {
     if (debug && !msDebuggAble) {
         return
     }
@@ -126,7 +127,7 @@ fun Context.toastLong(msg: String?, debug: Boolean = true) {
     }
 }
 
-fun Context.toastLong(@IdRes id: Int, debug: Boolean = true) {
+fun Context.toastLong(@StringRes id: Int, debug: Boolean = true) {
     if (debug && !msDebuggAble) {
         return
     }

@@ -6,7 +6,6 @@ import com.quduquxie.QuInitialization;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.component.service.DownloadService;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.ReadStatus;
 import net.lzbook.kit.encrypt.MainExtractorInterface;
 import net.lzbook.kit.encrypt.URLBuilderIntterface;
 import net.lzbook.kit.encrypt.v17.MainExtractor;
@@ -38,7 +37,6 @@ public abstract class BaseBookApplication extends Application {
     private static DisplayMetrics dm;
     private static URLBuilderIntterface urlBuilderIntterface;
     protected SharedPreferences sp;
-    private WeakReference<ReadStatus> readStatusWeakReference;
     private MainExtractorInterface mainExtractorInterface;
 
     public static BaseBookApplication getGlobalContext() {
@@ -65,14 +63,6 @@ public abstract class BaseBookApplication extends Application {
 
     public static DisplayMetrics getDisplayMetrics() {
         return dm;
-    }
-
-    public ReadStatus getReadStatus() {
-        return readStatusWeakReference.get();
-    }
-
-    public void setReadStatus(ReadStatus readStatus) {
-        readStatusWeakReference = new WeakReference<>(readStatus);
     }
 
     public MainExtractorInterface getMainExtractorInterface() {

@@ -104,6 +104,10 @@ public class SinglePageRender extends PageRender {
 
             isShouldShow = false;
 
+            if(mDrawCommand == DRAW_DELETE_AFTER_FIRST_PAGE){
+                mPageFlip.getFirstPage().deleteAllTextures();
+            }
+
 //            GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         }
 
@@ -266,8 +270,8 @@ public class SinglePageRender extends PageRender {
                 return true;
             }
         }else if(DRAW_DELETE_AFTER_FIRST_PAGE == mDrawCommand){
-            final PageFlipState state = mPageFlip.getFlipState();
-            mPageFlip.getFirstPage().deleteAllTextures();
+//            final PageFlipState state = mPageFlip.getFlipState();
+//            mPageFlip.getFirstPage().deleteAllTextures();
             mDrawCommand = DRAW_FULL_PAGE;
         }
         return false;

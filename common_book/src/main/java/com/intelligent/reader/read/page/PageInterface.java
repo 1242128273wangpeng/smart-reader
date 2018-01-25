@@ -4,14 +4,13 @@ import com.intelligent.reader.read.help.CallBack;
 import com.intelligent.reader.read.help.NovelHelper;
 import com.intelligent.reader.reader.ReaderViewModel;
 
-import net.lzbook.kit.data.bean.ReadStatus;
 
 import android.app.Activity;
 import android.view.KeyEvent;
 
 public interface PageInterface {
 
-    void init(Activity activity, ReadStatus readStatus, NovelHelper novelHelper);
+    void init(Activity activity, NovelHelper novelHelper);
 
     void freshTime(CharSequence time);
 

@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.annotation.IdRes
+import android.support.annotation.StringRes
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
@@ -27,7 +27,6 @@ import net.lzbook.kit.data.NullCallBack
 import net.lzbook.kit.data.bean.*
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.request.UrlUtils
-import net.lzbook.kit.request.own.OtherRequestService
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils
@@ -49,8 +48,6 @@ class ReadOptionPresenter : ReadOption.Presenter {
 
     val bookDaoHelper: BookDaoHelper
 
-    private var readStatus: ReadStatus
-
     private var activity: WeakReference<Activity>
 
 
@@ -59,35 +56,34 @@ class ReadOptionPresenter : ReadOption.Presenter {
     private var isSourceListShow: Boolean = false
     private var loadingPage: LoadingPage? = null
 
-    constructor(act: Activity, rs: ReadStatus, factory: ReaderViewModel) {
+    constructor(act: Activity, factory: ReaderViewModel) {
 
         activity = WeakReference(act)
 
-        readStatus = rs
         mReaderViewModel = factory
 
         bookDaoHelper = BookDaoHelper.getInstance()
     }
 
     override fun cache() {
-        if (!Book.isOnlineType(readStatus.book.book_type)) {
+        if (!Book.isOnlineType(ReadState.book.book_type)) {
             showToastShort("网络不给力，请稍后再试")
             return
         }
 
-        if (!bookDaoHelper.isBookSubed(readStatus.book_id) && !bookDaoHelper.insertBook(readStatus.book)) {
+        if (!bookDaoHelper.isBookSubed(ReadState.book_id) && !bookDaoHelper.insertBook(ReadState.book)) {
             return
         }
         if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
             showToastShort("网络不给力，请稍后再试")
             return
         }
-        clickDownload(activity.get()!!, readStatus.book as Book, Math.max(readStatus.sequence, 0))
+        clickDownload(activity.get()!!, ReadState.book as Book, Math.max(ReadState.sequence, 0))
     }
 
     override fun showMore() {
         val data = java.util.HashMap<String, String>()
-        data.put("bookid", readStatus.book_id)
+        data.put("bookid", ReadState.book_id)
         ReadState.chapterId?.let {
             data.put("chapterid", it)
         }
@@ -142,9 +138,9 @@ class ReadOptionPresenter : ReadOption.Presenter {
                 Toast.makeText(context, R.string.reading_cache_hint, Toast.LENGTH_SHORT).show()
 
                 val data = java.util.HashMap<String, String>()
-                data.put("bookid", readStatus.book_id)
-                if (mReaderViewModel != null && mReaderViewModel.currentChapter != null) {
-                    data.put("chapterid", mReaderViewModel!!.currentChapter!!.chapter_id)
+                data.put("bookid", ReadState.book_id)
+                if (ReadState.currentChapter != null) {
+                    data.put("chapterid", ReadState.currentChapter!!.chapter_id)
                 }
                 data.put("type", "1")
                 StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
@@ -163,9 +159,9 @@ class ReadOptionPresenter : ReadOption.Presenter {
                 Toast.makeText(context, R.string.reading_cache_hint, Toast.LENGTH_SHORT).show()
 
                 val data = java.util.HashMap<String, String>()
-                data.put("bookid", readStatus.book_id)
-                if (mReaderViewModel != null && mReaderViewModel.currentChapter != null) {
-                    data.put("chapterid", mReaderViewModel!!.currentChapter!!.chapter_id)
+                data.put("bookid", ReadState.book_id)
+                if (ReadState.currentChapter != null) {
+                    data.put("chapterid", ReadState.currentChapter!!.chapter_id)
                 }
                 data.put("type", "2")
                 StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
@@ -177,9 +173,9 @@ class ReadOptionPresenter : ReadOption.Presenter {
                 if (dialog != null && dialog.isShowing) {
                     dialog.dismiss()
                     val data = java.util.HashMap<String, String>()
-                    data.put("bookid", readStatus.book_id)
-                    if (mReaderViewModel != null && mReaderViewModel.currentChapter != null) {
-                        data.put("chapterid", mReaderViewModel!!.currentChapter!!.chapter_id)
+                    data.put("bookid", ReadState.book_id)
+                    if (ReadState.currentChapter != null) {
+                        data.put("chapterid", ReadState.currentChapter!!.chapter_id)
                     }
                     data.put("type", "0")
                     StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
@@ -195,7 +191,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
         }
     }
 
-    private fun showToastShort(@IdRes s: Int) {
+    private fun showToastShort(@StringRes s: Int) {
         if (activity.get() != null) {
             Toast.makeText(activity.get(), s, Toast.LENGTH_SHORT).show()
         }
@@ -203,11 +199,11 @@ class ReadOptionPresenter : ReadOption.Presenter {
 
 
     override fun changeSource() {
-        if (readStatus.sequence == -1) {
+        if (ReadState.sequence == -1) {
             showToastShort(R.string.read_changesource_tip)
             return
         }
-        if (Constants.QG_SOURCE == readStatus.requestItem.host) {
+        if (Constants.QG_SOURCE == ReadState.requestItem.host) {
             showToastShort("该小说暂无其他来源！")
             return
         }
@@ -216,7 +212,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
         if (isSourceListShow) {
             isSourceListShow = false
         } else {
-            if (Constants.QG_SOURCE == readStatus.getRequestItem().host || Constants.QG_SOURCE == readStatus.getRequestItem().host) {
+            if (Constants.QG_SOURCE == ReadState.requestItem.host || Constants.QG_SOURCE == ReadState.requestItem.host) {
                 return
             }
 
@@ -229,7 +225,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
             getCustomLoadingPage()
             loadingPage!!.loading(Callable<Void> {
                 mReaderViewModel.getBookSource(ReadState.book!!.book_id)
-//                OtherRequestService.requestBookSourceChange(dataFactory.mHandler, ReadingActivity.MSG_SEARCH_CHAPTER, -144, readStatus.book_id)
+//                OtherRequestService.requestBookSourceChange(dataFactory.mHandler, ReadingActivity.MSG_SEARCH_CHAPTER, -144, ReadState.book_id)
                 null
             })
         }
@@ -239,13 +235,12 @@ class ReadOptionPresenter : ReadOption.Presenter {
     //LoadingPage
     fun getCustomLoadingPage() {
         var curl = ""
-        if (mReaderViewModel.readStatus!!.sequence == -1) {
-            curl = mReaderViewModel.readStatus!!.firstChapterCurl
+        if (ReadState.sequence == -1) {
             //dataFactory
-        } else if (mReaderViewModel.currentChapter != null && !TextUtils.isEmpty(mReaderViewModel.currentChapter!!.curl)) {
-            //if (readStatus.book.dex == 1 && !TextUtils.isEmpty(currentChapter.curl)) {
-            curl = mReaderViewModel.currentChapter!!.curl
-            /*} else if (readStatus.book.dex == 0 && !TextUtils.isEmpty(currentChapter.curl1)) {
+        } else if (ReadState.currentChapter != null && !TextUtils.isEmpty(ReadState.currentChapter!!.curl)) {
+            //if (ReadState.book.dex == 1 && !TextUtils.isEmpty(currentChapter.curl)) {
+            curl = ReadState.currentChapter!!.curl
+            /*} else if (ReadState.book.dex == 0 && !TextUtils.isEmpty(currentChapter.curl1)) {
                 curl = currentChapter.curl1;
             }*/
         }
@@ -258,14 +253,14 @@ class ReadOptionPresenter : ReadOption.Presenter {
 
     override fun bookMark(): Int {
         StatServiceUtils.statAppBtnClick(activity.get(), StatServiceUtils.rb_click_add_book_mark_btn)
-        return addOptionMark(bookDaoHelper, font_count, readStatus.book.book_type)
+        return addOptionMark(bookDaoHelper, font_count, ReadState.book.book_type)
     }
 
     /**
      * 添加手动书签
      */
     fun addOptionMark(mBookDaoHelper: BookDaoHelper?, font_count: Int, type: Int): Int {
-        if (activity.get() == null || mBookDaoHelper == null || readStatus == null) {
+        if (activity.get() == null || mBookDaoHelper == null || ReadState == null) {
             return 0
         }
         if (!mBookDaoHelper.isBookMarkExist(ReadState.book!!.book_id, ReadState.sequence, ReadState.offset, type)) {
@@ -285,7 +280,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
             }
 
             val bookMark = Bookmark()
-//            val requestItem = readStatus.getRequestItem()
+//            val requestItem = ReadState.getRequestItem()
 
             bookMark.book_id = ReadState.book!!.book_id
             bookMark.book_source_id = ReadState.book!!.book_source_id
@@ -295,9 +290,9 @@ class ReadOptionPresenter : ReadOption.Presenter {
             bookMark.offset = ReadState.offset
             bookMark.sort = chapter.sort
             bookMark.last_time = System.currentTimeMillis()
-            //if (readStatus.book.dex == 1) {
+            //if (ReadState.book.dex == 1) {
             bookMark.book_url = chapter.curl
-            /*} else if (readStatus.book.dex == 0) {
+            /*} else if (ReadState.book.dex == 0) {
                 bookMark.book_url = dataFactory.currentChapter.curl1;
             }*/
             bookMark.chapter_name = chapter.chapter_name
@@ -340,39 +335,39 @@ class ReadOptionPresenter : ReadOption.Presenter {
 
 //    @Synchronized
 //    fun getPageContent(): List<NovelLineBean> {
-//        if (readStatus.mLineList == null) {
+//        if (ReadState.mLineList == null) {
 //            return listOf()
 //        }
-//        if (readStatus.currentPage == 0) {
-//            readStatus.currentPage = 1
+//        if (ReadState.currentPage == 0) {
+//            ReadState.currentPage = 1
 //        }
-//        if (readStatus.currentPage > readStatus.pageCount) {
-//            readStatus.currentPage = readStatus.pageCount
+//        if (ReadState.currentPage > ReadState.pageCount) {
+//            ReadState.currentPage = ReadState.pageCount
 //        }
-//        readStatus.offset = 0
-//        // AppLog.d("initTextContent2", "readStatus.currentPage:" +
-//        // readStatus.currentPage);
+//        ReadState.offset = 0
+//        // AppLog.d("initTextContent2", "ReadState.currentPage:" +
+//        // ReadState.currentPage);
 //        var pageContent: ArrayList<NovelLineBean>? = null
-//        if (readStatus.currentPage - 1 < readStatus.mLineList.size) {
-//            pageContent = readStatus.mLineList[readStatus.currentPage - 1]
+//        if (ReadState.currentPage - 1 < ReadState.mLineList.size) {
+//            pageContent = ReadState.mLineList[ReadState.currentPage - 1]
 //        } else {
 //            pageContent = ArrayList<NovelLineBean>()
 //        }
 //
 //        var i = 0
-//        while (i < readStatus.currentPage - 1 && i < readStatus.mLineList.size) {
-//            val pageList = readStatus.mLineList[i]
+//        while (i < ReadState.currentPage - 1 && i < ReadState.mLineList.size) {
+//            val pageList = ReadState.mLineList[i]
 //            val size = pageList.size
 //            // AppLog.d("initTextContent2", "size:" + size);
 //            for (j in 0 until size) {
 //                val string = pageList[j].lineContent
 //                if (!TextUtils.isEmpty(string)) {
-//                    readStatus.offset += string.length
+//                    ReadState.offset += string.length
 //                }
 //            }
 //            i++
 //        }
-//        readStatus.offset++
+//        ReadState.offset++
 //        return pageContent ?: listOf()
 //
 //    }
@@ -385,13 +380,13 @@ class ReadOptionPresenter : ReadOption.Presenter {
         }
         val intent = Intent(activity.get(), CoverPageActivity::class.java)
         val requestItem = RequestItem()
-        requestItem.book_id = readStatus.book_id
-        requestItem.book_source_id = readStatus.book.book_source_id
-        requestItem.host = readStatus.book.site
-        requestItem.name = readStatus.book.name
-        requestItem.author = readStatus.book.author
-        requestItem.parameter = readStatus.book.parameter
-        requestItem.extra_parameter = readStatus.book.extra_parameter
+        requestItem.book_id = ReadState.book_id
+        requestItem.book_source_id = ReadState.book.book_source_id
+        requestItem.host = ReadState.book.site
+        requestItem.name = ReadState.book.name
+        requestItem.author = ReadState.book.author
+        requestItem.parameter = ReadState.book.parameter
+        requestItem.extra_parameter = ReadState.book.extra_parameter
 
         val bundle = Bundle()
         bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
@@ -406,10 +401,10 @@ class ReadOptionPresenter : ReadOption.Presenter {
 
     override fun openWeb() {
         var url: String? = null
-        if (mReaderViewModel != null && mReaderViewModel!!.currentChapter != null) {
-            //if (readStatus.book.dex == 1) {
-            url = UrlUtils.buildContentUrl(mReaderViewModel!!.currentChapter!!.curl)
-            /*} else if (readStatus.book.dex == 0) {
+        if (ReadState.currentChapter != null) {
+            //if (ReadState.book.dex == 1) {
+            url = UrlUtils.buildContentUrl(ReadState.currentChapter!!.curl)
+            /*} else if (ReadState.book.dex == 0) {
                     url = dataFactory.currentChapter.curl1;*/
             //}
         }
@@ -422,8 +417,8 @@ class ReadOptionPresenter : ReadOption.Presenter {
                 e.printStackTrace()
             }
             val data = java.util.HashMap<String, String>()
-            if (readStatus != null) {
-                data.put("bookid", readStatus.book_id)
+            if (ReadState != null) {
+                data.put("bookid", ReadState.book_id)
             }
             StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ORIGINALLINK, data)
         } else {
@@ -439,7 +434,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
     }
 
     override fun updateStatus() {
-        view?.updateStatus(readStatus, mReaderViewModel, bookDaoHelper)
+        view?.updateStatus( bookDaoHelper)
     }
 
     override fun dismissLoadingPage() {

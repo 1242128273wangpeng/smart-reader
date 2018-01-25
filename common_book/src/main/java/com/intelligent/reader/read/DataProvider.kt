@@ -23,6 +23,7 @@ import com.intelligent.reader.reader.ReaderRepositoryFactory
 import com.intelligent.reader.repository.BookCoverRepository
 import com.intelligent.reader.repository.ReaderRepository
 import com.kyview.InitConfiguration
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.data.bean.*
@@ -283,9 +284,15 @@ class DataProvider : DisposableAndroidViewModel() {
     private fun requestSingleChapter(book: Book, chapters: List<Chapter>, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
         val chapter = chapters[sequence]
         addDisposable(mReaderRepository.requestSingleChapter(book.site, chapter)
+                .map {
+                    val separateContent = ReadSeparateHelper.initTextSeparateContent(it.content, it.chapter_name)
+                    NovelChapter(it,separateContent)
+                }
                 .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe({ c ->
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ mNovelChapter ->
+                    val c = mNovelChapter.chapter
+                    val separateContent = mNovelChapter.separateList
                     if (!TextUtils.isEmpty(chapter.content)) {
                         c.isSuccess = true
                         // 自动切源需要就更新目录
@@ -296,7 +303,7 @@ class DataProvider : DisposableAndroidViewModel() {
                     mReaderRepository.writeChapterCache(c, false)
                     if (c.content != "null" && c.content.isNotEmpty()) {
                         ReadState.chapterId = c.chapter_id
-                        chapterLruCache.put(sequence, NovelChapter(c,ReadSeparateHelper.initTextSeparateContent(c.content, c.chapter_name)))
+                        chapterLruCache.put(sequence, NovelChapter(c,separateContent))
                         chapterKey.add(sequence)
                         //加章末广告
                         if (isShowAd) {
@@ -333,15 +340,12 @@ class DataProvider : DisposableAndroidViewModel() {
 
     fun onReSeparate() {
         for (it in chapterKey){
-            if (chapterLruCache[it] != null) {
-                if (it != -1) {
-                    chapterLruCache[it].separateList =  ReadSeparateHelper.initTextSeparateContent(chapterLruCache[it].chapter.content, chapterLruCache[it].chapter.chapter_name)
-                    loadAd(it)
-                }/*else {
-                    chapterLruCache.put(-1, NovelChapter(Chapter(),arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf()))))
-                    chapterKey.add(-1)
-                }*/
-            }
+                if (chapterLruCache[it] != null) {
+                    if (it != -1) {
+                        chapterLruCache[it].separateList =  ReadSeparateHelper.initTextSeparateContent(chapterLruCache[it].chapter.content, chapterLruCache[it].chapter.chapter_name)
+                        loadAd(it)
+                    }
+                }
         }
     }
 

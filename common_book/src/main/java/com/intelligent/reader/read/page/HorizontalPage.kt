@@ -83,7 +83,6 @@ class HorizontalPage : FrameLayout, Observer {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, noticePageListener: NoticePageListener) : super(context, attrs, defStyleAttr) {
         this.noticePageListener = noticePageListener
         isDrawingCacheEnabled = true
-        drawingCacheQuality = View.DRAWING_CACHE_QUALITY_LOW
         init()
     }
 
@@ -103,8 +102,8 @@ class HorizontalPage : FrameLayout, Observer {
         addView(loadView)
     }
 
-    override fun getDrawingCache(): Bitmap {
-        if(hasAd || hasBigAd){
+    override fun getDrawingCache(): Bitmap? {
+        if(ReadViewEnums.PageIndex.current.equals(tag) && (hasAd || hasBigAd)){
             destroyDrawingCache()
         }
         return super.getDrawingCache()
@@ -335,7 +334,7 @@ class HorizontalPage : FrameLayout, Observer {
             cursor.curBook.sequence = cursor.sequence
             DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
                 override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex)  = checkEntrance(cursor,0)
-                override fun loadDataError(message: String) =  runOnMain {showErrorView(cursor)}
+                override fun loadDataError(message: String) =  showErrorView(cursor)
             })
             DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener() {
                 override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = checkEntrance(cursor,1)
@@ -352,10 +351,8 @@ class HorizontalPage : FrameLayout, Observer {
             //true 通知其他页面加载
             entranceArray[index] = true
             if (entranceArray.all {it}){
-                runOnMain {
-                    setCursor(cursor)
-                    this@HorizontalPage.destroyDrawingCache()
-                }
+                setCursor(cursor)
+                this@HorizontalPage.destroyDrawingCache()
             }
         }
         /**

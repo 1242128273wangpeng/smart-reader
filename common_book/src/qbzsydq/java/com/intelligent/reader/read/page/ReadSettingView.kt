@@ -32,7 +32,6 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ReadConfig
-import net.lzbook.kit.data.bean.ReadStatus
 import net.lzbook.kit.request.DataCache
 import net.lzbook.kit.utils.*
 import java.text.NumberFormat
@@ -55,7 +54,6 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     private var popUpInAnimation: Animation? = null
     private var popDownOutAnimation: Animation? = null
     private var mReaderViewModel: ReaderViewModel? = null
-    private var readStatus: ReadStatus? = null
     private var lastIndex: Int? = null
     private var themeHelper: ThemeHelper? = null
     var currentThemeMode: String? = null
@@ -304,13 +302,13 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     }
 
     private fun showChapterProgress() {
-        if (readStatus!!.sequence == -1) {
+        if (ReadState!!.sequence == -1) {
         } else {
             if (novel_hint_chapter != null) {
                 novel_hint_chapter!!.text = if (TextUtils.isEmpty(ReadState.chapterName)) "" else ReadState.chapterName
             }
             if (novel_hint_sequence != null) {
-                novel_hint_sequence!!.text = (readStatus!!.sequence + 1).toString() + "/" + readStatus!!.chapterCount + "章"
+                novel_hint_sequence!!.text = (ReadState.sequence + 1).toString() + "/" + ReadState.chapterCount + "章"
             }
         }
 
@@ -599,9 +597,9 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     }
 
     fun changeChapter() {
-        if (novel_jump_progress != null && novel_jump_progress!!.isShown && readStatus!!.chapterCount - 1 != 0) {
-            val index = Math.max(readStatus!!.sequence, 0)
-            novel_jump_progress!!.progress = index * 100 / (readStatus!!.chapterCount - 1)
+        if (novel_jump_progress != null && novel_jump_progress!!.isShown && ReadState.chapterCount - 1 != 0) {
+            val index = Math.max(ReadState.sequence, 0)
+            novel_jump_progress!!.progress = index * 100 / (ReadState.chapterCount - 1)
         }
         showChapterProgress()
     }
@@ -881,9 +879,8 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     }
 
 
-    fun setDataFactory(factory: ReaderViewModel, readStatus: ReadStatus, themeHelper: ThemeHelper) {
+    fun setDataFactory(factory: ReaderViewModel, themeHelper: ThemeHelper) {
         this.mReaderViewModel = factory
-        this.readStatus = readStatus
         this.themeHelper = themeHelper
 
     }
@@ -904,7 +901,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 //            val resizeProgress = progress.times(ReadState.chapterList.size).div(100)
             if (!ReadState.chapterList.isEmpty()
                     && progress <= ReadState.chapterList.size && progress >= 0) {
-//                readStatus!!.novel_progress = resizeProgress
+//                ReadState.novel_progress = resizeProgress
                 changeBottomSettingView(SETTING_OPTION)
                 AppLog.e("progress1", progress.toString())
                 if (progress == 0) {
@@ -973,9 +970,9 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             }
             AppLog.e("progress2", resizeProgress.toString())
             var offset = 0
-            if (Constants.QG_SOURCE == readStatus!!.book.site) {
-                val chapterId = getQGChapterId(readStatus!!.novel_progress)
-                val b = com.quduquxie.network.DataCache.isChapterExists(chapterId, readStatus!!.book_id)
+            if (Constants.QG_SOURCE == ReadState.book.site) {
+                val chapterId = getQGChapterId(resizeProgress)
+                val b = com.quduquxie.network.DataCache.isChapterExists(chapterId, ReadState.book_id)
                 if (b) {
                     if (listener != null) {
                         listener!!.onJumpChapter(resizeProgress, offset)
@@ -991,7 +988,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                     }
                 }
             } else {
-                if (DataCache.isChapterExists(readStatus!!.novel_progress, readStatus!!.book_id)) {
+                if (DataCache.isChapterExists(resizeProgress, ReadState.book_id)) {
                     if (listener != null) {
                         listener!!.onJumpChapter(resizeProgress, offset)
                     }
@@ -1027,10 +1024,6 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
         if (this.mReaderViewModel != null) {
             this.mReaderViewModel = null
-        }
-
-        if (this.readStatus != null) {
-            this.readStatus = null
         }
 
         if (read_setting_backdrop_group != null) {

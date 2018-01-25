@@ -24,7 +24,6 @@ import com.intelligent.reader.presenter.read.ReadOptionPresenter
 import com.intelligent.reader.presenter.read.ReadPreInterface
 import com.intelligent.reader.presenter.read.ReadPresenter
 import com.intelligent.reader.read.DataProvider
-import com.intelligent.reader.read.animation.BitmapManager
 import com.intelligent.reader.read.help.IReadPageChange
 import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.read.page.AutoReadMenu
@@ -45,7 +44,6 @@ import net.lzbook.kit.utils.OpenUDID
 import net.lzbook.kit.utils.SharedPreferencesUtils
 import net.lzbook.kit.utils.ToastUtils
 import java.util.*
-import kotlin.properties.Delegates
 
 
 /**
@@ -103,7 +101,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun initView(fac: ReaderViewModel) {
         readSettingView.setOnReadSettingListener(this)
-        readSettingView.setDataFactory(fac, readStatus, mThemeHelper)
+        readSettingView.setDataFactory(fac, mThemeHelper)
         readSettingView.currentThemeMode = mReadPresenter.currentThemeMode
 
         readerWidget.setOnAutoReadCallback(this)
@@ -114,12 +112,9 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         }
         read_catalog_mark_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         readerWidget.removeAllViews()
-        BitmapManager.getInstance().setSize(readStatus.screenWidth, readStatus.screenHeight)
         auto_menu.setOnAutoMemuListener(this)
 
-        readStatus.source_ids = readStatus.book?.site
         DataProvider.getInstance().context = this
-        ReadState.book = readStatus.book
         //add ReadInfo
 
         readerWidget.setIReadPageChange(this)
@@ -257,7 +252,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
 
-        if (hasFocus && !readStatus.isMenuShow) {
+        if (hasFocus && !ReadState.isMenuShow) {
             window.decorView.postDelayed(immersiveRunable, 1500)
         } else if (ReadConfig.animation == ReadViewEnums.Animation.list) {
             window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_LOW_PROFILE
@@ -391,10 +386,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         option_header.presenter = optionPresenter
     }
 
-    override fun setReadStatus(readSta: ReadStatus) {
-        readStatus = readSta
-    }
-
     override fun showSetMenu(isShow: Boolean) {
 
     }
@@ -452,10 +443,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         toast.setGravity(Gravity.CENTER, 0, 0)
         toast.show()
         auto_menu.visibility = View.GONE
-    }
-
-    companion object {
-        private var readStatus: ReadStatus by Delegates.notNull()
     }
 
     private val immersiveRunable = Runnable { setUIOptions() }
