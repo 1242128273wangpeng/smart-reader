@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.TextView
 import com.intelligent.reader.R
 import iyouqu.theme.FrameActivity
-import kotlinx.android.synthetic.kdqbdzs.act_login.*
+import kotlinx.android.synthetic.qbzsydq.act_login.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.user.Platform
