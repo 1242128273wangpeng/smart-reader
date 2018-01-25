@@ -59,7 +59,7 @@ public class BatteryView extends ImageView {
         int color_int = ReadQueryUtil.INSTANCE.getColor(resources);
         mPaint.setColor(color_int);
         canvas.drawRect(left + 1, getPaddingTop() + top + 1, (right - (left + 1)) * percent + (left + 1),
-                getPaddingBottom() + bottom, mPaint);
+                getPaddingTop() + bottom, mPaint);
     }
 
     private void getRect() {

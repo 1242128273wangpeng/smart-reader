@@ -2,6 +2,7 @@ package com.intelligent.reader.read.page
 
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
+import android.support.annotation.DrawableRes
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -12,12 +13,12 @@ import android.widget.FrameLayout
 import android.widget.PopupWindow
 import com.intelligent.reader.R
 import com.intelligent.reader.presenter.read.ReadOption
+import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.reader.ReaderViewModel
 import kotlinx.android.synthetic.qbzsydq.read_option_header.view.*
 import kotlinx.android.synthetic.qbzsydq.read_option_pop.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.ReadStatus
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.StatServiceUtils
@@ -146,13 +147,13 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
         novel_source_url?.text = source
     }
 
-    override fun setBookMarkImg(id: Int) {
+    override fun setBookMarkImg(@DrawableRes id: Int) {
         novel_bookmark?.setImageResource(id)
     }
 
-    override fun updateStatus(readStatus: ReadStatus, mReaderViewModel: ReaderViewModel, bookDaoHelper: BookDaoHelper) {
+    override fun updateStatus(bookDaoHelper: BookDaoHelper) {
         var typeChangeMark:Int
-        isMarkPage = bookDaoHelper.isBookMarkExist(readStatus.book_id, readStatus.sequence,readStatus.offset, readStatus.book.book_type)
+        isMarkPage = bookDaoHelper.isBookMarkExist(ReadState.book_id, ReadState.sequence,ReadState.offset, ReadState.book.book_type)
 
         if (novel_bookmark != null && novel_bookmark.visibility == View.VISIBLE) {
             typeChangeMark = if (isMarkPage) {
@@ -167,21 +168,21 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
         }
 
         if (novel_name != null) {
-            novel_name.text = readStatus.bookName
+            novel_name.text = ReadState.book.name
         }
-        if (readStatus.sequence == -1) {
+        if (ReadState.sequence == -1) {
             novel_source_url.visibility = View.GONE
         } else {
             //显示原网站地址
-            if (Constants.QG_SOURCE == readStatus.book.site) {
+            if (Constants.QG_SOURCE == ReadState.book.site) {
                 novel_source_url.text = "青果阅读"
                 novel_source_url.visibility = View.VISIBLE
             } else {
-                if (mReaderViewModel.currentChapter != null && !TextUtils.isEmpty(mReaderViewModel.currentChapter!!.curl)) {
-                    //if (readStatus.book.dex == 1 && !TextUtils.isEmpty(dataFactory.currentChapter.curl)) {
-                    novel_source_url.text = UrlUtils.buildContentUrl(mReaderViewModel.currentChapter!!.curl)
+                if (ReadState.currentChapter != null && !TextUtils.isEmpty(ReadState.currentChapter!!.curl)) {
+                    //if (ReadState.book.dex == 1 && !TextUtils.isEmpty(dataFactory.currentChapter.curl)) {
+                    novel_source_url.text = UrlUtils.buildContentUrl(ReadState.currentChapter!!.curl)
                     novel_source_url.visibility = View.VISIBLE
-                    /*} else if (readStatus.book.dex == 0 && !TextUtils.isEmpty(dataFactory.currentChapter.curl1)) {
+                    /*} else if (ReadState.book.dex == 0 && !TextUtils.isEmpty(dataFactory.currentChapter.curl1)) {
                         novel_source_url.setText("来源于：" + dataFactory.currentChapter.curl1);
                         novel_source_url.setVisibility(View.VISIBLE);*/
                 } else {

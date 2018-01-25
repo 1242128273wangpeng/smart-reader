@@ -42,11 +42,9 @@ class StatisticUncaughtExceptionHandler(val parent: Thread.UncaughtExceptionHand
 //        }
 //        mainJson.put("allstacks", stackJson)
 
-        if (BaseBookApplication.getGlobalContext().readStatus != null) {
-            extJson.put("readstatus", BaseBookApplication.getGlobalContext().readStatus.toString())
-        } else {
-            extJson.put("readstatus", "null")
-        }
+
+        extJson.put("readstatus", "null")
+
         mainJson.put("env", extJson.toString())
 
 //        Log.e("Crash", mainJson.toString())

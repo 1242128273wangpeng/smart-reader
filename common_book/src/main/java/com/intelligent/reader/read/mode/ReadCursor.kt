@@ -2,7 +2,6 @@ package com.intelligent.reader.read.mode
 
 import com.google.gson.Gson
 import net.lzbook.kit.data.bean.Book
-import net.lzbook.kit.data.bean.ReadStatus
 import net.lzbook.kit.data.bean.ReadViewEnums
 
 /**

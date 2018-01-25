@@ -78,7 +78,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
                 txt.text = "${chapter.chapter_name}"
 
                 var chapterExist = false
-                if (Constants.QG_SOURCE.equals(BaseBookApplication.getGlobalContext().readStatus.book.site)) {
+                if (Constants.QG_SOURCE.equals(ReadState.book.site)) {
                     chapterExist = DataCache.isChapterExists(chapter.chapter_id, chapter.book_id)
                 } else {
                     chapterExist = BookHelper.isChapterExist(chapter.sequence, chapter.book_id)
@@ -291,7 +291,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
     }
 
     fun fixBook() {
-        if (RepairHelp.isShowFixBtn(activity, (BookApplication.getGlobalContext())?.readStatus?.book_id)) {
+        if (RepairHelp.isShowFixBtn(activity, ReadState.book_id)) {
             view!!.iv_fixbook.visibility = View.VISIBLE
         } else {
             view!!.iv_fixbook.visibility = View.GONE
@@ -320,7 +320,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View, DrawerLayout.DrawerLis
         view!!.rl_layout_empty_online.visibility = View.GONE
         loadingPage?.onSuccess()
 
-        view!!.catalog_novel_name.setText(BaseBookApplication.getGlobalContext().readStatus.book.name)
+        view!!.catalog_novel_name.setText(ReadState.book.name)
 
         dataLoaded = true
 

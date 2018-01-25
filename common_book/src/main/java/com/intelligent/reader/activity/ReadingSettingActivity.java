@@ -8,7 +8,6 @@ import com.intelligent.reader.read.page.PreviewPageView;
 import net.lzbook.kit.book.view.SwitchButton;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.ReadConfig;
-import net.lzbook.kit.data.bean.ReadStatus;
 import net.lzbook.kit.data.bean.SettingItems;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.ResourceUtil;

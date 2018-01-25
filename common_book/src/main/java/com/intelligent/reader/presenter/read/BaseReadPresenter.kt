@@ -21,10 +21,8 @@ import android.text.TextUtils
 import android.view.InflateException
 import android.view.KeyEvent
 import android.view.View
-import android.text.format.DateFormat
 import android.view.*
 import android.widget.*
-import com.bumptech.glide.Glide
 import com.dycm_adsdk.PlatformSDK
 import com.dycm_adsdk.callback.AbstractCallback
 import com.dycm_adsdk.callback.ResultCode
@@ -43,7 +41,6 @@ import com.intelligent.reader.read.help.NovelHelper
 import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.read.page.AutoReadMenu
 import com.intelligent.reader.read.page.PageInterface
-import com.intelligent.reader.read.page.PageView
 import com.intelligent.reader.read.page.ReadOptionHeader
 import com.intelligent.reader.reader.ReaderOwnRepository
 import com.intelligent.reader.reader.ReaderRepositoryFactory
@@ -94,14 +91,14 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
      */
     override fun nextChapterCallBack(drawCurrent: Boolean) {
 //        Constants.readedCount++
-//        mReaderViewModel?.preChapter = mReaderViewModel?.currentChapter
-//        mReaderViewModel?.currentChapter = mReaderViewModel?.nextChapter
+//        mReaderViewModel?.preChapter = ReadState.currentChapter
+//        ReadState.currentChapter = mReaderViewModel?.nextChapter
 //        mReaderViewModel?.nextChapter = null
-//        mReaderViewModel?.readStatus!!.sequence++
-//        mReaderViewModel?.readStatus?.offset = 0
+//        ReadState.sequence++
+//        ReadState.offset = 0
 //        myNovelHelper?.isShown = false
-//        myNovelHelper?.getChapterContent(readReference?.get(), mReaderViewModel?.currentChapter, mReaderViewModel?.readStatus?.book)
-//        mReaderViewModel?.readStatus?.currentPage = 1
+//        myNovelHelper?.getChapterContent(readReference?.get(), ReadState.currentChapter, ReadState.book)
+//        ReadState.currentPage = 1
 //        pageView?.drawNextPage()
 //        if (drawCurrent) {
 //            pageView?.drawCurrentPage()
@@ -115,7 +112,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 //            mReaderViewModel?.mReadDataListener?.freshPage()
 //            mReaderViewModel?.mReadDataListener?.changeChapter()
 //        }
-//        mReaderViewModel?.readStatus?.isLoading = false
+//        ReadState.isLoading = false
     }
 
     /**
@@ -123,18 +120,18 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
      */
     override fun preChapterCallBack(drawCurrent: Boolean) {
 //        Constants.readedCount++
-//        mReaderViewModel?.nextChapter = mReaderViewModel!!.currentChapter
-//        mReaderViewModel?.currentChapter = mReaderViewModel!!.preChapter
+//        mReaderViewModel?.nextChapter = ReadState.currentChapter
+//        ReadState.currentChapter = mReaderViewModel!!.preChapter
 //        mReaderViewModel?.preChapter = null
 //
-//        mReaderViewModel?.readStatus!!.sequence--
-//        mReaderViewModel?.readStatus?.offset = 0
+//        ReadState.sequence--
+//        ReadState.offset = 0
 //        myNovelHelper?.isShown = false
-//        myNovelHelper?.getChapterContent(readReference?.get(), mReaderViewModel?.currentChapter, mReaderViewModel?.readStatus?.book)
+//        myNovelHelper?.getChapterContent(readReference?.get(), ReadState.currentChapter, ReadState.book)
 //        if (mReaderViewModel?.toChapterStart != false) {
-//            mReaderViewModel?.readStatus?.currentPage = 1
+//            ReadState.currentPage = 1
 //        } else {
-//            mReaderViewModel?.readStatus?.currentPage = mReaderViewModel?.readStatus?.pageCount
+//            ReadState.currentPage = ReadState.pageCount
 //        }
 //        mReaderViewModel?.toChapterStart = false
 //        pageView?.drawNextPage()
@@ -146,9 +143,9 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 //            mReaderViewModel?.mReadDataListener?.freshPage()
 //            mReaderViewModel?.mReadDataListener?.changeChapter()
 //        }
-//        mReaderViewModel?.readStatus?.isLoading = false
+//        ReadState.isLoading = false
 //
-//        if (mReaderViewModel?.readStatus?.currentPage == mReaderViewModel?.readStatus?.pageCount) {
+//        if (ReadState.currentPage == ReadState.pageCount) {
 //        }
     }
 
@@ -168,7 +165,6 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     val MSG_SOURCE_CHANGE = 9
     // 手动书签内容限制
     protected val font_count = 50
-    protected var readStatus: ReadStatus? = null
     var downloadService: DownloadService? = null
     var isRestDialogShow = false
     var stampTime: Long = 0
@@ -242,11 +238,8 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         AppLog.e("getAdsStatus", "novel_onCreate")
         versionCode = AppUtils.getVersionCode()
         AppLog.e(TAG, "versionCode: " + versionCode)
-        readStatus = ReadStatus(readReference?.get()?.applicationContext)
-        BookApplication.getGlobalContext().readStatus = readStatus
-        view?.setReadStatus(readStatus!!)
-//        autoSpeed = readStatus?.autoReadSpeed()!!
-        myNovelHelper = NovelHelper(readReference?.get(), readStatus)
+//        autoSpeed = ReadState.autoReadSpeed()!!
+        myNovelHelper = NovelHelper(readReference?.get())
         myNovelHelper?.setOnHelperCallBack(this)
         downloadService = BaseBookApplication.getDownloadService()
 
@@ -254,7 +247,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         initWindow()
         setOrientation()
         getSavedState(savedInstanceState)
-        RepairHelp.showFixMsg(readReference?.get(), readStatus?.book, {
+        RepairHelp.showFixMsg(readReference?.get(), ReadState?.book, {
             if (readReference != null && readReference?.get() != null && !readReference?.get()!!.isFinishing) {
                 val intent_download = Intent(readReference?.get(), DownloadManagerActivity::class.java)
                 try {
@@ -282,10 +275,10 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     }
 
     fun initCatalogPresenter(catalogMarkFragment: CatalogMarkFragment?, optionHeader: ReadOptionHeader) {
-        mCatalogMarkPresenter = CatalogMarkPresenter(readStatus!!, mReaderViewModel!!)
+        mCatalogMarkPresenter = CatalogMarkPresenter()
         mCatalogMarkPresenter?.view = catalogMarkFragment
 
-        mReadOptionPresenter = ReadOptionPresenter(readReference?.get() as Activity, readStatus!!, mReaderViewModel!!)
+        mReadOptionPresenter = ReadOptionPresenter(readReference?.get() as Activity, mReaderViewModel!!)
         mReadOptionPresenter?.view = optionHeader
 
         view?.initPresenter(mReadOptionPresenter, mCatalogMarkPresenter)
@@ -302,14 +295,8 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         Constants.isSlideUp = Constants.PAGE_MODE == 3
         versionCode = AppUtils.getVersionCode()
         AppLog.e(TAG, "versionCode: " + versionCode)
-        if (readStatus != null) {
-            readStatus?.recycleResource()
-        }
-        readStatus = ReadStatus(readReference?.get()?.getApplicationContext())
-        BookApplication.getGlobalContext().readStatus = readStatus
-        view?.setReadStatus(readStatus!!)
-//        autoSpeed = readStatus!!.autoReadSpeed()
-        myNovelHelper = NovelHelper(readReference?.get(), readStatus)
+//        autoSpeed = ReadState.autoReadSpeed()
+        myNovelHelper = NovelHelper(readReference?.get())
         myNovelHelper?.setOnHelperCallBack(this)
 
         // 初始化窗口基本信息
@@ -342,17 +329,17 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     private fun initBookState() {
         // 判断是否订阅
         mBookDaoHelper = BookDaoHelper.getInstance()
-        readStatus?.book_id = readStatus?.book?.book_id
-        isSubed = mBookDaoHelper!!.isBookSubed(readStatus?.book_id)
-        AppLog.e(TAG, "初始化书籍状态: " + readStatus?.book_id)
-        bookChapterDao = BookChapterDao(readReference?.get()?.applicationContext, readStatus!!.book_id)
+        
+        isSubed = mBookDaoHelper!!.isBookSubed(ReadState.book_id)
+        AppLog.e(TAG, "初始化书籍状态: " + ReadState.book_id)
+        bookChapterDao = BookChapterDao(readReference?.get()?.applicationContext, ReadState.book_id)
         if (isSubed) {
-            readStatus!!.book = mBookDaoHelper!!.getBook(readStatus!!.book_id, 0)
+            ReadState.book = mBookDaoHelper!!.getBook(ReadState.book_id, 0)
         }
-        if (readStatus?.sequence!! < -1) {
-            readStatus?.sequence = -1
-        } else if (isSubed && readStatus!!.sequence + 1 > readStatus!!.book.chapter_count) {
-            readStatus?.sequence = readStatus?.book?.chapter_count!! - 1
+        if (ReadState.sequence!! < -1) {
+            ReadState.sequence = -1
+        } else if (isSubed && ReadState.sequence + 1 > ReadState.book.chapter_count) {
+            ReadState.sequence = ReadState.book?.chapter_count!! - 1
         }
     }
 
@@ -363,10 +350,10 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         initWindow()
         AppLog.e(TAG, "onConfigurationChanged")
 
-        mCatalogMarkPresenter = CatalogMarkPresenter(readStatus!!, mReaderViewModel!!)
+        mCatalogMarkPresenter = CatalogMarkPresenter()
         mCatalogMarkPresenter?.view = catalogMarkFragment
 
-        mReadOptionPresenter = ReadOptionPresenter(readReference?.get()!!, readStatus!!, mReaderViewModel!!)
+        mReadOptionPresenter = ReadOptionPresenter(readReference?.get()!!, mReaderViewModel!!)
         mReadOptionPresenter?.view = optionHeader
 
         view?.initPresenter(mReadOptionPresenter, mCatalogMarkPresenter)
@@ -387,7 +374,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             BookHelper.reStartDownloadService()
         }
         setMode()
-        readStatus?.chapterCount = readStatus?.book?.chapter_count
+        ReadState.chapterCount = ReadState.book?.chapter_count
 
         changeMode(ReadConfig.MODE)
     }
@@ -400,34 +387,29 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             getReaderState(savedInstanceState)
 
             mReaderViewModel?.mReadDataListener = this
-            mReaderViewModel?.readStatus = readStatus
 
-            mReaderViewModel?.currentChapter = savedInstanceState.getSerializable("currentChapter") as Chapter?
-            AppLog.e(TAG, "getState1" + readStatus!!.sequence)
+            AppLog.e(TAG, "getState1" + ReadState.sequence)
         } else {
             getReaderState(bundle)
 
-            readStatus?.book_id = if (readStatus!!.book == null) "" else readStatus!!.book.book_id
-            AppLog.e(TAG, "getState2" + readStatus!!.sequence)
+            ReadState.book_id = if (ReadState.book == null) "" else ReadState.book.book_id
+            AppLog.e(TAG, "getState2" + ReadState.sequence)
         }
 
-        if (readStatus?.sequence == -2) {
-            readStatus?.sequence = -1
+        if (ReadState.sequence == -2) {
+            ReadState.sequence = -1
         }
     }
 
     private fun getReaderState(readerState: Bundle?) {
         readerState?.let {
             ReadState.sequence = it.getInt("sequence", 0)
-            readStatus?.sequence = it.getInt("sequence", 0)
-            val requestItem = it.getSerializable(Constants.REQUEST_ITEM) as RequestItem?
-            if (requestItem != null) {
-                readStatus!!.setRequestItem(requestItem)
-            }
+            ReadState.sequence = it.getInt("sequence", 0)
+     
             // 书签偏移量
             ReadState.offset = it.getInt("offset", 0)
             // 获取本书
-            readStatus?.book = it.getSerializable("book") as Book?
+            ReadState.book = it.getSerializable("book") as Book
 
             currentThemeMode = it.getString("thememode", readReference?.get()?.mThemeHelper?.mode)
         }
@@ -465,8 +447,8 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     private fun getBookContent() {
 
         NetWorkUtils.NATIVE_AD_TYPE = NetWorkUtils.NATIVE_AD_ERROR
-//        dataFactory?.getChapterByLoading(ReadingActivity.MSG_LOAD_CUR_CHAPTER, readStatus!!.sequence)
-//        getChapterByLoading(ReadingActivity.MSG_LOAD_CUR_CHAPTER, readStatus!!.sequence)
+//        dataFactory?.getChapterByLoading(ReadingActivity.MSG_LOAD_CUR_CHAPTER, ReadState.sequence)
+//        getChapterByLoading(ReadingActivity.MSG_LOAD_CUR_CHAPTER, ReadState.sequence)
 
     }
 
@@ -475,12 +457,11 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     //LoadingPage
     fun getCustomLoadingPage() {
         var curl = ""
-        if (mReaderViewModel != null && mReaderViewModel!!.readStatus != null && mReaderViewModel!!.readStatus!!.sequence == -1) {
-            curl = mReaderViewModel?.readStatus!!.firstChapterCurl
+        if (mReaderViewModel != null && ReadState.sequence == -1) {
             //dataFactory
-        } else if (mReaderViewModel?.currentChapter != null && !TextUtils.isEmpty(mReaderViewModel!!.currentChapter!!.curl)) {
+        } else if (ReadState.currentChapter != null && !TextUtils.isEmpty(ReadState.currentChapter!!.curl)) {
             //if (readStatus.book.dex == 1 && !TextUtils.isEmpty(currentChapter.curl)) {
-            curl = mReaderViewModel?.currentChapter!!.curl
+            curl = ReadState.currentChapter!!.curl
             /*} else if (readStatus.book.dex == 0 && !TextUtils.isEmpty(currentChapter.curl1)) {
                 curl = currentChapter.curl1;
             }*/
@@ -505,7 +486,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         val temp_sequence = sequence
         getCustomLoadingPage()
         loadingPage?.loading(Callable<Void> {
-            val requestItem = mReaderViewModel!!.readStatus!!.getRequestItem()
+            val requestItem = ReadState.requestItem
             if (requestItem != null) {
                 if (mReaderViewModel?.chapterList == null || mReaderViewModel?.chapterList?.isEmpty()!!) {
                     mReaderViewModel?.setBookChapterViewCallback(object : ReaderViewModel.BookChapterViewCallback {
@@ -538,9 +519,9 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                 return
             } else {
                 mReaderViewModel?.chapterList = chapterList
-                mReaderViewModel?.readStatus?.book?.extra_parameter = requestItem.extra_parameter
+                ReadState.book.extra_parameter = requestItem.extra_parameter
             }
-            mReaderViewModel?.readStatus?.chapterCount = chapterList.size
+            ReadState.chapterCount = chapterList.size
 
             if (temp_sequence == -1) {
                 val result = Chapter()
@@ -552,7 +533,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                 return
             }
 
-            AppLog.e("ReadDataFactory", "ReadDataFactory: " + temp_sequence + " : " + mReaderViewModel!!.readStatus!!.book_id)
+            AppLog.e("ReadDataFactory", "ReadDataFactory: " + temp_sequence + " : " + ReadState.book_id)
             val result = chapterList[temp_sequence]
             synchronized(this) {
                 mReaderViewModel?.requestSingleChapter(requestItem.host, result, object : ReaderViewModel.BookSingleChapterCallback {
@@ -590,13 +571,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         if (mReaderViewModel!!.chapterList != null && !mReaderViewModel!!.chapterList!!.isEmpty()) {
             val firstChapter = mReaderViewModel?.chapterList?.get(0)
             if (firstChapter != null) {
-                //if (readStatus.book.dex == 0) {
-                mReaderViewModel!!.readStatus!!.firstChapterCurl = firstChapter.curl
-                /*} else if (readStatus.book.dex == 1) {
-                    readStatus.firstChapterCurl = firstChapter.curl1;
-                }*/
-
-                loadingPage!!.setNovelSource(mReaderViewModel!!.readStatus!!.firstChapterCurl)
+                loadingPage!!.setNovelSource(firstChapter.curl)
                 Thread.sleep(time.toLong())
             }
         }
@@ -612,9 +587,9 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 //        when (what) {
 //            ReadingActivity.MSG_LOAD_CUR_CHAPTER -> {
 //                //                            loadCurrentChapter(m);
-//                mReaderViewModel?.currentChapter = chapter
-//                if (mReaderViewModel?.readStatus != null && mReaderViewModel?.currentChapter != null && mReaderViewModel?.currentChapter?.sequence != -1) {
-//                    mReaderViewModel?.readStatus?.sequence = mReaderViewModel?.currentChapter?.sequence
+//                ReadState.currentChapter = chapter
+//                if (mReaderViewModel?.readStatus != null && ReadState.currentChapter != null && ReadState.currentChapter?.sequence != -1) {
+//                    ReadState.sequence = ReadState.currentChapter?.sequence
 //                }
 //                initBookCallBack()
 //            }
@@ -630,7 +605,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 //            }
 //            ReadingActivity.MSG_JUMP_CHAPTER -> {
 //                //                            loadJumpChapter(m);
-//                mReaderViewModel?.currentChapter = chapter
+//                ReadState.currentChapter = chapter
 //                jumpChapterCallBack()
 //            }
 //        }
@@ -645,20 +620,10 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         if (mReaderViewModel?.chapterList == null) {
             return
         }
-        // 章节数
-        if (mReaderViewModel?.readStatus != null) {
-            mReaderViewModel?.readStatus?.chapterCount = mReaderViewModel?.chapterList?.size
-            if (mReaderViewModel?.chapterList != null && !mReaderViewModel?.chapterList?.isEmpty()!!) {
-                val firstChapter = mReaderViewModel?.chapterList?.get(0)
-                if (firstChapter != null) {
-                    mReaderViewModel?.readStatus?.firstChapterCurl = firstChapter.curl
-                }
-            }
-        }
 
         // 初始化章节内容
         if (myNovelHelper != null) {
-            myNovelHelper!!.getChapterContent(readReference?.get(), mReaderViewModel?.currentChapter, mReaderViewModel?.readStatus?.book)
+            myNovelHelper!!.getChapterContent(readReference?.get(), ReadState.currentChapter, ReadState.book)
         }
         // 刷新页面
 //        if (mReaderViewModel?.mReadDataListener != null) {
@@ -739,18 +704,12 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         val dm = readReference?.get()?.getResources()!!.getDisplayMetrics()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             display.getRealSize(realSize)
-            readStatus?.screenWidth = realSize.x
-            readStatus?.screenHeight = realSize.y
             ReadConfig.screenWidth = realSize.x
             ReadConfig.screenHeight = realSize.y
         } else {
-            readStatus?.screenWidth = dm.widthPixels
-            readStatus?.screenHeight = dm.heightPixels
             ReadConfig.screenWidth = dm.widthPixels
             ReadConfig.screenHeight = dm.heightPixels
         }
-        readStatus?.screenDensity = dm.density
-        readStatus?.screenScaledDensity = dm.scaledDensity
         ReadConfig.screenDensity = dm.density
         ReadConfig.screenScaledDensity = dm.scaledDensity
         // 保存字体、亮度、阅读模式
@@ -778,7 +737,6 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             }
         })
         mReaderViewModel?.mReadDataListener = this
-        mReaderViewModel?.readStatus = readStatus
     }
 
     /**
@@ -817,16 +775,15 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
      * 刷新页面
      */
     private fun refreshPage() {
-        readStatus?.isCanDrawFootView = readStatus?.sequence != -1
     }
 
     /**
      * 预加载
      */
     private fun downloadNovel() {
-        if (mBookDaoHelper!!.isBookSubed(readStatus!!.book_id)) {
+        if (mBookDaoHelper!!.isBookSubed(ReadState.book_id)) {
             var num = BookHelper.CHAPTER_CACHE_COUNT
-            val max = readStatus!!.chapterCount - 1 - readStatus!!.sequence
+            val max = ReadState.chapterCount - 1 - ReadState.sequence
             if (max > 0) {
                 if (max < num) {
                     num = max
@@ -834,15 +791,15 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 
                 //预加载
                 val size = mReaderViewModel!!.chapterList!!.size
-                var i = readStatus!!.sequence + 1
-                while (i < readStatus!!.sequence + num + 1 && i < size) {
+                var i = ReadState.sequence + 1
+                while (i < ReadState.sequence + num + 1 && i < size) {
                     val c = mReaderViewModel?.chapterList!![i]
                     if (c != null) {
                         AppLog.e(TAG, "预加载： " + c.toString())
                         val finalI = i
-                        mReaderViewModel!!.requestSingleChapter(readStatus!!.getRequestItem().host, c, object : ReaderViewModel.BookSingleChapterCallback {
+                        mReaderViewModel!!.requestSingleChapter(ReadState.book.site, c, object : ReaderViewModel.BookSingleChapterCallback {
                             override fun onPayChapter(chapter: Chapter) {
-                                if (finalI == readStatus!!.sequence + 1) {
+                                if (finalI == ReadState.sequence + 1) {
                                     mReaderViewModel!!.nextChapter = c
                                 }
                             }
@@ -861,7 +818,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     fun searchChapterCallBack(sourcesList: ArrayList<Source>?) {
         if (sourcesList?.isNotEmpty() == true) {
             //if (readStatus.book.dex == 1 && !TextUtils.isEmpty(dataFactory.currentChapter.curl) && sourcesList != null) {
-            myNovelHelper?.showSourceDialog(mReaderViewModel, mReaderViewModel?.currentChapter?.curl, sourcesList)
+            myNovelHelper?.showSourceDialog(ReadState.currentChapter?.curl, sourcesList)
             /*} else if (readStatus.book.dex == 0 && !TextUtils.isEmpty(dataFactory.currentChapter.curl1) && sourcesList != null) {
                 myNovelHelper.showSourceDialog(dataFactory, dataFactory.currentChapter.curl1, sourcesList);*/
             //}
@@ -874,19 +831,19 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
      * 打开目录页面
      */
     private fun openCategoryPage() {
-        if (readStatus!!.isMenuShow) {
+        if (ReadState.isMenuShow) {
             showMenu(false)
         }
-        if (readStatus!!.book.book_type == 0) {
+        if (ReadState.book.book_type == 0) {
             val intent = Intent(readReference?.get(), CataloguesActivity::class.java)
             val bundle = Bundle()
-            bundle.putSerializable("cover", readStatus!!.book)
-            bundle.putString("book_id", readStatus!!.book_id)
-            AppLog.e(TAG, "OpenCategoryPage: " + readStatus!!.sequence)
-            bundle.putInt("sequence", readStatus!!.sequence)
+            bundle.putSerializable("cover", ReadState.book)
+            bundle.putString("book_id", ReadState.book_id)
+            AppLog.e(TAG, "OpenCategoryPage: " + ReadState.sequence)
+            bundle.putInt("sequence", ReadState.sequence)
             bundle.putBoolean("fromCover", false)
-            AppLog.e(TAG, "ReadingActivity: " + readStatus!!.getRequestItem().toString())
-            bundle.putSerializable(Constants.REQUEST_ITEM, readStatus!!.getRequestItem())
+            AppLog.e(TAG, "ReadingActivity: " + ReadState.requestItem.toString())
+            bundle.putSerializable(Constants.REQUEST_ITEM, ReadState.requestItem)
             intent.putExtras(bundle)
             readReference?.get()?.startActivityForResult(intent, 1)
         }
@@ -904,10 +861,10 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     }
 
     override fun showCatalogActivity(source: Source?) {
-        if (readStatus != null && readStatus!!.getRequestItem() != null) {
-            if (source != null && !TextUtils.isEmpty(source.book_source_id) && readStatus != null && readStatus!!.book != null) {
-                if (mBookDaoHelper != null && mBookDaoHelper!!.isBookSubed(readStatus!!.book.book_id)) {
-                    val iBook = mBookDaoHelper!!.getBook(readStatus!!.book.book_id, 0)
+        if (ReadState.requestItem != null) {
+            if (source != null && !TextUtils.isEmpty(source.book_source_id) && ReadState.book != null) {
+                if (mBookDaoHelper != null && mBookDaoHelper!!.isBookSubed(ReadState.book.book_id)) {
+                    val iBook = mBookDaoHelper!!.getBook(ReadState.book.book_id, 0)
                     if (source.book_source_id != iBook.book_source_id) {
                         //弹出切源提示
                         showChangeSourceNoticeDialog(source)
@@ -959,47 +916,21 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     }
 
     private fun intoCatalogActivity(source: Source, b: Boolean) {
-        if (readStatus != null && readStatus!!.getRequestItem() != null) {
-            readStatus?.firstChapterCurl = ""
-            mReaderViewModel?.currentChapter = null
+        if (ReadState.requestItem != null) {
 
-            val requestItem = RequestItem()
-            requestItem.book_id = source.book_id
-            requestItem.book_source_id = source.book_source_id
-            requestItem.host = source.host
-            requestItem.name = readStatus!!.bookName
-            requestItem.author = readStatus!!.bookAuthor
-            requestItem.dex = source.dex
-
-            val iterator = source.source.entries.iterator()
-            val list = ArrayList<String>()
-            while (iterator.hasNext()) {
-                val entry = iterator.next()
-                val value = entry.value
-                list.add(value)
-            }
-            if (list.size > 0) {
-                requestItem.parameter = list[0]
-            }
-            if (list.size > 1) {
-                requestItem.extra_parameter = list[1]
-            }
-
-
-            readStatus!!.setRequestItem(requestItem)
             //readStatus.requestConfig = BookApplication.getGlobalContext().getSourceConfig(requestItem.host);
 
             val bookDaoHelper = BookDaoHelper.getInstance()
             if (bookDaoHelper.isBookSubed(source.book_id)) {
                 val iBook = bookDaoHelper.getBook(source.book_id, 0)
-                iBook.book_source_id = requestItem.book_source_id
-                iBook.site = requestItem.host
-                iBook.parameter = requestItem.parameter
-                iBook.extra_parameter = requestItem.extra_parameter
+                iBook.book_source_id = ReadState.book.book_source_id
+                iBook.site = ReadState.book.site
+                iBook.parameter = ReadState.book.parameter
+                iBook.extra_parameter = ReadState.book.extra_parameter
                 iBook.last_updatetime_native = source.update_time
                 iBook.dex = source.dex
                 bookDaoHelper.updateBook(iBook)
-                readStatus!!.book = iBook
+                ReadState.book = iBook
                 if (b) {
                     val bookChapterDao = BookChapterDao(readReference?.get(), source.book_id)
                     BookHelper.deleteAllChapterCache(source.book_id, 0, bookChapterDao.count)
@@ -1009,13 +940,13 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 
                 }
             } else {
-                val iBook = readStatus!!.book
+                val iBook = ReadState.book
                 iBook.book_source_id = source.book_source_id
                 iBook.site = source.host
                 iBook.dex = source.dex
-                iBook.parameter = requestItem.parameter
-                iBook.extra_parameter = requestItem.extra_parameter
-                readStatus!!.book = iBook
+                iBook.parameter = ReadState.book.parameter
+                iBook.extra_parameter = ReadState.book.extra_parameter
+                ReadState.book = iBook
             }
             mReaderViewModel?.chapterList?.clear()
             openCategoryPage()
@@ -1029,8 +960,8 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     }
 
     override fun deleteBook() {
-        if (mBookDaoHelper!!.isBookSubed(readStatus!!.book_id)) {
-            mBookDaoHelper!!.deleteBook(readStatus!!.book_id)
+        if (mBookDaoHelper!!.isBookSubed(ReadState.book_id)) {
+            mBookDaoHelper!!.deleteBook(ReadState.book_id)
         }
         readReference?.get()?.finish()
     }
@@ -1041,29 +972,29 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     }
 
     override fun addBookShelf(isAddShelf: Boolean) {
-        if (isAddShelf && mBookDaoHelper != null && readStatus!!.book != null) {
-            readStatus!!.book.sequence = readStatus!!.sequence
-            readStatus!!.book.offset = readStatus!!.offset
-            readStatus!!.book.sequence_time = System.currentTimeMillis()
-            readStatus!!.book.last_updateSucessTime = System.currentTimeMillis()
-            readStatus!!.book.readed = 1
+        if (isAddShelf && mBookDaoHelper != null && ReadState.book != null) {
+            ReadState.book.sequence = ReadState.sequence
+            ReadState.book.offset = ReadState.offset
+            ReadState.book.sequence_time = System.currentTimeMillis()
+            ReadState.book.last_updateSucessTime = System.currentTimeMillis()
+            ReadState.book.readed = 1
             if (mReaderViewModel != null) {
                 if (mReaderViewModel?.chapterList != null && mReaderViewModel!!.chapterList!!.size > 0) {
                     val chapter = mReaderViewModel!!.chapterList!![mReaderViewModel!!.chapterList!!.size - 1]
-                    readStatus!!.book.extra_parameter = chapter.extra_parameter
+                    ReadState.book.extra_parameter = chapter.extra_parameter
                 }
                 bookChapterDao?.insertBookChapter(mReaderViewModel?.chapterList)
             }
-            val succeed = mBookDaoHelper?.insertBook(readStatus!!.book)
+            val succeed = mBookDaoHelper?.insertBook(ReadState.book)
             Toast.makeText(readReference?.get(), if (succeed!!) R.string.reading_add_succeed else R.string.reading_add_fail,
                     Toast.LENGTH_SHORT).show()
         }
         val map1 = HashMap<String, String>()
-        if (readStatus!!.book != null) {
-            map1.put("bookid", readStatus!!.book.book_id)
+        if (ReadState.book != null) {
+            map1.put("bookid", ReadState.book.book_id)
         }
-        if (mReaderViewModel != null && mReaderViewModel?.currentChapter != null) {
-            map1.put("chapterid", mReaderViewModel!!.currentChapter!!.chapter_id)
+        if (mReaderViewModel != null && ReadState.currentChapter != null) {
+            map1.put("chapterid", ReadState.currentChapter!!.chapter_id)
         }
         if (isAddShelf) {
             StartLogClickUtil.upLoadEventLog(readReference?.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.POPUPSHELFADD, map1)
@@ -1078,25 +1009,25 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
      * 打开切源页面
      */
     private fun openSourcePage() {
-        if (readStatus!!.sequence == -1) {
+        if (ReadState.sequence == -1) {
             Toast.makeText(readReference?.get(), R.string.read_changesource_tip, Toast.LENGTH_SHORT).show()
             return
         }
-        if (Constants.QG_SOURCE == readStatus!!.requestItem.host) {
+        if (Constants.QG_SOURCE == ReadState.requestItem.host) {
             Toast.makeText(readReference?.get(), "该小说暂无其他来源！", Toast.LENGTH_SHORT).show()
             return
         }
         if (isSourceListShow) {
             isSourceListShow = false
         } else {
-            if (Constants.QG_SOURCE == readStatus!!.getRequestItem().host || Constants.QG_SOURCE == readStatus!!.getRequestItem().host) {
+            if (Constants.QG_SOURCE == ReadState.book.site|| Constants.QG_SOURCE == ReadState.book.site) {
                 return
             }
             showMenu(false)
 //            getCustomLoadingPage()
 //            loadingPage?.loading {
-//                mReaderViewModel!!.getBookSource(readStatus!!.book_id)
-//                OtherRequestService.requestBookSourceChange(dataFactory?.mHandler, ReadingActivity.MSG_SEARCH_CHAPTER, -144, readStatus!!.book_id)
+//                mReaderViewModel!!.getBookSource(ReadState.book_id)
+//                OtherRequestService.requestBookSourceChange(dataFactory?.mHandler, ReadingActivity.MSG_SEARCH_CHAPTER, -144, ReadState.book_id)
 //                null
 //            }
 //            dataFactory?.loadingError(loadingPage)
@@ -1108,7 +1039,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
      */
     private fun startDownLoad() {
         if (!isSubed) {
-            val succeed = mBookDaoHelper?.insertBook(readStatus!!.book)!!
+            val succeed = mBookDaoHelper?.insertBook(ReadState.book)!!
             if (succeed) {
                 isSubed = true
             } else {
@@ -1119,7 +1050,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             readReference?.get()?.showToastShort("网络不给力，请稍后再试")
             return
         }
-        myNovelHelper?.clickDownload(readReference?.get(), readStatus!!.book as Book, Math.max(readStatus!!.sequence, 0))
+        myNovelHelper?.clickDownload(readReference?.get(), ReadState.book as Book, Math.max(ReadState.sequence, 0))
     }
 
     /**
@@ -1156,10 +1087,10 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         if (pageView == null) {
             return
         }
-        readStatus!!.currentPage = 1
-        readStatus!!.offset = 0
+        ReadState.currentPage = 1
+        ReadState.offset = 0
         myNovelHelper?.isShown = false
-        myNovelHelper?.getChapterContent(readReference?.get(), mReaderViewModel?.currentChapter, readStatus!!.book)
+        myNovelHelper?.getChapterContent(readReference?.get(), ReadState.currentChapter, ReadState.book)
         refreshPage()
         isSourceListShow = false
         if (Constants.isSlideUp) {
@@ -1176,15 +1107,14 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
      */
     fun jumpChapterCallBack() {
         Constants.readedCount++
-        if (mReaderViewModel == null || readStatus == null || myNovelHelper == null) {
+        if (mReaderViewModel == null || myNovelHelper == null) {
             return
         }
         mReaderViewModel?.nextChapter = null
-        readStatus?.sequence = readStatus!!.novel_progress
-        readStatus?.offset = 0
+        ReadState.offset = 0
         myNovelHelper?.isShown = false
-        myNovelHelper?.getChapterContent(readReference?.get(), mReaderViewModel!!.currentChapter, readStatus!!.book)
-        readStatus?.currentPage = 1
+        myNovelHelper?.getChapterContent(readReference?.get(), ReadState.currentChapter, ReadState.book)
+        ReadState.currentPage = 1
         refreshPage()
         if (pageView == null) {
             return
@@ -1217,21 +1147,21 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
      * 显示隐藏菜单
      */
     fun showMenu(isShow: Boolean) {
-        if (readStatus!!.isMenuShow != isShow) {
+        if (ReadState.isMenuShow != isShow) {
             clearOtherPanel()
             if (isShow) {
                 full(false)
                 changeMarkState()
                 mReadOptionPresenter?.view?.show(true)
 //            view?.showSetMenu(isShow)
-                readStatus!!.isMenuShow = true
+                ReadState.isMenuShow = true
                 view?.initSettingGuide()
             } else {
                 full(true)
-                readStatus!!.isMenuShow = false
+                ReadState.isMenuShow = false
                 mReadOptionPresenter!!.view!!.show(false)
 //            view?.showSetMenu(isShow)
-                readStatus!!.isMenuShow = false
+                ReadState.isMenuShow = false
             }
         }
     }
@@ -1371,7 +1301,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                 view!!.showAutoMenu(true)
             }
         } else {
-            if (readStatus!!.isMenuShow) {
+            if (ReadState.isMenuShow) {
                 showMenu(false)
             } else {
                 showMenu(true)
@@ -1397,13 +1327,13 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             return false
         }
         // 显示菜单
-        if (readStatus != null && readStatus!!.isMenuShow) {
+        if (ReadState.isMenuShow) {
             showMenu(false)
             return true
         }
 
-        if (mBookDaoHelper != null && readStatus != null) {
-            isSubed = mBookDaoHelper!!.isBookSubed(readStatus!!.book_id)
+        if (mBookDaoHelper != null) {
+            isSubed = mBookDaoHelper!!.isBookSubed(ReadState.book_id)
         }
 
         if (mBookDaoHelper != null && !isSubed) {
@@ -1433,11 +1363,11 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 
         val content_mode = sp!!.getInt("content_mode", 51)
         if (isSubed) {
-            readStatus!!.book = mBookDaoHelper!!.getBook(readStatus!!.book_id, 0)
+            ReadState.book = mBookDaoHelper!!.getBook(ReadState.book_id, 0)
         }
         pageView?.resumeAutoRead()
 
-        readStatus!!.chapterCount = readStatus!!.book.chapter_count
+        ReadState.chapterCount = ReadState.book.chapter_count
 
 
         val lock = sp!!.getInt("lock_screen_time", 5)
@@ -1456,7 +1386,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 
 //        if (readStatus != null && Constants.isNetWorkError) {
 //            Constants.isNetWorkError = false
-//            getChapterByLoading(ReadingActivity.MSG_LOAD_CUR_CHAPTER, readStatus!!.sequence)
+//            getChapterByLoading(ReadingActivity.MSG_LOAD_CUR_CHAPTER, ReadState.sequence)
 //        }
     }
 
@@ -1473,8 +1403,8 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     fun onPause(mCurPageSequence: Int, mCurPageOffset: Int) {
         isFromCover = false
         if (isSubed) {
-            if (readStatus!!.book.book_type == 0) {
-                myNovelHelper?.saveBookmark(readStatus?.book_id, mCurPageSequence,
+            if (ReadState.book.book_type == 0) {
+                myNovelHelper?.saveBookmark(ReadState.book_id, mCurPageSequence,
                         mCurPageOffset, mBookDaoHelper)
                 // 统计阅读章节数
                 val spUtils = SharedPreferencesUtils(PreferenceManager
@@ -1502,15 +1432,15 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 //            mNovelLoader!!.cancel(true)
 //        }
 
-//        if (readStatus != null && mReaderViewModel != null && mReaderViewModel!!.currentChapter != null && readStatus!!.requestItem != null) {
+//        if (readStatus != null && mReaderViewModel != null && ReadState.currentChapter != null && ReadState.requestItem != null) {
 //            //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
-//            StartLogClickUtil.upLoadReadContent(readStatus!!.book_id, mReaderViewModel!!.currentChapter!!.chapter_id + "", readStatus!!.source_ids, readStatus!!.pageCount.toString() + "",
-//                    readStatus!!.currentPage.toString() + "", readStatus!!.currentPageConentLength.toString() + "", readStatus!!.requestItem.fromType.toString() + "",
-//                    readStatus!!.startReadTime.toString() + "", System.currentTimeMillis().toString() + "", (System.currentTimeMillis() - readStatus!!.startReadTime).toString() + "", "false", readStatus!!.requestItem.channel_code.toString() + "")
+//            StartLogClickUtil.upLoadReadContent(ReadState.book_id, ReadState.currentChapter!!.chapter_id + "", ReadState.source_ids, ReadState.pageCount.toString() + "",
+//                    ReadState.currentPage.toString() + "", ReadState.currentPageConentLength.toString() + "", ReadState.requestItem.fromType.toString() + "",
+//                    ReadState.startReadTime.toString() + "", System.currentTimeMillis().toString() + "", (System.currentTimeMillis() - ReadState.startReadTime).toString() + "", "false", ReadState.requestItem.channel_code.toString() + "")
 //
 //        }
 //        AppLog.e(TAG, "onDestroy")
-//        readStatus!!.isMenuShow = false
+//        ReadState.isMenuShow = false
 ////        if (mNovelLoader != null && mNovelLoader!!.status == AsyncTask.Status.RUNNING) {
 ////            mNovelLoader?.cancel(true)
 ////        }
@@ -1539,7 +1469,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 //        Glide.get(readReference?.get()).clearMemory()
 //
 //        if (readStatus != null) {
-//            readStatus!!.recycleResource()
+//            ReadState.recycleResource()
 //        }
 //
 //        if (mReaderViewModel != null) {
@@ -1561,12 +1491,11 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     fun onSaveInstanceState(outState: Bundle): Bundle? {
         // 保存书签状态
         try {
-            outState.putInt("sequence", readStatus!!.sequence)
-            outState.putInt("nid", readStatus!!.nid)
-            outState.putInt("offset", readStatus!!.offset)
-            outState.putSerializable("book", readStatus!!.book)
-            if (mReaderViewModel != null && mReaderViewModel?.currentChapter != null) {
-                outState.putSerializable("currentChapter", mReaderViewModel?.currentChapter)
+            outState.putInt("sequence", ReadState.sequence)
+            outState.putInt("offset", ReadState.offset)
+            outState.putSerializable("book", ReadState.book)
+            if (mReaderViewModel != null && ReadState.currentChapter != null) {
+                outState.putSerializable("currentChapter", ReadState.currentChapter)
             }
             outState.putString("thememode", readReference?.get()?.mThemeHelper?.getMode())
             return outState
@@ -1588,11 +1517,11 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 
         val intent = Intent(readReference?.get(), BookEndActivity::class.java)
         val bundle = Bundle()
-        bundle.putSerializable(Constants.REQUEST_ITEM, readStatus!!.getRequestItem())
-        bundle.putString("bookName", readStatus!!.book.name)
-        bundle.putString("book_id", readStatus!!.book_id)
-        bundle.putString("book_category", readStatus!!.book.category)
-        bundle.putSerializable("book", readStatus!!.book)
+        bundle.putSerializable(Constants.REQUEST_ITEM, ReadState.requestItem)
+        bundle.putString("bookName", ReadState.book.name)
+        bundle.putString("book_id", ReadState.book_id)
+        bundle.putString("book_category", ReadState.book.category)
+        bundle.putSerializable("book", ReadState.book)
         bundle.putString("thememode", currentThemeMode)
         intent.putExtras(bundle)
         readReference?.get()?.startActivity(intent)
@@ -1605,29 +1534,24 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                     showMenu(false)
                 }
                 val bundle = data.extras
-                readStatus!!.sequence = bundle.getInt("sequence")
-                readStatus!!.offset = bundle.getInt("offset", 0)
-                readStatus!!.book = bundle.getSerializable("book") as Book?
+                ReadState.sequence = bundle.getInt("sequence")
+                ReadState.offset = bundle.getInt("offset", 0)
+                ReadState.book = bundle.getSerializable("book") as Book
                 val requestItem = bundle.getSerializable(Constants.REQUEST_ITEM) as RequestItem?
                 AppLog.e(TAG, "onActivityResult: " + requestItem.toString())
-                if (!readStatus!!.source_ids.contains(readStatus!!.book.site)) {
-                    readStatus!!.source_ids += "`" + readStatus!!.book.site
-                }
 
-                AppLog.e(TAG, "from" + readStatus!!.requestItem.fromType + "===")
-                if (requestItem != null) {
-                    readStatus!!.setRequestItem(requestItem)
-                    //readStatus.requestConfig = BookApplication.getGlobalContext().getSourceConfig(requestItem.host);
-                }
+
+                AppLog.e(TAG, "from" + ReadState.requestItem.fromType + "===")
+
                 if (mReaderViewModel!!.chapterList != null) {
                     mReaderViewModel!!.chapterList!!.clear()
                 }
                 myNovelHelper?.isShown = false
-                readStatus!!.currentPage = 1
+                ReadState.currentPage = 1
                 mReaderViewModel?.nextChapter = null
                 mReaderViewModel?.preChapter = null
-                readStatus!!.requestItem.fromType = 1//打点 书籍封面（0）/书架（1）/上一页翻页（2）
-                if (Constants.QG_SOURCE == readStatus!!.book.site) {
+                ReadState.requestItem.fromType = 1//打点 书籍封面（0）/书架（1）/上一页翻页（2）
+                if (Constants.QG_SOURCE == ReadState.book.site) {
                     requestItem?.channel_code = 1
                 } else {
                     requestItem?.channel_code = 2
@@ -1656,7 +1580,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     }
 
     override fun jumpNextChapter() {
-        if (readStatus!!.isMenuShow) {
+        if (ReadState.isMenuShow) {
             showMenu(false)
             return
         }
@@ -1669,14 +1593,13 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     }
 
     override fun onCancelPage() {
-        mReaderViewModel?.restore()
         refreshPage()
     }
 
     override fun onResize() {
 //        AppLog.e("ReadingActivity", "onResize")
-//        if (mReaderViewModel?.currentChapter != null && readStatus!!.book != null) {
-//            myNovelHelper?.getChapterContent(readReference?.get(), mReaderViewModel?.currentChapter, readStatus!!.book)
+//        if (ReadState.currentChapter != null && ReadState.book != null) {
+//            myNovelHelper?.getChapterContent(readReference?.get(), ReadState.currentChapter, ReadState.book)
 //            refreshPage()
 //        }
     }
@@ -1720,13 +1643,13 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     }
 
 //    fun speedUp() {
-//        readStatus!!.setAutoReadSpeed(++autoSpeed)
-//        autoSpeed = readStatus!!.autoReadSpeed()
+//        ReadState.setAutoReadSpeed(++autoSpeed)
+//        autoSpeed = ReadState.autoReadSpeed()
 //    }
 
 //    fun speedDown() {
-//        readStatus!!.setAutoReadSpeed(--autoSpeed)
-//        autoSpeed = readStatus!!.autoReadSpeed()
+//        ReadState.setAutoReadSpeed(--autoSpeed)
+//        autoSpeed = ReadState.autoReadSpeed()
 //    }
 
     fun autoStop() {
@@ -1765,7 +1688,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     }
 
     fun onReadCatalog() {
-        if (readStatus!!.isMenuShow) {
+        if (ReadState.isMenuShow) {
             showMenu(false)
         }
         val data = HashMap<String, String>()
@@ -1781,13 +1704,13 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     }
 
     fun onReadChangeSource() {
-        if (Book.isOnlineType(readStatus!!.book.book_type)) {
+        if (Book.isOnlineType(ReadState.book.book_type)) {
             openSourcePage()
         }
     }
 
     fun onReadCache() {
-        if (Book.isOnlineType(readStatus!!.book.book_type)) {
+        if (Book.isOnlineType(ReadState.book.book_type)) {
             startDownLoad()
         }
     }
@@ -1798,22 +1721,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         }
         stampTime = System.currentTimeMillis()
         isSlideToAuto = Constants.isSlideUp
-        if (Constants.isSlideUp) {
-            val temp: PageInterface?
-            Constants.isSlideUp = false
-            temp = pageView
-            pageView = PageView(readReference?.get())
-            view?.resetPageView(pageView!!)
-            pageView!!.init(readReference?.get(), readStatus, myNovelHelper)
-            pageView!!.setCallBack(this)
-            pageView!!.setViewModel(mReaderViewModel)
-            myNovelHelper?.setPageView(pageView)
-            pageView!!.freshTime(time_text)
-//            pageView!!.freshBattery(batteryPercent)
-            pageView!!.drawCurrentPage()
-            changeMode(current_mode)
-            temp?.clear()
-        }
+
         pageView?.startAutoRead()
         showMenu(false)
     }
@@ -1824,9 +1732,9 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 
     fun onRedrawPage() {
 //        if (pageView is ScrollPageView && (pageView as ScrollPageView).tempChapter != null) {
-//            myNovelHelper?.getChapterContent(readReference?.get(), (pageView as ScrollPageView).tempChapter, readStatus!!.book)
+//            myNovelHelper?.getChapterContent(readReference?.get(), (pageView as ScrollPageView).tempChapter, ReadState.book)
 //        } else {
-//            myNovelHelper?.getChapterContent(readReference?.get(), mReaderViewModel?.currentChapter, readStatus!!.book)
+//            myNovelHelper?.getChapterContent(readReference?.get(), ReadState.currentChapter, ReadState.book)
 //        }
 //        refreshPage()
 //        pageView?.drawCurrentPage()
@@ -1835,7 +1743,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     }
 
     fun onJumpChapter() {
-//        getChapterByLoading(ReadingActivity.MSG_JUMP_CHAPTER, readStatus!!.novel_progress)
+//        getChapterByLoading(ReadingActivity.MSG_JUMP_CHAPTER, ReadState.novel_progress)
     }
 
     fun onJumpPreChapter() {
@@ -1872,7 +1780,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 
     fun onReadFeedBack() {
         if (readReference != null && readReference!!.get() != null && !readReference!!.get()!!.isFinishing()) {
-            if (readStatus!!.sequence == -1) {
+            if (ReadState.sequence == -1) {
                 readReference?.get()?.showToastShort("请到错误章节反馈")
                 return
             }
@@ -1992,12 +1900,12 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             return
         }
         val chapterErrorBean = ChapterErrorBean()
-        val book = readStatus!!.book
+        val book = ReadState.book
         chapterErrorBean.bookName = getEncode(book.name)
         chapterErrorBean.author = getEncode(book.author)
         chapterErrorBean.channelCode = if (Constants.QG_SOURCE == book.site) "1" else "2"
         val bookChapterDao = BookChapterDao(readReference?.get(), book.book_id)
-        val currChapter = bookChapterDao.getChapterBySequence(readStatus!!.sequence)
+        val currChapter = bookChapterDao.getChapterBySequence(ReadState.sequence)
         if (currChapter == null) {
             val time = Observable.timer(1000, TimeUnit.MILLISECONDS)
                     .subscribeOn(Schedulers.io())
@@ -2080,8 +1988,8 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 
     override fun onOriginClick() {
         var url: String? = null
-        if (mReaderViewModel != null && mReaderViewModel!!.currentChapter != null) {
-            url = UrlUtils.buildContentUrl(mReaderViewModel!!.currentChapter!!.curl)
+        if (mReaderViewModel != null && ReadState.currentChapter != null) {
+            url = UrlUtils.buildContentUrl(ReadState.currentChapter!!.curl)
         }
         if (!TextUtils.isEmpty(url)) {
             val uri = Uri.parse(url!!.trim { it <= ' ' })
@@ -2093,9 +2001,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             }
 
             val data = HashMap<String, String>()
-            if (readStatus != null) {
-                data.put("bookid", readStatus!!.book_id)
-            }
+            data.put("bookid", ReadState.book_id)
             StartLogClickUtil.upLoadEventLog(readReference?.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ORIGINALLINK, data)
         } else {
             Toast.makeText(readReference?.get(), "无法查看原文链接", Toast.LENGTH_SHORT).show()
@@ -2111,12 +2017,12 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
         override fun onReceive(context: Context, intent: Intent) {
             val book = intent.getSerializableExtra(Constants.REQUEST_ITEM) as Book
             if (Constants.QG_SOURCE != book.site) {
-                if (mActivityWeakReference.get() != null && readStatus!!.book.book_id == book.book_id) {
+                if (mActivityWeakReference.get() != null && ReadState.book.book_id == book.book_id) {
                     val bundle = Bundle()
-                    bundle.putInt("sequence", readStatus!!.sequence)
-                    bundle.putInt("offset", readStatus!!.offset)
-                    bundle.putSerializable("book", readStatus!!.book)
-                    bundle.putSerializable(Constants.REQUEST_ITEM, readStatus!!.requestItem)
+                    bundle.putInt("sequence", ReadState.sequence)
+                    bundle.putInt("offset", ReadState.offset)
+                    bundle.putSerializable("book", ReadState.book)
+                    bundle.putSerializable(Constants.REQUEST_ITEM, ReadState.requestItem)
                     val fresh = Intent(mActivityWeakReference.get(), ReadingActivity::class.java)
                     fresh.putExtras(bundle)
                     fresh.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)

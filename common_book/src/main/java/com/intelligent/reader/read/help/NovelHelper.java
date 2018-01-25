@@ -18,7 +18,6 @@ import net.lzbook.kit.data.bean.BookTask;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.NovelLineBean;
 import net.lzbook.kit.data.bean.ReadConfig;
-import net.lzbook.kit.data.bean.ReadStatus;
 import net.lzbook.kit.data.bean.Source;
 import net.lzbook.kit.data.db.BookChapterDao;
 import net.lzbook.kit.data.db.BookDaoHelper;
@@ -60,12 +59,10 @@ public class NovelHelper {
     public boolean isShown = false;
     private OnHelperCallBack helperCallBack;
     private WeakReference<Activity> actReference;
-    private ReadStatus readStatus;
     private PageInterface pageView;
 
-    public NovelHelper(Activity activity, ReadStatus readStatus) {
+    public NovelHelper(Activity activity) {
         this.actReference = new WeakReference<>(activity);
-        this.readStatus = readStatus;
     }
 
     public void setPageView(PageInterface pageView) {
@@ -200,7 +197,7 @@ public class NovelHelper {
         }
     }
 
-    public void showSourceDialog(final ReaderViewModel mReaderViewModel, String curl, final ArrayList<Source> sources) {
+    public void showSourceDialog( String curl, final ArrayList<Source> sources) {
         if (actReference == null || actReference.get() == null || actReference.get().isFinishing()) {
             return;
         }
@@ -211,8 +208,8 @@ public class NovelHelper {
         TextView change_source_original_web = (TextView) sourceDialog.findViewById(R.id.change_source_original_web);
         TextView change_source_continue = (TextView) sourceDialog.findViewById(R.id.change_source_continue);
 
-        if (mReaderViewModel != null && mReaderViewModel.getCurrentChapter() != null && mReaderViewModel.getCurrentChapter().status != Chapter.Status.CONTENT_NORMAL) {
-            change_source_disclaimer_message.setText(mReaderViewModel.getCurrentChapter().status.tips);
+        if (ReadState.INSTANCE.getCurrentChapter() != null && ReadState.INSTANCE.getCurrentChapter().status != Chapter.Status.CONTENT_NORMAL) {
+            change_source_disclaimer_message.setText(ReadState.INSTANCE.getCurrentChapter().status.tips);
             change_source_original_web.setVisibility(View.INVISIBLE);
             change_source_continue.setText(R.string.jump_next_chapter);
         }
@@ -264,7 +261,7 @@ public class NovelHelper {
                 map1.put("type", "1");
                 StartLogClickUtil.upLoadEventLog(actReference.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
                 dismissDialog(sourceDialog);
-                if (mReaderViewModel != null && mReaderViewModel.getCurrentChapter() != null && mReaderViewModel.getCurrentChapter().status != Chapter.Status.CONTENT_NORMAL) {
+                if (ReadState.INSTANCE.getCurrentChapter() != null && ReadState.INSTANCE.getCurrentChapter().status != Chapter.Status.CONTENT_NORMAL) {
                     if (helperCallBack != null) {
                         helperCallBack.jumpNextChapter();
                     }
@@ -509,70 +506,7 @@ public class NovelHelper {
 
     }
 
-    public synchronized List<NovelLineBean> getPageContent() {
-        if (readStatus.mLineList == null) {
-            return null;
-        }
-        if (readStatus.currentPage == 0) {
-            readStatus.currentPage = 1;
-        }
-        if (readStatus.currentPage > readStatus.pageCount) {
-            readStatus.currentPage = readStatus.pageCount;
-        }
-        readStatus.offset = 0;
-        ArrayList<NovelLineBean> pageContent = null;
-        if (readStatus.currentPage - 1 < readStatus.mLineList.size()) {
-            pageContent = readStatus.mLineList.get(readStatus.currentPage - 1);
-        } else {
-            pageContent = new ArrayList<NovelLineBean>();
-        }
 
-        for (int i = 0; i < readStatus.currentPage - 1 && i < readStatus.mLineList.size(); i++) {
-            ArrayList<NovelLineBean> pageList = readStatus.mLineList.get(i);
-            final int size = pageList.size();
-            // AppLog.d("initTextContent2", "size:" + size);
-            for (int j = 0; j < size; j++) {
-                NovelLineBean string = pageList.get(j);
-                if (string != null && !TextUtils.isEmpty(string.getLineContent())) {
-                    readStatus.offset += string.getLineContent().length();
-                }
-            }
-        }
-        readStatus.currentPageConentLength = 0;
-        for (int i = 0; i < pageContent.size(); i++) {
-            readStatus.currentPageConentLength += pageContent.get(i).getLineContent().length();
-
-        }
-        AppLog.e("总字数", "===" + readStatus.currentPage + "++" + readStatus.currentPageConentLength);
-        readStatus.offset++;
-        return pageContent;
-
-    }
-
-    public synchronized void getPageContentScroll() {
-        if (readStatus.mLineList == null) {
-            return;
-        }
-        if (readStatus.currentPage == 0) {
-            readStatus.currentPage = 1;
-        }
-        if (readStatus.currentPage > readStatus.pageCount) {
-            readStatus.currentPage = readStatus.pageCount;
-        }
-        readStatus.offset = 0;
-        int count = readStatus.mLineList.size();
-        for (int i = 0; i < readStatus.currentPage - 1 && i < count; i++) {
-            ArrayList<NovelLineBean> pageList = readStatus.mLineList.get(i);
-            final int size = pageList.size();
-            for (int j = 0; j < size; j++) {
-                NovelLineBean string = pageList.get(j);
-                if (string != null && !TextUtils.isEmpty(string.getLineContent())) {
-                    readStatus.offset += string.getLineContent().length();
-                }
-            }
-        }
-        readStatus.offset++;
-    }
 
     /**
      * 处理章节内容
@@ -584,23 +518,17 @@ public class NovelHelper {
      * @return true: NORMAL  false: ERROR
      */
     public synchronized boolean getChapterContent(Activity activity, Chapter currentChapter, Book mBook) {
-        if (mBook == null || readStatus == null)
+        if (mBook == null )
             return false;
         // 更新chapter状态
         BaseBookHelper.setChapterStatus(currentChapter);
-        if (currentChapter != null && readStatus != null) {
+        if (currentChapter != null) {
             if (currentChapter.status != Chapter.Status.CONTENT_NORMAL) {
                 if (helperCallBack != null) {
                     helperCallBack.changSource();
                 }
             }
             ReadState.INSTANCE.setChapterName(currentChapter.chapter_name);
-        }
-        if (readStatus != null) {
-            readStatus.bookName = mBook.name;
-            readStatus.bookAuthor = mBook.author;
-            //  小说来源
-            readStatus.bookSource = mBook.name;
         }
 
         if (currentChapter != null) {
@@ -625,19 +553,6 @@ public class NovelHelper {
         this.helperCallBack = callBack;
     }
 
-    public void clear() {
-        if (readStatus.bookNameList != null) {
-            readStatus.bookNameList.clear();
-            readStatus.bookNameList = null;
-        }
-        isShown = false;
-        readStatus.bookName = "";
-        readStatus.mLineList = null;
-
-        if (this.pageView != null) {
-            this.pageView = null;
-        }
-    }
 
     public interface OnHelperCallBack {
 
