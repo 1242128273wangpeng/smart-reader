@@ -418,6 +418,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
 
     private fun getReaderState(readerState: Bundle?) {
         readerState?.let {
+            ReadState.sequence = it.getInt("sequence", 0)
             readStatus?.sequence = it.getInt("sequence", 0)
             val requestItem = it.getSerializable(Constants.REQUEST_ITEM) as RequestItem?
             if (requestItem != null) {

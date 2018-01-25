@@ -339,7 +339,6 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     fun onReSeparate() {
-        unSubscribe()
         for (it in chapterKey){
                 if (chapterLruCache[it] != null) {
                     if (it != -1) {
