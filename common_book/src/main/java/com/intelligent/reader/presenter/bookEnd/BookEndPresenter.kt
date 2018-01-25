@@ -14,6 +14,7 @@ import com.intelligent.reader.activity.CataloguesActivity
 import com.intelligent.reader.activity.HomeActivity
 import com.intelligent.reader.activity.SearchBookActivity
 import com.intelligent.reader.read.help.BookHelper
+import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.util.EventBookStore
 import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.book.view.MyDialog
@@ -32,8 +33,7 @@ import java.util.ArrayList
  */
 
 class BookEndPresenter(val act: Activity, val bookEndContract: BookEndContract,
-                       var requestItem: RequestItem, var readStatus: ReadStatus,
-                       var bookName: String, var book_id: String, var category: String) {
+                        var category: String) {
     var activity: WeakReference<Activity>? = null
     var myDialog: MyDialog? = null
     var sourceList = ArrayList<Source>()
@@ -48,8 +48,8 @@ class BookEndPresenter(val act: Activity, val bookEndContract: BookEndContract,
     fun getBookSource() {
         Thread(Runnable {
             try {
-                if (Constants.QG_SOURCE != requestItem.host && Constants.SG_SOURCE != requestItem.host) {
-                    OtherRequestService.requestBookSourceChange(handler, 1, -144, book_id)
+                if (Constants.QG_SOURCE != ReadState.book.site && Constants.SG_SOURCE != ReadState.book.site) {
+                    OtherRequestService.requestBookSourceChange(handler, 1, -144, ReadState.book.book_id)
                 } else {
                     handler.sendEmptyMessage(0)
                 }
@@ -62,8 +62,8 @@ class BookEndPresenter(val act: Activity, val bookEndContract: BookEndContract,
     //书籍来源列表点击
     fun itemClick(source: Source) {
 
-        if (mBookDaoHelper!!.isBookSubed(readStatus.book_id)) {
-            if (source.book_source_id != readStatus.book.book_source_id) {
+        if (mBookDaoHelper!!.isBookSubed(ReadState.book.book_id)) {
+            if (source.book_source_id != ReadState.book.book_source_id) {
                 //弹出切源提示
                 showChangeSourceNoticeDialog(source)
                 return
@@ -124,15 +124,7 @@ class BookEndPresenter(val act: Activity, val bookEndContract: BookEndContract,
     }
 
     private fun intoCatalogActivity(source: Source, b: Boolean) {
-        if (readStatus != null && readStatus.getRequestItem() != null) {
-            readStatus.firstChapterCurl = ""
-            val requestItem = RequestItem()
-            requestItem.book_id = source.book_id
-            requestItem.book_source_id = source.book_source_id
-            requestItem.host = source.host
-            requestItem.name = bookName
-            requestItem.author = readStatus.book.author
-            requestItem.dex = source.dex
+        if (ReadState.book != null) {
 
             val iterator = source.source.entries.iterator()
             val list = ArrayList<String>()
@@ -141,25 +133,19 @@ class BookEndPresenter(val act: Activity, val bookEndContract: BookEndContract,
                 val value = entry.value
                 list.add(value)
             }
-            if (list.size > 0) {
-                requestItem.parameter = list[0]
-            }
-            if (list.size > 1) {
-                requestItem.extra_parameter = list[1]
-            }
-            readStatus.setRequestItem(requestItem)
+
             //readStatus.requestConfig = BookApplication.getGlobalContext().getSourceConfig(requestItem.host);
             val bookDaoHelper = BookDaoHelper.getInstance()
             if (bookDaoHelper.isBookSubed(source.book_id)) {
                 val iBook = bookDaoHelper.getBook(source.book_id, 0)
-                iBook.book_source_id = requestItem.book_source_id
-                iBook.site = requestItem.host
-                iBook.parameter = requestItem.parameter
-                iBook.extra_parameter = requestItem.extra_parameter
+                iBook.book_source_id = ReadState.book.book_source_id
+                iBook.site = ReadState.book.site
+                iBook.parameter = ReadState.book.parameter
+                iBook.extra_parameter = ReadState.book.extra_parameter
                 iBook.last_updatetime_native = source.update_time
                 iBook.dex = source.dex
                 bookDaoHelper.updateBook(iBook)
-                readStatus.book = iBook
+                ReadState.book = iBook
                 if (b) {
                     val bookChapterDao = BookChapterDao(activity!!.get(), source.book_id)
                     BookHelper.deleteAllChapterCache(source.book_id, 0, bookChapterDao.count)
@@ -168,13 +154,10 @@ class BookEndPresenter(val act: Activity, val bookEndContract: BookEndContract,
                     BaseBookHelper.delDownIndex(activity!!.get(), source.book_id)
                 }
             } else {
-                val iBook = readStatus.book
+                val iBook = ReadState.book
                 iBook.book_source_id = source.book_source_id
                 iBook.site = source.host
                 iBook.dex = source.dex
-                iBook.parameter = requestItem.parameter
-                iBook.extra_parameter = requestItem.extra_parameter
-                readStatus.book = iBook
             }
             //dataFactory.chapterList.clear();
             openCategoryPage()
@@ -187,15 +170,15 @@ class BookEndPresenter(val act: Activity, val bookEndContract: BookEndContract,
         val intent = Intent(activity!!.get(), CataloguesActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val bundle = Bundle()
-        bundle.putSerializable("cover", readStatus.book)
-        bundle.putString("book_id", readStatus.book_id)
+        bundle.putSerializable("cover", ReadState.book)
+        bundle.putString("book_id", ReadState.book.book_id)
         //AppLog.e(TAG, "OpenCategoryPage: " + readStatus.sequence);
-        bundle.putInt("sequence", readStatus.sequence)
+        bundle.putInt("sequence", ReadState.sequence)
         bundle.putBoolean("fromCover", true)
         bundle.putBoolean("fromEnd", true)
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         //AppLog.e(TAG, "ReadingActivity: " + readStatus.getRequestItem().toString());
-        bundle.putSerializable(Constants.REQUEST_ITEM, readStatus.getRequestItem())
+        bundle.putSerializable(Constants.REQUEST_ITEM, RequestItem.fromBook(ReadState.book))
         intent.putExtras(bundle)
         activity!!.get()!!.startActivity(intent)
     }
