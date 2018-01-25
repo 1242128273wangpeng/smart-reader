@@ -106,7 +106,7 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
 
         apkUpdateUtils = new ApkUpdateUtils(this);
         try {
-//            apkUpdateUtils.getApkUpdateInfo(this, handler, "HomeActivity");
+            apkUpdateUtils.getApkUpdateInfo(this, handler, "HomeActivity");
         } catch (Exception e) {
             e.printStackTrace();
         }
