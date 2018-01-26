@@ -1,31 +1,32 @@
 package com.intelligent.reader.activity
 
-import com.intelligent.reader.R
-import com.intelligent.reader.adapter.SourceAdapter
-import com.intelligent.reader.presenter.bookEnd.BookEndContract
-import com.intelligent.reader.presenter.bookEnd.BookEndPresenter
-
-import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.Book
-import net.lzbook.kit.data.bean.ReadStatus
-import net.lzbook.kit.data.bean.RequestItem
-import net.lzbook.kit.data.bean.Source
-
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.text.Html
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ListView
+import android.widget.RelativeLayout
+import android.widget.TextView
 import com.dycm_adsdk.PlatformSDK
 import com.dycm_adsdk.callback.AbstractCallback
 import com.dycm_adsdk.callback.ResultCode
+import com.intelligent.reader.R
+import com.intelligent.reader.adapter.SourceAdapter
+import com.intelligent.reader.presenter.bookEnd.BookEndContract
+import com.intelligent.reader.presenter.bookEnd.BookEndPresenter
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.book.view.LoadingPage
+import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.data.bean.Book
+import net.lzbook.kit.data.bean.ReadStatus
+import net.lzbook.kit.data.bean.RequestItem
+import net.lzbook.kit.data.bean.Source
 import org.json.JSONException
 import org.json.JSONObject
-
-import java.util.ArrayList
+import java.util.*
 import java.util.concurrent.Callable
 
 class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndContract {
@@ -169,7 +170,12 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
                 }
                 finish()
             }
-            R.id.iv_back -> finish()
+            R.id.iv_back -> {
+                val data = HashMap<String, String>()
+                data.put("type", "1")
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKENDPAGE_PAGE, StartLogClickUtil.BACK, data)
+                finish()
+            }
 //            R.id.ad_view -> {
 //                if (Constants.DEVELOPER_MODE) {
 //                    Toast.makeText(this@BookEndActivity, "你点击了广告", Toast.LENGTH_SHORT).show()

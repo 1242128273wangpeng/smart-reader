@@ -24,19 +24,19 @@ import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.NullCallBack
-import net.lzbook.kit.data.bean.*
+import net.lzbook.kit.data.bean.Book
+import net.lzbook.kit.data.bean.Bookmark
+import net.lzbook.kit.data.bean.ReadStatus
+import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.request.UrlUtils
-import net.lzbook.kit.request.own.OtherRequestService
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.toastShort
 import java.lang.Exception
 import java.lang.ref.WeakReference
-import java.util.*
 import java.util.concurrent.Callable
-import kotlin.collections.HashMap
 
 /**
  * Created by xian on 2017/8/8.
@@ -434,6 +434,9 @@ class ReadOptionPresenter : ReadOption.Presenter {
     override fun back() {
         //先这样实现吧...
         if (activity.get() is ReadingActivity) {
+            val data = java.util.HashMap<String, String>()
+            data.put("type", "1")
+            StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data)
             (activity.get() as ReadingActivity).goBackToHome()
         }
     }

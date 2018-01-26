@@ -5,9 +5,7 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.*
 import android.os.Bundle
-import android.os.Handler
 import android.os.IBinder
-import android.os.Message
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
@@ -21,9 +19,6 @@ import com.intelligent.reader.adapter.CoverSourceAdapter
 import com.intelligent.reader.cover.*
 import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.receiver.DownBookClickReceiver
-import com.quduquxie.bean.BookMode
-import com.quduquxie.network.DataService
-import com.quduquxie.network.RequestManager
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -42,9 +37,6 @@ import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.data.recommend.CoverRecommendBean
 import net.lzbook.kit.net.custom.service.NetService
-import net.lzbook.kit.request.RequestExecutor
-import net.lzbook.kit.request.RequestExecutor.REQUEST_COVER_ERROR
-import net.lzbook.kit.request.own.OWNParser
 import net.lzbook.kit.utils.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -672,7 +664,6 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
     }
 
 
-
     fun goToBookSearchActivity(view: View) {
         val intent = Intent()
         if (view is RecommendItemView) {
@@ -729,9 +720,10 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
             }
             insertBook?.last_updateSucessTime = System.currentTimeMillis()
             val succeed = bookDaoHelper!!.insertBook(insertBook)
-            if (succeed) {
+            if (succeed && insertBook != null) {
                 val data1 = HashMap<String, String>()
                 data1.put("type", "1")
+                data1.put("bookid", insertBook.book_id)
                 StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFEDIT, data1)
                 showToastShort("成功添加到书架！")
                 coverPageContract!!.successAddIntoShelf(true)
@@ -750,6 +742,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
                 showToastShort("成功从书架移除！")
                 val data2 = HashMap<String, String>()
                 data2.put("type", "2")
+                data2.put("bookid", requestItem.book_id)
                 StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFEDIT, data2)
                 val downloadService = BaseBookApplication.getDownloadService()
                 downloadService?.cancelTask(requestItem.book_id)
