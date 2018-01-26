@@ -260,6 +260,21 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
                 itemView.layoutParams.height = pageLines.height.toInt()
             }
         }
+
+        private fun getAdView(): View = ad_fl
+
+        /**
+         * 事件触发是否在广告视图范围内
+         */
+        fun singleTapUpIsInside(evX: Int, evY: Int): Boolean {
+            val location = IntArray(2)
+            getAdView().getLocationOnScreen(location)
+            val left = location[0]
+            val right = left + getAdView().width
+            val top = location[1]
+            val bottom = top + getAdView().height
+            return evX in left..right && top <= evY && bottom >= evY
+        }
     }
 
     /**

@@ -457,9 +457,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
                 window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
             }
         } else {
-
             window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_LOW_PROFILE
-
         }
 
         if (isShow) {
