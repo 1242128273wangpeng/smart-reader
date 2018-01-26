@@ -8,10 +8,13 @@ import java.util.*
  * 阅读器配置
  * Created by wt on 2017/12/26.
  */
-object ReadConfig :Observable(){
+object ReadConfig : Observable() {
+
+//    private var mModeSp: SharedPreferences = BaseBookApplication.sCtx.getSharedPreferences("config", Context.MODE_PRIVATE)
+
     //动画模式
-    val animation:ReadViewEnums.Animation
-        get() =  when (Constants.PAGE_MODE) {
+    val animation: ReadViewEnums.Animation
+        get() = when (Constants.PAGE_MODE) {
             1 -> ReadViewEnums.Animation.curl
             2 -> ReadViewEnums.Animation.shift
             3 -> ReadViewEnums.Animation.list
@@ -29,7 +32,7 @@ object ReadConfig :Observable(){
     var READ_PARAGRAPH_SPACE = 1.0f
     //阅读页行间距
     var READ_INTERLINEAR_SPACE = 0.3f
-        set(value){
+        set(value) {
             if (field != value) {
                 field = value
                 setChanged()
@@ -46,7 +49,7 @@ object ReadConfig :Observable(){
             }
         }
     //阅读模式 背景
-    var MODE:Int = 51
+    var MODE: Int = 51
         set(value) {
             if (field != value) {
                 field = value
@@ -64,7 +67,7 @@ object ReadConfig :Observable(){
             }
         }
     //跳章 改为true 则为跳章
-    var jump:Boolean = false
+    var jump: Boolean = false
         set(value) {
             if (value) {
                 setChanged()
@@ -96,13 +99,15 @@ object ReadConfig :Observable(){
     // 段间距
     var mDuan: Float = 0.0f
 
-    fun registObserver(observer: Observer){
+    fun registObserver(observer: Observer) {
         addObserver(observer)
     }
-    fun unregistObserver(observer: Observer){
+
+    fun unregistObserver(observer: Observer) {
         deleteObserver(observer)
     }
-    fun unregistObserverAll(){
+
+    fun unregistObserverAll() {
         deleteObservers()
     }
 }
