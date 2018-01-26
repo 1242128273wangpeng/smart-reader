@@ -8,10 +8,7 @@ import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.FrameLayout
 import com.intelligent.reader.R
 import com.intelligent.reader.read.DataProvider
@@ -79,9 +76,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
      */
     private val NEXT_LOAD_CHAPTER_SCROLL_SCALE = 0.6
 
-    private var mLoadPreChapterAble = true
-
-    private var mJumpChapterAction = false
+    private lateinit var mGestureDetector: GestureDetector
 
     constructor(context: Context?) : this(context, null) {
         init()
@@ -118,6 +113,58 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 }
                 mCanScrollVertically = recyclerView.canScrollVertically(1)
             }
+        })
+
+        mGestureDetector = GestureDetector(this.context, object : GestureDetector.SimpleOnGestureListener() {
+
+            override fun onSingleTapUp(e: MotionEvent): Boolean {
+                val childe = page_rv.findChildViewUnder(e.x, e.y)
+                if (childe != null) {
+                    val viewHolder = page_rv.getChildViewHolder(childe)
+                    if (viewHolder != null) {
+
+                        if (viewHolder is PagerScrollAdapter.AdViewHolder) {
+                            this@VerticalReaderView.parent.requestDisallowInterceptTouchEvent(true)
+                            return true
+
+                        } else if (viewHolder is PagerScrollAdapter.PagerHolder) {
+                            val groupLocation = IntArray(2)
+                            page_rv.getLocationOnScreen(groupLocation)
+                            val evX = (e.x + groupLocation[0]).toInt()
+                            val evY = (e.y + groupLocation[1]).toInt()
+
+                            if (viewHolder.singleTapUpIsInside(evX,evY)) {
+                                this@VerticalReaderView.parent.requestDisallowInterceptTouchEvent(true)
+                                return true
+                            } else {
+                                showMenuClick(e)
+                                return super.onSingleTapUp(e)
+                            }
+                        } else {
+                            showMenuClick(e)
+                            return super.onSingleTapUp(e)
+                        }
+                    }
+                }
+                return super.onSingleTapUp(e)
+            }
+
+        })
+
+        page_rv.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+
+            override fun onTouchEvent(rv: RecyclerView?, e: MotionEvent?) {
+                mGestureDetector.onTouchEvent(e)
+            }
+
+            override fun onInterceptTouchEvent(rv: RecyclerView?, e: MotionEvent?): Boolean {
+                mGestureDetector.onTouchEvent(e)
+                return false
+            }
+
+            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+            }
+
         })
     }
 
@@ -159,7 +206,6 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 }
             }
         }
-        Log.d("Vertical", "loadPreChapter sequence: " + sequence)
     }
 
     /**
@@ -233,8 +279,12 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 val firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition()
                 if (firstVisibleItemPosition != -1) {
                     val currentItemSequence = mOriginDataList[firstVisibleItemPosition].lines[0].sequence
-                    if ((currentItemSequence == PagerScrollAdapter.HEADER_ITEM_TYPE || currentItemSequence == PagerScrollAdapter.AD_ITEM_TYPE) && scrollIndex != -1) {
-                        page_rv.scrollToPosition(scrollIndex + 1)
+                    if (scrollIndex != -1) {
+                        if (currentItemSequence == PagerScrollAdapter.HEADER_ITEM_TYPE) {
+                            page_rv.scrollToPosition(scrollIndex + 1)
+                        } else if (currentItemSequence == PagerScrollAdapter.AD_ITEM_TYPE) {
+                            page_rv.scrollToPosition(scrollIndex + 2)
+                        }
                     }
                 }
                 addBookHomePage(chapter)
@@ -252,7 +302,6 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
          */
             ReadViewEnums.PageIndex.current -> {
                 if (reLoad && mAdapter.getAllData().size > 0) {
-//                    mOriginDataList.clear()
                     mAdapter.clearData()
                 }
                 mCatalogList = ReadState.chapterList
@@ -287,11 +336,6 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 }
                 mChapterLoadStat = CHAPTER_WAITING
 
-//                if (mJumpChapterAction) {
-//                    loadPreChapter(chapter.sequence - 1)
-//                    mJumpChapterAction = false
-//                    mLoadPreChapterAble = false
-//                }
             }
 
         /**
@@ -506,10 +550,10 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
             }
 
             MotionEvent.ACTION_UP -> {
-                val distance = Math.sqrt(Math.pow((mStartTouchX - tmpX).toDouble(), 2.0) + Math.pow((mStartTouchY - tmpY).toDouble(), 2.0)).toInt()
-                if (distance < 30 || distance < 10) {
-                    showMenuClick(event)
-                }
+//                val distance = Math.sqrt(Math.pow((mStartTouchX - tmpX).toDouble(), 2.0) + Math.pow((mStartTouchY - tmpY).toDouble(), 2.0)).toInt()
+//                if (distance < 30 || distance < 10) {
+//                    showMenuClick(event)
+//                }
             }
             MotionEvent.ACTION_MOVE -> {
                 // 底部
@@ -523,7 +567,6 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                         ToastUtils.showToastNoRepeat(resources.getString(R.string.is_first_chapter))
                     }
                 }
-                mLoadPreChapterAble = true
             }
         }
         return super.onInterceptTouchEvent(event)
@@ -578,22 +621,12 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     }
 
     private fun onRedrawPage() {
-//        mLoadPreChapterAble = true
-//        mJumpChapterAction = true
-//        getChapterData(ReadState.sequence, ReadViewEnums.PageIndex.current, true)
         entrance()
-//        mLoadPreChapterAble = false
-//        loadPreChapter(ReadState.sequence - 1)
     }
 
     private fun onJumpChapter(sequence: Int) {
         ReadState.sequence = sequence
         entrance()
-//        mLoadPreChapterAble = true
-//        mJumpChapterAction = true
-//        getChapterData(sequence, ReadViewEnums.PageIndex.current, true)
-//        loadPreChapter(ReadState.sequence - 1)
-//        mLoadPreChapterAble = false
     }
 
     override fun onAnimationChange(animation: ReadViewEnums.Animation) {

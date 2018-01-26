@@ -368,7 +368,7 @@ class DataProvider : DisposableAndroidViewModel() {
 //        var currentNovelLineBean = arrayListOf<NovelLineBean>()
 //        var mNovelPageBean = chapterSeparate[ReadState.sequence]
         val mNovelPageBean = chapterLruCache[ReadState.sequence].separateList
-        return mNovelPageBean[ReadState.currentPage - 1].lines
+        return mNovelPageBean[if (ReadState.currentPage == 0) 0 else ReadState.currentPage - 1].lines
     }
 
     abstract class OnLoadAdViewCallback(val loadAdBySequence: Int) : OnLoadReaderAdCallback

@@ -24,7 +24,9 @@ import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.NullCallBack
-import net.lzbook.kit.data.bean.*
+import net.lzbook.kit.data.bean.Book
+import net.lzbook.kit.data.bean.Bookmark
+import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.AppUtils
@@ -33,9 +35,7 @@ import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.toastShort
 import java.lang.Exception
 import java.lang.ref.WeakReference
-import java.util.*
 import java.util.concurrent.Callable
-import kotlin.collections.HashMap
 
 /**
  * Created by xian on 2017/8/8.
@@ -222,12 +222,12 @@ class ReadOptionPresenter : ReadOption.Presenter {
 
             }
 
-            getCustomLoadingPage()
-            loadingPage!!.loading(Callable<Void> {
-                mReaderViewModel.getBookSource(ReadState.book!!.book_id)
+//            getCustomLoadingPage()
+//            loadingPage!!.loading {
+            mReaderViewModel.getBookSource(ReadState.book.book_id)
 //                OtherRequestService.requestBookSourceChange(dataFactory.mHandler, ReadingActivity.MSG_SEARCH_CHAPTER, -144, ReadState.book_id)
-                null
-            })
+//                null
+//            }
         }
     }
 
@@ -434,7 +434,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
     }
 
     override fun updateStatus() {
-        view?.updateStatus( bookDaoHelper)
+        view?.updateStatus(bookDaoHelper)
     }
 
     override fun dismissLoadingPage() {
