@@ -410,7 +410,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         ReadState.book?.let {
             val sequence = ReadState.sequence
             val offset = ReadState.offset
-            DataProvider.getInstance().onReSeparate()
+            DataProvider.getInstance().clear()
 
             viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
                 override fun onPreDraw(): Boolean {

@@ -23,7 +23,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.View;
 
 import com.intelligent.reader.flip.base.PageFlip;
 import com.intelligent.reader.flip.base.PageFlipException;
@@ -36,8 +35,6 @@ import com.intelligent.reader.util.DisplayUtils;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
-
-import kotlin.jvm.Volatile;
 
 /**
  * Page flip view
@@ -169,6 +166,8 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, O
     private boolean downActioned = false;
     private float downX = 0F;
 
+    private boolean isFilledTexture = false;
+
     public volatile Bitmap firstTexture = null;
     public volatile Bitmap secondTexture = null;
 
@@ -197,6 +196,7 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, O
             queueEvent(new Runnable() {
                 @Override
                 public void run() {
+
                     mPageFlip.onFingerDown(x, y);
 //                    requestRender();
                 }
@@ -223,7 +223,6 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, O
             queueEvent(new Runnable() {
                 @Override
                 public void run() {
-
                     fillTextures();
 
                     if (mPageFlip.onFingerMove(x, y)) {
@@ -267,6 +266,7 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, O
                                log("onFingerUp");
 
                                requestRender();
+                               isFilledTexture = false;
                            }
                        }
             );
@@ -276,14 +276,17 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, O
     }
 
     private synchronized void fillTextures() {
-        if(firstTexture != null && !firstTexture.isRecycled()){
-            mPageFlip.getFirstPage().setFirstTexture(firstTexture);
-            firstTexture = null;
-        }
+        if(!isFilledTexture) {
+            isFilledTexture = true;
+            if (firstTexture != null && !firstTexture.isRecycled()) {
+                mPageFlip.getFirstPage().setFirstTexture(firstTexture);
+                firstTexture = null;
+            }
 
-        if(secondTexture != null && !secondTexture.isRecycled()){
-            mPageFlip.getFirstPage().setSecondTexture(secondTexture);
-            secondTexture = null;
+            if (secondTexture != null && !secondTexture.isRecycled()) {
+                mPageFlip.getFirstPage().setSecondTexture(secondTexture);
+                secondTexture = null;
+            }
         }
     }
 

@@ -388,6 +388,10 @@ class HorizontalPage : FrameLayout, Observer {
             val chapterList = DataProvider.getInstance().chapterLruCache[cursor.sequence].separateList
             try {
                 pageIndex = ReadQueryUtil.findPageIndexByOffset(cursor.offset, chapterList)
+                if(ReadViewEnums.PageIndex.current == tag) {
+                    ReadState.currentPage = pageIndex
+                    ReadState.sequence = cursor.sequence
+                }
             } catch (e: Exception) {
                 showErrorView(mCursor!!)
                 return

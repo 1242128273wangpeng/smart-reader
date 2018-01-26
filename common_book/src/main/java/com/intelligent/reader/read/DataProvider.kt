@@ -349,6 +349,12 @@ class DataProvider : DisposableAndroidViewModel() {
         }
     }
 
+    fun clear(){
+        chapterKey.clear()
+        chapterLruCache.evictAll()
+        unSubscribe()
+    }
+
     abstract class ReadDataListener {
         open fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) {
         }
