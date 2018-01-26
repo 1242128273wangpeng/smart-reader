@@ -816,11 +816,7 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
     //换源回调
     fun searchChapterCallBack(sourcesList: ArrayList<Source>?) {
         if (sourcesList?.isNotEmpty() == true) {
-            //if (readStatus.book.dex == 1 && !TextUtils.isEmpty(dataFactory.currentChapter.curl) && sourcesList != null) {
             myNovelHelper?.showSourceDialog(ReadState.currentChapter?.curl, sourcesList)
-            /*} else if (readStatus.book.dex == 0 && !TextUtils.isEmpty(dataFactory.currentChapter.curl1) && sourcesList != null) {
-                myNovelHelper.showSourceDialog(dataFactory, dataFactory.currentChapter.curl1, sourcesList);*/
-            //}
         } else {
             readReference?.get()?.showToastShort("暂无其它来源")
         }

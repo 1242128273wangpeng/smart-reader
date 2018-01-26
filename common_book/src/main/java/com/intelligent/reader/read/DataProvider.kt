@@ -53,7 +53,7 @@ class DataProvider : DisposableAndroidViewModel() {
     //是否显示广告
     var isShowAd: Boolean = true
     var countCacheSize: Int = 4
-//    //分页前缓存容器
+    //    //分页前缓存容器
 //    val chapterMap: HashMap<Int, Chapter> = HashMap()
 //    //分页后缓存容器
 //    val chapterSeparate: HashMap<Int, ArrayList<NovelPageBean>> = HashMap()
@@ -241,7 +241,7 @@ class DataProvider : DisposableAndroidViewModel() {
      */
     fun getChapterList(book: Book, requestItem: RequestItem, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
         if (sequence <= -1) {//封面页
-            chapterLruCache.put(sequence, NovelChapter(Chapter(),arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf()))))
+            chapterLruCache.put(sequence, NovelChapter(Chapter(), arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf()))))
 //            chapterSeparate.put(sequence, arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf())))
 //            chapterMap.put(-1, Chapter())
             chapterKey.add(sequence)
@@ -289,7 +289,7 @@ class DataProvider : DisposableAndroidViewModel() {
         addDisposable(mReaderRepository.requestSingleChapter(book.site, chapter)
                 .map {
                     val separateContent = ReadSeparateHelper.initTextSeparateContent(it.content, it.chapter_name)
-                    NovelChapter(it,separateContent)
+                    NovelChapter(it, separateContent)
                 }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -306,7 +306,7 @@ class DataProvider : DisposableAndroidViewModel() {
                     mReaderRepository.writeChapterCache(c, false)
                     if (c.content != "null" && c.content.isNotEmpty()) {
                         ReadState.chapterId = c.chapter_id
-                        chapterLruCache.put(sequence, NovelChapter(c,separateContent))
+                        chapterLruCache.put(sequence, NovelChapter(c, separateContent))
                         chapterKey.add(sequence)
                         //加章末广告
                         if (isShowAd) {
@@ -342,13 +342,13 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     fun onReSeparate() {
-        for (it in chapterKey){
-                if (chapterLruCache[it] != null) {
-                    if (it != -1) {
-                        chapterLruCache[it].separateList =  ReadSeparateHelper.initTextSeparateContent(chapterLruCache[it].chapter.content, chapterLruCache[it].chapter.chapter_name)
-                        loadAd(it)
-                    }
+        for (it in chapterKey) {
+            if (chapterLruCache[it] != null) {
+                if (it != -1) {
+                    chapterLruCache[it].separateList = ReadSeparateHelper.initTextSeparateContent(chapterLruCache[it].chapter.content, chapterLruCache[it].chapter.chapter_name)
+                    loadAd(it)
                 }
+            }
         }
     }
 
@@ -364,7 +364,7 @@ class DataProvider : DisposableAndroidViewModel() {
 //        var currentNovelLineBean = arrayListOf<NovelLineBean>()
 //        var mNovelPageBean = chapterSeparate[ReadState.sequence]
         val mNovelPageBean = chapterLruCache[ReadState.sequence].separateList
-        return mNovelPageBean[ReadState.currentPage - 1].lines
+        return mNovelPageBean[if (ReadState.currentPage == 0) 0 else ReadState.currentPage - 1].lines
     }
 
     abstract class OnLoadAdViewCallback(val loadAdBySequence: Int) : OnLoadReaderAdCallback
