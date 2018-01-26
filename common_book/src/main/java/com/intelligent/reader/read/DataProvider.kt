@@ -282,6 +282,9 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     private fun requestSingleChapter(book: Book, chapters: List<Chapter>, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
+        if(sequence>=chapters.size){
+            return
+        }
         val chapter = chapters[sequence]
         addDisposable(mReaderRepository.requestSingleChapter(book.site, chapter)
                 .map {
