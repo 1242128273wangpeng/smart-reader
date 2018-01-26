@@ -28,13 +28,13 @@ import com.dycm_adsdk.callback.AbstractCallback
 import com.dycm_adsdk.callback.ResultCode
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.*
-import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.cover.BookCoverLocalRepository
 import com.intelligent.reader.cover.BookCoverOtherRepository
 import com.intelligent.reader.cover.BookCoverQGRepository
 import com.intelligent.reader.cover.BookCoverRepositoryFactory
 import com.intelligent.reader.fragment.CatalogMarkFragment
 import com.intelligent.reader.presenter.IPresenter
+import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.read.help.CallBack
 import com.intelligent.reader.read.help.NovelHelper
@@ -78,7 +78,7 @@ import kotlin.collections.ArrayList
 /**
  * Created by yuchao on 2017/11/14 0014.
  */
-open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCallBack, CallBack,
+open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCallBack, CallBack,
         PageInterface.OnOperationClickListener, DownloadService.OnDownloadListener, ReaderViewModel.ReadDataListener {
 
     //获取章节信息
@@ -445,7 +445,8 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
      */
     private fun getBookContent() {
 
-        NetWorkUtils.NATIVE_AD_TYPE = NetWorkUtils.NATIVE_AD_ERROR
+
+//        NetWorkUtils.NATIVE_AD_TYPE = NetWorkUtils.NATIVE_AD_ERROR
 //        dataFactory?.getChapterByLoading(ReadingActivity.MSG_LOAD_CUR_CHAPTER, ReadState.sequence)
 //        getChapterByLoading(ReadingActivity.MSG_LOAD_CUR_CHAPTER, ReadState.sequence)
 
@@ -922,10 +923,8 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
             val bookDaoHelper = BookDaoHelper.getInstance()
             if (bookDaoHelper.isBookSubed(source.book_id)) {
                 val iBook = bookDaoHelper.getBook(source.book_id, 0)
-                iBook.book_source_id = ReadState.book.book_source_id
-                iBook.site = ReadState.book.site
-                iBook.parameter = ReadState.book.parameter
-                iBook.extra_parameter = ReadState.book.extra_parameter
+                iBook.book_source_id = source.book_source_id
+                iBook.site = source.host
                 iBook.last_updatetime_native = source.update_time
                 iBook.dex = source.dex
                 bookDaoHelper.updateBook(iBook)
@@ -1157,7 +1156,6 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                 view?.initSettingGuide()
             } else {
                 full(true)
-                ReadState.isMenuShow = false
                 mReadOptionPresenter!!.view!!.show(false)
 //            view?.showSetMenu(isShow)
                 ReadState.isMenuShow = false
@@ -1536,9 +1534,9 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                 ReadState.sequence = bundle.getInt("sequence")
                 ReadState.offset = bundle.getInt("offset", 0)
                 ReadState.book = bundle.getSerializable("book") as Book
-                val requestItem = bundle.getSerializable(Constants.REQUEST_ITEM) as RequestItem?
+                val requestItem = bundle.getSerializable(Constants.REQUEST_ITEM) as RequestItem
                 AppLog.e(TAG, "onActivityResult: " + requestItem.toString())
-
+                ReadState.book.book_source_id = requestItem.book_source_id
 
                 AppLog.e(TAG, "from" + ReadState.requestItem.fromType + "===")
 
@@ -1555,7 +1553,14 @@ open class BaseReadPresenter(act: ReadingActivity) : IPresenter<ReadPreInterface
                 } else {
                     requestItem?.channel_code = 2
                 }
-                getBookContent()
+                val intent = Intent(act, ReadingActivity::class.java)
+                val extras = Bundle()
+                extras.putInt("sequence", ReadState.sequence)
+                extras.putInt("offset", ReadState.offset)
+                extras.putSerializable("book", ReadState.book)
+                extras.putSerializable(Constants.REQUEST_ITEM, requestItem)
+                intent.putExtras(extras)
+                act.startActivity(intent)
             }
         }
     }

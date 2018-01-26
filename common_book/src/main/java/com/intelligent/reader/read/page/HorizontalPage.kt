@@ -100,6 +100,9 @@ class HorizontalPage : FrameLayout, Observer {
         addView(readTop)
         addView(readBottom)
         addView(loadView)
+
+        loadView.setOnTouchListener { v, event -> true }
+        errorView.setOnTouchListener { v, event -> true }
     }
 
     override fun getDrawingCache(): Bitmap? {
@@ -329,6 +332,7 @@ class HorizontalPage : FrameLayout, Observer {
          * 加载3章至内存
          */
         fun entrance(cursor: ReadCursor) {
+            loadView.visibility = View.VISIBLE
             mCursor = cursor
             entranceArray = arrayOf(false, false, false)
             cursor.curBook.sequence = cursor.sequence
