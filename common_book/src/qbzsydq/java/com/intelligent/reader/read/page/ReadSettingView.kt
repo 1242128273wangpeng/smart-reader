@@ -113,6 +113,9 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             openSystemLight()
         }
 
+        setBrightnessBackground(autoBrightness)
+        setScreenBrightProgress()
+
         val numberFormat = NumberFormat.getNumberInstance()
         numberFormat.maximumFractionDigits = 2
 
@@ -256,18 +259,6 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     }
 
 
-    private fun setScreenBrightProgress() {
-        val screenBrightness = sharedPreferences!!.getInt("screen_bright", -1)
-
-        if (screenBrightness >= 0) {
-            read_setting_brightness_progress!!.progress = screenBrightness
-        } else if (FrameActivity.mSystemBrightness >= 20) {
-            read_setting_brightness_progress!!.progress = FrameActivity.mSystemBrightness - 20
-        } else {
-            read_setting_brightness_progress!!.progress = 5
-        }
-    }
-
     fun showMenu() {
         if (!mIsChecked) {
             read_setting_reduce_text!!.isEnabled = ReadConfig.FONT_SIZE > 10
@@ -294,6 +285,18 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 ibtn_night.setImageResource(R.drawable.read_option_night_selector)
             }
             mIsChecked = true
+        }
+    }
+
+    private fun setScreenBrightProgress() {
+        val screenBrightness = sharedPreferences!!.getInt("screen_bright", -1)
+
+        if (screenBrightness >= 0) {
+            read_setting_brightness_progress!!.progress = screenBrightness
+        } else if (FrameActivity.mSystemBrightness >= 20) {
+            read_setting_brightness_progress!!.progress = FrameActivity.mSystemBrightness - 20
+        } else {
+            read_setting_brightness_progress!!.progress = 5
         }
     }
 
