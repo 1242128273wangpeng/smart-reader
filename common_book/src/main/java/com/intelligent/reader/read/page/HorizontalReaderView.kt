@@ -35,31 +35,24 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 
     //记录上一次滑动x坐标
     private var beforeX: Float = 0.toFloat()
-    //ViewPager是否能滑动 -1:都不能 0：都能 1 左 2 右
+    //ViewPager是否能滑动 -1:都不能 0：都能 1 左右
     var isCanScroll: Int = 0
     //禁止滑动方向 true:禁止左滑 false:禁止右滑
     var isLeftSlip: Boolean = true
 
     //当前游标
     var curCursor: ReadCursor? = null
-    //滑动方向
-    private var direction = ReadViewEnums.Direction.leftToRight
     //当前坐标
     private var index: Int = Int.MAX_VALUE.div(2)
-    //滑动监听
-    private var mListener: OnPageChangeListener = object : ViewPager.OnPageChangeListener {
-        private var lastValue: Float = 0.toFloat()
+    private var curViewState: ReadViewEnums.ViewState = ReadViewEnums.ViewState.loading
 
-        override fun onPageScrollStateChanged(state: Int) = Unit
+    var pageScrolledPosition = 0
+    //滑动监听
+    private var mListener: OnPageChangeListener = object : ViewPager.SimpleOnPageChangeListener() {
 
         override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
             if (positionOffset == 0.0f) return
-            if (lastValue > positionOffset) {
-                direction = ReadViewEnums.Direction.rightToLeft
-            } else if (lastValue < positionOffset) {
-                direction = ReadViewEnums.Direction.leftToRight
-            }
-            lastValue = positionOffset
+            pageScrolledPosition = position
         }
 
         override fun onPageSelected(position: Int) {
@@ -158,7 +151,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
      *  检查缓存
      */
     private fun checkChapterCache(whichOrientation: String) {
-        val threadObserve = Observable.create<Int> ({
+        val threadObserve = Observable.create<Int>({
             it.onNext(1)
             it.onComplete()
         }).subscribeOn(Schedulers.io())
@@ -369,6 +362,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         val curView = findViewWithTag(ReadViewEnums.PageIndex.current)
         curView as HorizontalPage
         val mCursor = curView.mCursor
+        curViewState = curView.viewState
         if (mCursor != null) {
             ReadState.sequence = mCursor.sequence
             ReadState.offset = mCursor.offset.plus(curView.mCursorOffset)
@@ -501,19 +495,24 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             MotionEvent.ACTION_MOVE -> {//移动
                 val motionValue = ev.x - beforeX
                 if (isLeftSlip) {
-                    mReadPageChange?.goToBookOver()//跳bookend
-                    if (motionValue < 0) {//禁止左滑
+                    if (motionValue < 0 && pageScrolledPosition > (adapter as HorizontalAdapter).curPosition) {//禁止左滑
+                        mReadPageChange?.goToBookOver()//跳bookend
                         return true
                     }
                 } else {
-                    if (motionValue > 0) {//禁止右滑动
+                    if (motionValue > 0 && pageScrolledPosition < (adapter as HorizontalAdapter).curPosition) {//禁止右滑动
                         return true
                     }
                 }
                 beforeX = ev.x//手指移动时，再把当前的坐标作为下一次的‘上次坐标’，解决上述问题
             }
             MotionEvent.ACTION_UP -> {
-                return super.dispatchTouchEvent(ev)
+                var times = ReadConfig.screenDensity.times(15)
+                return if ((beforeX < ev.x + times) and (beforeX > ev.x - times)) {
+                    super.dispatchTouchEvent(ev)
+                } else {
+                    true
+                }
             }
         }
         return super.onTouchEvent(ev)

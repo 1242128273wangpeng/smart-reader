@@ -19,6 +19,7 @@ class HorizontalAdapter(private var noticePageListener: HorizontalPage.NoticePag
     var mCurrentView: View? = null
     var index: Int = -1
     var cursor:ReadCursor? = null
+    var curPosition : Int = -1
 
     fun getPrimaryItem(): View? {
         return mCurrentView
@@ -28,6 +29,7 @@ class HorizontalAdapter(private var noticePageListener: HorizontalPage.NoticePag
         mCurrentView = `object` as View
         mCurrentView?.tag = ReadViewEnums.PageIndex.current
         noticePageListener.currentViewSuccess()
+        curPosition = position
     }
 
     override fun isViewFromObject(view: View?, `object`: Any?): Boolean = view == `object`

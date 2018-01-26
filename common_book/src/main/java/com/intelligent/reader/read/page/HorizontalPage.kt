@@ -428,8 +428,10 @@ class HorizontalPage : FrameLayout, Observer {
                         checkAdBiggerView()
                     } else {//普通页
                         //画之前清空内容
-                        removeView(homePage)
-                        postInvalidate()
+                        post {
+                            removeView(homePage)
+                            postInvalidate()
+                        }
                         //判断展示Banner广告
                         val topMargin = if (mNovelPageBean?.lines?.isNotEmpty() == true) mNovelPageBean!!.height else ReadConfig.screenHeight.toFloat()
                         if (ReadConfig.screenHeight - topMargin > ReadConfig.screenHeight / 5) {
