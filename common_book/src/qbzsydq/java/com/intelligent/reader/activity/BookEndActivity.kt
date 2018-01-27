@@ -21,9 +21,20 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Book
-import net.lzbook.kit.data.bean.ReadStatus
 import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.bean.Source
+
+import android.content.res.Resources
+import android.graphics.Bitmap
+import android.os.Bundle
+import android.text.Html
+import android.view.View
+import android.view.ViewGroup
+import android.widget.*
+import com.dycm_adsdk.PlatformSDK
+import com.dycm_adsdk.callback.AbstractCallback
+import com.dycm_adsdk.callback.ResultCode
+import com.intelligent.reader.read.mode.ReadState
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
@@ -44,7 +55,6 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
     private var requestItem: RequestItem? = null
     private var category: String? = null
     private var book_id: String? = null
-    private var readStatus: ReadStatus? = null
 
     private var sourceAdapter: SourceAdapter? = null
     private var sourceListView: ListView? = null
@@ -55,10 +65,9 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
         super.onCreate(savedInstanceState)
         setContentView(R.layout.act_book_end)
         initListener()
-        readStatus = ReadStatus(applicationContext)
         initData()
-        if (requestItem != null && readStatus != null) {
-            mBookEndPresenter = BookEndPresenter(this, this, requestItem!!, readStatus!!, bookName!!, book_id!!, category!!)
+        if (requestItem != null ) {
+            mBookEndPresenter = BookEndPresenter(this, this, category!!)
         }
         loadSource()
         initAD()
@@ -95,7 +104,7 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
 
         if (!Constants.isHideAD) {
             if (mBookEndPresenter == null) {
-                mBookEndPresenter = BookEndPresenter(this, this, requestItem!!, readStatus!!, bookName!!, book_id!!, category!!)
+                mBookEndPresenter = BookEndPresenter(this, this, category!!)
             }
         }
         loadingPage = LoadingPage(this, LoadingPage.setting_result)
@@ -139,14 +148,11 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
             category = intent.getStringExtra("book_category")
             book_id = intent.getStringExtra("book_id")
             name_bookend!!.text = bookName
-            readStatus!!.sequence = intent.getIntExtra("sequence", 0)
-            readStatus!!.offset = intent.getIntExtra("offset", 0)
+            ReadState.sequence = intent.getIntExtra("sequence", 0)
+            ReadState.offset = intent.getIntExtra("offset", 0)
             thememode = intent.getStringExtra("thememode")
-            if (requestItem != null) {
-                readStatus!!.requestItem = requestItem
-            }
-            readStatus!!.book = book
-            readStatus!!.book_id = book_id
+
+            ReadState.book = book!!
         }
         if (requestItem == null) {
             finish()

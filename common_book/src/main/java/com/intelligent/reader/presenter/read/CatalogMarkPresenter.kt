@@ -29,12 +29,12 @@ import java.util.*
 /**
  * Created by xian on 2017/8/17.
  */
-class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: ReaderViewModel) : CatalogMark.Presenter {
+class CatalogMarkPresenter : CatalogMark.Presenter {
     override fun onClickFixBook(activity: Activity) {
         val data = java.util.HashMap<String, String>()
-        data.put("bookid", readStatus.book_id)
-        if (dataFactory != null && dataFactory.currentChapter != null) {
-            data.put("chapterid", dataFactory!!.currentChapter!!.chapter_id)
+        data.put("bookid", ReadState.book.book_id)
+        if (ReadState.currentChapter != null) {
+            data.put("chapterid", ReadState.currentChapter!!.chapter_id)
         }
         StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.DIRECTORYREPAIR, data)
     }
@@ -45,11 +45,11 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: ReaderVi
     val requestItem: RequestItem
 
     init {
-        requestItem = RequestItem.fromBook(readStatus.book)
+        requestItem = RequestItem.fromBook(ReadState.book)
     }
 
     override fun getBook(): Book {
-        return readStatus.book
+        return ReadState.book
     }
 
     override fun loadCatalog(reverse: Boolean) {
@@ -58,7 +58,7 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: ReaderVi
 
         Observable.create<List<Chapter>> { emitter: ObservableEmitter<List<Chapter>>? ->
 
-            val chapterDao = BookChapterDao(BaseBookApplication.getGlobalContext(), readStatus.book.book_id)
+            val chapterDao = BookChapterDao(BaseBookApplication.getGlobalContext(), ReadState.book.book_id)
             val chapterList = chapterDao.queryBookChapter()
             if (chapterList != null && chapterList.size > 0) {
                 emitter?.onNext(chapterList)
@@ -85,7 +85,7 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: ReaderVi
                         }
 
                     } else {
-                        NetOwnBook.requestOwnCatalogList(readStatus.book).subscribekt(
+                        NetOwnBook.requestOwnCatalogList(ReadState.book).subscribekt(
                                 onNext = { t ->
                                     emitter?.onNext(t)
                                     emitter?.onComplete()
@@ -104,7 +104,7 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: ReaderVi
                             Collections.reverse(ret)
                             view?.showCatalog(ret, 0)
                         } else {
-                            view?.showCatalog(ret, readStatus.sequence)
+                            view?.showCatalog(ret, ReadState.sequence)
                         }
                     } else {
                         view?.onNetError()
@@ -138,7 +138,7 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: ReaderVi
 
         Observable.create<List<Bookmark>> { emitter: ObservableEmitter<List<Bookmark>>? ->
 
-            val list = mBookDaoHelper.getBookMarks(readStatus.book_id)
+            val list = mBookDaoHelper.getBookMarks(ReadState.book.book_id)
 
             emitter?.onNext(list)
             emitter?.onComplete()
@@ -157,19 +157,19 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: ReaderVi
         if (requestItem.host == Constants.QG_SOURCE) {
             isChapterExist = DataCache.isChapterExists(chapter.chapter_id, chapter.book_id)
         } else {
-            isChapterExist = BookHelper.isChapterExist(chapter.sequence, readStatus.book_id)
+            isChapterExist = BookHelper.isChapterExist(chapter.sequence, ReadState.book_id)
         }
         if (!isChapterExist && NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
             BaseBookApplication.getGlobalContext().toastShort(R.string.no_net)
             return
         }
 
-        readStatus.sequence = chapter.sequence
+        ReadState.sequence = chapter.sequence
         (activity as ReadingActivity).onJumpChapter(chapter.sequence, 0)
 
 
         val data = java.util.HashMap<String, String>()
-        data.put("bookid", readStatus.book_id)
+        data.put("bookid", ReadState.book_id)
         data.put("chapterid", chapter.chapter_id)
         StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CATALOG1, data)
 
@@ -182,7 +182,7 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: ReaderVi
         bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
         bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
         bundle.putInt("sequence", mark.sequence)
-        bundle.putSerializable("book", readStatus.book)
+        bundle.putSerializable("book", ReadState.book)
         val intent = Intent()
         intent.putExtras(bundle)
 
@@ -195,9 +195,9 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: ReaderVi
         }
 
         val data = java.util.HashMap<String, String>()
-        data.put("bookid", readStatus.book_id)
-        if (dataFactory != null && dataFactory.currentChapter != null) {
-            data.put("chapterid", dataFactory!!.currentChapter!!.chapter_id)
+        data.put("bookid", ReadState.book_id)
+        if (ReadState.currentChapter != null) {
+            data.put("chapterid", ReadState.currentChapter!!.chapter_id)
         }
         StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.BOOKMARK, data)
 
@@ -222,7 +222,7 @@ class CatalogMarkPresenter(val readStatus: ReadStatus, val dataFactory: ReaderVi
     override fun deleteAllBookMark(activity: Activity) {
         Observable.create<Boolean> { e: ObservableEmitter<Boolean>? ->
 
-            mBookDaoHelper.deleteBookMark(readStatus.book_id)
+            mBookDaoHelper.deleteBookMark(ReadState.book_id)
 
             e?.onNext(true)
             e?.onComplete()
