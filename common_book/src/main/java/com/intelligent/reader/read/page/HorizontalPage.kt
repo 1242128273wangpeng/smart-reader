@@ -73,6 +73,8 @@ class HorizontalPage : FrameLayout, Observer {
     var noticePageListener: NoticePageListener? = null
     var mNovelPageBean: NovelPageBean? = null
 
+    var orientationLimit = ReadViewEnums.ScrollLimitOrientation.NONE
+
 //    var drawCacheBitmap:Bitmap? = null
 //    var innerCanvas:Canvas? = null
 
@@ -101,8 +103,14 @@ class HorizontalPage : FrameLayout, Observer {
         addView(readBottom)
         addView(loadView)
 
-        loadView.setOnTouchListener { v, event -> true }
-        errorView.setOnTouchListener { v, event -> true }
+        loadView.setOnTouchListener { v, event ->
+            requestDisallowInterceptTouchEvent(true)
+            true
+        }
+        errorView.setOnTouchListener { v, event ->
+            requestDisallowInterceptTouchEvent(true)
+            true
+        }
     }
 
     override fun getDrawingCache(): Bitmap? {
@@ -400,6 +408,9 @@ class HorizontalPage : FrameLayout, Observer {
             if (pageIndex <= pageSum) {
                 //过滤其他页内容
                 if (cursor.sequence == -1) {//封面页
+
+                    ReadState.orientationLimit = ReadViewEnums.ScrollLimitOrientation.LEFT
+
                     setupHomePage(cursor)
                     val start = ReadViewEnums.ViewState.start
                     start.Tag = when (viewNotify) {
@@ -412,6 +423,13 @@ class HorizontalPage : FrameLayout, Observer {
                     viewState = start
                     noticePageListener?.pageChangSuccess(mCursor!!, ReadViewEnums.NotifyStateState.none)//游标通知回调
                 } else {
+
+                    if(cursor.sequence == ReadState.chapterCount - 1 && pageIndex == pageSum){
+                        ReadState.orientationLimit = ReadViewEnums.ScrollLimitOrientation.RIGHT
+                    }else{
+                        ReadState.orientationLimit = ReadViewEnums.ScrollLimitOrientation.NONE
+                    }
+
                     try {
                         mNovelPageBean = ReadQueryUtil.findNovelPageBeanByOffset(cursor.offset, chapterList)
 //                        if (mNovelPageBean.) {
@@ -432,6 +450,7 @@ class HorizontalPage : FrameLayout, Observer {
                         if(ReadViewEnums.PageIndex.current == tag) {
                             ReadState.currentPage = pageIndex
                             ReadState.sequence = cursor.sequence
+                            ReadState.offset = cursor.offset
                         }
 
                         //画之前清空内容
@@ -501,6 +520,11 @@ class HorizontalPage : FrameLayout, Observer {
                     }
                     time = System.currentTimeMillis()
 
+
+                    if(ReadState.orientationLimit == ReadViewEnums.ScrollLimitOrientation.RIGHT){
+                        requestDisallowInterceptTouchEvent(true)
+                    }
+
                     if (ReadConfig.animation == ReadViewEnums.Animation.curl) {
                         return isTouchMenuArea(event)
                     } else {
@@ -513,6 +537,14 @@ class HorizontalPage : FrameLayout, Observer {
                         noticePageListener?.onClickMenu(false)
                         isShowMenu = false
                     }
+
+                    if(ReadState.orientationLimit == ReadViewEnums.ScrollLimitOrientation.RIGHT){
+                        if(e1 != null && e2.x - e1.x < 0){
+                            noticePageListener?.onClickRight(false)
+                            return true
+                        }
+                    }
+                    requestDisallowInterceptTouchEvent(false)
                     return false
                 }
 

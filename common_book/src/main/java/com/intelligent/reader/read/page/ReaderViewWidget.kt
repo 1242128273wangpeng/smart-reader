@@ -19,6 +19,7 @@ import com.intelligent.reader.read.help.HorizontalEvent
 import com.intelligent.reader.read.help.IReadPageChange
 import com.intelligent.reader.read.help.IReadView
 import com.intelligent.reader.read.help.IReadWidget
+import com.intelligent.reader.read.mode.ReadState
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.utils.AppLog
@@ -253,6 +254,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
 
     private var isDownActioned = false
+    private var shouldGiveUpAction = false
 
 
     private var velocityTracker: VelocityTracker? = null
@@ -286,18 +288,19 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 //            eventList.clear()
 //        }
 
-        when (event.actionMasked) {
+        return when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> onCurlDown(event.x, event.y)
             MotionEvent.ACTION_MOVE -> onCurlMove(event.x, event.y)
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> onCurlUp(event.x, event.y)
+            else ->{
+                false
+            }
         }
-        return true
     }
 
     private val downPointF = PointF()
 
-
-    private fun onCurlDown(x: Float, y: Float) {
+    private fun onCurlDown(x: Float, y: Float):Boolean {
         isDownActioned = true
 
         downPointF.x = x
@@ -308,55 +311,77 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 //        setFlipCurrentAsFirstTexture()
 
         mTextureView?.onFingerDown(x, y)
+
+        return true
     }
 
-    private fun onCurlUp(x: Float, y: Float) {
-        if (isDownActioned) {
+    private fun onCurlUp(x: Float, y: Float):Boolean {
+
+        if (!shouldGiveUpAction && isDownActioned) {
             isDownActioned = false
 
-            if (mTextureView!!.getmPageRender().mPageFlip.flipState == PageFlipState.BEGIN_FLIP) {
-                if (x < width / 2) {
-                    //left
-                    flipPreviousPage()
-                } else {
-                    //right
-                    flipNextPage()
+            do {
+                if (mTextureView!!.getmPageRender().mPageFlip.flipState == PageFlipState.BEGIN_FLIP) {
+                    if (x < width / 2 && !ReadConfig.FULL_SCREEN_READ) {
+                        if (ReadViewEnums.ScrollLimitOrientation.LEFT == ReadState.orientationLimit) {
+                            break
+                        }
+                        //left
+                        flipPreviousPage()
+                    } else {
+                        if(ReadViewEnums.ScrollLimitOrientation.RIGHT == ReadState.orientationLimit){
+                            mReadPageChange?.goToBookOver()//跳bookend
+                            break
+                        }
+                        //right
+                        flipNextPage()
+                    }
                 }
-            }
 
-            velocityTracker?.computeCurrentVelocity(1000, mMaximumVelocity)
-            mTextureView?.onFingerUp(x, y, velocityTracker!!.xVelocity)
-            velocityTracker?.recycle()
-            velocityTracker = null
+                velocityTracker?.computeCurrentVelocity(1000, mMaximumVelocity)
+                mTextureView?.onFingerUp(x, y, velocityTracker!!.xVelocity)
+            }while (false)
         }
+
+        velocityTracker?.recycle()
+        velocityTracker = null
+        shouldGiveUpAction = false
+        return true
     }
 
-    private fun onCurlMove(x: Float, y: Float) {
+    private fun onCurlMove(x: Float, y: Float):Boolean {
 
         if (isDownActioned) {
 
             if (Math.abs(downPointF.x - x) >= mTouchSlop) {
                 //perpare texture
                 if (downPointF.x - x < 0) {
-                    //left
-                    flipPreviousPage()
+                    if(ReadViewEnums.ScrollLimitOrientation.LEFT == ReadState.orientationLimit){
+                        shouldGiveUpAction = true
+                        return false
+                    }else {
+                        //left
+                        flipPreviousPage()
+                    }
                 } else {
-                    //right
-                    flipNextPage()
+                    if(ReadViewEnums.ScrollLimitOrientation.RIGHT == ReadState.orientationLimit){
+                        shouldGiveUpAction = true
+                        mReadPageChange?.goToBookOver()//跳bookend
+                        return false
+                    }else {
+                        //right
+                        flipNextPage()
+                    }
                 }
 
 
                 mTextureView?.onFingerMove(x, y)
             }
         } else {
-            isDownActioned = true
-            downPointF.x = x
-            downPointF.y = y
-            if (context is ReadingActivity) (context as ReadingActivity).showMenu(false)
-
-//            setFlipCurrentAsFirstTexture()
-            mTextureView?.onFingerDown(x, y)
+            onCurlDown(x, y)
         }
+
+        return true
     }
 
     private fun flipPreviousPage() {

@@ -26,7 +26,6 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.NullCallBack
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.Bookmark
-import net.lzbook.kit.data.bean.ReadStatus
 import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.request.UrlUtils

@@ -35,10 +35,8 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 
     //记录上一次滑动x坐标
     private var beforeX: Float = 0.toFloat()
-    //ViewPager是否能滑动 -1:都不能 0：都能 1 左右
-    var isCanScroll: Int = 0
-    //禁止滑动方向 true:禁止左滑 false:禁止右滑
-    var isLeftSlip: Boolean = true
+
+    private var disallowIntercept = false
 
     //当前游标
     var curCursor: ReadCursor? = null
@@ -46,14 +44,8 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     private var index: Int = Int.MAX_VALUE.div(2)
     private var curViewState: ReadViewEnums.ViewState = ReadViewEnums.ViewState.loading
 
-    var pageScrolledPosition = 0
     //滑动监听
     private var mListener: OnPageChangeListener = object : ViewPager.SimpleOnPageChangeListener() {
-
-        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-            if (positionOffset == 0.0f) return
-            pageScrolledPosition = position
-        }
 
         override fun onPageSelected(position: Int) {
             //判断方向
@@ -116,7 +108,6 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             ReadViewEnums.ViewState.loading -> {
                 //改变View的NotifyStateState，
                 // success后，通知其他页updata
-                isCanScroll = -1
                 view.viewNotify = notify
                 if (notify == ReadViewEnums.NotifyStateState.all) {
                     view.setCursor(curCursor!!)
@@ -132,17 +123,6 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                 //设置新游标
                 val newCursor = ReadCursor(curCursor!!.curBook, newSequence, newOffset, ReadViewEnums.PageIndex.previous)
                 (adapter as HorizontalAdapter).cursor = newCursor
-            }
-            ReadViewEnums.ViewState.error -> {//
-
-            }
-            ReadViewEnums.ViewState.start -> {//封面开始
-                isCanScroll = 1
-                isLeftSlip = false
-            }
-            ReadViewEnums.ViewState.end -> {//结束
-                isCanScroll = 1
-                isLeftSlip = true
             }
         }
     }
@@ -318,7 +298,6 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                         AppLog.e("none", "start")
                     }
                 }
-                isCanScroll = 0
             }
         }
     }
@@ -338,7 +317,11 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
      */
     override fun onClickRight(smoothScroll: Boolean) {
         //当前页是最后一页禁止点击
-        if ((findViewWithTag(ReadViewEnums.PageIndex.current) != null) and ((findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState == ReadViewEnums.ViewState.end)) return
+        if ((findViewWithTag(ReadViewEnums.PageIndex.current) != null)
+                and ((findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState == ReadViewEnums.ViewState.end)){
+                mReadPageChange?.goToBookOver()
+            return
+        }
         checkViewState("Next", ReadViewEnums.NotifyStateState.right)
         setCurrentItem(index.plus(1), smoothScroll)
     }
@@ -369,19 +352,6 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             ReadState.currentPage = curView.pageIndex
             ReadState.pageCount = curView.pageSum
             ReadState.contentLength = curView.contentLength
-            when (curView.viewState) {
-                ReadViewEnums.ViewState.start -> {
-                    isCanScroll = 1
-                    isLeftSlip = false
-                }
-                ReadViewEnums.ViewState.end -> {
-                    isCanScroll = 1
-                    isLeftSlip = true
-                }
-                ReadViewEnums.ViewState.loading -> isCanScroll = -1
-                ReadViewEnums.ViewState.error -> isCanScroll = -1
-                else -> isCanScroll = 0
-            }
         }
     }
 
@@ -443,6 +413,11 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         this.mHorizontalEvent = mHorizontalEvent
     }
 
+    override fun requestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+        super.requestDisallowInterceptTouchEvent(disallowIntercept)
+        this.disallowIntercept = disallowIntercept
+    }
+
     //-----禁止左滑-------左滑：上一次坐标 > 当前坐标
     override fun onTouchEvent(event: MotionEvent): Boolean {
         return if (ReadConfig.animation == ReadViewEnums.Animation.curl) {
@@ -453,32 +428,19 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
-        if (ReadConfig.animation == ReadViewEnums.Animation.curl
+        if (!disallowIntercept && ReadConfig.animation == ReadViewEnums.Animation.curl
                 && MotionEvent.ACTION_MOVE == ev?.actionMasked) {
+            //仿真是要先判断出滑动方向的，防止ViewPager先滑动touchSlop长度
             return mTouchSlop <= Math.abs(ev.x - mLastMotionX)
         }
         return super.onInterceptTouchEvent(ev)
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
-
-//        if(!mScroller.isFinished) {
-//            mScroller.abortAnimation()
-//            return false
-//        }
-
-        return when (isCanScroll) {
-            -1 -> {
-                if (event.action == MotionEvent.ACTION_MOVE) {
-                    true
-                } else {
-                    return super.dispatchTouchEvent(event)
-                }
-            }
-            0 -> {
-                return super.dispatchTouchEvent(event)
-            }
-            else -> prohibitionOfSlidingTouchEvent(event)
+        return if(ReadConfig.animation == ReadViewEnums.Animation.curl){
+            super.dispatchTouchEvent(event)
+        }else {
+            prohibitionOfSlidingTouchEvent(event)
         }
     }
 
@@ -494,25 +456,15 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             }
             MotionEvent.ACTION_MOVE -> {//移动
                 val motionValue = ev.x - beforeX
-                if (isLeftSlip) {
-                    if (motionValue < 0 && pageScrolledPosition > (adapter as HorizontalAdapter).curPosition) {//禁止左滑
-                        mReadPageChange?.goToBookOver()//跳bookend
-                        return true
-                    }
-                } else {
-                    if (motionValue > 0 && pageScrolledPosition < (adapter as HorizontalAdapter).curPosition) {//禁止右滑动
-                        return true
-                    }
+                if(!disallowIntercept && motionValue < 0 && ReadState.orientationLimit == ReadViewEnums.ScrollLimitOrientation.RIGHT){
+                    mReadPageChange?.goToBookOver()//跳bookend
+                    return false
+                }else{
+                    return super.dispatchTouchEvent(ev)
                 }
-                beforeX = ev.x//手指移动时，再把当前的坐标作为下一次的‘上次坐标’，解决上述问题
             }
             MotionEvent.ACTION_UP -> {
-                var times = ReadConfig.screenDensity.times(15)
-                return if ((beforeX < ev.x + times) and (beforeX > ev.x - times)) {
-                    super.dispatchTouchEvent(ev)
-                } else {
-                    true
-                }
+                 super.dispatchTouchEvent(ev)
             }
         }
         return super.onTouchEvent(ev)

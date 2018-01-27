@@ -2,6 +2,7 @@ package com.intelligent.reader.read.mode
 
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.Chapter
+import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.data.bean.RequestItem
 import kotlin.properties.Delegates
 
@@ -55,4 +56,6 @@ object ReadState {
         }
 
     var isMenuShow: Boolean = false
+
+    var orientationLimit = ReadViewEnums.ScrollLimitOrientation.NONE
 }

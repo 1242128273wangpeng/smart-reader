@@ -16,6 +16,11 @@
 
 package com.intelligent.reader.view;
 
+import com.intelligent.reader.read.mode.ReadState;
+import com.intelligent.reader.read.page.HorizontalPage;
+
+import net.lzbook.kit.data.bean.ReadViewEnums;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -1401,8 +1406,18 @@ public class ViewPager extends ViewGroup {
         float offset = curItem.offset;
         int pos = curItem.position - 1;
         mFirstOffset = curItem.position == 0 ? curItem.offset : -Float.MAX_VALUE;
+
+        if(ReadState.INSTANCE.getOrientationLimit() == ReadViewEnums.ScrollLimitOrientation.LEFT ){
+            mFirstOffset = curItem.offset;
+        }
+
         mLastOffset = curItem.position == N - 1
                 ? curItem.offset + curItem.widthFactor - 1 : Float.MAX_VALUE;
+
+//        if(((HorizontalPage)curItem.object).getOrientationLimit() == ReadViewEnums.ScrollLimitOrientation.RIGHT ){
+//            mLastOffset = curItem.offset + curItem.widthFactor - 1;
+//        }
+
         // Previous pages
         for (int i = curIndex - 1; i >= 0; i--, pos--) {
             final ItemInfo ii = mItems.get(i);
@@ -2367,12 +2382,12 @@ public class ViewPager extends ViewGroup {
         boolean leftAbsolute = true;
         boolean rightAbsolute = true;
 
-        final ItemInfo firstItem = mItems.get(0);
+//        final ItemInfo firstItem = mItems.get(0);
         final ItemInfo lastItem = mItems.get(mItems.size() - 1);
-        if (firstItem.position != 0) {
-            leftAbsolute = false;
-            leftBound = firstItem.offset * width;
-        }
+//        if (firstItem.position != 0) {
+//            leftAbsolute = false;
+//            leftBound = firstItem.offset * width;
+//        }
         if (lastItem.position != mAdapter.getCount() - 1) {
             rightAbsolute = false;
             rightBound = lastItem.offset * width;
