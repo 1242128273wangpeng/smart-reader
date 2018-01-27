@@ -25,7 +25,6 @@ import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.bean.Source
 
-import com.intelligent.reader.read.mode.ReadState
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*

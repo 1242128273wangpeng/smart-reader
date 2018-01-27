@@ -700,35 +700,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         goBackToHome()
     }
 
-//    /**
-//     * 打开切源页面
-//     */
-//    private fun openSourcePage() {
-//        if (ReadState.sequence == -1) {
-//            Toast.makeText(readReference?.get(), R.string.read_changesource_tip, Toast.LENGTH_SHORT).show()
-//            return
-//        }
-//        if (Constants.QG_SOURCE == ReadState.requestItem.host) {
-//            Toast.makeText(readReference?.get(), "该小说暂无其他来源！", Toast.LENGTH_SHORT).show()
-//            return
-//        }
-//        if (isSourceListShow) {
-//            isSourceListShow = false
-//        } else {
-//            if (Constants.QG_SOURCE == ReadState.book.site || Constants.QG_SOURCE == ReadState.book.site) {
-//                return
-//            }
-//            showMenu(false)
-////            getCustomLoadingPage()
-////            loadingPage?.loading {
-////                mReaderViewModel!!.getBookSource(ReadState.book_id)
-////                OtherRequestService.requestBookSourceChange(dataFactory?.mHandler, ReadingActivity.MSG_SEARCH_CHAPTER, -144, ReadState.book_id)
-////                null
-////            }
-////            dataFactory?.loadingError(loadingPage)
-//        }
-//    }
-
     /**
      * 开始下载
      */
@@ -779,20 +750,13 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
     }
 
     fun changeSourceCallBack() {
-//        if (pageView == null) {
-//            return
-//        }
+
         ReadState.currentPage = 1
         ReadState.offset = 0
         myNovelHelper?.isShown = false
         myNovelHelper?.getChapterContent(readReference?.get(), ReadState.currentChapter, ReadState.book)
         isSourceListShow = false
-//        if (Constants.isSlideUp) {
-//            pageView?.getChapter(false)
-//        } else {
-//            pageView?.drawCurrentPage()
-//            pageView?.drawNextPage()
-//        }
+
         downloadNovel()
     }
 
@@ -809,15 +773,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         myNovelHelper?.isShown = false
         myNovelHelper?.getChapterContent(readReference?.get(), ReadState.currentChapter, ReadState.book)
         ReadState.currentPage = 1
-//        if (pageView == null) {
-//            return
-//        }
-//        if (Constants.isSlideUp) {
-//            pageView?.getChapter(false)
-//        } else {
-//            pageView?.drawCurrentPage()
-//            pageView?.drawNextPage()
-//        }
+
         downloadNovel()
     }
 
@@ -894,77 +850,9 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
                 setMode()
             }
         }
-//        AppLog.e(TAG, "mode : " + mode)
-//        when (mode) {
-//            51 -> {
-//                setTextColor(readReference?.get()?.getResources()!!.getColor(R.color.reading_text_color_first))
-//                setPageBackColor(readReference?.get()?.getResources()!!.getColor(R.color.reading_backdrop_first))
-//                setBackground()
-//                setBatteryBackground(R.drawable.reading_batty_day)
-//            }
-//            52 -> {
-//                setTextColor(readReference?.get()?.getResources()!!.getColor(R.color.reading_text_color_second))
-//                setPageBackColor(readReference?.get()?.getResources()!!.getColor(R.color.reading_backdrop_second))
-//
-//                setBackground()
-//                setBatteryBackground(R.drawable.reading_batty_eye)
-//            }
-//            53 -> {
-//                setTextColor(readReference?.get()?.getResources()!!.getColor(R.color.reading_text_color_third))
-//                setPageBackColor(readReference?.get()?.getResources()!!.getColor(R.color.reading_backdrop_third))
-//
-//                setBackground()
-//                setBatteryBackground(R.drawable.reading_batty_4)
-//            }
-//            54 -> {
-//                setTextColor(readReference?.get()?.getResources()!!.getColor(R.color.reading_text_color_fourth))
-//                setPageBackColor(readReference?.get()?.getResources()!!.getColor(R.color.reading_backdrop_fourth))
-//
-//                setBackground()
-//                setBatteryBackground(R.drawable.reading_batty_5)
-//            }
-//            55 -> {
-//                setTextColor(readReference?.get()?.getResources()!!.getColor(R.color.reading_text_color_fifth))
-//                setPageBackColor(readReference?.get()?.getResources()!!.getColor(R.color.reading_backdrop_fifth))
-//
-//                setBatteryBackground(R.drawable.reading_batty_night)
-//
-//                setBackground()
-//            }
-//            56 -> {
-//                setTextColor(readReference?.get()?.getResources()!!.getColor(R.color.reading_text_color_sixth))
-//                setPageBackColor(readReference?.get()?.getResources()!!.getColor(R.color.reading_backdrop_sixth))
-//
-//                setBackground()
-//                setBatteryBackground(R.drawable.reading_batty_night2)
-//            }
-//            61 -> {
-//                setTextColor(readReference?.get()?.resources!!.getColor(R.color.reading_text_color_night))
-//                setPageBackColor(readReference?.get()?.resources!!.getColor(R.color.reading_backdrop_night))
-//
-//                setBackground()
-//                setBatteryBackground(R.drawable.reading_batty_night2)
-//            }
-//            else -> {
-//                setTextColor(readReference?.get()?.resources!!.getColor(R.color.reading_text_color_first))
-//                setPageBackColor(Color.parseColor("#C2B282"))
-//
-//                setBackground()
-//                setBatteryBackground(R.drawable.reading_batty_day)
-//            }
-//        }
-//        view?.setBackground()
     }
 
-//    private fun setTextColor(color: Int) {
-//        pageView?.setTextColor(color)
-//    }
-//
-//    private fun setBackground() = pageView?.setBackground()
-//
-//    private fun setBatteryBackground(resourceId: Int) = pageView?.changeBatteryBg(resourceId)
-//
-//    private fun setPageBackColor(color: Int) = pageView?.setPageBackColor(color)
+
 
     fun dispatchKeyEvent(event: KeyEvent): Boolean {
         // 小说音量键翻页
@@ -977,22 +865,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
     }
 
     fun onKeyDown() {
-//        if (pageView != null && view != null && pageView!!.isAutoReadMode) {
-//            if (view!!.getAutoMenuShowState()) {
-//                view!!.showAutoMenu(false)
-//                pageView!!.setisAutoMenuShowing(false)
-//                pageView!!.resumeAutoRead()
-//            } else {
-//                pageView!!.pauseAutoRead()
-//                view!!.showAutoMenu(true)
-//            }
-//        } else {
-//            if (ReadState.isMenuShow) {
-//                showMenu(false)
-//            } else {
-//                showMenu(true)
-//            }
-//        }
+
     }
 
     fun onBackPressed(): Boolean {
@@ -1002,16 +875,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
             return false
         }
 
-//        if (pageView != null && auto_menu != null && view != null && view!!.getAutoMenuShowState()) {
-//            view?.showAutoMenu(false)
-//            pageView?.setisAutoMenuShowing(false)
-//            pageView?.resumeAutoRead()
-//            return false
-//        }
-//        if (pageView != null && pageView!!.isAutoReadMode) {
-//            autoStop()
-//            return false
-//        }
         // 显示菜单
         if (ReadState.isMenuShow) {
             showMenu(false)
@@ -1047,11 +910,9 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         }
         view?.checkModeChange()
 
-        val content_mode = sp!!.getInt("content_mode", 51)
         if (isSubed) {
             ReadState.book = mBookDaoHelper!!.getBook(ReadState.book_id, 0)
         }
-//        pageView?.resumeAutoRead()
 
         ReadState.chapterCount = ReadState.book.chapter_count
 
@@ -1070,10 +931,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
             isAcvNovelActive = true
         }
 
-//        if (readStatus != null && Constants.isNetWorkError) {
-//            Constants.isNetWorkError = false
-//            getChapterByLoading(ReadingActivity.MSG_LOAD_CUR_CHAPTER, ReadState.sequence)
-//        }
     }
 
     fun onStart() {
@@ -1098,7 +955,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
                 spUtils.putInt("readed_count", Constants.readedCount)
             }
         }
-//        pageView?.pauseAutoRead()
 
     }
 
@@ -1114,60 +970,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         if (timeRunnable != null) {
             Handler().removeCallbacksAndMessages(timeRunnable)
         }
-//        if (mNovelLoader != null && mNovelLoader!!.status == AsyncTask.Status.RUNNING) {
-//            mNovelLoader!!.cancel(true)
-//        }
 
-//        if (readStatus != null && mReaderViewModel != null && ReadState.currentChapter != null && ReadState.requestItem != null) {
-//            //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
-//            StartLogClickUtil.upLoadReadContent(ReadState.book_id, ReadState.currentChapter!!.chapter_id + "", ReadState.source_ids, ReadState.pageCount.toString() + "",
-//                    ReadState.currentPage.toString() + "", ReadState.currentPageConentLength.toString() + "", ReadState.requestItem.fromType.toString() + "",
-//                    ReadState.startReadTime.toString() + "", System.currentTimeMillis().toString() + "", (System.currentTimeMillis() - ReadState.startReadTime).toString() + "", "false", ReadState.requestItem.channel_code.toString() + "")
-//
-//        }
-//        AppLog.e(TAG, "onDestroy")
-//        ReadState.isMenuShow = false
-////        if (mNovelLoader != null && mNovelLoader!!.status == AsyncTask.Status.RUNNING) {
-////            mNovelLoader?.cancel(true)
-////        }
-//
-//        mTimerStopped = true
-//
-//        if (this.sp != null) {
-//            this.sp = null
-//        }
-//
-//        if (this.modeSp != null) {
-//            this.modeSp = null
-//        }
-//
-//        if (pageView != null) {
-//            pageView!!.setCallBack(null)
-//            pageView!!.clear()
-//            pageView = null
-//        }
-//
-//        if (myNovelHelper != null) {
-//            myNovelHelper!!.setOnHelperCallBack(null)
-//            myNovelHelper!!.clear()
-//        }
-//
-//        Glide.get(readReference?.get()).clearMemory()
-//
-//        if (readStatus != null) {
-//            ReadState.recycleResource()
-//        }
-//
-//        if (mReaderViewModel != null) {
-//            mReaderViewModel!!.mReadDataListener = null
-//
-//
-//            mReaderViewModel!!.clean()
-//        }
-//
-//        BitmapManager.getInstance().clearBitmap()
-//
-//        //
         for (d in disposable) {
             d.dispose()
         }
@@ -1277,29 +1080,9 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
             showMenu(false)
             return
         }
-//        mReaderViewModel?.next()
-//        pageView?.drawCurrentPage()
     }
 
-//    override fun onShowMenu(isShow: Boolean) {
-//        showMenu(isShow)
-//    }
-//
-//    override fun onCancelPage() {
-//        refreshPage()
-//    }
-//
-//    override fun onResize() {
-////        AppLog.e("ReadingActivity", "onResize")
-////        if (ReadState.currentChapter != null && ReadState.book != null) {
-////            myNovelHelper?.getChapterContent(readReference?.get(), ReadState.currentChapter, ReadState.book)
-////            refreshPage()
-////        }
-//    }
 
-//    override fun freshPage() {
-//        refreshPage()
-//    }
 
     override fun gotoOver() {
         goToBookOver()
@@ -1324,55 +1107,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         // 启动预加载
         downloadNovel()
     }
-
-//    override fun onShowAutoMenu(show: Boolean) {
-//        view?.showAutoMenu(show)
-//        if (show) {
-//            pageView?.pauseAutoRead()
-//        } else {
-//            pageView?.resumeAutoRead()
-//        }
-//    }
-
-//    fun speedUp() {
-//        ReadState.setAutoReadSpeed(++autoSpeed)
-//        autoSpeed = ReadState.autoReadSpeed()
-//    }
-
-//    fun speedDown() {
-//        ReadState.setAutoReadSpeed(--autoSpeed)
-//        autoSpeed = ReadState.autoReadSpeed()
-//    }
-
-//    fun autoStop() {
-//        pageView?.exitAutoRead()
-
-//        if (isSlideToAuto) {
-//            val temp: PageInterface?
-//            Constants.isSlideUp = true
-//            temp = pageView
-//            pageView = ScrollPageView(readReference?.get())
-//            view?.resetPageView(pageView!!)
-//            pageView?.init(readReference?.get(), readStatus, myNovelHelper)
-//            pageView?.setCallBack(this)
-//            pageView?.setViewModel(mReaderViewModel)
-//            myNovelHelper?.setPageView(pageView)
-//            pageView?.freshTime(time_text)
-////            pageView?.freshBattery(batteryPercent)
-//            changeMode(current_mode)
-//
-//            temp?.clear()
-//        }
-//        view?.showStopAutoHint()
-//    }
-
-//    private fun pauseAutoReadHandler() {
-//        pageView?.pauseAutoRead()
-//    }
-//
-//    private fun resumeAutoReadHandler() {
-//        pageView?.resumeAutoRead()
-//    }
 
     override fun changeChapter() {
         view?.changeChapter()
@@ -1422,21 +1156,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         changeMode(mode)
     }
 
-    fun onRedrawPage() {
-//        if (pageView is ScrollPageView && (pageView as ScrollPageView).tempChapter != null) {
-//            myNovelHelper?.getChapterContent(readReference?.get(), (pageView as ScrollPageView).tempChapter, ReadState.book)
-//        } else {
-//            myNovelHelper?.getChapterContent(readReference?.get(), ReadState.currentChapter, ReadState.book)
-//        }
-//        refreshPage()
-//        pageView?.drawCurrentPage()
-//        pageView?.drawNextPage()
-//        pageView?.getChapter(true)
-    }
-
-    fun onJumpChapter() {
-//        getChapterByLoading(ReadingActivity.MSG_JUMP_CHAPTER, ReadState.novel_progress)
-    }
 
     fun onJumpPreChapter() {
 
