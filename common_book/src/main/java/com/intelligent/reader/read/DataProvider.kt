@@ -237,12 +237,16 @@ class DataProvider : DisposableAndroidViewModel() {
      * 获取书籍目录 //复用BookCoverRepositoyFactory
      */
     fun getChapterList(book: Book, requestItem: RequestItem, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
-        if (sequence <= -1) {//封面页
+        if (sequence == -1) {//封面页
             chapterLruCache.put(sequence, NovelChapter(Chapter(), arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf()))))
 //            chapterSeparate.put(sequence, arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf())))
 //            chapterMap.put(-1, Chapter())
             chapterKey.add(sequence)
             mReadDataListener.loadDataSuccess(Chapter(), type)
+            return
+        }
+        if (sequence<-1){
+            mReadDataListener.loadDataError("无章节")
             return
         }
         if (NetWorkUtils.getNetWorkType(BaseBookApplication.getGlobalContext()) == NetWorkUtils.NETWORK_NONE) {
@@ -280,6 +284,7 @@ class DataProvider : DisposableAndroidViewModel() {
 
     private fun requestSingleChapter(book: Book, chapters: List<Chapter>, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
         if(sequence>=chapters.size){
+            mReadDataListener.loadDataError("章节超目录列表")
             return
         }
         val chapter = chapters[sequence]
@@ -328,11 +333,12 @@ class DataProvider : DisposableAndroidViewModel() {
                 arrayList.add(NovelPageBean(arrayListOf(), offset, arrayListOf()).apply { isAd = true })
             }
             if (arrayList.size >= 16) {
-                val offset2 = arrayList[7].offset + arrayList[7].lines.sumBy { it.lineContent.length } + 1
-                arrayList.add(8, NovelPageBean(arrayListOf(), offset2, arrayListOf()).apply { isAd = true; })
-                for (i in 9 until arrayList.size - 1) {
+                var adChapterSize = arrayList.size/2
+                val offset2 = arrayList[adChapterSize].offset
+                arrayList.add(adChapterSize, NovelPageBean(arrayListOf(), offset2, arrayListOf()).apply { isAd = true; })
+                for (i in adChapterSize+1 until arrayList.size - 1) {
                     //其他页offset向后偏移 1 length
-                    arrayList[i].offset = arrayList[i - 1].offset + 1
+                    arrayList[i].offset = arrayList[i].offset + 1
                 }
             }
         }
