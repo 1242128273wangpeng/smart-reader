@@ -224,9 +224,9 @@ class ReaderViewModel : DisposableAndroidViewModel {
         fun downLoadNovelMore()
         fun initBookStateDeal()
         fun changeChapter()
-        fun getChapter(what: Int, sequence: Int)
-        fun nextChapterCallBack(b: Boolean)
-        fun preChapterCallBack(b: Boolean)
+//        fun getChapter(what: Int, sequence: Int)
+//        fun nextChapterCallBack(b: Boolean)
+//        fun preChapterCallBack(b: Boolean)
         fun showChangeNetDialog()
     }
 

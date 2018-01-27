@@ -1,11 +1,10 @@
 package com.intelligent.reader.read.factory
 
 import android.content.Context
-import com.intelligent.reader.read.animation.ShiftTransformer
 import com.intelligent.reader.read.help.IReadView
-import net.lzbook.kit.data.bean.ReadViewEnums
 import com.intelligent.reader.read.page.HorizontalReaderView
 import com.intelligent.reader.read.page.VerticalReaderView
+import net.lzbook.kit.data.bean.ReadViewEnums
 
 /**
  * IReaderView 工厂类

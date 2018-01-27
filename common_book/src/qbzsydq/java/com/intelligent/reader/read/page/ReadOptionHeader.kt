@@ -14,7 +14,6 @@ import android.widget.PopupWindow
 import com.intelligent.reader.R
 import com.intelligent.reader.presenter.read.ReadOption
 import com.intelligent.reader.read.mode.ReadState
-import com.intelligent.reader.reader.ReaderViewModel
 import kotlinx.android.synthetic.qbzsydq.read_option_header.view.*
 import kotlinx.android.synthetic.qbzsydq.read_option_pop.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil

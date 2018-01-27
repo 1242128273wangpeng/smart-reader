@@ -22,7 +22,6 @@ import com.intelligent.reader.reader.ReaderOwnRepository
 import com.intelligent.reader.reader.ReaderRepositoryFactory
 import com.intelligent.reader.repository.BookCoverRepository
 import com.intelligent.reader.repository.ReaderRepository
-import com.kyview.InitConfiguration
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
@@ -48,8 +47,6 @@ class DataProvider : DisposableAndroidViewModel() {
         val INSTANCE = DataProvider()
     }
 
-    //上下文
-    var context: Context? = null
     //是否显示广告
     var isShowAd: Boolean = true
     var countCacheSize: Int = 4
