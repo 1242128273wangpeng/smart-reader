@@ -1,16 +1,5 @@
 package com.intelligent.reader.activity;
 
-import com.intelligent.reader.R;
-
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.view.CustomDialog;
-import net.lzbook.kit.book.view.SwitchButton;
-import net.lzbook.kit.book.view.TimePicker;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.SettingItems;
-import net.lzbook.kit.utils.SettingItemsHelper;
-import net.lzbook.kit.utils.StatServiceUtils;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,6 +12,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.intelligent.reader.R;
+
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.book.view.CustomDialog;
+import net.lzbook.kit.book.view.SwitchButton;
+import net.lzbook.kit.book.view.TimePicker;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.bean.SettingItems;
+import net.lzbook.kit.utils.SettingItemsHelper;
+import net.lzbook.kit.utils.StatServiceUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -174,6 +174,9 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
         switch (paramView.getId()) {
 
             case R.id.btn_left_setting:
+                Map<String, String> data = new HashMap<>();
+                data.put("type", "1");
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.MORESET_PAGE, StartLogClickUtil.BACK, data);
                 finish();
                 break;
 

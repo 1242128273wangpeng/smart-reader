@@ -1,5 +1,9 @@
 package net.lzbook.kit.appender_loghub;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.util.Log;
+
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.appender.AndroidLogClient;
 import net.lzbook.kit.appender_loghub.common.PLItemKey;
@@ -11,10 +15,6 @@ import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.OpenUDID;
-
-import android.content.Context;
-import android.support.annotation.NonNull;
-import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -53,7 +53,10 @@ public class StartLogClickUtil {
     public static final String FIRSTTOP_PAGE = "FIRSTTOP";//榜单一级页面的搜索
     public static final String FIRSTRECOMMEND_PAGE = "FIRSTRECOMMEND";//推荐一级页面的搜索
     public static final String BOOKCATALOG = "BOOKCATALOG";//书籍目录页
-
+    public static final String PROCTCOL_PAGE = "PROCTCOL";//使用协议
+    public static final String PERHELP_PAGE = "PERHELP";//帮助与反馈
+    public static final String PERHISTORY_PAGE = "PERHISTORY";//浏览足迹
+    public static final String BOOKENDPAGE_PAGE = "BOOKENDPAGE";//书籍end页
 
     //APP通用
     public static final String APPINIT = "APPINIT";//客户端启动
@@ -112,6 +115,8 @@ public class StartLogClickUtil {
     public static final String SEARCHBUTTON = "SEARCHBUTTON";//自动补全点击“搜索”按钮
     public static final String SHELFADD = "SHELFADD";//点击加入书架
     public static final String CLEAR = "CLEAR";//点击清空，重回搜索页
+
+    public static final String BARLIST = "BARLIST"; //搜索框下拉历史词点击
 
     //书籍详情页
     public static final String SOURCECHANGE = "SOURCECHANGE";//点击切源弹出

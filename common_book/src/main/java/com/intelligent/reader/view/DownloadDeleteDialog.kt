@@ -21,7 +21,7 @@ class DownloadDeleteDialog(activity: Activity) {
 
     private var checkListener: (() -> Unit)? = null
     private var confirmListener: ((books: ArrayList<Book>?, isDeleteBookOfShelf: Boolean) -> Unit)? = null
-    private val cancelListener: (() -> Unit)? = null
+    private var cancelListener: (() -> Unit)? = null
 
     private var books: ArrayList<Book>? = null
 
@@ -61,6 +61,6 @@ class DownloadDeleteDialog(activity: Activity) {
     }
 
     fun setCancelListener(listener: () -> Unit) {
-        checkListener = listener
+        cancelListener = listener
     }
 }
