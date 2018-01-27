@@ -198,7 +198,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
         lastPageAnimation = ReadConfig.animation//记录动画模式
 
-        mReaderView = mReaderViewFactory?.getView(ReadConfig.animation)//创建
+        mReaderView = mReaderViewFactory.getView(ReadConfig.animation)//创建
         (mReaderView as View).isClickable = false
 
         addView(mReaderView as View)//添加
@@ -238,6 +238,10 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
     override fun onPause() {
         mTextureView?.alpha = 0f
         mAutoReadView?.closeAutoRead()
+    }
+
+    override fun onDestroy() {
+        mReaderView = null
     }
 
     private var mReadPageChange: IReadPageChange? = null

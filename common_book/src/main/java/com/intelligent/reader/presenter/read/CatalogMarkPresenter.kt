@@ -8,7 +8,6 @@ import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.net.NetOwnBook
 import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.read.mode.ReadState
-import com.intelligent.reader.reader.ReaderViewModel
 import com.quduquxie.network.DataCache
 import com.quduquxie.network.DataService
 import io.reactivex.Observable
@@ -18,7 +17,10 @@ import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.*
+import net.lzbook.kit.data.bean.Book
+import net.lzbook.kit.data.bean.Bookmark
+import net.lzbook.kit.data.bean.Chapter
+import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.request.RequestExecutorDefault
