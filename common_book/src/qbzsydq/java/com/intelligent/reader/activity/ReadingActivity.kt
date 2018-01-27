@@ -27,7 +27,6 @@ import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.help.IReadPageChange
 import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.read.page.AutoReadMenu
-import com.intelligent.reader.read.page.PageInterface
 import com.intelligent.reader.read.page.ReadSettingView
 import com.intelligent.reader.read.page.ReaderViewWidget
 import com.intelligent.reader.reader.ReaderViewModel
@@ -38,11 +37,13 @@ import kotlinx.android.synthetic.qbzsydq.reading_page.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.*
+import net.lzbook.kit.data.bean.Book
+import net.lzbook.kit.data.bean.ReadConfig
+import net.lzbook.kit.data.bean.ReadViewEnums
+import net.lzbook.kit.data.bean.Source
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.OpenUDID
 import net.lzbook.kit.utils.SharedPreferencesUtils
-import net.lzbook.kit.utils.ToastUtils
 import java.util.*
 
 
@@ -107,15 +108,12 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         readerWidget.setOnAutoReadCallback(this)
 
         read_catalog_mark_drawer.addDrawerListener(mDrawerListener)
-        mCatalogMarkFragment?.let {
-            read_catalog_mark_drawer.addDrawerListener(it)
-        }
+//        mCatalogMarkFragment?.let {
+//            read_catalog_mark_drawer.addDrawerListener(it)
+//        }
         read_catalog_mark_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         readerWidget.removeAllViews()
         auto_menu.setOnAutoMemuListener(this)
-
-        DataProvider.getInstance().context = this
-        //add ReadInfo
 
         readerWidget.setIReadPageChange(this)
         readerWidget.entrance()
@@ -154,6 +152,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         //解锁， 可滑动关闭
         override fun onDrawerOpened(drawerView: View) {
             read_catalog_mark_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED)
+            mCatalogMarkFragment?.loadData()
         }
 
         //锁定不可滑出
@@ -168,11 +167,9 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         mReadPresenter.initCatalogPresenter(mCatalogMarkFragment, option_header)
         return true
     }
-
-//    fun freshPage() = mReadPresenter.freshPage()
-
-    //自动阅读
-    fun dealManualDialogShow() = mReadPresenter.dealManualDialogShow()
+//
+//    //自动阅读
+//    fun dealManualDialogShow() = mReadPresenter.dealManualDialogShow()
 
     fun searchChapterCallBack(sourcesList: ArrayList<Source>) = mReadPresenter.searchChapterCallBack(sourcesList)
 
@@ -211,8 +208,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
         if (readerWidget.isAutoRead) {
             readerWidget.stopAutoRead()
-            auto_menu.visibility = View.GONE
-            ToastUtils.showToastNoRepeat("已退出自动阅读")
+            showStopAutoHint()
             return
         }
 
@@ -266,9 +262,9 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onDestroy() {
         read_catalog_mark_drawer.removeDrawerListener(mDrawerListener)
-        mCatalogMarkFragment?.let {
-            read_catalog_mark_drawer.removeDrawerListener(it)
-        }
+//        mCatalogMarkFragment?.let {
+//            read_catalog_mark_drawer.removeDrawerListener(it)
+//        }
 
         readSettingView.recycleResource()
 
@@ -278,6 +274,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         mReadPresenter.onDestroy()
         DataProvider.getInstance().unSubscribe()
         DataProvider.getInstance().relase()
+        readerWidget.onDestroy()
         ReadConfig.unregistObserverAll()
         try {
             unregisterReceiver(mPowerOffReceiver)
@@ -302,7 +299,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun autoStop() {
         readerWidget.stopAutoRead()
-        ToastUtils.showToastNoRepeat("已退出自动阅读")
+        showStopAutoHint()
     }
 
     //ReadSettingView start
@@ -386,9 +383,9 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         option_header.presenter = optionPresenter
     }
 
-    override fun showSetMenu(isShow: Boolean) {
-
-    }
+//    override fun showSetMenu(isShow: Boolean) {
+//
+//    }
 
     override fun full(isFull: Boolean) {
         if (isFull) {
@@ -415,9 +412,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     override fun setMode() = readSettingView.setMode()
 
     override fun showAutoMenu(isShow: Boolean) = if (isShow) auto_menu?.visibility = View.VISIBLE else auto_menu?.visibility = View.GONE
-
-    override fun resetPageView(pageView: PageInterface) {
-    }
 
     override fun initShowCacheState() = readSettingView.initShowCacheState()
 

@@ -17,6 +17,7 @@ import com.intelligent.reader.R
 import com.intelligent.reader.adapter.SourceAdapter
 import com.intelligent.reader.presenter.bookEnd.BookEndContract
 import com.intelligent.reader.presenter.bookEnd.BookEndPresenter
+import com.intelligent.reader.read.mode.ReadState
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants

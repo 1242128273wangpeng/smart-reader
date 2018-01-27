@@ -22,6 +22,8 @@ public interface IReadWidget {
 
     void onPause();
 
+    void onDestroy();
+
     void startAutoRead();
 
     void stopAutoRead();
