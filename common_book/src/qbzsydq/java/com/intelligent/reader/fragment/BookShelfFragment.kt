@@ -93,6 +93,11 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
                     updateUI()
                 }
                 fragmentCallback.getMenuShownState(isShown)
+                if (isShown) {
+                    book_shelf_ad.visibility = View.GONE
+                } else {
+                    book_shelf_ad.visibility = View.VISIBLE
+                }
             }
 
             override fun getAllCheckedState(isAll: Boolean) {

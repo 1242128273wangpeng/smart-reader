@@ -508,22 +508,11 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
      * 添加广告 章节间  5-3   chapterContent: ArrayList<NovelPageBean>,
      */
     private fun loadAdViewToChapterBetween(sequence: Int, index: ReadViewEnums.PageIndex) {
-//        mDataProvider.loadChapterBetweenAd(context, object : DataProvider.OnLoadReaderAdCallback {
-//            override fun onLoadAd(adView: ViewGroup) {
-//                if (sequence == -1 && checkLoadAdValid(sequence) != 0) return
-//                val adData = arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { this.sequence = PagerScrollAdapter.AD_ITEM_TYPE; this.sequenceType = sequence }), 0,
-//                        arrayListOf()).apply { isAd = true;this.adView = adView })
-//                mAdapter.addAllChapter(mAdapter.getNotifyIndexByLoadChapter(index, adData), adData)
-//            }
-//        })
-
         if (sequence == -1 && checkLoadAdValid(sequence) != 0) return
 
         val adData = NovelPageBean(arrayListOf(NovelLineBean().apply { this.sequence = PagerScrollAdapter.AD_ITEM_TYPE; this.sequenceType = sequence }), 0,
                 arrayListOf())
-
         mAdapter.addAdViewToTheChapterLast(sequence, adData)
-
         mAdapter.clearUselessChapter(index)
 
         mDataProvider.loadChapterBetweenAd(context, object : DataProvider.OnLoadAdViewCallback(sequence) {

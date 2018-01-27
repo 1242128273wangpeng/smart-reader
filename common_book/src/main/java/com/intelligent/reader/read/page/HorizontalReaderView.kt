@@ -156,12 +156,13 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                 }
                 //加载下两章
                 if (sequence != -2) {
-                    ReadState.book?.let {
+                    ReadState.book.let {
                         provider.loadChapter(it, sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
                             override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
                             override fun loadDataError(message: String) = Unit
                         })
                     }
+                    break@loop//拉一次
                 }
             }
         })
@@ -348,7 +349,8 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         curViewState = curView.viewState
         if (mCursor != null) {
             ReadState.sequence = mCursor.sequence
-            ReadState.offset = mCursor.offset.plus(curView.mCursorOffset)
+//            ReadState.offset = mCursor.offset.plus(curView.mCursorOffset)
+            ReadState.offset = mCursor.offset
             ReadState.currentPage = curView.pageIndex
             ReadState.pageCount = curView.pageSum
             ReadState.contentLength = curView.contentLength
@@ -371,7 +373,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 
     //入口
     override fun entrance() {
-        ReadState.book?.let {
+        ReadState.book.let {
             val sequence = ReadState.sequence
             val offset = ReadState.offset
             DataProvider.getInstance().clear()

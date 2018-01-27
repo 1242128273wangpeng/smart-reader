@@ -18,10 +18,11 @@ import android.preference.PreferenceManager
 import android.provider.Settings
 import android.support.v4.content.LocalBroadcastManager
 import android.text.TextUtils
+import android.view.Gravity
 import android.view.InflateException
 import android.view.KeyEvent
 import android.view.View
-import android.view.*
+import android.view.ViewGroup
 import android.widget.*
 import com.dycm_adsdk.PlatformSDK
 import com.dycm_adsdk.callback.AbstractCallback
@@ -1851,11 +1852,11 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
     }
 
     fun onChageNightMode() {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(readReference?.get()?.getApplicationContext()?.getApplicationContext())
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(readReference?.get()?.applicationContext)
         val edit = sharedPreferences.edit()
         val data = HashMap<String, String>()
 
-        if (readReference?.get()?.mThemeHelper!!.isNight()) {
+        if (readReference?.get()?.mThemeHelper!!.isNight) {
             //夜间模式只有一种背景， 不能存储
             //            edit.putInt("current_night_mode", ReadConfig.MODE);
             ReadConfig.MODE = sharedPreferences.getInt("current_light_mode", 51)
@@ -1874,18 +1875,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         edit.putInt("content_mode", ReadConfig.MODE)
         edit.apply()
         changeMode(ReadConfig.MODE)
-        //        Intent intent = new Intent(this, ReadingActivity.class);
-        //        Bundle bundle = new Bundle();
-        //        bundle.putInt("sequence", readStatus.sequence);
-        //        bundle.putInt("offset", readStatus.offset);
-        //        bundle.putSerializable("book", readStatus.book);
-        //        bundle.putSerializable(Constants.REQUEST_ITEM, readStatus.requestItem);
-        //        bundle.putString("thememode", currentThemeMode);
-        //        intent.putExtras(bundle);
-        //        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        //        startActivity(intent);
-        //        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-        //        finish();
     }
 
     private fun submitFeedback(type: Int) {
