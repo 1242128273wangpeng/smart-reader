@@ -28,6 +28,9 @@ object ReadQueryUtil {
         val filter = chapterSeparate.filter {
             it.offset <= offset
         }
+        if(filter == null||filter.isEmpty()||filter.last() == null){
+            return chapterSeparate.last()
+        }
         return filter.last()
     }
 
