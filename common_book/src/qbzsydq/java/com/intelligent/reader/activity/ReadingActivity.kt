@@ -169,8 +169,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         return true
     }
 
-//    fun freshPage() = mReadPresenter.freshPage()
-
     //自动阅读
     fun dealManualDialogShow() = mReadPresenter.dealManualDialogShow()
 

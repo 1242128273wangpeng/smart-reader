@@ -36,6 +36,7 @@ import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
 import net.lzbook.kit.book.view.NonSwipeViewPager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.BookEvent;
+import net.lzbook.kit.data.bean.ReadConfig;
 import net.lzbook.kit.data.bean.RequestItem;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.ATManager;
@@ -212,11 +213,13 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
         //获取阅读页背景
         if (sharedPreferences.getInt("content_mode", 51) < 50) {
             Constants.MODE = 51;
+            ReadConfig.INSTANCE.setMODE(51);
             edit.putInt("content_mode", Constants.MODE);
             edit.putInt("current_light_mode", Constants.MODE);
             edit.apply();
         } else {
             Constants.MODE = sharedPreferences.getInt("content_mode", 51);
+            ReadConfig.INSTANCE.setMODE(sharedPreferences.getInt("content_mode", 51));
         }
 
         //判断用户是否是当日首次打开应用

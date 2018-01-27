@@ -35,12 +35,19 @@ import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.request.DataCache
 import net.lzbook.kit.utils.*
 import java.text.NumberFormat
+import java.util.*
 
 
 /**
  * 阅读页阅读设置
  */
-class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener {
+class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener , Observer {
+
+    override fun update(o: Observable?, arg: Any?) {
+        when (arg as String) {
+            "FONT_SIZE" -> setFontSize()
+        }
+    }
 
     private var sharedPreferences: SharedPreferences? = null
     private var readSettingHelper: ReadSettingHelper? = null
@@ -106,6 +113,9 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             openSystemLight()
         }
 
+        setBrightnessBackground(autoBrightness)
+        setScreenBrightProgress()
+
         val numberFormat = NumberFormat.getNumberInstance()
         numberFormat.maximumFractionDigits = 2
 
@@ -132,6 +142,8 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             ReadConfig.READ_INTERLINEAR_SPACE = 0.3f
             sharedPreferences!!.edit().putInt("read_interlinear_space", 3).apply()
         }
+
+        ReadConfig.registObserver(this)
 
         isCustomSpaceSet()
         initPageMode()
@@ -247,18 +259,6 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     }
 
 
-    private fun setScreenBrightProgress() {
-        val screenBrightness = sharedPreferences!!.getInt("screen_bright", -1)
-
-        if (screenBrightness >= 0) {
-            read_setting_brightness_progress!!.progress = screenBrightness
-        } else if (FrameActivity.mSystemBrightness >= 20) {
-            read_setting_brightness_progress!!.progress = FrameActivity.mSystemBrightness - 20
-        } else {
-            read_setting_brightness_progress!!.progress = 5
-        }
-    }
-
     fun showMenu() {
         if (!mIsChecked) {
             read_setting_reduce_text!!.isEnabled = ReadConfig.FONT_SIZE > 10
@@ -285,6 +285,18 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 ibtn_night.setImageResource(R.drawable.read_option_night_selector)
             }
             mIsChecked = true
+        }
+    }
+
+    private fun setScreenBrightProgress() {
+        val screenBrightness = sharedPreferences!!.getInt("screen_bright", -1)
+
+        if (screenBrightness >= 0) {
+            read_setting_brightness_progress!!.progress = screenBrightness
+        } else if (FrameActivity.mSystemBrightness >= 20) {
+            read_setting_brightness_progress!!.progress = FrameActivity.mSystemBrightness - 20
+        } else {
+            read_setting_brightness_progress!!.progress = 5
         }
     }
 

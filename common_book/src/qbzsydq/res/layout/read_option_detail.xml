@@ -39,7 +39,7 @@
                 android:progressDrawable="@drawable/read_option_progress_brightness"
                 android:splitTrack="false"
                 android:thumb="@drawable/read_option_seekbar_slider"/>
-        
+
         <LinearLayout
                 android:id="@+id/read_setting_save_power_layout"
                 android:layout_width="wrap_content"
@@ -48,7 +48,7 @@
                 android:orientation="horizontal"
                 android:paddingLeft="@dimen/dimen_padding_10"
                 android:visibility="visible">
-            
+
             <CheckBox
                     android:id="@+id/read_setting_auto_power"
                     android:layout_width="wrap_content"
