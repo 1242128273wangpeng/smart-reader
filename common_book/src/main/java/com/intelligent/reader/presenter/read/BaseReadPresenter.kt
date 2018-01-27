@@ -1141,21 +1141,15 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
      * 显示隐藏菜单
      */
     fun showMenu(isShow: Boolean) {
-        if (ReadState.isMenuShow != isShow) {
-            clearOtherPanel()
-            if (isShow) {
-                full(false)
-                changeMarkState()
-                mReadOptionPresenter?.view?.show(true)
-//            view?.showSetMenu(isShow)
-                ReadState.isMenuShow = true
-                view?.initSettingGuide()
-            } else {
-                full(true)
-                mReadOptionPresenter!!.view!!.show(false)
-//            view?.showSetMenu(isShow)
-                ReadState.isMenuShow = false
-            }
+        clearOtherPanel()
+        if (isShow) {
+            full(false)
+            changeMarkState()
+            mReadOptionPresenter?.view?.show(true)
+            view?.initSettingGuide()
+        } else {
+            full(true)
+            mReadOptionPresenter!!.view!!.show(false)
         }
     }
 

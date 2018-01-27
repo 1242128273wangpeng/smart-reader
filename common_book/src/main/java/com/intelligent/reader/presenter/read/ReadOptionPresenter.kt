@@ -274,10 +274,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
                 }
             }
 
-            val chapter = DataProvider.getInstance().chapterLruCache[ReadState.sequence].chapter
-            if (chapter == null || DataProvider.getInstance().findCurrentPageNovelLineBean().isEmpty()) {
-                return 0
-            }
+            val chapter = ReadState.currentChapter ?: return 0
 
             val bookMark = Bookmark()
 //            val requestItem = ReadState.getRequestItem()

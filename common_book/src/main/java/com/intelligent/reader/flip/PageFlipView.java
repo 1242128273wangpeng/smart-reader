@@ -172,11 +172,11 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, O
     public volatile Bitmap secondTexture = null;
 
     public synchronized boolean hasFirstTexture(){
-        return firstTexture != null || getmPageRender().mPageFlip.getFirstPage().isFirstTextureSet();
+        return isFilledTexture || firstTexture != null;
     }
 
     public synchronized boolean hasSecondTexture(){
-        return secondTexture != null || getmPageRender().mPageFlip.getFirstPage().isSecondTextureSet();
+        return isFilledTexture || secondTexture != null;
     }
 
     /**
