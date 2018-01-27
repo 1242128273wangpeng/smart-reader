@@ -17,24 +17,13 @@ import com.intelligent.reader.R
 import com.intelligent.reader.adapter.SourceAdapter
 import com.intelligent.reader.presenter.bookEnd.BookEndContract
 import com.intelligent.reader.presenter.bookEnd.BookEndPresenter
+import com.intelligent.reader.read.mode.ReadState
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.bean.Source
-
-import android.content.res.Resources
-import android.graphics.Bitmap
-import android.os.Bundle
-import android.text.Html
-import android.view.View
-import android.view.ViewGroup
-import android.widget.*
-import com.dycm_adsdk.PlatformSDK
-import com.dycm_adsdk.callback.AbstractCallback
-import com.dycm_adsdk.callback.ResultCode
-import com.intelligent.reader.read.mode.ReadState
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
