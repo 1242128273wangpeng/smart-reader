@@ -9,11 +9,9 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.RelativeLayout
 import com.dycm_adsdk.PlatformSDK
 import com.intelligent.reader.R
 import com.intelligent.reader.read.DataProvider
-import com.intelligent.reader.read.exception.ReadCustomException
 import com.intelligent.reader.read.help.DrawTextHelper
 import com.intelligent.reader.read.mode.NovelPageBean
 import com.intelligent.reader.read.mode.ReadCursor
@@ -25,10 +23,11 @@ import kotlinx.android.synthetic.main.error_page2.view.*
 import kotlinx.android.synthetic.main.loading_page_reading.view.*
 import kotlinx.android.synthetic.main.read_bottom.view.*
 import kotlinx.android.synthetic.main.read_top.view.*
-import net.lzbook.kit.book.download.DesUtils
+import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
+import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.runOnMain
 import java.util.*
@@ -194,7 +193,12 @@ class HorizontalPage : FrameLayout, Observer {
         checkAdBiggerView()
     }
 
-    private fun onJumpChapter() = if (tag == ReadViewEnums.PageIndex.current) noticePageListener?.onJumpChapter() ?: Unit else Unit
+    private fun onJumpChapter() {
+        mAdFrameLayout.removeAllViews()
+        if (tag == ReadViewEnums.PageIndex.current) {
+            noticePageListener?.onJumpChapter()
+        }
+    }
 
     //段末广告 8-1
     private fun checkAdBanner(topMargins: Float) {
@@ -269,24 +273,27 @@ class HorizontalPage : FrameLayout, Observer {
     }
 
     private fun showErrorView(cursor: ReadCursor) {
-        //Error
-        removeView(errorView)
-        addView(errorView)
-        ThemeUtil.getModePrimaryBackground(resources, errorView)
-
-        viewState = ReadViewEnums.ViewState.error
-        loadView.visibility = View.GONE
-        errorView.loading_error_reload.setOnClickListener({
-            pageView.entrance(cursor)
-            loadView.visibility = View.VISIBLE
-            viewState = ReadViewEnums.ViewState.loading
+        runOnMain {
+            //Error
             removeView(errorView)
-            post {
-                destroyDrawingCache()
-            }
-        })
-        errorView.loading_error_setting.visibility = FrameLayout.GONE
-        noticePageListener?.pageChangSuccess(cursor, viewNotify)//游标通知回调
+            addView(errorView)
+            ThemeUtil.getModePrimaryBackground(resources, errorView)
+
+            viewState = ReadViewEnums.ViewState.error
+            loadView.visibility = View.GONE
+            errorView.loading_error_reload.setOnClickListener({
+                pageView.entrance(cursor)
+                mAdFrameLayout.removeAllViews()
+                loadView.visibility = View.VISIBLE
+                viewState = ReadViewEnums.ViewState.loading
+                removeView(errorView)
+                post {
+                    destroyDrawingCache()
+                }
+            })
+            errorView.loading_error_setting.visibility = FrameLayout.GONE
+            noticePageListener?.pageChangSuccess(cursor, viewNotify)//游标通知回调
+        }
     }
 
     override fun update(o: Observable, arg: Any) {
@@ -364,11 +371,6 @@ class HorizontalPage : FrameLayout, Observer {
          */
         fun setCursor(cursor: ReadCursor) {
             mCursor = cursor
-            //判断超过章节数
-            if ((ReadState.chapterList.isNotEmpty()) and (mCursor!!.sequence > ReadState.chapterList.size - 1)) {
-                viewState = ReadViewEnums.ViewState.end
-                return
-            }
             //判断item 需要的章节是否在缓存
             val novelChapter = DataProvider.getInstance().chapterLruCache[cursor.sequence]
             if (novelChapter != null) {//加载数据
@@ -383,9 +385,17 @@ class HorizontalPage : FrameLayout, Observer {
          * 画页面前准备
          */
         private fun preDrawPage(cursor: ReadCursor, chapter: Chapter) {
+            //判断超过章节数
+//            val bookChapterDao = BookChapterDao(BaseBookApplication.getGlobalContext(), cursor.curBook.book_id)
+//            ReadState.chapterList = bookChapterDao.queryBookChapter()
+            if ((ReadState.chapterList.isNotEmpty()) and (mCursor!!.sequence > ReadState.chapterList.size - 1)) {
+                viewState = ReadViewEnums.ViewState.end
+                return
+            }
             //获取数据
             ReadState.chapterName = chapter.chapter_name
             val chapterList = DataProvider.getInstance().chapterLruCache[cursor.sequence].separateList
+            cursor.offset = cursor.offset - mCursorOffset
             try {
                 pageIndex = ReadQueryUtil.findPageIndexByOffset(cursor.offset, chapterList)
             } catch (e: Exception) {
@@ -410,10 +420,7 @@ class HorizontalPage : FrameLayout, Observer {
                 } else {
                     try {
                         mNovelPageBean = ReadQueryUtil.findNovelPageBeanByOffset(cursor.offset, chapterList)
-//                        if (mNovelPageBean.) {
-//                            throw ReadCustomException.PageContentException("内容为空")
-//                        }
-                    } catch (e: ReadCustomException.PageOffsetException) {
+                    } catch (e: Exception) {
                         showErrorView(mCursor!!)
                         return
                     }
@@ -438,7 +445,7 @@ class HorizontalPage : FrameLayout, Observer {
                     changeCursorState(chapterList)
 
                     //设置top and bottom
-                    val chapterProgress = "" + (cursor.sequence.plus(1)) + "/" + ReadState.chapterList.size + "章"
+                    val chapterProgress = "${cursor.sequence.plus(1)} / ${ReadState.chapterList.size} 章"
                     val pageProgress = "本章第$pageIndex/$pageSum"
                     setTopAndBottomViewContext(ReadState.chapterName ?: "", chapterProgress, pageProgress)
                     noticePageListener?.currentViewSuccess()
@@ -462,8 +469,16 @@ class HorizontalPage : FrameLayout, Observer {
             }
             //游标添加广告后的偏移量
             mCursorOffset = when {
-                (pageSum >= 16) and (pageIndex >= 9) and (pageIndex != pageSum) -> -1
-                (pageSum >= 16) and (pageIndex >= 9) and (pageIndex == pageSum) -> -2
+                (pageSum >= 16) and (pageIndex >= pageSum/2) and (pageIndex != pageSum) -> {
+                    if(PlatformSDK.config().getAdSwitch("5-1") and (PlatformSDK.config().getAdSwitch("6-1")))  -1 else  0
+                }
+                (pageSum >= 16) and (pageIndex >= pageSum/2) and (pageIndex == pageSum) -> {
+                    if(PlatformSDK.config().getAdSwitch("5-1") and (PlatformSDK.config().getAdSwitch("6-1")))  {
+                        if(PlatformSDK.config().getAdSwitch("5-2") and (PlatformSDK.config().getAdSwitch("6-2"))) -2 else-1
+                    } else {
+                        if(PlatformSDK.config().getAdSwitch("5-2") and (PlatformSDK.config().getAdSwitch("6-2"))) -1 else 0
+                    }
+                }
                 (pageSum < 16) and (pageIndex == pageSum) -> -1
                 else -> 0
             }
