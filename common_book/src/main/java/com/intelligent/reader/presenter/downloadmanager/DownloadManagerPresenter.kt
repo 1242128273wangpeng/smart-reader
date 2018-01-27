@@ -122,7 +122,7 @@ class DownloadManagerPresenter(override var view: DownloadManagerView?) : IPrese
         val data = HashMap<String, String>()
         data.put("type", "1")
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data)
+                "CACHEMANAGE", StartLogClickUtil.BACK, data)
     }
 
     fun uploadEditLog() {
@@ -151,7 +151,7 @@ class DownloadManagerPresenter(override var view: DownloadManagerView?) : IPrese
 
     fun uploadDialogCancelLog() {
         val data = HashMap<String, String>()
-        data.put("type", "0")
+        data.put("type", "2")
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
                 StartLogClickUtil.CHCHEEDIT_PAGE, StartLogClickUtil.DELETE, data)
     }
@@ -169,7 +169,7 @@ class DownloadManagerPresenter(override var view: DownloadManagerView?) : IPrese
         StatServiceUtils.statAppBtnClick(BaseBookApplication.getGlobalContext(),
                 StatServiceUtils.bs_down_m_click_select_all)
         val data = HashMap<String, String>()
-        data.put("type", if (checkedAll) "1" else "0")
+        data.put("type", if (checkedAll) "1" else "2")
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
                 StartLogClickUtil.CHCHEEDIT_PAGE, StartLogClickUtil.SELECTALL, data)
     }
