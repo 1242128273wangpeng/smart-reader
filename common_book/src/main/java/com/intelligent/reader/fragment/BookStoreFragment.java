@@ -1,15 +1,8 @@
 package com.intelligent.reader.fragment;
 
-import com.intelligent.reader.R;
-import com.intelligent.reader.read.page.PageInterface;
-
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.view.NonSwipeViewPager;
-import net.lzbook.kit.request.UrlUtils;
-import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.encrypt.URLBuilderIntterface;
-
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -20,6 +13,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import com.intelligent.reader.R;
+
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.book.view.NonSwipeViewPager;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.encrypt.URLBuilderIntterface;
+import net.lzbook.kit.request.UrlUtils;
+import net.lzbook.kit.utils.AppUtils;
 
 import java.util.HashMap;
 
@@ -45,6 +47,9 @@ public class BookStoreFragment extends Fragment {
     private int versionCode = 0;
     private SearchClickListener mSearchClickListener;
 
+    private SharedPreferences sharedPreferences;
+
+
     public BookStoreFragment() {
 
     }
@@ -57,6 +62,7 @@ public class BookStoreFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         versionCode = AppUtils.getVersionCode();
         fragmentManager = getChildFragmentManager();
     }
@@ -99,18 +105,21 @@ public class BookStoreFragment extends Fragment {
                             switchState(position);
                             if (mSearchClickListener != null) {
                                 mSearchClickListener.getCurrent(2);
+                                sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH, "recommend").apply();
                             }
                             break;
                         case 1:
                             switchState(position);
                             if (mSearchClickListener != null) {
                                 mSearchClickListener.getCurrent(3);
+                                sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH, "top").apply();
                             }
                             break;
                         case 2:
                             switchState(position);
                             if (mSearchClickListener != null) {
                                 mSearchClickListener.getCurrent(4);
+                                sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH, "class").apply();
                             }
                             break;
                     }
@@ -128,6 +137,7 @@ public class BookStoreFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     setTabSelected(0);
+                    sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH, "recommend").apply();
                     StartLogClickUtil.upLoadEventLog(getActivity(), StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.RECOMMEND);
                     if (mSearchClickListener != null) {
                         mSearchClickListener.getCurrent(2);
@@ -143,6 +153,7 @@ public class BookStoreFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     setTabSelected(1);
+                    sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH, "top").apply();
                     StartLogClickUtil.upLoadEventLog(getActivity(), StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.TOP);
                     if (mSearchClickListener != null) {
                         mSearchClickListener.getCurrent(3);
@@ -157,6 +168,7 @@ public class BookStoreFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     setTabSelected(2);
+                    sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH, "class").apply();
                     StartLogClickUtil.upLoadEventLog(getActivity(), StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.CLASS);
                     if (mSearchClickListener != null) {
                         mSearchClickListener.getCurrent(4);

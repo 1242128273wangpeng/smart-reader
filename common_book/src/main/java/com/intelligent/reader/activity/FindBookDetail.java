@@ -161,13 +161,20 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             case R.id.find_book_detail_back:
                 Map<String, String> data = new HashMap<>();
                 data.put("type", "1");
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
+                if (fromType.equals("class")) {
+                    data.put("firstclass", currentTitle);
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE, StartLogClickUtil.BACK, data);
+                } else if (fromType.equals("top")) {
+                    data.put("firsttop", currentTitle);
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE, StartLogClickUtil.BACK, data);
+                } else if (fromType.equals("recommend")) {
+                    data.put("firstrecommend", currentTitle);
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTRECOMMEND_PAGE, StartLogClickUtil.BACK, data);
+                }
                 clickBackBtn();
                 break;
             case R.id.find_book_detail_search:
-                String fromType = mSharedPreferences.getString(Constants.FINDBOOK_SEARCH, "other");
                 Map<String, String> postData = new HashMap<>();
-
 
                 if (fromType.equals("class")) {
                     postData.put("firstclass", currentTitle);
@@ -430,7 +437,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                 AppLog.e(TAG, "doAnotherWeb");
                 String packageName = AppUtils.getPackageName();
 
-                if ("cc.kdqbxs.reader".equals(packageName)|| "cc.quanbennovel".equals(packageName) || "cn.txtkdxsdq.reader".equals(packageName)) {
+                if ("cc.kdqbxs.reader".equals(packageName) || "cc.quanbennovel".equals(packageName) || "cn.txtkdxsdq.reader".equals(packageName)) {
                     try {
                         Intent intent = new Intent();
                         intent.setClass(FindBookDetail.this, FindBookDetail.class);

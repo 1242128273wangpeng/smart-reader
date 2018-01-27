@@ -3,6 +3,7 @@ package com.intelligent.reader.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -91,11 +92,13 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
     private ImageView home_edit_back;
     private TextView home_edit_cancel;
     private int bottomType;//青果打点搜索 2 推荐  3 榜单
+    private SharedPreferences sharedPreferences;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         mContext = getActivity();
         versionCode = AppUtils.getVersionCode();
         initData();
@@ -361,6 +364,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                         }
                     }
                 }
+                sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH, "recommend").apply();
                 bottomType = 2;
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_recommend_menu);
                 StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.RECOMMEND);
@@ -372,6 +376,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                     content_title.setText("榜单");
                 }
                 bottomType = 3;
+                sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH, "top").apply();
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_rank_menu);
                 StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.TOP);
                 break;
@@ -383,6 +388,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
                     content_title.setText("分类");
                 }
                 bottomType = 4;
+                sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH, "class").apply();
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_category_menu);
                 StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.CLASS);
                 break;

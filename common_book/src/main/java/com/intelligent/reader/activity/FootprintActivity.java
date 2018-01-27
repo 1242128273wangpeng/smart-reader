@@ -1,5 +1,14 @@
 package com.intelligent.reader.activity;
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.widget.LinearLayoutManager;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.BookShelfReAdapter;
 import com.intelligent.reader.adapter.paging.BaseAdapter;
@@ -18,15 +27,6 @@ import net.lzbook.kit.data.ormlite.dao.DaoUtils;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.StatServiceUtils;
-
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-import android.support.v7.widget.LinearLayoutManager;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -251,7 +251,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Boo
             case R.id.book_history_back:
                 Map<String, String> data = new HashMap<>();
                 data.put("type", "1");
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PERHISTORY_PAGE, StartLogClickUtil.BACK, data);
                 finish();
                 break;
             case R.id.book_history_clear:

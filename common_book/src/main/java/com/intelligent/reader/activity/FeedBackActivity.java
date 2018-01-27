@@ -1,16 +1,5 @@
 package com.intelligent.reader.activity;
 
-import com.intelligent.reader.R;
-import com.intelligent.reader.adapter.FeedBackAdapter;
-import com.umeng.fb.FeedbackAgent;
-import com.umeng.fb.SyncListener;
-import com.umeng.fb.model.Conversation;
-import com.umeng.fb.model.Reply;
-import com.umeng.fb.model.UserInfo;
-
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.utils.AppLog;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
@@ -26,6 +15,17 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.intelligent.reader.R;
+import com.intelligent.reader.adapter.FeedBackAdapter;
+import com.umeng.fb.FeedbackAgent;
+import com.umeng.fb.SyncListener;
+import com.umeng.fb.model.Conversation;
+import com.umeng.fb.model.Reply;
+import com.umeng.fb.model.UserInfo;
+
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.utils.AppLog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -146,7 +146,7 @@ public class FeedBackActivity extends Activity implements View.OnClickListener, 
             case R.id.feedback_head_back:
                 Map<String, String> data = new HashMap<>();
                 data.put("type", "1");
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PERHELP_PAGE, StartLogClickUtil.BACK, data);
                 finish();
                 break;
             case R.id.feedback_sent_text:

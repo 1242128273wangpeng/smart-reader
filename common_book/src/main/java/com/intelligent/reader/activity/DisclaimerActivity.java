@@ -1,10 +1,15 @@
 package com.intelligent.reader.activity;
 
-import com.intelligent.reader.R;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
+import com.intelligent.reader.R;
+
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class DisclaimerActivity extends iyouqu.theme.FrameActivity {
@@ -24,6 +29,9 @@ public class DisclaimerActivity extends iyouqu.theme.FrameActivity {
         findViewById(R.id.btn_left_setting).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Map<String, String> data = new HashMap<>();
+                data.put("type", "1");
+                StartLogClickUtil.upLoadEventLog(DisclaimerActivity.this, StartLogClickUtil.PROCTCOL_PAGE, StartLogClickUtil.BACK, data);
                 finish();
             }
         });
