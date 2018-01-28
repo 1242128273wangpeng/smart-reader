@@ -418,8 +418,7 @@ class HorizontalPage : FrameLayout, Observer {
             if (pageIndex <= pageSum) {
                 //过滤其他页内容
                 if (cursor.sequence == -1) {//封面页
-
-                    ReadState.orientationLimit = ReadViewEnums.ScrollLimitOrientation.LEFT
+                        orientationLimit = ReadViewEnums.ScrollLimitOrientation.LEFT
 
                     setupHomePage(cursor)
                     val start = ReadViewEnums.ViewState.start
@@ -434,10 +433,10 @@ class HorizontalPage : FrameLayout, Observer {
                     noticePageListener?.pageChangSuccess(mCursor!!, ReadViewEnums.NotifyStateState.none)//游标通知回调
                 } else {
 
-                    if(cursor.sequence == ReadState.chapterCount - 1 && pageIndex == pageSum){
-                        ReadState.orientationLimit = ReadViewEnums.ScrollLimitOrientation.RIGHT
-                    }else{
-                        ReadState.orientationLimit = ReadViewEnums.ScrollLimitOrientation.NONE
+                    if (cursor.sequence == ReadState.chapterCount - 1 && pageIndex == pageSum) {
+                        orientationLimit = ReadViewEnums.ScrollLimitOrientation.RIGHT
+                    } else {
+                        orientationLimit = ReadViewEnums.ScrollLimitOrientation.NONE
                     }
 
                     try {
@@ -494,9 +493,9 @@ class HorizontalPage : FrameLayout, Observer {
             viewState = if ((mCursor!!.sequence == ReadState.chapterList.size - 1) and (pageIndex == pageSum)) {//判断这本书的最后一页
                 ReadViewEnums.ViewState.end
             } else {
-                noticePageListener?.pageChangSuccess(mCursor!!, viewNotify)//游标通知回调
                 ReadViewEnums.ViewState.success
             }
+            noticePageListener?.pageChangSuccess(mCursor!!, viewNotify)//游标通知回调
             //游标添加广告后的偏移量
             mCursorOffset = when {
                 (pageSum >= 16) and (pageIndex >= pageSum/2) and (pageIndex != pageSum) -> {
@@ -535,11 +534,6 @@ class HorizontalPage : FrameLayout, Observer {
                     }
                     time = System.currentTimeMillis()
 
-
-                    if(ReadState.orientationLimit == ReadViewEnums.ScrollLimitOrientation.RIGHT){
-                        requestDisallowInterceptTouchEvent(true)
-                    }
-
                     if (ReadConfig.animation == ReadViewEnums.Animation.curl) {
                         return isTouchMenuArea(event)
                     } else {
@@ -552,14 +546,6 @@ class HorizontalPage : FrameLayout, Observer {
                         noticePageListener?.onClickMenu(false)
                         isShowMenu = false
                     }
-
-                    if(ReadState.orientationLimit == ReadViewEnums.ScrollLimitOrientation.RIGHT){
-                        if(e1 != null && e2.x - e1.x < 0){
-                            noticePageListener?.onClickRight(false)
-                            return true
-                        }
-                    }
-                    requestDisallowInterceptTouchEvent(false)
                     return false
                 }
 
@@ -591,6 +577,7 @@ class HorizontalPage : FrameLayout, Observer {
                             }
                         }
                     }
+
                     return true
                 }
             })

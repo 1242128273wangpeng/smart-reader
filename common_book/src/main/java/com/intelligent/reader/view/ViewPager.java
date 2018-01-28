@@ -1407,7 +1407,7 @@ public class ViewPager extends ViewGroup {
         int pos = curItem.position - 1;
         mFirstOffset = curItem.position == 0 ? curItem.offset : -Float.MAX_VALUE;
 
-        if(ReadState.INSTANCE.getOrientationLimit() == ReadViewEnums.ScrollLimitOrientation.LEFT ){
+        if(((HorizontalPage)curItem.object).getOrientationLimit() == ReadViewEnums.ScrollLimitOrientation.LEFT ){
             mFirstOffset = curItem.offset;
         }
 
@@ -2566,6 +2566,11 @@ public class ViewPager extends ViewGroup {
                 }
             }
         }
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        super.dispatchDraw(canvas);
     }
 
     private void drawShadow(Canvas canvas){

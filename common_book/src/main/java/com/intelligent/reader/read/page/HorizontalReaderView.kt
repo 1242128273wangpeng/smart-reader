@@ -458,7 +458,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             }
             MotionEvent.ACTION_MOVE -> {//移动
                 val motionValue = ev.x - beforeX
-                if(!disallowIntercept && motionValue < 0 && ReadState.orientationLimit == ReadViewEnums.ScrollLimitOrientation.RIGHT){
+                if(!disallowIntercept && motionValue < -mTouchSlop && (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).orientationLimit == ReadViewEnums.ScrollLimitOrientation.RIGHT){
                     mReadPageChange?.goToBookOver()//跳bookend
                     return false
                 }else{

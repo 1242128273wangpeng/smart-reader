@@ -56,6 +56,4 @@ object ReadState {
         }
 
     var isMenuShow: Boolean = false
-
-    var orientationLimit = ReadViewEnums.ScrollLimitOrientation.NONE
 }

@@ -62,6 +62,7 @@ class HorizontalAdapter(private var noticePageListener: HorizontalPage.NoticePag
         }
         addPageTag(container as ViewPager,itemView, position)
         container.addView(itemView)
+//        itemView.buildDrawingCache()
         ReadConfig.registObserver(itemView)
         return itemView
     }

@@ -30,6 +30,7 @@ import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.OpenUDID
+import net.lzbook.kit.utils.runOnMain
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
@@ -283,11 +284,14 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     private fun requestSingleChapter(book: Book, chapters: List<Chapter>, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
-        if(sequence>=chapters.size){
-            mReadDataListener.loadDataError("章节超目录列表")
+        if(sequence < 0 || sequence>=chapters.size){
+            runOnMain {
+                mReadDataListener.loadDataError("章节超目录列表")
+            }
             return
         }
         val chapter = chapters[sequence]
+        //val chapter = chapters[Math.max(0, Math.min(chapters.size - 1, sequence))]
         addDisposable(mReaderRepository.requestSingleChapter(book.site, chapter)
                 .map {
                     val separateContent = ReadSeparateHelper.initTextSeparateContent(it.content, it.chapter_name)

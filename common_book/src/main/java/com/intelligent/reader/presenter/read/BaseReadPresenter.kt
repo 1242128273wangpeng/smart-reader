@@ -9,10 +9,7 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Point
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.IBinder
+import android.os.*
 import android.preference.PreferenceManager
 import android.provider.Settings
 import android.support.v4.content.LocalBroadcastManager
@@ -118,6 +115,8 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
     protected var type = -1
     var currentThemeMode: String? = null
     private var lastMode = -1
+
+    private val handler = Handler(Looper.getMainLooper())
 
     init {
         readReference = WeakReference(act)
@@ -466,18 +465,18 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
      */
     private fun initListener() {
         if (downloadService == null) {
-            reStartDownloadService(readReference?.get()!!)
+            reStartDownloadService()
             downloadService = BaseBookApplication.getDownloadService()
         } else {
             downloadService!!.setOnDownloadListener(this)
         }
     }
 
-    private fun reStartDownloadService(context: Activity) {
+    private fun reStartDownloadService() {
         val intent = Intent()
-        intent.setClass(context, DownloadService::class.java)
-        context.startService(intent)
-        context.bindService(intent, sc, Context.BIND_AUTO_CREATE)
+        intent.setClass(mContext, DownloadService::class.java)
+        mContext.startService(intent)
+        mContext.bindService(intent, sc, Context.BIND_AUTO_CREATE)
     }
 
     /**
@@ -964,12 +963,8 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
     }
 
     fun onDestroy() {
-        if (intervalRunnable != null) {
-            Handler().removeCallbacksAndMessages(intervalRunnable)
-        }
-        if (timeRunnable != null) {
-            Handler().removeCallbacksAndMessages(timeRunnable)
-        }
+
+        handler.removeCallbacksAndMessages(null)
 
         for (d in disposable) {
             d.dispose()
@@ -1441,9 +1436,9 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         if (intervalRunnable == null) {
             intervalRunnable = Runnable {
                 restAd()
-                Handler().postDelayed(intervalRunnable, runtime)
+                handler.postDelayed(intervalRunnable, runtime)
             }
-            Handler().postDelayed(intervalRunnable, runtime)
+            handler.postDelayed(intervalRunnable, runtime)
         }
     }
 
@@ -1454,9 +1449,9 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
                 restAd()
             }
             var runtime: Long = PlatformSDK.config().restAd_sec.times(60000).toLong()
-            Handler().postDelayed(timeRunnable, runtime)
-            Handler().postDelayed({
-                Handler().removeCallbacksAndMessages(timeRunnable)
+            handler.postDelayed(timeRunnable, runtime)
+            handler.postDelayed({
+                handler.removeCallbacksAndMessages(timeRunnable)
                 timeRunnable = null
             }, runtime.plus(100))
         }
