@@ -1040,7 +1040,7 @@ public class PageFlip {
      * @return true if page is flipping
      */
     public boolean isAnimating() {
-        mScroller.computeScrollOffset();
+//        mScroller.computeScrollOffset();
         return !mScroller.isFinished();
     }
 

@@ -65,8 +65,6 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     private var themeHelper: ThemeHelper? = null
     var currentThemeMode: String? = null
 
-    private var mIsChecked: Boolean = false
-
     private var time: Long = 0
 
     constructor(context: Context) : super(context) {
@@ -259,8 +257,20 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     }
 
 
-    fun showMenu() {
-        if (!mIsChecked) {
+    private fun setScreenBrightProgress() {
+        val screenBrightness = sharedPreferences!!.getInt("screen_bright", -1)
+
+        if (screenBrightness >= 0) {
+            read_setting_brightness_progress!!.progress = screenBrightness
+        } else if (FrameActivity.mSystemBrightness >= 20) {
+            read_setting_brightness_progress!!.progress = FrameActivity.mSystemBrightness - 20
+        } else {
+            read_setting_brightness_progress!!.progress = 5
+        }
+    }
+
+    fun showMenu(isShow:Boolean) {
+        if (isShow) {
             read_setting_reduce_text!!.isEnabled = ReadConfig.FONT_SIZE > 10
             read_setting_increase_text!!.isEnabled = ReadConfig.FONT_SIZE < 30
             novel_bottom_options.visibility = View.VISIBLE
@@ -284,24 +294,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 txt_night.text = "夜间"
                 ibtn_night.setImageResource(R.drawable.read_option_night_selector)
             }
-            mIsChecked = true
-        }
-    }
-
-    private fun setScreenBrightProgress() {
-        val screenBrightness = sharedPreferences!!.getInt("screen_bright", -1)
-
-        if (screenBrightness >= 0) {
-            read_setting_brightness_progress!!.progress = screenBrightness
-        } else if (FrameActivity.mSystemBrightness >= 20) {
-            read_setting_brightness_progress!!.progress = FrameActivity.mSystemBrightness - 20
         } else {
-            read_setting_brightness_progress!!.progress = 5
-        }
-    }
-
-    fun dismissMenu() {
-        if (mIsChecked) {
             if (novel_bottom_options != null && novel_bottom_options!!.isShown) {
                 novel_bottom_options!!.startAnimation(popDownOutAnimation)
             }
@@ -309,7 +302,6 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 novel_bottom_options!!.visibility = View.GONE
             }
             read_setting_detail!!.visibility = View.GONE
-            mIsChecked = false
         }
     }
 
@@ -1048,9 +1040,6 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     fun setOnReadSettingListener(listener: OnReadSettingListener) {
         this.listener = listener
     }
-
-    fun isChecked() = mIsChecked
-
 
     interface OnReadSettingListener {
         fun onReadCatalog()

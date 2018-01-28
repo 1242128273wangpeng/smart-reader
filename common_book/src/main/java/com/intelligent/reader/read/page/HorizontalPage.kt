@@ -72,6 +72,8 @@ class HorizontalPage : FrameLayout, Observer {
     var noticePageListener: NoticePageListener? = null
     var mNovelPageBean: NovelPageBean? = null
 
+    var orientationLimit = ReadViewEnums.ScrollLimitOrientation.NONE
+
 //    var drawCacheBitmap:Bitmap? = null
 //    var innerCanvas:Canvas? = null
 
@@ -99,6 +101,15 @@ class HorizontalPage : FrameLayout, Observer {
         addView(readTop)
         addView(readBottom)
         addView(loadView)
+
+        loadView.setOnTouchListener { v, event ->
+            requestDisallowInterceptTouchEvent(true)
+            true
+        }
+        errorView.setOnTouchListener { v, event ->
+            requestDisallowInterceptTouchEvent(true)
+            true
+        }
     }
 
     override fun getDrawingCache(): Bitmap? {
@@ -336,6 +347,7 @@ class HorizontalPage : FrameLayout, Observer {
          * 加载3章至内存
          */
         fun entrance(cursor: ReadCursor) {
+            loadView.visibility = View.VISIBLE
             mCursor = cursor
             entranceArray = arrayOf(false, false, false)
             cursor.curBook.sequence = cursor.sequence
@@ -406,6 +418,8 @@ class HorizontalPage : FrameLayout, Observer {
             if (pageIndex <= pageSum) {
                 //过滤其他页内容
                 if (cursor.sequence == -1) {//封面页
+                        orientationLimit = ReadViewEnums.ScrollLimitOrientation.LEFT
+
                     setupHomePage(cursor)
                     val start = ReadViewEnums.ViewState.start
                     start.Tag = when (viewNotify) {
@@ -418,6 +432,13 @@ class HorizontalPage : FrameLayout, Observer {
                     viewState = start
                     noticePageListener?.pageChangSuccess(mCursor!!, ReadViewEnums.NotifyStateState.none)//游标通知回调
                 } else {
+
+                    if (cursor.sequence == ReadState.chapterCount - 1 && pageIndex == pageSum) {
+                        orientationLimit = ReadViewEnums.ScrollLimitOrientation.RIGHT
+                    } else {
+                        orientationLimit = ReadViewEnums.ScrollLimitOrientation.NONE
+                    }
+
                     try {
                         mNovelPageBean = ReadQueryUtil.findNovelPageBeanByOffset(cursor.offset, chapterList)
                     } catch (e: Exception) {
@@ -430,6 +451,14 @@ class HorizontalPage : FrameLayout, Observer {
                     if (mNovelPageBean!!.isAd) {//广告页
                         checkAdBiggerView()
                     } else {//普通页
+
+                        //记录阅读位置
+                        if(ReadViewEnums.PageIndex.current == tag) {
+                            ReadState.currentPage = pageIndex
+                            ReadState.sequence = cursor.sequence
+                            ReadState.offset = cursor.offset
+                        }
+
                         //画之前清空内容
                         post {
                             removeView(homePage)
@@ -464,9 +493,9 @@ class HorizontalPage : FrameLayout, Observer {
             viewState = if ((mCursor!!.sequence == ReadState.chapterList.size - 1) and (pageIndex == pageSum)) {//判断这本书的最后一页
                 ReadViewEnums.ViewState.end
             } else {
-                noticePageListener?.pageChangSuccess(mCursor!!, viewNotify)//游标通知回调
                 ReadViewEnums.ViewState.success
             }
+            noticePageListener?.pageChangSuccess(mCursor!!, viewNotify)//游标通知回调
             //游标添加广告后的偏移量
             mCursorOffset = when {
                 (pageSum >= 16) and (pageIndex >= pageSum/2) and (pageIndex != pageSum) -> {
@@ -548,6 +577,7 @@ class HorizontalPage : FrameLayout, Observer {
                             }
                         }
                     }
+
                     return true
                 }
             })

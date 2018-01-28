@@ -72,4 +72,8 @@ public interface ReadViewEnums {
             Msg = msg;
         }
     }
+
+    enum ScrollLimitOrientation{
+        NONE, LEFT, RIGHT, BOTH
+    }
 }

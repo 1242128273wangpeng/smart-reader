@@ -212,7 +212,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
             return
         }
 
-        readSettingView.dismissMenu()
+        showMenu(false)
 
         val isFinish = mReadPresenter.onBackPressed()
         if (isFinish && !isFinishing) {
@@ -315,7 +315,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onReadAuto() {
         readerWidget.startAutoRead()
-        readSettingView.dismissMenu()
+        showMenu(false)
     }
 
     override fun onChangeMode(mode: Int) {
@@ -324,7 +324,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onChangeScreenMode() {
         mReadPresenter.changeScreenMode()
-        readSettingView.dismissMenu()
+        showMenu(false)
     }
 
     //目录跳章
@@ -442,26 +442,24 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     private val immersiveRunable = Runnable { setUIOptions() }
 
     override fun showMenu(isShow: Boolean) {
-
-        if (ReadConfig.animation != ReadViewEnums.Animation.list) {
-            if (isShow) {
-                window.decorView.handler.removeCallbacks(immersiveRunable)
-                window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_NORMAL
+        if(ReadState.isMenuShow != isShow){
+            ReadState.isMenuShow = isShow
+            if (ReadConfig.animation != ReadViewEnums.Animation.list) {
+                if (isShow) {
+                    window.decorView.handler.removeCallbacks(immersiveRunable)
+                    window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_NORMAL
+                } else {
+                    window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
+                }
             } else {
-                window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
+                window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_LOW_PROFILE
             }
-        } else {
-            window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_LOW_PROFILE
-        }
 
-        if (isShow) {
-            if (!readSettingView.isChecked()) {
-                readSettingView.showMenu()
-            }
-        } else {
-            readSettingView.dismissMenu()
+
+            readSettingView.showMenu(isShow)
+
+            mReadPresenter.showMenu(isShow)
         }
-        mReadPresenter.showMenu(isShow)
     }
 
     override fun goToBookOver() {
