@@ -42,7 +42,8 @@ public interface URLBuilderIntterface {
 
     //书籍封面页 推荐书籍接口
     public static final String GET_COVER_RECOMMEND = "/v4/recommend/{book_id}/coverPage";
-    // webview分类页面
+
+    // 动态参数
     public static final String DYNAMIC_PARAMAS = "/v3/dynamic/dynamicParameter";
 
     public String buildUrl(String host, String uriTag, Map<String, String> params);

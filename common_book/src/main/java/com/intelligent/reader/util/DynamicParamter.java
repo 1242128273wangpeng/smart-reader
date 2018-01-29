@@ -11,11 +11,13 @@ import com.umeng.onlineconfig.UmengOnlineConfigureListener;
 
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
+import net.lzbook.kit.net.DynamicService;
+import net.lzbook.kit.net.custom.service.DynamicApi;
 import net.lzbook.kit.net.custom.service.NetService;
+import net.lzbook.kit.net.custom.service.UserService;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.LoadDataManager;
 import net.lzbook.kit.utils.Tools;
 
 import org.json.JSONException;
@@ -34,6 +36,7 @@ import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
 
 public class DynamicParamter {
 
@@ -124,6 +127,8 @@ public class DynamicParamter {
 
     public void setDynamicParamter() {
 
+        AppLog.d("startRequestCDNDynamic", "/v3/dynamic/dynamicParameter");
+        mDynamicUrl = UserService.DYNAMIC_PARAMAS;
         NetService.INSTANCE.getUserService().getDynamicParams()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
@@ -135,29 +140,13 @@ public class DynamicParamter {
 
                     @Override
                     public void onNext(@NonNull JsonObject jsonObject) {
-                        if (!TextUtils.isEmpty(jsonObject.toString())) {
-                            try {
-                                JSONObject js = new JSONObject(jsonObject.toString());
-                                if (js.getBoolean("success")) {
-                                    final JSONObject map = js.getJSONObject("map");
-                                    if (map != null) {
-                                        isReloadDynamic = false;
-                                        parserJSONObject(map, true);
-                                    } else {
-                                        isReloadDynamic = true;
-                                        setUMDynamicParamter();
-                                    }
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
+                        checkResult(jsonObject.toString());
                     }
 
                     @Override
                     public void onError(@NonNull Throwable e) {
-                        isReloadDynamic = true;
-                        setUMDynamicParamter();
+                        e.printStackTrace();
+                        startRequestCDNDynamic();
                     }
 
                     @Override
@@ -255,6 +244,90 @@ public class DynamicParamter {
         installParam();
 
     }
+
+    private void checkResult(String str) {
+        if (!TextUtils.isEmpty(str)) {
+            try {
+                JSONObject js = new JSONObject(str);
+                if (js.getBoolean("success")) {
+                    final JSONObject map = js.getJSONObject("map");
+                    if (map != null) {
+                        isReloadDynamic = false;
+                        parserJSONObject(map, true);
+                    } else {
+                        startRequestCDNDynamic();
+                    }
+                }else {
+                    startRequestCDNDynamic();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                startRequestCDNDynamic();
+            }
+        }else {
+            startRequestCDNDynamic();
+        }
+    }
+
+    private void startRequestCDNDynamic() {
+        String url = getDynamicUrl();
+        if (!TextUtils.isEmpty(url)){
+            url = url.replace("{packageName}", AppUtils.getPackageName());
+            AppLog.d("startRequestCDNDynamic",url);
+            DynamicService.INSTANCE.getDynamicApi()
+                    .requestCDNDynamicPar(url)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(new Observer<ResponseBody>() {
+                        @Override
+                        public void onSubscribe(@NonNull Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(@NonNull ResponseBody body) {
+                            try {
+                                if (body != null){
+                                    checkResult(body.string());
+                                }else {
+                                    throw new Exception("requestCDNDynamicPar call back body is null");
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                startRequestCDNDynamic();
+                            }
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+                            e.printStackTrace();
+                            startRequestCDNDynamic();
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            AppLog.d("requestCDNDynamicPar", "onComplete");
+                        }
+                    });
+        }else {
+            isReloadDynamic = true;
+            setUMDynamicParamter();
+        }
+    }
+
+    private synchronized String getDynamicUrl() {
+        if (UserService.DYNAMIC_PARAMAS.equals(mDynamicUrl)){
+            mDynamicUrl = DynamicApi.DYNAMIC_ZN;
+        }else if (DynamicApi.DYNAMIC_ZN.equals(mDynamicUrl)){
+            mDynamicUrl = DynamicApi.DYNAMIC_CM;
+        }else if (DynamicApi.DYNAMIC_CM.equals(mDynamicUrl)){
+            mDynamicUrl = DynamicApi.DYNAMIC_YC;
+        }else {
+            mDynamicUrl = "";
+        }
+        return mDynamicUrl;
+    }
+
+    private static String mDynamicUrl = UserService.DYNAMIC_PARAMAS;
 
 
     private String getConfigParams(String key) {
@@ -377,6 +450,7 @@ public class DynamicParamter {
     }
 
     private void parserJSONObject(JSONObject data, boolean isOwn) {
+        AppLog.d("startRequestCDNDynamic", data.toString());
         try {
             boolean showAdFlag = false;
             if (!data.isNull(Constants.SHOW_AD_VERSION)) {

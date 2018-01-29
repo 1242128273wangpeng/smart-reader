@@ -27,7 +27,6 @@ import com.intelligent.reader.cover.BookCoverQGRepository
 import com.intelligent.reader.cover.BookCoverRepositoryFactory
 import com.intelligent.reader.fragment.CatalogMarkFragment
 import com.intelligent.reader.presenter.IPresenter
-import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.read.help.NovelHelper
 import com.intelligent.reader.read.mode.ReadState
@@ -348,8 +347,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
 
 
     fun dealManualDialogShow() {
-        AppLog.d("IReadDataFactory", "Constants.manualReadedCount " + Constants.manualReadedCount)
-        if (Constants.manualReadedCount != 0) {
+        if (Constants.manualReadedCount != 0 && !Constants.isSlideUp) {
             if (Constants.manualReadedCount == Constants.manualTip) {
                 AppLog.d("IReadDataFactory", "显示自动阅读提醒")
                 if (myNovelHelper != null) {
@@ -614,37 +612,34 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
     }
 
     private fun intoCatalogActivity(source: Source, b: Boolean) {
-        if (ReadState.requestItem != null) {
+        val bookDaoHelper = BookDaoHelper.getInstance()
+        if (bookDaoHelper.isBookSubed(source.book_id)) {
+            val iBook = bookDaoHelper.getBook(source.book_id, 0)
+            iBook.book_source_id = source.book_source_id
+            iBook.site = source.host
+            iBook.last_updatetime_native = source.update_time
+            iBook.dex = source.dex
+            bookDaoHelper.updateBook(iBook)
+            ReadState.book = iBook
+            if (b) {
+                val bookChapterDao = BookChapterDao(readReference?.get(), source.book_id)
+                BookHelper.deleteAllChapterCache(source.book_id, 0, bookChapterDao.count)
+                DownloadService.clearTask(source.book_id)
+                BaseBookHelper.delDownIndex(readReference?.get(), source.book_id)
+                bookChapterDao.deleteBookChapters(0)
 
-            val bookDaoHelper = BookDaoHelper.getInstance()
-            if (bookDaoHelper.isBookSubed(source.book_id)) {
-                val iBook = bookDaoHelper.getBook(source.book_id, 0)
-                iBook.book_source_id = source.book_source_id
-                iBook.site = source.host
-                iBook.last_updatetime_native = source.update_time
-                iBook.dex = source.dex
-                bookDaoHelper.updateBook(iBook)
-                ReadState.book = iBook
-                if (b) {
-                    val bookChapterDao = BookChapterDao(readReference?.get(), source.book_id)
-                    BookHelper.deleteAllChapterCache(source.book_id, 0, bookChapterDao.count)
-                    DownloadService.clearTask(source.book_id)
-                    BaseBookHelper.delDownIndex(readReference?.get(), source.book_id)
-                    bookChapterDao.deleteBookChapters(0)
-
-                }
-            } else {
-                val iBook = ReadState.book
-                iBook.book_source_id = source.book_source_id
-                iBook.site = source.host
-                iBook.dex = source.dex
-                iBook.parameter = ReadState.book.parameter
-                iBook.extra_parameter = ReadState.book.extra_parameter
-                ReadState.book = iBook
             }
-            mReaderViewModel?.chapterList?.clear()
-            openCategoryPage()
+        } else {
+            val iBook = ReadState.book
+            iBook.book_source_id = source.book_source_id
+            iBook.site = source.host
+            iBook.dex = source.dex
+            iBook.parameter = ReadState.book.parameter
+            iBook.extra_parameter = ReadState.book.extra_parameter
+            ReadState.book = iBook
         }
+        mReaderViewModel?.chapterList?.clear()
+        openCategoryPage()
     }
 
     private fun dismissDialog() {
@@ -852,13 +847,10 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
     }
 
 
-
     fun dispatchKeyEvent(event: KeyEvent): Boolean {
         // 小说音量键翻页
         if (Constants.isVolumeTurnover) {
-//            if (pageView != null && pageView!!.setKeyEvent(event)) {
-//                return true
-//
+
         }
         return false
     }
@@ -1078,7 +1070,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
     }
 
 
-
     override fun gotoOver() {
         goToBookOver()
     }
@@ -1142,8 +1133,9 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         }
         stampTime = System.currentTimeMillis()
         isSlideToAuto = Constants.isSlideUp
-
-//        pageView?.startAutoRead()
+        if (!isSlideToAuto) {
+            (view as ReadingActivity).onReadAuto()
+        }
         showMenu(false)
     }
 
