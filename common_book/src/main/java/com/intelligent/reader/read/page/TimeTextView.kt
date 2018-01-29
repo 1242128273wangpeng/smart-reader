@@ -46,7 +46,9 @@ class TimeTextView : TextView {
     override fun onAttachedToWindow() {
         isAttach = true
         super.onAttachedToWindow()
-        init()
+        post {
+            init()
+        }
     }
 
     fun init (){

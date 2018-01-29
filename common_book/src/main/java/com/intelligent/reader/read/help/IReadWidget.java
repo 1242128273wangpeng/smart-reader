@@ -20,6 +20,8 @@ public interface IReadWidget {
 
     void changeAnimMode(int mode);
 
+    void onResume();
+
     void onPause();
 
     void onDestroy();

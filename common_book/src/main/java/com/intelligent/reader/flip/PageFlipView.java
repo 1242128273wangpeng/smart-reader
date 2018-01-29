@@ -166,17 +166,18 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, O
     private boolean downActioned = false;
     private float downX = 0F;
 
-    private boolean isFilledTexture = false;
+    private boolean isFilledFirstTexture = false;
+    private boolean isFilledSecondTexture = false;
 
     public volatile Bitmap firstTexture = null;
     public volatile Bitmap secondTexture = null;
 
     public synchronized boolean hasFirstTexture(){
-        return isFilledTexture || firstTexture != null;
+        return isFilledFirstTexture || (firstTexture != null && !firstTexture.isRecycled());
     }
 
     public synchronized boolean hasSecondTexture(){
-        return isFilledTexture || secondTexture != null;
+        return isFilledSecondTexture || (secondTexture != null && !secondTexture.isRecycled());
     }
 
     /**
@@ -209,7 +210,7 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, O
     }
 
     private void log(String msg) {
-        android.util.Log.w("PageFlipView", msg);
+//        android.util.Log.w("PageFlipView", msg);
     }
 
     /**
@@ -266,7 +267,8 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, O
                                log("onFingerUp");
 
                                requestRender();
-                               isFilledTexture = false;
+                               isFilledFirstTexture = false;
+                               isFilledSecondTexture = false;
                            }
                        }
             );
@@ -276,18 +278,19 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, O
     }
 
     private synchronized void fillTextures() {
-        if(!isFilledTexture) {
-            isFilledTexture = true;
-            if (firstTexture != null && !firstTexture.isRecycled()) {
-                mPageFlip.getFirstPage().setFirstTexture(firstTexture);
-                firstTexture = null;
-            }
 
-            if (secondTexture != null && !secondTexture.isRecycled()) {
-                mPageFlip.getFirstPage().setSecondTexture(secondTexture);
-                secondTexture = null;
-            }
+        if (!isFilledFirstTexture && firstTexture != null && !firstTexture.isRecycled()) {
+            mPageFlip.getFirstPage().setFirstTexture(firstTexture);
+            isFilledFirstTexture = true;
         }
+
+        if (!isFilledSecondTexture && secondTexture != null && !secondTexture.isRecycled()) {
+            mPageFlip.getFirstPage().setSecondTexture(secondTexture);
+            isFilledSecondTexture = true;
+        }
+
+        firstTexture = null;
+        secondTexture = null;
     }
 
     public void onDrawNextFrame(boolean isFlow) {

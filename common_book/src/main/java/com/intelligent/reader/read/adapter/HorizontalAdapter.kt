@@ -41,7 +41,6 @@ class HorizontalAdapter(private var noticePageListener: HorizontalPage.NoticePag
         val itemView = `object` as HorizontalPage
         itemView.tag = null
         container.removeView(itemView)
-        ReadConfig.unregistObserver(itemView)
         destroyedItem = itemView
     }
 
@@ -63,7 +62,6 @@ class HorizontalAdapter(private var noticePageListener: HorizontalPage.NoticePag
         addPageTag(container as ViewPager,itemView, position)
         container.addView(itemView)
 //        itemView.buildDrawingCache()
-        ReadConfig.registObserver(itemView)
         return itemView
     }
 

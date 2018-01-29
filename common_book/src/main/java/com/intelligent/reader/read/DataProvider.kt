@@ -25,9 +25,11 @@ import com.intelligent.reader.repository.ReaderRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.*
 import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.net.custom.service.NetService
+import net.lzbook.kit.user.UserManager
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.OpenUDID
 import net.lzbook.kit.utils.runOnMain
@@ -48,13 +50,7 @@ class DataProvider : DisposableAndroidViewModel() {
         val INSTANCE = DataProvider()
     }
 
-    //是否显示广告
-    var isShowAd: Boolean = true
     var countCacheSize: Int = 4
-    //    //分页前缓存容器
-//    val chapterMap: HashMap<Int, Chapter> = HashMap()
-//    //分页后缓存容器
-//    val chapterSeparate: HashMap<Int, ArrayList<NovelPageBean>> = HashMap()
     var chapterKey = arrayListOf<Int>()
     val chapterLruCache: LruCache<Int, NovelChapter> = LruCache(countCacheSize)
 
@@ -315,7 +311,7 @@ class DataProvider : DisposableAndroidViewModel() {
                         chapterLruCache.put(sequence, NovelChapter(c, separateContent))
                         chapterKey.add(sequence)
                         //加章末广告
-                        if (isShowAd) {
+                        if (!Constants.isHideAD) {
                             loadAd(sequence)
                         }
                         mReadDataListener.loadDataSuccess(c, type)
@@ -328,21 +324,36 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     private fun loadAd(sequence: Int) {
-        var isShowAd = PlatformSDK.config().getAdSwitch("5-1") and PlatformSDK.config().getAdSwitch("5-2") and PlatformSDK.config().getAdSwitch("6-1") and PlatformSDK.config().getAdSwitch("6-2")
-        if (isShowAd) {
+        PlatformSDK.config().setAd_userid(UserManager.mUserInfo?.uid?:"")
+        PlatformSDK.config().setChannel_code(Constants.CHANNEL_LIMIT)
+        var cityCode = if (Constants.cityCode.isEmpty()){0}else{Constants.cityCode.toInt()}
+        PlatformSDK.config().setCityCode(cityCode)
+        PlatformSDK.config().setCityName(Constants.adCityInfo?:"")
+        PlatformSDK.config().setLatitude(Constants.latitude.toFloat())
+        PlatformSDK.config().setLongitude(Constants.longitude.toFloat())
+
+        if (!Constants.isHideAD) {
+            val within = PlatformSDK.config().getAdSwitch("5-2") and PlatformSDK.config().getAdSwitch("6-2")
+            val between = PlatformSDK.config().getAdSwitch("5-1") and PlatformSDK.config().getAdSwitch("5-1")
 //            val arrayList = chapterSeparate[sequence]
             val arrayList = chapterLruCache[sequence].separateList
-            if (!arrayList.last().isAd) {
+            if (!arrayList.last().isAd && between) {
                 val offset = arrayList.last().offset + arrayList.last().lines.sumBy { it.lineContent.length } + 1
                 arrayList.add(NovelPageBean(arrayListOf(), offset, arrayListOf()).apply { isAd = true })
             }
-            if (arrayList.size >= 16) {
-                var adChapterSize = arrayList.size/2
-                val offset2 = arrayList[adChapterSize].offset
-                arrayList.add(adChapterSize, NovelPageBean(arrayListOf(), offset2, arrayListOf()).apply { isAd = true; })
-                for (i in adChapterSize+1 until arrayList.size - 1) {
-                    //其他页offset向后偏移 1 length
-                    arrayList[i].offset = arrayList[i].offset + 1
+            if (arrayList.size >= 16 && within) {
+//                val frequency = PlatformSDK.config().configExpireMinutes
+                val frequency = 8
+                val count = arrayList.size-2
+                for (i in 1 until count) {
+                    if (i % frequency == 0){
+                        val offset2 = arrayList[i].offset
+                        arrayList.add(i, NovelPageBean(arrayListOf(), offset2, arrayListOf()).apply { isAd = true})
+                        for (j in i+1 until arrayList.size - 1) {
+                            //其他页offset向后偏移 1 length
+                            arrayList[j].offset = arrayList[j].offset + 1
+                        }
+                    }
                 }
             }
         }
@@ -384,24 +395,5 @@ class DataProvider : DisposableAndroidViewModel() {
 
     interface OnLoadReaderAdCallback {
         fun onLoadAd(adView: ViewGroup)
-    }
-
-    fun relase() {
-        chapterKey.forEach {
-            chapterLruCache.remove(it)
-        }
-        chapterKey.clear()
-//        chapterMap.clear()
-//        val iter = chapterSeparate.entries.iterator()
-//        while (iter.hasNext()) {
-//            val chapterList = iter.next().value
-//            for (page in chapterList) {
-//                if (page.adView != null && page.adView!!.tag != null) {
-//                    page.adView!!.tag = null
-//                }
-//                page.adView = null
-//            }
-//        }
-//        chapterSeparate.clear()
     }
 }
