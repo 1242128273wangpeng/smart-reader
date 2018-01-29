@@ -81,7 +81,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         mReadPresenter.onCreateInit(savedInstanceState)
         auto_menu.setRateValue()
         mCatalogMarkFragment?.fixBook()
-        registerReceiver(mPowerOffReceiver, IntentFilter(Intent.ACTION_SCREEN_OFF))
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -89,7 +88,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         setUIOptions()
         read_catalog_mark_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         mReadPresenter.onNewIntent(intent)
-        registerReceiver(mPowerOffReceiver, IntentFilter(Intent.ACTION_SCREEN_OFF))
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -275,14 +273,9 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
         mReadPresenter.onDestroy()
         DataProvider.getInstance().unSubscribe()
-        DataProvider.getInstance().relase()
+        DataProvider.getInstance().clear()
         readerWidget.onDestroy()
         ReadConfig.unregistObserverAll()
-        try {
-            unregisterReceiver(mPowerOffReceiver)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
         super.onDestroy()
 
         if (BuildConfig.DEBUG) {
@@ -533,17 +526,5 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun supportSlideBack(): Boolean {
         return false
-    }
-
-    private val mPowerOffReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            val action = intent.action
-            if (Intent.ACTION_SCREEN_OFF == action) {
-                /**
-                 * 接受在阅读页，监听按下电源键的广播处理
-                 */
-                mReadPresenter.startRestTimer()
-            }
-        }
     }
 }
