@@ -74,8 +74,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
 
     override var view: ReadPreInterface.View? = act
 
-    val MSG_SEARCH_CHAPTER = 3
-    val ERROR = 7
     // 手动书签内容限制
     var downloadService: DownloadService? = null
     var isRestDialogShow = false
@@ -94,7 +92,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
     protected var isFromCover = true
     //    private var myNovelHelper: NovelHelper? = null
     var myNovelHelper: NovelHelper? = null
-    protected var autoSpeed: Int = 0
     protected var auto_menu: AutoReadMenu? = null
     protected var is_dot_orientation = false// 横竖屏打点
     var current_mode: Int = 0
