@@ -190,11 +190,13 @@ class HorizontalPage : FrameLayout, Observer {
         mAdFrameLayout.removeAllViews()
         if (tag == ReadViewEnums.PageIndex.current) {
             onReSeparate()
-            viewNotify = when (mCursor!!.sequence) {
-                -1 -> ReadViewEnums.NotifyStateState.right
-                else -> ReadViewEnums.NotifyStateState.all
+            mCursor?.let {
+                viewNotify = when (it.sequence) {
+                    -1 -> ReadViewEnums.NotifyStateState.right
+                    else -> ReadViewEnums.NotifyStateState.all
+                }
+                setCursor(it)
             }
-            setCursor(mCursor!!)
         }
     }
 
