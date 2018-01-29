@@ -614,8 +614,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
     }
 
     private fun intoCatalogActivity(source: Source, b: Boolean) {
-        if (ReadState.requestItem != null) {
-
             val bookDaoHelper = BookDaoHelper.getInstance()
             if (bookDaoHelper.isBookSubed(source.book_id)) {
                 val iBook = bookDaoHelper.getBook(source.book_id, 0)
@@ -632,19 +630,18 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
                     BaseBookHelper.delDownIndex(readReference?.get(), source.book_id)
                     bookChapterDao.deleteBookChapters(0)
 
-                }
-            } else {
-                val iBook = ReadState.book
-                iBook.book_source_id = source.book_source_id
-                iBook.site = source.host
-                iBook.dex = source.dex
-                iBook.parameter = ReadState.book.parameter
-                iBook.extra_parameter = ReadState.book.extra_parameter
-                ReadState.book = iBook
             }
-            mReaderViewModel?.chapterList?.clear()
-            openCategoryPage()
+        } else {
+            val iBook = ReadState.book
+            iBook.book_source_id = source.book_source_id
+            iBook.site = source.host
+            iBook.dex = source.dex
+            iBook.parameter = ReadState.book.parameter
+            iBook.extra_parameter = ReadState.book.extra_parameter
+            ReadState.book = iBook
         }
+        mReaderViewModel?.chapterList?.clear()
+        openCategoryPage()
     }
 
     private fun dismissDialog() {
