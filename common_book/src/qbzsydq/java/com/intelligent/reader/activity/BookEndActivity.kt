@@ -60,7 +60,9 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
             mBookEndPresenter = BookEndPresenter(this, this, category!!)
         }
         loadSource()
-        initAD()
+        if (!Constants.isHideAD) {
+            initAD()
+        }
     }
 
     private fun initAD() {
