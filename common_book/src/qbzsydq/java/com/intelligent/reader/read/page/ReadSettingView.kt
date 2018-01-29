@@ -41,7 +41,7 @@ import java.util.*
 /**
  * 阅读页阅读设置
  */
-class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener , Observer {
+class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener, Observer {
 
     override fun update(o: Observable?, arg: Any?) {
         when (arg as String) {
@@ -269,7 +269,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         }
     }
 
-    fun showMenu(isShow:Boolean) {
+    fun showMenu(isShow: Boolean) {
         if (isShow) {
             read_setting_reduce_text!!.isEnabled = ReadConfig.FONT_SIZE > 10
             read_setting_increase_text!!.isEnabled = ReadConfig.FONT_SIZE < 30
@@ -512,6 +512,16 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             novel_jump_previous.isEnabled = true
             novel_jump_previous.alpha = 1f
         }
+
+        if (ReadState.sequence == ReadState.chapterList.size - 1) {
+            novel_jump_next.isClickable = false
+            novel_jump_next.isEnabled = false
+            novel_jump_next.alpha = 0.3f
+        } else {
+            novel_jump_next.isClickable = true
+            novel_jump_next.isEnabled = true
+            novel_jump_next.alpha = 1f
+        }
     }
 
     private fun changeSystemLight() {
@@ -606,6 +616,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             novel_jump_progress!!.progress = index * 100 / (ReadState.chapterCount - 1)
         }
         showChapterProgress()
+        refreshJumpPreBtnState()
     }
 
     /**
@@ -919,7 +930,8 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                     novel_hint_sequence.text = progress.toString() + "/" + ReadState.chapterList.size
                 }
             }
-
+//            ReadState.sequence = progress
+            refreshJumpPreBtnState()
         } else if (fromUser && seekBar.id == R.id.read_setting_brightness_progress) {
             // 改变系统亮度按钮
             if (autoBrightness) {
@@ -1007,6 +1019,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                     }
                 }
             }
+            refreshJumpPreBtnState()
         } else if (seekBar.id == R.id.read_setting_brightness_progress) {
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_ld_progress)
             readSettingHelper!!.saveBrightness(seekBar.progress)
