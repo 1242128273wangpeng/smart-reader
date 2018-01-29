@@ -410,7 +410,8 @@ class HorizontalPage : FrameLayout, Observer {
             //获取数据
             ReadState.chapterName = chapter.chapter_name
             val chapterList = DataProvider.getInstance().chapterLruCache[cursor.sequence].separateList
-            cursor.offset = cursor.offset - mCursorOffset
+//            cursor.offset = cursor.offset - mCursorOffset
+            cursor.offset = cursor.offset
             try {
                 pageIndex = ReadQueryUtil.findPageIndexByOffset(cursor.offset, chapterList)
             } catch (e: Exception) {
