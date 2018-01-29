@@ -1431,7 +1431,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         val runtime = if (PlatformSDK.config().switch_sec == 0) {
             30.times(60000).toLong()
         } else {
-            PlatformSDK.config().switch_sec.times(60000).toLong()
+            PlatformSDK.config().restAd_sec.times(60000).toLong()
         }
         if (intervalRunnable == null) {
             intervalRunnable = Runnable {
@@ -1439,21 +1439,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
                 handler.postDelayed(intervalRunnable, runtime)
             }
             handler.postDelayed(intervalRunnable, runtime)
-        }
-    }
-
-    var timeRunnable: Runnable? = null
-    fun startRestTimer() {
-        if (timeRunnable == null) {
-            timeRunnable = Runnable {
-                restAd()
-            }
-            var runtime: Long = PlatformSDK.config().restAd_sec.times(60000).toLong()
-            handler.postDelayed(timeRunnable, runtime)
-            handler.postDelayed({
-                handler.removeCallbacksAndMessages(timeRunnable)
-                timeRunnable = null
-            }, runtime.plus(100))
         }
     }
 

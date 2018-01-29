@@ -422,6 +422,9 @@
                 android:screenOrientation="portrait"
                 android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
+        <activity
+            android:name="net.lzbook.kit.ad.SwitchSplashAdActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <!-- 微信回调activity -->
 
 

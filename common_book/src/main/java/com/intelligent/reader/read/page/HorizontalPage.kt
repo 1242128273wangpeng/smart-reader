@@ -180,6 +180,8 @@ class HorizontalPage : FrameLayout, Observer {
     }
 
     fun setCursor(cursor: ReadCursor){
+        removeView(errorView)
+        mAdFrameLayout.removeAllViews()
         setupView()
         pageView.setCursor(cursor)
     }
@@ -297,6 +299,7 @@ class HorizontalPage : FrameLayout, Observer {
                 mAdFrameLayout.removeAllViews()
                 loadView.visibility = View.VISIBLE
                 viewState = ReadViewEnums.ViewState.loading
+                viewNotify = ReadViewEnums.NotifyStateState.all
                 removeView(errorView)
                 post {
                     destroyDrawingCache()

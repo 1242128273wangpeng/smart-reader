@@ -31,11 +31,13 @@ import android.widget.Toast;
 import com.baidu.mobstat.StatService;
 
 import net.lzbook.kit.R;
+import net.lzbook.kit.ad.SwitchSplashAdActivity;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.utils.ATManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.ResourceUtil;
 
 import java.util.HashMap;
@@ -264,15 +266,21 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         mSystemBrightness = getScreenBrightness(this);
     }
 
-
     @Override
     protected void onStop() {
         super.onStop();
+        AppLog.e(TAG, "onStop");
         if (!isAppOnForeground()) {
             isActive = false;
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.HOME);
             isCurrentRunningForeground = false;
             restoreSystemDisplayState();
+        }
+        if (!Constants.isHideAD && Constants.isShowSwitchSplashAd && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
+            isCurrentRunningForeground = isAppOnForeground();
+            if (!isCurrentRunningForeground) {
+                outTime = System.currentTimeMillis();
+            }
         }
     }
 
@@ -285,6 +293,12 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
             Map<String, String> data = new HashMap<>();
             data.put("time", String.valueOf(inTime - outTime));
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.ACTIVATE, data);
+        }
+        if (!isCurrentRunningForeground && !Constants.isHideAD && Constants.isShowSwitchSplashAd && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
+            boolean isShowSwitchSplash = inTime - outTime > Constants.switchSplash_ad_sec * 1000;
+            if (isShowSwitchSplash) {
+                startActivity(new Intent(this, SwitchSplashAdActivity.class));
+            }
         }
     }
 
