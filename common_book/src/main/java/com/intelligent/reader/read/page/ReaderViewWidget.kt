@@ -68,6 +68,11 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 //                    mTextureView?.onChangTexture()
 //            }
 //            }
+
+            post {
+                canFlip = true
+            }
+
             return curView.hasAd
         }
 
@@ -236,6 +241,10 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
         mReaderView?.onAnimationChange(ReadConfig.animation)
     }
 
+    override fun onResume(){
+        canFlip = true
+    }
+
     override fun onPause() {
         mTextureView?.alpha = 0f
         mAutoReadView?.closeAutoRead()
@@ -259,6 +268,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
     private var isDownActioned = false
     private var shouldGiveUpAction = false
+    private var canFlip = true
 
 
     private var velocityTracker: VelocityTracker? = null
@@ -307,20 +317,25 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
     private var orientationLimit : ReadViewEnums.ScrollLimitOrientation? = null
 
     private fun onCurlDown(x: Float, y: Float):Boolean {
-        isDownActioned = true
+        if(canFlip) {
+            canFlip = false
+            isDownActioned = true
 
-        orientationLimit = (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage?)?.orientationLimit
+            orientationLimit = (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage?)?.orientationLimit
 
-        downPointF.x = x
-        downPointF.y = y
+            downPointF.x = x
+            downPointF.y = y
 
-        if (context is ReadingActivity) (context as ReadingActivity).showMenu(false)
+            if (context is ReadingActivity) (context as ReadingActivity).showMenu(false)
 
 //        setFlipCurrentAsFirstTexture()
 
-        mTextureView?.onFingerDown(x, y)
+            mTextureView?.onFingerDown(x, y)
 
-        return true
+            return true
+        }else{
+            return false
+        }
     }
 
     private fun onCurlUp(x: Float, y: Float):Boolean {
@@ -332,6 +347,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
                 if (mTextureView!!.getmPageRender().mPageFlip.flipState == PageFlipState.BEGIN_FLIP) {
                     if (x < width / 2 && !ReadConfig.FULL_SCREEN_READ) {
                         if (ReadViewEnums.ScrollLimitOrientation.LEFT == orientationLimit) {
+                            canFlip = true
                             break
                         }
                         //left
@@ -339,6 +355,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
                     } else {
                         if(ReadViewEnums.ScrollLimitOrientation.RIGHT == orientationLimit){
                             mReadPageChange?.goToBookOver()//跳bookend
+                            canFlip = true
                             break
                         }
                         //right
@@ -366,6 +383,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
                 if (downPointF.x - x < 0) {
                     if(ReadViewEnums.ScrollLimitOrientation.LEFT == orientationLimit){
                         shouldGiveUpAction = true
+                        canFlip = true
                         return false
                     }else {
                         //left
@@ -375,6 +393,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
                     if(ReadViewEnums.ScrollLimitOrientation.RIGHT == orientationLimit){
                         shouldGiveUpAction = true
                         mReadPageChange?.goToBookOver()//跳bookend
+                        canFlip = true
                         return false
                     }else {
                         //right

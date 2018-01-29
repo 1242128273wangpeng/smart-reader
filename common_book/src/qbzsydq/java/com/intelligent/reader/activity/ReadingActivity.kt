@@ -220,6 +220,8 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onResume() {
         super.onResume()
+
+        readerWidget.onResume()
         // 设置全屏
         when (!Constants.isFullWindowRead) {
             true -> window.addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
