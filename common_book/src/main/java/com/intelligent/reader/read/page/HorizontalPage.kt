@@ -153,6 +153,7 @@ class HorizontalPage : FrameLayout, Observer {
     }
 
     override fun onDetachedFromWindow() {
+        ReadConfig.unregistObserver(this)
         mDisposable.clear()
         mAdFrameLayout.removeAllViews()
 
@@ -187,6 +188,7 @@ class HorizontalPage : FrameLayout, Observer {
 
     fun setCursor(cursor: ReadCursor) {
         mDisposable.clear()
+        ReadConfig.registObserver(this)
         setupView()
         pageView.setCursor(cursor)
     }
