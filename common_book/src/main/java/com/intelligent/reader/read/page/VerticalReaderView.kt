@@ -133,7 +133,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                             val evX = (e.x + groupLocation[0]).toInt()
                             val evY = (e.y + groupLocation[1]).toInt()
 
-                            if (viewHolder.singleTapUpIsInside(evX,evY)) {
+                            if (viewHolder.singleTapUpIsInside(evX, evY)) {
                                 this@VerticalReaderView.parent.requestDisallowInterceptTouchEvent(true)
                                 return true
                             } else {
@@ -277,7 +277,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 val scrollIndex = mAdapter.addPreChapter(chapter.sequence, preChapterContent)
                 // 加载上一章的操作是否来自加载视图，防止加载数据时列表视图往上跳转
                 val firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition()
-                if (firstVisibleItemPosition != -1) {
+                if (firstVisibleItemPosition != -1 && mOriginDataList.size != 0) {
                     val currentItemSequence = mOriginDataList[firstVisibleItemPosition].lines[0].sequence
                     if (scrollIndex != -1) {
                         if (currentItemSequence == PagerScrollAdapter.HEADER_ITEM_TYPE) {
