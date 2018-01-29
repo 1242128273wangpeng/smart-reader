@@ -25,7 +25,6 @@ import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.util.BookShelfRemoveHelper
 import com.intelligent.reader.util.ShelfGridLayoutManager
 import com.intelligent.reader.view.BookDeleteDialog
-import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.layout_head.view.*
@@ -187,6 +186,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.TOBOOKCITY)
         }
         //悬浮广告 1-2
+        if (Constants.isHideAD ) return
         PlatformSDK.adapp().dycmNativeAd(activity, "1-2", book_shelf_ad, object : AbstractCallback() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
@@ -269,7 +269,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
      * 查Book数据库更新界面
      */
     fun updateUI() {
-        val isShowAd = !bookShelfRemoveHelper.isRemoveMode && isResumed
+        val isShowAd = !bookShelfRemoveHelper.isRemoveMode && isResumed && !Constants.isHideAD
         doAsync {
             presenter.queryBookListAndAd(activity, isShowAd)
             runOnMain {

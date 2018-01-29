@@ -1,5 +1,27 @@
 package com.intelligent.reader.activity;
 
+import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.res.Resources;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.preference.PreferenceManager;
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+
 import com.dycm_adsdk.PlatformSDK;
 import com.dycm_adsdk.callback.AbstractCallback;
 import com.dycm_adsdk.callback.ResultCode;
@@ -23,28 +45,6 @@ import net.lzbook.kit.utils.StatServiceUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import android.content.ActivityNotFoundException;
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.content.res.Resources;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.preference.PreferenceManager;
-import android.text.TextUtils;
-import android.util.DisplayMetrics;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -234,12 +234,17 @@ public class SplashActivity extends FrameActivity {
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.user_login_succeed);
         }
 
+        initAdSwitch();
         initSplashAd();
     }
 
     private void initSplashAd() {
         if (ad_view != null) {
-
+            if (Constants.isHideAD){
+                AppLog.e(TAG, "Limited AD display!");
+                handler.sendEmptyMessage(0);
+                return;
+            }
             PlatformSDK.adapp().dycmSplashAd(this,"10-1",ad_view, new AbstractCallback() {
                 @Override
                 public void onResult(boolean adswitch, String jsonResult) {
@@ -274,6 +279,89 @@ public class SplashActivity extends FrameActivity {
                     }
                 }
             });
+        }
+    }
+
+    //初始化广告开关
+    private void initAdSwitch() {
+        if (!Constants.dy_ad_switch) {
+            Constants.isHideAD = true;
+            return;
+        }
+
+        //判断是否展示广告
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if (preferences != null) {
+            long limited_time = preferences.getLong(Constants.AD_LIMIT_TIME_DAY, 0L);
+            if (limited_time == 0) {
+                limited_time = System.currentTimeMillis();
+                try {
+                    preferences.edit().putLong(Constants.AD_LIMIT_TIME_DAY, limited_time).apply();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            AppLog.e(TAG, "Limited_Time : " + limited_time);
+            AppLog.e(TAG, "Current_Time : " + System.currentTimeMillis());
+            AppLog.e(TAG, "AD_Limited_day : " + Constants.ad_limit_time_day);
+
+            int user_index = preferences.getInt(Constants.user_new_index, 0);
+            boolean init_ad = false;
+
+            if (user_index == 0) {
+                if (!preferences.getBoolean(Constants.ADD_DEFAULT_BOOKS, false)) {
+                    preferences.edit().putInt(Constants.user_new_index, 1).apply();
+                    init_ad = true;
+                } else {
+                    init_ad = false;
+                    //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
+                    if (Constants.new_app_ad_switch) {
+                        Constants.isHideAD = false;
+                    } else {
+                        Constants.isHideAD = true;
+                    }
+                }
+            } else if (user_index == 1) {
+                if (preferences.getBoolean(Constants.ADD_DEFAULT_BOOKS, false)) {
+                    init_ad = true;
+                }
+            } else {
+                init_ad = false;
+                //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
+                if (Constants.new_app_ad_switch) {
+                    Constants.isHideAD = false;
+                } else {
+                    Constants.isHideAD = true;
+                }
+            }
+
+            if (init_ad) {
+                int ad_limit_time_day = preferences.getInt(Constants.user_new_ad_limit_day, 0);
+                if (ad_limit_time_day == 0 || Constants.ad_limit_time_day != ad_limit_time_day) {
+                    ad_limit_time_day = Constants.ad_limit_time_day;
+                    preferences.edit().putInt(Constants.user_new_ad_limit_day, ad_limit_time_day).apply();
+                }
+
+                if (limited_time + (ad_limit_time_day * (Constants.DEVELOPER_MODE ? Constants.read_rest_time : Constants.one_day_time)) > System
+                        .currentTimeMillis()) {
+                    Constants.isHideAD = true;
+                } else {
+                    preferences.edit().putInt(Constants.user_new_index, 2).apply();
+                    //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
+                    if (Constants.new_app_ad_switch) {
+                        Constants.isHideAD = false;
+                    } else {
+                        Constants.isHideAD = true;
+                    }
+                }
+            }
+        } else {
+            //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
+            if (Constants.new_app_ad_switch) {
+                Constants.isHideAD = false;
+            } else {
+                Constants.isHideAD = true;
+            }
         }
     }
 

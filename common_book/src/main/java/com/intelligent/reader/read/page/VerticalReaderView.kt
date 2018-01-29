@@ -7,17 +7,20 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import com.intelligent.reader.R
 import com.intelligent.reader.read.DataProvider
-import com.intelligent.reader.read.help.*
+import com.intelligent.reader.read.help.HorizontalEvent
+import com.intelligent.reader.read.help.IReadPageChange
+import com.intelligent.reader.read.help.IReadView
+import com.intelligent.reader.read.help.ReadSeparateHelper
 import com.intelligent.reader.read.mode.NovelPageBean
 import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.util.ThemeUtil
 import kotlinx.android.synthetic.main.loading_page_reading.view.*
 import kotlinx.android.synthetic.main.vertical_pager_layout.view.*
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.data.bean.ReadConfig
@@ -483,6 +486,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
      * 添加广告 段尾  6-3
      */
     private fun loadAdViewToChapterLastPage(chapterContent: List<NovelPageBean>) {
+        if (Constants.isHideAD) return
         var lineData: NovelLineBean? = null
         for (i in chapterContent.indices) {
             val pageContent = chapterContent[i]
@@ -508,6 +512,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
      * 添加广告 章节间  5-3   chapterContent: ArrayList<NovelPageBean>,
      */
     private fun loadAdViewToChapterBetween(sequence: Int, index: ReadViewEnums.PageIndex) {
+        if (Constants.isHideAD) return
         if (sequence == -1 && checkLoadAdValid(sequence) != 0) return
 
         val adData = NovelPageBean(arrayListOf(NovelLineBean().apply { this.sequence = PagerScrollAdapter.AD_ITEM_TYPE; this.sequenceType = sequence }), 0,
