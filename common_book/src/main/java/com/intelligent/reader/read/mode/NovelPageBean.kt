@@ -12,7 +12,8 @@ data class NovelPageBean(
         var offset: Int,
         var chapterNameLines: ArrayList<NovelLineBean>
 ) {
-    var adView: ViewGroup? = null
+    var adBigView: ViewGroup? = null
+    var adSmallView: ViewGroup? = null
     var isAd: Boolean = false
     var height: Float = 0.0f
     var isLastPage: Boolean = false

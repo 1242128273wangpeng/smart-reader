@@ -65,7 +65,8 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        Constants.isHideAD = false
+        ReadState.readingActivity = this
         setUIOptions()
 
         setContentView(R.layout.act_read)
@@ -284,6 +285,8 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         }
 
         ReadState.chapterList.clear()
+
+        ReadState.readingActivity = null
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

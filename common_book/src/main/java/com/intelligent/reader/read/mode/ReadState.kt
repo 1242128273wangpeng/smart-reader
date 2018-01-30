@@ -1,5 +1,6 @@
 package com.intelligent.reader.read.mode
 
+import android.app.Activity
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.ReadViewEnums
@@ -56,4 +57,6 @@ object ReadState {
         }
 
     var isMenuShow: Boolean = false
+
+    var readingActivity: Activity? = null
 }

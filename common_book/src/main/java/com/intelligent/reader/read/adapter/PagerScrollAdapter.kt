@@ -381,14 +381,14 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
         override fun bindHolder(pageLines: NovelPageBean) {
             ad_fl.removeAllViews()
 
-            if (pageLines.isAd && pageLines.adView != null) {
+            if (pageLines.isAd && pageLines.adBigView != null) {
                 val layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                if (pageLines.adView!!.parent != null) {
-                    (pageLines.adView!!.tag as ViewGroup).removeAllViews()
+                if (pageLines.adBigView!!.parent != null) {
+                    (pageLines.adBigView!!.tag as ViewGroup).removeAllViews()
                 }
-                if (pageLines.adView!!.parent == null) {
-                    pageLines.adView!!.tag = ad_fl
-                    ad_fl.addView(pageLines.adView, layoutParams)
+                if (pageLines.adBigView!!.parent == null) {
+                    pageLines.adBigView!!.tag = ad_fl
+                    ad_fl.addView(pageLines.adBigView, layoutParams)
                 }
             }
         }
