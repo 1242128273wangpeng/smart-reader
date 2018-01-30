@@ -61,31 +61,32 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
         private fun invisibelSurface(): Boolean {
             //等待ViewPager切换完页面再隐藏
-            var curView = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage
-//            runOnMain {
-//            if (curView.hasAd) {
-            mTextureView?.alpha = 0F
-//                    mTextureView?.onChangTexture()
-//            }
-//            }
-
-            post {
-                canFlip = true
+            if(mReaderView is HorizontalReaderView) {
+                var curView = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage
+                mTextureView?.alpha = 0F
+                post {
+                    canFlip = true
+                }
+                return curView.hasAd
+            }else{
+                return false
             }
-
-            return curView.hasAd
         }
 
         override fun backward(): Boolean {
             AppLog.e(ReaderViewWidget.tag, "backward")
-            (mReaderView as HorizontalReaderView).onClickLeft(false)
+            if(mReaderView is HorizontalReaderView) {
+                (mReaderView as HorizontalReaderView).onClickLeft(false)
+            }
 
             return invisibelSurface()
         }
 
         override fun forward(): Boolean {
             AppLog.e(ReaderViewWidget.tag, "forward")
-            (mReaderView as HorizontalReaderView).onClickRight(false)
+            if(mReaderView is HorizontalReaderView) {
+                (mReaderView as HorizontalReaderView).onClickRight(false)
+            }
             return invisibelSurface()
         }
 
