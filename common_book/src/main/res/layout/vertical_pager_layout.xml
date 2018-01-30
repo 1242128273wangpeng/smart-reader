@@ -62,6 +62,12 @@
             android:visibility="gone"
             layout="@layout/loading_page_reading"/>
 
+    <include
+            android:id="@+id/error_page"
+            android:visibility="gone"
+            layout="@layout/error_page2"/>
+
+
     <RelativeLayout
             android:id="@+id/novel_bottom"
             android:layout_width="match_parent"
