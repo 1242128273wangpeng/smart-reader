@@ -110,6 +110,7 @@ class DataProvider : DisposableAndroidViewModel() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
                 if (!adswitch) {
+                    callback.onFail()
                     return
                 }
                 try {
@@ -121,6 +122,7 @@ class DataProvider : DisposableAndroidViewModel() {
                                 callback.onLoadAd(views[0])
                             }
                             else -> {
+                                callback.onFail()
                             }
                         }
                     }
@@ -136,6 +138,7 @@ class DataProvider : DisposableAndroidViewModel() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
                 if (!adswitch) {
+                    callback.onFail()
                     return
                 }
                 try {
@@ -145,6 +148,7 @@ class DataProvider : DisposableAndroidViewModel() {
                             ResultCode.AD_REQ_SUCCESS
                             -> callback.onLoadAd(views[0])
                             else -> {
+                                callback.onFail()
                             }
                         }
                     }
@@ -167,6 +171,7 @@ class DataProvider : DisposableAndroidViewModel() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
                 if (!adswitch) {
+                    callback.onFail()
                     return
                 }
                 try {
@@ -178,6 +183,7 @@ class DataProvider : DisposableAndroidViewModel() {
                                 callback.onLoadAd(views[0])
                             }
                             else -> {
+                                callback.onFail()
                             }
                         }
                     }
@@ -210,6 +216,7 @@ class DataProvider : DisposableAndroidViewModel() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
                 if (!adswitch) {
+                    callback.onFail()
                     return
                 }
                 try {
@@ -221,6 +228,7 @@ class DataProvider : DisposableAndroidViewModel() {
                                 callback.onLoadAd(views[0])
                             }
                             else -> {
+                                callback.onFail()
                             }
                         }
                     }
@@ -392,10 +400,10 @@ class DataProvider : DisposableAndroidViewModel() {
 
     fun findCurrentPageNovelLineBean(): List<NovelLineBean>? {
         val novelChapter = chapterLruCache[ReadState.sequence]
-        if(novelChapter != null) {
+        if (novelChapter != null) {
             val mNovelPageBean = novelChapter.separateList
             return mNovelPageBean[if (ReadState.currentPage == 0) 0 else ReadState.currentPage - 1].lines
-        }else{
+        } else {
             return null
         }
     }
@@ -404,5 +412,6 @@ class DataProvider : DisposableAndroidViewModel() {
 
     interface OnLoadReaderAdCallback {
         fun onLoadAd(adView: ViewGroup)
+        fun onFail()
     }
 }

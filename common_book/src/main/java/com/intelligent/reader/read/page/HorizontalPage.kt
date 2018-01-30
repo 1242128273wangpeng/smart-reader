@@ -228,6 +228,9 @@ class HorizontalPage : FrameLayout, Observer {
         if (PlatformSDK.config().getAdSwitch("5-1")) {
             mDisposable.add(io.reactivex.Observable.create<ViewGroup> {
                 DataProvider.getInstance().loadAd(context, "8-1", ReadConfig.screenWidth, ReadConfig.screenHeight - topMargins.toInt(), object : DataProvider.OnLoadReaderAdCallback {
+                    override fun onFail() {
+                    }
+
                     override fun onLoadAd(adView: ViewGroup) {
                         if(!it.isDisposed) {
                             it.onNext(adView)
@@ -262,6 +265,9 @@ class HorizontalPage : FrameLayout, Observer {
 
             mDisposable.add(io.reactivex.Observable.create<ViewGroup> {
                 DataProvider.getInstance().loadAd(context, adType, object : DataProvider.OnLoadReaderAdCallback {
+                    override fun onFail() {
+                    }
+
                     override fun onLoadAd(adView: ViewGroup) {
                         if(!it.isDisposed) {
                             it.onNext(adView)
@@ -384,10 +390,12 @@ class HorizontalPage : FrameLayout, Observer {
          * 加载3章至内存
          */
         fun entrance(cursor: ReadCursor) {
-            loadView.visibility = View.VISIBLE
             mCursor = cursor
             entranceArray = arrayOf(false, false, false)
             cursor.curBook.sequence = cursor.sequence
+            if (!DataProvider.getInstance().isCacheExistBySequence(cursor.curBook.sequence)) {
+                loadView.visibility = View.VISIBLE
+            }
             DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
                 override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = checkEntrance(cursor, 0)
                 override fun loadDataError(message: String) = showErrorView(cursor)
