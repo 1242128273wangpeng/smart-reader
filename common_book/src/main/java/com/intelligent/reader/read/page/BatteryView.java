@@ -21,7 +21,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class BatteryView extends ImageView {
 
-    static Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);;
+    static Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    ;
 
     Bitmap mBitmap;
 
@@ -63,7 +64,7 @@ public class BatteryView extends ImageView {
     }
 
     private void getRect() {
-        if(!isChecked) {
+        if (!isChecked) {
             isChecked = true;
             mBitmap = ((BitmapDrawable) getDrawable()).getBitmap();
             mBitmapWidth = mBitmap.getWidth();
@@ -108,7 +109,11 @@ public class BatteryView extends ImageView {
             public void run() {
                 if (mBatInfoReceiver == null) {
                     mBatInfoReceiver = new BatteryReceiver();
-                    getContext().registerReceiver(mBatInfoReceiver,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+                    try {
+                        getContext().registerReceiver(mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 mBatInfoReceiver.listeners.add(BatteryView.this);
@@ -122,10 +127,14 @@ public class BatteryView extends ImageView {
         post(new Runnable() {
             @Override
             public void run() {
-                if(mBatInfoReceiver != null && !mBatInfoReceiver.listeners.isEmpty()){
+                if (mBatInfoReceiver != null && !mBatInfoReceiver.listeners.isEmpty()) {
                     mBatInfoReceiver.listeners.remove(BatteryView.this);
-                    if(mBatInfoReceiver.listeners.isEmpty()) {
-                        getContext().unregisterReceiver(mBatInfoReceiver);
+                    if (mBatInfoReceiver.listeners.isEmpty()) {
+                        try {
+                            getContext().unregisterReceiver(mBatInfoReceiver);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         mBatInfoReceiver = null;
                     }
                 }
@@ -138,15 +147,16 @@ public class BatteryView extends ImageView {
      */
     private static BatteryReceiver mBatInfoReceiver = null;
 
-    static class BatteryReceiver extends BroadcastReceiver{
+    static class BatteryReceiver extends BroadcastReceiver {
         public HashSet<BatteryView> listeners = new HashSet<>();
+
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction() == Intent.ACTION_BATTERY_CHANGED) {
                 float level = intent.getIntExtra("level", 0);
                 float scale = intent.getIntExtra("scale", 100);
                 percent = level / scale;
-                for (BatteryView batteryView: listeners) {
+                for (BatteryView batteryView : listeners) {
                     batteryView.postInvalidate();
                     batteryView.destroyDrawingCache();
                 }

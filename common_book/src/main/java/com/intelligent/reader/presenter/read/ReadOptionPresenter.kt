@@ -293,7 +293,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
             }*/
             bookMark.chapter_name = chapter.chapter_name
             //获取本页内容
-            val content = DataProvider.getInstance().findCurrentPageNovelLineBean()
+            val content = DataProvider.getInstance().findCurrentPageNovelLineBean() ?: return 0
 
             val sb = StringBuilder()
             if (ReadState.sequence == -1) {
