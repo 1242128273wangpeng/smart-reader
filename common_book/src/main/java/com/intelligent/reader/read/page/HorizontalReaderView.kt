@@ -105,7 +105,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         }
         //2、判断View状态
         when ((view as HorizontalPage).viewState) {
-            ReadViewEnums.ViewState.loading,ReadViewEnums.ViewState.other -> {
+            ReadViewEnums.ViewState.loading, ReadViewEnums.ViewState.other -> {
                 //改变View的NotifyStateState，
                 // success后，通知其他页updata
                 view.viewNotify = notify
@@ -137,34 +137,59 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         }).subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io()).subscribe({
             val provider = DataProvider.getInstance()
-            var sequence: Int = -2
-            loop@ for (i in 1..3) {
-                when (whichOrientation) {
-                    "Pre" -> {
-                        if (ReadState.sequence.minus(i) < -1) continue@loop
-                        if (provider.chapterLruCache[ReadState.sequence.minus(i)] == null) {
-                            sequence = ReadState.sequence.minus(i)
-                        }
-                    }
+            var sequence: Int = ReadState.sequence
 
-                    "Next" -> {
-                        if (ReadState.sequence.plus(i) > ReadState.chapterList.size) continue@loop
-                        if (provider.chapterLruCache[ReadState.sequence.plus(i)] == null) {
-                            sequence = ReadState.sequence.plus(i)
-                        }
-                    }
+            if ("Pre" == whichOrientation) {
+                sequence -= 1
+                if (sequence > -1) {
+                    provider.loadChapter(ReadState.book, sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
+                        override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
+                        override fun loadDataError(message: String) = Unit
+                    })
                 }
-                //加载下两章
-                if (sequence != -2) {
-                    ReadState.book.let {
-                        provider.loadChapter(it, sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
-                            override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
-                            override fun loadDataError(message: String) = Unit
-                        })
-                    }
-                    break@loop//拉一次
+            } else {
+                sequence += 1
+                if (sequence < ReadState.chapterCount) {
+                    provider.loadChapter(ReadState.book, sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
+                        override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
+                        override fun loadDataError(message: String) = Unit
+                    })
                 }
+
+                if (ReadState.pageCount == ReadState.currentPage) {
+                    provider.preLoad(sequence + 1, sequence + 6)
+                }
+
             }
+
+
+//            loop@ for (i in 1..3) {
+//                when (whichOrientation) {
+//                    "Pre" -> {
+//                        if (ReadState.sequence.minus(i) < -1) continue@loop
+//                        if (provider.chapterLruCache[ReadState.sequence.minus(i)] == null) {
+//                            sequence = ReadState.sequence.minus(i)
+//                        }
+//                    }
+//
+//                    "Next" -> {
+//                        if (ReadState.sequence.plus(i) > ReadState.chapterList.size) continue@loop
+//                        if (provider.chapterLruCache[ReadState.sequence.plus(i)] == null) {
+//                            sequence = ReadState.sequence.plus(i)
+//                        }
+//                    }
+//                }
+//                //加载下两章
+//                if (sequence != -2) {
+//                    ReadState.book.let {
+//                        provider.loadChapter(it, sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
+//                            override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
+//                            override fun loadDataError(message: String) = Unit
+//                        })
+//                    }
+//                    break@loop//拉一次
+//                }
+//            }
         })
         DataProvider.getInstance().addDisposable(threadObserve)
     }
@@ -319,8 +344,8 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     override fun onClickRight(smoothScroll: Boolean) {
         //当前页是最后一页禁止点击
         if ((findViewWithTag(ReadViewEnums.PageIndex.current) != null)
-                and ((findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState == ReadViewEnums.ViewState.end)){
-                mReadPageChange?.goToBookOver()
+                and ((findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState == ReadViewEnums.ViewState.end)) {
+            mReadPageChange?.goToBookOver()
             return
         }
         checkViewState("Next", ReadViewEnums.NotifyStateState.right)
@@ -439,9 +464,9 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
-        return if(ReadConfig.animation == ReadViewEnums.Animation.curl){
+        return if (ReadConfig.animation == ReadViewEnums.Animation.curl) {
             super.dispatchTouchEvent(event)
-        }else {
+        } else {
             prohibitionOfSlidingTouchEvent(event)
         }
     }
@@ -458,15 +483,15 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             }
             MotionEvent.ACTION_MOVE -> {//移动
                 val motionValue = ev.x - beforeX
-                if(!disallowIntercept && motionValue < -mTouchSlop && (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).orientationLimit == ReadViewEnums.ScrollLimitOrientation.RIGHT){
+                if (!disallowIntercept && motionValue < -mTouchSlop && (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).orientationLimit == ReadViewEnums.ScrollLimitOrientation.RIGHT) {
                     mReadPageChange?.goToBookOver()//跳bookend
                     return false
-                }else{
+                } else {
                     return super.dispatchTouchEvent(ev)
                 }
             }
             MotionEvent.ACTION_UP -> {
-                 super.dispatchTouchEvent(ev)
+                super.dispatchTouchEvent(ev)
             }
         }
         return super.onTouchEvent(ev)

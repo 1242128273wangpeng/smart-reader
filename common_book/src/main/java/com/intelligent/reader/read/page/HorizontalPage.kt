@@ -169,7 +169,7 @@ class HorizontalPage : FrameLayout, Observer {
         contentLength = 0
         hasAd = false
         hasBigAd = false
-        mNovelPageBean?.adView = null
+//        mNovelPageBean?.adBigView = null
         mNovelPageBean = null
         super.onDetachedFromWindow()
     }
@@ -216,7 +216,7 @@ class HorizontalPage : FrameLayout, Observer {
     private fun onScreenChange() {
         mAdFrameLayout.removeAllViews()
         onRedrawPage()
-        checkAdBiggerView()
+//        checkAdBiggerView()
         mCursor?.let {
             pageView.entrance(it)
         }
@@ -230,82 +230,82 @@ class HorizontalPage : FrameLayout, Observer {
         viewState = ReadViewEnums.ViewState.other
     }
 
-    //段末广告 8-1
-    private fun checkAdBanner(topMargins: Float) {
-        if (PlatformSDK.config().getAdSwitch("5-1")) {
-            mDisposable.add(io.reactivex.Observable.create<ViewGroup> {
-                DataProvider.getInstance().loadAd(context, "8-1", ReadConfig.screenWidth, ReadConfig.screenHeight - topMargins.toInt(), object : DataProvider.OnLoadReaderAdCallback {
-                    override fun onFail() {
-                    }
-
-                    override fun onLoadAd(adView: ViewGroup) {
-                        if (!it.isDisposed) {
-                            it.onNext(adView)
-                        }
-                        it.onComplete()
-                    }
-                })
-            }.subscribekt(
-                    onNext = {
-                        val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-                        val margin = AppUtils.dip2px(context, 10f)
-                        param.setMargins(margin, topMargins.toInt(), margin, margin)
-                        mAdFrameLayout.removeAllViews()
-                        mAdFrameLayout.addView(it, param)
-                    },
-                    onError = {
-                        it.printStackTrace()
-                    }
-            ))
-
-        }
-    }
+//    //段末广告 8-1
+//    private fun checkAdBanner(topMargins: Float) {
+//        if (PlatformSDK.config().getAdSwitch("5-1")) {
+//            mDisposable.add(io.reactivex.Observable.create<ViewGroup> {
+//                DataProvider.getInstance().loadAd(context, "8-1", ReadConfig.screenWidth, ReadConfig.screenHeight - topMargins.toInt(), object : DataProvider.OnLoadReaderAdCallback {
+//                    override fun onFail() {
+//                    }
+//
+//                    override fun onLoadAd(adView: ViewGroup) {
+//                        if(!it.isDisposed) {
+//                            it.onNext(adView)
+//                        }
+//                        it.onComplete()
+//                    }
+//                })
+//            }.subscribekt(
+//                    onNext = {
+//                        val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+//                        val margin = AppUtils.dip2px(context, 10f)
+//                        param.setMargins(margin, topMargins.toInt(), margin, margin)
+//                        mAdFrameLayout.removeAllViews()
+//                        mAdFrameLayout.addView(it, param)
+//                    },
+//                    onError = {
+//                        it.printStackTrace()
+//                    }
+//            ))
+//
+//        }
+//    }
 
     //广告页 5-1 5-2 6-1 6-2
-    private fun checkAdBiggerView() {
-        if ((mNovelPageBean != null) and hasBigAd) {
-            val adType = if (ReadConfig.IS_LANDSCAPE) {
-                if (pageIndex == pageSum) "6-1" else "6-2"
-            } else {
-                if (pageIndex == pageSum) "5-1" else "5-2"
-            }
-
-            mDisposable.add(io.reactivex.Observable.create<ViewGroup> {
-                DataProvider.getInstance().loadAd(context, adType, object : DataProvider.OnLoadReaderAdCallback {
-                    override fun onFail() {
-                    }
-
-                    override fun onLoadAd(adView: ViewGroup) {
-                        if (!it.isDisposed) {
-                            it.onNext(adView)
-                        }
-                        it.onComplete()
-                    }
-                })
-            }.subscribekt(
-                    onNext = {
-                        if (mNovelPageBean!!.adView != null && mNovelPageBean!!.adView!!.parent != null) {
-                            mAdFrameLayout.removeView(mNovelPageBean!!.adView)
-                        } else {
-                            mNovelPageBean!!.adView = it
-                            val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-                            val leftMargin = AppUtils.dip2px(context, 10f)
-                            val rightMargin = AppUtils.dip2px(context, 10f)
-                            val topMargin = AppUtils.dip2px(context, 40f)
-                            val bottomMargin = AppUtils.dip2px(context, 30f)
-                            param.setMargins(leftMargin, topMargin, rightMargin, bottomMargin)
-                            mAdFrameLayout.addView(mNovelPageBean!!.adView, param)
-                        }
-                    },
-                    onError = {
-                        it.printStackTrace()
-                    }
-            )
-            )
-
-
-        }
-    }
+//    private fun checkAdBiggerView() {
+//        if ((mNovelPageBean != null) and hasBigAd) {
+//            val adType = if (ReadConfig.IS_LANDSCAPE) {
+//                if (pageIndex == pageSum) "6-1" else "6-2"
+//            } else {
+//                if (pageIndex == pageSum) "5-1" else "5-2"
+//            }
+//
+//            mDisposable.add(io.reactivex.Observable.create<ViewGroup> {
+//                DataProvider.getInstance().loadAd(context, adType, object : DataProvider.OnLoadReaderAdCallback {
+//                    override fun onFail() {
+//                    }
+//
+//                    override fun onLoadAd(adView: ViewGroup) {
+//                        if(!it.isDisposed) {
+//                            it.onNext(adView)
+//                        }
+//                        it.onComplete()
+//                    }
+//                })
+//            }.subscribekt(
+//                    onNext = {
+//                        if (mNovelPageBean!!.adBigView != null && mNovelPageBean!!.adBigView!!.parent != null) {
+//                            mAdFrameLayout.removeView(mNovelPageBean!!.adBigView)
+//                        } else {
+//                            mNovelPageBean!!.adBigView = it
+//                            val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+//                            val leftMargin = AppUtils.dip2px(context, 10f)
+//                            val rightMargin = AppUtils.dip2px(context, 10f)
+//                            val topMargin = AppUtils.dip2px(context, 40f)
+//                            val bottomMargin = AppUtils.dip2px(context, 30f)
+//                            param.setMargins(leftMargin, topMargin, rightMargin, bottomMargin)
+//                            mAdFrameLayout.addView(mNovelPageBean!!.adBigView, param)
+//                        }
+//                    },
+//                    onError = {
+//                        it.printStackTrace()
+//                    }
+//            )
+//            )
+//
+//
+//        }
+//    }
 
     //封面页
     private fun setupHomePage(cursor: ReadCursor) {
@@ -503,7 +503,7 @@ class HorizontalPage : FrameLayout, Observer {
                     hasBigAd = mNovelPageBean!!.isAd
                     contentLength = mNovelPageBean!!.contentLength
                     if (mNovelPageBean!!.isAd) {//广告页
-                        checkAdBiggerView()
+                        mAdFrameLayout.addView(mNovelPageBean!!.adBigView)
                     } else {//普通页
 
                         //记录阅读位置
@@ -521,12 +521,21 @@ class HorizontalPage : FrameLayout, Observer {
                         //判断展示Banner广告
 
                         val topMargin = if (mNovelPageBean?.lines?.isNotEmpty() == true) mNovelPageBean!!.height else ReadConfig.screenHeight.toFloat()
-                        if (ReadConfig.screenHeight - topMargin > ReadConfig.screenHeight / 5) {
-                            hasAd = false
-                            if (!Constants.isHideAD) {
-                                checkAdBanner(topMargin)
-                                hasAd = true
-                            }
+//                        if (ReadConfig.screenHeight - topMargin > ReadConfig.screenHeight / 5) {
+//                            hasAd = false
+//                            if (!Constants.isHideAD) {
+//                                checkAdBanner(topMargin)
+//                                hasAd = true
+//                            }
+//                        }
+
+                        val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+                        val margin = AppUtils.dip2px(context, 10f)
+                        param.setMargins(margin, topMargin.toInt(), margin, margin)
+
+                        if(mNovelPageBean?.adSmallView != null){
+                            hasAd = true
+                            mAdFrameLayout.addView(mNovelPageBean!!.adSmallView, param)
                         }
 
                     }
