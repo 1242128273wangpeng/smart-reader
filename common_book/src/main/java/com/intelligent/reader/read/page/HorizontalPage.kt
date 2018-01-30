@@ -385,10 +385,15 @@ class HorizontalPage : FrameLayout, Observer {
          * 加载3章至内存
          */
         fun entrance(cursor: ReadCursor) {
-            loadView.visibility = View.VISIBLE
             mCursor = cursor
             entranceArray = arrayOf(false, false, false)
             cursor.curBook.sequence = cursor.sequence
+
+            val chapterBySequence = BookChapterDao(context,cursor.curBook.book_id).getChapterBySequence(cursor.sequence)
+            if (chapterBySequence == null) {
+                loadView.visibility = View.VISIBLE
+            }
+
             DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
                 override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = checkEntrance(cursor, 0)
                 override fun loadDataError(message: String) = showErrorView(cursor)
