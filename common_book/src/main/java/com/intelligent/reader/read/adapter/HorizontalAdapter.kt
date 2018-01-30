@@ -47,13 +47,12 @@ class HorizontalAdapter(private var noticePageListener: HorizontalPage.NoticePag
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         var itemView = destroyedItem
         destroyedItem = null
-
         //每次创建很耗时
         if(itemView == null) {
             itemView = HorizontalPage(container.context, noticePageListener)
             //添加view
         }
-
+        itemView.viewState = ReadViewEnums.ViewState.loading
         itemView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 
         if (cursor!= null) {
