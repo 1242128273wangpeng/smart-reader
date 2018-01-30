@@ -234,8 +234,6 @@ public class SplashActivity extends FrameActivity {
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.user_login_succeed);
         }
 
-        initAdSwitch();
-        initSplashAd();
     }
 
     private void initSplashAd() {
@@ -471,6 +469,10 @@ public class SplashActivity extends FrameActivity {
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putBoolean(Constants.UPDATE_CHAPTER_SOURCE_ID, true)
                         .apply();
             }
+
+            //请求广告
+            initAdSwitch();
+            initSplashAd();
 
             // 4 加载默认书籍
 //            try {

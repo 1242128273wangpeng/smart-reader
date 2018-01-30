@@ -1,11 +1,16 @@
 package com.intelligent.reader.util;
 
-import com.google.gson.JsonObject;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
+import android.text.TextUtils;
 
 import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
 import com.baidu.mobstat.SendStrategyEnum;
 import com.baidu.mobstat.StatService;
+import com.google.gson.JsonObject;
 import com.umeng.onlineconfig.OnlineConfigAgent;
 import com.umeng.onlineconfig.UmengOnlineConfigureListener;
 
@@ -22,12 +27,6 @@ import net.lzbook.kit.utils.Tools;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.preference.PreferenceManager;
-import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -172,6 +171,9 @@ public class DynamicParamter {
         user_transfer_first = getConfigParams("user_transfer_first");
         user_transfer_second = getConfigParams("user_transfer_second");
         recommend_bookcover = getConfigParams(Constants.RECOMMEND_BOOKCOVER);
+
+        //新壳广告开关
+        new_app_ad_switch = getConfigParams(Constants.NEW_APP_AD_SWITCH);
 
         //新的统计开关
         dy_ad_new_statistics_switch = getConfigParams(Constants.DY_AD_NEW_STATISTICS_SWITCH);
@@ -750,6 +752,16 @@ public class DynamicParamter {
 //                    putConfigParams(Constants.NONET_READTIME, nonet_readhour);
 //                }
 //            }
+            //新壳的广告开关
+            if (!data.isNull(Constants.NEW_APP_AD_SWITCH)) {
+                new_app_ad_switch = data.getString(Constants.NEW_APP_AD_SWITCH);
+                if (showAdFlag) {
+                    new_app_ad_switch = "true";
+                }
+                if (isOwn) {
+                    putConfigParams(Constants.NEW_APP_AD_SWITCH, new_app_ad_switch);
+                }
+            }
             installParam();
         } catch (JSONException e) {
             e.printStackTrace();
