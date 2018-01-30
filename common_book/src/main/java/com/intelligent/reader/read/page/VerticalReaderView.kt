@@ -445,7 +445,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
      */
     @Synchronized
     private fun checkLoadAdValid(sequence: Int): Int =
-            mAdapter.getAllData().filter { it.lines[0].sequenceType == sequence }.filter { it.adView != null }.size
+            mAdapter.getAllData().filter { it.lines[0].sequenceType == sequence }.filter { it.adBigView != null }.size
 
     /**
      * 当前显示位置章节页数
@@ -544,7 +544,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
             }
 
             override fun onLoadAd(adView: ViewGroup) {
-                adData.apply { isAd = true;this.adView = adView }
+                adData.apply { isAd = true;this.adBigView = adView }
             }
         })
     }
@@ -628,10 +628,10 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 }
                 content.adView = null
             }
-            if (pageContent.adView != null && pageContent.adView?.tag != null) {
-                pageContent.adView?.tag = null
+            if (pageContent.adBigView != null && pageContent.adBigView?.tag != null) {
+                pageContent.adBigView?.tag = null
             }
-            pageContent.adView = null
+            pageContent.adBigView = null
         }
         mOriginDataList.clear()
     }

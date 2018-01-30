@@ -5,6 +5,7 @@ import android.content.Context
 import android.text.TextUtils
 import android.util.LruCache
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import com.dycm_adsdk.PlatformSDK
 import com.dycm_adsdk.callback.AbstractCallback
 import com.dycm_adsdk.callback.ResultCode
@@ -18,6 +19,7 @@ import com.intelligent.reader.read.help.ReadSeparateHelper
 import com.intelligent.reader.read.mode.NovelChapter
 import com.intelligent.reader.read.mode.NovelPageBean
 import com.intelligent.reader.read.mode.ReadState
+import com.intelligent.reader.read.page.PageAdContainer
 import com.intelligent.reader.reader.ReaderOwnRepository
 import com.intelligent.reader.reader.ReaderRepositoryFactory
 import com.intelligent.reader.repository.BookCoverRepository
@@ -30,12 +32,12 @@ import net.lzbook.kit.data.bean.*
 import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.user.UserManager
-import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.OpenUDID
 import net.lzbook.kit.utils.runOnMain
+import net.lzbook.kit.utils.subscribekt
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.*
 
 /**
  * Created by wt on 2017/12/20.
@@ -50,8 +52,8 @@ class DataProvider : DisposableAndroidViewModel() {
         val INSTANCE = DataProvider()
     }
 
-    var countCacheSize: Int = 4
-    var chapterKey = arrayListOf<Int>()
+    var countCacheSize: Int = 3
+
     val chapterLruCache: LruCache<Int, NovelChapter> = LruCache(countCacheSize)
     val mBookChapterDao = BookChapterDao(BaseBookApplication.getGlobalContext(), ReadState.book_id)
 
@@ -61,6 +63,23 @@ class DataProvider : DisposableAndroidViewModel() {
     var mBookCoverRepository: BookCoverRepository = BookCoverRepositoryFactory.getInstance(BookCoverOtherRepository.getInstance(NetService.userService)
             , BookCoverQGRepository.getInstance(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()))
             , BookCoverLocalRepository.getInstance(BaseBookApplication.getGlobalContext()))
+
+
+    fun preLoad(start: Int,  end: Int){
+        if(!ReadState.chapterList.isEmpty() && start >= 0 ) {
+            for (i in start until end) {
+                if(i < ReadState.chapterCount) {
+                    mReaderRepository.requestSingleChapter(ReadState.book.site, ReadState.chapterList.get(i))
+                            .subscribeOn(Schedulers.io())
+                            .subscribekt(onNext = {
+                                println(" chapter cached " + it.sequence)
+                                mReaderRepository.writeChapterCache(it, false)
+                            }, onError = {it.printStackTrace()})
+                }
+            }
+        }
+    }
+
 
     /**
      * 加载章节
@@ -245,7 +264,6 @@ class DataProvider : DisposableAndroidViewModel() {
     fun getChapterList(book: Book, requestItem: RequestItem, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
         if (sequence == -1) {//封面页
             chapterLruCache.put(sequence, NovelChapter(Chapter(), arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf()))))
-            chapterKey.add(sequence)
             mReadDataListener.loadDataSuccess(Chapter(), type)
             return
         }
@@ -283,6 +301,12 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     private fun requestSingleChapter(book: Book, chapters: List<Chapter>, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
+        val cacheNovelChapter = chapterLruCache.get(sequence)
+        if(cacheNovelChapter != null){
+            mReadDataListener.loadDataSuccess(cacheNovelChapter.chapter, type)
+            return
+        }
+
         if (sequence < 0 || sequence >= chapters.size) {
             runOnMain {
                 mReadDataListener.loadDataError("章节超目录列表")
@@ -298,9 +322,8 @@ class DataProvider : DisposableAndroidViewModel() {
                 }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ mNovelChapter ->
-                    val c = mNovelChapter.chapter
-                    val separateContent = mNovelChapter.separateList
+                .subscribe({ novelChapter ->
+                    val c = novelChapter.chapter
                     if (!TextUtils.isEmpty(chapter.content)) {
                         c.isSuccess = true
                         // 自动切源需要就更新目录
@@ -311,12 +334,12 @@ class DataProvider : DisposableAndroidViewModel() {
 
                     if (c.content != "null" && c.content.isNotEmpty()) {
                         ReadState.chapterId = c.chapter_id
-                        chapterLruCache.put(sequence, NovelChapter(c, separateContent))
-                        chapterKey.add(sequence)
                         //加章末广告
                         if (!Constants.isHideAD) {
-                            loadAd(sequence)
+                            loadAd(novelChapter)
                         }
+
+                        chapterLruCache.put(sequence, novelChapter)
                         mReadDataListener.loadDataSuccess(c, type)
                     } else {
                         mReadDataListener.loadDataError("章节内容为空")
@@ -334,7 +357,22 @@ class DataProvider : DisposableAndroidViewModel() {
         }
     }
 
-    private fun loadAd(sequence: Int) {
+
+    private fun getBigAdLayoutParams():FrameLayout.LayoutParams{
+        val bigAdLayoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+        val leftMargin = AppUtils.dip2px(ReadState.readingActivity, 10f)
+        val rightMargin = AppUtils.dip2px(ReadState.readingActivity, 10f)
+        val topMargin = AppUtils.dip2px(ReadState.readingActivity, 40f)
+        val bottomMargin = AppUtils.dip2px(ReadState.readingActivity, 30f)
+        bigAdLayoutParams.setMargins(leftMargin, topMargin, rightMargin, bottomMargin)
+        return bigAdLayoutParams
+    }
+
+
+    private fun loadAd(novelChapter: NovelChapter) {
+        if(ReadState.readingActivity == null || Constants.isHideAD )
+            return
+
         PlatformSDK.config().setAd_userid(UserManager.mUserInfo?.uid ?: "")
         PlatformSDK.config().setChannel_code(Constants.CHANNEL_LIMIT)
         var cityCode = if (Constants.cityCode.isEmpty()) {
@@ -350,10 +388,29 @@ class DataProvider : DisposableAndroidViewModel() {
         val within = PlatformSDK.config().getAdSwitch("5-2") and PlatformSDK.config().getAdSwitch("6-2")
         val between = PlatformSDK.config().getAdSwitch("5-1") and PlatformSDK.config().getAdSwitch("5-1")
 //            val arrayList = chapterSeparate[sequence]
-        val arrayList = chapterLruCache[sequence].separateList
-        if (!arrayList.last().isAd && between) {
-            val offset = arrayList.last().offset + arrayList.last().lines.sumBy { it.lineContent.length } + 1
-            arrayList.add(NovelPageBean(arrayListOf(), offset, arrayListOf()).apply { isAd = true })
+        val arrayList = novelChapter.separateList
+
+        val last = arrayList.last()
+
+        if (!last.isAd && between) {
+
+            //check small adView
+            val margin = if (last.lines.isNotEmpty()) last.height else ReadConfig.screenHeight.toFloat()
+            if (ReadConfig.screenHeight - margin > ReadConfig.screenHeight / 5) {
+
+                last.adSmallView = PageAdContainer(ReadState.readingActivity!!,
+                        "8-1", ReadConfig.screenWidth
+                        , (ReadConfig.screenHeight - margin).toInt())
+            }
+
+            val offset = last.offset + arrayList.last().lines.sumBy { it.lineContent.length } + 1
+
+            val novelPageBean = NovelPageBean(arrayListOf(), offset, arrayListOf()).apply { isAd = true }
+
+            novelPageBean.adBigView = PageAdContainer(ReadState.readingActivity!!,
+                    if (ReadConfig.IS_LANDSCAPE) "6-1"  else  "5-1", getBigAdLayoutParams())
+
+            arrayList.add(novelPageBean)
         }
         val frequency = PlatformSDK.config().configExpireMinutes
         if (arrayList.size >= frequency * 2 && within) {
@@ -361,7 +418,13 @@ class DataProvider : DisposableAndroidViewModel() {
             for (i in 1 until count) {
                 if (i % frequency == 0) {
                     val offset2 = arrayList[i].offset
-                    arrayList.add(i, NovelPageBean(arrayListOf(), offset2, arrayListOf()).apply { isAd = true })
+
+                    val novelPageBean = NovelPageBean(arrayListOf(), offset2, arrayListOf()).apply { isAd = true }
+
+                    novelPageBean.adBigView = PageAdContainer(ReadState.readingActivity!!,
+                            if (ReadConfig.IS_LANDSCAPE) "6-2"  else  "5-2", getBigAdLayoutParams())
+                    arrayList.add(novelPageBean)
+
                     for (j in i + 1 until arrayList.size - 1) {
                         //其他页offset向后偏移 1 length
                         arrayList[j].offset = arrayList[j].offset + 1
@@ -372,20 +435,17 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     fun onReSeparate() {
-        for (it in chapterKey) {
-            if (chapterLruCache[it] != null) {
-                if (it != -1) {
-                    chapterLruCache[it].separateList = ReadSeparateHelper.initTextSeparateContent(chapterLruCache[it].chapter.content, chapterLruCache[it].chapter.chapter_name)
-                    if (!Constants.isHideAD) {
-                        loadAd(it)
-                    }
-                }
+        val novelChapter = chapterLruCache.get(ReadState.sequence)
+        chapterLruCache.evictAll()
+        if (novelChapter != null) {
+            novelChapter.separateList = ReadSeparateHelper.initTextSeparateContent(novelChapter.chapter.content, novelChapter.chapter.chapter_name)
+            if (!Constants.isHideAD) {
+                loadAd(novelChapter)
             }
         }
     }
 
     fun clear() {
-        chapterKey.clear()
         chapterLruCache.evictAll()
         unSubscribe()
     }
