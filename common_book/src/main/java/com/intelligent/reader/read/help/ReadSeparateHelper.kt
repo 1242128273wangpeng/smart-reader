@@ -77,13 +77,13 @@ object ReadSeparateHelper {
             }
             novelText = newChapterList
 
-            if (novelText.size > 2) {
-                val temp = ArrayList<NovelLineBean>()
-                for (i in 0..1) {
-                    temp.add(novelText[i])
-                }
-                novelText = temp
-            }
+//            if (novelText.size > 2) {
+//                val temp = ArrayList<NovelLineBean>()
+//                for (i in 0..1) {
+//                    temp.add(novelText[i])
+//                }
+//                novelText = temp
+//            }
         }
 
 
