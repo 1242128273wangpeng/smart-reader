@@ -24,11 +24,10 @@ import kotlinx.android.synthetic.main.error_page2.view.*
 import kotlinx.android.synthetic.main.loading_page_reading.view.*
 import kotlinx.android.synthetic.main.read_bottom.view.*
 import kotlinx.android.synthetic.main.read_top.view.*
-import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
-import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.subscribekt
@@ -446,7 +445,8 @@ class HorizontalPage : FrameLayout, Observer {
             //获取数据
             ReadState.chapterName = chapter.chapter_name
             val chapterList = DataProvider.getInstance().chapterLruCache[cursor.sequence].separateList
-            cursor.offset = cursor.offset - mCursorOffset
+//            cursor.offset = cursor.offset - mCursorOffset
+            cursor.offset = cursor.offset
             try {
                 pageIndex = ReadQueryUtil.findPageIndexByOffset(cursor.offset, chapterList)
             } catch (e: Exception) {
@@ -504,11 +504,16 @@ class HorizontalPage : FrameLayout, Observer {
                             postInvalidate()
                         }
                         //判断展示Banner广告
+
                         val topMargin = if (mNovelPageBean?.lines?.isNotEmpty() == true) mNovelPageBean!!.height else ReadConfig.screenHeight.toFloat()
                         if (ReadConfig.screenHeight - topMargin > ReadConfig.screenHeight / 5) {
-                            hasAd = true
-                            checkAdBanner(topMargin)
+                            hasAd = false
+                            if (!Constants.isHideAD) {
+                                checkAdBanner(topMargin)
+                                hasAd = true
+                            }
                         }
+
                     }
                     changeCursorState(chapterList)
 
