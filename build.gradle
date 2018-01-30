@@ -24,7 +24,7 @@ allprojects {
         jcenter()
         google()
         maven {
-            url "http://10.171.103.67:8081/nexus/content/groups/public/"
+            url "http://20.20.27.101:8081/nexus/content/groups/public/"
             credentials {
                 username 'edwin'
                 password 'iyouquedwin'
