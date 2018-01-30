@@ -390,11 +390,14 @@ class DataProvider : DisposableAndroidViewModel() {
         }
     }
 
-    fun findCurrentPageNovelLineBean(): List<NovelLineBean> {
-//        var currentNovelLineBean = arrayListOf<NovelLineBean>()
-//        var mNovelPageBean = chapterSeparate[ReadState.sequence]
-        val mNovelPageBean = chapterLruCache[ReadState.sequence].separateList
-        return mNovelPageBean[if (ReadState.currentPage == 0) 0 else ReadState.currentPage - 1].lines
+    fun findCurrentPageNovelLineBean(): List<NovelLineBean>? {
+        val novelChapter = chapterLruCache[ReadState.sequence]
+        if(novelChapter != null) {
+            val mNovelPageBean = novelChapter.separateList
+            return mNovelPageBean[if (ReadState.currentPage == 0) 0 else ReadState.currentPage - 1].lines
+        }else{
+            return null
+        }
     }
 
     abstract class OnLoadAdViewCallback(val loadAdBySequence: Int) : OnLoadReaderAdCallback
