@@ -29,6 +29,7 @@ import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.data.db.BookChapterDao
+import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.subscribekt
@@ -192,7 +193,10 @@ class HorizontalPage : FrameLayout, Observer {
         mAdFrameLayout.removeAllViews()
         removeView(errorView)
         setupView()
-        pageView.setCursor(cursor)
+        if (viewState!=ReadViewEnums.ViewState.success){
+            pageView.setCursor(cursor)
+            AppLog.e("viewNotify",viewState.toString())
+        }
     }
 
     private fun onReSeparate() = DataProvider.getInstance().onReSeparate()
@@ -209,6 +213,7 @@ class HorizontalPage : FrameLayout, Observer {
                 setCursor(it)
             }
         }
+        viewState = ReadViewEnums.ViewState.other
     }
 
     private fun onScreenChange() {
@@ -222,6 +227,7 @@ class HorizontalPage : FrameLayout, Observer {
         if (tag == ReadViewEnums.PageIndex.current) {
             noticePageListener?.onJumpChapter()
         }
+        viewState = ReadViewEnums.ViewState.other
     }
 
     //段末广告 8-1
@@ -540,22 +546,26 @@ class HorizontalPage : FrameLayout, Observer {
             } else {
                 ReadViewEnums.ViewState.success
             }
+
+            if(this@HorizontalPage.tag == ReadViewEnums.PageIndex.current&&viewState == ReadViewEnums.ViewState.loading){
+                viewNotify = ReadViewEnums.NotifyStateState.all
+            }
             noticePageListener?.pageChangSuccess(mCursor!!, viewNotify)//游标通知回调
             //游标添加广告后的偏移量
-            mCursorOffset = when {
-                (pageSum >= 16) and (pageIndex >= pageSum / 2) and (pageIndex != pageSum) -> {
-                    if (PlatformSDK.config().getAdSwitch("5-1") and (PlatformSDK.config().getAdSwitch("6-1"))) -1 else 0
-                }
-                (pageSum >= 16) and (pageIndex >= pageSum / 2) and (pageIndex == pageSum) -> {
-                    if (PlatformSDK.config().getAdSwitch("5-1") and (PlatformSDK.config().getAdSwitch("6-1"))) {
-                        if (PlatformSDK.config().getAdSwitch("5-2") and (PlatformSDK.config().getAdSwitch("6-2"))) -2 else -1
-                    } else {
-                        if (PlatformSDK.config().getAdSwitch("5-2") and (PlatformSDK.config().getAdSwitch("6-2"))) -1 else 0
-                    }
-                }
-                (pageSum < 16) and (pageIndex == pageSum) -> -1
-                else -> 0
-            }
+//            mCursorOffset = when {
+//                (pageSum >= 16) and (pageIndex >= pageSum / 2) and (pageIndex != pageSum) -> {
+//                    if (PlatformSDK.config().getAdSwitch("5-1") and (PlatformSDK.config().getAdSwitch("6-1"))) -1 else 0
+//                }
+//                (pageSum >= 16) and (pageIndex >= pageSum / 2) and (pageIndex == pageSum) -> {
+//                    if (PlatformSDK.config().getAdSwitch("5-1") and (PlatformSDK.config().getAdSwitch("6-1"))) {
+//                        if (PlatformSDK.config().getAdSwitch("5-2") and (PlatformSDK.config().getAdSwitch("6-2"))) -2 else -1
+//                    } else {
+//                        if (PlatformSDK.config().getAdSwitch("5-2") and (PlatformSDK.config().getAdSwitch("6-2"))) -1 else 0
+//                    }
+//                }
+//                (pageSum < 16) and (pageIndex == pageSum) -> -1
+//                else -> 0
+//            }
         }
 
 
