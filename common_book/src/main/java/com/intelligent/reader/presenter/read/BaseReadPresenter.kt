@@ -1417,7 +1417,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
 
     var intervalRunnable: Runnable? = null
     fun startRestInterval() {
-        val runtime = if (PlatformSDK.config().switch_sec == 0) {
+        val runtime = if (PlatformSDK.config().restAd_sec == 0) {
             30.times(60000).toLong()
         } else {
             PlatformSDK.config().restAd_sec.times(60000).toLong()
