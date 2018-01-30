@@ -153,16 +153,6 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
         notifyItemRangeInserted(lastIndex, data.size)
     }
 
-    fun getNotifyIndexByLoadChapter(index: ReadViewEnums.PageIndex, data: ArrayList<NovelPageBean>): Int =
-            when (index) {
-                ReadViewEnums.PageIndex.previous -> {
-                    data.size
-                }
-                else -> {
-                    chapterList.size - footViewList.size
-                }
-            }
-
     fun addAdViewToTheChapterLast(sequence: Int, adData: NovelPageBean) {
         var sequenceIndex = 0
         foo@ for (i in getAllData().indices) {
@@ -174,6 +164,21 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
         val addAdViewIndex = sequenceIndex + getAllData().filter { it.lines[0].sequenceType == sequence }.size
         getAllData().add(addAdViewIndex, adData)
         notifyItemRangeInserted(addAdViewIndex, 1)
+    }
+
+    fun removeViewToTheChapterLast(sequence: Int) {
+        var sequenceIndex = 0
+        foo@ for (i in getAllData().indices) {
+            if (getAllData()[i].lines[0].sequenceType == sequence) {
+                sequenceIndex = i
+                break@foo
+            }
+        }
+        val removeAdViewIndex = sequenceIndex + getAllData().filter { it.lines[0].sequenceType == sequence }.size -1
+        if (getAllData()[removeAdViewIndex].lines[0].sequence == AD_ITEM_TYPE) {
+            getAllData().removeAt(removeAdViewIndex)
+            notifyItemRangeRemoved(removeAdViewIndex, 1)
+        }
     }
 
     fun showHeaderView(show: Boolean) {

@@ -191,7 +191,9 @@ class HorizontalPage : FrameLayout, Observer {
         mAdFrameLayout.removeAllViews()
         removeView(errorView)
         setupView()
-        pageView.setCursor(cursor)
+        if (viewState!=ReadViewEnums.ViewState.success){
+            pageView.setCursor(cursor)
+        }
     }
 
     private fun onReSeparate() = DataProvider.getInstance().onReSeparate()
@@ -208,6 +210,7 @@ class HorizontalPage : FrameLayout, Observer {
                 setCursor(it)
             }
         }
+        viewState = ReadViewEnums.ViewState.other
     }
 
     private fun onScreenChange() {
@@ -221,6 +224,7 @@ class HorizontalPage : FrameLayout, Observer {
         if (tag == ReadViewEnums.PageIndex.current) {
             noticePageListener?.onJumpChapter()
         }
+        viewState = ReadViewEnums.ViewState.other
     }
 
     //段末广告 8-1
@@ -228,6 +232,9 @@ class HorizontalPage : FrameLayout, Observer {
         if (PlatformSDK.config().getAdSwitch("5-1")) {
             mDisposable.add(io.reactivex.Observable.create<ViewGroup> {
                 DataProvider.getInstance().loadAd(context, "8-1", ReadConfig.screenWidth, ReadConfig.screenHeight - topMargins.toInt(), object : DataProvider.OnLoadReaderAdCallback {
+                    override fun onFail() {
+                    }
+
                     override fun onLoadAd(adView: ViewGroup) {
                         if(!it.isDisposed) {
                             it.onNext(adView)
@@ -262,6 +269,9 @@ class HorizontalPage : FrameLayout, Observer {
 
             mDisposable.add(io.reactivex.Observable.create<ViewGroup> {
                 DataProvider.getInstance().loadAd(context, adType, object : DataProvider.OnLoadReaderAdCallback {
+                    override fun onFail() {
+                    }
+
                     override fun onLoadAd(adView: ViewGroup) {
                         if(!it.isDisposed) {
                             it.onNext(adView)
@@ -384,10 +394,12 @@ class HorizontalPage : FrameLayout, Observer {
          * 加载3章至内存
          */
         fun entrance(cursor: ReadCursor) {
-            loadView.visibility = View.VISIBLE
             mCursor = cursor
             entranceArray = arrayOf(false, false, false)
             cursor.curBook.sequence = cursor.sequence
+            if (!DataProvider.getInstance().isCacheExistBySequence(cursor.curBook.sequence)) {
+                loadView.visibility = View.VISIBLE
+            }
             DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
                 override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = checkEntrance(cursor, 0)
                 override fun loadDataError(message: String) = showErrorView(cursor)
@@ -539,22 +551,26 @@ class HorizontalPage : FrameLayout, Observer {
             } else {
                 ReadViewEnums.ViewState.success
             }
+
+            if(this@HorizontalPage.tag == ReadViewEnums.PageIndex.current&&viewState == ReadViewEnums.ViewState.loading){
+                viewNotify = ReadViewEnums.NotifyStateState.all
+            }
             noticePageListener?.pageChangSuccess(mCursor!!, viewNotify)//游标通知回调
             //游标添加广告后的偏移量
-            mCursorOffset = when {
-                (pageSum >= 16) and (pageIndex >= pageSum / 2) and (pageIndex != pageSum) -> {
-                    if (PlatformSDK.config().getAdSwitch("5-1") and (PlatformSDK.config().getAdSwitch("6-1"))) -1 else 0
-                }
-                (pageSum >= 16) and (pageIndex >= pageSum / 2) and (pageIndex == pageSum) -> {
-                    if (PlatformSDK.config().getAdSwitch("5-1") and (PlatformSDK.config().getAdSwitch("6-1"))) {
-                        if (PlatformSDK.config().getAdSwitch("5-2") and (PlatformSDK.config().getAdSwitch("6-2"))) -2 else -1
-                    } else {
-                        if (PlatformSDK.config().getAdSwitch("5-2") and (PlatformSDK.config().getAdSwitch("6-2"))) -1 else 0
-                    }
-                }
-                (pageSum < 16) and (pageIndex == pageSum) -> -1
-                else -> 0
-            }
+//            mCursorOffset = when {
+//                (pageSum >= 16) and (pageIndex >= pageSum / 2) and (pageIndex != pageSum) -> {
+//                    if (PlatformSDK.config().getAdSwitch("5-1") and (PlatformSDK.config().getAdSwitch("6-1"))) -1 else 0
+//                }
+//                (pageSum >= 16) and (pageIndex >= pageSum / 2) and (pageIndex == pageSum) -> {
+//                    if (PlatformSDK.config().getAdSwitch("5-1") and (PlatformSDK.config().getAdSwitch("6-1"))) {
+//                        if (PlatformSDK.config().getAdSwitch("5-2") and (PlatformSDK.config().getAdSwitch("6-2"))) -2 else -1
+//                    } else {
+//                        if (PlatformSDK.config().getAdSwitch("5-2") and (PlatformSDK.config().getAdSwitch("6-2"))) -1 else 0
+//                    }
+//                }
+//                (pageSum < 16) and (pageIndex == pageSum) -> -1
+//                else -> 0
+//            }
         }
 
 

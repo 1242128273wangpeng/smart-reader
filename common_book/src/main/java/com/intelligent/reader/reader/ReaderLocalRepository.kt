@@ -1,5 +1,6 @@
 package com.intelligent.reader.reader
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.text.TextUtils
 import com.intelligent.reader.repository.ReaderRepository
@@ -11,6 +12,7 @@ import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.purchase.SingleChapterBean
 import net.lzbook.kit.request.DataCache
+import net.lzbook.kit.request.RequestFactory
 import net.lzbook.kit.request.WriteFileFailException
 import net.lzbook.kit.user.bean.RecommendBooksEndResp
 
@@ -30,16 +32,28 @@ class ReaderLocalRepository(context: Context) : ReaderRepository {
     }
 
     private object RepositoryHolder {
+        @SuppressLint("StaticFieldLeak")
         val INSTANCE = ReaderLocalRepository(BaseBookApplication.getGlobalContext())
     }
 
-    override fun requestSingleChapter(host: String?, chapter: Chapter?): Observable<Chapter> {
-        return Observable.create({
-            chapter?.content = com.quduquxie.network.DataCache.getChapterFromCache(chapter?.chapter_id, chapter?.book_id)
-            chapter?.isSuccess = true
-            it.onNext(chapter!!)
-            it.onComplete()
-        })
+    override fun requestSingleChapter(host: String, chapter: Chapter): Observable<Chapter> {
+        // 青果缓存
+        if (RequestFactory.RequestHost.QG.requestHost == host) {
+            return Observable.create({
+                chapter.content = com.quduquxie.network.DataCache.getChapterFromCache(chapter.chapter_id, chapter.book_id)
+                chapter.isSuccess = true
+                it.onNext(chapter)
+                it.onComplete()
+            })
+            // 智能缓存
+        } else {
+            return Observable.create({
+                chapter.content = net.lzbook.kit.request.DataCache.getChapterFromCache(chapter.sequence, chapter.book_id)
+                chapter.isSuccess = true
+                it.onNext(chapter)
+                it.onComplete()
+            })
+        }
     }
 
     override fun updateBookCurrentChapter(bookId: String, retChapter: Chapter?, sequence: Int) {
@@ -54,8 +68,8 @@ class ReaderLocalRepository(context: Context) : ReaderRepository {
         BookChapterDao(mContext, bookId).changeChargeBookState(chapterIndex, i)
     }
 
-    override fun writeChapterCache(chapter: Chapter?, downloadFlag: Boolean) {
-        if (chapter != null && mBookDaoHelper.isBookSubed(chapter.book_id)) {
+    override fun writeChapterCache(chapter: Chapter, downloadFlag: Boolean) {
+        if (mBookDaoHelper.isBookSubed(chapter.book_id)) {
             var content = chapter.content
             if (TextUtils.isEmpty(content)) {
                 content = "null"
@@ -66,19 +80,18 @@ class ReaderLocalRepository(context: Context) : ReaderRepository {
             } else {
                 write_success = DataCache.saveChapter(content, chapter.sequence, chapter.book_id)
             }
-
             if (downloadFlag && !write_success) {
                 throw WriteFileFailException()
             }
         }
     }
 
-    //空实现
+    override fun isChapterCacheExist(host: String?, chapter: Chapter?): Boolean = false
     override fun getBookEndRecommendBook(recommanded: String, bookId: String): Observable<RecommendBooksEndResp> = Observable.create(null)
-
     override fun getBookSource(bookId: String): Observable<SourceItem> = Observable.create(null)
-    override fun isNeedDownContent(chapter: Chapter, downloadFlag: Boolean): Boolean = false
+    //    override fun isNeedDownContent(chapter: Chapter, downloadFlag: Boolean): Boolean = false
     override fun batchChapter(dex: Int, downloadFlag: Boolean, chapterMap: MutableMap<String, Chapter>?) = Unit
+
     override fun paySingleChapter(sourceId: String?, chapterId: String?, chapterName: String?, uid: String?): Observable<SingleChapterBean> = Observable.create(null)
 
 }

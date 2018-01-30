@@ -172,6 +172,9 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     }
 
     override fun entrance() {
+
+        showLoadPage(ReadState.sequence)
+
         if (mOriginDataList.size > 0) {
             mOriginDataList.clear()
         }
@@ -190,7 +193,6 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
         loadPreChapter(ReadState.sequence - 1)
         loadNextChapter(ReadState.sequence + 1)
         setBackground()
-        showLoadPage()
     }
 
     /**
@@ -502,6 +504,10 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
         }
 
         mDataProvider.loadChapterLastPageAd(context, object : DataProvider.OnLoadReaderAdCallback {
+
+            override fun onFail() {
+            }
+
             override fun onLoadAd(adView: ViewGroup) {
                 lineData?.adView = adView
             }
@@ -521,6 +527,11 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
         mAdapter.clearUselessChapter(index)
 
         mDataProvider.loadChapterBetweenAd(context, object : DataProvider.OnLoadAdViewCallback(sequence) {
+
+            override fun onFail() {
+                mAdapter.removeViewToTheChapterLast(loadAdBySequence)
+            }
+
             override fun onLoadAd(adView: ViewGroup) {
                 adData.apply { isAd = true;this.adView = adView }
             }
@@ -619,6 +630,9 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     }
 
     private fun onJumpChapter(sequence: Int) {
+        if (sequence == 0) {
+            mFirstRead = false
+        }
         ReadState.sequence = sequence
         entrance()
     }
@@ -627,7 +641,10 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
 
     }
 
-    private fun showLoadPage() {
+    private fun showLoadPage(sequence: Int) {
+        if (mDataProvider.isCacheExistBySequence(sequence)) {
+            return
+        }
         page_rv.visibility = GONE
         load_page.visibility = View.VISIBLE
     }

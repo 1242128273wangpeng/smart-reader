@@ -105,7 +105,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         }
         //2、判断View状态
         when ((view as HorizontalPage).viewState) {
-            ReadViewEnums.ViewState.loading -> {
+            ReadViewEnums.ViewState.loading,ReadViewEnums.ViewState.other -> {
                 //改变View的NotifyStateState，
                 // success后，通知其他页updata
                 view.viewNotify = notify
