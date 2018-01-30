@@ -806,7 +806,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
             view?.initSettingGuide()
         } else {
             full(true)
-            mReadOptionPresenter!!.view!!.show(false)
+            mReadOptionPresenter?.view?.show(false)
         }
     }
 

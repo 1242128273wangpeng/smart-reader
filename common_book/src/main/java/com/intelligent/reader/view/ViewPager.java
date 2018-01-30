@@ -2465,7 +2465,7 @@ public class ViewPager extends ViewGroup {
         if (Math.abs(deltaX) > mFlingDistance && Math.abs(velocity) > mMinimumVelocity) {
             targetPage = velocity > 0 ? currentPage : currentPage + 1;
         } else {
-            final float truncator = currentPage >= mCurItem ? 0.4f : 0.6f;
+            final float truncator = currentPage >= mCurItem ? 0.8f : 0.2f;
             targetPage = currentPage + (int) (pageOffset + truncator);
         }
 

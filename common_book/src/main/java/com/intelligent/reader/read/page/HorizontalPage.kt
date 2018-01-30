@@ -24,12 +24,10 @@ import kotlinx.android.synthetic.main.error_page2.view.*
 import kotlinx.android.synthetic.main.loading_page_reading.view.*
 import kotlinx.android.synthetic.main.read_bottom.view.*
 import kotlinx.android.synthetic.main.read_top.view.*
-import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
-import net.lzbook.kit.data.db.BookChapterDao
-import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.subscribekt
@@ -195,7 +193,6 @@ class HorizontalPage : FrameLayout, Observer {
         setupView()
         if (viewState!=ReadViewEnums.ViewState.success){
             pageView.setCursor(cursor)
-            AppLog.e("viewNotify",viewState.toString())
         }
     }
 
@@ -391,15 +388,10 @@ class HorizontalPage : FrameLayout, Observer {
          * 加载3章至内存
          */
         fun entrance(cursor: ReadCursor) {
+            loadView.visibility = View.VISIBLE
             mCursor = cursor
             entranceArray = arrayOf(false, false, false)
             cursor.curBook.sequence = cursor.sequence
-
-            val chapterBySequence = BookChapterDao(context,cursor.curBook.book_id).getChapterBySequence(cursor.sequence)
-            if (chapterBySequence == null) {
-                loadView.visibility = View.VISIBLE
-            }
-
             DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
                 override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = checkEntrance(cursor, 0)
                 override fun loadDataError(message: String) = showErrorView(cursor)
@@ -516,11 +508,16 @@ class HorizontalPage : FrameLayout, Observer {
                             postInvalidate()
                         }
                         //判断展示Banner广告
+
                         val topMargin = if (mNovelPageBean?.lines?.isNotEmpty() == true) mNovelPageBean!!.height else ReadConfig.screenHeight.toFloat()
                         if (ReadConfig.screenHeight - topMargin > ReadConfig.screenHeight / 5) {
-                            hasAd = true
-                            checkAdBanner(topMargin)
+                            hasAd = false
+                            if (!Constants.isHideAD) {
+                                checkAdBanner(topMargin)
+                                hasAd = true
+                            }
                         }
+
                     }
                     changeCursorState(chapterList)
 

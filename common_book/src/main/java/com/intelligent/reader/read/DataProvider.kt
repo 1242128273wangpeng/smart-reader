@@ -332,27 +332,24 @@ class DataProvider : DisposableAndroidViewModel() {
         PlatformSDK.config().setLatitude(Constants.latitude.toFloat())
         PlatformSDK.config().setLongitude(Constants.longitude.toFloat())
 
-        if (!Constants.isHideAD) {
-            val within = PlatformSDK.config().getAdSwitch("5-2") and PlatformSDK.config().getAdSwitch("6-2")
-            val between = PlatformSDK.config().getAdSwitch("5-1") and PlatformSDK.config().getAdSwitch("5-1")
+        val within = PlatformSDK.config().getAdSwitch("5-2") and PlatformSDK.config().getAdSwitch("6-2")
+        val between = PlatformSDK.config().getAdSwitch("5-1") and PlatformSDK.config().getAdSwitch("5-1")
 //            val arrayList = chapterSeparate[sequence]
-            val arrayList = chapterLruCache[sequence].separateList
-            if (!arrayList.last().isAd && between) {
-                val offset = arrayList.last().offset + arrayList.last().lines.sumBy { it.lineContent.length } + 1
-                arrayList.add(NovelPageBean(arrayListOf(), offset, arrayListOf()).apply { isAd = true })
-            }
-            if (arrayList.size >= 16 && within) {
-//                val frequency = PlatformSDK.config().configExpireMinutes
-                val frequency = 8
-                val count = arrayList.size-2
-                for (i in 1 until count) {
-                    if (i % frequency == 0){
-                        val offset2 = arrayList[i].offset
-                        arrayList.add(i, NovelPageBean(arrayListOf(), offset2, arrayListOf()).apply { isAd = true})
-                        for (j in i+1 until arrayList.size - 1) {
-                            //其他页offset向后偏移 1 length
-                            arrayList[j].offset = arrayList[j].offset + 1
-                        }
+        val arrayList = chapterLruCache[sequence].separateList
+        if (!arrayList.last().isAd && between) {
+            val offset = arrayList.last().offset + arrayList.last().lines.sumBy { it.lineContent.length } + 1
+            arrayList.add(NovelPageBean(arrayListOf(), offset, arrayListOf()).apply { isAd = true })
+        }
+        val frequency = PlatformSDK.config().configExpireMinutes
+        if (arrayList.size >= frequency * 2 && within) {
+            val count = arrayList.size - 2
+            for (i in 1 until count) {
+                if (i % frequency == 0) {
+                    val offset2 = arrayList[i].offset
+                    arrayList.add(i, NovelPageBean(arrayListOf(), offset2, arrayListOf()).apply { isAd = true })
+                    for (j in i + 1 until arrayList.size - 1) {
+                        //其他页offset向后偏移 1 length
+                        arrayList[j].offset = arrayList[j].offset + 1
                     }
                 }
             }
@@ -364,7 +361,9 @@ class DataProvider : DisposableAndroidViewModel() {
             if (chapterLruCache[it] != null) {
                 if (it != -1) {
                     chapterLruCache[it].separateList = ReadSeparateHelper.initTextSeparateContent(chapterLruCache[it].chapter.content, chapterLruCache[it].chapter.chapter_name)
-                    loadAd(it)
+                    if (!Constants.isHideAD) {
+                        loadAd(it)
+                    }
                 }
             }
         }
@@ -384,11 +383,14 @@ class DataProvider : DisposableAndroidViewModel() {
         }
     }
 
-    fun findCurrentPageNovelLineBean(): List<NovelLineBean> {
-//        var currentNovelLineBean = arrayListOf<NovelLineBean>()
-//        var mNovelPageBean = chapterSeparate[ReadState.sequence]
-        val mNovelPageBean = chapterLruCache[ReadState.sequence].separateList
-        return mNovelPageBean[if (ReadState.currentPage == 0) 0 else ReadState.currentPage - 1].lines
+    fun findCurrentPageNovelLineBean(): List<NovelLineBean>? {
+        val novelChapter = chapterLruCache[ReadState.sequence]
+        if(novelChapter != null) {
+            val mNovelPageBean = novelChapter.separateList
+            return mNovelPageBean[if (ReadState.currentPage == 0) 0 else ReadState.currentPage - 1].lines
+        }else{
+            return null
+        }
     }
 
     abstract class OnLoadAdViewCallback(val loadAdBySequence: Int) : OnLoadReaderAdCallback
