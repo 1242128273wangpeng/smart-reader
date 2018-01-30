@@ -27,7 +27,7 @@ object ReadState {
         }
 
     //目录
-    var chapterList: ArrayList<Chapter> = ArrayList()
+    val chapterList: ArrayList<Chapter> = ArrayList()
 
     var chapterCount = 0
         get() {

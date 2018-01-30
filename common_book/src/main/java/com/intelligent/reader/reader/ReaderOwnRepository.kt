@@ -1,6 +1,5 @@
 package com.intelligent.reader.reader
 
-import android.text.TextUtils
 import com.intelligent.reader.repository.ReaderRepository
 import io.reactivex.Observable
 import net.lzbook.kit.constants.Constants
@@ -11,8 +10,6 @@ import net.lzbook.kit.net.custom.service.UserService
 import net.lzbook.kit.purchase.SingleChapterBean
 import net.lzbook.kit.request.RequestExecutorDefault
 import net.lzbook.kit.request.UrlUtils
-import net.lzbook.kit.request.own.OtherRequestChapterExecutor
-import net.lzbook.kit.user.RecommendService
 import net.lzbook.kit.user.bean.RecommendBooksEndResp
 import net.lzbook.kit.utils.NetWorkUtils
 import java.net.MalformedURLException
@@ -85,33 +82,38 @@ class ReaderOwnRepository private constructor(api: UserService) : ReaderReposito
         return NetService.userService.getChapterContent(chapter?.curl!!, chapter)
     }
 
-    /**
-     * 判断是否需要下载
-     */
-    override fun isNeedDownContent(chapter: Chapter, downloadFlag: Boolean): Boolean {
-        if (downloadFlag) {
-            if (net.lzbook.kit.request.DataCache.isChapterExists(chapter.sequence, chapter.book_id)) {
-                return false
-            }
-        } else {
-            val content = net.lzbook.kit.request.DataCache.getChapterFromCache(chapter.sequence, chapter.book_id)
-            if (!TextUtils.isEmpty(content) && !("null" == content || OtherRequestChapterExecutor.CACHE_EXIST == content) || NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
-                if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
-                    if (content.length <= Constants.CONTENT_ERROR_COUNT) {
-                        return true
-                    } else {
-                        chapter.content = content
-                        chapter.isSuccess = true
-                        return false
-                    }
-                } else {
-                    chapter.content = content
-                    chapter.isSuccess = true
-                    return false
-                }
-            }
-        }
-        return true
+//    /**
+//     * 判断是否需要下载
+//     */
+//    override fun isNeedDownContent(chapter: Chapter, downloadFlag: Boolean): Boolean {
+//        if (downloadFlag) {
+//            if (net.lzbook.kit.request.DataCache.isChapterExists(chapter.sequence, chapter.book_id)) {
+//                return false
+//            }
+//        } else {
+//            val content = net.lzbook.kit.request.DataCache.getChapterFromCache(chapter.sequence, chapter.book_id)
+//            if (!TextUtils.isEmpty(content) && !("null" == content || OtherRequestChapterExecutor.CACHE_EXIST == content) || NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
+//                if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
+//                    if (content.length <= Constants.CONTENT_ERROR_COUNT) {
+//                        return true
+//                    } else {
+//                        chapter.content = content
+//                        chapter.isSuccess = true
+//                        return false
+//                    }
+//                } else {
+//                    chapter.content = content
+//                    chapter.isSuccess = true
+//                    return false
+//                }
+//            }
+//        }
+//        return true
+//    }
+
+    override fun isChapterCacheExist(host: String, chapter: Chapter): Boolean {
+        val chapterContent = net.lzbook.kit.request.DataCache.getChapterFromCache(chapter.sequence, chapter.book_id)
+        return chapterContent != null && chapterContent.length <= Constants.CONTENT_ERROR_COUNT
     }
 
     //空实现

@@ -1,18 +1,12 @@
 package com.intelligent.reader.reader
 
-import android.content.Context
-import android.text.TextUtils
-import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.repository.ReaderRepository
 import io.reactivex.Observable
-import io.reactivex.ObservableOnSubscribe
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.SourceItem
 import net.lzbook.kit.purchase.SingleChapterBean
 import net.lzbook.kit.request.RequestFactory
 import net.lzbook.kit.user.bean.RecommendBooksEndResp
-import net.lzbook.kit.utils.AppLog
-import net.lzbook.kit.utils.NetWorkUtils
 
 /**
  * @desc 阅读模块数据源
@@ -39,25 +33,42 @@ class ReaderRepositoryFactory private constructor(readerOwnRepository: ReaderRep
     }
 
     override fun requestSingleChapter(host: String, chapter: Chapter): Observable<Chapter> {
+//        //判断青果
+//        if (RequestFactory.RequestHost.QG.requestHost == host) {
+//            //判断青果缓存
+//            if (isChapterCacheExist(host, chapter)) {
+//                return mReaderLocalRepository.requestSingleChapter(host, chapter)
+//            } else {
+//                return mReaderQGRepository.requestSingleChapter(host, chapter)
+//            }
+//        } else {
+//
+//            if (isNeedDownContent(chapter, false)) {//是否需要下载
+//                return mReaderOwnRepository.requestSingleChapter(host, chapter)
+//            } else {
+//                return Observable.create({
+//                    it.onNext(chapter)
+//                    it.onComplete()
+//                })
+//            }
+//        }
 
-        var downloadFlag = false
-        //判断青果
-        if (RequestFactory.RequestHost.QG.requestHost == host) {
-            //判断青果缓存
-            if (com.quduquxie.network.DataCache.isChapterExists(chapter.chapter_id, chapter.book_id)) {
-                return mReaderLocalRepository.requestSingleChapter(host, chapter)
-            } else {
-                return mReaderQGRepository.requestSingleChapter(host, chapter)
-            }
+        if (isChapterCacheExist(host, chapter)) {
+            return mReaderLocalRepository.requestSingleChapter(host, chapter)
         } else {
-            if (isNeedDownContent(chapter, downloadFlag)) {//是否需要下载
-                return mReaderOwnRepository.requestSingleChapter(host, chapter)
+            if (RequestFactory.RequestHost.QG.requestHost == host) {
+                return mReaderQGRepository.requestSingleChapter(host, chapter)
             } else {
-                return Observable.create({
-                    it.onNext(chapter)
-                    it.onComplete()
-                })
+                return mReaderOwnRepository.requestSingleChapter(host, chapter)
             }
+        }
+    }
+
+    override fun isChapterCacheExist(host: String, chapter: Chapter): Boolean {
+        if (host == RequestFactory.RequestHost.QG.requestHost) {
+            return mReaderQGRepository.isChapterCacheExist(host, chapter)
+        } else {
+            return mReaderOwnRepository.isChapterCacheExist(host, chapter)
         }
     }
 
@@ -65,9 +76,8 @@ class ReaderRepositoryFactory private constructor(readerOwnRepository: ReaderRep
         mReaderOwnRepository.batchChapter(dex, downloadFlag, chapterMap)
     }
 
-    override fun isNeedDownContent(chapter: Chapter, downloadFlag: Boolean): Boolean {
-        return mReaderOwnRepository.isNeedDownContent(chapter, downloadFlag)
-    }
+//    override fun isNeedDownContent(chapter: Chapter, downloadFlag: Boolean): Boolean =
+//            mReaderOwnRepository.isNeedDownContent(chapter, downloadFlag)
 
     override fun updateBookCurrentChapter(bookId: String, retChapter: Chapter?, sequence: Int) {
         mReaderLocalRepository.updateBookCurrentChapter(bookId, retChapter, retChapter!!.sequence)

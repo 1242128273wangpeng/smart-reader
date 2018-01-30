@@ -74,8 +74,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
 
     override var view: ReadPreInterface.View? = act
 
-    val MSG_SEARCH_CHAPTER = 3
-    val ERROR = 7
     // 手动书签内容限制
     var downloadService: DownloadService? = null
     var isRestDialogShow = false
@@ -94,7 +92,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
     protected var isFromCover = true
     //    private var myNovelHelper: NovelHelper? = null
     var myNovelHelper: NovelHelper? = null
-    protected var autoSpeed: Int = 0
     protected var auto_menu: AutoReadMenu? = null
     protected var is_dot_orientation = false// 横竖屏打点
     var current_mode: Int = 0
@@ -1420,7 +1417,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
 
     var intervalRunnable: Runnable? = null
     fun startRestInterval() {
-        val runtime = if (PlatformSDK.config().switch_sec == 0) {
+        val runtime = if (PlatformSDK.config().restAd_sec == 0) {
             30.times(60000).toLong()
         } else {
             PlatformSDK.config().restAd_sec.times(60000).toLong()

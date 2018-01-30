@@ -53,6 +53,7 @@ class DataProvider : DisposableAndroidViewModel() {
     var countCacheSize: Int = 4
     var chapterKey = arrayListOf<Int>()
     val chapterLruCache: LruCache<Int, NovelChapter> = LruCache(countCacheSize)
+    val mBookChapterDao = BookChapterDao(BaseBookApplication.getGlobalContext(), ReadState.book_id)
 
     //工厂
     var mReaderRepository: ReaderRepository = ReaderRepositoryFactory.getInstance(ReaderOwnRepository.getInstance())
@@ -109,6 +110,7 @@ class DataProvider : DisposableAndroidViewModel() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
                 if (!adswitch) {
+                    callback.onFail()
                     return
                 }
                 try {
@@ -120,6 +122,7 @@ class DataProvider : DisposableAndroidViewModel() {
                                 callback.onLoadAd(views[0])
                             }
                             else -> {
+                                callback.onFail()
                             }
                         }
                     }
@@ -135,6 +138,7 @@ class DataProvider : DisposableAndroidViewModel() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
                 if (!adswitch) {
+                    callback.onFail()
                     return
                 }
                 try {
@@ -144,6 +148,7 @@ class DataProvider : DisposableAndroidViewModel() {
                             ResultCode.AD_REQ_SUCCESS
                             -> callback.onLoadAd(views[0])
                             else -> {
+                                callback.onFail()
                             }
                         }
                     }
@@ -166,6 +171,7 @@ class DataProvider : DisposableAndroidViewModel() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
                 if (!adswitch) {
+                    callback.onFail()
                     return
                 }
                 try {
@@ -177,6 +183,7 @@ class DataProvider : DisposableAndroidViewModel() {
                                 callback.onLoadAd(views[0])
                             }
                             else -> {
+                                callback.onFail()
                             }
                         }
                     }
@@ -209,6 +216,7 @@ class DataProvider : DisposableAndroidViewModel() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
                 if (!adswitch) {
+                    callback.onFail()
                     return
                 }
                 try {
@@ -220,6 +228,7 @@ class DataProvider : DisposableAndroidViewModel() {
                                 callback.onLoadAd(views[0])
                             }
                             else -> {
+                                callback.onFail()
                             }
                         }
                     }
@@ -236,60 +245,54 @@ class DataProvider : DisposableAndroidViewModel() {
     fun getChapterList(book: Book, requestItem: RequestItem, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
         if (sequence == -1) {//封面页
             chapterLruCache.put(sequence, NovelChapter(Chapter(), arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf()))))
-//            chapterSeparate.put(sequence, arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf())))
-//            chapterMap.put(-1, Chapter())
             chapterKey.add(sequence)
             mReadDataListener.loadDataSuccess(Chapter(), type)
             return
         }
-        if (sequence<-1){
+        if (sequence < -1) {
             mReadDataListener.loadDataError("无章节")
             return
         }
-        if (NetWorkUtils.getNetWorkType(BaseBookApplication.getGlobalContext()) == NetWorkUtils.NETWORK_NONE) {
-            val bookChapterDao = BookChapterDao(BaseBookApplication.getGlobalContext(), requestItem.book_id)
-            val chapterList = bookChapterDao.queryBookChapter()
-            ReadState.chapterList = chapterList
-            if (chapterList.size != 0) {
-                requestSingleChapter(book, chapterList, sequence, type, mReadDataListener)
-                return
-            } else {
-                mReadDataListener.loadDataError("拉取章节时无网络")
-                return
-            }
+        if (ReadState.chapterList.size < 0) {
+            val chapterList = mBookChapterDao.queryBookChapter()
+            ReadState.chapterList.addAll(chapterList)
         }
-        addDisposable(
-                mBookCoverRepository.getChapterList(requestItem)
-                        .doOnNext { chapters ->
-                            // 已被订阅则加入数据库
-                            mBookCoverRepository.saveBookChapterList(chapters, requestItem)
-                        }
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(Schedulers.io())
-                        .subscribe({ chapters ->
-                            ReadState.chapterList = chapters as ArrayList<Chapter>
-                            if (chapters.size != 0) {
-                                requestSingleChapter(book, ReadState.chapterList, sequence, type, mReadDataListener)
-                            } else {
-                                mReadDataListener.loadDataError("拉取章节时无网络")
+        if (ReadState.chapterList.size != 0) {
+            requestSingleChapter(book, ReadState.chapterList, sequence, type, mReadDataListener)
+        } else {
+            addDisposable(
+                    mBookCoverRepository.getChapterList(requestItem)
+                            .doOnNext { chapters ->
+                                // 已被订阅则加入数据库
+                                mBookCoverRepository.saveBookChapterList(chapters, requestItem)
                             }
-                        }, { e ->
-                            e.printStackTrace()
-                            mReadDataListener.loadDataError("拉取章节时无网络")
-                        }))
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(Schedulers.io())
+                            .subscribe({ chapters ->
+                                ReadState.chapterList.addAll(chapters)
+                                if (ReadState.chapterList.size != 0) {
+                                    requestSingleChapter(book, ReadState.chapterList, sequence, type, mReadDataListener)
+                                } else {
+                                    mReadDataListener.loadDataError("拉取章节时无网络")
+                                }
+                            }, { e ->
+                                mReadDataListener.loadDataError("拉取章节时无网络")
+                                e.printStackTrace()
+                            }))
+        }
     }
 
     private fun requestSingleChapter(book: Book, chapters: List<Chapter>, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
-        if(sequence < 0 || sequence>=chapters.size){
+        if (sequence < 0 || sequence >= chapters.size) {
             runOnMain {
                 mReadDataListener.loadDataError("章节超目录列表")
             }
             return
         }
         val chapter = chapters[sequence]
-        //val chapter = chapters[Math.max(0, Math.min(chapters.size - 1, sequence))]
         addDisposable(mReaderRepository.requestSingleChapter(book.site, chapter)
                 .map {
+                    mReaderRepository.writeChapterCache(it, false)
                     val separateContent = ReadSeparateHelper.initTextSeparateContent(it.content, it.chapter_name)
                     NovelChapter(it, separateContent)
                 }
@@ -305,7 +308,7 @@ class DataProvider : DisposableAndroidViewModel() {
                             mReaderRepository.updateBookCurrentChapter(c.book_id, c, c.sequence)
                         }
                     }
-                    mReaderRepository.writeChapterCache(c, false)
+
                     if (c.content != "null" && c.content.isNotEmpty()) {
                         ReadState.chapterId = c.chapter_id
                         chapterLruCache.put(sequence, NovelChapter(c, separateContent))
@@ -323,12 +326,24 @@ class DataProvider : DisposableAndroidViewModel() {
                 }))
     }
 
+    fun isCacheExistBySequence(sequence: Int): Boolean {
+        if (ReadState.chapterList.size > 0) {
+            return mReaderRepository.isChapterCacheExist(ReadState.book.site, ReadState.chapterList[sequence])
+        } else {
+            return false
+        }
+    }
+
     private fun loadAd(sequence: Int) {
-        PlatformSDK.config().setAd_userid(UserManager.mUserInfo?.uid?:"")
+        PlatformSDK.config().setAd_userid(UserManager.mUserInfo?.uid ?: "")
         PlatformSDK.config().setChannel_code(Constants.CHANNEL_LIMIT)
-        var cityCode = if (Constants.cityCode.isEmpty()){0}else{Constants.cityCode.toInt()}
+        var cityCode = if (Constants.cityCode.isEmpty()) {
+            0
+        } else {
+            Constants.cityCode.toInt()
+        }
         PlatformSDK.config().setCityCode(cityCode)
-        PlatformSDK.config().setCityName(Constants.adCityInfo?:"")
+        PlatformSDK.config().setCityName(Constants.adCityInfo ?: "")
         PlatformSDK.config().setLatitude(Constants.latitude.toFloat())
         PlatformSDK.config().setLongitude(Constants.longitude.toFloat())
 
@@ -385,10 +400,10 @@ class DataProvider : DisposableAndroidViewModel() {
 
     fun findCurrentPageNovelLineBean(): List<NovelLineBean>? {
         val novelChapter = chapterLruCache[ReadState.sequence]
-        if(novelChapter != null) {
+        if (novelChapter != null) {
             val mNovelPageBean = novelChapter.separateList
             return mNovelPageBean[if (ReadState.currentPage == 0) 0 else ReadState.currentPage - 1].lines
-        }else{
+        } else {
             return null
         }
     }
@@ -397,5 +412,6 @@ class DataProvider : DisposableAndroidViewModel() {
 
     interface OnLoadReaderAdCallback {
         fun onLoadAd(adView: ViewGroup)
+        fun onFail()
     }
 }

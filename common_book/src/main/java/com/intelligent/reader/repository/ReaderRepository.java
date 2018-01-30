@@ -40,10 +40,10 @@ public interface ReaderRepository {
      */
     Observable<SingleChapterBean> paySingleChapter(String sourceId, String chapterId, String chapterName, String uid);
 
-    /**
-     * 是否需要下载
-     */
-    boolean isNeedDownContent(@NotNull Chapter chapter, boolean downloadFlag);
+//    /**
+//     * 是否需要下载
+//     */
+//    boolean isNeedDownContent(@NotNull Chapter chapter, boolean downloadFlag);
 
     /**
      * 批量下载
@@ -54,6 +54,11 @@ public interface ReaderRepository {
      * 更新书当前章节
      */
     void updateBookCurrentChapter(String bookId, Chapter retChapter, int sequence);
+
+    /**
+     * 本地是否存在缓存
+     */
+    boolean isChapterCacheExist(String host, Chapter chapter);
 
     /**
      * @param bookId
