@@ -45,7 +45,7 @@ public interface ReadViewEnums {
     }
     //页面状态
     enum ViewState{
-        loading(0),success(0),error(0),start(0),end(0);
+        loading(0),success(0),error(0),start(0),end(0),other(0);
         public int Tag = 0;
         ViewState(int tag) {
             Tag = tag;
