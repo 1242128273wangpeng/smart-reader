@@ -191,7 +191,7 @@ class HorizontalPage : FrameLayout, Observer {
         mAdFrameLayout.removeAllViews()
         removeView(errorView)
         setupView()
-        if (viewState!=ReadViewEnums.ViewState.success){
+        if (viewState != ReadViewEnums.ViewState.success) {
             pageView.setCursor(cursor)
         }
     }
@@ -217,6 +217,9 @@ class HorizontalPage : FrameLayout, Observer {
         mAdFrameLayout.removeAllViews()
         onRedrawPage()
         checkAdBiggerView()
+        mCursor?.let {
+            pageView.entrance(it)
+        }
     }
 
     private fun onJumpChapter() {
@@ -236,7 +239,7 @@ class HorizontalPage : FrameLayout, Observer {
                     }
 
                     override fun onLoadAd(adView: ViewGroup) {
-                        if(!it.isDisposed) {
+                        if (!it.isDisposed) {
                             it.onNext(adView)
                         }
                         it.onComplete()
@@ -273,7 +276,7 @@ class HorizontalPage : FrameLayout, Observer {
                     }
 
                     override fun onLoadAd(adView: ViewGroup) {
-                        if(!it.isDisposed) {
+                        if (!it.isDisposed) {
                             it.onNext(adView)
                         }
                         it.onComplete()
@@ -552,7 +555,7 @@ class HorizontalPage : FrameLayout, Observer {
                 ReadViewEnums.ViewState.success
             }
 
-            if(this@HorizontalPage.tag == ReadViewEnums.PageIndex.current&&viewState == ReadViewEnums.ViewState.loading){
+            if (this@HorizontalPage.tag == ReadViewEnums.PageIndex.current && viewState == ReadViewEnums.ViewState.loading) {
                 viewNotify = ReadViewEnums.NotifyStateState.all
             }
             noticePageListener?.pageChangSuccess(mCursor!!, viewNotify)//游标通知回调
