@@ -217,16 +217,14 @@ class DrawTextHelper(private val resources: Resources) {
             var i = 0
             val j = pageLines.size
             while (i < j) {
-                if (i > size_c) {
-                    val text = pageLines[i]
-                    replaceSensitiveWords(text)
-                    if (text != null && !TextUtils.isEmpty(text.lineContent)) {
-                        if (text.lineContent != " " && text.lineContent != "chapter_homepage  ") {
-                            if (text.type == 1) {
-                                drawLineIntervalText(canvas, text, text.indexY)
-                            } else {
-                                canvas.drawText(text.lineContent, ReadConfig.mLineStart, text.indexY, ReadConfig.mPaint!!)
-                            }
+                val text = pageLines[i]
+                replaceSensitiveWords(text)
+                if (text != null && !TextUtils.isEmpty(text.lineContent)) {
+                    if (text.lineContent != " " && text.lineContent != "chapter_homepage  ") {
+                        if (text.type == 1) {
+                            drawLineIntervalText(canvas, text, text.indexY)
+                        } else {
+                            canvas.drawText(text.lineContent, ReadConfig.mLineStart, text.indexY, ReadConfig.mPaint!!)
                         }
                     }
                 }
@@ -271,20 +269,17 @@ class DrawTextHelper(private val resources: Resources) {
             var i = 0
             val j = pageLines.size
             while (i < j) {
-                if (i > size_c) {
-                    hasContent = true
-                    val text = pageLines[i]
-                    replaceSensitiveWords(text)
-                    if (text != null && !TextUtils.isEmpty(text.lineContent)) {
-                        if (" " != text.lineContent && "chapter_homepage  " != text.lineContent) {
-                            if (text.type == 1) {
-                                drawLineIntervalText(canvas, text, text.indexY)
-                            } else {
-                                canvas?.drawText(text.lineContent, ReadConfig.mLineStart, text.indexY, ReadConfig.mPaint!!)
-                            }
+                hasContent = true
+                val text = pageLines[i]
+                replaceSensitiveWords(text)
+                if (text != null && !TextUtils.isEmpty(text.lineContent)) {
+                    if (" " != text.lineContent && "chapter_homepage  " != text.lineContent) {
+                        if (text.type == 1) {
+                            drawLineIntervalText(canvas, text, text.indexY)
+                        } else {
+                            canvas?.drawText(text.lineContent, ReadConfig.mLineStart, text.indexY, ReadConfig.mPaint!!)
                         }
                     }
-
                 }
                 i++
             }

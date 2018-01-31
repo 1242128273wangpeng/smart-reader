@@ -361,6 +361,8 @@ public class SplashActivity extends FrameActivity {
                 Constants.isHideAD = true;
             }
         }
+        //强制关闭广告
+        Constants.isHideAD = true;
     }
 
     @Override

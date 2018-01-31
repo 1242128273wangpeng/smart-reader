@@ -28,8 +28,8 @@ public class PageAdContainer extends FrameLayout {
 
         setLayoutParams(layoutParams);
 
-        PlatformSDK.adapp().dycmNativeAd(context, type, ReadConfig.INSTANCE.getScreenWidth()
-                , ReadConfig.INSTANCE.getScreenHeight(), new AbstractCallback() {
+        PlatformSDK.adapp().dycmNativeAd(context, type,  ReadConfig.INSTANCE.getScreenHeight(),
+                ReadConfig.INSTANCE.getScreenWidth(), new AbstractCallback() {
             @Override
             public void onResult(boolean adswitch, List<ViewGroup> views, String jsonResult) {
                 if (!adswitch) {
@@ -41,7 +41,7 @@ public class PageAdContainer extends FrameLayout {
                         if (ResultCode.AD_REQ_SUCCESS.equals(ResultCode.parser(jsonObject.getInt("state_code")))) {
 
                             loadStatus = true;
-                            if(!views.isEmpty()) {
+                            if(!views.isEmpty() && views.get(0).getParent() == null) {
                                 addView(views.get(0));
                             }
                         } else {
@@ -61,7 +61,7 @@ public class PageAdContainer extends FrameLayout {
 
         setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        PlatformSDK.adapp().dycmNativeAd(context, type, width, height, new AbstractCallback() {
+        PlatformSDK.adapp().dycmNativeAd(context, type, height, width, new AbstractCallback() {
             @Override
             public void onResult(boolean adswitch, List<ViewGroup> views, String jsonResult) {
                 if (!adswitch) {
@@ -74,7 +74,12 @@ public class PageAdContainer extends FrameLayout {
 
                             loadStatus = true;
                             if(!views.isEmpty()) {
-                                addView(views.get(0));
+                                for (ViewGroup viewGroup : views) {
+                                    if (viewGroup != null && viewGroup.getParent() == null) {
+                                        addView(viewGroup);
+                                        break;
+                                    }
+                                }
                             }
                         } else {
                             loadStatus = true;

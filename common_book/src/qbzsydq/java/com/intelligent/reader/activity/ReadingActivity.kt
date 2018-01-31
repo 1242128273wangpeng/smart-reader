@@ -2,14 +2,14 @@ package com.intelligent.reader.activity
 
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.Point
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
-import android.view.Gravity
-import android.view.KeyEvent
-import android.view.View
-import android.view.WindowManager
+import android.util.DisplayMetrics
+import android.view.*
 import android.widget.TextView
 import android.widget.Toast
 import com.intelligent.reader.BuildConfig
@@ -38,9 +38,12 @@ import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.data.bean.Source
+import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.OpenUDID
 import net.lzbook.kit.utils.SharedPreferencesUtils
+import java.lang.Exception
+import java.lang.reflect.Method
 import java.util.*
 
 
@@ -59,6 +62,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     private val startReadTime = System.currentTimeMillis()
 
+    private var isReadAutoOpening = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,6 +121,8 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         readSettingView.setNovelMode(ReadConfig.MODE)
 
         initGuide()
+
+        setNavigationBarListener()
     }
 
     private fun setUIOptions() {
@@ -311,9 +317,18 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onReadCache() = mReadPresenter.onReadCache()
 
+    /**
+     * 无NavigationBar, 直接开启自动阅读
+     * 有NavigationBar, 在NavigationBar隐藏监听里，开启自动阅读
+     * @see setNavigationBarListener
+     */
     override fun onReadAuto() {
-        readerWidget.startAutoRead()
+        isReadAutoOpening = true
         showMenu(false)
+        if (!isNavigationBarShow()) {
+            isReadAutoOpening = false
+            readerWidget.startAutoRead()
+        }
     }
 
     override fun onChangeMode(mode: Int) {
@@ -440,18 +455,18 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     private val immersiveRunable = Runnable { setUIOptions() }
 
     override fun showMenu(isShow: Boolean) {
-        if(ReadState.isMenuShow != isShow){
+        if (ReadState.isMenuShow != isShow) {
             ReadState.isMenuShow = isShow
-            if (ReadConfig.animation != ReadViewEnums.Animation.list) {
-                if (isShow) {
-                    window.decorView.handler.removeCallbacks(immersiveRunable)
-                    window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_NORMAL
-                } else {
-                    window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
-                }
+//            if (ReadConfig.animation != ReadViewEnums.Animation.list) {
+            if (isShow) {
+                window.decorView.handler.removeCallbacks(immersiveRunable)
+                window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_NORMAL
             } else {
-                window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_LOW_PROFILE
+                window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
             }
+//            } else {
+//                window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_LOW_PROFILE
+//            }
 
 
             readSettingView.showMenu(isShow)
@@ -521,6 +536,54 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         params.put("app_version_code", AppUtils.getVersionCode().toString())
         params.put("app_channel_id", AppUtils.getChannelId())
         LogEncapManager.getInstance().sendLog(params, "zn_pv")
+    }
+
+    private fun getRealScreenSize(): Point {
+        val display = windowManager.defaultDisplay
+        val displayMetrics = DisplayMetrics()
+        val realSize = Point()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            display.getRealMetrics(displayMetrics)
+        } else {
+            val c: Class<*>
+            try {
+                c = Class.forName("android.view.Display")
+                val method: Method = c.getMethod("getRealMetrics", DisplayMetrics::class.java)
+                method.invoke(display, displayMetrics)
+            } catch (e: Exception) {
+                displayMetrics.setToDefaults()
+                e.printStackTrace()
+            }
+        }
+
+        realSize.x = displayMetrics.widthPixels
+        realSize.y = displayMetrics.heightPixels
+
+        return realSize
+    }
+
+    private fun setNavigationBarListener() {
+        //NavigationBar显示及收起监听
+        val content = findViewById(Window.ID_ANDROID_CONTENT)
+        content.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+            if (bottom > oldBottom || right > oldRight) { // NavigationBar收起
+                if (isReadAutoOpening) { //开启自动阅读
+                    AppLog.e("ReadingActivity", "开始自动阅读")
+                    isReadAutoOpening = false
+                    readerWidget.startAutoRead()
+                }
+            }
+        }
+    }
+
+    private fun isNavigationBarShow(): Boolean {
+        val displayMetrics = DisplayMetrics()
+        val display = windowManager.defaultDisplay
+        display.getMetrics(displayMetrics)
+        val width = displayMetrics.widthPixels
+        val height = displayMetrics.heightPixels
+        val realSize = getRealScreenSize()
+        return realSize.x > width || realSize.y > height
     }
 
     override fun readOptionHeaderDismiss() {
