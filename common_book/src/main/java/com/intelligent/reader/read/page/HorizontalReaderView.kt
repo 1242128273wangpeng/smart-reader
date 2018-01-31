@@ -1,7 +1,6 @@
 package com.intelligent.reader.read.page
 
 import android.content.Context
-import android.os.Handler
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -19,7 +18,6 @@ import com.intelligent.reader.read.mode.ReadCursor
 import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.view.ViewPager
 import io.reactivex.Observable
-import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.ReadConfig
@@ -382,7 +380,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                 override fun onPreDraw(): Boolean {
                     viewTreeObserver.removeOnPreDrawListener(this)
                     //更改当前view状态
-                    var curView: View
+                    var curView: View?
                     do {
                         curView = findViewWithTag(ReadViewEnums.PageIndex.current)
                     } while (curView == null)
