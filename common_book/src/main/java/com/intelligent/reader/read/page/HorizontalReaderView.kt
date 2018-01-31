@@ -38,7 +38,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     private var beforeX: Float = 0.toFloat()
 
     private var disallowIntercept = false
-    private val touchSlop by lazy{
+    private val touchSlop by lazy {
         ViewConfiguration.get(context).scaledTouchSlop
     }
     //当前游标
@@ -193,7 +193,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                     cursor.nextOffset
                 }
             }
-            val nextCursor = ReadCursor(curCursor!!.curBook, newNextSequence, newOffset, ReadViewEnums.PageIndex.previous)
+            val nextCursor = ReadCursor(curCursor!!.curBook, newNextSequence, newOffset, ReadViewEnums.PageIndex.next)
             (nextView as HorizontalPage).viewNotify = ReadViewEnums.NotifyStateState.none
             nextView.setCursor(nextCursor)
         }
@@ -376,6 +376,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             val sequence = ReadState.sequence
             val offset = ReadState.offset
             DataProvider.getInstance().clear()
+            DataProvider.getInstance().preLoad(sequence, sequence + 6)
 
             viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
                 override fun onPreDraw(): Boolean {
@@ -429,6 +430,12 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
+
+        if (ReadState.isMenuShow) {
+            mReadPageChange?.showMenu(false)
+            return true
+        }
+
         if (!disallowIntercept && ReadConfig.animation == ReadViewEnums.Animation.curl
                 && MotionEvent.ACTION_MOVE == ev?.actionMasked) {
             //仿真是要先判断出滑动方向的，防止ViewPager先滑动touchSlop长度

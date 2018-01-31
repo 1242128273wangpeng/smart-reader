@@ -20,9 +20,9 @@ object ReadState {
     var currentChapter: Chapter? = null
         private set
         get() {
-            if(sequence >= 0 && sequence < chapterList.size) {
+            if (sequence >= 0 && sequence < chapterList.size) {
                 return chapterList[sequence]
-            }else{
+            } else {
                 return null
             }
         }
