@@ -65,15 +65,18 @@ class DataProvider : DisposableAndroidViewModel() {
 
 
     fun preLoad(start: Int, end: Int) {
-        if (!ReadState.chapterList.isEmpty() && start >= 0) {
-            for (i in start until end) {
+        if (!ReadState.chapterList.isEmpty()) {
+            val startIndex = Math.max(start, 0)
+            for (i in startIndex until end) {
                 if (i < ReadState.chapterCount) {
-                    mReaderRepository.requestSingleChapter(ReadState.book.site, ReadState.chapterList.get(i))
-                            .subscribeOn(Schedulers.io())
-                            .subscribekt(onNext = {
-                                println(" chapter cached " + it.sequence)
-                                mReaderRepository.writeChapterCache(it, false)
-                            }, onError = { it.printStackTrace() })
+                    if(!isCacheExistBySequence(i)) {
+                        mReaderRepository.requestSingleChapter(ReadState.book.site, ReadState.chapterList.get(i))
+                                .subscribeOn(Schedulers.io())
+                                .subscribekt(onNext = {
+                                    println(" chapter cached " + it.sequence)
+                                    mReaderRepository.writeChapterCache(it, false)
+                                }, onError = { it.printStackTrace() })
+                    }
                 }
             }
         }
@@ -261,21 +264,13 @@ class DataProvider : DisposableAndroidViewModel() {
      * 获取书籍目录 //复用BookCoverRepositoyFactory
      */
     fun getChapterList(book: Book, requestItem: RequestItem, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
-        if (sequence == -1) {//封面页
-            chapterLruCache.put(sequence, NovelChapter(Chapter(),
-                    arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf()))))
-            mReadDataListener.loadDataSuccess(Chapter(), type)
-            return
-        }
-        if (sequence < -1) {
-            mReadDataListener.loadDataError("无章节")
-            return
-        }
         if (ReadState.chapterList.size == 0) {
             val bookChapterDao = BookChapterDao(BaseBookApplication.getGlobalContext(), ReadState.book_id)
             val chapterList = bookChapterDao.queryBookChapter()
             ReadState.chapterList.addAll(chapterList)
+            preLoad(ReadState.sequence, ReadState.sequence + 6)
         }
+
         if (ReadState.chapterList.size != 0) {
             requestSingleChapter(book, ReadState.chapterList, sequence, type, mReadDataListener)
         } else {
@@ -290,6 +285,7 @@ class DataProvider : DisposableAndroidViewModel() {
                             .subscribe({ chapters ->
                                 if (ReadState.chapterList.size == 0) {
                                     ReadState.chapterList.addAll(chapters)
+                                    preLoad(ReadState.sequence, ReadState.sequence + 6)
                                 }
                                 if (ReadState.chapterList.size != 0) {
                                     requestSingleChapter(book, ReadState.chapterList, sequence, type, mReadDataListener)
@@ -304,18 +300,21 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     private fun requestSingleChapter(book: Book, chapters: List<Chapter>, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
+
         val cacheNovelChapter = chapterLruCache.get(sequence)
         if (cacheNovelChapter != null) {
             mReadDataListener.loadDataSuccess(cacheNovelChapter.chapter, type)
             return
         }
 
-        if (sequence < 0 || sequence >= chapters.size) {
-            runOnMain {
-                mReadDataListener.loadDataError("章节超目录列表")
-            }
+        if (sequence < 0) {//封面页
+            chapterLruCache.put(sequence, NovelChapter(Chapter(),
+                    arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf()))))
+            mReadDataListener.loadDataSuccess(Chapter(), type)
             return
         }
+
+
         val chapter = chapters[sequence]
         addDisposable(mReaderRepository.requestSingleChapter(book.site, chapter)
                 .map {
@@ -353,7 +352,7 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     fun isCacheExistBySequence(sequence: Int): Boolean {
-        if (ReadState.chapterList.size > 0 && sequence < ReadState.chapterList.size) {
+        if (ReadState.chapterList.size > 0 && sequence >= 0 && sequence < ReadState.chapterList.size) {
             return mReaderRepository.isChapterCacheExist(ReadState.book.site, ReadState.chapterList[sequence])
         } else {
             return false
