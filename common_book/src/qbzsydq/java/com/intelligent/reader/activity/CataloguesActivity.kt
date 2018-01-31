@@ -33,6 +33,7 @@ import net.lzbook.kit.utils.StatServiceUtils
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.Menu
@@ -50,6 +51,7 @@ import android.widget.ListView
 import android.widget.RadioButton
 import android.widget.RelativeLayout
 import android.widget.TextView
+import com.intelligent.reader.read.mode.ReadState
 
 import java.util.ArrayList
 import java.util.Collections
@@ -561,6 +563,10 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
 
         if (catalog_main != null) {
             catalog_main!!.setSelection(position)
+        }
+
+        if (fromEnd) {
+            catalog_main!!.setSelection(0)
         }
 
         if (mCatalogAdapter != null)

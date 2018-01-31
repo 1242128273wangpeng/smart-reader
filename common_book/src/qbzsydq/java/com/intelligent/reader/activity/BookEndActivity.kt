@@ -182,11 +182,6 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
-
     /**
      * 展示换源
      */

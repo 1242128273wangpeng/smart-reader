@@ -352,7 +352,11 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     fun isCacheExistBySequence(sequence: Int): Boolean {
-        if (ReadState.chapterList.size > 0 && sequence >= 0 && sequence < ReadState.chapterList.size) {
+        if (sequence == -1) {
+            return true
+        }
+
+        if (ReadState.chapterList.size > 0 && sequence <= ReadState.chapterList.size - 1) {
             return mReaderRepository.isChapterCacheExist(ReadState.book.site, ReadState.chapterList[sequence])
         } else {
             return false
