@@ -36,6 +36,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 
     //记录上一次滑动x坐标
     private var beforeX: Float = 0.toFloat()
+    private var shouldGiveUpAction: Boolean = false
 
     private var disallowIntercept = false
     private val touchSlop by lazy {
@@ -459,22 +460,25 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         when (ev.action) {
             MotionEvent.ACTION_DOWN//按下
             -> {
+                shouldGiveUpAction = false
                 beforeX = ev.x
                 return super.dispatchTouchEvent(ev)
             }
             MotionEvent.ACTION_MOVE -> {//移动
                 val motionValue = ev.x - beforeX
-                if (!disallowIntercept && motionValue < -touchSlop && (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).orientationLimit == ReadViewEnums.ScrollLimitOrientation.RIGHT) {
+                if (!disallowIntercept && motionValue < -mTouchSlop && (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).orientationLimit == ReadViewEnums.ScrollLimitOrientation.RIGHT) {
                     mReadPageChange?.goToBookOver()//跳bookend
+                    shouldGiveUpAction = true
                     return false
                 } else {
                     return super.dispatchTouchEvent(ev)
                 }
             }
-            MotionEvent.ACTION_UP -> {
-                super.dispatchTouchEvent(ev)
-            }
         }
-        return super.onTouchEvent(ev)
+
+        if(shouldGiveUpAction){
+            return false
+        }
+        return super.dispatchTouchEvent(ev)
     }
 }
