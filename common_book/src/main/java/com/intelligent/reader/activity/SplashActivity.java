@@ -362,7 +362,7 @@ public class SplashActivity extends FrameActivity {
             }
         }
         //强制关闭广告
-        Constants.isHideAD = true;
+//        Constants.isHideAD = true;
     }
 
     @Override

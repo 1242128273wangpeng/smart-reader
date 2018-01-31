@@ -282,6 +282,9 @@ class DataProvider : DisposableAndroidViewModel() {
                             }
                             .subscribeOn(Schedulers.io())
                             .observeOn(Schedulers.io())
+                            .doOnDispose{
+                                mReadDataListener.loadDataError("用户取消")
+                            }
                             .subscribe({ chapters ->
                                 if (ReadState.chapterList.size == 0) {
                                     ReadState.chapterList.addAll(chapters)
@@ -333,6 +336,9 @@ class DataProvider : DisposableAndroidViewModel() {
                 }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnDispose{
+                    mReadDataListener.loadDataError("用户取消")
+                }
                 .subscribe({ novelChapter ->
 
                     if (novelChapter.chapter.content != "null" && novelChapter.chapter.content.isNotEmpty()) {
@@ -419,7 +425,9 @@ class DataProvider : DisposableAndroidViewModel() {
 
             arrayList.add(novelPageBean)
         }
-        val frequency = PlatformSDK.config().configExpireMinutes
+
+        val frequency = PlatformSDK.config().chapter_limit
+
         if (arrayList.size >= frequency * 2 && within) {
             val count = arrayList.size - 2
             for (i in 1 until count) {

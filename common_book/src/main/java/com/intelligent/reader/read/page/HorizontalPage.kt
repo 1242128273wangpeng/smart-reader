@@ -211,8 +211,10 @@ class HorizontalPage : FrameLayout, Observer {
     }
 
     private fun onScreenChange() {
-        mAdFrameLayout.removeAllViews()
-        onRedrawPage()
+        if(ReadViewEnums.PageIndex.current == tag) {
+            mAdFrameLayout.removeAllViews()
+            onRedrawPage()
+        }
 //        checkAdBiggerView()
     }
 
@@ -303,26 +305,28 @@ class HorizontalPage : FrameLayout, Observer {
 
     //封面页
     private fun setupHomePage(cursor: ReadCursor) {
-        removeView(homePage)
-        addView(homePage)
-        //封面页
-        homePage.book_name_tv.text = cursor.curBook.name
-        homePage.book_auth_tv.text = cursor.curBook.author
-        homePage.slogan_tv.setTextView(2f, context.resources.getString(R.string.slogan))
-        homePage.product_name_tv.setTextView(1f, context.resources.getString(R.string.app_name))
-        //封面字颜色
-        var color = ReadQueryUtil.getHomePageColor(resources)
-        homePage.book_name_tv.setTextColor(color)
-        homePage.book_auth_tv.setTextColor(color)
-        homePage.slogan_tv.setTextColor(color)
-        homePage.product_name_tv.setTextColor(color)
-        postInvalidate()
-        //改变状态
-        mCursor!!.sequence = -1
-        viewState = ReadViewEnums.ViewState.start
-        loadView.visibility = View.GONE
-        readTop.visibility = View.GONE
-        readBottom.visibility = View.GONE
+        post {
+            removeView(homePage)
+            addView(homePage)
+            //封面页
+            homePage.book_name_tv.text = cursor.curBook.name
+            homePage.book_auth_tv.text = cursor.curBook.author
+            homePage.slogan_tv.setTextView(2f, context.resources.getString(R.string.slogan))
+            homePage.product_name_tv.setTextView(1f, context.resources.getString(R.string.app_name))
+            //封面字颜色
+            var color = ReadQueryUtil.getHomePageColor(resources)
+            homePage.book_name_tv.setTextColor(color)
+            homePage.book_auth_tv.setTextColor(color)
+            homePage.slogan_tv.setTextColor(color)
+            homePage.product_name_tv.setTextColor(color)
+            postInvalidate()
+            //改变状态
+            mCursor!!.sequence = -1
+            viewState = ReadViewEnums.ViewState.start
+            loadView.visibility = View.GONE
+            readTop.visibility = View.GONE
+            readBottom.visibility = View.GONE
+        }
     }
 
     private fun showErrorView(cursor: ReadCursor) {
@@ -352,14 +356,12 @@ class HorizontalPage : FrameLayout, Observer {
 
     override fun update(o: Observable, arg: Any) {
         destroyDrawingCache()
-        if(ReadViewEnums.PageIndex.current == tag) {
-            when (arg as String) {
-                "READ_INTERLINEAR_SPACE" -> onRedrawPage()
-                "FONT_SIZE" -> onRedrawPage()
-                "SCREEN" -> onScreenChange()
-                "MODE" -> setupView()
-                "JUMP" -> onJumpChapter()
-            }
+        when (arg as String) {
+            "READ_INTERLINEAR_SPACE" -> onRedrawPage()
+            "FONT_SIZE" -> onRedrawPage()
+            "SCREEN" -> onScreenChange()
+            "MODE" -> setupView()
+            "JUMP" -> onJumpChapter()
         }
     }
 
@@ -602,9 +604,6 @@ class HorizontalPage : FrameLayout, Observer {
 //            }
         }
 
-
-        private var isShowMenu: Boolean = false
-
         override fun onTouchEvent(event: MotionEvent): Boolean {
             return if (viewState == ReadViewEnums.ViewState.loading || viewState == ReadViewEnums.ViewState.error) {
                 return false
@@ -631,9 +630,8 @@ class HorizontalPage : FrameLayout, Observer {
                 }
 
                 override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
-                    if (isShowMenu) {
+                    if (ReadState.isMenuShow) {
                         noticePageListener?.onClickMenu(false)
-                        isShowMenu = false
                     }
                     return false
                 }
@@ -645,13 +643,11 @@ class HorizontalPage : FrameLayout, Observer {
                 override fun onShowPress(e: MotionEvent) = Unit
 
                 override fun onSingleTapUp(e: MotionEvent): Boolean {
-                    if (isShowMenu) {
+                    if (ReadState.isMenuShow) {
                         noticePageListener?.onClickMenu(false)
-                        isShowMenu = false
                     } else {
                         if (isTouchMenuArea(e)) {
                             noticePageListener?.onClickMenu(true)
-                            isShowMenu = true
                         } else {
                             if (e.x < width / 2) {
                                 //left

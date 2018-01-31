@@ -352,7 +352,9 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
                             break
                         }
                         //left
-                        flipPreviousPage()
+                        if(!flipPreviousPage()){
+                            break
+                        }
                     } else {
                         if(ReadViewEnums.ScrollLimitOrientation.RIGHT == orientationLimit){
                             mReadPageChange?.goToBookOver()//跳bookend
@@ -360,13 +362,17 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
                             break
                         }
                         //right
-                        flipNextPage()
+                        if(!flipNextPage()){
+                            break
+                        }
                     }
                 }
 
                 velocityTracker?.computeCurrentVelocity(1000, mMaximumVelocity)
                 mTextureView?.onFingerUp(x, y, velocityTracker!!.xVelocity)
             }while (false)
+        }else{
+            canFlip = true
         }
 
         velocityTracker?.recycle()
@@ -380,6 +386,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
         if (isDownActioned) {
 
             if (Math.abs(downPointF.x - x) >= mTouchSlop) {
+                var filledTexture = true
                 //perpare texture
                 if (downPointF.x - x < 0) {
                     if(ReadViewEnums.ScrollLimitOrientation.LEFT == orientationLimit){
@@ -388,7 +395,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
                         return false
                     }else {
                         //left
-                        flipPreviousPage()
+                        filledTexture = flipPreviousPage()
                     }
                 } else {
                     if(ReadViewEnums.ScrollLimitOrientation.RIGHT == orientationLimit){
@@ -398,12 +405,13 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
                         return false
                     }else {
                         //right
-                        flipNextPage()
+                        filledTexture = flipNextPage()
                     }
                 }
 
-
-                mTextureView?.onFingerMove(x, y)
+                if(filledTexture) {
+                    mTextureView?.onFingerMove(x, y)
+                }
             }
         } else {
             onCurlDown(x, y)
@@ -412,26 +420,36 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
         return true
     }
 
-    private fun flipPreviousPage() {
+    private fun flipPreviousPage():Boolean {
+        var flag = true
         synchronized(mTextureView as Object) {
             if (!mTextureView!!.hasFirstTexture()) {
                 mTextureView!!.firstTexture = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.previous).drawingCache
+                flag = mTextureView!!.firstTexture != null
             }
-            if (!mTextureView!!.hasSecondTexture()) {
+            if (flag && !mTextureView!!.hasSecondTexture()) {
                 mTextureView!!.secondTexture = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current).drawingCache
+                flag = mTextureView!!.secondTexture != null
             }
         }
+
+        return true
     }
 
-    private fun flipNextPage() {
+    private fun flipNextPage():Boolean {
+        var flag = true
         synchronized(mTextureView as Object) {
             if (!mTextureView!!.hasFirstTexture()) {
                 mTextureView!!.firstTexture = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current).drawingCache
+                flag = mTextureView!!.firstTexture != null
             }
-            if (!mTextureView!!.hasSecondTexture()) {
+            if (flag && !mTextureView!!.hasSecondTexture()) {
                 mTextureView!!.secondTexture = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.next).drawingCache
+                flag = mTextureView!!.secondTexture != null
             }
         }
+
+        return flag
     }
 
 //    private fun setFlipCurrentAsFirstTexture() {
