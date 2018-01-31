@@ -18,6 +18,7 @@ import com.intelligent.reader.read.help.ReadSeparateHelper
 import com.intelligent.reader.read.mode.NovelPageBean
 import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.util.ThemeUtil
+import kotlinx.android.synthetic.main.error_page2.view.*
 import kotlinx.android.synthetic.main.loading_page_reading.view.*
 import kotlinx.android.synthetic.main.vertical_pager_layout.view.*
 import net.lzbook.kit.constants.Constants
@@ -101,6 +102,10 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
         trans_coding_tv.setOnClickListener {
             mReadPageChange?.onTransCodingClick()
         }
+        loading_error_reload.setOnClickListener {
+            entrance()
+        }
+
         page_rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -169,6 +174,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
             }
 
         })
+        loading_error_setting.visibility = View.GONE
     }
 
     override fun entrance() {
@@ -249,7 +255,12 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                     runOnMain {
                         mChapterLoadStat = CHAPTER_WAITING
                         mAdapter.setLoadViewState(PagerScrollAdapter.LOAD_VIEW_FAIL_STATE)
-                        dismissLoadPage()
+                        if (mOriginDataList.size > 0) {
+                            dismissLoadPage()
+                        } else {
+                            showErrorPage()
+                        }
+
                     }
                 }
             })
@@ -646,12 +657,19 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
             return
         }
         page_rv.visibility = GONE
+        error_page.visibility = GONE
         load_page.visibility = View.VISIBLE
+    }
+
+    private fun showErrorPage() {
+        page_rv.visibility = GONE
+        error_page.visibility = View.VISIBLE
     }
 
     private fun dismissLoadPage() {
         page_rv.visibility = VISIBLE
         load_page.visibility = GONE
+        error_page.visibility = GONE
     }
 
     private fun setBackground() {
