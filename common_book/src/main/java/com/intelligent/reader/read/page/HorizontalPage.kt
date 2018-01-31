@@ -7,9 +7,7 @@ import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
-import com.dycm_adsdk.PlatformSDK
 import com.intelligent.reader.R
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.help.DrawTextHelper
@@ -24,13 +22,11 @@ import kotlinx.android.synthetic.main.error_page2.view.*
 import kotlinx.android.synthetic.main.loading_page_reading.view.*
 import kotlinx.android.synthetic.main.read_bottom.view.*
 import kotlinx.android.synthetic.main.read_top.view.*
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.runOnMain
-import net.lzbook.kit.utils.subscribekt
 import java.util.*
 
 
@@ -200,6 +196,7 @@ class HorizontalPage : FrameLayout, Observer {
 
     fun onRedrawPage() {
         mAdFrameLayout.removeAllViews()
+        viewState = ReadViewEnums.ViewState.other
         if (tag == ReadViewEnums.PageIndex.current) {
             onReSeparate()
             mCursor?.let {
@@ -210,16 +207,12 @@ class HorizontalPage : FrameLayout, Observer {
                 setCursor(it)
             }
         }
-        viewState = ReadViewEnums.ViewState.other
     }
 
     private fun onScreenChange() {
         mAdFrameLayout.removeAllViews()
         onRedrawPage()
 //        checkAdBiggerView()
-        mCursor?.let {
-            pageView.entrance(it)
-        }
     }
 
     private fun onJumpChapter() {
