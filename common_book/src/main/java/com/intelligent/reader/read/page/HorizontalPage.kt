@@ -491,6 +491,12 @@ class HorizontalPage : FrameLayout, Observer {
                     noticePageListener?.pageChangSuccess(mCursor!!, ReadViewEnums.NotifyStateState.none)//游标通知回调
                 } else {
 
+                    //画之前清空内容
+                    post {
+                        removeView(homePage)
+                        postInvalidate()
+                    }
+
                     if (cursor.sequence == ReadState.chapterCount - 1 && pageIndex == pageSum) {
                         orientationLimit = ReadViewEnums.ScrollLimitOrientation.RIGHT
                     } else {
@@ -525,11 +531,7 @@ class HorizontalPage : FrameLayout, Observer {
                             ReadState.offset = cursor.offset
                         }
 
-                        //画之前清空内容
-                        post {
-                            removeView(homePage)
-                            postInvalidate()
-                        }
+
                         //判断展示Banner广告
 
                         val topMargin = if (mNovelPageBean?.lines?.isNotEmpty() == true) mNovelPageBean!!.height else ReadConfig.screenHeight.toFloat()
