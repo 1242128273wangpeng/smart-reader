@@ -69,7 +69,7 @@ class DataProvider : DisposableAndroidViewModel() {
             val startIndex = Math.max(start, 0)
             for (i in startIndex until end) {
                 if (i < ReadState.chapterCount) {
-                    if(!isCacheExistBySequence(i)) {
+                    if (!isCacheExistBySequence(i)) {
                         mReaderRepository.requestSingleChapter(ReadState.book.site, ReadState.chapterList.get(i))
                                 .subscribeOn(Schedulers.io())
                                 .subscribekt(onNext = {
@@ -358,8 +358,9 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     fun isCacheExistBySequence(sequence: Int): Boolean {
+
         if (sequence == -1) {
-            return true
+            return mBookCoverRepository.isBookSubscribe(ReadState.book_id)
         }
 
         if (ReadState.chapterList.size > 0 && sequence <= ReadState.chapterList.size - 1) {
@@ -451,7 +452,7 @@ class DataProvider : DisposableAndroidViewModel() {
     fun onReSeparate() {
         val novelChapter = chapterLruCache.get(ReadState.sequence)
         chapterLruCache.evictAll()
-        if (ReadState.sequence >=0 && novelChapter != null) {
+        if (ReadState.sequence >= 0 && novelChapter != null) {
             novelChapter.separateList = ReadSeparateHelper.initTextSeparateContent(novelChapter.chapter.content, novelChapter.chapter.chapter_name)
             if (!Constants.isHideAD) {
                 loadAd(novelChapter)
