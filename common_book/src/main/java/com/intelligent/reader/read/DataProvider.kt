@@ -315,7 +315,7 @@ class DataProvider : DisposableAndroidViewModel() {
         }
 
 
-        val chapter = chapters[sequence]
+        val chapter = chapters[Math.min(sequence, chapters.size - 1)]
         addDisposable(mReaderRepository.requestSingleChapter(book.site, chapter)
                 .map {
                     mReaderRepository.writeChapterCache(it, false)

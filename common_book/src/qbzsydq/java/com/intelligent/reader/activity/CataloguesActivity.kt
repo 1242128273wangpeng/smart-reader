@@ -500,6 +500,9 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     }
 
     override fun onBackPressed() {
+        if (mCataloguesPresenter != null) {
+            mCataloguesPresenter!!.activityResult(sequence)
+        }
         exitAndUpdate()
     }
 
