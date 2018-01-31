@@ -350,7 +350,7 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     fun isCacheExistBySequence(sequence: Int): Boolean {
-        if (ReadState.chapterList.size > 0) {
+        if (ReadState.chapterList.size > 0 && sequence >= 0) {
             return mReaderRepository.isChapterCacheExist(ReadState.book.site, ReadState.chapterList[sequence])
         } else {
             return false
@@ -362,7 +362,7 @@ class DataProvider : DisposableAndroidViewModel() {
         val bigAdLayoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
         val leftMargin = AppUtils.dip2px(ReadState.readingActivity, 10f)
         val rightMargin = AppUtils.dip2px(ReadState.readingActivity, 10f)
-        val topMargin = AppUtils.dip2px(ReadState.readingActivity, 40f)
+        val topMargin = AppUtils.dip2px(ReadState.readingActivity, 30f)
         val bottomMargin = AppUtils.dip2px(ReadState.readingActivity, 30f)
         bigAdLayoutParams.setMargins(leftMargin, topMargin, rightMargin, bottomMargin)
         return bigAdLayoutParams
@@ -395,12 +395,13 @@ class DataProvider : DisposableAndroidViewModel() {
         if (!last.isAd && between) {
 
             //check small adView
-            val margin = if (last.lines.isNotEmpty()) last.height else ReadConfig.screenHeight.toFloat()
-            if (ReadConfig.screenHeight - margin > ReadConfig.screenHeight / 5) {
+            val contentHeight = if (last.lines.isNotEmpty()) last.height.toInt() else 0
+            val leftSpace = ReadConfig.screenHeight - contentHeight - (ReadConfig.screenDensity * ReadConfig.READ_CONTENT_PAGE_TOP_SPACE * 2).toInt() - (ReadConfig.screenDensity * 30).toInt()
+            if (leftSpace >= ReadConfig.screenHeight / 5) {
 
                 last.adSmallView = PageAdContainer(ReadState.readingActivity!!,
                         "8-1", ReadConfig.screenWidth
-                        , (ReadConfig.screenHeight - margin).toInt())
+                        , leftSpace)
             }
 
             val offset = last.offset + arrayList.last().lines.sumBy { it.lineContent.length } + 1
@@ -437,11 +438,12 @@ class DataProvider : DisposableAndroidViewModel() {
     fun onReSeparate() {
         val novelChapter = chapterLruCache.get(ReadState.sequence)
         chapterLruCache.evictAll()
-        if (novelChapter != null) {
+        if (ReadState.sequence >=0 && novelChapter != null) {
             novelChapter.separateList = ReadSeparateHelper.initTextSeparateContent(novelChapter.chapter.content, novelChapter.chapter.chapter_name)
             if (!Constants.isHideAD) {
                 loadAd(novelChapter)
             }
+            chapterLruCache.put(ReadState.sequence, novelChapter)
         }
     }
 

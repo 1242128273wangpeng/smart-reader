@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -26,10 +27,11 @@ public class PageAdContainer extends FrameLayout {
     public PageAdContainer(@NonNull Context context, String type, LayoutParams layoutParams) {
         super(context);
 
+        setBackgroundColor(Color.CYAN);
         setLayoutParams(layoutParams);
 
-        PlatformSDK.adapp().dycmNativeAd(context, type, ReadConfig.INSTANCE.getScreenWidth()
-                , ReadConfig.INSTANCE.getScreenHeight(), new AbstractCallback() {
+        PlatformSDK.adapp().dycmNativeAd(context, type,  ReadConfig.INSTANCE.getScreenHeight(),
+                ReadConfig.INSTANCE.getScreenWidth(), new AbstractCallback() {
             @Override
             public void onResult(boolean adswitch, List<ViewGroup> views, String jsonResult) {
                 if (!adswitch) {
@@ -41,7 +43,7 @@ public class PageAdContainer extends FrameLayout {
                         if (ResultCode.AD_REQ_SUCCESS.equals(ResultCode.parser(jsonObject.getInt("state_code")))) {
 
                             loadStatus = true;
-                            if(!views.isEmpty()) {
+                            if(!views.isEmpty() && views.get(0).getParent() == null) {
                                 addView(views.get(0));
                             }
                         } else {
@@ -59,9 +61,11 @@ public class PageAdContainer extends FrameLayout {
     public PageAdContainer(@NonNull Context context, String type, int width, int height) {
         super(context);
 
+        setBackgroundColor(Color.GREEN);
+
         setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        PlatformSDK.adapp().dycmNativeAd(context, type, width, height, new AbstractCallback() {
+        PlatformSDK.adapp().dycmNativeAd(context, type, height, width, new AbstractCallback() {
             @Override
             public void onResult(boolean adswitch, List<ViewGroup> views, String jsonResult) {
                 if (!adswitch) {
@@ -73,7 +77,7 @@ public class PageAdContainer extends FrameLayout {
                         if (ResultCode.AD_REQ_SUCCESS.equals(ResultCode.parser(jsonObject.getInt("state_code")))) {
 
                             loadStatus = true;
-                            if(!views.isEmpty()) {
+                            if(!views.isEmpty() && views.get(0).getParent() == null) {
                                 addView(views.get(0));
                             }
                         } else {

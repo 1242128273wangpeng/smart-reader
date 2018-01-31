@@ -193,7 +193,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                     cursor.nextOffset
                 }
             }
-            val nextCursor = ReadCursor(curCursor!!.curBook, newNextSequence, newOffset, ReadViewEnums.PageIndex.previous)
+            val nextCursor = ReadCursor(curCursor!!.curBook, newNextSequence, newOffset, ReadViewEnums.PageIndex.next)
             (nextView as HorizontalPage).viewNotify = ReadViewEnums.NotifyStateState.none
             nextView.setCursor(nextCursor)
         }
