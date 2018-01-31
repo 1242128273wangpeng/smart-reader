@@ -193,7 +193,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                     cursor.nextOffset
                 }
             }
-            val nextCursor = ReadCursor(curCursor!!.curBook, newNextSequence, newOffset, ReadViewEnums.PageIndex.previous)
+            val nextCursor = ReadCursor(curCursor!!.curBook, newNextSequence, newOffset, ReadViewEnums.PageIndex.next)
             (nextView as HorizontalPage).viewNotify = ReadViewEnums.NotifyStateState.none
             nextView.setCursor(nextCursor)
         }
@@ -376,6 +376,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             val sequence = ReadState.sequence
             val offset = ReadState.offset
             DataProvider.getInstance().clear()
+            DataProvider.getInstance().preLoad(sequence, sequence + 6)
 
             viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
                 override fun onPreDraw(): Boolean {
