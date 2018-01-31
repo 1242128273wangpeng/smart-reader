@@ -306,7 +306,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     }
 
     private fun showChapterProgress() {
-        if (ReadState!!.sequence == -1) {
+        if (ReadState.sequence == -1) {
         } else {
             if (novel_hint_chapter != null) {
                 novel_hint_chapter!!.text = if (TextUtils.isEmpty(ReadState.chapterName)) "" else ReadState.chapterName
@@ -449,11 +449,17 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             }
             R.id.read_setting_reduce_text// 减小字号
             -> {
+                if (ReadState.sequence < 0) {
+                    return
+                }
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_font_size_smaller)
                 decreaseFont()
             }
             R.id.read_setting_increase_text// 加大字号
             -> {
+                if (ReadState.sequence < 0) {
+                    return
+                }
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_font_size_bigger)
                 increaseFont()
             }
