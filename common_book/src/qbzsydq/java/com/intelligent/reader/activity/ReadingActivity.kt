@@ -85,7 +85,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        ReadState.chapterList.clear()
         setUIOptions()
         read_catalog_mark_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         mReadPresenter.onNewIntent(intent)
