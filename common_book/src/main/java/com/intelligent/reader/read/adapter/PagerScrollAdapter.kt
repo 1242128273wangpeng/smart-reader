@@ -41,6 +41,8 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
 
     private val LAST_PAGE_EXTEND_HEIGHT = 300
 
+    private val LAST_PAGE_AD_EXTEND_HEIGHT = 50
+
     private val AD_PORTRAIT_VIEW_HEIGHT = 600
 
     private val AD_LANDSCAPE_VIEW_HEIGHT = 800
@@ -255,7 +257,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
                     }
                     lineData.adView.tag = ad_fl
                     ad_fl.addView(lineData.adView, adViewLayoutParams)
-                    itemView.layoutParams.height = (pageLines.height + adViewLayoutParams.height).toInt() + LAST_PAGE_EXTEND_HEIGHT
+                    itemView.layoutParams.height = (pageLines.height + adViewLayoutParams.height).toInt() + LAST_PAGE_AD_EXTEND_HEIGHT
                 } else {
                     itemView.layoutParams.height = pageLines.height.toInt() + LAST_PAGE_EXTEND_HEIGHT
                 }
