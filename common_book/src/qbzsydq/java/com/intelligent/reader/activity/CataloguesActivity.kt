@@ -553,7 +553,16 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         if (is_last_chapter) {
             position = chapterList.size
         } else {
-            position = sequence
+
+            position = if (isPositive) {
+                sequence
+            } else {
+                if (sequence >= chapterList.size) {
+                    0
+                } else {
+                    chapterList.size - sequence - 1
+                }
+            }
         }
 
         if (catalog_main != null) {
@@ -561,7 +570,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         }
 
         if (mCatalogAdapter != null)
-            mCatalogAdapter!!.setSelectedItem(position)
+            mCatalogAdapter!!.setSelectedItem(sequence)
     }
 
     override fun requestCatalogError() {
