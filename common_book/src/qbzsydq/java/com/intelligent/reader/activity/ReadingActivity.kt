@@ -126,7 +126,11 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     }
 
     private fun setUIOptions() {
-        window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
+        if (ReadConfig.animation == ReadViewEnums.Animation.list) {
+            window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_LOW_PROFILE
+        } else {
+            window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
+        }
     }
 
     private fun initGuide() {
@@ -453,16 +457,16 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     override fun showMenu(isShow: Boolean) {
         if (ReadState.isMenuShow != isShow) {
             ReadState.isMenuShow = isShow
-            if (ReadConfig.animation != ReadViewEnums.Animation.list) {
-                if (isShow) {
-                    window.decorView.handler.removeCallbacks(immersiveRunable)
-                    window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_NORMAL
-                } else {
-                    window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
-                }
+//            if (ReadConfig.animation != ReadViewEnums.Animation.list) {
+            if (isShow) {
+                window.decorView.handler.removeCallbacks(immersiveRunable)
+                window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_NORMAL
             } else {
-                window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_LOW_PROFILE
+                window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
             }
+//            } else {
+//                window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_LOW_PROFILE
+//            }
 
 
             readSettingView.showMenu(isShow)
