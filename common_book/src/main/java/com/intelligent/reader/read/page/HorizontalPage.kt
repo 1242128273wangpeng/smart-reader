@@ -305,26 +305,28 @@ class HorizontalPage : FrameLayout, Observer {
 
     //封面页
     private fun setupHomePage(cursor: ReadCursor) {
-        removeView(homePage)
-        addView(homePage)
-        //封面页
-        homePage.book_name_tv.text = cursor.curBook.name
-        homePage.book_auth_tv.text = cursor.curBook.author
-        homePage.slogan_tv.setTextView(2f, context.resources.getString(R.string.slogan))
-        homePage.product_name_tv.setTextView(1f, context.resources.getString(R.string.app_name))
-        //封面字颜色
-        var color = ReadQueryUtil.getHomePageColor(resources)
-        homePage.book_name_tv.setTextColor(color)
-        homePage.book_auth_tv.setTextColor(color)
-        homePage.slogan_tv.setTextColor(color)
-        homePage.product_name_tv.setTextColor(color)
-        postInvalidate()
-        //改变状态
-        mCursor!!.sequence = -1
-        viewState = ReadViewEnums.ViewState.start
-        loadView.visibility = View.GONE
-        readTop.visibility = View.GONE
-        readBottom.visibility = View.GONE
+        post {
+            removeView(homePage)
+            addView(homePage)
+            //封面页
+            homePage.book_name_tv.text = cursor.curBook.name
+            homePage.book_auth_tv.text = cursor.curBook.author
+            homePage.slogan_tv.setTextView(2f, context.resources.getString(R.string.slogan))
+            homePage.product_name_tv.setTextView(1f, context.resources.getString(R.string.app_name))
+            //封面字颜色
+            var color = ReadQueryUtil.getHomePageColor(resources)
+            homePage.book_name_tv.setTextColor(color)
+            homePage.book_auth_tv.setTextColor(color)
+            homePage.slogan_tv.setTextColor(color)
+            homePage.product_name_tv.setTextColor(color)
+            postInvalidate()
+            //改变状态
+            mCursor!!.sequence = -1
+            viewState = ReadViewEnums.ViewState.start
+            loadView.visibility = View.GONE
+            readTop.visibility = View.GONE
+            readBottom.visibility = View.GONE
+        }
     }
 
     private fun showErrorView(cursor: ReadCursor) {
