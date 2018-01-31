@@ -443,7 +443,7 @@ class HorizontalPage : FrameLayout, Observer {
         fun setCursor(cursor: ReadCursor) {
             mCursor = cursor
             //判断item 需要的章节是否在缓存
-            val novelChapter = DataProvider.getInstance().chapterLruCache[cursor.sequence]
+            val novelChapter = DataProvider.getInstance().chapterCache.get(cursor.sequence)
             if (novelChapter != null) {//加载数据
                 preDrawPage(cursor, novelChapter)
             } else {//无缓存数据
@@ -517,9 +517,6 @@ class HorizontalPage : FrameLayout, Observer {
                         if (mNovelPageBean!!.adBigView != null) {
                             if (mNovelPageBean!!.adBigView!!.parent == null) {
                                 mAdFrameLayout.addView(mNovelPageBean!!.adBigView)
-                            } else {
-                                mNovelPageBean!!.adBigView!!.removeAllViewsInLayout()
-                                mNovelPageBean!!.adBigView = null
                             }
                         }
                     } else {//普通页

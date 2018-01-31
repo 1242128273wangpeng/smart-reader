@@ -3,7 +3,6 @@ package com.intelligent.reader.read
 import android.app.Activity
 import android.content.Context
 import android.text.TextUtils
-import android.util.LruCache
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.dycm_adsdk.PlatformSDK
@@ -34,15 +33,40 @@ import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.user.UserManager
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.OpenUDID
-import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.subscribekt
 import org.json.JSONException
 import org.json.JSONObject
+import java.util.*
 
 /**
  * Created by wt on 2017/12/20.
  */
 class DataProvider : DisposableAndroidViewModel() {
+
+    inner class DataCache(val maxSize:Int){
+        val map:TreeMap<Int, NovelChapter> = TreeMap()
+
+        fun put(key:Int, novelChapter: NovelChapter){
+            if(map.size >= maxSize){
+                val firstKey = map.firstKey()
+                if(firstKey < key){
+                    map.remove(firstKey)
+                }else{
+                    map.remove(map.lastKey())
+                }
+            }
+
+            map.put(key, novelChapter)
+        }
+
+        fun get(key:Int):NovelChapter?{
+            return map[key]
+        }
+
+        fun clear(){
+            map.clear()
+        }
+    }
 
     companion object {
         fun getInstance() = Provider.INSTANCE
@@ -54,7 +78,7 @@ class DataProvider : DisposableAndroidViewModel() {
 
     var countCacheSize: Int = 3
 
-    val chapterLruCache: LruCache<Int, NovelChapter> = LruCache(countCacheSize)
+    val chapterCache = DataCache(countCacheSize)
 
     //工厂
     var mReaderRepository: ReaderRepository = ReaderRepositoryFactory.getInstance(ReaderOwnRepository.getInstance())
@@ -282,9 +306,6 @@ class DataProvider : DisposableAndroidViewModel() {
                             }
                             .subscribeOn(Schedulers.io())
                             .observeOn(Schedulers.io())
-                            .doOnDispose{
-                                mReadDataListener.loadDataError("用户取消")
-                            }
                             .subscribe({ chapters ->
                                 if (ReadState.chapterList.size == 0) {
                                     ReadState.chapterList.addAll(chapters)
@@ -304,14 +325,14 @@ class DataProvider : DisposableAndroidViewModel() {
 
     private fun requestSingleChapter(book: Book, chapters: List<Chapter>, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
 
-        val cacheNovelChapter = chapterLruCache.get(sequence)
+        val cacheNovelChapter = chapterCache.get(sequence)
         if (cacheNovelChapter != null) {
             mReadDataListener.loadDataSuccess(cacheNovelChapter.chapter, type)
             return
         }
 
         if (sequence < 0) {//封面页
-            chapterLruCache.put(sequence, NovelChapter(Chapter(),
+            chapterCache.put(sequence, NovelChapter(Chapter(),
                     arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf()))))
             mReadDataListener.loadDataSuccess(Chapter(), type)
             return
@@ -336,9 +357,6 @@ class DataProvider : DisposableAndroidViewModel() {
                 }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnDispose{
-                    mReadDataListener.loadDataError("用户取消")
-                }
                 .subscribe({ novelChapter ->
 
                     if (novelChapter.chapter.content != "null" && novelChapter.chapter.content.isNotEmpty()) {
@@ -347,7 +365,7 @@ class DataProvider : DisposableAndroidViewModel() {
                         if (!Constants.isHideAD) {
                             loadAd(novelChapter)
                         }
-                        chapterLruCache.put(sequence, novelChapter)
+                        chapterCache.put(sequence, novelChapter)
                         mReadDataListener.loadDataSuccess(novelChapter.chapter, type)
                     } else {
                         mReadDataListener.loadDataError("章节内容为空")
@@ -455,19 +473,19 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     fun onReSeparate() {
-        val novelChapter = chapterLruCache.get(ReadState.sequence)
-        chapterLruCache.evictAll()
+        val novelChapter = chapterCache.get(ReadState.sequence)
+        chapterCache.clear()
         if (ReadState.sequence >= 0 && novelChapter != null) {
             novelChapter.separateList = ReadSeparateHelper.initTextSeparateContent(novelChapter.chapter.content, novelChapter.chapter.chapter_name)
             if (!Constants.isHideAD) {
                 loadAd(novelChapter)
             }
-            chapterLruCache.put(ReadState.sequence, novelChapter)
+            chapterCache.put(ReadState.sequence, novelChapter)
         }
     }
 
     fun clear() {
-        chapterLruCache.evictAll()
+        chapterCache.clear()
         unSubscribe()
     }
 
@@ -480,7 +498,7 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     fun findCurrentPageNovelLineBean(): List<NovelLineBean>? {
-        val novelChapter = chapterLruCache[ReadState.sequence]
+        val novelChapter = chapterCache.get(ReadState.sequence)
         if (novelChapter != null) {
             val mNovelPageBean = novelChapter.separateList
             return mNovelPageBean[if (ReadState.currentPage == 0) 0 else ReadState.currentPage - 1].lines

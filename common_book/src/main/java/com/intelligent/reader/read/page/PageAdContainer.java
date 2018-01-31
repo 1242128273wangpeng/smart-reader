@@ -28,8 +28,7 @@ public class PageAdContainer extends FrameLayout {
 
         setLayoutParams(layoutParams);
 
-        PlatformSDK.adapp().dycmNativeAd(context, type,  ReadConfig.INSTANCE.getScreenHeight(),
-                ReadConfig.INSTANCE.getScreenWidth(), new AbstractCallback() {
+        PlatformSDK.adapp().dycmNativeAd(context, type,  this, new AbstractCallback() {
             @Override
             public void onResult(boolean adswitch, List<ViewGroup> views, String jsonResult) {
                 if (!adswitch) {
