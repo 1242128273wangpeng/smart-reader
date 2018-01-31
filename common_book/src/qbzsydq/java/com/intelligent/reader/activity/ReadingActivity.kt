@@ -127,7 +127,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     private fun setUIOptions() {
         if (ReadConfig.animation == ReadViewEnums.Animation.list) {
-            window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_LOW_PROFILE
+            window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
         } else {
             window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
         }
@@ -256,7 +256,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         if (hasFocus && !ReadState.isMenuShow) {
             window.decorView.postDelayed(immersiveRunable, 1500)
         } else if (ReadConfig.animation == ReadViewEnums.Animation.list) {
-            window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_LOW_PROFILE
+            window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
         }
     }
 

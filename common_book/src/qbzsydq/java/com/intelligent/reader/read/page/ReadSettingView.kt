@@ -147,7 +147,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         initPageMode()
         setFontSize()
 
-        read_landscape.isChecked = context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        read_landscape.isChecked = ReadConfig.IS_LANDSCAPE
         read_full.isChecked = sharedPreferences!!.getBoolean("full_screen_read", false)
 
         resetBtn(Constants.isSlideUp)
