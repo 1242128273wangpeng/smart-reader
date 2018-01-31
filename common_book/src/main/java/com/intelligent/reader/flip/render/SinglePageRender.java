@@ -87,7 +87,7 @@ public class SinglePageRender extends PageRender {
             mPageFlip.drawFlipFrame();
 
             //防止闪屏
-            if(isShouldShow) {
+            if(isShouldShow && mPageFlip.getFirstPage().isFirstTextureSet() && mPageFlip.getFirstPage().isSecondTextureSet()) {
                 Message obtain = Message.obtain();
                 obtain.what = -1;
                 mHandler.sendMessage(obtain);

@@ -55,6 +55,8 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, O
     PageFlip mPageFlip;
     PageRender mPageRender;
 
+    public boolean canFlip = true;
+
     public PageRender getmPageRender() {
         return mPageRender;
     }
@@ -72,7 +74,7 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, O
         boolean isAuto = pref.getBoolean(Constants.PREF_PAGE_MODE, false);
 
         // create PageFlip 设置参数
-        mPageFlip = new PageFlip(context);
+        mPageFlip = new PageFlip(this);
         mPageFlip.setSemiPerimeterRatio(1.0f)//圆柱半径
                 .setShadowWidthOfFoldEdges(5, 80, 0.7f)//折叠页的边缘阴影颜色
                 .setShadowWidthOfFoldBase(5, 110, 0.7f)
@@ -221,7 +223,7 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, O
      * @param y finger y coordinate
      */
     public synchronized void onFingerMove(final float x, final float y) {
-        if (downActioned && !mPageFlip.isAnimating()) {
+        if (downActioned) {
             queueEvent(new Runnable() {
                 @Override
                 public void run() {
@@ -252,7 +254,7 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, O
      */
     public synchronized void onFingerUp(final float x, final float y, final float velocity) {
 
-        if (downActioned && !mPageFlip.isAnimating()) {
+        if (downActioned) {
             queueEvent(new Runnable() {
                            @Override
                            public void run() {
