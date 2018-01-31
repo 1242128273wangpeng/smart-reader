@@ -64,7 +64,9 @@ object ReadSeparateHelper {
             val chapterNameSplit = chapterName.split("章".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
             if (chapterNameSplit.isNotEmpty()) {
-                novelText.add(NovelLineBean(chapterNameSplit[0] + "章", 0f, 0, false, null))
+                val chapterTitleList = getNovelText(mchapterPaint, chapterNameSplit[0] + "章", ReadConfig.mWidth - ReadConfig.screenDensity * 10)
+
+                novelText.addAll(chapterTitleList)
 
                 if (chapterNameSplit.size > 1) {
                     for (i in 1 until chapterNameSplit.size) {
