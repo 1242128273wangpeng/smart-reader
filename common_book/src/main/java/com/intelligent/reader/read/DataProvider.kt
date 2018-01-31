@@ -55,7 +55,6 @@ class DataProvider : DisposableAndroidViewModel() {
     var countCacheSize: Int = 3
 
     val chapterLruCache: LruCache<Int, NovelChapter> = LruCache(countCacheSize)
-    val mBookChapterDao = BookChapterDao(BaseBookApplication.getGlobalContext(), ReadState.book_id)
 
     //工厂
     var mReaderRepository: ReaderRepository = ReaderRepositoryFactory.getInstance(ReaderOwnRepository.getInstance())
@@ -263,7 +262,8 @@ class DataProvider : DisposableAndroidViewModel() {
      */
     fun getChapterList(book: Book, requestItem: RequestItem, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
         if (sequence == -1) {//封面页
-            chapterLruCache.put(sequence, NovelChapter(Chapter(), arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf()))))
+            chapterLruCache.put(sequence, NovelChapter(Chapter(),
+                    arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf()))))
             mReadDataListener.loadDataSuccess(Chapter(), type)
             return
         }
@@ -272,7 +272,8 @@ class DataProvider : DisposableAndroidViewModel() {
             return
         }
         if (ReadState.chapterList.size == 0) {
-            val chapterList = mBookChapterDao.queryBookChapter()
+            val bookChapterDao = BookChapterDao(BaseBookApplication.getGlobalContext(), ReadState.book_id)
+            val chapterList = bookChapterDao.queryBookChapter()
             ReadState.chapterList.addAll(chapterList)
         }
         if (ReadState.chapterList.size != 0) {
@@ -319,30 +320,30 @@ class DataProvider : DisposableAndroidViewModel() {
         addDisposable(mReaderRepository.requestSingleChapter(book.site, chapter)
                 .map {
                     mReaderRepository.writeChapterCache(it, false)
+
+                    if (!TextUtils.isEmpty(it.content)) {
+                        it.isSuccess = true
+                        // 自动切源需要就更新目录
+                        if (it.flag == 1 && !TextUtils.isEmpty(it.content)) {
+                            mReaderRepository.updateBookCurrentChapter(it.book_id, it, it.sequence)
+                        }
+                    }
+
                     val separateContent = ReadSeparateHelper.initTextSeparateContent(it.content, it.chapter_name)
                     NovelChapter(it, separateContent)
                 }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ novelChapter ->
-                    val c = novelChapter.chapter
-                    if (!TextUtils.isEmpty(chapter.content)) {
-                        c.isSuccess = true
-                        // 自动切源需要就更新目录
-                        if (c.flag == 1 && !TextUtils.isEmpty(c.content)) {
-                            mReaderRepository.updateBookCurrentChapter(c.book_id, c, c.sequence)
-                        }
-                    }
 
-                    if (c.content != "null" && c.content.isNotEmpty()) {
-                        ReadState.chapterId = c.chapter_id
+                    if (novelChapter.chapter.content != "null" && novelChapter.chapter.content.isNotEmpty()) {
+                        ReadState.chapterId = novelChapter.chapter.chapter_id
                         //加章末广告
                         if (!Constants.isHideAD) {
                             loadAd(novelChapter)
                         }
-
                         chapterLruCache.put(sequence, novelChapter)
-                        mReadDataListener.loadDataSuccess(c, type)
+                        mReadDataListener.loadDataSuccess(novelChapter.chapter, type)
                     } else {
                         mReadDataListener.loadDataError("章节内容为空")
                     }
@@ -352,13 +353,12 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     fun isCacheExistBySequence(sequence: Int): Boolean {
-        if (ReadState.chapterList.size > 0) {
+        if (ReadState.chapterList.size > 0 && sequence <= ReadState.chapterList.size - 1) {
             return mReaderRepository.isChapterCacheExist(ReadState.book.site, ReadState.chapterList[sequence])
         } else {
             return false
         }
     }
-
 
     private fun getBigAdLayoutParams(): FrameLayout.LayoutParams {
         val bigAdLayoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)

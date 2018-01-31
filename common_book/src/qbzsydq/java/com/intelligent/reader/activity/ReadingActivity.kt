@@ -81,6 +81,8 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         mReadPresenter.onCreateInit(savedInstanceState)
         auto_menu.setRateValue()
         mCatalogMarkFragment?.fixBook()
+
+        Constants.isHideAD = true
     }
 
     override fun onNewIntent(intent: Intent) {

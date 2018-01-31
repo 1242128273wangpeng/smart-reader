@@ -319,7 +319,6 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                     mAdapter.clearData()
                 }
                 mAdapter.setChapterCatalog(ReadState.chapterList)
-
                 if (!checkLoadChapterValid(chapter.sequence)) return
                 val currentChapterContent = ReadSeparateHelper.initTextSeparateContent(chapter.content, chapter.chapter_name)
                 ReadState.currentPage = ReadSeparateHelper.getCurrentPage(ReadState.offset, currentChapterContent)
@@ -348,7 +347,6 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                     mAdapter.showFootView(false)
                 }
                 mChapterLoadStat = CHAPTER_WAITING
-
             }
 
         /**
