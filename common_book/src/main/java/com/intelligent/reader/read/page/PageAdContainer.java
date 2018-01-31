@@ -74,7 +74,12 @@ public class PageAdContainer extends FrameLayout {
 
                             loadStatus = true;
                             if(!views.isEmpty()) {
-                                addView(views.get(0));
+                                for (ViewGroup viewGroup : views) {
+                                    if (viewGroup != null && viewGroup.getParent() == null) {
+                                        addView(viewGroup);
+                                        break;
+                                    }
+                                }
                             }
                         } else {
                             loadStatus = true;
