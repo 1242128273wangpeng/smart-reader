@@ -60,13 +60,14 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
     private var mPageFlipStateListener = object : SinglePageRender.PageFlipStateListener {
 
         private fun invisibelSurface(): Boolean {
+            post{
+                mTextureView?.canFlip = true
+            }
             //等待ViewPager切换完页面再隐藏
             if(mReaderView is HorizontalReaderView) {
                 var curView = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage
                 mTextureView?.alpha = 0F
-                post {
-                    canFlip = true
-                }
+
                 return curView.hasAd
             }else{
                 return false
@@ -113,6 +114,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
             if (mTextureView == null) {
                 mTextureView = PageFlipView(context)
             }
+
             if (mTextureView!!.parent == null) {
                 mTextureView?.alpha = 0f
                 //翻页动画结束监听
@@ -192,6 +194,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
      */
     override fun entrance() {
 
+
         if (mReaderView != null) {
             removeView(mReaderView as View)
         }
@@ -243,7 +246,6 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
     }
 
     override fun onResume(){
-        canFlip = true
     }
 
     override fun onPause() {
@@ -269,7 +271,6 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
     private var isDownActioned = false
     private var shouldGiveUpAction = false
-    private var canFlip = true
 
 
     private var velocityTracker: VelocityTracker? = null
@@ -318,8 +319,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
     private var orientationLimit : ReadViewEnums.ScrollLimitOrientation? = null
 
     private fun onCurlDown(x: Float, y: Float):Boolean {
-        if(canFlip) {
-            canFlip = false
+        if(mTextureView?.canFlip == true) {
             isDownActioned = true
 
             orientationLimit = (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage?)?.orientationLimit
@@ -348,7 +348,6 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
                 if (mTextureView!!.getmPageRender().mPageFlip.flipState == PageFlipState.BEGIN_FLIP) {
                     if (x < width / 2 && !ReadConfig.FULL_SCREEN_READ) {
                         if (ReadViewEnums.ScrollLimitOrientation.LEFT == orientationLimit) {
-                            canFlip = true
                             break
                         }
                         //left
@@ -358,7 +357,6 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
                     } else {
                         if(ReadViewEnums.ScrollLimitOrientation.RIGHT == orientationLimit){
                             mReadPageChange?.goToBookOver()//跳bookend
-                            canFlip = true
                             break
                         }
                         //right
@@ -371,8 +369,6 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
                 velocityTracker?.computeCurrentVelocity(1000, mMaximumVelocity)
                 mTextureView?.onFingerUp(x, y, velocityTracker!!.xVelocity)
             }while (false)
-        }else{
-            canFlip = true
         }
 
         velocityTracker?.recycle()
@@ -391,7 +387,6 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
                 if (downPointF.x - x < 0) {
                     if(ReadViewEnums.ScrollLimitOrientation.LEFT == orientationLimit){
                         shouldGiveUpAction = true
-                        canFlip = true
                         return false
                     }else {
                         //left
@@ -401,7 +396,6 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
                     if(ReadViewEnums.ScrollLimitOrientation.RIGHT == orientationLimit){
                         shouldGiveUpAction = true
                         mReadPageChange?.goToBookOver()//跳bookend
-                        canFlip = true
                         return false
                     }else {
                         //right

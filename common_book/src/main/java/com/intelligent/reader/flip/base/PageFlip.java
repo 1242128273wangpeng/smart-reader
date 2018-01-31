@@ -15,6 +15,8 @@
  */
 package com.intelligent.reader.flip.base;
 
+import com.intelligent.reader.flip.PageFlipView;
+
 import net.lzbook.kit.data.bean.ReadConfig;
 
 import android.content.Context;
@@ -24,6 +26,7 @@ import android.graphics.PointF;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.Scroller;
 
 
@@ -89,6 +92,7 @@ public class PageFlip {
     private final static int AUTO_PAGE_MODE = 1;
 
     private final static int BASE_DURATION = 800;
+    private final PageFlipView mView;
 
 
     // view size
@@ -214,9 +218,10 @@ public class PageFlip {
     /**
      * Constructor
      */
-    public PageFlip(Context context) {
-        mContext = context;
-        mScroller = new Scroller(context);
+    public PageFlip(PageFlipView view) {
+        mView = view;
+        mContext = view.getContext();
+        mScroller = new Scroller(view.getContext());
         mFlipState = PageFlipState.END_FLIP;
         mIsVertical = false;
         mViewRect = new GLViewRect();
@@ -855,10 +860,17 @@ public class PageFlip {
                 dur /= 2;
             }
 
+            mView.canFlip = false;
             Log.e("PageFlip", "startScroll " + dur);
             mScroller.startScroll(start.x, start.y,
                     end.x - start.x, end.y - start.y,
                     dur);
+            mView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mView.canFlip = true;
+                }
+            }, dur);
             return true;
         }
 
@@ -1040,7 +1052,7 @@ public class PageFlip {
      * @return true if page is flipping
      */
     public boolean isAnimating() {
-//        mScroller.computeScrollOffset();
+        mScroller.computeScrollOffset();
         return !mScroller.isFinished();
     }
 

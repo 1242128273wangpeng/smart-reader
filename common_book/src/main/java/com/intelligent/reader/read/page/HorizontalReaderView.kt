@@ -430,10 +430,10 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
 
-        if (ReadState.isMenuShow) {
-            mReadPageChange?.showMenu(false)
-            return true
-        }
+//        if (ReadState.isMenuShow) {
+//            mReadPageChange?.showMenu(false)
+//            return true
+//        }
 
         if (!disallowIntercept && ReadConfig.animation == ReadViewEnums.Animation.curl
                 && MotionEvent.ACTION_MOVE == ev?.actionMasked) {
@@ -464,7 +464,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             }
             MotionEvent.ACTION_MOVE -> {//移动
                 val motionValue = ev.x - beforeX
-                if (!disallowIntercept && motionValue < -mTouchSlop && (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).orientationLimit == ReadViewEnums.ScrollLimitOrientation.RIGHT) {
+                if (!disallowIntercept && motionValue < -touchSlop && (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).orientationLimit == ReadViewEnums.ScrollLimitOrientation.RIGHT) {
                     mReadPageChange?.goToBookOver()//跳bookend
                     shouldGiveUpAction = true
                     return false

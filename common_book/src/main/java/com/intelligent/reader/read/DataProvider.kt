@@ -429,7 +429,7 @@ class DataProvider : DisposableAndroidViewModel() {
         val frequency = PlatformSDK.config().chapter_limit
 
         if (arrayList.size >= frequency * 2 && within) {
-            val count = arrayList.size - 2
+            var count = arrayList.size - 2
             for (i in 1 until count) {
                 if (i % frequency == 0) {
                     val offset2 = arrayList[i].offset
@@ -438,8 +438,8 @@ class DataProvider : DisposableAndroidViewModel() {
 
                     novelPageBean.adBigView = PageAdContainer(ReadState.readingActivity!!,
                             if (ReadConfig.IS_LANDSCAPE) "6-2" else "5-2", getBigAdLayoutParams())
-                    arrayList.add(novelPageBean)
-
+                    arrayList.add(i, novelPageBean)
+                    count++
                     for (j in i + 1 until arrayList.size - 1) {
                         //其他页offset向后偏移 1 length
                         arrayList[j].offset = arrayList[j].offset + 1
