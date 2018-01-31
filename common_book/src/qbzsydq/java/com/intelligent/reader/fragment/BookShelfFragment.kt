@@ -300,7 +300,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
         AppUtils.setLongPreferences(activity, "book_rack_update_time", bookRackUpdateTime)
         AppLog.e(TAG, "onSuccess的刷新ui调用")
         isShowAD = true
-        updateUI()
+//        updateUI()
     }
 
     override fun onException(e: Exception) {
