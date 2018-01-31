@@ -396,6 +396,14 @@ class HorizontalPage : FrameLayout, Observer {
             mCursor = cursor
             entranceArray = arrayOf(false, false, false)
             cursor.curBook.sequence = cursor.sequence
+
+            //sequence检测
+            if (ReadState.chapterList.size > 0) {
+                if (cursor.curBook.sequence >= ReadState.chapterList.size) {
+                    cursor.curBook.sequence = ReadState.chapterList.size - 1
+                }
+            }
+
             if (!DataProvider.getInstance().isCacheExistBySequence(cursor.curBook.sequence)) {
                 loadView.visibility = View.VISIBLE
             }
@@ -496,8 +504,16 @@ class HorizontalPage : FrameLayout, Observer {
                     hasAd = mNovelPageBean!!.isAd
                     hasBigAd = mNovelPageBean!!.isAd
                     contentLength = mNovelPageBean!!.contentLength
-                    if (mNovelPageBean!!.isAd && mNovelPageBean!!.adBigView?.parent == null) {//广告页
-                        mAdFrameLayout.addView(mNovelPageBean!!.adBigView)
+                    if (mNovelPageBean!!.isAd) {//广告页
+                        //已经曝光过的广告，移除并回收
+                        if (mNovelPageBean!!.adBigView != null) {
+                            if (mNovelPageBean!!.adBigView!!.parent == null) {
+                                mAdFrameLayout.addView(mNovelPageBean!!.adBigView)
+                            } else {
+                                mNovelPageBean!!.adBigView!!.removeAllViewsInLayout()
+                                mNovelPageBean!!.adBigView = null
+                            }
+                        }
                     } else {//普通页
 
                         //记录阅读位置
@@ -599,13 +615,13 @@ class HorizontalPage : FrameLayout, Observer {
 
         private val mGestureDetector by lazy {
             val detector = GestureDetector(context, object : GestureDetector.OnGestureListener {
-                private var time: Long = 0
+//                private var time: Long = 0
 
                 override fun onDown(event: MotionEvent): Boolean {
-                    if (System.currentTimeMillis() - time < 500) {
-                        return false
-                    }
-                    time = System.currentTimeMillis()
+//                    if (System.currentTimeMillis() - time < 500) {
+//                        return false
+//                    }
+//                    time = System.currentTimeMillis()
 
                     if (ReadConfig.animation == ReadViewEnums.Animation.curl) {
                         return isTouchMenuArea(event)

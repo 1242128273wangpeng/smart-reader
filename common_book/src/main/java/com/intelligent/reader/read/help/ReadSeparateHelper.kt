@@ -59,24 +59,40 @@ object ReadSeparateHelper {
         sb.append("chapter_homepage \n")
         sb.append("chapter_homepage \n")
         var novelText: ArrayList<NovelLineBean> = arrayListOf()
-        if (!TextUtils.isEmpty(chapterName)) {
-            novelText = getNovelText(mchapterPaint, chapterName, ReadConfig.mWidth - ReadConfig.screenDensity * 10)
-            val chapterNumAndName = novelText[0].lineContent.split("章".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            val newChapterList = ArrayList<NovelLineBean>()
 
-            for (i in chapterNumAndName.indices) {
-                if (i == 0) {
-                    newChapterList.add(NovelLineBean(chapterNumAndName[i] + "章", 0f, 0, false, null))
-                } else {
-                    newChapterList.add(NovelLineBean(chapterNumAndName[i].trim { it <= ' ' }, 0f, 0, false, null))
+        if (!TextUtils.isEmpty(chapterName)) {
+            val chapterNameSplit = chapterName.split("章".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+
+            if (chapterNameSplit.isNotEmpty()) {
+                novelText.add(NovelLineBean(chapterNameSplit[0] + "章", 0f, 0, false, null))
+
+                if (chapterNameSplit.size > 1) {
+                    for (i in 1 until chapterNameSplit.size) {
+                        val chapterNameList = getNovelText(mchapterPaint, chapterNameSplit[i].trim { it <= ' ' }, ReadConfig.mWidth - ReadConfig.screenDensity * 10)
+                        for (j in 0 until chapterNameList.size) {
+                            novelText.add(chapterNameList[j])
+                        }
+                    }
                 }
             }
-            if (novelText.size > 1) {
-                novelText.removeAt(0)
-                newChapterList.addAll(novelText)
-            }
-            novelText = newChapterList
 
+//            novelText = getNovelText(mchapterPaint, chapterName, ReadConfig.mWidth - ReadConfig.screenDensity * 10)
+//
+//            val chapterNumAndName = novelText[0].lineContent.split("章".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+//            val newChapterList = ArrayList<NovelLineBean>()
+//
+//            for (i in chapterNumAndName.indices) {
+//                if (i == 0) {
+//                    newChapterList.add(NovelLineBean(chapterNumAndName[i] + "章", 0f, 0, false, null))
+//                } else {
+//                    newChapterList.add(NovelLineBean(chapterNumAndName[i].trim { it <= ' ' }, 0f, 0, false, null))
+//                }
+//            }
+//            if (novelText.size > 1) {
+//                novelText.removeAt(0)
+//                newChapterList.addAll(novelText)
+//            }
+//            novelText = newChapterList
 //            if (novelText.size > 2) {
 //                val temp = ArrayList<NovelLineBean>()
 //                for (i in 0..1) {

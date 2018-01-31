@@ -40,8 +40,6 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
 
     private lateinit var mLayoutManager: WrapContentLinearLayoutManager
 
-    private var mCatalogList: ArrayList<Chapter>? = null
-
     private lateinit var mOriginDataList: CopyOnWriteArrayList<NovelPageBean>
 
     private val CHAPTER_WAITING: Int = 0
@@ -320,9 +318,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 if (reLoad && mAdapter.getAllData().size > 0) {
                     mAdapter.clearData()
                 }
-                mCatalogList = ReadState.chapterList
-                mAdapter.setChapterCatalog(mCatalogList)
-
+                mAdapter.setChapterCatalog(ReadState.chapterList)
                 if (!checkLoadChapterValid(chapter.sequence)) return
                 val currentChapterContent = ReadSeparateHelper.initTextSeparateContent(chapter.content, chapter.chapter_name)
                 ReadState.currentPage = ReadSeparateHelper.getCurrentPage(ReadState.offset, currentChapterContent)
@@ -351,7 +347,6 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                     mAdapter.showFootView(false)
                 }
                 mChapterLoadStat = CHAPTER_WAITING
-
             }
 
         /**

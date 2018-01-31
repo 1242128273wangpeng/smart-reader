@@ -10,7 +10,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -27,7 +26,6 @@ public class PageAdContainer extends FrameLayout {
     public PageAdContainer(@NonNull Context context, String type, LayoutParams layoutParams) {
         super(context);
 
-        setBackgroundColor(Color.CYAN);
         setLayoutParams(layoutParams);
 
         PlatformSDK.adapp().dycmNativeAd(context, type,  ReadConfig.INSTANCE.getScreenHeight(),
@@ -61,8 +59,6 @@ public class PageAdContainer extends FrameLayout {
     public PageAdContainer(@NonNull Context context, String type, int width, int height) {
         super(context);
 
-        setBackgroundColor(Color.GREEN);
-
         setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         PlatformSDK.adapp().dycmNativeAd(context, type, height, width, new AbstractCallback() {
@@ -77,8 +73,13 @@ public class PageAdContainer extends FrameLayout {
                         if (ResultCode.AD_REQ_SUCCESS.equals(ResultCode.parser(jsonObject.getInt("state_code")))) {
 
                             loadStatus = true;
-                            if(!views.isEmpty() && views.get(0).getParent() == null) {
-                                addView(views.get(0));
+                            if(!views.isEmpty()) {
+                                for (ViewGroup viewGroup : views) {
+                                    if (viewGroup != null && viewGroup.getParent() == null) {
+                                        addView(viewGroup);
+                                        break;
+                                    }
+                                }
                             }
                         } else {
                             loadStatus = true;
