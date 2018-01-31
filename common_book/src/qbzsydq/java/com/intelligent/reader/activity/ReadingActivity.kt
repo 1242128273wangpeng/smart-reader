@@ -65,7 +65,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Constants.isHideAD = false
         ReadState.readingActivity = this
         setUIOptions()
 

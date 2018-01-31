@@ -5,6 +5,7 @@ import android.os.Handler
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import android.view.ViewTreeObserver
 import com.intelligent.reader.R
 import com.intelligent.reader.read.DataProvider
@@ -37,7 +38,9 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     private var beforeX: Float = 0.toFloat()
 
     private var disallowIntercept = false
-
+    private val touchSlop by lazy{
+        ViewConfiguration.get(context).scaledTouchSlop
+    }
     //当前游标
     var curCursor: ReadCursor? = null
     //当前坐标
@@ -161,35 +164,6 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                 }
 
             }
-
-
-//            loop@ for (i in 1..3) {
-//                when (whichOrientation) {
-//                    "Pre" -> {
-//                        if (ReadState.sequence.minus(i) < -1) continue@loop
-//                        if (provider.chapterLruCache[ReadState.sequence.minus(i)] == null) {
-//                            sequence = ReadState.sequence.minus(i)
-//                        }
-//                    }
-//
-//                    "Next" -> {
-//                        if (ReadState.sequence.plus(i) > ReadState.chapterList.size) continue@loop
-//                        if (provider.chapterLruCache[ReadState.sequence.plus(i)] == null) {
-//                            sequence = ReadState.sequence.plus(i)
-//                        }
-//                    }
-//                }
-//                //加载下两章
-//                if (sequence != -2) {
-//                    ReadState.book.let {
-//                        provider.loadChapter(it, sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
-//                            override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
-//                            override fun loadDataError(message: String) = Unit
-//                        })
-//                    }
-//                    break@loop//拉一次
-//                }
-//            }
         })
         DataProvider.getInstance().addDisposable(threadObserve)
     }
@@ -458,7 +432,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         if (!disallowIntercept && ReadConfig.animation == ReadViewEnums.Animation.curl
                 && MotionEvent.ACTION_MOVE == ev?.actionMasked) {
             //仿真是要先判断出滑动方向的，防止ViewPager先滑动touchSlop长度
-            return mTouchSlop <= Math.abs(ev.x - mLastMotionX)
+            return touchSlop <= Math.abs(ev.x - mLastMotionX)
         }
         return super.onInterceptTouchEvent(ev)
     }
@@ -483,7 +457,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             }
             MotionEvent.ACTION_MOVE -> {//移动
                 val motionValue = ev.x - beforeX
-                if (!disallowIntercept && motionValue < -mTouchSlop && (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).orientationLimit == ReadViewEnums.ScrollLimitOrientation.RIGHT) {
+                if (!disallowIntercept && motionValue < -touchSlop && (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).orientationLimit == ReadViewEnums.ScrollLimitOrientation.RIGHT) {
                     mReadPageChange?.goToBookOver()//跳bookend
                     return false
                 } else {
