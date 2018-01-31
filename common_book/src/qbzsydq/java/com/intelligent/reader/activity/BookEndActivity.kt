@@ -140,8 +140,8 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
             category = intent.getStringExtra("book_category")
             book_id = intent.getStringExtra("book_id")
             name_bookend!!.text = bookName
-            ReadState.sequence = intent.getIntExtra("sequence", 0)
-            ReadState.offset = intent.getIntExtra("offset", 0)
+//            ReadState.sequence = intent.getIntExtra("sequence", 0)
+//            ReadState.offset = intent.getIntExtra("offset", 0)
             thememode = intent.getStringExtra("thememode")
 
             ReadState.book = book!!

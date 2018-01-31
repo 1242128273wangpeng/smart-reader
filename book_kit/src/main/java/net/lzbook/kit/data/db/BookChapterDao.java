@@ -61,6 +61,10 @@ public class BookChapterDao {
         this.mHelper = new SqliteHelper(context.getApplicationContext());
     }
 
+    public void setBookId(String book_id) {
+        this._book_id = book_id;
+    }
+
     private static boolean checkColumnExist1(SQLiteDatabase db, String tableName, String columnName) {
         boolean result = false;
         Cursor cursor = null;

@@ -73,11 +73,24 @@ class ReaderOwnRepository private constructor(api: UserService) : ReaderReposito
      */
     @Throws(Exception::class)
     fun getSourceChapter(chapter: Chapter?): Observable<Chapter>? {
+
+//        if (chapter.curl != null) {
+//            return Observable.create<Chapter> {
+//                val a = URL(chapter.curl)
+//                UrlUtils.BOOK_CONTENT = a.host
+//                chapter.curl?.let { NetService.userService.getChapterContent(it, chapter) }
+//            }
+//        } else {
+//            return null
+//        }
+
+
         try {
             val a = URL(chapter?.curl)
             UrlUtils.BOOK_CONTENT = a.host
         } catch (e: MalformedURLException) {
             e.printStackTrace()
+            return null
         }
         return NetService.userService.getChapterContent(chapter?.curl!!, chapter)
     }
