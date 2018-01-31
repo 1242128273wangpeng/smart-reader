@@ -598,13 +598,13 @@ class HorizontalPage : FrameLayout, Observer {
 
         private val mGestureDetector by lazy {
             val detector = GestureDetector(context, object : GestureDetector.OnGestureListener {
-                private var time: Long = 0
+//                private var time: Long = 0
 
                 override fun onDown(event: MotionEvent): Boolean {
-                    if (System.currentTimeMillis() - time < 500) {
-                        return false
-                    }
-                    time = System.currentTimeMillis()
+//                    if (System.currentTimeMillis() - time < 500) {
+//                        return false
+//                    }
+//                    time = System.currentTimeMillis()
 
                     if (ReadConfig.animation == ReadViewEnums.Animation.curl) {
                         return isTouchMenuArea(event)

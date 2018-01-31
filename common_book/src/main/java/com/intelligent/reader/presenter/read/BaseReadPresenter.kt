@@ -133,6 +133,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
     }
 
     fun onCreateInit(savedInstanceState: Bundle?) {
+        ReadState.chapterList.clear()
         AppLog.e(TAG, "onCreate")
 
         sp = PreferenceManager.getDefaultSharedPreferences(readReference?.get()?.applicationContext)
@@ -191,6 +192,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
     }
 
     fun onNewIntent(intent: Intent) {
+        ReadState.chapterList.clear()
         this.lastMode = -1
 //        pageView?.clear()
         showMenu(false)

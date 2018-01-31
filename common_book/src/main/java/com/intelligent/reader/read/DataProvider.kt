@@ -65,16 +65,16 @@ class DataProvider : DisposableAndroidViewModel() {
             , BookCoverLocalRepository.getInstance(BaseBookApplication.getGlobalContext()))
 
 
-    fun preLoad(start: Int,  end: Int){
-        if(!ReadState.chapterList.isEmpty() && start >= 0 ) {
+    fun preLoad(start: Int, end: Int) {
+        if (!ReadState.chapterList.isEmpty() && start >= 0) {
             for (i in start until end) {
-                if(i < ReadState.chapterCount) {
+                if (i < ReadState.chapterCount) {
                     mReaderRepository.requestSingleChapter(ReadState.book.site, ReadState.chapterList.get(i))
                             .subscribeOn(Schedulers.io())
                             .subscribekt(onNext = {
                                 println(" chapter cached " + it.sequence)
                                 mReaderRepository.writeChapterCache(it, false)
-                            }, onError = {it.printStackTrace()})
+                            }, onError = { it.printStackTrace() })
                 }
             }
         }
@@ -271,7 +271,7 @@ class DataProvider : DisposableAndroidViewModel() {
             mReadDataListener.loadDataError("无章节")
             return
         }
-        if (ReadState.chapterList.size < 0) {
+        if (ReadState.chapterList.size == 0) {
             val chapterList = mBookChapterDao.queryBookChapter()
             ReadState.chapterList.addAll(chapterList)
         }
@@ -287,7 +287,9 @@ class DataProvider : DisposableAndroidViewModel() {
                             .subscribeOn(Schedulers.io())
                             .observeOn(Schedulers.io())
                             .subscribe({ chapters ->
-                                ReadState.chapterList.addAll(chapters)
+                                if (ReadState.chapterList.size == 0) {
+                                    ReadState.chapterList.addAll(chapters)
+                                }
                                 if (ReadState.chapterList.size != 0) {
                                     requestSingleChapter(book, ReadState.chapterList, sequence, type, mReadDataListener)
                                 } else {
@@ -302,7 +304,7 @@ class DataProvider : DisposableAndroidViewModel() {
 
     private fun requestSingleChapter(book: Book, chapters: List<Chapter>, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
         val cacheNovelChapter = chapterLruCache.get(sequence)
-        if(cacheNovelChapter != null){
+        if (cacheNovelChapter != null) {
             mReadDataListener.loadDataSuccess(cacheNovelChapter.chapter, type)
             return
         }
@@ -358,7 +360,7 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
 
-    private fun getBigAdLayoutParams():FrameLayout.LayoutParams{
+    private fun getBigAdLayoutParams(): FrameLayout.LayoutParams {
         val bigAdLayoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
         val leftMargin = AppUtils.dip2px(ReadState.readingActivity, 10f)
         val rightMargin = AppUtils.dip2px(ReadState.readingActivity, 10f)
@@ -370,7 +372,7 @@ class DataProvider : DisposableAndroidViewModel() {
 
 
     private fun loadAd(novelChapter: NovelChapter) {
-        if(ReadState.readingActivity == null || Constants.isHideAD )
+        if (ReadState.readingActivity == null || Constants.isHideAD)
             return
 
         PlatformSDK.config().setAd_userid(UserManager.mUserInfo?.uid ?: "")
@@ -408,7 +410,7 @@ class DataProvider : DisposableAndroidViewModel() {
             val novelPageBean = NovelPageBean(arrayListOf(), offset, arrayListOf()).apply { isAd = true }
 
             novelPageBean.adBigView = PageAdContainer(ReadState.readingActivity!!,
-                    if (ReadConfig.IS_LANDSCAPE) "6-1"  else  "5-1", getBigAdLayoutParams())
+                    if (ReadConfig.IS_LANDSCAPE) "6-1" else "5-1", getBigAdLayoutParams())
 
             arrayList.add(novelPageBean)
         }
@@ -422,7 +424,7 @@ class DataProvider : DisposableAndroidViewModel() {
                     val novelPageBean = NovelPageBean(arrayListOf(), offset2, arrayListOf()).apply { isAd = true }
 
                     novelPageBean.adBigView = PageAdContainer(ReadState.readingActivity!!,
-                            if (ReadConfig.IS_LANDSCAPE) "6-2"  else  "5-2", getBigAdLayoutParams())
+                            if (ReadConfig.IS_LANDSCAPE) "6-2" else "5-2", getBigAdLayoutParams())
                     arrayList.add(novelPageBean)
 
                     for (j in i + 1 until arrayList.size - 1) {
