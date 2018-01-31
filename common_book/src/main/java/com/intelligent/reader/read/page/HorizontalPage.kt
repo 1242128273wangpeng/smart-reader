@@ -400,6 +400,14 @@ class HorizontalPage : FrameLayout, Observer {
             mCursor = cursor
             entranceArray = arrayOf(false, false, false)
             cursor.curBook.sequence = cursor.sequence
+
+            //sequence检测
+            if (ReadState.chapterList.size > 0) {
+                if (cursor.curBook.sequence >= ReadState.chapterList.size) {
+                    cursor.curBook.sequence = ReadState.chapterList.size - 1
+                }
+            }
+
             if (!DataProvider.getInstance().isCacheExistBySequence(cursor.curBook.sequence)) {
                 loadView.visibility = View.VISIBLE
             }
@@ -503,7 +511,15 @@ class HorizontalPage : FrameLayout, Observer {
                     hasBigAd = mNovelPageBean!!.isAd
                     contentLength = mNovelPageBean!!.contentLength
                     if (mNovelPageBean!!.isAd) {//广告页
-                        mAdFrameLayout.addView(mNovelPageBean!!.adBigView)
+                        //已经曝光过的广告，移除并回收
+                        if (mNovelPageBean!!.adBigView != null) {
+                            if (mNovelPageBean!!.adBigView!!.parent == null) {
+                                mAdFrameLayout.addView(mNovelPageBean!!.adBigView)
+                            } else {
+                                mNovelPageBean!!.adBigView!!.removeAllViewsInLayout()
+                                mNovelPageBean!!.adBigView = null
+                            }
+                        }
                     } else {//普通页
 
                         //记录阅读位置
