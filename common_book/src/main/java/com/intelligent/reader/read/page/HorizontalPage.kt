@@ -97,9 +97,15 @@ class HorizontalPage : FrameLayout, Observer {
         pageView = HorizontalItemPage(context)
         mAdFrameLayout = FrameLayout(context)
         addView(pageView)
-        addView(mAdFrameLayout, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
+
         addView(readTop)
         addView(readBottom)
+
+        val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+//        layoutParams. = readTop.height
+//        layoutParams.bottomMargin = readBottom.height
+
+        addView(mAdFrameLayout, layoutParams)
         addView(loadView)
 
         loadView.setOnTouchListener { v, event ->
@@ -211,7 +217,7 @@ class HorizontalPage : FrameLayout, Observer {
     }
 
     private fun onScreenChange() {
-        if(ReadViewEnums.PageIndex.current == tag) {
+        if (ReadViewEnums.PageIndex.current == tag) {
             mAdFrameLayout.removeAllViews()
             onRedrawPage()
         }
@@ -516,7 +522,10 @@ class HorizontalPage : FrameLayout, Observer {
                         //已经曝光过的广告，移除并回收
                         if (mNovelPageBean!!.adBigView != null) {
                             if (mNovelPageBean!!.adBigView!!.parent == null) {
-                                mAdFrameLayout.addView(mNovelPageBean!!.adBigView)
+                                val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+                                layoutParams.topMargin = AppUtils.dip2px(context, 26f)
+                                layoutParams.bottomMargin = AppUtils.dip2px(context, 26f)
+                                mAdFrameLayout.addView(mNovelPageBean!!.adBigView, layoutParams)
                             }
                         }
                     } else {//普通页
@@ -545,7 +554,7 @@ class HorizontalPage : FrameLayout, Observer {
 //                        val marginBottom = AppUtils.dip2px(context, 30f)
                         param.setMargins(0, topMargin.toInt(), 0, 0)
 
-                        if(mNovelPageBean?.adSmallView != null && mNovelPageBean?.adSmallView?.parent == null){
+                        if (mNovelPageBean?.adSmallView != null && mNovelPageBean?.adSmallView?.parent == null) {
                             hasAd = true
                             mAdFrameLayout.addView(mNovelPageBean!!.adSmallView, param)
                         }
