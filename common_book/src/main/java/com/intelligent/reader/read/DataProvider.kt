@@ -131,9 +131,11 @@ class DataProvider : DisposableAndroidViewModel() {
         val requestItem = RequestItem.fromBook(book)
         when (type) {
             ReadViewEnums.PageIndex.current -> {
+                preLoad(sequence + 1, sequence + 6)
                 getChapterList(book, requestItem, sequence, type, mReadDataListener)
             }
             ReadViewEnums.PageIndex.next -> {
+                preLoad(sequence + 1, sequence + 5)
                 getChapterList(book, requestItem, sequence, type, mReadDataListener)
             }
             ReadViewEnums.PageIndex.previous -> {
