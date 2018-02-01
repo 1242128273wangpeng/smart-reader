@@ -80,6 +80,8 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
 
     private lateinit var mGestureDetector: GestureDetector
 
+    private var mIsJumpChapter = false
+
     constructor(context: Context?) : this(context, null) {
         init()
     }
@@ -205,6 +207,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
      * 上翻页
      */
     private fun loadPreChapter(sequence: Int) {
+        if (mIsJumpChapter) return
         if ((!checkLoadChapterValid(sequence)) || sequence < 0) return
         if (mChapterLoadStat == CHAPTER_WAITING) {
             mChapterLoadStat = CHAPTER_LOADING
@@ -223,6 +226,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
      * 下翻页
      */
     private fun loadNextChapter(sequence: Int) {
+        if (mIsJumpChapter) return
         if ((!checkLoadChapterValid(sequence)) || sequence > ReadState.chapterList.size - 1) return
         if (mChapterLoadStat == CHAPTER_WAITING) {
             mChapterLoadStat = CHAPTER_LOADING
@@ -552,6 +556,9 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
             isShowMenu = false
             return true
         }
+
+        mIsJumpChapter = false
+
         val tmpX = event.x
         val tmpY = event.y
         when (event.action) {
@@ -638,11 +645,16 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     }
 
     private fun onJumpChapter(sequence: Int) {
+        mIsJumpChapter = false
+
         if (sequence == 0) {
             mFirstRead = false
         }
-        ReadState.sequence = sequence
-        entrance()
+
+        getChapterData(sequence, ReadViewEnums.PageIndex.current, true)
+
+//        ReadState.sequence = sequence
+//        entrance()
     }
 
     override fun onAnimationChange(animation: ReadViewEnums.Animation) {
