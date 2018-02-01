@@ -321,7 +321,7 @@ class HorizontalPage : FrameLayout, Observer {
             homePage.product_name_tv.setTextColor(color)
             postInvalidate()
             //改变状态
-            mCursor!!.sequence = -1
+            mCursor?.sequence = -1
             viewState = ReadViewEnums.ViewState.start
             loadView.visibility = View.GONE
             readTop.visibility = View.GONE

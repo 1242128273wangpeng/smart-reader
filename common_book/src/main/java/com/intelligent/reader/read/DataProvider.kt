@@ -141,69 +141,6 @@ class DataProvider : DisposableAndroidViewModel() {
         }
     }
 
-    fun loadAd(context: Context, type: String, callback: OnLoadReaderAdCallback) {
-
-        var adViewHeight = 800
-
-        if (type == AdMarkPostion.READING_MIDDLE_POSITION) {
-            adViewHeight = 800
-        } else if (type == AdMarkPostion.READING_POSITION) {
-            adViewHeight = 1080
-        }
-
-        PlatformSDK.adapp().dycmNativeAd(context, type, adViewHeight, 1920, object : AbstractCallback() {
-            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
-                super.onResult(adswitch, views, jsonResult)
-                if (!adswitch) {
-                    callback.onFail()
-                    return
-                }
-                try {
-                    val jsonObject = JSONObject(jsonResult)
-                    if (jsonObject.has("state_code")) {
-                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                            ResultCode.AD_REQ_SUCCESS
-                            -> {
-                                callback.onLoadAd(views[0])
-                            }
-                            else -> {
-                                callback.onFail()
-                            }
-                        }
-                    }
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                }
-            }
-        })
-    }
-
-    fun loadAd(context: Context, type: String, w: Int, h: Int, callback: OnLoadReaderAdCallback) {
-        PlatformSDK.adapp().dycmNativeAd(context as Activity, type, h, w, object : AbstractCallback() {
-            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
-                super.onResult(adswitch, views, jsonResult)
-                if (!adswitch) {
-                    callback.onFail()
-                    return
-                }
-                try {
-                    val jsonObject = JSONObject(jsonResult)
-                    if (jsonObject.has("state_code")) {
-                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                            ResultCode.AD_REQ_SUCCESS
-                            -> callback.onLoadAd(views[0])
-                            else -> {
-                                callback.onFail()
-                            }
-                        }
-                    }
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                }
-            }
-        })
-    }
-
     /**
      * 获取段末广告 6-3
      */
@@ -212,7 +149,7 @@ class DataProvider : DisposableAndroidViewModel() {
         if (ReadConfig.IS_LANDSCAPE) return
 //        loadAd(context, AdMarkPostion.LANDSCAPE_SLIDEUP_POPUPAD, callback)
 
-        PlatformSDK.adapp().dycmNativeAd(context, AdMarkPostion.LANDSCAPE_SLIDEUP_POPUPAD, 600, 1080, object : AbstractCallback() {
+        PlatformSDK.adapp().dycmNativeAd(context, AdMarkPostion.LANDSCAPE_SLIDEUP_POPUPAD, null, object : AbstractCallback() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
                 if (!adswitch) {
@@ -257,7 +194,7 @@ class DataProvider : DisposableAndroidViewModel() {
         }
 //        loadAd(context, adTyep, callback)
 
-        PlatformSDK.adapp().dycmNativeAd(context, adTyep, AdHeight, AdWidth, object : AbstractCallback() {
+        PlatformSDK.adapp().dycmNativeAd(context, adTyep, null, object : AbstractCallback() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
                 if (!adswitch) {

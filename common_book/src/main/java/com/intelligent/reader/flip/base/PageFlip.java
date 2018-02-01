@@ -27,6 +27,7 @@ import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.Scroller;
 
 
@@ -91,7 +92,7 @@ public class PageFlip {
     private final static int SINGLE_PAGE_MODE = 0;
     private final static int AUTO_PAGE_MODE = 1;
 
-    private final static int BASE_DURATION = 800;
+    private final static int BASE_DURATION = 350;
     private final PageFlipView mView;
 
 
@@ -221,7 +222,7 @@ public class PageFlip {
     public PageFlip(PageFlipView view) {
         mView = view;
         mContext = view.getContext();
-        mScroller = new Scroller(view.getContext());
+        mScroller = new Scroller(view.getContext(), new AccelerateInterpolator());
         mFlipState = PageFlipState.END_FLIP;
         mIsVertical = false;
         mViewRect = new GLViewRect();
@@ -557,7 +558,7 @@ public class PageFlip {
         mVertexProgram.initMatrix(-mViewRect.halfW, mViewRect.halfW,
                 -mViewRect.halfH, mViewRect.halfH);
         computeMaxMeshCount();
-        mIsVertical = width>height;
+        mIsVertical = width > height;
         createPages();
         computeVertexesAndBuildPage();
     }
@@ -617,6 +618,9 @@ public class PageFlip {
             mDownTouchP.set(touchX, touchY);
             mTouchP.set(touchX, touchY);
             mFlipState = PageFlipState.BEGIN_FLIP;
+
+            getFirstPage().setOriginAndDiagonalPoints(false, -touchY);
+
 //            if (touchX>0) {//下页
 //                if (beginListener != null) {
 //                    beginListener.beginNext();
@@ -658,13 +662,20 @@ public class PageFlip {
             }
         }
 
-        // compute moving distance (dx, dy)
-        float dy = (touchY - mStartTouchP.y);
-        float dx = (touchX - mStartTouchP.x);
-
         final Page page = mPages[FIRST_PAGE];
         final GLPoint originP = page.originP;
         final GLPoint diagonalP = page.diagonalP;
+
+        if(mOrientation == Orientation.RIGHT) {
+            mStartTouchP.x = originP.x;
+            mStartTouchP.y = originP.y;
+        }
+
+        // compute moving distance (dx, dy)
+        float dy = (touchY - mStartTouchP.y);
+        float dx = (touchX - mStartTouchP.x);
+//        float dy = (touchY - originP.y);
+//        float dx = (touchX - originP.x);
 
         // begin to move
         if (mFlipState == PageFlipState.BEGIN_FLIP /*&&
@@ -675,8 +686,12 @@ public class PageFlip {
             // compute max degree between X axis and line from TouchP to OriginP
             // and max degree between X axis and line from TouchP to
             // (OriginP.x, DiagonalP.Y)
+
             float y2o = Math.abs(mStartTouchP.y - originP.y);
             float y2d = Math.abs(mStartTouchP.y - diagonalP.y);
+//            float y2o = Math.abs(originP.y - originP.y);
+//            float y2d = Math.abs(originP.y - diagonalP.y);
+
             mMaxT2OAngleTan = computeTanOfCurlAngle(y2o);
             mMaxT2DAngleTan = computeTanOfCurlAngle(y2d);
 
@@ -722,9 +737,9 @@ public class PageFlip {
             // multiply a factor to make sure the touch point is always head of
             // finger point
             if (PageFlipState.FORWARD_FLIP == mFlipState) {
-                dx *= 1.2f;
+//                dx *= 1.2f;
             } else {
-                dx *= 1.1f;
+                dx *= 1.2f;
             }
 
             // moving direction is changed:
@@ -771,6 +786,9 @@ public class PageFlip {
             // set touchP(x, y) and middleP(x, y)
             mLastTouchP.set(touchX, touchY);
             mTouchP.set(dx + originP.x, dy + originP.y);
+            Log.e(TAG, "onFingerMove: dx, dy, originP \t" + dx + ", \t" + dy + ", \t" + originP.x + ", \t" + originP.y);
+//            mTouchP.set(touchX, touchY);
+
             mMiddleP.x = (mTouchP.x + originP.x) * 0.5f;
             mMiddleP.y = (mTouchP.y + originP.y) * 0.5f;
 
@@ -785,8 +803,8 @@ public class PageFlip {
     /**
      * Handle finger up event
      *
-     * @param touchX   x of finger moving point
-     * @param touchY   y of finger moving point
+     * @param touchX x of finger moving point
+     * @param touchY y of finger moving point
      * @return true if animation is started or animation is not triggered
      */
     public boolean onFingerUp(float touchX, float touchY, boolean forceFlip) {
@@ -807,7 +825,7 @@ public class PageFlip {
         // forward flipping
         if (mFlipState == PageFlipState.FORWARD_FLIP) {
             // can't going forward, restore current page
-            if (!forceFlip && getSurfaceWidth() * WIDTH_RATIO_OF_RESTORE_FLIP > absDx) {
+            if (!forceFlip && getSurfaceWidth() * WIDTH_RATIO_OF_RESTORE_FLIP > absDx && touchX > 0) {
                 end.x = (int) originP.x;
                 mFlipState = PageFlipState.FORWARD_RESTORE_FLIP;
             } else {
@@ -818,7 +836,7 @@ public class PageFlip {
         // backward flipping
         else if (mFlipState == PageFlipState.BACKWARD_FLIP) {
             // if not over middle x, change from backward to forward to restore
-            if (!forceFlip && getSurfaceWidth() * WIDTH_RATIO_OF_RESTORE_FLIP > absDx) {
+            if (!forceFlip && getSurfaceWidth() * WIDTH_RATIO_OF_RESTORE_FLIP > absDx && touchX < 0) {
                 mFlipState = PageFlipState.BACKWARD_RESTORE_FLIP;
                 end.set((int) (diagonalP.x - page.width), (int) originP.y);
             } else {
@@ -856,9 +874,11 @@ public class PageFlip {
                 mFlipState == PageFlipState.FORWARD_RESTORE_FLIP ||
                 mFlipState == PageFlipState.BACKWARD_RESTORE_FLIP) {
             int dur = BASE_DURATION * Math.abs(end.x - start.x) / getSurfaceWidth();
-            if(mFlipState == PageFlipState.BACKWARD_RESTORE_FLIP){
-                dur /= 2;
+            if (mFlipState == PageFlipState.BACKWARD_RESTORE_FLIP) {
+                dur = dur / 3 * 2;
             }
+
+            dur = Math.max(150, dur);
 
             mView.canFlip = false;
             Log.e("PageFlip", "startScroll " + dur);
@@ -934,9 +954,9 @@ public class PageFlip {
 
             // compute start.x
             if (originP.x < 0) {
-                start.x = (int) (originP.x + page.width * 0.25f);
+                start.x = (int) (originP.x + page.width * 0.5f);
             } else {
-                start.x = (int) (originP.x - page.width * 0.25f);
+                start.x = (int) (originP.x - page.width * 0.5f);
             }
 
             // compute start.y

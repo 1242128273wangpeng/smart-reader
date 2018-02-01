@@ -327,8 +327,6 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
             downPointF.x = x
             downPointF.y = y
 
-            if (context is ReadingActivity) (context as ReadingActivity).showMenu(false)
-
 //        setFlipCurrentAsFirstTexture()
 
             mTextureView?.onFingerDown(x, y)
