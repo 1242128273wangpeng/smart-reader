@@ -136,6 +136,8 @@ public class Constants {
     // 阅读模式
     public static int MODE = 51;//day
     //翻页模式
+    public static final int PAGE_MODE_DELAULT = 0;
+    //翻页模式
     public static int PAGE_MODE = 0;
     //全屏阅读
     public static boolean FULL_SCREEN_READ = false;

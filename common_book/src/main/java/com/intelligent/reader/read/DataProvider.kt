@@ -131,9 +131,11 @@ class DataProvider : DisposableAndroidViewModel() {
         val requestItem = RequestItem.fromBook(book)
         when (type) {
             ReadViewEnums.PageIndex.current -> {
+                preLoad(sequence + 1, sequence + 6)
                 getChapterList(book, requestItem, sequence, type, mReadDataListener)
             }
             ReadViewEnums.PageIndex.next -> {
+                preLoad(sequence + 1, sequence + 5)
                 getChapterList(book, requestItem, sequence, type, mReadDataListener)
             }
             ReadViewEnums.PageIndex.previous -> {
@@ -362,7 +364,7 @@ class DataProvider : DisposableAndroidViewModel() {
         PlatformSDK.config().setLongitude(Constants.longitude.toFloat())
 
         val within = PlatformSDK.config().getAdSwitch("5-2") and PlatformSDK.config().getAdSwitch("6-2")
-        val between = PlatformSDK.config().getAdSwitch("5-1") and PlatformSDK.config().getAdSwitch("5-1")
+        val between = PlatformSDK.config().getAdSwitch("5-1") and PlatformSDK.config().getAdSwitch("6-1")
 //            val arrayList = chapterSeparate[sequence]
         val arrayList = novelChapter.separateList
 

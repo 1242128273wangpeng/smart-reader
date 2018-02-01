@@ -90,7 +90,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
         val isAutoBrightness = sharedPreferences!!.getBoolean("auto_brightness", true)
 
-        Constants.PAGE_MODE = sharedPreferences!!.getInt("page_mode", 0)
+        Constants.PAGE_MODE = sharedPreferences!!.getInt("page_mode", Constants.PAGE_MODE_DELAULT)
 
         autoBrightness = isAutoBrightness
 

@@ -194,6 +194,8 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
             mFirstRead = true
         }
 
+        DataProvider.getInstance().preLoad(ReadState.sequence, ReadState.sequence + 6)
+
         getChapterData(ReadState.sequence, ReadViewEnums.PageIndex.current, false)
 
         loadPreChapter(ReadState.sequence - 1)

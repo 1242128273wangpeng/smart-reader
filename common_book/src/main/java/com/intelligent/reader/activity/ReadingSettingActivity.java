@@ -75,7 +75,7 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         //阅读页翻页模式
-        Constants.PAGE_MODE = sharedPreferences.getInt("page_mode", 0);
+        Constants.PAGE_MODE = sharedPreferences.getInt("page_mode", Constants.PAGE_MODE_DELAULT);
 
         //自动阅读
         boolean isAutoBrightness = sharedPreferences.getBoolean("auto_brightness", true);
