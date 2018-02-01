@@ -541,9 +541,9 @@ class HorizontalPage : FrameLayout, Observer {
 //                        }
 
                         val param = FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-                        val margin = AppUtils.dip2px(context, 10f)
-                        val marginBottom = AppUtils.dip2px(context, 30f)
-                        param.setMargins(margin, topMargin.toInt(), margin, marginBottom)
+//                        val margin = AppUtils.dip2px(context, 10f)
+//                        val marginBottom = AppUtils.dip2px(context, 30f)
+                        param.setMargins(0, topMargin.toInt(), 0, 0)
 
                         if(mNovelPageBean?.adSmallView != null && mNovelPageBean?.adSmallView?.parent == null){
                             hasAd = true
