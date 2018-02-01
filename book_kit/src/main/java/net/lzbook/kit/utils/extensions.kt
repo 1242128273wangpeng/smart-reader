@@ -47,6 +47,10 @@ fun Any.runOnMain(run: () -> Unit) {
     }
 }
 
+fun Any.runOnMainDelayed(delay:Long, run: () -> Unit) {
+    msMainLooperHandler.postDelayed({ run.invoke() }, delay)
+}
+
 enum class LOG_LEVEL {
     DEBUG, INFO, ERR;
 }

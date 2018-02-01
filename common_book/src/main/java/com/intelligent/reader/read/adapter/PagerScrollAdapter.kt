@@ -334,12 +334,14 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
                 loadSequence = ReadState.sequence + 1
             }
 
-            allChapterList?.let {
-                ReadSeparateHelper.getChapterNameList(it[loadSequence].chapter_name).forEachIndexed { index, novelLineBean ->
-                    if (index == 0) {
-                        load_chapter_num_tv.text = novelLineBean.lineContent
-                    } else {
-                        load_chapter_name_tv.text = novelLineBean.lineContent
+            if(allChapterList?.size ?: 0 > loadSequence) {
+                allChapterList?.let {
+                    ReadSeparateHelper.getChapterNameList(it[loadSequence].chapter_name).forEachIndexed { index, novelLineBean ->
+                        if (index == 0) {
+                            load_chapter_num_tv.text = novelLineBean.lineContent
+                        } else {
+                            load_chapter_name_tv.text = novelLineBean.lineContent
+                        }
                     }
                 }
             }

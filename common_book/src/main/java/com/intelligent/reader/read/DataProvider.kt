@@ -33,6 +33,7 @@ import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.user.UserManager
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.OpenUDID
+import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.subscribekt
 import org.json.JSONException
 import org.json.JSONObject
@@ -141,69 +142,6 @@ class DataProvider : DisposableAndroidViewModel() {
         }
     }
 
-    fun loadAd(context: Context, type: String, callback: OnLoadReaderAdCallback) {
-
-        var adViewHeight = 800
-
-        if (type == AdMarkPostion.READING_MIDDLE_POSITION) {
-            adViewHeight = 800
-        } else if (type == AdMarkPostion.READING_POSITION) {
-            adViewHeight = 1080
-        }
-
-        PlatformSDK.adapp().dycmNativeAd(context, type, adViewHeight, 1920, object : AbstractCallback() {
-            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
-                super.onResult(adswitch, views, jsonResult)
-                if (!adswitch) {
-                    callback.onFail()
-                    return
-                }
-                try {
-                    val jsonObject = JSONObject(jsonResult)
-                    if (jsonObject.has("state_code")) {
-                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                            ResultCode.AD_REQ_SUCCESS
-                            -> {
-                                callback.onLoadAd(views[0])
-                            }
-                            else -> {
-                                callback.onFail()
-                            }
-                        }
-                    }
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                }
-            }
-        })
-    }
-
-    fun loadAd(context: Context, type: String, w: Int, h: Int, callback: OnLoadReaderAdCallback) {
-        PlatformSDK.adapp().dycmNativeAd(context as Activity, type, h, w, object : AbstractCallback() {
-            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
-                super.onResult(adswitch, views, jsonResult)
-                if (!adswitch) {
-                    callback.onFail()
-                    return
-                }
-                try {
-                    val jsonObject = JSONObject(jsonResult)
-                    if (jsonObject.has("state_code")) {
-                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                            ResultCode.AD_REQ_SUCCESS
-                            -> callback.onLoadAd(views[0])
-                            else -> {
-                                callback.onFail()
-                            }
-                        }
-                    }
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                }
-            }
-        })
-    }
-
     /**
      * 获取段末广告 6-3
      */
@@ -212,7 +150,7 @@ class DataProvider : DisposableAndroidViewModel() {
         if (ReadConfig.IS_LANDSCAPE) return
 //        loadAd(context, AdMarkPostion.LANDSCAPE_SLIDEUP_POPUPAD, callback)
 
-        PlatformSDK.adapp().dycmNativeAd(context, AdMarkPostion.LANDSCAPE_SLIDEUP_POPUPAD, 600, 1080, object : AbstractCallback() {
+        PlatformSDK.adapp().dycmNativeAd(context, AdMarkPostion.LANDSCAPE_SLIDEUP_POPUPAD, null, object : AbstractCallback() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
                 if (!adswitch) {
@@ -257,7 +195,7 @@ class DataProvider : DisposableAndroidViewModel() {
         }
 //        loadAd(context, adTyep, callback)
 
-        PlatformSDK.adapp().dycmNativeAd(context, adTyep, AdHeight, AdWidth, object : AbstractCallback() {
+        PlatformSDK.adapp().dycmNativeAd(context, adTyep, null, object : AbstractCallback() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
                 if (!adswitch) {
@@ -314,10 +252,14 @@ class DataProvider : DisposableAndroidViewModel() {
                                 if (ReadState.chapterList.size != 0) {
                                     requestSingleChapter(book, ReadState.chapterList, sequence, type, mReadDataListener)
                                 } else {
-                                    mReadDataListener.loadDataError("拉取章节时无网络")
+                                    runOnMain {
+                                        mReadDataListener.loadDataError("拉取章节时无网络")
+                                    }
                                 }
                             }, { e ->
-                                mReadDataListener.loadDataError("拉取章节时无网络")
+                                runOnMain {
+                                    mReadDataListener.loadDataError("拉取章节时无网络")
+                                }
                                 e.printStackTrace()
                             }))
         }
@@ -327,14 +269,18 @@ class DataProvider : DisposableAndroidViewModel() {
 
         val cacheNovelChapter = chapterCache.get(sequence)
         if (cacheNovelChapter != null) {
-            mReadDataListener.loadDataSuccess(cacheNovelChapter.chapter, type)
+            runOnMain {
+                mReadDataListener.loadDataSuccess(cacheNovelChapter.chapter, type)
+            }
             return
         }
 
         if (sequence < 0) {//封面页
             chapterCache.put(sequence, NovelChapter(Chapter(),
                     arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf()))))
-            mReadDataListener.loadDataSuccess(Chapter(), type)
+            runOnMain {
+                mReadDataListener.loadDataSuccess(Chapter(), type)
+            }
             return
         }
 
@@ -362,7 +308,7 @@ class DataProvider : DisposableAndroidViewModel() {
                     if (novelChapter.chapter.content != "null" && novelChapter.chapter.content.isNotEmpty()) {
                         ReadState.chapterId = novelChapter.chapter.chapter_id
                         //加章末广告
-                        if (!Constants.isHideAD) {
+                        if (ReadConfig.animation != ReadViewEnums.Animation.list) {
                             loadAd(novelChapter)
                         }
                         chapterCache.put(sequence, novelChapter)

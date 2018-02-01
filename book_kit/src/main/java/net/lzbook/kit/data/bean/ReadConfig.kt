@@ -2,6 +2,7 @@ package net.lzbook.kit.data.bean
 
 import android.graphics.Paint
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.utils.runOnMainDelayed
 import java.util.*
 
 /**
@@ -62,8 +63,10 @@ object ReadConfig : Observable() {
         set(value) {
             if (field != value) {
                 field = value
-                setChanged()
-                notifyObservers("SCREEN")
+                runOnMainDelayed(500, {
+                    setChanged()
+                    notifyObservers("SCREEN")
+                })
             }
         }
     //跳章 改为true 则为跳章
