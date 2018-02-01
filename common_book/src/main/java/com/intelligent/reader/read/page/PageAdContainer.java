@@ -4,15 +4,15 @@ import com.dycm_adsdk.PlatformSDK;
 import com.dycm_adsdk.callback.AbstractCallback;
 import com.dycm_adsdk.callback.ResultCode;
 
-import net.lzbook.kit.data.bean.ReadConfig;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.view.Gravity;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ import java.util.List;
  * Created by Xian on 2018/1/30.
  */
 
-public class PageAdContainer extends FrameLayout {
+public class PageAdContainer extends RelativeLayout {
     private boolean loadStatus = false;
 
     public PageAdContainer(@NonNull Context context, String type, LayoutParams layoutParams) {
@@ -41,7 +41,9 @@ public class PageAdContainer extends FrameLayout {
 
                             loadStatus = true;
                             if(!views.isEmpty() && views.get(0).getParent() == null) {
-                                addView(views.get(0));
+                                LayoutParams adParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                                adParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                                addView(views.get(0), adParams);
                             }
                         } else {
                             loadStatus = true;
@@ -75,7 +77,9 @@ public class PageAdContainer extends FrameLayout {
                             if(!views.isEmpty()) {
                                 for (ViewGroup viewGroup : views) {
                                     if (viewGroup != null && viewGroup.getParent() == null) {
-                                        addView(viewGroup);
+                                        LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+                                        addView(viewGroup, layoutParams);
                                         break;
                                     }
                                 }

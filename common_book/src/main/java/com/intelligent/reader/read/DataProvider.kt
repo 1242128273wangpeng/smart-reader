@@ -3,8 +3,10 @@ package com.intelligent.reader.read
 import android.app.Activity
 import android.content.Context
 import android.text.TextUtils
+import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.RelativeLayout
 import com.dycm_adsdk.PlatformSDK
 import com.dycm_adsdk.callback.AbstractCallback
 import com.dycm_adsdk.callback.ResultCode
@@ -336,13 +338,13 @@ class DataProvider : DisposableAndroidViewModel() {
         }
     }
 
-    private fun getBigAdLayoutParams(): FrameLayout.LayoutParams {
-        val bigAdLayoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
-        val leftMargin = AppUtils.dip2px(ReadState.readingActivity, 10f)
-        val rightMargin = AppUtils.dip2px(ReadState.readingActivity, 10f)
+    private fun getBigAdLayoutParams(): RelativeLayout.LayoutParams {
+        val bigAdLayoutParams = RelativeLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+//        val leftMargin = AppUtils.dip2px(ReadState.readingActivity, 10f)
+//        val rightMargin = AppUtils.dip2px(ReadState.readingActivity, 10f)
         val topMargin = AppUtils.dip2px(ReadState.readingActivity, 30f)
         val bottomMargin = AppUtils.dip2px(ReadState.readingActivity, 30f)
-        bigAdLayoutParams.setMargins(leftMargin, topMargin, rightMargin, bottomMargin)
+        bigAdLayoutParams.setMargins(0, topMargin, 0, bottomMargin)
         return bigAdLayoutParams
     }
 

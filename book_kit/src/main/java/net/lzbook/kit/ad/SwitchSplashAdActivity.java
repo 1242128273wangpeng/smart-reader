@@ -2,6 +2,7 @@ package net.lzbook.kit.ad;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
@@ -19,12 +20,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import static android.view.KeyEvent.KEYCODE_BACK;
+import static net.lzbook.kit.utils.ExtensionsKt.msMainLooperHandler;
+import static net.lzbook.kit.utils.ExtensionsKt.runOnMainDelayed;
 
 public class SwitchSplashAdActivity extends Activity {
+
+    private boolean canBack = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        canBack = false;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -72,11 +78,31 @@ public class SwitchSplashAdActivity extends Activity {
                 }
             });
         }
+
+        msMainLooperHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                canBack = true;
+            }
+        }, 8000);
+    }
+
+    long[] mHits = new long[2];
+    public void click(){
+        System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
+        mHits[mHits.length - 1] = SystemClock.uptimeMillis();
+        if(mHits[0] > SystemClock.uptimeMillis() - 500){
+            finish();
+        }
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return keyCode == KEYCODE_BACK || super.onKeyDown(keyCode, event);
+        if(canBack && keyCode == KEYCODE_BACK){
+            click();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
 }
