@@ -138,7 +138,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
 
         sp = PreferenceManager.getDefaultSharedPreferences(readReference?.get()?.applicationContext)
         Constants.isFullWindowRead = sp?.getBoolean("read_fullwindow", true) ?: true
-        Constants.PAGE_MODE = sp?.getInt("page_mode", 0) ?: 0
+        Constants.PAGE_MODE = sp?.getInt("page_mode", Constants.PAGE_MODE_DELAULT) ?: Constants.PAGE_MODE_DELAULT
         ReadConfig.FULL_SCREEN_READ = sp?.getBoolean("full_screen_read", false) ?: false
         Constants.isSlideUp = Constants.PAGE_MODE == 3
         Constants.isVolumeTurnover = sp?.getBoolean("sound_turnover", true) ?: true
@@ -199,7 +199,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         AppLog.d("ReadingActivity", "onNewIntent:")
 //        this.sp = PreferenceManager.getDefaultSharedPreferences(readReference?.get()?.applicationContext)
         Constants.isFullWindowRead = sp?.getBoolean("read_fullwindow", true) ?: true
-        Constants.PAGE_MODE = sp?.getInt("page_mode", 0) ?: 0
+        Constants.PAGE_MODE = sp?.getInt("page_mode", Constants.PAGE_MODE_DELAULT) ?: Constants.PAGE_MODE_DELAULT
         Constants.isSlideUp = Constants.PAGE_MODE == 3
         versionCode = AppUtils.getVersionCode()
         AppLog.e(TAG, "versionCode: " + versionCode)
