@@ -362,6 +362,8 @@
 -dontwarn com.dycm_adsdk.**
 -keep class com.dycm_adsdk.** { *;}
 
+-keep class net.lzbook.kit.data.bean.** {*;}
+
 -keep class com.dingyueads.sdk.** {
   public protected *;
 }
