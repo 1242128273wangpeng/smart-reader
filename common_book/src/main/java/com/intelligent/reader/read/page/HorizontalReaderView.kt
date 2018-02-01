@@ -3,10 +3,7 @@ package com.intelligent.reader.read.page
 import android.content.Context
 import android.support.v4.view.ViewCompat
 import android.util.AttributeSet
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewConfiguration
-import android.view.ViewTreeObserver
+import android.view.*
 import com.intelligent.reader.R
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.adapter.HorizontalAdapter
@@ -380,15 +377,19 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 
             viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
                 override fun onPreDraw(): Boolean {
-                    viewTreeObserver.removeOnPreDrawListener(this)
                     //更改当前view状态
                     var curView: View?
-                    do {
-                        curView = findViewWithTag(ReadViewEnums.PageIndex.current)
-                    } while (curView == null)
-                    (curView as HorizontalPage).viewState = ReadViewEnums.ViewState.loading
-                    curCursor = ReadCursor(it, sequence, offset, ReadViewEnums.PageIndex.current)
-                    checkViewState("Cur", ReadViewEnums.NotifyStateState.all)
+
+                    curView = findViewWithTag(ReadViewEnums.PageIndex.current)
+
+                    if(curView != null) {
+
+                        viewTreeObserver.removeOnPreDrawListener(this)
+
+                        (curView as HorizontalPage).viewState = ReadViewEnums.ViewState.loading
+                        curCursor = ReadCursor(it, sequence, offset, ReadViewEnums.PageIndex.current)
+                        checkViewState("Cur", ReadViewEnums.NotifyStateState.all)
+                    }
                     return true
                 }
             })
@@ -418,6 +419,10 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     override fun requestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
         super.requestDisallowInterceptTouchEvent(disallowIntercept)
         this.disallowIntercept = disallowIntercept
+    }
+
+    override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
+        return false
     }
 
     //-----禁止左滑-------左滑：上一次坐标 > 当前坐标

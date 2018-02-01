@@ -33,6 +33,7 @@ import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.user.UserManager
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.OpenUDID
+import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.subscribekt
 import org.json.JSONException
 import org.json.JSONObject
@@ -251,10 +252,14 @@ class DataProvider : DisposableAndroidViewModel() {
                                 if (ReadState.chapterList.size != 0) {
                                     requestSingleChapter(book, ReadState.chapterList, sequence, type, mReadDataListener)
                                 } else {
-                                    mReadDataListener.loadDataError("拉取章节时无网络")
+                                    runOnMain {
+                                        mReadDataListener.loadDataError("拉取章节时无网络")
+                                    }
                                 }
                             }, { e ->
-                                mReadDataListener.loadDataError("拉取章节时无网络")
+                                runOnMain {
+                                    mReadDataListener.loadDataError("拉取章节时无网络")
+                                }
                                 e.printStackTrace()
                             }))
         }
@@ -264,14 +269,18 @@ class DataProvider : DisposableAndroidViewModel() {
 
         val cacheNovelChapter = chapterCache.get(sequence)
         if (cacheNovelChapter != null) {
-            mReadDataListener.loadDataSuccess(cacheNovelChapter.chapter, type)
+            runOnMain {
+                mReadDataListener.loadDataSuccess(cacheNovelChapter.chapter, type)
+            }
             return
         }
 
         if (sequence < 0) {//封面页
             chapterCache.put(sequence, NovelChapter(Chapter(),
                     arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf()))))
-            mReadDataListener.loadDataSuccess(Chapter(), type)
+            runOnMain {
+                mReadDataListener.loadDataSuccess(Chapter(), type)
+            }
             return
         }
 
@@ -299,7 +308,7 @@ class DataProvider : DisposableAndroidViewModel() {
                     if (novelChapter.chapter.content != "null" && novelChapter.chapter.content.isNotEmpty()) {
                         ReadState.chapterId = novelChapter.chapter.chapter_id
                         //加章末广告
-                        if (!Constants.isHideAD) {
+                        if (ReadConfig.animation != ReadViewEnums.Animation.list) {
                             loadAd(novelChapter)
                         }
                         chapterCache.put(sequence, novelChapter)
