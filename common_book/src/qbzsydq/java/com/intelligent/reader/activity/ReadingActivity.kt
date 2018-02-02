@@ -478,6 +478,10 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         }
     }
 
+    fun showChangeSourceDialog() {
+        mReadPresenter.changeSource()
+    }
+
     override fun goToBookOver() {
         mReadPresenter.goToBookOver()
     }

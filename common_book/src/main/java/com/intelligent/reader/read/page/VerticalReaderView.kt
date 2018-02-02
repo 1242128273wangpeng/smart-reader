@@ -11,6 +11,7 @@ import android.util.AttributeSet
 import android.view.*
 import android.widget.FrameLayout
 import com.intelligent.reader.R
+import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.help.HorizontalEvent
 import com.intelligent.reader.read.help.IReadPageChange
@@ -201,7 +202,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
 
         getChapterData(ReadState.sequence, ReadViewEnums.PageIndex.current, false)
 
-        loadPreChapter(ReadState.sequence - 1)
+//        loadPreChapter(ReadState.sequence - 1)
         loadNextChapter(ReadState.sequence + 1)
         setBackground()
     }
@@ -249,29 +250,32 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     }
 
     private fun getChapterData(sequence: Int, index: ReadViewEnums.PageIndex, reLoad: Boolean) {
-        ReadState.book?.let {
-            mDataProvider.loadChapter2(it, sequence, index, object : DataProvider.ReadDataListener() {
-                override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) {
-                    runOnMain {
-                        handleChapter(c, type, reLoad)
-                        dismissLoadPage()
+        mDataProvider.loadChapter2(ReadState.book, sequence, index, object : DataProvider.ReadDataListener() {
+            override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) {
+                runOnMain {
+                    handleChapter(c, type, reLoad)
+                    dismissLoadPage()
+                }
+            }
+
+            override fun loadDataError(message: String) {
+                runOnMain {
+                    mChapterLoadStat = CHAPTER_WAITING
+                    mAdapter.setLoadViewState(PagerScrollAdapter.LOAD_VIEW_FAIL_STATE)
+                    if (mOriginDataList.size == 0) {
+                        showErrorPage()
                     }
                 }
+                dismissLoadPage()
+            }
 
-                override fun loadDataError(message: String) {
-                    runOnMain {
-                        mChapterLoadStat = CHAPTER_WAITING
-                        mAdapter.setLoadViewState(PagerScrollAdapter.LOAD_VIEW_FAIL_STATE)
-                        if (mOriginDataList.size > 0) {
-                            dismissLoadPage()
-                        } else {
-                            showErrorPage()
-                        }
-
-                    }
+            override fun loadDataInvalid(message: String) {
+                ToastUtils.showToastNoRepeat(message)
+                if (context is ReadingActivity) {
+                    (context as ReadingActivity).showChangeSourceDialog()
                 }
-            })
-        }
+            }
+        })
     }
 
     private fun handleChapter(chapter: Chapter, index: ReadViewEnums.PageIndex, reLoad: Boolean) {
@@ -672,16 +676,16 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     }
 
     private fun onJumpChapter(sequence: Int) {
-        mIsJumpChapter = false
+//        mIsJumpChapter = true
+//
+//        if (sequence == 0) {
+//            mFirstRead = false
+//        }
 
-        if (sequence == 0) {
-            mFirstRead = false
-        }
+//        getChapterData(sequence, ReadViewEnums.PageIndex.current, true)
 
-        getChapterData(sequence, ReadViewEnums.PageIndex.current, true)
-
-//        ReadState.sequence = sequence
-//        entrance()
+        ReadState.sequence = sequence
+        entrance()
     }
 
     override fun onAnimationChange(animation: ReadViewEnums.Animation) {

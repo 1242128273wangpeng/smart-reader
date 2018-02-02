@@ -785,6 +785,10 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         full(true)
     }
 
+    fun changeSource() {
+        mReadOptionPresenter?.changeSource()
+    }
+
     // 全屏切换
     private fun full(enable: Boolean) {
         if (!Constants.isFullWindowRead) {

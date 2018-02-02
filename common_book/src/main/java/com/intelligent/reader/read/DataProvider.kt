@@ -32,6 +32,7 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.*
 import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.net.custom.service.NetService
+import net.lzbook.kit.request.RequestFactory
 import net.lzbook.kit.user.UserManager
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.OpenUDID
@@ -46,15 +47,15 @@ import java.util.*
  */
 class DataProvider : DisposableAndroidViewModel() {
 
-    inner class DataCache(val maxSize:Int){
-        val map:TreeMap<Int, NovelChapter> = TreeMap()
+    inner class DataCache(val maxSize: Int) {
+        val map: TreeMap<Int, NovelChapter> = TreeMap()
 
-        fun put(key:Int, novelChapter: NovelChapter){
-            if(map.size >= maxSize){
+        fun put(key: Int, novelChapter: NovelChapter) {
+            if (map.size >= maxSize) {
                 val firstKey = map.firstKey()
-                if(firstKey < key){
+                if (firstKey < key) {
                     map.remove(firstKey)
-                }else{
+                } else {
                     map.remove(map.lastKey())
                 }
             }
@@ -62,11 +63,11 @@ class DataProvider : DisposableAndroidViewModel() {
             map.put(key, novelChapter)
         }
 
-        fun get(key:Int):NovelChapter?{
+        fun get(key: Int): NovelChapter? {
             return map[key]
         }
 
-        fun clear(){
+        fun clear() {
             map.clear()
         }
     }
@@ -308,8 +309,12 @@ class DataProvider : DisposableAndroidViewModel() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ novelChapter ->
-
                     if (novelChapter.chapter.content != "null" && novelChapter.chapter.content.isNotEmpty()) {
+                        if (ReadState.sequence != -1 && book.site != RequestFactory.RequestHost.QG.requestHost &&
+                                novelChapter.chapter.content.length <= Constants.CONTENT_ERROR_COUNT) {
+                            mReadDataListener.loadDataInvalid("当前章节内容异常，推荐换源。")
+                        }
+
                         ReadState.chapterId = novelChapter.chapter.chapter_id
                         //加章末广告
                         if (ReadConfig.animation != ReadViewEnums.Animation.list) {
@@ -399,7 +404,7 @@ class DataProvider : DisposableAndroidViewModel() {
         if (arrayList.size - 8 > frequency && within) {
             var count = arrayList.size - 8
             var index = frequency
-            while(index < count){
+            while (index < count) {
                 if (index % frequency == 0) {
                     val offset2 = arrayList[index].offset
 
@@ -440,10 +445,15 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     abstract class ReadDataListener {
+
         open fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) {
         }
 
         open fun loadDataError(message: String) {
+        }
+
+        open fun loadDataInvalid(message: String) {
+
         }
     }
 
