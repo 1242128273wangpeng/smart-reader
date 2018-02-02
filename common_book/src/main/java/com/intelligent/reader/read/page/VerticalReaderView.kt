@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.LinearSmoothScroller
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.util.AttributeSet
@@ -26,6 +27,7 @@ import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
+import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.ToastUtils
 import net.lzbook.kit.utils.runOnMain
@@ -174,6 +176,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
             }
 
         })
+
         loading_error_setting.visibility = View.GONE
     }
 
@@ -569,12 +572,6 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 mLastY = event.y
             }
 
-            MotionEvent.ACTION_UP -> {
-//                val distance = Math.sqrt(Math.pow((mStartTouchX - tmpX).toDouble(), 2.0) + Math.pow((mStartTouchY - tmpY).toDouble(), 2.0)).toInt()
-//                if (distance < 30 || distance < 10) {
-//                    showMenuClick(event)
-//                }
-            }
             MotionEvent.ACTION_MOVE -> {
                 // 底部
                 if (mLastY - event.y > 20) {
@@ -590,6 +587,36 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
             }
         }
         return super.onInterceptTouchEvent(event)
+    }
+
+    override fun onKeyEvent(event: KeyEvent): Boolean {
+        when (event.keyCode) {
+            KeyEvent.KEYCODE_VOLUME_UP -> {
+                smoothScrollUp(event)
+                return true
+            }
+            KeyEvent.KEYCODE_VOLUME_DOWN -> {
+                smoothScrollDown(event)
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun smoothScrollUp(event: KeyEvent) {
+        if (event.action == KeyEvent.ACTION_UP) {
+            if (mLastVisiblePosition == 0) {
+                ToastUtils.showToastNoRepeat(resources.getString(R.string.is_first_chapter))
+                return
+            }
+            page_rv.smoothScrollBy(0, -AppUtils.dp2px(resources, 300f).toInt())
+        }
+    }
+
+    private fun smoothScrollDown(event: KeyEvent) {
+        if (event.action == KeyEvent.ACTION_UP) {
+            page_rv.smoothScrollBy(0, AppUtils.dp2px(resources, 300f).toInt())
+        }
     }
 
     override fun onLoadViewClick(type: Int) {

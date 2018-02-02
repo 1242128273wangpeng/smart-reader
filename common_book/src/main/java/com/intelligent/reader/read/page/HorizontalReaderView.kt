@@ -323,6 +323,24 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         setCurrentItem(index.plus(1), smoothScroll)
     }
 
+    override fun onKeyEvent(event: KeyEvent): Boolean {
+        when (event.keyCode) {
+            KeyEvent.KEYCODE_VOLUME_UP -> {
+                if (event.action == KeyEvent.ACTION_UP) {
+                    onClickLeft(true)
+                }
+                return true
+            }
+            KeyEvent.KEYCODE_VOLUME_DOWN -> {
+                if (event.action == KeyEvent.ACTION_UP) {
+                    onClickRight(true)
+                }
+                return true
+            }
+        }
+        return false
+    }
+
     /**
      * 点击屏幕中间区域显示菜单
      */
@@ -382,7 +400,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 
                     curView = findViewWithTag(ReadViewEnums.PageIndex.current)
 
-                    if(curView != null) {
+                    if (curView != null) {
 
                         viewTreeObserver.removeOnPreDrawListener(this)
 
@@ -487,7 +505,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             }
         }
 
-        if(shouldGiveUpAction){
+        if (shouldGiveUpAction) {
             return false
         }
         return super.dispatchTouchEvent(ev)
