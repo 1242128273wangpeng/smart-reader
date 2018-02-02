@@ -139,9 +139,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
                 .inflate(R.layout.layout_head, null)
     }
 
-    private val sharedPreferences: SharedPreferences by lazy {
-        PreferenceManager.getDefaultSharedPreferences(activity.applicationContext)
-    }
+    private lateinit var sharedPreferences: SharedPreferences
 
     private val bookDeleteDialog: BookDeleteDialog by lazy {
         val dialog = BookDeleteDialog(activity)
@@ -212,6 +210,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity.applicationContext)
 
         fragmentCallback.frameHelper()
         if (activity is HomeActivity) {
