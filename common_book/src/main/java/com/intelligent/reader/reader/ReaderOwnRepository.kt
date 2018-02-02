@@ -126,7 +126,7 @@ class ReaderOwnRepository private constructor(api: UserService) : ReaderReposito
 
     override fun isChapterCacheExist(host: String, chapter: Chapter): Boolean {
         val chapterContent = net.lzbook.kit.request.DataCache.getChapterFromCache(chapter.sequence, chapter.book_id)
-        return chapterContent != null && chapterContent.length <= Constants.CONTENT_ERROR_COUNT
+        return chapterContent != null && chapterContent.length >= Constants.CONTENT_ERROR_COUNT
     }
 
     //空实现

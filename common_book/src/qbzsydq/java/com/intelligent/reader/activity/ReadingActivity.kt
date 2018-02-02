@@ -12,7 +12,6 @@ import android.util.DisplayMetrics
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
-import com.intelligent.reader.BuildConfig
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.CatalogMarkFragment
@@ -31,6 +30,7 @@ import com.logcat.sdk.LogEncapManager
 import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.qbzsydq.act_read.*
 import kotlinx.android.synthetic.qbzsydq.reading_page.*
+import net.lzbook.kit.BuildConfig
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
@@ -38,7 +38,10 @@ import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.data.bean.Source
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.OpenUDID
+import net.lzbook.kit.utils.SharedPreferencesUtils
 import java.lang.Exception
 import java.lang.reflect.Method
 import java.util.*
@@ -184,11 +187,15 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
      */
     fun dismissTopMenu() = mReadPresenter.dismissTopMenu()
 
-    override fun dispatchKeyEvent(event: KeyEvent): Boolean =
-            when (mReadPresenter.dispatchKeyEvent(event)) {
-                true -> true
-                else -> super.dispatchKeyEvent(event)
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        if (Constants.isVolumeTurnover) {
+            if (readerWidget.onKeyEvent(event)) {
+                return true
             }
+        }
+        return super.dispatchKeyEvent(event)
+    }
+
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean =
             when (keyCode == KeyEvent.KEYCODE_MENU) {
