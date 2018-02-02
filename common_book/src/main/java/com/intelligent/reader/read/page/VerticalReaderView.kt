@@ -11,6 +11,7 @@ import android.util.AttributeSet
 import android.view.*
 import android.widget.FrameLayout
 import com.intelligent.reader.R
+import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.help.HorizontalEvent
 import com.intelligent.reader.read.help.IReadPageChange
@@ -270,6 +271,13 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
 
                     }
                 }
+
+                override fun loadDataInvalid(message: String) {
+                    ToastUtils.showToastNoRepeat(message)
+                    if (context is ReadingActivity) {
+                        (context as ReadingActivity).showChangeSourceDialog()
+                    }
+                }
             })
         }
     }
@@ -286,6 +294,8 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
             mAdapter.setLoadViewState(PagerScrollAdapter.LOAD_VIEW_FAIL_STATE)
             return
         }
+
+        mLayoutManager.stackFromEnd
 
         when (index) {
 
@@ -672,7 +682,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     }
 
     private fun onJumpChapter(sequence: Int) {
-        mIsJumpChapter = false
+        mIsJumpChapter = true
 
         if (sequence == 0) {
             mFirstRead = false

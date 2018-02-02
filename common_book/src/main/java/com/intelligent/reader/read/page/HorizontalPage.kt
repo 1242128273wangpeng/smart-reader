@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
 import com.intelligent.reader.R
+import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.help.DrawTextHelper
 import com.intelligent.reader.read.mode.NovelChapter
@@ -27,6 +28,7 @@ import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.ToastUtils
 import net.lzbook.kit.utils.runOnMain
 import java.util.*
 
@@ -418,14 +420,23 @@ class HorizontalPage : FrameLayout, Observer {
             DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
                 override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = checkEntrance(cursor, 0)
                 override fun loadDataError(message: String) = showErrorView(cursor)
+                override fun loadDataInvalid(message: String) {
+                    showChangeSourceDialog(message)
+                }
             })
             DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener() {
                 override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = checkEntrance(cursor, 1)
                 override fun loadDataError(message: String) = checkEntrance(cursor, 1)
+                override fun loadDataInvalid(message: String) {
+                    showChangeSourceDialog(message)
+                }
             })
             DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.next, object : DataProvider.ReadDataListener() {
                 override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = checkEntrance(cursor, 2)
                 override fun loadDataError(message: String) = checkEntrance(cursor, 2)
+                override fun loadDataInvalid(message: String) {
+                    showChangeSourceDialog(message)
+                }
             })
         }
 
@@ -436,6 +447,13 @@ class HorizontalPage : FrameLayout, Observer {
             if (entranceArray.all { it }) {
                 setCursor(cursor)
                 this@HorizontalPage.destroyDrawingCache()
+            }
+        }
+
+        private fun showChangeSourceDialog(message: String) {
+            ToastUtils.showToastNoRepeat(message)
+            if (context is ReadingActivity) {
+                (context as ReadingActivity).showChangeSourceDialog()
             }
         }
 
