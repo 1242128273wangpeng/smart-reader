@@ -33,7 +33,7 @@ abstract class IAliLogModel {
     /*app版本*/
     val app_version: String? = AppUtils.getVersionName()
     /*app内部version code*/
-    val app_version_code: String? = "${AppUtils.getPackageInfo().versionCode}"
+    val app_version_code: String? = "${AppUtils.getVersionCode()}"
     /*app渠道号*/
     val app_channel_id: String? = AppUtils.getChannelId()
 

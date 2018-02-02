@@ -30,6 +30,7 @@ import android.view.WindowManager;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.lang.reflect.Field;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -58,13 +59,11 @@ public class AppUtils {
     public static int density;
     public static int width = 0;
     public static long lastClickTime;
-    private static Context mContext;
-    private static PackageInfo packageInfo;
-    private static ApplicationInfo appInfo;
 
-    public static void setContext(Context context) {
-        mContext = context;
-    }
+    private static String APPLICATION_ID = null;
+    private static String VERSION_NAME = null;
+    private static int VERSION_CODE = 0;
+    private static String CHANNEL_NAME = null;
 
     public static void initDensity(Context ctt) {
         DisplayMetrics dis = ctt.getResources().getDisplayMetrics();
@@ -390,13 +389,8 @@ public class AppUtils {
      * context
      */
     public static int getVersionCode() {
-        int versionCode = -1;
-        try {
-            versionCode = getPackageInfo().versionCode;
-        } catch (NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return versionCode;
+        initValues();
+        return VERSION_CODE;
     }
 
     /**
@@ -406,72 +400,61 @@ public class AppUtils {
      * String 返回类型
      */
     public static String getVersionName() {
-
-        String versionName = "";
-        try {
-            versionName = getPackageInfo().versionName;
-        } catch (NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return versionName;
+        initValues();
+        return VERSION_NAME;
     }
 
-    public static PackageInfo getPackageInfo()
-            throws NameNotFoundException {
-        if (packageInfo == null) {
-            synchronized (sLock) {
-                if (packageInfo == null) {
-                    PackageManager packageManager = BaseBookApplication.getGlobalContext().getPackageManager();
-                    packageInfo = packageManager.getPackageInfo(
-                            BaseBookApplication.getGlobalContext().getPackageName(), 0);
-                }
+    private static void initValues() {
+        if (CHANNEL_NAME == null) {
+            try {
+                Class<?> buildConfig = Class.forName("com.intelligent.reader.BuildConfig");
+                APPLICATION_ID = getStringField("APPLICATION_ID", buildConfig);
+                VERSION_NAME = getStringField("VERSION_NAME", buildConfig);
+                VERSION_CODE = getIntField("VERSION_CODE", buildConfig);
+                CHANNEL_NAME = getStringField("CHANNEL_NAME", buildConfig);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
-
-        return packageInfo;
     }
+
+    private static String getStringField(String fieldName, Object obj) throws NoSuchFieldException, IllegalAccessException {
+        Class clazz = null;
+        if (obj instanceof Class) {
+            clazz = (Class) obj;
+        } else {
+            clazz = obj.getClass();
+        }
+        Field field = clazz.getDeclaredField(fieldName);
+        field.setAccessible(true);
+        return (String) field.get(obj);
+    }
+
+    private static int getIntField(String fieldName, Object obj) throws NoSuchFieldException, IllegalAccessException {
+        Class clazz = null;
+        if (obj instanceof Class) {
+            clazz = (Class) obj;
+        } else {
+            clazz = obj.getClass();
+        }
+        Field field = clazz.getDeclaredField(fieldName);
+        field.setAccessible(true);
+        return field.getInt(obj);
+    }
+
 
     /**
      * 获取包名
      */
     public static String getPackageName() {
-        String packageName = "";
-        try {
-            packageName = getPackageInfo().packageName;
-        } catch (NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return packageName;
+       initValues();
+        return APPLICATION_ID;
     }
 
     // 获取渠道号
     public static String getChannelId() {
-        return getAppMetadata("BaiduMobAd_CHANNEL");
-    }
-
-    // 获取application节点下某个meta-data节点的值
-    private static String getAppMetadata(String metaKey) {
-        if (mContext != null && !TextUtils.isEmpty(metaKey)) {
-            String packageName = mContext.getPackageName();
-            if (packageName != null) {
-
-                try {
-                    if (appInfo == null) {
-                        appInfo = mContext.getPackageManager().getApplicationInfo(packageName,
-                                PackageManager.GET_META_DATA);
-
-                    }
-                    if (appInfo != null && appInfo.metaData != null)
-                        return appInfo.metaData.getString(metaKey);
-                } catch (NameNotFoundException e) {
-                    // 忽略该异常
-                }
-
-                return "";
-            }
-        }
-
-        return "";
+        initValues();
+        return CHANNEL_NAME;
     }
 
     public static boolean isToday(long first_time, long currentTime) {

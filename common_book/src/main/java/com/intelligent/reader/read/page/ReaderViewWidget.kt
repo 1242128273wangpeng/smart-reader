@@ -65,17 +65,16 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
             }
             //等待ViewPager切换完页面再隐藏
             if(mReaderView is HorizontalReaderView) {
-                var curView = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage
+                var curView = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage?
                 mTextureView?.alpha = 0F
 
-                return curView.hasAd
+                return curView?.hasAd == true
             }else{
                 return false
             }
         }
 
         override fun backward(): Boolean {
-            AppLog.e(ReaderViewWidget.tag, "backward")
             if(mReaderView is HorizontalReaderView) {
                 (mReaderView as HorizontalReaderView).onClickLeft(false)
             }
@@ -84,7 +83,6 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
         }
 
         override fun forward(): Boolean {
-            AppLog.e(ReaderViewWidget.tag, "forward")
             if(mReaderView is HorizontalReaderView) {
                 (mReaderView as HorizontalReaderView).onClickRight(false)
             }
@@ -92,7 +90,6 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
         }
 
         override fun restore(): Boolean {
-            AppLog.e(ReaderViewWidget.tag, "restore")
             return invisibelSurface()
         }
     }

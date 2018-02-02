@@ -112,7 +112,6 @@ public abstract class BaseBookApplication extends Application {
         }
 
         DeviceHelper.setContext(this);
-        AppUtils.setContext(this);
 
         QuInitialization.init(this);
 

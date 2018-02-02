@@ -465,7 +465,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
 
     companion object {
 
-        val ACTION_CHKHIDE = AppUtils.getPackageName()
         private val PULL_REFRESH_DELAY = 30 * 1000
         private val TAG = BookShelfFragment::class.java.simpleName
     }
