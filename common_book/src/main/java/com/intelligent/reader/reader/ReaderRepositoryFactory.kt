@@ -33,25 +33,6 @@ class ReaderRepositoryFactory private constructor(readerOwnRepository: ReaderRep
     }
 
     override fun requestSingleChapter(host: String, chapter: Chapter): Observable<Chapter> {
-//        //判断青果
-//        if (RequestFactory.RequestHost.QG.requestHost == host) {
-//            //判断青果缓存
-//            if (isChapterCacheExist(host, chapter)) {
-//                return mReaderLocalRepository.requestSingleChapter(host, chapter)
-//            } else {
-//                return mReaderQGRepository.requestSingleChapter(host, chapter)
-//            }
-//        } else {
-//
-//            if (isNeedDownContent(chapter, false)) {//是否需要下载
-//                return mReaderOwnRepository.requestSingleChapter(host, chapter)
-//            } else {
-//                return Observable.create({
-//                    it.onNext(chapter)
-//                    it.onComplete()
-//                })
-//            }
-//        }
 
         if (isChapterCacheExist(host, chapter)) {
             return mReaderLocalRepository.requestSingleChapter(host, chapter)

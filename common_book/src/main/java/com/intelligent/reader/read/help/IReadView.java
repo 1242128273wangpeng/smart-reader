@@ -2,6 +2,8 @@ package com.intelligent.reader.read.help;
 
 import net.lzbook.kit.data.bean.ReadViewEnums;
 
+import android.view.KeyEvent;
+
 /**
  * 子容器接口
  * Created by wt on 2017/12/13.
@@ -34,4 +36,6 @@ public interface IReadView {
      * @param mHorizontalEvent event
      */
     void setHorizontalEventListener(HorizontalEvent mHorizontalEvent);
+
+    boolean onKeyEvent(KeyEvent event);
 }

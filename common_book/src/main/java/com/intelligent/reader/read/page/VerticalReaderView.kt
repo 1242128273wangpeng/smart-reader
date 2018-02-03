@@ -4,12 +4,14 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.LinearSmoothScroller
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.*
 import android.widget.FrameLayout
 import com.intelligent.reader.R
+import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.help.HorizontalEvent
 import com.intelligent.reader.read.help.IReadPageChange
@@ -26,6 +28,7 @@ import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
+import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.ToastUtils
 import net.lzbook.kit.utils.runOnMain
@@ -174,6 +177,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
             }
 
         })
+
         loading_error_setting.visibility = View.GONE
     }
 
@@ -198,7 +202,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
 
         getChapterData(ReadState.sequence, ReadViewEnums.PageIndex.current, false)
 
-        loadPreChapter(ReadState.sequence - 1)
+//        loadPreChapter(ReadState.sequence - 1)
         loadNextChapter(ReadState.sequence + 1)
         setBackground()
     }
@@ -246,29 +250,32 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     }
 
     private fun getChapterData(sequence: Int, index: ReadViewEnums.PageIndex, reLoad: Boolean) {
-        ReadState.book?.let {
-            mDataProvider.loadChapter2(it, sequence, index, object : DataProvider.ReadDataListener() {
-                override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) {
-                    runOnMain {
-                        handleChapter(c, type, reLoad)
-                        dismissLoadPage()
+        mDataProvider.loadChapter2(ReadState.book, sequence, index, object : DataProvider.ReadDataListener() {
+            override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) {
+                runOnMain {
+                    handleChapter(c, type, reLoad)
+                    dismissLoadPage()
+                }
+            }
+
+            override fun loadDataError(message: String) {
+                runOnMain {
+                    mChapterLoadStat = CHAPTER_WAITING
+                    mAdapter.setLoadViewState(PagerScrollAdapter.LOAD_VIEW_FAIL_STATE)
+                    if (mOriginDataList.size == 0) {
+                        showErrorPage()
                     }
                 }
+                dismissLoadPage()
+            }
 
-                override fun loadDataError(message: String) {
-                    runOnMain {
-                        mChapterLoadStat = CHAPTER_WAITING
-                        mAdapter.setLoadViewState(PagerScrollAdapter.LOAD_VIEW_FAIL_STATE)
-                        if (mOriginDataList.size > 0) {
-                            dismissLoadPage()
-                        } else {
-                            showErrorPage()
-                        }
-
-                    }
+            override fun loadDataInvalid(message: String) {
+                ToastUtils.showToastNoRepeat(message)
+                if (context is ReadingActivity) {
+                    (context as ReadingActivity).showChangeSourceDialog()
                 }
-            })
-        }
+            }
+        })
     }
 
     private fun handleChapter(chapter: Chapter, index: ReadViewEnums.PageIndex, reLoad: Boolean) {
@@ -569,12 +576,6 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 mLastY = event.y
             }
 
-            MotionEvent.ACTION_UP -> {
-//                val distance = Math.sqrt(Math.pow((mStartTouchX - tmpX).toDouble(), 2.0) + Math.pow((mStartTouchY - tmpY).toDouble(), 2.0)).toInt()
-//                if (distance < 30 || distance < 10) {
-//                    showMenuClick(event)
-//                }
-            }
             MotionEvent.ACTION_MOVE -> {
                 // 底部
                 if (mLastY - event.y > 20) {
@@ -590,6 +591,36 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
             }
         }
         return super.onInterceptTouchEvent(event)
+    }
+
+    override fun onKeyEvent(event: KeyEvent): Boolean {
+        when (event.keyCode) {
+            KeyEvent.KEYCODE_VOLUME_UP -> {
+                smoothScrollUp(event)
+                return true
+            }
+            KeyEvent.KEYCODE_VOLUME_DOWN -> {
+                smoothScrollDown(event)
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun smoothScrollUp(event: KeyEvent) {
+        if (event.action == KeyEvent.ACTION_UP) {
+            if (mLastVisiblePosition == 0) {
+                ToastUtils.showToastNoRepeat(resources.getString(R.string.is_first_chapter))
+                return
+            }
+            page_rv.smoothScrollBy(0, -AppUtils.dp2px(resources, 300f).toInt())
+        }
+    }
+
+    private fun smoothScrollDown(event: KeyEvent) {
+        if (event.action == KeyEvent.ACTION_UP) {
+            page_rv.smoothScrollBy(0, AppUtils.dp2px(resources, 300f).toInt())
+        }
     }
 
     override fun onLoadViewClick(type: Int) {
@@ -645,16 +676,16 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     }
 
     private fun onJumpChapter(sequence: Int) {
-        mIsJumpChapter = false
+//        mIsJumpChapter = true
+//
+//        if (sequence == 0) {
+//            mFirstRead = false
+//        }
 
-        if (sequence == 0) {
-            mFirstRead = false
-        }
+//        getChapterData(sequence, ReadViewEnums.PageIndex.current, true)
 
-        getChapterData(sequence, ReadViewEnums.PageIndex.current, true)
-
-//        ReadState.sequence = sequence
-//        entrance()
+        ReadState.sequence = sequence
+        entrance()
     }
 
     override fun onAnimationChange(animation: ReadViewEnums.Animation) {

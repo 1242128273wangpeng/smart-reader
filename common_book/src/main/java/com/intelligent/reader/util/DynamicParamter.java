@@ -29,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import io.reactivex.Observer;
@@ -869,17 +870,15 @@ public class DynamicParamter {
     private void setChannelLimit() {
         if (!TextUtils.isEmpty(channel_limit)) {
             String[] message = channel_limit.split(",");
-            for (int i = 0; i < message.length; i++) {
-                channelLimit.add(i, message[i]);
-            }
+            channelLimit.addAll(Arrays.asList(message));
         }
     }
 
     private void setDayLimit() {
         if (!TextUtils.isEmpty(day_limit)) {
             String[] message = day_limit.split(",");
-            for (int i = 0; i < message.length; i++) {
-                dayLimit.add(i, Integer.valueOf(message[i]));
+            for (String aMessage : message) {
+                dayLimit.add(Integer.valueOf(aMessage));
             }
         }
     }

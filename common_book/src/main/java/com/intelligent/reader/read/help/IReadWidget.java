@@ -1,5 +1,7 @@
 package com.intelligent.reader.read.help;
 
+import android.view.KeyEvent;
+
 /**
  * 父容器接口
  * Created by wt on 2017/12/13.
@@ -31,4 +33,6 @@ public interface IReadWidget {
     void stopAutoRead();
 
     boolean isAutoRead();
+
+    boolean onKeyEvent(KeyEvent event);
 }

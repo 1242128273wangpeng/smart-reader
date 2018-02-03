@@ -5,6 +5,7 @@ import android.support.v4.view.ViewCompat
 import android.util.AttributeSet
 import android.view.*
 import com.intelligent.reader.R
+import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.adapter.HorizontalAdapter
 import com.intelligent.reader.read.animation.ShiftTransformer
@@ -17,10 +18,12 @@ import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.view.ViewPager
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.layout_custom_dialog.view.*
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.ToastUtils
 
 /**
  * 水平滑动PageView容器
@@ -145,6 +148,12 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                     provider.loadChapter(ReadState.book, sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
                         override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
                         override fun loadDataError(message: String) = Unit
+                        override fun loadDataInvalid(message: String) {
+                            ToastUtils.showToastNoRepeat(message)
+                            if (context is ReadingActivity) {
+                                (context as ReadingActivity).showChangeSourceDialog()
+                            }
+                        }
                     })
                 }
             } else {
@@ -153,6 +162,12 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                     provider.loadChapter(ReadState.book, sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
                         override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
                         override fun loadDataError(message: String) = Unit
+                        override fun loadDataInvalid(message: String) {
+                            ToastUtils.showToastNoRepeat(message)
+                            if (context is ReadingActivity) {
+                                (context as ReadingActivity).showChangeSourceDialog()
+                            }
+                        }
                     })
                 }
 
@@ -323,6 +338,24 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         setCurrentItem(index.plus(1), smoothScroll)
     }
 
+    override fun onKeyEvent(event: KeyEvent): Boolean {
+        when (event.keyCode) {
+            KeyEvent.KEYCODE_VOLUME_UP -> {
+                if (event.action == KeyEvent.ACTION_UP) {
+                    onClickLeft(true)
+                }
+                return true
+            }
+            KeyEvent.KEYCODE_VOLUME_DOWN -> {
+                if (event.action == KeyEvent.ACTION_UP) {
+                    onClickRight(true)
+                }
+                return true
+            }
+        }
+        return false
+    }
+
     /**
      * 点击屏幕中间区域显示菜单
      */
@@ -382,7 +415,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 
                     curView = findViewWithTag(ReadViewEnums.PageIndex.current)
 
-                    if(curView != null) {
+                    if (curView != null) {
 
                         viewTreeObserver.removeOnPreDrawListener(this)
 
@@ -487,7 +520,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             }
         }
 
-        if(shouldGiveUpAction){
+        if (shouldGiveUpAction) {
             return false
         }
         return super.dispatchTouchEvent(ev)

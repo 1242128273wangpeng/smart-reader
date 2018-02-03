@@ -95,38 +95,10 @@ class ReaderOwnRepository private constructor(api: UserService) : ReaderReposito
         return NetService.userService.getChapterContent(chapter?.curl!!, chapter)
     }
 
-//    /**
-//     * 判断是否需要下载
-//     */
-//    override fun isNeedDownContent(chapter: Chapter, downloadFlag: Boolean): Boolean {
-//        if (downloadFlag) {
-//            if (net.lzbook.kit.request.DataCache.isChapterExists(chapter.sequence, chapter.book_id)) {
-//                return false
-//            }
-//        } else {
-//            val content = net.lzbook.kit.request.DataCache.getChapterFromCache(chapter.sequence, chapter.book_id)
-//            if (!TextUtils.isEmpty(content) && !("null" == content || OtherRequestChapterExecutor.CACHE_EXIST == content) || NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
-//                if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
-//                    if (content.length <= Constants.CONTENT_ERROR_COUNT) {
-//                        return true
-//                    } else {
-//                        chapter.content = content
-//                        chapter.isSuccess = true
-//                        return false
-//                    }
-//                } else {
-//                    chapter.content = content
-//                    chapter.isSuccess = true
-//                    return false
-//                }
-//            }
-//        }
-//        return true
-//    }
-
+    //&& chapterContent.length >= Constants.CONTENT_ERROR_COUNT
     override fun isChapterCacheExist(host: String, chapter: Chapter): Boolean {
         val chapterContent = net.lzbook.kit.request.DataCache.getChapterFromCache(chapter.sequence, chapter.book_id)
-        return chapterContent != null && chapterContent.length <= Constants.CONTENT_ERROR_COUNT
+        return chapterContent != null
     }
 
     //空实现
