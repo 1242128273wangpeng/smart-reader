@@ -157,11 +157,11 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
                 override fun loadBitmap(index: ReadViewEnums.PageIndex): Bitmap? {
                     if (mReaderView is HorizontalReaderView) {
-                        val view = (mReaderView as HorizontalReaderView).findViewWithTag(index) as HorizontalPage
-                        if (view.hasAd) {
-                            view.destroyDrawingCache()
+                        val view = (mReaderView as HorizontalReaderView).findViewWithTag(index) as HorizontalPage?
+                        if (view?.hasAd == true) {
+                            view?.destroyDrawingCache()
                         }
-                        return view.drawingCache
+                        return view?.drawingCache
                     }
                     return null
                 }

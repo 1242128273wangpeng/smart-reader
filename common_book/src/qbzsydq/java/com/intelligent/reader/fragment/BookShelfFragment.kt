@@ -291,16 +291,18 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
     }
 
     override fun onSuccess(result: BookUpdateResult) {
-        latestLoadDataTime = System.currentTimeMillis()
-        bookRackUpdateTime = System.currentTimeMillis()
-        if (bookshelf_refresh_view != null) {
-            bookshelf_refresh_view!!.onRefreshComplete()
-        }
-        presenter.handleSuccessUpdate(result)
-        AppUtils.setLongPreferences(activity, "book_rack_update_time", bookRackUpdateTime)
-        AppLog.e(TAG, "onSuccess的刷新ui调用")
-        isShowAD = true
+        if(activity!= null && !activity.isFinishing) {
+            latestLoadDataTime = System.currentTimeMillis()
+            bookRackUpdateTime = System.currentTimeMillis()
+            if (bookshelf_refresh_view != null) {
+                bookshelf_refresh_view!!.onRefreshComplete()
+            }
+            presenter.handleSuccessUpdate(result)
+            AppUtils.setLongPreferences(activity, "book_rack_update_time", bookRackUpdateTime)
+            AppLog.e(TAG, "onSuccess的刷新ui调用")
+            isShowAD = true
 //        updateUI()
+        }
     }
 
     override fun onException(e: Exception) {
@@ -321,7 +323,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
                 if (updateCount == 1 && activity != null) {
                     showToastDelay("《$bookName${activity.getString(R.string.bookshelf_one_book_update)}" +
                             "$bookLastChapterName")
-                } else {
+                } else if(activity != null){
                     showToastDelay("《$bookName${activity.getString(R.string.bookshelf_more_book_update)}" +
                             "$updateCount${activity.getString(R.string.bookshelf_update_chapters)}")
                 }
