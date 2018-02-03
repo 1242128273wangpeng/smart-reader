@@ -2,7 +2,10 @@ package swipeback;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.os.Bundle;
+
+import net.lzbook.kit.utils.AppLog;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -94,6 +97,10 @@ public class ActivityLifecycleHelper implements Application.ActivityLifecycleCal
         if (activities == null) {
             activities = new LinkedList<>();
         }
+        boolean isSplashActivity = getName(activity).equals("SplashActivity");
+        boolean isGuideActivity = getName(activity).equals("GuideActivity");
+        if (isSplashActivity || isGuideActivity) return;
+        AppLog.e("ActivityLifecycleHelper", "add: " + getName(activity));
         activities.add(activity);
     }
 
@@ -103,12 +110,14 @@ public class ActivityLifecycleHelper implements Application.ActivityLifecycleCal
      * @return
      */
     public static Activity getLatestActivity() {
-        ActivityLifecycleHelper adapter = build();
-        int count = adapter.activities.size();
+        if (activities == null) {
+            activities = new LinkedList<>();
+        }
+        int count = activities.size();
         if (count == 0) {
             return null;
         }
-        return adapter.activities.get(count - 1);
+        return activities.get(count - 1);
     }
 
     /**
@@ -117,11 +126,19 @@ public class ActivityLifecycleHelper implements Application.ActivityLifecycleCal
      * @return
      */
     public static Activity getPreviousActivity() {
-        ActivityLifecycleHelper adapter = build();
-        if (adapter.activities == null || adapter.activities.size() < 2) {
+        if (activities == null) {
+            activities = new LinkedList<>();
+        }
+        int count = activities.size();
+        if (count < 2) {
             return null;
         }
-        return adapter.activities.get(adapter.activities.size() - 2);
+        return activities.get(count - 2);
+    }
+
+    private String getName(Context context) {
+        String contextString = context.toString();
+        return contextString.substring(contextString.lastIndexOf(".") + 1, contextString.indexOf("@"));
     }
 
 }

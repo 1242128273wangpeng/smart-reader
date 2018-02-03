@@ -31,7 +31,6 @@ public class AutoReadMenu extends LinearLayout implements OnClickListener {
     private TextView autoread_rate;
     private TextView autoread_label;
     private TextView autoread_stop;
-    private Context mContext;
     private OnAutoMemuListener autoMemuListener;
 
     /**
@@ -60,31 +59,28 @@ public class AutoReadMenu extends LinearLayout implements OnClickListener {
 
     public AutoReadMenu(Context context) {
         super(context);
-        this.mContext = context;
         init();
     }
 
     public AutoReadMenu(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.mContext = context;
         init();
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public AutoReadMenu(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        this.mContext = context;
         init();
     }
 
     private void init() {
-        LayoutInflater.from(mContext).inflate(R.layout.autoread_menu, this);
+        LayoutInflater.from(getContext()).inflate(R.layout.autoread_menu, this);
         autoread_up = (TextView) findViewById(R.id.autoread_up);
         autoread_down = (TextView) findViewById(R.id.autoread_down);
         autoread_rate = (TextView) findViewById(R.id.autoread_rate);
         autoread_stop = (TextView) findViewById(R.id.autoread_stop);
         autoread_label = (TextView) findViewById(R.id.autoread_label);
-        mAutoReadSp = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mAutoReadSp = PreferenceManager.getDefaultSharedPreferences(getContext());
         mAutoReadSpeed = mAutoReadSp.getInt(AUTO_READ_SPEED_KEY, AUTO_READ_DEFAULS_SPEED);
         initListener();
     }
@@ -128,7 +124,7 @@ public class AutoReadMenu extends LinearLayout implements OnClickListener {
     public void onClick(View view) {
         int i = view.getId();
         if (i == R.id.autoread_up) {
-            StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_auto_read_speed_up);
+            StatServiceUtils.statAppBtnClick(getContext(), StatServiceUtils.rb_click_auto_read_speed_up);
             if (autoMemuListener != null) {
                 autoMemuListener.setAutoSpeed(autoReadFactor());
                 setAutoReadSpeed(mAutoReadSpeed + 1);
@@ -136,7 +132,7 @@ public class AutoReadMenu extends LinearLayout implements OnClickListener {
             }
 
         } else if (i == R.id.autoread_down) {
-            StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_auto_read_speed_down);
+            StatServiceUtils.statAppBtnClick(getContext(), StatServiceUtils.rb_click_auto_read_speed_down);
             if (autoMemuListener != null) {
                 autoMemuListener.setAutoSpeed(autoReadFactor());
                 setAutoReadSpeed(mAutoReadSpeed - 1);
@@ -146,8 +142,8 @@ public class AutoReadMenu extends LinearLayout implements OnClickListener {
         } else if (i == R.id.autoread_stop) {
             Map<String, String> data = new HashMap<>();
             data.put("type", "2");
-            StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.AUTOREAD, data);
-            StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_auto_read_cancel);
+            StartLogClickUtil.upLoadEventLog(getContext(), StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.AUTOREAD, data);
+            StatServiceUtils.statAppBtnClick(getContext(), StatServiceUtils.rb_click_auto_read_cancel);
             if (autoMemuListener != null) {
                 autoMemuListener.autoStop();
                 setVisibility(GONE);
@@ -160,13 +156,6 @@ public class AutoReadMenu extends LinearLayout implements OnClickListener {
         if (autoMemuListener != null) {
             autoMemuListener.setAutoSpeed(autoReadFactor());
         }
-    }
-
-    public void recycleResource() {
-        if (this.mContext != null) {
-            this.mContext = null;
-        }
-
     }
 
     public interface OnAutoMemuListener {

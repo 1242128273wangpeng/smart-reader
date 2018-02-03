@@ -126,24 +126,24 @@ class ReaderViewModel : DisposableAndroidViewModel {
                         }))
     }
 
-    /**
-     * 购买单章
-     */
-    fun paySingleChapter(sourceId: String?, chapterId: String?, chapterName: String?, uid: String?) {
-        addDisposable(mReaderRepository!!.paySingleChapter(sourceId, chapterId, chapterName, uid)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ chapters ->
-                    if (mBookChapterViewCallback != null) {
-                        mBookChapterPayCallback?.onPayChapter(chapters)
-                    }
-                }, { throwable ->
-                    if (mBookChapterViewCallback != null) {
-                        mBookChapterViewCallback?.onFail(throwable.message.toString())
-                    }
-                }))
-
-    }
+//    /**
+//     * 购买单章
+//     */
+//    fun paySingleChapter(sourceId: String?, chapterId: String?, chapterName: String?, uid: String?) {
+//        addDisposable(mReaderRepository!!.paySingleChapter(sourceId, chapterId, chapterName, uid)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe({ chapters ->
+//                    if (mBookChapterViewCallback != null) {
+//                        mBookChapterPayCallback?.onPayChapter(chapters)
+//                    }
+//                }, { throwable ->
+//                    if (mBookChapterViewCallback != null) {
+//                        mBookChapterViewCallback?.onFail(throwable.message.toString())
+//                    }
+//                }))
+//
+//    }
 
     /**
      * 请求单章
@@ -152,16 +152,16 @@ class ReaderViewModel : DisposableAndroidViewModel {
         addDisposable(mReaderRepository!!.requestSingleChapter(host, chapter)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ chapters ->
-                    if (!TextUtils.isEmpty(chapters.content)) {
-                        chapters.isSuccess = true
+                .subscribe({ chapter ->
+                    if (!TextUtils.isEmpty(chapter.content)) {
+                        chapter.isSuccess = true
                         // 自动切源需要就更新目录
-                        if (chapters.flag == 1 && !TextUtils.isEmpty(chapters.content)) {
-                            mReaderRepository?.updateBookCurrentChapter(chapters.book_id, chapters, chapters.sequence)
+                        if (chapter.flag == 1 && !TextUtils.isEmpty(chapter.content)) {
+                            mReaderRepository?.updateBookCurrentChapter(chapter.book_id, chapter, chapter.sequence)
                         }
                     }
-                    mReaderRepository?.writeChapterCache(chapters, false)
-                    mBookSingleChapterCallback.onPayChapter(chapters)
+                    mReaderRepository?.writeChapterCache(chapter, false)
+                    mBookSingleChapterCallback.onPayChapter(chapter)
                 }, { throwable ->
                     mBookSingleChapterCallback.onFail(throwable.message.toString())
                 }))
@@ -224,7 +224,7 @@ class ReaderViewModel : DisposableAndroidViewModel {
         fun downLoadNovelMore()
         fun initBookStateDeal()
         fun changeChapter()
-//        fun getChapter(what: Int, sequence: Int)
+        //        fun getChapter(what: Int, sequence: Int)
 //        fun nextChapterCallBack(b: Boolean)
 //        fun preChapterCallBack(b: Boolean)
         fun showChangeNetDialog()

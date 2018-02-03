@@ -493,7 +493,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
                 var i = ReadState.sequence + 1
                 while (i < ReadState.sequence + num + 1 && i < size) {
                     val c = mReaderViewModel?.chapterList!![i]
-                    if (c != null) {
                         AppLog.e(TAG, "预加载： " + c.toString())
                         val finalI = i
                         mReaderViewModel!!.requestSingleChapter(ReadState.book.site, c, object : ReaderViewModel.BookSingleChapterCallback {
@@ -505,7 +504,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
 
                             override fun onFail(msg: String) {}
                         })
-                    }
                     i++
                 }
             }

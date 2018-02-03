@@ -56,8 +56,8 @@ class ReaderLocalRepository(context: Context) : ReaderRepository {
         }
     }
 
-    override fun updateBookCurrentChapter(bookId: String, retChapter: Chapter?, sequence: Int) {
-        BookChapterDao(mContext, bookId).updateBookCurrentChapter(retChapter, retChapter!!.sequence)
+    override fun updateBookCurrentChapter(bookId: String, retChapter: Chapter, sequence: Int) {
+        BookChapterDao(mContext, bookId).updateBookCurrentChapter(retChapter, retChapter.sequence)
     }
 
     override fun getChapterIdByChapterId(bookId: String, chapter_id: String?): Int {
@@ -90,8 +90,8 @@ class ReaderLocalRepository(context: Context) : ReaderRepository {
     override fun getBookEndRecommendBook(recommanded: String, bookId: String): Observable<RecommendBooksEndResp> = Observable.create(null)
     override fun getBookSource(bookId: String): Observable<SourceItem> = Observable.create(null)
     //    override fun isNeedDownContent(chapter: Chapter, downloadFlag: Boolean): Boolean = false
-    override fun batchChapter(dex: Int, downloadFlag: Boolean, chapterMap: MutableMap<String, Chapter>?) = Unit
+//    override fun batchChapter(dex: Int, downloadFlag: Boolean, chapterMap: MutableMap<String, Chapter>?) = Unit
 
-    override fun paySingleChapter(sourceId: String?, chapterId: String?, chapterName: String?, uid: String?): Observable<SingleChapterBean> = Observable.create(null)
+//    override fun paySingleChapter(sourceId: String?, chapterId: String?, chapterName: String?, uid: String?): Observable<SingleChapterBean> = Observable.create(null)
 
 }

@@ -35,20 +35,20 @@ public interface ReaderRepository {
      */
     Observable<Chapter> requestSingleChapter(String host, Chapter chapter);
 
-    /**
-     * 单章购买
-     */
-    Observable<SingleChapterBean> paySingleChapter(String sourceId, String chapterId, String chapterName, String uid);
+//    /**
+//     * 单章购买
+//     */
+//    Observable<SingleChapterBean> paySingleChapter(String sourceId, String chapterId, String chapterName, String uid);
 
 //    /**
 //     * 是否需要下载
 //     */
 //    boolean isNeedDownContent(@NotNull Chapter chapter, boolean downloadFlag);
 
-    /**
-     * 批量下载
-     */
-    void batchChapter(int dex, boolean downloadFlag, Map<String, Chapter> chapterMap) throws Exception;
+//    /**
+//     * 批量下载
+//     */
+//    void batchChapter(int dex, boolean downloadFlag, Map<String, Chapter> chapterMap) throws Exception;
 
     /**
      * 更新书当前章节
