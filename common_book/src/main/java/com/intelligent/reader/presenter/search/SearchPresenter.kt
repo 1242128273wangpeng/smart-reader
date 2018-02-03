@@ -141,7 +141,9 @@ class SearchPresenter(private val mContext: Context, override var view: SearchVi
     }
 
     fun setStartedAction() {
-        wordInfoMap.put(word!!, WordInfo())
+        if(word != null) {
+            wordInfoMap.put(word!!, WordInfo())
+        }
     }
 
     fun onLoadFinished() {
