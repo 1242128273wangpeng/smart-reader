@@ -82,12 +82,21 @@ public class EglHelper implements IEglHelper {
             throw new RuntimeException("eglInitialize failed");
         }
         mEglConfig = eglConfigChooser.chooseConfig(mEgl, mEglDisplay);
-
+        int times = 0;
+        do {
             /*
             * Create an EGL context. We want to do this as rarely as we can, because an
             * EGL context is a somewhat heavy object.
             */
-        mEglContext = eglContextFactory.createContext(mEgl, mEglDisplay, mEglConfig, eglContext.getEglContextOld());
+            mEglContext = eglContextFactory.createContext(mEgl, mEglDisplay, mEglConfig, eglContext.getEglContextOld());
+            times++;
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }while (mEglContext == null || mEglContext == EGL10.EGL_NO_CONTEXT && times < 3);
+
         if (mEglContext == null || mEglContext == EGL10.EGL_NO_CONTEXT) {
             mEglContext = null;
             throwEglException("createContext");
