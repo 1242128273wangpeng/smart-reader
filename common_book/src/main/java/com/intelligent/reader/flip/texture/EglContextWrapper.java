@@ -13,10 +13,9 @@ import javax.microedition.khronos.egl.EGLContext;
 
 public class EglContextWrapper {
 
-    protected EGLContext eglContextOld = EGL10.EGL_NO_CONTEXT;
+    protected EGLContext eglContextOld = null;
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-    protected android.opengl.EGLContext eglContext = EGL14.EGL_NO_CONTEXT;
+    protected android.opengl.EGLContext eglContext = null;
     public static EglContextWrapper EGL_NO_CONTEXT_WRAPPER = new EGLNoContextWrapper();
 
     public EGLContext getEglContextOld() {
@@ -27,12 +26,10 @@ public class EglContextWrapper {
         this.eglContextOld = eglContextOld;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public android.opengl.EGLContext getEglContext() {
         return eglContext;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void setEglContext(android.opengl.EGLContext eglContext) {
         this.eglContext = eglContext;
     }
@@ -42,9 +39,9 @@ public class EglContextWrapper {
 
         public EGLNoContextWrapper() {
             eglContextOld = EGL10.EGL_NO_CONTEXT;
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-//                eglContext = EGL14.EGL_NO_CONTEXT;
-//            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                eglContext = EGL14.EGL_NO_CONTEXT;
+            }
         }
 
         @Override
