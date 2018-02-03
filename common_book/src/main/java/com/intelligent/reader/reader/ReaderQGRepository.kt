@@ -35,9 +35,9 @@ class ReaderQGRepository private constructor() : ReaderRepository {
         })
     }
 
-    override fun paySingleChapter(sourceId: String?, chapterId: String?, chapterName: String?, uid: String?): Observable<SingleChapterBean> {
-        return NetService.userService.requestSingleChapter(sourceId!!, chapterId!!, chapterName!!, uid!!)
-    }
+//    override fun paySingleChapter(sourceId: String?, chapterId: String?, chapterName: String?, uid: String?): Observable<SingleChapterBean> {
+//        return NetService.userService.requestSingleChapter(sourceId!!, chapterId!!, chapterName!!, uid!!)
+//    }
 
     override fun isChapterCacheExist(host: String, chapter: Chapter): Boolean =
             com.quduquxie.network.DataCache.isChapterExists(chapter.chapter_id, chapter.book_id)
@@ -47,9 +47,9 @@ class ReaderQGRepository private constructor() : ReaderRepository {
     override fun getBookEndRecommendBook(recommanded: String, bookId: String): Observable<RecommendBooksEndResp> = Observable.create(null)
 
     override fun getBookSource(bookId: String): Observable<SourceItem> = Observable.create(null)
-    override fun updateBookCurrentChapter(bookId: String, retChapter: Chapter?, sequence: Int) = Unit
+    override fun updateBookCurrentChapter(bookId: String, retChapter: Chapter, sequence: Int) = Unit
     override fun getChapterIdByChapterId(bookId: String, chapter_id: String?): Int = -1
     override fun changeChargeBookState(bookId: String, chapterIndex: Int, i: Int) = Unit
-    override fun writeChapterCache(chapter: Chapter?, downloadFlag: Boolean?) = Unit
-    override fun batchChapter(dex: Int, downloadFlag: Boolean, chapterMap: MutableMap<String, Chapter>?) = Unit
+    override fun writeChapterCache(chapter: Chapter, downloadFlag: Boolean?) = Unit
+//    override fun batchChapter(dex: Int, downloadFlag: Boolean, chapterMap: MutableMap<String, Chapter>?) = Unit
 }

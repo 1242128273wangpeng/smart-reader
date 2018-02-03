@@ -47,25 +47,31 @@ class ReaderOwnRepository private constructor(api: UserService) : ReaderReposito
         return getSourceChapter(chapter)
     }
 
-    override fun batchChapter(dex: Int, downloadFlag: Boolean, chapterMap: MutableMap<String, Chapter>?) {
-        val iterator = chapterMap?.entries?.iterator()!!
-        val chapters = ArrayList<Chapter>()
-        var index = 0
-        while (iterator.hasNext()) {
-            if (NetWorkUtils.getNetWorkType(RequestExecutorDefault.mContext) == NetWorkUtils.NETWORK_NONE) {
-                RequestExecutorDefault.mRquestChaptersListener.requestFailed(RequestExecutorDefault.RequestChaptersListener.ERROR_TYPE_NETWORK_NONE, "没有网络连接", index)
-                return
-            } else {
-                val entry = iterator.next() as Map.Entry<*, *>
-                val chapter = entry.value as Chapter
-//                val result = singleChapter(dex, chapter)
-                val result = getSourceChapter(chapter)
-//                chapters.add(result!!)
+//    override fun batchChapter(dex: Int, downloadFlag: Boolean, chapterMap: MutableMap<String, Chapter>?) {
+//        val iterator = chapterMap?.entries?.iterator()!!
+//        val chapters = ArrayList<Chapter>()
+//        var index = 0
+//        while (iterator.hasNext()) {
+//            if (NetWorkUtils.getNetWorkType(RequestExecutorDefault.mContext) == NetWorkUtils.NETWORK_NONE) {
+//                RequestExecutorDefault.mRquestChaptersListener.requestFailed(RequestExecutorDefault.RequestChaptersListener.ERROR_TYPE_NETWORK_NONE, "没有网络连接", index)
+//                return
+//            } else {
+//                val entry = iterator.next() as Map.Entry<*, *>
+//                val chapter = entry.value as Chapter
+////                val result = singleChapter(dex, chapter)
+//                val result = getSourceChapter(chapter)
+////                chapters.add(result!!)
+//
+//            }
+//            index++
+//        }
+//        RequestExecutorDefault.mRquestChaptersListener.requestSuccess(chapters)
+//    }
 
-            }
-            index++
-        }
-        RequestExecutorDefault.mRquestChaptersListener.requestSuccess(chapters)
+    //&& chapterContent.length >= Constants.CONTENT_ERROR_COUNT
+    override fun isChapterCacheExist(host: String, chapter: Chapter): Boolean {
+        val chapterContent = net.lzbook.kit.request.DataCache.getChapterFromCache(chapter.sequence, chapter.book_id)
+        return chapterContent != null
     }
 
     /**
@@ -95,17 +101,11 @@ class ReaderOwnRepository private constructor(api: UserService) : ReaderReposito
         return NetService.userService.getChapterContent(chapter?.curl!!, chapter)
     }
 
-    //&& chapterContent.length >= Constants.CONTENT_ERROR_COUNT
-    override fun isChapterCacheExist(host: String, chapter: Chapter): Boolean {
-        val chapterContent = net.lzbook.kit.request.DataCache.getChapterFromCache(chapter.sequence, chapter.book_id)
-        return chapterContent != null
-    }
-
     //空实现
-    override fun updateBookCurrentChapter(bookId: String, retChapter: Chapter?, sequence: Int) = Unit
+    override fun updateBookCurrentChapter(bookId: String, retChapter: Chapter, sequence: Int) = Unit
 
     override fun getChapterIdByChapterId(bookId: String, chapter_id: String?): Int = -1
     override fun changeChargeBookState(bookId: String, chapterIndex: Int, i: Int) = Unit
-    override fun writeChapterCache(chapter: Chapter?, downloadFlag: Boolean?) = Unit
-    override fun paySingleChapter(sourceId: String?, chapterId: String?, chapterName: String?, uid: String?): Observable<SingleChapterBean> = Observable.create(null)
+    override fun writeChapterCache(chapter: Chapter, downloadFlag: Boolean?) = Unit
+//    override fun paySingleChapter(sourceId: String?, chapterId: String?, chapterName: String?, uid: String?): Observable<SingleChapterBean> = Observable.create(null)
 }

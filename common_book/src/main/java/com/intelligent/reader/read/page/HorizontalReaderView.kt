@@ -146,7 +146,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                 sequence -= 1
                 if (sequence > -1) {
                     provider.loadChapter(ReadState.book, sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
-                        override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
+                        override fun loadDataSuccess(c: Chapter?, type: ReadViewEnums.PageIndex) = Unit
                         override fun loadDataError(message: String) = Unit
                         override fun loadDataInvalid(message: String) {
                             ToastUtils.showToastNoRepeat(message)
@@ -160,7 +160,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                 sequence += 1
                 if (sequence < ReadState.chapterCount) {
                     provider.loadChapter(ReadState.book, sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
-                        override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = Unit
+                        override fun loadDataSuccess(c: Chapter?, type: ReadViewEnums.PageIndex) = Unit
                         override fun loadDataError(message: String) = Unit
                         override fun loadDataInvalid(message: String) {
                             ToastUtils.showToastNoRepeat(message)

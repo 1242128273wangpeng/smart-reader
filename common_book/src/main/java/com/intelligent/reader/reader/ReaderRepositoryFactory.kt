@@ -53,15 +53,15 @@ class ReaderRepositoryFactory private constructor(readerOwnRepository: ReaderRep
         }
     }
 
-    override fun batchChapter(dex: Int, downloadFlag: Boolean, chapterMap: MutableMap<String, Chapter>?) {
-        mReaderOwnRepository.batchChapter(dex, downloadFlag, chapterMap)
-    }
+//    override fun batchChapter(dex: Int, downloadFlag: Boolean, chapterMap: MutableMap<String, Chapter>?) {
+//        mReaderOwnRepository.batchChapter(dex, downloadFlag, chapterMap)
+//    }
 
 //    override fun isNeedDownContent(chapter: Chapter, downloadFlag: Boolean): Boolean =
 //            mReaderOwnRepository.isNeedDownContent(chapter, downloadFlag)
 
-    override fun updateBookCurrentChapter(bookId: String, retChapter: Chapter?, sequence: Int) {
-        mReaderLocalRepository.updateBookCurrentChapter(bookId, retChapter, retChapter!!.sequence)
+    override fun updateBookCurrentChapter(bookId: String, retChapter: Chapter, sequence: Int) {
+        mReaderLocalRepository.updateBookCurrentChapter(bookId, retChapter, retChapter.sequence)
     }
 
     override fun getChapterIdByChapterId(bookId: String, chapter_id: String?): Int {
@@ -72,12 +72,12 @@ class ReaderRepositoryFactory private constructor(readerOwnRepository: ReaderRep
         mReaderLocalRepository.changeChargeBookState(bookId, chapterIndex, 1)
     }
 
-    override fun writeChapterCache(chapter: Chapter?, downloadFlag: Boolean?) {
+    override fun writeChapterCache(chapter: Chapter, downloadFlag: Boolean?) {
         mReaderLocalRepository.writeChapterCache(chapter, downloadFlag)
     }
 
-    override fun paySingleChapter(sourceId: String?, chapterId: String?, chapterName: String?, uid: String?): Observable<SingleChapterBean> {
-        return mReaderQGRepository.paySingleChapter(sourceId, chapterId, chapterName, uid)
-    }
+//    override fun paySingleChapter(sourceId: String?, chapterId: String?, chapterName: String?, uid: String?): Observable<SingleChapterBean> {
+//        return mReaderQGRepository.paySingleChapter(sourceId, chapterId, chapterName, uid)
+//    }
 
 }
