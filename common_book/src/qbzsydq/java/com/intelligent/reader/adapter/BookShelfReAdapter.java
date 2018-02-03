@@ -1,11 +1,5 @@
 package com.intelligent.reader.adapter;
 
-import com.intelligent.reader.R;
-import com.intelligent.reader.adapter.holder.AbsRecyclerViewHolder;
-
-import net.lzbook.kit.data.bean.Book;
-import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
-
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,11 +8,17 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.RelativeLayout;
 
+import com.intelligent.reader.R;
+import com.intelligent.reader.adapter.holder.AbsRecyclerViewHolder;
+
+import net.lzbook.kit.data.bean.Book;
+import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class BookShelfReAdapter extends RecyclerView.Adapter<AbsRecyclerViewHolder<Book>> {
 
     private static boolean isList;
     public HashSet<Integer> remove_checked_states;
@@ -48,9 +48,9 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = null;
-        RecyclerView.ViewHolder holder = null;
+    public AbsRecyclerViewHolder<Book> onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view;
+        AbsRecyclerViewHolder<Book> holder = null;
         switch (viewType) {
             case 0:
                 if (isList) {
@@ -73,15 +73,13 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(AbsRecyclerViewHolder<Book> holder, int position) {
         Book book = book_list.get(position);
         switch (getItemViewType(position)) {
-            case 0: {
-                ((AbsRecyclerViewHolder<Book>) holder).onBindData(position, book,
-                        update_table.contains(book.book_id), isRemoveMode(), remove_checked_states
-                                .contains(position));
-            }
-            break;
+            case 0:
+                holder.onBindData(position, book, update_table.contains(book.book_id),
+                        isRemoveMode(), remove_checked_states.contains(position));
+                break;
             case 1:
                 View adView = getAdView(book);
                 if (adView != null) {
@@ -195,12 +193,17 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         void onItemLongClick(View view, int position);
     }
 
-    class ADViewHolder extends RecyclerView.ViewHolder {
+    class ADViewHolder extends AbsRecyclerViewHolder<Book> {
         RelativeLayout book_shelf_item_ad;
 
         public ADViewHolder(View itemView) {
-            super(itemView);
+            super(itemView, null, null);
             book_shelf_item_ad = (RelativeLayout) itemView.findViewById(R.id.book_shelf_item_ad);
+        }
+
+        @Override
+        public void onBindData(int position, Book data, boolean update, boolean isRemoveMode, boolean removeMark) {
+
         }
     }
 

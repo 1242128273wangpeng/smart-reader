@@ -134,7 +134,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
             book1.sequence = index++
             iBookList.add(0, book1)
             var i: Int = 1
-            while (size > adCount * i){
+            while (size > adCount * i) {
                 book1 = Book()
                 book1.book_type = -2
                 book1.sequence = index++
@@ -160,40 +160,40 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
                         when (ResultCode.parser(jsonObject.getInt("state_code"))) {
                             ResultCode.AD_REQ_SUCCESS//请求成功
                             -> {
-                                if (views != null) {
-                                    aDViews.clear()
-                                    updateBookList()
-                                    aDViews.addAll(views)
-                                    if (iBookList.isEmpty()) {
-                                        return
-                                    }
-                                    val size = iBookList.size
-                                    var index = 0
-                                    var book1 = Book()
-                                    book1.book_type = -2
-                                    book1.sequence = index++
-                                    iBookList.add(0, book1)
-                                    var adCount = PlatformSDK.config().getAdCount()
-                                    var i: Int = 1
-                                    while (size > adCount * i){
-                                        book1 = Book()
+                                runOnMain {
+                                    if (views != null) {
+                                        aDViews.clear()
+                                        updateBookList()
+                                        aDViews.addAll(views)
+                                        if (iBookList.isEmpty()) {
+                                            return@runOnMain
+                                        }
+                                        val size = iBookList.size
+                                        var index = 0
+                                        var book1 = Book()
                                         book1.book_type = -2
                                         book1.sequence = index++
-                                        iBookList.add(adCount * i, book1)
-                                        i++
-                                    }
+                                        iBookList.add(0, book1)
+                                        var adCount = PlatformSDK.config().getAdCount()
+                                        var i: Int = 1
+                                        while (size > adCount * i) {
+                                            book1 = Book()
+                                            book1.book_type = -2
+                                            book1.sequence = index++
+                                            iBookList.add(adCount * i, book1)
+                                            i++
+                                        }
 
-                                    runOnMain {
                                         view?.onAdRefresh()
-                                    }
 
+                                    }
                                     DyLogUtils.e("ADSDK", "请求成功")
                                 }
 
                             }
                             ResultCode.AD_REPAIR_SUCCESS//补充
                             -> {
-                                if(views != null){
+                                if (views != null) {
                                     aDViews.addAll(views)
                                     runOnMain {
                                         view?.onAdRefresh()

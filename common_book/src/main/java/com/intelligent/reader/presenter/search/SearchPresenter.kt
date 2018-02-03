@@ -1,11 +1,18 @@
 package com.intelligent.reader.presenter.search
 
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import android.text.TextUtils
+import android.widget.Toast
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
-
-import net.lzbook.kit.net.custom.service.NetService
+import com.intelligent.reader.presenter.IPresenter
 import com.intelligent.reader.read.help.BookHelper
-
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.RequestItem
@@ -13,32 +20,17 @@ import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.data.search.SearchAutoCompleteBean
 import net.lzbook.kit.data.search.SearchCommonBean
 import net.lzbook.kit.encrypt.URLBuilderIntterface
+import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.statistic.alilog
+import net.lzbook.kit.statistic.buildSearch
 import net.lzbook.kit.statistic.model.Search
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.JSInterfaceHelper
-
-import android.content.Context
-import android.content.Intent
-import android.os.Bundle
-import android.text.TextUtils
-import android.widget.Toast
-import com.intelligent.reader.presenter.IPresenter
-
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
-import java.util.ArrayList
-import java.util.HashMap
-import java.util.Random
-
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
-
-import net.lzbook.kit.statistic.alilog
-import net.lzbook.kit.statistic.buildSearch
+import java.util.*
 
 /**
  * Created by yuchao on 2017/8/2 0002.
@@ -141,8 +133,8 @@ class SearchPresenter(private val mContext: Context, override var view: SearchVi
     }
 
     fun setStartedAction() {
-        if(word != null) {
-            wordInfoMap.put(word!!, WordInfo())
+        word?.let {
+            wordInfoMap.put(it, WordInfo())
         }
     }
 
@@ -201,7 +193,7 @@ class SearchPresenter(private val mContext: Context, override var view: SearchVi
             requestItem.extra_parameter = extra_parameter
 
             val wordInfo = wordInfoMap[word]
-            if (wordInfo != null) {
+            if (wordInfo != null && word != null) {
                 wordInfo.actioned = true
                 alilog(buildSearch(requestItem, word!!, Search.OP.COVER, wordInfo.computeUseTime()))
             }
@@ -242,7 +234,7 @@ class SearchPresenter(private val mContext: Context, override var view: SearchVi
             val book = genCoverBook(host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count,
                     updateTime, parameter, extra_parameter, dex)
             val wordInfo = wordInfoMap[word]
-            if (wordInfo != null) {
+            if (wordInfo != null && word != null) {
                 wordInfo.actioned = true
                 alilog(buildSearch(book, word!!, Search.OP.BOOKSHELF, wordInfo.computeUseTime()))
             }
