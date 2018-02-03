@@ -67,22 +67,26 @@ public class ActivityLifecycleHelper implements Application.ActivityLifecycleCal
 
     @Override
     public void onActivityDestroyed(Activity activity) {
-        if (activities.contains(activity)) {
-            activities.remove(activity);
-        }
+        if(activities != null) {
+            if (activities.contains(activity)) {
+                activities.remove(activity);
+            }
 
-        if (activities.size() == 0) {
-            activities = null;
+            if (activities.size() == 0) {
+                activities = null;
+            }
         }
     }
 
     public void finishActivity(Activity activity) {
-        if (activities.contains(activity)) {
-            activities.remove(activity);
-        }
+        if(activities != null) {
+            if (activities.contains(activity)) {
+                activities.remove(activity);
+            }
 
-        if (activities.size() == 0) {
-            activities = null;
+            if (activities.size() == 0) {
+                activities = null;
+            }
         }
     }
 
