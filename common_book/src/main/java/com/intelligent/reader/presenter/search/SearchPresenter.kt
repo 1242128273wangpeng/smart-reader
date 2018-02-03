@@ -133,7 +133,9 @@ class SearchPresenter(private val mContext: Context, override var view: SearchVi
     }
 
     fun setStartedAction() {
-        wordInfoMap.put(word!!, WordInfo())
+        word?.let {
+            wordInfoMap.put(it, WordInfo())
+        }
     }
 
     fun onLoadFinished() {
@@ -191,7 +193,7 @@ class SearchPresenter(private val mContext: Context, override var view: SearchVi
             requestItem.extra_parameter = extra_parameter
 
             val wordInfo = wordInfoMap[word]
-            if (wordInfo != null) {
+            if (wordInfo != null && word != null) {
                 wordInfo.actioned = true
                 alilog(buildSearch(requestItem, word!!, Search.OP.COVER, wordInfo.computeUseTime()))
             }
@@ -232,7 +234,7 @@ class SearchPresenter(private val mContext: Context, override var view: SearchVi
             val book = genCoverBook(host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count,
                     updateTime, parameter, extra_parameter, dex)
             val wordInfo = wordInfoMap[word]
-            if (wordInfo != null) {
+            if (wordInfo != null && word != null) {
                 wordInfo.actioned = true
                 alilog(buildSearch(book, word!!, Search.OP.BOOKSHELF, wordInfo.computeUseTime()))
             }

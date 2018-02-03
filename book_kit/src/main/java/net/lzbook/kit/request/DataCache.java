@@ -51,14 +51,16 @@ public class DataCache {
         String content = null;
         if (file != null && file.exists()) {
             byte[] b = FileUtils.readBytes(filePath);
-            try {
-                content = new String(MultiInputStreamHelper.encrypt(b));
+            if(b != null) {
+                try {
+                    content = new String(MultiInputStreamHelper.encrypt(b));
 
-            } catch (Throwable e) {
-                e.printStackTrace();
-                // TODO 尝试解决 java.lang.OutOfMemoryError
-                System.gc();
-                content = new String(MultiInputStreamHelper.encrypt(b));
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                    // TODO 尝试解决 java.lang.OutOfMemoryError
+                    System.gc();
+                    content = new String(MultiInputStreamHelper.encrypt(b));
+                }
             }
         }
         return content;

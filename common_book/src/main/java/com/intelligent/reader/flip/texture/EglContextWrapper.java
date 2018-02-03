@@ -1,5 +1,9 @@
 package com.intelligent.reader.flip.texture;
 
+import android.opengl.EGL14;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLContext;
 
@@ -9,8 +13,9 @@ import javax.microedition.khronos.egl.EGLContext;
 
 public class EglContextWrapper {
 
-    protected EGLContext eglContextOld;
-    protected android.opengl.EGLContext eglContext;
+    protected EGLContext eglContextOld = null;
+
+    protected android.opengl.EGLContext eglContext = null;
     public static EglContextWrapper EGL_NO_CONTEXT_WRAPPER = new EGLNoContextWrapper();
 
     public EGLContext getEglContextOld() {
@@ -34,9 +39,9 @@ public class EglContextWrapper {
 
         public EGLNoContextWrapper() {
             eglContextOld = EGL10.EGL_NO_CONTEXT;
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-//                eglContext = EGL14.EGL_NO_CONTEXT;
-//            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                eglContext = EGL14.EGL_NO_CONTEXT;
+            }
         }
 
         @Override
