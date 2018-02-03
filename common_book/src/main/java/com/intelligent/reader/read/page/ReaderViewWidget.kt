@@ -235,6 +235,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
             mTextureView?.let {
                 ReadConfig.unregistObserver(it)
             }
+            mTextureView = null
         }
 
         mReaderView?.onAnimationChange(ReadConfig.animation)
