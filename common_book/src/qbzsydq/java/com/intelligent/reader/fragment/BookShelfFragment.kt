@@ -318,7 +318,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
             val bookName = firstBook?.book_name
             val bookLastChapterName = firstBook?.last_chapter_name
             if (bookName?.isNotEmpty() == true && bookLastChapterName?.isNotEmpty() == true) {
-                if (updateCount == 1) {
+                if (updateCount == 1 && activity != null) {
                     showToastDelay("《$bookName${activity.getString(R.string.bookshelf_one_book_update)}" +
                             "$bookLastChapterName")
                 } else {
@@ -334,8 +334,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
     }
 
     override fun doUpdateBook(updateService: CheckNovelUpdateService) {
-        updateService.setBookUpdateListener(activity as CheckNovelUpdateService.OnBookUpdateListener)
-        presenter.addUpdateTask(this)
+        if(activity != null) {
+            updateService.setBookUpdateListener(activity as CheckNovelUpdateService.OnBookUpdateListener)
+            presenter.addUpdateTask(this)
+        }
     }
 
     override fun notification(gid: String) {
