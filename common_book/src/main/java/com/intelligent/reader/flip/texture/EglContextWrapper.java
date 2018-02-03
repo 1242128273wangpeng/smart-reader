@@ -11,10 +11,11 @@ import javax.microedition.khronos.egl.EGLContext;
  * Created by Chilling on 2016/12/29.
  */
 
-@RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
 public class EglContextWrapper {
 
     protected EGLContext eglContextOld = EGL10.EGL_NO_CONTEXT;
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     protected android.opengl.EGLContext eglContext = EGL14.EGL_NO_CONTEXT;
     public static EglContextWrapper EGL_NO_CONTEXT_WRAPPER = new EGLNoContextWrapper();
 
@@ -26,10 +27,12 @@ public class EglContextWrapper {
         this.eglContextOld = eglContextOld;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public android.opengl.EGLContext getEglContext() {
         return eglContext;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void setEglContext(android.opengl.EGLContext eglContext) {
         this.eglContext = eglContext;
     }
