@@ -291,16 +291,18 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
     }
 
     override fun onSuccess(result: BookUpdateResult) {
-        latestLoadDataTime = System.currentTimeMillis()
-        bookRackUpdateTime = System.currentTimeMillis()
-        if (bookshelf_refresh_view != null) {
-            bookshelf_refresh_view!!.onRefreshComplete()
-        }
-        presenter.handleSuccessUpdate(result)
-        AppUtils.setLongPreferences(activity, "book_rack_update_time", bookRackUpdateTime)
-        AppLog.e(TAG, "onSuccess的刷新ui调用")
-        isShowAD = true
+        if(activity!= null && !activity.isFinishing) {
+            latestLoadDataTime = System.currentTimeMillis()
+            bookRackUpdateTime = System.currentTimeMillis()
+            if (bookshelf_refresh_view != null) {
+                bookshelf_refresh_view!!.onRefreshComplete()
+            }
+            presenter.handleSuccessUpdate(result)
+            AppUtils.setLongPreferences(activity, "book_rack_update_time", bookRackUpdateTime)
+            AppLog.e(TAG, "onSuccess的刷新ui调用")
+            isShowAD = true
 //        updateUI()
+        }
     }
 
     override fun onException(e: Exception) {
@@ -318,10 +320,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
             val bookName = firstBook?.book_name
             val bookLastChapterName = firstBook?.last_chapter_name
             if (bookName?.isNotEmpty() == true && bookLastChapterName?.isNotEmpty() == true) {
-                if (updateCount == 1) {
+                if (updateCount == 1 && activity != null) {
                     showToastDelay("《$bookName${activity.getString(R.string.bookshelf_one_book_update)}" +
                             "$bookLastChapterName")
-                } else {
+                } else if(activity != null){
                     showToastDelay("《$bookName${activity.getString(R.string.bookshelf_more_book_update)}" +
                             "$updateCount${activity.getString(R.string.bookshelf_update_chapters)}")
                 }
@@ -334,8 +336,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
     }
 
     override fun doUpdateBook(updateService: CheckNovelUpdateService) {
-        updateService.setBookUpdateListener(activity as CheckNovelUpdateService.OnBookUpdateListener)
-        presenter.addUpdateTask(this)
+        if(activity != null) {
+            updateService.setBookUpdateListener(activity as CheckNovelUpdateService.OnBookUpdateListener)
+            presenter.addUpdateTask(this)
+        }
     }
 
     override fun notification(gid: String) {
@@ -465,7 +469,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
 
     companion object {
 
-        val ACTION_CHKHIDE = AppUtils.getPackageName()
         private val PULL_REFRESH_DELAY = 30 * 1000
         private val TAG = BookShelfFragment::class.java.simpleName
     }

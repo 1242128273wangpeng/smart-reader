@@ -3,6 +3,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         package="net.lzbook.kit">
     <!-- 用于精确统计用户手机的系统信息 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.READ_LOGS"/>

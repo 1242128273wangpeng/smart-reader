@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.PointF
 import android.util.AttributeSet
+import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import com.intelligent.reader.activity.ReadingActivity
@@ -61,19 +62,18 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
                 mTextureView?.canFlip = true
             }
             //等待ViewPager切换完页面再隐藏
-            if (mReaderView is HorizontalReaderView) {
-                var curView = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage
+            if(mReaderView is HorizontalReaderView) {
+                var curView = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage?
                 mTextureView?.alpha = 0F
 
-                return curView.hasAd
-            } else {
+                return curView?.hasAd == true
+            }else{
                 return false
             }
         }
 
         override fun backward(): Boolean {
-            AppLog.e(ReaderViewWidget.tag, "backward")
-            if (mReaderView is HorizontalReaderView) {
+            if(mReaderView is HorizontalReaderView) {
                 (mReaderView as HorizontalReaderView).onClickLeft(false)
             }
 
@@ -81,15 +81,13 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
         }
 
         override fun forward(): Boolean {
-            AppLog.e(ReaderViewWidget.tag, "forward")
-            if (mReaderView is HorizontalReaderView) {
+            if(mReaderView is HorizontalReaderView) {
                 (mReaderView as HorizontalReaderView).onClickRight(false)
             }
             return invisibelSurface()
         }
 
         override fun restore(): Boolean {
-            AppLog.e(ReaderViewWidget.tag, "restore")
             return invisibelSurface()
         }
     }
@@ -159,11 +157,11 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
                 override fun loadBitmap(index: ReadViewEnums.PageIndex): Bitmap? {
                     if (mReaderView is HorizontalReaderView) {
-                        val view = (mReaderView as HorizontalReaderView).findViewWithTag(index) as HorizontalPage
-                        if (view.hasAd) {
-                            view.destroyDrawingCache()
+                        val view = (mReaderView as HorizontalReaderView).findViewWithTag(index) as HorizontalPage?
+                        if (view?.hasAd == true) {
+                            view?.destroyDrawingCache()
                         }
-                        return view.drawingCache
+                        return view?.drawingCache
                     }
                     return null
                 }
@@ -237,6 +235,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
             mTextureView?.let {
                 ReadConfig.unregistObserver(it)
             }
+            mTextureView = null
         }
 
         mReaderView?.onAnimationChange(ReadConfig.animation)
@@ -267,15 +266,17 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
     private fun flipUp(event: KeyEvent) {
         if (event.action == KeyEvent.ACTION_UP) {
-            onCurlDown(0f, ReadConfig.screenHeight.toFloat())
-            onCurlUp(0f, ReadConfig.screenHeight.toFloat())
+            if(onCurlDown(10f, ReadConfig.screenHeight.toFloat() - 10)) {
+                onCurlUp(10f, ReadConfig.screenHeight.toFloat() - 10)
+            }
         }
     }
 
     private fun flipDown(event: KeyEvent) {
         if (event.action == KeyEvent.ACTION_UP) {
-            onCurlDown(ReadConfig.screenWidth.toFloat(), ReadConfig.screenHeight.toFloat())
-            onCurlUp(ReadConfig.screenWidth.toFloat(), ReadConfig.screenHeight.toFloat())
+            if(onCurlDown(ReadConfig.screenWidth.toFloat() - 10, ReadConfig.screenHeight.toFloat() - 10)) {
+                onCurlUp(ReadConfig.screenWidth.toFloat() - 10, ReadConfig.screenHeight.toFloat() - 10)
+            }
         }
     }
 
@@ -316,27 +317,6 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
         }
 
         velocityTracker!!.addMovement(event)
-
-//        if (ReadConfig.FULL_SCREEN_READ) {
-//            if (event.action == MotionEvent.ACTION_DOWN) {
-//                eventList.add(event)
-//                AppLog.e("event", event.action.toString())
-//                return true
-//            }
-//            if (eventList.isNotEmpty()) {
-//                if (event.action == MotionEvent.ACTION_UP) {
-//                    //执行操作
-//                    val x = ReadConfig.screenWidth.minus(100).toFloat()
-//                    val y = ReadConfig.screenHeight.div(2).toFloat()
-//                    onCurlDown(x, y)
-//                    onCurlUp(x, y)
-//                    return true
-//                } else if (event.action == MotionEvent.ACTION_CANCEL) {
-//                    onCurlDown(eventList.last().x, eventList.last().y)
-//                }
-//            }
-//            eventList.clear()
-//        }
 
         return when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> onCurlDown(event.x, event.y)
@@ -384,6 +364,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
                         }
                         //left
                         if (!flipPreviousPage()) {
+                            Log.e("ReaderWidget", "cant fillPreTexture")
                             break
                         }
                     } else {
@@ -393,6 +374,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
                         }
                         //right
                         if (!flipNextPage()) {
+                            Log.e("ReaderWidget", "cant fillNextTexture")
                             break
                         }
                     }
@@ -437,6 +419,9 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
                 if (filledTexture) {
                     mTextureView?.onFingerMove(x, y)
+                }else{
+                    shouldGiveUpAction = true
+                    Log.e("ReaderWidget", "cant filledTexture")
                 }
             }
         } else {
@@ -459,7 +444,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
             }
         }
 
-        return true
+        return flag
     }
 
     private fun flipNextPage(): Boolean {
