@@ -274,7 +274,6 @@ public class PageFlip {
 
 //        //打开深度检测
 //        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-//        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 //        //打开背面剪裁
 //        GLES20.glEnable(GLES20.GL_CULL_FACE);
     }

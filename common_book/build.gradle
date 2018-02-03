@@ -119,7 +119,7 @@ android {
             txtqbxsydq: "cn.zsqbydq.reader"
     ]
 
-    def channel = "custom_channel"
+    def channel = "dev_channel"
 
 
     lintOptions {
@@ -254,7 +254,9 @@ android {
         }
 
         //默认开启LeakCanary
-        buildConfigField "boolean", "IS_LEAKCANARY_DISABLE", "false"
+        buildConfigField "boolean", "IS_LEAKCANARY_DISABLE", "true"
+        //默认的
+        buildConfigField "String", "CHANNEL_NAME", "\"DEBUG\""
     }
 
     sourceSets {
@@ -328,6 +330,9 @@ N多网	        blf1298_10885_001
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources false
+
+            buildConfigField "String", "CHANNEL_NAME", "\"${channel}\""
+
             addManifestPlaceholders([CHANNEL_NAME: "${channel}"])
         }
 
@@ -341,8 +346,9 @@ N多网	        blf1298_10885_001
             //便于执行monkey, 跑monkey时 这是为true
             buildConfigField "boolean", "IS_LEAKCANARY_DISABLE", "false"
 
+            buildConfigField "String", "CHANNEL_NAME", "\"DEBUG\""
             fixChannelAppName(getOwner())
-            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_11974_001'])
+            addManifestPlaceholders([CHANNEL_NAME: 'DEBUG'])
         }
 
         //调试和开发使用
@@ -351,7 +357,10 @@ N多网	        blf1298_10885_001
             zipAlignEnabled true
             shrinkResources false
             fixChannelAppName(getOwner())
-            addManifestPlaceholders([CHANNEL_NAME: 'blf1298_11974_001'])
+
+            buildConfigField "String", "CHANNEL_NAME", "\"${channel}\""
+
+            addManifestPlaceholders([CHANNEL_NAME: "${channel}"])
         }
 
     }

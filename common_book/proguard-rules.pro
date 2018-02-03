@@ -436,6 +436,8 @@ public protected *;
 }
 -dontwarn com.fasterxml.**
 
+-keep public class com.intelligent.reader.BuildConfig {*;}
+
 # keep annotated by NotProguard
 -keep @net.lzbook.kit.utils.NotProguard class * {*;}
 -keep class * {

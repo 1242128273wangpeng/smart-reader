@@ -196,15 +196,15 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, O
 
         if (!mPageFlip.isAnimating() &&
                 mPageFlip.getFirstPage() != null) {
-            queueEvent(new Runnable() {
-                @Override
-                public void run() {
+//            queueEvent(new Runnable() {
+//                @Override
+//                public void run() {
                     isFilledFirstTexture = false;
                     isFilledSecondTexture = false;
                     mPageFlip.onFingerDown(x, y);
 //                    requestRender();
-                }
-            });
+//                }
+//            });
             downActioned = true;
             log("down");
         } else {
