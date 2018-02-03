@@ -64,22 +64,26 @@ public class ActivityLifecycleHelper implements Application.ActivityLifecycleCal
 
     @Override
     public void onActivityDestroyed(Activity activity) {
-        if (activities.contains(activity)) {
-            activities.remove(activity);
-        }
+        if(activities != null) {
+            if (activities.contains(activity)) {
+                activities.remove(activity);
+            }
 
-        if (activities.size() == 0) {
-            activities = null;
+            if (activities.size() == 0) {
+                activities = null;
+            }
         }
     }
 
     public void finishActivity(Activity activity) {
-        if (activities.contains(activity)) {
-            activities.remove(activity);
-        }
+        if(activities != null) {
+            if (activities.contains(activity)) {
+                activities.remove(activity);
+            }
 
-        if (activities.size() == 0) {
-            activities = null;
+            if (activities.size() == 0) {
+                activities = null;
+            }
         }
     }
 
@@ -114,11 +118,10 @@ public class ActivityLifecycleHelper implements Application.ActivityLifecycleCal
      */
     public static Activity getPreviousActivity() {
         ActivityLifecycleHelper adapter = build();
-        int count = adapter.activities.size();
-        if (count < 2) {
+        if (adapter.activities == null || adapter.activities.size() < 2) {
             return null;
         }
-        return adapter.activities.get(count - 2);
+        return adapter.activities.get(adapter.activities.size() - 2);
     }
 
 }
