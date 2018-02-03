@@ -1,9 +1,7 @@
 package com.intelligent.reader.read
 
-import android.app.Activity
 import android.content.Context
 import android.text.TextUtils
-import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
@@ -26,6 +24,8 @@ import com.intelligent.reader.reader.ReaderRepositoryFactory
 import com.intelligent.reader.repository.BookCoverRepository
 import com.intelligent.reader.repository.ReaderRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.Consumer
+import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.constants.Constants
@@ -34,12 +34,10 @@ import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.request.RequestFactory
 import net.lzbook.kit.user.UserManager
-import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.OpenUDID
-import net.lzbook.kit.utils.runOnMain
-import net.lzbook.kit.utils.subscribekt
+import net.lzbook.kit.utils.*
 import org.json.JSONException
 import org.json.JSONObject
+import java.net.UnknownHostException
 import java.util.*
 
 /**
@@ -98,7 +96,7 @@ class DataProvider : DisposableAndroidViewModel() {
             for (i in startIndex until end) {
                 if (i < ReadState.chapterCount) {
                     if (!isCacheExistBySequence(i)) {
-                        mReaderRepository.requestSingleChapter(ReadState.book.site, ReadState.chapterList.get(i))
+                        mReaderRepository.requestSingleChapter(ReadState.book.site, ReadState.chapterList[i])
                                 .subscribeOn(Schedulers.io())
                                 .subscribekt(onNext = {
                                     println(" chapter cached " + it.sequence)
@@ -309,6 +307,7 @@ class DataProvider : DisposableAndroidViewModel() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ novelChapter ->
+
                     if (novelChapter.chapter.content != "null" && novelChapter.chapter.content.isNotEmpty()) {
                         if (ReadState.sequence != -1 && book.site != RequestFactory.RequestHost.QG.requestHost &&
                                 novelChapter.chapter.content.length <= Constants.CONTENT_ERROR_COUNT) {
@@ -440,13 +439,24 @@ class DataProvider : DisposableAndroidViewModel() {
     }
 
     fun clear() {
+        setRxJavaErrorHandler()
         chapterCache.clear()
         unSubscribe()
     }
 
+    /**
+     * RxJava2 当取消订阅后(dispose())，RxJava抛出的异常后续无法接收(此时后台线程仍在跑，可能会抛出IO等异常),全部由RxJavaPlugin接收，需要提前设置ErrorHandler
+     * 详情：http://engineering.rallyhealth.com/mobile/rxjava/reactive/2017/03/15/migrating-to-rxjava-2.html#Error Handling
+     */
+    private fun setRxJavaErrorHandler() {
+        RxJavaPlugins.setErrorHandler { throwable ->
+            AppLog.e("DataProvider", " throwable :" + throwable.message)
+        }
+    }
+
     abstract class ReadDataListener {
 
-        open fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) {
+        open fun loadDataSuccess(c: Chapter?, type: ReadViewEnums.PageIndex) {
         }
 
         open fun loadDataError(message: String) {

@@ -251,20 +251,18 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
 
     private fun getChapterData(sequence: Int, index: ReadViewEnums.PageIndex, reLoad: Boolean) {
         mDataProvider.loadChapter2(ReadState.book, sequence, index, object : DataProvider.ReadDataListener() {
-            override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) {
-                runOnMain {
-                    handleChapter(c, type, reLoad)
-                    dismissLoadPage()
+            override fun loadDataSuccess(chapter: Chapter?, type: ReadViewEnums.PageIndex) {
+                chapter?.let {
+                    handleChapter(chapter, type, reLoad)
                 }
+                dismissLoadPage()
             }
 
             override fun loadDataError(message: String) {
-                runOnMain {
-                    mChapterLoadStat = CHAPTER_WAITING
-                    mAdapter.setLoadViewState(PagerScrollAdapter.LOAD_VIEW_FAIL_STATE)
-                    if (mOriginDataList.size == 0) {
-                        showErrorPage()
-                    }
+                mChapterLoadStat = CHAPTER_WAITING
+                mAdapter.setLoadViewState(PagerScrollAdapter.LOAD_VIEW_FAIL_STATE)
+                if (mOriginDataList.size == 0) {
+                    showErrorPage()
                 }
                 dismissLoadPage()
             }

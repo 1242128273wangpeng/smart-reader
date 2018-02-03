@@ -17,7 +17,7 @@ public class DataCache {
 
     public static boolean saveChapter(String content, int sequence, String book_id) {
         String filePath = ReplaceConstants.getReplaceConstants().APP_PATH_BOOK + book_id + "/" + sequence + ".text";
-        if ((content.length()) <= Constants.CONTENT_ERROR_COUNT) {
+        if (!TextUtils.isEmpty(content) && (content.length()) <= Constants.CONTENT_ERROR_COUNT) {
             if (DataCache.isChapterExists(sequence, book_id)) {
                 return true;
             } else {
