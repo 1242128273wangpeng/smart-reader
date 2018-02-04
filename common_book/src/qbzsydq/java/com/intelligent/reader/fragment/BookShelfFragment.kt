@@ -184,7 +184,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.TOBOOKCITY)
         }
         //悬浮广告 1-2
-        if (Constants.isHideAD ) return
+        if (Constants.isHideAD) return
         PlatformSDK.adapp().dycmNativeAd(activity, "1-2", book_shelf_ad, object : AbstractCallback() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
@@ -291,7 +291,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
     }
 
     override fun onSuccess(result: BookUpdateResult) {
-        if(activity!= null && !activity.isFinishing) {
+        if (activity != null && !activity.isFinishing) {
             latestLoadDataTime = System.currentTimeMillis()
             bookRackUpdateTime = System.currentTimeMillis()
             if (bookshelf_refresh_view != null) {
@@ -314,6 +314,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
     }
 
     override fun onSuccessUpdateHandle(updateCount: Int, firstBook: BookUpdate?) {
+        if (activity == null || activity.isFinishing) {
+            return
+        }
         if (updateCount == 0) {
             showToastDelay(R.string.main_update_no_new)
         } else {
@@ -323,7 +326,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
                 if (updateCount == 1 && activity != null) {
                     showToastDelay("《$bookName${activity.getString(R.string.bookshelf_one_book_update)}" +
                             "$bookLastChapterName")
-                } else if(activity != null){
+                } else if (activity != null) {
                     showToastDelay("《$bookName${activity.getString(R.string.bookshelf_more_book_update)}" +
                             "$updateCount${activity.getString(R.string.bookshelf_update_chapters)}")
                 }
@@ -336,7 +339,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
     }
 
     override fun doUpdateBook(updateService: CheckNovelUpdateService) {
-        if(activity != null) {
+        if (activity != null) {
             updateService.setBookUpdateListener(activity as CheckNovelUpdateService.OnBookUpdateListener)
             presenter.addUpdateTask(this)
         }
