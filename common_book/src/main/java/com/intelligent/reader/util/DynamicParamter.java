@@ -10,7 +10,9 @@ import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
 import com.baidu.mobstat.SendStrategyEnum;
 import com.baidu.mobstat.StatService;
+
 import com.google.gson.JsonObject;
+
 import com.umeng.onlineconfig.OnlineConfigAgent;
 import com.umeng.onlineconfig.UmengOnlineConfigureListener;
 
@@ -260,23 +262,23 @@ public class DynamicParamter {
                     } else {
                         startRequestCDNDynamic();
                     }
-                }else {
+                } else {
                     startRequestCDNDynamic();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
                 startRequestCDNDynamic();
             }
-        }else {
+        } else {
             startRequestCDNDynamic();
         }
     }
 
     private void startRequestCDNDynamic() {
         String url = getDynamicUrl();
-        if (!TextUtils.isEmpty(url)){
+        if (!TextUtils.isEmpty(url)) {
             url = url.replace("{packageName}", AppUtils.getPackageName());
-            AppLog.d("startRequestCDNDynamic",url);
+            AppLog.d("startRequestCDNDynamic", url);
             DynamicService.INSTANCE.getDynamicApi()
                     .requestCDNDynamicPar(url)
                     .subscribeOn(Schedulers.io())
@@ -289,9 +291,9 @@ public class DynamicParamter {
                         @Override
                         public void onNext(@NonNull ResponseBody body) {
                             try {
-                                if (body != null){
+                                if (body != null) {
                                     checkResult(body.string());
-                                }else {
+                                } else {
                                     throw new Exception("requestCDNDynamicPar call back body is null");
                                 }
                             } catch (Exception e) {
@@ -311,20 +313,20 @@ public class DynamicParamter {
                             AppLog.d("requestCDNDynamicPar", "onComplete");
                         }
                     });
-        }else {
+        } else {
             isReloadDynamic = true;
             setUMDynamicParamter();
         }
     }
 
     private synchronized String getDynamicUrl() {
-        if (UserService.DYNAMIC_PARAMAS.equals(mDynamicUrl)){
+        if (UserService.DYNAMIC_PARAMAS.equals(mDynamicUrl)) {
             mDynamicUrl = DynamicApi.DYNAMIC_ZN;
-        }else if (DynamicApi.DYNAMIC_ZN.equals(mDynamicUrl)){
+        } else if (DynamicApi.DYNAMIC_ZN.equals(mDynamicUrl)) {
             mDynamicUrl = DynamicApi.DYNAMIC_CM;
-        }else if (DynamicApi.DYNAMIC_CM.equals(mDynamicUrl)){
+        } else if (DynamicApi.DYNAMIC_CM.equals(mDynamicUrl)) {
             mDynamicUrl = DynamicApi.DYNAMIC_YC;
-        }else {
+        } else {
             mDynamicUrl = "";
         }
         return mDynamicUrl;
@@ -920,35 +922,37 @@ public class DynamicParamter {
     private void setNoADTime() {
         // 隐藏广告期限
         if (!TextUtils.isEmpty(ad_limit_time_day)) {
-            String channelID = "";
-            channelID = AppUtils.getChannelId();
+            String channelID = AppUtils.getChannelId();
 
             AppLog.e(TAG, "channelLimit: " + channel_limit);
             AppLog.e(TAG, "dayLimit: " + day_limit);
             int all_channel_index = channelLimit.indexOf("AllChannel");
-            int all_channel_limit = dayLimit.get(all_channel_index);
-            if (all_channel_limit != 0) {
-                AppLog.e(TAG, "all_channel_limit: " + all_channel_limit);
-                Constants.ad_limit_time_day = all_channel_limit;
-            } else {
-                if (channelLimit.contains(channelID)) {
-                    AppLog.e(TAG, "channelLimit.contains: " + channelID);
-                    int index = channelLimit.indexOf(channelID);
-                    AppLog.e(TAG, "dayLimit: " + dayLimit.get(index));
-                    Constants.ad_limit_time_day = dayLimit.get(index);
+            if (all_channel_index != -1) {
+                int all_channel_limit = dayLimit.get(all_channel_index);
+                if (all_channel_limit != 0) {
+                    AppLog.e(TAG, "all_channel_limit: " + all_channel_limit);
+                    Constants.ad_limit_time_day = all_channel_limit;
                 } else {
-                    try {
-                        Constants.ad_limit_time_day = Integer.parseInt(ad_limit_time_day);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    if (channelLimit.contains(channelID)) {
+                        AppLog.e(TAG, "channelLimit.contains: " + channelID);
+                        int index = channelLimit.indexOf(channelID);
+                        AppLog.e(TAG, "dayLimit: " + dayLimit.get(index));
+                        Constants.ad_limit_time_day = dayLimit.get(index);
+                    } else {
+                        if (TextUtils.isEmpty(ad_limit_time_day)) {
+                            ad_limit_time_day = "2";
+                        }
+                        try {
+                            Constants.ad_limit_time_day = Integer.parseInt(ad_limit_time_day);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-                if (Constants.DEVELOPER_MODE) {
-                    AppLog.e(TAG, " ad_limit_time_day:" + Constants.ad_limit_time_day);
-                }
             }
-//            PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(Constants.user_new_ad_limit_day,   Constants.ad_limit_time_day).apply();;
-
+            if (Constants.DEVELOPER_MODE) {
+                AppLog.e(TAG, " ad_limit_time_day:" + Constants.ad_limit_time_day);
+            }
         }
     }
 

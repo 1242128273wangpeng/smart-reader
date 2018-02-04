@@ -13,9 +13,12 @@ import com.squareup.leakcanary.RefWatcher;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.ReplaceConstants;
+import net.lzbook.kit.utils.AppLog;
 
 import java.util.concurrent.Callable;
 
+import io.reactivex.functions.Consumer;
+import io.reactivex.plugins.RxJavaPlugins;
 import swipeback.ActivityLifecycleHelper;
 
 
@@ -59,5 +62,19 @@ public class BookApplication extends BaseBookApplication {
             }
         }
         registerActivityLifecycleCallbacks(ActivityLifecycleHelper.build());
+        setRxJavaErrorHandler();
+    }
+
+    /**
+     * RxJava2 当取消订阅后(dispose())，RxJava抛出的异常后续无法接收(此时后台线程仍在跑，可能会抛出IO等异常),全部由RxJavaPlugin接收，需要提前设置ErrorHandler
+     * 详情：http://engineering.rallyhealth.com/mobile/rxjava/reactive/2017/03/15/migrating-to-rxjava-2.html#Error Handling
+     */
+    private void setRxJavaErrorHandler() {
+        RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                AppLog.e("DataProvider", " throwable :" + throwable.getMessage());
+            }
+        });
     }
 }
