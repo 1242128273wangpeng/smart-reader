@@ -1,7 +1,6 @@
 package com.intelligent.reader.read.page
 
 import android.content.Context
-import android.support.v4.view.ViewCompat
 import android.util.AttributeSet
 import android.view.*
 import com.intelligent.reader.R
@@ -18,7 +17,6 @@ import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.view.ViewPager
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.layout_custom_dialog.view.*
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums

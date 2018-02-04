@@ -2,17 +2,16 @@ package com.intelligent.reader.reader
 
 import android.text.TextUtils
 import com.intelligent.reader.DisposableAndroidViewModel
-import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.repository.BookCoverRepository
 import com.intelligent.reader.repository.ReaderRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
-import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.*
+import net.lzbook.kit.data.bean.Chapter
+import net.lzbook.kit.data.bean.RequestItem
+import net.lzbook.kit.data.bean.SourceItem
 import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.purchase.SingleChapterBean
-import net.lzbook.kit.request.DataCache
 import net.lzbook.kit.user.bean.RecommendBooksEndResp
 import net.lzbook.kit.utils.NetWorkUtils
 import java.util.*
@@ -38,10 +37,11 @@ class ReaderViewModel : DisposableAndroidViewModel {
 
 //===============================================Repository Factory===================================================
 
-    var mReaderRepository: ReaderRepository? = null
-    var mBookCoverRepository: BookCoverRepository? = null
+    private lateinit var mReaderRepository: ReaderRepository
+    private lateinit var mBookCoverRepository: BookCoverRepository
 
     constructor()
+
     constructor(readerRepository: ReaderRepository) : this() {
         mReaderRepository = readerRepository
     }
@@ -57,25 +57,23 @@ class ReaderViewModel : DisposableAndroidViewModel {
 
     private var mBookChapterViewCallback: BookChapterViewCallback? = null
 
-    private var mBookChapterPayCallback: BookChapterPayCallback? = null
-
 
     /**
      * 阅读完结书籍推荐
      */
-    fun getBookEndRecommendBook(recommanded: String, bookId: String) {
-        addDisposable(mReaderRepository!!.getBookEndRecommendBook(recommanded, bookId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ mReaderRecommendViewCallback?.onRecommendBook(it) },
-                        { mReaderRecommendViewCallback?.onRecommendBookFail(it.message) }))
-    }
+//    fun getBookEndRecommendBook(recommanded: String, bookId: String) {
+//        addDisposable(mReaderRepository.getBookEndRecommendBook(recommanded, bookId)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe({ mReaderRecommendViewCallback?.onRecommendBook(it) },
+//                        { mReaderRecommendViewCallback?.onRecommendBookFail(it.message) }))
+//    }
 
     /**
      * 换源集合
      */
     fun getBookSource(bookId: String) {
-        addDisposable(mReaderRepository!!.getBookSource(bookId)
+        addDisposable(mReaderRepository.getBookSource(bookId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -149,7 +147,7 @@ class ReaderViewModel : DisposableAndroidViewModel {
      * 请求单章
      */
     fun requestSingleChapter(host: String, chapter: Chapter, mBookSingleChapterCallback: BookSingleChapterCallback) {
-        addDisposable(mReaderRepository!!.requestSingleChapter(host, chapter)
+        addDisposable(mReaderRepository.requestSingleChapter(host, chapter)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ chapter ->
@@ -157,27 +155,15 @@ class ReaderViewModel : DisposableAndroidViewModel {
                         chapter.isSuccess = true
                         // 自动切源需要就更新目录
                         if (chapter.flag == 1 && !TextUtils.isEmpty(chapter.content)) {
-                            mReaderRepository?.updateBookCurrentChapter(chapter.book_id, chapter, chapter.sequence)
+                            mReaderRepository.updateBookCurrentChapter(chapter.book_id, chapter, chapter.sequence)
                         }
                     }
-                    mReaderRepository?.writeChapterCache(chapter, false)
+                    mReaderRepository.writeChapterCache(chapter, false)
                     mBookSingleChapterCallback.onPayChapter(chapter)
                 }, { throwable ->
                     mBookSingleChapterCallback.onFail(throwable.message.toString())
                 }))
 
-    }
-
-
-    operator fun next(): Boolean {
-        var isPrepared = false
-        return isPrepared
-    }
-
-
-    fun previous(): Boolean {
-        var isPrepared = false
-        return isPrepared
     }
 
 
