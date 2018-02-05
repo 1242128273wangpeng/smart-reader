@@ -186,6 +186,12 @@ public class NovelHelper {
         }
     }
 
+    private void dismissDialog(MyDialog sourceDialog) {
+        if (sourceDialog != null && sourceDialog.isShowing()) {
+            sourceDialog.dismiss();
+        }
+    }
+
     public void showSourceDialog( String curl, final ArrayList<Source> sources) {
         if (actReference == null || actReference.get() == null || actReference.get().isFinishing()) {
             return;
@@ -263,12 +269,6 @@ public class NovelHelper {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    private void dismissDialog(MyDialog sourceDialog) {
-        if (sourceDialog != null && sourceDialog.isShowing()) {
-            sourceDialog.dismiss();
         }
     }
 

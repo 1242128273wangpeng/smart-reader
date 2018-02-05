@@ -269,23 +269,22 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     }
 
     override fun onDestroy() {
+        super.onDestroy()
+
         read_catalog_mark_drawer.removeDrawerListener(mDrawerListener)
 //        mCatalogMarkFragment?.let {
 //            read_catalog_mark_drawer.removeDrawerListener(it)
 //        }
 
-        readSettingView.recycleResource()
+//        readSettingView.recycleResource()
 
         auto_menu.setOnAutoMemuListener(null)
-        auto_menu.recycleResource()
 
         mReadPresenter.onDestroy()
-        DataProvider.getInstance().unSubscribe()
+//        DataProvider.getInstance().unSubscribe()
         DataProvider.getInstance().clear()
         readerWidget.onDestroy()
         ReadConfig.unregistObserverAll()
-        super.onDestroy()
-
         if (BuildConfig.DEBUG) {
             BookApplication.getRefWatcher().watch(this)
         }

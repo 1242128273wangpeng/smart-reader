@@ -418,21 +418,21 @@ class HorizontalPage : FrameLayout, Observer {
                 loadView.visibility = View.VISIBLE
             }
             DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
-                override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = checkEntrance(cursor, 0)
+                override fun loadDataSuccess(c: Chapter?, type: ReadViewEnums.PageIndex) = checkEntrance(cursor, 0)
                 override fun loadDataError(message: String) = showErrorView(cursor)
                 override fun loadDataInvalid(message: String) {
                     showChangeSourceDialog(message)
                 }
             })
             DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.previous, object : DataProvider.ReadDataListener() {
-                override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = checkEntrance(cursor, 1)
+                override fun loadDataSuccess(c: Chapter?, type: ReadViewEnums.PageIndex) = checkEntrance(cursor, 1)
                 override fun loadDataError(message: String) = checkEntrance(cursor, 1)
                 override fun loadDataInvalid(message: String) {
                     showChangeSourceDialog(message)
                 }
             })
             DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.next, object : DataProvider.ReadDataListener() {
-                override fun loadDataSuccess(c: Chapter, type: ReadViewEnums.PageIndex) = checkEntrance(cursor, 2)
+                override fun loadDataSuccess(c: Chapter?, type: ReadViewEnums.PageIndex) = checkEntrance(cursor, 2)
                 override fun loadDataError(message: String) = checkEntrance(cursor, 2)
                 override fun loadDataInvalid(message: String) {
                     showChangeSourceDialog(message)

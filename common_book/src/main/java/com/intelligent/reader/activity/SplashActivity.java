@@ -59,7 +59,6 @@ public class SplashActivity extends FrameActivity {
     public int initialization_count = 0;
     public int complete_count = 0;
     public ViewGroup ad_view;
-    private Context context;
     private SharedPreferencesUtils sharePreferenceUtils;
 
     public static void checkAndInstallShotCut(Context ctt) {
@@ -187,6 +186,7 @@ public class SplashActivity extends FrameActivity {
         shieldManager.startAchieveUserLocation();
     }
 
+    @Override
     public void onCreate(Bundle paramBundle) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(paramBundle);
@@ -218,7 +218,6 @@ public class SplashActivity extends FrameActivity {
         ad_view = (ViewGroup) findViewById(R.id.ad_view);
         complete_count = 0;
         initialization_count = 0;
-        context = this;
         AppLog.e("oncreat", "oncreat go");
         sharePreferenceUtils = new SharedPreferencesUtils(PreferenceManager.getDefaultSharedPreferences(this));
 
@@ -229,9 +228,9 @@ public class SplashActivity extends FrameActivity {
         // 安装快捷方式
         new InstallShotCutTask().execute();
 
-        StatServiceUtils.statAppBtnClick(context, StatServiceUtils.app_start);
+        StatServiceUtils.statAppBtnClick(getApplication(), StatServiceUtils.app_start);
         if (UserManager.INSTANCE.isUserLogin()) {
-            StatServiceUtils.statAppBtnClick(context, StatServiceUtils.user_login_succeed);
+            StatServiceUtils.statAppBtnClick(getApplication(), StatServiceUtils.user_login_succeed);
         }
 
     }
@@ -389,15 +388,15 @@ public class SplashActivity extends FrameActivity {
 
     @Override
     protected void onDestroy() {
-        try {
-            setContentView(R.layout.empty);
-        } catch (Resources.NotFoundException e) {
-            e.printStackTrace();
-        }
-
-        if (context != null) {
-            context = null;
-        }
+//        try {
+//            setContentView(R.layout.empty);
+//        } catch (Resources.NotFoundException e) {
+//            e.printStackTrace();
+//        }
+//
+//        if (context != null) {
+//            context = null;
+//        }
 
         AppLog.e(TAG, "ondestory执行");
         super.onDestroy();
