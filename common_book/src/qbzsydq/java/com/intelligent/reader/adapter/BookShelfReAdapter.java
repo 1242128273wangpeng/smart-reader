@@ -74,6 +74,7 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<AbsRecyclerViewHold
 
     @Override
     public void onBindViewHolder(AbsRecyclerViewHolder<Book> holder, int position) {
+        if (holder == null) return;
         Book book = book_list.get(position);
         switch (getItemViewType(position)) {
             case 0:
