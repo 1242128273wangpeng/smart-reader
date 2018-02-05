@@ -82,14 +82,16 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<AbsRecyclerViewHold
                         isRemoveMode(), remove_checked_states.contains(position));
                 break;
             case 1:
-                View adView = getAdView(book);
-                if (adView != null) {
-                    ViewParent parent = adView.getParent();
-                    if (parent != null && parent instanceof RelativeLayout) {
-                        ((RelativeLayout) parent).removeAllViews();
+                if (holder instanceof ADViewHolder) {
+                    View adView = getAdView(book);
+                    if (adView != null) {
+                        ViewParent parent = adView.getParent();
+                        if (parent != null && parent instanceof RelativeLayout) {
+                            ((RelativeLayout) parent).removeAllViews();
+                        }
+                        ((ADViewHolder) holder).book_shelf_item_ad.removeAllViews();
+                        ((ADViewHolder) holder).book_shelf_item_ad.addView(adView);
                     }
-                    ((ADViewHolder) holder).book_shelf_item_ad.removeAllViews();
-                    ((ADViewHolder) holder).book_shelf_item_ad.addView(adView);
                 }
                 break;
         }
