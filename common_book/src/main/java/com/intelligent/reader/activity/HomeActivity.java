@@ -20,6 +20,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.webkit.WebView;
 
+import com.dycm_adsdk.PlatformSDK;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
@@ -376,6 +377,7 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
             BookApplication.getRefWatcher().watch(this);
         }
         EventBus.getDefault().unregister(this);
+        PlatformSDK.lifecycle().onDestroy();
     }
 
     @Override

@@ -10,6 +10,7 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.*
 import android.widget.FrameLayout
+import com.dycm_adsdk.PlatformSDK
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.read.DataProvider
