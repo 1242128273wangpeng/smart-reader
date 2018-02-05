@@ -4,7 +4,6 @@ import com.intelligent.reader.repository.ReaderRepository
 import io.reactivex.Observable
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.SourceItem
-import net.lzbook.kit.purchase.SingleChapterBean
 import net.lzbook.kit.request.RequestFactory
 import net.lzbook.kit.user.bean.RecommendBooksEndResp
 
@@ -45,7 +44,7 @@ class ReaderRepositoryFactory private constructor(readerOwnRepository: ReaderRep
         }
     }
 
-    override fun isChapterCacheExist(host: String, chapter: Chapter): Boolean {
+    override fun isChapterCacheExist(host: String, chapter: Chapter?): Boolean {
         if (host == RequestFactory.RequestHost.QG.requestHost) {
             return mReaderQGRepository.isChapterCacheExist(host, chapter)
         } else {

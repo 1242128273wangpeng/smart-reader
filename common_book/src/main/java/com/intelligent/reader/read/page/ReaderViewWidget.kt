@@ -2,13 +2,11 @@ package com.intelligent.reader.read.page
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.PointF
 import android.util.AttributeSet
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
-import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.flip.PageFlipView
 import com.intelligent.reader.flip.base.PageFlipState
 import com.intelligent.reader.flip.render.SinglePageRender
@@ -17,11 +15,8 @@ import com.intelligent.reader.read.help.HorizontalEvent
 import com.intelligent.reader.read.help.IReadPageChange
 import com.intelligent.reader.read.help.IReadView
 import com.intelligent.reader.read.help.IReadWidget
-import com.intelligent.reader.read.mode.ReadState
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
-import net.lzbook.kit.utils.AppLog
-import net.lzbook.kit.utils.runOnMain
 
 
 /**
@@ -434,14 +429,16 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
 
     private fun flipPreviousPage(): Boolean {
         var flag = true
-        synchronized(mTextureView as Any) {
-            if (!mTextureView!!.hasFirstTexture()) {
-                mTextureView!!.firstTexture = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.previous).drawingCache
-                flag = mTextureView!!.firstTexture != null
-            }
-            if (flag && !mTextureView!!.hasSecondTexture()) {
-                mTextureView!!.secondTexture = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current).drawingCache
-                flag = mTextureView!!.secondTexture != null
+        mTextureView?.let {
+            synchronized(it as Any) {
+                if (!it.hasFirstTexture()) {
+                    it.firstTexture = (mReaderView as HorizontalReaderView?)?.findViewWithTag(ReadViewEnums.PageIndex.previous)?.drawingCache
+                    flag = it.firstTexture != null
+                }
+                if (flag && !it.hasSecondTexture()) {
+                    it.secondTexture = (mReaderView as HorizontalReaderView?)?.findViewWithTag(ReadViewEnums.PageIndex.current)?.drawingCache
+                    flag = it.secondTexture != null
+                }
             }
         }
 
@@ -453,14 +450,16 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
         if (mReaderView == null) {
             return flag
         }
-        synchronized(mTextureView as Any) {
-            if (!mTextureView!!.hasFirstTexture()) {
-                mTextureView!!.firstTexture = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current).drawingCache
-                flag = mTextureView!!.firstTexture != null
-            }
-            if (flag && !mTextureView!!.hasSecondTexture()) {
-                mTextureView!!.secondTexture = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.next).drawingCache
-                flag = mTextureView!!.secondTexture != null
+        mTextureView?.let {
+            synchronized(it as Any) {
+                if (!it.hasFirstTexture()) {
+                    it.firstTexture = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current).drawingCache
+                    flag = it.firstTexture != null
+                }
+                if (flag && !it.hasSecondTexture()) {
+                    it.secondTexture = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.next).drawingCache
+                    flag = it.secondTexture != null
+                }
             }
         }
 
