@@ -399,6 +399,7 @@ public class SplashActivity extends FrameActivity {
 //        }
 
         AppLog.e(TAG, "ondestory执行");
+        PlatformSDK.lifecycle().onDestroy();
         super.onDestroy();
     }
 

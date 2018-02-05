@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.dycm_adsdk.PlatformSDK
 import com.intelligent.reader.R
 import com.intelligent.reader.read.help.ReadSeparateHelper
 import com.intelligent.reader.read.mode.NovelPageBean
@@ -137,15 +138,33 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
                     .filter { it.lines[0].sequenceType == mLoadedChapter.last() }
             if (type == ReadViewEnums.PageIndex.previous) {
                 getAllData().removeAll(lastData)
+                clearUserlessAdView(lastData)
                 notifyItemRangeRemoved(chapterList.size - footViewList.size, lastData.size)
                 mLoadedChapter.remove(mLoadedChapter.last())
             } else {
                 val firstData = getAllData().filter { (it.lines[0].sequenceType != HEADER_ITEM_TYPE && it.lines[0].sequenceType != FOOTER_ITEM_TYPE) }
                         .filter { it.lines[0].sequenceType == mLoadedChapter.first() }
                 getAllData().removeAll(firstData)
+                clearUserlessAdView(firstData)
                 notifyItemRangeRemoved(headerViewList.size, firstData.size)
                 mLoadedChapter.remove(mLoadedChapter.first())
             }
+        }
+    }
+
+    private fun clearUserlessAdView(userlessChapter: List<NovelPageBean>) {
+        for (i in userlessChapter.indices) {
+            val pageContent = userlessChapter[i]
+            for (content in pageContent.lines) {
+                if (content.adView != null && content.adView.tag != null) {
+                    content.adView.tag = null
+                }
+                content.adView = null
+            }
+            if (pageContent.adBigView != null && pageContent.adBigView?.tag != null) {
+                pageContent.adBigView?.tag = null
+            }
+            pageContent.adBigView = null
         }
     }
 
@@ -176,7 +195,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
                 break@foo
             }
         }
-        val removeAdViewIndex = sequenceIndex + getAllData().filter { it.lines[0].sequenceType == sequence }.size -1
+        val removeAdViewIndex = sequenceIndex + getAllData().filter { it.lines[0].sequenceType == sequence }.size - 1
         if (getAllData()[removeAdViewIndex].lines[0].sequence == AD_ITEM_TYPE) {
             getAllData().removeAt(removeAdViewIndex)
             notifyItemRangeRemoved(removeAdViewIndex, 1)
@@ -334,7 +353,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
                 loadSequence = ReadState.sequence + 1
             }
 
-            if(allChapterList?.size ?: 0 > loadSequence) {
+            if (allChapterList?.size ?: 0 > loadSequence) {
                 allChapterList?.let {
                     ReadSeparateHelper.getChapterNameList(it[loadSequence].chapter_name).forEachIndexed { index, novelLineBean ->
                         if (index == 0) {
