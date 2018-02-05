@@ -1457,7 +1457,9 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
                                     //广告 3-1
                                     rest_ad.addView(views?.get(0))
                                     rest_ad.postInvalidate()
-                                    mDialog?.show()
+                                    if (readReference?.get()?.isFinishing == false) {
+                                        mDialog?.show()
+                                    }
                                 }
                             }
                             ResultCode.AD_REQ_FAILED -> {
