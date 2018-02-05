@@ -2,20 +2,14 @@ package com.intelligent.reader.reader
 
 import com.intelligent.reader.repository.ReaderRepository
 import io.reactivex.Observable
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.SourceItem
 import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.net.custom.service.UserService
-import net.lzbook.kit.purchase.SingleChapterBean
-import net.lzbook.kit.request.RequestExecutorDefault
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.user.bean.RecommendBooksEndResp
-import net.lzbook.kit.utils.NetWorkUtils
 import java.net.MalformedURLException
 import java.net.URL
-import java.util.*
-import java.util.Map
 
 /**
  * @desc 阅读模块 自有数据源
@@ -69,7 +63,8 @@ class ReaderOwnRepository private constructor(api: UserService) : ReaderReposito
 //    }
 
     //&& chapterContent.length >= Constants.CONTENT_ERROR_COUNT
-    override fun isChapterCacheExist(host: String, chapter: Chapter): Boolean {
+    override fun isChapterCacheExist(host: String, chapter: Chapter?): Boolean {
+        if (chapter == null) return false
         val chapterContent = net.lzbook.kit.request.DataCache.getChapterFromCache(chapter.sequence, chapter.book_id)
         return chapterContent != null
     }
