@@ -28,13 +28,14 @@ import com.intelligent.reader.flip.base.PageFlip;
 import com.intelligent.reader.flip.base.PageFlipException;
 import com.intelligent.reader.flip.render.PageRender;
 import com.intelligent.reader.flip.render.SinglePageRender;
-import com.intelligent.reader.flip.texture.BaseGLTextureView;
-import com.intelligent.reader.flip.texture.GLViewRenderer;
 import com.intelligent.reader.util.DisplayUtils;
 
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
 
 /**
  * Page flip view
@@ -42,7 +43,7 @@ import java.util.Observer;
  * @author eschao
  */
 
-public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, Observer {
+public class PageFlipView extends GLTextureView implements GLTextureView.Renderer, Observer {
 
     private final static String TAG = "PageFlipView";
 
@@ -86,16 +87,16 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, O
         mPageRender = new SinglePageRender(context, mPageFlip,
                 mHandler);
         //setting
-//        setEGLContextClientVersion(2);
-//        setPreserveEGLContextOnPause(true);
-//        setEGLConfigChooser(8, 8, 8, 0, 16, 0);
-//        setEGLWindowSurfaceFactory(new DefaultWindowSurfaceFactory());
+        setEGLContextClientVersion(2);
+        setPreserveEGLContextOnPause(true);
+        setEGLConfigChooser(5, 6, 5, 0, 16, 0);
+        setEGLWindowSurfaceFactory(new GLTextureView.DefaultWindowSurfaceFactory());
 //        setZOrderOnTop(true);
 //        setZOrderMediaOverlay(true);
 //        getHolder().setFormat(PixelFormat.TRANSLUCENT);//设置透明
         // configure render
         setRenderer(this);
-//        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        setRenderMode(GLTextureView.RENDERMODE_WHEN_DIRTY);
 
         final float density = context.getResources().getDisplayMetrics().density;
 
@@ -348,7 +349,7 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, O
     }
 
     @Override
-    public void onSurfaceCreated() {
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         try {
             mPageFlip.onSurfaceCreated();
         } catch (PageFlipException e) {
@@ -358,7 +359,7 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, O
     }
 
     @Override
-    public void onSurfaceChanged(int width, int height) {
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
         try {
             mPageFlip.onSurfaceChanged(width, height);
         } catch (PageFlipException e) {
@@ -379,10 +380,16 @@ public class PageFlipView extends BaseGLTextureView implements GLViewRenderer, O
     }
 
     @Override
-    public void onDrawFrame() {
+    public boolean onDrawFrame(GL10 gl) {
         if (mPageRender != null) {
             mPageRender.onDrawFrame();
         }
+        return true;
+    }
+
+    @Override
+    public void onSurfaceDestroyed(){
+
     }
 
     @Override
