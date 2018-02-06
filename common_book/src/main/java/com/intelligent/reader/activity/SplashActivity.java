@@ -438,12 +438,7 @@ public class SplashActivity extends FrameActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            // 5 初始化屏蔽
-            try {
-                initShield();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+
 
             // 2 动态参数
             try {
@@ -484,6 +479,13 @@ public class SplashActivity extends FrameActivity {
 //            } catch (Exception e) {
 //                e.printStackTrace();
 //            }
+
+            // 5 初始化屏蔽
+            try {
+                initShield();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             // 6 其他信息初始化
             try {
