@@ -1,5 +1,6 @@
 package com.intelligent.reader.read
 
+import android.app.Activity
 import android.content.Context
 import android.text.TextUtils
 import android.view.ViewGroup
@@ -43,7 +44,25 @@ import java.util.*
 /**
  * Created by wt on 2017/12/20.
  */
-class DataProvider : DisposableAndroidViewModel() {
+class DataProvider : DisposableAndroidViewModel(), Observer {
+
+    override fun update(o: Observable?, arg: Any?) {
+        if (ReadState.STATE_EVENT.SEQUENCE_CHANGE == arg) {
+            val novelChapter = chapterCache.get(ReadState.sequence)
+            if (novelChapter != null) {
+                novelChapter.separateList.forEach {
+                    if (it.adSmallView != null && it.adSmallView is PageAdContainer) {
+                        (it.adSmallView as PageAdContainer).load()
+                    }
+                    if (it.adBigView != null && it.adBigView is PageAdContainer) {
+                        (it.adBigView as PageAdContainer).load()
+                    }
+                }
+            }
+        }
+    }
+
+    var readingActivity: Activity? = null
 
     inner class DataCache(val maxSize: Int) {
         val map: TreeMap<Int, NovelChapter> = TreeMap()
@@ -347,15 +366,15 @@ class DataProvider : DisposableAndroidViewModel() {
         val bigAdLayoutParams = RelativeLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
 //        val leftMargin = AppUtils.dip2px(ReadState.readingActivity, 10f)
 //        val rightMargin = AppUtils.dip2px(ReadState.readingActivity, 10f)t
-        val topMargin = AppUtils.dip2px(ReadState.readingActivity, 30f)
-        val bottomMargin = AppUtils.dip2px(ReadState.readingActivity, 30f)
+        val topMargin = AppUtils.dip2px(readingActivity, 30f)
+        val bottomMargin = AppUtils.dip2px(readingActivity, 30f)
         bigAdLayoutParams.setMargins(0, topMargin, 0, bottomMargin)
         return bigAdLayoutParams
     }
 
 
     private fun loadAd(novelChapter: NovelChapter) {
-        if (ReadState.readingActivity == null || Constants.isHideAD)
+        if (readingActivity == null || Constants.isHideAD)
             return
 
         PlatformSDK.config().setAd_userid(UserManager.mUserInfo?.uid ?: "")
@@ -381,20 +400,22 @@ class DataProvider : DisposableAndroidViewModel() {
 
             //check small adView
             val contentHeight = if (last.lines.isNotEmpty()) last.height.toInt() else 0
-            val leftSpace = ReadConfig.screenHeight - contentHeight - (ReadConfig.screenDensity * ReadConfig.READ_CONTENT_PAGE_TOP_SPACE * 2).toInt() - (ReadConfig.screenDensity * 30).toInt()
+            val leftSpace = ReadConfig.screenHeight - contentHeight - (ReadConfig.screenDensity
+                    * ReadConfig.READ_CONTENT_PAGE_TOP_SPACE * 2).toInt() - (ReadConfig.screenDensity * 30).toInt()
             if (leftSpace >= ReadConfig.screenHeight / 5) {
 
-                last.adSmallView = PageAdContainer(ReadState.readingActivity!!,
+                last.adSmallView = PageAdContainer(readingActivity!!,
                         "8-1", ReadConfig.screenWidth
-                        , leftSpace)
+                        , leftSpace, novelChapter.chapter.sequence == ReadState.sequence)
             }
 
             val offset = last.offset + arrayList.last().lines.sumBy { it.lineContent.length } + 1
 
             val novelPageBean = NovelPageBean(arrayListOf(), offset, arrayListOf()).apply { isAd = true }
 
-            novelPageBean.adBigView = PageAdContainer(ReadState.readingActivity!!,
-                    if (ReadConfig.IS_LANDSCAPE) "6-1" else "5-1", getBigAdLayoutParams())
+            novelPageBean.adBigView = PageAdContainer(readingActivity!!,
+                    if (ReadConfig.IS_LANDSCAPE) "6-1" else "5-1", getBigAdLayoutParams(),
+                    novelChapter.chapter.sequence == ReadState.sequence)
 
             arrayList.add(novelPageBean)
         }
@@ -410,8 +431,9 @@ class DataProvider : DisposableAndroidViewModel() {
 
                     val novelPageBean = NovelPageBean(arrayListOf(), offset2, arrayListOf()).apply { isAd = true }
 
-                    novelPageBean.adBigView = PageAdContainer(ReadState.readingActivity!!,
-                            if (ReadConfig.IS_LANDSCAPE) "6-2" else "5-2", getBigAdLayoutParams())
+                    novelPageBean.adBigView = PageAdContainer(readingActivity!!,
+                            if (ReadConfig.IS_LANDSCAPE) "6-2" else "5-2", getBigAdLayoutParams(),
+                            novelChapter.chapter.sequence == ReadState.sequence)
                     arrayList.add(index, novelPageBean)
 
                     count++

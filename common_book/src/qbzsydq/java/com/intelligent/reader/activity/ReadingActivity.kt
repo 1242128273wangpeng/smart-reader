@@ -67,7 +67,8 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ReadState.readingActivity = this
+        DataProvider.getInstance().readingActivity = this
+        ReadState.addObserver(DataProvider.getInstance())
         setUIOptions()
 
         setContentView(R.layout.act_read)
@@ -284,6 +285,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         mReadPresenter.onDestroy()
 //        DataProvider.getInstance().unSubscribe()
         DataProvider.getInstance().clear()
+        ReadState.deleteObserver(DataProvider.getInstance())
         readerWidget.onDestroy()
         ReadConfig.unregistObserverAll()
         if (BuildConfig.DEBUG) {
@@ -291,9 +293,10 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         }
 
         ReadState.chapterList.clear()
+        DataProvider.getInstance().clear()
 
         PlatformSDK.lifecycle().onDestroy()
-        ReadState.readingActivity = null
+        DataProvider.getInstance().readingActivity = null
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
