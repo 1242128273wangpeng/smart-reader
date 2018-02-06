@@ -1,19 +1,29 @@
 package com.intelligent.reader.read.mode
 
 import android.app.Activity
-import net.lzbook.kit.data.bean.Book
-import net.lzbook.kit.data.bean.Chapter
-import net.lzbook.kit.data.bean.ReadViewEnums
-import net.lzbook.kit.data.bean.RequestItem
+import net.lzbook.kit.data.bean.*
+import java.util.*
 import kotlin.properties.Delegates
 
 /**
  * 阅读状态
  * Created by wt on 2018/1/4.
  */
-object ReadState {
+object ReadState  : Observable(){
+
+    enum class STATE_EVENT{
+        SEQUENCE_CHANGE
+    }
+
     //阅读当前章节顺序
     var sequence = 0
+        set(value) {
+            if (field != value) {
+                field = value
+                setChanged()
+                notifyObservers(STATE_EVENT.SEQUENCE_CHANGE)
+            }
+        }
     //阅读当前页偏移量
     var offset = 0
 
@@ -58,5 +68,4 @@ object ReadState {
 
     var isMenuShow: Boolean = false
 
-    var readingActivity: Activity? = null
 }
