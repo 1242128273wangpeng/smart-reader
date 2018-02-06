@@ -86,9 +86,9 @@ public abstract class BaseBookApplication extends Application {
         super.attachBaseContext(base);
         loge(this, "attachBaseContext");
 
-        final Thread.UncaughtExceptionHandler parent = Thread.getDefaultUncaughtExceptionHandler();
-
-        Thread.setDefaultUncaughtExceptionHandler(new StatisticUncaughtExceptionHandler(parent));
+//        final Thread.UncaughtExceptionHandler parent = Thread.getDefaultUncaughtExceptionHandler();
+//
+//        Thread.setDefaultUncaughtExceptionHandler(new StatisticUncaughtExceptionHandler(parent));
 
         Constants.SHOW_LOG = ExtensionsKt.msDebuggAble =(getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)!= 0;
         //分割dex防止方法数过多
