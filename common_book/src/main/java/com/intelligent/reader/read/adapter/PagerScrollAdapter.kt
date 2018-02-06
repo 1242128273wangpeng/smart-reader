@@ -2,6 +2,7 @@ package com.intelligent.reader.read.page
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -149,6 +150,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
                 notifyItemRangeRemoved(headerViewList.size, firstData.size)
                 mLoadedChapter.remove(mLoadedChapter.first())
             }
+            Log.d(this.javaClass.simpleName, "AllData size : " + getAllData().size)
         }
     }
 
