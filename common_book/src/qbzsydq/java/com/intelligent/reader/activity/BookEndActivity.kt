@@ -254,7 +254,7 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
         } catch (e: Resources.NotFoundException) {
             e.printStackTrace()
         }
-
+        PlatformSDK.lifecycle().onDestroy()
         super.onDestroy()
     }
 

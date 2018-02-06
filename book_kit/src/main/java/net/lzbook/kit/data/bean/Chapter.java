@@ -17,7 +17,7 @@ public class Chapter implements Serializable {
     public int flag;
     //章节名称列表
 
-    public ArrayList<NovelLineBean> chapterNameList;
+//    public ArrayList<NovelLineBean> chapterNameList;
 
     //升级后使用的字段
     //小说组id
@@ -85,8 +85,8 @@ public class Chapter implements Serializable {
         if (sort != chapter.sort) return false;
         if (gsort != chapter.gsort) return false;
         if (chapter_form != chapter.chapter_form) return false;
-        if (chapterNameList != null ? !chapterNameList.equals(chapter.chapterNameList) : chapter.chapterNameList != null)
-            return false;
+//        if (chapterNameList != null ? !chapterNameList.equals(chapter.chapterNameList) : chapter.chapterNameList != null)
+//            return false;
         if (site != null ? !site.equals(chapter.site) : chapter.site != null) return false;
         if (curl != null ? !curl.equals(chapter.curl) : chapter.curl != null) return false;
         if (curl1 != null ? !curl1.equals(chapter.curl1) : chapter.curl1 != null) return false;
@@ -117,7 +117,7 @@ public class Chapter implements Serializable {
         result = 31 * result + (isSuccess ? 1 : 0);
         result = 31 * result + sequence;
         result = 31 * result + flag;
-        result = 31 * result + (chapterNameList != null ? chapterNameList.hashCode() : 0);
+//        result = 31 * result + (chapterNameList != null ? chapterNameList.hashCode() : 0);
         result = 31 * result + gid;
         result = 31 * result + nid;
         result = 31 * result + (int) (time ^ (time >>> 32));
@@ -145,7 +145,7 @@ public class Chapter implements Serializable {
                 "isSuccess=" + isSuccess +
                 ", sequence=" + sequence +
                 ", flag=" + flag +
-                ", chapterNameList=" + chapterNameList +
+//                ", chapterNameList=" + chapterNameList +
                 ", gid=" + gid +
                 ", nid=" + nid +
                 ", time=" + time +

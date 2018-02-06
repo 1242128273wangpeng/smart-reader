@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearSmoothScroller
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.util.AttributeSet
+import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import com.dycm_adsdk.PlatformSDK
@@ -417,6 +418,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
             }
 
             mReadPageChange?.addLog()
+            Log.d(this.javaClass.simpleName, "AllData size : " + mOriginDataList.size)
         }
 
         if (ReadState.sequence == -1) {
