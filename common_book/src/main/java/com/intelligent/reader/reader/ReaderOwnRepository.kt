@@ -37,9 +37,8 @@ class ReaderOwnRepository private constructor(api: UserService) : ReaderReposito
         return mApi.getBookSource(bookId).map { it.book_id = bookId;it }
     }
 
-    override fun requestSingleChapter(host: String?, chapter: Chapter?): Observable<Chapter>? {
-        return getSourceChapter(chapter)
-    }
+    override fun requestSingleChapter(host: String?, chapter: Chapter): Observable<Chapter> =
+            getSourceChapter(chapter)
 
 //    override fun batchChapter(dex: Int, downloadFlag: Boolean, chapterMap: MutableMap<String, Chapter>?) {
 //        val iterator = chapterMap?.entries?.iterator()!!
@@ -72,8 +71,7 @@ class ReaderOwnRepository private constructor(api: UserService) : ReaderReposito
     /**
      * 从原网址获取章节内容并转化
      */
-    @Throws(Exception::class)
-    fun getSourceChapter(chapter: Chapter?): Observable<Chapter>? {
+    private fun getSourceChapter(chapter: Chapter): Observable<Chapter> {
 
 //        if (chapter.curl != null) {
 //            return Observable.create<Chapter> {
@@ -85,15 +83,9 @@ class ReaderOwnRepository private constructor(api: UserService) : ReaderReposito
 //            return null
 //        }
 
-
-        try {
-            val a = URL(chapter?.curl)
-            UrlUtils.BOOK_CONTENT = a.host
-        } catch (e: MalformedURLException) {
-            e.printStackTrace()
-            return null
-        }
-        return NetService.userService.getChapterContent(chapter?.curl!!, chapter)
+        val a = URL(chapter.curl)
+        UrlUtils.BOOK_CONTENT = a.host
+        return NetService.userService.getChapterContent(chapter.curl!!, chapter)
     }
 
     //空实现
