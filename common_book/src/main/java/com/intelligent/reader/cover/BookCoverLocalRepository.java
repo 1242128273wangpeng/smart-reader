@@ -67,8 +67,8 @@ public class BookCoverLocalRepository implements BookCoverRepository {
 
     @Override
     public boolean isBookSubscribe(String bookId) {
-        BookChapterDao bookChapterDao = new BookChapterDao(mContext, bookId);
-        return BookDaoHelper.getInstance().isBookSubed(bookId) && bookChapterDao.getCount() > 0;
+
+        return BookDaoHelper.getInstance().isBookSubed(bookId);
     }
 
     @Override
@@ -98,6 +98,10 @@ public class BookCoverLocalRepository implements BookCoverRepository {
 
     private void saveTheChapterAndLastBook(List<Chapter> chapterList, RequestItem requestItem) {
         BookChapterDao bookChapterDao = new BookChapterDao(mContext, requestItem.book_id);
+        int chapterCount = bookChapterDao.getCount();
+        if (chapterCount > 0) {
+            return;
+        }
         bookChapterDao.insertBookChapter(chapterList);
         Chapter lastChapter = chapterList.get(chapterList.size() - 1);
         Book book = new Book();

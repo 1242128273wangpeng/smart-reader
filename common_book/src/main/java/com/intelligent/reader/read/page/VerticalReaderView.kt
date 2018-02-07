@@ -4,14 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.LinearSmoothScroller
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
-import com.dycm_adsdk.PlatformSDK
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.read.DataProvider
@@ -33,7 +31,6 @@ import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.ToastUtils
-import net.lzbook.kit.utils.runOnMain
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -70,8 +67,6 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
      * 当前可见视图位置
      */
     private var mLastVisiblePosition = -1
-
-    private var isShowMenu: Boolean = false
 
     /**
      * 上翻页章节阅读比例
@@ -559,9 +554,8 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     }
 
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
-        if (isShowMenu) {
+        if (ReadState.isMenuShow) {
             mReadPageChange?.showMenu(false)
-            isShowMenu = false
             return true
         }
 
@@ -644,7 +638,6 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
         } else if (x >= width - w3 || y >= height - h4 && x >= w3) {
         } else {
             mReadPageChange?.showMenu(true)
-            isShowMenu = true
         }
     }
 

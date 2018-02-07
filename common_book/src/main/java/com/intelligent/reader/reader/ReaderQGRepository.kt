@@ -25,7 +25,7 @@ class ReaderQGRepository private constructor() : ReaderRepository {
         val INSTANCE = ReaderQGRepository()
     }
 
-    override fun requestSingleChapter(host: String?, chapter: Chapter?): Observable<Chapter> {
+    override fun requestSingleChapter(host: String?, chapter: Chapter): Observable<Chapter> {
         val udid = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())
         return Observable.create({
             it.onNext(BeanParser.parseToOWNBean(DataService.getChapterFromNet(BaseBookApplication.getGlobalContext(), BeanParser.parseToQGBean(chapter), udid)))

@@ -30,4 +30,5 @@ public interface IReadPageChange {
      * 打点统计
      */
     void addLog();
+
 }
