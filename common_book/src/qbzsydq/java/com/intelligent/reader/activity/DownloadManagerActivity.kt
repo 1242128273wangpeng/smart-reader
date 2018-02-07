@@ -155,13 +155,9 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
         if (bookList.size == 0) {
             btn_edit.visibility = View.GONE
         } else {
-            if (AppUtils.getPackageName() == "cc.kdqbxs.reader") {
-                btn_edit.visibility = View.GONE
-            } else {
-                btn_edit.visibility = View.VISIBLE
-                if (hasDeleted) {
-                    btn_edit.text = "编辑"
-                }
+            btn_edit.visibility = View.VISIBLE
+            if (hasDeleted) {
+                btn_edit.text = "编辑"
             }
         }
         if (bookList.size == 0) {
@@ -278,7 +274,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
                 }
             }
         }
-        presenter.queryDownloadBooks(true)
+        presenter.queryDownloadBooks(false)
     }
 
     override fun onProgressUpdate(book_id: String?, progress: Int) {
