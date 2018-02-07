@@ -319,7 +319,8 @@ class AutoReadView : View {
         }
 
         private fun decideCanRun(): Boolean {
-            if (ReadState.sequence + 1 == ReadState.chapterList.size - 1) {
+            if (mOnAutoReadViewLoadCallback?.onAutoReadAble() == true) {
+                mOnAutoReadViewLoadCallback?.onNextPage()
                 mOnAutoReadViewLoadCallback?.onStop()
                 return false
             }
@@ -344,5 +345,6 @@ class AutoReadView : View {
         fun onStop()
         fun onPause()
         fun onNextPage()
+        fun onAutoReadAble(): Boolean
     }
 }
