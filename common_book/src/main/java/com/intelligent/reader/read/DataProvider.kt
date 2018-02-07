@@ -117,12 +117,14 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
             for (i in startIndex until end) {
                 if (i < ReadState.chapterCount) {
                     if (!isCacheExistBySequence(i)) {
-                        mReaderRepository.requestSingleChapter(ReadState.book.site, ReadState.chapterList[i])
-                                .subscribeOn(Schedulers.io())
-                                .subscribekt(onNext = {
-                                    println(" chapter cached " + it.sequence)
-                                    mReaderRepository.writeChapterCache(it, false)
-                                }, onError = { it.printStackTrace() })
+                        val requestChapter: Chapter = ReadState.chapterList[i]
+                        if (!TextUtils.isEmpty(requestChapter.curl)) {
+                            addDisposable(mReaderRepository.requestSingleChapter(ReadState.book.site, ReadState.chapterList[i])
+                                    .subscribeOn(Schedulers.io())
+                                    .subscribekt(onNext = {
+                                        mReaderRepository.writeChapterCache(it, false)
+                                    }, onError = { it.printStackTrace() }))
+                        }
                     }
                 }
             }
