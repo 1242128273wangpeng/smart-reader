@@ -1,12 +1,14 @@
 package com.intelligent.reader.cover;
 
 
+import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.repository.BookCoverRepository;
 
 import net.lzbook.kit.data.bean.Bookmark;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.CoverPage;
 import net.lzbook.kit.data.bean.RequestItem;
+import net.lzbook.kit.data.db.BookChapterDao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +41,6 @@ public class BookCoverRepositoryFactory implements BookCoverRepository {
      */
     private final BookCoverRepository mCoverBookLocalRepository;
 
-    private boolean mChapterComeFromLocal = false;
-
     private BookCoverRepositoryFactory(BookCoverRepository coverBookCoverRepository, BookCoverRepository coverQGBookCoverRepository,
                                        BookCoverRepository coverBookCoverLocalRepository) {
         this.mCoverBookRepository = coverBookCoverRepository;
@@ -72,12 +72,11 @@ public class BookCoverRepositoryFactory implements BookCoverRepository {
     @Override
     public Observable<List<Chapter>> getChapterList(RequestItem requestItem) {
         // 已加入书架，且书籍目录存在本地数据库
-        if (mCoverBookLocalRepository.isBookSubscribe(requestItem.book_id)) {
-            mChapterComeFromLocal = true;
+        BookChapterDao bookChapterDao = new BookChapterDao(BookApplication.getGlobalContext(), requestItem.book_id);
+        if (mCoverBookLocalRepository.isBookSubscribe(requestItem.book_id) && bookChapterDao.getCount() > 0) {
             return mCoverBookLocalRepository.getChapterList(requestItem);
         }
 
-        mChapterComeFromLocal = false;
         if (requestItem.host.equals(QG_SOURCE)) {
             return mCoverQGBookRepository.getChapterList(requestItem);
         } else {
@@ -92,7 +91,7 @@ public class BookCoverRepositoryFactory implements BookCoverRepository {
 
     @Override
     public boolean saveBookChapterList(List<Chapter> chapterList, RequestItem requestItem) {
-        if (!mChapterComeFromLocal) {
+        if (mCoverBookLocalRepository.isBookSubscribe(requestItem.book_id)) {
             return mCoverBookLocalRepository.saveBookChapterList(chapterList, requestItem);
         }
         return false;

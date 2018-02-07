@@ -21,7 +21,6 @@ import org.json.JSONObject;
 
 import static android.view.KeyEvent.KEYCODE_BACK;
 import static net.lzbook.kit.utils.ExtensionsKt.msMainLooperHandler;
-import static net.lzbook.kit.utils.ExtensionsKt.runOnMainDelayed;
 
 public class SwitchSplashAdActivity extends Activity {
 
@@ -97,6 +96,18 @@ public class SwitchSplashAdActivity extends Activity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        PlatformSDK.lifecycle().onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        PlatformSDK.lifecycle().onPause();
+    }
+
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(canBack && keyCode == KEYCODE_BACK){
             click();
@@ -105,4 +116,9 @@ public class SwitchSplashAdActivity extends Activity {
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PlatformSDK.lifecycle().onDestroy();
+    }
 }
