@@ -115,37 +115,45 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
      * 查询书籍列表
      */
     fun queryBookListAndAd(activity: Activity, isShowAd: Boolean) {
-        var adNum = updateBookList()
-        if (isShowAd)
+        val adNum = updateBookList()
+        if (isShowAd && iBookList.isNotEmpty()) {
             updateAd(activity, adNum)
+        }
     }
 
     fun updateBookList(): Int {
         val bookList = bookDaoHelper.booksOnLineList
-        Collections.sort(bookList, FrameBookHelper.MultiComparator())
         iBookList.clear()
-        iBookList.addAll(bookList)
-        var adCount = PlatformSDK.config().getAdCount()
-        if (aDViews.isNotEmpty()) {
-            val size = iBookList.size
-            var index = 0
-            var book1 = Book()
-            book1.book_type = -2
-            book1.sequence = index++
-            iBookList.add(0, book1)
-            var i: Int = 1
-            while (size > adCount * i) {
-                book1 = Book()
+        if (bookList.isEmpty()) {
+            runOnMain {
+                view?.onBookListQuery(bookList)
+            }
+            return 0
+        } else {
+            Collections.sort(bookList, FrameBookHelper.MultiComparator())
+            iBookList.addAll(bookList)
+            val adCount = PlatformSDK.config().adCount
+            if (aDViews.isNotEmpty()) {
+                val size = iBookList.size
+                var index = 0
+                var book1 = Book()
                 book1.book_type = -2
                 book1.sequence = index++
-                iBookList.add(adCount * i, book1)
-                i++
+                iBookList.add(0, book1)
+                var i: Int = 1
+                while (size > adCount * i) {
+                    book1 = Book()
+                    book1.book_type = -2
+                    book1.sequence = index++
+                    iBookList.add(adCount * i, book1)
+                    i++
+                }
             }
+            runOnMain {
+                view?.onBookListQuery(bookList)
+            }
+            return bookList.size / adCount + 1
         }
-        runOnMain {
-            view?.onBookListQuery(bookList)
-        }
-        return bookList.size / adCount + 1
     }
 
     fun updateAd(activity: Activity, num: Int) {

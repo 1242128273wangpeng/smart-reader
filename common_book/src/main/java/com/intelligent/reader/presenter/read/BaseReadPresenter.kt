@@ -27,6 +27,7 @@ import com.intelligent.reader.cover.BookCoverQGRepository
 import com.intelligent.reader.cover.BookCoverRepositoryFactory
 import com.intelligent.reader.fragment.CatalogMarkFragment
 import com.intelligent.reader.presenter.IPresenter
+import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.read.help.NovelHelper
 import com.intelligent.reader.read.mode.ReadState
@@ -134,6 +135,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
 
     fun onCreateInit(savedInstanceState: Bundle?) {
         ReadState.chapterList.clear()
+        DataProvider.getInstance().clear()
         AppLog.e(TAG, "onCreate")
 
         sp = PreferenceManager.getDefaultSharedPreferences(readReference?.get()?.applicationContext)
@@ -193,6 +195,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
 
     fun onNewIntent(intent: Intent) {
         ReadState.chapterList.clear()
+        DataProvider.getInstance().clear()
         this.lastMode = -1
 //        pageView?.clear()
         showMenu(false)
@@ -1011,6 +1014,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
                     showMenu(false)
                 }
                 val bundle = data.extras
+
                 ReadState.sequence = bundle.getInt("sequence")
                 ReadState.offset = bundle.getInt("offset", 0)
                 ReadState.book = bundle.getSerializable("book") as Book

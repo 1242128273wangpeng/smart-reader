@@ -88,8 +88,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
                 } else {
                     if (presenter.iBookList.isNotEmpty()) {
                         bookshelf_refresh_view.setPullToRefreshEnabled(true)
+                        updateUI()
                     }
-                    updateUI()
                 }
                 fragmentCallback.getMenuShownState(isShown)
                 if (isShown) {
@@ -104,9 +104,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
             }
 
             override fun doHideAd() {
-                if (isShowAD) {
-                    presenter.removeAd()
-                }
+                presenter.removeAd()
             }
 
         })
@@ -130,7 +128,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
 
     private var frameBookHelper: FrameBookHelper? = null
     private var bookDaoHelper: BookDaoHelper = BookDaoHelper.getInstance()
-    private var isShowAD = false
     private var bookRackUpdateTime: Long = 0
     private var latestLoadDataTime: Long = 0
 
@@ -300,7 +297,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
             presenter.handleSuccessUpdate(result)
             AppUtils.setLongPreferences(activity, "book_rack_update_time", bookRackUpdateTime)
             AppLog.e(TAG, "onSuccess的刷新ui调用")
-            isShowAD = true
 //        updateUI()
         }
     }
@@ -354,7 +350,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
 
     override fun onBookDelete() {
         AppLog.e(TAG, "onBookDelete")
-        updateUI()
         bookShelfRemoveHelper.dismissRemoveMenu()
     }
 
