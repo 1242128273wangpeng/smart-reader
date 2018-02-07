@@ -318,8 +318,8 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
         }
 
         override fun bindHolder(pageLines: NovelPageBean) {
-            book_name_tv.text = ReadState.book?.name
-            book_auth_tv.text = ReadState.book?.author
+            book_name_tv.text = ReadState.book.name
+            book_auth_tv.text = ReadState.book.author
             slogan_tv.setTextView(2f, context.resources.getString(R.string.slogan))
             product_name_tv.setTextView(1f, context.resources.getString(R.string.app_name))
 

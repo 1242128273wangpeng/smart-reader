@@ -56,8 +56,10 @@ class ReaderLocalRepository(context: Context) : ReaderRepository {
         }
     }
 
-    override fun updateBookCurrentChapter(bookId: String, retChapter: Chapter, sequence: Int) {
-        BookChapterDao(mContext, bookId).updateBookCurrentChapter(retChapter, retChapter.sequence)
+    override fun updateBookCurrentChapter(bookId: String, retChapter: Chapter?, sequence: Int) {
+        retChapter?.let {
+            BookChapterDao(mContext, bookId).updateBookCurrentChapter(retChapter, retChapter.sequence)
+        }
     }
 
     override fun getChapterIdByChapterId(bookId: String, chapter_id: String?): Int {
@@ -68,20 +70,22 @@ class ReaderLocalRepository(context: Context) : ReaderRepository {
         BookChapterDao(mContext, bookId).changeChargeBookState(chapterIndex, i)
     }
 
-    override fun writeChapterCache(chapter: Chapter, downloadFlag: Boolean) {
-        if (mBookDaoHelper.isBookSubed(chapter.book_id)) {
-            var content = chapter.content
-            if (TextUtils.isEmpty(content)) {
-                content = "null"
-            }
-            val write_success: Boolean
-            if (downloadFlag && content == CACHE_EXIST) {
-                write_success = true
-            } else {
-                write_success = DataCache.saveChapter(content, chapter.sequence, chapter.book_id)
-            }
-            if (downloadFlag && !write_success) {
-                throw WriteFileFailException()
+    override fun writeChapterCache(chapter: Chapter?, downloadFlag: Boolean) {
+        chapter?.let {
+            if (mBookDaoHelper.isBookSubed(chapter.book_id)) {
+                var content = chapter.content
+                if (TextUtils.isEmpty(content)) {
+                    content = "null"
+                }
+                val write_success: Boolean
+                if (downloadFlag && content == CACHE_EXIST) {
+                    write_success = true
+                } else {
+                    write_success = DataCache.saveChapter(content, chapter.sequence, chapter.book_id)
+                }
+                if (downloadFlag && !write_success) {
+                    throw WriteFileFailException()
+                }
             }
         }
     }
