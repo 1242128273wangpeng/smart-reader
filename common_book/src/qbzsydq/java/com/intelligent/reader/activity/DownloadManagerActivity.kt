@@ -155,13 +155,9 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
         if (bookList.size == 0) {
             btn_edit.visibility = View.GONE
         } else {
-            if (AppUtils.getPackageName() == "cc.kdqbxs.reader") {
-                btn_edit.visibility = View.GONE
-            } else {
-                btn_edit.visibility = View.VISIBLE
-                if (hasDeleted) {
-                    btn_edit.text = "编辑"
-                }
+            btn_edit.visibility = View.VISIBLE
+            if (hasDeleted) {
+                btn_edit.text = "编辑"
             }
         }
         if (bookList.size == 0) {
@@ -267,7 +263,9 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
 
     override fun onTaskFinish(book_id: String?) {
         val book = presenter.bookDaoHelper.getBook(book_id, 0)
-        toastShort( "${book.name}缓存完成")
+        book.name?.let {
+            toastShort("${it}缓存完成")
+        }
         if (presenter.downloadService?.getDownBookTask(book_id) != null
                 && presenter.downloadService?.getDownBookTask(book_id)?.state == DownloadState.FINISH) {
             val data = presenter.downloadBooks
@@ -278,7 +276,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
                 }
             }
         }
-        presenter.queryDownloadBooks(true)
+        presenter.queryDownloadBooks(false)
     }
 
     override fun onProgressUpdate(book_id: String?, progress: Int) {
