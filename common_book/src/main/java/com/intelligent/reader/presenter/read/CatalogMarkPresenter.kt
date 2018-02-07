@@ -58,67 +58,18 @@ class CatalogMarkPresenter : CatalogMark.Presenter {
         view?.setChangeAble(false)
         view?.onLoading()
 
-        Observable.create<List<Chapter>> { emitter: ObservableEmitter<List<Chapter>>? ->
-
-            val chapterDao = BookChapterDao(BaseBookApplication.getGlobalContext(), ReadState.book.book_id)
-            val chapterList = chapterDao.queryBookChapter()
-            if (chapterList != null && chapterList.size > 0) {
-                emitter?.onNext(chapterList)
-                emitter?.onComplete()
+        if (!ReadState.chapterList.isEmpty()) {
+            if (reverse) {
+                Collections.reverse(ReadState.chapterList)
+                view?.showCatalog(ReadState.chapterList, 0)
             } else {
-                if (Constants.SG_SOURCE.equals(requestItem.host)) {
-                    emitter?.onError(Exception("error"))
-                } else {
-                    if (Constants.QG_SOURCE.equals(requestItem.host)) {
-                        var chapters: ArrayList<com.quduquxie.bean.Chapter>? = null
-                        try {
-                            val udid = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())
-                            chapters = DataService.getChapterList(RequestExecutorDefault.mContext, requestItem.book_id, 1, Integer.MAX_VALUE - 1, udid)
-                            val list = BeanParser.buildOWNChapterList(chapters, 0, chapters!!.size)
-                            if (list != null && list.size > 0) {
-                                emitter?.onNext(list)
-                                emitter?.onComplete()
-                            } else {
-                                emitter?.onError(Exception("error"))
-                            }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                            emitter?.onError(e)
-                        }
-
-                    } else {
-                        NetOwnBook.requestOwnCatalogList(ReadState.book).subscribekt(
-                                onNext = { t ->
-                                    emitter?.onNext(t)
-                                    emitter?.onComplete()
-                                },
-                                onError = { err ->
-                                    emitter?.onError(err)
-                                }
-                        )
-                    }
-                }
+                view?.showCatalog(ReadState.chapterList, ReadState.sequence)
             }
-        }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribekt(
-                onNext = { ret ->
-                    if (!ret.isEmpty()) {
-                        if (reverse) {
-                            Collections.reverse(ret)
-                            view?.showCatalog(ret, 0)
-                        } else {
-                            view?.showCatalog(ret, ReadState.sequence)
-                        }
-                    } else {
-                        view?.onNetError()
-                    }
-
-                    view?.setChangeAble(true)
-                }, onError = { e ->
-            e.printStackTrace()
+        } else {
             view?.onNetError()
+        }
 
-            view?.setChangeAble(true)
-        })
+        view?.setChangeAble(true)
 
     }
 

@@ -211,7 +211,7 @@ public class ViewPager extends ViewGroup {
      * Position of the last motion event.
      */
     protected float mLastMotionX;
-    private float mLastMotionY;
+//    private float mLastMotionY;
     private float mInitialMotionX;
     private float mInitialMotionY;
     /**
@@ -2134,35 +2134,35 @@ public class ViewPager extends ViewGroup {
                 final float x = ev.getX(pointerIndex);
                 final float dx = x - mLastMotionX;
                 final float xDiff = Math.abs(dx);
-                final float y = ev.getY(pointerIndex);
-                final float yDiff = Math.abs(y - mInitialMotionY);
-                if (DEBUG) Log.v(TAG, "Moved x to " + x + "," + y + " diff=" + xDiff + "," + yDiff);
+//                final float y = ev.getY(pointerIndex);
+//                final float yDiff = Math.abs(y - mInitialMotionY);
+//                if (DEBUG) Log.v(TAG, "Moved x to " + x + "," + y + " diff=" + xDiff + "," + yDiff);
 
                 if (dx != 0 && !isGutterDrag(mLastMotionX, dx)
-                        && canScroll(this, false, (int) dx, (int) x, (int) y)) {
+                        && canScroll(this, false, (int) dx, (int) x)) {
                     // Nested view has scrollable area under this point. Let it be handled there.
                     mLastMotionX = x;
-                    mLastMotionY = y;
+//                    mLastMotionY = y;
                     mIsUnableToDrag = true;
                     return false;
                 }
-                if (xDiff > mTouchSlop && xDiff * 0.5f > yDiff) {
+                if (xDiff > mTouchSlop /*&& xDiff * 0.5f > yDiff*/) {
                     if (DEBUG) Log.v(TAG, "Starting drag!");
                     mIsBeingDragged = true;
                     requestParentDisallowInterceptTouchEvent(true);
                     setScrollState(SCROLL_STATE_DRAGGING);
                     mLastMotionX = dx > 0
                             ? mInitialMotionX + mTouchSlop : mInitialMotionX - mTouchSlop;
-                    mLastMotionY = y;
+//                    mLastMotionY = y;
                     setScrollingCacheEnabled(true);
-                } else if (yDiff > mTouchSlop) {
+                } /*else if (yDiff > mTouchSlop) {
                     // The finger has moved enough in the vertical
                     // direction to be counted as a drag...  abort
                     // any attempt to drag horizontally, to work correctly
                     // with children that have scrolling containers.
                     if (DEBUG) Log.v(TAG, "Starting unable to drag!");
                     mIsUnableToDrag = true;
-                }
+                }*/
                 if (mIsBeingDragged) {
                     // Scroll to follow the motion event
                     if (performDrag(x)) {
@@ -2178,7 +2178,7 @@ public class ViewPager extends ViewGroup {
                  * ACTION_DOWN always refers to pointer index 0.
                  */
                 mLastMotionX = mInitialMotionX = ev.getX();
-                mLastMotionY = mInitialMotionY = ev.getY();
+//                mLastMotionY = mInitialMotionY = ev.getY();
                 mActivePointerId = ev.getPointerId(0);
                 mIsUnableToDrag = false;
 
@@ -2198,11 +2198,11 @@ public class ViewPager extends ViewGroup {
                     mIsBeingDragged = false;
                 }
 
-                if (DEBUG) {
-                    Log.v(TAG, "Down at " + mLastMotionX + "," + mLastMotionY
-                            + " mIsBeingDragged=" + mIsBeingDragged
-                            + "mIsUnableToDrag=" + mIsUnableToDrag);
-                }
+//                if (DEBUG) {
+//                    Log.v(TAG, "Down at " + mLastMotionX + "," + mLastMotionY
+//                            + " mIsBeingDragged=" + mIsBeingDragged
+//                            + "mIsUnableToDrag=" + mIsUnableToDrag);
+//                }
                 break;
             }
 
@@ -2259,7 +2259,7 @@ public class ViewPager extends ViewGroup {
 
                 // Remember where the motion event started
                 mLastMotionX = mInitialMotionX = ev.getX();
-                mLastMotionY = mInitialMotionY = ev.getY();
+//                mLastMotionY = mInitialMotionY = ev.getY();
                 mActivePointerId = ev.getPointerId(0);
                 break;
             }
@@ -2274,18 +2274,18 @@ public class ViewPager extends ViewGroup {
                     }
                     final float x = ev.getX(pointerIndex);
                     final float xDiff = Math.abs(x - mLastMotionX);
-                    final float y = ev.getY(pointerIndex);
-                    final float yDiff = Math.abs(y - mLastMotionY);
-                    if (DEBUG) {
-                        Log.v(TAG, "Moved x to " + x + "," + y + " diff=" + xDiff + "," + yDiff);
-                    }
-                    if (xDiff > mTouchSlop && xDiff > yDiff) {
+//                    final float y = ev.getY(pointerIndex);
+//                    final float yDiff = Math.abs(y - mLastMotionY);
+//                    if (DEBUG) {
+//                        Log.v(TAG, "Moved x to " + x + "," + y + " diff=" + xDiff + "," + yDiff);
+//                    }
+                    if (xDiff > mTouchSlop /*&& xDiff > yDiff*/) {
                         if (DEBUG) Log.v(TAG, "Starting drag!");
                         mIsBeingDragged = true;
                         requestParentDisallowInterceptTouchEvent(true);
                         mLastMotionX = x - mInitialMotionX > 0 ? mInitialMotionX + mTouchSlop :
                                 mInitialMotionX - mTouchSlop;
-                        mLastMotionY = y;
+//                        mLastMotionY = y;
                         setScrollState(SCROLL_STATE_DRAGGING);
                         setScrollingCacheEnabled(true);
 
@@ -2818,10 +2818,9 @@ public class ViewPager extends ViewGroup {
      *               or just its children (false).
      * @param dx Delta scrolled in pixels
      * @param x X coordinate of the active touch point
-     * @param y Y coordinate of the active touch point
      * @return true if child views of v can be scrolled by delta of dx.
      */
-    protected boolean canScroll(View v, boolean checkV, int dx, int x, int y) {
+    protected boolean canScroll(View v, boolean checkV, int dx, int x) {
         if (v instanceof ViewGroup) {
             final ViewGroup group = (ViewGroup) v;
             final int scrollX = v.getScrollX();
@@ -2833,9 +2832,7 @@ public class ViewPager extends ViewGroup {
                 // This will not work for transformed views in Honeycomb+
                 final View child = group.getChildAt(i);
                 if (x + scrollX >= child.getLeft() && x + scrollX < child.getRight()
-                        && y + scrollY >= child.getTop() && y + scrollY < child.getBottom()
-                        && canScroll(child, true, dx, x + scrollX - child.getLeft(),
-                                y + scrollY - child.getTop())) {
+                        && canScroll(child, true, dx, x + scrollX - child.getLeft())) {
                     return true;
                 }
             }
