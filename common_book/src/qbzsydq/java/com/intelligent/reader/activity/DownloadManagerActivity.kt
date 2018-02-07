@@ -263,7 +263,9 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
 
     override fun onTaskFinish(book_id: String?) {
         val book = presenter.bookDaoHelper.getBook(book_id, 0)
-        toastShort( "${book.name}缓存完成")
+        book.name?.let {
+            toastShort("${it}缓存完成")
+        }
         if (presenter.downloadService?.getDownBookTask(book_id) != null
                 && presenter.downloadService?.getDownBookTask(book_id)?.state == DownloadState.FINISH) {
             val data = presenter.downloadBooks
