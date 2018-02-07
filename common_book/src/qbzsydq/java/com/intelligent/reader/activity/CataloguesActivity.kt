@@ -396,6 +396,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data)
                 if (!fromCover) {
                     if (mCataloguesPresenter != null) {
+                        sequence = Math.min(sequence, (chapterList?.size ?: 1) - 1)
                         mCataloguesPresenter!!.activityResult(sequence)
                     }
                 }
@@ -501,6 +502,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
 
     override fun onBackPressed() {
         if (mCataloguesPresenter != null) {
+            sequence = Math.min(sequence, (chapterList?.size ?: 1) - 1)
             mCataloguesPresenter!!.activityResult(sequence)
         }
         exitAndUpdate()

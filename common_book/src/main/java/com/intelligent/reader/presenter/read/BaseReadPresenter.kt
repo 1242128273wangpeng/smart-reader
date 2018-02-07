@@ -1014,6 +1014,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
                     showMenu(false)
                 }
                 val bundle = data.extras
+
                 ReadState.sequence = bundle.getInt("sequence")
                 ReadState.offset = bundle.getInt("offset", 0)
                 ReadState.book = bundle.getSerializable("book") as Book
