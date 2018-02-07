@@ -15,6 +15,7 @@ import com.intelligent.reader.cover.BookCoverLocalRepository
 import com.intelligent.reader.cover.BookCoverOtherRepository
 import com.intelligent.reader.cover.BookCoverQGRepository
 import com.intelligent.reader.cover.BookCoverRepositoryFactory
+import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.read.help.ReadSeparateHelper
 import com.intelligent.reader.read.mode.NovelChapter
 import com.intelligent.reader.read.mode.NovelPageBean
@@ -32,6 +33,7 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.*
 import net.lzbook.kit.data.db.BookChapterDao
+import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.request.RequestFactory
 import net.lzbook.kit.user.UserManager
@@ -110,7 +112,7 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
 
 
     fun preLoad(start: Int, end: Int) {
-        if (!ReadState.chapterList.isEmpty()) {
+        if (BookDaoHelper.getInstance().isBookSubed(ReadState.book_id) && !ReadState.chapterList.isEmpty()) {
             val startIndex = Math.max(start, 0)
             for (i in startIndex until end) {
                 if (i < ReadState.chapterCount) {
@@ -346,6 +348,7 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
                         mReadDataListener.loadDataError("章节内容为空")
                     }
                 }, { throwable ->
+                    throwable.printStackTrace()
                     mReadDataListener.loadDataError(throwable.message.toString())
                 }))
     }
