@@ -125,7 +125,7 @@ public class BaseCacheableActivity extends FrameActivity {
 
                 final Book book = (Book) intent.getSerializableExtra(Constants.REQUEST_ITEM);
 
-                if (intent.getAction().equalsIgnoreCase(ACTION_CACHE_COMPLETE)) {
+                if (book.name != null && intent.getAction().equalsIgnoreCase(ACTION_CACHE_COMPLETE)) {
                     if (myDialog != null && myDialog.isShowing()) {
                         myDialog.dismiss();
                     }
