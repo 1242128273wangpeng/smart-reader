@@ -612,6 +612,8 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
     }
 
     private fun intoCatalogActivity(source: Source, b: Boolean) {
+
+
         val bookDaoHelper = BookDaoHelper.getInstance()
         if (bookDaoHelper.isBookSubed(source.book_id)) {
             val iBook = bookDaoHelper.getBook(source.book_id, 0)
@@ -622,6 +624,9 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
             bookDaoHelper.updateBook(iBook)
             ReadState.book = iBook
             if (b) {
+                //停止预缓存逻辑
+                DataProvider.getInstance().clear()
+
                 val bookChapterDao = BookChapterDao(readReference?.get(), source.book_id)
                 BookHelper.deleteAllChapterCache(source.book_id, 0, bookChapterDao.count)
                 DownloadService.clearTask(source.book_id)
