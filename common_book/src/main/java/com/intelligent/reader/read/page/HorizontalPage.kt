@@ -154,6 +154,9 @@ class HorizontalPage : FrameLayout, Observer {
         ThemeUtil.getModePrimaryBackground(resources, homePage)
         //进度条
         ThemeUtil.getModePrimaryBackground(resources, loadView)
+
+        readTop.visibility = View.VISIBLE
+        readBottom.visibility = View.VISIBLE
     }
 
     override fun onDetachedFromWindow() {
