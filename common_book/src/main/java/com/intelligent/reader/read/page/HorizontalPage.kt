@@ -585,7 +585,7 @@ class HorizontalPage : FrameLayout, Observer {
                     //设置top and bottom
                     val chapterProgress = "${cursor.sequence.plus(1)} / ${ReadState.chapterList.size} 章"
                     val pageProgress = "本章第$pageIndex/$pageSum"
-                    setTopAndBottomViewContext(ReadState.chapterName ?: "", chapterProgress, pageProgress)
+                    setTopAndBottomViewContext(ReadState.chapterList[cursor.sequence].chapter_name ?: "", chapterProgress, pageProgress)
 
                     noticePageListener?.currentViewSuccess()
 
