@@ -424,11 +424,9 @@ class ReadOptionPresenter : ReadOption.Presenter {
 
     override fun back() {
         //先这样实现吧...
-        if (activity.get() is ReadingActivity) {
-            val data = java.util.HashMap<String, String>()
-            data.put("type", "1")
-            StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data)
-            (activity.get() as ReadingActivity).goBackToHome()
+        val activity = this.activity.get()
+        if (activity is ReadingActivity) {
+            activity.onBackPressed()
         }
     }
 
