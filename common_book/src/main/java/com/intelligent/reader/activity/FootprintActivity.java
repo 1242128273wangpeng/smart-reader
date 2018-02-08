@@ -123,7 +123,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Boo
         try {
             mDaoUtils = new DaoUtils(HistoryInfo.class);
             dataCount = (int) mDaoUtils.countOf();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         String typeInfo = null;
@@ -160,7 +160,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Boo
         try {
             mDaoUtils = new DaoUtils(HistoryInfo.class);
             mDataSet = mDaoUtils.queryDataForPagingLoad(HistoryInforTable.LAST_BROW_TIME, 0L, (long) LoadMoreAdapterWrapper.PAGE_SIZE);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -229,13 +229,18 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Boo
             public void run() {
 
                 AppLog.d(TAG, "pagePosition = " + pagePosition);
-                List<Book> dataSet = mDaoUtils.queryDataForPagingLoad(HistoryInforTable.LAST_BROW_TIME, (long) pagePosition, (long) pageSize);
-
-                mHisAdapter.appendData(dataSet);
-                callback.onSuccess();
+                List<Book> dataSet = null;
+                try {
+                    dataSet = mDaoUtils.queryDataForPagingLoad(HistoryInforTable.LAST_BROW_TIME, (long) pagePosition, (long) pageSize);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
 
                 if (dataSet == null || dataSet.isEmpty() || dataSet.size() < pageSize) {
                     callback.onFailure();
+                }else{
+                    mHisAdapter.appendData(dataSet);
+                    callback.onSuccess();
                 }
             }
         }, 200);

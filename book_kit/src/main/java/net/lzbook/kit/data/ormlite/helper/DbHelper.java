@@ -17,7 +17,8 @@ public class DbHelper extends OrmDatabaseHelper {
     private volatile static DbHelper mInstance = null;
 
     public static DbHelper getInstance() {
-        if (mInstance == null) {
+        if (mInstance == null || !mInstance.isOpen()) {
+            mInstance = null;
             synchronized (DbHelper.class) {
                 if (mInstance == null) {
                     mInstance = new DbHelper(BaseBookApplication.getGlobalContext());
