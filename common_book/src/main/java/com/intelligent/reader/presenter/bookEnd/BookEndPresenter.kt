@@ -174,7 +174,7 @@ class BookEndPresenter(val act: Activity, val bookEndContract: BookEndContract,
         bundle.putString("book_id", ReadState.book.book_id)
         //AppLog.e(TAG, "OpenCategoryPage: " + readStatus.sequence);
         bundle.putInt("sequence", ReadState.sequence)
-        bundle.putBoolean("fromCover", false)
+        bundle.putBoolean("fromCover", true)
         bundle.putBoolean("fromEnd", true)
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         //AppLog.e(TAG, "ReadingActivity: " + readStatus.getRequestItem().toString());

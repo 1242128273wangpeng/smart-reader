@@ -354,6 +354,11 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         return false
     }
 
+    fun isLastPage(): Boolean {
+        return ((findViewWithTag(ReadViewEnums.PageIndex.next) != null)
+                and ((findViewWithTag(ReadViewEnums.PageIndex.next) as HorizontalPage).viewState == ReadViewEnums.ViewState.end))
+    }
+
     /**
      * 点击屏幕中间区域显示菜单
      */

@@ -627,7 +627,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
                 DownloadService.clearTask(source.book_id)
                 BaseBookHelper.delDownIndex(readReference?.get(), source.book_id)
                 bookChapterDao.deleteBookChapters(0)
-
+                BookDaoHelper.getInstance().deleteBookMark(source.book_id)
             }
         } else {
             val iBook = ReadState.book
@@ -1014,6 +1014,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
                     showMenu(false)
                 }
                 val bundle = data.extras
+
                 ReadState.sequence = bundle.getInt("sequence")
                 ReadState.offset = bundle.getInt("offset", 0)
                 ReadState.book = bundle.getSerializable("book") as Book

@@ -33,7 +33,7 @@ public interface ReaderRepository {
     /**
      * 单章拉取
      */
-    Observable<Chapter> requestSingleChapter(String host, Chapter chapter);
+    Observable<Chapter> requestSingleChapter(String host, @NotNull Chapter chapter);
 
 //    /**
 //     * 单章购买

@@ -123,6 +123,13 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
                 mAutoReadView?.setAutoReadSpeed(mAutoReadSpeed)
             }
             mAutoReadView?.setOnAutoReadViewLoadCallback(object : AutoReadView.OnAutoReadViewLoadCallback {
+                override fun onAutoReadAble(): Boolean {
+                    if (mReaderView != null && mReaderView is HorizontalReaderView) {
+                        return (mReaderView as HorizontalReaderView).isLastPage()
+                    } else {
+                        return false
+                    }
+                }
 
                 override fun onStart() {
                     mTextureView?.visibility = View.INVISIBLE

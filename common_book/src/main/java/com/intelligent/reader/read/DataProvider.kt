@@ -15,6 +15,7 @@ import com.intelligent.reader.cover.BookCoverLocalRepository
 import com.intelligent.reader.cover.BookCoverOtherRepository
 import com.intelligent.reader.cover.BookCoverQGRepository
 import com.intelligent.reader.cover.BookCoverRepositoryFactory
+import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.read.help.ReadSeparateHelper
 import com.intelligent.reader.read.mode.NovelChapter
 import com.intelligent.reader.read.mode.NovelPageBean
@@ -32,6 +33,7 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.*
 import net.lzbook.kit.data.db.BookChapterDao
+import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.request.RequestFactory
 import net.lzbook.kit.user.UserManager
@@ -110,7 +112,7 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
 
 
     fun preLoad(start: Int, end: Int) {
-        if (!ReadState.chapterList.isEmpty()) {
+        if (BookDaoHelper.getInstance().isBookSubed(ReadState.book_id) && !ReadState.chapterList.isEmpty()) {
             val startIndex = Math.max(start, 0)
             for (i in startIndex until end) {
                 if (i < ReadState.chapterCount) {
@@ -253,6 +255,9 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
         if (ReadState.chapterList.size == 0) {
             val bookChapterDao = BookChapterDao(BaseBookApplication.getGlobalContext(), ReadState.book_id)
             val chapterList = bookChapterDao.queryBookChapter()
+            if (ReadState.chapterList.size > 0) {
+                ReadState.chapterList.clear()
+            }
             ReadState.chapterList.addAll(chapterList)
             preLoad(ReadState.sequence, ReadState.sequence + 6)
         }
@@ -310,6 +315,7 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
 
 
         val chapter = chapters[Math.min(sequence, chapters.size - 1)]
+
         addDisposable(mReaderRepository.requestSingleChapter(book.site, chapter)
                 .map {
                     mReaderRepository.writeChapterCache(it, false)
@@ -322,6 +328,10 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
                         }
                     }
 
+                    if (it.content == "null") {
+                        it.content = "文章内容较短，可能非正文，正在抓紧修复中..."
+                    }
+
                     val separateContent = ReadSeparateHelper.initTextSeparateContent(it.content, it.chapter_name)
                     NovelChapter(it, separateContent)
                 }
@@ -329,11 +339,11 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ novelChapter ->
 
-                    if (novelChapter.chapter.content != "null" && novelChapter.chapter.content.isNotEmpty()) {
-                        if (ReadState.sequence != -1 && book.site != RequestFactory.RequestHost.QG.requestHost &&
-                                novelChapter.chapter.content.length <= Constants.CONTENT_ERROR_COUNT) {
-                            mReadDataListener.loadDataInvalid("当前章节内容异常，推荐换源。")
-                        }
+//                    if (novelChapter.chapter.content != "null" && novelChapter.chapter.content.isNotEmpty()) {
+//                        if (ReadState.sequence != -1 && book.site != RequestFactory.RequestHost.QG.requestHost &&
+//                                novelChapter.chapter.content.length <= Constants.CONTENT_ERROR_COUNT) {
+////                            mReadDataListener.loadDataInvalid("当前章节内容异常，推荐换源。")
+//                        }
 
                         ReadState.chapterId = novelChapter.chapter.chapter_id
                         //加章末广告
@@ -342,10 +352,14 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
                         }
                         chapterCache.put(sequence, novelChapter)
                         mReadDataListener.loadDataSuccess(novelChapter.chapter, type)
-                    } else {
-                        mReadDataListener.loadDataError("章节内容为空")
-                    }
+//                    } else {
+//                        novelChapter.separateList = ReadSeparateHelper.initTextSeparateContent("文章内容较短，可能非正文，正在抓紧修复中...", novelChapter.chapter.chapter_name)
+//                        novelChapter.chapter.content = "文章内容较短，可能非正文，正在抓紧修复中..."
+//                        mReadDataListener.loadDataSuccess(novelChapter.chapter, type)
+////                        mReadDataListener.loadDataError("章节内容为空")
+//                    }
                 }, { throwable ->
+                    throwable.printStackTrace()
                     mReadDataListener.loadDataError(throwable.message.toString())
                 }))
     }

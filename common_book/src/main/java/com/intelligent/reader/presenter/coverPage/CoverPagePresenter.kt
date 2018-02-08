@@ -105,7 +105,6 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
         coverSourceDialog.setCanceledOnTouchOutside(true)
         val sourceView = coverSourceDialog.findViewById(R.id.change_source_list) as ListView
         val dialog_top_title = coverSourceDialog.findViewById(R.id.dialog_top_title) as TextView
-        dialog_top_title.text = "更换来源"
         val change_source_statement = coverSourceDialog.findViewById(R.id.change_source_statement) as RelativeLayout
         change_source_statement.visibility = View.GONE
 
