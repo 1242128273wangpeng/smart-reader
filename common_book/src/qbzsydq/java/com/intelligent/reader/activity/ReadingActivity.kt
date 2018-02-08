@@ -177,13 +177,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     fun searchChapterCallBack(sourcesList: ArrayList<Source>) = mReadPresenter.searchChapterCallBack(sourcesList)
 
-    fun changeSourceCallBack() = mReadPresenter.changeSourceCallBack()
-
-    /**
-     * 跳章
-     */
-    fun jumpChapterCallBack() = mReadPresenter.jumpChapterCallBack()
-
     /**
      * 隐藏topmenu
      */

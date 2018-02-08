@@ -2,6 +2,7 @@ package com.intelligent.reader.reader
 
 import com.intelligent.reader.repository.ReaderRepository
 import io.reactivex.Observable
+import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.SourceItem
 import net.lzbook.kit.net.custom.service.NetService
@@ -93,6 +94,6 @@ class ReaderOwnRepository private constructor(api: UserService) : ReaderReposito
 
     override fun getChapterIdByChapterId(bookId: String, chapter_id: String?): Int = -1
     override fun changeChargeBookState(bookId: String, chapterIndex: Int, i: Int) = Unit
-    override fun writeChapterCache(chapter: Chapter, downloadFlag: Boolean?) = Unit
+    override fun writeChapterCache(chapter: Chapter, book: Book) = Unit
 //    override fun paySingleChapter(sourceId: String?, chapterId: String?, chapterName: String?, uid: String?): Observable<SingleChapterBean> = Observable.create(null)
 }

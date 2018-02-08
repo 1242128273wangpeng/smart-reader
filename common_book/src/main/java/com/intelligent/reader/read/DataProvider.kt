@@ -118,11 +118,11 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
                 if (i < ReadState.chapterCount) {
                     if (!isCacheExistBySequence(i)) {
                         val requestChapter: Chapter = ReadState.chapterList[i]
-                        if (!TextUtils.isEmpty(requestChapter.curl)) {
+                        if (RequestFactory.RequestHost.QG.requestHost == ReadState.book.site || !TextUtils.isEmpty(requestChapter.curl)) {
                             addDisposable(mReaderRepository.requestSingleChapter(ReadState.book.site, ReadState.chapterList[i])
                                     .subscribeOn(Schedulers.io())
                                     .subscribekt(onNext = {
-                                        mReaderRepository.writeChapterCache(it, false)
+                                        mReaderRepository.writeChapterCache(it, ReadState.book)
                                     }, onError = { it.printStackTrace() }))
                         }
                     }
@@ -318,7 +318,7 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
 
         addDisposable(mReaderRepository.requestSingleChapter(book.site, chapter)
                 .map {
-                    mReaderRepository.writeChapterCache(it, false)
+                    mReaderRepository.writeChapterCache(it, ReadState.book)
 
                     if (!TextUtils.isEmpty(it.content)) {
                         it.isSuccess = true

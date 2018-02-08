@@ -6,6 +6,7 @@ import android.text.TextUtils
 import com.intelligent.reader.repository.ReaderRepository
 import io.reactivex.Observable
 import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.SourceItem
 import net.lzbook.kit.data.db.BookChapterDao
@@ -70,20 +71,18 @@ class ReaderLocalRepository(context: Context) : ReaderRepository {
         BookChapterDao(mContext, bookId).changeChargeBookState(chapterIndex, i)
     }
 
-    override fun writeChapterCache(chapter: Chapter?, downloadFlag: Boolean) {
+    override fun writeChapterCache(chapter: Chapter?, book: Book) {
         chapter?.let {
-            if (mBookDaoHelper.isBookSubed(chapter.book_id)) {
+            if (mBookDaoHelper.isBookSubed(chapter.book_id) && !DataCache.isChapterExists(chapter.sequence, book.book_id)) {
+
                 var content = chapter.content
                 if (TextUtils.isEmpty(content)) {
                     content = "null"
                 }
-                val write_success: Boolean
-                if (downloadFlag && content == CACHE_EXIST) {
-                    write_success = true
-                } else {
-                    write_success = DataCache.saveChapter(content, chapter.sequence, chapter.book_id)
-                }
-                if (downloadFlag && !write_success) {
+
+                val write_success = DataCache.saveChapter(content, chapter.sequence, chapter.book_id)
+
+                if (!write_success) {
                     throw WriteFileFailException()
                 }
             }

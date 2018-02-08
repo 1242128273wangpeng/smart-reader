@@ -4,8 +4,10 @@ import com.intelligent.reader.repository.ReaderRepository
 import com.quduquxie.network.DataService
 import io.reactivex.Observable
 import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.SourceItem
+import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.user.bean.RecommendBooksEndResp
 import net.lzbook.kit.utils.BeanParser
 import net.lzbook.kit.utils.OpenUDID
@@ -50,6 +52,12 @@ class ReaderQGRepository private constructor() : ReaderRepository {
     override fun updateBookCurrentChapter(bookId: String, retChapter: Chapter, sequence: Int) = Unit
     override fun getChapterIdByChapterId(bookId: String, chapter_id: String?): Int = -1
     override fun changeChargeBookState(bookId: String, chapterIndex: Int, i: Int) = Unit
-    override fun writeChapterCache(chapter: Chapter, downloadFlag: Boolean?) = Unit
+    override fun writeChapterCache(chapter: Chapter?, book: Book){
+        chapter?.let {
+            if(BookDaoHelper.getInstance().isBookSubed(chapter.book_id) && !com.quduquxie.network.DataCache.isChapterExists(chapter.chapter_id, book.book_id)) {
+                com.quduquxie.network.DataCache.saveChapter(chapter.content, chapter.chapter_id, book.book_id)
+            }
+        }
+    }
 //    override fun batchChapter(dex: Int, downloadFlag: Boolean, chapterMap: MutableMap<String, Chapter>?) = Unit
 }

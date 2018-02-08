@@ -1,5 +1,6 @@
 package com.intelligent.reader.repository;
 
+import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.SourceItem;
 import net.lzbook.kit.purchase.SingleChapterBean;
@@ -77,5 +78,5 @@ public interface ReaderRepository {
     /**
      * 写入缓存
      */
-    void writeChapterCache(Chapter chapter, Boolean downloadFlag);
+    void writeChapterCache(Chapter chapter, Book book);
 }
