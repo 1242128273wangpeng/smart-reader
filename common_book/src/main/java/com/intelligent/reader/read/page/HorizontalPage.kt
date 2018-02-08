@@ -490,7 +490,7 @@ class HorizontalPage : FrameLayout, Observer {
                 return
             }
             //获取数据
-            ReadState.chapterName = novelChapter.chapter.chapter_name
+//            ReadState.chapterName = novelChapter.chapter.chapter_name
 //            cursor.offset = cursor.offset - mCursorOffset
 //            cursor.offset = cursor.offset
             try {

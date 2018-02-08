@@ -9,9 +9,9 @@ import kotlin.properties.Delegates
  * 阅读状态
  * Created by wt on 2018/1/4.
  */
-object ReadState  : Observable(){
+object ReadState : Observable() {
 
-    enum class STATE_EVENT{
+    enum class STATE_EVENT {
         SEQUENCE_CHANGE
     }
 
@@ -48,7 +48,14 @@ object ReadState  : Observable(){
     //chapterId
     var chapterId: String? = null
     //章节名
-    var chapterName: String? = null
+    var chapterName: String = ""
+        get() {
+            if (sequence < chapterList.size && sequence >= 0) {
+                return chapterList[sequence].chapter_name
+            } else {
+                return ""
+            }
+        }
     //总页数
     var pageCount: Int = 0
     //当前页数
