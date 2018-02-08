@@ -2,6 +2,7 @@ package com.intelligent.reader.reader
 
 import com.intelligent.reader.repository.ReaderRepository
 import io.reactivex.Observable
+import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.SourceItem
 import net.lzbook.kit.request.RequestFactory
@@ -71,8 +72,12 @@ class ReaderRepositoryFactory private constructor(readerOwnRepository: ReaderRep
         mReaderLocalRepository.changeChargeBookState(bookId, chapterIndex, 1)
     }
 
-    override fun writeChapterCache(chapter: Chapter, downloadFlag: Boolean?) {
-        mReaderLocalRepository.writeChapterCache(chapter, downloadFlag)
+    override fun writeChapterCache(chapter: Chapter?, book: Book) {
+        if (RequestFactory.RequestHost.QG.requestHost == book.site) {
+            mReaderQGRepository.writeChapterCache(chapter, book)
+        }else{
+            mReaderLocalRepository.writeChapterCache(chapter, book)
+        }
     }
 
 //    override fun paySingleChapter(sourceId: String?, chapterId: String?, chapterName: String?, uid: String?): Observable<SingleChapterBean> {

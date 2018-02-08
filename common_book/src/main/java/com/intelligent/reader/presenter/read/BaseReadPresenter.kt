@@ -479,41 +479,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         mContext.bindService(intent, sc, Context.BIND_AUTO_CREATE)
     }
 
-    /**
-     * 预加载
-     */
-    private fun downloadNovel() {
-        if (mBookDaoHelper!!.isBookSubed(ReadState.book_id)) {
-            var num = BookHelper.CHAPTER_CACHE_COUNT
-            val max = ReadState.chapterCount - 1 - ReadState.sequence
-            if (max > 0) {
-                if (max < num) {
-                    num = max
-                }
-
-                //预加载
-                val size = mReaderViewModel!!.chapterList!!.size
-                var i = ReadState.sequence + 1
-                while (i < ReadState.sequence + num + 1 && i < size) {
-                    val c = mReaderViewModel?.chapterList!![i]
-                        AppLog.e(TAG, "预加载： " + c.toString())
-                        val finalI = i
-                        mReaderViewModel!!.requestSingleChapter(ReadState.book.site, c, object : ReaderViewModel.BookSingleChapterCallback {
-                            override fun onPayChapter(chapter: Chapter) {
-                                if (finalI == ReadState.sequence + 1) {
-                                    mReaderViewModel!!.nextChapter = c
-                                }
-                            }
-
-                            override fun onFail(msg: String) {}
-                        })
-                    i++
-                }
-            }
-        }
-
-    }
-
     //换源回调
     fun searchChapterCallBack(sourcesList: ArrayList<Source>?) {
         if (sourcesList?.isNotEmpty() == true) {
@@ -756,25 +721,8 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         myNovelHelper?.getChapterContent(readReference?.get(), ReadState.currentChapter, ReadState.book)
         isSourceListShow = false
 
-        downloadNovel()
     }
 
-    /**
-     * 跳章
-     */
-    fun jumpChapterCallBack() {
-        Constants.readedCount++
-        if (mReaderViewModel == null || myNovelHelper == null) {
-            return
-        }
-        mReaderViewModel?.nextChapter = null
-        ReadState.offset = 0
-        myNovelHelper?.isShown = false
-        myNovelHelper?.getChapterContent(readReference?.get(), ReadState.currentChapter, ReadState.book)
-        ReadState.currentPage = 1
-
-        downloadNovel()
-    }
 
     /**
      * 清空屏幕
@@ -1089,7 +1037,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
     }
 
     override fun downLoadNovelMore() {
-        downloadNovel()
     }
 
     override fun initBookStateDeal() {
@@ -1101,7 +1048,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         // 刷新页面
         // 刷新内容显示
         // 启动预加载
-        downloadNovel()
     }
 
     override fun changeChapter() {
