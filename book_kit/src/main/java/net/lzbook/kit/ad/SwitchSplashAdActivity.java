@@ -1,9 +1,11 @@
 package net.lzbook.kit.ad;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -14,7 +16,6 @@ import com.dycm_adsdk.callback.ResultCode;
 import com.dycm_adsdk.utils.DyLogUtils;
 
 import net.lzbook.kit.R;
-import net.lzbook.kit.utils.ResourceUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,18 +36,12 @@ public class SwitchSplashAdActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_switch_splash_ad);
         final FrameLayout fm = (FrameLayout) findViewById(R.id.container);
-        try {
-            if (android.os.Build.VERSION.SDK_INT > 10 && "night".equals(ResourceUtil.mode)) {
-                fm.setAlpha(0.6f);
-            }
-        } catch (NoSuchMethodError e) {
-            e.printStackTrace();
-        }
+        setVisibility(fm, false);
 
         if (PlatformSDK.config().getAdSwitch("11-1")) {
             PlatformSDK.adapp().dycmSplashAd(this, "11-1", fm, new AbstractCallback() {
                 @Override
-                public void onResult(boolean adswitch,  String jsonResult) {
+                public void onResult(boolean adswitch, String jsonResult) {
                     super.onResult(adswitch, jsonResult);
                     if (!adswitch) return;
                     try {
@@ -55,6 +50,7 @@ public class SwitchSplashAdActivity extends Activity {
                             switch (ResultCode.parser(jsonObject.getInt("state_code"))) {
                                 case AD_REQ_SUCCESS://广告请求成功
                                     DyLogUtils.dd("AD_REQ_SUCCESS" + jsonResult);
+                                    setVisibility(fm, true);
                                     break;
                                 case AD_REQ_FAILED://广告请求失败
                                     DyLogUtils.dd("AD_REQ_FAILED" + jsonResult);
@@ -87,11 +83,20 @@ public class SwitchSplashAdActivity extends Activity {
     }
 
     long[] mHits = new long[2];
-    public void click(){
+
+    public void click() {
         System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
         mHits[mHits.length - 1] = SystemClock.uptimeMillis();
-        if(mHits[0] > SystemClock.uptimeMillis() - 500){
+        if (mHits[0] > SystemClock.uptimeMillis() - 500) {
             finish();
+        }
+    }
+
+    private void setVisibility(View view, boolean isShow) {
+        if (isShow) {
+            view.setBackgroundColor(Color.parseColor("#ffffffff"));
+        } else {
+            view.setBackgroundColor(Color.parseColor("#00ffffff"));
         }
     }
 
@@ -109,7 +114,7 @@ public class SwitchSplashAdActivity extends Activity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(canBack && keyCode == KEYCODE_BACK){
+        if (canBack && keyCode == KEYCODE_BACK) {
             click();
             return true;
         }
