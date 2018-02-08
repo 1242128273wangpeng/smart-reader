@@ -200,7 +200,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
         getChapterData(ReadState.sequence, ReadViewEnums.PageIndex.current, false)
 
 //        loadPreChapter(ReadState.sequence - 1)
-        loadNextChapter(ReadState.sequence + 1)
+//        loadNextChapter(ReadState.sequence + 1)
         setBackground()
     }
 
@@ -299,7 +299,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 val scrollIndex = mAdapter.addPreChapter(chapter.sequence, preChapterContent)
                 // 加载上一章的操作是否来自加载视图，防止加载数据时列表视图往上跳转
                 val firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition()
-                if (firstVisibleItemPosition != -1 && mOriginDataList.size != 0) {
+                if (firstVisibleItemPosition != -1 && mOriginDataList.size != 0 && firstVisibleItemPosition < mOriginDataList.size) {
                     val currentItemSequence = mOriginDataList[firstVisibleItemPosition].lines[0].sequence
                     if (scrollIndex != -1) {
                         if (currentItemSequence == PagerScrollAdapter.HEADER_ITEM_TYPE) {
@@ -400,7 +400,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                     && mOriginDataList[position].lines[0].sequence != PagerScrollAdapter.FOOTER_ITEM_TYPE
                     && mOriginDataList[position].lines[0].sequence != PagerScrollAdapter.AD_ITEM_TYPE) {
 
-                ReadState.chapterName = mOriginDataList[position].lines[0].chapterName
+//                ReadState.chapterName = mOriginDataList[position].lines[0].chapterName
                 novel_title.text = ReadState.chapterName
                 novel_chapter.text = "${mOriginDataList[position].lines[0].sequence + 1} / ${ReadState.chapterList.size} 章"
                 novel_page.text = "本章第${(getCurrentChapterPage(position) + 1)} / ${getCurrentChapterPageCount(mOriginDataList[position].lines[0].sequence)}"
@@ -559,8 +559,6 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
             return true
         }
 
-        mIsJumpChapter = false
-
         val tmpX = event.x
         val tmpY = event.y
         when (event.action) {
@@ -666,6 +664,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     }
 
     private fun onRedrawPage() {
+        DataProvider.getInstance().clear()
         entrance()
     }
 
@@ -678,6 +677,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
 
 //        getChapterData(sequence, ReadViewEnums.PageIndex.current, true)
 
+        DataProvider.getInstance().clear()
         ReadState.sequence = sequence
         entrance()
     }
