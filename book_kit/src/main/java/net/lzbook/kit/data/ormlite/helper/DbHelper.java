@@ -16,19 +16,19 @@ public class DbHelper extends OrmDatabaseHelper {
 
     private volatile static DbHelper mInstance = null;
 
-//    public static DbHelper getInstance() {
-//        if (mInstance == null) {
-//            synchronized (DbHelper.class) {
-//                if (mInstance == null) {
-//                    mInstance = new DbHelper(BaseBookApplication.getGlobalContext());
-//                }
-//            }
-//        }
-//
-//        return mInstance;
-//    }
+    public static DbHelper getInstance() {
+        if (mInstance == null) {
+            synchronized (DbHelper.class) {
+                if (mInstance == null) {
+                    mInstance = new DbHelper(BaseBookApplication.getGlobalContext());
+                }
+            }
+        }
 
-    public DbHelper(Context context) {
+        return mInstance;
+    }
+
+    private DbHelper(Context context) {
         super(context, DEF_DB_NAME, null, DB_VERSION);
     }
 
