@@ -1,5 +1,27 @@
 package net.lzbook.kit.book.component.service;
 
+import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Binder;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.RemoteViews;
+import android.widget.Toast;
+
 import com.quduquxie.network.DataService;
 
 import net.lzbook.kit.R;
@@ -41,28 +63,6 @@ import net.lzbook.kit.utils.OpenUDID;
 import net.lzbook.kit.utils.StatServiceUtils;
 
 import org.json.JSONException;
-
-import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.Service;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Binder;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Message;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.content.LocalBroadcastManager;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -345,7 +345,7 @@ public class DownloadService extends Service {
      * 取消当前gid任务
      */
     public void cancelTask(final String book_id) {
-
+        if (executor == null) return;
         executor.execute(new Runnable() {
             @Override
             public void run() {
