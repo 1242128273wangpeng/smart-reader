@@ -460,11 +460,11 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
         mTextureView?.let {
             synchronized(it as Any) {
                 if (!it.hasFirstTexture()) {
-                    it.firstTexture = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current).drawingCache
+                    it.firstTexture = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.current)?.drawingCache
                     flag = it.firstTexture != null
                 }
                 if (flag && !it.hasSecondTexture()) {
-                    it.secondTexture = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.next).drawingCache
+                    it.secondTexture = (mReaderView as HorizontalReaderView).findViewWithTag(ReadViewEnums.PageIndex.next)?.drawingCache
                     flag = it.secondTexture != null
                 }
             }

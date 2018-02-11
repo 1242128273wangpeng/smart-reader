@@ -249,14 +249,14 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
      * 过滤出更新状态的表
      */
     fun filterUpdateTableList(): ArrayList<String> {
-        iBookList.asSequence().forEach { book ->
-            if (book.update_status == 1) {
+        iBookList.asSequence().forEach { book: Book? ->
+            if (book?.update_status == 1) {
                 if (!updateTableList.contains(book.book_id)) {
                     updateTableList.add(book.book_id)
                 }
             } else {
-                if (updateTableList.contains(book.book_id)) {
-                    updateTableList.remove(book.book_id)
+                if (updateTableList.contains(book?.book_id)) {
+                    updateTableList.remove(book?.book_id)
                 }
             }
         }
