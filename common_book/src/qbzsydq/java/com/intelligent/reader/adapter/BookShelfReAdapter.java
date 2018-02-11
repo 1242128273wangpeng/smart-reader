@@ -74,7 +74,7 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<AbsRecyclerViewHold
 
     @Override
     public void onBindViewHolder(AbsRecyclerViewHolder<Book> holder, int position) {
-        if (holder == null) return;
+        if (holder == null && book_list == null) return;
         Book book = book_list.get(position);
         switch (getItemViewType(position)) {
             case 0:
@@ -117,13 +117,15 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<AbsRecyclerViewHold
 
     @Override
     public int getItemViewType(int position) {
-        if (book_list != null && position < book_list.size() && book_list.get(position) != null) {
-            if (book_list.get(position).book_type == 0) {
-                return 0;
-            } else if (book_list.get(position).book_type == -2) {
-                return 1;
+        if (book_list != null && position >= 0 && position <= book_list.size() - 1) {
+            Book book = book_list.get(position);
+            if (book != null) {
+                if (book.book_type == 0) {
+                    return 0;
+                } else if (book.book_type == -2) {
+                    return 1;
+                }
             }
-            return -1;
         }
         return -1;
     }
