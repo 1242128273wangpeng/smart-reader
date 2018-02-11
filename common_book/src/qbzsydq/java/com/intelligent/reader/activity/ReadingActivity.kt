@@ -65,8 +65,11 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     private var isReadAutoOpening = false
 
+    private lateinit var book: Book
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        book = intent.getSerializableExtra("book") as Book
         DataProvider.getInstance().readingActivity = this
         ReadState.addObserver(DataProvider.getInstance())
         setUIOptions()
@@ -89,6 +92,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        book = intent.getSerializableExtra("book") as Book
         setUIOptions()
         read_catalog_mark_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         mReadPresenter.onNewIntent(intent)
@@ -501,7 +505,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     var oldchapterId = ""
     override fun addLog() {
-        val book = intent.getSerializableExtra("book") as Book
         val endTime = System.currentTimeMillis()
         val bookId = book.book_id
         val chapterId = ReadState.chapterId
