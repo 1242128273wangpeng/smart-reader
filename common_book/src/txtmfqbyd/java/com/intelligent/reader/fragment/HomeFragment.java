@@ -32,9 +32,9 @@ import com.intelligent.reader.R;
 import com.intelligent.reader.activity.DownloadManagerActivity;
 import com.intelligent.reader.activity.HomeActivity;
 import com.intelligent.reader.activity.SearchBookActivity;
-import com.intelligent.reader.activity.SettingActivity;
 import com.intelligent.reader.activity.SplashActivity;
 import com.intelligent.reader.app.BookApplication;
+import com.intelligent.reader.widget.drawer.DrawerLayout;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.ConsumeEvent;
@@ -93,6 +93,7 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
     private TextView home_edit_cancel;
     private int bottomType;//青果打点搜索 2 推荐  3 榜单
     private SharedPreferences sharedPreferences;
+    public DrawerLayout drawerLayout;
 
 
     @Override
@@ -177,6 +178,9 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
             viewPager.setScrollable(false);
             adapter = new MainAdapter(fragmentManager);
             viewPager.setAdapter(adapter);
+
+            drawerLayout = (DrawerLayout) mFrameView.findViewById(R.id.drawer);
+
             initGuide(mFrameView);
         }
         viewPager.setCurrentItem(current_tab);
@@ -316,7 +320,12 @@ public class HomeFragment extends BaseFragment implements OnPageChangeListener, 
             case R.id.content_head_setting:
                 StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.PERSONAL);
                 EventBus.getDefault().post(new ConsumeEvent(R.id.redpoint_home_setting));
-                startActivity(new Intent(context, SettingActivity.class));
+//                startActivity(new Intent(context, SettingActivity.class));
+                if (drawerLayout.isOpened()) {
+                    drawerLayout.closeMenu();
+                } else {
+                    drawerLayout.openMenu();
+                }
                 net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext, net.lzbook.kit.utils.StatServiceUtils.bs_click_mine_menu);
                 break;
             case R.id.content_head_search:
