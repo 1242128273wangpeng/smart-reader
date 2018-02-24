@@ -39,6 +39,7 @@ android {
     def UMENG_APPKEY_HYCS = "54800fd1fd98c53cb000096c"
     def UMENG_APPKEY_TXTMFQBYDQ = "5475a099fd98c5e733000c41"
     def UMENG_APPKEY_TXTMFQBDZS = "539e59d856240b0520057ce7"
+    def UMENG_APPKEY_TXTMFQBYD = "539e59d856240b0520057ce7"
 
 
 
@@ -60,6 +61,7 @@ android {
     def AMAP_APIKEY_HYCS = "dab5a066b2745ed848d76bf34d9f1038"
     def AMAP_APIKEY_TXTMFQBYDQ = "df07c4696ee41b5075459b6d9a4d335f"
     def AMAP_APIKEY_TXTMFQBDZS = "bbae57edf34620794d87545b18798e0e"
+    def AMAP_APIKEY_TXTMFQBYD = "bbae57edf34620794d87545b18798e0e"
 
 
     def BAIDU_STAT_ID_KDZSYDQ = "542233ee41"
@@ -79,6 +81,7 @@ android {
     def BAIDU_STAT_ID_HYCS = "3eebb5d9e8"
     def BAIDU_STAT_ID_TXTMFQBYDQ = "a867478598"
     def BAIDU_STAT_ID_TXTMFQBDZS = "04fe041fcd"
+    def BAIDU_STAT_ID_TXTMFQBYD = "04fe041fcd"
 
     def IFLYTEK_APPID_QBZSYDQ = "5982c10f"
     def IFLYTEK_APPID_KDZSYDQ = "5982c0d0"
@@ -104,7 +107,8 @@ android {
             qbmfxsydq : "全本免费小说阅读器", //五步替
             txtqbdzs  : "TXT全本免费电子书",
             kdqbdzs   : "快读全本电子书",
-            txtqbxsydq: "TXT全本小说阅读器"
+            txtqbxsydq: "TXT全本小说阅读器",
+            txtmfqbyd: "TXT免费全本阅读"
     ]
 
     def appPackageIDConfig = [
@@ -116,7 +120,8 @@ android {
             qbmfxsydq : "cc.quanben.novel",
             txtqbdzs  : "cc.remennovel",
             kdqbdzs   : "cn.kkqbtxtxs.reader",
-            txtqbxsydq: "cn.zsqbydq.reader"
+            txtqbxsydq: "cn.zsqbydq.reader",
+            txtmfqbyd: "cn.txtmfqbyd.reader"
     ]
 
     def channel = "dev_channel"
@@ -130,7 +135,7 @@ android {
     }
     defaultConfig {
 
-        applicationId "cn.qbzsydsq.reader"
+        applicationId "cn.txtmfqbyd.reader"
 
 //        System.err.println("project.properties = ${project.getProperties()}")
 
@@ -629,6 +634,35 @@ N多网	        blf1298_10885_001
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://xiaoshuo.youshiit.com"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://bookrank.youshiit.com:443"
         }
+
+        txtmfqbyd {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+
+
+            manifestPlaceholders = [
+                    UMENG_APP_KEY: "${UMENG_APPKEY_TXTMFQBYD}",
+                    APP_NAME     : 'TXT免费全本阅读',
+                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_TXTMFQBYD}",
+                    AMAP_APIKEY  : "${AMAP_APIKEY_TXTMFQBYD}",
+                    WECHAT_APPID : "",
+                    QQ_APPID     : "",
+                    IFLYTEK_APPID: "",
+                    PACKAGE_NAME : defaultConfig.applicationId
+
+            ]
+
+            notOverrideResValue getOwner(), "string", "app_path", "/txtmfqbyd_book"
+            // notOverrideResValue getOwner(), "string", "app_name", "TXT全本小说阅读器"
+            notOverrideResValue getOwner(), "string", "database_name", "txtmfqbydBook.db"
+            notOverrideResValue getOwner(), "string", "baidu_stat_id", "05c32565e4"
+            notOverrideResValue getOwner(), "string", "push_key", "DOGRj3vpV9F6KamswYShmdHM"
+            notOverrideResValue getOwner(), "string", "alifeedback_key", "23571370"
+            notOverrideResValue getOwner(), "string", "alifeedback_secret", "003658cd2cde6537a912eff2c171d0a7"
+
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://xiaoshuo.youshiit.com"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://bookrank.youshiit.com:443"
+        }
     }
 
 
@@ -807,6 +841,8 @@ N多网	        blf1298_10885_001
                     fileName = "lianzainovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
                 } else if (variant.flavorName == "txtmfqbydq") {
                     fileName = "mianfeinovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
+                } else if (variant.flavorName == "txtmfqbyd") {
+                    fileName = "txtmfqbyd_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
                 } else {
                     fileName = "remennovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
                 }

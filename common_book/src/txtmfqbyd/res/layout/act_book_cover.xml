@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:background="@color/cover_bg">
+
+    <RelativeLayout
+            android:id="@+id/rl_title_book_cover"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:fitsSystemWindows="true"
+            android:background="@color/top_navigation_bg_color">
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/top_bar_height">
+
+            <ImageView
+                    android:id="@+id/book_cover_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:src="@mipmap/cover_top_back"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:gravity="center_vertical"
+                    android:text="书籍封面"
+                    android:textColor="@color/top_navigation_text_color"
+                    android:textSize="18sp"/>
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+            android:id="@+id/book_cover_main"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@id/rl_title_book_cover">
+
+        <RelativeLayout
+                android:id="@+id/layout_bottom_view"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_alignParentBottom="true">
+
+            <View
+                    android:id="@+id/id_dividing"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentTop="true"
+                    android:background="@color/color_divider"/>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="@dimen/dimen_margin_10"
+                    android:layout_marginRight="@dimen/dimen_margin_10"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/id_dividing"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                <TextView
+                        android:id="@+id/book_cover_download"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="@dimen/dimen_margin_5"
+                        android:layout_weight="1"
+                        android:background="@drawable/cover_bottom_btn_selector"
+                        android:gravity="center"
+                        android:text="全本缓存"
+                        android:textColor="@drawable/cover_bottom_btn_text_selector"
+                        android:textSize="14sp"/>
+
+                <TextView
+                        android:id="@+id/book_cover_reading"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_centerInParent="true"
+                        android:layout_marginRight="@dimen/dimen_margin_7"
+                        android:layout_marginLeft="@dimen/dimen_margin_7"
+                        android:layout_weight="1"
+                        android:background="@drawable/cover_bottom_btn_selector"
+                        android:gravity="center"
+                        android:text="转码阅读"
+                        android:textColor="@drawable/cover_bottom_btn_text_selector"
+                        android:textSize="14sp"/>
+
+                <TextView
+                        android:id="@+id/book_cover_bookshelf"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:layout_marginRight="@dimen/dimen_margin_5"
+                        android:text="加入书架"
+                        android:textSize="@dimen/text_size_14"/>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <ScrollView
+                android:id="@+id/book_cover_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/layout_bottom_view"
+                android:scrollbars="none">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="16dp"
+                            android:orientation="horizontal"
+                            android:paddingBottom="@dimen/padding_10"
+                            android:paddingTop="@dimen/padding_23">
+
+                        <FrameLayout
+                                android:layout_width="74dp"
+                                android:layout_height="98dp">
+
+                            <ImageView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:contentDescription="@string/app_name"
+                                    android:scaleType="fitXY"
+                                    android:src="@mipmap/cover_book_shadow"/>
+
+                            <ImageView
+                                    android:id="@+id/book_cover_image"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center_horizontal"
+                                    android:layout_marginTop="2dp"
+                                    android:layout_marginRight="3dp"
+                                    android:layout_marginLeft="2dp"
+                                    android:layout_marginBottom="3dp"
+                                    android:scaleType="fitXY"
+                                    android:background="@mipmap/bookshelf_book_cover_default"
+                                    android:src="@mipmap/bookshelf_book_cover_default"/>
+                        </FrameLayout>
+
+                        <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="98dp"
+                                android:layout_marginLeft="20dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                            <TextView
+                                    android:layout_marginTop="3dp"
+                                    android:id="@+id/book_cover_title"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_weight="1"
+                                    android:focusable="true"
+                                    android:focusableInTouchMode="true"
+                                    android:gravity="center_vertical"
+                                    android:includeFontPadding="false"
+                                    android:singleLine="true"
+                                    android:text="@string/app_name"
+                                    android:textColor="@color/cover_profile_title_color"
+                                    android:textSize="@dimen/text_size_16"/>
+
+                            <LinearLayout
+                                    android:id="@+id/ll_status_category_layout"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_weight="1"
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal">
+
+                                <TextView
+                                        android:id="@+id/book_cover_category"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="玄幻"
+                                        android:textColor="@color/cover_profile_des_color"
+                                        android:textSize="12sp"/>
+
+                                <TextView
+                                        android:id="@+id/book_cover_category2"
+                                        android:layout_width="@dimen/dimen_height_50"
+                                        android:layout_height="@dimen/dimen_height_20"
+                                        android:text="玄幻"
+                                        android:gravity="center"
+                                        android:textColor="@color/base_bg"
+                                        android:visibility="gone"
+                                        android:textSize="@dimen/dimen_text_10"/>
+
+                                <TextView
+                                        android:id="@+id/book_cover_status"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:includeFontPadding="false"
+                                        android:text="-连载中"
+                                        android:textColor="@color/cover_profile_des_color"
+                                        android:textSize="@dimen/cover_page_author_text"/>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                    android:id="@+id/ll_author_layout"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_weight="1"
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal">
+
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="作者："
+                                        android:textColor="@color/cover_profile_des_color"
+                                        android:textSize="@dimen/cover_page_author_text"/>
+
+                                <TextView
+                                        android:id="@+id/book_cover_author"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="望语"
+                                        android:textColor="@color/cover_profile_des_color"
+                                        android:textSize="@dimen/cover_page_author_text"/>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                    android:id="@+id/book_cover_source_view"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dip"
+                                    android:layout_weight="1"
+                                    android:layout_marginBottom="3dp"
+                                    android:orientation="horizontal">
+
+                                <TextView
+                                        android:id="@+id/book_cover_source"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="match_parent"
+                                        android:gravity="center_vertical"
+                                        android:text="@string/book_cover_source"
+                                        android:textColor="@color/cover_profile_des_color"
+                                        android:textSize="@dimen/dimen_text_12"/>
+
+                                <TextView
+                                        android:id="@+id/book_cover_source_form"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:drawableRight="@drawable/icon_open_answer"
+                                        android:gravity="center_vertical"
+                                        android:paddingLeft="@dimen/dimen_padding_5"
+                                        android:paddingRight="@dimen/dimen_padding_5"
+                                        android:text="@string/book_cover_no_source"
+                                        android:background="@color/cover_profile_bg_color"
+                                        android:textColor="@color/cover_profile_des_color"
+                                        android:textSize="@dimen/dimen_text_12"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.5dp"
+                            android:layout_marginTop="10dp"
+                            android:background="@color/color_divider"/>
+                </LinearLayout>
+
+                <RelativeLayout
+                        android:id="@+id/book_cover_chapter_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="15dp">
+
+                    <LinearLayout
+                            android:id="@+id/cover_latest_section"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:paddingLeft="@dimen/padding_8">
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:drawableLeft="@mipmap/cover_profile_icon"
+                                android:drawablePadding="@dimen/padding_6"
+                                android:text="最新："
+                                android:textColor="@color/cover_profile_title_color"
+                                android:textSize="14sp"/>
+
+                        <TextView
+                                android:id="@+id/book_cover_last_chapter"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="16dp"
+                                android:ellipsize="end"
+                                android:singleLine="true"
+                                android:text="第145章 - 大结局"
+                                android:textColor="@color/cover_profile_title_color"
+                                android:textSize="14sp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                            android:id="@+id/ff_source_site"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/cover_latest_section"
+                            android:paddingLeft="25dp"
+                            android:paddingTop="8dp">
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="更新："
+                                android:layout_marginLeft="@dimen/margin_4"
+                                android:textColor="@color/cover_profile_des_color"
+                                android:textSize="@dimen/cover_page_author_text"/>
+
+                        <TextView
+                                android:id="@+id/book_cover_update_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="2 天前"
+                                android:textColor="@color/cover_profile_des_color"
+                                android:textSize="@dimen/cover_page_author_text"/>
+                    </LinearLayout>
+
+                    <View
+                            android:id="@+id/cover_dividing_line"
+                            android:layout_width="match_parent"
+                            android:layout_height="0.5dp"
+                            android:layout_below="@id/ff_source_site"
+                            android:layout_marginTop="12dp"
+                            android:background="@color/color_divider"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                    <TextView
+                            android:id="@+id/cover_book_introduction"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableLeft="@mipmap/cover_profile_icon"
+                            android:drawablePadding="@dimen/padding_6"
+                            android:paddingLeft="@dimen/padding_8"
+                            android:layout_marginBottom="@dimen/dimen_margin_5"
+                            android:layout_marginTop="@dimen/dimen_margin_18"
+                            android:text="内容简介"
+                            android:textColor="@color/cover_profile_title_color"
+                            android:textSize="14sp"/>
+
+                    <net.lzbook.kit.book.view.ExpandableTextView
+                            android:id="@+id/book_cover_description"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/cover_book_introduction"
+                            android:layout_marginBottom="8dp"
+                            android:orientation="vertical"
+                            expandableTextView:animAlphaStart="1"
+                            expandableTextView:maxCollapsedLines="9">
+
+                        <TextView
+                                android:id="@+id/expandable_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:lineSpacingMultiplier="1.2"
+                                android:paddingLeft="16dp"
+                                android:paddingTop="5dp"
+                                android:paddingRight="8dp"
+                                android:gravity="center_vertical"
+                                android:textColor="@color/color_gray_9c9c9c"
+                                android:textSize="12sp"/>
+
+                        <TextView
+                                android:id="@+id/expand_collapse"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="right|bottom"
+                                android:paddingLeft="16dp"
+                                android:paddingRight="16dp"
+                                android:paddingBottom="5dp"
+                                android:layout_marginTop="@dimen/dimen_radius_10"
+                                android:textColor="@color/color_black_727272"
+                                android:text="展开"
+                                android:background="@android:color/transparent"/>
+                    </net.lzbook.kit.book.view.ExpandableTextView>
+                </RelativeLayout>
+
+                <RelativeLayout
+                        android:id="@+id/book_cover_catalog_view"
+                        android:layout_width="match_parent"
+                        android:layout_marginRight="@dimen/dimen_margin_10"
+                        android:layout_marginLeft="@dimen/dimen_margin_10"
+                        android:layout_height="40dp"
+                        android:background="@drawable/cover_checkdir_bg"
+                        android:layout_marginTop="@dimen/dimen_margin_5">
+
+                    <TextView
+                            android:id="@+id/tv_catalog_book_cover"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:gravity="center"
+                            android:paddingBottom="10dp"
+                            android:paddingTop="10dp"
+                            android:textColor="@color/cover_checkdir_text_color"
+                            android:text="查看目录"
+                            android:textSize="@dimen/text_size_14"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                        android:id="@+id/book_cover_catalog_view_nobg"
+                        android:layout_width="match_parent"
+                        android:visibility="gone"
+                        android:layout_height="@dimen/dimen_view_height_45">
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:gravity="center"
+                            android:text="查看目录"
+                            android:textColor="@color/dialog_recommend"
+                            android:textSize="@dimen/text_size_16"/>
+                </RelativeLayout>
+            </LinearLayout>
+        </ScrollView>
+    </RelativeLayout>
+
+    <FrameLayout
+            android:id="@+id/fl_guide_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+        <ImageView
+                android:id="@+id/iv_guide_cover_page"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_margin_80"
+                android:layout_marginTop="@dimen/dimen_margin_120"
+                android:scaleType="fitXY"
+                android:visibility="gone"/>
+    </FrameLayout>
+
+    <ImageView
+            android:id="@+id/title_shadow"
+            android:layout_below="@+id/rl_title_book_cover"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@mipmap/top_shadow"/>
+</RelativeLayout>
