@@ -2,7 +2,6 @@ package com.intelligent.reader.widget.drawer;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.os.ParcelableCompat;
@@ -26,8 +25,9 @@ import swipeback.ShadowView;
 
 public class DrawerLayout extends FrameLayout {
 
-    private static final String TAG = "SRDrawerLayout";
+    private static final String TAG = "DrawerLayout";
     private final int screenWidth;
+    private final int screenHeight;
 
     private View menuView;
     private DrawerMain mainView;
@@ -47,7 +47,7 @@ public class DrawerLayout extends FrameLayout {
     private static final int SPRING_BACK_DISTANCE = 80;
     private final int springBackDistance;
 
-    private static final int MENU_MARGIN_RIGHT = 64;
+    private static final int MENU_MARGIN_RIGHT = 100;
     private final int menuWidth;
 
     private static final int SHADOW_WIDTH = 15;
@@ -71,6 +71,7 @@ public class DrawerLayout extends FrameLayout {
         final float density = getResources().getDisplayMetrics().density;//屏幕密度
 
         screenWidth = getResources().getDisplayMetrics().widthPixels;
+        screenHeight = getResources().getDisplayMetrics().heightPixels;
 
         springBackDistance = (int) (SPRING_BACK_DISTANCE * density + 0.5f);
 
@@ -145,8 +146,10 @@ public class DrawerLayout extends FrameLayout {
 
         @Override
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
-//            Log.d(TAG, "onViewPositionChanged: left:" + left);
             mainLeft = left;
+
+            moveView(screenHeight);
+
             if (dx > 0) {
                 dragOrientation = LEFT_TO_RIGHT;
             } else if (dx < 0) {
@@ -160,11 +163,15 @@ public class DrawerLayout extends FrameLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         menuView = getChildAt(0);
+        MarginLayoutParams menuParams = (MarginLayoutParams) menuView.getLayoutParams();
+        menuParams.width = menuWidth;
+        menuView.setLayoutParams(menuParams);
 
         mainView = (DrawerMain) getChildAt(1);
         mainView.setParent(this);
 
-        addView(shadowView);
+        FrameLayout.LayoutParams shadowParams = new FrameLayout.LayoutParams(shadowWidth, LayoutParams.MATCH_PARENT);
+        addView(shadowView, shadowParams);
     }
 
     @Override
@@ -188,17 +195,7 @@ public class DrawerLayout extends FrameLayout {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-        MarginLayoutParams menuParams = (MarginLayoutParams) menuView.getLayoutParams();
-        menuParams.width = menuWidth;
-        menuView.setLayoutParams(menuParams);
-
-        mainView.layout(mainLeft, 0, mainLeft + screenWidth, bottom);
-
-        MarginLayoutParams shadowParams = (MarginLayoutParams) shadowView.getLayoutParams();
-        shadowParams.width = shadowWidth;
-        shadowView.setLayoutParams(shadowParams);
-        int shadowLeft = mainLeft - shadowWidth;
-        shadowView.layout(shadowLeft, 0, mainLeft, bottom);
+        moveView(bottom);
     }
 
     @Override
@@ -207,7 +204,7 @@ public class DrawerLayout extends FrameLayout {
 
         int clipLeft = 0;
         int clipRight = mainView.getLeft();
-        if (child == menuView && clipRight == 0) {//在 menu 关闭后剪裁
+        if (child == menuView) {
             canvas.clipRect(clipLeft, 0, clipRight, getHeight());//剪裁显示的区域
         }
 
@@ -216,8 +213,6 @@ public class DrawerLayout extends FrameLayout {
         //恢复画布之前保存的剪裁信息
         //以正常绘制之后的view
         canvas.restoreToCount(restoreCount);
-
-        shadowView.setX(mainLeft - shadowWidth);
 
         return result;
     }
@@ -303,11 +298,11 @@ public class DrawerLayout extends FrameLayout {
                 });
     }
 
-    public int transToHsvColor(int color) {
-        float[] hsv = new float[3];
-        Color.colorToHSV(color, hsv);
-        hsv[1] = hsv[1] + 0.1f;
-        hsv[2] = hsv[2] - 0.1f;
-        return Color.HSVToColor(hsv);
+    private void moveView(int bottom) {
+        mainView.layout(mainLeft, 0, mainLeft + screenWidth, bottom);
+
+        int shadowLeft = mainLeft - shadowWidth;
+        shadowView.layout(shadowLeft, 0, mainLeft, bottom);
     }
+
 }
