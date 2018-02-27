@@ -248,7 +248,10 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (viewPager != null && viewPager.getCurrentItem() != 0 && mHomeFragment != null) {
+            if (mHomeFragment.drawerLayout.isOpened()) {
+                mHomeFragment.drawerLayout.closeMenu();
+                return true;
+            }else if (viewPager != null && viewPager.getCurrentItem() != 0 && mHomeFragment != null) {
                 mHomeFragment.setTabSelected(0);
                 return true;
             } else if (removeMenuHelper != null && removeMenuHelper.dismissRemoveMenu()) {
