@@ -67,7 +67,7 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
     //检测自身是不是前台运行app
     private boolean isCurrentRunningForeground = true;
     private boolean isFirst = true;
-    private boolean isMfqbxssc = false;
+    private boolean isDarkStatusBarText = false;
     private String packageName;
 
 
@@ -101,14 +101,14 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
             UI_OPTIONS_IMMERSIVE_STICKY = getWindow().getDecorView().getSystemUiVisibility();
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.M && !isMfqbxssc) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.M && !isDarkStatusBarText) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 //            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-            if (isMfqbxssc) {
+            if (isDarkStatusBarText) {
                 getWindow().getDecorView().setSystemUiVisibility(getWindow().getDecorView().getSystemUiVisibility() | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             }
         }
@@ -133,10 +133,11 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
     public void hasGetPackageName() {
         packageName = AppUtils.getPackageName();
         isFirst = false;
-        if (!TextUtils.isEmpty(packageName) && packageName.equals("cc.kdqbxs.reader")) {
-            isMfqbxssc = true;
+        if (!TextUtils.isEmpty(packageName) &&
+                (packageName.equals("cc.kdqbxs.reader") || packageName.equals("cn.txtmfqbyd.reader"))) {
+            isDarkStatusBarText = true;
         } else {
-            isMfqbxssc = false;
+            isDarkStatusBarText = false;
         }
     }
     /**

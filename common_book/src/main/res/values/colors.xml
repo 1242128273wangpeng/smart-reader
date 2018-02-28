@@ -484,4 +484,10 @@
     <color name="color_e8e7e7">#E8E7E7</color>
     <color name="color_303030">#303030</color>
     <color name="color_black_858C96">#858C96</color>
+    
+    <color name="text_color_dark">#FF212832</color>
+    <color name="text_color_plain">#FF5D646E</color>
+    <color name="text_color_light">#FF9097A1</color>
+    <color name="text_color_weak">#FFADB4BE</color>
+
 </resources>
