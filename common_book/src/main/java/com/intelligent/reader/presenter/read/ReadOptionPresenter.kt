@@ -17,6 +17,10 @@ import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.read.mode.ReadState
+import com.intelligent.reader.read.page.ReadOptionHeader.Companion.DOWNLOAD_CACHE_FINISH
+import com.intelligent.reader.read.page.ReadOptionHeader.Companion.DOWNLOAD_CACHE_NORMAL
+import com.intelligent.reader.read.page.ReadOptionHeader.Companion.DOWNLOAD_CACHE_PAUSEED
+import com.intelligent.reader.read.page.ReadOptionHeader.Companion.DOWNLOAD_CACHE_RUNNING
 import com.intelligent.reader.reader.ReaderViewModel
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.DownloadState
@@ -182,6 +186,27 @@ class ReadOptionPresenter : ReadOption.Presenter {
             }
             dialog.show()
         }
+    }
+
+    override fun getCacheState(): Int {
+        if (activity.get() == null) {
+            return DOWNLOAD_CACHE_NORMAL
+        }
+        val bookTask = BookHelper.getDownBookTask(activity.get(), ReadState.book.book_id)
+        if (bookTask != null && BookHelper.getStartDownIndex(activity.get(), ReadState.book) > -1) {
+            if (bookTask.state == DownloadState.DOWNLOADING || bookTask.state == DownloadState.WAITTING) {
+                return DOWNLOAD_CACHE_RUNNING
+            } else if (bookTask.state == DownloadState.NOSTART
+                    || bookTask.state == DownloadState.PAUSEED || bookTask.state == DownloadState.REFRESH
+                    || bookTask.state == DownloadState.LOCKED) {
+                return DOWNLOAD_CACHE_PAUSEED
+            } else if (bookTask.state == DownloadState.FINISH) {
+                return DOWNLOAD_CACHE_FINISH
+            }
+        } else {
+            return DOWNLOAD_CACHE_NORMAL
+        }
+        return DOWNLOAD_CACHE_NORMAL
     }
 
     private fun showToastShort(s: String) {
@@ -427,6 +452,13 @@ class ReadOptionPresenter : ReadOption.Presenter {
         val activity = this.activity.get()
         if (activity is ReadingActivity) {
             activity.onBackPressed()
+        }
+    }
+
+    override fun feedback() {
+        val activity = this.activity.get()
+        if (activity is ReadingActivity) {
+            activity.onReadFeedBack()
         }
     }
 

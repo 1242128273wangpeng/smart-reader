@@ -5,14 +5,10 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.text.Html
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ListView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import com.dycm_adsdk.PlatformSDK
-import com.dycm_adsdk.callback.AbstractCallback
-import com.dycm_adsdk.callback.ResultCode
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.SourceAdapter
 import com.intelligent.reader.presenter.bookEnd.BookEndContract
@@ -24,9 +20,6 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.bean.Source
-
-import org.json.JSONException
-import org.json.JSONObject
 import java.util.*
 import java.util.concurrent.Callable
 
@@ -67,29 +60,29 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
 
     private fun initAD() {
         val adview = findViewById(R.id.ad_view) as RelativeLayout
-        PlatformSDK.adapp().dycmNativeAd(this, "9-1",null, object : AbstractCallback() {
-            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
-                super.onResult(adswitch, views, jsonResult)
-                if (!adswitch) {
-                    return
-                }
-                try {
-                    val jsonObject = JSONObject(jsonResult)
-                    if (jsonObject.has("state_code")) {
-                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                            ResultCode.AD_REQ_SUCCESS
-                            -> {
-                                adview.addView(views[0])
-                            }
-                            else -> {
-                            }
-                        }
-                    }
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                }
-            }
-        })
+//        PlatformSDK.adapp().dycmNativeAd(this, "9-1",null, object : AbstractCallback() {
+//            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
+//                super.onResult(adswitch, views, jsonResult)
+//                if (!adswitch) {
+//                    return
+//                }
+//                try {
+//                    val jsonObject = JSONObject(jsonResult)
+//                    if (jsonObject.has("state_code")) {
+//                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+//                            ResultCode.AD_REQ_SUCCESS
+//                            -> {
+//                                adview.addView(views[0])
+//                            }
+//                            else -> {
+//                            }
+//                        }
+//                    }
+//                } catch (e: JSONException) {
+//                    e.printStackTrace()
+//                }
+//            }
+//        })
     }
 
     private fun loadSource() {
@@ -254,7 +247,7 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
         } catch (e: Resources.NotFoundException) {
             e.printStackTrace()
         }
-        PlatformSDK.lifecycle().onDestroy()
+//        PlatformSDK.lifecycle().onDestroy()
         super.onDestroy()
     }
 

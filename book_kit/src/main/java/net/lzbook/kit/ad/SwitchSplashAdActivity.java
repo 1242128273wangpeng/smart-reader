@@ -1,5 +1,7 @@
 package net.lzbook.kit.ad;
 
+import net.lzbook.kit.R;
+
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,16 +11,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-
-import com.dycm_adsdk.PlatformSDK;
-import com.dycm_adsdk.callback.AbstractCallback;
-import com.dycm_adsdk.callback.ResultCode;
-import com.dycm_adsdk.utils.DyLogUtils;
-
-import net.lzbook.kit.R;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import static android.view.KeyEvent.KEYCODE_BACK;
 import static net.lzbook.kit.utils.ExtensionsKt.msMainLooperHandler;
@@ -38,41 +30,41 @@ public class SwitchSplashAdActivity extends Activity {
         final FrameLayout fm = (FrameLayout) findViewById(R.id.container);
         setVisibility(fm, false);
 
-        if (PlatformSDK.config().getAdSwitch("11-1")) {
-            PlatformSDK.adapp().dycmSplashAd(this, "11-1", fm, new AbstractCallback() {
-                @Override
-                public void onResult(boolean adswitch, String jsonResult) {
-                    super.onResult(adswitch, jsonResult);
-                    if (!adswitch) return;
-                    try {
-                        JSONObject jsonObject = new JSONObject(jsonResult);
-                        if (jsonObject.has("state_code")) {
-                            switch (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                                case AD_REQ_SUCCESS://广告请求成功
-                                    DyLogUtils.dd("AD_REQ_SUCCESS" + jsonResult);
-                                    setVisibility(fm, true);
-                                    break;
-                                case AD_REQ_FAILED://广告请求失败
-                                    DyLogUtils.dd("AD_REQ_FAILED" + jsonResult);
-                                    SwitchSplashAdActivity.this.finish();
-                                    break;
-                                case AD_DISMISSED_CODE://开屏页面关闭
-                                    SwitchSplashAdActivity.this.finish();
-                                    break;
-                                case AD_ONCLICKED_CODE://开屏页面点击
-                                    DyLogUtils.dd("AD_ONCLICKED_CODE" + jsonResult);
-                                    break;
-                                case AD_ONTICK_CODE://剩余显示时间
-                                    DyLogUtils.dd("AD_ONTICK_CODE" + jsonResult);
-                                    break;
-                            }
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
+//        if (PlatformSDK.config().getAdSwitch("11-1")) {
+//            PlatformSDK.adapp().dycmSplashAd(this, "11-1", fm, new AbstractCallback() {
+//                @Override
+//                public void onResult(boolean adswitch, String jsonResult) {
+//                    super.onResult(adswitch, jsonResult);
+//                    if (!adswitch) return;
+//                    try {
+//                        JSONObject jsonObject = new JSONObject(jsonResult);
+//                        if (jsonObject.has("state_code")) {
+//                            switch (ResultCode.parser(jsonObject.getInt("state_code"))) {
+//                                case AD_REQ_SUCCESS://广告请求成功
+//                                    DyLogUtils.dd("AD_REQ_SUCCESS" + jsonResult);
+//                                    setVisibility(fm, true);
+//                                    break;
+//                                case AD_REQ_FAILED://广告请求失败
+//                                    DyLogUtils.dd("AD_REQ_FAILED" + jsonResult);
+//                                    SwitchSplashAdActivity.this.finish();
+//                                    break;
+//                                case AD_DISMISSED_CODE://开屏页面关闭
+//                                    SwitchSplashAdActivity.this.finish();
+//                                    break;
+//                                case AD_ONCLICKED_CODE://开屏页面点击
+//                                    DyLogUtils.dd("AD_ONCLICKED_CODE" + jsonResult);
+//                                    break;
+//                                case AD_ONTICK_CODE://剩余显示时间
+//                                    DyLogUtils.dd("AD_ONTICK_CODE" + jsonResult);
+//                                    break;
+//                            }
+//                        }
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
+//        }
 
         msMainLooperHandler.postDelayed(new Runnable() {
             @Override
@@ -103,13 +95,13 @@ public class SwitchSplashAdActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        PlatformSDK.lifecycle().onResume();
+//        PlatformSDK.lifecycle().onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        PlatformSDK.lifecycle().onPause();
+//        PlatformSDK.lifecycle().onPause();
     }
 
     @Override
@@ -124,6 +116,6 @@ public class SwitchSplashAdActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        PlatformSDK.lifecycle().onDestroy();
+//        PlatformSDK.lifecycle().onDestroy();
     }
 }

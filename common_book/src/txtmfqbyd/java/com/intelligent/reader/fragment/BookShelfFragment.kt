@@ -11,9 +11,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.dycm_adsdk.PlatformSDK
-import com.dycm_adsdk.callback.AbstractCallback
-import com.dycm_adsdk.callback.ResultCode
 import com.intelligent.reader.BuildConfig
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.HomeActivity
@@ -40,8 +37,6 @@ import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.utils.*
-import org.json.JSONException
-import org.json.JSONObject
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -182,27 +177,27 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
         }
         //悬浮广告 1-2
         if (Constants.isHideAD) return
-        PlatformSDK.adapp().dycmNativeAd(activity, "1-2", book_shelf_ad, object : AbstractCallback() {
-            override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
-                super.onResult(adswitch, views, jsonResult)
-                if (!adswitch) return
-                try {
-                    val jsonObject = JSONObject(jsonResult)
-                    if (jsonObject.has("state_code")) {
-                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                            ResultCode.AD_REQ_SUCCESS -> {
-                                book_shelf_ad.addView(views?.get(0))
-                                book_shelf_ad.postInvalidate()
-                            }
-                            ResultCode.AD_REQ_FAILED -> {
-                            }
-                        }
-                    }
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                }
-            }
-        })
+//        PlatformSDK.adapp().dycmNativeAd(activity, "1-2", book_shelf_ad, object : AbstractCallback() {
+//            override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
+//                super.onResult(adswitch, views, jsonResult)
+//                if (!adswitch) return
+//                try {
+//                    val jsonObject = JSONObject(jsonResult)
+//                    if (jsonObject.has("state_code")) {
+//                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+//                            ResultCode.AD_REQ_SUCCESS -> {
+//                                book_shelf_ad.addView(views?.get(0))
+//                                book_shelf_ad.postInvalidate()
+//                            }
+//                            ResultCode.AD_REQ_FAILED -> {
+//                            }
+//                        }
+//                    }
+//                } catch (e: JSONException) {
+//                    e.printStackTrace()
+//                }
+//            }
+//        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -219,7 +214,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
             updateUI()
         }
 
-        presenter.clickNotification(activity.intent)
+        presenter.clickNotification(context, activity.intent)
 
         initDownloadService()
         initUpdateService()

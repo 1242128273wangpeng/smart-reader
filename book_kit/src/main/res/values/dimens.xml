@@ -2,6 +2,7 @@
 <resources>
 
     <dimen name="bottom_nav">50dp</dimen>
+    <dimen name="bottom_nav2">60dp</dimen>
     <dimen name="text_small">10sp</dimen>
     <dimen name="text_content">12sp</dimen>
     
@@ -54,6 +55,7 @@
     <dimen name="dimen_view_height_0.5">0.5dip</dimen>
     <dimen name="dimen_view_height_1">1dip</dimen>
     <dimen name="dimen_view_height_2">2dip</dimen>
+    <dimen name="dimen_view_height_3">3dip</dimen>
     <dimen name="dimen_view_height_5">5dip</dimen>
     <dimen name="dimen_view_height_6">6dip</dimen>
     <dimen name="dimen_view_height_8">8dip</dimen>

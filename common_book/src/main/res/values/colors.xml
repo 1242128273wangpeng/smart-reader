@@ -261,9 +261,12 @@
     
     <color name="read_option_main">#C2B282</color>
     <color name="read_option_bg">#f2212020</color>
+    <color name="read_option_txtmfqbyd_bg">#FF191C1F</color>
     <color name="read_option_text">#65ffffff</color>
     <color name="read_option_text_pressed">#4cffffff</color>
     <color name="read_option_divider">#373737</color>
+    <color name="read_option_divider2">#FF9097A1</color>
+    <color name="read_option_checked_divider">#FF1CA66E</color>
     <color name="read_option_page_bg1">#C2B282</color>
     <color name="read_option_page_bg2">#F7F0DE</color>
     <color name="read_option_page_bg3">#DEE9E1</color>

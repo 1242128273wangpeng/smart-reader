@@ -12,7 +12,6 @@ import android.util.DisplayMetrics
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
-import com.dycm_adsdk.PlatformSDK
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.CatalogMarkFragment
@@ -292,7 +291,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         ReadState.chapterList.clear()
         DataProvider.getInstance().clear()
 
-        PlatformSDK.lifecycle().onDestroy()
+//        PlatformSDK.lifecycle().onDestroy()
         DataProvider.getInstance().readingActivity = null
     }
 

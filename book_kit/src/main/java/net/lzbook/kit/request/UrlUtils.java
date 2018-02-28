@@ -17,9 +17,12 @@ public class UrlUtils {
 
 
     //正式线上API，域名例子：api.wubutianxia.com
-    public static String BOOK_NOVEL_DEPLOY_HOST = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST;
+    public static String BOOK_NOVEL_DEPLOY_HOST = "http://test5.api.bookapi.cn:8080";
     //正式线上webview地址，域名例子：bookwebview.wubutianxia.com
-    public static String BOOK_WEBVIEW_HOST = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST;
+    public static String BOOK_WEBVIEW_HOST = "http://test5.api.bookapi.cn:8080";
+//    public static String BOOK_NOVEL_DEPLOY_HOST = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST;
+//    //正式线上webview地址，域名例子：bookwebview.wubutianxia.com
+//    public static String BOOK_WEBVIEW_HOST = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST;
 
     public static String BOOK_CONTENT;
 
@@ -34,7 +37,7 @@ public class UrlUtils {
 
     public static void setBookNovelDeployHost(String bookNovelDeployHost) {
         if (!TextUtils.isEmpty(bookNovelDeployHost)) {
-            BOOK_NOVEL_DEPLOY_HOST = bookNovelDeployHost;
+//            BOOK_NOVEL_DEPLOY_HOST = bookNovelDeployHost;
         }
     }
 
@@ -44,7 +47,7 @@ public class UrlUtils {
 
     public static void setBookWebviewHost(String bookWebviewHost) {
         if (!TextUtils.isEmpty(bookWebviewHost)) {
-            BOOK_WEBVIEW_HOST = bookWebviewHost;
+//            BOOK_WEBVIEW_HOST = bookWebviewHost;
         }
     }
 

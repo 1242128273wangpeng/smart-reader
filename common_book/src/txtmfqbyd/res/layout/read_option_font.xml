@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:background="@color/read_option_txtmfqbyd_bg"
+              android:layout_width="match_parent"
+              android:alpha="0.9"
+              android:id="@+id/novel_read_font_layout"
+              android:layout_height="140dp">
+
+    <LinearLayout
+            android:id="@+id/read_setting_land_extend"
+            android:layout_width="match_parent"
+            android:layout_height="67dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_marginLeft="@dimen/dimen_margin_19"
+            android:layout_marginRight="@dimen/dimen_margin_19">
+
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/read_option_group_border"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp">
+
+            <ImageView
+                    android:id="@+id/read_setting_reduce_text"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:scaleType="center"
+                    android:src="@drawable/read_option_font_down_selector"/>
+
+            <TextView
+                    android:id="@+id/read_setting_text_size"
+                    android:layout_width="50dp"
+                    android:layout_height="30dp"
+                    android:gravity="center"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="@dimen/dimen_margin_5"
+                    android:layout_marginRight="@dimen/dimen_margin_5"
+                    android:text="16"
+                    android:textColor="@color/read_option_text"
+                    android:textSize="@dimen/text_content"
+                    android:background="@drawable/read_option_font_center_divider"
+                    />
+
+            <ImageView
+                    android:id="@+id/read_setting_increase_text"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:scaleType="center"
+                    android:src="@drawable/read_option_font_up_selector"/>
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="73dp"
+            android:orientation="horizontal"
+            android:layout_marginLeft="@dimen/dimen_margin_24"
+            android:layout_marginRight="@dimen/dimen_margin_24">
+
+        <com.intelligent.reader.read.page.LRadioGroup
+                android:id="@+id/read_setting_row_spacing_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+            <RadioButton
+                    android:id="@+id/read_spacing_0_2"
+                    android:layout_width="20dp"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:background="@null"
+                    android:button="@drawable/read_option_spacing_6_selector"/>
+
+            <RadioButton
+                    android:id="@+id/read_spacing_0_5"
+                    android:layout_width="20dp"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:background="@null"
+                    android:layout_marginLeft="80dp"
+                    android:button="@drawable/read_option_spacing_5_selector"/>
+
+            <RadioButton
+                    android:id="@+id/read_spacing_1_0"
+                    android:layout_width="20dp"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:background="@null"
+                    android:layout_marginLeft="80dp"
+                    android:button="@drawable/read_option_spacing_4_selector"/>
+
+            <RadioButton
+                    android:id="@+id/read_spacing_1_5"
+                    android:layout_width="20dp"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:background="@null"
+                    android:layout_marginLeft="80dp"
+                    android:button="@drawable/read_option_spacing_3_selector"/>
+        </com.intelligent.reader.read.page.LRadioGroup>
+    </LinearLayout>
+</LinearLayout>

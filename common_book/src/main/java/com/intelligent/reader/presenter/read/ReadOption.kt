@@ -13,11 +13,14 @@ interface ReadOption {
     interface Presenter : IPresenter<View> {
 
         fun cache()
+        fun getCacheState(): Int
         fun changeSource()
         fun bookMark(): Int
         fun bookInfo()
         fun back()
         fun showMore()
+
+        fun feedback()
 
         fun updateStatus()
 
@@ -30,7 +33,7 @@ interface ReadOption {
 
         fun setBookSource(source: String)
         fun setBookMarkImg(@IdRes id: Int)
-        fun updateStatus( bookDaoHelper: BookDaoHelper)
+        fun updateStatus(bookDaoHelper: BookDaoHelper)
         fun show(flag: Boolean)
     }
 }

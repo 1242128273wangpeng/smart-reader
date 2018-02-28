@@ -14,11 +14,10 @@ import android.preference.PreferenceManager
 import android.provider.Settings
 import android.support.v4.content.LocalBroadcastManager
 import android.text.TextUtils
-import android.view.*
+import android.view.InflateException
+import android.view.KeyEvent
+import android.view.View
 import android.widget.*
-import com.dycm_adsdk.PlatformSDK
-import com.dycm_adsdk.callback.AbstractCallback
-import com.dycm_adsdk.callback.ResultCode
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.*
 import com.intelligent.reader.cover.BookCoverLocalRepository
@@ -55,8 +54,6 @@ import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
-import org.json.JSONException
-import org.json.JSONObject
 import java.io.UnsupportedEncodingException
 import java.lang.ref.WeakReference
 import java.net.URLEncoder
@@ -1376,18 +1373,18 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
 
     var intervalRunnable: Runnable? = null
     fun startRestInterval() {
-        val runtime = if (PlatformSDK.config().restAd_sec == 0) {
-            30.times(60000).toLong()
-        } else {
-            PlatformSDK.config().restAd_sec.times(60000).toLong()
-        }
-        if (intervalRunnable == null) {
-            intervalRunnable = Runnable {
-                restAd()
-                handler.postDelayed(intervalRunnable, runtime)
-            }
-            handler.postDelayed(intervalRunnable, runtime)
-        }
+//        val runtime = if (PlatformSDK.config().restAd_sec == 0) {
+//            30.times(60000).toLong()
+//        } else {
+//            PlatformSDK.config().restAd_sec.times(60000).toLong()
+//        }
+//        if (intervalRunnable == null) {
+//            intervalRunnable = Runnable {
+//                restAd()
+//                handler.postDelayed(intervalRunnable, runtime)
+//            }
+//            handler.postDelayed(intervalRunnable, runtime)
+//        }
     }
 
     var mDialog: MyDialog? = null
@@ -1396,35 +1393,35 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         if (mDialog != null && mDialog!!.isShowing) {
             return
         }
-        PlatformSDK.adapp().dycmNativeAd(readReference?.get(), "3-1", null, object : AbstractCallback() {
-            override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
-                super.onResult(adswitch, views, jsonResult)
-                if (!adswitch) return
-                try {
-                    val jsonObject = JSONObject(jsonResult)
-                    if (jsonObject.has("state_code")) {
-                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                            ResultCode.AD_REQ_SUCCESS -> {
-                                mDialog = MyDialog(readReference?.get(), R.layout.reading_resttime, Gravity.CENTER, false)
-                                mDialog?.let {
-                                    val rest_ad = it.findViewById(R.id.rest_ad) as RelativeLayout//容器
-                                    it.findViewById(R.id.iv_close).setOnClickListener { mDialog?.dismiss() }
-                                    //广告 3-1
-                                    rest_ad.addView(views?.get(0))
-                                    rest_ad.postInvalidate()
-                                    if (readReference?.get()?.isFinishing == false) {
-                                        mDialog?.show()
-                                    }
-                                }
-                            }
-                            ResultCode.AD_REQ_FAILED -> {
-                            }
-                        }
-                    }
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                }
-            }
-        })
+//        PlatformSDK.adapp().dycmNativeAd(readReference?.get(), "3-1", null, object : AbstractCallback() {
+//            override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
+//                super.onResult(adswitch, views, jsonResult)
+//                if (!adswitch) return
+//                try {
+//                    val jsonObject = JSONObject(jsonResult)
+//                    if (jsonObject.has("state_code")) {
+//                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+//                            ResultCode.AD_REQ_SUCCESS -> {
+//                                mDialog = MyDialog(readReference?.get(), R.layout.reading_resttime, Gravity.CENTER, false)
+//                                mDialog?.let {
+//                                    val rest_ad = it.findViewById(R.id.rest_ad) as RelativeLayout//容器
+//                                    it.findViewById(R.id.iv_close).setOnClickListener { mDialog?.dismiss() }
+//                                    //广告 3-1
+//                                    rest_ad.addView(views?.get(0))
+//                                    rest_ad.postInvalidate()
+//                                    if (readReference?.get()?.isFinishing == false) {
+//                                        mDialog?.show()
+//                                    }
+//                                }
+//                            }
+//                            ResultCode.AD_REQ_FAILED -> {
+//                            }
+//                        }
+//                    }
+//                } catch (e: JSONException) {
+//                    e.printStackTrace()
+//                }
+//            }
+//        })
     }
 }

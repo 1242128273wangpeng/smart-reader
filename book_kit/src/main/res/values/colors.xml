@@ -46,6 +46,7 @@
     <color name="reading_text_color_tenth">#313025</color>
     <color name="reading_backdrop_tenth">#6F665F</color>
     <color name="reading_backdrop_tenth_head">#D1B893</color>
+    <color name="reading_setting_text_color">#FFF4F5F7</color>
 
     <!--关于-->
     <color name="remove_delete_normal">#f25732</color>

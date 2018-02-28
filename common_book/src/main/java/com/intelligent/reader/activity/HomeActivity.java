@@ -1,26 +1,5 @@
 package com.intelligent.reader.activity;
 
-import android.app.Notification;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.webkit.WebView;
-
-import com.dycm_adsdk.PlatformSDK;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
@@ -49,6 +28,26 @@ import net.lzbook.kit.utils.LoadDataManager;
 import net.lzbook.kit.utils.MD5Utils;
 import net.lzbook.kit.utils.ToastUtils;
 import net.lzbook.kit.utils.update.ApkUpdateUtils;
+
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.webkit.WebView;
 
 import java.io.File;
 import java.util.HashMap;
@@ -377,7 +376,7 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
             BookApplication.getRefWatcher().watch(this);
         }
         EventBus.getDefault().unregister(this);
-        PlatformSDK.lifecycle().onDestroy();
+//        PlatformSDK.lifecycle().onDestroy();
     }
 
     @Override

@@ -121,7 +121,7 @@ android {
             txtqbdzs  : "cc.remennovel",
             kdqbdzs   : "cn.kkqbtxtxs.reader",
             txtqbxsydq: "cn.zsqbydq.reader",
-            txtmfqbyd: "cn.txtmfqbyd.reader"
+            txtmfqbyd: "cn.qbzsydsq.reader"
     ]
 
     def channel = "dev_channel"
@@ -135,7 +135,7 @@ android {
     }
     defaultConfig {
 
-        applicationId "cn.txtmfqbyd.reader"
+        applicationId "cn.qbzsydsq.reader"
 
 //        System.err.println("project.properties = ${project.getProperties()}")
 

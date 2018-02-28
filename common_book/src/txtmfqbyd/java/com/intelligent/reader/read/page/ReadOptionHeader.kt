@@ -57,6 +57,16 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
 
     var isMarkPage = false
 
+    companion object {
+        val DOWNLOAD_CACHE_NORMAL = 1
+
+        val DOWNLOAD_CACHE_RUNNING = 2
+
+        val DOWNLOAD_CACHE_PAUSEED = 3
+
+        val DOWNLOAD_CACHE_FINISH = 4
+    }
+
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.read_option_header, null)
         addView(view)
@@ -69,10 +79,18 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
             presenter?.openWeb()
         }
 
+        when (presenter?.getCacheState()) {
+            DOWNLOAD_CACHE_NORMAL -> header_ibtn_download.setImageResource(R.drawable.icon_read_option_down_normal)
+            DOWNLOAD_CACHE_RUNNING -> header_ibtn_download.setImageResource(R.drawable.icon_read_option_down_running)
+            DOWNLOAD_CACHE_PAUSEED -> header_ibtn_download.setImageResource(R.drawable.icon_read_option_down_pause)
+            DOWNLOAD_CACHE_FINISH -> header_ibtn_download.setImageResource(R.drawable.icon_read_option_down_finish)
+        }
+
         header_ibtn_download.setOnClickListener {
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_btn)
             presenter?.cache()
         }
+
         header_ibtn_more?.setOnClickListener {
 
             presenter?.showMore();
@@ -87,9 +105,6 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
             popupWindow.isOutsideTouchable = false
             popupWindow.showAsDropDown(header_ibtn_more)
 
-            if (isMarkPage) {
-                inflate.read_option_pop_mark.text = "删除书签"
-            }
 
             inflate.read_option_pop_change_source.setOnClickListener {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_change_source_btn)
@@ -97,42 +112,77 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
                 popupWindow.dismiss()
             }
 
-            inflate.read_option_pop_mark.setOnClickListener { v ->
+//            if (isMarkPage) {
+//                inflate.read_option_pop_mark.text = "删除书签"
+//            }
 
+//            inflate.read_option_pop_mark.setOnClickListener { v ->
+//
+//                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_add_book_mark_btn)
+//                val result = presenter?.bookMark()
+//                val data = HashMap<String, String>()
+//
+//                when (result) {
+//                    1 -> {
+//                        v.context.toastShort("书签添加成功", false)
+//                        isMarkPage = true
+//                        inflate.read_option_pop_mark.text = "删除书签"
+//                        data.put("type", "1")
+//                    }
+//                    2 -> {
+//                        v.context.toastShort("书签已删除", false)
+//                        isMarkPage = false
+//                        inflate.read_option_pop_mark.text = "添加书签"
+//                        data.put("type", "2")
+//
+//                    }
+//                    else -> {
+//                        v.context.toastShort(R.string.add_mark_fail, false)
+//                    }
+//                }
+//
+//                popupWindow.dismiss()
+//                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, data)
+//            }
+
+            header_ibtn_bookmark.isSelected = isMarkPage
+
+            header_ibtn_bookmark?.setOnClickListener {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_add_book_mark_btn)
                 val result = presenter?.bookMark()
                 val data = HashMap<String, String>()
+                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, data)
 
                 when (result) {
                     1 -> {
-                        v.context.toastShort("书签添加成功", false)
+                        context.toastShort("书签添加成功", false)
                         isMarkPage = true
-                        inflate.read_option_pop_mark.text = "删除书签"
+                        header_ibtn_bookmark.isSelected = true
                         data.put("type", "1")
                     }
                     2 -> {
-                        v.context.toastShort("书签已删除", false)
+                        context.toastShort("书签已删除", false)
                         isMarkPage = false
-                        inflate.read_option_pop_mark.text = "添加书签"
+                        header_ibtn_bookmark.isSelected = false
                         data.put("type", "2")
-
                     }
                     else -> {
-                        v.context.toastShort(R.string.add_mark_fail, false)
+                        context.toastShort(R.string.add_mark_fail, false)
                     }
                 }
-
-                popupWindow.dismiss()
-                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, data)
             }
 
-            inflate.read_option_pop_info.setOnClickListener {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_read_head_bookinfo)
-                presenter?.bookInfo()
+//            inflate.read_option_pop_info.setOnClickListener {
+//                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_read_head_bookinfo)
+//                presenter?.bookInfo()
+//                popupWindow.dismiss()
+//            }
+
+            read_option_pop_feedback?.setOnClickListener {
+                //                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_read_head_bookinfo)
+                presenter?.feedback()
                 popupWindow.dismiss()
             }
-
-
         }
 
         // 初始化动画
@@ -151,8 +201,8 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
     }
 
     override fun updateStatus(bookDaoHelper: BookDaoHelper) {
-        var typeChangeMark:Int
-        isMarkPage = bookDaoHelper.isBookMarkExist(ReadState.book_id, ReadState.sequence,ReadState.offset, ReadState.book.book_type)
+        var typeChangeMark: Int
+        isMarkPage = bookDaoHelper.isBookMarkExist(ReadState.book_id, ReadState.sequence, ReadState.offset, ReadState.book.book_type)
 
         if (novel_bookmark != null && novel_bookmark.visibility == View.VISIBLE) {
             typeChangeMark = if (isMarkPage) {
@@ -175,12 +225,12 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
             //显示原网站地址
             if (Constants.QG_SOURCE == ReadState.book.site) {
                 novel_source_url.text = "青果阅读"
-                novel_source_url.visibility = View.VISIBLE
+//                novel_source_url.visibility = View.VISIBLE
             } else {
                 if (ReadState.currentChapter != null && !TextUtils.isEmpty(ReadState.currentChapter!!.curl)) {
                     //if (ReadState.book.dex == 1 && !TextUtils.isEmpty(dataFactory.currentChapter.curl)) {
                     novel_source_url.text = UrlUtils.buildContentUrl(ReadState.currentChapter!!.curl)
-                    novel_source_url.visibility = View.VISIBLE
+//                    novel_source_url.visibility = View.VISIBLE
                     /*} else if (ReadState.book.dex == 0 && !TextUtils.isEmpty(dataFactory.currentChapter.curl1)) {
                         novel_source_url.setText("来源于：" + dataFactory.currentChapter.curl1);
                         novel_source_url.setVisibility(View.VISIBLE);*/
@@ -191,7 +241,8 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
             }
         }
     }
-    fun dismissLoadingPage(){
+
+    fun dismissLoadingPage() {
         presenter?.dismissLoadingPage()
     }
 }

@@ -6,16 +6,11 @@ import android.text.TextUtils
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
-import com.dycm_adsdk.PlatformSDK
-import com.dycm_adsdk.callback.AbstractCallback
-import com.dycm_adsdk.callback.ResultCode
-import com.dycm_adsdk.constant.AdMarkPostion
 import com.intelligent.reader.DisposableAndroidViewModel
 import com.intelligent.reader.cover.BookCoverLocalRepository
 import com.intelligent.reader.cover.BookCoverOtherRepository
 import com.intelligent.reader.cover.BookCoverQGRepository
 import com.intelligent.reader.cover.BookCoverRepositoryFactory
-import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.read.help.ReadSeparateHelper
 import com.intelligent.reader.read.mode.NovelChapter
 import com.intelligent.reader.read.mode.NovelPageBean
@@ -26,8 +21,6 @@ import com.intelligent.reader.reader.ReaderRepositoryFactory
 import com.intelligent.reader.repository.BookCoverRepository
 import com.intelligent.reader.repository.ReaderRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.Consumer
-import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.constants.Constants
@@ -36,11 +29,10 @@ import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.request.RequestFactory
-import net.lzbook.kit.user.UserManager
-import net.lzbook.kit.utils.*
-import org.json.JSONException
-import org.json.JSONObject
-import java.net.UnknownHostException
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.OpenUDID
+import net.lzbook.kit.utils.runOnMain
+import net.lzbook.kit.utils.subscribekt
 import java.util.*
 
 /**
@@ -172,35 +164,35 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
      * 获取段末广告 6-3
      */
     fun loadChapterLastPageAd(context: Context, callback: OnLoadReaderAdCallback) {
-        // 上下滑动模式，横屏无段末广告
-        if (ReadConfig.IS_LANDSCAPE) return
-//        loadAd(context, AdMarkPostion.LANDSCAPE_SLIDEUP_POPUPAD, callback)
-
-        PlatformSDK.adapp().dycmNativeAd(context, AdMarkPostion.LANDSCAPE_SLIDEUP_POPUPAD, null, object : AbstractCallback() {
-            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
-                super.onResult(adswitch, views, jsonResult)
-                if (!adswitch) {
-                    callback.onFail()
-                    return
-                }
-                try {
-                    val jsonObject = JSONObject(jsonResult)
-                    if (jsonObject.has("state_code")) {
-                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                            ResultCode.AD_REQ_SUCCESS
-                            -> {
-                                callback.onLoadAd(views[0])
-                            }
-                            else -> {
-                                callback.onFail()
-                            }
-                        }
-                    }
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                }
-            }
-        })
+//        // 上下滑动模式，横屏无段末广告
+//        if (ReadConfig.IS_LANDSCAPE) return
+////        loadAd(context, AdMarkPostion.LANDSCAPE_SLIDEUP_POPUPAD, callback)
+//
+//        PlatformSDK.adapp().dycmNativeAd(context, AdMarkPostion.LANDSCAPE_SLIDEUP_POPUPAD, null, object : AbstractCallback() {
+//            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
+//                super.onResult(adswitch, views, jsonResult)
+//                if (!adswitch) {
+//                    callback.onFail()
+//                    return
+//                }
+//                try {
+//                    val jsonObject = JSONObject(jsonResult)
+//                    if (jsonObject.has("state_code")) {
+//                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+//                            ResultCode.AD_REQ_SUCCESS
+//                            -> {
+//                                callback.onLoadAd(views[0])
+//                            }
+//                            else -> {
+//                                callback.onFail()
+//                            }
+//                        }
+//                    }
+//                } catch (e: JSONException) {
+//                    e.printStackTrace()
+//                }
+//            }
+//        })
     }
 
     /**
@@ -208,44 +200,44 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
      */
     fun loadChapterBetweenAd(context: Context, callback: OnLoadReaderAdCallback) {
         val adTyep: String
-        val AdHeight: Int
-        val AdWidth: Int
+//        val AdHeight: Int
+//        val AdWidth: Int
         if (ReadConfig.IS_LANDSCAPE) {
-            adTyep = AdMarkPostion.LANDSCAPE_SLIDEUP_POPUPAD
-            AdHeight = 1280
-            AdWidth = 1920
+//            adTyep = AdMarkPostion.LANDSCAPE_SLIDEUP_POPUPAD
+//            AdHeight = 1280
+//            AdWidth = 1920
         } else {
-            adTyep = AdMarkPostion.SLIDEUP_POPUPAD_POSITION
-            AdHeight = 1920
-            AdWidth = 1280
+//            adTyep = AdMarkPostion.SLIDEUP_POPUPAD_POSITION
+//            AdHeight = 1920
+//            AdWidth = 1280
         }
 //        loadAd(context, adTyep, callback)
 
-        PlatformSDK.adapp().dycmNativeAd(context, adTyep, null, object : AbstractCallback() {
-            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
-                super.onResult(adswitch, views, jsonResult)
-                if (!adswitch) {
-                    callback.onFail()
-                    return
-                }
-                try {
-                    val jsonObject = JSONObject(jsonResult)
-                    if (jsonObject.has("state_code")) {
-                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                            ResultCode.AD_REQ_SUCCESS
-                            -> {
-                                callback.onLoadAd(views[0])
-                            }
-                            else -> {
-                                callback.onFail()
-                            }
-                        }
-                    }
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                }
-            }
-        })
+//        PlatformSDK.adapp().dycmNativeAd(context, adTyep, null, object : AbstractCallback() {
+//            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
+//                super.onResult(adswitch, views, jsonResult)
+//                if (!adswitch) {
+//                    callback.onFail()
+//                    return
+//                }
+//                try {
+//                    val jsonObject = JSONObject(jsonResult)
+//                    if (jsonObject.has("state_code")) {
+//                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+//                            ResultCode.AD_REQ_SUCCESS
+//                            -> {
+//                                callback.onLoadAd(views[0])
+//                            }
+//                            else -> {
+//                                callback.onFail()
+//                            }
+//                        }
+//                    }
+//                } catch (e: JSONException) {
+//                    e.printStackTrace()
+//                }
+//            }
+//        })
     }
 
     /**
@@ -390,79 +382,79 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
 
 
     private fun loadAd(novelChapter: NovelChapter) {
-        if (readingActivity == null || Constants.isHideAD)
-            return
-
-        PlatformSDK.config().setAd_userid(UserManager.mUserInfo?.uid ?: "")
-        PlatformSDK.config().setChannel_code(Constants.CHANNEL_LIMIT)
-        var cityCode = if (Constants.cityCode.isEmpty()) {
-            0
-        } else {
-            Constants.cityCode.toInt()
-        }
-        PlatformSDK.config().setCityCode(cityCode)
-        PlatformSDK.config().setCityName(Constants.adCityInfo ?: "")
-        PlatformSDK.config().setLatitude(Constants.latitude.toFloat())
-        PlatformSDK.config().setLongitude(Constants.longitude.toFloat())
-
-        val within = PlatformSDK.config().getAdSwitch("5-2") and PlatformSDK.config().getAdSwitch("6-2")
-        val between = PlatformSDK.config().getAdSwitch("5-1") and PlatformSDK.config().getAdSwitch("6-1")
-//            val arrayList = chapterSeparate[sequence]
-        val arrayList = novelChapter.separateList
-
-        val last = arrayList.last()
-
-        if (!last.isAd && between) {
-
-            //check small adView
-            val contentHeight = if (last.lines.isNotEmpty()) last.height.toInt() else 0
-            val leftSpace = ReadConfig.screenHeight - contentHeight - (ReadConfig.screenDensity
-                    * ReadConfig.READ_CONTENT_PAGE_TOP_SPACE * 2).toInt() - (ReadConfig.screenDensity * 30).toInt()
-            if (leftSpace >= ReadConfig.screenHeight / 5) {
-
-                last.adSmallView = PageAdContainer(readingActivity!!,
-                        "8-1", ReadConfig.screenWidth
-                        , leftSpace, novelChapter.chapter.sequence == ReadState.sequence)
-            }
-
-            val offset = last.offset + arrayList.last().lines.sumBy { it.lineContent.length } + 1
-
-            val novelPageBean = NovelPageBean(arrayListOf(), offset, arrayListOf()).apply { isAd = true }
-
-            novelPageBean.adBigView = PageAdContainer(readingActivity!!,
-                    if (ReadConfig.IS_LANDSCAPE) "6-1" else "5-1", getBigAdLayoutParams(),
-                    novelChapter.chapter.sequence == ReadState.sequence)
-
-            arrayList.add(novelPageBean)
-        }
-
-        val frequency = PlatformSDK.config().chapter_limit
-
-        if (arrayList.size - 8 > frequency && within) {
-            var count = arrayList.size - 8
-            var index = frequency
-            while (index < count) {
-                if (index % frequency == 0) {
-                    val offset2 = arrayList[index].offset
-
-                    val novelPageBean = NovelPageBean(arrayListOf(), offset2, arrayListOf()).apply { isAd = true }
-
-                    novelPageBean.adBigView = PageAdContainer(readingActivity!!,
-                            if (ReadConfig.IS_LANDSCAPE) "6-2" else "5-2", getBigAdLayoutParams(),
-                            novelChapter.chapter.sequence == ReadState.sequence)
-                    arrayList.add(index, novelPageBean)
-
-                    count++
-                    index++
-
-                    for (j in index until arrayList.size - 1) {
-                        //其他页offset向后偏移 1 length
-                        arrayList[j].offset = arrayList[j].offset + 1
-                    }
-                }
-                index++
-            }
-        }
+//        if (readingActivity == null || Constants.isHideAD)
+//            return
+//
+//        PlatformSDK.config().setAd_userid(UserManager.mUserInfo?.uid ?: "")
+//        PlatformSDK.config().setChannel_code(Constants.CHANNEL_LIMIT)
+//        var cityCode = if (Constants.cityCode.isEmpty()) {
+//            0
+//        } else {
+//            Constants.cityCode.toInt()
+//        }
+//        PlatformSDK.config().setCityCode(cityCode)
+//        PlatformSDK.config().setCityName(Constants.adCityInfo ?: "")
+//        PlatformSDK.config().setLatitude(Constants.latitude.toFloat())
+//        PlatformSDK.config().setLongitude(Constants.longitude.toFloat())
+//
+//        val within = PlatformSDK.config().getAdSwitch("5-2") and PlatformSDK.config().getAdSwitch("6-2")
+//        val between = PlatformSDK.config().getAdSwitch("5-1") and PlatformSDK.config().getAdSwitch("6-1")
+////            val arrayList = chapterSeparate[sequence]
+//        val arrayList = novelChapter.separateList
+//
+//        val last = arrayList.last()
+//
+//        if (!last.isAd && between) {
+//
+//            //check small adView
+//            val contentHeight = if (last.lines.isNotEmpty()) last.height.toInt() else 0
+//            val leftSpace = ReadConfig.screenHeight - contentHeight - (ReadConfig.screenDensity
+//                    * ReadConfig.READ_CONTENT_PAGE_TOP_SPACE * 2).toInt() - (ReadConfig.screenDensity * 30).toInt()
+//            if (leftSpace >= ReadConfig.screenHeight / 5) {
+//
+//                last.adSmallView = PageAdContainer(readingActivity!!,
+//                        "8-1", ReadConfig.screenWidth
+//                        , leftSpace, novelChapter.chapter.sequence == ReadState.sequence)
+//            }
+//
+//            val offset = last.offset + arrayList.last().lines.sumBy { it.lineContent.length } + 1
+//
+//            val novelPageBean = NovelPageBean(arrayListOf(), offset, arrayListOf()).apply { isAd = true }
+//
+//            novelPageBean.adBigView = PageAdContainer(readingActivity!!,
+//                    if (ReadConfig.IS_LANDSCAPE) "6-1" else "5-1", getBigAdLayoutParams(),
+//                    novelChapter.chapter.sequence == ReadState.sequence)
+//
+//            arrayList.add(novelPageBean)
+//        }
+//
+//        val frequency = PlatformSDK.config().chapter_limit
+//
+//        if (arrayList.size - 8 > frequency && within) {
+//            var count = arrayList.size - 8
+//            var index = frequency
+//            while (index < count) {
+//                if (index % frequency == 0) {
+//                    val offset2 = arrayList[index].offset
+//
+//                    val novelPageBean = NovelPageBean(arrayListOf(), offset2, arrayListOf()).apply { isAd = true }
+//
+//                    novelPageBean.adBigView = PageAdContainer(readingActivity!!,
+//                            if (ReadConfig.IS_LANDSCAPE) "6-2" else "5-2", getBigAdLayoutParams(),
+//                            novelChapter.chapter.sequence == ReadState.sequence)
+//                    arrayList.add(index, novelPageBean)
+//
+//                    count++
+//                    index++
+//
+//                    for (j in index until arrayList.size - 1) {
+//                        //其他页offset向后偏移 1 length
+//                        arrayList[j].offset = arrayList[j].offset + 1
+//                    }
+//                }
+//                index++
+//            }
+//        }
     }
 
     fun onReSeparate() {

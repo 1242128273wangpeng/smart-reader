@@ -4,7 +4,6 @@ import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
-import android.content.res.Configuration
 import android.graphics.Rect
 import android.os.Build
 import android.preference.PreferenceManager
@@ -26,8 +25,12 @@ import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.reader.ReaderViewModel
 import iyouqu.theme.FrameActivity
 import iyouqu.theme.ThemeHelper
+import kotlinx.android.synthetic.txtmfqbyd.read_option_background.view.*
 import kotlinx.android.synthetic.txtmfqbyd.read_option_bottom.view.*
 import kotlinx.android.synthetic.txtmfqbyd.read_option_detail.view.*
+import kotlinx.android.synthetic.txtmfqbyd.read_option_font.view.*
+import kotlinx.android.synthetic.txtmfqbyd.read_option_mode.view.*
+import kotlinx.android.synthetic.txtmfqbyd.read_option_reading_info.view.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
@@ -180,8 +183,6 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     }
 
     private fun changeBottomSettingView(id: Int) {
-
-
         when (id) {
             SETTING_OPTION -> {
                 novel_bottom_options!!.visibility = View.VISIBLE
@@ -278,23 +279,20 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
             refreshJumpPreBtnState()
             novel_jump_progress.max = ReadState.chapterList.size - 1
-            if (novel_jump_layout != null) {
-                if (ReadState.chapterList.size < 1 || ReadState.sequence < 1) {
-                    novel_jump_progress!!.progress = 0
-                } else {
-                    novel_jump_progress!!.progress = ReadState.sequence
-                }
-                showChapterProgress()
+            if (ReadState.chapterList.size < 1 || ReadState.sequence < 1) {
+                novel_jump_progress.progress = 0
+            } else {
+                novel_jump_progress.progress = ReadState.sequence
             }
+            showChapterProgress()
 
             if (themeHelper!!.isNight) {
-                txt_night.text = "白天"
-                ibtn_night.setImageResource(R.drawable.read_option_day_selector)
+                night_mode_iv.setImageResource(R.drawable.icon_read_night)
             } else {
-                txt_night.text = "夜间"
-                ibtn_night.setImageResource(R.drawable.read_option_night_selector)
+                night_mode_iv.setImageResource(R.drawable.icon_read_day)
             }
         } else {
+            resetOptionLayout()
             if (novel_bottom_options != null && novel_bottom_options!!.isShown) {
                 novel_bottom_options!!.startAnimation(popDownOutAnimation)
             }
@@ -307,34 +305,21 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
     private fun showChapterProgress() {
         if (ReadState.sequence == -1) {
+            setReadingChapterName("封面")
         } else {
-            if (novel_hint_chapter != null) {
-                novel_hint_chapter!!.text = if (TextUtils.isEmpty(ReadState.chapterName)) "" else ReadState.chapterName
-            }
-            if (novel_hint_sequence != null) {
-                novel_hint_sequence!!.text = (ReadState.sequence + 1).toString() + "/" + ReadState.chapterCount + "章"
-            }
+            setReadingChapterName(if (TextUtils.isEmpty(ReadState.chapterName)) "" else ReadState.chapterName)
         }
-
     }
 
     private fun initListener() {
-
-        novel_jump_previous?.setOnClickListener(this)
-
-
-        novel_jump_next?.setOnClickListener(this)
-
-        novel_jump_progress?.setOnSeekBarChangeListener(this)
-
-        novel_catalog?.setOnClickListener(this)
-
-        novel_feedback?.setOnClickListener(this)
-
-        novel_setting?.setOnClickListener(this)
-
-        novel_night?.setOnClickListener(this)
-
+        novel_jump_previous.setOnClickListener(this)
+        novel_jump_next.setOnClickListener(this)
+        novel_jump_progress.setOnSeekBarChangeListener(this)
+        novel_catalog.setOnClickListener(this)
+        novel_background.setOnClickListener(this)
+        novel_font.setOnClickListener(this)
+        night_mode_iv.setOnClickListener(this)
+        novel_read_mode.setOnClickListener(this)
         read_setting_backdrop_group?.setOnCheckedChangeListener(this)
 
         read_setting_row_spacing_group?.setOnCheckedChangeListener { id ->
@@ -344,7 +329,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                     val data = java.util.HashMap<String, String>()
                     data.put("type", "4")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.READGAP, data)
-                    if (read_spacing_0_2!!.isChecked) {
+                    if (read_spacing_0_2.isChecked) {
                         ReadConfig.READ_INTERLINEAR_SPACE = 0.2f
                         setInterLinearSpaceMode()
                     }
@@ -354,7 +339,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                     val data = java.util.HashMap<String, String>()
                     data.put("type", "3")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.READGAP, data)
-                    if (read_spacing_0_5!!.isChecked) {
+                    if (read_spacing_0_5.isChecked) {
                         ReadConfig.READ_INTERLINEAR_SPACE = 0.3f
                         setInterLinearSpaceMode()
                     }
@@ -364,7 +349,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                     val data = java.util.HashMap<String, String>()
                     data.put("type", "2")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.READGAP, data)
-                    if (read_spacing_1_0!!.isChecked) {
+                    if (read_spacing_1_0.isChecked) {
                         ReadConfig.READ_INTERLINEAR_SPACE = 0.4f
                         setInterLinearSpaceMode()
                     }
@@ -374,7 +359,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                     val data = java.util.HashMap<String, String>()
                     data.put("type", "1")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.READGAP, data)
-                    if (read_spacing_1_5!!.isChecked) {
+                    if (read_spacing_1_5.isChecked) {
                         ReadConfig.READ_INTERLINEAR_SPACE = 0.5f
                         setInterLinearSpaceMode()
                     }
@@ -424,24 +409,26 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 listener?.onReadCatalog()
             }
 
-            R.id.novel_feedback -> {
-                listener?.onReadFeedBack()
+            R.id.novel_read_mode -> {
+                checkOptionLayout(R.id.novel_read_mode)
             }
 
-            R.id.novel_setting -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_setting_btn)
-                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.SET)
-                changeBottomSettingView(SETTING_DETAIL)
+            R.id.novel_background -> {
+                checkOptionLayout(R.id.novel_background)
             }
-            R.id.novel_night//夜间模式
+
+            R.id.novel_font -> {
+//                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_setting_btn)
+//                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.SET)
+//                changeBottomSettingView(SETTING_DETAIL)
+                checkOptionLayout(R.id.novel_font)
+            }
+            R.id.night_mode_iv//夜间模式
             -> {
                 if (themeHelper!!.isNight) {
-                    txt_night.text = "夜间"
-                    ibtn_night.setImageResource(R.drawable.read_option_night_selector)
+                    night_mode_iv.setImageResource(R.drawable.icon_read_day)
                 } else {
-                    txt_night.text = "白天"
-                    ibtn_night.setImageResource(R.drawable.read_option_day_selector)
-
+                    night_mode_iv.setImageResource(R.drawable.icon_read_night)
                 }
 
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_night_mode)
@@ -508,26 +495,80 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         }
     }
 
+    /**
+     * 当前章节名
+     */
+    private fun setReadingChapterName(title: String) {
+        reading_foot_options_dividing.text = title
+    }
+
+    private fun checkOptionLayout(id: Int) {
+        when (id) {
+            R.id.novel_read_mode -> {
+                novel_jump_layout.visibility = View.GONE
+                novel_read_mode_layout.visibility = View.VISIBLE
+                novel_read_font_layout.visibility = View.GONE
+                novel_read_background_layout.visibility = View.GONE
+
+                read_mode_iv.setImageResource(R.drawable.icon_read_mode_checked)
+                bg_iv.setImageResource(R.drawable.icon_read_bg_normal)
+                font_iv.setImageResource(R.drawable.icon_read_font_normal)
+            }
+
+            R.id.novel_background -> {
+                novel_jump_layout.visibility = View.GONE
+                novel_read_mode_layout.visibility = View.GONE
+                novel_read_font_layout.visibility = View.GONE
+                novel_read_background_layout.visibility = View.VISIBLE
+
+                read_mode_iv.setImageResource(R.drawable.icon_read_mode_normal)
+                bg_iv.setImageResource(R.drawable.icon_read_bg_checked)
+                font_iv.setImageResource(R.drawable.icon_read_font_normal)
+            }
+
+            R.id.novel_font -> {
+                novel_jump_layout.visibility = View.GONE
+                novel_read_mode_layout.visibility = View.GONE
+                novel_read_background_layout.visibility = View.GONE
+                novel_read_font_layout.visibility = View.VISIBLE
+
+                read_mode_iv.setImageResource(R.drawable.icon_read_mode_normal)
+                bg_iv.setImageResource(R.drawable.icon_read_bg_normal)
+                font_iv.setImageResource(R.drawable.icon_read_font_checked)
+            }
+
+
+        }
+    }
+
+    private fun resetOptionLayout() {
+        novel_jump_layout.visibility = View.VISIBLE
+        novel_read_mode_layout.visibility = View.GONE
+        novel_read_font_layout.visibility = View.GONE
+        novel_read_background_layout.visibility = View.GONE
+
+        read_mode_iv.setImageResource(R.drawable.icon_read_mode_normal)
+        bg_iv.setImageResource(R.drawable.icon_read_bg_normal)
+        font_iv.setImageResource(R.drawable.icon_read_font_normal)
+    }
+
     private fun refreshJumpPreBtnState() {
         if (ReadState.sequence <= 0) {
             novel_jump_previous.isClickable = false
             novel_jump_previous.isEnabled = false
-            novel_jump_previous.alpha = 0.3f
         } else {
             novel_jump_previous.isClickable = true
             novel_jump_previous.isEnabled = true
-            novel_jump_previous.alpha = 1f
         }
 
         if (ReadState.sequence == ReadState.chapterList.size - 1) {
             novel_jump_next.isClickable = false
             novel_jump_next.isEnabled = false
-            novel_jump_next.alpha = 0.3f
         } else {
             novel_jump_next.isClickable = true
             novel_jump_next.isEnabled = true
-            novel_jump_next.alpha = 1f
         }
+        showChapterProgress()
     }
 
     private fun changeSystemLight() {
@@ -546,11 +587,11 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         read_setting_brightness_progress!!.progress = 40
     }
 
-    private fun dismissNovelHintLayout() {
-        if (novel_hint_layout != null && novel_hint_layout!!.visibility != View.GONE) {
-            novel_hint_layout!!.visibility = View.GONE
-        }
-    }
+//    private fun dismissNovelHintLayout() {
+//        if (novel_hint_layout != null && novel_hint_layout!!.visibility != View.GONE) {
+//            novel_hint_layout!!.visibility = View.GONE
+//        }
+//    }
 
     /**
      * 关闭系统亮度
@@ -911,10 +952,10 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
         if (fromUser && seekBar.id == R.id.novel_jump_progress) {
-            novel_hint_layout.visibility = View.VISIBLE
-            novel_hint_layout.alpha = 1F
+//            novel_hint_layout.visibility = View.VISIBLE
+//            novel_hint_layout.alpha = 1F
             anim?.cancel()
-            anim = novel_hint_layout.animate()
+//            anim = novel_hint_layout.animate()
             anim?.alpha(0F)
             anim?.duration = 1000
             anim?.startDelay = 1000
@@ -926,14 +967,11 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 changeBottomSettingView(SETTING_OPTION)
                 AppLog.e("progress1", progress.toString())
                 if (progress == 0) {
-                    novel_hint_chapter.text = ReadState.chapterList[progress].chapter_name
-                    novel_hint_sequence.text = progress.plus(1).toString() + "/" + ReadState.chapterList.size
+                    setReadingChapterName(ReadState.chapterList[progress].chapter_name)
                 } else if (progress == ReadState.chapterList.size - 1) {
-                    novel_hint_chapter.text = ReadState.chapterList[ReadState.chapterList.size - 1].chapter_name
-                    novel_hint_sequence.text = ReadState.chapterList.size.toString() + "/" + ReadState.chapterList.size
+                    setReadingChapterName(ReadState.chapterList[ReadState.chapterList.size - 1].chapter_name)
                 } else {
-                    novel_hint_chapter.text = ReadState.chapterList[progress - 1].chapter_name
-                    novel_hint_sequence.text = progress.toString() + "/" + ReadState.chapterList.size
+                    setReadingChapterName(ReadState.chapterList[progress - 1].chapter_name)
                 }
             }
 //            ReadState.sequence = progress

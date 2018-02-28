@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">
-        #ce3d3e
+        #FF19DD8B
     </color>
     <color name="colorAccent">
-        #ce3d3e
+        #FF19DD8B
     </color>
     <color name="color_primary">
-        #ce3d3e
+        #FF19DD8B
     </color>
     <color name="theme_primary">
-        #ce3d3e
+        #FF19DD8B
     </color>
     <color name="base_bg">
         #ffffff
@@ -46,7 +46,7 @@
         #1d1d1c
     </color>
     <color name="switchbutton_checked_color">
-        #ce3d3e
+        #FF19DD8B
     </color>
     <color name="switchbutton_unchecked_color">
         #ffffff
@@ -112,7 +112,7 @@
         #AEAEAE
     </color>
     <color name="bookshelf_book_unread_text_color">
-        #ce3d3e
+        #FF19DD8B
     </color>
     <color name="bookshelf_divider_1">
         #e8e8e8
@@ -127,7 +127,7 @@
         #949494
     </color>
     <color name="bookshelf_status_update_text_color">
-        #f13435
+        #FF19DD8B
     </color>
     <color name="bookshelf_status_finish_text_color">
         #1f83ff

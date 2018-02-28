@@ -1,1 +1,1 @@
-include ':common_book', ':book_kit', 'retrofit-tag'
+include ':common_book', ':book_kit', 'retrofit-tag',':dy-compile-plugin'

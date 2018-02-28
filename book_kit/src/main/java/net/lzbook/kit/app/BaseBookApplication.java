@@ -1,6 +1,5 @@
 package net.lzbook.kit.app;
 
-import com.dycm_adsdk.PlatformSDK;
 import com.quduquxie.QuInitialization;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
@@ -10,8 +9,6 @@ import net.lzbook.kit.encrypt.MainExtractorInterface;
 import net.lzbook.kit.encrypt.URLBuilderIntterface;
 import net.lzbook.kit.encrypt.v17.MainExtractor;
 import net.lzbook.kit.encrypt.v17.URLBuilder;
-import net.lzbook.kit.error.StatisticUncaughtExceptionHandler;
-import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.DeviceHelper;
 import net.lzbook.kit.utils.ExtensionsKt;
 import net.lzbook.kit.utils.HttpUtils;
@@ -24,8 +21,6 @@ import android.content.pm.ApplicationInfo;
 import android.preference.PreferenceManager;
 import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
-
-import java.lang.ref.WeakReference;
 
 import static net.lzbook.kit.utils.ExtensionsKt.loge;
 
@@ -77,7 +72,7 @@ public abstract class BaseBookApplication extends Application {
         super.onCreate();
         this.sCtx = this;
         loge(this, "onCreate");
-        PlatformSDK.app().onAppCreate(this);
+//        PlatformSDK.app().onAppCreate(this);
     }
 
     @Override
@@ -121,6 +116,6 @@ public abstract class BaseBookApplication extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
-        PlatformSDK.app().onTerminate();
+//        PlatformSDK.app().onTerminate();
     }
 }

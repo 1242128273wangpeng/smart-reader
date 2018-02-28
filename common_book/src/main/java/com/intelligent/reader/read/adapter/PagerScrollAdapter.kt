@@ -10,7 +10,6 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TextView
-import com.dycm_adsdk.PlatformSDK
 import com.intelligent.reader.R
 import com.intelligent.reader.read.help.ReadSeparateHelper
 import com.intelligent.reader.read.mode.NovelPageBean

@@ -19,6 +19,7 @@
     <string name="read_pagemode_updown">上下</string>
     <string name="read_mode_full">全屏翻页</string>
     <string name="read_mode_auto">自动阅读</string>
+    <string name="read_mode_title">翻页</string>
 
     <string name="read_event_yellow">_fryellow</string>
     <string name="read_event_eye">_freye</string>

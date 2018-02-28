@@ -1,31 +1,5 @@
 package com.intelligent.reader.activity;
 
-import android.content.ActivityNotFoundException;
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.content.res.Resources;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.preference.PreferenceManager;
-import android.text.TextUtils;
-import android.util.DisplayMetrics;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-
-import com.dycm_adsdk.PlatformSDK;
-import com.dycm_adsdk.callback.AbstractCallback;
-import com.dycm_adsdk.callback.ResultCode;
-import com.dycm_adsdk.utils.DyLogUtils;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.util.DynamicParamter;
@@ -43,8 +17,26 @@ import net.lzbook.kit.utils.SharedPreferencesUtils;
 import net.lzbook.kit.utils.ShieldManager;
 import net.lzbook.kit.utils.StatServiceUtils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.preference.PreferenceManager;
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -236,48 +228,48 @@ public class SplashActivity extends FrameActivity {
     }
 
     private void initSplashAd() {
-        if (ad_view != null) {
-            if (Constants.isHideAD){
-                AppLog.e(TAG, "Limited AD display!");
-                handler.sendEmptyMessage(0);
-                return;
-            }
-            PlatformSDK.adapp().dycmSplashAd(this,"10-1",ad_view, new AbstractCallback() {
-                @Override
-                public void onResult(boolean adswitch, String jsonResult) {
-                    if (adswitch) {
-                        try {
-                            JSONObject jsonObject = new JSONObject(jsonResult);
-                            if (jsonObject.has("state_code")) {
-                                switch (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                                    case AD_REQ_SUCCESS://广告请求成功
-                                        DyLogUtils.dd("AD_REQ_SUCCESS" + jsonResult);
-                                        break;
-                                    case AD_REQ_FAILED://广告请求失败
-                                        DyLogUtils.dd("AD_REQ_FAILED" + jsonResult);
-                                        handler.sendEmptyMessage(0);
-                                        break;
-                                    case AD_DISMISSED_CODE://开屏页面关闭
-                                        handler.sendEmptyMessage(0);
-                                        break;
-                                    case AD_ONCLICKED_CODE://开屏页面点击
-                                        DyLogUtils.dd("AD_ONCLICKED_CODE" + jsonResult);
-                                        break;
-                                    case AD_ONTICK_CODE://剩余显示时间
-                                        DyLogUtils.dd("AD_ONTICK_CODE" + jsonResult);
-                                        break;
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        handler.sendEmptyMessage(0);
-                    }
-                }
-            });
-        }
-    }
+//        if (ad_view != null) {
+//            if (Constants.isHideAD){
+//                AppLog.e(TAG, "Limited AD display!");
+        handler.sendEmptyMessage(0);
+//                return;
+//            }
+//            PlatformSDK.adapp().dycmSplashAd(this,"10-1",ad_view, new AbstractCallback() {
+//                @Override
+//                public void onResult(boolean adswitch, String jsonResult) {
+//                    if (adswitch) {
+//                        try {
+//                            JSONObject jsonObject = new JSONObject(jsonResult);
+//                            if (jsonObject.has("state_code")) {
+//                                switch (ResultCode.parser(jsonObject.getInt("state_code"))) {
+//                                    case AD_REQ_SUCCESS://广告请求成功
+//                                        DyLogUtils.dd("AD_REQ_SUCCESS" + jsonResult);
+//                                        break;
+//                                    case AD_REQ_FAILED://广告请求失败
+//                                        DyLogUtils.dd("AD_REQ_FAILED" + jsonResult);
+//                                        handler.sendEmptyMessage(0);
+//                                        break;
+//                                    case AD_DISMISSED_CODE://开屏页面关闭
+//                                        handler.sendEmptyMessage(0);
+//                                        break;
+//                                    case AD_ONCLICKED_CODE://开屏页面点击
+//                                        DyLogUtils.dd("AD_ONCLICKED_CODE" + jsonResult);
+//                                        break;
+//                                    case AD_ONTICK_CODE://剩余显示时间
+//                                        DyLogUtils.dd("AD_ONTICK_CODE" + jsonResult);
+//                                        break;
+//                                }
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                    } else {
+//                        handler.sendEmptyMessage(0);
+//                    }
+//                }
+//            });
+//    }
+}
 
     //初始化广告开关
     private void initAdSwitch() {
@@ -367,7 +359,7 @@ public class SplashActivity extends FrameActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        PlatformSDK.lifecycle().onResume();
+//        PlatformSDK.lifecycle().onResume();
     }
 
     @Override
@@ -378,8 +370,9 @@ public class SplashActivity extends FrameActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        PlatformSDK.lifecycle().onPause();
+//        PlatformSDK.lifecycle().onPause();
     }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -399,7 +392,7 @@ public class SplashActivity extends FrameActivity {
 //        }
 
         AppLog.e(TAG, "ondestory执行");
-        PlatformSDK.lifecycle().onDestroy();
+//        PlatformSDK.lifecycle().onDestroy();
         super.onDestroy();
     }
 
@@ -408,70 +401,70 @@ public class SplashActivity extends FrameActivity {
         return keyCode == KEYCODE_BACK || super.onKeyDown(keyCode, event);
     }
 
-    static class MHandler extends Handler {
+static class MHandler extends Handler {
 
-        private WeakReference<SplashActivity> weakReference;
+    private WeakReference<SplashActivity> weakReference;
 
-        MHandler(SplashActivity splashActivity) {
-            weakReference = new WeakReference<>(splashActivity);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            SplashActivity splashActivity = weakReference.get();
-            if (splashActivity == null) {
-                return;
-            }
-            switch (msg.what) {
-                case 0:
-                    UserManager.INSTANCE.initPlatform(splashActivity, null);
-                    AppLog.e(TAG, "handler执行");
-                    splashActivity.initGuide();
-                    break;
-            }
-        }
-
+    MHandler(SplashActivity splashActivity) {
+        weakReference = new WeakReference<>(splashActivity);
     }
 
-    public class InitTask extends AsyncTask<Void, Void, Void> {
+    @Override
+    public void handleMessage(Message msg) {
+        super.handleMessage(msg);
+        SplashActivity splashActivity = weakReference.get();
+        if (splashActivity == null) {
+            return;
+        }
+        switch (msg.what) {
+            case 0:
+                UserManager.INSTANCE.initPlatform(splashActivity, null);
+                AppLog.e(TAG, "handler执行");
+                splashActivity.initGuide();
+                break;
+        }
+    }
 
-        @Override
-        protected Void doInBackground(Void... params) {
+}
+
+public class InitTask extends AsyncTask<Void, Void, Void> {
+
+    @Override
+    protected Void doInBackground(Void... params) {
 
 
-            // 2 动态参数
-            try {
-                DynamicParamter dynamicParameter = new DynamicParamter(getApplicationContext());
-                dynamicParameter.setDynamicParamter();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        // 2 动态参数
+        try {
+            DynamicParamter dynamicParameter = new DynamicParamter(getApplicationContext());
+            dynamicParameter.setDynamicParamter();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            boolean b = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(Constants.UPDATE_CHAPTER_SOURCE_ID, false);
-            if (!b) {
-                BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
-                ArrayList<Book> bookOnlineList = bookDaoHelper.getBooksOnLineList();
-                for (int i = 0; i < bookOnlineList.size(); i++) {
-                    Book iBook = bookOnlineList.get(i);
-                    if (!TextUtils.isEmpty(iBook.book_id)) {
-                        BookChapterDao bookChapterDao = new BookChapterDao(BookApplication.getGlobalContext(), iBook.book_id);
-                        Chapter lastChapter = bookChapterDao.getLastChapter();
-                        if (lastChapter != null) {
-                            lastChapter.book_source_id = iBook.book_source_id;
-                            bookChapterDao.updateBookCurrentChapter(lastChapter, lastChapter.sequence);
-                        }
+        boolean b = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(Constants.UPDATE_CHAPTER_SOURCE_ID, false);
+        if (!b) {
+            BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
+            ArrayList<Book> bookOnlineList = bookDaoHelper.getBooksOnLineList();
+            for (int i = 0; i < bookOnlineList.size(); i++) {
+                Book iBook = bookOnlineList.get(i);
+                if (!TextUtils.isEmpty(iBook.book_id)) {
+                    BookChapterDao bookChapterDao = new BookChapterDao(BookApplication.getGlobalContext(), iBook.book_id);
+                    Chapter lastChapter = bookChapterDao.getLastChapter();
+                    if (lastChapter != null) {
+                        lastChapter.book_source_id = iBook.book_source_id;
+                        bookChapterDao.updateBookCurrentChapter(lastChapter, lastChapter.sequence);
                     }
                 }
-                PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putBoolean(Constants.UPDATE_CHAPTER_SOURCE_ID, true)
-                        .apply();
             }
+            PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putBoolean(Constants.UPDATE_CHAPTER_SOURCE_ID, true)
+                    .apply();
+        }
 
-            //请求广告
-            initAdSwitch();
-            initSplashAd();
+        //请求广告
+        initAdSwitch();
+        initSplashAd();
 
-            // 4 加载默认书籍
+        // 4 加载默认书籍
 //            try {
 //                if (NetWorkUtils.getNetWorkType(BaseBookApplication.getGlobalContext()) != NetWorkUtils.NETWORK_NONE) {
 //                    initBook();
@@ -480,57 +473,57 @@ public class SplashActivity extends FrameActivity {
 //                e.printStackTrace();
 //            }
 
-            // 5 初始化屏蔽
-            try {
-                initShield();
-            } catch (Exception e) {
-                e.printStackTrace();
+        // 5 初始化屏蔽
+        try {
+            initShield();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // 6 其他信息初始化
+        try {
+            // 统计阅读章节数
+            if (Constants.readedCount == 0) {
+                Constants.readedCount = sharePreferenceUtils.getInt("readed_count");
             }
 
-            // 6 其他信息初始化
-            try {
-                // 统计阅读章节数
-                if (Constants.readedCount == 0) {
-                    Constants.readedCount = sharePreferenceUtils.getInt("readed_count");
-                }
-
-                //
-                DisplayMetrics dm = new DisplayMetrics();
-                SplashActivity.this.getWindowManager().getDefaultDisplay().getMetrics(dm);
-                PreferenceManager.getDefaultSharedPreferences(SplashActivity.this).edit().putInt("screen_width", dm.widthPixels).putInt
-                        ("screen_height", dm
-                                .heightPixels).commit();
+            //
+            DisplayMetrics dm = new DisplayMetrics();
+            SplashActivity.this.getWindowManager().getDefaultDisplay().getMetrics(dm);
+            PreferenceManager.getDefaultSharedPreferences(SplashActivity.this).edit().putInt("screen_width", dm.widthPixels).putInt
+                    ("screen_height", dm
+                            .heightPixels).commit();
 //                BookApplication.getGlobalContext().setDisplayMetrics(dm);
-                AppUtils.initDensity(getApplicationContext());
+            AppUtils.initDensity(getApplicationContext());
 
-                // 判断是否小说推送，检查小说是否更新
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                boolean isStarPush = sharedPreferences.getBoolean("settings_push", true);
-                if (isStarPush) {
-                    CheckNovelUpdateService.startChkUpdService(getApplicationContext());
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
+            // 判断是否小说推送，检查小说是否更新
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            boolean isStarPush = sharedPreferences.getBoolean("settings_push", true);
+            if (isStarPush) {
+                CheckNovelUpdateService.startChkUpdService(getApplicationContext());
             }
-            return null;
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return null;
+    }
+}
+
+// 安装快捷方式任务
+class InstallShotCutTask extends AsyncTask<Void, Void, Void> {
+    @Override
+    protected Void doInBackground(Void... params) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(SplashActivity.this);
+        boolean create = sp.getBoolean("createshotcut", false);
+        if (!create) {
+            checkAndInstallShotCut(SplashActivity.this);
+            sp.edit().putBoolean("createshotcut", true).apply();
+        }
+        return null;
     }
 
-    // 安装快捷方式任务
-    class InstallShotCutTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(SplashActivity.this);
-            boolean create = sp.getBoolean("createshotcut", false);
-            if (!create) {
-                checkAndInstallShotCut(SplashActivity.this);
-                sp.edit().putBoolean("createshotcut", true).apply();
-            }
-            return null;
-        }
-
-    }
+}
 
     @Override
     public boolean shouldShowNightShadow() {

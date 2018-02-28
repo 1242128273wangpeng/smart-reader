@@ -6,12 +6,6 @@ import android.content.*
 import android.os.IBinder
 import android.text.TextUtils
 import android.view.ViewGroup
-import android.widget.RelativeLayout
-import com.dycm_adsdk.PlatformSDK
-import com.dycm_adsdk.callback.AbstractCallback
-import com.dycm_adsdk.callback.ResultCode
-import com.dycm_adsdk.imagecache.config.GlobalConfig.context
-import com.dycm_adsdk.utils.DyLogUtils
 import com.intelligent.reader.R
 import com.intelligent.reader.presenter.IPresenter
 import com.intelligent.reader.read.help.BookHelper
@@ -26,8 +20,6 @@ import net.lzbook.kit.data.bean.BookUpdate
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.utils.*
-import org.json.JSONException
-import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -96,7 +88,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
         }
     }
 
-    fun clickNotification(intent: Intent) {
+    fun clickNotification(context: Context, intent: Intent) {
         AppLog.d(tag, "click_push: " + intent.getBooleanExtra("click_push", false))
         if (intent.getBooleanExtra("click_push", false)) {
             val bookId = intent.getStringExtra("book_id")
@@ -107,7 +99,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
         if (intent.getBooleanExtra("cancel_finish_ntf", false)) {
             val notifyManager = context.getSystemService(Context
                     .NOTIFICATION_SERVICE) as NotificationManager
-            notifyManager.cancel(context.getResources().getString(R.string.main_nftmgr_id).hashCode())
+            notifyManager.cancel(context.resources.getString(R.string.main_nftmgr_id).hashCode())
         }
     }
 
@@ -132,7 +124,8 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
         } else {
             Collections.sort(bookList, FrameBookHelper.MultiComparator())
             iBookList.addAll(bookList)
-            val adCount = PlatformSDK.config().adCount
+//            val adCount = PlatformSDK.config().adCount
+            val adCount = 0
             if (aDViews.isNotEmpty()) {
                 val size = iBookList.size
                 var index = 0
@@ -157,68 +150,68 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
     }
 
     fun updateAd(activity: Activity, num: Int) {
-        PlatformSDK.adapp().dycmNativeAd(activity, "1-1", RelativeLayout(activity), object : AbstractCallback() {
-            override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
-                DyLogUtils.dd("NativeActivity:" + jsonResult!!)
-                if (!adswitch) return
-                try {
-                    val jsonObject = JSONObject(jsonResult)
-                    DyLogUtils.e("ADSDK", "执行NativeActivity 回调")
-                    if (jsonObject.has("state_code")) {
-                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                            ResultCode.AD_REQ_SUCCESS//请求成功
-                            -> {
-                                runOnMain {
-                                    if (views != null) {
-                                        aDViews.clear()
-                                        updateBookList()
-                                        aDViews.addAll(views)
-                                        if (iBookList.isEmpty()) {
-                                            return@runOnMain
-                                        }
-                                        val size = iBookList.size
-                                        var index = 0
-                                        var book1 = Book()
-                                        book1.book_type = -2
-                                        book1.sequence = index++
-                                        iBookList.add(0, book1)
-                                        var adCount = PlatformSDK.config().getAdCount()
-                                        var i: Int = 1
-                                        while (size > adCount * i) {
-                                            book1 = Book()
-                                            book1.book_type = -2
-                                            book1.sequence = index++
-                                            iBookList.add(adCount * i, book1)
-                                            i++
-                                        }
-
-                                        view?.onAdRefresh()
-
-                                    }
-                                    DyLogUtils.e("ADSDK", "请求成功")
-                                }
-
-                            }
-                            ResultCode.AD_REPAIR_SUCCESS//补充
-                            -> {
-                                if (views != null) {
-                                    aDViews.addAll(views)
-                                    runOnMain {
-                                        view?.onAdRefresh()
-                                    }
-                                }
-                            }
-                            ResultCode.AD_REQ_FAILED//请示失败
-                            -> {
-                            }
-                        }
-                    }
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                }
-
-            }
-        }, num)
+//        PlatformSDK.adapp().dycmNativeAd(activity, "1-1", RelativeLayout(activity), object : AbstractCallback() {
+//            override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
+//                DyLogUtils.dd("NativeActivity:" + jsonResult!!)
+//                if (!adswitch) return
+//                try {
+//                    val jsonObject = JSONObject(jsonResult)
+//                    DyLogUtils.e("ADSDK", "执行NativeActivity 回调")
+//                    if (jsonObject.has("state_code")) {
+//                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+//                            ResultCode.AD_REQ_SUCCESS//请求成功
+//                            -> {
+//                                runOnMain {
+//                                    if (views != null) {
+//                                        aDViews.clear()
+//                                        updateBookList()
+//                                        aDViews.addAll(views)
+//                                        if (iBookList.isEmpty()) {
+//                                            return@runOnMain
+//                                        }
+//                                        val size = iBookList.size
+//                                        var index = 0
+//                                        var book1 = Book()
+//                                        book1.book_type = -2
+//                                        book1.sequence = index++
+//                                        iBookList.add(0, book1)
+//                                        var adCount = PlatformSDK.config().getAdCount()
+//                                        var i: Int = 1
+//                                        while (size > adCount * i) {
+//                                            book1 = Book()
+//                                            book1.book_type = -2
+//                                            book1.sequence = index++
+//                                            iBookList.add(adCount * i, book1)
+//                                            i++
+//                                        }
+//
+//                                        view?.onAdRefresh()
+//
+//                                    }
+//                                    DyLogUtils.e("ADSDK", "请求成功")
+//                                }
+//
+//                            }
+//                            ResultCode.AD_REPAIR_SUCCESS//补充
+//                            -> {
+//                                if (views != null) {
+//                                    aDViews.addAll(views)
+//                                    runOnMain {
+//                                        view?.onAdRefresh()
+//                                    }
+//                                }
+//                            }
+//                            ResultCode.AD_REQ_FAILED//请示失败
+//                            -> {
+//                            }
+//                        }
+//                    }
+//                } catch (e: JSONException) {
+//                    e.printStackTrace()
+//                }
+//
+//            }
+//        }, num)
     }
 
     fun handleSuccessUpdate(result: BookUpdateResult) {

@@ -4,8 +4,9 @@
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:alpha="0.9"
         android:background="@drawable/read_head_option_pop_bg">
-    
+
     <TextView
             android:id="@+id/read_option_pop_change_source"
             android:layout_width="112dp"
@@ -17,31 +18,42 @@
             android:background="@drawable/read_option_pop_bg_selector"
             android:clickable="true"
             android:soundEffectsEnabled="true"
-    />
-    
+            />
+
+    <!--<TextView-->
+            <!--android:id="@+id/read_option_pop_mark"-->
+            <!--android:layout_width="112dp"-->
+            <!--android:layout_height="45dp"-->
+            <!--android:gravity="center"-->
+            <!--android:textColor="@color/color_gray_d3d3d3"-->
+            <!--android:textSize="12sp"-->
+            <!--android:text="添加书签"-->
+            <!--android:background="@drawable/read_option_pop_bg_selector"-->
+            <!--android:clickable="true"-->
+            <!--android:soundEffectsEnabled="true"-->
+            <!--/>-->
+
+    <!--<TextView-->
+            <!--android:id="@+id/read_option_pop_info"-->
+            <!--android:layout_width="112dp"-->
+            <!--android:layout_height="45dp"-->
+            <!--android:gravity="center"-->
+            <!--android:textColor="@color/color_gray_d3d3d3"-->
+            <!--android:textSize="12sp"-->
+            <!--android:text="书籍详情"-->
+            <!--android:background="@drawable/read_option_pop_bg_selector"-->
+            <!--android:clickable="true"-->
+            <!--android:soundEffectsEnabled="true"-->
+            <!--/>-->
+
     <TextView
-            android:id="@+id/read_option_pop_mark"
+            android:id="@+id/read_option_pop_feedback"
             android:layout_width="112dp"
-            android:layout_height="45dp"
             android:gravity="center"
             android:textColor="@color/color_gray_d3d3d3"
             android:textSize="12sp"
-            android:text="添加书签"
+            android:text="反馈"
             android:background="@drawable/read_option_pop_bg_selector"
-            android:clickable="true"
             android:soundEffectsEnabled="true"
-    />
-    
-    <TextView
-            android:id="@+id/read_option_pop_info"
-            android:layout_width="112dp"
-            android:layout_height="45dp"
-            android:gravity="center"
-            android:textColor="@color/color_gray_d3d3d3"
-            android:textSize="12sp"
-            android:text="书籍详情"
-            android:background="@drawable/read_option_pop_bg_selector"
-            android:clickable="true"
-            android:soundEffectsEnabled="true"
-    />
+            android:layout_height="45dp"/>
 </LinearLayout>
