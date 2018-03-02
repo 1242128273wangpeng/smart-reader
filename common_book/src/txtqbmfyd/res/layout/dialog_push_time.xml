@@ -25,6 +25,11 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
+        <View
+            android:layout_width="20dp"
+            android:layout_height="34dp"
+            android:background="@drawable/number_picker_text_bg"/>
+
         <com.intelligent.reader.widget.NumberPicker
             android:id="@+id/np_start_hour"
             android:layout_width="wrap_content"
@@ -41,6 +46,14 @@
             app:np_textSize="12sp"
             app:np_value="7"
             app:np_wheelItemCount="5"/>
+
+        <TextView
+            android:layout_width="10dp"
+            android:layout_height="34dp"
+            android:background="@drawable/number_picker_text_bg"
+            android:gravity="center"
+            android:text=":"/>
+
         <com.intelligent.reader.widget.NumberPicker
             android:id="@+id/np_start_minute"
             android:layout_width="wrap_content"
@@ -57,6 +70,17 @@
             app:np_textSize="12sp"
             app:np_value="0"
             app:np_wheelItemCount="5"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="34dp"
+            android:layout_weight="1"
+            android:background="@drawable/number_picker_text_bg"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:textColor="#FF858C96"
+            android:text="至"/>
+
         <com.intelligent.reader.widget.NumberPicker
             android:id="@+id/np_stop_hour"
             android:layout_width="wrap_content"
@@ -73,6 +97,14 @@
             app:np_textSize="12sp"
             app:np_value="23"
             app:np_wheelItemCount="5"/>
+
+        <TextView
+            android:layout_width="10dp"
+            android:layout_height="34dp"
+            android:background="@drawable/number_picker_text_bg"
+            android:gravity="center"
+            android:text=":"/>
+
         <com.intelligent.reader.widget.NumberPicker
             android:id="@+id/np_stop_minute"
             android:layout_width="wrap_content"
@@ -89,6 +121,12 @@
             app:np_textSize="12sp"
             app:np_value="0"
             app:np_wheelItemCount="5"/>
+
+        <View
+            android:layout_width="20dp"
+            android:layout_height="34dp"
+            android:background="@drawable/number_picker_text_bg"/>
+
     </LinearLayout>
 
     <View
