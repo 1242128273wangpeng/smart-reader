@@ -25,6 +25,7 @@ import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.read.mode.ReadState
 import com.quduquxie.network.DataCache
 import kotlinx.android.synthetic.txtmfqbyd.item_read_bookmark.view.*
+import kotlinx.android.synthetic.txtmfqbyd.item_read_catalog.view.*
 import kotlinx.android.synthetic.txtmfqbyd.pop_catalog_mark_delete.view.*
 import kotlinx.android.synthetic.txtmfqbyd.read_catalog_mark_layout.*
 import kotlinx.android.synthetic.txtmfqbyd.read_catalog_mark_layout.view.*
@@ -34,6 +35,7 @@ import net.lzbook.kit.data.bean.Bookmark
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.ToastUtils
 import java.text.SimpleDateFormat
 import java.util.concurrent.Callable
 
@@ -83,34 +85,41 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
 
         val bookmarkAdapter = ListRecyclerAdapter(bookMarkList, R.layout.item_read_bookmark, BookMarkHolder::class.java)
         bookmarkAdapter.itemClick = View.OnClickListener { v ->
-            presenter?.gotoBookMark(activity, v.tag as Bookmark)
+            when (v.id) {
+                R.id.bookmark_content_layout -> {
+                    presenter?.gotoBookMark(activity, v.tag as Bookmark)
+                }
+                R.id.item_bookmark_delete -> {
+                    presenter?.deleteBookMark(activity, v.tag as Bookmark)
+                }
+            }
         }
 
-        bookmarkAdapter.itemLongClick = View.OnLongClickListener { v: View ->
-            rl_left_pop_bg.visibility = View.VISIBLE
-            val transX = activity.window.decorView.width - rl_catalog_novel.width
-            val inflate = LayoutInflater.from(context).inflate(R.layout.pop_catalog_mark_delete, null)
-
-            val popupWindow = PopupWindow(inflate, FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
-            popupWindow.setBackgroundDrawable(ColorDrawable(0x00000000));
-            popupWindow.isFocusable = true
-            popupWindow.isOutsideTouchable = false
-            popupWindow.showAtLocation(rl_left_pop_bg, Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, -transX / 2, 0)
-            inflate.txt_delete_mark.tag = v.tag
-            inflate.txt_delete_mark.setOnClickListener { v ->
-                presenter?.deleteBookMark(activity, v.tag as Bookmark)
-                popupWindow.dismiss()
-            }
-            inflate.txt_clear_mark.setOnClickListener { v ->
-                presenter?.deleteAllBookMark(activity)
-                popupWindow.dismiss()
-            }
-
-            popupWindow.setOnDismissListener {
-                rl_left_pop_bg.visibility = View.GONE
-            }
-            true
-        }
+//        bookmarkAdapter.itemLongClick = View.OnLongClickListener { v: View ->
+//            rl_left_pop_bg.visibility = View.VISIBLE
+//            val transX = activity.window.decorView.width - rl_catalog_novel.width
+//            val inflate = LayoutInflater.from(context).inflate(R.layout.pop_catalog_mark_delete, null)
+//
+//            val popupWindow = PopupWindow(inflate, FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+//            popupWindow.setBackgroundDrawable(ColorDrawable(0x00000000));
+//            popupWindow.isFocusable = true
+//            popupWindow.isOutsideTouchable = false
+//            popupWindow.showAtLocation(rl_left_pop_bg, Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, -transX / 2, 0)
+//            inflate.txt_delete_mark.tag = v.tag
+//            inflate.txt_delete_mark.setOnClickListener { v ->
+//                presenter?.deleteBookMark(activity, v.tag as Bookmark)
+//                popupWindow.dismiss()
+//            }
+//            inflate.txt_clear_mark.setOnClickListener { v ->
+//                presenter?.deleteAllBookMark(activity)
+//                popupWindow.dismiss()
+//            }
+//
+//            popupWindow.setOnDismissListener {
+//                rl_left_pop_bg.visibility = View.GONE
+//            }
+//            true
+//        }
         bookmark_main.adapter = bookmarkAdapter
         bookmark_main.layoutManager = object : LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false) {
             override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State) {
@@ -274,9 +283,9 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
                     onItemClick?.onClick(v)
                 }
 
-                val txt = (itemView as TextView)
-
-                txt.text = "${chapter.chapter_name}"
+//                val txt = (itemView as TextView)
+//
+//                txt.text = "${chapter.chapter_name}"
 
                 var chapterExist = false
                 if (Constants.QG_SOURCE == ReadState.book.site) {
@@ -287,16 +296,22 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
 
                 var txtColor = 0
                 if (chapterExist) {
-                    txtColor = R.color.read_item_catalog_chapter_text_color
-
+//                    txtColor = R.color.reading_setting_text_color
+//                    txtColor = R.color.read_item_catalog_chapter_text_color
+                    itemView.chapter_cache_tv.visibility = View.VISIBLE
                 } else {
-                    txtColor = R.color.read_item_catalog_uncached_chapter_text_color
+//                    txtColor = R.color.read_item_catalog_uncached_chapter_text_color
+//                    txtColor = R.color.reading_setting_text_color
+                    itemView.chapter_cache_tv.visibility = View.GONE
                 }
                 if (chapter.chapter_name?.equals(ReadState.chapterName) == true) {
-                    txtColor = R.color.read_item_catalog_current_chapter_text_color
+                    txtColor = R.color.dialog_recommend
+                } else {
+                    txtColor = R.color.reading_setting_text_color
                 }
 
-                txt.setTextColor(itemView.context.resources.getColor(txtColor))
+                (itemView.chapter_name_tv as TextView).text = chapter.chapter_name
+                (itemView.chapter_name_tv as TextView).setTextColor(itemView.context.resources.getColor(txtColor))
             }
         }
     }
@@ -319,6 +334,11 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
                 }
                 itemView.setOnLongClickListener { v ->
                     onItemLongClick?.onLongClick(v) ?: false
+                }
+
+                itemView.item_bookmark_delete.tag = data
+                itemView.item_bookmark_delete.setOnClickListener { v ->
+                    onItemClick?.onClick(v)
                 }
 
                 (itemView.item_bookmark_title as TextView).text = "${data.chapter_name}"

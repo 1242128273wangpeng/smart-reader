@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.graphics.Rect
 import android.os.Build
 import android.preference.PreferenceManager
+import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -23,6 +24,7 @@ import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.read.help.ReadSettingHelper
 import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.reader.ReaderViewModel
+import com.intelligent.reader.widget.SignSeekBar
 import iyouqu.theme.FrameActivity
 import iyouqu.theme.ThemeHelper
 import kotlinx.android.synthetic.txtmfqbyd.read_option_background.view.*
@@ -148,13 +150,23 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
         isCustomSpaceSet()
         initPageMode()
-        setFontSize()
 
         read_landscape.isChecked = ReadConfig.IS_LANDSCAPE
         read_full.isChecked = sharedPreferences!!.getBoolean("full_screen_read", false)
 
         resetBtn(Constants.isSlideUp)
 
+        font_seekbar.configBuilder
+                .min(10f)
+                .max(30f)
+                .sectionCount(10)
+                //                .thumbColor(ContextCompat.getColor(getContext(), R.color.color_60))
+//                .sectionTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
+                .sectionTextSize(16)
+                .setUnit("字号: ")
+                //                .sectionTextPosition(SignSeekBar.TextPosition.BELOW_SECTION_MARK)
+                .build()
+        setFontSize()
     }
 
     private fun resetBtn(isSlideUp: Boolean) {
@@ -272,8 +284,8 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
     fun showMenu(isShow: Boolean) {
         if (isShow) {
-            read_setting_reduce_text!!.isEnabled = ReadConfig.FONT_SIZE > 10
-            read_setting_increase_text!!.isEnabled = ReadConfig.FONT_SIZE < 30
+            font_reduce_iv.isEnabled = ReadConfig.FONT_SIZE > 10
+            font_plus_iv.isEnabled = ReadConfig.FONT_SIZE < 30
             novel_bottom_options.visibility = View.VISIBLE
             novel_bottom_options.startAnimation(popUpInAnimation)
 
@@ -369,9 +381,9 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
         read_setting_animation_group?.setOnCheckedChangeListener(this)
 
-        read_setting_reduce_text?.setOnClickListener(this)
+        font_reduce_iv?.setOnClickListener(this)
 
-        read_setting_increase_text?.setOnClickListener(this)
+        font_plus_iv?.setOnClickListener(this)
 
 
         read_setting_brightness_progress?.setOnSeekBarChangeListener(this)
@@ -383,7 +395,22 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         read_autoRead?.setOnClickListener(this)
         read_full?.setOnClickListener(this)
 
+        font_seekbar.setOnProgressChangedListener(object :SignSeekBar.OnProgressChangedListener{
+            override fun onProgressChanged(signSeekBar: SignSeekBar?, progress: Int, progressFloat: Float, fromUser: Boolean) {
+                ReadConfig.FONT_SIZE = progressFloat.toInt()
+                readSettingHelper?.saveFontSize()
+            }
 
+            override fun getProgressOnActionUp(signSeekBar: SignSeekBar?, progress: Int, progressFloat: Float) {
+                ReadConfig.FONT_SIZE = progressFloat.toInt()
+                readSettingHelper?.saveFontSize()
+            }
+
+            override fun getProgressOnFinally(signSeekBar: SignSeekBar?, progress: Int, progressFloat: Float, fromUser: Boolean) {
+                ReadConfig.FONT_SIZE = progressFloat.toInt()
+                readSettingHelper?.saveFontSize()
+            }
+        })
     }
 
     override fun onClick(v: View) {
@@ -434,7 +461,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_night_mode)
                 listener?.onChageNightMode()
             }
-            R.id.read_setting_reduce_text// 减小字号
+            R.id.font_reduce_iv// 减小字号
             -> {
                 if (ReadState.sequence < 0) {
                     return
@@ -442,7 +469,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_font_size_smaller)
                 decreaseFont()
             }
-            R.id.read_setting_increase_text// 加大字号
+            R.id.font_plus_iv// 加大字号
             -> {
                 if (ReadState.sequence < 0) {
                     return
@@ -614,11 +641,11 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     private fun decreaseFont() {
         if (ReadConfig.FONT_SIZE > 10) {
             if (ReadConfig.FONT_SIZE == 30) {
-                read_setting_increase_text!!.isEnabled = true
+                font_plus_iv.isEnabled = true
             }
             ReadConfig.FONT_SIZE -= 2
             if (ReadConfig.FONT_SIZE <= 10) {
-                read_setting_reduce_text!!.isEnabled = false
+                font_reduce_iv.isEnabled = false
             }
             readSettingHelper?.saveFontSize()
             setFontSize()
@@ -635,11 +662,11 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     private fun increaseFont() {
         if (ReadConfig.FONT_SIZE < 30) {
             if (ReadConfig.FONT_SIZE == 10) {
-                read_setting_reduce_text!!.isEnabled = true
+                font_reduce_iv.isEnabled = true
             }
             ReadConfig.FONT_SIZE += 2
             if (ReadConfig.FONT_SIZE >= 30) {
-                read_setting_increase_text!!.isEnabled = false
+                font_plus_iv.isEnabled = false
             }
             readSettingHelper!!.saveFontSize()
 
@@ -652,9 +679,10 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     }
 
     private fun setFontSize() {
-        if (read_setting_text_size != null) {
-            read_setting_text_size!!.text = ReadConfig.FONT_SIZE.toString()
-        }
+//        if (read_setting_text_size != null) {
+//            read_setting_text_size!!.text = ReadConfig.FONT_SIZE.toString()
+//        }
+        font_seekbar.setProgress(ReadConfig.FONT_SIZE.toFloat())
     }
 
     fun changeChapter() {

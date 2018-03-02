@@ -39,8 +39,8 @@
     <string name="read_setting_more">设置</string>
     <string name="bookshelf">书架</string>
     <string name="bookstore">书城</string>
-    <string name="read_speedfull">加速+</string>
-    <string name="read_speedless">减速-</string>
+    <string name="read_speedfull">加速</string>
+    <string name="read_speedless">减速</string>
     <string name="read_auto_speed">自动翻页速度:</string>
     <string name="network_error_retry">刷新</string>
     <string name="read_bookmark_empty">您还没有添加书签喔</string>

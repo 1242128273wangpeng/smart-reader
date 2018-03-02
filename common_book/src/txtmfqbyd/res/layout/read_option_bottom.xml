@@ -42,7 +42,6 @@
             android:layout_height="@dimen/bottom_nav2"
             android:layout_alignParentBottom="true"
             android:clickable="true"
-            android:alpha="0.9"
             android:gravity="center_vertical"
             android:background="@color/read_option_txtmfqbyd_bg"
             android:orientation="horizontal"

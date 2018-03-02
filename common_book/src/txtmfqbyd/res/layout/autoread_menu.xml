@@ -1,28 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/color_black_alpha_101010"
+              android:layout_height="wrap_content"
+              android:background="@color/read_option_txtmfqbyd_bg"
               android:orientation="vertical">
 
-    <View
-            android:id="@+id/autoreading_divide0"
-            android:visibility="invisible"
+
+    <!--<LinearLayout-->
+            <!--android:id="@+id/read_speed_layout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="54dp"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:visibility="gone"-->
+            <!--android:orientation="horizontal">-->
+
+        <!--<TextView-->
+                <!--android:id="@+id/autoread_down"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:layout_marginRight="@dimen/padding_16"-->
+                <!--android:layout_marginLeft="@dimen/padding_16"-->
+                <!--android:layout_weight="1"-->
+                <!--android:background="@drawable/dialog_download_bg"-->
+                <!--android:contentDescription="TODO"-->
+                <!--android:gravity="center"-->
+                <!--android:text="@string/read_speedless"-->
+                <!--android:textColor="@color/gray_orange_text_selector"-->
+                <!--android:textSize="14sp"/>-->
+
+        <!--<TextView-->
+                <!--android:id="@+id/autoread_up"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:layout_marginLeft="@dimen/padding_16"-->
+                <!--android:layout_marginRight="@dimen/padding_16"-->
+                <!--android:layout_weight="1"-->
+                <!--android:background="@drawable/dialog_download_bg"-->
+                <!--android:gravity="center"-->
+                <!--android:text="@string/read_speedfull"-->
+                <!--android:textColor="@color/gray_orange_text_selector"-->
+                <!--android:textSize="14sp"/>-->
+    <!--</LinearLayout>-->
+
+    <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/light_reading_divide"/>
+            android:layout_marginRight="@dimen/dimen_margin_16"
+            android:layout_marginLeft="@dimen/dimen_margin_16"
+            android:layout_height="wrap_content">
+
+
+        <TextView
+                android:id="@+id/autoread_down_tv"
+                android:text="@string/read_speedless"
+                android:layout_width="wrap_content"
+                android:textSize="@dimen/text_size_12"
+                android:textColor="@color/reading_setting_text_color"
+                android:drawablePadding="3dp"
+                android:drawableRight="@drawable/icon_auto_read_speed_down"
+                android:layout_centerVertical="true"
+                android:layout_height="wrap_content"/>
+
+        <com.intelligent.reader.widget.SignSeekBar
+                android:id="@+id/auto_read_seekbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:ssb_second_track_color="@color/read_option_progress_second_bg"
+                app:ssb_second_track_size="3dp"
+                app:ssb_show_section_mark="true"
+                app:ssb_show_thumb_text="false"
+                app:ssb_text_space="3dp"
+                android:layout_marginTop="25dp"
+                android:layout_toRightOf="@+id/autoread_down_tv"
+                android:layout_toLeftOf="@+id/autoread_up_tv"
+                app:ssb_auto_adjust_section_mark="true"
+                android:layout_marginRight="17dp"
+                android:layout_marginLeft="17dp"
+                app:ssb_thumb_bg_alpha="0.3"
+                app:ssb_thumb_radius="5dp"
+                app:ssb_sign_color="@color/read_option_progress_bg"
+                app:ssb_thumb_ratio="0.7"
+                app:ssb_thumb_text_size="16sp"
+                app:ssb_touch_to_seek="true"
+                app:ssb_track_color="@color/read_option_progress_bg"
+                app:ssb_track_size="3dp"/>
+
+        <TextView
+                android:id="@+id/autoread_up_tv"
+                android:text="@string/read_speedfull"
+                android:layout_width="wrap_content"
+                android:textSize="@dimen/text_size_12"
+                android:layout_centerVertical="true"
+                android:drawableRight="@drawable/icon_auto_read_speed_up"
+                android:layout_alignParentRight="true"
+                android:drawablePadding="3dp"
+                android:textColor="@color/reading_setting_text_color"
+                android:layout_height="wrap_content"/>
+    </RelativeLayout>
 
     <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:paddingLeft="18dp"
-            android:gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
             android:orientation="horizontal">
 
         <TextView
                 android:id="@+id/autoread_label"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:textColor="@color/color_gray_707070"
                 android:paddingRight="8dp"
                 android:gravity="center"
@@ -38,51 +124,17 @@
                 android:text="8"/>
     </LinearLayout>
 
-    <LinearLayout
-            android:id="@+id/read_speed_layout"
+    <View
+            android:id="@+id/change_source_bottom_divider"
             android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-        <TextView
-                android:id="@+id/autoread_down"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginRight="@dimen/padding_16"
-                android:layout_marginLeft="@dimen/padding_16"
-                android:layout_weight="1"
-                android:background="@drawable/dialog_download_bg"
-                android:contentDescription="TODO"
-                android:gravity="center"
-                android:text="@string/read_speedless"
-                android:textColor="@color/gray_orange_text_selector"
-                android:textSize="14sp"/>
-
-        <TextView
-                android:id="@+id/autoread_up"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="@dimen/padding_16"
-                android:layout_marginRight="@dimen/padding_16"
-                android:layout_weight="1"
-                android:background="@drawable/dialog_download_bg"
-                android:gravity="center"
-                android:text="@string/read_speedfull"
-                android:textColor="@color/gray_orange_text_selector"
-                android:textSize="14sp"/>
-    </LinearLayout>
+            android:layout_height="@dimen/dimen_view_width_0.5"
+            android:background="@color/text_color_plain"/>
 
     <TextView
             android:id="@+id/autoread_stop"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/padding_14"
-            android:layout_marginBottom="@dimen/padding_14"
-            android:layout_marginLeft="@dimen/padding_16"
-            android:layout_marginRight="@dimen/padding_16"
-            android:background="@drawable/dialog_download_bg"
             android:gravity="center"
             android:text="@string/cancel"
             android:textColor="@color/gray_orange_text_selector"

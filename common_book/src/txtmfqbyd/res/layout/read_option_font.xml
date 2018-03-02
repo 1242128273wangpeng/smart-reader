@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
               android:background="@color/read_option_txtmfqbyd_bg"
               android:layout_width="match_parent"
-              android:alpha="0.9"
               android:id="@+id/novel_read_font_layout"
               android:layout_height="140dp">
 
@@ -17,44 +17,91 @@
             android:layout_marginRight="@dimen/dimen_margin_19">
 
 
-        <LinearLayout
+        <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="horizontal"-->
+                <!--android:background="@drawable/read_option_group_border"-->
+                <!--android:layout_marginLeft="16dp"-->
+                <!--android:visibility="gone"-->
+                <!--android:layout_marginRight="16dp">-->
+
+            <!--<ImageView-->
+                    <!--android:id="@+id/read_setting_reduce_text"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="30dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:scaleType="center"-->
+                    <!--android:src="@drawable/read_option_font_down_selector"/>-->
+
+            <!--<TextView-->
+                    <!--android:id="@+id/read_setting_text_size"-->
+                    <!--android:layout_width="50dp"-->
+                    <!--android:layout_height="30dp"-->
+                    <!--android:gravity="center"-->
+                    <!--android:layout_centerInParent="true"-->
+                    <!--android:layout_marginLeft="@dimen/dimen_margin_5"-->
+                    <!--android:layout_marginRight="@dimen/dimen_margin_5"-->
+                    <!--android:text="16"-->
+                    <!--android:textColor="@color/read_option_text"-->
+                    <!--android:textSize="@dimen/text_content"-->
+                    <!--android:background="@drawable/read_option_font_center_divider"-->
+                    <!--/>-->
+
+            <!--<ImageView-->
+                    <!--android:id="@+id/read_setting_increase_text"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="30dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:scaleType="center"-->
+                    <!--android:src="@drawable/read_option_font_up_selector"/>-->
+        <!--</LinearLayout>-->
+
+
+        <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@drawable/read_option_group_border"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp">
+                android:layout_height="wrap_content">
 
             <ImageView
-                    android:id="@+id/read_setting_reduce_text"
-                    android:layout_width="0dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="1"
-                    android:scaleType="center"
-                    android:src="@drawable/read_option_font_down_selector"/>
+                    android:id="@+id/font_reduce_iv"
+                    android:layout_width="wrap_content"
+                    android:src="@drawable/icon_read_font_reduce"
+                    android:paddingTop="30dp"
+                    android:layout_height="match_parent"/>
 
-            <TextView
-                    android:id="@+id/read_setting_text_size"
-                    android:layout_width="50dp"
-                    android:layout_height="30dp"
-                    android:gravity="center"
-                    android:layout_centerInParent="true"
-                    android:layout_marginLeft="@dimen/dimen_margin_5"
-                    android:layout_marginRight="@dimen/dimen_margin_5"
-                    android:text="16"
-                    android:textColor="@color/read_option_text"
-                    android:textSize="@dimen/text_content"
-                    android:background="@drawable/read_option_font_center_divider"
-                    />
+            <com.intelligent.reader.widget.SignSeekBar
+                    android:id="@+id/font_seekbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:ssb_second_track_color="@color/read_option_progress_second_bg"
+                    app:ssb_second_track_size="3dp"
+                    app:ssb_show_section_mark="true"
+                    app:ssb_show_sign="true"
+                    android:layout_centerVertical="true"
+                    app:ssb_show_thumb_text="false"
+                    app:ssb_text_space="3dp"
+                    android:layout_toRightOf="@+id/font_reduce_iv"
+                    android:layout_toLeftOf="@+id/font_plus_iv"
+                    app:ssb_auto_adjust_section_mark="true"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp"
+                    app:ssb_thumb_bg_alpha="0.3"
+                    app:ssb_thumb_radius="5dp"
+                    app:ssb_sign_color="@color/read_option_progress_bg"
+                    app:ssb_thumb_ratio="0.7"
+                    app:ssb_thumb_text_size="16sp"
+                    app:ssb_touch_to_seek="true"
+                    app:ssb_track_color="@color/read_option_progress_bg"
+                    app:ssb_track_size="3dp"/>
 
             <ImageView
-                    android:id="@+id/read_setting_increase_text"
-                    android:layout_width="0dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="1"
-                    android:scaleType="center"
-                    android:src="@drawable/read_option_font_up_selector"/>
-        </LinearLayout>
+                    android:id="@+id/font_plus_iv"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/icon_read_font_plus"
+                    android:paddingTop="30dp"
+                    android:layout_height="match_parent"/>
+        </RelativeLayout>
     </LinearLayout>
 
 

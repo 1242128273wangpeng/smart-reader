@@ -5,7 +5,6 @@
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:background="@color/read_option_txtmfqbyd_bg"
-        android:alpha="0.9"
         android:layout_height="140dp">
 
     <RelativeLayout
@@ -33,7 +32,7 @@
                 android:minHeight="@dimen/dimen_view_height_3"
                 android:progressDrawable="@drawable/read_option_progress_brightness"
                 android:splitTrack="false"
-                android:thumb="@drawable/read_option_seekbar_slider"/>
+                android:thumb="@drawable/icon_read_seekbar_thumb"/>
 
         <ImageView
                 android:id="@+id/read_light_plus_iv"

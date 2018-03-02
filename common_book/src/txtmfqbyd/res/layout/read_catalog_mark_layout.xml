@@ -2,17 +2,17 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             android:background="@color/base_bg">
+             android:background="@color/read_option_txtmfqbyd_bg">
 
-    <View
-            android:id="@+id/rl_left_pop_bg"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#99000000"
-            android:visibility="gone"
-            android:focusable="true"
-            android:clickable="true">
-    </View>
+    <!--<View-->
+            <!--android:id="@+id/rl_left_pop_bg"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="#99000000"-->
+            <!--android:visibility="gone"-->
+            <!--android:focusable="true"-->
+            <!--android:clickable="true">-->
+    <!--</View>-->
 
     <RelativeLayout
             android:layout_width="match_parent"
@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="20dp"
                 android:paddingLeft="16dp"
-                android:paddingRight="16dp"
+                android:paddingRight="20dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true">
@@ -38,8 +38,8 @@
                     android:layout_alignParentLeft="true"
                     android:singleLine="true"
                     android:text="@string/app_name"
-                    android:textColor="@color/read_catalog_mark_title_color"
-                    android:textSize="@dimen/dimen_text_16"
+                    android:textColor="@color/reading_setting_text_color"
+                    android:textSize="@dimen/dimen_text_20"
                     android:textStyle="bold"/>
 
             <TextView
@@ -48,12 +48,12 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_below="@+id/catalog_novel_name"
-                    android:layout_marginTop="@dimen/dimen_margin_10"
+                    android:layout_marginTop="@dimen/dimen_margin_5"
                     android:layout_marginBottom="15dp"
                     android:maxLines="1"
                     android:text="@string/app_name"
                     android:textColor="@color/read_catalog_mark_des_color"
-                    android:textSize="@dimen/dimen_text_13"/>
+                    android:textSize="@dimen/dimen_text_12"/>
 
             <CheckBox
                     android:id="@+id/tv_catalog_novel_sort"
@@ -66,8 +66,8 @@
                     android:background="@drawable/read_catalog_mark_order_bg_selector"
                     android:button="@null"
                     android:textSize="@dimen/dimen_text_12"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"/>
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"/>
         </RelativeLayout>
 
         <FrameLayout
@@ -84,7 +84,7 @@
                     android:cacheColorHint="@color/color_black_00000000"
                     android:listSelector="@android:color/transparent"
                     android:layerType="software"
-            />
+                    />
 
             <com.intelligent.reader.view.RecyclerViewFastScroller
                     android:id="@+id/catalog_fastscroller"
@@ -94,7 +94,7 @@
                     android:layout_alignTop="@id/catalog_main"
                     android:layout_gravity="right"
                     android:layout_marginBottom="@dimen/margin_12"
-            />
+                    />
 
 
             <android.support.v7.widget.RecyclerView
@@ -115,7 +115,7 @@
                     android:visibility="gone"
                     android:layout_gravity="right"
                     android:layout_marginBottom="@dimen/margin_10"
-            />
+                    />
 
             <LinearLayout
                     android:id="@+id/rl_layout_empty_online"
@@ -132,13 +132,23 @@
                         android:gravity="center"
                         android:layout_marginTop="115dp"
                         android:src="@mipmap/read_catalog_mark_empty"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textColor="@color/text_color_light"
+                        android:textSize="@dimen/text_size_15"
+                        android:text="@string/novel_no_bookmark"
+                        android:layout_marginTop="16dp"/>
             </LinearLayout>
         </FrameLayout>
 
         <RadioGroup
                 android:id="@+id/read_rg_catlog_mark"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="60dp"
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:layout_alignParentBottom="true"
@@ -149,13 +159,21 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:layout_centerVertical="true"
                     android:button="@null"
-                    android:background="@null"
+                    android:background="@color/read_option_txtmfqbyd_pressed_bg"
                     android:checked="true"
                     android:gravity="center"
                     android:text="@string/read_catalog"
+                    android:textSize="@dimen/text_size_16"
                     android:textColor="@drawable/read_catalog_mark_navi_color_selector"/>
+
+            <View
+                    android:id="@+id/change_source_bottom_divider"
+                    android:layout_width="@dimen/dimen_view_width_0.5"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="13dp"
+                    android:layout_marginBottom="13dp"
+                    android:background="@color/text_color_plain"/>
 
             <RadioButton
                     android:id="@+id/tab_bookmark"
@@ -163,11 +181,11 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:button="@null"
-                    android:background="@null"
+                    android:background="@color/read_option_txtmfqbyd_pressed_bg"
                     android:checked="false"
-                    android:layout_centerVertical="true"
                     android:gravity="center"
                     android:text="@string/read_bookmark"
+                    android:textSize="@dimen/text_size_16"
                     android:textColor="@drawable/read_catalog_mark_navi_color_selector"/>
         </RadioGroup>
 
@@ -186,6 +204,6 @@
                 android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-        />
+                />
     </RelativeLayout>
 </FrameLayout>

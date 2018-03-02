@@ -257,11 +257,12 @@
     <color name="color_yellow_d6a628">#d6a628</color>
     <color name="color_yellow_8a6e26">#8a6e26</color>
     <color name="color_gray_c1bebe">#c1bebe</color>
-    
-    
+
+
     <color name="read_option_main">#C2B282</color>
     <color name="read_option_bg">#f2212020</color>
-    <color name="read_option_txtmfqbyd_bg">#FF191C1F</color>
+    <color name="read_option_txtmfqbyd_bg">#E6191C1F</color>
+    <color name="read_option_txtmfqbyd_pressed_bg">#191C1F</color>
     <color name="read_option_text">#65ffffff</color>
     <color name="read_option_text_pressed">#4cffffff</color>
     <color name="read_option_divider">#373737</color>
@@ -274,6 +275,8 @@
     <color name="read_option_page_bg5">#E2ECF6</color>
     <color name="read_option_page_bg6">#111111</color>
     <color name="read_option_page_stroke_bg6">#666666</color>
+    <color name="read_option_progress_second_bg">#F4F5F7</color>
+    <color name="read_option_progress_bg">#5D646E</color>
 
 
     <color name="primary">#222222</color>
@@ -468,14 +471,14 @@
     <color name="color_green_a4c277">#a4c277</color>
     <color name="color_green_4cb78e">#4cb78e</color>
     <color name="color_green_86ceb2">#86ceb2</color>
-    
+
     <!--带点绿-->
     <color name="color_green_1fb7c3">#1fb7c3</color>
-    
+
     <!--草木绿-->
     <color name="color_green_ff0000">#ff0000</color>
-    
-    
+
+
     <!-- ui优化-->
     <color name="color_home_title_btn_back">#3d3d3d</color>
     <color name="color_home_search">#b5b5b5</color>
@@ -484,10 +487,12 @@
     <color name="color_e8e7e7">#E8E7E7</color>
     <color name="color_303030">#303030</color>
     <color name="color_black_858C96">#858C96</color>
-    
+
     <color name="text_color_dark">#FF212832</color>
     <color name="text_color_plain">#FF5D646E</color>
     <color name="text_color_light">#FF9097A1</color>
     <color name="text_color_weak">#FFADB4BE</color>
+
+    <color name="divider_bg">#5D646E</color>
 
 </resources>

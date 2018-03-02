@@ -1,16 +1,19 @@
 package com.intelligent.reader.read.page;
 
 import com.intelligent.reader.R;
+import com.intelligent.reader.widget.SignSeekBar;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.utils.StatServiceUtils;
+import net.lzbook.kit.utils.ToastUtils;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +34,7 @@ public class AutoReadMenu extends LinearLayout implements OnClickListener {
     private TextView autoread_rate;
     private TextView autoread_label;
     private TextView autoread_stop;
+    private SignSeekBar mSignSeekBar;
     private OnAutoMemuListener autoMemuListener;
 
     /**
@@ -75,13 +79,27 @@ public class AutoReadMenu extends LinearLayout implements OnClickListener {
 
     private void init() {
         LayoutInflater.from(getContext()).inflate(R.layout.autoread_menu, this);
-        autoread_up = (TextView) findViewById(R.id.autoread_up);
-        autoread_down = (TextView) findViewById(R.id.autoread_down);
+        autoread_up = (TextView) findViewById(R.id.autoread_up_tv);
+        autoread_down = (TextView) findViewById(R.id.autoread_down_tv);
         autoread_rate = (TextView) findViewById(R.id.autoread_rate);
         autoread_stop = (TextView) findViewById(R.id.autoread_stop);
         autoread_label = (TextView) findViewById(R.id.autoread_label);
+        mSignSeekBar = (SignSeekBar) findViewById(R.id.auto_read_seekbar);
         mAutoReadSp = PreferenceManager.getDefaultSharedPreferences(getContext());
         mAutoReadSpeed = mAutoReadSp.getInt(AUTO_READ_SPEED_KEY, AUTO_READ_DEFAULS_SPEED);
+
+        mSignSeekBar.getConfigBuilder()
+                .min(1)
+                .max(20)
+                .progress(mAutoReadSpeed)
+                .sectionCount(20)
+//                .thumbColor(ContextCompat.getColor(getContext(), R.color.color_60))
+//                .sectionTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary))
+//                .sectionTextSize(16)
+//                .setUnit("字号: ")
+//                .sectionTextPosition(SignSeekBar.TextPosition.BELOW_SECTION_MARK)
+                .build();
+
         initListener();
     }
 
@@ -89,6 +107,35 @@ public class AutoReadMenu extends LinearLayout implements OnClickListener {
         autoread_up.setOnClickListener(this);
         autoread_down.setOnClickListener(this);
         autoread_stop.setOnClickListener(this);
+
+        mSignSeekBar.setOnProgressChangedListener(new SignSeekBar.OnProgressChangedListener() {
+            @Override
+            public void onProgressChanged(SignSeekBar signSeekBar, int progress, float progressFloat, boolean fromUser) {
+                if (autoMemuListener != null) {
+                    autoMemuListener.setAutoSpeed(autoReadFactor());
+                    setAutoReadSpeed(progress);
+                    setRateValue();
+                }
+            }
+
+            @Override
+            public void getProgressOnActionUp(SignSeekBar signSeekBar, int progress, float progressFloat) {
+                if (autoMemuListener != null) {
+                    autoMemuListener.setAutoSpeed(autoReadFactor());
+                    setAutoReadSpeed(progress);
+                    setRateValue();
+                }
+            }
+
+            @Override
+            public void getProgressOnFinally(SignSeekBar signSeekBar, int progress, float progressFloat, boolean fromUser) {
+                if (autoMemuListener != null) {
+                    autoMemuListener.setAutoSpeed(autoReadFactor());
+                    setAutoReadSpeed(progress);
+                    setRateValue();
+                }
+            }
+        });
     }
 
     public void setRateValue() {
@@ -123,19 +170,21 @@ public class AutoReadMenu extends LinearLayout implements OnClickListener {
     @Override
     public void onClick(View view) {
         int i = view.getId();
-        if (i == R.id.autoread_up) {
+        if (i == R.id.autoread_up_tv) {
             StatServiceUtils.statAppBtnClick(getContext(), StatServiceUtils.rb_click_auto_read_speed_up);
             if (autoMemuListener != null) {
                 autoMemuListener.setAutoSpeed(autoReadFactor());
                 setAutoReadSpeed(mAutoReadSpeed + 1);
+                mSignSeekBar.setProgress(mAutoReadSpeed + 1);
                 setRateValue();
             }
 
-        } else if (i == R.id.autoread_down) {
+        } else if (i == R.id.autoread_down_tv) {
             StatServiceUtils.statAppBtnClick(getContext(), StatServiceUtils.rb_click_auto_read_speed_down);
             if (autoMemuListener != null) {
                 autoMemuListener.setAutoSpeed(autoReadFactor());
                 setAutoReadSpeed(mAutoReadSpeed - 1);
+                mSignSeekBar.setProgress(mAutoReadSpeed - 1);
                 setRateValue();
             }
 

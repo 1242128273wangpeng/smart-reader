@@ -199,42 +199,6 @@ class CataloguesPresenter(var act: Activity, var book: Book, var requestItem: Re
     }
 
 
-    //转码阅读，目前只有免费小说书城有
-    fun showReadingSourceDialog() {
-        val readingSourceDialog = MyDialog(activity!!.get(), R.layout.dialog_read_source, Gravity.CENTER)
-        readingSourceDialog.setCanceledOnTouchOutside(true)
-        val title = readingSourceDialog.findViewById(R.id.dialog_top_title) as TextView
-        title.text = "转码"
-
-        val cancle = readingSourceDialog.findViewById(R.id.change_source_original_web) as TextView
-        cancle.setText(R.string.cancel)
-        val continueRead = readingSourceDialog.findViewById(R.id.change_source_continue) as TextView
-
-        cancle.setOnClickListener {
-            val data1 = HashMap<String, String>()
-            data1.put("type", "2")
-            StartLogClickUtil.upLoadEventLog(activity!!.get(), StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.CATALOG_TRANSCODEPOPUP, data1)
-            readingSourceDialog.dismiss()
-        }
-        continueRead.setOnClickListener {
-            val data1 = HashMap<String, String>()
-            data1.put("type", "1")
-            StartLogClickUtil.upLoadEventLog(activity!!.get(), StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.CATALOG_TRANSCODEPOPUP, data1)
-            readingBook()
-            if (readingSourceDialog.isShowing()) {
-                readingSourceDialog.dismiss()
-            }
-        }
-
-        if (!readingSourceDialog.isShowing()) {
-            try {
-                readingSourceDialog.show()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-
     //进入阅读页
     private fun readingBook() {
         if (requestItem == null || book == null) {

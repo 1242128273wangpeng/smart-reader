@@ -4,7 +4,6 @@
               android:id="@+id/novel_read_mode_layout"
               android:layout_width="match_parent"
               android:background="@color/read_option_txtmfqbyd_bg"
-              android:alpha="0.9"
               android:layout_height="140dp">
 
     <TextView

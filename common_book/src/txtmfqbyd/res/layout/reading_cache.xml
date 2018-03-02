@@ -1,79 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:layout_gravity="center"
+<!--<FrameLayout -->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="match_parent"-->
+<!--android:layout_gravity="center"-->
+<!--android:scrollbars="vertical">-->
 
-             android:scrollbars="vertical">
-    
-    <LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/read_dialog_layout"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_gravity="bottom"
+              android:background="@color/read_option_txtmfqbyd_bg"
+              android:alpha="0.9"
+              android:orientation="vertical">
+
+
+    <TextView
+            android:id="@+id/reading_all_down"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:orientation="vertical">
-        
-        <LinearLayout
-                android:id="@+id/read_dialog_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/read_option_bg"
-                android:orientation="vertical">
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="20dp"
+            android:gravity="center"
+            android:text="@string/reading_all_down"
+            android:textColor="@color/reading_setting_text_color"
+            android:textSize="@dimen/text_size_14"/>
 
-            <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="@dimen/padding_10"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:text="缓存方式"
-                    android:gravity="center"
-                    android:textColor="@color/read_option_text"
-                    android:textSize="18sp"/>
-            
-            <TextView
-                    android:id="@+id/reading_all_down"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="@dimen/padding_10"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:background="@drawable/read_option_border_bg_click"
-                    android:gravity="center"
-                    android:text="@string/reading_all_down"
-                    android:textColor="@drawable/read_option_txt_click_color"
-                    android:textSize="16sp"/>
-            <TextView
-                    android:visibility="gone"
-                    android:id="@+id/reading_current_down"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="@dimen/padding_10"
-                    android:layout_marginTop="@dimen/padding_10"
-                    android:layout_marginLeft="@dimen/padding_10"
-                    android:layout_marginRight="@dimen/padding_10"
-                    android:background="@drawable/read_option_border_bg_click"
-                    android:gravity="center"
-                    android:text="@string/reading_current_down"
-                    android:textColor="@drawable/read_option_txt_click_color"
-                    android:textSize="14sp"/>
-            <TextView
-                    android:id="@+id/reading_cache_cancel"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="20dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:background="@drawable/read_option_border_bg_click"
-                    android:gravity="center"
-                    android:text="@string/cancel"
-                    android:textColor="@drawable/read_option_txt_click_color"
-                    android:textSize="16sp"/>
-        </LinearLayout>
-    </LinearLayout>
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_view_width_0.5"
+            android:background="@color/text_color_plain"/>
 
-</FrameLayout>
+    <TextView
+            android:id="@+id/reading_current_down"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="@string/reading_current_down"
+            android:textColor="@color/reading_setting_text_color"
+            android:textSize="@dimen/text_size_14"/>
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_view_width_0.5"
+            android:background="@color/text_color_plain"/>
+
+    <TextView
+            android:id="@+id/reading_cache_cancel"
+            android:layout_width="match_parent"
+            android:layout_margin="20dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="@string/cancel"
+            android:textColor="@color/reading_setting_text_color"
+            android:textSize="@dimen/text_size_14"/>
+</LinearLayout>
+
+        <!--</FrameLayout>-->

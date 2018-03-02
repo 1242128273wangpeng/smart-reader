@@ -3,6 +3,7 @@ package com.intelligent.reader.read.help;
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.SourceAdapter;
 import com.intelligent.reader.read.mode.ReadState;
+import com.intelligent.reader.widget.drawer.ChangeSourcePopWindow;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.download.DownloadState;
@@ -192,84 +193,92 @@ public class NovelHelper {
         }
     }
 
-    public void showSourceDialog( String curl, final ArrayList<Source> sources) {
+    public void showSourceDialog(String curl, final ArrayList<Source> sources) {
         if (actReference == null || actReference.get() == null || actReference.get().isFinishing()) {
             return;
         }
-        final Activity activity = actReference.get();
-        final MyDialog sourceDialog = new MyDialog(activity, R.layout.dialog_read_source, Gravity.CENTER);
-        sourceDialog.setCanceledOnTouchOutside(true);
-        TextView change_source_disclaimer_message = (TextView) sourceDialog.findViewById(R.id.change_source_disclaimer_message);
-        TextView change_source_original_web = (TextView) sourceDialog.findViewById(R.id.change_source_original_web);
-        TextView change_source_continue = (TextView) sourceDialog.findViewById(R.id.change_source_continue);
-
-        if (ReadState.INSTANCE.getCurrentChapter() != null && ReadState.INSTANCE.getCurrentChapter().status != Chapter.Status.CONTENT_NORMAL) {
-            change_source_disclaimer_message.setText(ReadState.INSTANCE.getCurrentChapter().status.tips);
-            change_source_original_web.setVisibility(View.INVISIBLE);
-            change_source_continue.setText(R.string.jump_next_chapter);
-        }
-
-        ListView change_source_list = (ListView) sourceDialog.findViewById(R.id.change_source_list);
-
-        final SourceAdapter sourceListAdapter = new SourceAdapter(activity, sources);
-        change_source_list.setAdapter(sourceListAdapter);
-
-        if (ReadConfig.INSTANCE.getIS_LANDSCAPE()) {
-            if (sources.size() > 1) {
-                change_source_list.getLayoutParams().height = activity.getResources().getDimensionPixelOffset(R.dimen.dimen_view_height_80);
-            }
-        } else {
-            if (sources.size() > 3) {
-                change_source_list.getLayoutParams().height = activity.getResources().getDimensionPixelOffset(R.dimen.dimen_view_height_135);
-            }
-        }
-
-        change_source_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Source source = (Source) sourceListAdapter.getItem(position);
-
-                if (source != null && !TextUtils.isEmpty(source.host)) {
-                    helperCallBack.showCatalogActivity(source);
-                }
-
-                Map<String, String> map1 = new HashMap<String, String>();
-                map1.put("type", "2");
-                StartLogClickUtil.upLoadEventLog(actReference.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
-                dismissDialog(sourceDialog);
-            }
-        });
-
-        change_source_original_web.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Map<String, String> map1 = new HashMap<String, String>();
-                map1.put("type", "1");
-                StartLogClickUtil.upLoadEventLog(actReference.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
-                dismissDialog(sourceDialog);
-            }
-        });
-        change_source_continue.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Map<String, String> map1 = new HashMap<String, String>();
-                map1.put("type", "1");
-                StartLogClickUtil.upLoadEventLog(actReference.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
-                dismissDialog(sourceDialog);
-                if (ReadState.INSTANCE.getCurrentChapter() != null && ReadState.INSTANCE.getCurrentChapter().status != Chapter.Status.CONTENT_NORMAL) {
-                    if (helperCallBack != null) {
-                        helperCallBack.jumpNextChapter();
+        ChangeSourcePopWindow.newBuilder(actReference.get()).setSourceData(sources)
+                .setOnSourceItemClick(new ChangeSourcePopWindow.OnSourceItemClickListener() {
+                    @Override
+                    public void onSourceItemClick(Source source) {
+                        helperCallBack.showCatalogActivity(source);
                     }
-                }
-            }
-        });
-        if (!sourceDialog.isShowing()) {
-            try {
-                sourceDialog.show();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+                }).build().show();
+
+//        final Activity activity = actReference.get();
+//        final MyDialog sourceDialog = new MyDialog(activity, R.layout.dialog_read_source, Gravity.CENTER);
+//        sourceDialog.setCanceledOnTouchOutside(true);
+//        TextView change_source_disclaimer_message = (TextView) sourceDialog.findViewById(R.id.change_source_disclaimer_message);
+//        TextView change_source_original_web = (TextView) sourceDialog.findViewById(R.id.change_source_original_web);
+//        TextView change_source_continue = (TextView) sourceDialog.findViewById(R.id.change_source_continue);
+//
+//        if (ReadState.INSTANCE.getCurrentChapter() != null && ReadState.INSTANCE.getCurrentChapter().status != Chapter.Status.CONTENT_NORMAL) {
+//            change_source_disclaimer_message.setText(ReadState.INSTANCE.getCurrentChapter().status.tips);
+//            change_source_original_web.setVisibility(View.INVISIBLE);
+//            change_source_continue.setText(R.string.jump_next_chapter);
+//        }
+//
+//        ListView change_source_list = (ListView) sourceDialog.findViewById(R.id.change_source_list);
+//
+//        final SourceAdapter sourceListAdapter = new SourceAdapter(activity, sources);
+//        change_source_list.setAdapter(sourceListAdapter);
+//
+//        if (ReadConfig.INSTANCE.getIS_LANDSCAPE()) {
+//            if (sources.size() > 1) {
+//                change_source_list.getLayoutParams().height = activity.getResources().getDimensionPixelOffset(R.dimen.dimen_view_height_80);
+//            }
+//        } else {
+//            if (sources.size() > 3) {
+//                change_source_list.getLayoutParams().height = activity.getResources().getDimensionPixelOffset(R.dimen.dimen_view_height_135);
+//            }
+//        }
+//
+//        change_source_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Source source = (Source) sourceListAdapter.getItem(position);
+//
+//                if (source != null && !TextUtils.isEmpty(source.host)) {
+//                    helperCallBack.showCatalogActivity(source);
+//                }
+//
+//                Map<String, String> map1 = new HashMap<String, String>();
+//                map1.put("type", "2");
+//                StartLogClickUtil.upLoadEventLog(actReference.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
+//                dismissDialog(sourceDialog);
+//            }
+//        });
+//
+//        change_source_original_web.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Map<String, String> map1 = new HashMap<String, String>();
+//                map1.put("type", "1");
+//                StartLogClickUtil.upLoadEventLog(actReference.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
+//                dismissDialog(sourceDialog);
+//            }
+//        });
+//        change_source_continue.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Map<String, String> map1 = new HashMap<String, String>();
+//                map1.put("type", "1");
+//                StartLogClickUtil.upLoadEventLog(actReference.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
+//                dismissDialog(sourceDialog);
+//                if (ReadState.INSTANCE.getCurrentChapter() != null && ReadState.INSTANCE.getCurrentChapter().status != Chapter.Status.CONTENT_NORMAL) {
+//                    if (helperCallBack != null) {
+//                        helperCallBack.jumpNextChapter();
+//                    }
+//                }
+//            }
+//        });
+//        if (!sourceDialog.isShowing()) {
+//            try {
+//                sourceDialog.show();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     /**
@@ -496,7 +505,6 @@ public class NovelHelper {
     }
 
 
-
     /**
      * 处理章节内容
      * <p/>
@@ -507,7 +515,7 @@ public class NovelHelper {
      * @return true: NORMAL  false: ERROR
      */
     public synchronized boolean getChapterContent(Activity activity, Chapter currentChapter, Book mBook) {
-        if (mBook == null )
+        if (mBook == null)
             return false;
         // 更新chapter状态
         BaseBookHelper.setChapterStatus(currentChapter);

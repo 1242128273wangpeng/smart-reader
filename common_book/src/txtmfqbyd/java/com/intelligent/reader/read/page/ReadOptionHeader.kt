@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import android.widget.PopupWindow
 import com.intelligent.reader.R
+import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.presenter.read.ReadOption
 import com.intelligent.reader.read.mode.ReadState
 import kotlinx.android.synthetic.txtmfqbyd.read_option_header.view.*
@@ -89,6 +90,8 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
         header_ibtn_download.setOnClickListener {
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_btn)
             presenter?.cache()
+
+            (context as ReadingActivity).showMenu(false)
         }
 
         header_ibtn_more?.setOnClickListener {
@@ -109,6 +112,8 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
             inflate.read_option_pop_change_source.setOnClickListener {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_change_source_btn)
                 presenter?.changeSource()
+//                presenter?.feedback()
+                (context as ReadingActivity).showMenu(false)
                 popupWindow.dismiss()
             }
 
@@ -181,6 +186,7 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
             read_option_pop_feedback?.setOnClickListener {
                 //                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_read_head_bookinfo)
                 presenter?.feedback()
+                (context as ReadingActivity).showMenu(false)
                 popupWindow.dismiss()
             }
         }
@@ -215,6 +221,8 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
             }
             novel_bookmark.setImageResource(typeChangeMark)
         }
+
+        header_ibtn_bookmark.isSelected = isMarkPage
 
         if (novel_name != null) {
             novel_name.text = ReadState.book.name

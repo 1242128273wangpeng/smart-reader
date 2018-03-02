@@ -4,7 +4,6 @@
               android:orientation="vertical"
               android:id="@+id/novel_jump_layout"
               android:layout_width="match_parent"
-              android:alpha="0.9"
               android:layout_height="wrap_content">
 
     <RelativeLayout
@@ -37,7 +36,7 @@
                 android:minHeight="3dp"
                 android:progressDrawable="@drawable/read_option_progress_brightness"
                 android:splitTrack="false"
-                android:thumb="@drawable/read_option_seekbar_slider"/>
+                android:thumb="@drawable/icon_read_seekbar_thumb"/>
 
         <ImageView
                 android:id="@+id/novel_jump_next"

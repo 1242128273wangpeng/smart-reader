@@ -52,6 +52,7 @@ public class SourceAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             convertView = LayoutInflater.from(context).inflate(R.layout.item_book_end_serial_chapter, parent, false);
             viewHolder.book_source_name = (TextView) convertView.findViewById(R.id.site_text);
+            viewHolder.bestSource_text = (TextView) convertView.findViewById(R.id.bestSource_text);
             viewHolder.book_source_chapter_name = (TextView) convertView.findViewById(R.id.new_text);
             viewHolder.book_source_update_time = (TextView) convertView.findViewById(R.id.time_text);
             convertView.setTag(viewHolder);
@@ -59,6 +60,11 @@ public class SourceAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         viewHolder.book_source_name.setText("来源" + (position + 1) + ": " + source.host);
+        if (position == 0) {
+            viewHolder.bestSource_text.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.bestSource_text.setVisibility(View.GONE);
+        }
         viewHolder.book_source_chapter_name.setText(source.last_chapter_name);
         viewHolder.book_source_update_time.setText(Tools.compareTime(AppUtils.formatter, source.update_time));
         return convertView;
@@ -68,5 +74,6 @@ public class SourceAdapter extends BaseAdapter {
         public TextView book_source_name;
         public TextView book_source_chapter_name;
         public TextView book_source_update_time;
+        public TextView bestSource_text;
     }
 }
