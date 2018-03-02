@@ -110,7 +110,7 @@ class CatalogMarkPresenter : CatalogMark.Presenter {
         if (requestItem.host == Constants.QG_SOURCE) {
             isChapterExist = DataCache.isChapterExists(chapter.chapter_id, chapter.book_id)
         } else {
-            isChapterExist = BookHelper.isChapterExist(chapter.sequence, ReadState.book_id)
+            isChapterExist = BookHelper.isChapterExist(chapter)
         }
         if (!isChapterExist && NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
             BaseBookApplication.getGlobalContext().toastShort(R.string.no_net)

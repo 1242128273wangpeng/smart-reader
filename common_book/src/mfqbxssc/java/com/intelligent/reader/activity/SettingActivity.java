@@ -8,12 +8,15 @@ import com.intelligent.reader.util.EventBookStore;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.component.service.DownloadService;
+import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.book.view.ConsumeEvent;
 import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.book.view.SwitchButton;
 import net.lzbook.kit.cache.DataCleanManager;
 import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.constants.SPKeys;
 import net.lzbook.kit.data.bean.BookTask;
+import net.lzbook.kit.data.bean.ReadConfig;
 import net.lzbook.kit.user.Platform;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.user.bean.LoginResp;
@@ -88,6 +91,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     private LinearLayout rl_setting_layout;//背景
     private RelativeLayout rl_style_change;//主题切换
     private SwitchButton bt_night_shift;//夜间模式切换按钮
+    private SwitchButton bt_wifi_auto;//wifi下自动缓存
     private RelativeLayout rl_readpage_setting;//阅读页设置
     private RelativeLayout rl_setting_more;//更多设置
     private RelativeLayout rl_feedback;//意见反馈
@@ -144,6 +148,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         top_setting_back = (ImageView) findViewById(R.id.top_setting_back);
         rl_style_change = (RelativeLayout) findViewById(R.id.rl_style_change);
         bt_night_shift = (SwitchButton) findViewById(R.id.bt_night_shift);
+        bt_wifi_auto = (SwitchButton) findViewById(R.id.bt_wifi_auto);
         rl_readpage_setting = (RelativeLayout) findViewById(R.id.rl_readpage_setting);
         rl_history_setting = (RelativeLayout) findViewById(R.id.rl_history_setting);
         rl_setting_more = (RelativeLayout) findViewById(R.id.rl_setting_more);
@@ -183,45 +188,6 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             txt_login_des = (TextView) findViewById(desid);
         }
 
-        //字体颜色
-        mTextViewList = new ArrayList<>();
-        TextView[] tvNum = new TextView[]{tv_style_change, tv_night_shift, tv_history_setting, tv_readpage_setting, tv_setting_more,
-                tv_feedback, tv_mark, text_check_update, text_clear_cache, text_disclaimer_statement};
-
-        for (TextView textView : tvNum) {
-            mTextViewList.add(textView);
-        }
-
-        if (txt_login_des != null)
-            mTextViewList.add(txt_login_des);
-
-
-        //条目背景
-        mRelativeLayoutList = new ArrayList<>();
-        RelativeLayout[] rlNum = new RelativeLayout[]{rl_style_change, rl_history_setting, rl_readpage_setting, rl_setting_more,
-                rl_feedback, rl_mark, checkUpdateGuideRL, clear_cache_rl, disclaimer_statement_rl};
-
-        for (RelativeLayout relativeLayout : rlNum) {
-            mRelativeLayoutList.add(relativeLayout);
-        }
-
-
-        //15条分割线 和 3个gap
-        mDivider = new ArrayList<>();
-        View[] viewNum = new View[]{findViewById(R.id.v_divider3), findViewById(R.id.v_divider4), findViewById(R.id.v_divider5), findViewById(R.id.v_divider6),
-                findViewById(R.id.v_divider7), findViewById(R.id.v_divider8), findViewById(R.id.v_divider9), findViewById(R.id.v_divider10), findViewById(R.id.v_divider11), findViewById(R.id.v_divider12), findViewById(R.id.v_divider13),
-                findViewById(R.id.v_divider14), findViewById(R.id.v_divider15), findViewById(R.id.v_divider16), findViewById(R.id.v_divider17), findViewById(R.id.v_divider18)};
-
-        for (View view : viewNum) {
-            mDivider.add(view);
-        }
-
-        mGap = new ArrayList<>();
-        mGap.add(findViewById(R.id.v_gap2));
-        mGap.add(findViewById(R.id.v_gap3));
-        mGap.add(findViewById(R.id.v_gap4));
-        mGap.add(findViewById(R.id.v_gap5));
-
         if (mThemeHelper.isNight()) {
             StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_day_shift);
             tv_night_shift.setText(R.string.mode_day);
@@ -231,6 +197,8 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             tv_night_shift.setText(R.string.mode_night);
             bt_night_shift.setChecked(false);
         }
+
+        bt_wifi_auto.setChecked(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, true));
 
     }
 
@@ -299,6 +267,9 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         }
         if (bt_night_shift != null) {
             bt_night_shift.setOnCheckedChangeListener(this);
+        }
+        if (bt_wifi_auto != null) {
+            bt_wifi_auto.setOnCheckedChangeListener(this);
         }
         if (btn_logout != null) {
             findViewById(R.id.rl_logout).setOnClickListener(this);
@@ -594,15 +565,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                         public void run() {
                             super.run();
 
-                            DownloadService downloadService = BaseBookApplication.getDownloadService();
-                            if (downloadService != null) {
-                                ArrayList<BookTask> bookTasks = downloadService.cancelAll();
-                                if (bookTasks != null) {
-                                    for (BookTask task : bookTasks) {
-                                        downloadService.dellTask(task.book_id);
-                                    }
-                                }
-                            }
+                            CacheManager.INSTANCE.removeAll();
 
                             UIHelper.clearAppCache();
                             DataCleanManager.clearAllCache(getApplicationContext());
@@ -644,14 +607,28 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
 
     public void goBackToHome() {
         if (!currentThemeMode.equals(mThemeHelper.getMode()) || isStyleChanged) {
-            Intent themIntent = new Intent(SettingActivity.this, HomeActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_SWITCH_THEME);
-            themIntent.putExtras(bundle);
-            startActivity(themIntent);
+            if (getSwipeBackHelper() == null || !getSwipeBackHelper().isSliding()) {//滑动返回已结束
+                onThemeSwitch();
+            }
         } else {
-            finish();
+            super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onSlideFinishAnimEnd() {
+        super.onSlideFinishAnimEnd();
+        if (!currentThemeMode.equals(mThemeHelper.getMode()) || isStyleChanged) {
+            onThemeSwitch();
+        }
+    }
+
+    private void onThemeSwitch() {
+        Intent themIntent = new Intent(SettingActivity.this, HomeActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_SWITCH_THEME);
+        themIntent.putExtras(bundle);
+        startActivity(themIntent);
     }
 
     private void dismissDialog() {
@@ -664,23 +641,31 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     //夜间模式切换按钮的回调
     @Override
     public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.NIGHTMODE);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor edit = sharedPreferences.edit();
-        if (isChecked) {
-            tv_night_shift.setText(R.string.mode_day);
-            edit.putInt("current_light_mode", Constants.MODE);
-            Constants.MODE = 61;
-            mThemeHelper.setMode(ThemeMode.NIGHT);
-        } else {
-            tv_night_shift.setText(R.string.mode_night);
-            edit.putInt("current_night_mode", Constants.MODE);
-            Constants.MODE = sharedPreferences.getInt("current_light_mode", 51);
-            mThemeHelper.setMode(ThemeMode.THEME1);
+        if (view.getId() == R.id.bt_night_shift) {
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.NIGHTMODE);
+            if (isChecked) {
+                tv_night_shift.setText(R.string.mode_day);
+                edit.putInt("current_light_mode", ReadConfig.INSTANCE.getMODE());
+                ReadConfig.INSTANCE.setMODE(61);
+                mThemeHelper.setMode(ThemeMode.NIGHT);
+            } else {
+                tv_night_shift.setText(R.string.mode_night);
+                edit.putInt("current_night_mode", ReadConfig.INSTANCE.getMODE());
+                ReadConfig.INSTANCE.setMODE(sharedPreferences.getInt("current_light_mode", 51));
+                mThemeHelper.setMode(ThemeMode.THEME1);
+            }
+            edit.putInt("content_mode", ReadConfig.INSTANCE.getMODE());
+            edit.apply();
+            nightShift(isChecked, true);
+        } else if (view.getId() == R.id.bt_wifi_auto) {
+            edit.putBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, isChecked);
+            edit.apply();
+            Map<String, String> data = new HashMap<>();
+            data.put("type", isChecked ? "1" : "0");
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.WIFI_AUTOCACHE, data);
         }
-        edit.putInt("content_mode", Constants.MODE);
-        edit.apply();
-        nightShift(isChecked, true);
     }
 
     private void CancelTask() {

@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import java.io.Serializable;
 
-public class Book implements Serializable, Comparable<Book> {
+public class Book implements Serializable, Comparable<Book>, Cloneable {
     //0:线上书籍
     public static final int TYPE_ONLINE = 0;
     private static final long serialVersionUID = -6628109520747996395L;
@@ -115,6 +115,11 @@ public class Book implements Serializable, Comparable<Book> {
     @Override
     public int compareTo(Book another) {
         return this.sequence_time == another.sequence_time ? 0 : (this.sequence_time < another.sequence_time ? 1 : -1);
+    }
+
+    @Override
+    public Book clone() throws CloneNotSupportedException {
+        return (Book) super.clone();
     }
 
     @Override

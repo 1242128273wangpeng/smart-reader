@@ -5,6 +5,7 @@ import com.quduquxie.network.DataServiceNew;
 
 import net.lzbook.kit.R;
 import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.UpdateCallBack;
 import net.lzbook.kit.data.bean.Book;
@@ -61,6 +62,8 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
@@ -182,6 +185,7 @@ public class CheckNovelUpdateService extends Service {
                     }
                 }
             }
+            ArrayList<Book> booksOnLineList = mBookDaoHelper.getBooksOnLineList();
 
             books = CheckNovelUpdHelper.combain(this, books);
             if (books != null) {
@@ -507,7 +511,33 @@ public class CheckNovelUpdateService extends Service {
     }
 
     private void checkOnSuccess(final BookUpdateTaskData data, final BookUpdateResult result) {
+
+
         if (UPDATE_OWN_SUCCESS && UPDATE_QG_SUCCESS) {
+
+            if(mUpdateBooks != null && mUpdateBooks.size() > 0){
+                //更新缓存任务状态
+                BookUpdate[] arr = new BookUpdate[mUpdateBooks.size()];
+                io.reactivex.Observable.fromArray(mUpdateBooks.toArray(arr))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(Schedulers.io())
+                        .doOnComplete(new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                CacheManager.INSTANCE.checkAutoStart();
+                            }
+                        })
+                        .subscribe(new Consumer<BookUpdate>() {
+                            @Override
+                            public void accept(BookUpdate myBook) throws Exception {
+                                CacheManager.INSTANCE.freshBook(myBook.book_id, true);
+                            }
+                        });
+            }else{
+                //检测一次是否有符合标准的
+                CacheManager.INSTANCE.checkAutoStart();
+            }
+
             if (hasUpdatedCount == updateTotalCount) {
                 h.post(new Runnable() {
 
@@ -748,8 +778,8 @@ public class CheckNovelUpdateService extends Service {
                 Book book = books.get(i);
                 BookChapterDao bookChapterDao = new BookChapterDao(getApplicationContext(), book.book_id);
                 Chapter lastChapter = bookChapterDao.getLastChapter();
-                if (lastChapter == null) {
-                    AppLog.e(TAG, "arrToJson lastChapter = null 检测书籍更时发现该书籍的目录为空!!!");
+                if (lastChapter == null || TextUtils.isEmpty(lastChapter.chapter_id)) {
+                    AppLog.e(TAG, "arrToJson lastChapter = null 检测书籍更时发现该书籍的目录为空 或章节id为空!!!");
                     continue;
                 }
                 JSONObject jsonObj = new JSONObject();

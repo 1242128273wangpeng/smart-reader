@@ -65,7 +65,7 @@ class ReaderOwnRepository private constructor(api: UserService) : ReaderReposito
     //&& chapterContent.length >= Constants.CONTENT_ERROR_COUNT
     override fun isChapterCacheExist(host: String, chapter: Chapter?): Boolean {
         if (chapter == null) return false
-        val chapterContent = net.lzbook.kit.request.DataCache.getChapterFromCache(chapter.sequence, chapter.book_id)
+        val chapterContent = net.lzbook.kit.request.DataCache.getChapterFromCache(chapter)
         return chapterContent != null
     }
 

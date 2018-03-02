@@ -1,9 +1,9 @@
 package net.lzbook.kit.utils;
 
 import net.lzbook.kit.R;
-import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
-import net.lzbook.kit.book.component.service.DownloadService;
+import net.lzbook.kit.book.download.CacheManager;
+import net.lzbook.kit.book.download.DownloadState;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.db.BookDaoHelper;
@@ -17,9 +17,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.preference.PreferenceManager;
 
 import java.io.Serializable;
@@ -42,61 +40,11 @@ public class FrameBookHelper {
     BookChanged bookChanged;
     private Context context;
     private Activity activity;
-    private DownloadService downloadService;
     private CheckNovelUpdateService updateService;
     private boolean isActivityPause = false;
     private BookDaoHelper bookHelper;
     private DownloadFinishReceiver downloadFinishReceiver;
     private SearchUpdateBookReceiver searchUpdateReceiver;
-    private ServiceConnection downLoadConnection = new ServiceConnection() {
-
-        private Handler handler = new Handler() {
-
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                if (downloadService.isOffLineDowning()) {
-                    if (downLoadState != null) {
-                        downLoadState.changeDownLoadBtn(true);
-                    }
-                } else {
-                    if (downLoadState != null) {
-                        downLoadState.changeDownLoadBtn(false);
-                    }
-                }
-            }
-
-        };
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-        }
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            try {
-                downloadService = ((DownloadService.MyBinder) service).getService();
-                if (downloadService != null) {
-                    if (Constants.is_wifi_auto_download && NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_WIFI) {
-                        new Thread(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                downloadService.autoStartDownLoad();
-                                handler.sendEmptyMessage(0);
-                            }
-                        }).start();
-
-                    }
-
-                }
-                BaseBookApplication.setDownloadService(downloadService);
-            } catch (ClassCastException e) {
-                e.printStackTrace();
-            }
-        }
-    };
 
     // =======================================================
     // 服务
@@ -153,16 +101,8 @@ public class FrameBookHelper {
     public void initDownUpdateService() {
         // 离线下载服务
         Intent intent;
-        if (downloadService == null) {
-            try {
-                intent = new Intent();
-                intent.setClass(context, DownloadService.class);
-                context.startService(intent);
-                context.bindService(intent, downLoadConnection, Context.BIND_AUTO_CREATE);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+
+        CacheManager.INSTANCE.checkService();
 
         // 检查更新服务
         if (updateService == null) {
@@ -260,13 +200,6 @@ public class FrameBookHelper {
      */
     public void restoreState() {
 
-        if (downloadService != null && downLoadConnection != null) {
-            context.unbindService(downLoadConnection);
-            if (!downloadService.isOffLineDowning()) {
-                downloadService.stopSelf();
-                BaseBookApplication.setDownloadService(null);
-            }
-        }
         if (updateService != null && updateConnection != null) {
             context.unbindService(updateConnection);
         }
@@ -467,6 +400,27 @@ public class FrameBookHelper {
         @Override
         public int compare(Object o1, Object o2) {
             return ((Book) o1).sequence_time == ((Book) o2).sequence_time ? 0 : (((Book) o1).sequence_time < ((Book) o2).sequence_time ? 1 : -1);
+        }
+    }
+
+    public static class CachedComparator implements Comparator<Book> {
+        @Override
+        public int compare(Book o1, Book o2) {
+            DownloadState status1 = CacheManager.INSTANCE.getBookStatus(o1);
+            DownloadState status2 = CacheManager.INSTANCE.getBookStatus(o2);
+            if (status1 == status2) {
+                return 0;
+            }
+            if (status1 == DownloadState.FINISH && status2 == DownloadState.FINISH) {
+                return 0;
+            }
+            if (status1 == DownloadState.FINISH && status2 != DownloadState.FINISH) {
+                return 1;
+            }
+            if (status1 == DownloadState.FINISH || status2 != DownloadState.FINISH) {
+                return 0;
+            }
+            return -1;
         }
     }
 

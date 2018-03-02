@@ -50,6 +50,7 @@
                 android:button="@drawable/dialog_checkbox_selector"
                 android:checked="false"
                 android:layout_marginBottom="@dimen/dimen_margin_25"
+                android:paddingLeft="10dp"
                 android:text="@string/text_no_hint"
                 android:textColor="@color/color_gray_777777"
                 android:textSize="@dimen/text_size_14"/>

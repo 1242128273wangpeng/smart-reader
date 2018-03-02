@@ -92,6 +92,13 @@
     <string name="mian_click_tiwce_exit">再按一次退出 全本免费阅读器</string>
 
 
+    <string name="tip_cleaning">正在清理中...</string>
+    <string name="tip_cleaning_cache">正在清理缓存中...</string>
+    <string name="tip_clear_cache">你确定要清除包括下载书籍在内的所有缓存吗？</string>
+    <string name="tip_clear_other_source_cache">缓存新来源，会清除已缓存内容，确认缓存？</string>
+    <string name="tip_network_mobile">当前为非Wi-Fi网络,是否继续缓存?</string>
+    <string name="tip_space_not_enough">存储空间不足，请检查设备剩余存储空间</string>
+
     <string name="mian_delete_cache_no_choose">您没有选择书籍</string>
     <!-- 找书页 -->
     <string name="is_first_chapter">当前已经是第一章</string>
@@ -101,6 +108,9 @@
     <string name="download_pager_dialog_deletemessage">本小说缓存吗?</string>
     <string name="download_pager_dialog_deletemessage_first">》等</string>
     <string name="download_pager_dialog_deletemessage_after">》小说缓存吗?</string>
+
+    <string name="toast_cache_complete">《%1$s》缓存完成</string>
+    <string name="toast_cache_paused">《%1$s》已暂停</string>
     <!-- 更新 -->
     <string name="updatenofiy_new_update">更新了</string>
     <string name="update_notify_zhang">章!</string>
@@ -134,6 +144,7 @@
     <string name="download_app_nofify_ticker_error">版本更新失败</string>
     <string name="download_app_nofify_info_error">缓存出错</string>
 
+    <string name="toast_net_weak">网络较弱，努力加载中...</string>
 
     <string name="book_end_info">当前章节已全部看完，去看看其它是否有更新吧!</string>
     <string name="book_end_return_bookstore"> 去书城看看 </string>

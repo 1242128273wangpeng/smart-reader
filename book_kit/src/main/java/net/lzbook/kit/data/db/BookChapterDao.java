@@ -84,7 +84,7 @@ public class BookChapterDao {
         return result;
     }
 
-    public int getCount() {
+    public synchronized int getCount() {
         Cursor c = null;
         SQLiteDatabase db = null;
         int count = 0;
@@ -556,8 +556,9 @@ public class BookChapterDao {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (db != null)
+            if (db != null) {
                 db.close();
+            }
         }
     }
 
@@ -600,8 +601,9 @@ public class BookChapterDao {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (db != null)
+            if (db != null) {
                 db.close();
+            }
         }
 
         return result != 0;
@@ -615,7 +617,7 @@ public class BookChapterDao {
      * sort
      * void
      */
-    public void deleteBookChapters(int sequence) {
+    public synchronized void deleteBookChapters(int sequence) {
         SQLiteDatabase db = null;
         try {
             db = mHelper.getWritableDatabase();
@@ -685,6 +687,7 @@ public class BookChapterDao {
             super(paramContext, DATABASE_NAME, null, version);
         }
 
+        @Override
         public void onCreate(SQLiteDatabase paramSQLiteDatabase) {
             paramSQLiteDatabase.execSQL(SQL_CREATE_CHAPTER);
         }

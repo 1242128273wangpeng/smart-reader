@@ -57,6 +57,9 @@ public class BeanParser {
         ownChapter.sequence = chapter.serial_number - 1;
         ownChapter.sort = chapter.serial_number;
         ownChapter.chapter_name = chapter.name;
+        //完整填充智能chapter内容
+        ownChapter.site = net.lzbook.kit.constants.Constants.QG_SOURCE;
+        ownChapter.book_source_id = chapter.id_book;
         return ownChapter;
     }
 

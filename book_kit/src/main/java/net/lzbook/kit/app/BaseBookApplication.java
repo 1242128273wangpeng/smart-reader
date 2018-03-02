@@ -1,19 +1,5 @@
 package net.lzbook.kit.app;
 
-import com.quduquxie.QuInitialization;
-
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.component.service.DownloadService;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.encrypt.MainExtractorInterface;
-import net.lzbook.kit.encrypt.URLBuilderIntterface;
-import net.lzbook.kit.encrypt.v17.MainExtractor;
-import net.lzbook.kit.encrypt.v17.URLBuilder;
-import net.lzbook.kit.utils.DeviceHelper;
-import net.lzbook.kit.utils.ExtensionsKt;
-import net.lzbook.kit.utils.HttpUtils;
-import net.lzbook.kit.utils.LogcatHelper;
-
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -22,12 +8,26 @@ import android.preference.PreferenceManager;
 import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
 
+import com.quduquxie.QuInitialization;
+
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.book.download.CacheManager;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.encrypt.MainExtractorInterface;
+import net.lzbook.kit.encrypt.URLBuilderIntterface;
+import net.lzbook.kit.encrypt.v17.MainExtractor;
+import net.lzbook.kit.encrypt.v17.URLBuilder;
+import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.DeviceHelper;
+import net.lzbook.kit.utils.ExtensionsKt;
+import net.lzbook.kit.utils.HttpUtils;
+import net.lzbook.kit.utils.LogcatHelper;
+
 import static net.lzbook.kit.utils.ExtensionsKt.loge;
 
 
 public abstract class BaseBookApplication extends Application {
     public static Context sCtx;
-    private static DownloadService downloadService;
     private static BaseBookApplication g_context;
     private static DisplayMetrics dm;
     private static URLBuilderIntterface urlBuilderIntterface;
@@ -47,14 +47,7 @@ public abstract class BaseBookApplication extends Application {
         return urlBuilderIntterface;
     }
 
-    public static DownloadService getDownloadService() {
 
-        return downloadService;
-    }
-
-    public static void setDownloadService(DownloadService downloadService) {
-        BaseBookApplication.downloadService = downloadService;
-    }
 
     public static DisplayMetrics getDisplayMetrics() {
         return dm;
@@ -72,6 +65,9 @@ public abstract class BaseBookApplication extends Application {
         super.onCreate();
         this.sCtx = this;
         loge(this, "onCreate");
+		if (AppUtils.isMainProcess(this)) {
+            CacheManager.INSTANCE.checkService();
+        }
 //        PlatformSDK.app().onAppCreate(this);
     }
 

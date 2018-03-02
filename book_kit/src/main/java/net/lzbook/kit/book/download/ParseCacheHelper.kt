@@ -58,7 +58,7 @@ private fun writeChapterFromPackage(bookDaoHelper: BookDaoHelper, chapter: Chapt
             write_success = true
             println(" content == OtherRequestChapterExecutor.CACHE_EXIST ")
         } else {
-            write_success = DataCache.saveChapterFromPackage(content, chapter.sequence, chapter.book_id)
+            write_success = DataCache.saveChapterFromPackage(content, chapter)
         }
 
         if (!write_success) {

@@ -3,9 +3,10 @@ package com.intelligent.reader.presenter.bookshelf
 import android.app.Activity
 import android.app.NotificationManager
 import android.content.*
-import android.os.IBinder
 import android.text.TextUtils
 import android.view.ViewGroup
+import android.widget.RelativeLayout
+import android.widget.TextView
 import com.intelligent.reader.R
 import com.intelligent.reader.presenter.IPresenter
 import com.intelligent.reader.read.help.BookHelper
@@ -13,6 +14,8 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.component.service.DownloadService
+import net.lzbook.kit.book.download.CacheManager
+import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.Book
@@ -41,43 +44,6 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
     var downloadService: DownloadService? = null
 
     var updateService: CheckNovelUpdateService? = null
-
-    val downloadConnection = object : ServiceConnection {
-
-        override fun onServiceDisconnected(name: ComponentName) {}
-
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            try {
-                downloadService = (service as DownloadService.MyBinder).service
-                if (Constants.is_wifi_auto_download
-                        && NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_WIFI) {
-                    doAsync { downloadService?.autoStartDownLoad() }
-                }
-                BaseBookApplication.setDownloadService(downloadService)
-            } catch (e: ClassCastException) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    val updateConnection = object : ServiceConnection {
-
-        override fun onServiceDisconnected(name: ComponentName) {}
-
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            try {
-                updateService = (service as CheckNovelUpdateService.CheckUpdateBinder).service
-                AppLog.d(tag, "auto-updateService" + updateService)
-                if (updateService != null) {
-                    AppLog.d(tag, "updateData ")
-                    view?.doUpdateBook(updateService!!)
-                }
-            } catch (e: ClassCastException) {
-                e.printStackTrace()
-            }
-
-        }
-    }
 
     fun addUpdateTask(updateCallBack: UpdateCallBack) {
         AppLog.e(tag, "updateService: $updateService")
@@ -304,36 +270,46 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
                 StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.LONGTIMEBOOKSHELFEDIT)
     }
 
-    fun deleteBooks(books: ArrayList<Book>) {
-        val size = books.size
+    fun deleteBooks(deleteBooks: ArrayList<Book>, justDeleteCache: Boolean, activity: Activity) {
+         val myDialog = MyDialog(activity, R.layout.dialog_download_clean)
+        myDialog.setCanceledOnTouchOutside(false)
+        myDialog.setCancelable(false)
+        (myDialog.findViewById(R.id.dialog_msg) as TextView).setText(R.string.tip_cleaning)
+        myDialog.show()
+        val size = deleteBooks.size
         doAsync {
-            val bookIdArr = arrayOfNulls<String>(size)
             val sb = StringBuffer()
             for (i in 0 until size) {
-                val book = books[i]
-                bookIdArr[i] = book.book_id
+                var book = deleteBooks[i]
 
                 sb.append(book.book_id)
                 sb.append(if (book.readed == 1) "_1" else "_0")
                 sb.append(if (i == size - 1) "" else "$")
             }
             // 删除书架数据库和章节数据库
-            bookDaoHelper.deleteBook(*bookIdArr)
+            if (bookDaoHelper != null && !justDeleteCache) {
+                bookDaoHelper.deleteBook(deleteBooks)
+            } else {
+                deleteBooks.forEach {
+                    CacheManager.remove(it.book_id)
+                    BaseBookHelper.removeChapterCacheFile(it)
+                }
+            }
+
+            myDialog.dismiss()
+
             runOnMain {
                 view?.onBookDelete()
             }
 
-            uploadBookDeleteLog(size, sb)
+            if (justDeleteCache) {
+                val data1 = HashMap<String, String>()
+                data1.put("type", "1")
+                data1.put("number", size.toString())
+                data1.put("bookids", sb.toString())
+                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.DELETE1, data1)
+            }
         }
-    }
-
-    private fun uploadBookDeleteLog(size: Int, sb: StringBuffer) {
-        val data1 = HashMap<String, String>()
-        data1.put("type", "1")
-        data1.put("number", size.toString())
-        data1.put("bookids", sb.toString())
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.DELETE1, data1)
     }
 
     fun uploadBookDeleteCancelLog() {

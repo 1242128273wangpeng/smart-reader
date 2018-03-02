@@ -440,11 +440,9 @@ public protected *;
 
 # keep annotated by NotProguard
 -keep @net.lzbook.kit.utils.NotProguard class * {*;}
--keep class * {
-    @net.lzbook.kit.utils.NotProguard <fields>;
-}
+
 -keepclassmembers class * {
-    @net.lzbook.kit.utils.NotProguard <methods>;
+    @net.lzbook.kit.utils.NotProguard *;
 }
 
 #阿里云

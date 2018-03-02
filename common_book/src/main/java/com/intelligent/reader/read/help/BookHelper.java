@@ -4,17 +4,21 @@ import com.intelligent.reader.activity.CataloguesActivity;
 import com.intelligent.reader.activity.CoverPageActivity;
 import com.intelligent.reader.activity.ReadingActivity;
 
+import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.download.DownloadState;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Book;
+import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.RequestItem;
+import net.lzbook.kit.data.db.BookChapterDao;
 import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.data.ormlite.bean.HistoryInfo;
-import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.request.DataCache;
 import net.lzbook.kit.utils.BaseBookHelper;
 import net.lzbook.kit.utils.FootprintUtils;
+import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
+import net.lzbook.kit.utils.oneclick.AntiShake;
 
 import android.app.Activity;
 import android.content.Context;
@@ -28,6 +32,8 @@ import java.util.Map;
  * Created by Administrator on 2016/8/8 0008.
  */
 public class BookHelper extends BaseBookHelper {
+
+    private static AntiShake shake = new AntiShake();
 
     public static void goToCatalogOrRead(Context ctx, Activity activity, Book book) {
 
@@ -52,8 +58,7 @@ public class BookHelper extends BaseBookHelper {
                 requestItem.parameter = book.parameter;
                 requestItem.extra_parameter = book.extra_parameter;
 
-                if ((book.sequence > -1 || book.readed == 1 || isDownFnish(ctx, book)) && BookDaoHelper.getInstance().isBookSubed(book.book_id)) {
-                    AppLog.i("DownloadState---", "goToCoverOrRead " + isDownFnish(ctx, book));
+                if ((book.sequence > -1 || book.readed == 1 || (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE && isCached( book))) && BookDaoHelper.getInstance().isBookSubed(book.book_id)) {
                     requestItem.fromType = 0;
                     if (Constants.QG_SOURCE.equals(book.site)) {
                         requestItem.channel_code = 1;
@@ -138,8 +143,7 @@ public class BookHelper extends BaseBookHelper {
                     intent.setClass(ctx, CataloguesActivity.class);
                     intent.putExtras(bundle);
                     activity.startActivity(intent);
-                } else if ((book.sequence > -1 || book.readed == 1 || isDownFnish(ctx, book)) && BookDaoHelper.getInstance().isBookSubed(book.book_id)) {
-                    AppLog.i("DownloadState---", "goToCoverOrRead " + isDownFnish(ctx, book));
+                } else if ((book.sequence > -1 || book.readed == 1 || (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE && isCached( book))) && BookDaoHelper.getInstance().isBookSubed(book.book_id)) {
 
                     requestItem.fromType = 0;
                     FootprintUtils.saveHistoryShelf(book);
@@ -159,6 +163,10 @@ public class BookHelper extends BaseBookHelper {
                     activity.startActivity(intent);
                     net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(activity, net.lzbook.kit.utils.StatServiceUtils.bs_click_one_book);
                 } else {
+
+                    if (shake.check()){
+                        return;
+                    }
 
                     Map<String, String> data = new HashMap<>();
                     data.put("BOOKID", book.book_id);
@@ -188,10 +196,19 @@ public class BookHelper extends BaseBookHelper {
         }
     }
 
-    public static boolean isDownFnish(Context ctx, Book book) {
+    private static boolean isCached(Book book) {
 
-        DownloadState state = BookHelper.getInitDownstate(ctx, book, BookHelper.getStartDownIndex(ctx, book));
-        return state == DownloadState.FINISH;
+        int index = Math.max(0, book.sequence);
+        BookChapterDao bookChapterDao = new BookChapterDao(BaseBookApplication.getGlobalContext(), book.book_id);
+        Chapter chapterBySequence = bookChapterDao.getChapterBySequence(index);
+        if(chapterBySequence == null){
+            return false;
+        }
+        if(Constants.QG_SOURCE.equals(book.site)) {
+            return com.quduquxie.network.DataCache.isChapterExists(chapterBySequence.chapter_id, book.book_id);
+        }else{
+            return DataCache.isChapterExists(chapterBySequence);
+        }
     }
 
     /**

@@ -9,6 +9,7 @@
     <dimen name="cover_book_flowlayout">2dp</dimen>
     <dimen name="cover_book_flowlayout_padding">6dp</dimen>
     <dimen name="cover_book_flowlayout_top">2.5dp</dimen>
+    <dimen name="search_margin">24px</dimen>
 
 
     <dimen name="cover_book_score_size">12sp</dimen>

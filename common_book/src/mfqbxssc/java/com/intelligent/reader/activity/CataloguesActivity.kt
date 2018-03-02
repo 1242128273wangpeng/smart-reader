@@ -1,8 +1,3 @@
-/**
- * @Title: CataloguesActivity.java
- * *
- * @Description: 小说目录页
- */
 package com.intelligent.reader.activity
 
 import com.baidu.mobstat.StatService
@@ -10,46 +5,25 @@ import com.intelligent.reader.R
 import com.intelligent.reader.adapter.CatalogAdapter
 import com.intelligent.reader.presenter.catalogues.CataloguesContract
 import com.intelligent.reader.presenter.catalogues.CataloguesPresenter
-import com.intelligent.reader.read.help.BookHelper
-import com.intelligent.reader.receiver.DownBookClickReceiver
 import com.intelligent.reader.receiver.OffLineDownLoadReceiver
-import com.quduquxie.network.DataCache
 
-import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.Bookmark
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.EventBookmark
 import net.lzbook.kit.data.bean.RequestItem
-import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.repair_books.RepairHelp
-import net.lzbook.kit.request.RequestExecutor
-import net.lzbook.kit.request.RequestFactory
 import net.lzbook.kit.utils.AppLog
-import net.lzbook.kit.utils.BookCoverUtil
-import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils
 
-import android.app.Notification
-import android.app.PendingIntent
-import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
-import android.content.ServiceConnection
 import android.content.res.Resources
 import android.os.Bundle
-import android.os.Handler
-import android.os.IBinder
-import android.os.Message
-import android.view.Gravity
-import android.view.KeyEvent
 import android.view.Menu
 import android.view.View
 import android.view.View.OnClickListener
@@ -57,20 +31,21 @@ import android.widget.AbsListView
 import android.widget.AbsListView.OnScrollListener
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.RelativeLayout
-import android.widget.TextView
-import android.widget.Toast
 
-import java.lang.ref.WeakReference
 import java.util.ArrayList
 import java.util.Collections
 import java.util.HashMap
 import java.util.concurrent.Callable
 
 import de.greenrobot.event.EventBus
+import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
+import io.reactivex.ObservableOnSubscribe
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.Consumer
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.mfqbxssc.act_catalog.*
+import net.lzbook.kit.book.download.CacheManager
 
 /**
  * CataloguesActivity
@@ -81,16 +56,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     internal var colorSelected: Int = 0
     internal var colorNormal: Int = 0
     internal var sortIcon = 0//背景色
-    private var catalog_root: FrameLayout? = null
-    private var rl_catalog_novel: RelativeLayout? = null
-    private var catalog_novel_name: TextView? = null
-    private var catalog_novel_close: ImageView? = null
-    private var catalog_main: ListView? = null
-    private var catalog_empty_refresh: TextView? = null
-    private var catalog_chapter_hint: TextView? = null
-    private var catalog_chapter_count: TextView? = null
-    private var iv_catalog_novel_sort: ImageView? = null
-    private var iv_back_reading: ImageView? = null
     //是否是最后一页
     private var is_last_chapter: Boolean = false
     //是否来源于封面页
@@ -115,11 +80,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     private var scrollState: Int = 0
     private var downLoadReceiver: OffLineDownLoadReceiver? = null
     private var requestItem: RequestItem? = null
-    private var book_catalog_download: TextView? = null
-    private var book_catalog_reading: TextView? = null
-    private var book_catalog_bookshelf: TextView? = null
     private var mTextColor = 0
-    private var iv_fixbook: ImageView? = null
     private var mCataloguesPresenter: CataloguesPresenter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -149,39 +110,14 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
 
     private fun initUI() {
 
-        catalog_root = findViewById(R.id.catalog_layout) as FrameLayout
-
-        rl_catalog_novel = findViewById(R.id.rl_catalog_novel) as RelativeLayout
-
-        catalog_novel_name = findViewById(R.id.catalog_novel_name) as TextView
-
-        catalog_novel_close = findViewById(R.id.catalog_novel_close) as ImageView
         catalog_novel_close!!.setOnClickListener(this)
 
-        book_catalog_download = findViewById(R.id.book_catalog_download) as TextView
-        book_catalog_reading = findViewById(R.id.book_catalog_reading) as TextView
-        book_catalog_bookshelf = findViewById(R.id.book_catalog_bookshelf) as TextView
         book_catalog_download!!.setOnClickListener(this)
         book_catalog_reading!!.setOnClickListener(this)
         book_catalog_bookshelf!!.setOnClickListener(this)
-
-
-        iv_catalog_novel_sort = findViewById(R.id.iv_catalog_novel_sort) as ImageView
         iv_catalog_novel_sort!!.setOnClickListener(this)
+        char_hint!!.visibility = View.INVISIBLE
 
-        catalog_chapter_count = findViewById(R.id.catalog_chapter_count) as TextView
-
-        catalog_main = findViewById(R.id.catalog_main) as ListView
-
-
-        catalog_empty_refresh = findViewById(R.id.catalog_empty_refresh) as TextView
-
-        catalog_chapter_hint = findViewById(R.id.char_hint) as TextView
-        catalog_chapter_hint!!.visibility = View.INVISIBLE
-
-        iv_fixbook = findViewById(R.id.iv_fixbook) as ImageView
-
-        iv_back_reading = findViewById(R.id.iv_back_reading) as ImageView
         iv_back_reading!!.setOnClickListener(this)
         changeSortState(isPositive)
     }
@@ -298,6 +234,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         if (mBookDaoHelper == null || requestItem == null)
             return
 
+        changeDownloadButtonStatus()
         if (mBookDaoHelper!!.isBookSubed(requestItem!!.book_id)) {
             if (book_catalog_bookshelf != null) {
                 book_catalog_bookshelf!!.setText(R.string.book_cover_havein_bookshelf)
@@ -316,12 +253,15 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     private fun initCatalogAndBookmark() {
         mCatalogAdapter = CatalogAdapter(this, chapterList, requestItem!!.host)
         catalog_main!!.adapter = mCatalogAdapter
+        if (!chapterList!!.isEmpty()) {
+            sequence = Math.min(chapterList!!.size - 1, sequence)
+        }
         if (is_last_chapter) {
             mCatalogAdapter!!.setSelectedItem(chapterList!!.size)
             catalog_main!!.setSelection(chapterList!!.size)
         } else {
-            mCatalogAdapter!!.setSelectedItem(sequence + 1)
-            catalog_main!!.setSelection(sequence + 1)
+            mCatalogAdapter!!.setSelectedItem(sequence)
+            catalog_main!!.setSelection(sequence)
         }
     }
 
@@ -368,7 +308,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     // 目录
     override fun onScroll(view: AbsListView, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
         if (chapterList != null && !chapterList!!.isEmpty()) {
-            catalog_chapter_hint!!.text = String.format(getString(R.string.chapter_sort), chapterList!![firstVisibleItem].sequence + 1)
+            char_hint!!.text = String.format(getString(R.string.chapter_sort), chapterList!![firstVisibleItem].sequence + 1)
         }
     }
 
@@ -379,8 +319,8 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
                 mCataloguesPresenter!!.delayOverLayHandler()
             }
         } else {
-            if (catalog_chapter_hint != null) {
-                catalog_chapter_hint!!.visibility = View.VISIBLE
+            if (char_hint != null) {
+                char_hint!!.visibility = View.VISIBLE
             }
         }
     }
@@ -391,12 +331,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
                 val data = HashMap<String, String>()
                 data.put("type", "1")
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data)
-                if (!fromCover) {
-                    if (mCataloguesPresenter != null) {
-                        mCataloguesPresenter!!.activityResult(sequence)
-                    }
-                }
-                finish()
+                onBackPressed()
             }
             R.id.iv_back_reading -> finish()
             R.id.catalog_empty_refresh -> getChapterData()
@@ -463,13 +398,17 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         }
     }
 
+    override fun onTaskStatusChange() {
+        super.onTaskStatusChange()
+        changeDownloadButtonStatus()
+    }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            exitAndUpdate()
-            return true
+    override fun onBackPressed() {
+        if (!fromCover && !chapterList!!.isEmpty() && mCataloguesPresenter != null) {
+            sequence = Math.min(sequence, (chapterList?.size ?: 1) - 1)
+            mCataloguesPresenter!!.activityResult(sequence)
         }
-        return super.onKeyDown(keyCode, event)
+        exitAndUpdate()
     }
 
     private fun exitAndUpdate() {
@@ -478,11 +417,13 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
             val intent = Intent(this, SplashActivity::class.java)
             startActivity(intent)
         }
-        exit()
+        super.onBackPressed()
     }
 
     private fun exit() {
-        finish()
+        if (!this.isFinishing()) {
+            finish()
+        }
     }
 
     override fun onItemClick(parent: AdapterView<*>, view: View, position: Int, id: Long) {
@@ -510,27 +451,32 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
                 isPositive = false
                 Collections.reverse(chapterList)
             }
-            mCatalogAdapter!!.list = chapterList
-            mCatalogAdapter!!.notifyDataSetChanged()
-        }
 
-        //设置选中的条目
-        var position = 0
-        if (is_last_chapter) {
-            position = chapterList.size
-        } else {
-            position = sequence
-        }
-
-        if (catalog_main != null) {
-            catalog_main!!.setSelection(position)
-        }
-
-        if (mCatalogAdapter != null)
-            mCatalogAdapter!!.setSelectedItem(position)
-
-        if (mCataloguesPresenter != null) {
-            mCataloguesPresenter!!.changeDownLoadButtonText()
+            //更新书籍缓存状态啊
+            Observable.create(object : ObservableOnSubscribe<Boolean> {
+                @Throws(Exception::class)
+                override fun subscribe(e: ObservableEmitter<Boolean>) {
+                    CacheManager.freshBook(book!!.book_id, false)
+                    e.onNext(true)
+                    e.onComplete()
+                }
+            }).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object :Consumer<Boolean> {
+                        @Throws(Exception::class)
+                        override fun accept(flag : Boolean) {
+                            mCatalogAdapter?.setList(chapterList)
+                            mCatalogAdapter?.notifyDataSetChanged()
+                            sequence = Math.min(chapterList.size - 1, sequence)
+                            if (is_last_chapter) {
+                                mCatalogAdapter?.setSelectedItem(chapterList.size)
+                                catalog_main.setSelection(chapterList.size)
+                            } else {
+                                mCatalogAdapter?.setSelectedItem(sequence)
+                                catalog_main.setSelection(sequence)
+                            }
+                        }
+                    })
         }
     }
 
@@ -548,24 +494,25 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     }
 
     override fun handOverLay() {
-        if (scrollState == OnScrollListener.SCROLL_STATE_IDLE || scrollState == OnScrollListener.SCROLL_STATE_FLING && catalog_chapter_hint != null) {
-            catalog_chapter_hint!!.visibility = View.INVISIBLE
+        if (scrollState == OnScrollListener.SCROLL_STATE_IDLE || scrollState == OnScrollListener.SCROLL_STATE_FLING && char_hint != null) {
+            char_hint!!.visibility = View.INVISIBLE
         }
     }
 
 
-    override fun changeDownloadButtonStatus(type: Int) {
-        if (mCataloguesPresenter != null) {
-            if (type == mCataloguesPresenter!!.DOWNLOAD_STATE_FINISH) {
-                book_catalog_download!!.setText(R.string.download_status_complete)
-                book_catalog_download!!.setTextColor(resources.getColor(R.color.home_title_search_text))
-            } else if (type == mCataloguesPresenter!!.DOWNLOAD_STATE_LOCKED) {
-                book_catalog_download!!.setText(R.string.download_status_complete)
-                book_catalog_download!!.setTextColor(resources.getColor(R.color.home_title_search_text))
-            } else if (type == mCataloguesPresenter!!.DOWNLOAD_STATE_NOSTART) {
-                book_catalog_download!!.setText(R.string.download_status_total)
+    override fun changeDownloadButtonStatus() {
+        if (book_catalog_download == null) {
+            return
+        }
+        if (book != null && book_catalog_download != null) {
+            var status = CacheManager.getBookStatus(book!!)
+            if (status == DownloadState.FINISH) {
+                book_catalog_download.setText(R.string.download_status_complete)
+            } else if (status == DownloadState
+                    .WAITTING || status == DownloadState.DOWNLOADING) {
+                book_catalog_download.setText(R.string.download_status_underway)
             } else {
-                book_catalog_download!!.setText(R.string.download_status_underway)
+                book_catalog_download.setText(R.string.download_status_total)
             }
         }
     }

@@ -53,7 +53,20 @@ public class RequestItem implements Serializable {
         return requestItem;
     }
 
-
+    public Book toBook() {
+        Book book = new Book();
+        book.site = this.host;
+        book.book_id = this.book_id;
+        book.book_source_id = this.book_source_id;
+        book.author = this.author;
+        book.dex = this.dex;
+        book.name = this.name;
+        book.parameter = this.parameter;
+        book.extra_parameter = this.extra_parameter;
+        book.last_checkupdatetime = this.last_checkupdatetime;
+        book.last_updateSucessTime = this.last_updateSucessTime;
+        return book;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

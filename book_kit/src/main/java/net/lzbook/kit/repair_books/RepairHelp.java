@@ -3,7 +3,7 @@ package net.lzbook.kit.repair_books;
 import net.lzbook.kit.R;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.component.service.DownloadService;
+import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.book.download.DownloadState;
 import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.data.NullCallBack;
@@ -167,7 +167,7 @@ public class RepairHelp {
     }
 
     private static void fixChapterContent(Chapter chapter, FixContentState fixState) {
-        if (chapter != null && !TextUtils.isEmpty(chapter.curl) && DataCache.isChapterExists(chapter.sequence, chapter.book_id)) {
+        if (chapter != null && !TextUtils.isEmpty(chapter.curl) && DataCache.isChapterExists(chapter)) {
 
             try {
                 String url = UrlUtils.buildContentUrl(chapter.curl);
@@ -184,7 +184,7 @@ public class RepairHelp {
                     content = "null";
                 }
 
-                fixState.addContState(DataCache.fixChapter(content, chapter.sequence, chapter.book_id));
+                fixState.addContState(DataCache.fixChapter(content, chapter));
             } catch (Exception e) {
                 fixState.addContState(false);
                 e.printStackTrace();
@@ -277,33 +277,26 @@ public class RepairHelp {
             @Override
             public void run() {
                 BookChapterDao bookChapterDao = new BookChapterDao(BaseBookApplication.getGlobalContext(), book.book_id);
-                BaseBookHelper.deleteAllChapterCache(book.book_id, 0, bookChapterDao.getCount());
-                DownloadService.clearTask(book.book_id);
-                BaseBookHelper.delDownIndex(BaseBookApplication.getGlobalContext(), book.book_id);
+                BaseBookHelper.removeChapterCacheFile(book);
+                CacheManager.INSTANCE.remove(book.book_id);
                 bookChapterDao.deleteBookChapters(0);
 
-                DownloadService downloadService = BaseBookApplication.getDownloadService();
 
-                if (downloadService != null) {
-                    book.list_version = bookFix.list_version;
-                    book.c_version = bookFix.c_version;
-                    instance.updateBook(book);
-                    downloadService.dellTask(book.book_id);
-                    BaseBookHelper.writeDownIndex(BaseBookApplication.getGlobalContext(), book.book_id, false, 0);
-                    downloadService.addTask(BaseBookHelper.getBookTask(BaseBookApplication.getGlobalContext(), book, DownloadState.NOSTART, new NullCallBack(), true));
-                    downloadService.addRequestItem(book);
-                    downloadService.startTask(book.book_id);
-                    boolean isdeleteBookFixSucess = instance.deleteBookFix(book.book_id);
-                    AppLog.d(TAG, "删除修复状态信息 -- isdeleteBookFixSucess = " + isdeleteBookFixSucess);
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (fixCallBack != null) {
-                                fixCallBack.toDownLoadActivity();
-                            }
+                book.list_version = bookFix.list_version;
+                book.c_version = bookFix.c_version;
+                instance.updateBook(book);
+                CacheManager.INSTANCE.start(book.book_id, 0);
+                boolean isdeleteBookFixSucess = instance.deleteBookFix(book.book_id);
+                AppLog.d(TAG, "删除修复状态信息 -- isdeleteBookFixSucess = " + isdeleteBookFixSucess);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (fixCallBack != null) {
+                            fixCallBack.toDownLoadActivity();
                         }
-                    });
-                }
+                    }
+                });
+
             }
         }).start();
 
@@ -348,34 +341,25 @@ public class RepairHelp {
                             if (bookFix.fix_type == 2) {
                                 if (NetWorkUtils.isNetworkAvailable(context)) {
                                     BookChapterDao bookChapterDao = new BookChapterDao(BaseBookApplication.getGlobalContext(), book.book_id);
-                                    BaseBookHelper.deleteAllChapterCache(book.book_id, 0, bookChapterDao.getCount());
-                                    DownloadService.clearTask(book.book_id);
-                                    BaseBookHelper.delDownIndex(BaseBookApplication.getGlobalContext(), book.book_id);
+                                    BaseBookHelper.removeChapterCacheFile(book);
+                                    CacheManager.INSTANCE.remove(book.book_id);
                                     bookChapterDao.deleteBookChapters(0);
 
-                                    DownloadService downloadService = BaseBookApplication.getDownloadService();
 
-                                    if (downloadService != null) {
-                                        book.list_version = bookFix.list_version;
-                                        book.c_version = bookFix.c_version;
-                                        instance.updateBook(book);
-                                        downloadService.dellTask(book.book_id);
-                                        BaseBookHelper.writeDownIndex(BaseBookApplication.getGlobalContext(), book.book_id, false, 0);
-                                        downloadService.addTask(BaseBookHelper.getBookTask(BaseBookApplication.getGlobalContext(), book, DownloadState.NOSTART, new NullCallBack(), true));
-                                        downloadService.addRequestItem(book);
-                                        downloadService.startTask(book.book_id);
-                                        boolean isdeleteBookFixSucess = instance.deleteBookFix(book.book_id);
-                                        AppLog.d(TAG, "删除修复状态信息 -- isdeleteBookFixSucess = " + isdeleteBookFixSucess);
-                                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                if (fixCallBack != null) {
-                                                    fixCallBack.toDownLoadActivity();
-                                                }
+                                    book.list_version = bookFix.list_version;
+                                    book.c_version = bookFix.c_version;
+                                    instance.updateBook(book);
+                                    CacheManager.INSTANCE.start(book.book_id, 0);
+                                    boolean isdeleteBookFixSucess = instance.deleteBookFix(book.book_id);
+                                    AppLog.d(TAG, "删除修复状态信息 -- isdeleteBookFixSucess = " + isdeleteBookFixSucess);
+                                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (fixCallBack != null) {
+                                                fixCallBack.toDownLoadActivity();
                                             }
-                                        });
-
-                                    }
+                                        }
+                                    });
 
                                 } else {
                                     new Handler(Looper.getMainLooper()).post(new Runnable() {

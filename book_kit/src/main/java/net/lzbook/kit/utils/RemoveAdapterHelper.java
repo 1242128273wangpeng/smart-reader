@@ -2,13 +2,19 @@ package net.lzbook.kit.utils;
 
 import net.lzbook.kit.R;
 import net.lzbook.kit.book.adapter.RemoveModeAdapter;
+import net.lzbook.kit.data.bean.Book;
+import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.utils.popup.PopupBase;
+import net.lzbook.kit.utils.popup.PopupBase.PopupWindowDeleteClickListener;
 import net.lzbook.kit.utils.popup.PopupBookCollect;
+import net.lzbook.kit.utils.popup.PopupBookCollect.PopupCollectClickListener;
 import net.lzbook.kit.utils.popup.PopupDeleteCancle;
+import net.lzbook.kit.utils.popup.PopupDeleteCancle.PopupCancleclickListener;
 import net.lzbook.kit.utils.popup.PopupDownloadManager;
+import net.lzbook.kit.utils.popup.PopupDownloadManager.PopupSelectALLClickListener;
 import net.lzbook.kit.utils.popup.PopupFactory;
 import net.lzbook.kit.utils.popup.PopupWindowInterface;
-import net.lzbook.kit.utils.popup.PopupWindowManager;
+import net.lzbook.kit.utils.popup.PopupWindowManager.PopupWindowOnShowingListener;
 
 import android.content.Context;
 import android.os.Handler;
@@ -16,289 +22,228 @@ import android.view.View;
 import android.widget.ListView;
 
 import java.util.HashSet;
+import java.util.List;
 
-/**
- * RemoveMode Helper
- */
-public class RemoveAdapterHelper implements PopupBase.PopupWindowDeleteClickListener, PopupWindowManager.PopupWindowOnShowingListener, PopupBookCollect.PopupCollectClickListener, PopupDeleteCancle.PopupCancleclickListener, PopupDownloadManager.PopupSelectALLClickListener {
+public class RemoveAdapterHelper implements PopupWindowDeleteClickListener, PopupWindowOnShowingListener, PopupCollectClickListener, PopupCancleclickListener, PopupSelectALLClickListener {
+    private static final long DELAY_TIME = 500;
+    public static final int popup_type_addBook = 2;
     public static final int popup_type_base = 0;
-    public static final int popup_type_collect = popup_type_base + 1;
-    public static final int popup_type_addBook = popup_type_collect + 1;
-    public static final int popup_type_cancle = popup_type_addBook + 1;
-    public static final int popup_type_download = popup_type_cancle + 1;
-    private final static long DELAY_TIME = 500;
-    // ====================================
-    // fields
-    // =====================================
-    protected PopupWindowInterface popupWindowManager;
-    protected OnMenuStateListener menuStateListener;
-    protected OnMenuDeleteClickListener deleteClickListener;
-    protected OnMenuSelectAllListener selectAllListener;
-    protected OnMenuAddBookClickListener addBookClickListener;
-    protected OnMenuCollectClickListener collectClickListener;
-    protected RemoveModeAdapter removeModeAdapter;
-    protected ListView listview;
-    protected View clickAllView, clickCancleView;
+    public static final int popup_type_cancle = 3;
+    public static final int popup_type_collect = 1;
+    public static final int popup_type_download = 4;
     String TAG = "RemoveAdapterHelper";
-    boolean isAllChecked;
+    protected OnMenuAddBookClickListener addBookClickListener;
+    protected View clickAllView;
+    protected View clickCancleView;
+    protected OnMenuCollectClickListener collectClickListener;
+    protected OnMenuDeleteClickListener deleteClickListener;
     Handler handler = new Handler();
+    boolean isAllChecked;
+    protected ListView listview;
+    protected OnMenuStateListener menuStateListener;
+    protected PopupWindowInterface popupWindowManager;
+    protected RemoveModeAdapter removeModeAdapter;
+    protected OnMenuSelectAllListener selectAllListener;
 
-    public RemoveAdapterHelper(Context context, RemoveModeAdapter adapter, int type) {//显示指定菜单类别
+    public interface OnMenuAddBookClickListener {
+        void onMenuAddBook(HashSet<Integer> hashSet);
+    }
 
-        removeModeAdapter = adapter;
+    public interface OnMenuCollectClickListener {
+        void onMenuColleck(View view, List<Book> list);
+    }
+
+    public interface OnMenuDeleteClickListener {
+        void onMenuDelete(List<Book> list);
+    }
+
+    public interface OnMenuSelectAllListener {
+        void onSelectAll(boolean z);
+    }
+
+    public interface OnMenuStateListener {
+        void getAllCheckedState(boolean z);
+
+        void getMenuShownState(boolean z);
+    }
+
+    public RemoveAdapterHelper(Context context, RemoveModeAdapter adapter, int type) {
+        this.removeModeAdapter = adapter;
         setRemoveWindow(context, type);
     }
-    // =========================================
-    // state
-    // =======================================
 
-    public boolean isRemoveMode() {//判定当前菜单状态是否为删除模式
-        if (removeModeAdapter != null) {
-            return removeModeAdapter.isRemoveMode();
+    public boolean isRemoveMode() {
+        if (this.removeModeAdapter != null) {
+            return this.removeModeAdapter.isRemoveMode();
         }
         return false;
     }
 
-    public void setListView(ListView view) {//指定使用菜单的ListView
+    public void setListView(ListView view) {
         this.listview = view;
     }
 
-    ////指定回调对象
-    public void setOnMenuDeleteListener(OnMenuDeleteClickListener click) {//指定删除回调对象
-        deleteClickListener = click;
+    public void setOnMenuDeleteListener(OnMenuDeleteClickListener click) {
+        this.deleteClickListener = click;
     }
 
     public void setOnSelectAllListener(OnMenuSelectAllListener selectAllListener) {
         this.selectAllListener = selectAllListener;
     }
 
-    public void setOnMenuStateListener(OnMenuStateListener shownListener) {//指定菜单状态监听回调对象
-        menuStateListener = shownListener;
+    public void setOnMenuStateListener(OnMenuStateListener shownListener) {
+        this.menuStateListener = shownListener;
     }
 
-    public void setCheckPosition(int position) {//点击选中position,已自动判定全选或非全选状态
-        if (removeModeAdapter != null) {
-            removeModeAdapter.setChecked(position);
-            removeModeAdapter.notifyDataSetChanged();
+    public void setCheckPosition(int position) {
+        if (this.removeModeAdapter != null) {
+            this.removeModeAdapter.setChecked(position);
+            this.removeModeAdapter.notifyDataSetChanged();
             setSelectNum();
-            if (isAllChecked) {//全选状态中，选中任意position,取消全选状态
-                isAllChecked = false;
-            } else {//非全选状态中，如果已经全部选中完成，则进入全选状态
-                //FIXME
-                if (removeModeAdapter.getCheckedSize() == removeModeAdapter.getCount()) {
-                    isAllChecked = true;
+            if (this.removeModeAdapter.getCheckedSize() != BookDaoHelper.getInstance().getBooksCount()) {
+                this.isAllChecked = false;
+            } else if (this.removeModeAdapter.getCheckedSize() == BookDaoHelper.getInstance().getBooksCount()) {
+                this.isAllChecked = true;
+            } else {
+                this.isAllChecked = false;
+            }
+            if (this.popupWindowManager instanceof PopupDownloadManager) {
+                if (this.isAllChecked) {
+                    ((PopupDownloadManager) this.popupWindowManager).hasSelectedAll = true;
+                    ((PopupDownloadManager) this.popupWindowManager).btn_selectAll.setText("取消全选");
                 } else {
-                    isAllChecked = false;
+                    ((PopupDownloadManager) this.popupWindowManager).hasSelectedAll = false;
+                    ((PopupDownloadManager) this.popupWindowManager).btn_selectAll.setText("全选");
                 }
             }
-            //改变全选按钮的显示
-            if (popupWindowManager instanceof PopupDownloadManager) {
-                if (isAllChecked) {
-                    ((PopupDownloadManager) popupWindowManager).hasSelectedAll = true;
-                    ((PopupDownloadManager) popupWindowManager).btn_selectAll.setText("取消全选");
-                } else {
-                    ((PopupDownloadManager) popupWindowManager).hasSelectedAll = false;
-                    ((PopupDownloadManager) popupWindowManager).btn_selectAll.setText("全选");
-                }
+            if (this.menuStateListener != null) {
+                this.menuStateListener.getAllCheckedState(this.isAllChecked);
             }
-
-            if (menuStateListener != null) {
-                menuStateListener.getAllCheckedState(isAllChecked);
-            }
-
         }
     }
 
-
-    /**
-     * use to dissmiss the remove window
-     */
-    public boolean dismissRemoveMenu() {//显示关闭菜单
-        if (popupWindowManager != null && popupWindowManager.isShowing()) {
-//            popupWindowManager.dismissPop();
-            ((PopupBase) popupWindowManager).dismissMenu();
-            return true;
+    public boolean dismissRemoveMenu() {
+        if (this.popupWindowManager == null || !this.popupWindowManager.isShowing()) {
+            return false;
         }
-        return false;
+        ((PopupBase) this.popupWindowManager).dismissMenu();
+        return true;
     }
 
-
-    /**
-     * use to show the remove window
-     *
-     * @param parent the view which the menu belong with
-     */
-    public void showRemoveMenu(View parent) {//显示菜单
-        if (parent != null && popupWindowManager != null) {
-            popupWindowManager.showPopupWindow(parent);
+    public void showRemoveMenu(View parent) {
+        if (parent != null && this.popupWindowManager != null) {
+            this.popupWindowManager.showPopupWindow(parent);
         }
     }
 
-    @Override
     public void selectAll(boolean checkedAll) {
-        if (removeModeAdapter != null) {
-            removeModeAdapter.setAllChecked(checkedAll);
-            removeModeAdapter.notifyDataSetChanged();
+        if (this.removeModeAdapter != null) {
+            this.removeModeAdapter.setAllChecked(checkedAll);
+            this.removeModeAdapter.notifyDataSetChanged();
             setSelectNum();
         }
-        selectAllListener.onSelectAll(checkedAll);
+        this.selectAllListener.onSelectAll(checkedAll);
     }
 
-    // =================================================================
-    // menu method
-    // do not touch
-    // =================================================================
-    private void setRemoveWindow(Context context, int type) {//实例化对应类别的菜单对象
+    private void setRemoveWindow(Context context, int type) {
         switch (type) {
-            case popup_type_collect:
-                popupWindowManager = new PopupFactory().getPopupWindow(context, PopupFactory.BOOKCOLLECT_BOTTOM);
-                if (popupWindowManager != null) {
-
-                    popupWindowManager.initPopupWindow(R.layout.remove_menu_popup_collect, false);
-
-                    ((PopupBookCollect) popupWindowManager).setPopupCollectClickListener(this);
+            case 1:
+                this.popupWindowManager = new PopupFactory().getPopupWindow(context, 4);
+                if (this.popupWindowManager != null) {
+                    this.popupWindowManager.initPopupWindow(R.layout.remove_menu_popup_collect, false);
+                    ((PopupBookCollect) this.popupWindowManager).setPopupCollectClickListener(this);
+                    break;
                 }
                 break;
-            case popup_type_cancle:
-                popupWindowManager = new PopupFactory().getPopupWindow(context, PopupFactory.DELETE_CANCLE);
-                if (popupWindowManager != null) {
-                    popupWindowManager.initPopupWindow(R.layout.remove_menu_popup_collect, false);
-//                    popupWindowManager.initPopupWindow(R.layout.remove_menu_popup_cancle, false);
-                    ((PopupDeleteCancle) popupWindowManager).setPopupCancleClickListener(this);
+            case 3:
+                this.popupWindowManager = new PopupFactory().getPopupWindow(context, 5);
+                if (this.popupWindowManager != null) {
+                    this.popupWindowManager.initPopupWindow(R.layout.remove_menu_popup_collect, false);
+                    ((PopupDeleteCancle) this.popupWindowManager).setPopupCancleClickListener(this);
+                    break;
                 }
                 break;
-            case popup_type_download:
-                popupWindowManager = new PopupFactory().getPopupWindow(context, PopupFactory.DOWNLOAD_BOTTOM);
-                if (popupWindowManager != null) {
-                    popupWindowManager.initPopupWindow(R.layout.download_manager_bottom, false);
-                    ((PopupDownloadManager) popupWindowManager).setPopupSelectALLClickListener(this);
+            case 4:
+                this.popupWindowManager = new PopupFactory().getPopupWindow(context, 1);
+                if (this.popupWindowManager != null) {
+                    this.popupWindowManager.initPopupWindow(R.layout.download_manager_bottom, false);
+                    ((PopupDownloadManager) this.popupWindowManager).setPopupSelectALLClickListener(this);
+                    break;
                 }
                 break;
         }
-        ((PopupBase) popupWindowManager).setPopupWindowDeleteClickListener(this);
-        ((PopupBase) popupWindowManager).setPopupWindowOnShowingListener(this);
-
+        ((PopupBase) this.popupWindowManager).setPopupWindowDeleteClickListener(this);
+        ((PopupBase) this.popupWindowManager).setPopupWindowOnShowingListener(this);
     }
 
     @Override
-    public void onShowing(final boolean isShowing) {//菜单打开及关闭状态
-        if (removeModeAdapter != null) {
-            removeModeAdapter.resetRemovedState();
+    public void onShowing(final boolean isShowing) {
+        if (this.removeModeAdapter != null) {
+            this.removeModeAdapter.resetRemovedState();
             setSelectNum();
-            isAllChecked = false;
+            this.isAllChecked = false;
         }
-        if (menuStateListener != null) {
-            menuStateListener.getAllCheckedState(isAllChecked);
+        if (this.menuStateListener != null) {
+            this.menuStateListener.getAllCheckedState(this.isAllChecked);
         }
         if (isShowing) {
-            if (menuStateListener != null) {
-                menuStateListener.getMenuShownState(isShowing);
+            if (this.menuStateListener != null) {
+                this.menuStateListener.getMenuShownState(isShowing);
             }
-            if (removeModeAdapter != null) {
+            if (this.removeModeAdapter != null) {
 
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        removeModeAdapter.setRemoveMode(isShowing);
-                        removeModeAdapter.setListPadding(listview, isShowing);
-                        removeModeAdapter.notifyDataSetChanged();
-                    }
-                }, DELAY_TIME);
+                RemoveAdapterHelper.this.removeModeAdapter.setRemoveMode(isShowing);
+                RemoveAdapterHelper.this.removeModeAdapter.setListPadding(RemoveAdapterHelper.this.listview, isShowing);
+                RemoveAdapterHelper.this.removeModeAdapter.notifyDataSetChanged();
 
+                return;
             }
-        } else {
-            if (menuStateListener != null) {
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        menuStateListener.getMenuShownState(isShowing);
-                    }
-                }, 300);
-            }
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (removeModeAdapter != null) {
-                        removeModeAdapter.setRemoveMode(isShowing);
-                        removeModeAdapter.setListPadding(listview, isShowing);
-                        removeModeAdapter.notifyDataSetChanged();
-                    }
-                }
-            });
+            return;
+        }
+        if (this.menuStateListener != null) {
+            RemoveAdapterHelper.this.menuStateListener.getMenuShownState(isShowing);
+
+        }
+        if (RemoveAdapterHelper.this.removeModeAdapter != null) {
+            RemoveAdapterHelper.this.removeModeAdapter.setRemoveMode(isShowing);
+            RemoveAdapterHelper.this.removeModeAdapter.setListPadding(RemoveAdapterHelper.this.listview, isShowing);
+            RemoveAdapterHelper.this.removeModeAdapter.notifyDataSetChanged();
         }
     }
 
     @Override
-    public void clickDeleteBtn() {//删除
-        if (deleteClickListener != null) {
-            deleteClickListener.onMenuDelete(removeModeAdapter.remove_checked_states);
+    public void clickDeleteBtn() {
+        if (this.deleteClickListener != null) {
+            this.deleteClickListener.onMenuDelete(this.removeModeAdapter.remove_checked_states);
         }
     }
 
     @Override
-    public void clickCollect(View baseView) {//收藏  取消
-        if (collectClickListener != null)
-
-            collectClickListener.onMenuColleck(baseView, removeModeAdapter.remove_checked_states);
+    public void clickCollect(View baseView) {
+        if (this.collectClickListener != null) {
+            this.collectClickListener.onMenuColleck(baseView, this.removeModeAdapter.remove_checked_states);
+        }
     }
 
-    @Override
     public void clickCancle(View collectView) {
-        if (removeModeAdapter != null) {
-            removeModeAdapter.setRemoveMode(false);
-            removeModeAdapter.resetRemovedState();
-            removeModeAdapter.notifyDataSetChanged();
+        if (this.removeModeAdapter != null) {
+            this.removeModeAdapter.setRemoveMode(false);
+            this.removeModeAdapter.resetRemovedState();
+            this.removeModeAdapter.notifyDataSetChanged();
             setSelectNum();
-            isAllChecked = false;
+            this.isAllChecked = false;
         }
-        if (menuStateListener != null) {
-            menuStateListener.getAllCheckedState(isAllChecked);
+        if (this.menuStateListener != null) {
+            this.menuStateListener.getAllCheckedState(this.isAllChecked);
         }
         dismissRemoveMenu();
     }
 
-    private void setSelectNum() {//改变菜单显示所选定总数
-        if (removeModeAdapter != null && popupWindowManager != null) {
-            int num = removeModeAdapter.getCheckedSize();
-            AppLog.d(TAG, "setSelectNum " + num);
-            popupWindowManager.changeText(String.valueOf(num));
+    private void setSelectNum() {
+        if (this.removeModeAdapter != null && this.popupWindowManager != null) {
+            int num = Math.min(this.removeModeAdapter.getCheckedSize(), BookDaoHelper.getInstance().getBooksCount());
+            AppLog.d(this.TAG, "setSelectNum " + num);
+            this.popupWindowManager.changeText(String.valueOf(num));
         }
     }
-
-    // ====================================================
-    // callback
-    // ===================================================
-    public interface OnMenuStateListener {//菜单状态监听
-
-        public void getMenuShownState(boolean isShown);//菜单开启状态
-
-        public void getAllCheckedState(boolean isAll);//菜单全选状态
-
-    }
-
-
-    public interface OnMenuSelectAllListener {
-        void onSelectAll(boolean checkedAll);
-    }
-
-    public interface OnMenuDeleteClickListener {//菜单删除按钮监听
-
-        /**
-         * delete button
-         *
-         * @param checked_state position which the list checkbox is selected
-         */
-        public void onMenuDelete(HashSet<Integer> checked_state);//删除按钮回调，得到被选中的position
-    }
-
-    public interface OnMenuAddBookClickListener {//菜单加入书架监听
-
-        public void onMenuAddBook(HashSet<Integer> checked_state);//加入数据按钮回调，得到被选中的position
-    }
-
-    public interface OnMenuCollectClickListener {//菜单收藏监听
-
-        public void onMenuColleck(View baseView, HashSet<Integer> checked_state);//加入收藏回调
-    }
-
 }

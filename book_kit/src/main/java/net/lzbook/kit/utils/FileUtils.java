@@ -1,5 +1,9 @@
 package net.lzbook.kit.utils;
 
+import net.lzbook.kit.constants.ReplaceConstants;
+
+import android.os.StatFs;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -215,5 +219,33 @@ public class FileUtils {
             }
         }
         return null;
+    }
+
+    public static boolean deleteDir(File dir) {
+        if (dir != null && dir.isDirectory()) {
+            String[] children = dir.list();
+            if (children != null) {
+                for (String file : children) {
+                    if (!deleteDir(new File(dir, file))) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return dir.delete();
+    }
+
+    public static boolean checkLeftSpace() {
+        File file = new File(ReplaceConstants.getReplaceConstants().APP_PATH_BOOK);
+
+        if(!file.exists()) {
+            file.mkdirs();
+        }
+
+        if(!file.exists()){
+            return false;
+        }
+        StatFs statFs = new StatFs(ReplaceConstants.getReplaceConstants().APP_PATH_BOOK);
+        return new Long((long) statFs.getAvailableBlocks()).longValue() * ((long) statFs.getBlockSize()) > 20971520;
     }
 }

@@ -13,6 +13,6 @@ interface CataloguesContract {
     fun notifyDataChange(isCatalog: Boolean, bookmarkList: java.util.ArrayList<Bookmark>) //更新标签状态
     fun deleteBookmarks(deleteList: ArrayList<Int>) //删除标签
     fun handOverLay()
-    fun changeDownloadButtonStatus(type: Int) //改变缓存按钮的文字
+    fun changeDownloadButtonStatus() //改变缓存按钮的文字
     fun successAddIntoShelf(isAddIntoShelf: Boolean) //是否成功加入书架
 }
