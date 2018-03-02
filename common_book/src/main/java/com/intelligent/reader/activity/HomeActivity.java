@@ -1,5 +1,25 @@
 package com.intelligent.reader.activity;
 
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.webkit.WebView;
+
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
@@ -28,26 +48,6 @@ import net.lzbook.kit.utils.LoadDataManager;
 import net.lzbook.kit.utils.MD5Utils;
 import net.lzbook.kit.utils.ToastUtils;
 import net.lzbook.kit.utils.update.ApkUpdateUtils;
-
-import android.app.Notification;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.webkit.WebView;
 
 import java.io.File;
 import java.util.HashMap;
@@ -130,7 +130,7 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
             if (intent.hasExtra(EventBookStore.BOOKSTORE)) {
                 position = intent.getIntExtra(EventBookStore.BOOKSTORE, 0);
                 if (mHomeFragment != null) {
-                    mHomeFragment.setTabSelected(position);
+                    mHomeFragment.selectTab(position);
                 }
             } else {
                 int intExtra = intent.getIntExtra(EventBookStore.BOOKSTORE, EventBookStore
@@ -138,7 +138,7 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
                 if (intExtra != EventBookStore.TYPE_ERROR) {
                     if (!isFinishing()) {
                         if (mHomeFragment != null) {
-                            mHomeFragment.setTabSelected(intExtra);
+                            mHomeFragment.selectTab(intExtra);
                         }
                     }
                 }
@@ -191,7 +191,7 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
                 if (intExtra != EventBookStore.TYPE_ERROR) {
                     if (!isFinishing()) {
                         if (mHomeFragment != null) {
-                            mHomeFragment.setTabSelected(intExtra);
+                            mHomeFragment.selectTab(intExtra);
                         }
                     }
                 }
@@ -247,11 +247,11 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (mHomeFragment.drawerLayout.isOpened()) {
-                mHomeFragment.drawerLayout.closeMenu();
+            if (mHomeFragment.getDrawerLayout().isOpened()) {
+                mHomeFragment.getDrawerLayout().closeMenu();
                 return true;
             }else if (viewPager != null && viewPager.getCurrentItem() != 0 && mHomeFragment != null) {
-                mHomeFragment.setTabSelected(0);
+                mHomeFragment.selectTab(0);
                 return true;
             } else if (removeMenuHelper != null && removeMenuHelper.dismissRemoveMenu()) {
 
@@ -348,7 +348,7 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
     @Override
     public void setSelectTab(int index) {
         if (mHomeFragment != null) {
-            mHomeFragment.setTabSelected(index);
+            mHomeFragment.selectTab(index);
         }
     }
 

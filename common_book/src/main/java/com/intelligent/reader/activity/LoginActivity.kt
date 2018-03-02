@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.TextView
 import com.intelligent.reader.R
 import iyouqu.theme.FrameActivity
-import kotlinx.android.synthetic.qbzsydq.act_login.*
+import kotlinx.android.synthetic.txtqbmfyd.act_login.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.user.Platform
@@ -98,7 +98,7 @@ class LoginActivity : FrameActivity() {
         progressDialog!!.findViewById(R.id.publish_content).setVisibility(View.GONE)
         (progressDialog!!.findViewById(R.id.dialog_title) as TextView).setText(R.string.tips_login)
         progressDialog!!.findViewById(R.id.change_source_bottom).setVisibility(View.GONE)
-        progressDialog!!.findViewById(R.id.progress_del).setVisibility(View.VISIBLE)
+        progressDialog!!.findViewById(R.id.pgbar_loading).setVisibility(View.VISIBLE)
         progressDialog!!.setOnDismissListener {
             flagLoginEnd = true
         }

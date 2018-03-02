@@ -1,23 +1,5 @@
 package net.lzbook.kit.utils.update;
 
-import com.google.gson.JsonObject;
-
-import net.lzbook.kit.R;
-import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.view.MyDialog;
-import net.lzbook.kit.net.custom.service.NetService;
-import net.lzbook.kit.net.volley.request.Parser;
-import net.lzbook.kit.net.volley.request.VolleyDataService;
-import net.lzbook.kit.request.UrlUtils;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.NetWorkUtils;
-import net.lzbook.kit.encrypt.URLBuilderIntterface;
-import net.lzbook.kit.utils.ToastUtils;
-
-import org.json.JSONException;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -30,6 +12,20 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.JsonObject;
+
+import net.lzbook.kit.R;
+import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.book.view.MyDialog;
+import net.lzbook.kit.net.custom.service.NetService;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.NetWorkUtils;
+import net.lzbook.kit.utils.ToastUtils;
+
+import org.json.JSONException;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -72,18 +68,18 @@ public class ApkUpdateUtils {
                         try {
                             ApkUpdateInfo apkUpdateInfo = new ApkUpdateInfo(result.toString());
                             final ApkUpdateInfo finalApkUpdateInfo = apkUpdateInfo;
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if ("SettingActivity".equals(from)) {
-                                        type = 2;
-                                        doUpdateFromSettingACT(finalApkUpdateInfo);
-                                    } else if ("HomeActivity".equals(from)) {
-                                        type = 1;
-                                        doUpdate(finalApkUpdateInfo);
-                                    }
-                                }
-                            });
+//                            handler.post(new Runnable() {
+//                                @Override
+//                                public void run() {
+                            if ("SettingActivity".equals(from)) {
+                                type = 2;
+                                doUpdateFromSettingACT(finalApkUpdateInfo);
+                            } else if ("HomeActivity".equals(from)) {
+                                type = 1;
+                                doUpdate(finalApkUpdateInfo);
+                            }
+//                                }
+//                            });
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

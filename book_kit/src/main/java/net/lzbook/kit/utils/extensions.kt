@@ -1,13 +1,14 @@
 package net.lzbook.kit.utils
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
 import android.support.annotation.AttrRes
-import android.support.annotation.IdRes
 import android.support.annotation.StringRes
+import android.support.v4.app.Fragment
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
@@ -16,6 +17,7 @@ import android.widget.TextView
 import de.greenrobot.event.EventBus
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
+import java.lang.ref.WeakReference
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
@@ -34,9 +36,30 @@ private object BackgroundExecutor {
     fun <R> submit(task: () -> R): Future<R> = executor.submit(task)
 }
 
-fun Any.doAsync(task: () -> Unit) : Future<Unit>{
-    return BackgroundExecutor.submit(task)
+fun <R> R.doAsync(task: R.() -> Unit): Future<Unit> {
+    return BackgroundExecutor.submit {
+        return@submit try {
+            task()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 }
+
+fun <R> R.uiThread(f: (R) -> Unit): Boolean {
+    val ref = WeakReference(this).get() ?: return false
+    if (ref is Activity && ref.isFinishing) return false
+    if (ref is Fragment && ref.isDetached) return false
+    if (mainThread == Thread.currentThread()) {
+        f(ref)
+    } else {
+        msMainLooperHandler.post { f(ref) }
+    }
+    return true
+}
+
+@JvmField
+val mainThread: Thread = Looper.getMainLooper().thread
 
 @JvmField
 val msMainLooperHandler = Handler(Looper.getMainLooper())
@@ -47,7 +70,7 @@ fun Any.runOnMain(run: () -> Unit) {
     }
 }
 
-fun Any.runOnMainDelayed(delay:Long, run: () -> Unit) {
+fun Any.runOnMainDelayed(delay: Long, run: () -> Unit) {
     msMainLooperHandler.postDelayed({ run.invoke() }, delay)
 }
 

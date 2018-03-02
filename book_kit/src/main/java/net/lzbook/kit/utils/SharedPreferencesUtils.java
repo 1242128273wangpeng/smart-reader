@@ -29,8 +29,13 @@ public class SharedPreferencesUtils {
         return sp.getInt(key, 0);
     }
 
+    public int getInt(String key, int defValue) {
+        return sp.getInt(key, defValue);
+    }
+
     public String getString(String key) {
         return sp.getString(key, "");
     }
+
 }
 

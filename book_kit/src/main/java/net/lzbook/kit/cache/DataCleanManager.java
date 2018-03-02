@@ -1,9 +1,9 @@
 package net.lzbook.kit.cache;
 
-import net.lzbook.kit.constants.ReplaceConstants;
-
 import android.content.Context;
 import android.os.Environment;
+
+import net.lzbook.kit.constants.ReplaceConstants;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -118,7 +118,7 @@ public class DataCleanManager {
         double kiloByte = size / 1024;
         if (kiloByte < 1) {
             // return size + "Byte";
-            return "0K";
+            return "0B";
         }
 
         double megaByte = kiloByte / 1024;
