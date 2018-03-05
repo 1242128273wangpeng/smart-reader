@@ -33,19 +33,6 @@
             <!--android:soundEffectsEnabled="true"-->
             <!--/>-->
 
-    <!--<TextView-->
-            <!--android:id="@+id/read_option_pop_info"-->
-            <!--android:layout_width="112dp"-->
-            <!--android:layout_height="45dp"-->
-            <!--android:gravity="center"-->
-            <!--android:textColor="@color/color_gray_d3d3d3"-->
-            <!--android:textSize="12sp"-->
-            <!--android:text="书籍详情"-->
-            <!--android:background="@drawable/read_option_pop_bg_selector"-->
-            <!--android:clickable="true"-->
-            <!--android:soundEffectsEnabled="true"-->
-            <!--/>-->
-
     <TextView
             android:id="@+id/read_option_pop_feedback"
             android:layout_width="120dp"
@@ -56,4 +43,17 @@
             android:background="@drawable/read_option_pop_bg_selector"
             android:soundEffectsEnabled="true"
             android:layout_height="45dp"/>
+
+    <TextView
+            android:id="@+id/read_option_pop_info"
+            android:layout_width="120dp"
+            android:layout_height="45dp"
+            android:gravity="center"
+            android:textColor="@color/color_gray_d3d3d3"
+            android:textSize="12sp"
+            android:text="书籍详情"
+            android:background="@drawable/read_option_pop_bg_selector"
+            android:clickable="true"
+            android:soundEffectsEnabled="true"
+            />
 </LinearLayout>

@@ -37,6 +37,7 @@ import com.intelligent.reader.reader.ReaderRepositoryFactory
 import com.intelligent.reader.reader.ReaderViewModel
 import com.intelligent.reader.receiver.DownBookClickReceiver
 import com.intelligent.reader.util.EventBookStore
+import com.intelligent.reader.widget.drawer.ConfirmPopWindow
 import com.intelligent.reader.widget.drawer.FeedbackPopWindow
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -537,40 +538,56 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
 
     private fun showChangeSourceNoticeDialog(source: Source) {
         if (readReference != null && readReference!!.get() != null && !readReference!!.get()!!.isFinishing()) {
-            myDialog = MyDialog(readReference!!.get(), R.layout.publish_hint_dialog)
-            myDialog!!.setCanceledOnTouchOutside(true)
-            val dialog_cancel = myDialog!!.findViewById(R.id.publish_stay) as Button
-            dialog_cancel.setText(R.string.book_cover_continue_read_cache)
-            val dialog_confirm = myDialog!!.findViewById(R.id.publish_leave) as Button
-            dialog_confirm.setText(R.string.book_cover_confirm_change_source)
-            val dialog_information = myDialog!!.findViewById(R.id.publish_content) as TextView
-            dialog_information.setText(R.string.book_cover_change_source_prompt)
-            dialog_cancel.setOnClickListener {
-                StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_change_source_read)
-                val map1 = HashMap<String, String>()
-                map1.put("type", "2")
-                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGECONFIRM, map1)
-
-                dismissDialog()
-            }
-            dialog_confirm.setOnClickListener {
-                StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_change_source_ok)
-                val map2 = HashMap<String, String>()
-                map2.put("type", "1")
-                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGECONFIRM, map2)
-                dismissDialog()
-                intoCatalogActivity(source, true)
-            }
-
-            myDialog!!.setOnCancelListener { myDialog!!.dismiss() }
-            if (!myDialog!!.isShowing) {
-                try {
-                    myDialog!!.show()
-                } catch (e: Exception) {
-                    e.printStackTrace()
+//            myDialog = MyDialog(readReference!!.get(), R.layout.pop_confirm_layout)
+//            myDialog!!.setCanceledOnTouchOutside(true)
+//            val dialog_cancel = myDialog!!.findViewById(R.id.publish_stay) as Button
+//            dialog_cancel.setText(R.string.book_cover_continue_read_cache)
+//            val dialog_confirm = myDialog!!.findViewById(R.id.publish_leave) as Button
+//            dialog_confirm.setText(R.string.book_cover_confirm_change_source)
+//            val dialog_information = myDialog!!.findViewById(R.id.publish_content) as TextView
+//            dialog_information.setText(R.string.book_cover_change_source_prompt)
+//            dialog_cancel.setOnClickListener {
+//                StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_change_source_read)
+//                val map1 = HashMap<String, String>()
+//                map1.put("type", "2")
+//                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGECONFIRM, map1)
+//
+//                dismissDialog()
+//            }
+//            dialog_confirm.setOnClickListener {
+//                StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_change_source_ok)
+//                val map2 = HashMap<String, String>()
+//                map2.put("type", "1")
+//                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGECONFIRM, map2)
+//                dismissDialog()
+//                intoCatalogActivity(source, true)
+//            }
+//
+//            myDialog!!.setOnCancelListener { myDialog!!.dismiss() }
+//            if (!myDialog!!.isShowing) {
+//                try {
+//                    myDialog!!.show()
+//                } catch (e: Exception) {
+//                    e.printStackTrace()
+//                }
+//
+//            }
+            ConfirmPopWindow.newBuilder(readReference!!.get()).setOnConfirmListener(object :ConfirmPopWindow.OnConfirmListener{
+                override fun onConfirm(view: View?) {
+                    StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_change_source_read)
+                    val map1 = HashMap<String, String>()
+                    map1.put("type", "2")
+                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGECONFIRM, map1)
                 }
 
-            }
+                override fun onCancel(view: View?) {
+                    StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_change_source_ok)
+                    val map2 = HashMap<String, String>()
+                    map2.put("type", "1")
+                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGECONFIRM, map2)
+                    intoCatalogActivity(source, true)
+                }
+            }).build().show()
         }
     }
 

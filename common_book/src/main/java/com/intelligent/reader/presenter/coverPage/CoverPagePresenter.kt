@@ -295,7 +295,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
 
     private fun showChangeSourceNoticeDialog(source: CoverPage.SourcesBean) {
         if (!activity.isFinishing()) {
-            val confirm_change_source_dialog = MyDialog(activity, R.layout.publish_hint_dialog)
+            val confirm_change_source_dialog = MyDialog(activity, R.layout.pop_confirm_layout)
             confirm_change_source_dialog.setCanceledOnTouchOutside(true)
             val dialog_cancel = confirm_change_source_dialog.findViewById(R.id.publish_stay) as Button
             dialog_cancel.setText(R.string.book_cover_continue_read_cache)

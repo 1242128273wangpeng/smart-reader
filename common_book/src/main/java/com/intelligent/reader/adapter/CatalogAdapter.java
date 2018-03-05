@@ -78,12 +78,12 @@ public class CatalogAdapter extends BaseAdapter {
         return false;
     }
 
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewCache viewCache;
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.content_catalog_item, parent, false);
             viewCache = new ViewCache(convertView);
-            viewCache.catalog_chapter_divider = convertView.findViewById(R.id.catalog_chapter_divider);
             convertView.setTag(viewCache);
         } else {
             viewCache = (ViewCache) convertView.getTag();
@@ -92,8 +92,9 @@ public class CatalogAdapter extends BaseAdapter {
             return convertView;
         }
         Chapter chapter = list.get(position);
-        String text = (chapter.sequence + 1) + " " + chapter.chapter_name;
-        viewCache.getChapterName().setText(text);
+//        String text = (chapter.sequence + 1) + " " + chapter.chapter_name;
+//        viewCache.getChapterName().setText(text);
+        viewCache.getChapterName().setText(chapter.chapter_name);
         boolean chapterExist;
         if (book_site.equals(Constants.QG_SOURCE)) {
             chapterExist = DataCache.isChapterExists(chapter.chapter_id, chapter.book_id);
@@ -109,14 +110,14 @@ public class CatalogAdapter extends BaseAdapter {
         }
 
         if (chapter.sequence == selectedItem) {
-            textColor = R.color.directory_current_chapter_text_color;
+            textColor = R.color.dialog_recommend;
             viewCache.getChapterName().setTextColor(resources.getColor(textColor));
         } else {
             if (chapterExist) {
-                textColor = R.color.directory_chapter_text_color;
+                textColor = R.color.text_color_dark;
                 viewCache.getChapterName().setTextColor(resources.getColor(textColor));
             } else {
-                textColor = R.color.directory_uncached_chapter_text_color;
+                textColor = R.color.text_color_light;
                 viewCache.getChapterName().setTextColor(resources.getColor(textColor));
             }
         }
@@ -145,7 +146,6 @@ public class CatalogAdapter extends BaseAdapter {
         private View baseView;
         private TextView textView;
         private TextView has_cache;
-        private View catalog_chapter_divider;
 
         public ViewCache(View baseView) {
             this.baseView = baseView;

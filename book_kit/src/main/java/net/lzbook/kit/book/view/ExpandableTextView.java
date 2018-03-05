@@ -40,13 +40,14 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class ExpandableTextView extends LinearLayout implements View.OnClickListener {
+public class ExpandableTextView extends RelativeLayout implements View.OnClickListener {
 
     private static final int MAX_COLLAPSED_LINES = 8;
 
@@ -128,15 +129,16 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         }
 
         mCollapsed = !mCollapsed;
-        mButton.setText(mCollapsed ? "展开" : "收起");
+//        mButton.setText(mCollapsed ? "展开" : "收起");
 //        mButton.setTextColor(Color.GRAY);
         mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
+        setCollapsedMarins();
         Map<String, String> data = new HashMap<>();
 
         if (mCollapsedStatus != null) {
             mCollapsedStatus.put(mPosition, mCollapsed);
         }
-        if (mButton.getText().toString().trim().equals("展开")) {
+        if (mCollapsed) {
             data.put("type", "2");
         } else {
             data.put("type", "1");
@@ -249,9 +251,10 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         mTv.setOnClickListener(this);
         mButton = (TextView) findViewById(R.id.expand_collapse);
         mButton.setCompoundDrawablePadding(12);
-        mButton.setText(mCollapsed ? "展开" : "收起");
+//        mButton.setText(mCollapsed ? "展开" : "收起");
 //        mButton.setTextColor(Color.GRAY);
         mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
+        setCollapsedMarins();
         mButton.setOnClickListener(this);
     }
 
@@ -261,12 +264,27 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         boolean isCollapsed = collapsedStatus.get(position, true);
         clearAnimation();
         mCollapsed = isCollapsed;
-        mButton.setText(mCollapsed ? "展开" : "收起");
+//        mButton.setText(mCollapsed ? "展开" : "收起");
 //        mButton.setTextColor(Color.GRAY);
         mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
+        setCollapsedMarins();
         setText(text);
         getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
         requestLayout();
+    }
+
+    private void setCollapsedMarins() {
+        if (!mCollapsed) {
+//            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(TRUE);
+            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(RelativeLayout.BELOW, R.id.expandable_text);
+            mTv.setMaxLines(Integer.MAX_VALUE);
+        } else {
+//            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(RelativeLayout.BELOW, TRUE);
+            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            mTv.setMaxLines(3);
+            mTv.setEllipsize(TextUtils.TruncateAt.END);
+        }
     }
 
     public CharSequence getText() {

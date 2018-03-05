@@ -13,7 +13,7 @@ import net.lzbook.kit.data.bean.Book
  */
 class BookDeleteDialog(activity: Activity) {
 
-    private val dialog = MyDialog(activity, R.layout.publish_hint_dialog)
+    private val dialog = MyDialog(activity, R.layout.pop_confirm_layout)
 
     private val title = dialog.findViewById(R.id.dialog_title) as TextView
     private val content = dialog.findViewById(R.id.publish_content) as TextView

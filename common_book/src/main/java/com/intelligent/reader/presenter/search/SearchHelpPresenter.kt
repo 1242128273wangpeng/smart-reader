@@ -183,7 +183,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
 
     fun showDialog(activity: Activity?) {
         if (activity != null && !activity!!.isFinishing) {
-            val myDialog = MyDialog(activity, R.layout.publish_hint_dialog)
+            val myDialog = MyDialog(activity, R.layout.pop_confirm_layout)
             myDialog.setCanceledOnTouchOutside(true)
             val dialog_title = myDialog.findViewById(R.id.dialog_title) as TextView
             dialog_title.setText(R.string.prompt)

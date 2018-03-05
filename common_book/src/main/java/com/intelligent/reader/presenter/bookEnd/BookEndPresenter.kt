@@ -188,7 +188,7 @@ class BookEndPresenter(val act: Activity, val bookEndContract: BookEndContract,
         if (!activity!!.get()!!.isFinishing()) {
             dismissDialog()
 
-            myDialog = MyDialog(activity!!.get(), R.layout.publish_hint_dialog)
+            myDialog = MyDialog(activity!!.get(), R.layout.pop_confirm_layout)
             myDialog!!.setCanceledOnTouchOutside(true)
             val dialog_cancel = myDialog!!.findViewById(R.id.publish_stay) as Button
             dialog_cancel.setText(R.string.cancel)

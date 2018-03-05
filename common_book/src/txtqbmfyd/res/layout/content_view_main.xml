@@ -5,14 +5,14 @@
     android:id="@+id/content_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:ignore="RtlHardcoded">
 
     <RelativeLayout
         android:id="@+id/rl_head"
         android:layout_width="match_parent"
         android:layout_height="@dimen/top_bar_height"
-        android:background="@color/top_navigation_bg_color"
-        android:fitsSystemWindows="true">
+        android:background="@color/top_navigation_bg_color">
 
         <ImageView
             android:id="@+id/img_head_setting"

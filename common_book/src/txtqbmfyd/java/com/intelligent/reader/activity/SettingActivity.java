@@ -508,7 +508,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         if (myDialog != null && myDialog.isShowing()) {
             myDialog.dismiss();
         }
-        myDialog = new MyDialog(this, R.layout.publish_hint_dialog);
+        myDialog = new MyDialog(this, R.layout.pop_confirm_layout);
         myDialog.setCanceledOnTouchOutside(false);
         myDialog.setCancelable(false);
         myDialog.setCanceledOnTouchOutside(true);//设置点击dialog外面对话框消失
@@ -539,7 +539,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
 
     private void clearCacheDialog() {
         if (!isFinishing()) {
-            myDialog = new MyDialog(this, R.layout.publish_hint_dialog);
+            myDialog = new MyDialog(this, R.layout.pop_confirm_layout);
             myDialog.setCanceledOnTouchOutside(false);
             myDialog.setCancelable(false);
             myDialog.setCanceledOnTouchOutside(true);//设置点击dialog外面对话框消失
