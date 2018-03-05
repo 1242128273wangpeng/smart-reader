@@ -5,20 +5,27 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.AttributeSet;
+import android.util.StateSet;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,11 +51,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
 import swipeback.SwipeBackHelper;
 
 public abstract class FrameActivity extends AppCompatActivity implements SwipeBackHelper.SlideBackManager,
         SwipeBackHelper.SlideAnimListener {
     protected final static int commonLockTime = 5 * 60 * 1000;
+    public static final float ALPHA_FADE_TO = 0.3F;
     // 全局亮度
     public static int mSystemBrightness = 0;
     // 屏幕超时时间
@@ -118,6 +128,83 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
 //        ATManager.addActivity(this);
 //        StatusBarCompat.compat(this, getStatusBarColorId());
     }
+
+    @Override
+    public final View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
+
+        boolean changeAlpha = isChangeAlpha(attrs);
+
+        if(changeAlpha && parent != null && parent instanceof ViewGroup){
+            ((ViewGroup)parent).setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+        }
+
+        View view = super.onCreateView(name, context, attrs);
+
+        if(changeAlpha){
+
+            if(view == null) {
+                view = getView(parent, name, context, attrs);
+            }
+
+            if(view != null) {
+
+                final View tempView = view;
+                StateListDrawable stateListDrawable = new StateListListenerDrawable(new Function2<Boolean, Boolean, Unit>() {
+                    @Override
+                    public Unit invoke(Boolean pressed, Boolean enable) {
+                        if(pressed || !enable) {
+                            tempView.setAlpha(ALPHA_FADE_TO);
+                        }else{
+                            tempView.setAlpha(1.0F);
+                        }
+
+                        return null;
+                    }
+                });
+
+                Drawable background = view.getBackground();
+
+                if(background != null) {
+                    stateListDrawable.addState(StateSet.WILD_CARD, background);
+                }
+
+                ViewCompat.setBackground(view, stateListDrawable);
+            }
+        }
+
+        return view ;
+    }
+
+    @Nullable
+    private View getView(View parent, String name, Context context, AttributeSet attrs) {
+
+        //first use AppCompat
+        View view = getDelegate().createView(parent, name, context, attrs);
+
+        if(view == null){
+            try {
+                if (-1 == name.indexOf('.')) {
+                    view = getLayoutInflater().createView(name, "android.view.", attrs);
+                }else{
+                    view = getLayoutInflater().createView(name, null, attrs);
+                }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return view;
+    }
+
+    private boolean isChangeAlpha(AttributeSet attrs) {
+        int count = attrs.getAttributeCount();
+        for (int i = 0; i < count; i++) {
+            if("onPressChangeAlpha".equals(attrs.getAttributeName(i))){
+                return attrs.getAttributeBooleanValue(i, false);
+            }
+        }
+        return false;
+    }
+
 
     @Override
     public void onBackPressed() {
