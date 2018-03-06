@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="mian_click_tiwce_exit">再按一次退出TXT免费全本阅读</string>
+    <string name="mian_click_tiwce_exit">再按一次退出TXT全本免费阅读</string>
     <string name="bookshelf">书架</string>
     <string name="recommend">推荐</string>
     <string name="ranking">榜单</string>
@@ -15,10 +15,21 @@
 
     <string name="string_home_menu_desc">都进来了，找本书瞧瞧吧~</string>
     <string name="auto_download">Wi-Fi下自动缓存</string>
+    <string name="bookshelf_no_book_desc">还没有添加书籍哦~</string>
+    <string name="bookshelf_no_book_goto">去找书</string>
+
+    <string name="bookshelf_edit_title">编辑书架</string>
+    <string name="select_all">全选</string>
+    <string name="select_all_cancel">取消全选</string>
+    <string name="delete_book_dialog_desc">删除后，缓存内容将被清空，你确定要继续吗？</string>
+    <string name="download_manager">缓存管理</string>
+    <string name="book_sorting">书籍排序</string>
+    <string name="recent_read_sorting">按最近阅读排序</string>
+    <string name="update_time_sorting">按更新时间排序</string>
 
     <string name="disclaimer_statement_description">
         "
-        "在使用TXT免费全本阅读（简称“本软件”）前，请您（个人、公司、其他组织）仔细阅读本使用协议如下全部内容以便决定是否继续使用本软件，您的继续使用行为即表示您已经完全理解并接受本使用协议，否则您应当立即卸载并删除本软件。同时，本使用协议内容可能会根据将来服务内容的变化而做相应的更改，故请您及时予以关注并决定是否继续接受相关更改。\n
+        "在使用TXT全本免费阅读（简称“本软件”）前，请您（个人、公司、其他组织）仔细阅读本使用协议如下全部内容以便决定是否继续使用本软件，您的继续使用行为即表示您已经完全理解并接受本使用协议，否则您应当立即卸载并删除本软件。同时，本使用协议内容可能会根据将来服务内容的变化而做相应的更改，故请您及时予以关注并决定是否继续接受相关更改。\n
         " "一、免责声明 \n
         "
         "1.1、本软件仅为根据您的搜索指令提供搜索、链接服务，搜索结果均来自于第三方网站，本软件不会对第三方网站内容作任何实质性的编辑、整理、修改，搜索结果亦不代表本软件同意、赞同第三方网站的观点。本软件不能保证被链接内容的正确性、合法性，是否同意、采用、引用该等内容完全由您自行决定并自行担责。\n

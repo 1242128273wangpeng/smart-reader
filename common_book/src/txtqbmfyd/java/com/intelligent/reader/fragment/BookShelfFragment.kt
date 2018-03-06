@@ -54,6 +54,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
                     if (position < 0 || position > presenter.iBookList.size) {
                         return@ShelfItemClickListener
                     }
+                    if (position == presenter.iBookList.size) {
+                        fragmentCallback.setSelectTab(1)
+                    }
                     if (bookShelfRemoveHelper.isRemoveMode) {
                         bookShelfRemoveHelper.setCheckPosition(position)
                     } else {
@@ -69,7 +72,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
                         bookShelfRemoveHelper.showRemoveMenu(bookshelf_refresh_view)
                         presenter.uploadItemLongClickLog()
                     }
-                }, true)
+                })
     }
 
     val bookShelfRemoveHelper: BookShelfRemoveHelper by lazy {
@@ -261,6 +264,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
      * 查Book数据库更新界面
      */
     fun updateUI() {
+        AppLog.e(TAG, "updateUI")
         val isShowAd = !bookShelfRemoveHelper.isRemoveMode && isResumed && !Constants.isHideAD
         doAsync {
             presenter.queryBookListAndAd(activity, isShowAd)
@@ -285,6 +289,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
     override fun onSuccess(result: BookUpdateResult) {
         if (activity != null && !activity.isFinishing) {
             latestLoadDataTime = System.currentTimeMillis()
+            bookRackUpdateTime = System.currentTimeMillis()
             bookRackUpdateTime = System.currentTimeMillis()
             if (bookshelf_refresh_view != null) {
                 bookshelf_refresh_view!!.onRefreshComplete()
@@ -345,6 +350,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
 
     override fun onBookDelete() {
         AppLog.e(TAG, "onBookDelete")
+        updateUI()
         bookShelfRemoveHelper.dismissRemoveMenu()
     }
 
@@ -375,8 +381,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
         bookshelf_refresh_view.setHeaderView(createHeaderView())
         bookshelf_refresh_view.isTargetScrollWithLayout = true
         recycler_view.recycledViewPool.setMaxRecycledViews(0, 12)
-        val layoutManager = ShelfGridLayoutManager(activity, 1)
+        val layoutManager = ShelfGridLayoutManager(activity, 3)
         recycler_view.layoutManager = layoutManager
+        recycler_view.isFocusable = false//放弃焦点
         //        recyclerView.getItemAnimator().setSupportsChangeAnimations(false);
         recycler_view.itemAnimator.addDuration = 0
         recycler_view.itemAnimator.changeDuration = 0

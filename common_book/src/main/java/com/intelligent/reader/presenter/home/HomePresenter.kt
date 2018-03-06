@@ -4,6 +4,7 @@ import com.intelligent.reader.presenter.IPresenter
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.StatServiceUtils
+import java.util.*
 
 /**
  * Desc HomeFragment - presenter
@@ -44,7 +45,7 @@ class HomePresenter(override var view: HomeView?) : IPresenter<HomeView> {
         net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(context,
                 net.lzbook.kit.utils.StatServiceUtils.bs_click_download_btn)
         StartLogClickUtil.upLoadEventLog(context,
-                StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.CACHEMANAGE)
+                StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.CACHEMANAGE)
     }
 
     fun uploadBookshelfSelectedLog() {
@@ -133,5 +134,17 @@ class HomePresenter(override var view: HomeView?) : IPresenter<HomeView> {
         val context = BaseBookApplication.getGlobalContext()
         StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.CACHECLEAR)
         StatServiceUtils.statAppBtnClick(context, StatServiceUtils.me_set_cli_clear_cache)
+    }
+
+    fun uploadEditorSelectAllLog(isAllSelected: Boolean) {
+        val data = HashMap<String, String>()
+        data.put("type", if (isAllSelected) "2" else "1")
+        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.SELECTALL1, data)
+    }
+
+    fun uploadBookSortingLog() {
+        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.BOOKSORT)
     }
 }

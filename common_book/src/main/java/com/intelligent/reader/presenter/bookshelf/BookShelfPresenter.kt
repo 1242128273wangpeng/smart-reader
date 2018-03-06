@@ -145,7 +145,8 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
             runOnMain {
                 view?.onBookListQuery(bookList)
             }
-            return bookList.size / adCount + 1
+//            return bookList.size / adCount + 1
+            return 0
         }
     }
 

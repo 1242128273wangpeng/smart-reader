@@ -23,7 +23,9 @@ import com.intelligent.reader.activity.*
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
+import com.intelligent.reader.widget.BookSortingDialog
 import com.intelligent.reader.widget.ClearCacheDialog
+import com.intelligent.reader.widget.HomeMenuPopup
 import com.intelligent.reader.widget.drawer.DrawerLayout
 import de.greenrobot.event.EventBus
 import io.reactivex.Observable
@@ -110,6 +112,38 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
                     txt_clear_cache_message.text = "0B"
                 }
             }
+        }
+        dialog
+    }
+
+    private val homeMenuPopup: HomeMenuPopup by lazy {
+        val popup = HomeMenuPopup(activity)
+        popup.setOnDownloadClickListener {
+            startActivity(Intent(activity, DownloadManagerActivity::class.java))
+            presenter.uploadDownloadManagerLog()
+        }
+        popup.setOnSortingClickListener {
+            bookSortingDialog.show()
+            presenter.uploadBookSortingLog()
+        }
+        popup
+    }
+
+    private val settingItemsHelper by lazy { SettingItemsHelper.getSettingHelper(context) }
+
+    private val bookSortingDialog: BookSortingDialog by lazy {
+        val dialog = BookSortingDialog(activity)
+        dialog.setOnRecentReadClickListener {
+            StatServiceUtils.statAppBtnClick(context, StatServiceUtils.me_set_cli_shelf_rak_time)
+            settingItemsHelper.putInt(settingItemsHelper.booklistSortType, 0)
+            Constants.book_list_sort_type = 0
+            bookShelfFragment?.updateUI()
+        }
+        dialog.setOnUpdateTimeClickListener {
+            StatServiceUtils.statAppBtnClick(context, StatServiceUtils.me_set_cli_shelf_rak_time)
+            settingItemsHelper.putInt(settingItemsHelper.booklistSortType, 1)
+            Constants.book_list_sort_type = 1
+            bookShelfFragment?.updateUI()
         }
         dialog
     }
@@ -241,9 +275,7 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
         }
 
         img_head_menu.setOnClickListener {
-            //TODO popup 弹窗
-//            startActivity(Intent(context, DownloadManagerActivity::class.java))
-//            presenter.uploadDownloadManagerLog()
+            homeMenuPopup.show(img_head_menu)
         }
 
         ll_bottom_tab_bookshelf.setOnClickListener {
@@ -279,14 +311,23 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
             presenter.uploadCategorySelectedLog()
         }
 
-        img_editor_back.setOnClickListener {
-            bookShelfFragment?.bookShelfRemoveHelper?.dismissRemoveMenu()
-            presenter.uploadEditorBackLog()
-        }
+//        img_editor_back.setOnClickListener {
+        //TODO move
+//            bookShelfFragment?.bookShelfRemoveHelper?.dismissRemoveMenu()
+//            presenter.uploadEditorBackLog()
+//        }
 
-        txt_editor_cancel.setOnClickListener {
-            bookShelfFragment?.bookShelfRemoveHelper?.dismissRemoveMenu()
-            presenter.uploadEditorCancelLog()
+        txt_editor_select_all.setOnClickListener {
+            val bookShelfRemoveHelper = bookShelfFragment?.bookShelfRemoveHelper
+            val isAllSelected = bookShelfRemoveHelper?.isAllChecked ?: false
+            if (isAllSelected) {
+                txt_editor_select_all.text = getString(R.string.select_all)
+                bookShelfRemoveHelper?.selectAll(false)
+            } else {
+                txt_editor_select_all.text = getString(R.string.select_all_cancel)
+                bookShelfRemoveHelper?.selectAll(true)
+            }
+            presenter.uploadEditorSelectAllLog(isAllSelected)
         }
 
 
@@ -437,7 +478,7 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
     fun onMenuShownState(state: Boolean) {
         if (state) {
             content_tab_selection.visibility = View.GONE
-            view_tab_divider.visibility = View.GONE
+            img_bottom_shadow.visibility = View.GONE
             if (!rl_head_editor.isShown) {
                 val showAnimation = AlphaAnimation(0.0f, 1.0f)
                 showAnimation.duration = 200
@@ -449,8 +490,8 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
             if (rl_head_editor.isShown) {
                 rl_head_editor.visibility = View.GONE
             }
+            img_bottom_shadow.visibility = View.VISIBLE
             content_tab_selection.visibility = View.VISIBLE
-            view_tab_divider.visibility = View.VISIBLE
             AnimationHelper.smoothScrollTo(view_pager, 0)
         }
     }

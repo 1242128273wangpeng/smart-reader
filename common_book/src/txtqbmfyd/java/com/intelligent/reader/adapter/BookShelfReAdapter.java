@@ -18,12 +18,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class BookShelfReAdapter extends RecyclerView.Adapter<AbsRecyclerViewHolder<Book>> {
+public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static boolean isList;
     public HashSet<Integer> remove_checked_states;
     protected Activity mContext;
-    int distanceY = -1;
+    private int distanceY = -1;
     private boolean isRemoveMode = false;
     private ArrayList<Book> book_list;
     private ArrayList<String> update_table;
@@ -33,13 +32,17 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<AbsRecyclerViewHold
     private ViewGroup parentView;
     private List<ViewGroup> mAdViews;
 
-    public BookShelfReAdapter(Activity context, List<Book> list, List<ViewGroup> adViews, ShelfItemClickListener itemClick, ShelfItemLongClickListener itemLongClick, boolean isList) {
+    private static final int TYPE_BOOK = 0;
+    private static final int TYPE_AD = 1;
+    private static final int TYPE_ADD = 2;
+
+    public BookShelfReAdapter(Activity context, List<Book> list, List<ViewGroup> adViews,
+                              ShelfItemClickListener itemClick, ShelfItemLongClickListener itemLongClick) {
         mContext = context;
         book_list = (ArrayList<Book>) list;
         mAdViews = adViews;
         shelfItemClickListener = itemClick;
         shelfItemLongClickListener = itemLongClick;
-        this.isList = isList;
         update_table = new ArrayList<>();
         down_table = new ArrayList<>();
         remove_checked_states = new HashSet<>();
@@ -48,40 +51,42 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<AbsRecyclerViewHold
     }
 
     @Override
-    public AbsRecyclerViewHolder<Book> onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
-        AbsRecyclerViewHolder<Book> holder = null;
+        RecyclerView.ViewHolder holder = null;
         switch (viewType) {
-            case 0:
-                if (isList) {
-                    view = LayoutInflater.from(mContext).inflate(R.layout
-                                    .layout_bookshelf_item_list,
-                            parent, false);
-                } else {
-                    view = LayoutInflater.from(mContext).inflate(R.layout.layout_bookshelf_item_grid, parent, false);
-                }
+            case TYPE_BOOK:
+                view = LayoutInflater.from(mContext).inflate(R.layout.layout_bookshelf_item_grid, parent, false);
 
                 holder = new BookShelfItemHolder(view, shelfItemClickListener,
                         shelfItemLongClickListener);
                 break;
-            case 1:
+            case TYPE_AD:
                 view = LayoutInflater.from(mContext).inflate(R.layout.layout_bookshelf_item_list_ad, parent, false);
                 holder = new ADViewHolder(view);
+                break;
+            case TYPE_ADD:
+                view = LayoutInflater.from(mContext).inflate(R.layout.item_bookshelf_add, parent, false);
+                holder = new AddViewHolder(view, shelfItemClickListener);
                 break;
         }
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(AbsRecyclerViewHolder<Book> holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder == null && book_list == null) return;
-        Book book = book_list.get(position);
+        Book book;
         switch (getItemViewType(position)) {
-            case 0:
-                holder.onBindData(position, book, update_table.contains(book.book_id),
-                        isRemoveMode(), remove_checked_states.contains(position));
+            case TYPE_BOOK:
+                book = book_list.get(position);
+                if (holder instanceof BookShelfItemHolder) {
+                    ((BookShelfItemHolder) holder).onBindData(position, book, update_table.contains(book.book_id),
+                            isRemoveMode(), remove_checked_states.contains(position));
+                }
                 break;
-            case 1:
+            case TYPE_AD:
+                book = book_list.get(position);
                 if (holder instanceof ADViewHolder) {
                     View adView = getAdView(book);
                     if (adView != null) {
@@ -94,13 +99,26 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<AbsRecyclerViewHold
                     }
                 }
                 break;
+            case TYPE_ADD:
+                if (holder instanceof AddViewHolder) {
+                    if (isRemoveMode) {
+                        ((AddViewHolder) holder).rl_add.setVisibility(View.INVISIBLE);
+                    } else {
+                        ((AddViewHolder) holder).rl_add.setVisibility(View.VISIBLE);
+                    }
+                }
+                break;
         }
     }
 
     @Override
     public int getItemCount() {
-        if (book_list != null) {
-            return book_list.size();
+        if ((book_list != null && book_list.size() > 0)) {
+            if (book_list.size() >= 50) {
+                return book_list.size();
+            } else {
+                return book_list.size() + 1;
+            }
         }
         return 0;
     }
@@ -117,14 +135,18 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<AbsRecyclerViewHold
 
     @Override
     public int getItemViewType(int position) {
-        if (book_list != null && position >= 0 && position <= book_list.size() - 1) {
-            Book book = book_list.get(position);
-            if (book != null) {
-                if (book.book_type == 0) {
-                    return 0;
-                } else if (book.book_type == -2) {
-                    return 1;
+        if (book_list != null && position >= 0) {
+            if (position < book_list.size()) {
+                Book book = book_list.get(position);
+                if (book != null) {
+                    if (book.book_type == 0) {
+                        return TYPE_BOOK;
+                    } else if (book.book_type == -2) {
+                        return TYPE_AD;
+                    }
                 }
+            } else if (position == book_list.size()) {
+                return TYPE_ADD;
             }
         }
         return -1;
@@ -198,17 +220,25 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<AbsRecyclerViewHold
         void onItemLongClick(View view, int position);
     }
 
-    class ADViewHolder extends AbsRecyclerViewHolder<Book> {
+    class ADViewHolder extends RecyclerView.ViewHolder {
         RelativeLayout book_shelf_item_ad;
 
-        public ADViewHolder(View itemView) {
-            super(itemView, null, null);
+        ADViewHolder(View itemView) {
+            super(itemView);
             book_shelf_item_ad = (RelativeLayout) itemView.findViewById(R.id.book_shelf_item_ad);
+        }
+    }
+
+    class AddViewHolder extends AbsRecyclerViewHolder<Book> {
+        RelativeLayout rl_add;
+
+        AddViewHolder(View itemView, ShelfItemClickListener shelfItemClickListener) {
+            super(itemView, shelfItemClickListener, null);
+            rl_add = (RelativeLayout) itemView.findViewById(R.id.rl_add);
         }
 
         @Override
         public void onBindData(int position, Book data, boolean update, boolean isRemoveMode, boolean removeMark) {
-
         }
     }
 

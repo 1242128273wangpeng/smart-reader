@@ -1,7 +1,6 @@
 package com.intelligent.reader.util;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.os.Handler;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -12,21 +11,20 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.PopupWindow;
 
+import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.BookShelfReAdapter;
 
-import net.lzbook.kit.R;
+import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
 import net.lzbook.kit.utils.popup.PopupWindowInterface;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 /**
  * BookShelfRemoveHelper
  */
-public class BookShelfRemoveHelper implements View.OnClickListener {
+public class BookShelfRemoveHelper {
 
     private final static long DELAY_TIME = 500;
     protected PopupWindowInterface popupWindowManager;
@@ -39,8 +37,8 @@ public class BookShelfRemoveHelper implements View.OnClickListener {
     Handler handler = new Handler();
     private Context mContext;
     private PopupWindow popupWindow;
-    private Button delete_btn;
-    private Button selectAll_btn;
+    private Button btnDelete;
+    private Button btnCancel;
 
     public BookShelfRemoveHelper(Context context, BookShelfReAdapter adapter) {//显示指定菜单类别
         mContext = context;
@@ -85,7 +83,7 @@ public class BookShelfRemoveHelper implements View.OnClickListener {
         }
     }
 
-    private boolean isAllChecked() {
+    public boolean isAllChecked() {
         return bookShelfReAdapter.getCheckedSize() == bookShelfReAdapter.getItemCount();
     }
 
@@ -129,34 +127,15 @@ public class BookShelfRemoveHelper implements View.OnClickListener {
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v == null) {
-            return;
-        }
-        switch (v.getId()) {
-            case R.id.btn_right:
-                if (deleteClickListener != null) {
-                    deleteClickListener.onMenuDelete(bookShelfReAdapter.remove_checked_states);
-                }
-                break;
-            case R.id.btn_left:
-                Map<String, String> data = new HashMap<>();
-                data.put("type", isAllChecked()?"2":"1");
-                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.SELECTALL1, data);
-                selectAll(isAllChecked() ? false : true);
-                break;
-        }
-    }
-
     private void setRemoveWindow(Context context) {//实例化菜单对象
 
-        View baseView = LayoutInflater.from(context).inflate(R.layout.download_manager_bottom, null);
-        popupWindow = new PopupWindow(baseView, WindowManager.LayoutParams.MATCH_PARENT, (int) context.getResources().getDimension(R.dimen.dimen_view_height_default));
+        View baseView = LayoutInflater.from(context).inflate(R.layout.popup_bookshelf_bottom_editor, null);
+        popupWindow = new PopupWindow(baseView, WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.WRAP_CONTENT);
         popupWindow.setAnimationStyle(R.style.remove_menu_anim_style);
-        delete_btn = (Button) baseView.findViewById(R.id.btn_right);
-        selectAll_btn = (Button) baseView.findViewById(R.id.btn_left);
-        ViewGroup layout = (ViewGroup) baseView.findViewById(R.id.remove_delete_layout);
+        btnDelete = (Button) baseView.findViewById(R.id.btn_delete);
+        btnCancel = (Button) baseView.findViewById(R.id.btn_cancel);
+        ViewGroup layout = (ViewGroup) baseView.findViewById(R.id.rl_remove);
 
         layout.setOnKeyListener(new View.OnKeyListener() {
 
@@ -177,8 +156,22 @@ public class BookShelfRemoveHelper implements View.OnClickListener {
         layout.setFocusableInTouchMode(true);
         layout.requestFocus();
 
-        delete_btn.setOnClickListener(this);
-        selectAll_btn.setOnClickListener(this);
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (deleteClickListener != null) {
+                    deleteClickListener.onMenuDelete(bookShelfReAdapter.remove_checked_states);
+                }
+            }
+        });
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                        StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.CANCLE1);
+                dismissRemoveMenu();
+            }
+        });
     }
 
     public void onShowing(final boolean isShowing) {//菜单打开及关闭状态
@@ -229,20 +222,20 @@ public class BookShelfRemoveHelper implements View.OnClickListener {
     }
 
     private void setDeleteNum() {
-        if (bookShelfReAdapter != null && delete_btn != null && selectAll_btn != null) {
+        if (bookShelfReAdapter != null && btnDelete != null && btnCancel != null) {
             int num = bookShelfReAdapter.getCheckedSize();
-            selectAll_btn.setText(isAllChecked() ? "取消全选" : "全选");
             if (num == 0) {
-                delete_btn.setText("删除");
-                int textCsl = mContext.getResources().getColor(R.color.color_gray_babfc1);
-                delete_btn.setTextColor(textCsl);
-                delete_btn.setBackgroundResource(com.intelligent.reader.R.drawable.bookshelf_delete_submit_default_bg);
+                btnDelete.setText(mContext.getString(R.string.delete));
+//                int textCsl = mContext.getResources().getColor(R.color.color_gray_babfc1);
+//                btnDelete.setTextColor(textCsl);
+//                btnDelete.setBackgroundResource(com.intelligent.reader.R.drawable.bookshelf_delete_submit_default_bg);
             } else {
-                delete_btn.setText("删除 (" + num + ")");
-                ColorStateList draw = mContext.getResources()
-                        .getColorStateList(com.intelligent.reader.R.color.bookshelf_delete_submit_text_color);
-                delete_btn.setTextColor(draw);
-                delete_btn.setBackgroundResource(com.intelligent.reader.R.drawable.bookshelf_delete_submit_bg);
+                String text = mContext.getString(R.string.delete) + "(" + num + ")";
+                btnDelete.setText(text);
+//                ColorStateList draw = mContext.getResources()
+//                        .getColorStateList(com.intelligent.reader.R.color.bookshelf_delete_submit_text_color);
+//                btnDelete.setTextColor(draw);
+//                btnDelete.setBackgroundResource(com.intelligent.reader.R.drawable.bookshelf_delete_submit_bg);
             }
         }
     }
@@ -271,7 +264,7 @@ public class BookShelfRemoveHelper implements View.OnClickListener {
          *
          * @param checked_state position which the list checkbox is selected
          */
-        public void onMenuDelete(HashSet<Integer> checked_state);//删除按钮回调，得到被选中的position
+        void onMenuDelete(HashSet<Integer> checked_state);//删除按钮回调，得到被选中的position
     }
 
 }
