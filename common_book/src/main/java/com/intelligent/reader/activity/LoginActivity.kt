@@ -91,7 +91,7 @@ class LoginActivity : FrameActivity() {
         if (progressDialog != null && progressDialog!!.isShowing) {
             progressDialog!!.dismiss()
         }
-        progressDialog = MyDialog(this, R.layout.publish_hint_dialog)
+        progressDialog = MyDialog(this, R.layout.pop_confirm_layout)
         progressDialog!!.setCanceledOnTouchOutside(false)
         progressDialog!!.setCancelable(true)
 

@@ -1,11 +1,9 @@
 package com.intelligent.reader.read.help;
 
 import com.intelligent.reader.R;
-import com.intelligent.reader.adapter.SourceAdapter;
 import com.intelligent.reader.read.mode.ReadState;
 import com.intelligent.reader.widget.drawer.ChangeSourcePopWindow;
 
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.download.DownloadState;
 import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.constants.ReadConstants;
@@ -14,7 +12,6 @@ import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.BookTask;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.NovelLineBean;
-import net.lzbook.kit.data.bean.ReadConfig;
 import net.lzbook.kit.data.bean.Source;
 import net.lzbook.kit.data.db.BookChapterDao;
 import net.lzbook.kit.data.db.BookDaoHelper;
@@ -28,22 +25,17 @@ import net.lzbook.kit.utils.Tools;
 import android.app.Activity;
 import android.content.Context;
 import android.text.TextPaint;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 阅读页工具类
@@ -137,7 +129,7 @@ public class NovelHelper {
             return;
         }
 
-        final MyDialog myDialog = new MyDialog(activity, R.layout.publish_hint_dialog);
+        final MyDialog myDialog = new MyDialog(activity, R.layout.pop_confirm_layout);
         TextView tv_update_info_dialog = (TextView) myDialog.findViewById(R.id.publish_content);
         TextView dialog_title = (TextView) myDialog.findViewById(R.id.dialog_title);
         dialog_title.setText(R.string.prompt);

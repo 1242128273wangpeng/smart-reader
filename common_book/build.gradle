@@ -108,7 +108,7 @@ android {
             txtqbdzs  : "TXT全本免费电子书",
             kdqbdzs   : "快读全本电子书",
             txtqbxsydq: "TXT全本小说阅读器",
-            txtqbmfyd: "TXT全本免费阅读"
+            txtqbmfyd : "TXT全本免费阅读"
     ]
 
     def appPackageIDConfig = [
@@ -121,7 +121,7 @@ android {
             txtqbdzs  : "cc.remennovel",
             kdqbdzs   : "cn.kkqbtxtxs.reader",
             txtqbxsydq: "cn.zsqbydq.reader",
-            txtqbmfyd: "cn.qbzsydsq.reader"
+            txtqbmfyd : "cn.qbzsydsq.reader"
     ]
 
     def channel = "dev_channel"

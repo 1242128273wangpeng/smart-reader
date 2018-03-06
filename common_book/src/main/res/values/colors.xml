@@ -113,6 +113,13 @@
     <color name="page_indicator_text_select_main">#ff7d1a</color>
     <color name="page_indicator_text_select_store">#c5a478</color>
 
+    <!--书籍详情-->
+    <color name="title_state_text_color">#FF78AF8F</color>
+    <color name="title_tagart_text_color">#FF799CB7</color>
+    <color name="cover_decs_text_color">#FF000000</color>
+    <color name="cover_decs_title_text_color">#FF212832</color>
+    <color name="cover_reading_btn_bg_color">#FF19D567</color>
+
     <!-- 关于 -->
     <color name="dialog_content_text">#474747</color>
     <color name="top_bar_text_color">#ffffff</color>
@@ -494,5 +501,6 @@
     <color name="text_color_weak">#FFADB4BE</color>
 
     <color name="divider_bg">#5D646E</color>
+    <color name="common_press_bg">#FFF4F5F7</color>
 
 </resources>

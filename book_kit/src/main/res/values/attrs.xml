@@ -93,4 +93,7 @@
               format="reference"></attr>
     </declare-styleable>
 
+    <declare-styleable name="item_state">
+        <attr name="onPressChangeAlpha" format="boolean"/>
+    </declare-styleable>
 </resources>

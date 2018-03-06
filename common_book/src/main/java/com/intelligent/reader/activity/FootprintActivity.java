@@ -28,7 +28,6 @@ import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.StatServiceUtils;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -317,7 +316,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Boo
 
     private void showDialog() {
         if (!this.isFinishing()) {
-            final MyDialog myDialog = new MyDialog(this, R.layout.publish_hint_dialog);
+            final MyDialog myDialog = new MyDialog(this, R.layout.pop_confirm_layout);
             myDialog.setCanceledOnTouchOutside(true);
             TextView dialog_title = (TextView) myDialog.findViewById(R.id.dialog_title);
             dialog_title.setText(R.string.prompt);

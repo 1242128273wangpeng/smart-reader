@@ -2,6 +2,9 @@
 <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:background="@drawable/common_background_press"
         android:layout_height="wrap_content">
     
     <TextView
@@ -11,13 +14,12 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="40dp"
             android:layout_alignParentLeft="true"
-            android:paddingLeft="8dp"
-            android:paddingBottom="@dimen/small_size_12"
-            android:paddingTop="@dimen/small_size_12"
+            android:paddingBottom="21dp"
+            android:paddingTop="21dp"
             android:maxLines="2"
             android:ellipsize="end"
             android:text="@string/app_name"
-            android:textSize="@dimen/text_size_15"
+            android:textSize="@dimen/text_size_14"
             android:textStyle="normal"/>
     
     <TextView
@@ -27,13 +29,15 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:textColor="@color/color_gray_9C9C9C"
+            android:text="已缓存"
             android:textSize="@dimen/small_size_12"
             android:textStyle="normal"/>
-    
-    <include
-            android:id="@+id/catalog_chapter_divider"
-            layout="@layout/dialog_divider"
+
+    <View
+            android:id="@+id/change_source_bottom_divider"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_view_height_0.5"
-            android:layout_alignParentBottom="true"/>
+            android:layout_height="@dimen/dimen_view_width_0.5"
+            android:layout_alignParentBottom="true"
+            android:background="@color/common_press_bg"/>
+    
 </RelativeLayout>

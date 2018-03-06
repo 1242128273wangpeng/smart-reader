@@ -177,11 +177,11 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
                 }
             }
 
-//            inflate.read_option_pop_info.setOnClickListener {
-//                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_read_head_bookinfo)
-//                presenter?.bookInfo()
-//                popupWindow.dismiss()
-//            }
+            inflate.read_option_pop_info.setOnClickListener {
+                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_read_head_bookinfo)
+                presenter?.bookInfo()
+                popupWindow.dismiss()
+            }
 
             read_option_pop_feedback?.setOnClickListener {
                 //                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_read_head_bookinfo)
