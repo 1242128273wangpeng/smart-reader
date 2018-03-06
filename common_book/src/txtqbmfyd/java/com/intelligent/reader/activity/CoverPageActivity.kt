@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
@@ -22,15 +23,15 @@ import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.CoverPage
 import net.lzbook.kit.data.bean.RequestItem
+import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils
+import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.Callable
 
 class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageContract {
     //private RelativeLayout book_cover_reading_view;
-    private var mBackground = 0
-    private var mTextColor = 0
     private var loadingPage: LoadingPage? = null
 
 
@@ -99,6 +100,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 null
             })
         }
+
+        mCoverPagePresenter?.getRecommend()
     }
 
 //    private fun setRemoveBtn() {
@@ -205,7 +208,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
 
     override fun showRecommend(recommendBean: ArrayList<Book>) {
-
+        Log.e("showRecommend", "showRecommend : recommendBeans size" + recommendBean.size)
     }
 
     override fun showCoverError() {
@@ -324,12 +327,46 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 book_cover_description.text = resources.getString(R.string
                         .book_cover_no_description)
             }
+
+            if (bookVo.wordCountDescp != null) {
+                if (Constants.QG_SOURCE != bookVo.host) {
+                    word_count_tv.text = bookVo.wordCountDescp + "字"
+                } else {
+                    word_count_tv.text = AppUtils.getWordNums(java.lang.Long.valueOf(bookVo.wordCountDescp)!!)
+                }
+            } else {
+                word_count_tv.text = "暂无"
+            }
+
+            if (bookVo.readerCountDescp != null) {
+                if (Constants.QG_SOURCE == bookVo.host) {
+                    reading_tv.text = AppUtils.getReadNums(java.lang.Long.valueOf(bookVo.readerCountDescp)!!)
+                } else {
+                    reading_tv.text = bookVo.readerCountDescp + "人在读"
+                }
+
+            } else {
+                reading_tv!!.text = "暂无"
+            }
+            if (bookVo.score == 0.0) {
+                start_tv.text = "暂无评分"
+            } else {
+                if (Constants.QG_SOURCE != bookVo.host) {
+                    bookVo.score = java.lang.Double.valueOf(DecimalFormat("0.0").format(bookVo.score))!!
+                }
+                start_tv.text = bookVo.score.toString() + "分"
+
+            }
         } else {
             showToastShort(R.string.book_cover_no_resource)
             if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
                 finish()
             }
         }
+    }
+
+    private fun numberEllipsisTransform() {
+
     }
 
     override fun changeDownloadButtonStatus(type: Int) {

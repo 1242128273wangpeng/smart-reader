@@ -274,17 +274,17 @@ public class ExpandableTextView extends RelativeLayout implements View.OnClickLi
     }
 
     private void setCollapsedMarins() {
-        if (!mCollapsed) {
-//            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(TRUE);
-            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(RelativeLayout.BELOW, R.id.expandable_text);
-            mTv.setMaxLines(Integer.MAX_VALUE);
-        } else {
-//            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(RelativeLayout.BELOW, TRUE);
-            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            mTv.setMaxLines(3);
-            mTv.setEllipsize(TextUtils.TruncateAt.END);
-        }
+//        if (!mCollapsed) {
+////            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(TRUE);
+//            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(RelativeLayout.BELOW, R.id.expandable_text);
+//            mTv.setMaxLines(Integer.MAX_VALUE);
+//        } else {
+////            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(RelativeLayout.BELOW, TRUE);
+//            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+//            mTv.setMaxLines(3);
+//            mTv.setEllipsize(TextUtils.TruncateAt.END);
+//        }
     }
 
     public CharSequence getText() {

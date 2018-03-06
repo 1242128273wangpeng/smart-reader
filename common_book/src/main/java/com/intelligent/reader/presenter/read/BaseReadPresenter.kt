@@ -37,7 +37,7 @@ import com.intelligent.reader.reader.ReaderRepositoryFactory
 import com.intelligent.reader.reader.ReaderViewModel
 import com.intelligent.reader.receiver.DownBookClickReceiver
 import com.intelligent.reader.util.EventBookStore
-import com.intelligent.reader.widget.drawer.ConfirmPopWindow
+import com.intelligent.reader.widget.drawer.ConfirmDarkPopWindow
 import com.intelligent.reader.widget.drawer.FeedbackPopWindow
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -572,7 +572,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
 //                }
 //
 //            }
-            ConfirmPopWindow.newBuilder(readReference!!.get()).setOnConfirmListener(object :ConfirmPopWindow.OnConfirmListener{
+            ConfirmDarkPopWindow.newBuilder(readReference!!.get()).setOnConfirmListener(object : ConfirmDarkPopWindow.OnConfirmListener{
                 override fun onConfirm(view: View?) {
                     StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_change_source_read)
                     val map1 = HashMap<String, String>()

@@ -4,30 +4,32 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/read_option_txtmfqbyd_bg"
         android:orientation="vertical">
 
     <TextView
             android:id="@+id/dialog_title"
-            style="@style/style_text_large_plain"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="提示"
             android:paddingTop="@dimen/padding_16"
             android:paddingBottom="@dimen/padding_14"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:textColor="@color/reading_setting_text_color"
+            android:textSize="@dimen/text_size_16"/>
 
     <TextView
             android:id="@+id/publish_content"
-            style="@style/style_text_normal_dark"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/publish_leave_detail"
+            android:textColor="@color/reading_setting_text_color"
             android:gravity="center"
             android:layout_marginTop="7dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="20dp"
+            android:textSize="@dimen/text_size_14"
             android:padding="@dimen/dimen_margin_30"
             android:lineSpacingExtra="6dp"/>
 
@@ -54,15 +56,16 @@
 
         <Button
                 android:id="@+id/okBt"
-                style="@style/style_text_normal_plain"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@+id/bottom_divider"
-                android:background="@drawable/background_dialog_button"
+                android:background="@drawable/read_setting_background_press"
+                android:textColor="@color/reading_setting_text_color"
                 android:layout_below="@+id/top_divider"
                 android:gravity="center"
-                android:text="@string/cancel"/>
+                android:text="@string/cancel"
+                android:textSize="@dimen/dimen_text_14"/>
 
         <View
                 android:id="@+id/bottom_divider"
@@ -80,12 +83,12 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:layout_toRightOf="@+id/bottom_divider"
-                android:background="@drawable/background_dialog_button"
-                android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
+                android:background="@drawable/read_setting_background_press"
+                android:textColor="@color/dialog_recommend"
                 android:layout_below="@+id/top_divider"
                 android:gravity="center"
-                android:text="@string/confirm"/>
+                android:text="@string/confirm"
+                android:textSize="@dimen/dimen_text_14"/>
 
     </RelativeLayout>
 </LinearLayout>

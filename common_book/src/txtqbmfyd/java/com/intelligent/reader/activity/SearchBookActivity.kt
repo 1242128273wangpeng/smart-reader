@@ -1,5 +1,6 @@
 package com.intelligent.reader.activity
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
 import android.os.Build
@@ -16,10 +17,6 @@ import android.view.View.OnFocusChangeListener
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.webkit.WebSettings
-import android.webkit.WebView
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import com.intelligent.reader.R
@@ -27,8 +24,8 @@ import com.intelligent.reader.presenter.search.SearchPresenter
 import com.intelligent.reader.presenter.search.SearchView
 import com.intelligent.reader.util.SearchViewHelper
 import iyouqu.theme.FrameActivity
+import kotlinx.android.synthetic.txtqbmfyd.activity_search_book.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.HWEditText
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.utils.*
@@ -37,17 +34,17 @@ import java.util.*
 
 class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListener, SearchViewHelper.OnHistoryClickListener, TextWatcher, OnEditorActionListener, SearchView.AvtView {
 
-    private var search_result_back: ImageView? = null
-    private var search_result_button: ImageView? = null
-    private var search_result_outcome: RelativeLayout? = null
-    private var search_result_count: TextView? = null
-    private var search_result_keyword: TextView? = null
-    private var search_result_default: RelativeLayout? = null
-    private var search_result_clear: ImageView? = null
-    private var search_result_input: HWEditText? = null
-    private var search_result_main: RelativeLayout? = null
-    private var search_result_content: WebView? = null
-    private var search_result_hint: FrameLayout? = null
+//    private var search_result_back: ImageView? = null
+//    private var search_result_button: ImageView? = null
+//    private var search_result_outcome: RelativeLayout? = null
+//    private var search_result_count: TextView? = null
+//    private var search_result_keyword: TextView? = null
+//    private var search_result_default: RelativeLayout? = null
+//    private var search_result_clear: ImageView? = null
+//    private var search_result_input: HWEditText? = null
+//    private var search_result_main: RelativeLayout? = null
+//    private var search_result_content: WebView? = null
+//    private var search_result_hint: FrameLayout? = null
 
     private var searchViewHelper: SearchViewHelper? = null
     private var bookDaoHelper: BookDaoHelper? = null
@@ -65,12 +62,12 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
     private var mSearchPresenter: SearchPresenter? = null
 
     override fun onJsSearch() {
-        if (search_result_content != null) {
-            search_result_content!!.clearView()
-            if (loadingPage == null) {
-                loadingPage = LoadingPage(this, search_result_main, LoadingPage.setting_result)
-            }
+//        if (search_result_content != null) {
+        search_result_content.clearView()
+        if (loadingPage == null) {
+            loadingPage = LoadingPage(this, search_result_main, LoadingPage.setting_result)
         }
+//        }
     }
 
     override fun onStartLoad(url: String) {
@@ -95,25 +92,26 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         }
     }
 
+    @SuppressLint("JavascriptInterface")
     private fun initView() {
-        search_result_back = findViewById(R.id.search_result_back) as ImageView
-        search_result_button = findViewById(R.id.search_result_button) as ImageView
-        search_result_outcome = findViewById(R.id.search_result_outcome) as RelativeLayout
-        if (search_result_outcome != null) {
-            search_result_outcome!!.visibility = View.VISIBLE
-        }
-        search_result_count = findViewById(R.id.search_result_count) as TextView
-        search_result_keyword = findViewById(R.id.search_result_keyword) as TextView
-        search_result_default = findViewById(R.id.search_result_default) as RelativeLayout
-        search_result_clear = findViewById(R.id.search_result_clear) as ImageView
-        if (search_result_clear != null) {
-            search_result_clear!!.visibility = View.GONE
-        }
-        search_result_input = findViewById(R.id.search_result_input) as HWEditText
-        search_result_main = findViewById(R.id.search_result_main) as RelativeLayout
-        search_result_content = findViewById(R.id.search_result_content) as WebView
-
-        search_result_hint = findViewById(R.id.search_result_hint) as FrameLayout
+//        search_result_back = findViewById(R.id.search_result_back) as ImageView
+//        search_result_button = findViewById(R.id.search_result_button) as ImageView
+//        search_result_outcome = findViewById(R.id.search_result_outcome) as RelativeLayout
+//        if (search_result_outcome != null) {
+        search_result_outcome.visibility = View.VISIBLE
+//        }
+//        search_result_count = findViewById(R.id.search_result_count) as TextView
+//        search_result_keyword = findViewById(R.id.search_result_keyword) as TextView
+//        search_result_default = findViewById(R.id.search_result_default) as RelativeLayout
+//        search_result_clear = findViewById(R.id.search_result_clear) as ImageView
+//        if (search_result_clear != null) {
+        search_result_clear.visibility = View.GONE
+//        }
+//        search_result_input = findViewById(R.id.search_result_input) as HWEditText
+//        search_result_main = findViewById(R.id.search_result_main) as RelativeLayout
+//        search_result_content = findViewById(R.id.search_result_content) as WebView
+//
+//        search_result_hint = findViewById(R.id.search_result_hint) as FrameLayout
 
         if (mSearchPresenter == null) {
             mSearchPresenter = SearchPresenter(this, this)
@@ -146,7 +144,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         }
 
         if (jsInterfaceHelper != null && search_result_content != null) {
-            search_result_content!!.addJavascriptInterface(jsInterfaceHelper, "J_search")
+            search_result_content.addJavascriptInterface(jsInterfaceHelper, "J_search")
             mSearchPresenter!!.initJSHelp(jsInterfaceHelper)
         }
 
@@ -382,7 +380,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                     search_result_main!!.removeView(search_result_content)
                 }
             }
-            search_result_content = null
+//            search_result_content = null
         }
 
         if (loadingPage != null) {
@@ -436,9 +434,9 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             //            search_result_input.setText(word);
             //            search_result_input.setSelection(word.length());
 
-            if (search_result_hint != null) {
-                search_result_hint!!.visibility = View.VISIBLE
-            }
+//            if (search_result_hint != null) {
+            search_result_hint.visibility = View.VISIBLE
+//            }
 
             if (searchViewHelper != null) {
                 searchViewHelper!!.setShowHintEnabled(true)
@@ -612,6 +610,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                     }
                 }
             }
+            searchViewHelper!!.showHitstoryList()
             ziyougb = true
         } else {
             ziyougb = false

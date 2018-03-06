@@ -8,17 +8,17 @@ import android.preference.PreferenceManager
 import android.text.TextUtils
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.AdapterView
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.intelligent.reader.presenter.IPresenter
+import com.intelligent.reader.widget.ConfirmDialog
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.search.SearchAutoCompleteBean
 import net.lzbook.kit.data.search.SearchCommonBean
@@ -27,8 +27,7 @@ import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
 import java.lang.ref.WeakReference
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 /**
  * Created by yuchao on 2017/12/1 0001.
@@ -183,37 +182,23 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
 
     fun showDialog(activity: Activity?) {
         if (activity != null && !activity!!.isFinishing) {
-            val myDialog = MyDialog(activity, R.layout.pop_confirm_layout)
-            myDialog.setCanceledOnTouchOutside(true)
-            val dialog_title = myDialog.findViewById(R.id.dialog_title) as TextView
-            dialog_title.setText(R.string.prompt)
-            val dialog_content = myDialog.findViewById(R.id.publish_content) as TextView
-            dialog_content.setText(R.string.determine_clear_serach_history)
-            val dialog_comfire = myDialog.findViewById(R.id.publish_leave) as TextView
-
-            dialog_comfire.setOnClickListener {
+            val dialog = ConfirmDialog(activity)
+            dialog.setTitle(activity.getString(R.string.prompt))
+            dialog.setContent(activity.getString(R.string.determine_clear_serach_history))
+            dialog.setOnConfirmListener {
                 val data = HashMap<String, String>()
                 data.put("type", "1")
                 StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH, StartLogClickUtil.HISTORYCLEAR, data)
                 mSearchHandler?.sendEmptyMessage(10)
-                myDialog.dismiss()
+                dialog.dismiss()
             }
-            val dialog_cancle = myDialog.findViewById(R.id.publish_stay) as TextView
-            dialog_cancle.setOnClickListener {
+            dialog.setOnCancelListener {
                 val data = HashMap<String, String>()
                 data.put("type", "0")
                 StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.HISTORYCLEAR, data)
-                myDialog.dismiss()
+                dialog.dismiss()
             }
-            myDialog.setOnCancelListener { myDialog.dismiss() }
-            if (!myDialog.isShowing) {
-                try {
-                    myDialog.show()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-
-            }
+            dialog.show()
         }
     }
 

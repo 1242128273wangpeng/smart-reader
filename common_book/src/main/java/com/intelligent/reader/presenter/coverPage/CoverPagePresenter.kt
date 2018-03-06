@@ -19,16 +19,21 @@ import com.intelligent.reader.adapter.CoverSourceAdapter
 import com.intelligent.reader.cover.*
 import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.receiver.DownBookClickReceiver
+import com.intelligent.reader.widget.ClearCacheDialog
+import com.intelligent.reader.widget.ConfirmDialog
+import com.intelligent.reader.widget.drawer.ConfirmPopWindow
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.txtqbmfyd.content_view_menu.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.book.view.RecommendItemView
+import net.lzbook.kit.cache.DataCleanManager
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.CoverPage
@@ -223,23 +228,13 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
         activity.startActivity(intent)
     }
 
-    private fun showReadingSourceDialog() {
-        val readingSourceDialog = MyDialog(activity, R.layout.dialog_read_source, Gravity.CENTER)
-        readingSourceDialog.setCanceledOnTouchOutside(true)
-        val change_source_head = readingSourceDialog.findViewById(R.id.dialog_top_title) as TextView
-        change_source_head.text = "转码"
-        val change_source_original_web = readingSourceDialog.findViewById(R.id.change_source_original_web) as TextView
-        change_source_original_web.setText(R.string.cancel)
-        val change_source_continue = readingSourceDialog.findViewById(R.id.change_source_continue) as TextView
-
-        change_source_original_web.setOnClickListener {
-            val data = HashMap<String, String>()
-            data.put("type", "2")
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
-
-            readingSourceDialog.dismiss()
-        }
-        change_source_continue.setOnClickListener {
+    private val clearCacheDialog: ConfirmDialog by lazy {
+        val dialog = ConfirmDialog(activity)
+        dialog.setTitle("转码")
+        dialog.setContent(activity.getString(R.string.translate_code_read))
+        dialog.setConfirmName(activity.getString(R.string.reading_continue))
+        dialog.setOnCancelName(activity.getString(R.string.cancel))
+        dialog.setOnConfirmListener {
             val data = HashMap<String, String>()
             data.put("type", "1")
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
@@ -252,32 +247,119 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
 
                 } else {
                     if (currentSource?.book_source_id == book?.book_source_id) {
-
                         //直接进入阅读
                         readingCustomaryBook(currentSource, true)
-                        readingSourceDialog.dismiss()
                     } else {
                         //弹出切源提示
-                        readingSourceDialog.dismiss()
                         showChangeSourceNoticeDialog(currentSource!!)
                     }
                 }
             } else {
                 continueReading()
             }
-            if (readingSourceDialog.isShowing()) {
-                readingSourceDialog.dismiss()
-            }
+            dialog.dismiss()
         }
-
-        if (!readingSourceDialog.isShowing()) {
-            try {
-                readingSourceDialog.show()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
+        dialog.setOnCancelListener {
+            val data = HashMap<String, String>()
+            data.put("type", "2")
+            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+            dialog.dismiss()
         }
+        dialog
+    }
+
+    private fun showReadingSourceDialog() {
+        clearCacheDialog.show()
+//        ConfirmPopWindow.newBuilder(activity).title("转码")
+//                .cancelButtonName(activity.getString(R.string.cancel))
+//                .confirmButtonName(activity.getString(R.string.reading_continue))
+//                .setOnConfirmListener(object : ConfirmPopWindow.OnConfirmListener {
+//                    override fun onConfirm(view: View?) {
+//                        val data = HashMap<String, String>()
+//                        data.put("type", "2")
+//                        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+//                    }
+//
+//                    override fun onCancel(view: View?) {
+//                        val data = HashMap<String, String>()
+//                        data.put("type", "1")
+//                        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+//
+//                        requestItem.fromType = 3// 打点统计 当前页面来源，所有可能来源的映射唯一字符串。书架(0)/目录页(1)/上一页翻页(2)/书籍封面(3)
+//                        if (bookDaoHelper!!.isBookSubed(bookVo!!.book_id)) {
+//                            val book = bookDaoHelper!!.getBook(bookVo!!.book_id, 0)
+//                            if (Constants.QG_SOURCE == requestItem.host) {
+//                                readingCustomaryBook(null, false)
+//
+//                            } else {
+//                                if (currentSource?.book_source_id == book?.book_source_id) {
+//                                    //直接进入阅读
+//                                    readingCustomaryBook(currentSource, true)
+//                                } else {
+//                                    //弹出切源提示
+//                                    showChangeSourceNoticeDialog(currentSource!!)
+//                                }
+//                            }
+//                        } else {
+//                            continueReading()
+//                        }
+//                    }
+//
+//                }).build().show()
+        val readingSourceDialog = MyDialog(activity, R.layout.dialog_read_source, Gravity.CENTER)
+//        readingSourceDialog.setCanceledOnTouchOutside(true)
+//        val change_source_head = readingSourceDialog.findViewById(R.id.dialog_top_title) as TextView
+//        change_source_head.text = "转码"
+//        val change_source_original_web = readingSourceDialog.findViewById(R.id.change_source_original_web) as TextView
+//        change_source_original_web.setText(R.string.cancel)
+//        val change_source_continue = readingSourceDialog.findViewById(R.id.change_source_continue) as TextView
+//
+//        change_source_original_web.setOnClickListener {
+//            val data = HashMap<String, String>()
+//            data.put("type", "2")
+//            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+//
+//            readingSourceDialog.dismiss()
+//        }
+//        change_source_continue.setOnClickListener {
+//            val data = HashMap<String, String>()
+//            data.put("type", "1")
+//            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+//
+//            requestItem.fromType = 3// 打点统计 当前页面来源，所有可能来源的映射唯一字符串。书架(0)/目录页(1)/上一页翻页(2)/书籍封面(3)
+//            if (bookDaoHelper!!.isBookSubed(bookVo!!.book_id)) {
+//                val book = bookDaoHelper!!.getBook(bookVo!!.book_id, 0)
+//                if (Constants.QG_SOURCE == requestItem.host) {
+//                    readingCustomaryBook(null, false)
+//
+//                } else {
+//                    if (currentSource?.book_source_id == book?.book_source_id) {
+//
+//                        //直接进入阅读
+//                        readingCustomaryBook(currentSource, true)
+//                        readingSourceDialog.dismiss()
+//                    } else {
+//                        //弹出切源提示
+//                        readingSourceDialog.dismiss()
+//                        showChangeSourceNoticeDialog(currentSource!!)
+//                    }
+//                }
+//            } else {
+//                continueReading()
+//            }
+//            if (readingSourceDialog.isShowing()) {
+//                readingSourceDialog.dismiss()
+//            }
+//        }
+//
+//        if (!readingSourceDialog.isShowing()) {
+//            try {
+//                readingSourceDialog.show()
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
+//
+//        }
     }
 
     fun bookCoverReading() {

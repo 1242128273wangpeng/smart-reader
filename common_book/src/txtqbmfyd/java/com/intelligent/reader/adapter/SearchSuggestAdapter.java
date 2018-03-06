@@ -25,7 +25,7 @@ public class SearchSuggestAdapter extends BaseAdapter {
 
     private Context mContext;
     private List<SearchCommonBean> mData;
-    private String editInput="";
+    private String editInput = "";
 
     public SearchSuggestAdapter(Context context, List<SearchCommonBean> mData, String editInput) {
         this.mContext = context;
@@ -52,40 +52,40 @@ public class SearchSuggestAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder hodler = null;
         if (convertView == null) {
-                try {
-                    LayoutInflater inflater = LayoutInflater.from(mContext);
-                    convertView = inflater.inflate(R.layout.item_search_suggest, parent, false);
-                } catch (InflateException e) {
-                    e.printStackTrace();
-                }
-                if (convertView != null) {
-                    hodler = new ViewHolder();
-                    hodler.iv_type = (ImageView) convertView.findViewById(R.id.iv_type);
-                    hodler.tv_2 = (TextView) convertView.findViewById(R.id.tv_search_item_2);
-                    convertView.setTag(hodler);
-                }
+            try {
+                LayoutInflater inflater = LayoutInflater.from(mContext);
+                convertView = inflater.inflate(R.layout.item_search_suggest, parent, false);
+            } catch (InflateException e) {
+                e.printStackTrace();
+            }
+            if (convertView != null) {
+                hodler = new ViewHolder();
+                hodler.iv_type = (ImageView) convertView.findViewById(R.id.iv_type);
+                hodler.tv_2 = (TextView) convertView.findViewById(R.id.tv_search_item_2);
+                convertView.setTag(hodler);
+            }
         } else {
             hodler = (ViewHolder) convertView.getTag();
         }
         SearchCommonBean bean = mData.get(position);
         String type = bean.getWordtype();
-        if(type.equals("author")){
+        if (type.equals("author")) {
             hodler.iv_type.setImageResource(R.drawable.search_author);
 
-        }else if(type.equals("label")){
+        } else if (type.equals("label")) {
             hodler.iv_type.setImageResource(R.drawable.search_biaoqian);
-        }else if(type.equals("fenlei")){
-            hodler.iv_type.setImageResource(R.drawable.search_fenlei);
-        }else{
-            hodler.iv_type.setImageResource(R.drawable.search_transparent);
+        } else if (type.equals("fenlei")) {
+            hodler.iv_type.setImageResource(R.drawable.search_biaoqian);
+        } else {
+            hodler.iv_type.setImageResource(R.drawable.search_book);
         }
         String content = bean.getSuggest();
-        String finalInput="";
+        String finalInput = "";
 
-        if(editInput!=null){
+        if (editInput != null) {
             finalInput = AppUtils.deleteAllIllegalChar(editInput);
         }
-        content = content.replaceAll(finalInput, "<font color='#ce3d3e'>" + finalInput + "</font>");
+        content = content.replaceAll(finalInput, "<font color='#19DD8B'>" + finalInput + "</font>");
 
         hodler.tv_2.setText(Html.fromHtml(content));
         return convertView;

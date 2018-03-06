@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.intelligent.reader.R;
@@ -31,7 +32,7 @@ public class SearchHotWordAdapter extends BaseAdapter {
     private int oldType = -1;
     private List<SearchHotBean.DataBean> datas;
 
-    public SearchHotWordAdapter(Activity context,List<SearchHotBean.DataBean> datas) {
+    public SearchHotWordAdapter(Activity context, List<SearchHotBean.DataBean> datas) {
         this.mContext = context;
         this.datas = datas;
         random = new Random();
@@ -39,13 +40,13 @@ public class SearchHotWordAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        if(datas!=null&&datas.size()!=0){
+        if (datas != null && datas.size() != 0) {
             if (datas.size() >= 9) {
                 return 9;
-            }else{
+            } else {
                 return datas.size();
             }
-        }else{
+        } else {
             return 0;
         }
     }
@@ -68,13 +69,14 @@ public class SearchHotWordAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.search_item_hotword, parent, false);
             holder = new ViewHolder();
             holder.tvHotWord = (TextView) convertView.findViewById(R.id.tv_hotword);
+            holder.bubbleIv = (ImageView) convertView.findViewById(R.id.bubble_iv);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
         SearchHotBean.DataBean dataBean = datas.get(position);
         holder.tvHotWord.setText(dataBean.getWord());
-        setHotShowType(holder.tvHotWord);
+        setHotShowType(holder.bubbleIv, position);
         return convertView;
 
 
@@ -82,6 +84,7 @@ public class SearchHotWordAdapter extends BaseAdapter {
 
     private class ViewHolder {
         TextView tvHotWord;
+        ImageView bubbleIv;
     }
 
 
@@ -90,36 +93,19 @@ public class SearchHotWordAdapter extends BaseAdapter {
     }
 
 
-    private void setHotShowType(TextView textView) {
-        int currType = random.nextInt(7);
-        while (oldType == currType){
-            currType = random.nextInt(7);
-        }
-        oldType = currType;
-        int csl;
-        switch (currType){
+    private void setHotShowType(ImageView bubbleIv, int position) {
+        switch (position) {
             case 0:
+                bubbleIv.setImageResource(R.drawable.search_img_hot_1);
+                break;
             case 1:
+                bubbleIv.setImageResource(R.drawable.search_img_hot_2);
+                break;
             case 2:
-            case 3:
-                textView.setBackgroundResource(R.drawable.search_hot_word_bg_1);
-                csl =  mContext.getResources().getColor(R.color.search_hot_word_text_color_1);
-                textView.setTextColor(csl);
+                bubbleIv.setImageResource(R.drawable.search_img_hot_3);
                 break;
-            case 4:
-                textView.setBackgroundResource(R.drawable.search_hot_word_bg_2);
-                csl =  mContext.getResources().getColor(R.color.search_hot_word_text_color_2);
-                textView.setTextColor(csl);
-                break;
-            case 5:
-                textView.setBackgroundResource(R.drawable.search_hot_word_bg_3);
-                csl =  mContext.getResources().getColor(R.color.search_hot_word_text_color_3);
-                textView.setTextColor(csl);
-                break;
-            case 6:
-                textView.setBackgroundResource(R.drawable.search_hot_word_bg_3);
-                csl =  mContext.getResources().getColor(R.color.search_hot_word_text_color_4);
-                textView.setTextColor(csl);
+            default:
+                bubbleIv.setImageResource(R.drawable.search_img_hot_4);
                 break;
         }
     }
