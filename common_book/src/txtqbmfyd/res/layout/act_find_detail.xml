@@ -22,17 +22,16 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:paddingLeft="@dimen/dimen_padding_12"
+                    android:paddingLeft="@dimen/dimen_padding_16"
                     android:paddingRight="@dimen/dimen_padding_12"
-                    android:src="@mipmap/cover_top_back"/>
+                    android:src="@mipmap/nbar_back_icon"/>
 
             <TextView
                     android:id="@+id/find_book_detail_title"
+                    style="@style/style_text_huge_dark"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:textSize="18sp"
-                    android:textColor="@color/top_navigation_text_color"/>
+                    android:layout_centerInParent="true"/>
 
             <ImageView
                     android:id="@+id/find_book_detail_search"
@@ -40,8 +39,8 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
                     android:paddingLeft="@dimen/dimen_padding_12"
-                    android:paddingRight="@dimen/dimen_padding_12"
-                    android:src="@mipmap/search_submit_btn"/>
+                    android:paddingRight="@dimen/dimen_padding_16"
+                    android:src="@mipmap/nbar_search_nor_icon"/>
         </RelativeLayout>
     </RelativeLayout>
 
@@ -51,11 +50,4 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-    <ImageView
-            android:id="@+id/title_shadow"
-            android:layout_below="@+id/find_book_detail_head"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scaleType="fitXY"
-            android:src="@mipmap/top_shadow"/>
 </RelativeLayout>

@@ -339,9 +339,12 @@
                             android:id="@+id/book_cover_last_chapter_tv"
                             style="@style/style_text_small_light"
                             android:layout_width="wrap_content"
-                            android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
+                            android:singleLine="true"
+                            android:layout_marginLeft="70dp"
                             android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:layout_alignParentRight="true"
                             android:drawableRight="@mipmap/board_more_nor_icon"
                             android:text="更新至：123章"/>
                 </RelativeLayout>
