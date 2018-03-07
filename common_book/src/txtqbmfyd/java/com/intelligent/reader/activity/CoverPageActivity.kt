@@ -20,6 +20,7 @@ import com.intelligent.reader.read.help.BookHelper
 import kotlinx.android.synthetic.txtqbmfyd.act_book_cover.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
+import net.lzbook.kit.book.download.CallBackDownload
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
@@ -34,14 +35,13 @@ import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.Callable
 
-class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageContract {
-
-    //private RelativeLayout book_cover_reading_view;
+class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageContract, CallBackDownload {
     private var loadingPage: LoadingPage? = null
     private var requestItem: RequestItem? = null
     private var mCoverPagePresenter: CoverPagePresenter? = null
     private var mRecommendList: ArrayList<Book>? = null
     private lateinit var mBookRecommedAdapter: BookRecommendAdapter
+    private var mBookDownlLoadState: DownloadState = DownloadState.NOSTART
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,7 +72,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private fun initData(intent: Intent?) {
 
         if (intent != null) {
-
             if (intent.hasExtra(Constants.REQUEST_ITEM)) {
                 requestItem = intent.getSerializableExtra(Constants.REQUEST_ITEM) as RequestItem
             }
@@ -121,29 +120,50 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         mCoverPagePresenter?.getRecommend()
     }
 
-//    private fun setRemoveBtn() {
-//        mBackground = R.drawable.cover_bottom_btn_remove_bg
-//        mTextColor = R.color.cover_bottom_btn_remove_text_color
-//        book_cover_bookshelf.setTextColor(resources.getColor(mTextColor))
-//        if (book_cover_category2.visibility != View.VISIBLE) {
-//            book_cover_bookshelf.setBackgroundResource(mBackground)
-//        }
-//    }
 
-//    private fun setAddShelfBtn() {
-//        mBackground = R.drawable.cover_bottom_btn_add_bg
-//        mTextColor = R.color.cover_bottom_btn_add_text_color
-//        book_cover_bookshelf.setTextColor(resources.getColor(mTextColor))
-//        if (book_cover_category2.visibility != View.VISIBLE) {
-//            book_cover_bookshelf.setBackgroundResource(mBackground)
-//        }
-//    }
+    override fun onTaskStatusChange(book_id: String?) {
+        getBookDownLoadState(book_id)
+    }
+
+    override fun onTaskFinish(book_id: String?) {
+        getBookDownLoadState(book_id)
+    }
+
+    private fun getBookDownLoadState(book_id: String?) {
+        requestItem?.let {
+            if (book_id == it.toBook().book_id) {
+                val downlLoadState = CacheManager.getBookStatus(it.toBook())
+                mBookDownlLoadState = downlLoadState
+                Log.d("Cover Page", "getBookDownLoadState downlLoadState: " + downlLoadState)
+                when (downlLoadState) {
+                    DownloadState.FINISH -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_finish)
+                    DownloadState.PAUSEED -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_pause)
+                    DownloadState.NOSTART -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_normal)
+                    DownloadState.DOWNLOADING -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_running)
+                    else -> {
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onTaskFailed(book_id: String?, t: Throwable?) {
+    }
+
+    override fun onTaskProgressUpdate(book_id: String?) {
+    }
 
     override fun onResume() {
         super.onResume()
         if (mCoverPagePresenter != null) {
             mCoverPagePresenter?.checkBookStatus()
         }
+        CacheManager.listeners.add(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        CacheManager.listeners.remove(this)
     }
 
 
@@ -186,10 +206,14 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                     StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_all_load)
                     val data3 = HashMap<String, String>()
                     data3.put("bookId", it.book_id)
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CASHEALL, data3)
-                }
-                if (mCoverPagePresenter != null) {
-                    mCoverPagePresenter?.downLoadBook()
+                    if (mCoverPagePresenter != null) {
+                        if (mBookDownlLoadState == DownloadState.DOWNLOADING) {
+                            CacheManager.stop(it.book_id)
+                        } else {
+                            mCoverPagePresenter?.downLoadBook()
+                            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CASHEALL, data3)
+                        }
+                    }
                 }
             }
             R.id.book_catalog_tv -> {
@@ -276,7 +300,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         if (bookVo != null) {
 
             if (book_cover_image != null && !TextUtils.isEmpty(bookVo.img_url) && bookVo
-                            .img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL) {
+                    .img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL) {
                 Glide.with(applicationContext).load(bookVo.img_url).placeholder(net.lzbook.kit.R.drawable.icon_book_cover_default).error(net.lzbook.kit.R.drawable.icon_book_cover_default).diskCacheStrategy(DiskCacheStrategy.ALL).into(book_cover_image)
             } else {
                 Glide.with(applicationContext).load(net.lzbook.kit.R.drawable.icon_book_cover_default).into(book_cover_image)
@@ -384,10 +408,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         }
     }
 
-    private fun numberEllipsisTransform() {
-
-    }
-
     override fun setCompound() {
         book_cover_source_form.setCompoundDrawables(null, null, null, null)
     }
@@ -402,21 +422,11 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         mCoverPagePresenter?.let {
             when (status) {
                 DownloadState.FINISH -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_finish)
+                DownloadState.PAUSEED -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_pause)
                 DownloadState.NOSTART -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_normal)
-                else -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_running)
+                DownloadState.DOWNLOADING -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_running)
             }
         }
-//        if (mCoverPagePresenter != null) {
-//            if (type == mCoverPagePresenter.DOWNLOAD_STATE_FINISH) {
-//                book_cover_download.setText(R.string.download_status_complete)
-//            } else if (type == mCoverPagePresenter.DOWNLOAD_STATE_LOCKED) {
-//                book_cover_download.setText(R.string.download_status_complete)
-//            } else if (type == mCoverPagePresenter.DOWNLOAD_STATE_NOSTART) {
-//                book_cover_download.setText(R.string.download_status_total)
-//            } else {
-//                book_cover_download.setText(R.string.download_status_underway)
-//            }
-//        }
     }
 
 
