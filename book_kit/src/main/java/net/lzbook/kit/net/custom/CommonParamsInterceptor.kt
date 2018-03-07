@@ -141,7 +141,9 @@ class CommonParamsInterceptor : Interceptor {
         for (index in 0..querySize - 1) {
             originParams.put(newRequest.url().queryParameterName(index), newRequest.url().queryParameterValue(index))
         }
-        originParams.putAll(buildCommonParams())
+        if(!originParams.containsKey("packageName")) {
+            originParams.putAll(buildCommonParams())
+        }
 
         val url = genTokenParams(newRequest, originParams) ?: return request
         newRequest = newRequest.newBuilder().url(url).build()

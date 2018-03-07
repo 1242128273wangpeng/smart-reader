@@ -62,6 +62,7 @@ public class OtherRequestService extends VolleyDataService {
                     ArrayList<Chapter> chapterList = OWNParser.parserOwnChapterList(response, requestItem);
                     if (chapterList != null && !chapterList.isEmpty() && BookDaoHelper.getInstance()
                             .isBookSubed(requestItem.book_id)) {
+                        chapterDao.deleteBookChapters(0);
                         chapterDao.insertBookChapter(chapterList);
                         Chapter lastChapter = chapterList.get(chapterList.size() - 1);
                         Book book = new Book();
@@ -119,6 +120,7 @@ public class OtherRequestService extends VolleyDataService {
                         ArrayList<Chapter> chapters = OWNParser.parserOwnChapterList(response, requestItem);
                         if (chapters != null && !chapters.isEmpty() && BookDaoHelper.getInstance().isBookSubed
                                 (requestItem.book_id)) {
+                            chapterDao.deleteBookChapters(0);
                             chapterDao.insertBookChapter(chapters);
                             Chapter lastChapter = chapters.get(chapters.size() - 1);
                             Book book = new Book();

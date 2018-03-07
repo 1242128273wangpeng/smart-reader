@@ -25,6 +25,7 @@
                 android:layout_weight="1">
             
             <Button
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:id="@+id/btn_left"
                     android:layout_width="140dp"
                     android:layout_height="38dp"
@@ -44,6 +45,7 @@
                 android:layout_weight="1">
             
             <Button
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:id="@+id/btn_right"
                     android:layout_width="140dp"
                     android:layout_height="38dp"

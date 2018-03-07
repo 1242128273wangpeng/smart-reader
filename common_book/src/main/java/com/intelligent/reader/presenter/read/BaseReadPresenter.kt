@@ -67,7 +67,7 @@ import kotlin.collections.ArrayList
  * Created by yuchao on 2017/11/14 0014.
  */
 open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInterface.View>, NovelHelper.OnHelperCallBack,
-        DownloadService.OnDownloadListener, ReaderViewModel.ReadDataListener {
+        ReaderViewModel.ReadDataListener {
 
     var disposable: ArrayList<Disposable> = ArrayList()
     protected val TAG = BaseReadPresenter::class.java.simpleName
@@ -121,16 +121,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
     private var mCacheUpdateReceiver: CacheUpdateReceiver? = null
     private var mReadOptionPresenter: ReadOptionPresenter? = null
     private var mCatalogMarkPresenter: CatalogMarkPresenter? = null
-    private val sc = object : ServiceConnection {
-
-        override fun onServiceDisconnected(name: ComponentName) {}
-
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            downloadService = (service as DownloadService.MyBinder).service
-            BaseBookApplication.setDownloadService(downloadService)
-            downloadService?.setOnDownloadListener(this@BaseReadPresenter)
-        }
-    }
 
     fun onCreateInit(savedInstanceState: Bundle?) {
         ReadState.chapterList.clear()
@@ -149,7 +139,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
 //        autoSpeed = ReadState.autoReadSpeed()!!
         myNovelHelper = NovelHelper(readReference?.get())
         myNovelHelper?.setOnHelperCallBack(this)
-        downloadService = BaseBookApplication.getDownloadService()
 
         // 初始化窗口基本信息
         initWindow()
@@ -173,12 +162,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         initBookState()
         // 初始化view
         view?.initView(mReaderViewModel!!)
-        // 初始化监听器
-        initListener()
 //        getBookContent()
-        if (BaseBookApplication.getDownloadService() == null) {
-            BookHelper.reStartDownloadService()
-        }
         startRestInterval()
     }
 
@@ -224,11 +208,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         initBookState()
         // 初始化view
         view?.initView(mReaderViewModel!!)
-        // 初始化监听器
-        initListener()
-        if (BaseBookApplication.getDownloadService() == null) {
-            BookHelper.reStartDownloadService()
-        }
         changeMode(ReadConfig.MODE)
     }
 
@@ -274,11 +253,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
 //            view?.onChangedScreen()
         }
 
-        // 初始化监听器
-        initListener()
-        if (BaseBookApplication.getDownloadService() == null) {
-            BookHelper.reStartDownloadService()
-        }
         setMode()
         ReadState.chapterCount = ReadState.book?.chapter_count
 
@@ -421,15 +395,16 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
 
         val display = readReference?.get()?.getWindowManager()!!.getDefaultDisplay()
         val realSize = Point()
-        val dm = readReference?.get()?.getResources()!!.getDisplayMetrics()
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             display.getRealSize(realSize)
-            ReadConfig.screenWidth = realSize.x
-            ReadConfig.screenHeight = realSize.y
         } else {
-            ReadConfig.screenWidth = dm.widthPixels
-            ReadConfig.screenHeight = dm.heightPixels
+            display.getSize(realSize)
         }
+
+        val dm = readReference?.get()?.getResources()!!.getDisplayMetrics()
+        ReadConfig.screenWidth = realSize.x
+        ReadConfig.screenHeight = realSize.y
         ReadConfig.screenDensity = dm.density
         ReadConfig.screenScaledDensity = dm.scaledDensity
         // 保存字体、亮度、阅读模式
@@ -448,7 +423,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         //换源监听
         mReaderViewModel?.setReaderBookSourceViewCallback(object : ReaderViewModel.ReaderBookSourceViewCallback {
             override fun onBookSource(sourceItem: SourceItem) {
-                searchChapterCallBack(sourceItem.sourceList)
+                onGetSourceList(sourceItem.sourceList)
                 view?.readOptionHeaderDismiss()
             }
 
@@ -459,27 +434,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         mReaderViewModel?.mReadDataListener = this
     }
 
-    /**
-     * 初始化监听器
-     */
-    private fun initListener() {
-        if (downloadService == null) {
-            reStartDownloadService()
-            downloadService = BaseBookApplication.getDownloadService()
-        } else {
-            downloadService!!.setOnDownloadListener(this)
-        }
-    }
-
-    private fun reStartDownloadService() {
-        val intent = Intent()
-        intent.setClass(mContext, DownloadService::class.java)
-        mContext.startService(intent)
-        mContext.bindService(intent, sc, Context.BIND_AUTO_CREATE)
-    }
-
-    //换源回调
-    fun searchChapterCallBack(sourcesList: ArrayList<Source>?) {
+    fun onGetSourceList(sourcesList: ArrayList<Source>?) {
         if (sourcesList?.isNotEmpty() == true) {
             myNovelHelper?.showSourceDialog(ReadState.currentChapter?.curl, sourcesList)
         } else {
@@ -608,9 +563,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
                 DataProvider.getInstance().clear()
 
                 val bookChapterDao = BookChapterDao(readReference?.get(), source.book_id)
-                BookHelper.deleteAllChapterCache(source.book_id, 0, bookChapterDao.count)
-                DownloadService.clearTask(source.book_id)
-                BaseBookHelper.delDownIndex(readReference?.get(), source.book_id)
                 bookChapterDao.deleteBookChapters(0)
                 BookDaoHelper.getInstance().deleteBookMark(source.book_id)
             }
@@ -635,7 +587,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
 
     override fun deleteBook() {
         if (mBookDaoHelper!!.isBookSubed(ReadState.book_id)) {
-            mBookDaoHelper!!.deleteBook(ReadState.book_id)
+            mBookDaoHelper!!.deleteBook(ReadState.book, false)
         }
         readReference?.get()?.finish()
     }
@@ -657,6 +609,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
                     val chapter = mReaderViewModel!!.chapterList!![mReaderViewModel!!.chapterList!!.size - 1]
                     ReadState.book.extra_parameter = chapter.extra_parameter
                 }
+                bookChapterDao?.deleteBookChapters(0)
                 bookChapterDao?.insertBookChapter(mReaderViewModel?.chapterList)
             }
             val succeed = mBookDaoHelper?.insertBook(ReadState.book)
@@ -695,7 +648,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
             readReference?.get()?.showToastShort("网络不给力，请稍后再试")
             return
         }
-        myNovelHelper?.clickDownload(readReference?.get(), ReadState.book, Math.max(ReadState.sequence, 0))
+        BookHelper.startDownBookTask(readReference?.get(), ReadState.book, Math.max(ReadState.sequence, 0))
     }
 
     /**
@@ -896,16 +849,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
 
     }
 
-    fun onStart() {
-        if (mCacheUpdateReceiver == null) {
-            mCacheUpdateReceiver = CacheUpdateReceiver(readReference!!)
-        }
-
-        val intentFilter = IntentFilter()
-        intentFilter.addAction(BaseCacheableActivity.ACTION_CACHE_COMPLETE)
-        LocalBroadcastManager.getInstance(readReference?.get()).registerReceiver(mCacheUpdateReceiver, intentFilter)
-    }
-
     fun onPause(mCurPageSequence: Int, mCurPageOffset: Int) {
         isFromCover = false
         if (isSubed) {
@@ -1015,24 +958,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
                 act.startActivity(intent)
             }
         }
-    }
-
-    override fun notificationCallBack(preNTF: Notification, book_id: String) {
-        if (readReference == null || readReference!!.get() == null) {
-            return
-        }
-        var pending: PendingIntent? = null
-        var intent: Intent? = null
-        if (book_id != (-1).toString() + "") {
-            intent = Intent(readReference?.get(), DownBookClickReceiver::class.java)
-            intent.action = DownBookClickReceiver.action
-            intent.putExtra("book_id", book_id)
-            pending = PendingIntent.getBroadcast(readReference?.get()?.applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        } else {
-            intent = Intent(readReference?.get(), DownloadManagerActivity::class.java)
-            pending = PendingIntent.getActivity(readReference?.get()?.applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        }
-        preNTF.contentIntent = pending
     }
 
     override fun jumpNextChapter() {

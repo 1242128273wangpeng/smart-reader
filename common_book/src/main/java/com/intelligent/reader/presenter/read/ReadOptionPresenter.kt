@@ -15,28 +15,19 @@ import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.read.DataProvider
-import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.read.mode.ReadState
-import com.intelligent.reader.read.page.ReadOptionHeader.Companion.DOWNLOAD_CACHE_FINISH
-import com.intelligent.reader.read.page.ReadOptionHeader.Companion.DOWNLOAD_CACHE_NORMAL
-import com.intelligent.reader.read.page.ReadOptionHeader.Companion.DOWNLOAD_CACHE_PAUSEED
-import com.intelligent.reader.read.page.ReadOptionHeader.Companion.DOWNLOAD_CACHE_RUNNING
 import com.intelligent.reader.reader.ReaderViewModel
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.download.DownloadState
+import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.NullCallBack
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.Bookmark
 import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.request.UrlUtils
-import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.NetWorkUtils
-import net.lzbook.kit.utils.StatServiceUtils
-import net.lzbook.kit.utils.toastShort
+import net.lzbook.kit.utils.*
 import java.lang.Exception
 import java.lang.ref.WeakReference
 
@@ -104,109 +95,64 @@ class ReadOptionPresenter : ReadOption.Presenter {
      */
     fun clickDownload(context: Context, mBook: Book, sequence: Int) {
 
-        val bookTask = BookHelper.getDownBookTask(context, mBook.book_id)
-        if (bookTask != null && BookHelper.getStartDownIndex(context, mBook) > -1) {
-            if (bookTask.state == DownloadState.DOWNLOADING || bookTask.state == DownloadState.WAITTING) {
-                Toast.makeText(context, "请耐心等待，已存在缓存队列", Toast.LENGTH_SHORT).show()
-                return
-            } else if (bookTask.state == DownloadState.NOSTART
-                    || bookTask.state == DownloadState.PAUSEED || bookTask.state == DownloadState.REFRESH
-                    || bookTask.state == DownloadState.LOCKED) {
-                BookHelper.startDownBookTask(context, mBook.book_id)
-
-                val downloadState = BookHelper.getDownloadState(context, mBook)
-                if (downloadState != DownloadState.FINISH && downloadState != DownloadState.WAITTING && downloadState != DownloadState.DOWNLOADING) {
-                    Toast.makeText(context, "马上开始为你缓存。。。", Toast.LENGTH_SHORT).show()
-                }
+        val bookTask = CacheManager.getBookTask(mBook)
 
 
-                return
-            } else if (bookTask.state == DownloadState.FINISH) {
-                Toast.makeText(context, "离线缓存已完成", Toast.LENGTH_SHORT).show()
+        val dialog = MyDialog(activity.get(), R.layout.reading_cache, Gravity.BOTTOM, true)
+        val reading_all_down = dialog.findViewById(R.id.reading_all_down) as TextView
+        reading_all_down.setOnClickListener(View.OnClickListener {
+            StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_all)
+            if (NetWorkUtils.getNetWorkType(context) == NetWorkUtils.NETWORK_NONE) {
+                Toast.makeText(context, context.getText(R.string.game_network_none), Toast.LENGTH_LONG).show()
+                return@OnClickListener
             }
-        } else {
+            BaseBookHelper.startDownBookTask(activity.get(), mBook, 0)
+            dialog.dismiss()
 
-            val dialog = MyDialog(activity.get(), R.layout.reading_cache, Gravity.BOTTOM, true)
-            val reading_all_down = dialog.findViewById(R.id.reading_all_down) as TextView
-            reading_all_down.setOnClickListener(View.OnClickListener {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_all)
-                if (NetWorkUtils.getNetWorkType(context) == NetWorkUtils.NETWORK_NONE) {
-                    Toast.makeText(context, context.getText(R.string.game_network_none), Toast.LENGTH_LONG).show()
-                    return@OnClickListener
-                }
-                BookHelper.addDownBookTask(context, mBook, NullCallBack(), true)
-                BookHelper.startDownBookTask(context, mBook.book_id)
-                BookHelper.writeDownIndex(context, mBook.book_id, false, 0)
+            val data = java.util.HashMap<String, String>()
+            data.put("bookid", ReadState.book_id)
+            if (ReadState.currentChapter != null) {
+                data.put("chapterid", ReadState.currentChapter!!.chapter_id)
+            }
+            data.put("type", "1")
+            StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
+        })
+        val reading_current_down = dialog.findViewById(R.id.reading_current_down) as TextView
+        reading_current_down.setOnClickListener(View.OnClickListener {
+            StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_from_now)
+            if (NetWorkUtils.getNetWorkType(context) == NetWorkUtils.NETWORK_NONE) {
+                Toast.makeText(context, context.getText(R.string.game_network_none), Toast.LENGTH_LONG).show()
+                return@OnClickListener
+            }
+            BaseBookHelper.startDownBookTask(activity.get(), mBook, sequence)
+
+            dialog.dismiss()
+
+            val data = java.util.HashMap<String, String>()
+            data.put("bookid", ReadState.book_id)
+            if (ReadState.currentChapter != null) {
+                data.put("chapterid", ReadState.currentChapter!!.chapter_id)
+            }
+            data.put("type", "2")
+            StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
+        })
+        val cancel = dialog.findViewById(R.id.reading_cache_cancel) as TextView
+
+        cancel.setOnClickListener {
+            StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_cancel)
+            if (dialog != null && dialog.isShowing) {
                 dialog.dismiss()
-                Toast.makeText(context, R.string.reading_cache_hint, Toast.LENGTH_SHORT).show()
-
                 val data = java.util.HashMap<String, String>()
                 data.put("bookid", ReadState.book_id)
                 if (ReadState.currentChapter != null) {
                     data.put("chapterid", ReadState.currentChapter!!.chapter_id)
                 }
-                data.put("type", "1")
+                data.put("type", "0")
                 StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
-            })
-            val reading_current_down = dialog.findViewById(R.id.reading_current_down) as TextView
-            reading_current_down.setOnClickListener(View.OnClickListener {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_from_now)
-                if (NetWorkUtils.getNetWorkType(context) == NetWorkUtils.NETWORK_NONE) {
-                    Toast.makeText(context, context.getText(R.string.game_network_none), Toast.LENGTH_LONG).show()
-                    return@OnClickListener
-                }
-                BookHelper.addDownBookTask(context, mBook, NullCallBack(), false)
-                BookHelper.startDownBookTask(context, mBook.book_id, if (sequence > -1) sequence + 1 else 0)
-                BookHelper.writeDownIndex(context, mBook.book_id, true, if (sequence > -1) sequence + 1 else 0)
-                dialog.dismiss()
-                Toast.makeText(context, R.string.reading_cache_hint, Toast.LENGTH_SHORT).show()
-
-                val data = java.util.HashMap<String, String>()
-                data.put("bookid", ReadState.book_id)
-                if (ReadState.currentChapter != null) {
-                    data.put("chapterid", ReadState.currentChapter!!.chapter_id)
-                }
-                data.put("type", "2")
-                StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
-            })
-            val cancel = dialog.findViewById(R.id.reading_cache_cancel) as TextView
-
-            cancel.setOnClickListener {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_cancel)
-                if (dialog != null && dialog.isShowing) {
-                    dialog.dismiss()
-                    val data = java.util.HashMap<String, String>()
-                    data.put("bookid", ReadState.book_id)
-                    if (ReadState.currentChapter != null) {
-                        data.put("chapterid", ReadState.currentChapter!!.chapter_id)
-                    }
-                    data.put("type", "0")
-                    StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
-                }
             }
-            dialog.show()
         }
-    }
+        dialog.show()
 
-    override fun getCacheState(): Int {
-        if (activity.get() == null) {
-            return DOWNLOAD_CACHE_NORMAL
-        }
-        val bookTask = BookHelper.getDownBookTask(activity.get(), ReadState.book.book_id)
-        if (bookTask != null && BookHelper.getStartDownIndex(activity.get(), ReadState.book) > -1) {
-            if (bookTask.state == DownloadState.DOWNLOADING || bookTask.state == DownloadState.WAITTING) {
-                return DOWNLOAD_CACHE_RUNNING
-            } else if (bookTask.state == DownloadState.NOSTART
-                    || bookTask.state == DownloadState.PAUSEED || bookTask.state == DownloadState.REFRESH
-                    || bookTask.state == DownloadState.LOCKED) {
-                return DOWNLOAD_CACHE_PAUSEED
-            } else if (bookTask.state == DownloadState.FINISH) {
-                return DOWNLOAD_CACHE_FINISH
-            }
-        } else {
-            return DOWNLOAD_CACHE_NORMAL
-        }
-        return DOWNLOAD_CACHE_NORMAL
     }
 
     private fun showToastShort(s: String) {
@@ -287,7 +233,12 @@ class ReadOptionPresenter : ReadOption.Presenter {
         if (activity.get() == null || mBookDaoHelper == null || ReadState == null) {
             return 0
         }
-        if (!mBookDaoHelper.isBookMarkExist(ReadState.book!!.book_id, ReadState.sequence, ReadState.offset, type)) {
+
+        if (!mBookDaoHelper.isBookSubed(ReadState.book_id) && !mBookDaoHelper.insertBook(ReadState.book)) {
+            return 0
+        }
+
+        if (!mBookDaoHelper.isBookMarkExist(ReadState.book_id, ReadState.sequence, ReadState.offset, type)) {
             var logMap = HashMap<String, String>()
             logMap.put("type", "1")
             StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.BOOKMARKEDIT, logMap)
@@ -305,8 +256,6 @@ class ReadOptionPresenter : ReadOption.Presenter {
 
             bookMark.book_id = ReadState.book!!.book_id
             bookMark.book_source_id = ReadState.book!!.book_source_id
-            bookMark.parameter = ReadState.book!!.parameter
-            bookMark.extra_parameter = ReadState.book!!.extra_parameter
             bookMark.sequence = if (ReadState.sequence + 1 > ReadState.chapterList.size) ReadState.chapterList.size else ReadState.sequence
             bookMark.offset = ReadState.offset
             bookMark.sort = chapter.sort
@@ -406,8 +355,6 @@ class ReadOptionPresenter : ReadOption.Presenter {
         requestItem.host = ReadState.book.site
         requestItem.name = ReadState.book.name
         requestItem.author = ReadState.book.author
-        requestItem.parameter = ReadState.book.parameter
-        requestItem.extra_parameter = ReadState.book.extra_parameter
 
         val bundle = Bundle()
         bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
@@ -455,18 +402,15 @@ class ReadOptionPresenter : ReadOption.Presenter {
         }
     }
 
-    override fun feedback() {
-        val activity = this.activity.get()
-        if (activity is ReadingActivity) {
-            activity.onReadFeedBack()
-        }
-    }
-
     override fun updateStatus() {
         view?.updateStatus(bookDaoHelper)
     }
 
     override fun dismissLoadingPage() {
         loadingPage?.onSuccess()
+    }
+
+    override fun feedback() {
+        (activity.get() as ReadingActivity).onReadFeedBack()
     }
 }

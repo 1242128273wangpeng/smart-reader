@@ -266,6 +266,13 @@ public class Constants {
     public static int isNoNetRead = 0;
     public static String noNetReadNumber = "noNetReadNumber";
 
+    //是否是在下载管理页面
+    public static boolean isDownloadManagerActivity = false;
+    //是否已经提示过了
+    public static boolean hadShownMobilNetworkConfirm = false;
+
+    public static int WIFI_AUTO_CACHE_COUNT = 20;
+
     /*
          * 初始化
          */

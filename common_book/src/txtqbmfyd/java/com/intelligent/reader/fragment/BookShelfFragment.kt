@@ -1,7 +1,5 @@
 package com.intelligent.reader.fragment
 
-import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -21,14 +19,13 @@ import com.intelligent.reader.presenter.bookshelf.BookShelfView
 import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.util.BookShelfRemoveHelper
 import com.intelligent.reader.util.ShelfGridLayoutManager
-import com.intelligent.reader.view.BookDeleteDialog
+import com.intelligent.reader.widget.BookDeleteDialog
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.layout_head.view.*
 import kotlinx.android.synthetic.txtqbmfyd.fragment_bookshelf.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
-import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.Book
@@ -138,8 +135,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
 
     private val bookDeleteDialog: BookDeleteDialog by lazy {
         val dialog = BookDeleteDialog(activity)
-        dialog.setOnConfirmListener { books ->
-            if (books != null && books.isNotEmpty()) presenter.deleteBooks(books)
+        dialog.setOnConfirmListener { books, isOnlyDeleteCache ->
+            if (books != null && books.isNotEmpty()) presenter.deleteBooks(books, isOnlyDeleteCache)
             StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.bs_click_delete_ok_btn)
         }
         dialog.setOnAbrogateListener {
@@ -219,8 +216,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
 
         presenter.clickNotification(context, activity.intent)
 
-        initDownloadService()
-        initUpdateService()
+//        initDownloadService()
+//        initUpdateService()
 
         //根据书架数量确定是否刷新
         if (presenter.iBookList.size > 0) {
@@ -331,13 +328,13 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
     }
 
     fun doUpdateBook() {
-        presenter.addUpdateTask(this)
+        presenter.addUpdateTask(this, frameBookHelper)
     }
 
     override fun doUpdateBook(updateService: CheckNovelUpdateService) {
         if (activity != null) {
             updateService.setBookUpdateListener(activity as CheckNovelUpdateService.OnBookUpdateListener)
-            presenter.addUpdateTask(this)
+            presenter.addUpdateTask(this, frameBookHelper)
         }
     }
 
@@ -358,23 +355,23 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
         bookShelfReAdapter.notifyDataSetChanged()
     }
 
-    private fun initDownloadService() {
-        if (presenter.downloadService != null) return
-        val intent = Intent()
-        val context = activity.applicationContext
-        intent.setClass(context, DownloadService::class.java)
-        context.startService(intent)
-        context.bindService(intent, presenter.downloadConnection, Context.BIND_AUTO_CREATE)
-    }
-
-    private fun initUpdateService() {
-        if (presenter.updateService != null) return
-        val intent = Intent()
-        val context = activity.applicationContext
-        intent.setClass(context, CheckNovelUpdateService::class.java)
-        context.startService(intent)
-        context.bindService(intent, presenter.updateConnection, Context.BIND_AUTO_CREATE)
-    }
+//    private fun initDownloadService() {
+//        if (presenter.downloadService != null) return
+//        val intent = Intent()
+//        val context = activity.applicationContext
+//        intent.setClass(context, DownloadService::class.java)
+//        context.startService(intent)
+//        context.bindService(intent, presenter.downloadConnection, Context.BIND_AUTO_CREATE)
+//    }
+//
+//    private fun initUpdateService() {
+//        if (presenter.updateService != null) return
+//        val intent = Intent()
+//        val context = activity.applicationContext
+//        intent.setClass(context, CheckNovelUpdateService::class.java)
+//        context.startService(intent)
+//        context.bindService(intent, presenter.updateConnection, Context.BIND_AUTO_CREATE)
+//    }
 
     private fun initRecyclerView() {
         bookshelf_refresh_view.setHeaderViewBackgroundColor(0x00000000)
@@ -422,7 +419,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
             showToastDelay(R.string.main_update_no_new)
         } else {
             // 刷新间隔大于30秒直接请求更新，
-            presenter.addUpdateTask(this)
+            presenter.addUpdateTask(this, frameBookHelper)
             AppLog.d(TAG, "刷新间隔大于30秒请求数据")
         }
 

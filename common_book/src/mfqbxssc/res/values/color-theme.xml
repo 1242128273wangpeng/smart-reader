@@ -355,6 +355,10 @@
     <color name="cover_title_color">#252B35</color>
     <color name="cover_recommend_read">#949AA5</color>
     <color name="cover_label">#C6CCD6</color>
+    <color name="color_black_80000000">#80000000</color>
+
+    <color name="download_manager_wifi_pause_color">#882F46</color>
+    <color name="down_head_pop_item_click">#0c000000</color>
 
 
 </resources>

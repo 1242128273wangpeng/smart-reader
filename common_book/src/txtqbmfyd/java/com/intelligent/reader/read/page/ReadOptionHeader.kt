@@ -15,9 +15,12 @@ import com.intelligent.reader.R
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.presenter.read.ReadOption
 import com.intelligent.reader.read.mode.ReadState
+import com.intelligent.reader.read.mode.ReadState.book
 import kotlinx.android.synthetic.txtqbmfyd.read_option_header.view.*
 import kotlinx.android.synthetic.txtqbmfyd.read_option_pop.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.book.download.CacheManager
+import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.request.UrlUtils
@@ -80,11 +83,12 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
             presenter?.openWeb()
         }
 
-        when (presenter?.getCacheState()) {
-            DOWNLOAD_CACHE_NORMAL -> header_ibtn_download.setImageResource(R.drawable.icon_read_option_down_normal)
-            DOWNLOAD_CACHE_RUNNING -> header_ibtn_download.setImageResource(R.drawable.icon_read_option_down_running)
-            DOWNLOAD_CACHE_PAUSEED -> header_ibtn_download.setImageResource(R.drawable.icon_read_option_down_pause)
-            DOWNLOAD_CACHE_FINISH -> header_ibtn_download.setImageResource(R.drawable.icon_read_option_down_finish)
+        val status = CacheManager.getBookStatus(book)
+        when (status) {
+            DownloadState.NOSTART -> header_ibtn_download.setImageResource(R.drawable.icon_read_option_down_normal)
+            DownloadState.DOWNLOADING -> header_ibtn_download.setImageResource(R.drawable.icon_read_option_down_running)
+            DownloadState.PAUSEED -> header_ibtn_download.setImageResource(R.drawable.icon_read_option_down_pause)
+            DownloadState.FINISH -> header_ibtn_download.setImageResource(R.drawable.icon_read_option_down_finish)
         }
 
         header_ibtn_download.setOnClickListener {
@@ -112,7 +116,6 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
             inflate.read_option_pop_change_source.setOnClickListener {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_change_source_btn)
                 presenter?.changeSource()
-//                presenter?.feedback()
                 (context as ReadingActivity).showMenu(false)
                 popupWindow.dismiss()
             }

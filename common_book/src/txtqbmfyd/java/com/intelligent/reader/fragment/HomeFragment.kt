@@ -34,7 +34,7 @@ import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.txtqbmfyd.content_view.*
 import kotlinx.android.synthetic.txtqbmfyd.content_view_main.*
 import kotlinx.android.synthetic.txtqbmfyd.content_view_menu.*
-import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.view.ConsumeEvent
 import net.lzbook.kit.book.view.NonSwipeViewPager
 import net.lzbook.kit.cache.DataCleanManager
@@ -97,13 +97,7 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
         dialog.setOnConfirmListener {
             dialog.showLoading()
             activity.doAsync {
-                val downloadService = BaseBookApplication.getDownloadService()
-                val bookTasks = downloadService?.cancelAll()
-                if (bookTasks != null) {
-                    for (task in bookTasks) {
-                        downloadService.dellTask(task.book_id)
-                    }
-                }
+                CacheManager.removeAll()
                 UIHelper.clearAppCache()
                 DataCleanManager.clearAllCache(activity.applicationContext)
                 Thread.sleep(1000)

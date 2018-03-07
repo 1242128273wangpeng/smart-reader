@@ -18,7 +18,6 @@ import com.intelligent.reader.presenter.read.ReadPresenter
 import com.intelligent.reader.read.page.*
 import com.intelligent.reader.reader.ReaderViewModel
 import iyouqu.theme.FrameActivity
-import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ReadStatus
 import net.lzbook.kit.data.bean.Source
@@ -33,7 +32,6 @@ import java.util.*
 
 class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener, ReadSettingView.OnReadSettingListener, ReadPreInterface.View {
     private val mTAG = ReadingActivity::class.java.simpleName
-    var downloadService: DownloadService? = null
     internal var readLength = 0
     private var pageView: PageInterface? = null
     // 系统存储设置
@@ -266,19 +264,12 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     }
 
-    override fun shouldReceiveCacheEvent(): Boolean {
-        return false
-    }
-
     override fun shouldShowNightShadow(): Boolean {
         return false
     }
 
     override fun onStart() {
         super.onStart()
-        if (mReadPresenter != null) {
-            mReadPresenter!!.onStart()
-        }
     }
 
     override fun onPause() {

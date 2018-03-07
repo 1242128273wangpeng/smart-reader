@@ -17,10 +17,13 @@ import com.intelligent.reader.adapter.CoverRecommendAdapter
 import com.intelligent.reader.presenter.coverPage.CoverPageContract
 import com.intelligent.reader.presenter.coverPage.CoverPagePresenter
 import com.intelligent.reader.read.help.BookHelper
+import com.intelligent.reader.read.mode.ReadState.book
 import com.intelligent.reader.util.ShelfGridLayoutManager
 import com.intelligent.reader.view.MyScrollView
 import kotlinx.android.synthetic.mfqbxssc.act_book_cover.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.book.download.CacheManager
+import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Book
@@ -83,7 +86,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, MyScrollView
     protected fun initListener() {
         book_cover_back?.setOnClickListener(this)
         book_cover_author?.setOnClickListener(this)
-        book_cover_source_view?.setOnClickListener(this)
         book_cover_last_chapter?.setOnClickListener(this)
         book_cover_bookshelf?.setOnClickListener(this)
         book_cover_reading?.setOnClickListener(this)
@@ -148,18 +150,18 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, MyScrollView
         }
     }
 
-    override fun showArrow(isShow: Boolean, isQGTitle: Boolean) {
-        if (iv_arrow != null) {
-            if (isShow) {
-                iv_arrow!!.visibility = View.VISIBLE
-            } else {
-                iv_arrow!!.visibility = View.GONE
+    override fun showArrow(isQGTitle: Boolean) {
+        if (isQGTitle) {
+            if (book_cover_source_form != null) {
+                book_cover_source_form!!.text = "青果阅读"
+                book_cover_source_form.setCompoundDrawables(null, null, null, null)
             }
-            if (isQGTitle) {
-                if (book_cover_source_form != null) {
-                    book_cover_source_form!!.text = "青果阅读"
-                }
-            }
+        }
+    }
+
+    override fun setCompound() {
+        if (book_cover_source_form != null) {
+            book_cover_source_form.setCompoundDrawables(null, null, null, null)
         }
     }
 
@@ -296,6 +298,10 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, MyScrollView
         }
     }
 
+    override fun setShelfBtnClickable(clickable: Boolean) {
+        book_cover_bookshelf!!.setClickable(clickable)
+    }
+
     private fun setRemoveBtn() {
         mTextColor = R.color.home_title_search_text
         book_cover_bookshelf!!.setTextColor(resources.getColor(mTextColor))
@@ -320,18 +326,21 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, MyScrollView
     /**
      * 改变缓存状态值
      */
-    override fun changeDownloadButtonStatus(type: Int) {
-        if (mCoverPagePresenter != null) {
-            if (type == mCoverPagePresenter!!.DOWNLOAD_STATE_FINISH) {
-                book_cover_download!!.setText(R.string.download_status_complete)
-                book_cover_download!!.setTextColor(resources.getColor(R.color.home_title_search_text))
-            } else if (type == mCoverPagePresenter!!.DOWNLOAD_STATE_LOCKED) {
-                book_cover_download!!.setText(R.string.download_status_complete)
-                book_cover_download!!.setTextColor(resources.getColor(R.color.home_title_search_text))
-            } else if (type == mCoverPagePresenter!!.DOWNLOAD_STATE_NOSTART) {
-                book_cover_download!!.setText(R.string.download_status_total)
+    override fun changeDownloadButtonStatus() {
+        if (book_cover_download == null || bookVo == null) {
+            return
+        }
+        var book: Book? = null
+        book = mCoverPagePresenter?.getBook()
+        if (book != null && book_cover_download != null) {
+            val status = CacheManager.getBookStatus(book)
+            if (status == DownloadState.FINISH) {
+                book_cover_download.setText(R.string.download_status_complete)
+            } else if (status == DownloadState
+                    .WAITTING || status == DownloadState.DOWNLOADING) {
+                book_cover_download.setText(R.string.download_status_underway)
             } else {
-                book_cover_download!!.setText(R.string.download_status_underway)
+                book_cover_download.setText(R.string.download_status_total)
             }
         }
     }
@@ -346,14 +355,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, MyScrollView
                 data.put("type", "1")
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data)
                 finish()
-            }
-            R.id.book_cover_source_view -> {
-                //书籍详情页换源点击
-                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_ch_source)
-                if (mCoverPagePresenter != null) {
-                    mCoverPagePresenter!!.showCoverSourceDialog()
-                }
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SOURCECHANGE)
             }
 
             R.id.book_cover_bookshelf -> if (mCoverPagePresenter != null) {
@@ -403,6 +404,11 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, MyScrollView
             mCoverPagePresenter!!.destory()
         }
         super.onDestroy()
+    }
+
+    override fun onTaskStatusChange() {
+        super.onTaskStatusChange()
+        changeDownloadButtonStatus()
     }
 
     override fun onScrollChanged(top: Int, oldTop: Int) {

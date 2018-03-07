@@ -1,64 +1,67 @@
 package net.lzbook.kit.data.bean;
 
 
-import net.lzbook.kit.book.download.BreakPointFileLoader;
-import net.lzbook.kit.book.download.CallBackDownload;
 import net.lzbook.kit.book.download.DownloadState;
 
 
 public class BookTask {
-    //开始下载的位置
-    public int startSequence;
-    //结束下载的位置
-    public int endSequence;
-    //监听下载的回调接口
-    public CallBackDownload mCallBack;
-    //下载的小说
     public Book book;
-    //小说id
     public String book_id;
-    //下载的状态
-    public DownloadState state;
-    //是否开启自动下载
+
+
     public boolean isAutoState = false;
+    public boolean isWifiAuto = false;
+    public boolean isOldTaskProgress = false;
 
-    public BreakPointFileLoader cacheLoader = null;
+    public volatile DownloadState state;
+
     public int progress = 0;
+    public int startSequence;
+    public int beginSequence;
+    public int endSequence;
 
-    public BookTask(Book book, DownloadState state, int startSequence, int endSequence, CallBackDownload mCallBack) {
-        super();
+    //下载章节进度位置
+    public int shouldCacheCount = 0;
+    //处理了多少章节
+    public int processChapterCount = 0;
+
+    public String start_chapterid;
+    public String end_chapterid;
+    //真实缓存了多少章节
+    public int cache_chapters = 0;
+    public long cache_times;
+    public boolean isFullCache = false;
+
+    public BookTask(Book book, DownloadState state, int startSequence, int endSequence) {
         if (book == null) {
             throw new IllegalArgumentException("book may not be null");
+        } else {
+            try {
+                //避免换源时， 任务无法刷新的问题
+                this.book = book.clone();
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+                throw new IllegalArgumentException("book cant clone");
+            }
+            this.book_id = book.book_id;
+            this.state = state;
+            this.startSequence = startSequence;
+            this.endSequence = endSequence;
         }
-
-        if (mCallBack == null) {
-            throw new IllegalArgumentException("mCallBack may not be null");
-        }
-        this.book = book;
-        this.book_id = book.book_id;
-        this.state = state;
-        this.startSequence = startSequence;
-        this.endSequence = endSequence;
-        this.mCallBack = mCallBack;
     }
 
-    @Override
     public boolean equals(Object o) {
-        if (o != null && o instanceof BookTask) {
-            BookTask ao = (BookTask) o;
-            return book.book_id.equals(ao.book.book_id);
+        if (o == null || !(o instanceof BookTask)) {
+            return super.equals(o);
         }
-        return super.equals(o);
+        return this.book.book_id.equals(((BookTask) o).book.book_id);
     }
 
-    @Override
     public int hashCode() {
-        return book.book_id.hashCode();
+        return this.book.book_id.hashCode();
     }
 
-    @Override
     public String toString() {
         return super.toString();
     }
-
 }

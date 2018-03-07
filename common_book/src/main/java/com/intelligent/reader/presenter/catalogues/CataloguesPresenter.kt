@@ -25,6 +25,7 @@ import com.quduquxie.network.DataCache
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.DownloadService
+import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.constants.Constants
@@ -45,7 +46,7 @@ import java.util.HashMap
 
 class CataloguesPresenter(var act: Activity, var book: Book, var requestItem: RequestItem, var cataloguesContract: CataloguesContract,
                           val onClickListener: View.OnClickListener, val fromCover: Boolean)
-    : BookCoverUtil.OnDownloadState, BookCoverUtil.OnDownLoadService, DownloadService.OnDownloadListener, BookCoverViewModel.BookChapterViewCallback {
+    : BookCoverUtil.OnDownloadState, BookCoverUtil.OnDownLoadService, BookCoverViewModel.BookChapterViewCallback {
 
 
     var activity: WeakReference<Activity>? = null
@@ -58,10 +59,10 @@ class CataloguesPresenter(var act: Activity, var book: Book, var requestItem: Re
     private val DELAY_OVERLAY = MESSAGE_FETCH_ERROR + 1
     var mBookDaoHelper: BookDaoHelper? = null
     var downloadService: DownloadService? = null
-    val DOWNLOAD_STATE_FINISH = 1;
-    val DOWNLOAD_STATE_LOCKED = 2;
-    val DOWNLOAD_STATE_NOSTART = 3;
-    val DOWNLOAD_STATE_OTHER = 4;
+    val DOWNLOAD_STATE_FINISH = 1
+    val DOWNLOAD_STATE_LOCKED = 2
+    val DOWNLOAD_STATE_NOSTART = 3
+    val DOWNLOAD_STATE_OTHER = 4
     var bookCoverUtil: BookCoverUtil? = null
     var bookDaoHelper: BookDaoHelper? = null
     var mBookCoverViewModel: BookCoverViewModel? = null
@@ -76,48 +77,12 @@ class CataloguesPresenter(var act: Activity, var book: Book, var requestItem: Re
                 BookCoverQGRepository.getInstance(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())), BookCoverLocalRepository.getInstance(BaseBookApplication.getGlobalContext())))
         mBookCoverViewModel?.setBookChapterViewCallback(this)
 
-
-        downloadService = BaseBookApplication.getDownloadService()
-        if (downloadService == null) {
-            BookHelper.reStartDownloadService()
-        } else {
-            downloadService?.setUiContext(BaseBookApplication.getGlobalContext())
-            downloadService?.setOnDownloadListener(this@CataloguesPresenter)
-        }
-
         bookCoverUtil = BookCoverUtil(activity!!.get(), onClickListener)
         bookCoverUtil?.registReceiver()
         bookCoverUtil?.setOnDownloadState(this)
         bookCoverUtil?.setOnDownLoadService(this)
 
 
-    }
-
-    private val sc = object : ServiceConnection {
-
-        override fun onServiceDisconnected(name: ComponentName) {}
-
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            downloadService = (service as DownloadService.MyBinder).service
-            BaseBookApplication.setDownloadService(downloadService)
-            downloadService!!.setUiContext(BaseBookApplication.getGlobalContext())
-            downloadService!!.setOnDownloadListener(this@CataloguesPresenter)
-        }
-    }
-
-    override fun notificationCallBack(preNTF: Notification, book_id: String) {
-        var pending: PendingIntent? = null
-        var intent: Intent? = null
-        if (book_id != (-1).toString() + "") {
-            intent = Intent(activity!!.get(), DownBookClickReceiver::class.java)
-            intent!!.action = DownBookClickReceiver.action
-            intent.putExtra("book_id", book_id)
-            pending = PendingIntent.getBroadcast(BaseBookApplication.getGlobalContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        } else {
-            intent = Intent(activity!!.get(), DownloadManagerActivity::class.java)
-            pending = PendingIntent.getActivity(BaseBookApplication.getGlobalContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        }
-        preNTF.contentIntent = pending
     }
 
     fun requestCatalogList() {
@@ -174,30 +139,12 @@ class CataloguesPresenter(var act: Activity, var book: Book, var requestItem: Re
     }
 
     override fun changeState() {
-        changeDownLoadButtonText()
+        cataloguesContract.changeDownloadButtonStatus()
     }
 
     override fun downLoadService() {
-        changeDownLoadButtonText()
+        cataloguesContract.changeDownloadButtonStatus()
     }
-
-    fun changeDownLoadButtonText() {
-        var type: Int = 0
-
-        if (book != null) {
-            if (BookHelper.getDownloadState(activity!!.get(), book) == DownloadState.FINISH) {
-                type = DOWNLOAD_STATE_FINISH
-            } else if (BookHelper.getDownloadState(activity!!.get(), book) == DownloadState.LOCKED) {
-                type = DOWNLOAD_STATE_LOCKED
-            } else if (BookHelper.getDownloadState(activity!!.get(), book) == DownloadState.NOSTART) {
-                type = DOWNLOAD_STATE_NOSTART
-            } else {
-                type = DOWNLOAD_STATE_OTHER
-            }
-            cataloguesContract.changeDownloadButtonStatus(type)
-        }
-    }
-
 
     //进入阅读页
     private fun readingBook() {
@@ -278,7 +225,7 @@ class CataloguesPresenter(var act: Activity, var book: Book, var requestItem: Re
                     isChapterExist = DataCache.isChapterExists(tempChapter.chapter_id, tempChapter.book_id)
                 } else {
                     requestItem.channel_code = 2
-                    isChapterExist = BookHelper.isChapterExist(tempChapter.sequence, book.book_id)
+                    isChapterExist = BookHelper.isChapterExist(tempChapter)
                 }
                 if (!isChapterExist && NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
                     showToastShort("网络不给力，请稍后重试")
@@ -333,7 +280,7 @@ class CataloguesPresenter(var act: Activity, var book: Book, var requestItem: Re
         if (book == null)
             return
 
-        val downloadState = BookHelper.getDownloadState(activity!!.get(), book)
+        var downloadState = CacheManager.getBookStatus(book)
         if (downloadState != DownloadState.FINISH && downloadState != DownloadState.WAITTING && downloadState != DownloadState.DOWNLOADING) {
             showToastShort("正在缓存中。。。")
         }
@@ -353,12 +300,13 @@ class CataloguesPresenter(var act: Activity, var book: Book, var requestItem: Re
                     showToastShort("成功添加到书架!")
 
 
-                    bookCoverUtil!!.catalogStartDownLoad(book)
+                    BaseBookHelper.startDownBookTask(activity!!.get(), requestItem.toBook(), 0);
                 }
             } else {
-                bookCoverUtil!!.catalogStartDownLoad(book)
+                BaseBookHelper.startDownBookTask(activity!!.get(), requestItem.toBook(), 0);
             }
         }
+        cataloguesContract.changeDownloadButtonStatus()
     }
 
 

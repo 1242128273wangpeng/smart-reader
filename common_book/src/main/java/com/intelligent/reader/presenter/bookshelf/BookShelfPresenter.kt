@@ -2,8 +2,9 @@ package com.intelligent.reader.presenter.bookshelf
 
 import android.app.Activity
 import android.app.NotificationManager
-import android.content.*
-import android.os.IBinder
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.text.TextUtils
 import android.view.ViewGroup
 import com.intelligent.reader.R
@@ -13,6 +14,7 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.component.service.DownloadService
+import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.Book
@@ -40,51 +42,13 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
 
     var downloadService: DownloadService? = null
 
-    var updateService: CheckNovelUpdateService? = null
-
-    val downloadConnection = object : ServiceConnection {
-
-        override fun onServiceDisconnected(name: ComponentName) {}
-
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            try {
-                downloadService = (service as DownloadService.MyBinder).service
-                if (Constants.is_wifi_auto_download
-                        && NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_WIFI) {
-                    doAsync { downloadService?.autoStartDownLoad() }
-                }
-                BaseBookApplication.setDownloadService(downloadService)
-            } catch (e: ClassCastException) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    val updateConnection = object : ServiceConnection {
-
-        override fun onServiceDisconnected(name: ComponentName) {}
-
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            try {
-                updateService = (service as CheckNovelUpdateService.CheckUpdateBinder).service
-                AppLog.d(tag, "auto-updateService" + updateService)
-                if (updateService != null) {
-                    AppLog.d(tag, "updateData ")
-                    view?.doUpdateBook(updateService!!)
-                }
-            } catch (e: ClassCastException) {
-                e.printStackTrace()
-            }
-
-        }
-    }
-
-    fun addUpdateTask(updateCallBack: UpdateCallBack) {
+    fun addUpdateTask(updateCallBack: UpdateCallBack, frameBookHelper: FrameBookHelper?) {
+        val updateService: CheckNovelUpdateService? = frameBookHelper?.updateService
         AppLog.e(tag, "updateService: $updateService")
         if (bookDaoHelper.booksCount > 0 && updateService != null) {
             val list = bookDaoHelper.booksList
             AppLog.e(tag, "BookUpdateCount: " + list.size)
-            updateService?.checkUpdate(BookHelper.getBookUpdateTaskData(list, updateCallBack))
+            updateService.checkUpdate(BookHelper.getBookUpdateTaskData(list, updateCallBack))
         }
     }
 
@@ -117,7 +81,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
         val bookList = bookDaoHelper.booksOnLineList
         iBookList.clear()
         if (bookList.isEmpty()) {
-            runOnMain {
+            uiThread {
                 view?.onBookListQuery(bookList)
             }
             return 0
@@ -142,7 +106,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
                     i++
                 }
             }
-            runOnMain {
+            uiThread {
                 view?.onBookListQuery(bookList)
             }
 //            return bookList.size / adCount + 1
@@ -162,13 +126,13 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
 //                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
 //                            ResultCode.AD_REQ_SUCCESS//请求成功
 //                            -> {
-//                                runOnMain {
+//                                uiThread {
 //                                    if (views != null) {
 //                                        aDViews.clear()
 //                                        updateBookList()
 //                                        aDViews.addAll(views)
 //                                        if (iBookList.isEmpty()) {
-//                                            return@runOnMain
+//                                            return@uiThread
 //                                        }
 //                                        val size = iBookList.size
 //                                        var index = 0
@@ -197,7 +161,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
 //                            -> {
 //                                if (views != null) {
 //                                    aDViews.addAll(views)
-//                                    runOnMain {
+//                                    uiThread {
 //                                        view?.onAdRefresh()
 //                                    }
 //                                }
@@ -304,41 +268,50 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
                 StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.LONGTIMEBOOKSHELFEDIT)
     }
 
-    fun deleteBooks(books: ArrayList<Book>) {
-        val size = books.size
+    fun deleteBooks(deleteBooks: ArrayList<Book>, isOnlyDeleteCache: Boolean) {
+        val size = deleteBooks.size
         doAsync {
-            val bookIdArr = arrayOfNulls<String>(size)
             val sb = StringBuffer()
             for (i in 0 until size) {
-                val book = books[i]
-                bookIdArr[i] = book.book_id
-
+                val book = deleteBooks[i]
                 sb.append(book.book_id)
                 sb.append(if (book.readed == 1) "_1" else "_0")
                 sb.append(if (i == size - 1) "" else "$")
             }
             // 删除书架数据库和章节数据库
-            bookDaoHelper.deleteBook(*bookIdArr)
-            runOnMain {
-                view?.onBookDelete()
+            if (isOnlyDeleteCache) {
+                uiThread {
+                    view?.onBookDelete()
+                }
+                deleteBooks.forEach {
+                    CacheManager.remove(it.book_id)
+                    BaseBookHelper.removeChapterCacheFile(it)
+                }
+            } else {
+                bookDaoHelper.deleteBook(deleteBooks)
+                uiThread {
+                    view?.onBookDelete()
+                }
             }
 
-            uploadBookDeleteLog(size, sb)
+            if (isOnlyDeleteCache) {
+                uploadBookCacheDeleteLog(sb, size)
+            }
         }
     }
 
-    private fun uploadBookDeleteLog(size: Int, sb: StringBuffer) {
-        val data1 = HashMap<String, String>()
-        data1.put("type", "1")
-        data1.put("number", size.toString())
-        data1.put("bookids", sb.toString())
+    private fun uploadBookCacheDeleteLog(sb: StringBuffer, size: Int) {
+        val data = HashMap<String, String>()
+        data["type"] = "1"
+        data["number"] = size.toString()
+        data["bookids"] = sb.toString()
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.DELETE1, data1)
+                StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.DELETE1, data)
     }
 
     fun uploadBookDeleteCancelLog() {
         val data = HashMap<String, String>()
-        data.put("type", "2")
+        data["type"] = "2"
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
                 StartLogClickUtil.SHELFEDIT, StartLogClickUtil.DELETE1, data)
     }

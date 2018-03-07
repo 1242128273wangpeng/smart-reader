@@ -4,6 +4,8 @@ import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
 
+import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -650,4 +652,39 @@ public class AppUtils {
 
     }
 
+    public static String getProcessName(Context context) {
+        List<ActivityManager.RunningAppProcessInfo> runningApps = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getRunningAppProcesses();
+        if (runningApps == null) {
+            return null;
+        }
+        for (ActivityManager.RunningAppProcessInfo proInfo : runningApps) {
+            if (proInfo.pid == android.os.Process.myPid() && proInfo.processName != null) {
+                return proInfo.processName;
+            }
+        }
+        return null;
+    }
+
+    public static boolean isMainProcess(Context context) {
+        return getPackageName().equals(getProcessName(context));
+    }
+
+    public static String colorHoHex(int color){
+        String red =  Integer.toHexString((color & 0xff0000) >> 16);
+        String green =  Integer.toHexString((color & 0x00ff00) >> 8);
+        String blue = Integer.toHexString((color & 0x0000ff));
+        return "#"+red+green+blue;
+    }
+
+
+    // 是否含有中文
+    public static boolean isContainChinese(String str) {
+
+        Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+        Matcher m = p.matcher(str);
+        if (m.find()) {
+            return true;
+        }
+        return false;
+    }
 }

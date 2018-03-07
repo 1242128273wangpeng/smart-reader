@@ -29,7 +29,8 @@
     <string name="publish_leave_detail">离开将丢失已输入的内容,您是否确定要离开?</string>
     <string name="title_book_cover">书籍封面</string>
     <string name="book_no_data_tips">书架空空如也~去书城看看吧</string>
-
+    <string name="determine_delete_book">删除书籍，确定要继续吗？</string>
+    <string name="determine_clear_book">保留书籍仅清除缓存</string>
     <string name="switch_on"/>
     <string name="switch_off"/>
     <string name="action_settings">Settings</string>
@@ -137,7 +138,7 @@
 
     <string name="over_index_text1">你已经全部读完啦！\n接下来要不要看看其他有意思的...</string>
     <string name="over_index_text2">接下来要不要看看其他有意思的...</string>
-    <string name="book_end_info"><Data><![CDATA[当前章节已全部看完，去看看其它是否有<font color="#1CA66E"><b>更新</b></font>吧!]]></Data></string>
+    <string name="book_end_info"><Data><![CDATA[当前章节已全部看完，去看看其它是否有<font color="#ed5b47"><b>更新</b></font>吧!]]></Data></string>
 
     <string name="title_name_setting">设置</string>
     <string name="tv_push_time_tips_setting">分时间段推送</string>
@@ -175,6 +176,7 @@
     <string name="setting_history_page">浏览足迹</string>
     <string name="style_change">主题换肤</string>
     <string name="night_shift">夜间模式</string>
+    <string name="setting_wifi_auto">Wi-Fi下自动缓存追更书籍</string>
     <string name="setting_more">更多设置</string>
     <string name="clear_cache">清除缓存</string>
     <string name="disclaimer_statement">使用协议</string>
@@ -263,4 +265,11 @@
     <string name="theme_night"></string>
     <string name="mode_day">日间模式</string>
     <string name="mode_night">夜间模式</string>
+
+    <string name="not_wifi_cache_confirm">当前为非Wi-Fi网络，是否继续缓存？</string>
+    <string name="dialog_cache_sure">确定</string>
+    <string name="dialog_title_tip">提示</string>
+    <string name="dialog_cache_complete_with_err">《%1$s》缓存任务已完成, 但部分章节无法缓存</string>
+    <string name="dialog_cache_know">我知道了</string>
+
 </resources>

@@ -3,12 +3,10 @@ package com.intelligent.reader.read.page
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Rect
 import android.os.Build
-import android.os.Bundle
 import android.preference.PreferenceManager
 import android.text.TextUtils
 import android.util.AttributeSet
@@ -23,8 +21,9 @@ import android.widget.SeekBar
 import android.widget.Toast
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.ReadingActivity
-import com.intelligent.reader.read.help.IReadDataFactory
 import com.intelligent.reader.read.help.ReadSettingHelper
+import com.intelligent.reader.read.mode.ReadState
+import com.intelligent.reader.reader.ReaderViewModel
 import iyouqu.theme.FrameActivity
 import iyouqu.theme.ThemeHelper
 import kotlinx.android.synthetic.mfqbxssc.read_option_bottom.view.*
@@ -32,16 +31,23 @@ import kotlinx.android.synthetic.mfqbxssc.read_option_detail.view.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.ReadStatus
+import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.request.DataCache
 import net.lzbook.kit.utils.*
 import java.text.NumberFormat
+import java.util.*
 
 
 /**
  * 阅读页阅读设置
  */
-class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener {
+class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener, Observer {
+
+    override fun update(o: Observable?, arg: Any?) {
+        when (arg as String) {
+            "FONT_SIZE" -> setFontSize()
+        }
+    }
 
     private var sharedPreferences: SharedPreferences? = null
     private var readSettingHelper: ReadSettingHelper? = null
@@ -54,8 +60,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     private var listener: OnReadSettingListener? = null
     private var popUpInAnimation: Animation? = null
     private var popDownOutAnimation: Animation? = null
-    private var dataFactory: IReadDataFactory? = null
-    private var readStatus: ReadStatus? = null
+    private var mReaderViewModel: ReaderViewModel? = null
     private var lastIndex: Int? = null
     private var themeHelper: ThemeHelper? = null
     var currentThemeMode: String? = null
@@ -85,13 +90,9 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
         val isAutoBrightness = sharedPreferences!!.getBoolean("auto_brightness", true)
 
-        Constants.PAGE_MODE = sharedPreferences!!.getInt("page_mode", 0)
+        Constants.PAGE_MODE = sharedPreferences!!.getInt("page_mode", Constants.PAGE_MODE_DELAULT)
 
-        if (isAutoBrightness) {
-            autoBrightness = true
-        } else {
-            autoBrightness = false
-        }
+        autoBrightness = isAutoBrightness
 
         this.addView(LayoutInflater.from(context).inflate(R.layout.read_option_bottom, null))
         this.addView(LayoutInflater.from(context).inflate(R.layout.read_option_detail, null))
@@ -110,49 +111,50 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             openSystemLight()
         }
 
+        setBrightnessBackground(autoBrightness)
+        setScreenBrightProgress()
+
         val numberFormat = NumberFormat.getNumberInstance()
         numberFormat.maximumFractionDigits = 2
 
         try {
-            Constants.READ_INTERLINEAR_SPACE = sharedPreferences!!.getInt("read_interlinear_space", 3) * 0.1f
-            Constants.READ_INTERLINEAR_SPACE = java.lang.Float.valueOf(numberFormat.format(Constants.READ_INTERLINEAR_SPACE.toDouble()))!!
-            Constants.READ_PARAGRAPH_SPACE = sharedPreferences!!.getInt("read_paragraph_space", 10) * 0.1f
-            Constants.READ_PARAGRAPH_SPACE = java.lang.Float.valueOf(numberFormat.format(Constants.READ_PARAGRAPH_SPACE.toDouble()))!!
+            ReadConfig.READ_INTERLINEAR_SPACE = sharedPreferences!!.getInt("read_interlinear_space", 3) * 0.1f
+            ReadConfig.READ_INTERLINEAR_SPACE = java.lang.Float.valueOf(numberFormat.format(ReadConfig.READ_INTERLINEAR_SPACE.toDouble()))!!
+            ReadConfig.READ_PARAGRAPH_SPACE = sharedPreferences!!.getInt("read_paragraph_space", 10) * 0.1f
+            ReadConfig.READ_PARAGRAPH_SPACE = java.lang.Float.valueOf(numberFormat.format(ReadConfig.READ_PARAGRAPH_SPACE.toDouble()))!!
         } catch (e: NumberFormatException) {
             e.printStackTrace()
         }
 
-        Constants.READ_CONTENT_PAGE_TOP_SPACE = sharedPreferences!!.getInt("read_content_page_top_space", 45)
-        Constants.READ_CONTENT_PAGE_LEFT_SPACE = sharedPreferences!!.getInt("read_content_page_left_space", 20)
+        ReadConfig.READ_CONTENT_PAGE_TOP_SPACE = sharedPreferences!!.getInt("read_content_page_top_space", 45)
+        ReadConfig.READ_CONTENT_PAGE_LEFT_SPACE = sharedPreferences!!.getInt("read_content_page_left_space", 20)
 
         // 老版本左右边距修正
-        if (Constants.READ_CONTENT_PAGE_LEFT_SPACE != 20) {
-            Constants.READ_CONTENT_PAGE_LEFT_SPACE = 20
+        if (ReadConfig.READ_CONTENT_PAGE_LEFT_SPACE != 20) {
+            ReadConfig.READ_CONTENT_PAGE_LEFT_SPACE = 20
             sharedPreferences!!.edit().putInt("read_content_page_left_space", 20).apply()
         }
 
         // 老版本行距修正
-        if (!(Constants.READ_INTERLINEAR_SPACE == 0.2f || Constants.READ_INTERLINEAR_SPACE == 0.3f || Constants.READ_INTERLINEAR_SPACE == 0.4f || Constants.READ_INTERLINEAR_SPACE == 0.5f)) {
-            Constants.READ_INTERLINEAR_SPACE = 0.3f
+        if (!(ReadConfig.READ_INTERLINEAR_SPACE == 0.2f || ReadConfig.READ_INTERLINEAR_SPACE == 0.3f || ReadConfig.READ_INTERLINEAR_SPACE == 0.4f || ReadConfig.READ_INTERLINEAR_SPACE == 0.5f)) {
+            ReadConfig.READ_INTERLINEAR_SPACE = 0.3f
             sharedPreferences!!.edit().putInt("read_interlinear_space", 3).apply()
         }
+
+        ReadConfig.registObserver(this)
 
         isCustomSpaceSet()
         initPageMode()
         setFontSize()
 
-        if (context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            read_landscape.isChecked = true
-        } else {
-            read_landscape.isChecked = false
-        }
+        read_landscape.isChecked = ReadConfig.IS_LANDSCAPE
         read_full.isChecked = sharedPreferences!!.getBoolean("full_screen_read", false)
 
-        resetBtn()
+        resetBtn(Constants.isSlideUp)
 
     }
 
-    private fun resetBtn() {
+    private fun resetBtn(isSlideUp: Boolean) {
         if (Constants.PAGE_MODE == 3) {
             read_full.isEnabled = false
             read_full.isClickable = false
@@ -163,14 +165,17 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             read_full.alpha = 1f
         }
 
-        if (Constants.isSlideUp) {
+        if (isSlideUp) {
             read_autoRead.isClickable = false
             read_autoRead.isEnabled = false
             read_autoRead.alpha = 0.3f
+            Constants.isSlideUp = true
         } else {
             read_autoRead.isClickable = true
             read_autoRead.isEnabled = true
             read_autoRead.alpha = 1f
+            Constants.isSlideUp
+            Constants.isSlideUp = false
         }
     }
 
@@ -192,12 +197,12 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
                 read_setting_backdrop_group.setOnCheckedChangeListener(null)
 
-                resetBtn()
+                resetBtn(Constants.isSlideUp)
 
-                if (Constants.MODE == 61) {
+                if (ReadConfig.MODE == 61) {
                     read_setting_backdrop_group.clearCheck()
                 } else {
-                    setNovelMode(Constants.MODE)
+                    setNovelMode(ReadConfig.MODE)
                 }
                 read_setting_backdrop_group.setOnCheckedChangeListener(this)
             }
@@ -213,11 +218,11 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     private fun setScreenBright() {
         val screenBrightness = sharedPreferences!!.getInt("screen_bright", -1)
         if (screenBrightness >= 0) {
-            readSettingHelper!!.setScreenBrightness(context as Activity?, 20 + screenBrightness)
+            readSettingHelper?.setScreenBrightness(context as Activity, 20 + screenBrightness)
         } else if (FrameActivity.mSystemBrightness >= 20) {
-            readSettingHelper!!.setScreenBrightness(context as Activity?, FrameActivity.mSystemBrightness)
+            readSettingHelper?.setScreenBrightness(context as Activity, FrameActivity.mSystemBrightness)
         } else {
-            readSettingHelper!!.setScreenBrightness(context as Activity?, 20)
+            readSettingHelper?.setScreenBrightness(context as Activity, 20)
         }
     }
 
@@ -264,63 +269,50 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         }
     }
 
-    fun showSetMenu(show: Boolean) {
-        if (show) {
-            if (Constants.FONT_SIZE > 10) {
-                read_setting_reduce_text!!.isEnabled = true
-            } else {
-                read_setting_reduce_text!!.isEnabled = false
-            }
-            if (Constants.FONT_SIZE < 30) {
-                read_setting_increase_text!!.isEnabled = true
-            } else {
-                read_setting_increase_text!!.isEnabled = false
-            }
+    fun showMenu(isShow: Boolean) {
+        if (isShow) {
+            read_setting_reduce_text!!.isEnabled = ReadConfig.FONT_SIZE > 10
+            read_setting_increase_text!!.isEnabled = ReadConfig.FONT_SIZE < 30
             novel_bottom_options.visibility = View.VISIBLE
             novel_bottom_options.startAnimation(popUpInAnimation)
 
-
             refreshJumpPreBtnState()
-
+            novel_jump_progress.max = ReadState.chapterList.size - 1
             if (novel_jump_layout != null) {
-                if (readStatus!!.chapterCount - 1 <= 0 || readStatus!!.chapterCount - 1 < readStatus!!.sequence) {
+                if (ReadState.chapterList.size < 1 || ReadState.sequence < 1) {
                     novel_jump_progress!!.progress = 0
                 } else {
-                    val index = Math.max(readStatus!!.sequence, 0)
-                    novel_jump_progress!!.progress = index * 100 / (readStatus!!.chapterCount - 1)
+                    novel_jump_progress!!.progress = ReadState.sequence
                 }
                 showChapterProgress()
             }
 
-
-            if (themeHelper!!.isNight()) {
+            if (themeHelper!!.isNight) {
                 txt_night.text = "白天"
                 ibtn_night.setImageResource(R.drawable.read_option_day_selector)
             } else {
                 txt_night.text = "夜间"
                 ibtn_night.setImageResource(R.drawable.read_option_night_selector)
             }
-
         } else {
             if (novel_bottom_options != null && novel_bottom_options!!.isShown) {
                 novel_bottom_options!!.startAnimation(popDownOutAnimation)
             }
-            popDownOutAnimation!!.onEnd {
+            popDownOutAnimation?.onEnd {
                 novel_bottom_options!!.visibility = View.GONE
             }
             read_setting_detail!!.visibility = View.GONE
-            //dismissNovelHintLayout();
         }
     }
 
     private fun showChapterProgress() {
-        if (readStatus!!.sequence == -1) {
+        if (ReadState.sequence == -1) {
         } else {
             if (novel_hint_chapter != null) {
-                novel_hint_chapter!!.text = if (TextUtils.isEmpty(readStatus!!.chapterName)) "" else readStatus!!.chapterName
+                novel_hint_chapter!!.text = if (TextUtils.isEmpty(ReadState.chapterName)) "" else ReadState.chapterName
             }
             if (novel_hint_sequence != null) {
-                novel_hint_sequence!!.text = (readStatus!!.sequence + 1).toString() + "/" + readStatus!!.chapterCount + "章"
+                novel_hint_sequence!!.text = (ReadState.sequence + 1).toString() + "/" + ReadState.chapterCount + "章"
             }
         }
 
@@ -353,7 +345,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                     data.put("type", "4")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.READGAP, data)
                     if (read_spacing_0_2!!.isChecked) {
-                        Constants.READ_INTERLINEAR_SPACE = 0.2f
+                        ReadConfig.READ_INTERLINEAR_SPACE = 0.2f
                         setInterLinearSpaceMode()
                     }
                 }
@@ -363,7 +355,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                     data.put("type", "3")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.READGAP, data)
                     if (read_spacing_0_5!!.isChecked) {
-                        Constants.READ_INTERLINEAR_SPACE = 0.3f
+                        ReadConfig.READ_INTERLINEAR_SPACE = 0.3f
                         setInterLinearSpaceMode()
                     }
                 }
@@ -373,7 +365,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                     data.put("type", "2")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.READGAP, data)
                     if (read_spacing_1_0!!.isChecked) {
-                        Constants.READ_INTERLINEAR_SPACE = 0.4f
+                        ReadConfig.READ_INTERLINEAR_SPACE = 0.4f
                         setInterLinearSpaceMode()
                     }
                 }
@@ -383,7 +375,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                     data.put("type", "1")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.READGAP, data)
                     if (read_spacing_1_5!!.isChecked) {
-                        Constants.READ_INTERLINEAR_SPACE = 0.5f
+                        ReadConfig.READ_INTERLINEAR_SPACE = 0.5f
                         setInterLinearSpaceMode()
                     }
                 }
@@ -443,7 +435,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             }
             R.id.novel_night//夜间模式
             -> {
-                if (themeHelper!!.isNight()) {
+                if (themeHelper!!.isNight) {
                     txt_night.text = "夜间"
                     ibtn_night.setImageResource(R.drawable.read_option_night_selector)
                 } else {
@@ -457,11 +449,17 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             }
             R.id.read_setting_reduce_text// 减小字号
             -> {
+                if (ReadState.sequence < 0) {
+                    return
+                }
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_font_size_smaller)
                 decreaseFont()
             }
             R.id.read_setting_increase_text// 加大字号
             -> {
+                if (ReadState.sequence < 0) {
+                    return
+                }
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_font_size_bigger)
                 increaseFont()
             }
@@ -496,9 +494,9 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
                 sharedPreferences?.edit()?.putBoolean("full_screen_read", read_full.isChecked)?.apply()
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_fullscreen_read_btn)
-                Constants.FULL_SCREEN_READ = read_full.isChecked
+                ReadConfig.FULL_SCREEN_READ = read_full.isChecked
                 val data = java.util.HashMap<String, String>()
-                if (Constants.FULL_SCREEN_READ) {
+                if (ReadConfig.FULL_SCREEN_READ) {
                     data.put("type", "1")
                 } else {
                     data.put("type", "2")
@@ -511,7 +509,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     }
 
     private fun refreshJumpPreBtnState() {
-        if (readStatus!!.sequence <= 0) {
+        if (ReadState.sequence <= 0) {
             novel_jump_previous.isClickable = false
             novel_jump_previous.isEnabled = false
             novel_jump_previous.alpha = 0.3f
@@ -519,6 +517,16 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             novel_jump_previous.isClickable = true
             novel_jump_previous.isEnabled = true
             novel_jump_previous.alpha = 1f
+        }
+
+        if (ReadState.sequence == ReadState.chapterList.size - 1) {
+            novel_jump_next.isClickable = false
+            novel_jump_next.isEnabled = false
+            novel_jump_next.alpha = 0.3f
+        } else {
+            novel_jump_next.isClickable = true
+            novel_jump_next.isEnabled = true
+            novel_jump_next.alpha = 1f
         }
     }
 
@@ -563,27 +571,20 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
      * 减小字体
      */
     private fun decreaseFont() {
-        if (Constants.FONT_SIZE > 10) {
-            if (Constants.FONT_SIZE == 30) {
+        if (ReadConfig.FONT_SIZE > 10) {
+            if (ReadConfig.FONT_SIZE == 30) {
                 read_setting_increase_text!!.isEnabled = true
             }
-            Constants.FONT_SIZE -= 2
-            if (Constants.FONT_SIZE <= 10) {
+            ReadConfig.FONT_SIZE -= 2
+            if (ReadConfig.FONT_SIZE <= 10) {
                 read_setting_reduce_text!!.isEnabled = false
             }
-            readSettingHelper!!.saveFontSize()
-
+            readSettingHelper?.saveFontSize()
             setFontSize()
-
-            val temp_offset = readStatus!!.offset
-            if (listener != null) {
-                listener!!.onRedrawPage()
-            }
-            readStatus!!.offset = temp_offset
         }
         val data = java.util.HashMap<String, String>()
         data.put("type", "2")
-        data.put("FONT", Constants.FONT_SIZE.toString())
+        data.put("FONT", ReadConfig.FONT_SIZE.toString())
         StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.WORDSIZE, data)
     }
 
@@ -591,42 +592,37 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
      * 增大字体
      */
     private fun increaseFont() {
-        if (Constants.FONT_SIZE < 30) {
-            if (Constants.FONT_SIZE == 10) {
+        if (ReadConfig.FONT_SIZE < 30) {
+            if (ReadConfig.FONT_SIZE == 10) {
                 read_setting_reduce_text!!.isEnabled = true
             }
-            Constants.FONT_SIZE += 2
-            if (Constants.FONT_SIZE >= 30) {
+            ReadConfig.FONT_SIZE += 2
+            if (ReadConfig.FONT_SIZE >= 30) {
                 read_setting_increase_text!!.isEnabled = false
             }
             readSettingHelper!!.saveFontSize()
 
             setFontSize()
-
-            val temp_offset = readStatus!!.offset
-            if (listener != null) {
-                listener!!.onRedrawPage()
-            }
-            readStatus!!.offset = temp_offset
         }
         val data = java.util.HashMap<String, String>()
         data.put("type", "1")
-        data.put("FONT", Constants.FONT_SIZE.toString())
+        data.put("FONT", ReadConfig.FONT_SIZE.toString())
         StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.WORDSIZE, data)
     }
 
     private fun setFontSize() {
         if (read_setting_text_size != null) {
-            read_setting_text_size!!.text = Constants.FONT_SIZE.toString()
+            read_setting_text_size!!.text = ReadConfig.FONT_SIZE.toString()
         }
     }
 
     fun changeChapter() {
-        if (novel_jump_progress != null && novel_jump_progress!!.isShown && readStatus!!.chapterCount - 1 != 0) {
-            val index = Math.max(readStatus!!.sequence, 0)
-            novel_jump_progress!!.progress = index * 100 / (readStatus!!.chapterCount - 1)
+        if (novel_jump_progress != null && novel_jump_progress!!.isShown && ReadState.chapterCount - 1 != 0) {
+            val index = Math.max(ReadState.sequence, 0)
+            novel_jump_progress!!.progress = index * 100 / (ReadState.chapterCount - 1)
         }
         showChapterProgress()
+        refreshJumpPreBtnState()
     }
 
     /**
@@ -649,95 +645,47 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     }
 
     fun changePageBackgroundWrapper(index: Int) {
-        if (Constants.MODE == 61) {
-            readSettingHelper!!.setReadMode(index)
+        if (ReadConfig.MODE == 61) {
+            readSettingHelper?.setReadMode(index)
             sharedPreferences?.edit()?.putInt("current_light_mode", index)?.apply()
             listener?.onChageNightMode()
         } else {
             setNovelMode(index)
         }
-
         badiuStat(index)
     }
 
     private fun badiuStat(index: Int) {
         when (index) {
-            51 -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_01)
-            }
-            52 -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_02)
-            }
-            53 -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_03)
-            }
-            54 -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_04)
-            }
-            55 -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_05)
-            }
-            56 -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_06)
-            }
-            61 -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_08)
-            }
-            else -> {
-            }
+            51 -> StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_01)
+            52 -> StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_02)
+            53 -> StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_03)
+            54 -> StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_04)
+            55 -> StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_05)
+            56 -> StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_06)
+            61 -> StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_background_08)
+            else -> Unit
         }
     }
 
     fun setNovelMode(index: Int) {
-        if (Constants.MODE == 61) {
-            restoreBright()
-        }
-
-
         when (index) {
-            51 -> {
-
-                readSettingHelper!!.setReadMode(index)
-                changeMode(51)
-                read_setting_backdrop_group!!.check(R.id.read_backdrop_first)
-            }
-            52 -> {
-
-                readSettingHelper!!.setReadMode(index)
-                changeMode(52)
-                read_setting_backdrop_group!!.check(R.id.read_backdrop_second)
-            }
-            53 -> {
-
-                readSettingHelper!!.setReadMode(index)
-                changeMode(53)
-                read_setting_backdrop_group!!.check(R.id.read_backdrop_third)
-            }
-            54 -> {
-
-                readSettingHelper!!.setReadMode(index)
-                changeMode(54)
-                read_setting_backdrop_group!!.check(R.id.read_backdrop_fourth)
-            }
-            55 -> {
-
-                readSettingHelper!!.setReadMode(index)
-                changeMode(55)
-                read_setting_backdrop_group!!.check(R.id.read_backdrop_fifth)
-            }
-            56 -> {
-
-                readSettingHelper!!.setReadMode(index)
-                changeMode(56)
-                read_setting_backdrop_group!!.check(R.id.read_backdrop_sixth)
-            }
+            51 -> read_setting_backdrop_group?.check(R.id.read_backdrop_first)
+            52 -> read_setting_backdrop_group?.check(R.id.read_backdrop_second)
+            53 -> read_setting_backdrop_group?.check(R.id.read_backdrop_third)
+            54 -> read_setting_backdrop_group?.check(R.id.read_backdrop_fourth)
+            55 -> read_setting_backdrop_group?.check(R.id.read_backdrop_fifth)
+            56 -> read_setting_backdrop_group!!.check(R.id.read_backdrop_sixth)
             61 -> {
-
-                readSettingHelper!!.setReadMode(index)
-                changeMode(61)
+                restoreBright()
+                readSettingHelper?.setReadMode(index)
+                changeMode(index)
             }
-            else -> {
-            }
+            else -> Unit
+        }
+        if (index in 51..56) {
+            readSettingHelper?.setReadMode(index)
+            changeMode(index)
         }
     }
 
@@ -780,7 +728,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             return
         setBrightBtn()
 
-        val prefetchThumb = getResources().getDrawable(
+        val prefetchThumb = resources.getDrawable(
                 ResourceUtil.getResourceId(context, Constants.DRAWABLE, "_sliderbar"))
         prefetchThumb.bounds = Rect(0, 0, prefetchThumb.intrinsicWidth, prefetchThumb.intrinsicHeight)
 
@@ -861,6 +809,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 data.put("type", "1")
                 StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.PAGETURN, data)
                 changePageMode(0)
+                resetBtn(false)
             }
             R.id.read_animation_simulation -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_flip_page_02)
@@ -868,6 +817,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 data.put("type", "3")
                 StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.PAGETURN, data)
                 changePageMode(1)
+                resetBtn(false)
             }
             R.id.read_animation_translation -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_flip_page_03)
@@ -875,6 +825,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 data.put("type", "2")
                 StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.PAGETURN, data)
                 changePageMode(2)
+                resetBtn(false)
             }
             R.id.read_animation_updown -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_flip_page_04)
@@ -882,6 +833,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 data.put("type", "4")
                 StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.PAGETURN, data)
                 changePageMode(3)
+                resetBtn(true)
             }
             else -> {
             }
@@ -898,20 +850,8 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         }
         time = System.currentTimeMillis()
         readSettingHelper!!.savePageAnimation(mode)
-        if (mode == 3 && Constants.PAGE_MODE != 3 || mode != 3 && Constants.PAGE_MODE == 3) {
-            val intent = Intent(context, ReadingActivity::class.java)
-            val bundle = Bundle()
-            bundle.putSerializable("book", readStatus!!.book)
-            bundle.putInt("sequence", readStatus!!.sequence)
-            bundle.putInt("nid", readStatus!!.nid)
-            bundle.putInt("offset", readStatus!!.offset)
-            bundle.putString("thememode", currentThemeMode)
-            intent.putExtras(bundle)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-
-            context!!.startActivity(intent)
-        }
         Constants.PAGE_MODE = mode
+        listener?.changeAnimMode(mode)
     }
 
     fun setInterLinearSpaceMode() {
@@ -920,19 +860,12 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         readSettingHelper!!.saveLinearSpace()
 
         isCustomReadingSpace = false
-
-        val temp_offset = readStatus!!.offset
-        // 重新绘制页面
-        if (listener != null) {
-            listener!!.onRedrawPage()
-        }
-        readStatus!!.offset = temp_offset
     }
 
     // 根据页间距默认值判断是否为自定义间距
     private fun isCustomSpaceSet() {
-        if (Constants.READ_INTERLINEAR_SPACE == 0.2f || Constants.READ_INTERLINEAR_SPACE == 0.3f || Constants.READ_INTERLINEAR_SPACE == 0.4f || Constants.READ_INTERLINEAR_SPACE == 0.5f) {
-            if (Constants.READ_CONTENT_PAGE_LEFT_SPACE == 20 && Constants.READ_CONTENT_PAGE_TOP_SPACE == 45 && Constants.READ_PARAGRAPH_SPACE == 1.0f) {
+        if (ReadConfig.READ_INTERLINEAR_SPACE == 0.2f || ReadConfig.READ_INTERLINEAR_SPACE == 0.3f || ReadConfig.READ_INTERLINEAR_SPACE == 0.4f || ReadConfig.READ_INTERLINEAR_SPACE == 0.5f) {
+            if (ReadConfig.READ_CONTENT_PAGE_LEFT_SPACE == 20 && ReadConfig.READ_CONTENT_PAGE_TOP_SPACE == 45 && ReadConfig.READ_PARAGRAPH_SPACE == 1.0f) {
                 isCustomReadingSpace = false
                 switchSpaceState()
             } else {
@@ -947,19 +880,19 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
     // 单选切换行间距
     private fun switchSpaceState() {
-        if (Constants.READ_INTERLINEAR_SPACE == 0.2f) {
+        if (ReadConfig.READ_INTERLINEAR_SPACE == 0.2f) {
             read_setting_row_spacing_group!!.check(R.id.read_spacing_0_2)
             readSettingHelper!!.setRowSpacing(2)
 
-        } else if (Constants.READ_INTERLINEAR_SPACE == 0.3f) {
+        } else if (ReadConfig.READ_INTERLINEAR_SPACE == 0.3f) {
             read_setting_row_spacing_group!!.check(R.id.read_spacing_0_5)
             readSettingHelper!!.setRowSpacing(3)
 
-        } else if (Constants.READ_INTERLINEAR_SPACE == 0.4f) {
+        } else if (ReadConfig.READ_INTERLINEAR_SPACE == 0.4f) {
             read_setting_row_spacing_group!!.check(R.id.read_spacing_1_0)
             readSettingHelper!!.setRowSpacing(4)
 
-        } else if (Constants.READ_INTERLINEAR_SPACE == 0.5f) {
+        } else if (ReadConfig.READ_INTERLINEAR_SPACE == 0.5f) {
             read_setting_row_spacing_group!!.check(R.id.read_spacing_1_5)
             readSettingHelper!!.setRowSpacing(5)
 
@@ -967,9 +900,8 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     }
 
 
-    fun setDataFactory(factory: IReadDataFactory, readStatus: ReadStatus, themeHelper: ThemeHelper) {
-        this.dataFactory = factory
-        this.readStatus = readStatus
+    fun setDataFactory(factory: ReaderViewModel, themeHelper: ThemeHelper) {
+        this.mReaderViewModel = factory
         this.themeHelper = themeHelper
 
     }
@@ -982,25 +914,33 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             novel_hint_layout.visibility = View.VISIBLE
             novel_hint_layout.alpha = 1F
             anim?.cancel()
-
-
             anim = novel_hint_layout.animate()
-            anim!!.alpha(0F)
-            anim!!.duration = 1000
-            anim!!.startDelay = 1000
-
-            anim!!.start()
-
-            val resizeProgress = progress * (readStatus!!.chapterCount - 1) / 100
-
-            if (dataFactory!!.chapterList != null && !dataFactory!!.chapterList.isEmpty()
-                    && resizeProgress < dataFactory!!.chapterList.size && resizeProgress >= 0) {
-                readStatus!!.novel_progress = resizeProgress
+            anim?.alpha(0F)
+            anim?.duration = 1000
+            anim?.startDelay = 1000
+            anim?.start()
+//            val resizeProgress = progress.times(ReadState.chapterList.size).div(100)
+            if (!ReadState.chapterList.isEmpty()
+                    && progress <= ReadState.chapterList.size && progress >= 0) {
+                novel_jump_previous.isClickable = true
+                novel_jump_previous.isEnabled = true
+                novel_jump_previous.alpha = 1f
+//                ReadState.novel_progress = resizeProgress
                 changeBottomSettingView(SETTING_OPTION)
-                novel_hint_chapter!!.text = dataFactory!!.chapterList[resizeProgress].chapter_name
-                novel_hint_sequence!!.text = (resizeProgress + 1).toString() + "/" + readStatus!!.chapterCount
+                AppLog.e("progress1", progress.toString())
+                if (progress == 0) {
+                    novel_hint_chapter.text = ReadState.chapterList[progress].chapter_name
+                    novel_hint_sequence.text = progress.plus(1).toString() + "/" + ReadState.chapterList.size
+                } else if (progress == ReadState.chapterList.size - 1) {
+                    novel_hint_chapter.text = ReadState.chapterList[ReadState.chapterList.size - 1].chapter_name
+                    novel_hint_sequence.text = ReadState.chapterList.size.toString() + "/" + ReadState.chapterList.size
+                } else {
+                    novel_hint_chapter.text = ReadState.chapterList[progress - 1].chapter_name
+                    novel_hint_sequence.text = progress.toString() + "/" + ReadState.chapterList.size
+                }
             }
-
+//            ReadState.sequence = progress
+//            refreshJumpPreBtnState()
         } else if (fromUser && seekBar.id == R.id.read_setting_brightness_progress) {
             // 改变系统亮度按钮
             if (autoBrightness) {
@@ -1015,13 +955,13 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
                 if (screenBrightness >= 0) {
                     read_setting_brightness_progress!!.progress = screenBrightness
-                    readSettingHelper!!.setScreenBrightness(context as Activity?, 20 + screenBrightness)
+                    readSettingHelper?.setScreenBrightness(context as Activity?, 20 + screenBrightness)
                 } else if (FrameActivity.mSystemBrightness >= 20) {
                     read_setting_brightness_progress!!.progress = FrameActivity.mSystemBrightness - 20
-                    readSettingHelper!!.setScreenBrightness(context as Activity?, FrameActivity.mSystemBrightness)
+                    readSettingHelper?.setScreenBrightness(context as Activity?, FrameActivity.mSystemBrightness)
                 } else {
                     read_setting_brightness_progress!!.progress = 0
-                    readSettingHelper!!.setScreenBrightness(context as Activity?, 20)
+                    readSettingHelper?.setScreenBrightness(context as Activity?, 20)
                 }
             }
 
@@ -1033,7 +973,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     override fun onStartTrackingTouch(seekBar: SeekBar) {}
 
     fun getQGChapterId(sequence: Int): String? {
-        for (chapter in dataFactory!!.chapterList) {
+        for (chapter in ReadState.chapterList) {
             if (chapter.sequence == sequence) {
                 return chapter.chapter_id
             }
@@ -1045,42 +985,19 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         val numFormat = NumberFormat.getNumberInstance()
         numFormat.maximumFractionDigits = 2
         if (seekBar.id == R.id.novel_jump_progress) {
-            if (readStatus!!.novel_progress == readStatus!!.sequence) {// 本章不跳
+            if (seekBar.progress == ReadState.sequence) {// 本章不跳
                 return
             }
-            if (Constants.QG_SOURCE == readStatus!!.book.site) {
-                val chapterId = getQGChapterId(readStatus!!.novel_progress)
-                val b = com.quduquxie.network.DataCache.isChapterExists(chapterId, readStatus!!.book_id)
-                if (b) {
-                    if (listener != null) {
-                        listener!!.onJumpChapter()
-                    }
-                } else {
-                    if (NetWorkUtils.getNetWorkType(BaseBookApplication.getGlobalContext()) == NetWorkUtils.NETWORK_NONE) {
-                        Toast.makeText(context, R.string.net_error, Toast.LENGTH_SHORT).show()
-                        return
-                    } else {
-                        if (listener != null) {
-                            listener!!.onJumpChapter()
-                        }
-                    }
-                }
-            } else {
-                if (DataCache.isChapterExists(readStatus!!.novel_progress, readStatus!!.book_id)) {
-                    if (listener != null) {
-                        listener!!.onJumpChapter()
-                    }
-                } else {
-                    if (NetWorkUtils.getNetWorkType(BaseBookApplication.getGlobalContext()) == NetWorkUtils.NETWORK_NONE) {
-                        Toast.makeText(context, R.string.net_error, Toast.LENGTH_SHORT).show()
-                        return
-                    } else {
-                        if (listener != null) {
-                            listener!!.onJumpChapter()
-                        }
-                    }
-                }
+            var resizeProgress = when (seekBar.progress) {
+                0 -> 0
+                ReadState.chapterList.size - 1 -> ReadState.chapterList.size - 1
+                else -> seekBar.progress - 1
             }
+            AppLog.e("progress2", resizeProgress.toString())
+            if (listener != null) {
+                listener!!.onJumpChapter(resizeProgress, 0)
+            }
+            refreshJumpPreBtnState()
         } else if (seekBar.id == R.id.read_setting_brightness_progress) {
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_ld_progress)
             readSettingHelper!!.saveBrightness(seekBar.progress)
@@ -1100,12 +1017,8 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
         this.detachAllViewsFromParent()
 
-        if (this.dataFactory != null) {
-            this.dataFactory = null
-        }
-
-        if (this.readStatus != null) {
-            this.readStatus = null
+        if (this.mReaderViewModel != null) {
+            this.mReaderViewModel = null
         }
 
         if (read_setting_backdrop_group != null) {
@@ -1132,9 +1045,8 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 
         fun onChangeScreenMode()
 
-        fun onRedrawPage()
 
-        fun onJumpChapter()
+        fun onJumpChapter(sequence: Int, offset: Int)
 
         fun onJumpPreChapter()
 
@@ -1143,10 +1055,11 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         fun onReadFeedBack()
 
         fun onChageNightMode()
+
+        fun changeAnimMode(mode: Int)
     }
 
     companion object {
-
         private val SETTING_OPTION = 1
         private val SETTING_DETAIL = SETTING_OPTION + 1
     }

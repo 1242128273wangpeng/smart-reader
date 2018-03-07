@@ -4,7 +4,7 @@ import com.intelligent.reader.util.DynamicParamter;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
-import net.lzbook.kit.book.component.service.DownloadService;
+import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.NetWorkUtils;
 
@@ -24,13 +24,12 @@ public class ConnectionChangeReceiver extends BroadcastReceiver {
     private static final int WIFI = 5;
     public static int mobileType;
     private static boolean canReload = true;
-    private static boolean canShowAlert = true;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         if ("android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction())) {
             AppLog.d(TAG, "ConnectivityReceiver.onReceive()...");
-            DownloadService downloadService = BaseBookApplication.getDownloadService();
+
             ConnectivityManager connectivityManager = (ConnectivityManager) context
                     .getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
@@ -39,18 +38,18 @@ public class ConnectionChangeReceiver extends BroadcastReceiver {
                 if (nType == ConnectivityManager.TYPE_MOBILE) {
                     NetWorkUtils.NETWORK_TYPE = NetWorkUtils.NETWORK_MOBILE;
                     mobileType = getMobileType(networkInfo.getSubtype());
-                    if (downloadService != null && canShowAlert) {
-                        canShowAlert = false;
-                        downloadService.showAlert();
-                    }
+
+                    CacheManager.INSTANCE.onNetTypeChange();
+
                 } else if (nType == ConnectivityManager.TYPE_WIFI) {
                     NetWorkUtils.NETWORK_TYPE = NetWorkUtils.NETWORK_WIFI;
                     mobileType = WIFI;
-                    canShowAlert = true;
+
+                    CacheManager.INSTANCE.onNetTypeChange();
+
                 } else {
                     NetWorkUtils.NETWORK_TYPE = NetWorkUtils.NETWORK_NONE;
                     mobileType = G0;
-                    canShowAlert = false;
                 }
                 AppLog.d(TAG, "Network Type  = " + networkInfo.getTypeName());
                 AppLog.d(TAG, "Network State = " + networkInfo.getState());
@@ -76,7 +75,6 @@ public class ConnectionChangeReceiver extends BroadcastReceiver {
                 AppLog.e(TAG, "Network unavailable");
                 NetWorkUtils.NETWORK_TYPE = NetWorkUtils.NETWORK_NONE;
                 mobileType = G0;
-                canShowAlert = false;
             }
         }
     }

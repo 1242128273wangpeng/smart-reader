@@ -17,7 +17,6 @@
     <string name="auto_download">Wi-Fi下自动缓存</string>
     <string name="bookshelf_no_book_desc">还没有添加书籍哦~</string>
     <string name="bookshelf_no_book_goto">去找书</string>
-
     <string name="bookshelf_edit_title">编辑书架</string>
     <string name="select_all">全选</string>
     <string name="select_all_cancel">取消全选</string>
@@ -26,6 +25,7 @@
     <string name="book_sorting">书籍排序</string>
     <string name="recent_read_sorting">按最近阅读排序</string>
     <string name="update_time_sorting">按更新时间排序</string>
+    <string name="bookshelf_delete_dialog_check_hint">保留书籍仅清除缓存</string>
 
     <string name="disclaimer_statement_description">
         "

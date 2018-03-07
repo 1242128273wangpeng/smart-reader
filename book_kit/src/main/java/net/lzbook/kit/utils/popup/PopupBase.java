@@ -105,15 +105,11 @@ public class PopupBase extends PopupWindowManager implements View.OnClickListene
     public void changeText(String text) {
         if (text != null) {
             if ("0".equals(text)) {
-                delete_btn.setText("删除");
-//                ColorStateList csl =  mContext.getResources().getColorStateList(R.color.color_gray_babfc1);
-//                delete_btn.setTextColor(csl);
-//                delete_btn.setBackgroundResource(R.drawable.remove_bottom_delete_unclick);
+                delete_btn.setText("删除缓存");
+                delete_btn.setEnabled(false);
             } else {
-                delete_btn.setText("删除 (" + text + ")");
-//                ColorStateList draw = mContext.getResources().getColorStateList(R.color.selector_text_default);
-//                delete_btn.setTextColor(draw);
-//                delete_btn.setBackgroundResource(R.drawable.remove_bottom_delete);
+                delete_btn.setText("删除缓存 (" + text + ")");
+                delete_btn.setEnabled(true);
             }
         }
     }

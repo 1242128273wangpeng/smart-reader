@@ -189,60 +189,6 @@ public class BookCoverUtil {
         return FootprintUtils.saveHistoryData(info);
     }
 
-    //新的开始下载的方法
-    public void startDownLoad(BookDaoHelper bookDaoHelper, CoverPage.BookVoBean coverResult) {
-        if (context == null)
-            return;
-        if (NetWorkUtils.getNetWorkType(context) == NetWorkUtils.NETWORK_NONE) {
-            Toast.makeText(context, context.getText(R.string.game_network_none), Toast.LENGTH_LONG).show();
-            return;
-        }
-        Book book = getCoverBook(bookDaoHelper, coverResult);
-        DownloadService downloadService = BaseBookApplication.getDownloadService();
-
-        if (downloadService != null && book != null) {
-            if (downloadService.containTask(book.book_id)) {
-                downloadService.startTask(book.book_id);
-            } else {
-                BaseBookHelper.writeDownIndex(context, book.book_id, false, 0);
-                downloadService.addTask(BaseBookHelper.getBookTask(context, book, DownloadState.NOSTART, new NullCallBack(), true));
-                downloadService.addRequestItem(book);
-                downloadService.startTask(book.book_id);
-            }
-
-            if (onDownLoadService != null) {
-                onDownLoadService.downLoadService();
-            }
-
-        }
-    }
-
-    //目录页下载缓存
-    public void catalogStartDownLoad(Book book) {
-        if (context == null)
-            return;
-        if (NetWorkUtils.getNetWorkType(context) == NetWorkUtils.NETWORK_NONE) {
-            Toast.makeText(context, context.getText(R.string.game_network_none), Toast.LENGTH_LONG).show();
-            return;
-        }
-        DownloadService downloadService = BaseBookApplication.getDownloadService();
-
-        if (downloadService != null && book != null) {
-            if (downloadService.containTask(book.book_id)) {
-                downloadService.startTask(book.book_id);
-            } else {
-                BaseBookHelper.writeDownIndex(context, book.book_id, false, 0);
-                downloadService.addTask(BaseBookHelper.getBookTask(context, book, DownloadState.NOSTART, new NullCallBack(), true));
-                downloadService.addRequestItem(book);
-                downloadService.startTask(book.book_id);
-            }
-
-            if (onDownLoadService != null) {
-                onDownLoadService.downLoadService();
-            }
-
-        }
-    }
 
 
     public interface OnDownloadState {

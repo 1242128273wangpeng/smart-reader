@@ -1,14 +1,9 @@
 package com.intelligent.reader.presenter.downloadmanager
 
-import android.content.ComponentName
-import android.content.ServiceConnection
-import android.os.IBinder
-import com.intelligent.reader.activity.DownloadManagerActivity
 import com.intelligent.reader.presenter.IPresenter
-import com.intelligent.reader.read.help.BookHelper
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.component.service.DownloadService
+import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.db.BookDaoHelper
@@ -29,91 +24,44 @@ class DownloadManagerPresenter(override var view: DownloadManagerView?) : IPrese
 
     var downloadBooks: ArrayList<Book> = ArrayList()
 
-    var downloadService: DownloadService? = BaseBookApplication.getDownloadService()
-    val serviceConnection = object : ServiceConnection {
-
-        override fun onServiceDisconnected(name: ComponentName) {}
-
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            downloadService = (service as DownloadService.MyBinder).service
-            BaseBookApplication.setDownloadService(downloadService)
-            setDownloadService()
-            queryBooks(false)
-        }
-    }
-
-    fun setDownloadService() {
-        downloadService?.setUiContext(BaseBookApplication.getGlobalContext())
-        downloadService?.setOnDownloadListener { preNTF, bookId ->
-            val pending = (view as DownloadManagerActivity).pendingIntent(bookId)
-            preNTF.contentIntent = pending
-        }
-    }
-
     fun queryDownloadBooks(hasDeleted: Boolean) {
-        if (downloadService == null) {
-            (view as DownloadManagerActivity).startDownloadService()
-        } else {
-            queryBooks(hasDeleted)
-        }
+        CacheManager.freshBooks(false)
+        queryBooks(hasDeleted)
     }
 
     private fun queryBooks(hasDeleted: Boolean) {
         val books = bookDaoHelper.booksOnLineList
-        (view as DownloadManagerActivity).addBookToService(books)
-        // TODO 从service获取books列表 FIXME
-        if (downloadService != null) {
-            downloadBooks.clear()
-            downloadBooks.addAll(books)
-            Collections.sort<Book>(downloadBooks)
-            Collections.sort<Book>(downloadBooks, FrameBookHelper.MultiComparator())
-
+        downloadBooks.clear()
+        downloadBooks.addAll(books)
+        downloadBooks.sort()
+        Collections.sort<Book>(downloadBooks, FrameBookHelper.MultiComparator())
+        Collections.sort<Book>(downloadBooks, FrameBookHelper.CachedComparator())
+        uiThread {
             view?.onDownloadBookQuery(downloadBooks, hasDeleted)
-        } else {
-            AppLog.e(tag, "downloadService == null")
         }
     }
 
-    fun getDeleteBooks(checkStates: HashSet<Int>): ArrayList<Book> {
+    fun getDeleteBooks(checkStates: MutableList<Book>): ArrayList<Book> {
         val deleteBooks = ArrayList<Book>()
         deleteBooks.clear()
         for (i in 0 until downloadBooks.size) {
             val book = downloadBooks[i]
-            if (checkStates.contains(i)) {
+            if (checkStates.contains(book)) {
                 deleteBooks.add(book)
             }
         }
         return deleteBooks
     }
 
-    fun deleteBooksOfShelf(books: ArrayList<Book>?) {
-        if (books == null) return
-        val bookIds = arrayOfNulls<String>(books.size)
-        for (i in bookIds.indices) {
-            AppLog.e(tag, "DownloadPage: " + books[i].toString())
-            bookIds[i] = books[i].book_id
-        }
-        bookDaoHelper.deleteBook(*bookIds)
-    }
-
-    fun deleteDownload(books: ArrayList<Book>?, isDeleteOfShelf: Boolean) {
+    fun deleteDownload(books: ArrayList<Book>?) {
         if (books == null) return
         doAsync {
             books.forEach { book ->
-                if (downloadService != null) {
-                    if (isDeleteOfShelf) downloadService?.dellTask(book.book_id)
-                    else downloadService?.resetTask(book.book_id, true)
-                }
-                if (downloadService?.getDownBookTask(book.book_id) != null) {
-                    downloadService?.getDownBookTask(book.book_id)?.state = DownloadState
-                            .NOSTART
-                    downloadService?.getDownBookTask(book.book_id)?.startSequence = 0
-                }
-                BookHelper.delDownIndex(BaseBookApplication.getGlobalContext(), book.book_id)
-                BookHelper.removeChapterCacheFile(book.book_id)
+                CacheManager.remove(book.book_id)
+                BaseBookHelper.removeChapterCacheFile(book)
             }
             runOnMain {
-                view?.onDownloadDelete(isDeleteOfShelf)
+                view?.onDownloadDelete()
             }
         }
     }
@@ -174,9 +122,9 @@ class DownloadManagerPresenter(override var view: DownloadManagerView?) : IPrese
                 StartLogClickUtil.CHCHEEDIT_PAGE, StartLogClickUtil.SELECTALL, data)
     }
 
-    fun uploadBookClickLog(b: Book) {
+    fun uploadBookClickLog(book: Book) {
         val data = HashMap<String, String>()
-        data.put("STATUS", if (BookHelper.isDownFnish(BaseBookApplication.getGlobalContext(), b)) "1" else "0")
+        data.put("STATUS", if (CacheManager.getBookStatus(book) === DownloadState.FINISH) "1" else "0")
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
                 StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.BOOKCLICK1, data)
     }

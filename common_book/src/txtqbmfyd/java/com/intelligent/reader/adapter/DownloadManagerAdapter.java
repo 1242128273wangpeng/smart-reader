@@ -15,10 +15,9 @@ import com.intelligent.reader.R;
 import com.intelligent.reader.activity.DownloadManagerActivity;
 import com.intelligent.reader.read.help.BookHelper;
 
-import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.adapter.RemoveModeAdapter;
-import net.lzbook.kit.book.component.service.DownloadService;
+import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.book.download.DownloadState;
 import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.BookTask;
@@ -113,12 +112,7 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
         final Book book = book_data.get(position);
         switch (getItemViewType(position)) {
             case 0:
-                DownloadService downloadService = BaseBookApplication.getDownloadService();
-                if (downloadService == null) return;
-                final BookTask task = downloadService.getDownBookTask(book.book_id);
-                if (task == null || book == null) {
-                    return;
-                }
+                BookTask task = CacheManager.INSTANCE.getBookTask(book);
                 if (cache.book_name != null && !TextUtils.isEmpty(book.name)) {
                     cache.book_name.setText(book.name);
                 }
@@ -170,17 +164,16 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
                     cache.download_state.setText("已暂停");
                 } else if ((state == DownloadState.NONE_NETWORK)) {
                     cache.download_state.setText("已暂停");
-                } else if ((state == DownloadState.REFRESH)) {
-                    cache.download_state.setText("已暂停");
                 } else if (state == null || (state == DownloadState.NOSTART)) {
                     cache.download_state.setText("无缓存");
                     cache.download_progress.setProgress(0);
                 } else if (state == DownloadState.FINISH) {
-                    cache.download_state.setText("缓存完成");
+                    cache.download_state.setText("已缓存: 100%");
                     cache.download_btn.setImageResource(R.drawable.icon_download_complete);
                     cache.download_progress.setProgress(100);
-                } else if (state == DownloadState.LOCKED) {
-                    cache.download_state.setText("已暂停");
+                } else if (state == DownloadState.WAITTING_WIFI) {
+                    cache.download_state.setText("非Wi-Fi状态下已自动暂停");
+                    cache.download_count.setVisibility(View.GONE);
                 } else {
                     task.state = DownloadState.NOSTART;
                     cache.download_state.setText("无缓存");
@@ -201,16 +194,10 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
                     @Override
                     public void onClick(View v) {
                         System.err.println("download : " + book.book_id);
-                        DownloadService downloadService = BaseBookApplication.getDownloadService();
-                        DownloadState state = null;
-                        if (downloadService != null) {
-                            state = downloadService.getDownBookTask(book.book_id) == null ? null
-                                    : downloadService.getDownBookTask(book.book_id).state;
-                        }
+                        DownloadState state = CacheManager.INSTANCE.getBookStatus(book);
                         Map<String, String> data = new HashMap<>();
-                        if (state == null || state == DownloadState.NOSTART) {
-                            BookHelper.startDownBookTask(mContext, book.book_id, 0);
-                            BookHelper.writeDownIndex(mContext, book.book_id, false, 0);
+                        if (state == DownloadState.NOSTART) {
+                            BookHelper.startDownBookTask(mContext, book, 0);
                             data.put("type", "1");
                             data.put("bookid", book.book_id);
                             StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.CACHEBUTTON, data);
@@ -219,17 +206,11 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
                             downloadManagerActivity.stopDownloadBook(book.book_id);
                             data.put("type", "2");
                             data.put("speed", speed);
-                        } else if (state == DownloadState.LOCKED) {
-                            BookHelper.startDownBookTask(mContext, book.book_id);
-                            data.put("type", "1");
-                        } else if (state == DownloadState.NONE_NETWORK) {
-                            BookHelper.startDownBookTask(mContext, book.book_id);
-                            data.put("type", "1");
-                        } else if (state == DownloadState.PAUSEED || state == DownloadState.REFRESH) {
-                            BookHelper.startDownBookTask(mContext, book.book_id);
-                            data.put("type", "1");
                         } else if (state == DownloadState.FINISH) {
                             Toast.makeText(mContext, "缓存已完成", Toast.LENGTH_SHORT).show();
+                            data.put("type", "1");
+                        } else {
+                            BookHelper.startDownBookTask(mContext, book, 0);
                             data.put("type", "1");
                         }
                         notifyDataSetChanged();

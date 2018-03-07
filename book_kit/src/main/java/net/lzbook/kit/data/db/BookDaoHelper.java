@@ -1,7 +1,11 @@
 package net.lzbook.kit.data.db;
 
+import android.content.Context;
+import android.text.TextUtils;
+import android.widget.Toast;
+
 import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.book.component.service.DownloadService;
+import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.Bookmark;
@@ -9,10 +13,6 @@ import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.repair_books.bean.BookFix;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.BaseBookHelper;
-
-import android.content.Context;
-import android.text.TextUtils;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,40 +68,16 @@ public class BookDaoHelper {
     }
 
     public synchronized boolean deleteAllBook() {
-        ArrayList<String> booksGid = mDao.getBooksGid(false);
-        if (booksGid != null && !booksGid.isEmpty()) {
-
-            int size = booksGid.size();
-            String[] ints = booksGid.toArray(new String[size]);
-            return deleteBookCache(ints);
-        }
-        return false;
+        return deleteBookCache(this.books);
     }
 
-    public synchronized boolean deleteBookCache(final String... book_id) {
-        final DownloadService downloadService = BaseBookApplication.getDownloadService();
-        final String[] delete_gids = new String[book_id.length];
-        for (int i = 0; i < book_id.length; i++) {
-            delete_gids[i] = book_id[i];
+    public synchronized boolean deleteBookCache(List<Book> lsitBook) {
+        this.books.clear();
+        this.books = this.mDao.getBooks();
+        for (int i = 0; i < lsitBook.size(); i++) {
+            CacheManager.INSTANCE.remove(((Book) lsitBook.get(i)).book_id);
         }
-        books.clear();
-        books = mDao.getBooks();
-//        new Thread(new Runnable() {
-//
-//            @Override
-//            public void run() {
-        for (int i = 0; i < delete_gids.length; i++) {
-            if (downloadService != null) {
-                downloadService.dellTask(delete_gids[i]);
-            }
-
-            BaseBookHelper.delDownIndex(mContext, delete_gids[i]);//删除偏好文件的记录
-//                    BaseBookHelper.removeChapterCacheFile(delete_gids[i]);//删除这本书本地缓存的章节文件
-
-        }
-//            }
-//        }).start();
-        return delete_gids.length > 0;
+        return lsitBook.size() > 0;
     }
 
     /**
@@ -318,8 +294,9 @@ public class BookDaoHelper {
      * 根据book_id取book对象
      */
     public synchronized Book getBook(String book_id, int type) {
-        if (book_id == null)
+        if (book_id == null) {
             return new Book();
+        }
         switch (type) {
             case 0:
                 int size = books.size();
@@ -431,88 +408,51 @@ public class BookDaoHelper {
         return false;
     }
 
+    public synchronized boolean deleteBook(Book book, boolean clearCache) {
+        boolean z = true;
+        synchronized (this) {
+            String[] delete_ids = this.mDao.deleteSubBook(book.book_id);
+            this.books.clear();
+            this.books = this.mDao.getBooks();
 
-    /**
-     * 根据gid删除书籍
-     **/
-    public synchronized boolean deleteBook(final Integer... gid) {
-        final DownloadService downloadService = BaseBookApplication.getDownloadService();
-        final int[] delete_ids = mDao.deleteSubBook(gid);
-        books.clear();
-        books = mDao.getBooks();
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                for (int i = 0; i < delete_ids.length; i++) {
-                    if (downloadService != null) {
-                        downloadService.dellTask(delete_ids[i]);
-                    }
-                    mContext.deleteDatabase("book_chapter_" + delete_ids[i]);
-                    BaseBookHelper.delDownIndex(mContext, delete_ids[i]);
-                    BaseBookHelper.removeChapterCacheFile(delete_ids[i]);
+            for (String remove : delete_ids) {
+                if (clearCache) {
+                    BaseBookHelper.removeChapterCacheFile(book);
                 }
+
+                if(remove != null){
+                    CacheManager.INSTANCE.stop(remove);
+                    CacheManager.INSTANCE.resetTask(remove);
+                }
+                this.mContext.deleteDatabase("book_chapter_" + book.book_id);
             }
-        }).start();
-        return delete_ids.length > 0;
+
+            if (delete_ids.length <= 0) {
+                z = false;
+            }
+        }
+        return z;
     }
 
-    /**
-     * 根据book_id删除书籍
-     **/
-    public synchronized boolean deleteBook(final String bookHost, final String book_id) {
-        final DownloadService downloadService = BaseBookApplication.getDownloadService();
-        final String[] delete_ids = mDao.deleteSubBook(book_id);
-        books.clear();
-        books = mDao.getBooks();
-        new Thread(new Runnable() {
+    public synchronized boolean deleteBook(List<Book> bookList) {
+        for (Book b : bookList) {
+            this.mDao.deleteSubBook(b.book_id);
+        }
+        this.books.clear();
+        this.books = this.mDao.getBooks();
+        for (int i = 0; i < bookList.size(); i++) {
+            CacheManager.INSTANCE.remove(((Book) bookList.get(i)).book_id);
+            this.mContext.deleteDatabase("book_chapter_" + bookList.get(i));
 
-            @Override
-            public void run() {
-                for (int i = 0; i < delete_ids.length; i++) {
-                    if (downloadService != null) {
-                        downloadService.dellTask(delete_ids[i]);
-                    }
-                    mContext.deleteDatabase("book_chapter_" + delete_ids[i]);
-                    BaseBookHelper.delDownIndex(mContext, delete_ids[i]);
-                    if (Constants.QG_SOURCE.equals(bookHost)) {
-                        BaseBookHelper.removeQGChaptersCacheFile(delete_ids[i]);
-                    } else {
-                        BaseBookHelper.removeChapterCacheFile(delete_ids[i]);
-                    }
-                }
+            BaseBookHelper.removeChapterCacheFile((Book) bookList.get(i));
+
+            if (!TextUtils.isEmpty(this.mDao.getBookFix(((Book) bookList.get(i)).book_id).book_id)) {
+                this.mDao.deleteBookFix(((Book) bookList.get(i)).book_id);
             }
-        }).start();
-        return delete_ids.length > 0;
+        }
+        return bookList.size() > 0;
     }
 
-    /**
-     * 根据book_id删除书籍
-     **/
-    public synchronized boolean deleteBook(final String... book_id) {
-        final DownloadService downloadService = BaseBookApplication.getDownloadService();
-        final String[] delete_ids = mDao.deleteSubBook(book_id);
-        books.clear();
-        books = mDao.getBooks();
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                for (int i = 0; i < delete_ids.length; i++) {
-                    if (downloadService != null) {
-                        downloadService.dellTask(delete_ids[i]);
-                    }
-                    mContext.deleteDatabase("book_chapter_" + delete_ids[i]);
-                    BaseBookHelper.delDownIndex(mContext, delete_ids[i]);
-                    BaseBookHelper.removeChapterCacheFile(delete_ids[i]);
-                    if (!TextUtils.isEmpty(mDao.getBookFix(delete_ids[i]).book_id)) {
-                        mDao.deleteBookFix(delete_ids[i]);
-                    }
-                }
-            }
-        }).start();
-        return delete_ids.length > 0;
-    }
 
     /**
      * 新增修复书籍状态信息
@@ -553,4 +493,35 @@ public class BookDaoHelper {
         return mDao.deleteBookFix(book_id).length > 0;
     }
 
+//    /**
+//     * 新增搜索页推荐书籍
+//     */
+//    public synchronized void insertSearchBook(List<SearchRecommendBook.DataBean> recommendBooks) {
+//        deleteSearchBooks();
+//        for (int i = 0; i < recommendBooks.size(); i++) {
+//            mDao.insertSearchBook(recommendBooks.get(i));
+//        }
+//
+//    }
+//
+//    /**
+//     * 获取搜索页推荐的书籍
+//     */
+//
+//    public synchronized ArrayList<SearchRecommendBook.DataBean> getSearchBooks() {
+//        return mDao.getSearchBooks();
+//    }
+//
+//
+//    /**
+//     * 删除表里的数据
+//     */
+//
+//    public synchronized void deleteSearchBooks() {
+//        mDao.deleteSearchBook();
+//    }
+
+    public synchronized void deleteBook(String book_id) {
+        this.mDao.deleteSubBook(book_id);
+    }
 }

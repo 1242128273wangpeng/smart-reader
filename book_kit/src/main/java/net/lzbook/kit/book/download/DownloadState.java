@@ -5,10 +5,9 @@ public enum DownloadState {
     NOSTART("NOSTART"),
     DOWNLOADING("DOWNLOADING"),
     WAITTING("WAITTING"),
+    WAITTING_WIFI("WAITTING_WIFI"),
     PAUSEED("PAUSEED"),
-    REFRESH("REFRESH"),
     FINISH("FINISH"),
-    LOCKED("LOCKED"),
     NONE_NETWORK("NONE_NETWORK");
 
     private String tag;

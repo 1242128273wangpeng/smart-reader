@@ -27,6 +27,8 @@ object NetOwnBook {
                 if (!ownChapterList.isEmpty() &&
                         bookDaoHelper.isBookSubed(book.book_id)) {
                     val chapterDao = BookChapterDao(BaseBookApplication.getGlobalContext(), book.book_id)
+
+                    chapterDao.deleteBookChapters(0);
                     chapterDao.insertBookChapter(ownChapterList)
                     val lastChapter = ownChapterList.get(ownChapterList.size - 1)
                     val book = Book()

@@ -49,7 +49,7 @@ class ReaderLocalRepository(context: Context) : ReaderRepository {
             // 智能缓存
         } else {
             return Observable.create({
-                chapter.content = net.lzbook.kit.request.DataCache.getChapterFromCache(chapter.sequence, chapter.book_id)
+                chapter.content = net.lzbook.kit.request.DataCache.getChapterFromCache(chapter)
                 chapter.isSuccess = true
                 it.onNext(chapter)
                 it.onComplete()
@@ -73,14 +73,14 @@ class ReaderLocalRepository(context: Context) : ReaderRepository {
 
     override fun writeChapterCache(chapter: Chapter?, book: Book) {
         chapter?.let {
-            if (mBookDaoHelper.isBookSubed(chapter.book_id) && !DataCache.isChapterExists(chapter.sequence, book.book_id)) {
+            if (mBookDaoHelper.isBookSubed(chapter.book_id) && !DataCache.isChapterExists(chapter)) {
 
                 var content = chapter.content
                 if (TextUtils.isEmpty(content)) {
                     content = "null"
                 }
 
-                val write_success = DataCache.saveChapter(content, chapter.sequence, chapter.book_id)
+                val write_success = DataCache.saveChapter(content, chapter)
 
                 if (!write_success) {
                     throw WriteFileFailException()

@@ -94,8 +94,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
 
     private val bookDeleteDialog: BookDeleteDialog by lazy {
         val dialog = BookDeleteDialog(activity)
-        dialog.setOnConfirmListener { books ->
-            if (books != null && books.isNotEmpty()) presenter.deleteBooks(books)
+        dialog.setOnConfirmListener { books, isChecked ->
+            if (books != null && books.isNotEmpty()) presenter.deleteBooks(books, isChecked, activity)
             StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.bs_click_delete_ok_btn)
         }
         dialog.setOnAbrogateListener {
@@ -184,7 +184,16 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
 
     override fun onItemLongClick(view: View, position: Int) {
         if (!bookShelfRemoveHelper.isRemoveMode) {
-            bookShelfRemoveHelper.showRemoveMenu(bookshelf_refresh_view)
+            var book = presenter.iBookList[position]
+            var bookOnLines = bookDaoHelper.booksOnLineList
+            var index: Int = -1
+            if (book != null && bookOnLines.contains(book)) {
+                index = bookOnLines.lastIndexOf(book)
+            }
+            this.bookShelfRemoveHelper.showRemoveMenu2(bookshelf_refresh_view, position);
+            if (index != -1) {
+                this.bookShelfRemoveHelper.setCheckPosition(index);
+            }
             presenter.uploadItemLongClickLog()
         }
     }
@@ -447,7 +456,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, FrameBookHelper.BookUpdate
         }.mapTo(checkedBooks) {
             presenter.iBookList[it]
         }
-        bookDeleteDialog.show(checkedBooks)
+        if (checkedBooks.isNotEmpty()){
+            bookDeleteDialog.show(checkedBooks)
+        }
     }
 
     override fun onBookDelete() {

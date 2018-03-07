@@ -3,14 +3,6 @@
  */
 package com.intelligent.reader.adapter;
 
-import com.intelligent.reader.R;
-import com.intelligent.reader.activity.CataloguesActivity;
-import com.intelligent.reader.read.help.BookHelper;
-import com.quduquxie.network.DataCache;
-
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.Chapter;
-
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -18,6 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.intelligent.reader.R;
+import com.intelligent.reader.activity.CataloguesActivity;
+import com.intelligent.reader.read.help.BookHelper;
+import com.quduquxie.network.DataCache;
+
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.bean.Chapter;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -99,7 +99,7 @@ public class CatalogAdapter extends BaseAdapter {
         if (book_site.equals(Constants.QG_SOURCE)) {
             chapterExist = DataCache.isChapterExists(chapter.chapter_id, chapter.book_id);
         } else {
-            chapterExist = BookHelper.isChapterExist(chapter.sequence, chapter.book_id);
+            chapterExist = BookHelper.isChapterExist(chapter);
         }
         if (chapterExist) {
             viewCache.getHasCache().setVisibility(View.VISIBLE);

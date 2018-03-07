@@ -1,22 +1,20 @@
 package com.intelligent.reader.presenter.coverPage
 
 import android.app.Activity
-import android.app.Notification
-import android.app.PendingIntent
 import android.content.*
 import android.os.Bundle
-import android.os.IBinder
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
 import android.widget.*
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CataloguesActivity
-import com.intelligent.reader.activity.DownloadManagerActivity
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.activity.SearchBookActivity
 import com.intelligent.reader.adapter.CoverSourceAdapter
 import com.intelligent.reader.cover.*
+import io.reactivex.Observable
+import io.reactivex.ObservableOnSubscribe
 import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.receiver.DownBookClickReceiver
 import com.intelligent.reader.widget.ClearCacheDialog
@@ -30,6 +28,7 @@ import kotlinx.android.synthetic.txtqbmfyd.content_view_menu.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.DownloadService
+import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.book.view.RecommendItemView
@@ -52,8 +51,7 @@ import kotlin.collections.ArrayList
 
 class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: CoverPageContract,
                          val activity: Activity, val onClickListener: View.OnClickListener)
-    : BookCoverUtil.OnDownloadState, BookCoverUtil.OnDownLoadService, DownloadService.OnDownloadListener
-        , BookCoverViewModel.BookCoverViewCallback {
+    : BookCoverUtil.OnDownloadState, BookCoverUtil.OnDownLoadService, BookCoverViewModel.BookCoverViewCallback {
 
     var downloadService: DownloadService? = null
     var bookVo: CoverPage.BookVoBean? = null
@@ -84,13 +82,6 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
 
         if (bookDaoHelper == null) {
             bookDaoHelper = BookDaoHelper.getInstance()
-        }
-
-        downloadService = BaseBookApplication.getDownloadService()
-        if (downloadService == null) {
-            BookHelper.reStartDownloadService()
-        } else {
-            serviceConnect()
         }
 
         bookCoverUtil = BookCoverUtil(activity, onClickListener)
@@ -488,10 +479,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
 
         val bookChapterDao = BookChapterDao(activity, source.book_id)
 
-        BookHelper.deleteAllChapterCache(source.book_id, 0, bookChapterDao.count)
         bookChapterDao.deleteBookChapters(0)
-        DownloadService.clearTask(source.book_id)
-        BaseBookHelper.delDownIndex(activity, source.book_id)
         return book
     }
 
@@ -535,21 +523,6 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
         activity.startActivity(intent)
     }
 
-    override fun notificationCallBack(preNTF: Notification?, book_id: String?) {
-        var pending: PendingIntent? = null
-        var intent: Intent? = null
-        if (book_id != (-1).toString() + "") {
-            intent = Intent(activity, DownBookClickReceiver::class.java)
-            intent!!.action = DownBookClickReceiver.action
-            intent.putExtra("book_id", book_id)
-            pending = PendingIntent.getBroadcast(activity, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        } else {
-            intent = Intent(activity, DownloadManagerActivity::class.java)
-            pending = PendingIntent.getActivity(activity, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        }
-        preNTF!!.contentIntent = pending
-    }
-
     /**
      *
      * 获取书籍封面信息
@@ -569,34 +542,12 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
     fun checkBookStatus() {
         if (bookDaoHelper == null || requestItem == null)
             return
+
+        coverPageContract!!.changeDownloadButtonStatus()
         if (bookDaoHelper!!.isBookSubed(requestItem.book_id)) {
             coverPageContract!!.onStartStatus(true)
         } else {
             coverPageContract!!.onStartStatus(false)
-        }
-        changeDownLoadButtonText();
-    }
-
-    fun changeDownLoadButtonText() {
-        var type: Int = 0
-        if (bookVo == null) {
-            return
-        }
-        var book: Book? = null
-        if (bookCoverUtil != null) {
-            book = bookCoverUtil!!.getCoverBook(bookDaoHelper, bookVo)
-        }
-        if (book != null) {
-            if (BookHelper.getDownloadState(activity, book) == DownloadState.FINISH) {
-                type = DOWNLOAD_STATE_FINISH
-            } else if (BookHelper.getDownloadState(activity, book) == DownloadState.LOCKED) {
-                type = DOWNLOAD_STATE_LOCKED
-            } else if (BookHelper.getDownloadState(activity, book) == DownloadState.NOSTART) {
-                type = DOWNLOAD_STATE_NOSTART
-            } else {
-                type = DOWNLOAD_STATE_OTHER
-            }
-            coverPageContract.changeDownloadButtonStatus(type)
         }
     }
 
@@ -621,7 +572,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
         if (bookVo == null)
             return
         val book = bookCoverUtil!!.getCoverBook(bookDaoHelper, bookVo)
-        val downloadState = BookHelper.getDownloadState(activity, book)
+        val downloadState = CacheManager.getBookStatus(book)
         if (downloadState != DownloadState.FINISH && downloadState != DownloadState.WAITTING && downloadState != DownloadState.DOWNLOADING) {
             showToastShort("正在缓存中。。。")
         }
@@ -639,10 +590,10 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
                     if (succeed) {
                         coverPageContract.successAddIntoShelf(true)
                         showToastShort("成功添加到书架！")
-                        bookCoverUtil!!.startDownLoad(bookDaoHelper, bookVo)
+                        BaseBookHelper.startDownBookTask(activity, requestItem.toBook(), 0)
                     }
                 } else {
-                    bookCoverUtil!!.startDownLoad(bookDaoHelper, bookVo)
+                    BaseBookHelper.startDownBookTask(activity, requestItem.toBook(), 0)
                 }
             }
         } else {
@@ -663,14 +614,15 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
                         if (succeed) {
                             coverPageContract!!.successAddIntoShelf(true)
                             showToastShort("成功添加到书架！")
-                            bookCoverUtil!!.startDownLoad(bookDaoHelper, bookVo)
+                            BaseBookHelper.startDownBookTask(activity, requestItem.toBook(), 0)
                         }
                     } else {
-                        bookCoverUtil!!.startDownLoad(bookDaoHelper, bookVo)
+                        BaseBookHelper.startDownBookTask(activity, requestItem.toBook(), 0)
                     }
                 }
             }
         }
+        coverPageContract!!.changeDownloadButtonStatus()
     }
 
     /**
@@ -681,9 +633,9 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
         if (isQG) {//如果是青果的数据，就先进行一次类型转换
             bookVo = (objects as CoverPage).bookVo
 
-            coverPageContract!!.showArrow(false, true)
+            coverPageContract!!.showArrow(true)
 
-        } else {
+        } else if (objects != null){
             bookVo = (objects as CoverPage).bookVo
             if (bookVo != null) {
                 if (requestItem != null && !TextUtils.isEmpty(requestItem.book_id)) {
@@ -700,6 +652,10 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
                 }
 
                 val sources = objects.sources
+
+                if (sources.size < 2) {
+                    coverPageContract!!.setCompound()
+                }
                 if (bookSourceList == null) {
                     bookSourceList = java.util.ArrayList<CoverPage.SourcesBean>()
                 }
@@ -711,11 +667,6 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
                         if (requestItem.book_source_id == source.book_source_id) {
                             currentSource = source
                         }
-                    }
-                    if (bookSourceList != null && bookSourceList.size > 1) {
-                        coverPageContract!!.showArrow(true, false)
-                    } else {
-                        coverPageContract!!.showArrow(false, false)
                     }
                     if (currentSource != null && !TextUtils.isEmpty(currentSource!!.host)) {
                         coverPageContract.showCurrentSources(currentSource!!.host)
@@ -741,7 +692,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
         }
         coverPageContract!!.showLoadingSuccess()
         coverPageContract!!.showCoverDetail(bookVo!!)
-        changeDownLoadButtonText()
+        coverPageContract!!.changeDownloadButtonStatus()
     }
 
 
@@ -759,30 +710,6 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
             return
         }
     }
-
-    fun reStartDownloadService(context: Context) {
-        val intent = Intent()
-        intent.setClass(context, DownloadService::class.java)
-        context.startService(intent)
-        context.bindService(intent, sc, Context.BIND_AUTO_CREATE)
-        downloadService = BaseBookApplication.getDownloadService()
-    }
-
-    fun serviceConnect() {
-        downloadService?.setUiContext(BaseBookApplication.getGlobalContext())
-        downloadService?.setOnDownloadListener(this@CoverPagePresenter)
-    }
-
-
-    private val sc = object : ServiceConnection {
-        override fun onServiceDisconnected(name: ComponentName) {}
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            downloadService = (service as DownloadService.MyBinder).service
-            BaseBookApplication.setDownloadService(downloadService)
-            serviceConnect()
-        }
-    }
-
 
     /**
      * isNeedRemoveFun 是否需要移除的功能 ， 目前免费小说书城不需要移出书架，其他几个壳任然保持之前移出书架
@@ -811,10 +738,6 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
             }
         } else {
             if (isNeedRemoveFun) {
-                if (bookDaoHelper != null) {
-                    bookDaoHelper!!.deleteBook(requestItem.host, requestItem.book_id)
-                }
-                BookHelper.delDownIndex(activity, requestItem.book_id)
 
                 coverPageContract!!.successAddIntoShelf(false)
 
@@ -825,9 +748,29 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
                 data2.put("type", "2")
                 data2.put("bookid", requestItem.book_id)
                 StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFEDIT, data2)
-                val downloadService = BaseBookApplication.getDownloadService()
-                downloadService?.cancelTask(requestItem.book_id)
-                changeDownLoadButtonText()
+                coverPageContract!!.changeDownloadButtonStatus()
+
+                coverPageContract!!.setShelfBtnClickable(false)
+                val cleanDialog = MyDialog(activity, R.layout.dialog_download_clean)
+                cleanDialog.setCanceledOnTouchOutside(false)
+                cleanDialog.setCancelable(false)
+                (cleanDialog.findViewById(R.id.dialog_msg) as TextView).setText(R.string.tip_cleaning_cache)
+                cleanDialog.show()
+
+                Observable.create(ObservableOnSubscribe<Boolean> { e ->
+                    CacheManager.remove(requestItem.book_id)
+
+                    bookDaoHelper?.deleteBook(requestItem.toBook(), false)
+
+                    e.onNext(true)
+                    e.onComplete()
+                }).subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe {
+                            cleanDialog.dismiss()
+                            coverPageContract!!.setShelfBtnClickable(true)
+                            coverPageContract!!.changeDownloadButtonStatus()
+                        }
             } else {
                 showToastShort("已在书架中！")
             }
@@ -893,13 +836,12 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
         }
     }
 
-
     override fun changeState() {
-        changeDownLoadButtonText()
+        coverPageContract!!.changeDownloadButtonStatus()
     }
 
     override fun downLoadService() {
-        changeDownLoadButtonText()
+        coverPageContract!!.changeDownloadButtonStatus()
     }
 
 
@@ -1068,6 +1010,13 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
     //解绑
     fun unSub() {
         mBookCoverViewModel?.unSubscribe()
+    }
+
+    fun getBook() :Book? {
+        if(bookCoverUtil == null || bookDaoHelper == null || bookVo == null){
+            return null
+        }
+        return bookCoverUtil!!.getCoverBook(bookDaoHelper, bookVo)
     }
 
 }

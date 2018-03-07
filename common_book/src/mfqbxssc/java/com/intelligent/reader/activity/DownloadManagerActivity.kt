@@ -1,301 +1,406 @@
 package com.intelligent.reader.activity
 
-import android.app.PendingIntent
-import android.content.Context
+import com.intelligent.reader.R
+import com.intelligent.reader.read.help.BookHelper
+import com.intelligent.reader.view.DownloadPager
+import com.intelligent.reader.view.DownloadPager.DeleteItemListener
+
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.book.download.CacheManager
+import net.lzbook.kit.book.download.DownloadState
+import net.lzbook.kit.book.view.MyDialog
+import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.data.bean.Book
+import net.lzbook.kit.data.db.BookDaoHelper
+import net.lzbook.kit.utils.FrameBookHelper.CachedComparator
+import net.lzbook.kit.utils.FrameBookHelper.MultiComparator
+import net.lzbook.kit.utils.SettingItemsHelper
+import net.lzbook.kit.utils.StatServiceUtils
+
 import android.content.Intent
+import android.content.res.Resources.NotFoundException
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.support.v4.view.ViewCompat
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.View
-import com.intelligent.reader.R
-import com.intelligent.reader.adapter.DownloadManagerAdapter
-import com.intelligent.reader.event.DownLoaderToHome
-import com.intelligent.reader.presenter.downloadmanager.DownloadManagerPresenter
-import com.intelligent.reader.presenter.downloadmanager.DownloadManagerView
-import com.intelligent.reader.read.help.BookHelper
-import com.intelligent.reader.receiver.DownBookClickReceiver
-import com.intelligent.reader.view.DownloadDeleteDialog
-import de.greenrobot.event.EventBus
-import kotlinx.android.synthetic.mfqbxssc.download_manager.*
-import kotlinx.android.synthetic.mfqbxssc.download_manager_pager.*
-import net.lzbook.kit.book.component.service.DownloadService
+import android.view.View.OnClickListener
+import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemClickListener
+import android.widget.AdapterView.OnItemLongClickListener
+import android.widget.ImageView
+import android.widget.PopupWindow
+import android.widget.TextView
 import net.lzbook.kit.book.download.CallBackDownload
-import net.lzbook.kit.book.download.DownloadState
-import net.lzbook.kit.data.bean.Book
-import net.lzbook.kit.utils.*
 
-/**
- * Created by qiantao on 2017/11/22 0022
- */
-class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, DownloadManagerView {
+import java.util.ArrayList
+import java.util.Collections
+import java.util.HashMap
 
-    val presenter by lazy { DownloadManagerPresenter(this) }
+class DownloadManagerActivity : BaseCacheableActivity(), OnClickListener, OnItemClickListener, OnItemLongClickListener {
+    private var alertDialog: MyDialog? = null
+    private var back_btn: ImageView? = null
+    private var content_layout: ViewGroup? = null
+    private var downloadingBooks: ArrayList<Book>? = null
+    var lastClickTime: Long = 0
+    private var mBookDaoHelper: BookDaoHelper? = null
+    private var more: ImageView? = null
+    private var title_name_btn: TextView? = null
+    private var editCancel: TextView? = null
+    private var editSelectAll: TextView? = null
+    var views: DownloadPager? = null
 
-    private val downloadAdapter: DownloadManagerAdapter by lazy {
-        DownloadManagerAdapter(this, presenter.downloadBooks)
-    }
-
-    private var isDeleteBookOfShelf = false
-
-    private var isShowing: Boolean = false
-
-    private var time = System.currentTimeMillis()
-
-    private var lastShowTime = 0L
-
-    private val deleteDialog: DownloadDeleteDialog by lazy {
-        val dialog = DownloadDeleteDialog(this)
-        dialog.setCheckListener {
-            presenter.uploadDialogCheckLog()
+    override
+    fun onCreate(paramBundle: Bundle?) {
+        super.onCreate(paramBundle)
+        try {
+            setContentView(R.layout.download_manager)
+        } catch (e: NotFoundException) {
+            e.printStackTrace()
         }
-        dialog.setCancelListener {
-            presenter.uploadDialogCancelLog()
-        }
-        dialog.setConfirmListener { books, isDeleteBookOfShelf ->
-            if (isDeleteBookOfShelf) presenter.deleteBooksOfShelf(books)
-            presenter.uploadDialogConfirmLog(books?.size)
-            presenter.deleteDownload(books, isDeleteBookOfShelf)
-        }
-        dialog
-    }
 
-    private val removeHelper: RemoveAdapterHelper by lazy {
-        val helper = RemoveAdapterHelper(this, downloadAdapter,
-                RemoveAdapterHelper.popup_type_download)
-        helper.setListView(download_manager_list)
-        helper.setOnMenuDeleteListener { checkStates ->
-            presenter.uploadDeleteLog()
-            isDeleteBookOfShelf = false
-            val deleteBooks = presenter.getDeleteBooks(checkStates)
-            if (deleteBooks.isEmpty()) {
-                toastShort(net.lzbook.kit.R.string.mian_delete_cache_no_choose)
-            } else {
-                deleteDialog.show(deleteBooks)
-            }
-        }
-        helper.setOnSelectAllListener { checkedAll ->
-            presenter.uploadRemoveSelectAllLog(checkedAll)
-        }
-        helper.setOnMenuStateListener(object : RemoveAdapterHelper.OnMenuStateListener {
-            override fun getMenuShownState(isShown: Boolean) {
-                isShowing = isShown
-            }
-
-            override fun getAllCheckedState(isAll: Boolean) {}
-        })
-        helper
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.download_manager)
         initView()
-        startDownloadService()
+        initData()
+        initListener()
+        Constants.isDownloadManagerActivity = true
+        Constants.hadShownMobilNetworkConfirm = false
     }
 
-    override fun onResume() {
-        super.onResume()
-        presenter.queryDownloadBooks(false)
+    override
+    protected fun onStart() {
+        super.onStart()
+        initService()
+    }
+
+    override
+    protected fun onStop() {
+        super.onStop()
+    }
+
+    override
+    protected fun onDestroy() {
+        Constants.isDownloadManagerActivity = false
+        Constants.hadShownMobilNetworkConfirm = false
+        CacheManager.listeners.remove(this.views as CallBackDownload)
+        if (this.alertDialog != null) {
+            this.alertDialog = null
+        }
+        try {
+            setContentView(R.layout.empty)
+        } catch (e: NotFoundException) {
+            e.printStackTrace()
+        }
+
+        super.onDestroy()
+    }
+
+    override
+    protected fun onResume() {
+        try {
+            super.onResume()
+            freshBooks(false)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
+
+    private fun initService() {}
+
+    fun stopDownloadbook(book_id: String) {
+        CacheManager.stop(book_id)
     }
 
     private fun initView() {
-        title_back_btn.setOnClickListener {
-            presenter.uploadBackLog()
-            finish()
+        this.back_btn = findViewById(R.id.title_back_btn) as ImageView
+        this.more = findViewById(R.id.ibtn_more) as ImageView
+        this.content_layout = findViewById(R.id.content_layout) as ViewGroup
+        this.title_name_btn = findViewById(R.id.title_name_btn) as TextView
+        this.editCancel = findViewById(R.id.edit_cancel) as TextView
+        this.editSelectAll = findViewById(R.id.edit_select_all) as TextView
+    }
+
+    private fun initListener() {
+        this.back_btn!!.setOnClickListener(this)
+        if (this.more != null) {
+            this.more!!.setOnClickListener(this)
         }
-        btn_edit.setOnClickListener {
-            if (presenter.isDoubleClick(System.currentTimeMillis())) {
-                return@setOnClickListener
+        if (this.editCancel != null) {
+            this.editCancel!!.setOnClickListener(this)
+        }
+        if (this.editSelectAll != null) {
+            this.editSelectAll!!.setOnClickListener(this)
+        }
+        this.title_name_btn!!.setOnClickListener(this)
+        this.views!!.setDeleteItemListener(object :DeleteItemListener {
+            override
+            fun onSuccess() {
+                this@DownloadManagerActivity.editCancel!!.setVisibility(View.GONE)
+                this@DownloadManagerActivity.editSelectAll!!.setVisibility(View.GONE)
+                this@DownloadManagerActivity.more!!.setVisibility(View.VISIBLE)
+                this@DownloadManagerActivity.back_btn!!.setVisibility(View.VISIBLE)
             }
-            if ("编辑" == btn_edit.text) {
-                removeHelper.showRemoveMenu(root)
-                btn_edit.text = "取消"
-                presenter.uploadEditLog()
-            } else {
-                removeHelper.dismissRemoveMenu()
-                btn_edit.text = "编辑"
-                presenter.uploadCancelLog()
+
+            override
+            fun onFailed() {
+                this@DownloadManagerActivity.editCancel!!.setVisibility(View.GONE)
+                this@DownloadManagerActivity.editSelectAll!!.setVisibility(View.GONE)
+                this@DownloadManagerActivity.more!!.setVisibility(View.VISIBLE)
+                this@DownloadManagerActivity.back_btn!!.setVisibility(View.VISIBLE)
             }
+        })
+        this.views!!.getListView().setOnItemClickListener(this)
+        this.views!!.getListView().setOnItemLongClickListener(this)
+    }
+
+    private fun initData() {
+        this.mBookDaoHelper = BookDaoHelper.getInstance()
+        this.downloadingBooks = ArrayList()
+        this.views = DownloadPager(getApplicationContext(), this, this.downloadingBooks)
+        CacheManager.listeners.add(this.views as CallBackDownload)
+        this.content_layout!!.addView(this.views)
+    }
+
+    fun freshBooks(hasDeleted: Boolean) {
+        CacheManager.freshBooks(false)
+        getDownLoadBookList(hasDeleted)
+    }
+
+    private fun getDownLoadBookList(hasDeleted: Boolean) {
+        if (this.mBookDaoHelper == null) {
+            this.mBookDaoHelper = BookDaoHelper.getInstance()
         }
-        title_name_btn.setOnClickListener {
-            finish()
-        }
-        download_manager_list.adapter = downloadAdapter
-        download_manager_list.setOnItemClickListener { parent, view, position, id ->
-            if (position < 0 || position > presenter.downloadBooks.size) return@setOnItemClickListener
-            if (!removeHelper.isRemoveMode && !isShowing) {
-                val book = presenter.downloadBooks[position]
-                val b = presenter.bookDaoHelper.getBook(book.book_id, 0) as Book
-                presenter.uploadBookClickLog(b)
-                BookHelper.goToCoverOrRead(applicationContext, this@DownloadManagerActivity, b, 1)
-            } else {
-                removeHelper.setCheckPosition(position)
+        val books = this.mBookDaoHelper!!.getBooksOnLineList()
+        if (this.downloadingBooks != null && this.views != null) {
+            this.downloadingBooks!!.clear()
+            this.downloadingBooks!!.addAll(books)
+            Collections.sort(this.downloadingBooks)
+            Collections.sort(this.downloadingBooks, MultiComparator())
+            Collections.sort(this.downloadingBooks, CachedComparator())
+            if (downloadingBooks!!.isEmpty()) {
+                this.more!!.setVisibility(View.GONE)
             }
+            this.views!!.freshBookList(this.downloadingBooks)
         }
-        download_manager_list.setOnItemLongClickListener { parent, view, position, id ->
-            if (AppUtils.getPackageName() != "cc.kdqbxs.reader") {
-                if (!removeHelper.isRemoveMode) {
-                    removeHelper.showRemoveMenu(root)
-                    btn_edit.text = "取消"
+    }
+
+    fun checkSelectAll(isAll: Boolean) {
+        if (isAll) {
+            this.editSelectAll!!.setText("取消全选")
+        } else {
+            this.editSelectAll!!.setText("全选")
+        }
+    }
+
+    override
+    fun onClick(v: View) {
+
+        val data = HashMap<String, String>()
+        when (v.getId()) {
+        //            case R.id.btn_edit:
+        //                this.views.dissmissremoveMenu();
+        //                this.editCancel.setVisibility(View.GONE);
+        //                this.editSelectAll.setVisibility(View.GONE);
+        //                this.more.setVisibility(View.VISIBLE);
+        //                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.bs_down_m_click_cancel);
+        //                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.CANCLE);
+        //                return;
+            R.id.edit_cancel -> {
+                if (!isDoubleClick(System.currentTimeMillis())) {
+                    this.views!!.removehelper.dismissRemoveMenu()
+                    this.editCancel!!.setVisibility(View.GONE)
+                    this.editSelectAll!!.setVisibility(View.GONE)
+                    this.more!!.setVisibility(View.VISIBLE)
+                    this.back_btn!!.setVisibility(View.VISIBLE)
                 }
+                return
             }
-            false
-        }
-        download_empty_btn.setOnClickListener{
-            EventBus.getDefault().post(DownLoaderToHome(1))
-            finish()
-        }
-    }
-
-    fun startDownloadService() {
-        if (presenter.downloadService != null) {//downloadService已经启用
-            presenter.setDownloadService()
-        } else {
-            val intent = Intent()
-            intent.setClass(this, DownloadService::class.java)
-            startService(intent)
-            bindService(intent, presenter.serviceConnection, Context.BIND_AUTO_CREATE)
-        }
-    }
-
-    override fun onDownloadBookQuery(bookList: ArrayList<Book>, hasDeleted: Boolean) {
-        if (bookList.size == 0) {
-            btn_edit.visibility = View.GONE
-        } else {
-            if (AppUtils.getPackageName() == "cc.kdqbxs.reader") {
-                btn_edit.visibility = View.GONE
-            } else {
-                btn_edit.visibility = View.VISIBLE
-                if (hasDeleted) {
-                    btn_edit.text = "编辑"
+            R.id.edit_select_all -> {
+                val isAll = "全选".equals(this.editSelectAll!!.getText())
+                if (isAll) {
+                    this.editSelectAll!!.setText("取消全选")
+                } else {
+                    this.editSelectAll!!.setText("全选")
                 }
+                views!!.setSelectAll(isAll)
+                return
             }
-        }
-        if (bookList.size == 0) {
-            download_manager_list.visibility = View.GONE
-            empty_bookshelf.visibility = View.VISIBLE
-        } else {
-            empty_bookshelf.visibility = View.GONE
-            download_manager_list.visibility = View.VISIBLE
-            presenter.downloadService?.replaceOffLineCallBack(this)
-            downloadAdapter.notifyDataSetChanged()
+            R.id.title_back_btn -> {
+                data.put("type", "1")
+                StartLogClickUtil.upLoadEventLog(this, "CACHEMANAGE", StartLogClickUtil.BACK, data)
+                finish()
+                return
+            }
+            R.id.title_name_btn -> {
+                finish()
+                return
+            }
+        //            case R.id.btn_edit:
+        //                if (!isDoubleClick(System.currentTimeMillis())) {
+        //                    if ("编辑".equals(this.editBtn.getText())) {
+        //                        this.views.showRemoveMenu(this.views);
+        //                        this.editBtn.setText("取消");
+        //                        StatServiceUtils.statAppBtnClick(this, StatServiceUtils.bs_down_m_click_edit);
+        //                        StartLogClickUtil.upLoadEventLog(this, "CACHEMANAGE", "CACHEEDIT");
+        //                        return;
+        //                    }
+        //                    this.views.dissmissremoveMenu();
+        //                    this.editBtn.setText("编辑");
+        //                    StatServiceUtils.statAppBtnClick(this, StatServiceUtils.bs_down_m_click_cancel);
+        //                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.CHCHEEDIT_PAGE, "CANCLE");
+        //                    return;
+        //                }
+        //                return;
+            R.id.ibtn_more -> {
+
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.MORE)
+
+
+                if (!isDoubleClick(System.currentTimeMillis())) {
+                    val inflate = getLayoutInflater().inflate(R.layout.download_head_more_pop, null)
+                    inflate.measure(0, 0)
+                    val popupWindow = PopupWindow(inflate, -2, -2)
+                    popupWindow.setBackgroundDrawable(ColorDrawable(ViewCompat.MEASURED_SIZE_MASK))
+                    popupWindow.setFocusable(true)
+                    popupWindow.setTouchable(true)
+                    popupWindow.setOutsideTouchable(false)
+                    this.more!!.getLocationOnScreen(IntArray(2))
+                    popupWindow.showAsDropDown(this.more, 0, -this.more!!.getHeight())
+                    val settingItemsHelper = SettingItemsHelper.getSettingHelper(getApplicationContext())
+                    val txt_read = inflate.findViewById(R.id.download_head_pop_sort_read) as TextView
+                    val txt_time = inflate.findViewById(R.id.download_head_pop_sort_time) as TextView
+                    if (settingItemsHelper.getValues().booklist_sort_type === 0) {
+                        txt_read.setTextColor(getResources().getColor(R.color.color_primary))
+                    } else {
+                        txt_time.setTextColor(getResources().getColor(R.color.color_primary))
+                    }
+                    txt_read.setOnClickListener(object : OnClickListener {
+                        override
+                        fun onClick(v: View) {
+                            settingItemsHelper.putInt(settingItemsHelper.booklistSortType, 0)
+                            Constants.book_list_sort_type = 0
+                            popupWindow.dismiss()
+                            this@DownloadManagerActivity.freshBooks(false)
+                            data.put("type", "0")
+                            StartLogClickUtil.upLoadEventLog(this@DownloadManagerActivity, StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.SORT, data)
+                        }
+                    })
+                    txt_time.setOnClickListener(object : OnClickListener {
+                        override
+                        fun onClick(v: View) {
+                            settingItemsHelper.putInt(settingItemsHelper.booklistSortType, 1)
+                            Constants.book_list_sort_type = 1
+                            popupWindow.dismiss()
+                            this@DownloadManagerActivity.freshBooks(false)
+                            data.put("type", "1")
+                            StartLogClickUtil.upLoadEventLog(this@DownloadManagerActivity, StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.SORT, data)
+
+                        }
+                    })
+                    inflate.findViewById(R.id.download_head_pop_edit).setOnClickListener(object : OnClickListener {
+                        override
+                        fun onClick(v: View) {
+                            this@DownloadManagerActivity.editCancel!!.setVisibility(View.VISIBLE)
+                            this@DownloadManagerActivity.editSelectAll!!.setVisibility(View.VISIBLE)
+                            this@DownloadManagerActivity.more!!.setVisibility(View.GONE)
+                            this@DownloadManagerActivity.back_btn!!.setVisibility(View.GONE)
+                            this@DownloadManagerActivity.views!!.showRemoveMenu(this@DownloadManagerActivity.views)
+                            StatServiceUtils.statAppBtnClick(this@DownloadManagerActivity, StatServiceUtils.bs_down_m_click_edit)
+                            StartLogClickUtil.upLoadEventLog(this@DownloadManagerActivity, StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.CACHEEDIT)
+                            popupWindow.dismiss()
+                        }
+                    })
+                    return
+                }
+                return
+            }
+            else -> return
         }
     }
 
-    override fun onDownloadDelete(isDeleteOfShelf: Boolean) {
-        if (isDeleteOfShelf) {
-            presenter.queryDownloadBooks(true)// FIXME
-        } else {
-            downloadAdapter.notifyDataSetChanged()
-        }
-        removeHelper.dismissRemoveMenu()
-        if (presenter.downloadBooks.isEmpty()) {
-            btn_edit.visibility = View.GONE
-        } else {
-            btn_edit.text = "编辑"
-        }
-    }
-
-    fun addBookToService(books: ArrayList<Book>) {
-        books.forEach {
-            BookHelper.addDownBookTask(this@DownloadManagerActivity, it,
-                    this, true)
-        }
-    }
-
-    fun pendingIntent(bookId: String?): PendingIntent {
-        val pending: PendingIntent
-        val intent: Intent
-        if (bookId != (-1).toString() + "") {
-            intent = Intent(this, DownBookClickReceiver::class.java)
-            intent.action = DownBookClickReceiver.action
-            intent.putExtra("book_id", bookId)
-            pending = PendingIntent.getBroadcast(applicationContext, 0, intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT)
-        } else {
-            intent = Intent(this,
-                    DownloadManagerActivity::class.java)
-            pending = PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        }
-        return pending
-    }
-
-    fun stopDownloadBook(book_id: String) {
-        if (presenter.downloadService != null) {
-            presenter.downloadService?.cancelTask(book_id)
-        }
-    }
-
-    override fun onMenuOpened(featureId: Int, menu: Menu): Boolean {
-        removeHelper.showRemoveMenu(root)
+    override
+    fun onMenuOpened(featureId: Int, menu: Menu): Boolean {
+        this.editCancel!!.setVisibility(View.VISIBLE)
+        this.editSelectAll!!.setVisibility(View.VISIBLE)
+        this.more!!.setVisibility(View.GONE)
+        this.back_btn!!.setVisibility(View.GONE)
+        this.views!!.showRemoveMenu(this.views)
         return false
     }
 
-    override fun onBackPressed() {
-        if (removeHelper.isRemoveMode) {
-            removeHelper.dismissRemoveMenu()
-            btn_edit.text = "编辑"
-        } else {
-            //如果是从通知栏过来, 且已经退出到home了, 要回到应用中
-            if (isTaskRoot) {
-                val intent = Intent(this, SplashActivity::class.java)
-                startActivity(intent)
+    override
+    fun onCreateOptionsMenu(menu: Menu): Boolean {
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override
+    fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if (keyCode != 4 || this.alertDialog == null || !this.alertDialog!!.isShowing()) {
+            return super.onKeyDown(keyCode, event)
+        }
+        this.alertDialog!!.cancel()
+        return true
+    }
+
+    override
+    fun onItemLongClick(adapterView: AdapterView<*>, view: View, position: Int, id: Long): Boolean {
+        if (!this.views!!.isRemoveMode()) {
+            this.editCancel!!.setVisibility(View.VISIBLE)
+            this.editSelectAll!!.setVisibility(View.VISIBLE)
+            this.more!!.setVisibility(View.GONE)
+            this.back_btn!!.setVisibility(View.GONE)
+            this.views!!.showRemoveMenu(findViewById(R.id.root))
+        }
+        return false
+    }
+
+    override
+    fun onItemClick(adapterView: AdapterView<*>, view: View, position: Int, id: Long) {
+        if (this.views!!.isRemoveMode() || this.views!!.isShowing) {
+            this.views!!.setRemoveChecked(position)
+            return
+        }
+        val book = this.views!!.getAdapter().getItem(position) as Book
+        if (book != null) {
+            val data = HashMap<String, String>()
+            data.put("STATUS", if (CacheManager.getBookStatus(book) === DownloadState.FINISH) "1" else "0")
+            StartLogClickUtil.upLoadEventLog(this, "CACHEMANAGE", "BOOKCLICK", data)
+            BookHelper.goToCoverOrRead(getApplicationContext(), this, book, 1)
+        }
+    }
+
+    override
+    fun onBackPressed() {
+        if (this.views!!.removehelper == null || !this.views!!.removehelper.isRemoveMode()) {
+            if (isTaskRoot()) {
+                startActivity(Intent(this, SplashActivity::class.java))
             }
             super.onBackPressed()
+            return
         }
+        this.views!!.removehelper.dismissRemoveMenu()
+        this.editCancel!!.setVisibility(View.GONE)
+        this.editSelectAll!!.setVisibility(View.GONE)
+        this.more!!.setVisibility(View.VISIBLE)
+        this.back_btn!!.setVisibility(View.VISIBLE)
     }
 
-    override fun onTaskStart(book_id: String?) {
-        downloadAdapter.notifyDataSetChanged()
-    }
-
-    override fun onChapterDownStart(book_id: String?, sequence: Int) {}
-
-    override fun onChapterDownFinish(book_id: String?, sequence: Int) {
-        val currentTime = System.currentTimeMillis()
-        if (currentTime - time > 1000) {
-            time = System.currentTimeMillis()
-            downloadAdapter.notifyDataSetChanged()
+    fun isDoubleClick(time: Long): Boolean {
+        if (time - this.lastClickTime <= 800) {
+            return true
         }
+        this.lastClickTime = time
+        return false
     }
 
-    override fun onChapterDownFailed(book_id: String?, sequence: Int, msg: String?) {
-        val currentTime = System.currentTimeMillis()
-        if (currentTime - lastShowTime > 4000) {
-            lastShowTime = currentTime
-            toastLong(msg)
-        }
-        downloadAdapter.notifyDataSetChanged()
+    override
+    fun supportSlideBack(): Boolean {
+        return if (isTaskRoot() || this.views!!.isRemoveMode()) false else true
     }
 
-    override fun onChapterDownFailedNeedLogin() {}
-
-    override fun onChapterDownFailedNeedPay(book_id: String?, nid: Int, sequence: Int) {}
-
-    override fun onTaskFinish(book_id: String?) {
-        val book = presenter.bookDaoHelper.getBook(book_id, 0)
-        toastShort("${book.name}缓存完成")
-        if (presenter.downloadService?.getDownBookTask(book_id) != null
-                && presenter.downloadService?.getDownBookTask(book_id)?.state == DownloadState.FINISH) {
-            val data = presenter.downloadBooks
-            for (b in data) {
-                if (b.book_id != null && book.book_id != null && b.book_id == book.book_id) {
-                    data.remove(b)
-                    break
-                }
-            }
-        }
-        presenter.queryDownloadBooks(true)
+    companion object {
+        private val TAG = "DownloadManagerActivity"
     }
-
-    override fun onProgressUpdate(book_id: String?, progress: Int) {
-        if (System.currentTimeMillis() - time > 500) {
-            time = System.currentTimeMillis()
-            runOnMain { downloadAdapter.notifyDataSetChanged() }
-        }
-    }
-
-    override fun onOffLineFinish() {
-        AppLog.d(TAG, "onOffLineFinish")
-    }
-
 }

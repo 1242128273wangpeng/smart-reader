@@ -9,5 +9,5 @@ interface DownloadManagerView {
 
     fun onDownloadBookQuery(bookList: ArrayList<Book>, hasDeleted: Boolean)
 
-    fun onDownloadDelete(isDeleteOfShelf: Boolean)
+    fun onDownloadDelete()
 }

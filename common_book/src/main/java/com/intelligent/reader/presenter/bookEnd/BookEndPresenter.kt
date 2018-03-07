@@ -17,6 +17,7 @@ import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.util.EventBookStore
 import net.lzbook.kit.book.component.service.DownloadService
+import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.book.view.RecommendItemView
 import net.lzbook.kit.constants.Constants
@@ -64,8 +65,7 @@ class BookEndPresenter(val act: Activity, val bookEndContract: BookEndContract,
 
         if (mBookDaoHelper!!.isBookSubed(ReadState.book.book_id)) {
             if (source.book_source_id != ReadState.book.book_source_id) {
-                //弹出切源提示
-                showChangeSourceNoticeDialog(source)
+                intoCatalogActivity(source, true)
                 return
             }
         }
@@ -148,10 +148,7 @@ class BookEndPresenter(val act: Activity, val bookEndContract: BookEndContract,
                 ReadState.book = iBook
                 if (b) {
                     val bookChapterDao = BookChapterDao(activity!!.get(), source.book_id)
-                    BookHelper.deleteAllChapterCache(source.book_id, 0, bookChapterDao.count)
                     bookChapterDao.deleteBookChapters(0)
-                    DownloadService.clearTask(source.book_id)
-                    BaseBookHelper.delDownIndex(activity!!.get(), source.book_id)
                 }
             } else {
                 val iBook = ReadState.book
@@ -160,6 +157,7 @@ class BookEndPresenter(val act: Activity, val bookEndContract: BookEndContract,
                 iBook.dex = source.dex
             }
             //dataFactory.chapterList.clear();
+            CacheManager.stop(source.book_id)
             openCategoryPage()
         }
     }
@@ -181,37 +179,6 @@ class BookEndPresenter(val act: Activity, val bookEndContract: BookEndContract,
         bundle.putSerializable(Constants.REQUEST_ITEM, RequestItem.fromBook(ReadState.book))
         intent.putExtras(bundle)
         activity!!.get()!!.startActivity(intent)
-    }
-
-    //换源弹窗
-    fun showChangeSourceNoticeDialog(source: Source) {
-        if (!activity!!.get()!!.isFinishing()) {
-            dismissDialog()
-
-            myDialog = MyDialog(activity!!.get(), R.layout.pop_confirm_layout)
-            myDialog!!.setCanceledOnTouchOutside(true)
-            val dialog_cancel = myDialog!!.findViewById(R.id.publish_stay) as Button
-            dialog_cancel.setText(R.string.cancel)
-            val dialog_confirm = myDialog!!.findViewById(R.id.publish_leave) as Button
-            dialog_confirm.setText(R.string.book_cover_confirm_change_source)
-            val dialog_information = myDialog!!.findViewById(R.id.publish_content) as TextView
-            dialog_information.setText(R.string.book_cover_change_source_prompt)
-            dialog_cancel.setOnClickListener { dismissDialog() }
-            dialog_confirm.setOnClickListener {
-                dismissDialog()
-                intoCatalogActivity(source, true)
-            }
-
-            myDialog!!.setOnCancelListener(DialogInterface.OnCancelListener { myDialog!!.dismiss() })
-            if (!myDialog!!.isShowing()) {
-                try {
-                    myDialog!!.show()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-
-            }
-        }
     }
 
     private fun dismissDialog() {

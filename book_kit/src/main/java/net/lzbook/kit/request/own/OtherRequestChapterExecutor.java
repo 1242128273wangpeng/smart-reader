@@ -35,11 +35,11 @@ public class OtherRequestChapterExecutor extends RequestExecutorDefault {
      */
     protected boolean isNeedDownContent(Chapter chapter) {
         if (downloadFlag) {
-            if (DataCache.isChapterExists(chapter.sequence, chapter.book_id)) {
+            if (DataCache.isChapterExists(chapter)) {
                 return false;
             }
         } else {
-            final String content = DataCache.getChapterFromCache(chapter.sequence, chapter.book_id);
+            final String content = DataCache.getChapterFromCache(chapter);
             if (!TextUtils.isEmpty(content) && !("null".equals(content) || CACHE_EXIST.equals(content))
                     || NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
                 if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
@@ -79,7 +79,7 @@ public class OtherRequestChapterExecutor extends RequestExecutorDefault {
                 write_success = true;
 
             } else {
-                write_success = DataCache.saveChapter(content, chapter.sequence, chapter.book_id);
+                write_success = DataCache.saveChapter(content, chapter);
             }
 
             if (downloadFlag && !write_success) {
@@ -106,7 +106,7 @@ public class OtherRequestChapterExecutor extends RequestExecutorDefault {
                 write_success = true;
 
             } else {
-                write_success = DataCache.saveChapter(content, chapter.sequence, chapter.book_id);
+                write_success = DataCache.saveChapter(content, chapter);
             }
 
             if (downloadFlag && !write_success) {

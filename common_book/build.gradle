@@ -325,6 +325,7 @@ N多网	        blf1298_10885_001
 		blf1298_10001_001
 安智市场渠道号  blp1298_10894_001
 猎豹联盟        dyp1024_20001_001
+三星   blf1298_10929_001
 
 升级渠道	blf1298_11974_001
  */
@@ -396,7 +397,7 @@ N多网	        blf1298_10885_001
             notOverrideResValue getOwner(), "string", "push_key", "aHSRXNEN6xUTi2QM455gvQC6"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23572755"
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "ea0dfde6fc6241cd0aa7a4330bfcd8ad"
-            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://yuedu.dushixiaoshuo.cn"
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://yuedu.dushixiaoshuo.cn"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://scpage.dushixiaoshuo.cn:443"
         }
 

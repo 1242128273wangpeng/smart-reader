@@ -48,6 +48,7 @@ public class QGRequestExecutor extends RequestExecutorDefault {
                         ArrayList<Chapter> chapterList = chapterDao.queryBookChapter();
                         if (chapterList == null || chapterList.size() == 0) {
                             if (BookDaoHelper.getInstance().isBookSubed(requestItem.book_id)) {
+                                chapterDao.deleteBookChapters(0);
                                 chapterDao.insertBookChapter(list);
                                 Chapter lastChapter = list.get(list.size() - 1);
                                 Book book = new Book();
@@ -105,6 +106,7 @@ public class QGRequestExecutor extends RequestExecutorDefault {
                         //数据库操作
                         if (chapterList != null && !chapterList.isEmpty() && BookDaoHelper.getInstance().isBookSubed
                                 (requestItem.book_id)) {
+                            chapterDao.deleteBookChapters(0);
                             chapterDao.insertBookChapter(chapterList);
                             Chapter lastChapter = chapterList.get(chapterList.size() - 1);
                             Book book = new Book();

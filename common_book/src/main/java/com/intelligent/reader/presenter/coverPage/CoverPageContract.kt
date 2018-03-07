@@ -12,10 +12,12 @@ interface CoverPageContract {
     fun showRecommend(recommendBean: ArrayList<Book>) //获取推荐的书
     fun showCoverError()
     fun showRecommendError()
-    fun changeDownloadButtonStatus(type: Int) //改变缓存按钮的文字
+    fun changeDownloadButtonStatus() //改变缓存按钮的文字
+    fun setShelfBtnClickable(clickable: Boolean)
     fun successAddIntoShelf(isAddIntoShelf: Boolean) //是否成功加入书架
     fun showLoadingSuccess() //加载成功
-    fun showArrow(isShow: Boolean, isQGTitle: Boolean) //是否显示多源的下拉箭头
+    fun showArrow(isQGTitle: Boolean) //是否显示多源的下拉箭头
+    fun setCompound()
     fun showCurrentSources(currentSource: String) // 显示来源地址
 
     fun showCoverDetail(bookVo: CoverPage.BookVoBean) //显示书籍封面页
