@@ -55,8 +55,6 @@ public class BookHelper extends BaseBookHelper {
                 requestItem.name = book.name;
                 requestItem.author = book.author;
                 requestItem.dex = book.dex;
-                requestItem.parameter = book.parameter;
-                requestItem.extra_parameter = book.extra_parameter;
 
                 if ((book.sequence > -1 || book.readed == 1 || (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE && isCached( book))) && BookDaoHelper.getInstance().isBookSubed(book.book_id)) {
                     requestItem.fromType = 0;
@@ -126,8 +124,6 @@ public class BookHelper extends BaseBookHelper {
                 requestItem.name = book.name;
                 requestItem.author = book.author;
                 requestItem.dex = book.dex;
-                requestItem.parameter = book.parameter;
-                requestItem.extra_parameter = book.extra_parameter;
                 if (book.readed == -2 || book.initialization_status == 5) {
                     BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
                     book.initialization_status = 0;

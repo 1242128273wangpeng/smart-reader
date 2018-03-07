@@ -10,8 +10,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:fitsSystemWindows="true"
-            android:background="@color/color_primary">
+            android:fitsSystemWindows="true">
 
         <RelativeLayout
                 android:layout_width="match_parent"
@@ -21,11 +20,9 @@
                     android:id="@+id/iv_back"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_alignParentLeft="true"
-                    android:gravity="center"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="@dimen/padding_16"
-                    android:src="@mipmap/cover_top_back"/>
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/nbar_back_icon"
+                    android:paddingLeft="16dp"/>
 
             <TextView
                     android:id="@+id/name_bookend"
@@ -37,21 +34,22 @@
                     android:text="@string/read_end_tip"
                     android:textSize="@dimen/large_size_18"
                     android:layout_alignParentTop="true"
+                    android:visibility="gone"
                     android:layout_toLeftOf="@+id/imageView"
                     android:layout_toRightOf="@+id/iv_back"/>
 
-            <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:paddingLeft="16dp"
-                    android:visibility="invisible"
-                    android:paddingRight="@dimen/padding_16"
-                    android:src="@mipmap/cover_top_back"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    android:id="@+id/imageView"/>
+            <!--<ImageView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:gravity="center"-->
+                    <!--android:paddingLeft="16dp"-->
+                    <!--android:visibility="invisible"-->
+                    <!--android:paddingRight="@dimen/padding_16"-->
+                    <!--android:src="@mipmap/cover_top_back"-->
+                    <!--android:layout_alignParentTop="true"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_alignParentEnd="true"-->
+                    <!--android:id="@+id/imageView"/>-->
         </RelativeLayout>
     </RelativeLayout>
 
@@ -97,6 +95,7 @@
             <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_marginTop="10dp"
                     android:background="@color/color_divider"/>
 
             <ListView
@@ -112,6 +111,7 @@
             <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
                     android:layout_alignParentTop="true">
 
                 <LinearLayout
@@ -160,11 +160,11 @@
                          android:layout_width="match_parent"
                          android:layout_height="@dimen/dimen_height_0.5"
                          android:background="?attr/color_divider"/>-->
-            <View
-                    android:layout_width="match_parent"
-                    android:layout_height="12dp"
-                    android:id="@+id/view"
-                    android:background="@color/color_divider_item"/>
+            <!--<View-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="12dp"-->
+                    <!--android:id="@+id/view"-->
+                    <!--android:background="@color/color_divider_item"/>-->
 
             <!--<RelativeLayout
                          android:id="@+id/bookend_ad_layout"

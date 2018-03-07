@@ -34,7 +34,7 @@ import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.txtqbmfyd.content_view.*
 import kotlinx.android.synthetic.txtqbmfyd.content_view_main.*
 import kotlinx.android.synthetic.txtqbmfyd.content_view_menu.*
-import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.view.ConsumeEvent
 import net.lzbook.kit.book.view.NonSwipeViewPager
 import net.lzbook.kit.cache.DataCleanManager
@@ -97,13 +97,7 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
         dialog.setOnConfirmListener {
             dialog.showLoading()
             activity.doAsync {
-                val downloadService = BaseBookApplication.getDownloadService()
-                val bookTasks = downloadService?.cancelAll()
-                if (bookTasks != null) {
-                    for (task in bookTasks) {
-                        downloadService.dellTask(task.book_id)
-                    }
-                }
+                CacheManager.removeAll()
                 UIHelper.clearAppCache()
                 DataCleanManager.clearAllCache(activity.applicationContext)
                 Thread.sleep(1000)
@@ -478,7 +472,7 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
     fun onMenuShownState(state: Boolean) {
         if (state) {
             content_tab_selection.visibility = View.GONE
-            img_bottom_shadow.visibility = View.GONE
+//            img_bottom_shadow.visibility = View.GONE
             if (!rl_head_editor.isShown) {
                 val showAnimation = AlphaAnimation(0.0f, 1.0f)
                 showAnimation.duration = 200
@@ -490,7 +484,7 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
             if (rl_head_editor.isShown) {
                 rl_head_editor.visibility = View.GONE
             }
-            img_bottom_shadow.visibility = View.VISIBLE
+//            img_bottom_shadow.visibility = View.VISIBLE
             content_tab_selection.visibility = View.VISIBLE
             AnimationHelper.smoothScrollTo(view_pager, 0)
         }

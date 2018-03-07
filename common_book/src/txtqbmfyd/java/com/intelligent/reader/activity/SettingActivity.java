@@ -24,14 +24,12 @@ import com.bumptech.glide.Glide;
 import com.intelligent.reader.R;
 import com.intelligent.reader.util.EventBookStore;
 
-import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.component.service.DownloadService;
+import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.book.view.ConsumeEvent;
 import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.book.view.SwitchButton;
 import net.lzbook.kit.cache.DataCleanManager;
-import net.lzbook.kit.data.bean.BookTask;
 import net.lzbook.kit.data.bean.ReadConfig;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.user.bean.LoginResp;
@@ -568,16 +566,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                         public void run() {
                             super.run();
 
-                            DownloadService downloadService = BaseBookApplication.getDownloadService();
-                            if (downloadService != null) {
-                                ArrayList<BookTask> bookTasks = downloadService.cancelAll();
-                                if (bookTasks != null) {
-                                    for (BookTask task : bookTasks) {
-                                        downloadService.dellTask(task.book_id);
-                                    }
-                                }
-                            }
-
+                            CacheManager.INSTANCE.removeAll();
                             UIHelper.clearAppCache();
                             DataCleanManager.clearAllCache(getApplicationContext());
                             runOnUiThread(new Runnable() {

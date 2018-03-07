@@ -1,7 +1,5 @@
 package com.intelligent.reader.activity
 
-import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -11,11 +9,10 @@ import com.intelligent.reader.adapter.DownloadManagerAdapter
 import com.intelligent.reader.presenter.downloadmanager.DownloadManagerPresenter
 import com.intelligent.reader.presenter.downloadmanager.DownloadManagerView
 import com.intelligent.reader.read.help.BookHelper
-import com.intelligent.reader.receiver.DownBookClickReceiver
 import com.intelligent.reader.view.DownloadDeleteDialog
 import kotlinx.android.synthetic.txtqbmfyd.download_manager.*
 import kotlinx.android.synthetic.txtqbmfyd.download_manager_pager.*
-import net.lzbook.kit.book.component.service.DownloadService
+import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.CallBackDownload
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.data.bean.Book
@@ -49,9 +46,8 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
             presenter.uploadDialogCancelLog()
         }
         dialog.setConfirmListener { books, isDeleteBookOfShelf ->
-            if (isDeleteBookOfShelf) presenter.deleteBooksOfShelf(books)
             presenter.uploadDialogConfirmLog(books?.size)
-            presenter.deleteDownload(books, isDeleteBookOfShelf)
+            presenter.deleteDownload(books)
         }
         dialog
     }
@@ -87,7 +83,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
         super.onCreate(savedInstanceState)
         setContentView(R.layout.download_manager)
         initView()
-        startDownloadService()
+        CacheManager.listeners.add(this)
     }
 
     override fun onResume() {
@@ -140,17 +136,6 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
         }
     }
 
-    fun startDownloadService() {
-        if (presenter.downloadService != null) {//downloadService已经启用
-            presenter.setDownloadService()
-        } else {
-            val intent = Intent()
-            intent.setClass(this, DownloadService::class.java)
-            startService(intent)
-            bindService(intent, presenter.serviceConnection, Context.BIND_AUTO_CREATE)
-        }
-    }
-
     override fun onDownloadBookQuery(bookList: ArrayList<Book>, hasDeleted: Boolean) {
         if (bookList.size == 0) {
             btn_edit.visibility = View.GONE
@@ -166,17 +151,13 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
         } else {
             empty_bookshelf.visibility = View.GONE
             download_manager_list.visibility = View.VISIBLE
-            presenter.downloadService?.replaceOffLineCallBack(this)
             downloadAdapter.notifyDataSetChanged()
         }
     }
 
-    override fun onDownloadDelete(isDeleteOfShelf: Boolean) {
-        if (isDeleteOfShelf) {
-            presenter.queryDownloadBooks(true)// FIXME
-        } else {
-            downloadAdapter.notifyDataSetChanged()
-        }
+    override fun onDownloadDelete() {
+        presenter.queryDownloadBooks(true)
+        downloadAdapter.notifyDataSetChanged()
         removeHelper.dismissRemoveMenu()
         if (presenter.downloadBooks.isEmpty()) {
             btn_edit.visibility = View.GONE
@@ -185,34 +166,8 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
         }
     }
 
-    fun addBookToService(books: ArrayList<Book>) {
-        books.forEach {
-            BookHelper.addDownBookTask(this@DownloadManagerActivity, it,
-                    this, true)
-        }
-    }
-
-    fun pendingIntent(bookId: String?): PendingIntent {
-        val pending: PendingIntent
-        val intent: Intent
-        if (bookId != (-1).toString() + "") {
-            intent = Intent(this, DownBookClickReceiver::class.java)
-            intent.action = DownBookClickReceiver.action
-            intent.putExtra("book_id", bookId)
-            pending = PendingIntent.getBroadcast(applicationContext, 0, intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT)
-        } else {
-            intent = Intent(this,
-                    DownloadManagerActivity::class.java)
-            pending = PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        }
-        return pending
-    }
-
     fun stopDownloadBook(book_id: String) {
-        if (presenter.downloadService != null) {
-            presenter.downloadService?.cancelTask(book_id)
-        }
+        CacheManager.stop(book_id)
     }
 
     override fun onMenuOpened(featureId: Int, menu: Menu): Boolean {
@@ -234,40 +189,13 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
         }
     }
 
-    override fun onTaskStart(book_id: String?) {
-        downloadAdapter.notifyDataSetChanged()
-    }
-
-    override fun onChapterDownStart(book_id: String?, sequence: Int) {}
-
-    override fun onChapterDownFinish(book_id: String?, sequence: Int) {
-        val currentTime = System.currentTimeMillis()
-        if (currentTime - time > 1000) {
-            time = System.currentTimeMillis()
-            downloadAdapter.notifyDataSetChanged()
-        }
-    }
-
-    override fun onChapterDownFailed(book_id: String?, sequence: Int, msg: String?) {
-        val currentTime = System.currentTimeMillis()
-        if (currentTime - lastShowTime > 4000) {
-            lastShowTime = currentTime
-            toastLong(msg)
-        }
-        downloadAdapter.notifyDataSetChanged()
-    }
-
-    override fun onChapterDownFailedNeedLogin() {}
-
-    override fun onChapterDownFailedNeedPay(book_id: String?, nid: Int, sequence: Int) {}
-
     override fun onTaskFinish(book_id: String?) {
+        AppLog.e("tag", "onTaskFinish")
         val book = presenter.bookDaoHelper.getBook(book_id, 0)
-        book.name?.let {
-            toastShort("${it}缓存完成")
-        }
-        if (presenter.downloadService?.getDownBookTask(book_id) != null
-                && presenter.downloadService?.getDownBookTask(book_id)?.state == DownloadState.FINISH) {
+        if (CacheManager.getBookStatus(book) == DownloadState.FINISH) {
+            book.name?.let {
+                toastShort("${it}缓存完成")
+            }
             val data = presenter.downloadBooks
             for (b in data) {
                 if (b.book_id != null && book.book_id != null && b.book_id == book.book_id) {
@@ -279,18 +207,33 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
         presenter.queryDownloadBooks(false)
     }
 
-    override fun onProgressUpdate(book_id: String?, progress: Int) {
+
+    override fun onTaskStatusChange(book_id: String?) {
+        downloadAdapter.notifyDataSetChanged()
+    }
+
+    override fun onTaskFailed(book_id: String?, t: Throwable?) {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastShowTime > 4000) {
+            lastShowTime = currentTime
+//       TODO     toastLong(msg)
+        }
+        downloadAdapter.notifyDataSetChanged()
+    }
+
+    override fun onTaskProgressUpdate(book_id: String?) {
         if (System.currentTimeMillis() - time > 500) {
             time = System.currentTimeMillis()
             runOnMain { downloadAdapter.notifyDataSetChanged() }
         }
     }
 
-    override fun onOffLineFinish() {
-        AppLog.d(TAG, "onOffLineFinish")
-    }
-
     override fun supportSlideBack(): Boolean {
         return !isTaskRoot && !removeHelper.isRemoveMode
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        CacheManager.listeners.remove(this)
     }
 }

@@ -222,6 +222,10 @@ public class StartLogClickUtil {
     //一级分类页面
     public static final String FIRST_SEARCH = "SEARCH";//点击搜索
 
+    //下载解包
+    public static final String DOWNLOADPACKE = "DOWNLOADPACKE";
+    public static final String RESOLVEPACKE = "RESOLVEPACKE";
+
 
     private static final ExecutorService logThreadPool = Executors.newSingleThreadExecutor();
 

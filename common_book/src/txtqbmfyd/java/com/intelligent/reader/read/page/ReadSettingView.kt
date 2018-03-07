@@ -7,7 +7,6 @@ import android.content.SharedPreferences
 import android.graphics.Rect
 import android.os.Build
 import android.preference.PreferenceManager
-import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -1076,7 +1075,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                     }
                 }
             } else {
-                if (DataCache.isChapterExists(resizeProgress, ReadState.book_id)) {
+                if (DataCache.isChapterExists(ReadState.currentChapter)) {
                     if (listener != null) {
                         listener!!.onJumpChapter(resizeProgress, offset)
                     }

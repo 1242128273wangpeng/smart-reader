@@ -9,12 +9,10 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.PopupWindow
 import android.widget.TextView
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.DownloadManagerActivity
@@ -26,7 +24,6 @@ import com.intelligent.reader.read.mode.ReadState
 import com.quduquxie.network.DataCache
 import kotlinx.android.synthetic.txtqbmfyd.item_read_bookmark.view.*
 import kotlinx.android.synthetic.txtqbmfyd.item_read_catalog.view.*
-import kotlinx.android.synthetic.txtqbmfyd.pop_catalog_mark_delete.view.*
 import kotlinx.android.synthetic.txtqbmfyd.read_catalog_mark_layout.*
 import kotlinx.android.synthetic.txtqbmfyd.read_catalog_mark_layout.view.*
 import net.lzbook.kit.book.view.LoadingPage
@@ -35,7 +32,6 @@ import net.lzbook.kit.data.bean.Bookmark
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.utils.StatServiceUtils
-import net.lzbook.kit.utils.ToastUtils
 import java.text.SimpleDateFormat
 import java.util.concurrent.Callable
 
@@ -291,7 +287,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
                 if (Constants.QG_SOURCE == ReadState.book.site) {
                     chapterExist = DataCache.isChapterExists(chapter.chapter_id, chapter.book_id)
                 } else {
-                    chapterExist = BookHelper.isChapterExist(chapter.sequence, chapter.book_id)
+                    chapterExist = BookHelper.isChapterExist(chapter)
                 }
 
                 var txtColor = 0

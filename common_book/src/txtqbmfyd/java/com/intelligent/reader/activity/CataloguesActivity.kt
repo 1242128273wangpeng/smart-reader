@@ -14,7 +14,6 @@ import android.widget.AbsListView
 import android.widget.AbsListView.OnScrollListener
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
-import android.widget.ImageView
 import com.baidu.mobstat.StatService
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.BookmarkAdapter
@@ -29,7 +28,6 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.*
-import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.StatServiceUtils
 import java.util.*
@@ -40,6 +38,7 @@ import java.util.concurrent.Callable
  * 小说目录
  */
 class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollListener, OnItemClickListener, CataloguesContract {
+
     internal var colorSelected: Int = 0
     internal var colorNormal: Int = 0
     internal var sortIcon = 0//背景色
@@ -566,7 +565,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
 
 
     //目前只有免费小说书城有用到 其他几个壳没有
-    override fun changeDownloadButtonStatus(type: Int) {
+    override fun changeDownloadButtonStatus() {
 
     }
 

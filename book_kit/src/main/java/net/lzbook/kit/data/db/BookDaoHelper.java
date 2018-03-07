@@ -1,5 +1,9 @@
 package net.lzbook.kit.data.db;
 
+import android.content.Context;
+import android.text.TextUtils;
+import android.widget.Toast;
+
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
@@ -9,10 +13,6 @@ import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.repair_books.bean.BookFix;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.BaseBookHelper;
-
-import android.content.Context;
-import android.text.TextUtils;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -420,8 +420,10 @@ public class BookDaoHelper {
                     BaseBookHelper.removeChapterCacheFile(book);
                 }
 
-                CacheManager.INSTANCE.stop(remove);
-                CacheManager.INSTANCE.resetTask(remove);
+                if(remove != null){
+                    CacheManager.INSTANCE.stop(remove);
+                    CacheManager.INSTANCE.resetTask(remove);
+                }
                 this.mContext.deleteDatabase("book_chapter_" + book.book_id);
             }
 
@@ -491,4 +493,35 @@ public class BookDaoHelper {
         return mDao.deleteBookFix(book_id).length > 0;
     }
 
+//    /**
+//     * 新增搜索页推荐书籍
+//     */
+//    public synchronized void insertSearchBook(List<SearchRecommendBook.DataBean> recommendBooks) {
+//        deleteSearchBooks();
+//        for (int i = 0; i < recommendBooks.size(); i++) {
+//            mDao.insertSearchBook(recommendBooks.get(i));
+//        }
+//
+//    }
+//
+//    /**
+//     * 获取搜索页推荐的书籍
+//     */
+//
+//    public synchronized ArrayList<SearchRecommendBook.DataBean> getSearchBooks() {
+//        return mDao.getSearchBooks();
+//    }
+//
+//
+//    /**
+//     * 删除表里的数据
+//     */
+//
+//    public synchronized void deleteSearchBooks() {
+//        mDao.deleteSearchBook();
+//    }
+
+    public synchronized void deleteBook(String book_id) {
+        this.mDao.deleteSubBook(book_id);
+    }
 }

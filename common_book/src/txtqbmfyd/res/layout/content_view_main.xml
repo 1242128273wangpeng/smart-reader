@@ -76,11 +76,11 @@
 
         <ImageView
             android:id="@+id/img_head_menu"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="22dp"
+            android:layout_marginRight="16dp"
             android:scaleType="fitXY"
             android:src="@mipmap/nbar_more_nor_icon"/>
     </RelativeLayout>
@@ -126,23 +126,24 @@
         android:layout_above="@+id/content_tab_selection"
         android:layout_below="@id/rl_head"
         android:flipInterval="30"
+        android:background="@color/base_bg"
         android:persistentDrawingCache="animation"/>
 
-    <ImageView
-        android:id="@+id/img_head_shadow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/rl_head"
-        android:scaleType="fitXY"
-        android:src="@drawable/top_shadow_bg"/>
+    <!--<ImageView-->
+        <!--android:id="@+id/img_head_shadow"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/rl_head"-->
+        <!--android:scaleType="fitXY"-->
+        <!--android:src="@drawable/top_shadow_bg"/>-->
 
-    <ImageView
-        android:id="@+id/img_bottom_shadow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/content_tab_selection"
-        android:scaleType="fitXY"
-        android:src="@drawable/bottom_shadow_bg"/>
+    <!--<ImageView-->
+        <!--android:id="@+id/img_bottom_shadow"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_above="@+id/content_tab_selection"-->
+        <!--android:scaleType="fitXY"-->
+        <!--android:src="@drawable/bottom_shadow_bg"/>-->
 
     <LinearLayout
         android:id="@+id/content_tab_selection"

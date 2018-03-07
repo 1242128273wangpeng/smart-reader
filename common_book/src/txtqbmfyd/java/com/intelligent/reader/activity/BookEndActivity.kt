@@ -10,6 +10,7 @@ import android.widget.ListView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.intelligent.reader.R
+import com.intelligent.reader.adapter.BookEndSourceAdapter
 import com.intelligent.reader.adapter.SourceAdapter
 import com.intelligent.reader.presenter.bookEnd.BookEndContract
 import com.intelligent.reader.presenter.bookEnd.BookEndPresenter
@@ -39,7 +40,7 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
     private var category: String? = null
     private var book_id: String? = null
 
-    private var sourceAdapter: SourceAdapter? = null
+    private var sourceAdapter: BookEndSourceAdapter? = null
     private var sourceListView: ListView? = null
     private var mBookEndPresenter: BookEndPresenter? = null
     private var thememode: String? = null
@@ -181,7 +182,7 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
     override fun showSource(hasSource: Boolean, sourceList: ArrayList<Source>) {
         if (hasSource) {
             sourceListView!!.visibility = View.VISIBLE
-            sourceAdapter = SourceAdapter(this, sourceList)
+            sourceAdapter = BookEndSourceAdapter(this, sourceList)
             sourceListView!!.adapter = sourceAdapter
             sourceListView!!.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
                 val source = sourceList[position]

@@ -45,11 +45,11 @@
                 android:layout_alignParentBottom="true">
 
             <!--<View-->
-                    <!--android:id="@+id/id_dividing"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="0.5dp"-->
-                    <!--android:layout_alignParentTop="true"-->
-                    <!--android:background="@color/color_divider"/>-->
+            <!--android:id="@+id/id_dividing"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0.5dp"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:background="@color/color_divider"/>-->
 
             <LinearLayout
                     android:layout_width="match_parent"
@@ -237,7 +237,6 @@
                                     android:paddingRight="5dp"
                                     android:paddingTop="4dp"
                                     android:paddingBottom="4dp"
-                                    android:includeFontPadding="false"
                                     android:text="玄幻"
                                     android:layout_marginLeft="5dp"
                                     android:textColor="@color/title_tagart_text_color"
@@ -299,21 +298,21 @@
                             android:id="@+id/expandable_text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:lineSpacingMultiplier="1.2"
+                            android:lineSpacingMultiplier="1.5"
                             android:gravity="center_vertical"
                             android:ellipsize="end"
-                            android:text="简介简介简介简介简介简介简介简介简介简介"
-                            android:maxLines="3"
-                            android:textColor="@color/text_color_light"
+                            android:text="简介"
+                            android:textColor="@color/cover_info_text_color"
                             android:textSize="13sp"/>
 
-                    <TextView
+                    <ImageView
                             android:id="@+id/expand_collapse"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
                             android:layout_alignParentBottom="true"
-                            android:drawableRight="@drawable/icon_close_text"/>
+                            android:paddingBottom="1dp"
+                            android:src="@drawable/icon_close_text"/>
                 </net.lzbook.kit.book.view.ExpandableTextView>
 
 
@@ -465,6 +464,14 @@
                             android:layout_height="wrap_content"/>
                 </LinearLayout>
 
+
+                <com.intelligent.reader.view.ScrollForListView
+                        android:id="@+id/book_recommend_lv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:cacheColorHint="@color/transparent"
+                        android:listSelector="@color/transparent"
+                        android:divider="@null"/>
             </LinearLayout>
         </ScrollView>
     </RelativeLayout>

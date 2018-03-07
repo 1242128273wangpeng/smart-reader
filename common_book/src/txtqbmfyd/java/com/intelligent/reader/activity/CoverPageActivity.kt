@@ -13,10 +13,13 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.intelligent.reader.R
+import com.intelligent.reader.adapter.BookRecommendAdapter
 import com.intelligent.reader.presenter.coverPage.CoverPageContract
 import com.intelligent.reader.presenter.coverPage.CoverPagePresenter
 import kotlinx.android.synthetic.txtqbmfyd.act_book_cover.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.book.download.CacheManager
+import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
@@ -31,6 +34,7 @@ import java.util.*
 import java.util.concurrent.Callable
 
 class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageContract {
+
     //private RelativeLayout book_cover_reading_view;
     private var loadingPage: LoadingPage? = null
 
@@ -39,6 +43,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
 
     private var mCoverPagePresenter: CoverPagePresenter? = null
+    private lateinit var mBookRecommedAdapter: BookRecommendAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +83,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             mCoverPagePresenter = CoverPagePresenter(it, this, this, this)
             loadCoverInfo()
         }
+        mBookRecommedAdapter = BookRecommendAdapter()
+        book_recommend_lv.adapter = mBookRecommedAdapter
+        book_recommend_lv.setOnItemClickListener { parent, view, position, id ->  }
     }
 
     private fun loadCoverInfo() {
@@ -208,7 +216,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
 
     override fun showRecommend(recommendBean: ArrayList<Book>) {
-        Log.e("showRecommend", "showRecommend : recommendBeans size" + recommendBean.size)
+//        Log.e("showRecommend", "showRecommend : recommendBeans size" + recommendBean.size)
+        mBookRecommedAdapter.setData(recommendBean)
     }
 
     override fun showCoverError() {
@@ -239,7 +248,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         }
     }
 
-    override fun showArrow(isShow: Boolean, isQGTitle: Boolean) {
+    override fun showArrow(isQGTitle: Boolean) {
         if (isQGTitle) {
             if (book_cover_source_form != null) {
                 book_cover_source_form.text = "青果阅读"
@@ -257,7 +266,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         if (bookVo != null) {
 
             if (book_cover_image != null && !TextUtils.isEmpty(bookVo.img_url) && bookVo
-                    .img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL) {
+                            .img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL) {
                 Glide.with(applicationContext).load(bookVo.img_url).placeholder(net.lzbook.kit.R.drawable.icon_book_cover_default).error(net.lzbook.kit.R.drawable.icon_book_cover_default).diskCacheStrategy(DiskCacheStrategy.ALL).into(book_cover_image)
             } else {
                 Glide.with(applicationContext).load(net.lzbook.kit.R.drawable.icon_book_cover_default).into(book_cover_image)
@@ -369,12 +378,21 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     }
 
-    override fun changeDownloadButtonStatus(type: Int) {
+    override fun setCompound() {
+        book_cover_source_form.setCompoundDrawables(null, null, null, null)
+    }
+
+    override fun setShelfBtnClickable(clickable: Boolean) {
+        book_cover_bookshelf.isClickable = clickable
+    }
+
+    override fun changeDownloadButtonStatus() {
+        val book = mCoverPagePresenter?.getBook() ?: return
+        val status = CacheManager.getBookStatus(book)
         mCoverPagePresenter?.let {
-            when (type) {
-                it.DOWNLOAD_STATE_FINISH -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_finish)
-                it.DOWNLOAD_STATE_LOCKED -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_finish)
-                it.DOWNLOAD_STATE_NOSTART -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_normal)
+            when (status) {
+                DownloadState.FINISH -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_finish)
+                DownloadState.NOSTART -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_normal)
                 else -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_running)
             }
         }

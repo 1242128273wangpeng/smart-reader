@@ -178,7 +178,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 //    //自动阅读
 //    fun dealManualDialogShow() = mReadPresenter.dealManualDialogShow()
 
-    fun searchChapterCallBack(sourcesList: ArrayList<Source>) = mReadPresenter.searchChapterCallBack(sourcesList)
+    fun searchChapterCallBack(sourcesList: ArrayList<Source>) = mReadPresenter.onGetSourceList(sourcesList)
 
     /**
      * 隐藏topmenu
@@ -242,7 +242,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onStart() {
         super.onStart()
-        mReadPresenter.onStart()
     }
 
     override fun onPause() {
