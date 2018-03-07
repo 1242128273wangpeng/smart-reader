@@ -38,7 +38,6 @@ import android.widget.Toast;
 import com.baidu.mobstat.StatService;
 
 import net.lzbook.kit.R;
-import net.lzbook.kit.ad.SwitchSplashAdActivity;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.utils.ATManager;
@@ -381,12 +380,12 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
             data.put("time", String.valueOf(inTime - outTime));
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.ACTIVATE, data);
         }
-        if (!isCurrentRunningForeground && !Constants.isHideAD && Constants.isShowSwitchSplashAd && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
-            boolean isShowSwitchSplash = inTime - outTime > Constants.switchSplash_ad_sec * 1000;
-            if (isShowSwitchSplash) {
-                startActivity(new Intent(this, SwitchSplashAdActivity.class));
-            }
-        }
+//        if (!isCurrentRunningForeground && !Constants.isHideAD && Constants.isShowSwitchSplashAd && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
+//            boolean isShowSwitchSplash = inTime - outTime > Constants.switchSplash_ad_sec * 1000;
+//            if (isShowSwitchSplash) {
+//                startActivity(new Intent(this, SwitchSplashAdActivity.class));
+//            }
+//        }
     }
 
 
