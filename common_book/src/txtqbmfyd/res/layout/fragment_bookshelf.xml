@@ -3,7 +3,7 @@
                 android:id="@+id/bookshelf_main"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/base_bg">
+                android:background="@android:color/white">
 
     <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
         android:id="@+id/bookshelf_refresh_view"

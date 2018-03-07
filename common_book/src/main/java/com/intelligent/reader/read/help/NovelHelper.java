@@ -2,6 +2,7 @@ package com.intelligent.reader.read.help;
 
 import com.intelligent.reader.R;
 import com.intelligent.reader.read.mode.ReadState;
+import com.intelligent.reader.widget.ConfirmDialog;
 import com.intelligent.reader.widget.drawer.ChangeSourcePopWindow;
 
 import net.lzbook.kit.book.download.DownloadState;
@@ -36,6 +37,9 @@ import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 
 /**
  * 阅读页工具类
@@ -129,54 +133,80 @@ public class NovelHelper {
             return;
         }
 
-        final MyDialog myDialog = new MyDialog(activity, R.layout.pop_confirm_layout);
-        TextView tv_update_info_dialog = (TextView) myDialog.findViewById(R.id.publish_content);
-        TextView dialog_title = (TextView) myDialog.findViewById(R.id.dialog_title);
-        dialog_title.setText(R.string.prompt);
-        tv_update_info_dialog.setText("喜欢就加入书架吧！");
-        tv_update_info_dialog.setGravity(Gravity.CENTER);
-        Button bt_cancel = (Button) myDialog.findViewById(R.id.publish_stay);
-        Button bt_ok = (Button) myDialog.findViewById(R.id.publish_leave);
-        bt_ok.setText("加入书架");
-        bt_cancel.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (myDialog != null) {
-                    try {
 
-
-                        myDialog.dismiss();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (helperCallBack != null) {
-                    helperCallBack.addBookShelf(false);
-                }
-            }
-        });
-        bt_ok.setOnClickListener(new OnClickListener() {
+        final ConfirmDialog confirmDialog = new ConfirmDialog(activity);
+        confirmDialog.setTitle(activity.getString(R.string.prompt));
+        confirmDialog.setContent("喜欢就加入书架吧！");
+        confirmDialog.setConfirmName("加入书架");
+        confirmDialog.setOnConfirmListener(new Function0<Unit>() {
             @Override
-            public void onClick(View v) {
-                if (myDialog != null) {
-                    try {
-                        myDialog.dismiss();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+            public Unit invoke() {
+                confirmDialog.dismiss();
                 if (helperCallBack != null) {
                     helperCallBack.addBookShelf(true);
                 }
+                return null;
             }
         });
-        if (myDialog != null && !myDialog.isShowing() && !activity.isFinishing()) {
-            try {
-                myDialog.show();
-            } catch (Exception e) {
-                e.printStackTrace();
+        confirmDialog.setOnCancelListener(new Function0<Unit>() {
+            @Override
+            public Unit invoke() {
+                if (helperCallBack != null) {
+                    helperCallBack.addBookShelf(false);
+                }
+                return null;
             }
-        }
+        });
+        confirmDialog.show();
+
+//        final MyDialog myDialog = new MyDialog(activity, R.layout.pop_confirm_layout);
+//        TextView tv_update_info_dialog = (TextView) myDialog.findViewById(R.id.publish_content);
+//        TextView dialog_title = (TextView) myDialog.findViewById(R.id.dialog_title);
+//        dialog_title.setText(R.string.prompt);
+//        tv_update_info_dialog.setText("喜欢就加入书架吧！");
+//        tv_update_info_dialog.setGravity(Gravity.CENTER);
+//        Button bt_cancel = (Button) myDialog.findViewById(R.id.publish_stay);
+//        Button bt_ok = (Button) myDialog.findViewById(R.id.publish_leave);
+//        bt_ok.setText("加入书架");
+//        bt_cancel.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (myDialog != null) {
+//                    try {
+//
+//
+//                        myDialog.dismiss();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                if (helperCallBack != null) {
+//                    helperCallBack.addBookShelf(false);
+//                }
+//            }
+//        });
+//        bt_ok.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (myDialog != null) {
+//                    try {
+//                        myDialog.dismiss();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                if (helperCallBack != null) {
+//                    helperCallBack.addBookShelf(true);
+//                }
+//            }
+//        });
+//        if (myDialog != null && !myDialog.isShowing() && !activity.isFinishing()) {
+//            try {
+//                myDialog.show();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     private void dismissDialog(MyDialog sourceDialog) {

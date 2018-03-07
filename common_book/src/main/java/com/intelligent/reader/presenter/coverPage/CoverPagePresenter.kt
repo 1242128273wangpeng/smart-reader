@@ -988,6 +988,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
                     book.parameter = "0"
                     book.extra_parameter = "0"
                     book.dex = znBean.dex
+                    book.desc = znBean.description
                     book.last_updateSucessTime = System.currentTimeMillis()
                     book.readPersonNum = znBean.readerCountDescp + ""
                     mRecommendBooks.add(book)
@@ -1036,6 +1037,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
                 book.parameter = "0"
                 book.extra_parameter = "0"
                 book.dex = 1
+                book.desc = qgBean.description
                 book.last_updateSucessTime = System.currentTimeMillis()
                 book.readPersonNum = qgBean.read_count.toString() + ""
                 mRecommendBooks.add(book)

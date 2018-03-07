@@ -135,34 +135,34 @@ public class SplashActivity extends FrameActivity {
 //            editor.apply();
 //        }
 
-        if (firstGuide) {
-            Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
-            editor.putBoolean(versionCode + "first_guide", false);
-            editor.apply();
-
-            try {
-                Intent intent = new Intent();
-                intent.setClass(SplashActivity.this, GuideActivity.class);
-                intent.putExtra("fromA", "Loading");
-                startActivity(intent);
-                finish();
-            } catch (ActivityNotFoundException e) {
-                e.printStackTrace();
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            }
-        } else {
-            Intent intent = new Intent();
-            intent.setClass(SplashActivity.this, HomeActivity.class);
-            try {
-                startActivity(intent);
-            } catch (ActivityNotFoundException e) {
-                e.printStackTrace();
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            }
-            finish();
+//        if (firstGuide) {
+//            Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+//            editor.putBoolean(versionCode + "first_guide", false);
+//            editor.apply();
+//
+//            try {
+//                Intent intent = new Intent();
+//                intent.setClass(SplashActivity.this, GuideActivity.class);
+//                intent.putExtra("fromA", "Loading");
+//                startActivity(intent);
+//                finish();
+//            } catch (ActivityNotFoundException e) {
+//                e.printStackTrace();
+//            } catch (SecurityException e) {
+//                e.printStackTrace();
+//            }
+//        } else {
+        Intent intent = new Intent();
+        intent.setClass(SplashActivity.this, HomeActivity.class);
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            e.printStackTrace();
         }
+        finish();
+//        }
     }
 
 //    private void initBook() {
@@ -269,7 +269,7 @@ public class SplashActivity extends FrameActivity {
 //                }
 //            });
 //    }
-}
+    }
 
     //初始化广告开关
     private void initAdSwitch() {
@@ -401,70 +401,70 @@ public class SplashActivity extends FrameActivity {
         return keyCode == KEYCODE_BACK || super.onKeyDown(keyCode, event);
     }
 
-static class MHandler extends Handler {
+    static class MHandler extends Handler {
 
-    private WeakReference<SplashActivity> weakReference;
+        private WeakReference<SplashActivity> weakReference;
 
-    MHandler(SplashActivity splashActivity) {
-        weakReference = new WeakReference<>(splashActivity);
+        MHandler(SplashActivity splashActivity) {
+            weakReference = new WeakReference<>(splashActivity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            SplashActivity splashActivity = weakReference.get();
+            if (splashActivity == null) {
+                return;
+            }
+            switch (msg.what) {
+                case 0:
+                    UserManager.INSTANCE.initPlatform(splashActivity, null);
+                    AppLog.e(TAG, "handler执行");
+                    splashActivity.initGuide();
+                    break;
+            }
+        }
+
     }
 
-    @Override
-    public void handleMessage(Message msg) {
-        super.handleMessage(msg);
-        SplashActivity splashActivity = weakReference.get();
-        if (splashActivity == null) {
-            return;
-        }
-        switch (msg.what) {
-            case 0:
-                UserManager.INSTANCE.initPlatform(splashActivity, null);
-                AppLog.e(TAG, "handler执行");
-                splashActivity.initGuide();
-                break;
-        }
-    }
+    public class InitTask extends AsyncTask<Void, Void, Void> {
 
-}
-
-public class InitTask extends AsyncTask<Void, Void, Void> {
-
-    @Override
-    protected Void doInBackground(Void... params) {
+        @Override
+        protected Void doInBackground(Void... params) {
 
 
-        // 2 动态参数
-        try {
-            DynamicParamter dynamicParameter = new DynamicParamter(getApplicationContext());
-            dynamicParameter.setDynamicParamter();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            // 2 动态参数
+            try {
+                DynamicParamter dynamicParameter = new DynamicParamter(getApplicationContext());
+                dynamicParameter.setDynamicParamter();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-        boolean b = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(Constants.UPDATE_CHAPTER_SOURCE_ID, false);
-        if (!b) {
-            BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
-            ArrayList<Book> bookOnlineList = bookDaoHelper.getBooksOnLineList();
-            for (int i = 0; i < bookOnlineList.size(); i++) {
-                Book iBook = bookOnlineList.get(i);
-                if (!TextUtils.isEmpty(iBook.book_id)) {
-                    BookChapterDao bookChapterDao = new BookChapterDao(BookApplication.getGlobalContext(), iBook.book_id);
-                    Chapter lastChapter = bookChapterDao.getLastChapter();
-                    if (lastChapter != null) {
-                        lastChapter.book_source_id = iBook.book_source_id;
-                        bookChapterDao.updateBookCurrentChapter(lastChapter, lastChapter.sequence);
+            boolean b = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(Constants.UPDATE_CHAPTER_SOURCE_ID, false);
+            if (!b) {
+                BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
+                ArrayList<Book> bookOnlineList = bookDaoHelper.getBooksOnLineList();
+                for (int i = 0; i < bookOnlineList.size(); i++) {
+                    Book iBook = bookOnlineList.get(i);
+                    if (!TextUtils.isEmpty(iBook.book_id)) {
+                        BookChapterDao bookChapterDao = new BookChapterDao(BookApplication.getGlobalContext(), iBook.book_id);
+                        Chapter lastChapter = bookChapterDao.getLastChapter();
+                        if (lastChapter != null) {
+                            lastChapter.book_source_id = iBook.book_source_id;
+                            bookChapterDao.updateBookCurrentChapter(lastChapter, lastChapter.sequence);
+                        }
                     }
                 }
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putBoolean(Constants.UPDATE_CHAPTER_SOURCE_ID, true)
+                        .apply();
             }
-            PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putBoolean(Constants.UPDATE_CHAPTER_SOURCE_ID, true)
-                    .apply();
-        }
 
-        //请求广告
-        initAdSwitch();
-        initSplashAd();
+            //请求广告
+            initAdSwitch();
+            initSplashAd();
 
-        // 4 加载默认书籍
+            // 4 加载默认书籍
 //            try {
 //                if (NetWorkUtils.getNetWorkType(BaseBookApplication.getGlobalContext()) != NetWorkUtils.NETWORK_NONE) {
 //                    initBook();
@@ -473,57 +473,57 @@ public class InitTask extends AsyncTask<Void, Void, Void> {
 //                e.printStackTrace();
 //            }
 
-        // 5 初始化屏蔽
-        try {
-            initShield();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // 6 其他信息初始化
-        try {
-            // 统计阅读章节数
-            if (Constants.readedCount == 0) {
-                Constants.readedCount = sharePreferenceUtils.getInt("readed_count");
+            // 5 初始化屏蔽
+            try {
+                initShield();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
-            //
-            DisplayMetrics dm = new DisplayMetrics();
-            SplashActivity.this.getWindowManager().getDefaultDisplay().getMetrics(dm);
-            PreferenceManager.getDefaultSharedPreferences(SplashActivity.this).edit().putInt("screen_width", dm.widthPixels).putInt
-                    ("screen_height", dm
-                            .heightPixels).commit();
+            // 6 其他信息初始化
+            try {
+                // 统计阅读章节数
+                if (Constants.readedCount == 0) {
+                    Constants.readedCount = sharePreferenceUtils.getInt("readed_count");
+                }
+
+                //
+                DisplayMetrics dm = new DisplayMetrics();
+                SplashActivity.this.getWindowManager().getDefaultDisplay().getMetrics(dm);
+                PreferenceManager.getDefaultSharedPreferences(SplashActivity.this).edit().putInt("screen_width", dm.widthPixels).putInt
+                        ("screen_height", dm
+                                .heightPixels).commit();
 //                BookApplication.getGlobalContext().setDisplayMetrics(dm);
-            AppUtils.initDensity(getApplicationContext());
+                AppUtils.initDensity(getApplicationContext());
 
-            // 判断是否小说推送，检查小说是否更新
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            boolean isStarPush = sharedPreferences.getBoolean("settings_push", true);
-            if (isStarPush) {
-                CheckNovelUpdateService.startChkUpdService(getApplicationContext());
+                // 判断是否小说推送，检查小说是否更新
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                boolean isStarPush = sharedPreferences.getBoolean("settings_push", true);
+                if (isStarPush) {
+                    CheckNovelUpdateService.startChkUpdService(getApplicationContext());
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            return null;
         }
-        return null;
-    }
-}
-
-// 安装快捷方式任务
-class InstallShotCutTask extends AsyncTask<Void, Void, Void> {
-    @Override
-    protected Void doInBackground(Void... params) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(SplashActivity.this);
-        boolean create = sp.getBoolean("createshotcut", false);
-        if (!create) {
-            checkAndInstallShotCut(SplashActivity.this);
-            sp.edit().putBoolean("createshotcut", true).apply();
-        }
-        return null;
     }
 
-}
+    // 安装快捷方式任务
+    class InstallShotCutTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(SplashActivity.this);
+            boolean create = sp.getBoolean("createshotcut", false);
+            if (!create) {
+                checkAndInstallShotCut(SplashActivity.this);
+                sp.edit().putBoolean("createshotcut", true).apply();
+            }
+            return null;
+        }
+
+    }
 
     @Override
     public boolean shouldShowNightShadow() {

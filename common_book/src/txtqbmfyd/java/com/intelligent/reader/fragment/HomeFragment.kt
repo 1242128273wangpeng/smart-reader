@@ -478,7 +478,7 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
     fun onMenuShownState(state: Boolean) {
         if (state) {
             content_tab_selection.visibility = View.GONE
-            img_bottom_shadow.visibility = View.GONE
+//            img_bottom_shadow.visibility = View.GONE
             if (!rl_head_editor.isShown) {
                 val showAnimation = AlphaAnimation(0.0f, 1.0f)
                 showAnimation.duration = 200
@@ -490,7 +490,7 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
             if (rl_head_editor.isShown) {
                 rl_head_editor.visibility = View.GONE
             }
-            img_bottom_shadow.visibility = View.VISIBLE
+//            img_bottom_shadow.visibility = View.VISIBLE
             content_tab_selection.visibility = View.VISIBLE
             AnimationHelper.smoothScrollTo(view_pager, 0)
         }

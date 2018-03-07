@@ -137,7 +137,7 @@
 
     <string name="over_index_text1">你已经全部读完啦！\n接下来要不要看看其他有意思的...</string>
     <string name="over_index_text2">接下来要不要看看其他有意思的...</string>
-    <string name="book_end_info"><Data><![CDATA[当前章节已全部看完，去看看其它是否有<font color="#ed5b47"><b>更新</b></font>吧!]]></Data></string>
+    <string name="book_end_info"><Data><![CDATA[当前章节已全部看完，去看看其它是否有<font color="#1CA66E"><b>更新</b></font>吧!]]></Data></string>
 
     <string name="title_name_setting">设置</string>
     <string name="tv_push_time_tips_setting">分时间段推送</string>

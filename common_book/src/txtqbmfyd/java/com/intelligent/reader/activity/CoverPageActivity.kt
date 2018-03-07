@@ -13,6 +13,7 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.intelligent.reader.R
+import com.intelligent.reader.adapter.BookRecommendAdapter
 import com.intelligent.reader.presenter.coverPage.CoverPageContract
 import com.intelligent.reader.presenter.coverPage.CoverPagePresenter
 import kotlinx.android.synthetic.txtqbmfyd.act_book_cover.*
@@ -39,6 +40,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
 
     private var mCoverPagePresenter: CoverPagePresenter? = null
+    private lateinit var mBookRecommedAdapter: BookRecommendAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +80,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             mCoverPagePresenter = CoverPagePresenter(it, this, this, this)
             loadCoverInfo()
         }
+        mBookRecommedAdapter = BookRecommendAdapter()
+        book_recommend_lv.adapter = mBookRecommedAdapter
+        book_recommend_lv.setOnItemClickListener { parent, view, position, id ->  }
     }
 
     private fun loadCoverInfo() {
@@ -208,7 +213,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
 
     override fun showRecommend(recommendBean: ArrayList<Book>) {
-        Log.e("showRecommend", "showRecommend : recommendBeans size" + recommendBean.size)
+//        Log.e("showRecommend", "showRecommend : recommendBeans size" + recommendBean.size)
+        mBookRecommedAdapter.setData(recommendBean)
     }
 
     override fun showCoverError() {
@@ -363,10 +369,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 finish()
             }
         }
-    }
-
-    private fun numberEllipsisTransform() {
-
     }
 
     override fun changeDownloadButtonStatus(type: Int) {

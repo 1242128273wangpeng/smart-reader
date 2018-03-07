@@ -4,7 +4,7 @@
         android:id="@+id/web_content_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/color_white_fafafa">
+        android:background="@color/base_bg">
     
     <WebView
             android:id="@+id/web_content_view"
