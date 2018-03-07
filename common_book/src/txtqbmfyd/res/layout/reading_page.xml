@@ -56,10 +56,19 @@
                 android:src="@drawable/ic_guide_reading_bookmark"
                 android:visibility="gone"
                 android:layout_alignParentRight="true"
-                android:layout_marginTop="65dp"
-                android:layout_marginRight="5dp"
+                android:layout_marginTop="63dp"
+                android:layout_marginRight="17dp"
                 android:layout_alignParentEnd="true"/>
 
-
+        <ImageView
+                android:id="@+id/iv_guide_setting_chapter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_guide_reading_chapter"
+                android:visibility="gone"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="120dp"
+                android:layout_marginLeft="23dp"/>
     </RelativeLayout>
 </RelativeLayout>
