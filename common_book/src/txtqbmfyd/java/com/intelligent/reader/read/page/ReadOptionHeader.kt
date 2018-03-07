@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable
 import android.support.annotation.DrawableRes
 import android.text.TextUtils
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
@@ -15,9 +16,12 @@ import com.intelligent.reader.R
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.presenter.read.ReadOption
 import com.intelligent.reader.read.mode.ReadState
+import kotlinx.android.synthetic.txtqbmfyd.act_book_cover.*
 import kotlinx.android.synthetic.txtqbmfyd.read_option_header.view.*
 import kotlinx.android.synthetic.txtqbmfyd.read_option_pop.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.book.download.CacheManager
+import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.request.UrlUtils
@@ -31,8 +35,9 @@ import net.lzbook.kit.utils.toastShort
  */
 class ReadOptionHeader : FrameLayout, ReadOption.View {
 
-
     override var presenter: ReadOption.Presenter? = null
+
+    private var mBookDownlLoadState: DownloadState = DownloadState.NOSTART
 
     override fun show(flag: Boolean) {
         if (flag) {
@@ -58,16 +63,6 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
 
     var isMarkPage = false
 
-    companion object {
-        val DOWNLOAD_CACHE_NORMAL = 1
-
-        val DOWNLOAD_CACHE_RUNNING = 2
-
-        val DOWNLOAD_CACHE_PAUSEED = 3
-
-        val DOWNLOAD_CACHE_FINISH = 4
-    }
-
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.read_option_header, null)
         addView(view)
@@ -80,19 +75,14 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
             presenter?.openWeb()
         }
 
-//        val status = CacheManager.getBookStatus(book)
-//        when (status) {
-//            DownloadState.NOSTART -> header_ibtn_download.setImageResource(R.drawable.icon_read_option_down_normal)
-//            DownloadState.DOWNLOADING -> header_ibtn_download.setImageResource(R.drawable.icon_read_option_down_running)
-//            DownloadState.PAUSEED -> header_ibtn_download.setImageResource(R.drawable.icon_read_option_down_pause)
-//            DownloadState.FINISH -> header_ibtn_download.setImageResource(R.drawable.icon_read_option_down_finish)
-//        }
-
         header_ibtn_download.setOnClickListener {
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_btn)
-            presenter?.cache()
-
-            (context as ReadingActivity).showMenu(false)
+            if (mBookDownlLoadState == DownloadState.DOWNLOADING) {
+                CacheManager.stop(ReadState.book.book_id)
+            } else {
+                presenter?.cache()
+            }
+//            (context as ReadingActivity).showMenu(false)
         }
 
         header_ibtn_more?.setOnClickListener {
@@ -116,39 +106,6 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
                 (context as ReadingActivity).showMenu(false)
                 popupWindow.dismiss()
             }
-
-//            if (isMarkPage) {
-//                inflate.read_option_pop_mark.text = "删除书签"
-//            }
-
-//            inflate.read_option_pop_mark.setOnClickListener { v ->
-//
-//                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_add_book_mark_btn)
-//                val result = presenter?.bookMark()
-//                val data = HashMap<String, String>()
-//
-//                when (result) {
-//                    1 -> {
-//                        v.context.toastShort("书签添加成功", false)
-//                        isMarkPage = true
-//                        inflate.read_option_pop_mark.text = "删除书签"
-//                        data.put("type", "1")
-//                    }
-//                    2 -> {
-//                        v.context.toastShort("书签已删除", false)
-//                        isMarkPage = false
-//                        inflate.read_option_pop_mark.text = "添加书签"
-//                        data.put("type", "2")
-//
-//                    }
-//                    else -> {
-//                        v.context.toastShort(R.string.add_mark_fail, false)
-//                    }
-//                }
-//
-//                popupWindow.dismiss()
-//                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, data)
-//            }
 
             header_ibtn_bookmark.isSelected = isMarkPage
 
@@ -184,7 +141,6 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
             }
 
             read_option_pop_feedback?.setOnClickListener {
-                //                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_read_head_bookinfo)
                 presenter?.feedback()
                 (context as ReadingActivity).showMenu(false)
                 popupWindow.dismiss()
@@ -197,6 +153,23 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
 
         this.visibility = View.GONE
     }
+
+    fun setBookDownLoadState(book_id: String?) {
+        if (book_id == ReadState.book.book_id) {
+            val downlLoadState = CacheManager.getBookStatus(ReadState.book)
+            mBookDownlLoadState = downlLoadState
+            Log.d("Cover Page", "getBookDownLoadState downlLoadState: " + downlLoadState)
+            when (downlLoadState) {
+                DownloadState.NOSTART -> header_ibtn_download.setImageResource(R.drawable.icon_read_option_down_normal)
+                DownloadState.DOWNLOADING -> header_ibtn_download.setImageResource(R.drawable.icon_read_option_down_running)
+                DownloadState.PAUSEED -> header_ibtn_download.setImageResource(R.drawable.icon_read_option_down_pause)
+                DownloadState.FINISH -> header_ibtn_download.setImageResource(R.drawable.icon_read_option_down_finish)
+                else -> {
+                }
+            }
+        }
+    }
+
 
     override fun setBookSource(source: String) {
         novel_source_url?.text = source

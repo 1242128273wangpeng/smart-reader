@@ -19,6 +19,7 @@ import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.reader.ReaderViewModel
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
+import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.constants.Constants
@@ -96,6 +97,11 @@ class ReadOptionPresenter : ReadOption.Presenter {
     fun clickDownload(context: Context, mBook: Book, sequence: Int) {
 
         val bookTask = CacheManager.getBookTask(mBook)
+
+        if (bookTask.state == DownloadState.FINISH) {
+            ToastUtils.showToastNoRepeat("离线缓存已完成")
+            return
+        }
 
 
         val dialog = MyDialog(activity.get(), R.layout.reading_cache, Gravity.BOTTOM, true)

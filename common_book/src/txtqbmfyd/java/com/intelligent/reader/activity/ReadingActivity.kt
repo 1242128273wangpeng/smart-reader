@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
+import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.*
 import android.widget.TextView
@@ -33,6 +34,8 @@ import kotlinx.android.synthetic.txtqbmfyd.reading_page.*
 import net.lzbook.kit.BuildConfig
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.book.download.CacheManager
+import net.lzbook.kit.book.download.CallBackDownload
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.ReadConfig
@@ -51,7 +54,8 @@ import java.util.*
  * ReadingActivity
  * 小说阅读页
  */
-class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener, ReadSettingView.OnReadSettingListener, ReadPreInterface.View, IReadPageChange, ReaderViewWidget.OnAutoReadCallback {
+class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener, ReadSettingView.OnReadSettingListener, ReadPreInterface.View, IReadPageChange
+        , ReaderViewWidget.OnAutoReadCallback, CallBackDownload {
 
     // 系统存储设置
     private lateinit var mSharedPreferencesUtils: SharedPreferencesUtils
@@ -171,9 +175,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         mReadPresenter.initCatalogPresenter(mCatalogMarkFragment, option_header)
         return true
     }
-//
-//    //自动阅读
-//    fun dealManualDialogShow() = mReadPresenter.dealManualDialogShow()
 
     fun searchChapterCallBack(sourcesList: ArrayList<Source>) = mReadPresenter.onGetSourceList(sourcesList)
 
@@ -223,7 +224,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     override fun onResume() {
         super.onResume()
-
         readerWidget.onResume()
         // 设置全屏
         when (!Constants.isFullWindowRead) {
@@ -231,20 +231,35 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
             false -> window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }
         mReadPresenter.onResume()
+        if (!TextUtils.isEmpty(ReadState.book.book_id)) {
+            option_header.setBookDownLoadState(ReadState.book.book_id)
+            CacheManager.listeners.add(this)
+        }
     }
 
     override fun shouldReceiveCacheEvent(): Boolean = false
 
     override fun shouldShowNightShadow(): Boolean = false
 
-    override fun onStart() {
-        super.onStart()
-    }
-
     override fun onPause() {
         super.onPause()
         readerWidget.onPause()
         mReadPresenter.onPause(ReadState.sequence, ReadState.offset)
+        CacheManager.listeners.remove(this)
+    }
+
+    override fun onTaskStatusChange(book_id: String?) {
+        option_header.setBookDownLoadState(book_id)
+    }
+
+    override fun onTaskFinish(book_id: String?) {
+        option_header.setBookDownLoadState(book_id)
+    }
+
+    override fun onTaskFailed(book_id: String?, t: Throwable?) {
+    }
+
+    override fun onTaskProgressUpdate(book_id: String?) {
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -387,17 +402,12 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         showMenu(false)
     }
 
-    //ReadSettingView end
     fun goBackToHome() = mReadPresenter.goBackToHome()
 
     override fun initPresenter(optionPresenter: ReadOptionPresenter?, markPresenter: CatalogMarkPresenter?) {
         mCatalogMarkFragment?.presenter = markPresenter
         option_header.presenter = optionPresenter
     }
-
-//    override fun showSetMenu(isShow: Boolean) {
-//
-//    }
 
     override fun full(isFull: Boolean) {
         if (isFull) {
@@ -469,7 +479,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
 
             readSettingView.showMenu(isShow)
-
             mReadPresenter.showMenu(isShow)
         }
     }
@@ -511,7 +520,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         //按照此顺序传值 当前的book_id，阅读章节，书籍源，章节总页数，当前阅读页，当前页总字数，当前页面来自，开始阅读时间,结束时间,阅读时间,是否有阅读中间退出行为,书籍来源1为青果，2为智能
         StartLogClickUtil.upLoadReadContent(bookId, chapterId, sourceIds, pageCount, currentPage, currentPageContentLength, "2",
                 startReadTime.toString(), endTime.toString(), (endTime - startReadTime).toString(), "false", channelCode)
-        //
         chapterId?.let {
             if (oldchapterId != it) {
                 oldchapterId = it
