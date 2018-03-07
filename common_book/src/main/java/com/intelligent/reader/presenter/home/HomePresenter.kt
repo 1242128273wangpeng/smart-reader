@@ -147,4 +147,11 @@ class HomePresenter(override var view: HomeView?) : IPresenter<HomeView> {
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
                 StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.BOOKSORT)
     }
+
+    fun uploadAutoCacheLog(isChecked: Boolean) {
+        val data = HashMap<String, String>()
+        data["type"] = if (isChecked) "1" else "0"
+        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.WIFI_AUTOCACHE, data)
+    }
 }

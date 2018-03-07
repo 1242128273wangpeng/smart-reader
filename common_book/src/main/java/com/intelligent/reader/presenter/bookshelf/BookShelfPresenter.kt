@@ -2,9 +2,8 @@ package com.intelligent.reader.presenter.bookshelf
 
 import android.app.Activity
 import android.app.NotificationManager
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
+import android.os.IBinder
 import android.text.TextUtils
 import android.view.ViewGroup
 import com.intelligent.reader.R
@@ -13,7 +12,6 @@ import com.intelligent.reader.read.help.BookHelper
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
-import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
@@ -40,15 +38,33 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
 
     private val updateTableList: ArrayList<String> = ArrayList()
 
-    var downloadService: DownloadService? = null
+    var updateService: CheckNovelUpdateService? = null
 
-    fun addUpdateTask(updateCallBack: UpdateCallBack, frameBookHelper: FrameBookHelper?) {
-        val updateService: CheckNovelUpdateService? = frameBookHelper?.updateService
+    val updateConnection = object : ServiceConnection {
+
+        override fun onServiceDisconnected(name: ComponentName) {}
+
+        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+            try {
+                updateService = (service as CheckNovelUpdateService.CheckUpdateBinder).service
+                AppLog.d(tag, "auto-updateService $updateService")
+                if (updateService != null) {
+                    AppLog.d(tag, "updateData ")
+                    view?.doUpdateBook(updateService!!)
+                }
+            } catch (e: ClassCastException) {
+                e.printStackTrace()
+            }
+
+        }
+    }
+
+    fun addUpdateTask(updateCallBack: UpdateCallBack) {
         AppLog.e(tag, "updateService: $updateService")
         if (bookDaoHelper.booksCount > 0 && updateService != null) {
             val list = bookDaoHelper.booksList
             AppLog.e(tag, "BookUpdateCount: " + list.size)
-            updateService.checkUpdate(BookHelper.getBookUpdateTaskData(list, updateCallBack))
+            updateService?.checkUpdate(BookHelper.getBookUpdateTaskData(list, updateCallBack))
         }
     }
 

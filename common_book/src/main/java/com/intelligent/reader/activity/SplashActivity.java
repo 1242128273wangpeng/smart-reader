@@ -1,5 +1,25 @@
 package com.intelligent.reader.activity;
 
+import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.preference.PreferenceManager;
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.util.DynamicParamter;
@@ -16,27 +36,6 @@ import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.SharedPreferencesUtils;
 import net.lzbook.kit.utils.ShieldManager;
 import net.lzbook.kit.utils.StatServiceUtils;
-
-import android.content.ActivityNotFoundException;
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.preference.PreferenceManager;
-import android.text.TextUtils;
-import android.util.DisplayMetrics;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

@@ -137,13 +137,13 @@
         <!--android:scaleType="fitXY"-->
         <!--android:src="@drawable/top_shadow_bg"/>-->
 
-    <!--<ImageView-->
-        <!--android:id="@+id/img_bottom_shadow"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_above="@+id/content_tab_selection"-->
-        <!--android:scaleType="fitXY"-->
-        <!--android:src="@drawable/bottom_shadow_bg"/>-->
+    <ImageView
+        android:id="@+id/img_bottom_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/content_tab_selection"
+        android:scaleType="fitXY"
+        android:src="@drawable/bottom_shadow_bg"/>
 
     <LinearLayout
         android:id="@+id/content_tab_selection"
