@@ -16,6 +16,7 @@ import com.intelligent.reader.R
 import com.intelligent.reader.adapter.BookRecommendAdapter
 import com.intelligent.reader.presenter.coverPage.CoverPageContract
 import com.intelligent.reader.presenter.coverPage.CoverPagePresenter
+import com.intelligent.reader.read.help.BookHelper
 import kotlinx.android.synthetic.txtqbmfyd.act_book_cover.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
@@ -37,12 +38,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     //private RelativeLayout book_cover_reading_view;
     private var loadingPage: LoadingPage? = null
-
-
     private var requestItem: RequestItem? = null
-
-
     private var mCoverPagePresenter: CoverPagePresenter? = null
+    private var mRecommendList: ArrayList<Book>? = null
     private lateinit var mBookRecommedAdapter: BookRecommendAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,7 +83,18 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         }
         mBookRecommedAdapter = BookRecommendAdapter()
         book_recommend_lv.adapter = mBookRecommedAdapter
-        book_recommend_lv.setOnItemClickListener { parent, view, position, id ->  }
+        book_recommend_lv.setOnItemClickListener { _, _, position, _ ->
+            mRecommendList?.let {
+                val book = it[position]
+                val data = HashMap<String, String>()
+                if (requestItem != null && requestItem!!.book_id != null) {
+                    data.put("bookid", requestItem!!.book_id)
+                    data.put("Tbookid", book.book_id)
+                }
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.RECOMMENDEDBOOK, data)
+                BookHelper.goToCoverOrRead(this, this, book, 2)
+            }
+        }
     }
 
     private fun loadCoverInfo() {
@@ -216,6 +225,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
 
     override fun showRecommend(recommendBean: ArrayList<Book>) {
+        mRecommendList = recommendBean
 //        Log.e("showRecommend", "showRecommend : recommendBeans size" + recommendBean.size)
         mBookRecommedAdapter.setData(recommendBean)
     }

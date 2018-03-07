@@ -113,9 +113,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         readerWidget.setOnAutoReadCallback(this)
 
         read_catalog_mark_drawer.addDrawerListener(mDrawerListener)
-//        mCatalogMarkFragment?.let {
-//            read_catalog_mark_drawer.addDrawerListener(it)
-//        }
         read_catalog_mark_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         readerWidget.removeAllViews()
         auto_menu.setOnAutoMemuListener(this)
@@ -139,12 +136,12 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 
     private fun initGuide() {
         if (!mSharedPreferencesUtils.getBoolean(mReadPresenter.versionCode.toString() + Constants.READING_GUIDE_TAG)) {
-            ll_guide_layout!!.visibility = View.VISIBLE
+            ll_guide_layout.visibility = View.VISIBLE
             iv_guide_reading.visibility = View.VISIBLE
-            ll_guide_layout!!.setOnClickListener {
+            ll_guide_layout.setOnClickListener {
                 mSharedPreferencesUtils.putBoolean(mReadPresenter.versionCode.toString() + Constants.READING_GUIDE_TAG, true)
                 iv_guide_reading.visibility = View.GONE
-                ll_guide_layout!!.visibility = View.GONE
+                ll_guide_layout.visibility = View.GONE
             }
         }
     }
@@ -415,8 +412,8 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         if (!mSharedPreferencesUtils.getBoolean(mReadPresenter.versionCode.toString() + Constants
                 .READING_SETING_GUIDE_TAG)) {
             ll_guide_layout.visibility = View.VISIBLE
-            ll_guide_layout.visibility = View.VISIBLE
             iv_guide_setting_bookmark.visibility = View.VISIBLE
+            iv_guide_setting_chapter.visibility = View.VISIBLE
             ll_guide_layout.setOnClickListener {
                 mSharedPreferencesUtils.putBoolean(mReadPresenter.versionCode.toString() + Constants.READING_SETING_GUIDE_TAG, true)
                 ll_guide_layout.visibility = View.GONE
@@ -521,7 +518,6 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
                 sendPVData(bookId, chapterId, sourceIds, channelCode, pageCount)
             }
         }
-
     }
 
     private fun sendPVData(bookId: String, chapterId: String?, sourceIds: String, channelCode: String, pageCount: String) {

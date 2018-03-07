@@ -80,6 +80,7 @@
                     android:layout_centerVertical="true"
                     app:ssb_show_thumb_text="false"
                     app:ssb_text_space="3dp"
+                    android:layout_marginTop="5dp"
                     android:layout_toRightOf="@+id/font_reduce_iv"
                     android:layout_toLeftOf="@+id/font_plus_iv"
                     app:ssb_auto_adjust_section_mark="true"
