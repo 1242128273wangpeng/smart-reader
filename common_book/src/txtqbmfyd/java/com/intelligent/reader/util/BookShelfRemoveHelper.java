@@ -84,7 +84,11 @@ public class BookShelfRemoveHelper {
     }
 
     public boolean isAllChecked() {
-        return bookShelfReAdapter.getCheckedSize() == bookShelfReAdapter.getItemCount();
+        int itemCount = bookShelfReAdapter.getItemCount();
+        if (itemCount < 50) {//书的数量小于 50 本，书架页会多出一个 “+” 号的 item
+            itemCount --;
+        }
+        return bookShelfReAdapter.getCheckedSize() == itemCount;
     }
 
 

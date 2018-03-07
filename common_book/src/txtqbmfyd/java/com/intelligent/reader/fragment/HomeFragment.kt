@@ -454,6 +454,7 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
     override fun onDetach() {
         super.onDetach()
         AppLog.e(TAG, "onDetach")
+        bookShelfFragment?.onRemoveModeAllCheckedListener = null
         try {
             val childFragmentManager = Fragment::class.java.getDeclaredField("mChildFragmentManager")
             childFragmentManager.isAccessible = true
@@ -477,7 +478,7 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
     fun onMenuShownState(state: Boolean) {
         if (state) {
             content_tab_selection.visibility = View.GONE
-//            img_bottom_shadow.visibility = View.GONE
+            img_bottom_shadow.visibility = View.GONE
             if (!rl_head_editor.isShown) {
                 val showAnimation = AlphaAnimation(0.0f, 1.0f)
                 showAnimation.duration = 200
@@ -489,7 +490,7 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
             if (rl_head_editor.isShown) {
                 rl_head_editor.visibility = View.GONE
             }
-//            img_bottom_shadow.visibility = View.VISIBLE
+            img_bottom_shadow.visibility = View.VISIBLE
             content_tab_selection.visibility = View.VISIBLE
             AnimationHelper.smoothScrollTo(view_pager, 0)
         }
@@ -506,6 +507,14 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
                 0 -> {
                     if (bookShelfFragment == null) {
                         bookShelfFragment = BookShelfFragment()
+                        bookShelfFragment?.onRemoveModeAllCheckedListener = { isAllChecked ->
+                            AppLog.e(TAG, "isAllChecked: $isAllChecked")
+                            if (isAllChecked) {
+                                txt_editor_select_all.text = getString(R.string.select_all_cancel)
+                            } else {
+                                txt_editor_select_all.text = getString(R.string.select_all)
+                            }
+                        }
                     }
                     bookShelfFragment
                 }
