@@ -39,6 +39,7 @@ import net.lzbook.kit.book.view.ConsumeEvent
 import net.lzbook.kit.book.view.NonSwipeViewPager
 import net.lzbook.kit.cache.DataCleanManager
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.constants.SPKeys
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.request.UrlUtils
@@ -352,8 +353,12 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
             parent.nightShift(isChecked, true)
         }
 
+        val isAutoDownload = PreferenceManager.getDefaultSharedPreferences(activity)
+                .getBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, true)
+        btn_auto_download.isChecked = isAutoDownload
         btn_auto_download.setOnCheckedChangeListener { view, isChecked ->
-            //TODO 新缓存
+            preferencesUtils.putBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, isChecked)
+            presenter.uploadAutoCacheLog(isChecked)
         }
 
         txt_push_setting.setOnClickListener {

@@ -158,6 +158,7 @@ public class StartLogClickUtil {
     public static final String CACHECLEAR = "CACHECLEAR";//点击清除缓存
     public static final String PROCTCOL = "PROCTCOL";//点击使用协议
     public static final String LOGOUT = "LOGOUT";//点击退出登录
+    public static final String WIFI_AUTOCACHE = "WIFI_AUTOCACHE";//点击退出登录
 
     //阅读页
     public static final String LABELEDIT = "LABELEDIT";//添加书签
