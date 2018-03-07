@@ -83,13 +83,13 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
         fragment
     }
 
-    private val categoryFragment: WebViewFragment by lazy {
-        val fragment = WebViewFragment()
+    private val categoryFragment: CategoryFragment by lazy {
+        val fragment = CategoryFragment()
         val bundle = Bundle()
-        bundle.putString("type", "category")
-        val uri = URLBuilderIntterface.WEB_CATEGORY.replace("{packageName}", AppUtils.getPackageName())
-        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
-        fragment.arguments = bundle
+//        bundle.putString("type", "category")
+//        val uri = URLBuilderIntterface.WEB_CATEGORY.replace("{packageName}", AppUtils.getPackageName())
+//        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
+//        fragment.arguments = bundle
         fragment
     }
 
@@ -276,11 +276,13 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
         ll_bottom_tab_bookshelf.setOnClickListener {
             AppLog.e(TAG, "BookShelf Selected")
             selectTab(0)
+            rl_head.visibility = View.VISIBLE
             presenter.uploadBookshelfSelectedLog()
         }
 
         ll_bottom_tab_recommend.setOnClickListener {
             AppLog.e(TAG, "Selection Selected")
+            rl_head.visibility = View.GONE
             selectTab(1)
             //双击回到顶部
             if (AppUtils.isDoubleClick(System.currentTimeMillis())) {
@@ -294,6 +296,7 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
 
         ll_bottom_tab_ranking.setOnClickListener {
             AppLog.e(TAG, "Ranking Selected")
+            rl_head.visibility = View.GONE
             selectTab(2)
             preferencesUtils.putString(Constants.FINDBOOK_SEARCH, "top")
             presenter.uploadRankingSelectedLog()
@@ -301,6 +304,7 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
 
         ll_bottom_tab_category.setOnClickListener {
             AppLog.e(TAG, "Classify Selected")
+            rl_head.visibility = View.GONE
             selectTab(3)
             preferencesUtils.putString(Constants.FINDBOOK_SEARCH, "class")
             presenter.uploadCategorySelectedLog()
@@ -420,7 +424,8 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
     fun selectTab(position: Int) {
         if (currentTab != position) {
             AppLog.e(TAG, "position: " + position)
-            view_pager.currentItem = position
+//            view_pager.currentItem = position
+            view_pager.setCurrentItem(position,false)
         }
     }
 
