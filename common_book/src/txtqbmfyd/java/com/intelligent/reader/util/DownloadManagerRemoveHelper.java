@@ -1,7 +1,6 @@
 package com.intelligent.reader.util;
 
 import android.content.Context;
-import android.os.Handler;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -9,46 +8,49 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.PopupWindow;
 
 import com.intelligent.reader.R;
-import com.intelligent.reader.adapter.BookShelfReAdapter;
+import com.intelligent.reader.adapter.DownloadManagerAdapter;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
+import net.lzbook.kit.utils.ExtensionsKt;
 import net.lzbook.kit.utils.popup.PopupWindowInterface;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 
-/**
- * BookShelfRemoveHelper
- */
-public class BookShelfRemoveHelper {
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
-    private final static long DELAY_TIME = 500;
+public class DownloadManagerRemoveHelper {
+
     protected PopupWindowInterface popupWindowManager;
     protected OnMenuStateListener menuStateListener;
     protected OnMenuDeleteClickListener deleteClickListener;
-    protected OnMenuSelectAllListener selectAllListener;
-    protected BookShelfReAdapter bookShelfReAdapter;
+    private DownloadManagerAdapter downloadManagerAdapter;
     protected SuperSwipeRefreshLayout Layout;
     String TAG = "BookShelfRemoveHelper";
-    Handler handler = new Handler();
     private Context mContext;
     private PopupWindow popupWindow;
     private Button btnDelete;
     private Button btnCancel;
+    private ListView listView;
 
-    public BookShelfRemoveHelper(Context context, BookShelfReAdapter adapter) {//显示指定菜单类别
+    public DownloadManagerRemoveHelper(Context context, DownloadManagerAdapter adapter,
+                                       ListView listView) {//显示指定菜单类别
         mContext = context;
-        bookShelfReAdapter = adapter;
+        downloadManagerAdapter = adapter;
+        this.listView = listView;
         setRemoveWindow(context);
     }
 
     public boolean isRemoveMode() {//判定当前菜单状态是否为删除模式
-        if (bookShelfReAdapter != null) {
-            return bookShelfReAdapter.isRemoveMode();
+        if (downloadManagerAdapter != null) {
+            return downloadManagerAdapter.isRemoveMode();
         }
         return false;
     }
@@ -62,33 +64,25 @@ public class BookShelfRemoveHelper {
         deleteClickListener = click;
     }
 
-    public void setOnSelectAllListener(OnMenuSelectAllListener selectAllListener) {
-        this.selectAllListener = selectAllListener;
-    }
-
     public void setOnMenuStateListener(OnMenuStateListener shownListener) {//指定菜单状态监听回调对象
         menuStateListener = shownListener;
     }
 
     public void setCheckPosition(int position) {//点击选中position,已自动判定全选或非全选状态
-        if (bookShelfReAdapter != null) {
-            bookShelfReAdapter.setChecked(position);
-            bookShelfReAdapter.notifyItemRangeChanged(position, 1);
+        if (downloadManagerAdapter != null) {
+            downloadManagerAdapter.setChecked(position);
+            downloadManagerAdapter.notifyDataSetChanged();
             setDeleteNum();
 
             if (menuStateListener != null) {
-                menuStateListener.getAllCheckedState(isAllChecked());
+                menuStateListener.onAllCheckedStateChanged(isAllChecked());
             }
 
         }
     }
 
     public boolean isAllChecked() {
-        int itemCount = bookShelfReAdapter.getItemCount();
-        if (itemCount < 50) {//书的数量小于 50 本，书架页会多出一个 “+” 号的 item
-            itemCount --;
-        }
-        return bookShelfReAdapter.getCheckedSize() == itemCount;
+        return downloadManagerAdapter.getCheckedSize() == downloadManagerAdapter.getBookCount();
     }
 
 
@@ -121,19 +115,19 @@ public class BookShelfRemoveHelper {
     }
 
     public void selectAll(boolean checkedAll) {
-        if (bookShelfReAdapter != null) {
-            bookShelfReAdapter.setAllChecked(checkedAll);
-            bookShelfReAdapter.notifyDataSetChanged();
+        if (downloadManagerAdapter != null) {
+            downloadManagerAdapter.setAllChecked(checkedAll);
+            downloadManagerAdapter.notifyDataSetChanged();
             setDeleteNum();
         }
-        if (selectAllListener != null) {
-            selectAllListener.onSelectAll();
+        if (menuStateListener != null) {
+            menuStateListener.onAllCheckedStateChanged(checkedAll);
         }
     }
 
     private void setRemoveWindow(Context context) {//实例化菜单对象
 
-        View baseView = LayoutInflater.from(context).inflate(R.layout.popup_bookshelf_bottom_editor, null);
+        View baseView = LayoutInflater.from(context).inflate(R.layout.popup_download_manager_bottom_editor, null);
         popupWindow = new PopupWindow(baseView, WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.WRAP_CONTENT);
         popupWindow.setAnimationStyle(R.style.remove_menu_anim_style);
@@ -164,7 +158,7 @@ public class BookShelfRemoveHelper {
             @Override
             public void onClick(View v) {
                 if (deleteClickListener != null) {
-                    deleteClickListener.onMenuDelete(bookShelfReAdapter.remove_checked_states);
+                    deleteClickListener.onMenuDelete(downloadManagerAdapter.remove_checked_states);
                 }
             }
         });
@@ -179,96 +173,59 @@ public class BookShelfRemoveHelper {
     }
 
     public void onShowing(final boolean isShowing) {//菜单打开及关闭状态
-        if (bookShelfReAdapter != null) {
-            bookShelfReAdapter.setRemoveMode(isShowing);
-            bookShelfReAdapter.resetRemovedState();
+        if (downloadManagerAdapter != null) {
+            downloadManagerAdapter.setRemoveMode(isShowing);
+            downloadManagerAdapter.setListPadding(listView, isShowing);
+            downloadManagerAdapter.resetRemovedState();
             setDeleteNum();
         }
         if (menuStateListener != null) {
-            menuStateListener.getAllCheckedState(isAllChecked());
+            menuStateListener.onAllCheckedStateChanged(isAllChecked());
         }
         if (isShowing) {
             if (menuStateListener != null) {
-                menuStateListener.getMenuShownState(isShowing);
-            }
-            if (bookShelfReAdapter != null) {
-
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        menuStateListener.doHideAd();
-                        bookShelfReAdapter.setListPadding(Layout, isShowing);
-                        bookShelfReAdapter.notifyDataSetChanged();
-                    }
-                }, DELAY_TIME);
-
+                menuStateListener.onMenuStateChanged(true);
             }
         } else {
-            if (menuStateListener != null) {
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        menuStateListener.getMenuShownState(isShowing);
-                    }
-                }, 300);
-            }
-            handler.post(new Runnable() {
+            ExtensionsKt.uiThread(mContext, new Function1<Object, Unit>() {
                 @Override
-                public void run() {
-                    if (bookShelfReAdapter != null) {
-                        bookShelfReAdapter.setRemoveMode(isShowing);
-                        bookShelfReAdapter.setListPadding(Layout, isShowing);
-                        bookShelfReAdapter.notifyDataSetChanged();
+                public Unit invoke(Object o) {
+                    if (menuStateListener != null) {
+                        menuStateListener.onMenuStateChanged(false);
                     }
+                    if (downloadManagerAdapter != null) {
+                        downloadManagerAdapter.setRemoveMode(false);
+                        downloadManagerAdapter.notifyDataSetChanged();
+                    }
+                    return null;
                 }
             });
         }
     }
 
     private void setDeleteNum() {
-        if (bookShelfReAdapter != null && btnDelete != null && btnCancel != null) {
-            int num = bookShelfReAdapter.getCheckedSize();
+        if (downloadManagerAdapter != null && btnDelete != null && btnCancel != null) {
+            int num = downloadManagerAdapter.getCheckedSize();
             if (num == 0) {
                 btnDelete.setText(mContext.getString(R.string.delete));
-//                int textCsl = mContext.getResources().getColor(R.color.color_gray_babfc1);
-//                btnDelete.setTextColor(textCsl);
-//                btnDelete.setBackgroundResource(com.intelligent.reader.R.drawable.bookshelf_delete_submit_default_bg);
             } else {
                 String text = mContext.getString(R.string.delete) + "(" + num + ")";
                 btnDelete.setText(text);
-//                ColorStateList draw = mContext.getResources()
-//                        .getColorStateList(com.intelligent.reader.R.color.bookshelf_delete_submit_text_color);
-//                btnDelete.setTextColor(draw);
-//                btnDelete.setBackgroundResource(com.intelligent.reader.R.drawable.bookshelf_delete_submit_bg);
             }
         }
     }
 
-    // ====================================================
-    // callback
-    // ===================================================
-    public interface OnMenuStateListener {//菜单状态监听
+    public interface OnMenuStateListener {
 
-        void getMenuShownState(boolean isShown);//菜单开启状态
+        void onMenuStateChanged(boolean isShown);//菜单开启状态
 
-        void getAllCheckedState(boolean isAll);//菜单全选状态
+        void onAllCheckedStateChanged(boolean isAllChecked);//菜单全选状态
 
-        void doHideAd();//编辑状态删除广告数据
-
-    }
-
-    public interface OnMenuSelectAllListener {
-        void onSelectAll();
     }
 
     public interface OnMenuDeleteClickListener {//菜单删除按钮监听
 
-        /**
-         * delete button
-         *
-         * @param checked_state position which the list checkbox is selected
-         */
-        void onMenuDelete(HashSet<Integer> checked_state);//删除按钮回调，得到被选中的position
+        void onMenuDelete(ArrayList<Book> books);//删除按钮回调，得到被选中的position
     }
 
 }

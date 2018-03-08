@@ -139,4 +139,18 @@ class DownloadManagerPresenter(override var view: DownloadManagerView?) : IPrese
         }
     }
 
+    fun uploadTimeSortingLog() {
+        val data = HashMap<String, String>()
+        data["type"] = "1"
+        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.SORT, data)
+    }
+
+    fun uploadRecentReadSortingLog() {
+        val data = HashMap<String, String>()
+        data["type"] = "0"
+        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.SORT, data)
+    }
+
 }

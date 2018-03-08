@@ -1,71 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_black"
-    android:orientation="vertical">
+    android:background="@color/white"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:ignore="RtlHardcoded">
 
     <RelativeLayout
-        android:id="@+id/top_layout"
+        android:id="@+id/rl_content_head"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/top_navigation_bg_color"
-        android:fitsSystemWindows="true"
-        android:orientation="vertical"
-        android:paddingBottom="5dp">
+        android:layout_height="@dimen/top_bar_height"
+        android:focusableInTouchMode="true">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/top_bar_height">
+        <ImageView
+            android:id="@+id/txt_head_back"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:src="@mipmap/nbar_back_icon"/>
 
-            <ImageView
-                android:id="@+id/title_back_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:padding="6dp"
-                android:src="@mipmap/cover_top_back"/>
+        <TextView
+            android:id="@+id/txt_head_title"
+            style="@style/style_text_huge_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/download_manager"/>
 
-            <TextView
-                android:id="@+id/title_name_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="缓存管理"
-                android:textColor="@color/top_navigation_text_color"
-                android:textSize="18sp"/>
+        <TextView
+            android:id="@+id/txt_select_all"
+            style="@style/style_text_normal_plain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:gravity="center_vertical"
+            android:text="@string/select_all"
+            android:visibility="gone"/>
 
-            <TextView
-                android:id="@+id/btn_edit"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:gravity="center_vertical"
-                android:paddingBottom="@dimen/dimen_margin_2"
-                android:paddingLeft="@dimen/dimen_margin_12"
-                android:paddingRight="@dimen/dimen_margin_12"
-                android:paddingTop="@dimen/dimen_margin_2"
-                android:text="编辑"
-                android:textColor="@color/top_navigation_text_color"
-                android:textSize="@dimen/text_big16_size"/>
-        </RelativeLayout>
+        <ImageView
+            android:id="@+id/img_head_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:src="@drawable/download_manager_menu_icon"
+            android:visibility="visible"/>
+
     </RelativeLayout>
 
-    <include
-        layout="@layout/download_manager_pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/top_layout"/>
-
-    <ImageView
-        android:id="@+id/title_shadow"
+    <ListView
+        android:id="@+id/download_manager_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/top_layout"
-        android:scaleType="fitXY"
-        android:src="@mipmap/top_shadow"/>
+        android:layout_below="@+id/rl_content_head"
+        android:cacheColorHint="@color/transparent"
+        android:divider="@color/color_divider"
+        android:dividerHeight="0dp"
+        android:fadingEdge="none"
+        android:scrollbars="none"/>
+
+    <LinearLayout
+        android:id="@+id/empty_bookshelf"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/rl_content_head"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/bookshelf_no_book_icon"/>
+
+        <TextView
+            android:id="@+id/bookshelf_empty_prompt"
+            style="@style/style_text_normal_light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/download_manager_no_book_desc"/>
+
+        <TextView
+            android:id="@+id/bookshelf_empty_btn"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="60dp"
+            android:background="@drawable/bookshelf_no_book_btn_bg"
+            android:gravity="center"
+            android:text="@string/download_manager_no_book_goto"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/text_size_huge"/>
+    </LinearLayout>
+
 </RelativeLayout>

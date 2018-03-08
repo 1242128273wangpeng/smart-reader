@@ -74,6 +74,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
                 })
     }
 
+    var onRemoveModeAllCheckedListener: ((isAllChecked: Boolean) -> Unit)? = null
+
     val bookShelfRemoveHelper: BookShelfRemoveHelper by lazy {
         val helper = BookShelfRemoveHelper(activity, bookShelfReAdapter)
         helper.setLayout(bookshelf_refresh_view)
@@ -96,8 +98,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
                 }
             }
 
-            override fun getAllCheckedState(isAll: Boolean) {
-                fragmentCallback.getAllCheckedState(isAll)
+            override fun getAllCheckedState(isAllChecked: Boolean) {
+                fragmentCallback.getAllCheckedState(isAllChecked)
+                onRemoveModeAllCheckedListener?.invoke(isAllChecked)
             }
 
             override fun doHideAd() {
