@@ -89,11 +89,11 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
                 contentView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             }
 
-            if (!TextUtils.isEmpty(getArguments().getString("type")) && getArguments().getString("type").equals("category")) {
+//            if (!TextUtils.isEmpty(getArguments().getString("type")) && getArguments().getString("type").equals("category")) {
                 title_layout.setVisibility(View.GONE);
-            } else {
-                title_layout.setVisibility(View.VISIBLE);
-            }
+//            } else {
+//                title_layout.setVisibility(View.VISIBLE);
+//            }
         }
 
         if (weakReference != null) {
