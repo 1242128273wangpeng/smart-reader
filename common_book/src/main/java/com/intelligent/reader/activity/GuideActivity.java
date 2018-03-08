@@ -77,7 +77,7 @@ public class GuideActivity extends FrameActivity implements GuideFragment.Fragme
 
 
         Bundle guideBundle = new Bundle();
-        guideBundle.putInt("image_center", R.drawable.guide_bg);
+        guideBundle.putInt("image_center", R.drawable.splash_icons);
         GuideFragment guideFragment = new GuideFragment();
         guideFragment.setArguments(guideBundle);
 
@@ -106,7 +106,7 @@ public class GuideActivity extends FrameActivity implements GuideFragment.Fragme
 
     }
 
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public boolean  onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (isFromApp) {
                 finish();
