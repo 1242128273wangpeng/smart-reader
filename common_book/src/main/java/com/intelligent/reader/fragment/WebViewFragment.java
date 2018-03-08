@@ -83,9 +83,16 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     private void initView() {
         if (rootView != null) {
             contentLayout = (RelativeLayout) rootView.findViewById(R.id.web_content_layout);
+            View title_layout = rootView.findViewById(R.id.title_layout);
             contentView = (WebView) rootView.findViewById(R.id.web_content_view);
             if (Build.VERSION.SDK_INT >= 11) {
                 contentView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+            }
+
+            if (!TextUtils.isEmpty(getArguments().getString("type")) && getArguments().getString("type").equals("category")) {
+                title_layout.setVisibility(View.GONE);
+            } else {
+                title_layout.setVisibility(View.VISIBLE);
             }
         }
 
