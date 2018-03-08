@@ -98,6 +98,7 @@ public class StartLogClickUtil {
     public static final String BOOKCLICK1 = "BOOKCLICK";//书籍点击
     public static final String CACHEBUTTON = "CACHEBUTTON";//缓存按钮点击
     public static final String CACHEEDIT1 = "CACHEEDIT";//右上角编辑按钮点击
+    public static final String SORT = "SORT";//右上角取消
 
     //缓存编辑页
     public static final String SELECTALL = "SELECTALL";//全选

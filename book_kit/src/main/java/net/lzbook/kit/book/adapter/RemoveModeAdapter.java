@@ -26,10 +26,10 @@ public abstract class RemoveModeAdapter extends BaseAdapter {
     int distanceY = -1;
     ViewHolder holder = null;
     private boolean isRemoveMode = false;
-    private List<?> listData;
+    private List<Book> listData;
     protected Context mContext;
     private int mode_default = 16;
-    public List<Book> remove_checked_states;
+    public ArrayList<Book> remove_checked_states;
 
     public interface RemoveAdapterChild {
         void setChildAdapterData(int i, ViewHolder viewHolder, View view);
@@ -44,10 +44,10 @@ public abstract class RemoveModeAdapter extends BaseAdapter {
         public ViewGroup childView;
     }
 
-    public RemoveModeAdapter(Context context, List<?> list) {
+    public RemoveModeAdapter(Context context, List<Book> list) {
         this.listData = list;
         this.mContext = context;
-        this.remove_checked_states = new ArrayList();
+        this.remove_checked_states = new ArrayList<>();
         resetRemovedState();
         this.distanceY = (int) this.mContext.getResources().getDimension(R.dimen.dimen_view_height_50);
     }
@@ -57,7 +57,7 @@ public abstract class RemoveModeAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public Book getItem(int position) {
         return this.listData.get(position);
     }
 

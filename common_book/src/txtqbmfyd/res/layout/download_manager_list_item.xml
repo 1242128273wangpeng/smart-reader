@@ -1,81 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="16dp"
+    tools:ignore="RtlHardcoded">
+
+    <ImageView
+        android:id="@+id/img_book_cover_shadow"
+        android:layout_width="58dp"
+        android:layout_height="85dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="14dp"
+        android:src="@drawable/bookshelf_book_cover_shadow_bg"/>
+
+    <ImageView
+        android:id="@+id/img_book_cover"
+        android:layout_width="50dp"
+        android:layout_height="70dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/icon_book_cover_default"/>
+
+
+    <ImageView
+        android:id="@+id/img_download"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="45dp"
+        android:src="@drawable/download_manager_download"/>
+
+    <TextView
+        android:id="@+id/txt_book_name"
+        style="@style/style_text_huge_dark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="24dp"
+        android:layout_toLeftOf="@+id/img_download"
+        android:layout_toRightOf="@+id/img_book_cover"
+        android:ellipsize="end"
+        android:singleLine="true"
+        tools:text="凡人修仙传"/>
 
     <RelativeLayout
-            android:id="@+id/rl_item_content"
-            android:layout_width="match_parent"
-            android:layout_height="85dp"
-            android:paddingLeft="14dp"
-            android:paddingTop="16dp"
-            android:background="@color/download_manager_lv_bg_color">
+        android:id="@+id/rl_progress_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/txt_book_name"
+        android:layout_below="@+id/txt_book_name"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="8dp"
+        android:layout_toLeftOf="@+id/img_download">
 
-        <ImageView
-                android:id="@+id/download_manager_download_btn"
-                android:layout_width="@dimen/dimen_view_width_60"
-                android:layout_height="match_parent"
-                android:paddingRight="14dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:paddingLeft="@dimen/dimen_margin_17"
-                android:src="@drawable/icon_download_nostart"/>
+        <TextView
+            android:id="@+id/txt_download_state"
+            style="@style/style_text_small_weak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            tools:text="正在缓存"/>
 
-        <LinearLayout
-                android:id="@+id/download_manager_click_item"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@id/download_manager_download_btn"
-                android:orientation="vertical">
-
-            <TextView
-                    android:id="@+id/download_manager_bookname"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:singleLine="true"
-                    android:text="凡人修仙传"
-                    android:textColor="@color/download_manager_book_name_color"
-                    android:textSize="@dimen/text_big16_size"/>
-
-            <ProgressBar
-                    android:id="@+id/download_progress"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_view_height_5"
-                    android:layout_marginTop="@dimen/margin_10"
-                    android:progressDrawable="@drawable/bg_download_progressbar"/>
-
-            <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_5">
-
-                <TextView
-                        android:id="@+id/download_manager_download_state"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:text="正在缓存"
-                        android:textColor="@color/download_manager_other_tag_color"
-                        android:textSize="@dimen/dimen_text_12"/>
-
-                <TextView
-                        android:id="@+id/download_manager_chapter_num"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:text="111/2334章"
-                        android:textColor="@color/download_manager_other_tag_color"
-                        android:textSize="@dimen/dimen_text_12"/>
-            </RelativeLayout>
-        </LinearLayout>
+        <TextView
+            android:id="@+id/txt_download_num"
+            style="@style/style_text_small_weak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/txt_download_state"
+            tools:text=": 0%"/>
     </RelativeLayout>
 
-    <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_height_0.5"
-            android:layout_below="@+id/rl_item_content"
-            android:background="@color/color_divider"/>
+    <ProgressBar
+        android:id="@+id/pgbar_download"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_alignLeft="@+id/txt_book_name"
+        android:layout_below="@+id/rl_progress_text"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="4dp"
+        android:layout_toLeftOf="@+id/img_download"
+        android:layout_toRightOf="@+id/img_book_cover"
+        android:progressDrawable="@drawable/bg_download_progressbar"/>
 </RelativeLayout>

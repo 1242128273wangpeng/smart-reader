@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="false"
+    android:focusable="false"
+    tools:ignore="RtlHardcoded">
+
+    <View
+        android:id="@+id/view_divider"
+        android:layout_width="wrap_content"
+        android:layout_height="15dp"
+        android:visibility="visible"/>
+
+    <ImageView
+        android:id="@+id/img_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/view_divider"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/icon_common_tagart_bubble"/>
+
+    <TextView
+        style="@style/style_text_small_plain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/view_divider"
+        android:layout_marginTop="16dp"
+        android:layout_toRightOf="@+id/img_icon"
+        android:text="@string/download_manager_item_head_not_cached"/>
+
+</RelativeLayout>

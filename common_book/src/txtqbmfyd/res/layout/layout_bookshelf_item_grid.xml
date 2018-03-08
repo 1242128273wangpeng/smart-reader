@@ -14,7 +14,7 @@
         <ImageView
             android:id="@+id/img_book_cover_shadow"
             android:layout_width="92dp"
-            android:layout_height="131dp"
+            android:layout_height="140dp"
             android:src="@drawable/bookshelf_book_cover_shadow_bg"/>
 
         <ImageView
