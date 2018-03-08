@@ -6,13 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="fill_parent">
     
-    <!--<include-->
-    <!--layout="@layout/view_read_setting_jump_layout"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_above="@+id/reading_foot_options_dividing"/>-->
-    
-    
+
     <RelativeLayout
             android:layout_above="@+id/novel_jump_linear"
             android:background="@color/color_black_alpha_101010"
@@ -182,22 +176,6 @@
                 android:textColor="@color/color_gray_b5b5b5"
                 android:textSize="12sp"/>
         
-        <!--<TextView
-            android:visibility="gone"
-            android:id="@+id/read_changesource"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:paddingTop="9dp"
-            android:drawablePadding="5dp"
-            android:layout_gravity="center"
-            android:drawableTop="@drawable/read_changesource"
-            android:gravity="center"
-            android:singleLine="true"
-            android:text="@string/read_changesource"
-            android:background="@drawable/read_press_settings_selector"
-            android:textColor="@color/color_gray_b5b5b5"
-            android:textSize="12sp" />-->
         <TextView
                 android:id="@+id/read_setting_more"
                 android:layout_width="0dp"
@@ -215,13 +193,4 @@
                 android:textSize="12sp"/>
     
     </LinearLayout>
-    <!--<ImageView
-        android:id="@+id/autoread_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="25dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="70dp"
-        android:background="@drawable/nxh_light_autoread_switch_selector"
-        />-->
 </RelativeLayout>
