@@ -7,15 +7,14 @@
     android:background="@color/white"
     android:clipToPadding="true"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     tools:ignore="RtlHardcoded">
 
 
     <RelativeLayout
         android:id="@+id/rl_content_head"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/top_bar_height"
-        android:fitsSystemWindows="true"
-        android:focusableInTouchMode="true">
+        android:layout_height="@dimen/top_bar_height">
 
         <ImageView
             android:id="@+id/img_head_back"

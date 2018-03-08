@@ -27,7 +27,6 @@ import com.intelligent.reader.widget.BookSortingDialog
 import com.intelligent.reader.widget.ClearCacheDialog
 import com.intelligent.reader.widget.HomeMenuPopup
 import com.intelligent.reader.widget.drawer.DrawerLayout
-import de.greenrobot.event.EventBus
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import iyouqu.theme.ThemeMode
@@ -35,7 +34,6 @@ import kotlinx.android.synthetic.txtqbmfyd.content_view.*
 import kotlinx.android.synthetic.txtqbmfyd.content_view_main.*
 import kotlinx.android.synthetic.txtqbmfyd.content_view_menu.*
 import net.lzbook.kit.book.download.CacheManager
-import net.lzbook.kit.book.view.ConsumeEvent
 import net.lzbook.kit.book.view.NonSwipeViewPager
 import net.lzbook.kit.cache.DataCleanManager
 import net.lzbook.kit.constants.Constants
@@ -254,7 +252,7 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
         }
 
         img_head_setting.setOnClickListener {
-            EventBus.getDefault().post(ConsumeEvent(R.id.red_point_head_setting))
+//            EventBus.getDefault().post(ConsumeEvent(R.id.red_point_head_setting))
             if (drawer_layout.isOpened) {
                 drawer_layout.closeMenu()
             } else {
@@ -269,6 +267,14 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
             presenter.uploadHeadSearchLog(bottomType)
         }
 
+        rl_recommend_search.setOnClickListener {
+            startActivity(Intent(context, SearchBookActivity::class.java))
+        }
+
+        img_ranking_search.setOnClickListener {
+            startActivity(Intent(context, SearchBookActivity::class.java))
+        }
+
         img_head_menu.setOnClickListener {
             homeMenuPopup.show(img_head_menu)
         }
@@ -276,13 +282,17 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
         ll_bottom_tab_bookshelf.setOnClickListener {
             AppLog.e(TAG, "BookShelf Selected")
             selectTab(0)
-            rl_head.visibility = View.VISIBLE
+            rl_head_bookshelf.visibility = View.VISIBLE
+            rl_recommend_head.visibility = View.GONE
+            rl_head_ranking.visibility = View.GONE
             presenter.uploadBookshelfSelectedLog()
         }
 
         ll_bottom_tab_recommend.setOnClickListener {
             AppLog.e(TAG, "Selection Selected")
-            rl_head.visibility = View.GONE
+            rl_head_bookshelf.visibility = View.INVISIBLE
+            rl_recommend_head.visibility = View.VISIBLE
+            rl_head_ranking.visibility = View.GONE
             selectTab(1)
             //双击回到顶部
             if (AppUtils.isDoubleClick(System.currentTimeMillis())) {
@@ -296,7 +306,9 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
 
         ll_bottom_tab_ranking.setOnClickListener {
             AppLog.e(TAG, "Ranking Selected")
-            rl_head.visibility = View.GONE
+            rl_head_bookshelf.visibility = View.INVISIBLE
+            rl_recommend_head.visibility = View.GONE
+            rl_head_ranking.visibility = View.VISIBLE
             selectTab(2)
             preferencesUtils.putString(Constants.FINDBOOK_SEARCH, "top")
             presenter.uploadRankingSelectedLog()
@@ -304,7 +316,9 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
 
         ll_bottom_tab_category.setOnClickListener {
             AppLog.e(TAG, "Classify Selected")
-            rl_head.visibility = View.GONE
+            rl_head_bookshelf.visibility = View.GONE
+            rl_recommend_head.visibility = View.GONE
+            rl_head_ranking.visibility = View.GONE
             selectTab(3)
             preferencesUtils.putString(Constants.FINDBOOK_SEARCH, "class")
             presenter.uploadCategorySelectedLog()

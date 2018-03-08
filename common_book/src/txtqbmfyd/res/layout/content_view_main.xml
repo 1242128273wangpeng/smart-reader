@@ -6,13 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:ignore="RtlHardcoded">
+    tools:ignore="RtlHardcoded, RtlSymmetry">
 
     <RelativeLayout
-        android:id="@+id/rl_head"
+        android:id="@+id/rl_head_bookshelf"
         android:layout_width="match_parent"
         android:layout_height="@dimen/top_bar_height"
-        android:background="@color/top_navigation_bg_color">
+        android:background="@color/top_navigation_bg_color"
+        android:visibility="visible">
 
         <ImageView
             android:id="@+id/img_head_setting"
@@ -24,13 +25,13 @@
             android:scaleType="fitXY"
             android:src="@mipmap/nbar_personal_nor_icon"/>
 
-        <net.lzbook.kit.book.view.FirstUsePointView
-            android:id="@+id/red_point_head_setting"
-            android:layout_width="7dp"
-            android:layout_height="7dp"
-            android:layout_alignRight="@+id/img_head_setting"
-            android:layout_alignTop="@+id/img_head_setting"
-            android:background="@color/color_red_point"/>
+        <!--<net.lzbook.kit.book.view.FirstUsePointView-->
+        <!--android:id="@+id/red_point_head_setting"-->
+        <!--android:layout_width="7dp"-->
+        <!--android:layout_height="7dp"-->
+        <!--android:layout_alignRight="@+id/img_head_setting"-->
+        <!--android:layout_alignTop="@+id/img_head_setting"-->
+        <!--android:background="@color/color_red_point"/>-->
 
         <TextView
             android:id="@+id/txt_head_title"
@@ -86,12 +87,81 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/rl_recommend_head"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/top_navigation_bg_color"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:id="@+id/rl_recommend_search"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="7dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="7dp"
+            android:background="@drawable/recommend_title_search_bg"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:paddingLeft="10dp">
+
+            <ImageView
+                android:id="@+id/img_recommend"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/recommend_title_search_icon"/>
+
+            <TextView
+                style="@style/style_text_normal_weak"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="6dp"
+                android:layout_toRightOf="@+id/img_recommend"
+                android:text="搜小说"/>
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_head_ranking"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/top_bar_height"
+        android:background="@color/top_navigation_bg_color"
+        android:visibility="gone">
+
+        <TextView
+            style="@style/style_text_huge_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:text="@string/ranking"/>
+
+
+        <ImageView
+            android:id="@+id/img_ranking_search"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:layout_alignParentRight="true"
+            android:scaleType="fitXY"
+            android:src="@mipmap/nbar_search_nor_icon"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/rl_head_editor"
         android:layout_width="match_parent"
         android:layout_height="@dimen/top_bar_height"
-        android:layout_alignBottom="@+id/rl_head"
+        android:layout_alignBottom="@+id/rl_head_bookshelf"
         android:layout_alignParentTop="true"
-        android:layout_alignTop="@+id/rl_head"
+        android:layout_alignTop="@+id/rl_head_bookshelf"
         android:background="@color/top_navigation_bg_color"
         android:clickable="true"
         android:fitsSystemWindows="true"
@@ -124,18 +194,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/content_tab_selection"
-        android:layout_below="@id/rl_head"
-        android:flipInterval="30"
+        android:layout_below="@id/rl_head_bookshelf"
         android:background="@color/base_bg"
+        android:flipInterval="30"
         android:persistentDrawingCache="animation"/>
 
     <!--<ImageView-->
-        <!--android:id="@+id/img_head_shadow"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/rl_head"-->
-        <!--android:scaleType="fitXY"-->
-        <!--android:src="@drawable/top_shadow_bg"/>-->
+    <!--android:id="@+id/img_head_shadow"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@+id/rl_head_bookshelf"-->
+    <!--android:scaleType="fitXY"-->
+    <!--android:src="@drawable/top_shadow_bg"/>-->
 
     <ImageView
         android:id="@+id/img_bottom_shadow"
@@ -259,8 +329,8 @@
         android:id="@+id/fl_guide_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/img_guide_download"
@@ -269,18 +339,18 @@
             android:layout_gravity="right"
             android:layout_marginTop="37dp"
             android:scaleType="fitXY"
-            android:visibility="gone"
-            android:src="@drawable/icon_bookshelf_guide_download"/>
+            android:src="@drawable/icon_bookshelf_guide_download"
+            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/img_guide_remove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_marginLeft="9dp"
             android:layout_marginBottom="200dp"
+            android:layout_marginLeft="9dp"
             android:scaleType="fitXY"
-            android:visibility="gone"
-            android:src="@drawable/bookshelf_guide_remove"/>
+            android:src="@drawable/bookshelf_guide_remove"
+            android:visibility="gone"/>
     </FrameLayout>
 </com.intelligent.reader.widget.drawer.DrawerMain>
