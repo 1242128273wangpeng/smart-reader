@@ -411,8 +411,8 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 startActivity(new Intent(SettingActivity.this, SettingMoreActivity.class));
                 break;
             case R.id.rl_style_change:
-                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_theme_change);
-                startActivity(new Intent(SettingActivity.this, StyleChangeActivity.class));
+//                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_theme_change);
+//                startActivity(new Intent(SettingActivity.this, StyleChangeActivity.class));
 //                finish();
                 break;
             case R.id.tv_login_info:

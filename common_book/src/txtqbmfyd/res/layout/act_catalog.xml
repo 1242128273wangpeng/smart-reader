@@ -140,11 +140,6 @@
                 android:layout_height="wrap_content"
                 android:src="@mipmap/top_shadow"/>
 
-        <!--<FrameLayout-->
-        <!--android:id="@+id/catalog_content"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent">-->
-
         <ListView
                 android:id="@+id/catalog_main"
                 android:layout_width="match_parent"
@@ -155,21 +150,6 @@
                 android:cacheColorHint="@color/color_black_00000000"
                 android:listSelector="@android:color/transparent"
                 android:scrollbars="none"/>
-
-        <!--<ListView-->
-        <!--android:id="@+id/bookmark_main"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:divider="@null"-->
-        <!--android:fadingEdge="none"-->
-        <!--android:fastScrollEnabled="true"-->
-        <!--android:cacheColorHint="@color/color_black_00000000"-->
-        <!--android:listSelector="@android:color/transparent"-->
-        <!--android:scrollbars="none"-->
-        <!--android:visibility="gone"/>-->
-
-        <!--<include layout="@layout/layout_empty_catalog"/>-->
-        <!--</FrameLayout>-->
 
         <LinearLayout
                 android:id="@+id/catalog_empty"
@@ -204,34 +184,4 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <!--<TextView-->
-    <!--android:id="@+id/char_hint"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="top|center_horizontal"-->
-    <!--android:layout_marginTop="160dp"-->
-    <!--android:background="@drawable/char_hint_bg"-->
-    <!--android:gravity="center"-->
-    <!--android:maxWidth="200dip"-->
-    <!--android:minWidth="200dip"-->
-    <!--android:textColor="@android:color/white"-->
-    <!--android:textSize="30sp"/>-->
-
-    <!--<ImageView-->
-    <!--android:id="@+id/iv_back_reading"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:visibility="gone"-->
-    <!--android:src="@drawable/ic_back_reading"-->
-    <!--android:layout_gravity="center_vertical|right"/>-->
-
-    <!--<ImageView-->
-    <!--android:id="@+id/iv_fixbook"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:visibility="gone"-->
-    <!--android:src="@drawable/cata_fixbook_img"-->
-    <!--android:layout_marginBottom="50dp"-->
-    <!--android:layout_marginRight="15dp"-->
-    <!--android:layout_gravity="bottom|right"/>-->
 </FrameLayout>

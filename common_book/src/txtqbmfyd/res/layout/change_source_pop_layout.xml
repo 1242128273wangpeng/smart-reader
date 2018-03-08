@@ -51,40 +51,4 @@
             android:textColor="@color/reading_setting_text_color"
             android:textSize="@dimen/dimen_text_14"/>
 
-
-    <!--<RelativeLayout-->
-    <!--android:id="@+id/change_source_bottom"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="@dimen/dimen_view_height_50"-->
-    <!--android:layout_below="@id/change_source_list">-->
-
-
-    <!--<TextView-->
-    <!--android:id="@+id/change_source_continue"-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_alignParentRight="true"-->
-    <!--android:layout_toRightOf="@id/change_source_bottom_divider"-->
-    <!--android:gravity="center"-->
-    <!--android:text="@string/reading_continue"-->
-    <!--android:background="@drawable/dialog_btn_right_selector"-->
-    <!--android:textColor="@drawable/dialog_confirm_selector"-->
-    <!--android:textSize="@dimen/dimen_text_16"/>-->
-
-    <!--<include-->
-    <!--layout="@layout/dialog_divider"-->
-    <!--android:id="@+id/change_source_divider"/>-->
-    <!--</RelativeLayout>-->
-    <!--</LinearLayout>-->
-
-    <!--<net.lzbook.kit.book.view.NightShadowView-->
-    <!--android:visibility="gone"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_alignTop="@+id/container"-->
-    <!--android:layout_alignRight="@+id/container"-->
-    <!--android:layout_alignBottom="@+id/container"-->
-    <!--android:layout_alignLeft="@+id/container"-->
-    <!--app:cornerRadius="4dp"-->
-    <!--/>-->
 </LinearLayout>
