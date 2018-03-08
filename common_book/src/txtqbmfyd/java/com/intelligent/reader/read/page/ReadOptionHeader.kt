@@ -16,7 +16,6 @@ import com.intelligent.reader.R
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.presenter.read.ReadOption
 import com.intelligent.reader.read.mode.ReadState
-import kotlinx.android.synthetic.txtqbmfyd.act_book_cover.*
 import kotlinx.android.synthetic.txtqbmfyd.read_option_header.view.*
 import kotlinx.android.synthetic.txtqbmfyd.read_option_pop.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -140,7 +139,7 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
                 popupWindow.dismiss()
             }
 
-            read_option_pop_feedback?.setOnClickListener {
+            inflate.read_option_pop_feedback.setOnClickListener {
                 presenter?.feedback()
                 (context as ReadingActivity).showMenu(false)
                 popupWindow.dismiss()
