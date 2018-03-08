@@ -71,5 +71,5 @@
     <string name="guide_next">我知道了</string>
     <string name="loading_read_page">精彩内容即将呈现...</string>
     <string name="delete_mark_bookshelf">同时从书架中删除</string>
-    <string name="read_network_error">咦？咋木有网了呢～</string>
+    <string name="read_network_error">网络连接不畅，请稍后再试~</string>
 </resources>
