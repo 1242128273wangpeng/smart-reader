@@ -296,20 +296,17 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
             }
             // 删除书架数据库和章节数据库
             if (isOnlyDeleteCache) {
-                uiThread {
-                    view?.onBookDelete()
-                }
                 deleteBooks.forEach {
                     CacheManager.remove(it.book_id)
                     BaseBookHelper.removeChapterCacheFile(it)
                 }
             } else {
                 bookDaoHelper.deleteBook(deleteBooks)
-                uiThread {
-                    view?.onBookDelete()
-                }
             }
-
+            Thread.sleep(1000)
+            uiThread {
+                view?.onBookDelete()
+            }
             if (isOnlyDeleteCache) {
                 uploadBookCacheDeleteLog(sb, size)
             }

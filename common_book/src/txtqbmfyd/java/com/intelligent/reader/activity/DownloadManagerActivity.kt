@@ -6,12 +6,14 @@ import android.view.Menu
 import android.view.View
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.DownloadManagerAdapter
+import com.intelligent.reader.event.DownloadManagerToHome
 import com.intelligent.reader.presenter.downloadmanager.DownloadManagerPresenter
 import com.intelligent.reader.presenter.downloadmanager.DownloadManagerView
 import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.util.DownloadManagerRemoveHelper
 import com.intelligent.reader.view.DownloadDeleteLoadingDialog
 import com.intelligent.reader.widget.DownloadManagerMenuPopup
+import de.greenrobot.event.EventBus
 import kotlinx.android.synthetic.txtqbmfyd.download_manager.*
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.CallBackDownload
@@ -135,6 +137,11 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
             menuPopup.show(img_head_menu)
         }
 
+        txt_no_book_goto.setOnClickListener {
+            EventBus.getDefault().post(DownloadManagerToHome(1))
+            finish()
+        }
+
         download_manager_list.adapter = downloadAdapter
         download_manager_list.setOnItemClickListener { parent, view, position, id ->
             if (position < 0) return@setOnItemClickListener
@@ -160,9 +167,9 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
     override fun onDownloadBookQuery(bookList: ArrayList<Book>, hasDeleted: Boolean) {
         if (bookList.size == 0) {
             download_manager_list.visibility = View.GONE
-            empty_bookshelf.visibility = View.VISIBLE
+            ll_no_book.visibility = View.VISIBLE
         } else {
-            empty_bookshelf.visibility = View.GONE
+            ll_no_book.visibility = View.GONE
             download_manager_list.visibility = View.VISIBLE
             downloadAdapter.notifyDataSetChanged()
         }

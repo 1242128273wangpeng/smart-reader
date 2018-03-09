@@ -10,11 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.main.category_fragment_layout.*
-import kotlinx.android.synthetic.txtqbmfyd.content_view_main.view.*
 import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.AppUtils
-import java.util.HashMap
 
 /**
  * @desc 书城-分类
@@ -45,7 +43,9 @@ class CategoryFragment : Fragment() {
         val bundle = Bundle()
         bundle.putString("type", "category")
         val uri = URLBuilderIntterface.WEB_CATEGORY.replace("{packageName}", AppUtils.getPackageName())
-        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
+        val map = HashMap<String, String>()
+        map["type"] = "0"
+        bundle.putString("url", UrlUtils.buildWebUrl(uri, map))
         fragment.arguments = bundle
         fragment
     }
@@ -56,7 +56,9 @@ class CategoryFragment : Fragment() {
         val bundle = Bundle()
         bundle.putString("type", "category")
         val uri = URLBuilderIntterface.WEB_CATEGORY.replace("{packageName}", AppUtils.getPackageName())
-        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
+        val map = HashMap<String, String>()
+        map["type"] = "1"
+        bundle.putString("url", UrlUtils.buildWebUrl(uri, map))
         fragment.arguments = bundle
         fragment
     }

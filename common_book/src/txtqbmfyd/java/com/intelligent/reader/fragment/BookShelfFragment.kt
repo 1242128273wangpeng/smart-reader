@@ -141,7 +141,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
     private val bookDeleteDialog: BookDeleteDialog by lazy {
         val dialog = BookDeleteDialog(activity)
         dialog.setOnConfirmListener { books, isOnlyDeleteCache ->
-            if (books != null && books.isNotEmpty()) presenter.deleteBooks(books, isOnlyDeleteCache)
+            if (books != null && books.isNotEmpty()) {
+                dialog.showLoading()
+                presenter.deleteBooks(books, isOnlyDeleteCache)
+            }
             StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.bs_click_delete_ok_btn)
         }
         dialog.setOnAbrogateListener {
@@ -352,6 +355,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
     override fun onBookDelete() {
         AppLog.e(TAG, "onBookDelete")
         updateUI()
+        bookDeleteDialog.dismiss()
         bookShelfRemoveHelper.dismissRemoveMenu()
     }
 

@@ -2,6 +2,7 @@ package com.intelligent.reader.fragment
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
@@ -15,20 +16,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.baidu.mobstat.StatService
 import com.intelligent.reader.BuildConfig
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.*
 import com.intelligent.reader.app.BookApplication
+import com.intelligent.reader.event.DownloadManagerToHome
 import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.widget.BookSortingDialog
 import com.intelligent.reader.widget.ClearCacheDialog
 import com.intelligent.reader.widget.HomeMenuPopup
 import com.intelligent.reader.widget.drawer.DrawerLayout
+import de.greenrobot.event.EventBus
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import iyouqu.theme.StatusBarCompat
 import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.txtqbmfyd.content_view.*
 import kotlinx.android.synthetic.txtqbmfyd.content_view_main.*
@@ -163,6 +168,7 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
         } catch (e: NoSuchMethodError) {
             e.printStackTrace()
         }
+        EventBus.getDefault().register(this)
     }
 
     override fun getFrameView(inflater: LayoutInflater): View {
@@ -252,7 +258,7 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
         }
 
         img_head_setting.setOnClickListener {
-//            EventBus.getDefault().post(ConsumeEvent(R.id.red_point_head_setting))
+            //            EventBus.getDefault().post(ConsumeEvent(R.id.red_point_head_setting))
             if (drawer_layout.isOpened) {
                 drawer_layout.closeMenu()
             } else {
@@ -282,17 +288,11 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
         ll_bottom_tab_bookshelf.setOnClickListener {
             AppLog.e(TAG, "BookShelf Selected")
             selectTab(0)
-            rl_head_bookshelf.visibility = View.VISIBLE
-            rl_recommend_head.visibility = View.GONE
-            rl_head_ranking.visibility = View.GONE
             presenter.uploadBookshelfSelectedLog()
         }
 
         ll_bottom_tab_recommend.setOnClickListener {
             AppLog.e(TAG, "Selection Selected")
-            rl_head_bookshelf.visibility = View.INVISIBLE
-            rl_recommend_head.visibility = View.VISIBLE
-            rl_head_ranking.visibility = View.GONE
             selectTab(1)
             //双击回到顶部
             if (AppUtils.isDoubleClick(System.currentTimeMillis())) {
@@ -306,9 +306,6 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
 
         ll_bottom_tab_ranking.setOnClickListener {
             AppLog.e(TAG, "Ranking Selected")
-            rl_head_bookshelf.visibility = View.INVISIBLE
-            rl_recommend_head.visibility = View.GONE
-            rl_head_ranking.visibility = View.VISIBLE
             selectTab(2)
             preferencesUtils.putString(Constants.FINDBOOK_SEARCH, "top")
             presenter.uploadRankingSelectedLog()
@@ -316,9 +313,6 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
 
         ll_bottom_tab_category.setOnClickListener {
             AppLog.e(TAG, "Classify Selected")
-            rl_head_bookshelf.visibility = View.GONE
-            rl_recommend_head.visibility = View.GONE
-            rl_head_ranking.visibility = View.GONE
             selectTab(3)
             preferencesUtils.putString(Constants.FINDBOOK_SEARCH, "class")
             presenter.uploadCategorySelectedLog()
@@ -345,6 +339,8 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
 
 
         //menu
+        setMenuTitleMargin()
+
         val isNightMode = parent.mThemeHelper.isNight
         presenter.uploadCurModeLog(isNightMode)
         if (isNightMode) {
@@ -439,7 +435,7 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
         if (currentTab != position) {
             AppLog.e(TAG, "position: " + position)
 //            view_pager.currentItem = position
-            view_pager.setCurrentItem(position,false)
+            view_pager.setCurrentItem(position, false)
         }
     }
 
@@ -454,6 +450,33 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
         ll_bottom_tab_recommend.isSelected = position == 1
         ll_bottom_tab_ranking.isSelected = position == 2
         ll_bottom_tab_category.isSelected = position == 3
+
+        when (position) {
+            0 -> {
+                rl_head_bookshelf.visibility = View.VISIBLE
+                rl_recommend_head.visibility = View.GONE
+                rl_head_ranking.visibility = View.GONE
+                img_head_shadow.visibility = View.VISIBLE
+            }
+            1 -> {
+                rl_head_bookshelf.visibility = View.INVISIBLE
+                rl_recommend_head.visibility = View.VISIBLE
+                rl_head_ranking.visibility = View.GONE
+                img_head_shadow.visibility = View.VISIBLE
+            }
+            2 -> {
+                rl_head_bookshelf.visibility = View.INVISIBLE
+                rl_recommend_head.visibility = View.GONE
+                rl_head_ranking.visibility = View.VISIBLE
+                img_head_shadow.visibility = View.VISIBLE
+            }
+            else -> {
+                rl_head_bookshelf.visibility = View.GONE
+                rl_recommend_head.visibility = View.GONE
+                rl_head_ranking.visibility = View.GONE
+                img_head_shadow.visibility = View.GONE
+            }
+        }
     }
 
     override fun onResume() {
@@ -487,11 +510,23 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
 
     }
 
+    /**
+     * EventBus 接收下载管理页面的跳转请求
+     */
+    fun onEventMainThread(event: DownloadManagerToHome) {
+        selectTab(event.tabPosition)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         if (BuildConfig.DEBUG) {
             BookApplication.getRefWatcher().watch(this)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
     }
 
     fun onMenuShownState(state: Boolean) {
@@ -571,4 +606,21 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
             uiThread { txt_clear_cache_message.text = result }
         }
     }
+
+    private fun setMenuTitleMargin() {
+        val statusBarHeight = StatusBarCompat.getStatusBarHeight(activity)
+        AppLog.e(TAG, "statusBarHeight: $statusBarHeight")
+        val density = resources.displayMetrics.density
+        val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        val left = (12 * density + 0.5f).toInt()
+        var top = 20
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M || parent.isMIUISupport || parent.isFlymeSupport) {
+            top += 20
+        }
+        top = (top * density + 0.5f).toInt()
+        params.topMargin = top
+        params.leftMargin = left
+        txt_menu_title.layoutParams = params
+    }
+
 }
