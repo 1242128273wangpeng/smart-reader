@@ -84,6 +84,33 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
 //            (context as ReadingActivity).showMenu(false)
         }
 
+        header_ibtn_bookmark.isSelected = isMarkPage
+
+        header_ibtn_bookmark?.setOnClickListener {
+            StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_add_book_mark_btn)
+            val result = presenter?.bookMark()
+            val data = HashMap<String, String>()
+            StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, data)
+
+            when (result) {
+                1 -> {
+                    context.toastShort("书签添加成功", false)
+                    isMarkPage = true
+                    header_ibtn_bookmark.isSelected = true
+                    data.put("type", "1")
+                }
+                2 -> {
+                    context.toastShort("书签已删除", false)
+                    isMarkPage = false
+                    header_ibtn_bookmark.isSelected = false
+                    data.put("type", "2")
+                }
+                else -> {
+                    context.toastShort(R.string.add_mark_fail, false)
+                }
+            }
+        }
+
         header_ibtn_more?.setOnClickListener {
 
             presenter?.showMore();
@@ -104,33 +131,6 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
                 presenter?.changeSource()
                 (context as ReadingActivity).showMenu(false)
                 popupWindow.dismiss()
-            }
-
-            header_ibtn_bookmark.isSelected = isMarkPage
-
-            header_ibtn_bookmark?.setOnClickListener {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_add_book_mark_btn)
-                val result = presenter?.bookMark()
-                val data = HashMap<String, String>()
-                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, data)
-
-                when (result) {
-                    1 -> {
-                        context.toastShort("书签添加成功", false)
-                        isMarkPage = true
-                        header_ibtn_bookmark.isSelected = true
-                        data.put("type", "1")
-                    }
-                    2 -> {
-                        context.toastShort("书签已删除", false)
-                        isMarkPage = false
-                        header_ibtn_bookmark.isSelected = false
-                        data.put("type", "2")
-                    }
-                    else -> {
-                        context.toastShort(R.string.add_mark_fail, false)
-                    }
-                }
             }
 
             inflate.read_option_pop_info.setOnClickListener {
@@ -182,17 +182,14 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
         var typeChangeMark: Int
         isMarkPage = bookDaoHelper.isBookMarkExist(ReadState.book_id, ReadState.sequence, ReadState.offset, ReadState.book.book_type)
 
-        if (novel_bookmark != null && novel_bookmark.visibility == View.VISIBLE) {
-            typeChangeMark = if (isMarkPage) {
-                /*novel_bookmark.setImageResource(R.drawable.read_bookmarked);*/
-                R.mipmap.read_bookmarked
-            } else {
-                /*novel_bookmark.setImageDrawable(resources.getDrawable(ResourceUtil.getResourceId(this, Constants
-                            .DRAWABLE, "_bookmark_selector")));*/
-                R.mipmap.read_bookmark
-            }
-            novel_bookmark.setImageResource(typeChangeMark)
-        }
+//        if (novel_bookmark != null && novel_bookmark.visibility == View.VISIBLE) {
+//            typeChangeMark = if (isMarkPage) {
+//                R.mipmap.read_bookmarked
+//            } else {
+//                R.mipmap.read_bookmark
+//            }
+//            novel_bookmark.setImageResource(typeChangeMark)
+//        }
 
         header_ibtn_bookmark.isSelected = isMarkPage
 
@@ -205,19 +202,12 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
             //显示原网站地址
             if (Constants.QG_SOURCE == ReadState.book.site) {
                 novel_source_url.text = "青果阅读"
-//                novel_source_url.visibility = View.VISIBLE
             } else {
                 if (ReadState.currentChapter != null && !TextUtils.isEmpty(ReadState.currentChapter!!.curl)) {
-                    //if (ReadState.book.dex == 1 && !TextUtils.isEmpty(dataFactory.currentChapter.curl)) {
                     novel_source_url.text = UrlUtils.buildContentUrl(ReadState.currentChapter!!.curl)
-//                    novel_source_url.visibility = View.VISIBLE
-                    /*} else if (ReadState.book.dex == 0 && !TextUtils.isEmpty(dataFactory.currentChapter.curl1)) {
-                        novel_source_url.setText("来源于：" + dataFactory.currentChapter.curl1);
-                        novel_source_url.setVisibility(View.VISIBLE);*/
                 } else {
                     novel_source_url.visibility = View.GONE
                 }
-                //}
             }
         }
     }
