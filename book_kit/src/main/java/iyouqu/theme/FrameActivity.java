@@ -257,7 +257,6 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
             isDarkStatusBarText = false;
         }
     }
-
     /**
      * 初始化主题助手
      */
