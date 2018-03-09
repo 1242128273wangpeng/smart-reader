@@ -20,6 +20,7 @@
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
                 android:src="@mipmap/nbar_back_icon"
+                onPressChangeAlpha="true"
                 android:paddingLeft="16dp"/>
 
         <ImageView
@@ -78,6 +79,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
+                        android:background="@drawable/select_background_color"
                         android:text="加入书架"/>
 
                 <TextView

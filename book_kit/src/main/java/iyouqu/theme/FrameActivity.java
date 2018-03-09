@@ -1,5 +1,16 @@
 package iyouqu.theme;
 
+import com.baidu.mobstat.StatService;
+
+import net.lzbook.kit.R;
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.utils.ATManager;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.NetWorkUtils;
+import net.lzbook.kit.utils.ResourceUtil;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -34,17 +45,6 @@ import android.view.ViewPropertyAnimator;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
-
-import com.baidu.mobstat.StatService;
-
-import net.lzbook.kit.R;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.utils.ATManager;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.NetWorkUtils;
-import net.lzbook.kit.utils.ResourceUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -131,29 +131,29 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
     @Override
     public final View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
 
-        boolean changeAlpha = isChangeAlpha(attrs);
+        boolean changeAlpha = isChangeAlpha(attrs, name);
 
-        if(changeAlpha && parent != null && parent instanceof ViewGroup){
-            ((ViewGroup)parent).setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+        if (changeAlpha && parent != null && parent instanceof ViewGroup) {
+            ((ViewGroup) parent).setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
         }
 
         View view = super.onCreateView(name, context, attrs);
 
-        if(changeAlpha){
+        if (changeAlpha) {
 
-            if(view == null) {
+            if (view == null) {
                 view = getView(parent, name, context, attrs);
             }
 
-            if(view != null) {
+            if (view != null) {
 
                 final View tempView = view;
                 StateListDrawable stateListDrawable = new StateListListenerDrawable(new Function2<Boolean, Boolean, Unit>() {
                     @Override
                     public Unit invoke(Boolean pressed, Boolean enable) {
-                        if(pressed || !enable) {
+                        if (pressed || !enable) {
                             tempView.setAlpha(ALPHA_FADE_TO);
-                        }else{
+                        } else {
                             tempView.setAlpha(1.0F);
                         }
 
@@ -163,7 +163,7 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
 
                 Drawable background = view.getBackground();
 
-                if(background != null) {
+                if (background != null) {
                     stateListDrawable.addState(StateSet.WILD_CARD, background);
                 }
 
@@ -171,7 +171,7 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
             }
         }
 
-        return view ;
+        return view;
     }
 
     @Nullable
@@ -180,11 +180,11 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         //first use AppCompat
         View view = getDelegate().createView(parent, name, context, attrs);
 
-        if(view == null){
+        if (view == null) {
             try {
                 if (-1 == name.indexOf('.')) {
                     view = getLayoutInflater().createView(name, "android.view.", attrs);
-                }else{
+                } else {
                     view = getLayoutInflater().createView(name, null, attrs);
                 }
             } catch (ClassNotFoundException e) {
@@ -194,10 +194,17 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         return view;
     }
 
-    private boolean isChangeAlpha(AttributeSet attrs) {
+    private boolean isChangeAlpha(AttributeSet attrs, String name) {
+        System.out.println("attr name :" +name);
         int count = attrs.getAttributeCount();
         for (int i = 0; i < count; i++) {
-            if("onPressChangeAlpha".equals(attrs.getAttributeName(i))){
+            if (attrs.getAttributeName(i).equals("id")) {
+                if (attrs.getAttributeIntValue(i, 0) == getResources().getIdentifier("book_cover_back", "id", getPackageName())) {
+                    System.out.println("attr :" + attrs.getAttributeName(i) + " " + attrs.getAttributeIntValue(i, 0));
+                }
+            }
+
+            if ("onPressChangeAlpha".equals(attrs.getAttributeName(i))) {
                 return attrs.getAttributeBooleanValue(i, false);
             }
         }
@@ -226,6 +233,7 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
             isDarkStatusBarText = false;
         }
     }
+
     /**
      * 初始化主题助手
      */

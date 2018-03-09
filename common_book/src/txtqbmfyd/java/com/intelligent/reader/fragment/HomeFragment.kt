@@ -167,7 +167,7 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
 
     override fun getFrameView(inflater: LayoutInflater): View {
         try {
-            mFrameView = inflater.inflate(R.layout.content_view, null)
+            mFrameView = activity.layoutInflater.inflate(R.layout.content_view, null)
             AppLog.e(TAG, "-->>HomeFragment")
         } catch (e: InflateException) {
             e.printStackTrace()
