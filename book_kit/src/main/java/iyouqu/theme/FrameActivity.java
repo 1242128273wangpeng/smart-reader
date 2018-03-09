@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
@@ -21,6 +22,8 @@ import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.view.LayoutInflaterCompat;
+import android.support.v4.view.LayoutInflaterFactory;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -101,6 +104,14 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
 
     @SuppressLint("NewApi")
     public void onCreate(Bundle paramBundle) {
+
+        LayoutInflaterCompat.setFactory(getLayoutInflater(), new LayoutInflaterFactory() {
+            @Override
+            public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
+                return createViewWithPressState(parent, name, context, attrs);
+            }
+        });
+
         super.onCreate(paramBundle);
         if (isFirst) {
             hasGetPackageName();
@@ -128,32 +139,66 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
 //        StatusBarCompat.compat(this, getStatusBarColorId());
     }
 
-    @Override
-    public final View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
+    protected View createViewWithPressState(View parent, String name, Context context, AttributeSet attrs) {
 
-        boolean changeAlpha = isChangeAlpha(attrs);
 
-        if(changeAlpha && parent != null && parent instanceof ViewGroup){
-            ((ViewGroup)parent).setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-        }
+        View view = getDelegate().createView(parent, name, context, attrs);
 
-        View view = super.onCreateView(name, context, attrs);
+        if (view != null && hasItemStateAttr(attrs)) {
 
-        if(changeAlpha){
+            TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.item_state);
+            boolean changeAlpha = typedArray.getBoolean(R.styleable.item_state_onPressChangeAlpha, false);
+//            Drawable pressDrawable = null;
+//            Drawable unableDrawable = null;
+//
+//            for (int i = 0; i < typedArray.getIndexCount(); i++) {
+//                int attr = typedArray.getIndex(i);
+//                if (R.styleable.item_state_onPressBackground == attr) {
+//                    pressDrawable = typedArray.getDrawable(attr);
+//                }
+//                if (R.styleable.item_state_onUnableBackground == attr) {
+//                    unableDrawable = typedArray.getDrawable(attr);
+//                }
+//            }
 
-            if(view == null) {
-                view = getView(parent, name, context, attrs);
+            typedArray.recycle();
+
+
+            Drawable background = view.getBackground();
+
+//            if (pressDrawable != null || unableDrawable != null) {
+//                StateListDrawable stateBackground = new StateListDrawable();
+//
+//                if (pressDrawable != null) {
+//                    stateBackground.addState(new int[]{
+//                            android.R.attr.state_pressed
+//                            , android.R.attr.state_enabled}, pressDrawable);
+//                }
+//
+////                if (unableDrawable != null) {
+////                    stateBackground.addState(new int[]{-android.R.attr.state_enabled}, unableDrawable);
+////                }
+//
+//                stateBackground.addState(new int[]{}, background);
+//
+//                background = stateBackground;
+//            }
+
+
+            if (changeAlpha && parent != null && parent instanceof ViewGroup) {
+                ((ViewGroup) parent).setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
             }
 
-            if(view != null) {
+
+            if (changeAlpha) {
 
                 final View tempView = view;
                 StateListDrawable stateListDrawable = new StateListListenerDrawable(new Function2<Boolean, Boolean, Unit>() {
                     @Override
                     public Unit invoke(Boolean pressed, Boolean enable) {
-                        if(pressed || !enable) {
+                        if (pressed || !enable) {
                             tempView.setAlpha(ALPHA_FADE_TO);
-                        }else{
+                        } else {
                             tempView.setAlpha(1.0F);
                         }
 
@@ -161,49 +206,35 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
                     }
                 });
 
-                Drawable background = view.getBackground();
-
-                if(background != null) {
+                if (background != null) {
                     stateListDrawable.addState(StateSet.WILD_CARD, background);
                 }
 
-                ViewCompat.setBackground(view, stateListDrawable);
+                background = stateListDrawable;
             }
+
+
+            ViewCompat.setBackground(view, background);
         }
 
-        return view ;
-    }
-
-    @Nullable
-    private View getView(View parent, String name, Context context, AttributeSet attrs) {
-
-        //first use AppCompat
-        View view = getDelegate().createView(parent, name, context, attrs);
-
-        if(view == null){
-            try {
-                if (-1 == name.indexOf('.')) {
-                    view = getLayoutInflater().createView(name, "android.view.", attrs);
-                }else{
-                    view = getLayoutInflater().createView(name, null, attrs);
-                }
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
         return view;
     }
 
-    private boolean isChangeAlpha(AttributeSet attrs) {
+    private boolean hasItemStateAttr(AttributeSet attrs) {
         int count = attrs.getAttributeCount();
         for (int i = 0; i < count; i++) {
-            if("onPressChangeAlpha".equals(attrs.getAttributeName(i))){
-                return attrs.getAttributeBooleanValue(i, false);
+            if ("onPressChangeAlpha".equals(attrs.getAttributeName(i))) {
+                return true;
+            }
+            if ("onPressBackground".equals(attrs.getAttributeName(i))) {
+                return true;
+            }
+            if ("onUnableBackground".equals(attrs.getAttributeName(i))) {
+                return true;
             }
         }
         return false;
     }
-
 
     @Override
     public void onBackPressed() {
@@ -226,6 +257,7 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
             isDarkStatusBarText = false;
         }
     }
+
     /**
      * 初始化主题助手
      */
