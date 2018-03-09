@@ -95,5 +95,7 @@
 
     <declare-styleable name="item_state">
         <attr name="onPressChangeAlpha" format="boolean"/>
+        <!--<attr name="onPressBackground" format="color|reference"/>-->
+        <!--<attr name="onUnableBackground" format="color|reference"/>-->
     </declare-styleable>
 </resources>
