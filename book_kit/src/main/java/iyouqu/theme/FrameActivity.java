@@ -1,5 +1,16 @@
 package iyouqu.theme;
 
+import com.baidu.mobstat.StatService;
+
+import net.lzbook.kit.R;
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.utils.ATManager;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.NetWorkUtils;
+import net.lzbook.kit.utils.ResourceUtil;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -21,7 +32,6 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v4.view.LayoutInflaterFactory;
 import android.support.v4.view.ViewCompat;
@@ -37,17 +47,6 @@ import android.view.ViewPropertyAnimator;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
-
-import com.baidu.mobstat.StatService;
-
-import net.lzbook.kit.R;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.utils.ATManager;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.NetWorkUtils;
-import net.lzbook.kit.utils.ResourceUtil;
 
 import java.util.HashMap;
 import java.util.List;

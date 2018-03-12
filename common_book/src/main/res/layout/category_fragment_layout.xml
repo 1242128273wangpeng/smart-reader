@@ -2,6 +2,7 @@
 <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/web_content_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -33,7 +34,9 @@
                 android:layout_marginRight="16dp"
                 android:layout_alignParentRight="true"
                 android:scaleType="fitXY"
-                android:src="@mipmap/nbar_search_nor_icon"/>
+                app:onPressChangeAlpha="true"
+                android:src="@mipmap/nbar_search_nor_icon"
+                tools:ignore="MissingPrefix"/>
 
     </RelativeLayout>
 

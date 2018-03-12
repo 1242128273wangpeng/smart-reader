@@ -405,6 +405,9 @@ class ReadOptionPresenter : ReadOption.Presenter {
         val activity = this.activity.get()
         if (activity is ReadingActivity) {
             activity.onBackPressed()
+            val data = java.util.HashMap<String, String>()
+            data.put("type", "1")
+            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.BACK, data)
         }
     }
 
