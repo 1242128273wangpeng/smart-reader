@@ -28,11 +28,12 @@
 
     <ImageView
         android:id="@+id/img_download"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="51dp"
+        android:layout_height="85dp"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="45dp"
+        android:paddingRight="16dp"
+        android:paddingLeft="15dp"
+        android:layout_marginTop="14dp"
         android:src="@drawable/download_manager_download"/>
 
     <TextView
@@ -83,7 +84,6 @@
         android:layout_height="4dp"
         android:layout_alignLeft="@+id/txt_book_name"
         android:layout_below="@+id/rl_progress_text"
-        android:layout_marginRight="15dp"
         android:layout_marginTop="4dp"
         android:layout_toLeftOf="@+id/img_download"
         android:layout_toRightOf="@+id/img_book_cover"
