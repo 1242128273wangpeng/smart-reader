@@ -35,6 +35,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 
     private static String TAG = WebViewFragment.class.getSimpleName();
     public String url;
+    private String type;
     private WeakReference<Activity> weakReference;
     private Context context;
     private View rootView;
@@ -45,6 +46,11 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     private FragmentCallback fragmentCallback;
     private LoadingPage loadingpage;
     private Handler handler;
+
+    private boolean isPrepared;
+    private boolean isVisible;
+
+    private boolean isFirstVisible = true;
 
     @Override
     public void onAttach(Activity activity) {
@@ -63,6 +69,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
         if (bundle != null) {
             this.url = bundle.getString("url");
             AppLog.e(TAG, "url---->" + url);
+            type = bundle.getString("type");
         }
     }
 
@@ -90,7 +97,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
             }
 
 //            if (!TextUtils.isEmpty(getArguments().getString("type")) && getArguments().getString("type").equals("category")) {
-                title_layout.setVisibility(View.GONE);
+            title_layout.setVisibility(View.GONE);
 //            } else {
 //                title_layout.setVisibility(View.VISIBLE);
 //            }
@@ -128,9 +135,58 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        isPrepared = true;
+        if (type != null && type.equals("category_female")) {//女频
+            lazyLoad();
+        } else {
+            if (!TextUtils.isEmpty(url)) {
+                loadWebData(url);
+            }
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (getUserVisibleHint()) {
+            isVisible = true;
+            onVisible();
+        } else {
+            isVisible = false;
+            onInvisible();
+        }
+    }
+
+    protected void onVisible() {
+        if (type != null) {
+            if (type.equals("category_female")) {//分类-女频
+                lazyLoad();
+            }
+            if (type.equals("rank")) {//榜单
+                jsInterfaceHelper.setRankingWebVisible();
+                notifyRankingWebLog();//通知 H5 打点
+            }
+        }
+    }
+
+    protected void onInvisible() {
+    }
+
+    private void notifyRankingWebLog() {
+        if (!isVisible || !isPrepared) {
+            return;
+        }
+        contentView.loadUrl("javascript:startEventFunc()");
+    }
+
+    protected void lazyLoad() {
+        if (!isVisible || !isPrepared || !isFirstVisible) {
+            return;
+        }
         if (!TextUtils.isEmpty(url)) {
             loadWebData(url);
         }
+        isFirstVisible = false;
     }
 
     @Override

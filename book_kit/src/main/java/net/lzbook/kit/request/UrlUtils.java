@@ -16,9 +16,9 @@ public class UrlUtils {
 
 
     //正式线上API，域名例子：api.wubutianxia.com
-    public static String BOOK_NOVEL_DEPLOY_HOST = "http://test5.api.bookapi.cn:8080";
+    public static String BOOK_NOVEL_DEPLOY_HOST = "http://test5.api.bookapi.cn:8088";
     //正式线上webview地址，域名例子：bookwebview.wubutianxia.com
-    public static String BOOK_WEBVIEW_HOST = "http://test5.api.bookapi.cn:8080";
+    public static String BOOK_WEBVIEW_HOST = "http://test5.api.bookapi.cn:8088";
 //    public static String BOOK_NOVEL_DEPLOY_HOST = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST;
 //    //正式线上webview地址，域名例子：bookwebview.wubutianxia.com
 //    public static String BOOK_WEBVIEW_HOST = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST;

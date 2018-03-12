@@ -41,7 +41,7 @@ class CategoryFragment : Fragment() {
     private val manCategoryFragment: WebViewFragment by lazy {
         val fragment = WebViewFragment()
         val bundle = Bundle()
-        bundle.putString("type", "category")
+        bundle.putString("type", "category_male")
         val uri = URLBuilderIntterface.WEB_CATEGORY.replace("{packageName}", AppUtils.getPackageName())
         val map = HashMap<String, String>()
         map["type"] = "0"
@@ -54,7 +54,7 @@ class CategoryFragment : Fragment() {
     private val girlCategoryFragment: WebViewFragment by lazy {
         val fragment = WebViewFragment()
         val bundle = Bundle()
-        bundle.putString("type", "category")
+        bundle.putString("type", "category_female")
         val uri = URLBuilderIntterface.WEB_CATEGORY.replace("{packageName}", AppUtils.getPackageName())
         val map = HashMap<String, String>()
         map["type"] = "1"
