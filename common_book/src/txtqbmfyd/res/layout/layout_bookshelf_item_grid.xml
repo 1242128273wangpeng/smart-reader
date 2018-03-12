@@ -17,7 +17,8 @@
             android:layout_height="140dp"
             android:src="@drawable/bookshelf_book_cover_shadow_bg"/>
 
-        <ImageView
+
+        <com.intelligent.reader.widget.BorderImageView
             android:id="@+id/img_book_cover"
             android:layout_width="80dp"
             android:layout_height="113dp"
@@ -64,6 +65,14 @@
             android:background="@drawable/bookshelf_edit_unselected_icon"
             android:visibility="visible"
             tools:ignore="RtlHardcoded"/>
+
+        <View
+            android:layout_width="80dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/book_cover_sel"
+            android:layout_height="113dp"/>
+
     </RelativeLayout>
 
 </RelativeLayout>

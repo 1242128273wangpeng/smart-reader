@@ -295,11 +295,11 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
             AppLog.e(TAG, "Selection Selected")
             selectTab(1)
             //双击回到顶部
-            if (AppUtils.isDoubleClick(System.currentTimeMillis())) {
-                if (view_pager.currentItem == 1) {
-                    recommendFragment.loadWebData(recommendFragment.url)
-                }
-            }
+//            if (AppUtils.isDoubleClick(System.currentTimeMillis())) {
+//                if (view_pager.currentItem == 1) {
+//                    recommendFragment.loadWebData(recommendFragment.url)
+//                }
+//            }
             preferencesUtils.putString(Constants.FINDBOOK_SEARCH, "recommend")
             presenter.uploadRecommendSelectedLog()
         }

@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.intelligent.reader.widget.drawer.DrawerLayout.MenuState.MENU_CLOSED
 import com.intelligent.reader.widget.drawer.DrawerLayout.MenuState.MENU_OPENED
+import net.lzbook.kit.utils.AppLog
 
 
 /**
@@ -91,8 +92,8 @@ class DrawerLayout @JvmOverloads constructor(context: Context, attrs: AttributeS
             }
         }
 
-        override fun getViewHorizontalDragRange(child: View?): Int {
-            return 1
+        override fun getViewHorizontalDragRange(child: View): Int {
+            return measuredWidth -child.measuredWidth
         }
 
         override fun clampViewPositionHorizontal(child: View?, left: Int, dx: Int): Int {
@@ -157,11 +158,13 @@ class DrawerLayout @JvmOverloads constructor(context: Context, attrs: AttributeS
     }
 
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
+        AppLog.e(TAG, "onInterceptTouchEvent")
         return viewDragHelper.shouldInterceptTouchEvent(event)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         //将触摸事件传递给ViewDragHelper，此操作必不可少
+        AppLog.e(TAG, "onTouchEvent")
         viewDragHelper.processTouchEvent(event)
         return true
     }
