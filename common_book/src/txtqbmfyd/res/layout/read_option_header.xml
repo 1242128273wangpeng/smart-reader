@@ -90,7 +90,7 @@
                 android:scaleType="fitCenter"
                 android:padding="10dp"
                 app:onPressChangeAlpha="true"
-                android:src="@drawable/icon_read_option_down_normal"/>
+                android:src="@drawable/icon_read_option_down_finish"/>
 
         <ImageButton
                 android:id="@+id/header_ibtn_more"

@@ -503,54 +503,54 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
      * 添加广告 段尾  6-3
      */
     private fun loadAdViewToChapterLastPage(chapterContent: List<NovelPageBean>) {
-        if (Constants.isHideAD) return
-        var lineData: NovelLineBean? = null
-        for (i in chapterContent.indices) {
-            val pageContent = chapterContent[i]
-            for (j in pageContent.lines.indices) {
-                if (j == pageContent.lines.size - 1) {
-                    lineData = pageContent.lines[j]
-                }
-            }
-        }
-
-        if (lineData?.adView != null) {
-            return
-        }
-
-        mDataProvider.loadChapterLastPageAd(context, object : DataProvider.OnLoadReaderAdCallback {
-
-            override fun onFail() {
-            }
-
-            override fun onLoadAd(adView: ViewGroup) {
-                lineData?.adView = adView
-            }
-        })
+//        if (Constants.isHideAD) return
+//        var lineData: NovelLineBean? = null
+//        for (i in chapterContent.indices) {
+//            val pageContent = chapterContent[i]
+//            for (j in pageContent.lines.indices) {
+//                if (j == pageContent.lines.size - 1) {
+//                    lineData = pageContent.lines[j]
+//                }
+//            }
+//        }
+//
+//        if (lineData?.adView != null) {
+//            return
+//        }
+//
+//        mDataProvider.loadChapterLastPageAd(context, object : DataProvider.OnLoadReaderAdCallback {
+//
+//            override fun onFail() {
+//            }
+//
+//            override fun onLoadAd(adView: ViewGroup) {
+//                lineData?.adView = adView
+//            }
+//        })
     }
 
     /**
-     * 添加广告 章节间  5-3   chapterContent: ArrayList<NovelPageBean>,
+     * 添加广告 章节间  5-3
      */
     private fun loadAdViewToChapterBetween(sequence: Int, index: ReadViewEnums.PageIndex) {
-        if (Constants.isHideAD) return
-        if (sequence == -1 && checkLoadAdValid(sequence) != 0) return
-
-        val adData = NovelPageBean(arrayListOf(NovelLineBean().apply { this.sequence = PagerScrollAdapter.AD_ITEM_TYPE; this.sequenceType = sequence }), 0,
-                arrayListOf())
-        mAdapter.addAdViewToTheChapterLast(sequence, adData)
+//        if (Constants.isHideAD) return
+//        if (sequence == -1 && checkLoadAdValid(sequence) != 0) return
+//
+//        val adData = NovelPageBean(arrayListOf(NovelLineBean().apply { this.sequence = PagerScrollAdapter.AD_ITEM_TYPE; this.sequenceType = sequence }), 0,
+//                arrayListOf())
+//        mAdapter.addAdViewToTheChapterLast(sequence, adData)
         mAdapter.clearUselessChapter(index)
-
-        mDataProvider.loadChapterBetweenAd(context, object : DataProvider.OnLoadAdViewCallback(sequence) {
-
-            override fun onFail() {
-                mAdapter.removeViewToTheChapterLast(loadAdBySequence)
-            }
-
-            override fun onLoadAd(adView: ViewGroup) {
-                adData.apply { isAd = true;this.adBigView = adView }
-            }
-        })
+//
+//        mDataProvider.loadChapterBetweenAd(context, object : DataProvider.OnLoadAdViewCallback(sequence) {
+//
+//            override fun onFail() {
+//                mAdapter.removeViewToTheChapterLast(loadAdBySequence)
+//            }
+//
+//            override fun onLoadAd(adView: ViewGroup) {
+//                adData.apply { isAd = true;this.adBigView = adView }
+//            }
+//        })
     }
 
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
