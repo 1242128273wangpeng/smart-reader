@@ -43,6 +43,7 @@ import android.text.Spanned;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
@@ -581,14 +582,19 @@ public class SignSeekBar extends View {
         if (isFloatType || (isShowProgressInFloat && mSectionTextPosition == BOTTOM_SIDES &&
                 mProgress != mMin && mProgress != mMax)) {
             String value = String.valueOf(getProgressFloat());
-            if (value != null && unit != null && !unit.isEmpty())
-                value = String.format("%s", unit) + value;
-            canvas.drawText(value, mThumbCenterX, y_, mPaint);
+
+            if (Integer.parseInt(value) % 2 == 0) {
+                if (value != null && unit != null && !unit.isEmpty())
+                    value = String.format("%s", unit) + value;
+                canvas.drawText(value, mThumbCenterX, y_, mPaint);
+            }
         } else {
             String value = String.valueOf(getProgress());
-            if (value != null && unit != null && !unit.isEmpty())
-                value = String.format("%s", unit) + value;
-            canvas.drawText(value, mThumbCenterX, y_, mPaint);
+            if (Integer.parseInt(value) % 2 == 0) {
+                if (value != null && unit != null && !unit.isEmpty())
+                    value = String.format("%s", unit) + value;
+                canvas.drawText(value, mThumbCenterX, y_, mPaint);
+            }
         }
     }
 
@@ -692,10 +698,17 @@ public class SignSeekBar extends View {
         requestLayout();
     }
 
+    private String realProgress = "0.0";
+
     private void createValueTextLayout() {
         String value = isShowProgressInFloat ? String.valueOf(getProgressFloat()) : String.valueOf(getProgress());
-        if (value != null && unit != null && !unit.isEmpty())
-            value = String.format("%s", unit) + value;
+        if (Float.parseFloat(value) % 2 == 0) {
+            realProgress = value;
+        }
+
+        if (realProgress != null && unit != null && !unit.isEmpty())
+            value = String.format("%s", unit) + realProgress;
+        Log.e("createValueTextLayout", "createValueTextLayout realProgress :" + value);
 //            value = String.format(" <small>%s</small>", unit) + value;
         Spanned spanned = Html.fromHtml(value);
         valueTextLayout = new StaticLayout(spanned, valueTextPaint, mSignWidth, Layout.Alignment.ALIGN_CENTER, 1, 0, false);
