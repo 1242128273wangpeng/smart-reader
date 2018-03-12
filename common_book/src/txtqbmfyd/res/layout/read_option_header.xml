@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:id="@+id/novel_head_options"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/read_option_txtmfqbyd_bg"
                 android:clickable="true"
-                android:paddingTop="@dimen/dimen_padding_20">
+                android:paddingTop="@dimen/dimen_padding_20"
+                tools:ignore="MissingPrefix">
 
     <RelativeLayout
             android:id="@+id/reading_head_content"
@@ -21,6 +24,7 @@
                 android:paddingLeft="@dimen/dimen_padding_16"
                 android:paddingRight="@dimen/dimen_padding_10"
                 android:paddingTop="@dimen/dimen_padding_5"
+                app:onPressChangeAlpha="true"
                 android:src="@drawable/read_option_back_selector"/>
 
         <ImageView
@@ -73,6 +77,7 @@
                 android:background="@null"
                 android:scaleType="fitCenter"
                 android:padding="10dp"
+                app:onPressChangeAlpha="true"
                 android:src="@drawable/read_option_mark_selector"/>
 
         <ImageButton
@@ -84,7 +89,8 @@
                 android:background="@null"
                 android:scaleType="fitCenter"
                 android:padding="10dp"
-                android:src="@drawable/icon_read_option_down_normal"/>
+                app:onPressChangeAlpha="true"
+                android:src="@drawable/icon_read_option_down_finish"/>
 
         <ImageButton
                 android:id="@+id/header_ibtn_more"
@@ -94,6 +100,7 @@
                 android:scaleType="fitCenter"
                 android:paddingRight="@dimen/dimen_margin_16"
                 android:src="@drawable/read_option_more_selector"
+                app:onPressChangeAlpha="true"
                 android:layout_alignParentRight="true"/>
     </RelativeLayout>
 

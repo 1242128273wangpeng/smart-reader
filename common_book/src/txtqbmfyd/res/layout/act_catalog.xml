@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/catalog_layout"
         android:layout_width="match_parent"
         android:fitsSystemWindows="true"
         android:clipToPadding="true"
         android:background="@color/base_bg"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:ignore="MissingPrefix">
 
     <RelativeLayout
             android:id="@+id/novel_catalog_view"
@@ -25,6 +28,7 @@
                     android:layout_centerVertical="true"
                     android:src="@mipmap/nbar_back_icon"
                     android:paddingLeft="16dp"
+                    app:onPressChangeAlpha="true"
                     android:layout_height="match_parent"/>
 
             <TextView
@@ -131,6 +135,7 @@
                     android:paddingTop="2dp"
                     android:paddingBottom="2dp"
                     android:background="@drawable/cover_rounded_bg"
+                    app:onPressChangeAlpha="true"
                     android:layout_marginRight="16dp"/>
         </RelativeLayout>
 

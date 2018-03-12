@@ -366,6 +366,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
                 data.put("typerank", (arg2 + 1).toString() + "")
             }
             StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TIPLISTCLICK, data)
+            StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SEARCHRESULT_PAGE, StartLogClickUtil.SEARCHRESULT_BOOK, data)
 
             //                    mSearchEditText.setSelection(suggest.length());
             startSearch(suggest, searchType ?: "")

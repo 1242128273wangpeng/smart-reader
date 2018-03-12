@@ -15,21 +15,21 @@
                 android:id="@+id/read_light_reduce_iv"
                 android:layout_width="wrap_content"
                 android:src="@drawable/icon_read_light_reduce"
-                android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dimen_margin_19"
+                android:layout_marginTop="35dp"
                 android:layout_height="wrap_content"/>
 
         <SeekBar
                 android:id="@+id/read_setting_brightness_progress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="@dimen/dimen_margin_10"
                 android:layout_toRightOf="@+id/read_light_reduce_iv"
                 android:layout_toLeftOf="@+id/read_light_plus_iv"
                 android:maxHeight="@dimen/dimen_view_height_3"
                 android:minHeight="@dimen/dimen_view_height_3"
+                android:layout_marginTop="32dp"
                 android:progressDrawable="@drawable/read_option_progress_brightness"
                 android:splitTrack="false"
                 android:thumb="@drawable/icon_read_seekbar_thumb"/>
@@ -38,9 +38,9 @@
                 android:id="@+id/read_light_plus_iv"
                 android:layout_width="wrap_content"
                 android:src="@drawable/icon_read_light_plus"
-                android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dimen_margin_10"
                 android:layout_marginRight="@dimen/dimen_margin_10"
+                android:layout_marginTop="35dp"
                 android:layout_toLeftOf="@+id/read_setting_save_power_layout"
                 android:layout_height="wrap_content"/>
 

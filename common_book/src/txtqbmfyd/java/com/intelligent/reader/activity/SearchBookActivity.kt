@@ -517,7 +517,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             R.id.search_result_back -> {
                 val data1 = HashMap<String, String>()
                 data1.put("type", "1")
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data1)
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.BACK, data1)
                 backAction()
             }
 

@@ -38,6 +38,7 @@ import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.txtqbmfyd.content_view.*
 import kotlinx.android.synthetic.txtqbmfyd.content_view_main.*
 import kotlinx.android.synthetic.txtqbmfyd.content_view_menu.*
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.view.NonSwipeViewPager
 import net.lzbook.kit.cache.DataCleanManager
@@ -284,6 +285,8 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
 
         img_head_menu.setOnClickListener {
             homeMenuPopup.show(img_head_menu)
+            StartLogClickUtil.upLoadEventLog(context,
+                    StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.MORE)
         }
 
         ll_bottom_tab_bookshelf.setOnClickListener {

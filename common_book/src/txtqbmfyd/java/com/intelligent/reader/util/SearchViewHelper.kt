@@ -2,6 +2,7 @@ package com.intelligent.reader.util
 
 import android.app.Activity
 import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.res.Resources
 import android.text.TextUtils
 import android.view.InflateException
@@ -9,31 +10,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.AbsListView
+import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.ListView
-import android.widget.RelativeLayout
-import android.widget.TextView
-
-import net.lzbook.kit.data.search.SearchAutoCompleteBean
-import net.lzbook.kit.data.search.SearchCommonBean
-import net.lzbook.kit.data.search.SearchHotBean
-import net.lzbook.kit.utils.*
-import net.lzbook.kit.utils.StatServiceUtils
-
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.SearchHotWordAdapter
 import com.intelligent.reader.adapter.SearchSuggestAdapter
-
-import com.intelligent.reader.presenter.search.SearchPresenter
-import com.intelligent.reader.view.ScrollForGridView
-
-import android.content.Context.INPUT_METHOD_SERVICE
 import com.intelligent.reader.presenter.search.SearchHelpPresenter
+import com.intelligent.reader.presenter.search.SearchPresenter
 import com.intelligent.reader.presenter.search.SearchView
+import com.intelligent.reader.view.ScrollForGridView
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.data.search.SearchAutoCompleteBean
+import net.lzbook.kit.data.search.SearchCommonBean
+import net.lzbook.kit.data.search.SearchHotBean
+import net.lzbook.kit.utils.StatServiceUtils
 
 class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText: EditText, private val mSearchPresenter: SearchPresenter?) : SearchPresenter.SearchSuggestCallBack, SearchView.HelpView {
 
@@ -163,6 +153,8 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         val historyDeleteView: View = View.inflate(context, R.layout.search_history_delete_layout, null)
         historyDeleteView.setOnClickListener {
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.b_search_click_his_clear)
+            StartLogClickUtil.upLoadEventLog(context,
+                    StartLogClickUtil.SEARCH, StartLogClickUtil.BARCLEAR)
             mSearchHelpPresenter?.showDialog(activity)
         }
         mHistoryDataListView!!.addFooterView(historyDeleteView)
