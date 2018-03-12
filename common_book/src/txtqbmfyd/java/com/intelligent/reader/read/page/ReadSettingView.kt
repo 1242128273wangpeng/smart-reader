@@ -394,22 +394,32 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         read_autoRead?.setOnClickListener(this)
         read_full?.setOnClickListener(this)
 
-        font_seekbar.setOnProgressChangedListener(object :SignSeekBar.OnProgressChangedListener{
+        font_seekbar.setOnProgressChangedListener(object : SignSeekBar.OnProgressChangedListener {
             override fun onProgressChanged(signSeekBar: SignSeekBar?, progress: Int, progressFloat: Float, fromUser: Boolean) {
-                ReadConfig.FONT_SIZE = progressFloat.toInt()
-                readSettingHelper?.saveFontSize()
+//                ReadConfig.FONT_SIZE = progressFloat.toInt()
+//                readSettingHelper?.saveFontSize()
+                setFontValue(progressFloat.toInt())
             }
 
             override fun getProgressOnActionUp(signSeekBar: SignSeekBar?, progress: Int, progressFloat: Float) {
-                ReadConfig.FONT_SIZE = progressFloat.toInt()
-                readSettingHelper?.saveFontSize()
+//                ReadConfig.FONT_SIZE = progressFloat.toInt()
+//                readSettingHelper?.saveFontSize()
+                setFontValue(progressFloat.toInt())
             }
 
             override fun getProgressOnFinally(signSeekBar: SignSeekBar?, progress: Int, progressFloat: Float, fromUser: Boolean) {
-                ReadConfig.FONT_SIZE = progressFloat.toInt()
-                readSettingHelper?.saveFontSize()
+//                ReadConfig.FONT_SIZE = progressFloat.toInt()
+//                readSettingHelper?.saveFontSize()
+                setFontValue(progressFloat.toInt())
             }
         })
+    }
+
+    private fun setFontValue(value: Int) {
+        if (value % 2 == 0) {
+            ReadConfig.FONT_SIZE = value
+            readSettingHelper?.saveFontSize()
+        }
     }
 
     override fun onClick(v: View) {
