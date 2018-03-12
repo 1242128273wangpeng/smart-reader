@@ -32,6 +32,8 @@ public class JSInterfaceHelper implements WebViewJsInterface {
     String strings;
     private boolean isLogin = false;
 
+    private boolean isRankingVisible = false;
+
     public JSInterfaceHelper(Context context, WebView webView) {
         super();
         this.context = context;
@@ -397,5 +399,13 @@ public class JSInterfaceHelper implements WebViewJsInterface {
         void onH5PagerInfo(int x, int y, int width, int height);
     }
 
+    @Override
+    @JavascriptInterface
+    public boolean isRankingVisible() {
+        return isRankingVisible;
+    }
 
+    public void setRankingWebVisible() {
+        isRankingVisible = true;
+    }
 }
