@@ -1,14 +1,13 @@
 package net.lzbook.kit.request;
 
-import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.constants.ReplaceConstants;
-import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.OpenUDID;
-import net.lzbook.kit.encrypt.URLBuilderIntterface;
-
 import android.text.TextUtils;
 import android.util.Log;
+
+import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.encrypt.URLBuilderIntterface;
+import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.OpenUDID;
 
 import java.util.HashMap;
 import java.util.Map;

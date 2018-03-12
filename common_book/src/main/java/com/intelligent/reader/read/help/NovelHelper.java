@@ -3,14 +3,11 @@ package com.intelligent.reader.read.help;
 import com.intelligent.reader.R;
 import com.intelligent.reader.read.mode.ReadState;
 import com.intelligent.reader.widget.ConfirmDialog;
-import com.intelligent.reader.widget.drawer.ChangeSourcePopWindow;
+import com.intelligent.reader.widget.ChangeSourcePopWindow;
 
-import net.lzbook.kit.book.download.DownloadState;
 import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.constants.ReadConstants;
-import net.lzbook.kit.data.NullCallBack;
 import net.lzbook.kit.data.bean.Book;
-import net.lzbook.kit.data.bean.BookTask;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.NovelLineBean;
 import net.lzbook.kit.data.bean.Source;
@@ -24,7 +21,6 @@ import net.lzbook.kit.utils.StatServiceUtils;
 import net.lzbook.kit.utils.Tools;
 
 import android.app.Activity;
-import android.content.Context;
 import android.text.TextPaint;
 import android.view.Gravity;
 import android.view.View;

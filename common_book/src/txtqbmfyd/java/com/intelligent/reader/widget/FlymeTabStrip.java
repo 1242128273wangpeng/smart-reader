@@ -1,7 +1,5 @@
 package com.intelligent.reader.widget;
 
-import com.intelligent.reader.R;
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -23,6 +21,10 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.intelligent.reader.R;
+
+import net.lzbook.kit.utils.AppUtils;
 
 /**
  * Flyme6 ViewPager指示器
@@ -71,11 +73,11 @@ public class FlymeTabStrip extends HorizontalScrollView {
     /**
      * 文字大小
      */
-    private int textSize;
+    private int textSize = 15;
     /**
      * 选中位置的文字大小
      */
-    private int selectedTextSize;
+    private int selectedTextSize = 15;
     /**
      * 指示器高度
      */
@@ -167,14 +169,14 @@ public class FlymeTabStrip extends HorizontalScrollView {
 
                 // 文字大小，默认15
             } else if (attr == R.styleable.FlymeTabStrip_indicatorTextSize) {
-                textSize = typedArray.getDimensionPixelSize(attr, (int) TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_SP, 15, dm)) / 3;
-
-                // 选中项的文字大小，默认18
+//                textSize = typedArray.getDimensionPixelSize(attr, (int) TypedValue.applyDimension(
+//                        TypedValue.COMPLEX_UNIT_SP, 15, dm)) / 3;
+                textSize = (int) typedArray.getDimension(attr, AppUtils.sp2px(context.getResources(), textSize));
+                // 选中项的文字大小，默认186
             } else if (attr == R.styleable.FlymeTabStrip_selectedIndicatorTextSize) {
-                selectedTextSize = typedArray.getDimensionPixelSize(attr, (int) TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_SP, 18, dm)) / 3;
-
+//                selectedTextSize = typedArray.getDimensionPixelSize(attr, (int) TypedValue.applyDimension(
+//                        TypedValue.COMPLEX_UNIT_SP, 18, dm)) / 3;
+                selectedTextSize = (int) typedArray.getDimension(attr, AppUtils.sp2px(context.getResources(), selectedTextSize));
             } else {
             }
         }
@@ -207,7 +209,7 @@ public class FlymeTabStrip extends HorizontalScrollView {
         float leftPadding = currentTab.getLeft();
         // 当前tab的右边相对于父容器左边距
         float rightPadding = currentTab.getRight();
-        float tempPadding = 20;
+        float tempPadding = 20f;
         // 如果出现位移
 
         float centerPosition = 0.0f;
@@ -228,7 +230,7 @@ public class FlymeTabStrip extends HorizontalScrollView {
 //        canvas.drawRect(left, height - indicatorHeight, right, height, paint);
         mBrounds = new RectF();
         mBrounds.set(left, height - indicatorHeight, right, height);
-        canvas.drawRoundRect(mBrounds,20f,20f,paint);
+        canvas.drawRoundRect(mBrounds, AppUtils.px2dip(context,10f),AppUtils.px2dip(context,10f),paint);
     }
 
     /**
@@ -292,7 +294,7 @@ public class FlymeTabStrip extends HorizontalScrollView {
         TextView tvTab = new TextView(context);
         tvTab.setText(title);
         tvTab.setTextColor(textColor);
-        tvTab.setTextSize(textSize);
+        tvTab.setTextSize(TypedValue.COMPLEX_UNIT_PX ,textSize);
         tvTab.setGravity(Gravity.CENTER);
         tvTab.setSingleLine();
         tvTab.setFocusable(true);
@@ -316,10 +318,10 @@ public class FlymeTabStrip extends HorizontalScrollView {
             if (i == selectedPosition) {
                 // 设置选中的指示器文字颜色和大小
                 tab.setTextColor(indicatorColor);
-                tab.setTextSize(selectedTextSize);
+                tab.setTextSize(TypedValue.COMPLEX_UNIT_PX ,selectedTextSize);
             } else {
                 tab.setTextColor(textColor);
-                tab.setTextSize(textSize);
+                tab.setTextSize(TypedValue.COMPLEX_UNIT_PX ,textSize);
             }
         }
     }

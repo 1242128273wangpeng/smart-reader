@@ -41,8 +41,12 @@ class SettingMoreActivity : BaseCacheableActivity() {
         btn_push_sound.isChecked = settingItems.isSoundOpen
         btn_push_time.isChecked = settingItems.isSetPushTime
         txt_push_time_setting.isEnabled = btn_push_time.isChecked
-        showPushTime(settingItems.pushTimeStartH, settingItems.pushTimeStartMin,
-                settingItems.pushTimeStopH, settingItems.pushTimeStopMin)
+        if (settingItems.isSetPushTime) {
+            showPushTime(settingItems.pushTimeStartH, settingItems.pushTimeStartMin,
+                    settingItems.pushTimeStopH, settingItems.pushTimeStopMin)
+        } else {
+            txt_push_time_setting.text = "全天推送"
+        }
 
     }
 
@@ -85,6 +89,7 @@ class SettingMoreActivity : BaseCacheableActivity() {
             AppLog.e(tag, "showDialog")
             pushTimeDialog.show(settingItems)
         }
+
     }
 
     private fun changePushStatus(status: Boolean) {

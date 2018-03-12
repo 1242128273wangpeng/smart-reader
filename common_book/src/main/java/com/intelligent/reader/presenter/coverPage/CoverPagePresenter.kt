@@ -15,16 +15,11 @@ import com.intelligent.reader.adapter.CoverSourceAdapter
 import com.intelligent.reader.cover.*
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
-import com.intelligent.reader.read.help.BookHelper
-import com.intelligent.reader.receiver.DownBookClickReceiver
-import com.intelligent.reader.widget.ClearCacheDialog
 import com.intelligent.reader.widget.ConfirmDialog
-import com.intelligent.reader.widget.drawer.ConfirmPopWindow
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.txtqbmfyd.content_view_menu.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.DownloadService
@@ -32,7 +27,6 @@ import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.book.view.RecommendItemView
-import net.lzbook.kit.cache.DataCleanManager
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.CoverPage

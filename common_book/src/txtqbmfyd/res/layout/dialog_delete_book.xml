@@ -43,6 +43,17 @@
             android:paddingLeft="8dp"
             android:text="@string/bookshelf_delete_dialog_check_hint"/>
 
+        <ProgressBar
+            android:id="@+id/pgbar_loading"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_below="@id/txt_dialog_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:indeterminateDrawable="@drawable/home_clear_cache_loading_bg"
+            android:indeterminateDuration="1000"
+            android:visibility="visible"/>
+
         <View
             android:id="@+id/view_divider"
             android:layout_width="match_parent"

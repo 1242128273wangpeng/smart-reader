@@ -1,8 +1,6 @@
 package com.intelligent.reader.presenter.read
 
 import android.app.Activity
-import android.app.Notification
-import android.app.PendingIntent
 import android.content.*
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
@@ -35,10 +33,9 @@ import com.intelligent.reader.read.page.ReadOptionHeader
 import com.intelligent.reader.reader.ReaderOwnRepository
 import com.intelligent.reader.reader.ReaderRepositoryFactory
 import com.intelligent.reader.reader.ReaderViewModel
-import com.intelligent.reader.receiver.DownBookClickReceiver
 import com.intelligent.reader.util.EventBookStore
-import com.intelligent.reader.widget.drawer.ConfirmDarkPopWindow
-import com.intelligent.reader.widget.drawer.FeedbackPopWindow
+import com.intelligent.reader.widget.ConfirmDarkPopWindow
+import com.intelligent.reader.widget.FeedbackPopWindow
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable

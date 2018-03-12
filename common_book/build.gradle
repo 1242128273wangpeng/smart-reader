@@ -61,7 +61,7 @@ android {
     def AMAP_APIKEY_HYCS = "dab5a066b2745ed848d76bf34d9f1038"
     def AMAP_APIKEY_TXTMFQBYDQ = "df07c4696ee41b5075459b6d9a4d335f"
     def AMAP_APIKEY_TXTMFQBDZS = "bbae57edf34620794d87545b18798e0e"
-    def AMAP_APIKEY_TXTQBMFYD = "bbae57edf34620794d87545b18798e0e"
+    def AMAP_APIKEY_TXTQBMFYD = "2baf3d5d4f949e5189afbe37a8e1302e"
 
 
     def BAIDU_STAT_ID_KDZSYDQ = "542233ee41"
@@ -81,7 +81,7 @@ android {
     def BAIDU_STAT_ID_HYCS = "3eebb5d9e8"
     def BAIDU_STAT_ID_TXTMFQBYDQ = "a867478598"
     def BAIDU_STAT_ID_TXTMFQBDZS = "04fe041fcd"
-    def BAIDU_STAT_ID_TXTQBMFYD = "04fe041fcd"
+    def BAIDU_STAT_ID_TXTQBMFYD = "0b1405d1df"
 
     def IFLYTEK_APPID_QBZSYDQ = "5982c10f"
     def IFLYTEK_APPID_KDZSYDQ = "5982c0d0"
@@ -121,7 +121,7 @@ android {
             txtqbdzs  : "cc.remennovel",
             kdqbdzs   : "cn.kkqbtxtxs.reader",
             txtqbxsydq: "cn.zsqbydq.reader",
-            txtqbmfyd : "cn.qbzsydsq.reader"
+            txtqbmfyd : "cn.txtqbmfyd.reader"
     ]
 
     def channel = "dev_channel"
@@ -135,7 +135,7 @@ android {
     }
     defaultConfig {
 
-        applicationId "cn.qbzsydsq.reader"
+        applicationId "cn.txtqbmfyd.reader"
 
 //        System.err.println("project.properties = ${project.getProperties()}")
 

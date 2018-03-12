@@ -1,4 +1,4 @@
-package com.intelligent.reader.widget.drawer;
+package com.intelligent.reader.widget;
 
 import com.intelligent.reader.R;
 
@@ -14,16 +14,16 @@ import android.widget.TextView;
 
 /**
  * @author lijun Lee
- * @desc 确认窗口 (黑)
+ * @desc 确认窗口
  * @mail jun_li@dingyuegroup.cn
  * @data 2018/2/28 15:37
  */
 
-public class ConfirmDarkPopWindow extends PopupWindow {
+public class ConfirmPopWindow extends PopupWindow {
 
     private View mPopInflater;
 
-    private ConfirmDarkPopWindow(View inflate, int matchParent, int wrapContent, ConfirmDarkPopWindow.Builder builder) {
+    private ConfirmPopWindow(View inflate, int matchParent, int wrapContent, ConfirmPopWindow.Builder builder) {
         super(inflate, matchParent, wrapContent);
         mPopInflater = builder.popInflater;
     }
@@ -56,37 +56,38 @@ public class ConfirmDarkPopWindow extends PopupWindow {
             this.context = context;
         }
 
-        public ConfirmDarkPopWindow.Builder setOnConfirmListener(OnConfirmListener onConfirmListener) {
+        public ConfirmPopWindow.Builder setOnConfirmListener(OnConfirmListener onConfirmListener) {
             this.onConfirmListener = onConfirmListener;
             return this;
         }
 
-        public ConfirmDarkPopWindow.Builder title(String title) {
+        public ConfirmPopWindow.Builder title(String title) {
             this.title = title;
             return this;
         }
 
-        public ConfirmDarkPopWindow.Builder content(String content) {
+        public ConfirmPopWindow.Builder content(String content) {
             this.content = content;
             return this;
         }
 
-        public ConfirmDarkPopWindow.Builder confirmButtonName(String confirmButtonName) {
+        public ConfirmPopWindow.Builder confirmButtonName(String confirmButtonName) {
             this.confirmButtonName = confirmButtonName;
             return this;
         }
 
-        public ConfirmDarkPopWindow.Builder cancelButtonName(String cancelButtonName) {
+        public ConfirmPopWindow.Builder cancelButtonName(String cancelButtonName) {
             this.cancelButtonName = cancelButtonName;
             return this;
         }
 
-        public ConfirmDarkPopWindow build() {
-            View popupView = LayoutInflater.from(context).inflate(R.layout.pop_confirm_dark_layout, null);
+        public ConfirmPopWindow build() {
+            View popupView = LayoutInflater.from(context).inflate(R.layout.pop_confirm_layout, null);
             this.popInflater = popupView;
-            final ConfirmDarkPopWindow popupWindow = new ConfirmDarkPopWindow(popupView,
+            final ConfirmPopWindow popupWindow = new ConfirmPopWindow(popupView,
                     FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT, this);
             popupWindow.setFocusable(true);
+//            popupWindow.setDarkColor(Color.parseColor("#a0880000"));//颜色
             popupWindow.setTouchable(true);
             popupWindow.setOutsideTouchable(false);
 

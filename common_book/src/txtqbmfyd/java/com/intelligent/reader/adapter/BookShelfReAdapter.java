@@ -47,7 +47,7 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         down_table = new ArrayList<>();
         remove_checked_states = new HashSet<>();
         resetRemovedState();
-        distanceY = (int) mContext.getResources().getDimension(net.lzbook.kit.R.dimen.dimen_view_height_default);
+        distanceY = (int) mContext.getResources().getDimension(R.dimen.bottom_tab_height);
     }
 
     @Override

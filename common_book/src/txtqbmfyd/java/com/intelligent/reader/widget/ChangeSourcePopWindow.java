@@ -1,4 +1,4 @@
-package com.intelligent.reader.widget.drawer;
+package com.intelligent.reader.widget;
 
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.SourceAdapter;

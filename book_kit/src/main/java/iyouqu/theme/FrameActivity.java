@@ -52,6 +52,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import iyouqu.theme.statusbar.impl.FlymeHelper;
+import iyouqu.theme.statusbar.impl.MIUIHelper;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 import swipeback.SwipeBackHelper;
@@ -101,6 +103,9 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         return swipeBackHelper;
     }
 
+    public boolean isMIUISupport = false;
+    public boolean isFlymeSupport = false;
+
     @SuppressLint("NewApi")
     public void onCreate(Bundle paramBundle) {
 
@@ -120,9 +125,13 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
             UI_OPTIONS_IMMERSIVE_STICKY = getWindow().getDecorView().getSystemUiVisibility();
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.M && !isDarkStatusBarText) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.M ) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 //            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            if (isDarkStatusBarText) {
+                isMIUISupport = new MIUIHelper().setStatusBarLightMode(this, true);
+                isFlymeSupport = new FlymeHelper().setStatusBarLightMode(this, true);
+            }
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -250,7 +259,7 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         packageName = AppUtils.getPackageName();
         isFirst = false;
         if (!TextUtils.isEmpty(packageName) &&
-                (packageName.equals("cc.kdqbxs.reader") || packageName.equals("cn.qbzsydsq.reader"))) {
+                (packageName.equals("cc.kdqbxs.reader") || packageName.equals("cn.txtqbmfyd.reader"))) {
             isDarkStatusBarText = true;
         } else {
             isDarkStatusBarText = false;

@@ -1,11 +1,4 @@
-package com.intelligent.reader.widget.drawer;
-
-import com.intelligent.reader.R;
-
-import net.lzbook.kit.utils.StatServiceUtils;
-import net.lzbook.kit.utils.ToastUtils;
-
-import org.w3c.dom.Text;
+package com.intelligent.reader.widget;
 
 import android.content.Context;
 import android.view.Gravity;
@@ -17,6 +10,11 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.intelligent.reader.R;
+
+import net.lzbook.kit.utils.StatServiceUtils;
+import net.lzbook.kit.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
