@@ -209,9 +209,6 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
         AppLog.e("tag", "onTaskFinish")
         val book = presenter.bookDaoHelper.getBook(book_id, 0)
         if (CacheManager.getBookStatus(book) == DownloadState.FINISH) {
-            book.name?.let {
-                toastShort("${it}缓存完成")
-            }
             val data = presenter.downloadBooks
             for (b in data) {
                 if (b.book_id != null && book.book_id != null && b.book_id == book.book_id) {
@@ -232,7 +229,6 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
         val currentTime = System.currentTimeMillis()
         if (currentTime - lastShowTime > 4000) {
             lastShowTime = currentTime
-//       TODO     toastLong(msg)
         }
         downloadAdapter.notifyDataSetChanged()
     }
