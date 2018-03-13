@@ -41,7 +41,7 @@ interface UserService {
     companion object {
 
         const val SEARCH_HOT = "/v3/search/hotWords"
-        const val SEARCH_AUTO_COMPLETE = "/v3/search/autoComplete"
+        const val SEARCH_AUTO_COMPLETE = "/v4/search/autoComplete"
 
         const val PATH_LOGIN = "/v3/user/login"
         const val PATH_REFRESH = "/v3/user/refLToken"
@@ -116,7 +116,7 @@ interface UserService {
 
 
     @GET(SEARCH_AUTO_COMPLETE)
-    fun searchAutoComplete(@Query("word") word: String): Observable<SearchAutoCompleteBean>
+    fun searchAutoComplete(@Query("keyword") word: String): Observable<SearchAutoCompleteBean>
 
     /**
      * 用户第三方登录请求接口
