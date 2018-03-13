@@ -32,7 +32,9 @@ public class JSInterfaceHelper implements WebViewJsInterface {
     String strings;
     private boolean isLogin = false;
 
+    private boolean isRecommendVisible = false;
     private boolean isRankingVisible = false;
+    private boolean isCategoryVisible = false;
 
     public JSInterfaceHelper(Context context, WebView webView) {
         super();
@@ -401,11 +403,31 @@ public class JSInterfaceHelper implements WebViewJsInterface {
 
     @Override
     @JavascriptInterface
+    public boolean isRecommendVisible() {
+        return false;
+    }
+
+    @Override
+    @JavascriptInterface
     public boolean isRankingVisible() {
         return isRankingVisible;
     }
 
+    @Override
+    @JavascriptInterface
+    public boolean isCategoryVisible() {
+        return false;
+    }
+
+    public void setRecommendVisible() {
+        isRecommendVisible = true;
+    }
+
     public void setRankingWebVisible() {
         isRankingVisible = true;
+    }
+
+    public void setCategoryVisible() {
+        isCategoryVisible = true;
     }
 }

@@ -147,9 +147,10 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
             if (position < 0) return@setOnItemClickListener
             if (!removeHelper.isRemoveMode && !isShowing) {
                 val book = downloadAdapter.getItem(position)
-                val b = presenter.bookDaoHelper.getBook(book.book_id, 0) as Book
-                presenter.uploadBookClickLog(b)
-                BookHelper.goToCoverOrRead(applicationContext, this@DownloadManagerActivity, b, 1)
+                if (book != null) {
+                    presenter.uploadBookClickLog(book)
+                    BookHelper.goToCoverOrRead(applicationContext, this@DownloadManagerActivity, book, 1)
+                }
             } else {
                 removeHelper.setCheckPosition(position)
             }

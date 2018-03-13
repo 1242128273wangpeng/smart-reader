@@ -39,5 +39,10 @@ public interface WebViewJsInterface {
     //获得H5页面ViewPager边界
     void getH5ViewPagerInfo(String x, String y, String width, String height);
 
+    boolean isRecommendVisible();
+
     boolean isRankingVisible();
+
+    boolean isCategoryVisible();
+
 }
