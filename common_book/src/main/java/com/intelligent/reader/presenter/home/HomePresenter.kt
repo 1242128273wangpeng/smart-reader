@@ -33,7 +33,7 @@ class HomePresenter(override var view: HomeView?) : IPresenter<HomeView> {
             4 -> StartLogClickUtil.upLoadEventLog(context,
                     StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.QG_FL_SEARCH)
             else -> StartLogClickUtil.upLoadEventLog(context,
-                    StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.SEARCH)
+                    StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.SEARCH)
         }
         net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(context,
                 net.lzbook.kit.utils.StatServiceUtils.bs_click_search_btn)
