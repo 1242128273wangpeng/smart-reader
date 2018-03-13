@@ -76,6 +76,7 @@ public class StartLogClickUtil {
     public static final String PERSONAL = "PERSONAL";
     public static final String SEARCH = "SEARCH";
     public static final String BOOKLIST = "BOOKLIST";
+    public static final String ENTRYPAGE = "ENTRYPAGE";
 
 
     //书架页

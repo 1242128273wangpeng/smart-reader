@@ -16,7 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
@@ -25,11 +28,19 @@ import com.intelligent.reader.activity.SearchBookActivity;
 import com.intelligent.reader.app.BookApplication;
 
 import net.lzbook.kit.book.view.LoadingPage;
+import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
 import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.CustomWebClient;
+import net.lzbook.kit.utils.ExtensionsKt;
 import net.lzbook.kit.utils.JSInterfaceHelper;
+import net.lzbook.kit.utils.NetWorkUtils;
+import net.lzbook.kit.utils.ToastUtils;
 
 import java.lang.ref.WeakReference;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 public class WebViewFragment extends Fragment implements View.OnClickListener {
 
@@ -52,6 +63,13 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 
     private boolean isFirstVisible = true;
 
+    private SuperSwipeRefreshLayout swipeRefreshLayout;
+    private ProgressBar head_pb_view;
+    private TextView head_text_view;
+    private ImageView head_image_view;
+
+    private boolean hasRefreshHead = false;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -71,6 +89,10 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
             AppLog.e(TAG, "url---->" + url);
             type = bundle.getString("type");
         }
+
+        String packageName = AppUtils.getPackageName();
+        hasRefreshHead = "cc.kdqbxs.reader".equals(packageName)
+                || "cn.txtqbmfyd.reader".equals(packageName);
     }
 
     @Nullable
@@ -83,6 +105,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
             e.printStackTrace();
         }
         initView();
+        initRefresh();
         return rootView;
     }
 
@@ -159,12 +182,16 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 
     protected void onVisible() {
         if (type != null) {
-            if (type.equals("category_female")) {//分类-女频
-                lazyLoad();
-            }
             if (type.equals("rank")) {//榜单
                 jsInterfaceHelper.setRankingWebVisible();
-                notifyRankingWebLog();//通知 H5 打点
+                notifyWebLog();//通知 H5 打点
+            }
+            if (type.equals("recommend")){//推荐
+                jsInterfaceHelper.setRecommendVisible();
+                notifyWebLog();
+            }
+            if (type.equals("category_female")) {//分类-女频
+                lazyLoad();
             }
         }
     }
@@ -172,7 +199,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     protected void onInvisible() {
     }
 
-    private void notifyRankingWebLog() {
+    private void notifyWebLog() {
         if (!isVisible || !isPrepared) {
             return;
         }
@@ -346,5 +373,76 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 
         String startLoad(WebView webView, String url);
 
+    }
+
+    private void initRefresh() {
+
+        // 免费全本小说书城 推荐页添加下拉刷新
+        if (hasRefreshHead && !TextUtils.isEmpty(url) && rootView != null) {
+            swipeRefreshLayout = (SuperSwipeRefreshLayout) rootView.findViewById(R.id.bookshelf_refresh_view);
+            swipeRefreshLayout.setHeaderViewBackgroundColor(0x00000000);
+            swipeRefreshLayout.setHeaderView(createHeaderView());
+            swipeRefreshLayout.setTargetScrollWithLayout(true);
+            swipeRefreshLayout.setOnPullRefreshListener(new SuperSwipeRefreshLayout.OnPullRefreshListener() {
+
+                @Override
+                public void onRefresh() {
+                    head_text_view.setText("正在刷新");
+                    head_image_view.setVisibility(View.GONE);
+                    head_pb_view.setVisibility(View.VISIBLE);
+                    checkUpdate();
+                }
+
+                @Override
+                public void onPullDistance(int distance) {
+                    // pull distance
+                }
+
+                @Override
+                public void onPullEnable(boolean enable) {
+                    head_pb_view.setVisibility(View.GONE);
+                    head_text_view.setText(enable ? "松开刷新" : "下拉刷新");
+                    head_image_view.setVisibility(View.VISIBLE);
+                    head_image_view.setRotation(enable ? 180 : 0);
+                }
+            });
+            if (url.contains("recommend")) {
+                swipeRefreshLayout.setPullToRefreshEnabled(true);
+            } else {
+                swipeRefreshLayout.setPullToRefreshEnabled(false);
+            }
+        }
+    }
+
+    private View createHeaderView() {
+        View headerView = LayoutInflater.from(swipeRefreshLayout.getContext())
+                .inflate(R.layout.layout_head, null);
+        head_pb_view = (ProgressBar) headerView.findViewById(R.id.head_pb_view);
+        head_text_view = (TextView) headerView.findViewById(R.id.head_text_view);
+        head_text_view.setText("下拉刷新");
+        head_image_view = (ImageView) headerView.findViewById(R.id.head_image_view);
+        head_image_view.setVisibility(View.VISIBLE);
+        head_image_view.setImageResource(R.drawable.pulltorefresh_down_arrow);
+        head_pb_view.setVisibility(View.GONE);
+        return headerView;
+    }
+
+    private void checkUpdate() {
+
+        if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
+            swipeRefreshLayout.setRefreshing(false);
+            ToastUtils.showToastNoRepeat("网络不给力");
+            return;
+        }
+
+        swipeRefreshLayout.onRefreshComplete();
+        ExtensionsKt.uiThread(this, new Function1<Object, Unit>() {
+            @Override
+            public Unit invoke(Object o) {
+                AppLog.e(TAG, "call back jsMethod s: javascript:refreshNew()");
+                contentView.loadUrl("javascript:refreshNew()");
+                return null;
+            }
+        });
     }
 }

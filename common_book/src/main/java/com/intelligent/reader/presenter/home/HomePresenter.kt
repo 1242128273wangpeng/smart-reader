@@ -4,7 +4,6 @@ import com.intelligent.reader.presenter.IPresenter
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.StatServiceUtils
-import java.util.*
 
 /**
  * Desc HomeFragment - presenter
@@ -75,6 +74,22 @@ class HomePresenter(override var view: HomeView?) : IPresenter<HomeView> {
                 net.lzbook.kit.utils.StatServiceUtils.bs_click_category_menu)
         StartLogClickUtil.upLoadEventLog(context,
                 StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.CLASS)
+    }
+
+    fun uploadRankingEntryLog() {
+        val context = BaseBookApplication.getGlobalContext()
+        val data = HashMap<String, String>()
+        data["pk"] = "主页"
+        StartLogClickUtil.upLoadEventLog(context,
+                StartLogClickUtil.TOP_PAGE, StartLogClickUtil.ENTRYPAGE, data)
+    }
+
+    fun uploadCategoryEntryLog() {
+        val context = BaseBookApplication.getGlobalContext()
+        val data = HashMap<String, String>()
+        data["pk"] = "主页"
+        StartLogClickUtil.upLoadEventLog(context,
+                StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.ENTRYPAGE, data)
     }
 
     fun uploadEditorBackLog() {

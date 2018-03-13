@@ -473,12 +473,14 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
                 rl_recommend_head.visibility = View.GONE
                 rl_head_ranking.visibility = View.VISIBLE
                 img_head_shadow.visibility = View.VISIBLE
+                presenter.uploadRankingEntryLog()
             }
             else -> {
                 rl_head_bookshelf.visibility = View.GONE
                 rl_recommend_head.visibility = View.GONE
                 rl_head_ranking.visibility = View.GONE
                 img_head_shadow.visibility = View.GONE
+                presenter.uploadCategoryEntryLog()
             }
         }
     }
