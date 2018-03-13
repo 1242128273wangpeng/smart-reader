@@ -37,7 +37,7 @@ class CategoryFragment : Fragment() {
             val intent = Intent(activity, SearchBookActivity::class.java)
             startActivity(intent)
         }
-        mCategoryPageAdapter = CategoryPageAdapter(fragmentManager)
+        mCategoryPageAdapter = CategoryPageAdapter(childFragmentManager)
         category_view_page.adapter = mCategoryPageAdapter
         category_view_page.setCurrentItem(0, false)
         tabstrip.setViewPager(category_view_page)

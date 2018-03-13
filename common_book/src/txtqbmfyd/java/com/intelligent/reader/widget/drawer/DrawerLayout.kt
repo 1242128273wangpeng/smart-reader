@@ -228,53 +228,6 @@ class DrawerLayout @JvmOverloads constructor(context: Context, attrs: AttributeS
         isLock = false
     }
 
-    override fun onSaveInstanceState(): Parcelable? {
-        val superState = super.onSaveInstanceState()
-        val ss = SavedState(superState)
-        ss.menuState = menuState
-        return ss
-    }
-
-    override fun onRestoreInstanceState(state: Parcelable) {
-        if (state !is SavedState) {
-            super.onRestoreInstanceState(state)
-            return
-        }
-
-        super.onRestoreInstanceState(state.superState)
-
-        if (state.menuState == MENU_OPENED) {
-            openMenu()
-        }
-    }
-
-    protected class SavedState : AbsSavedState {
-        internal var menuState: Int = 0
-
-        internal constructor(`in`: Parcel, loader: ClassLoader) : super(`in`, loader) {
-            menuState = `in`.readInt()
-        }
-
-        internal constructor(superState: Parcelable) : super(superState) {}
-
-        override fun writeToParcel(dest: Parcel, flags: Int) {
-            super.writeToParcel(dest, flags)
-            dest.writeInt(menuState)
-        }
-
-        val CREATOR: Parcelable.Creator<SavedState> = ParcelableCompat.newCreator(
-                object : ParcelableCompatCreatorCallbacks<SavedState> {
-                    override fun createFromParcel(`in`: Parcel, loader: ClassLoader): SavedState {
-                        return SavedState(`in`, loader)
-                    }
-
-                    override fun newArray(size: Int): Array<SavedState?> {
-                        return arrayOfNulls(size)
-                    }
-                })
-
-    }
-
     private fun moveView(bottom: Int) {
         mainView?.layout(mainLeft, 0, mainLeft + screenWidth, bottom)
 
