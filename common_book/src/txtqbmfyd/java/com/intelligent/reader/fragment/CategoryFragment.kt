@@ -1,5 +1,6 @@
 package com.intelligent.reader.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.intelligent.reader.R
+import com.intelligent.reader.activity.SearchBookActivity
 import kotlinx.android.synthetic.main.category_fragment_layout.*
 import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.request.UrlUtils
@@ -31,6 +33,10 @@ class CategoryFragment : Fragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        content_head_search.setOnClickListener {
+            val intent = Intent(activity, SearchBookActivity::class.java)
+            startActivity(intent)
+        }
         mCategoryPageAdapter = CategoryPageAdapter(fragmentManager)
         category_view_page.adapter = mCategoryPageAdapter
         category_view_page.setCurrentItem(0, false)
