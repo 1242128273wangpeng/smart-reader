@@ -286,7 +286,7 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
         img_head_menu.setOnClickListener {
             homeMenuPopup.show(img_head_menu)
             StartLogClickUtil.upLoadEventLog(context,
-                    StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.MORE)
+                    StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.MORE)
         }
 
         ll_bottom_tab_bookshelf.setOnClickListener {
@@ -345,15 +345,7 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
         //menu
         setMenuTitleMargin()
 
-        val isNightMode = parent.mThemeHelper.isNight
-        presenter.uploadCurModeLog(isNightMode)
-        if (isNightMode) {
-            tv_night_shift.setText(R.string.mode_day)
-            bt_night_shift.isChecked = true
-        } else {
-            tv_night_shift.setText(R.string.mode_night)
-            bt_night_shift.isChecked = false
-        }
+        setNightMode(false)
         bt_night_shift.setOnCheckedChangeListener { _, isChecked ->
             presenter.uploadModeChangeLog()
             if (isChecked) {
@@ -427,6 +419,18 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
             clearCacheDialog.show()
         }
 
+    }
+
+    private fun setNightMode(isEvent: Boolean) {
+        val isNightMode = parent.mThemeHelper.isNight
+        if (!isEvent) presenter.uploadCurModeLog(isNightMode)
+        if (isNightMode) {
+            tv_night_shift.setText(R.string.mode_day)
+            bt_night_shift.isChecked = true
+        } else {
+            tv_night_shift.setText(R.string.mode_night)
+            bt_night_shift.isChecked = false
+        }
     }
 
     override fun searchUpdateBook() {
@@ -523,6 +527,12 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
         selectTab(event.tabPosition)
     }
 
+    fun onEventMainThread(event: String) {
+        if (event == EVENT_CHANGE_NIGHT_MODE) {
+            setNightMode(true)
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         if (BuildConfig.DEBUG) {
@@ -602,14 +612,14 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
     }
 
     private fun showCacheMessage() {
-        activity.doAsync {
+        doAsync {
             var result = "0B"
             try {
                 result = DataCleanManager.getTotalCacheSize(context)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            uiThread { txt_clear_cache_message.text = result }
+            uiThread { txt_clear_cache_message?.text = result }
         }
     }
 
@@ -627,6 +637,10 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
         params.topMargin = top
         params.leftMargin = left
         txt_menu_title.layoutParams = params
+    }
+
+    companion object {
+        val EVENT_CHANGE_NIGHT_MODE = "event_change_night_mode"
     }
 
 }
