@@ -85,7 +85,7 @@ class SearchPresenter(private val mContext: Context, override var view: SearchVi
                             resultSuggest.clear()
                             transmitBean = bean
                             AppLog.e("bean", bean.toString())
-                            if (bean.suc == "200" && bean.data != null) {
+                            if (bean.respCode == "20000" && bean.data != null) {
                                 for (i in 0..bean.data.authors.size - 1) {
                                     val searchCommonBean = SearchCommonBean()
                                     searchCommonBean.suggest = bean.data.authors[i].suggest
