@@ -236,7 +236,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
     override fun onTaskProgressUpdate(book_id: String?) {
         if (System.currentTimeMillis() - time > 500) {
             time = System.currentTimeMillis()
-            runOnMain { downloadAdapter.notifyDataSetChanged() }
+            uiThread { downloadAdapter.notifyDataSetChanged() }
         }
     }
 
