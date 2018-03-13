@@ -24,6 +24,10 @@ class DownloadManagerPresenter(override var view: DownloadManagerView?) : IPrese
 
     var downloadBooks: ArrayList<Book> = ArrayList()
 
+    private val multiComparator = FrameBookHelper.MultiComparator()
+
+    private val cachedComparator = FrameBookHelper.CachedComparator()
+
     fun queryDownloadBooks(hasDeleted: Boolean) {
         CacheManager.freshBooks(false)
         queryBooks(hasDeleted)
@@ -33,9 +37,9 @@ class DownloadManagerPresenter(override var view: DownloadManagerView?) : IPrese
         val books = bookDaoHelper.booksOnLineList
         downloadBooks.clear()
         downloadBooks.addAll(books)
-        downloadBooks.sort()
-        Collections.sort<Book>(downloadBooks, FrameBookHelper.MultiComparator())
-        Collections.sort<Book>(downloadBooks, FrameBookHelper.CachedComparator())
+        Collections.sort<Book>(downloadBooks)
+        Collections.sort<Book>(downloadBooks, multiComparator)
+        Collections.sort<Book>(downloadBooks, cachedComparator)
         uiThread {
             view?.onDownloadBookQuery(downloadBooks, hasDeleted)
         }
