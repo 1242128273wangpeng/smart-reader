@@ -59,12 +59,13 @@ public class BookCoverOtherRepository implements BookCoverRepository {
                 coverPage.bookVo.last_chapter_name = coverPage.bookVo.lastChapter.getName();
                 coverPage.bookVo.serial_number = coverPage.bookVo.lastChapter.getSerial_number();
                 if (coverPage.sources != null && coverPage.sources.size() > 0) {
-                    coverPage.bookVo.wordCountDescp = coverPage.sources.get(0).wordCountDescp;
-                    coverPage.bookVo.readerCountDescp = coverPage.sources.get(0).readerCountDescp;
-                    coverPage.bookVo.score = coverPage.sources.get(0).score;
-
+                    coverPage.bookVo.wordCountDescp = coverPage.sources.get(0).bookSourceVO.wordCountDescp;
+                    coverPage.bookVo.readerCountDescp = coverPage.sources.get(0).bookSourceVO.readerCountDescp;
+                    coverPage.bookVo.score = coverPage.sources.get(0).bookSourceVO.score;
+                    coverPage.sources.get(0).wordCountDescp = coverPage.sources.get(0).bookSourceVO.wordCountDescp;
+                    coverPage.sources.get(0).readerCountDescp = coverPage.sources.get(0).bookSourceVO.readerCountDescp;
+                    coverPage.sources.get(0).score = coverPage.sources.get(0).bookSourceVO.score;
                 }
-
                 return coverPage;
             }
         });

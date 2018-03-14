@@ -144,6 +144,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                     }
                 }
             }
+            if (!mCoverPagePresenter!!.isBookSubed()) {
+                book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_normal)
+            }
         }
     }
 
@@ -175,7 +178,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             R.id.book_cover_back -> {
                 val data = HashMap<String, String>()
                 data.put("type", "1")
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data)
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.BACK, data)
                 finish()
             }
 
@@ -207,6 +210,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                     val data3 = HashMap<String, String>()
                     data3.put("bookId", it.book_id)
                     if (mCoverPagePresenter != null) {
+                        getBookDownLoadState(it.book_id)
                         if (mBookDownlLoadState == DownloadState.DOWNLOADING) {
                             CacheManager.stop(it.book_id)
                         } else {
@@ -419,6 +423,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     override fun changeDownloadButtonStatus() {
         val book = mCoverPagePresenter?.getBook() ?: return
         val status = CacheManager.getBookStatus(book)
+        mBookDownlLoadState = status
         mCoverPagePresenter?.let {
             when (status) {
                 DownloadState.FINISH -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_finish)
@@ -426,6 +431,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 DownloadState.NOSTART -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_normal)
                 DownloadState.DOWNLOADING -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_running)
             }
+        }
+        if (!mCoverPagePresenter!!.isBookSubed()) {
+            book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_normal)
         }
     }
 

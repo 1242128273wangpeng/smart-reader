@@ -629,7 +629,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
 
             coverPageContract!!.showArrow(true)
 
-        } else if (objects != null){
+        } else if (objects != null) {
             bookVo = (objects as CoverPage).bookVo
             if (bookVo != null) {
                 if (requestItem != null && !TextUtils.isEmpty(requestItem.book_id)) {
@@ -704,6 +704,11 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
             return
         }
     }
+
+    /**
+     * 是否存在书架
+     */
+    fun isBookSubed(): Boolean = bookDaoHelper!!.isBookSubed(requestItem.book_id)
 
     /**
      * isNeedRemoveFun 是否需要移除的功能 ， 目前免费小说书城不需要移出书架，其他几个壳任然保持之前移出书架
@@ -1006,8 +1011,8 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
         mBookCoverViewModel?.unSubscribe()
     }
 
-    fun getBook() :Book? {
-        if(bookCoverUtil == null || bookDaoHelper == null || bookVo == null){
+    fun getBook(): Book? {
+        if (bookCoverUtil == null || bookDaoHelper == null || bookVo == null) {
             return null
         }
         return bookCoverUtil!!.getCoverBook(bookDaoHelper, bookVo)
