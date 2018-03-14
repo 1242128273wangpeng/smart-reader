@@ -226,7 +226,7 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
                 DownloadState state = task.state;
                 cache.pgbarDownload.setProgressDrawable(this.mResources.getDrawable(this.progressbarSecond));
                 cache.imgDownload.setImageResource(drawableDownload);
-                cache.txtDownloadState.setTextColor(downloadManagerActivity.getResources().getColor(R.color.download_manager_other_tag_color));
+//                cache.txtDownloadState.setTextColor(downloadManagerActivity.getResources().getColor(R.color.download_manager_other_tag_color));
                 if (state == DownloadState.DOWNLOADING) {
                     cache.txtDownloadState.setText("正在缓存");
                     cache.imgDownload.setImageResource(drawablePause);
