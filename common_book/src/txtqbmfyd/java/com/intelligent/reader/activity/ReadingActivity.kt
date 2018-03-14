@@ -538,7 +538,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         params.put("chapter_read", "1")
         params.put("chapter_pages", pageCount)
         params.put("start_time", startReadTime.toString())
-        params.put("end_time", System.currentTimeMillis().toString())
+        params.put("end_time", Constants.endReadTime.toString())
         params.put("udid", OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()))
         params.put("app_package", AppUtils.getPackageName())
         params.put("app_version", AppUtils.getVersionName())

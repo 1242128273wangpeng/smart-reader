@@ -1,6 +1,9 @@
 package com.intelligent.reader.widget
 
 import android.app.Activity
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
@@ -29,6 +32,10 @@ class ConfirmDialog(val activity: Activity) {
         layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
         window.attributes = layoutParams
         window.setWindowAnimations(R.style.BottomPopupDialog)
+        dialog.rootLayout.viewTreeObserver.addOnGlobalLayoutListener {
+            dialog.nightShadowView.layoutParams.height = dialog.rootLayout.height
+            dialog.rootLayout.requestLayout()
+        }
         dialog.setCanceledOnTouchOutside(true)
         dialog.setCancelable(true)
 
