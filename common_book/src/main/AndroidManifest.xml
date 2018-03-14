@@ -333,25 +333,25 @@
         <!-- 百度推送push结束 -->
 
         <!-- Inmobi广告 下载类广告需要的 -->
-        <activity
-                android:name="com.inmobi.rendering.InMobiAdActivity"
-                android:configChanges="keyboardHidden|orientation|keyboard|smallestScreenSize|screenSize|screenLayout"
-                android:hardwareAccelerated="true"
-                android:resizeableActivity="false"
-                android:theme="@android:style/Theme.NoTitleBar"
-                tools:ignore="UnusedAttribute"/>
-        <receiver
-                android:name="com.inmobi.commons.core.utilities.uid.ImIdShareBroadCastReceiver"
-                android:enabled="true"
-                android:exported="true"
-                tools:ignore="ExportedReceiver">
-            <intent-filter>
-                <action android:name="com.inmobi.share.id"/>
-            </intent-filter>
-        </receiver>
-        <service
-                android:name="com.inmobi.ads.ApkDownloader$ApkDownloadService"
-                android:enabled="true"></service>
+        <!--<activity-->
+                <!--android:name="com.inmobi.rendering.InMobiAdActivity"-->
+                <!--android:configChanges="keyboardHidden|orientation|keyboard|smallestScreenSize|screenSize|screenLayout"-->
+                <!--android:hardwareAccelerated="true"-->
+                <!--android:resizeableActivity="false"-->
+                <!--android:theme="@android:style/Theme.NoTitleBar"-->
+                <!--tools:ignore="UnusedAttribute"/>-->
+        <!--<receiver-->
+                <!--android:name="com.inmobi.commons.core.utilities.uid.ImIdShareBroadCastReceiver"-->
+                <!--android:enabled="true"-->
+                <!--android:exported="true"-->
+                <!--tools:ignore="ExportedReceiver">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.inmobi.share.id"/>-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
+        <!--<service-->
+                <!--android:name="com.inmobi.ads.ApkDownloader$ApkDownloadService"-->
+                <!--android:enabled="true"></service>-->
         <!-- Inmobi相关配置结束 -->
 
         <activity
