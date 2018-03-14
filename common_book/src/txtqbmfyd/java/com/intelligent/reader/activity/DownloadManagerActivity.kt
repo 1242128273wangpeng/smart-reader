@@ -71,9 +71,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
                         else getString(R.string.download_manager)
             }
 
-            override fun onAllCheckedStateChanged(isAllChecked: Boolean) {
-                presenter.uploadRemoveSelectAllLog(isAllChecked)
-            }
+            override fun onAllCheckedStateChanged(isAllChecked: Boolean) {}
         })
         helper
     }
@@ -124,9 +122,11 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
             if (txt_select_all.text == getString(R.string.select_all)) {
                 txt_select_all.text = getString(R.string.select_all_cancel)
                 removeHelper.selectAll(true)
+                presenter.uploadRemoveSelectAllLog(true)
             } else {
                 txt_select_all.text = getString(R.string.select_all)
                 removeHelper.selectAll(false)
+                presenter.uploadRemoveSelectAllLog(false)
             }
         }
         txt_head_title.setOnClickListener {

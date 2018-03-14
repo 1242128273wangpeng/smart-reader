@@ -277,10 +277,12 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
 
         rl_recommend_search.setOnClickListener {
             startActivity(Intent(context, SearchBookActivity::class.java))
+            presenter.uploadHeadSearchLog(bottomType)
         }
 
         img_ranking_search.setOnClickListener {
             startActivity(Intent(context, SearchBookActivity::class.java))
+            presenter.uploadHeadSearchLog(bottomType)
         }
 
         img_head_menu.setOnClickListener {
