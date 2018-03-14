@@ -524,7 +524,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
 //                }
 //
 //            }
-            ConfirmDarkPopWindow.newBuilder(readReference!!.get()).setOnConfirmListener(object : ConfirmDarkPopWindow.OnConfirmListener{
+            ConfirmDarkPopWindow.newBuilder(readReference!!.get()).setOnConfirmListener(object : ConfirmDarkPopWindow.OnConfirmListener {
                 override fun onConfirm(view: View?) {
                     StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_change_source_read)
                     val map1 = HashMap<String, String>()
@@ -794,7 +794,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
             return true
         }
 
-        if (mBookDaoHelper != null) {
+        if (mBookDaoHelper != null && !TextUtils.isEmpty(ReadState.book_id)) {
             isSubed = mBookDaoHelper!!.isBookSubed(ReadState.book_id)
         }
 

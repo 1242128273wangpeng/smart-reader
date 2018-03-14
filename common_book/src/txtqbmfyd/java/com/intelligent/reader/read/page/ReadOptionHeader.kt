@@ -90,20 +90,22 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_add_book_mark_btn)
             val result = presenter?.bookMark()
             val data = HashMap<String, String>()
-            StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, data)
-
+            data.put("bookid", ReadState.book_id)
+            data.put("chapterid", ReadState.chapterId ?: "")
             when (result) {
                 1 -> {
                     context.toastShort("书签添加成功", false)
                     isMarkPage = true
                     header_ibtn_bookmark.isSelected = true
                     data.put("type", "1")
+                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, data)
                 }
                 2 -> {
                     context.toastShort("书签已删除", false)
                     isMarkPage = false
                     header_ibtn_bookmark.isSelected = false
                     data.put("type", "2")
+                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, data)
                 }
                 else -> {
                     context.toastShort(R.string.add_mark_fail, false)
