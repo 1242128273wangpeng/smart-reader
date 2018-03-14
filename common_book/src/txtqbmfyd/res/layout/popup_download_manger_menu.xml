@@ -52,4 +52,11 @@
             android:textColor="@color/text_color_dark"
             android:textSize="13sp"/>
     </LinearLayout>
+
+    <net.lzbook.kit.book.view.NightShadowView
+        android:layout_width="125dp"
+        android:layout_height="150dp"
+        app:cornerRadius="5dp"
+        android:visibility="gone"/>
+
 </android.support.v7.widget.CardView>
