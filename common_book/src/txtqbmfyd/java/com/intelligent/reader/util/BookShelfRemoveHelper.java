@@ -230,12 +230,14 @@ public class BookShelfRemoveHelper {
             int num = bookShelfReAdapter.getCheckedSize();
             if (num == 0) {
                 btnDelete.setText(mContext.getString(R.string.delete));
+                btnDelete.setEnabled(false);
 //                int textCsl = mContext.getResources().getColor(R.color.color_gray_babfc1);
 //                btnDelete.setTextColor(textCsl);
 //                btnDelete.setBackgroundResource(com.intelligent.reader.R.drawable.bookshelf_delete_submit_default_bg);
             } else {
                 String text = mContext.getString(R.string.delete) + "(" + num + ")";
                 btnDelete.setText(text);
+                btnDelete.setEnabled(true);
 //                ColorStateList draw = mContext.getResources()
 //                        .getColorStateList(com.intelligent.reader.R.color.bookshelf_delete_submit_text_color);
 //                btnDelete.setTextColor(draw);

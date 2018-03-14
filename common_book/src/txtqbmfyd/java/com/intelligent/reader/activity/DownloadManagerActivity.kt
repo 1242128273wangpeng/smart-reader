@@ -20,7 +20,10 @@ import net.lzbook.kit.book.download.CallBackDownload
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Book
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.SettingItemsHelper
+import net.lzbook.kit.utils.uiThread
 import java.util.*
 
 /**
@@ -52,9 +55,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
         helper.setOnMenuDeleteListener { books ->
             presenter.uploadDeleteLog()
             isDeleteBookOfShelf = false
-            if (books.isEmpty()) {
-                toastShort(net.lzbook.kit.R.string.mian_delete_cache_no_choose)
-            } else {
+            if (books.isNotEmpty()) {
                 deleteLoadingDialog.show()
                 presenter.deleteDownload(books)
                 presenter.uploadDialogConfirmLog(books?.size)

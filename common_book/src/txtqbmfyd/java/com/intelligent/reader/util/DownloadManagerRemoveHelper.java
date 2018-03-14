@@ -208,9 +208,11 @@ public class DownloadManagerRemoveHelper {
             int num = downloadManagerAdapter.getCheckedSize();
             if (num == 0) {
                 btnDelete.setText(mContext.getString(R.string.delete));
+                btnDelete.setEnabled(false);
             } else {
                 String text = mContext.getString(R.string.delete) + "(" + num + ")";
                 btnDelete.setText(text);
+                btnDelete.setEnabled(true);
             }
         }
     }
