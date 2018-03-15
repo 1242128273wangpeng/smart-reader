@@ -307,17 +307,16 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
             uiThread {
                 view?.onBookDelete()
             }
-            if (isOnlyDeleteCache) {
-                uploadBookCacheDeleteLog(sb, size)
-            }
+            uploadBookCacheDeleteLog(sb, size, isOnlyDeleteCache)
         }
     }
 
-    private fun uploadBookCacheDeleteLog(sb: StringBuffer, size: Int) {
+    private fun uploadBookCacheDeleteLog(sb: StringBuffer, size: Int, isOnlyDeleteCache: Boolean) {
         val data = HashMap<String, String>()
         data["type"] = "1"
         data["number"] = size.toString()
         data["bookids"] = sb.toString()
+        data["status"] = if (isOnlyDeleteCache) "1" else "2"
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
                 StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.DELETE1, data)
     }

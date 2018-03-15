@@ -72,6 +72,6 @@ class DownloadManagerMenuPopup(private val context: Context) {
             contentView.txt_time_sorting.setTextColor(selectedTextColor)
             contentView.txt_recent_read_sorting.setTextColor(unSelectedTextColor)
         }
-        popupWindow.showAsDropDown(view, 0, 10)
+        popupWindow.showAsDropDown(view, 0, 0)
     }
 }
