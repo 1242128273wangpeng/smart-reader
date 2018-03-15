@@ -81,7 +81,7 @@
         android:id="@+id/pgbar_download"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="4dp"
+        android:layout_height="2dp"
         android:layout_alignLeft="@+id/txt_book_name"
         android:layout_below="@+id/rl_progress_text"
         android:layout_marginTop="4dp"
