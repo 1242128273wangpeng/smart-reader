@@ -151,9 +151,18 @@
                 android:layout_height="match_parent"
                 android:divider="@null"
                 android:layout_below="@+id/rl_catalog_novel"
-                android:fadingEdge="none"
                 android:cacheColorHint="@color/color_black_00000000"
                 android:listSelector="@android:color/transparent"/>
+
+        <android.support.v7.widget.RecyclerView
+                android:id="@+id/catalog_recyceler_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/rl_catalog_novel"
+                android:cacheColorHint="@color/color_black_00000000"
+                android:listSelector="@android:color/transparent"
+                android:visibility="gone"
+                android:layerType="software"/>
 
         <LinearLayout
                 android:id="@+id/catalog_empty"

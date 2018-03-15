@@ -53,7 +53,7 @@
                 android:background="@color/text_color_plain"/>
 
         <Button
-                android:id="@+id/okBt"
+                android:id="@+id/cancelBt"
                 style="@style/style_text_normal_plain"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -75,7 +75,7 @@
                 android:background="@color/text_color_plain"/>
 
         <Button
-                android:id="@+id/cancelBt"
+                android:id="@+id/okBt"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"

@@ -7,6 +7,7 @@ package com.intelligent.reader.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.View
 import android.view.View.OnClickListener
@@ -14,14 +15,20 @@ import android.widget.AbsListView
 import android.widget.AbsListView.OnScrollListener
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
+import android.widget.TextView
 import com.baidu.mobstat.StatService
 import com.intelligent.reader.R
+import com.intelligent.reader.adapter.BaseRecyclerHolder
 import com.intelligent.reader.adapter.BookmarkAdapter
 import com.intelligent.reader.adapter.CatalogAdapter
+import com.intelligent.reader.adapter.ListRecyclerAdapter
 import com.intelligent.reader.presenter.catalogues.CataloguesContract
 import com.intelligent.reader.presenter.catalogues.CataloguesPresenter
+import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.receiver.OffLineDownLoadReceiver
+import com.quduquxie.network.DataCache
 import de.greenrobot.event.EventBus
+import kotlinx.android.synthetic.main.content_catalog_item.view.*
 import kotlinx.android.synthetic.main.layout_empty_catalog.*
 import kotlinx.android.synthetic.txtqbmfyd.act_catalog.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -79,6 +86,9 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     private var chapterList: ArrayList<Chapter>? = ArrayList()
     private var bookmarkList: ArrayList<Bookmark>? = ArrayList()
     private var isPositive = true
+
+    private lateinit var mListRecyclerAdapter: ListRecyclerAdapter<Chapter, ChapterHolder>
+
     /**
      * 标识List的滚动状态。
      */
@@ -105,51 +115,14 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
             isPositive = false
             changeSortState(isPositive)
         }
+
+        catalog_recyceler_main.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         EventBus.getDefault().register(this)
     }
 
     private fun initUI() {
-
-//        catalog_root = findViewById(R.id.catalog_layout) as FrameLayout
-//
-//        rl_catalog_novel = findViewById(R.id.rl_catalog_novel) as RelativeLayout
-//
-//        catalog_novel_name = findViewById(R.id.catalog_novel_name) as TextView
-//
-//        catalog_novel_close = findViewById(R.id.catalog_novel_close) as ImageView
         backIv.setOnClickListener(this)
-
-//        tv_catalog_novel_sort = findViewById(R.id.tv_catalog_novel_sort) as TextView
         tv_catalog_novel_sort.setOnClickListener(this)
-
-//        iv_catalog_novel_sort = findViewById(R.id.iv_catalog_novel_sort) as ImageView
-//        tv_catalog_novel_sort.setOnClickListener(this)
-
-//        catalog_chapter_count = findViewById(R.id.catalog_chapter_count) as TextView
-
-//        tab_bookmark = findViewById(R.id.tab_bookmark) as RadioButton
-//        tab_bookmark.setOnClickListener(this)
-//        tab_catalog = findViewById(R.id.tab_catalog) as RadioButton
-//        tab_catalog.setOnClickListener(this)
-
-//        catalog_main = findViewById(R.id.catalog_main) as ListView
-//        bookmark_main = findViewById(R.id.bookmark_main) as ListView
-
-//        bookmark_empty = findViewById(R.id.rl_layout_empty_online) as LinearLayout
-//        rl_layout_empty_online.visibility = View.GONE
-
-//        bookmark_empty_message = findViewById(R.id.mask_no_text) as TextView
-//        catalog_empty_refresh = findViewById(R.id.catalog_empty_refresh) as TextView
-
-//        catalog_chapter_hint = findViewById(R.id.char_hint) as TextView
-//        char_hint.visibility = View.INVISIBLE
-
-//        iv_fixbook = findViewById(R.id.iv_fixbook) as ImageView
-
-//        iv_back_reading = findViewById(R.id.iv_back_reading) as ImageView
-//        iv_back_reading.setOnClickListener(this)
-//        currentView = tab_catalog
-
         changeSortState(isPositive)
     }
 
@@ -159,14 +132,9 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
             catalog_main!!.setOnScrollListener(this)
         }
 
-//        if (bookmark_main != null) {
-//            bookmark_main!!.onItemClickListener = this
-//        }
-
         if (catalog_empty_refresh != null) {
             catalog_empty_refresh!!.setOnClickListener(this)
         }
-//        iv_fixbook?.setOnClickListener(this)
     }
 
     private fun initData(bundle: Bundle) {
@@ -285,6 +253,64 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
             catalog_main!!.setSelection(sequence + 1)
         }
 
+//        chapterList?.let {
+//            mListRecyclerAdapter = ListRecyclerAdapter(it, R.layout.content_catalog_item, ChapterHolder::class.java)
+//        }
+//        catalog_recyceler_main.adapter = mListRecyclerAdapter
+//        if (is_last_chapter) {
+////            mCatalogAdapter!!.setSelectedItem(chapterList!!.size)
+//            catalog_recyceler_main.scrollToPosition(chapterList!!.size)
+//        } else {
+////            mCatalogAdapter!!.setSelectedItem(sequence + 1)
+//            catalog_recyceler_main.scrollToPosition(sequence + 1)
+//        }
+    }
+
+    inner class ChapterHolder(itemView: View?) : BaseRecyclerHolder<Chapter>(itemView) {
+        override fun onBindData(position: Int, chapter: Chapter, editMode: Boolean) {
+            if (itemView != null) {
+                itemView.tag = chapter
+                itemView.isClickable = true
+                itemView.setOnClickListener { v ->
+                    onItemClick?.onClick(v)
+                }
+
+//                val txt = (itemView as TextView)
+//
+//                txt.text = "${chapter.chapter_name}"
+
+                var chapterExist = false
+                if (Constants.QG_SOURCE == chapter.site) {
+                    chapterExist = DataCache.isChapterExists(chapter.chapter_id, chapter.book_id)
+                } else {
+                    chapterExist = BookHelper.isChapterExist(chapter)
+                }
+
+                var txtColor = 0
+                if (chapterExist) {
+                    itemView.catalog_chapter_cache.visibility = View.VISIBLE
+                } else {
+                    itemView.catalog_chapter_cache.visibility = View.GONE
+                }
+
+                var selelctItem = sequence + 1
+                if (this@CataloguesActivity.is_last_chapter) {
+                    selelctItem = chapterList!!.size
+                } else {
+                    selelctItem = sequence + 1
+                }
+
+
+                if (chapter.chapter_name?.equals(selelctItem) == true) {
+                    txtColor = R.color.dialog_recommend
+                } else {
+                    txtColor = R.color.text_color_dark
+                }
+
+                (itemView.catalog_chapter_name as TextView).text = chapter.chapter_name
+                (itemView.catalog_chapter_name as TextView).setTextColor(itemView.context.resources.getColor(txtColor))
+            }
+        }
     }
 
     override fun onStart() {
@@ -354,7 +380,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
             R.id.backIv -> {
                 val data = HashMap<String, String>()
                 data.put("type", "1")
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data)
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.CATALOG, StartLogClickUtil.BACK, data)
                 if (!fromCover) {
                     if (mCataloguesPresenter != null) {
                         sequence = Math.min(sequence, (chapterList?.size ?: 1) - 1)
