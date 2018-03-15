@@ -254,7 +254,9 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
     }
 
     private fun showReadingSourceDialog() {
-        clearCacheDialog.show()
+        if(!activity.isFinishing){
+            clearCacheDialog.show()
+        }
 //        ConfirmPopWindow.newBuilder(activity).title("转码")
 //                .cancelButtonName(activity.getString(R.string.cancel))
 //                .confirmButtonName(activity.getString(R.string.reading_continue))
