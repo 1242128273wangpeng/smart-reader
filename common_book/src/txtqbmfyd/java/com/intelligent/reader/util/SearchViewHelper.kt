@@ -159,6 +159,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
             mSearchHelpPresenter?.showDialog(activity)
         }
         mHistoryDataListView!!.addFooterView(mHistoryDeleteView)
+
     }
 
     private fun initHistoryView() {
@@ -171,6 +172,12 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         mSearchHelpPresenter?.initHistoryData(mContext)
         mHistoryAdapter = ArrayAdapter(activity!!, R.layout.item_history_search_view,
                 mSearchHelpPresenter?.getHistoryData()!!)
+
+        if (mSearchHelpPresenter?.getHistoryData() != null && mSearchHelpPresenter?.getHistoryData()!!.size == 0) {
+            mHistoryDeleteView.visibility = View.GONE
+        } else {
+            mHistoryDeleteView.visibility = View.VISIBLE
+        }
 
 //        if (mHistoryListView != null) {
 //            mHistoryListView!!.adapter = mHistoryAdapter

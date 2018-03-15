@@ -336,7 +336,6 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         novel_font.setOnClickListener(this)
         night_mode_iv.setOnClickListener(this)
         novel_read_mode.setOnClickListener(this)
-        read_setting_backdrop_group?.setOnCheckedChangeListener(this)
 
         read_setting_row_spacing_group?.setOnCheckedChangeListener { id ->
             when (id) {
@@ -727,6 +726,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         } else {
             setNovelMode(content_mode)
         }
+        read_setting_backdrop_group.setOnCheckedChangeListener(this)
     }
 
     fun changePageBackgroundWrapper(index: Int) {
@@ -772,6 +772,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
             readSettingHelper?.setReadMode(index)
             changeMode(index)
         }
+        read_setting_backdrop_group?.setOnCheckedChangeListener(this)
     }
 
     private fun restoreBright() {

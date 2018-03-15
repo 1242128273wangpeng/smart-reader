@@ -67,6 +67,8 @@
                     android:button="@null"
                     android:textSize="@dimen/dimen_text_12"
                     android:paddingLeft="15dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
                     android:paddingRight="15dp"/>
         </RelativeLayout>
 

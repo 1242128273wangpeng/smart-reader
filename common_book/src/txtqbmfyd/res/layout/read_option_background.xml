@@ -96,7 +96,7 @@
                         android:id="@+id/read_backdrop_first"
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginLeft="0dp"
                         android:drawableLeft="@drawable/read_option_page_bg1"
                         android:button="@null"
