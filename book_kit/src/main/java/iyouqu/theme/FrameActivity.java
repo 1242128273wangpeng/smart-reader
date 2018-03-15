@@ -1,16 +1,5 @@
 package iyouqu.theme;
 
-import com.baidu.mobstat.StatService;
-
-import net.lzbook.kit.R;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.utils.ATManager;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.NetWorkUtils;
-import net.lzbook.kit.utils.ResourceUtil;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -47,6 +36,17 @@ import android.view.ViewPropertyAnimator;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import com.baidu.mobstat.StatService;
+
+import net.lzbook.kit.R;
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.utils.ATManager;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.NetWorkUtils;
+import net.lzbook.kit.utils.ResourceUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -125,12 +125,16 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
             UI_OPTIONS_IMMERSIVE_STICKY = getWindow().getDecorView().getSystemUiVisibility();
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.M ) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
 //            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             if (isDarkStatusBarText) {
                 isMIUISupport = new MIUIHelper().setStatusBarLightMode(this, true);
                 isFlymeSupport = new FlymeHelper().setStatusBarLightMode(this, true);
+                if (isMIUISupport || isFlymeSupport) {
+                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                }
+            } else {
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             }
         }
 
@@ -265,6 +269,7 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
             isDarkStatusBarText = false;
         }
     }
+
     /**
      * 初始化主题助手
      */

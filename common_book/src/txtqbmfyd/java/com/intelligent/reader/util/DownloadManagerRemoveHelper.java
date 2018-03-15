@@ -39,6 +39,7 @@ public class DownloadManagerRemoveHelper {
     private Button btnDelete;
     private Button btnCancel;
     private ListView listView;
+    private int distanceY;
 
     public DownloadManagerRemoveHelper(Context context, DownloadManagerAdapter adapter,
                                        ListView listView) {//显示指定菜单类别
@@ -46,6 +47,7 @@ public class DownloadManagerRemoveHelper {
         downloadManagerAdapter = adapter;
         this.listView = listView;
         setRemoveWindow(context);
+        distanceY = (int) mContext.getResources().getDimension(R.dimen.bottom_tab_height);
     }
 
     public boolean isRemoveMode() {//判定当前菜单状态是否为删除模式
@@ -175,7 +177,7 @@ public class DownloadManagerRemoveHelper {
     public void onShowing(final boolean isShowing) {//菜单打开及关闭状态
         if (downloadManagerAdapter != null) {
             downloadManagerAdapter.setRemoveMode(isShowing);
-            downloadManagerAdapter.setListPadding(listView, isShowing);
+            setListPadding(listView, isShowing);
             downloadManagerAdapter.resetRemovedState();
             setDeleteNum();
         }
@@ -203,14 +205,25 @@ public class DownloadManagerRemoveHelper {
         }
     }
 
+    private void setListPadding(ListView listView, boolean isShowing) {
+        if (isShowing) {
+            int height = distanceY;
+            listView.setPadding(0, 0, 0, height);
+        } else {
+            listView.setPadding(0, 0, 0, 0);
+        }
+    }
+
     private void setDeleteNum() {
         if (downloadManagerAdapter != null && btnDelete != null && btnCancel != null) {
             int num = downloadManagerAdapter.getCheckedSize();
             if (num == 0) {
                 btnDelete.setText(mContext.getString(R.string.delete));
+                btnDelete.setEnabled(false);
             } else {
                 String text = mContext.getString(R.string.delete) + "(" + num + ")";
                 btnDelete.setText(text);
+                btnDelete.setEnabled(true);
             }
         }
     }

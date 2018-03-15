@@ -357,6 +357,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
         updateUI()
         bookDeleteDialog.dismiss()
         bookShelfRemoveHelper.dismissRemoveMenu()
+        activity.toastShort(R.string.book_delete_success)
     }
 
     override fun onAdRefresh() {

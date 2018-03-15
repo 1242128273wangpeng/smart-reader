@@ -54,7 +54,7 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
 
     private static final int SCALE_DOWN_DURATION = 150;
     private static final int ANIMATE_TO_TRIGGER_DURATION = 200;
-    private static final int ANIMATE_TO_START_DURATION = 200;
+    private static final int ANIMATE_TO_START_DURATION = 500;
     private static final int DEFAULT_CIRCLE_TARGET = 64;
     private static final int[] LAYOUT_ATTRS = new int[]{android.R.attr.enabled};
     private final DecelerateInterpolator mDecelerateInterpolator;
@@ -74,6 +74,7 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
     private int mCurrentTargetOffsetTop;
     private boolean mOriginalOffsetCalculated = false;
     private float mInitialMotionY;
+    private float mInitialMotionX;
     private boolean mIsBeingDragged;
     private int mActivePointerId = INVALID_POINTER;
     private boolean mScale;
@@ -167,7 +168,7 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
             updateListenerCallBack();
         }
     };
-    private long REFRSH_LOADING_MIN_TIME = 1500;
+    private long REFRSH_LOADING_MIN_TIME = 1000;
     private long complete_loading_time = -1;
     private long start_loading_time = -1;
     Runnable refreshCompleteTask = new Runnable() {
@@ -650,6 +651,7 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
                     return false;
                 }
                 mInitialMotionY = initialMotionY;// 记录按下的位置
+                mInitialMotionX = ev.getX();
 
             case MotionEvent.ACTION_MOVE:
                 if (mActivePointerId == INVALID_POINTER) {
@@ -665,12 +667,17 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
                 float yDiff = 0;
                 if (isChildScrollToBottom()) {
                     yDiff = mInitialMotionY - y;// 计算上拉距离
-                    if (yDiff > mTouchSlop && !mIsBeingDragged) {// 判断是否下拉的距离足够
+                    float deltaX = Math.abs(ev.getX() - mInitialMotionX);
+                    float deltaY = Math.abs(ev.getY() - mInitialMotionY);
+                    if (yDiff > mTouchSlop && !mIsBeingDragged && deltaY > deltaX) {// 判断是否下拉的距离足够
                         mIsBeingDragged = true;// 正在上拉
                     }
                 } else {
                     yDiff = y - mInitialMotionY;// 计算下拉距离
-                    if (yDiff > mTouchSlop && !mIsBeingDragged) {// 判断是否下拉的距离足够
+
+                    float deltaX = Math.abs(ev.getX() - mInitialMotionX);
+                    float deltaY = Math.abs(ev.getY() - mInitialMotionY);
+                    if (yDiff > mTouchSlop && !mIsBeingDragged && deltaY > deltaX) {// 判断是否下拉的距离足够
                         mIsBeingDragged = true;// 正在下拉
                     }
                 }

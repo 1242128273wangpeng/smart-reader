@@ -1,13 +1,19 @@
 package com.intelligent.reader.presenter.read
 
 import android.app.Activity
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Point
 import android.net.Uri
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.preference.PreferenceManager
 import android.provider.Settings
 import android.support.v4.content.LocalBroadcastManager
@@ -15,7 +21,8 @@ import android.text.TextUtils
 import android.view.InflateException
 import android.view.KeyEvent
 import android.view.View
-import android.widget.*
+import android.widget.ImageButton
+import android.widget.Toast
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.*
 import com.intelligent.reader.cover.BookCoverLocalRepository
@@ -23,6 +30,7 @@ import com.intelligent.reader.cover.BookCoverOtherRepository
 import com.intelligent.reader.cover.BookCoverQGRepository
 import com.intelligent.reader.cover.BookCoverRepositoryFactory
 import com.intelligent.reader.fragment.CatalogMarkFragment
+import com.intelligent.reader.fragment.HomeFragment
 import com.intelligent.reader.presenter.IPresenter
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.help.BookHelper
@@ -36,6 +44,7 @@ import com.intelligent.reader.reader.ReaderViewModel
 import com.intelligent.reader.util.EventBookStore
 import com.intelligent.reader.widget.ConfirmDarkPopWindow
 import com.intelligent.reader.widget.FeedbackPopWindow
+import de.greenrobot.event.EventBus
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -1184,6 +1193,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         edit.putInt("content_mode", ReadConfig.MODE)
         edit.apply()
         changeMode(ReadConfig.MODE)
+        EventBus.getDefault().post(HomeFragment.EVENT_CHANGE_NIGHT_MODE)
     }
 
     private fun submitFeedback(type: Int) {
