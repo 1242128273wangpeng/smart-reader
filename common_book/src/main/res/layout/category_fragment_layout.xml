@@ -21,7 +21,7 @@
                 app:indicatorMargin="20dp"
                 app:indicatorTextSize="17sp"
                 app:selectedIndicatorTextSize="17sp"
-                app:indicatorTextColor="@color/home_bottom_tab_unselected"
+                app:indicatorTextColor="@color/text_color_dark"
                 android:layout_width="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_height="match_parent"/>
