@@ -40,6 +40,13 @@
 
     </RelativeLayout>
 
+
+    <android.support.v4.view.ViewPager
+            android:id="@+id/category_view_page"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/title_layout"/>
+
     <ImageView
         android:id="@+id/img_head_shadow"
         android:layout_width="match_parent"
@@ -47,11 +54,5 @@
         android:layout_below="@+id/title_layout"
         android:scaleType="fitXY"
         android:src="@drawable/top_shadow_bg"/>
-
-    <android.support.v4.view.ViewPager
-            android:id="@+id/category_view_page"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/title_layout"/>
 
 </RelativeLayout>
