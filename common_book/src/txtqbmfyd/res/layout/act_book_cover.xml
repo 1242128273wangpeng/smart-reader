@@ -42,6 +42,14 @@
             android:layout_height="fill_parent"
             android:layout_below="@id/rl_title_book_cover">
 
+        <ImageView
+                android:id="@+id/img_bottom_shadow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                android:layout_above="@+id/layout_bottom_view"
+                android:src="@drawable/bottom_shadow_bg"/>
+
         <RelativeLayout
                 android:id="@+id/layout_bottom_view"
                 android:layout_width="match_parent"
@@ -49,11 +57,11 @@
                 android:layout_alignParentBottom="true">
 
             <LinearLayout
+                    android:id="@+id/option_bottom_ll"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:orientation="horizontal">
-
 
                 <TextView
                         android:id="@+id/book_cover_bookshelf"
@@ -244,6 +252,7 @@
                             android:layout_width="wrap_content"
                             android:drawableLeft="@drawable/icon_cover_words"
                             android:drawablePadding="6dp"
+                            android:gravity="center"
                             android:layout_height="wrap_content"
                             android:text="800万字"/>
 
@@ -253,6 +262,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
+                            android:gravity="center"
                             android:drawableLeft="@drawable/icon_cover_reading"
                             android:drawablePadding="6dp"
                             android:text="800万人在读"/>
@@ -262,6 +272,7 @@
                             style="@style/style_text_small_light"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:gravity="center"
                             android:layout_alignParentRight="true"
                             android:drawableLeft="@drawable/icon_cover_start"
                             android:drawablePadding="6dp"

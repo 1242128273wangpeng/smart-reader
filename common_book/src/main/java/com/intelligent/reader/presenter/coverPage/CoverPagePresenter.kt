@@ -850,43 +850,43 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
      */
     fun getRecommend() {
         var bookIds: String = getBookOnLineIds(bookDaoHelper!!)
-        if (requestItem != null && requestItem.book_id != null && !TextUtils.isEmpty(bookIds)) {
-            NetService.userService.requestCoverRecommend(requestItem.book_id, bookIds)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : Observer<CoverRecommendBean> {
-                        override fun onSubscribe(d: Disposable) {}
-                        override fun onNext(bean: CoverRecommendBean) {
-                            AppLog.e("aaa", bean.toString())
-                            if (bean != null && bean.data != null && bean.data.map != null) {
-                                if (preferences != null) {
-                                    var scale = preferences!!.getString(Constants.RECOMMEND_BOOKCOVER, "2,2,0")!!.split(",")
-                                    if (scale != null && scale.size >= 2) {
-                                        if (!TextUtils.isEmpty(scale[0])) {
-                                            AppLog.e("cover", scale[0])
-                                            addZNBooks(bean, Integer.parseInt(scale[0]))
-                                        }
-                                        if (!TextUtils.isEmpty(scale[1])) {
-                                            AppLog.e("cover", scale[1])
-                                            addQGBookss(bean, Integer.parseInt(scale[1]))
-                                        }
+//        if (requestItem != null && requestItem.book_id != null && !TextUtils.isEmpty(bookIds)) {
+        NetService.userService.requestCoverRecommend(requestItem.book_id, bookIds)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<CoverRecommendBean> {
+                    override fun onSubscribe(d: Disposable) {}
+                    override fun onNext(bean: CoverRecommendBean) {
+                        AppLog.e("aaa", bean.toString())
+                        if (bean != null && bean.data != null && bean.data.map != null) {
+                            if (preferences != null) {
+                                var scale = preferences!!.getString(Constants.RECOMMEND_BOOKCOVER, "2,2,0")!!.split(",")
+                                if (scale != null && scale.size >= 2) {
+                                    if (!TextUtils.isEmpty(scale[0])) {
+                                        AppLog.e("cover", scale[0])
+                                        addZNBooks(bean, Integer.parseInt(scale[0]))
                                     }
-                                    coverPageContract.showRecommend(mRecommendBooks)
+                                    if (!TextUtils.isEmpty(scale[1])) {
+                                        AppLog.e("cover", scale[1])
+                                        addQGBookss(bean, Integer.parseInt(scale[1]))
+                                    }
                                 }
-                            } else {
-                                coverPageContract.showRecommendError()
+                                coverPageContract.showRecommend(mRecommendBooks)
                             }
-                        }
-
-                        override fun onError(e: Throwable) {
+                        } else {
                             coverPageContract.showRecommendError()
                         }
+                    }
 
-                        override fun onComplete() {
+                    override fun onError(e: Throwable) {
+                        coverPageContract.showRecommendError()
+                    }
 
-                        }
-                    })
-        }
+                    override fun onComplete() {
+
+                    }
+                })
+//        }
 
     }
 

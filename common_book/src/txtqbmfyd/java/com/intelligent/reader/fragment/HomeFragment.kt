@@ -352,13 +352,13 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
             presenter.uploadModeChangeLog()
             if (isChecked) {
                 tv_night_shift.setText(R.string.mode_day)
-                preferencesUtils.putInt("current_light_mode", ReadConfig.MODE)
                 ReadConfig.MODE = 61
+                preferencesUtils.putInt("current_light_mode", ReadConfig.MODE)
                 parent.mThemeHelper.setMode(ThemeMode.NIGHT)
             } else {
                 tv_night_shift.setText(R.string.mode_night)
+                ReadConfig.MODE = 51
                 preferencesUtils.putInt("current_night_mode", ReadConfig.MODE)
-                ReadConfig.MODE = preferencesUtils.getInt("current_light_mode", 51)
                 parent.mThemeHelper.setMode(ThemeMode.THEME1)
             }
             preferencesUtils.putInt("content_mode", ReadConfig.MODE)
