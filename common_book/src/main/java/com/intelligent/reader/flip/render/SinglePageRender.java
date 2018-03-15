@@ -16,7 +16,6 @@
 package com.intelligent.reader.flip.render;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
 
@@ -24,7 +23,10 @@ import com.intelligent.reader.flip.base.Page;
 import com.intelligent.reader.flip.base.PageFlip;
 import com.intelligent.reader.flip.base.PageFlipState;
 
-import net.lzbook.kit.data.bean.ReadViewEnums.PageIndex;
+import net.lzbook.kit.utils.AppLog;
+
+import static com.intelligent.reader.flip.base.PageFlipState.END_WITH_FORWARD;
+import static com.intelligent.reader.flip.base.PageFlipState.END_WITH_RESTORE_BACKWARD;
 
 
 /**
@@ -52,13 +54,6 @@ public class SinglePageRender extends PageRender {
         boolean restore();
     }
 
-
-    private PageFlipStateListener mPageFlipStateListener;
-
-    public void setPageFlipStateListenerListener(PageFlipStateListener mPageFlipStateListener) {
-        this.mPageFlipStateListener = mPageFlipStateListener;
-    }
-
     /**
      * Constructor
      *
@@ -80,37 +75,43 @@ public class SinglePageRender extends PageRender {
         // 2. handle drawing command triggered from finger moving and animating 处理滑动命令
         if (mDrawCommand == DRAW_MOVING_FRAME ||
                 mDrawCommand == DRAW_ANIMATING_FRAME) {
-            // is forward flip 向前滑动
-
 
             // draw frame for page flip 翻页
             mPageFlip.drawFlipFrame();
 
-            //防止闪屏
-            if(isShouldShow && mPageFlip.getFirstPage().isFirstTextureSet() && mPageFlip.getFirstPage().isSecondTextureSet()) {
-                Message obtain = Message.obtain();
-                obtain.what = -1;
-                mHandler.sendMessage(obtain);
-            }
-
-            if(!isShouldShow) {
-                isShouldShow = true;
-            }
+//            //防止闪屏
+//            if(isShouldShow && mPageFlip.getFirstPage().isFirstTextureSet() && mPageFlip.getFirstPage().isSecondTextureSet()) {
+            Message obtain = Message.obtain();
+            obtain.what = -1;
+            mHandler.sendMessage(obtain);
+//            }
+//
+//            if(!isShouldShow) {
+//                isShouldShow = true;
+//            }
         }
         // draw stationary page without flipping 没有翻转的 画静止页
-        else if (mDrawCommand == DRAW_FULL_PAGE || mDrawCommand == DRAW_DELETE_AFTER_FIRST_PAGE) {
+        else if (mDrawCommand == DRAW_FULL_PAGE /*|| mDrawCommand == DRAW_DELETE_AFTER_FIRST_PAGE*/) {
 
             mPageFlip.drawPageFrame();
 
-            isShouldShow = false;
 
-            if(mDrawCommand == DRAW_DELETE_AFTER_FIRST_PAGE){
-                mPageFlip.getFirstPage().deleteAllTextures();
-            }
+//            if(mDrawCommand == DRAW_DELETE_AFTER_FIRST_PAGE){
+//                mPageFlip.getFirstPage().deleteAllTextures();
+//            }
 
 //            GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+            Message obtain = Message.obtain();
+            obtain.what = -1;
+            mHandler.sendMessage(obtain);
+
+            while (!afterFirstDrawEvent.isEmpty()){
+                afterFirstDrawEvent.remove(0).run();
+            }
         }
 
+        AppLog.v("flip","single");
         // 3. send message to main thread to notify drawing is ended so that
         // we can continue to calculate next animation frame if need.
         // Remember: the drawing operation is always in GL thread instead of
@@ -124,44 +125,7 @@ public class SinglePageRender extends PageRender {
 
     @Override
     public void onDrawNextFrame(boolean isFlow) {
-        //重新画
-//        Page page = mPageFlip.getFirstPage();
-//        if (isFlow) {
-//            if (!page.isSecondTextureSet()) {
-//                drawPage(++mPageNo, 1);
-//                page.setSecondTexture(mBitmap);
-//            }
-//        }else {
-//            if(!page.isFirstTextureSet()) {
-//                drawPage(--mPageNo, 1);
-//                page.setFirstTexture(mBitmap);
-//            }
-//        }
-//        if (isFlow) {
-//            if(page.isSecondTextureSet()) {
-//                page.setFirstTextureWithSecond();
-//            }else{
-//                page.setFirstTexture(listener.loadBitmap(PageIndex.current));
-//            }
-//            page.setSecondTexture(listener.loadBitmap(PageIndex.next));
-//        } else {
-//            if(page.isFirstTextureSet()) {
-//                page.setSecondTextureWithFirst();
-//            }else{
-//                page.setSecondTexture(listener.loadBitmap(PageIndex.current));
-//            }
-//            page.setFirstTexture(listener.loadBitmap(PageIndex.previous));
-//        }
 
-//
-//        if(isFlow){
-//            page.setFirstTextureWithSecond();
-//        }else{
-//            page.setSecondTextureWithFirst();
-//        }
-//        mPageFlip.getFirstPage().deleteAllTextures();
-//        mPageFlip.deleteUnusedTextures();
-//        setPageMessage();
     }
 
     @Override
@@ -170,10 +134,10 @@ public class SinglePageRender extends PageRender {
     }
 
     public void sendMessage() {
-        Message msg = Message.obtain();
-        msg.what = MSG_ENDED_DRAWING_FRAME;
-        msg.arg1 = mDrawCommand;
-        mHandler.sendMessage(msg);
+
+        if (onEndedDrawing(mDrawCommand)) {
+            mPageFlip.mView.requestRender();
+        }
     }
 
     public void sendMessageDown() {
@@ -231,49 +195,37 @@ public class SinglePageRender extends PageRender {
             }
             // animation is finished
             else {
-
-                mDrawCommand = DRAW_FULL_PAGE;
-
+                mDrawCommand = mPageFlip.mEndAnimationCommand;
                 final PageFlipState state = mPageFlip.getFlipState();
                 // update page number for backward flip
-                if (state == PageFlipState.END_WITH_BACKWARD) {
-                    // don't do anything on page number since mPageNo is always
-                    // represents the FIRST_TEXTURE no;
-                    if (mPageFlipStateListener != null) {
-                        mPageFlipStateListener.backward();
-                    }
-                }
-                // update page number and switch textures for forward flip
-                else if (state == PageFlipState.END_WITH_FORWARD) {
-                    mPageFlip.getFirstPage().setFirstTextureWithSecond();
-                    if (mPageFlipStateListener != null) {
-                        if (mPageFlipStateListener.forward()) {
-                            mDrawCommand = DRAW_DELETE_AFTER_FIRST_PAGE;
-                        }
-                    }
-                } else if (state == PageFlipState.END_WITH_RESTORE_FORWARD) {
-                    if (mPageFlipStateListener != null) {
-                        if (mPageFlipStateListener.restore()) {
-                            mDrawCommand = DRAW_DELETE_AFTER_FIRST_PAGE;
-                        }
-                    }
-                } else if (state == PageFlipState.END_WITH_RESTORE_BACKWARD) {
-                    mPageFlip.getFirstPage().setFirstTextureWithSecond();
-                    if (mPageFlipStateListener != null) {
-                        if (mPageFlipStateListener.restore()) {
-                            mDrawCommand = DRAW_DELETE_AFTER_FIRST_PAGE;
-                        }
-                    }
+                switch (state){
+                    case END_WITH_FORWARD :
+                    case END_WITH_RESTORE_BACKWARD :
+                        mPageFlip.getFirstPage().setFirstTextureWithSecond();
+                        break;
+                    default:
+                        break;
                 }
 
+                mPageFlip.setFlipState(PageFlipState.BEGIN_FLIP);
+                mPageFlip.mView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        AppLog.e("flip", "onEndedDrawing");
+                        mPageFlip.mView.setAlpha(0F);
+                    }
+                });
+                mPageFlip.mView.canFlip = true;
                 //绘制最后一帧后，删除第一页文理
                 return true;
             }
-        }else if(DRAW_DELETE_AFTER_FIRST_PAGE == mDrawCommand){
-//            final PageFlipState state = mPageFlip.getFlipState();
-//            mPageFlip.getFirstPage().deleteAllTextures();
-            mDrawCommand = DRAW_FULL_PAGE;
         }
+//        else if(DRAW_DELETE_AFTER_FIRST_PAGE == mDrawCommand){
+////            final PageFlipState state = mPageFlip.getFlipState();
+////            mPageFlip.getFirstPage().deleteAllTextures();
+//            mDrawCommand = DRAW_FULL_PAGE;
+//        }
+
         return false;
     }
 

@@ -212,7 +212,7 @@ class ShadowVertexes {
      */
     public ShadowVertexes addVertexesForward(float startX, float startY,
                                              float endX, float endY) {
-        if (mForward>=mVertexes.length) reset();
+        if (mForward + 8 >=mVertexes.length) reset();
         mVertexes[mForward++] = startX;
         mVertexes[mForward++] = startY;
         mVertexes[mForward++] = mColor.startColor;
@@ -275,7 +275,7 @@ class ShadowVertexes {
             glUniform1f(program.mVertexZLoc, vertexZ);
 
             // disable texture, and enable blend
-            glDisable(GL_TEXTURE_2D);
+//            glDisable(GL_TEXTURE_2D);
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 

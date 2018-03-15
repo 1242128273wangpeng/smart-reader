@@ -8,4 +8,5 @@ import android.view.MotionEvent;
 
 public interface HorizontalEvent {
     boolean myDispatchTouchEvent(MotionEvent event);
+    boolean forceUseTouchEvent();
 }

@@ -41,7 +41,6 @@ object ReadSeparateHelper {
         initPaint()
 
         val mchapterPaint = TextPaint()
-        mchapterPaint.textSize = 20 * ReadConfig.screenScaledDensity
 
         // 显示文字区域高度
         val height = ReadConfig.screenHeight - ReadConfig.screenDensity * ReadConfig.READ_CONTENT_PAGE_TOP_SPACE.toFloat() * 2f
@@ -64,12 +63,14 @@ object ReadSeparateHelper {
             val chapterNameSplit = chapterName.split("章".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
             if (chapterNameSplit.isNotEmpty()) {
+                mchapterPaint.textSize = 16 * ReadConfig.screenScaledDensity
                 val chapterTitleList = getNovelText(mchapterPaint, chapterNameSplit[0] + "章", ReadConfig.mWidth - ReadConfig.screenDensity * 10)
 
                 novelText.addAll(chapterTitleList)
 
                 if (chapterNameSplit.size > 1) {
                     for (i in 1 until chapterNameSplit.size) {
+                        mchapterPaint.textSize = 23 * ReadConfig.screenScaledDensity
                         val chapterNameList = getNovelText(mchapterPaint, chapterNameSplit[i].trim { it <= ' ' }, ReadConfig.mWidth - ReadConfig.screenDensity * 10)
                         for (j in 0 until chapterNameList.size) {
                             novelText.add(chapterNameList[j])

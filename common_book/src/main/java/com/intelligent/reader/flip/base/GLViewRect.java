@@ -27,6 +27,12 @@ public final class GLViewRect {
     float left;
     // view right
     float right;
+
+    // view left
+    float middleLeft;
+    // view right
+    float middleRight;
+
     // view top
     float top;
     // view bottom
@@ -123,6 +129,10 @@ public final class GLViewRect {
         halfH = height * 0.5f;
         left = -halfW + marginL;
         right = halfW - marginR;
+
+        middleLeft = left / 3;
+        middleRight = right / 3;
+
         top = halfH;
         bottom = -halfH;
         return this;

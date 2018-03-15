@@ -523,9 +523,17 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
         onSurfaceTextureSizeChanged(surface, width, height);
     }
 
+
+    private int mWidth = 0;
+    private int mHeight = 0;
+
     @Override
     public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-        mGLThread.onWindowResize(width, height);
+        if(mWidth == 0 || mHeight == width) {
+            mWidth = width;
+            mHeight = height;
+            mGLThread.onWindowResize(width, height);
+        }
     }
 
     @Override
@@ -540,7 +548,6 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
 
     @Override
     public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-
     }
 
     /**

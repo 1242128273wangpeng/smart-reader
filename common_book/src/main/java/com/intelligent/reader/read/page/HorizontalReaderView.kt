@@ -35,7 +35,6 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     private var beforeX: Float = 0.toFloat()
     private var shouldGiveUpAction: Boolean = false
 
-    private var disallowIntercept = false
     private val touchSlop by lazy {
         ViewConfiguration.get(context).scaledTouchSlop
     }
@@ -316,10 +315,15 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
      * 点击屏幕左边前翻页
      */
     override fun onClickLeft(smoothScroll: Boolean) {
-        //当前页是封面页禁止点击
-        if ((findViewWithTag(ReadViewEnums.PageIndex.current) != null) and ((findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState == ReadViewEnums.ViewState.start)) return
+        //当前页是封面页 最后一页触发完结页禁止点击
+        val view = findViewWithTag(ReadViewEnums.PageIndex.current)
+        if ((view != null) && ((view as HorizontalPage).viewState == ReadViewEnums.ViewState.start) || bookOver) return
         checkViewState("Pre", ReadViewEnums.NotifyStateState.left)
-        setCurrentItem(index.minus(1), smoothScroll)
+        if(ReadConfig.animation == ReadViewEnums.Animation.curl){
+            setCurrentItem(index.minus(1), smoothScroll)
+        }else {
+            setCurrentItemForce(index.minus(1), smoothScroll)
+        }
     }
 
     /**
@@ -327,13 +331,19 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
      */
     override fun onClickRight(smoothScroll: Boolean) {
         //当前页是最后一页禁止点击
-        if ((findViewWithTag(ReadViewEnums.PageIndex.current) != null)
-                and ((findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).viewState == ReadViewEnums.ViewState.end)) {
+        val view = findViewWithTag(ReadViewEnums.PageIndex.current)
+        if ((view != null) && ((view as HorizontalPage).viewState == ReadViewEnums.ViewState.end)) {
             mReadPageChange?.goToBookOver()
             return
         }
+        AppLog.e("viewpager","1 "+index+"===")
         checkViewState("Next", ReadViewEnums.NotifyStateState.right)
-        setCurrentItem(index.plus(1), smoothScroll)
+        if(ReadConfig.animation == ReadViewEnums.Animation.curl){
+            setCurrentItem(index.plus(1), smoothScroll)
+        }else {
+            setCurrentItemForce(index.plus(1), smoothScroll)
+        }
+        AppLog.e("viewpager","2 "+index+"===")
     }
 
     override fun onKeyEvent(event: KeyEvent): Boolean {
@@ -362,7 +372,11 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     /**
      * 点击屏幕中间区域显示菜单
      */
-    override fun onClickMenu(isShow: Boolean) = mReadPageChange?.showMenu(isShow) ?: Unit
+    override fun onClickMenu(isShow: Boolean){
+        if (!bookOver){
+            mReadPageChange?.showMenu(isShow)
+        }
+    }
 
     /**
      * 点击原网页
@@ -440,6 +454,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             setPageTransformer(true, ShiftTransformer())
         } else {
             setShadowDrawable(null)
+            setShadowWidth(0)
             setPageTransformer(true, SlideTransformer())
         }
     }
@@ -454,7 +469,6 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 
     override fun requestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
         super.requestDisallowInterceptTouchEvent(disallowIntercept)
-        this.disallowIntercept = disallowIntercept
     }
 
     override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
@@ -465,18 +479,24 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (ReadState.isMenuShow) {
             mReadPageChange?.showMenu(false)
-        }
-
-        return if (ReadConfig.animation == ReadViewEnums.Animation.curl) {
-            mHorizontalEvent!!.myDispatchTouchEvent(event)
+            return false
         } else {
-            super.onTouchEvent(event)
+
+            return if (ReadConfig.animation == ReadViewEnums.Animation.curl) {
+                mHorizontalEvent!!.myDispatchTouchEvent(event)
+            } else {
+                super.onTouchEvent(event)
+            }
         }
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
 
-        if (!disallowIntercept && ReadConfig.animation == ReadViewEnums.Animation.curl
+        if (mHorizontalEvent?.forceUseTouchEvent() == true) {
+            return true
+        }
+
+        if (ReadConfig.animation == ReadViewEnums.Animation.curl
                 && MotionEvent.ACTION_MOVE == ev?.actionMasked) {
             //仿真是要先判断出滑动方向的，防止ViewPager先滑动touchSlop长度
             return touchSlop <= Math.abs(ev.x - mLastMotionX)
@@ -500,6 +520,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         }
     }
 
+    var bookOver = false
     /**
      * 禁止单方向滑动事件
      */
@@ -508,18 +529,29 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             MotionEvent.ACTION_DOWN//按下
             -> {
                 shouldGiveUpAction = false
+                bookOver = false
                 beforeX = ev.x
                 return super.dispatchTouchEvent(ev)
             }
             MotionEvent.ACTION_MOVE -> {//移动
                 val motionValue = ev.x - beforeX
-                if (!disallowIntercept && motionValue < -touchSlop && (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).orientationLimit == ReadViewEnums.ScrollLimitOrientation.RIGHT) {
-                    mReadPageChange?.goToBookOver()//跳bookend
+                if (motionValue < -touchSlop && (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).orientationLimit == ReadViewEnums.ScrollLimitOrientation.RIGHT) {
                     shouldGiveUpAction = true
+                    bookOver = true
+                    mReadPageChange?.goToBookOver()//跳bookend
                     return false
                 } else {
                     return super.dispatchTouchEvent(ev)
                 }
+            }
+            MotionEvent.ACTION_UP -> {//抬起
+                if (bookOver) {
+                    if (!mScroller.isFinished()) {
+                        mScroller.abortAnimation()
+                    }
+                    return super.dispatchTouchEvent(ev)
+                }
+
             }
         }
 

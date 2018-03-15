@@ -15,6 +15,11 @@
  */
 package com.intelligent.reader.flip.base;
 
+import com.intelligent.reader.util.ThemeUtil;
+
+import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.utils.AppLog;
+
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PointF;
@@ -38,6 +43,7 @@ import static android.opengl.GLES20.glDeleteTextures;
 import static android.opengl.GLES20.glDrawArrays;
 import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glGenTextures;
+import static android.opengl.GLES20.glGetError;
 import static android.opengl.GLES20.glTexParameterf;
 import static android.opengl.GLES20.glUniform1i;
 import static android.opengl.GLES20.glUniformMatrix4fv;
@@ -186,8 +192,8 @@ public class Page {
      * </pre>
      * <p>if origin(x, y) is 1, the diagonal(x, y) is 0</p>
      */
-    GLPoint originP;
-    GLPoint diagonalP;
+    public GLPoint originP;
+    public GLPoint diagonalP;
 
     private GLPoint mXFoldP;
     private GLPoint mYFoldP;
@@ -206,7 +212,7 @@ public class Page {
     private int mApexOrderIndex;
 
     // mask color of back texture
-    float[][] maskColor;
+    float[] maskColorArr;
 
     // texture(front, back and second) ids allocated by OpenGL
     public int[] mTexIDs;
@@ -214,6 +220,8 @@ public class Page {
     private int[] mUnusedTexIDs;
     // actual size of mUnusedTexIDs
     private int mUnusedTexSize;
+    private int mMaskColorRes;
+    private int mMaskColor;
 
     /**
      * Constructor
@@ -246,9 +254,7 @@ public class Page {
         originP = new GLPoint();
         diagonalP = new GLPoint();
 
-        maskColor = new float[][] {new float[] {0, 0, 0},
-                                   new float[] {0, 0, 0},
-                                   new float[] {0, 0, 0}};
+        maskColorArr = new float[] {0, 0, 0};
 
         mTexIDs = new int[] {INVALID_TEXTURE_ID,
                              INVALID_TEXTURE_ID,
@@ -344,13 +350,13 @@ public class Page {
      * @return self
      */
     public Page setFirstTextureWithSecond() {
+
+        AppLog.e("flip", "setFirstTextureWithSecond");
+
         if (mTexIDs[FIRST_TEXTURE_ID] > INVALID_TEXTURE_ID) {
             mUnusedTexIDs[mUnusedTexSize++] = mTexIDs[FIRST_TEXTURE_ID];
         }
 
-        maskColor[FIRST_TEXTURE_ID][0] = maskColor[SECOND_TEXTURE_ID][0];
-        maskColor[FIRST_TEXTURE_ID][1] = maskColor[SECOND_TEXTURE_ID][1];
-        maskColor[FIRST_TEXTURE_ID][2] = maskColor[SECOND_TEXTURE_ID][2];
         mTexIDs[FIRST_TEXTURE_ID] = mTexIDs[SECOND_TEXTURE_ID];
         mTexIDs[SECOND_TEXTURE_ID] = INVALID_TEXTURE_ID;
         return this;
@@ -368,9 +374,6 @@ public class Page {
             mUnusedTexIDs[mUnusedTexSize++] = mTexIDs[SECOND_TEXTURE_ID];
         }
 
-        maskColor[SECOND_TEXTURE_ID][0] = maskColor[FIRST_TEXTURE_ID][0];
-        maskColor[SECOND_TEXTURE_ID][1] = maskColor[FIRST_TEXTURE_ID][1];
-        maskColor[SECOND_TEXTURE_ID][2] = maskColor[FIRST_TEXTURE_ID][2];
         mTexIDs[SECOND_TEXTURE_ID] = mTexIDs[FIRST_TEXTURE_ID];
         mTexIDs[FIRST_TEXTURE_ID] = INVALID_TEXTURE_ID;
         return this;
@@ -476,7 +479,7 @@ public class Page {
      * @param dy            relative finger movement on Y axis
      * @return self
      */
-    Page setOriginAndDiagonalPoints(boolean hasSecondPage, float dy) {
+    public Page setOriginAndDiagonalPoints(boolean hasSecondPage, float dy) {
         if (hasSecondPage && left < 0) {
             originP.x = left;
             diagonalP.x = right;
@@ -566,20 +569,27 @@ public class Page {
      *
      * @param b Bitmap object for creating texture
      */
-    public void setFirstTexture(Bitmap b) {
+    public boolean setFirstTexture(Bitmap b) {
+
+        AppLog.e("flip", "setFirstTexture");
+
+        checkBackColor();
+
         if (b == null || b.isRecycled())
-            return;
+            return false;
 
         if (mTexIDs[FIRST_TEXTURE_ID] > INVALID_TEXTURE_ID) {
             mUnusedTexIDs[mUnusedTexSize++] = mTexIDs[FIRST_TEXTURE_ID];
+            mTexIDs[FIRST_TEXTURE_ID] = -1;
         }
 
         // compute mask color
-        int color = PageFlipUtils.computeAverageColor(b, 30);
-        maskColor[FIRST_TEXTURE_ID][0] = Color.red(color) / 255.0f;
-        maskColor[FIRST_TEXTURE_ID][1] = Color.green(color) / 255.0f;
-        maskColor[FIRST_TEXTURE_ID][2] = Color.blue(color) / 255.0f;
+//        int color = PageFlipUtils.computeAverageColor(b, 30);
 
+        maskColorArr[0] = Color.red(mMaskColor) / 255.0f;
+        maskColorArr[1] = Color.green(mMaskColor) / 255.0f;
+        maskColorArr[2] = Color.blue(mMaskColor) / 255.0f;
+        checkErr("first");
         glGenTextures(1, mTexIDs, FIRST_TEXTURE_ID);
         glActiveTexture(GL_TEXTURE0);
 //        glActiveTexture(GL_TEXTURE_2D);
@@ -587,6 +597,28 @@ public class Page {
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         GLUtils.texImage2D(GL_TEXTURE_2D, 0, b, 0);
+
+        return !checkErr("first");
+    }
+
+    private boolean  checkErr(String tag) {
+        boolean flag = false;
+        int error = glGetError();
+        while (error != 0){
+            flag = true;
+            AppLog.e("flip" + tag, "err ： " + error);
+            error = glGetError();
+        }
+        return flag;
+    }
+
+    private void checkBackColor() {
+        int bgColor = ThemeUtil.Companion.getModeLoadBgColor();
+        if (bgColor != mMaskColorRes) {
+            mMaskColorRes = bgColor;
+            mMaskColor = BaseBookApplication.getGlobalContext().getResources().getColor(bgColor);
+//            mMaskColor = Color.TRANSPARENT;
+        }
     }
 
     /**
@@ -594,54 +626,26 @@ public class Page {
      *
      * @param b Bitmap object for creating texture
      */
-    public void setSecondTexture(Bitmap b) {
+    public boolean setSecondTexture(Bitmap b) {
+
+        AppLog.e("flip", "setSecondTexture");
+
         if (b == null || b.isRecycled())
-            return;
+            return false;
         if (mTexIDs[SECOND_TEXTURE_ID] > INVALID_TEXTURE_ID) {
             mUnusedTexIDs[mUnusedTexSize++] = mTexIDs[SECOND_TEXTURE_ID];
+            mTexIDs[SECOND_TEXTURE_ID] = -1;
         }
-
-        // compute mask color
-        int color = PageFlipUtils.computeAverageColor(b, 30);
-        maskColor[SECOND_TEXTURE_ID][0] = Color.red(color) / 255.0f;
-        maskColor[SECOND_TEXTURE_ID][1] = Color.green(color) / 255.0f;
-        maskColor[SECOND_TEXTURE_ID][2] = Color.blue(color) / 255.0f;
-
+        checkErr("second");
         glGenTextures(1, mTexIDs, SECOND_TEXTURE_ID);
         glActiveTexture(GL_TEXTURE0);
+//        glActiveTexture(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, mTexIDs[SECOND_TEXTURE_ID]);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         GLUtils.texImage2D(GL_TEXTURE_2D, 0, b, 0);
-    }
 
-    /**
-     * Set the back texture with given bitmap
-     * <p>If given bitmap is null, the back texture will be same with the first
-     * texture</p>
-     *
-     * @param b Bitmap object for creating back texture
-     */
-    public void setBackTexture(Bitmap b) {
-        if (b == null) {
-            // back texture is same with the first texture
-            if (mTexIDs[BACK_TEXTURE_ID] != INVALID_TEXTURE_ID) {
-                mUnusedTexIDs[mUnusedTexSize++] = mTexIDs[BACK_TEXTURE_ID];
-            }
-            mTexIDs[BACK_TEXTURE_ID] = INVALID_TEXTURE_ID;
-        } else {
-            // compute mask color
-            int color = PageFlipUtils.computeAverageColor(b, 50);
-            maskColor[BACK_TEXTURE_ID][0] = Color.red(color) / 255.0f;
-            maskColor[BACK_TEXTURE_ID][1] = Color.green(color) / 255.0f;
-            maskColor[BACK_TEXTURE_ID][2] = Color.blue(color) / 255.0f;
-
-            glGenTextures(1, mTexIDs, BACK_TEXTURE_ID);
-            glBindTexture(GL_TEXTURE_2D, mTexIDs[BACK_TEXTURE_ID]);
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            GLUtils.texImage2D(GL_TEXTURE_2D, 0, b, 0);
-        }
+        return !checkErr("second");
     }
 
     /**

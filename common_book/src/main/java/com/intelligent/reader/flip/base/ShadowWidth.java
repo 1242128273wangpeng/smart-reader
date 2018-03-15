@@ -33,6 +33,8 @@ final class ShadowWidth {
     // shadow width will be dynamically computed upon fold cylinder radius
     float mRatio;
 
+    float width = 0;
+
     public ShadowWidth(float min, float max, float ratio) {
         set(min, max, ratio);
     }
@@ -52,6 +54,7 @@ final class ShadowWidth {
                                                "is invalid!");
         }
 
+        width = min;
         mMin = min;
         mMax = max;
         mRatio = ratio;
@@ -67,13 +70,15 @@ final class ShadowWidth {
     public float width(float r) {
         float w = r * mRatio;
         if (w < mMin) {
-            return mMin;
+            width = mMin;
         }
         else if (w > mMax) {
-            return mMax;
+            width = mMax;
         }
         else {
-            return w;
+            width = w;
         }
+
+        return width;
     }
 }

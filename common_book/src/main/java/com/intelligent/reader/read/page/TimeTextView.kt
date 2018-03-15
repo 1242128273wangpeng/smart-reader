@@ -4,13 +4,8 @@ import android.content.Context
 import android.text.format.DateFormat
 import android.util.AttributeSet
 import android.widget.TextView
-import com.intelligent.reader.util.ThemeUtil
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
+import com.intelligent.reader.read.util.ReadQueryUtil
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 /**
  *
@@ -56,7 +51,7 @@ class TimeTextView : TextView {
         mCalendar.timeInMillis = System.currentTimeMillis()
         text = DateFormat.format("k:mm", mCalendar)
 
-        setTextColor(resources.getColor(ThemeUtil.modePrimaryColor))
+        setTextColor(ReadQueryUtil.getColor(resources))
 
         postDelayed(changeTimeRunnable, 30000)
     }
