@@ -4,6 +4,7 @@ import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.SourceAdapter;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.book.view.NightShadowView;
 import net.lzbook.kit.data.bean.Source;
 
 import android.content.Context;
@@ -79,6 +80,16 @@ public class ChangeSourcePopWindow extends PopupWindow {
 
             ListView changeSourceList = (ListView) popupView.findViewById(R.id.change_source_list);
             TextView cleanTv = (TextView) popupView.findViewById(R.id.change_source_original_web);
+
+            final FrameLayout container = (FrameLayout) popupView.findViewById(R.id.container);
+            final NightShadowView nightShadowView = (NightShadowView) popInflater.findViewById(R.id.nightShadowView);
+            container.post(new Runnable() {
+                @Override
+                public void run() {
+                    nightShadowView.getLayoutParams().height = container.getHeight();
+                    container.requestLayout();
+                }
+            });
 
             final SourceAdapter sourceListAdapter = new SourceAdapter(context, sourceList);
             changeSourceList.setAdapter(sourceListAdapter);

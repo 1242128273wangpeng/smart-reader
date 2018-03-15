@@ -568,7 +568,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
         val book = bookCoverUtil!!.getCoverBook(bookDaoHelper, bookVo)
         val downloadState = CacheManager.getBookStatus(book)
         if (downloadState != DownloadState.FINISH && downloadState != DownloadState.WAITTING && downloadState != DownloadState.DOWNLOADING) {
-            showToastShort("正在缓存中。。。")
+            showToastShort("正在缓存中...")
         }
         if (Constants.QG_SOURCE == requestItem.host) {
             if (bookDaoHelper == null) {
@@ -859,7 +859,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
                             AppLog.e("aaa", bean.toString())
                             if (bean != null && bean.data != null && bean.data.map != null) {
                                 if (preferences != null) {
-                                    var scale = preferences!!.getString(Constants.RECOMMEND_BOOKCOVER, "3,3,0")!!.split(",")
+                                    var scale = preferences!!.getString(Constants.RECOMMEND_BOOKCOVER, "2,2,0")!!.split(",")
                                     if (scale != null && scale.size >= 2) {
                                         if (!TextUtils.isEmpty(scale[0])) {
                                             AppLog.e("cover", scale[0])

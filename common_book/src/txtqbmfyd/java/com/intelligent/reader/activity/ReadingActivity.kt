@@ -41,10 +41,7 @@ import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.data.bean.Source
-import net.lzbook.kit.utils.AppLog
-import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.OpenUDID
-import net.lzbook.kit.utils.SharedPreferencesUtils
+import net.lzbook.kit.utils.*
 import java.lang.Exception
 import java.lang.reflect.Method
 import java.util.*
@@ -452,12 +449,13 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     override fun getAutoMenuShowState(): Boolean = auto_menu.isShown
 
     override fun showStopAutoHint() {
-        val view = View.inflate(this, R.layout.autoread_textview, null) as TextView
-        val toast = Toast(applicationContext)
-        toast.view = view
-        toast.duration = Toast.LENGTH_SHORT
-        toast.setGravity(Gravity.CENTER, 0, 0)
-        toast.show()
+//        val view = View.inflate(this, R.layout.autoread_textview, null) as TextView
+//        val toast = Toast(applicationContext)
+//        toast.view = view
+//        toast.duration = Toast.LENGTH_SHORT
+//        toast.setGravity(Gravity.CENTER, 0, 0)
+//        toast.show()
+        ToastUtils.showToastNoRepeat("已退出自动阅读")
         auto_menu.visibility = View.GONE
     }
 

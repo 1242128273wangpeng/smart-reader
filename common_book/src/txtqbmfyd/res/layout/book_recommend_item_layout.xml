@@ -33,6 +33,7 @@
             android:layout_toRightOf="@+id/book_img_iv"
             android:layout_below="@+id/book_name_tv"
             android:maxLines="2"
+            android:lineSpacingMultiplier="1.2"
             android:ellipsize="end"
             android:text="简介简介简介简介简介简介简介"/>
 

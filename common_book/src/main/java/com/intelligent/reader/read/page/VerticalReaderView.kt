@@ -110,7 +110,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
-                if (mLastVisiblePosition != linearLayoutManager.findLastVisibleItemPosition()) {
+//                if (mLastVisiblePosition != linearLayoutManager.findLastVisibleItemPosition()) {
                     mLastVisiblePosition = linearLayoutManager.findLastVisibleItemPosition()
                     setCurrentChapterInfo(mLastVisiblePosition)
                     if (mLastVisiblePosition < (mOriginDataList.size * PRE_LOAD_CHAPTER_SCROLL_SCALE)) {
@@ -118,7 +118,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                     } else if (mLastVisiblePosition > (mOriginDataList.size * NEXT_LOAD_CHAPTER_SCROLL_SCALE)) {
                         loadNextChapter(ReadState.sequence + 1)
                     }
-                }
+//                }
                 mCanScrollVertically = recyclerView.canScrollVertically(1)
             }
         })
@@ -355,6 +355,10 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                     mAdapter.showFootView(false)
                 }
                 mChapterLoadStat = CHAPTER_WAITING
+
+                if (mOriginDataList.size < 3) {
+                    loadPreChapter(chapter.sequence - 1)
+                }
             }
 
         /**

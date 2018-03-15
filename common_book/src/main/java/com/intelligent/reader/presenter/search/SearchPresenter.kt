@@ -297,6 +297,7 @@ class SearchPresenter(private val mContext: Context, override var view: SearchVi
             params.put("filter_type", filterType ?: "")
             params.put("filter_word", filterWord ?: "")
             params.put("sort_type", sortType ?: "")
+            params.put("searchEmpty", "1")
             AppLog.e("kk", "$searchWord==$searchType==$filterType==$filterWord===$sortType")
             mUrl = UrlUtils.buildWebUrl(URLBuilderIntterface.SEARCH, params)
         }
