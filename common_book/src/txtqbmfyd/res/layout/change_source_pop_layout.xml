@@ -1,54 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@id/container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/read_option_txtmfqbyd_bg"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-    <TextView
-            android:id="@+id/dialog_top_title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/change_source"
-            android:paddingTop="@dimen/padding_15"
-            android:paddingBottom="@dimen/padding_20"
-            android:gravity="center"
-            android:textColor="@color/reading_setting_text_color"
-            android:textSize="@dimen/text_size_16"/>
-
-    <ListView
-            android:id="@+id/change_source_list"
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="@dimen/dimen_view_height_60"
-            android:cacheColorHint="@android:color/transparent"
-            android:fadingEdge="none"
-            android:scrollbarFadeDuration="0"
-            android:fadeScrollbars="false"
-            android:scrollbars="vertical"
-            android:scrollbarStyle="insideInset"
-            android:verticalScrollbarPosition="right"
-            android:scrollbarThumbVertical="@color/top_navigation_bg_color"
-            android:scrollbarSize="@dimen/dimen_view_width_5"
-            android:listSelector="@android:color/transparent"/>
+            android:background="@color/read_option_txtmfqbyd_bg"
+            android:orientation="vertical">
 
-    <View
-            android:id="@+id/change_source_bottom_divider"
+        <TextView
+                android:id="@+id/dialog_top_title"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/change_source"
+                android:paddingTop="@dimen/padding_15"
+                android:paddingBottom="@dimen/padding_20"
+                android:gravity="center"
+                android:textColor="@color/reading_setting_text_color"
+                android:textSize="@dimen/text_size_16"/>
+
+        <ListView
+                android:id="@+id/change_source_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/dimen_view_height_60"
+                android:cacheColorHint="@android:color/transparent"
+                android:fadingEdge="none"
+                android:scrollbarFadeDuration="0"
+                android:fadeScrollbars="false"
+                android:scrollbars="vertical"
+                android:scrollbarStyle="insideInset"
+                android:verticalScrollbarPosition="right"
+                android:scrollbarThumbVertical="@color/top_navigation_bg_color"
+                android:scrollbarSize="@dimen/dimen_view_width_5"
+                android:listSelector="@android:color/transparent"/>
+
+        <View
+                android:id="@+id/change_source_bottom_divider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_view_width_0.5"
+                android:background="@color/text_color_plain"/>
+
+        <TextView
+                android:id="@+id/change_source_original_web"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/cancel"
+                android:padding="20dp"
+                android:background="@drawable/read_setting_background_press"
+                android:textColor="@color/reading_setting_text_color"
+                android:textSize="@dimen/dimen_text_14"/>
+
+    </LinearLayout>
+
+    <net.lzbook.kit.book.view.NightShadowView
+            android:id="@+id/nightShadowView"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_view_width_0.5"
-            android:background="@color/text_color_plain"/>
-
-    <TextView
-            android:id="@+id/change_source_original_web"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/cancel"
-            android:padding="20dp"
-            android:background="@drawable/read_setting_background_press"
-            android:textColor="@color/reading_setting_text_color"
-            android:textSize="@dimen/dimen_text_14"/>
-
-</LinearLayout>
+            android:visibility="gone"
+            android:layout_height="0dp"/>
+</FrameLayout>

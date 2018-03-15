@@ -94,25 +94,8 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     @SuppressLint("JavascriptInterface")
     private fun initView() {
-//        search_result_back = findViewById(R.id.search_result_back) as ImageView
-//        search_result_button = findViewById(R.id.search_result_button) as ImageView
-//        search_result_outcome = findViewById(R.id.search_result_outcome) as RelativeLayout
-//        if (search_result_outcome != null) {
         search_result_outcome.visibility = View.VISIBLE
-//        }
-//        search_result_count = findViewById(R.id.search_result_count) as TextView
-//        search_result_keyword = findViewById(R.id.search_result_keyword) as TextView
-//        search_result_default = findViewById(R.id.search_result_default) as RelativeLayout
-//        search_result_clear = findViewById(R.id.search_result_clear) as ImageView
-//        if (search_result_clear != null) {
         search_result_clear.visibility = View.GONE
-//        }
-//        search_result_input = findViewById(R.id.search_result_input) as HWEditText
-//        search_result_main = findViewById(R.id.search_result_main) as RelativeLayout
-//        search_result_content = findViewById(R.id.search_result_content) as WebView
-//
-//        search_result_hint = findViewById(R.id.search_result_hint) as FrameLayout
-
         if (mSearchPresenter == null) {
             mSearchPresenter = SearchPresenter(this, this)
         }

@@ -36,6 +36,12 @@
         <include
                 android:visibility="gone"
                 layout="@layout/read_option_background"/>
+
+        <net.lzbook.kit.book.view.NightShadowView
+                android:id="@+id/function_layout_shadowView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:visibility="gone"/>
     </FrameLayout>
 
     <LinearLayout
@@ -170,4 +176,9 @@
                 />
     </LinearLayout>
 
+    <net.lzbook.kit.book.view.NightShadowView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bottom_nav2"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone"/>
 </RelativeLayout>

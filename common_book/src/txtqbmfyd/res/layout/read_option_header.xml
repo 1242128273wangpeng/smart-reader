@@ -118,4 +118,9 @@
             android:text="@string/app_name"
             android:textColor="#6D6D6D"
             android:textSize="12sp"/>
+
+    <net.lzbook.kit.book.view.NightShadowView
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:visibility="gone"/>
 </RelativeLayout>

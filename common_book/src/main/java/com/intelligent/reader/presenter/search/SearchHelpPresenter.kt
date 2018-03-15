@@ -190,6 +190,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
                 data.put("type", "1")
                 StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH, StartLogClickUtil.HISTORYCLEAR, data)
                 mSearchHandler?.sendEmptyMessage(10)
+                view?.onHistoryClear()
                 dialog.dismiss()
             }
             dialog.setOnCancelListener {
@@ -266,10 +267,11 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
         override fun handleMessage(msg: Message) {
             val helper = reference.get() ?: return
             when (msg.what) {
-                10 -> helper.clearHistory()
+                10 -> {
+                    helper.clearHistory()
+                }
 
                 20 -> helper.result(msg.obj as ArrayList<SearchCommonBean>)
-
                 else -> {
                 }
             }
