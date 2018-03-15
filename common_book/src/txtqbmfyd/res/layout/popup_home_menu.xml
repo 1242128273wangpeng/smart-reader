@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="5dp"
-    app:cardElevation="5dp"
-    app:cardUseCompatPadding="true"
+    android:background="@drawable/more_pop_bg"
     tools:ignore="RtlHardcoded">
 
     <LinearLayout
         android:id="@+id/ll_container"
-        android:layout_width="125dp"
-        android:layout_height="98dp"
-        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="10dp"
         android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/ll_download_manager"
-            android:layout_width="match_parent"
+            android:layout_width="125dp"
             android:layout_height="49dp"
             android:background="@drawable/home_menu_top_sel"
             android:gravity="center"
@@ -35,7 +36,7 @@
             <TextView
                 android:id="@+id/tv_car_empty"
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:gravity="center"
                 android:text="@string/download_manager"
@@ -45,7 +46,7 @@
 
         <LinearLayout
             android:id="@+id/ll_book_sorting"
-            android:layout_width="match_parent"
+            android:layout_width="125dp"
             android:layout_height="49dp"
             android:background="@drawable/home_menu_bottom_sel"
             android:gravity="center"
@@ -60,7 +61,7 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:gravity="center"
                 android:text="@string/book_sorting"
@@ -72,7 +73,11 @@
     <net.lzbook.kit.book.view.NightShadowView
         android:layout_width="125dp"
         android:layout_height="98dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="10dp"
         app:cornerRadius="5dp"
         android:visibility="gone"/>
 
-</android.support.v7.widget.CardView>
+</FrameLayout>

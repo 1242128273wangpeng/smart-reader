@@ -50,6 +50,6 @@ class HomeMenuPopup(context: Context) {
     }
 
     fun show(view: View) {
-        popupWindow.showAsDropDown(view, 0, 10)
+        popupWindow.showAsDropDown(view, 0, 0)
     }
 }
