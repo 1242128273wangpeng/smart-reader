@@ -81,7 +81,7 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
             } else {
                 presenter?.cache()
             }
-//            (context as ReadingActivity).showMenu(false)
+            (context as ReadingActivity).showMenu(false)
         }
 
         header_ibtn_bookmark.isSelected = isMarkPage
