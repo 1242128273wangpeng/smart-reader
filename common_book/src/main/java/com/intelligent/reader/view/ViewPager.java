@@ -16,7 +16,6 @@
 
 package com.intelligent.reader.view;
 
-import com.intelligent.reader.read.mode.ReadState;
 import com.intelligent.reader.read.page.HorizontalPage;
 
 import net.lzbook.kit.data.bean.ReadViewEnums;
@@ -637,6 +636,25 @@ public class ViewPager extends ViewGroup {
             mPopulatePending = false;
             setCurrentItemInternal(item, smoothScroll, false);
         }
+    }
+
+    public void setCurrentItemForce(int item, boolean smoothScroll) {
+        if (isDoubleClick(System.currentTimeMillis())){
+            return;
+        }
+        mScroller.abortAnimation();
+        mPopulatePending = false;
+        setCurrentItemInternal(item, smoothScroll, false);
+    }
+
+    private long lastClickTime = 0;
+
+    private boolean isDoubleClick(long time) {
+        if (time - this.lastClickTime <= 250) {
+            return true;
+        }
+        this.lastClickTime = time;
+        return false;
     }
 
     public int getCurrentItem() {
@@ -2084,6 +2102,9 @@ public class ViewPager extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (mScrollState != SCROLL_STATE_IDLE && !mPopulatePending) {
+            return false;
+        }
         /*
          * This method JUST determines whether we want to intercept the motion.
          * If we return true, onMotionEvent will be called and we do the actual

@@ -259,7 +259,7 @@ class Vertexes {
      */
     public Vertexes addVertex(float x, float y, float z,
                               float coordX, float coordY) {
-        if (mNext>=mVertexes.length) reset();
+        if (mNext + 3 >=mVertexes.length) reset();
         int j = mNext / mSizeOfPerVex * 2;
         mVertexes[mNext++] = x;
         mVertexes[mNext++] = y;
@@ -301,7 +301,7 @@ class Vertexes {
      */
     public Vertexes addVertex(float x, float y, float z, float w,
                               float coordX, float coordY) {
-        if (mNext>=mVertexes.length) reset();
+        if (mNext + 4 >=mVertexes.length) reset();
         int j = mNext / mSizeOfPerVex * 2;
         mVertexes[mNext++] = x;
         mVertexes[mNext++] = y;
@@ -320,7 +320,7 @@ class Vertexes {
      * @return self
      */
     public Vertexes addVertex(GLPoint point) {
-        if (mNext>=mVertexes.length) reset();
+        if (mNext + 3 >=mVertexes.length) reset();
         int j = mNext / mSizeOfPerVex * 2;
         mVertexes[mNext++] = point.x;
         mVertexes[mNext++] = point.y;

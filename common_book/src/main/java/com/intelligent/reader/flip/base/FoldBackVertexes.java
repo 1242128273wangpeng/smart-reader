@@ -43,7 +43,7 @@ final class FoldBackVertexes extends Vertexes {
         super();
 
         mSizeOfPerVex = 4;
-        mMaskAlpha = 0.6f;
+        mMaskAlpha = 0.9f;
     }
 
     /**
@@ -54,34 +54,6 @@ final class FoldBackVertexes extends Vertexes {
     public void set(int meshCount) {
         super.set(meshCount << 1, 4, true);
         mNext = 0;
-    }
-
-    /**
-     * Set mask alpha
-     *
-     * @param alpha mask alpha, value is [0 .. 255]
-     */
-    public void setMaskAlpha(int alpha) {
-        if (alpha < 0 || alpha > 255) {
-            throw new IllegalArgumentException("Alpha: " + alpha + "is out of "
-                                               + "[0 .. 255]!");
-        }
-
-        mMaskAlpha = alpha / 255.0f;
-    }
-
-    /**
-     * set mask alpha
-     *
-     * @param alpha mask alpha, value is [0 .. 1]
-     */
-    public void setMaskAlpha(float alpha) {
-        if (alpha < 0 || alpha > 1) {
-            throw new IllegalArgumentException("Alpha: " + alpha + "is out of "
-                                               + "[0 .. 1]!");
-        }
-
-        mMaskAlpha = alpha;
     }
 
     /**
@@ -119,9 +91,9 @@ final class FoldBackVertexes extends Vertexes {
 
         // set mask color and alpha
         glUniform4f(program.mMaskColorLoc,
-                    page.maskColor[0][0],
-                    page.maskColor[0][1],
-                    page.maskColor[0][2],
+                    page.maskColorArr[0],
+                    page.maskColorArr[1],
+                    page.maskColorArr[2],
                     hasSecondPage ? 0 : mMaskAlpha);
 
         // draw triangles

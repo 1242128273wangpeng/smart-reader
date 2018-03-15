@@ -23,13 +23,13 @@ package com.intelligent.reader.flip.base;
  */
 public final class GLPoint {
     // 3D coordinate
-    float x;
-    float y;
-    float z;
+    public float x;
+    public float y;
+    public float z;
 
     // texutre coordinate
-    float texX;
-    float texY;
+    public float texX;
+    public float texY;
 
     /**
      * Set GLPoint with given values

@@ -18,7 +18,7 @@ package com.intelligent.reader.flip;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.SurfaceTexture;
+import android.opengl.GLSurfaceView;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
@@ -26,9 +26,12 @@ import android.util.Log;
 
 import com.intelligent.reader.flip.base.PageFlip;
 import com.intelligent.reader.flip.base.PageFlipException;
+import com.intelligent.reader.flip.base.PageFlipState;
 import com.intelligent.reader.flip.render.PageRender;
 import com.intelligent.reader.flip.render.SinglePageRender;
 import com.intelligent.reader.util.DisplayUtils;
+
+import net.lzbook.kit.utils.AppLog;
 
 import java.util.ArrayList;
 import java.util.Observable;
@@ -77,12 +80,15 @@ public class PageFlipView extends GLTextureView implements GLTextureView.Rendere
         // create PageFlip 设置参数
         mPageFlip = new PageFlip(this);
         mPageFlip.setSemiPerimeterRatio(1.0f)//圆柱半径
-                .setShadowWidthOfFoldEdges(5, 80, 0.7f)//折叠页的边缘阴影颜色
-                .setShadowWidthOfFoldBase(5, 110, 0.7f)
+                .setShadowWidthOfFoldEdges(1, 30, 0.2f)//折叠页的边缘阴影颜色
+                .setShadowColorOfFoldEdges(0.0f, 0.15f, 0.0f, 0.0f)
+
+                .setShadowWidthOfFoldBase(80, 220, 1.0f)
+                .setShadowColorOfFoldBase(0.0f, 0.4f, 0.0f, 0.0f)
                 .setPixelsOfMesh(pixelsOfMesh)
                 .enableAutoPage(isAuto);
 //        setEGLContextClientVersion(2);
-        mPageFlip.setShadowColorOfFoldBase(0.1f, 0.5f, 0.3f, 0.01f);//
+
         // init others
         mPageRender = new SinglePageRender(context, mPageFlip,
                 mHandler);
@@ -90,9 +96,8 @@ public class PageFlipView extends GLTextureView implements GLTextureView.Rendere
         setEGLContextClientVersion(2);
         setPreserveEGLContextOnPause(true);
         setEGLConfigChooser(5, 6, 5, 0, 16, 0);
-        setEGLWindowSurfaceFactory(new GLTextureView.DefaultWindowSurfaceFactory());
+//        setEGLWindowSurfaceFactory(new GLSurfaceView.DefaultWindowSurfaceFactory());
 //        setZOrderOnTop(true);
-//        setZOrderMediaOverlay(true);
 //        getHolder().setFormat(PixelFormat.TRANSLUCENT);//设置透明
         // configure render
         setRenderer(this);
@@ -166,7 +171,6 @@ public class PageFlipView extends GLTextureView implements GLTextureView.Rendere
 
     private ArrayList<Runnable> mbeforeEventQueue = new ArrayList<Runnable>();
 
-    private boolean downActioned = false;
     private float downX = 0F;
 
     private boolean isFilledFirstTexture = false;
@@ -175,12 +179,20 @@ public class PageFlipView extends GLTextureView implements GLTextureView.Rendere
     public volatile Bitmap firstTexture = null;
     public volatile Bitmap secondTexture = null;
 
-    public synchronized boolean hasFirstTexture(){
+    public synchronized boolean hasFirstTexture() {
         return isFilledFirstTexture || (firstTexture != null && !firstTexture.isRecycled());
     }
 
-    public synchronized boolean hasSecondTexture(){
+    public synchronized boolean hasSecondTexture() {
         return isFilledSecondTexture || (secondTexture != null && !secondTexture.isRecycled());
+    }
+
+    private float limitX(float x) {
+        return Math.max(1, Math.min(x, getWidth() - 1));
+    }
+
+    private float limitY(float Y) {
+        return Math.max(1, Math.min(Y, getHeight() - 1));
     }
 
     /**
@@ -192,29 +204,20 @@ public class PageFlipView extends GLTextureView implements GLTextureView.Rendere
     public synchronized void onFingerDown(final float x, final float y) {
         // if the animation is going, we should ignore this event to avoid
         // mess drawing on screen
-
         downX = x;
-
-        if (!mPageFlip.isAnimating() &&
-                mPageFlip.getFirstPage() != null) {
-//            queueEvent(new Runnable() {
-//                @Override
-//                public void run() {
-                    isFilledFirstTexture = false;
-                    isFilledSecondTexture = false;
-                    mPageFlip.onFingerDown(x, y);
-//                    requestRender();
-//                }
-//            });
-            downActioned = true;
-            log("down");
-        } else {
-            log("down miss");
-        }
+        canFlip = false;
+        queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                isFilledFirstTexture = false;
+                isFilledSecondTexture = false;
+                mPageFlip.onFingerDown(limitX(x), limitY(y));
+            }
+        });
     }
 
     private void log(String msg) {
-//        android.util.Log.w("PageFlipView", msg);
+//        android.util.Log.w("curl", msg);
     }
 
     /**
@@ -224,27 +227,36 @@ public class PageFlipView extends GLTextureView implements GLTextureView.Rendere
      * @param y finger y coordinate
      */
     public synchronized void onFingerMove(final float x, final float y) {
-        if (downActioned) {
-            queueEvent(new Runnable() {
-                @Override
-                public void run() {
-                    fillTextures();
 
-                    if (mPageFlip.onFingerMove(x, y)) {
+        queueEvent(new Runnable() {
+            @Override
+            public void run() {
 
-                        if (mPageRender != null &&
-                                mPageRender.onFingerMove(x, y)) {
-                        }
-
-                        log("onFingerMove");
-                    } else {
-                        log("onFingerMove miss");
+                fillTextures();
+                if (isFilledFirstTexture
+                        && isFilledSecondTexture) {
+                    if (mPageFlip.isAnimating()) {
+                        mPageFlip.forceFinishAnimating();
                     }
 
+                    if (mPageFlip.onFingerMove(limitX(x), limitY(y))) {
+
+                        if (mPageRender != null &&
+                                mPageRender.onFingerMove()) {
+                        }
+                    }
+
+                    AppLog.e("flip","fingerMove2");
                     requestRender();
+                }else{
+//                    if (mPageFlip.isAnimating()) {
+//                        mPageFlip.forceFinishAnimating();
+//                    }
+                    isFilledFirstTexture = false;
+                    isFilledSecondTexture = false;
                 }
-            });
-        }
+            }
+        });
     }
 
     /**
@@ -253,48 +265,100 @@ public class PageFlipView extends GLTextureView implements GLTextureView.Rendere
      * @param x finger x coordinate
      * @param y finger y coordinate
      */
-    public synchronized void onFingerUp(final float x, final float y, final float velocity) {
+    public synchronized void onFingerUp(final float x, final float y, final float xVelocity, final float yVelocity) {
 
-        if (downActioned) {
-            queueEvent(new Runnable() {
-                           @Override
-                           public void run() {
-                               fillTextures();
+        queueEvent(new Runnable() {
+                       @Override
+                       public void run() {
 
-                               boolean forceFlip = Math.abs(velocity) > mMinimumVelocity;
-                               forceFlip = forceFlip && mFlingDistance < Math.abs(downX - x);
-                               mPageFlip.onFingerUp(x, y, forceFlip);
-
-                               if (mPageRender != null &&
-                                       mPageRender.onFingerUp(x, y)) {
+                           fillTextures();
+                           if (isFilledFirstTexture
+                                   && isFilledSecondTexture) {
+                               if (mPageFlip.isAnimating()) {
+                                   mPageFlip.forceFinishAnimating();
                                }
-                               log("onFingerUp");
 
+                               boolean forceFlip = false;
+                               boolean shouldBack = false;
+
+                               boolean canUseVelocity = mFlingDistance < Math.abs(downX - x) && (Math.abs(xVelocity) > mMinimumVelocity
+                                       || Math.abs(yVelocity) > mMinimumVelocity);
+
+                               if (mPageFlip.getFlipState() == PageFlipState.FORWARD_FLIP) {
+                                   if (canUseVelocity) {
+                                       forceFlip = xVelocity < 0;
+                                       shouldBack = !forceFlip;
+                                   }
+                               } else if (mPageFlip.getFlipState() == PageFlipState.BACKWARD_FLIP) {
+                                   if (canUseVelocity) {
+                                       forceFlip = xVelocity > 0;
+                                       shouldBack = !forceFlip;
+                                   }
+                               }
+
+                               if(mPageFlip.getFlipState() == PageFlipState.BACKWARD_FLIP
+                                       || mPageFlip.getFlipState() == PageFlipState.FORWARD_FLIP){
+                                   mPageFlip.onFingerUp(limitX(x), limitY(y), forceFlip, shouldBack);
+
+                                   if (mPageRender != null &&
+                                           mPageRender.onFingerUp()) {
+                                   }
+
+//                                   requestRender();
+                               } else {
+
+                                   //先绘制一帧
+
+                                   final boolean finalForceFlip = forceFlip;
+                                   final boolean finalShouldBack = shouldBack;
+                                   mPageRender.afterFirstDrawEvent.add(new Runnable() {
+                                       @Override
+                                       public void run() {
+                                           mPageFlip.onFingerUp(limitX(x), limitY(y), finalForceFlip, finalShouldBack);
+
+                                           if (mPageRender != null &&
+                                                   mPageRender.onFingerUp()) {
+                                           }
+
+                                           requestRender();
+                                       }
+                                   });
+                               }
                                requestRender();
-                               isFilledFirstTexture = false;
-                               isFilledSecondTexture = false;
-                           }
-                       }
-            );
-        }
 
-        downActioned = false;
+                           }
+                           isFilledFirstTexture = false;
+                           isFilledSecondTexture = false;
+
+                       }
+                   }
+        );
+
     }
 
     private synchronized void fillTextures() {
 
         if (!isFilledFirstTexture && firstTexture != null && !firstTexture.isRecycled()) {
-            mPageFlip.getFirstPage().setFirstTexture(firstTexture);
-            isFilledFirstTexture = true;
+            isFilledFirstTexture = mPageFlip.getFirstPage().setFirstTexture(firstTexture);
+            log("fillTextures");
         }
 
         if (!isFilledSecondTexture && secondTexture != null && !secondTexture.isRecycled()) {
-            mPageFlip.getFirstPage().setSecondTexture(secondTexture);
-            isFilledSecondTexture = true;
+            isFilledSecondTexture = mPageFlip.getFirstPage().setSecondTexture(secondTexture);
+        }
+
+        if (isFilledFirstTexture && isFilledSecondTexture && getAlpha() != 1.0F) {
+            Message obtain = Message.obtain();
+            obtain.what = -1;
+            mHandler.sendMessage(obtain);
         }
 
         firstTexture = null;
         secondTexture = null;
+    }
+
+    public void setPageFlipStateListenerListener(SinglePageRender.PageFlipStateListener mPageFlipStateListener) {
+        this.mPageFlip.setPageFlipStateListenerListener(mPageFlipStateListener);
     }
 
     public void onDrawNextFrame(boolean isFlow) {
@@ -318,28 +382,33 @@ public class PageFlipView extends GLTextureView implements GLTextureView.Rendere
         mHandler = new Handler() {
             public void handleMessage(final Message msg) {
                 switch (msg.what) {
-                    case PageRender.MSG_ENDED_DRAWING_FRAME:
-
-                        if (mPageRender != null &&
-                                mPageRender.onEndedDrawing(msg.arg1)) {
-                            requestRender();
-                        }
-                        break;
+//                    case PageRender.MSG_ENDED_DRAWING_FRAME:
+//
+//                        if (mPageRender != null &&
+//                                mPageRender.onEndedDrawing(msg.arg1)) {
+//                            requestRender();
+//                        }
+//                        break;
                     case PageRender.MSG_ENDED_FLIP_DOWN:
                         //翻下页
                         onFingerDown(DisplayUtils.getScreenWight(getContext()) / 2 + 500, DisplayUtils.getScreenHeight(getContext()) / 2);
-                        onFingerUp(DisplayUtils.getScreenWight(getContext()) / 2 + 500, DisplayUtils.getScreenHeight(getContext()) / 2, 10000);
+                        onFingerUp(DisplayUtils.getScreenWight(getContext()) / 2 + 500, DisplayUtils.getScreenHeight(getContext()) / 2, 10000, 0);
                     case PageRender.MSG_ENDED_FLIP_UP:
                         //翻下页
                         onFingerDown(DisplayUtils.getScreenWight(getContext()) / 2 - 500, DisplayUtils.getScreenHeight(getContext()) / 2);
-                        onFingerUp(DisplayUtils.getScreenWight(getContext()) / 2 - 500, DisplayUtils.getScreenHeight(getContext()) / 2, 10000);
+                        onFingerUp(DisplayUtils.getScreenWight(getContext()) / 2 - 500, DisplayUtils.getScreenHeight(getContext()) / 2, 10000, 0);
                     case PageRender.MSG_ENDED_SET_PAGE:
 
                         requestRender();
 
                         break;
+                    case -1:
+                        if (getAlpha() != 1.0F) {
+                            setAlpha(1.0F);
+                        }
+                        break;
                     default:
-                        if(getAlpha() != 1.0F) {
+                        if (getAlpha() != 1.0F) {
                             setAlpha(1.0F);
                         }
                         break;
@@ -356,6 +425,13 @@ public class PageFlipView extends GLTextureView implements GLTextureView.Rendere
             e.printStackTrace();
             Log.e(TAG, "Failed to run PageFlipFlipRender:onSurfaceCreated");
         }
+
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                setAlpha(0F);
+            }
+        });
     }
 
     @Override
@@ -372,25 +448,42 @@ public class PageFlipView extends GLTextureView implements GLTextureView.Rendere
             }
             mbeforeEventQueue.clear();
         }
+
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                setAlpha(0F);
+            }
+        });
     }
 
-    @Override
-    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-        return super.onSurfaceTextureDestroyed(surface);
-    }
+//    @Override
+//    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+//        return super.onSurfaceTextureDestroyed(surface);
+//    }
 
     @Override
     public boolean onDrawFrame(GL10 gl) {
-        if (mPageRender != null) {
+        if (mPageRender != null && mPageFlip.getFirstPage().isFirstTextureSet()
+                && mPageFlip.getFirstPage().isSecondTextureSet()) {
             mPageRender.onDrawFrame();
+            return true;
+        }else{
+            AppLog.e("flip","miss onDrawFrame");
         }
-        return true;
+        return false;
     }
 
-    @Override
-    public void onSurfaceDestroyed(){
 
+    public void onSurfaceDestroyed() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                setAlpha(0F);
+            }
+        });
     }
+
 
     @Override
     public void update(Observable o, final Object arg) {

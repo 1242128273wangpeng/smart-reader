@@ -23,6 +23,9 @@ import android.os.Handler;
 import com.intelligent.reader.flip.base.OnPageFlipListener;
 import com.intelligent.reader.flip.base.PageFlip;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Abstract Page Render
  *
@@ -31,16 +34,16 @@ import com.intelligent.reader.flip.base.PageFlip;
 
 public abstract class PageRender implements OnPageFlipListener {
 
-    public final static int MSG_ENDED_DRAWING_FRAME = 1;
+//    public final static int MSG_ENDED_DRAWING_FRAME = 1;
     public final static int MSG_ENDED_FLIP_DOWN = 2;
     public final static int MSG_ENDED_FLIP_UP = 3;
     public final static int MSG_ENDED_SET_PAGE = 4;
     private final static String TAG = "PageRender";
 
-    final static int DRAW_MOVING_FRAME = 0;
-    final static int DRAW_ANIMATING_FRAME = 1;
-    final static int DRAW_FULL_PAGE = 2;
-    final static int DRAW_DELETE_AFTER_FIRST_PAGE = 3;
+    public final static int DRAW_MOVING_FRAME = 0;
+    public final static int DRAW_ANIMATING_FRAME = 1;
+    public final static int DRAW_FULL_PAGE = 2;
+//    public final static int DRAW_DELETE_AFTER_FIRST_PAGE = 3;
 
     final static int MAX_PAGES = Integer.MAX_VALUE;
 
@@ -49,11 +52,13 @@ public abstract class PageRender implements OnPageFlipListener {
     public Handler mHandler;
     public PageFlip mPageFlip;
 
+    public List<Runnable> afterFirstDrawEvent = new ArrayList<>();
+
     public PageRender(Context context, PageFlip pageFlip,
                       Handler handler) {
         mContext = context;
         mPageFlip = pageFlip;
-        mDrawCommand = DRAW_DELETE_AFTER_FIRST_PAGE;
+        mDrawCommand = DRAW_FULL_PAGE;
         mPageFlip.setListener(this);
         mHandler = handler;
     }
@@ -68,11 +73,9 @@ public abstract class PageRender implements OnPageFlipListener {
     /**
      * Handle finger moving event
      *
-     * @param x x coordinate of finger moving
-     * @param y y coordinate of finger moving
      * @return true if event is handled
      */
-    public boolean onFingerMove(float x, float y) {
+    public boolean onFingerMove() {
         mDrawCommand = DRAW_MOVING_FRAME;
         return true;
     }
@@ -80,11 +83,9 @@ public abstract class PageRender implements OnPageFlipListener {
     /**
      * Handle finger up event
      *
-     * @param x x coordinate of finger up
-     * @param y y coordinate of inger up
      * @return true if event is handled
      */
-    public boolean onFingerUp(float x, float y) {
+    public boolean onFingerUp() {
         if (mPageFlip.animating()) {
             mDrawCommand = DRAW_ANIMATING_FRAME;
             return true;

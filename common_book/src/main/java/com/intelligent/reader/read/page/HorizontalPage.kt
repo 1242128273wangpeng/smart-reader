@@ -27,6 +27,7 @@ import kotlinx.android.synthetic.main.read_top.view.*
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
+import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.ToastUtils
 import net.lzbook.kit.utils.runOnMain
@@ -160,6 +161,8 @@ class HorizontalPage : FrameLayout, Observer {
     }
 
     override fun onDetachedFromWindow() {
+        destroyDrawingCache()
+
         ReadConfig.unregistObserver(this)
         mDisposable.clear()
         mAdFrameLayout.removeAllViews()
@@ -207,9 +210,10 @@ class HorizontalPage : FrameLayout, Observer {
     fun onRedrawPage() {
         mAdFrameLayout.removeAllViews()
 
-        viewState = ReadViewEnums.ViewState.other
-
         if (tag == ReadViewEnums.PageIndex.current) {
+
+            viewState = ReadViewEnums.ViewState.loading
+
             onReSeparate()
             mCursor?.let {
                 viewNotify = when (it.sequence) {
@@ -349,6 +353,19 @@ class HorizontalPage : FrameLayout, Observer {
 
             viewState = ReadViewEnums.ViewState.error
             loadView.visibility = View.GONE
+            AppLog.d("errorView", "showErrorView")
+            errorView.setOnClickListener {
+                AppLog.d("errorView", "onClickMenu " + !ReadState.isMenuShow)
+                if (ReadState.isMenuShow) {
+                    noticePageListener?.onClickMenu(false)
+                } else {
+                    noticePageListener?.onClickMenu(true)
+                }
+            }
+            errorView.loading_error_reload.setOnTouchListener { v, event ->
+                parent?.requestDisallowInterceptTouchEvent(true)
+                return@setOnTouchListener false
+            }
             errorView.loading_error_reload.setOnClickListener({
                 pageView.entrance(cursor)
                 mAdFrameLayout.removeAllViews()
@@ -585,7 +602,9 @@ class HorizontalPage : FrameLayout, Observer {
                     //设置top and bottom
                     val chapterProgress = "${cursor.sequence.plus(1)} / ${ReadState.chapterList.size} 章"
                     val pageProgress = "本章第$pageIndex/$pageSum"
-                    setTopAndBottomViewContext(ReadState.chapterList[cursor.sequence].chapter_name ?: "", chapterProgress, pageProgress)
+                    if (cursor.sequence<ReadState.chapterList.size) {
+                        setTopAndBottomViewContext(ReadState.chapterList[cursor.sequence].chapter_name ?: "", chapterProgress, pageProgress)
+                    }
 
                     noticePageListener?.currentViewSuccess()
 
