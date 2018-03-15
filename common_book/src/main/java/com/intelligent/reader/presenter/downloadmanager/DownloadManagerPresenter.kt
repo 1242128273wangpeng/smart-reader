@@ -11,6 +11,7 @@ import net.lzbook.kit.utils.*
 import java.util.*
 import kotlin.collections.ArrayList
 
+
 /**
  * Created by qiantao on 2017/11/22 0022
  */
@@ -108,11 +109,34 @@ class DownloadManagerPresenter(override var view: DownloadManagerView?) : IPrese
                 StartLogClickUtil.CHCHEEDIT_PAGE, StartLogClickUtil.DELETE, data)
     }
 
-    fun uploadDialogConfirmLog(size: Int?) {
-        if (size == null) return
+    fun uploadDialogConfirmLog(books: List<Book>) {
         val data = HashMap<String, String>()
-        data.put("type", "1")
-        data.put("number", size.toString())
+
+        val bookIds = StringBuilder()
+        val status = StringBuilder()
+
+        for (i in 0 until books.size) {
+            bookIds.append(if (i == books.size - 1) books[i].book_id else books[i].book_id + "$")
+            val task = CacheManager.getBookTask(books[i])
+
+            val currentStatus: String = if (task.state == DownloadState.DOWNLOADING) {
+                "4"
+            } else if (task.state == DownloadState.WAITTING
+                    || task.state == DownloadState.PAUSEED
+                    || task.state == DownloadState.WAITTING_WIFI) {
+                "3"
+            } else if (task.state == DownloadState.FINISH) {
+                "1"
+            } else {
+                "2"
+            }
+            status.append(if (i == books.size - 1) currentStatus else "$currentStatus$")
+
+        }
+        data["type"] = "1"
+        data["status"] = status.toString()
+        data["bookid"] = bookIds.toString()
+        data["number"] = books.size.toString()
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
                 StartLogClickUtil.CHCHEEDIT_PAGE, StartLogClickUtil.DELETE, data)
     }

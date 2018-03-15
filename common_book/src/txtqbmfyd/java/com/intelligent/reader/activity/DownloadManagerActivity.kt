@@ -58,7 +58,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
             if (books.isNotEmpty()) {
                 deleteLoadingDialog.show()
                 presenter.deleteDownload(books)
-                presenter.uploadDialogConfirmLog(books?.size)
+                presenter.uploadDialogConfirmLog(books)
             }
         }
         helper.setOnMenuStateListener(object : DownloadManagerRemoveHelper.OnMenuStateListener {
