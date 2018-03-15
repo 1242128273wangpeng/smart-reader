@@ -109,7 +109,7 @@
                 android:id="@+id/autoread_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/color_gray_707070"
+                android:textColor="#F4F5F7"
                 android:paddingRight="8dp"
                 android:gravity="center"
                 android:textSize="14sp"
@@ -137,6 +137,7 @@
             android:layout_gravity="center_horizontal"
             android:gravity="center"
             android:text="@string/cancel"
+            android:background="@drawable/read_setting_background_press"
             android:textColor="@color/gray_orange_text_selector"
             android:textSize="14sp"/>
 </LinearLayout>

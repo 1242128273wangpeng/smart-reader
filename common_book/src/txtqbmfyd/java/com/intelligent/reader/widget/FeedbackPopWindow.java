@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.intelligent.reader.R;
 
+import net.lzbook.kit.book.view.NightShadowView;
 import net.lzbook.kit.utils.StatServiceUtils;
 import net.lzbook.kit.utils.ToastUtils;
 
@@ -61,7 +63,7 @@ public class FeedbackPopWindow extends PopupWindow {
         }
 
         public FeedbackPopWindow build() {
-            View popupView = LayoutInflater.from(context).inflate(R.layout.pop_feedback_layout, null);
+            final View popupView = LayoutInflater.from(context).inflate(R.layout.pop_feedback_layout, null);
             this.popInflater = popupView;
             final FeedbackPopWindow popupWindow = new FeedbackPopWindow(popupView,
                     FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT, this);
@@ -69,6 +71,15 @@ public class FeedbackPopWindow extends PopupWindow {
             popupWindow.setTouchable(true);
             popupWindow.setOutsideTouchable(false);
 
+            final NightShadowView nightShadowView = (NightShadowView) popInflater.findViewById(R.id.nightShadowView);
+            final FrameLayout container = (FrameLayout) popInflater.findViewById(R.id.container);
+            container.post(new Runnable() {
+                @Override
+                public void run() {
+                    nightShadowView.getLayoutParams().height = container.getHeight();
+                    popupView.requestLayout();
+                }
+            });
             LinearLayout checkboxsParent = (LinearLayout) popInflater.findViewById(R.id.feedback_checkboxs_parent);
             final List<CheckBox> checkboxs = new ArrayList<>();
             final List<TextView> texts = new ArrayList<>();

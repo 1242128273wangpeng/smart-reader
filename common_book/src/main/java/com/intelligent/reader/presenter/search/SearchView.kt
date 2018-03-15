@@ -21,6 +21,7 @@ interface SearchView {
         fun setHotWordAdapter(hotWords: MutableList<SearchHotBean.DataBean>?)
         fun onSuggestBack()
         fun setEditText(text: String?)
+        fun onHistoryClear()
     }
 
     interface View {

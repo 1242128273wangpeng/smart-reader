@@ -101,6 +101,11 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         this.addView(LayoutInflater.from(context).inflate(R.layout.read_option_bottom, null))
         this.addView(LayoutInflater.from(context).inflate(R.layout.read_option_detail, null))
 
+        function_layout.viewTreeObserver.addOnGlobalLayoutListener {
+            function_layout_shadowView.layoutParams.height = function_layout.height
+            function_layout.requestLayout()
+        }
+
         changeBottomSettingView(-1)
 
         popUpInAnimation = AnimationUtils.loadAnimation(context, R.anim.pop_up_in)
@@ -586,6 +591,8 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
         read_mode_iv.setImageResource(R.drawable.icon_read_mode_normal)
         bg_iv.setImageResource(R.drawable.icon_read_bg_normal)
         font_iv.setImageResource(R.drawable.icon_read_font_normal)
+
+        function_layout_shadowView.layoutParams.height = 0
     }
 
     private fun refreshJumpPreBtnState() {

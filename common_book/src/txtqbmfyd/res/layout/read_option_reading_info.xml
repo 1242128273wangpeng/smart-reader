@@ -58,6 +58,6 @@
             android:background="@color/read_option_txtmfqbyd_bg"
             tools:text="第一章 校花贴身高手"
             android:textColor="@color/reading_setting_text_color"
-            android:textSize="@dimen/text_size_12"
-            android:layout_above="@+id/reading_foot_options"/>
+            android:textSize="@dimen/text_size_12"/>
+
 </LinearLayout>

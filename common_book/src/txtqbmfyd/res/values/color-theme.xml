@@ -48,7 +48,7 @@
     <color name="home_bottom_tab_bg">#fafafa</color>
     <color name="home_bottom_tab_divider">#e8e8e8</color>
     <color name="search_input_text_color">#323232</color>
-    <color name="search_input_text_color_hint">#c4c2c2</color>
+    <color name="search_input_text_color_hint">#ADB4BE</color>
     <color name="search_history_text_color">#323232</color>
     <color name="search_hot_word_title_text_color">#737575</color>
     <color name="search_hot_word_text_color_1">#1c1c1c</color>
@@ -96,6 +96,7 @@
     <color name="read_item_catalog_uncached_chapter_text_color">#4c000000</color>
     <color name="read_item_mark_title_color">#e5000000</color>
     <color name="read_item_mark_des_color">#7f000000</color>
+    <!--<color name="read_theme_second_color">#F4F5F7</color>-->
     <color name="moresetting_push_text_color">#ce3d3e</color>
     <color name="download_manager_bottom_menu_bg">#fafafa</color>
     <color name="download_manager_lv_bg_color">#FAFAFA</color>

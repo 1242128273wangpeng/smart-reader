@@ -1,62 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<FrameLayout -->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="match_parent"-->
-<!--android:layout_gravity="center"-->
-<!--android:scrollbars="vertical">-->
+<FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="182dp"
+        android:layout_gravity="center">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/read_dialog_layout"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_gravity="bottom"
-              android:background="@color/read_option_txtmfqbyd_bg"
-              android:alpha="0.9"
-              android:orientation="vertical">
-
-
-    <TextView
-            android:id="@+id/reading_all_down"
+    <LinearLayout
+            android:id="@+id/read_dialog_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="20dp"
-            android:gravity="center"
-            android:text="@string/reading_all_down"
-            android:textColor="@color/reading_setting_text_color"
-            android:textSize="@dimen/text_size_14"/>
+            android:layout_gravity="bottom"
+            android:background="@color/read_option_txtmfqbyd_bg"
+            android:alpha="0.9"
+            android:orientation="vertical">
 
-    <View
+        <TextView
+                android:id="@+id/reading_all_down"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:padding="20dp"
+                android:background="@drawable/read_setting_background_press"
+                android:gravity="center"
+                android:text="@string/reading_all_down"
+                android:textColor="@color/reading_setting_text_color"
+                android:textSize="@dimen/text_size_14"/>
+
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_view_width_0.5"
+                android:background="@color/text_color_plain"/>
+
+        <TextView
+                android:id="@+id/reading_current_down"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                android:background="@drawable/read_setting_background_press"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:text="@string/reading_current_down"
+                android:textColor="@color/reading_setting_text_color"
+                android:textSize="@dimen/text_size_14"/>
+
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_view_width_0.5"
+                android:background="@color/text_color_plain"/>
+
+        <TextView
+                android:id="@+id/reading_cache_cancel"
+                android:layout_width="match_parent"
+                android:padding="20dp"
+                android:background="@drawable/read_setting_background_press"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:text="@string/cancel"
+                android:textColor="@color/reading_setting_text_color"
+                android:textSize="@dimen/text_size_14"/>
+    </LinearLayout>
+
+    <net.lzbook.kit.book.view.NightShadowView
+            android:id="@+id/nightShadowView"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_view_width_0.5"
-            android:background="@color/text_color_plain"/>
-
-    <TextView
-            android:id="@+id/reading_current_down"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:text="@string/reading_current_down"
-            android:textColor="@color/reading_setting_text_color"
-            android:textSize="@dimen/text_size_14"/>
-
-    <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_view_width_0.5"
-            android:background="@color/text_color_plain"/>
-
-    <TextView
-            android:id="@+id/reading_cache_cancel"
-            android:layout_width="match_parent"
-            android:layout_margin="20dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:text="@string/cancel"
-            android:textColor="@color/reading_setting_text_color"
-            android:textSize="@dimen/text_size_14"/>
-</LinearLayout>
-
-        <!--</FrameLayout>-->
+            android:visibility="gone"
+            android:layout_height="match_parent"/>
+</FrameLayout>

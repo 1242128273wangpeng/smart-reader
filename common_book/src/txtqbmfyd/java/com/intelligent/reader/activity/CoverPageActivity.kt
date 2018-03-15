@@ -319,7 +319,11 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             }
 
             if (book_cover_category2 != null && !TextUtils.isEmpty(bookVo.labels)) {
-                book_cover_category2.text = bookVo.labels
+                if (bookVo.labels.contains(",")) {
+                    book_cover_category2.text = bookVo.labels.split(",")[0]
+                } else{
+                    book_cover_category2.text = bookVo.labels
+                }
 //                if (!mThemeHelper.isNight) {
 //                    book_cover_category2.setBackgroundResource(R.drawable.book_cover_label_bg)
 //                    val background = book_cover_category2.background as GradientDrawable

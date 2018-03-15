@@ -153,8 +153,7 @@
                 android:layout_below="@+id/rl_catalog_novel"
                 android:fadingEdge="none"
                 android:cacheColorHint="@color/color_black_00000000"
-                android:listSelector="@android:color/transparent"
-                android:scrollbars="none"/>
+                android:listSelector="@android:color/transparent"/>
 
         <LinearLayout
                 android:id="@+id/catalog_empty"

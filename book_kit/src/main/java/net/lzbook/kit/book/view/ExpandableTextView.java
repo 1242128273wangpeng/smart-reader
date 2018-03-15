@@ -127,7 +127,7 @@ public class ExpandableTextView extends RelativeLayout implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
-        if (mButton.getVisibility() != View.VISIBLE) {
+        if (mButton.getVisibility() != View.VISIBLE || mTv.getLineCount() < 2) {
             return;
         }
 

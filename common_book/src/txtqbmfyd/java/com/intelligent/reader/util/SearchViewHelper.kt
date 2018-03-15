@@ -33,6 +33,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
     private var mSearchEditText: EditText? = null
     private var mHistoryListView: ListView? = null
     private var mHistoryDataListView: ListView? = null
+    private lateinit var mHistoryDeleteView: View
     private var mSuggestListView: ListView? = null
     private var mGridView: ScrollForGridView? = null
     private var linear_parent: LinearLayout? = null
@@ -150,14 +151,14 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
             mHistoryDataListView!!.visibility = View.GONE
         }
 
-        val historyDeleteView: View = View.inflate(context, R.layout.search_history_delete_layout, null)
-        historyDeleteView.setOnClickListener {
+        mHistoryDeleteView = View.inflate(context, R.layout.search_history_delete_layout, null)
+        mHistoryDeleteView.setOnClickListener {
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.b_search_click_his_clear)
             StartLogClickUtil.upLoadEventLog(context,
                     StartLogClickUtil.SEARCH, StartLogClickUtil.BARCLEAR)
             mSearchHelpPresenter?.showDialog(activity)
         }
-        mHistoryDataListView!!.addFooterView(historyDeleteView)
+        mHistoryDataListView!!.addFooterView(mHistoryDeleteView)
     }
 
     private fun initHistoryView() {
@@ -418,6 +419,10 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         if (imm.isActive) {
             imm.hideSoftInputFromWindow(paramView.applicationWindowToken, 0)
         }
+    }
+
+    override fun onHistoryClear() {
+        mHistoryDeleteView.visibility = View.GONE
     }
 
 
