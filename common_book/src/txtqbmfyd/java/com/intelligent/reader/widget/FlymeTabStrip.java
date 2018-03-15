@@ -230,7 +230,7 @@ public class FlymeTabStrip extends HorizontalScrollView {
 //        canvas.drawRect(left, height - indicatorHeight, right, height, paint);
         mBrounds = new RectF();
         mBrounds.set(left, height - indicatorHeight, right, height);
-        canvas.drawRoundRect(mBrounds, AppUtils.px2dip(context,10f),AppUtils.px2dip(context,10f),paint);
+        canvas.drawRoundRect(mBrounds, AppUtils.px2dip(context,20f),AppUtils.px2dip(context,20f),paint);
     }
 
     /**
