@@ -917,6 +917,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         bundle.putSerializable(Constants.REQUEST_ITEM, ReadState.requestItem)
         bundle.putString("bookName", ReadState.book.name)
         bundle.putString("book_id", ReadState.book_id)
+        bundle.putString("chapter_id", ReadState.chapterId)
         bundle.putString("book_category", ReadState.book.category)
         bundle.putSerializable("book", ReadState.book)
         bundle.putString("thememode", currentThemeMode)

@@ -343,7 +343,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 R.id.read_spacing_0_2 -> {
                     StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_hangju_01)
                     val data = java.util.HashMap<String, String>()
-                    data.put("type", "4")
+                    data.put("type", "1")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.READGAP, data)
                     if (read_spacing_0_2.isChecked) {
                         ReadConfig.READ_INTERLINEAR_SPACE = 0.2f
@@ -353,7 +353,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 R.id.read_spacing_0_5 -> {
                     StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_hangju_02)
                     val data = java.util.HashMap<String, String>()
-                    data.put("type", "3")
+                    data.put("type", "2")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.READGAP, data)
                     if (read_spacing_0_5.isChecked) {
                         ReadConfig.READ_INTERLINEAR_SPACE = 0.3f
@@ -363,7 +363,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 R.id.read_spacing_1_0 -> {
                     StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_hangju_03)
                     val data = java.util.HashMap<String, String>()
-                    data.put("type", "2")
+                    data.put("type", "3")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.READGAP, data)
                     if (read_spacing_1_0.isChecked) {
                         ReadConfig.READ_INTERLINEAR_SPACE = 0.4f
@@ -373,7 +373,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 R.id.read_spacing_1_5 -> {
                     StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_hangju_04)
                     val data = java.util.HashMap<String, String>()
-                    data.put("type", "1")
+                    data.put("type", "4")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.READGAP, data)
                     if (read_spacing_1_5.isChecked) {
                         ReadConfig.READ_INTERLINEAR_SPACE = 0.5f

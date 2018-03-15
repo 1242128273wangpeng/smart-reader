@@ -28,7 +28,7 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
     private var iv_back_bookstore: View? = null
     private var iv_back: View? = null
     private var iv_title_right: View? = null
-//    private var ad_view: ImageView? = null
+    //    private var ad_view: ImageView? = null
 //    private var ad_view_logo: ImageView? = null
     private var textView_endInfo: TextView? = null
     private var book: Book? = null
@@ -39,6 +39,7 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
     private var requestItem: RequestItem? = null
     private var category: String? = null
     private var book_id: String? = null
+    private var chapter_id: String? = null
 
     private var sourceAdapter: BookEndSourceAdapter? = null
     private var sourceListView: ListView? = null
@@ -50,7 +51,7 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
         setContentView(R.layout.act_book_end)
         initListener()
         initData()
-        if (requestItem != null ) {
+        if (requestItem != null) {
             mBookEndPresenter = BookEndPresenter(this, this, category!!)
         }
         loadSource()
@@ -133,12 +134,22 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
             requestItem = intent.getSerializableExtra(Constants.REQUEST_ITEM) as RequestItem
             category = intent.getStringExtra("book_category")
             book_id = intent.getStringExtra("book_id")
+            chapter_id = intent.getStringExtra("chapter_id")
             name_bookend!!.text = bookName
 //            ReadState.sequence = intent.getIntExtra("sequence", 0)
 //            ReadState.offset = intent.getIntExtra("offset", 0)
             thememode = intent.getStringExtra("thememode")
 
             ReadState.book = book!!
+
+            val data = HashMap<String, String>()
+            book_id?.let {
+                data.put("bookid", it)
+            }
+            chapter_id?.let {
+                data.put("chapterid", it)
+            }
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKENDPAGE_PAGE, StartLogClickUtil.ENTER, data)
         }
         if (requestItem == null) {
             finish()
@@ -154,12 +165,30 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
                 if (mBookEndPresenter != null) {
                     mBookEndPresenter!!.goToBookStore()
                 }
+
+                val data = HashMap<String, String>()
+                book_id?.let {
+                    data.put("bookid", it)
+                }
+                chapter_id?.let {
+                    data.put("chapterid", it)
+                }
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKENDPAGE_PAGE, StartLogClickUtil.TOBOOKSTORE, data)
+
                 finish()
             }
             R.id.iv_title_right -> {
                 if (mBookEndPresenter != null) {
                     mBookEndPresenter!!.goToShelf()
                 }
+                val data = HashMap<String, String>()
+                book_id?.let {
+                    data.put("bookid", it)
+                }
+                chapter_id?.let {
+                    data.put("chapterid", it)
+                }
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKENDPAGE_PAGE, StartLogClickUtil.TOSHELF, data)
                 finish()
             }
             R.id.iv_back -> {
@@ -189,6 +218,12 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
                 if (mBookEndPresenter != null) {
                     mBookEndPresenter!!.itemClick(source)
                 }
+                val data = HashMap<String, String>()
+                data.put("bookid", source.book_id)
+                chapter_id?.let {
+                    data.put("chapterid", it)
+                }
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKENDPAGE_PAGE, StartLogClickUtil.SOURCECHANGE, data)
             }
             sourceListView!!.layoutParams.height = sourceList.size * resources.getDimensionPixelOffset(R
                     .dimen.dimen_view_height_70)

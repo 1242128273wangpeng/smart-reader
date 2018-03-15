@@ -364,9 +364,10 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
         if (!activity.isFinishing()) {
             val confirm_change_source_dialog = MyDialog(activity, R.layout.pop_confirm_layout)
             confirm_change_source_dialog.setCanceledOnTouchOutside(true)
-            val dialog_cancel = confirm_change_source_dialog.findViewById(R.id.publish_stay) as Button
+            val dialog_cancel = confirm_change_source_dialog.findViewById(R.id.cancelBt) as Button
             dialog_cancel.setText(R.string.book_cover_continue_read_cache)
-            val dialog_confirm = confirm_change_source_dialog.findViewById(R.id.publish_leave) as Button
+
+            val dialog_confirm = confirm_change_source_dialog.findViewById(R.id.okBt) as Button
             dialog_confirm.setText(R.string.book_cover_confirm_change_source)
             val dialog_information = confirm_change_source_dialog.findViewById(R.id.publish_content) as TextView
             dialog_information.setText(R.string.book_cover_change_source_prompt)
