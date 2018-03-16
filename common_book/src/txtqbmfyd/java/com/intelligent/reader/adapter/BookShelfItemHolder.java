@@ -82,8 +82,8 @@ public class BookShelfItemHolder extends AbsRecyclerViewHolder<Book> {
 
         if (isRemoveMode) {
             this.imgCheckDelete.setVisibility(View.VISIBLE);
-            this.imgStateFinish.setVisibility(View.GONE);
-            this.imgStateUpdate.setVisibility(View.GONE);
+//            this.imgStateFinish.setVisibility(View.GONE);
+//            this.imgStateUpdate.setVisibility(View.GONE);
             if (removeMark) {
                 this.imgCheckDelete.setBackgroundResource(R.drawable.bookshelf_edit_selected_icon);
             } else {
