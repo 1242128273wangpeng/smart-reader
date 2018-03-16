@@ -10,6 +10,7 @@ interface SearchView {
     interface AvtView {
         fun onJsSearch()
         fun onStartLoad(url: String)
+        fun onNoneResultSearch(searchWord: String)
     }
 
     interface HelpView {

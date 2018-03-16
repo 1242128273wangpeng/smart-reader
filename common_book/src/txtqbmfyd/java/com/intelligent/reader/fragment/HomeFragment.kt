@@ -170,7 +170,6 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
             e.printStackTrace()
         }
         EventBus.getDefault().register(this)
-        FeedbackAPI.setBackIcon(R.mipmap.nbar_back_icon)
     }
 
     override fun getFrameView(inflater: LayoutInflater): View {

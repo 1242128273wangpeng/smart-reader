@@ -688,4 +688,21 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         return false
     }
 
+    override fun onNoneResultSearch(searchWord: String) {
+
+        if (search_result_default.visibility != View.VISIBLE) {
+            search_result_default.visibility = View.VISIBLE
+        }
+
+        search_result_input.setText(searchWord)
+        if (searchViewHelper != null) {
+            searchViewHelper?.addHistoryWord(searchWord)
+        }
+
+        search_result_content.clearView()
+        if (loadingPage == null) {
+            loadingPage = LoadingPage(this, search_result_main, LoadingPage.setting_result)
+        }
+    }
+
 }

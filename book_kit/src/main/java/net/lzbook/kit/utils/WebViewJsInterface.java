@@ -16,6 +16,8 @@ public interface WebViewJsInterface {
 
     void closeWebview();
 
+    void sendSearchWord(final String searchWord, final String searchType);
+
     String buildAjaxUrl(String url);
 
     void enterCover(final String host, final String book_id, final String book_source_id, final String name, final String author, final String parameter, final String extra_parameter);// 进入封面页面
@@ -26,6 +28,8 @@ public interface WebViewJsInterface {
 
     void enterSearch(final String keyWord, final String search_type, final String filter_type, final String filter_word, final String sort_type);// 进入搜索结果页面
 
+    //搜索优化
+    void turnToRead(final String book_id, final String book_source_id, final String host, final String name, final String author, final String parameter, final String extra_parameter, final String update_type, final String last_chapter_name, final String serial_number, final String img_url, final String update_time,final String desc,final String label,final String status,final String bookType);
 
     void doInsertBook(String host, String book_id, String book_source_id, String name, String author, String status, String category, String imgUrl, String last_chapter, String chapter_count, String updateTime, String parameter, String extra_parameter, String dex);
 
