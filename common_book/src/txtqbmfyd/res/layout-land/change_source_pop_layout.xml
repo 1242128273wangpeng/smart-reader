@@ -4,7 +4,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@id/container"
         android:layout_width="match_parent"
-        app:mhv_HeightRatio="0.6"
+        app:mhv_HeightRatio="0.7"
         android:layout_height="wrap_content">
 
     <RelativeLayout

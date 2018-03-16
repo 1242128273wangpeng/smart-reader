@@ -539,6 +539,7 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
         // Surface will be destroyed when we return
+        mWidth = 0;
         mGLThread.surfaceDestroyed();
         if(null != mRenderer) {
             mRenderer.onSurfaceDestroyed();
