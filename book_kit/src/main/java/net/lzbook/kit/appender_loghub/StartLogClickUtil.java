@@ -407,13 +407,15 @@ public class StartLogClickUtil {
         linkList.add(log);
         AppLog.e("log", log.GetContent().toString());
         if (linkList != null && linkList.size() > 10) {
+            final List<ServerLog> list = linkList;
+            linkList = new LinkedList<>();
             logThreadPool.execute(new Runnable() {
                 @Override
                 public void run() {
-                    for (int i = 0; i < linkList.size(); i++) {
-                        AndroidLogClient.putLog(linkList.get(i));
+                    for (int i = 0; i < list.size(); i++) {
+                        AndroidLogClient.putLog(list.get(i));
                     }
-                    linkList.clear();
+                    list.clear();
                 }
             });
 
