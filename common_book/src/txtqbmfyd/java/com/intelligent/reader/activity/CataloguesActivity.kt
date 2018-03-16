@@ -15,20 +15,15 @@ import android.widget.AbsListView
 import android.widget.AbsListView.OnScrollListener
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
-import android.widget.TextView
 import com.baidu.mobstat.StatService
 import com.intelligent.reader.R
-import com.intelligent.reader.adapter.BaseRecyclerHolder
 import com.intelligent.reader.adapter.BookmarkAdapter
 import com.intelligent.reader.adapter.CatalogAdapter
-import com.intelligent.reader.adapter.ListRecyclerAdapter
+import com.intelligent.reader.adapter.CataloguesAdapter
 import com.intelligent.reader.presenter.catalogues.CataloguesContract
 import com.intelligent.reader.presenter.catalogues.CataloguesPresenter
-import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.receiver.OffLineDownLoadReceiver
-import com.quduquxie.network.DataCache
 import de.greenrobot.event.EventBus
-import kotlinx.android.synthetic.main.content_catalog_item.view.*
 import kotlinx.android.synthetic.main.layout_empty_catalog.*
 import kotlinx.android.synthetic.txtqbmfyd.act_catalog.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -87,7 +82,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     private var bookmarkList: ArrayList<Bookmark>? = ArrayList()
     private var isPositive = true
 
-    private lateinit var mListRecyclerAdapter: ListRecyclerAdapter<Chapter, ChapterHolder>
+    private lateinit var mCataloguesAdapter: CataloguesAdapter
 
     /**
      * 标识List的滚动状态。
@@ -108,19 +103,22 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         initListener()
 
         val bundle = intent.extras ?: return
-
         initData(bundle)
+
         initCatalogAndBookmark()
         if (fromEnd) {
             isPositive = false
             changeSortState(isPositive)
         }
 
-        catalog_recyceler_main.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         EventBus.getDefault().register(this)
     }
 
     private fun initUI() {
+        catalog_recyceler_main.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        catalog_fastscroller.setRecyclerView(catalog_recyceler_main)
+        catalog_fastscroller.setViewsToUse(R.layout.catalog_recyclerview_fast_scroller, R.id.fastscroller_handle)
+
         backIv.setOnClickListener(this)
         tv_catalog_novel_sort.setOnClickListener(this)
         changeSortState(isPositive)
@@ -138,6 +136,14 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     }
 
     private fun initData(bundle: Bundle) {
+
+        mCataloguesAdapter = CataloguesAdapter(applicationContext)
+        catalog_recyceler_main.adapter = mCataloguesAdapter
+        mCataloguesAdapter.setOnChapterItemClickListener { position, _ ->
+            if (mCataloguesPresenter != null) {
+                mCataloguesPresenter!!.catalogToReading(position, true)
+            }
+        }
 
         requestItem = bundle.getSerializable(Constants.REQUEST_ITEM) as RequestItem
 
@@ -253,63 +259,14 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
             catalog_main!!.setSelection(sequence + 1)
         }
 
-//        chapterList?.let {
-//            mListRecyclerAdapter = ListRecyclerAdapter(it, R.layout.content_catalog_item, ChapterHolder::class.java)
-//        }
-//        catalog_recyceler_main.adapter = mListRecyclerAdapter
-//        if (is_last_chapter) {
-////            mCatalogAdapter!!.setSelectedItem(chapterList!!.size)
-//            catalog_recyceler_main.scrollToPosition(chapterList!!.size)
-//        } else {
-////            mCatalogAdapter!!.setSelectedItem(sequence + 1)
-//            catalog_recyceler_main.scrollToPosition(sequence + 1)
-//        }
-    }
+        mCataloguesAdapter.setData(chapterList)
 
-    inner class ChapterHolder(itemView: View?) : BaseRecyclerHolder<Chapter>(itemView) {
-        override fun onBindData(position: Int, chapter: Chapter, editMode: Boolean) {
-            if (itemView != null) {
-                itemView.tag = chapter
-                itemView.isClickable = true
-                itemView.setOnClickListener { v ->
-                    onItemClick?.onClick(v)
-                }
-
-//                val txt = (itemView as TextView)
-//
-//                txt.text = "${chapter.chapter_name}"
-
-                var chapterExist = false
-                if (Constants.QG_SOURCE == chapter.site) {
-                    chapterExist = DataCache.isChapterExists(chapter.chapter_id, chapter.book_id)
-                } else {
-                    chapterExist = BookHelper.isChapterExist(chapter)
-                }
-
-                var txtColor = 0
-                if (chapterExist) {
-                    itemView.catalog_chapter_cache.visibility = View.VISIBLE
-                } else {
-                    itemView.catalog_chapter_cache.visibility = View.GONE
-                }
-
-                var selelctItem = sequence + 1
-                if (this@CataloguesActivity.is_last_chapter) {
-                    selelctItem = chapterList!!.size
-                } else {
-                    selelctItem = sequence + 1
-                }
-
-
-                if (chapter.chapter_name?.equals(selelctItem) == true) {
-                    txtColor = R.color.dialog_recommend
-                } else {
-                    txtColor = R.color.text_color_dark
-                }
-
-                (itemView.catalog_chapter_name as TextView).text = chapter.chapter_name
-                (itemView.catalog_chapter_name as TextView).setTextColor(itemView.context.resources.getColor(txtColor))
-            }
+        if (is_last_chapter) {
+            mCataloguesAdapter.setSelectedItem(chapterList!!.size - 1)
+            catalog_recyceler_main.scrollToPosition(chapterList!!.size - 1)
+        } else {
+            mCataloguesAdapter.setSelectedItem(sequence)
+            catalog_recyceler_main.scrollToPosition(sequence)
         }
     }
 
@@ -319,10 +276,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
             downLoadReceiver = OffLineDownLoadReceiver(this)
         }
         downLoadReceiver!!.registerAction()
-    }
-
-    override fun onStop() {
-        super.onStop()
     }
 
     override fun onDestroy() {
@@ -425,6 +378,9 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
                 Collections.reverse(chapterList!!)
                 mCatalogAdapter!!.list = chapterList
                 mCatalogAdapter!!.notifyDataSetChanged()
+
+                mCataloguesAdapter.setData(chapterList)
+                mCataloguesAdapter.notifyDataSetChanged()
                 changeSortState(isPositive)
             }
             R.id.iv_fixbook -> if (mCataloguesPresenter != null) {
@@ -536,6 +492,8 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
             }
             mCatalogAdapter!!.list = chapterList
             mCatalogAdapter!!.notifyDataSetChanged()
+
+            mCataloguesAdapter.setData(chapterList)
         }
 
         //设置选中的条目
@@ -548,14 +506,18 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
 
         if (catalog_main != null) {
             catalog_main!!.setSelection(position)
+            catalog_recyceler_main.scrollToPosition(position)
         }
 
         if (fromEnd) {
             catalog_main!!.setSelection(0)
+            catalog_recyceler_main.scrollToPosition(0)
         }
 
         if (mCatalogAdapter != null)
             mCatalogAdapter!!.setSelectedItem(position)
+
+        mCataloguesAdapter.setSelectedItem(position)
     }
 
     override fun requestCatalogError() {

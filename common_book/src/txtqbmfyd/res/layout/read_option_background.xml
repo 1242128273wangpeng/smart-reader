@@ -5,6 +5,7 @@
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:background="@color/read_option_txtmfqbyd_bg"
+        android:clickable="true"
         android:layout_height="140dp">
 
     <RelativeLayout

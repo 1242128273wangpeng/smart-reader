@@ -81,7 +81,7 @@ public class ChangeSourcePopWindow extends PopupWindow {
             ListView changeSourceList = (ListView) popupView.findViewById(R.id.change_source_list);
             TextView cleanTv = (TextView) popupView.findViewById(R.id.change_source_original_web);
 
-            final FrameLayout container = (FrameLayout) popupView.findViewById(R.id.container);
+            final MaxHeightView container = (MaxHeightView) popupView.findViewById(R.id.container);
             final NightShadowView nightShadowView = (NightShadowView) popInflater.findViewById(R.id.nightShadowView);
             container.post(new Runnable() {
                 @Override

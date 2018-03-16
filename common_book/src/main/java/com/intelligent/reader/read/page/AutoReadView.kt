@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Message
 import android.os.PowerManager
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import com.intelligent.reader.read.mode.ReadState
@@ -198,17 +199,18 @@ class AutoReadView : View {
             }
 
             canvas.restore()
-        } else {
-            mNextPageBitmap?.let {
-                if (it.isRecycled) return
-                canvas.drawBitmap(it, 0f, 0f, mPaint)
-            }
-
-            mCurrentPageBitmap?.let {
-                if (it.isRecycled) return
-                canvas.drawBitmap(it, 0f, 0f, mPaint)
-            }
         }
+//        else {
+//            mNextPageBitmap?.let {
+//                if (it.isRecycled) return
+//                canvas.drawBitmap(it, 0f, 0f, mPaint)
+//            }
+//
+//            mCurrentPageBitmap?.let {
+//                if (it.isRecycled) return
+//                canvas.drawBitmap(it, 0f, 0f, mPaint)
+//            }
+//        }
     }
 
     private var mStartTouchTime = 0L
@@ -237,6 +239,7 @@ class AutoReadView : View {
             MotionEvent.ACTION_MOVE -> {
                 if (tmpY != mStartEventY && mInvalidatable) {
                     mAutoReadHandler.changeReadPosition(tmpY - mStartEventY)
+                    Log.e("AutoReadView", "ACTION_MOVE Y : " + (tmpY - mStartEventY))
                     mStartEventY = tmpY
                 }
                 return true
