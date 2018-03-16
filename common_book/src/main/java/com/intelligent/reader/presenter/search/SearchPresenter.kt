@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.widget.Toast
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
+import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.presenter.IPresenter
 import com.intelligent.reader.read.help.BookHelper
 import io.reactivex.Observer
@@ -27,6 +28,7 @@ import net.lzbook.kit.statistic.buildSearch
 import net.lzbook.kit.statistic.model.Search
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.FootprintUtils
 import net.lzbook.kit.utils.JSInterfaceHelper
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -204,6 +206,62 @@ class SearchPresenter(private val mContext: Context, override var view: SearchVi
             intent.putExtras(bundle)
             mContext.startActivity(intent)
         }
+
+        jsInterfaceHelper.setSearchWordClick(JSInterfaceHelper.onSearchWordClick { searchWord, search_type ->
+            word = searchWord
+            searchType = search_type
+
+            startLoadData()
+
+            view?.onNoneResultSearch(searchWord)
+        })
+
+        jsInterfaceHelper.setOnTurnRead(JSInterfaceHelper.onTurnRead { book_id, book_source_id, host, name, author, parameter, extra_parameter, update_type, last_chapter_name, serial_number, img_url, update_time, desc, label, status, bookType ->
+            val intent = Intent()
+            val bundle = Bundle()
+
+            bundle.putInt("sequence", 0)
+            bundle.putInt("offset", 0)
+
+            val book = Book()
+            book.book_id = book_id
+            book.book_source_id = book_source_id
+            book.site = host
+            book.author = author
+            book.name = name
+            book.last_chapter_name = last_chapter_name
+            book.chapter_count = serial_number
+            book.img_url = img_url
+            book.last_updatetime_native = update_time
+            book.sequence = -1
+            book.desc = desc
+            book.category = label
+            if ("FINISH" == status) {
+                book.status = 2
+            } else {
+                book.status = 1
+            }
+            //                book.mBookType = Integer.parseInt(bookType);
+            //bookType为是否付费书籍标签 除快读外不加
+
+            bundle.putSerializable("book", book)
+            FootprintUtils.saveHistoryShelf(book)
+            val requestItem = RequestItem()
+            requestItem.book_id = book_id
+            requestItem.book_source_id = book_source_id
+            requestItem.host = host
+            requestItem.name = name
+            requestItem.author = author
+            //                requestItem.mBookType = Integer.parseInt(bookType);
+            bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
+
+            bundle.putSerializable("book", book)
+
+            AppLog.e(TAG, "GotoReading: " + book.site + " : " + requestItem.host)
+            intent.setClass(mContext, ReadingActivity::class.java)
+            intent.putExtras(bundle)
+            mContext.startActivity(intent)
+        })
 
         jsInterfaceHelper.setOnEnterRead { host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count, updateTime, parameter, extra_parameter, dex ->
             AppLog.e(TAG, "doRead")
