@@ -388,6 +388,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
         recycler_view.itemAnimator.removeDuration = 0
         (recycler_view.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         recycler_view.adapter = bookShelfReAdapter
+        recycler_view.topShadow = img_head_shadow
     }
 
     private fun createHeaderView(): View {

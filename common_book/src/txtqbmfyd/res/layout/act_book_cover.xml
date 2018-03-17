@@ -86,7 +86,7 @@
             </LinearLayout>
         </RelativeLayout>
 
-        <ScrollView
+        <com.intelligent.reader.widget.topshadow.TopShadowScrollView
                 android:id="@+id/book_cover_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -472,14 +472,16 @@
                         android:listSelector="@color/transparent"
                         android:divider="@null"/>
             </LinearLayout>
-        </ScrollView>
+        </com.intelligent.reader.widget.topshadow.TopShadowScrollView>
     </RelativeLayout>
 
     <ImageView
-            android:id="@+id/title_shadow"
-            android:layout_below="@+id/rl_title_book_cover"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scaleType="fitXY"
-            android:src="@mipmap/top_shadow"/>
+        android:id="@+id/img_head_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_title_book_cover"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        android:src="@drawable/top_shadow_bg"/>
+
 </RelativeLayout>

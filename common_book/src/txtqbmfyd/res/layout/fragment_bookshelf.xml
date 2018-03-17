@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
+        <com.intelligent.reader.widget.topshadow.TopShadowRecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -123,4 +123,13 @@
             android:textSize="@dimen/dimen_text_15"
             android:textStyle="bold"/>
     </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/img_head_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        android:src="@drawable/top_shadow_bg"/>
+
 </RelativeLayout>

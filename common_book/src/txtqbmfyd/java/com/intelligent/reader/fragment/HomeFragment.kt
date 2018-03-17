@@ -465,26 +465,26 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
                 rl_head_bookshelf.visibility = View.VISIBLE
                 rl_recommend_head.visibility = View.GONE
                 rl_head_ranking.visibility = View.GONE
-                img_head_shadow.visibility = View.VISIBLE
+//                img_head_shadow.visibility = View.VISIBLE
             }
             1 -> {
                 rl_head_bookshelf.visibility = View.INVISIBLE
                 rl_recommend_head.visibility = View.VISIBLE
                 rl_head_ranking.visibility = View.GONE
-                img_head_shadow.visibility = View.VISIBLE
+//                img_head_shadow.visibility = View.VISIBLE
             }
             2 -> {
                 rl_head_bookshelf.visibility = View.INVISIBLE
                 rl_recommend_head.visibility = View.GONE
                 rl_head_ranking.visibility = View.VISIBLE
-                img_head_shadow.visibility = View.VISIBLE
+//                img_head_shadow.visibility = View.VISIBLE
                 presenter.uploadRankingEntryLog()
             }
             else -> {
                 rl_head_bookshelf.visibility = View.GONE
                 rl_recommend_head.visibility = View.GONE
                 rl_head_ranking.visibility = View.GONE
-                img_head_shadow.visibility = View.GONE
+//                img_head_shadow.visibility = View.GONE
                 presenter.uploadCategoryEntryLog()
             }
         }
