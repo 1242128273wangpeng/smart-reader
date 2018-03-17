@@ -181,8 +181,8 @@ object CacheManager {
                     showFinishNotify(bookTask.book)
                 }
 
-                if (bookTask.isFullCache && bookTask.state != DownloadState.FINISH) {
-
+                if (bookTask.isFullCache && bookTask.state != DownloadState.FINISH
+                        && bookTask.book.site != Constants.QG_SOURCE) {
                     val intent = Intent()
                     intent.action = ActionConstants.ACTION_CACHE_COMPLETE_WITH_ERR
                     intent.putExtra(Constants.REQUEST_ITEM, bookTask.book)
@@ -396,7 +396,7 @@ object CacheManager {
                 if (needRefreshProgress && bookTask.state != DownloadState.DOWNLOADING && bookTask.state != DownloadState.WAITTING && bookTask.state != DownloadState.WAITTING_WIFI) {
 
                     workMap.put(book_id, restroeTaskInfo(book))
-                }else{
+                } else {
                     //避免其他地方修改书籍信息时不同步的问题
                     bookTask.book = book.clone()
                 }
