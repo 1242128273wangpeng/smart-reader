@@ -126,11 +126,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-            <WebView
+            <com.intelligent.reader.widget.topshadow.TopShadowWebView
                     android:id="@+id/search_result_content"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-            </WebView>
+                    android:layout_height="match_parent"/>
 
         </RelativeLayout>
 
@@ -141,5 +140,12 @@
                 android:background="@color/base_bg">
         </FrameLayout>
     </RelativeLayout>
-
+    <ImageView
+        android:id="@+id/img_head_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/search_result_head"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        android:src="@drawable/top_shadow_bg"/>
 </RelativeLayout>

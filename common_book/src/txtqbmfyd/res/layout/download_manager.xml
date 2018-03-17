@@ -61,15 +61,15 @@
 
     </RelativeLayout>
 
-    <ListView
+    <com.intelligent.reader.widget.topshadow.TopShadowListView
         android:id="@+id/download_manager_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rl_content_head"
         android:cacheColorHint="@color/transparent"
-        android:divider="@color/color_divider"
         android:dividerHeight="0dp"
         android:fadingEdge="none"
+        android:listSelector="@color/transparent"
         android:scrollbars="none"/>
 
     <LinearLayout
@@ -113,6 +113,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/rl_content_head"
         android:scaleType="fitXY"
+        android:visibility="gone"
         android:src="@drawable/top_shadow_bg"/>
 
 </RelativeLayout>

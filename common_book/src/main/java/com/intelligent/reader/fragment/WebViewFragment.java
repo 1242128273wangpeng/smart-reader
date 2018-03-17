@@ -26,6 +26,7 @@ import com.intelligent.reader.R;
 import com.intelligent.reader.activity.DownloadManagerActivity;
 import com.intelligent.reader.activity.SearchBookActivity;
 import com.intelligent.reader.app.BookApplication;
+import com.intelligent.reader.widget.topshadow.TopShadowWebView;
 
 import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
@@ -51,7 +52,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     private Context context;
     private View rootView;
     private RelativeLayout contentLayout;
-    private WebView contentView;
+    private TopShadowWebView contentView;
     private CustomWebClient customWebClient;
     private JSInterfaceHelper jsInterfaceHelper;
     private FragmentCallback fragmentCallback;
@@ -67,6 +68,8 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     private ProgressBar head_pb_view;
     private TextView head_text_view;
     private ImageView head_image_view;
+
+    private ImageView topShadowView;
 
     private boolean hasRefreshHead = false;
 
@@ -113,8 +116,10 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     private void initView() {
         if (rootView != null) {
             contentLayout = (RelativeLayout) rootView.findViewById(R.id.web_content_layout);
+            topShadowView = (ImageView) rootView.findViewById(R.id.img_head_shadow);
             View title_layout = rootView.findViewById(R.id.title_layout);
-            contentView = (WebView) rootView.findViewById(R.id.web_content_view);
+            contentView = (TopShadowWebView) rootView.findViewById(R.id.web_content_view);
+            contentView.setTopShadow(topShadowView);
             if (Build.VERSION.SDK_INT >= 11) {
                 contentView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             }
@@ -186,7 +191,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
                 jsInterfaceHelper.setRankingWebVisible();
                 notifyWebLog();//通知 H5 打点
             }
-            if (type.equals("recommend")){//推荐
+            if (type.equals("recommend")) {//推荐
                 jsInterfaceHelper.setRecommendVisible();
                 notifyWebLog();
             }

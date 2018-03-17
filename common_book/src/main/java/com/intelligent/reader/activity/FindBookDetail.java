@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.baidu.mobstat.StatService;
 import com.intelligent.reader.R;
 import com.intelligent.reader.util.PagerDesc;
+import com.intelligent.reader.widget.topshadow.TopShadowWebView;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.LoadingPage;
@@ -58,7 +59,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     private ImageView weekSelect;
     private ImageView monthSelect;
     private ImageView totalSelect;
-    private WebView find_detail_content;
+    private TopShadowWebView find_detail_content;
     private String currentUrl;
     private String currentTitle;
     private ArrayList<String> urls;
@@ -112,7 +113,8 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         find_book_detail_back = (ImageView) findViewById(R.id.find_book_detail_back);
         find_book_detail_title = (TextView) findViewById(R.id.find_book_detail_title);
         find_book_detail_search = (ImageView) findViewById(R.id.find_book_detail_search);
-        find_detail_content = (WebView) findViewById(R.id.rank_content);
+        find_detail_content = (TopShadowWebView) findViewById(R.id.rank_content);
+//        find_detail_content.setTopShadow(findViewById(R.id.img_head_shadow));
         initListener();
 
         if (Build.VERSION.SDK_INT >= 11) {

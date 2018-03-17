@@ -204,13 +204,13 @@
         android:flipInterval="30"
         android:persistentDrawingCache="animation"/>
 
-    <ImageView
-        android:id="@+id/img_head_shadow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/rl_head_bookshelf"
-        android:scaleType="fitXY"
-        android:src="@drawable/top_shadow_bg"/>
+    <!--<ImageView-->
+        <!--android:id="@+id/img_head_shadow"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/rl_head_bookshelf"-->
+        <!--android:scaleType="fitXY"-->
+        <!--android:src="@drawable/top_shadow_bg"/>-->
 
     <ImageView
         android:id="@+id/img_bottom_shadow"

@@ -94,6 +94,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     @SuppressLint("JavascriptInterface")
     private fun initView() {
+        search_result_content.topShadow = img_head_shadow
         search_result_outcome.visibility = View.VISIBLE
         search_result_clear.visibility = View.GONE
         if (mSearchPresenter == null) {

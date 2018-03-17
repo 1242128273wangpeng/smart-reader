@@ -144,6 +144,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
         }
 
         download_manager_list.adapter = downloadAdapter
+        download_manager_list.topShadow = img_head_shadow
         download_manager_list.setOnItemClickListener { parent, view, position, id ->
             if (position < 0) return@setOnItemClickListener
             if (!removeHelper.isRemoveMode && !isShowing) {

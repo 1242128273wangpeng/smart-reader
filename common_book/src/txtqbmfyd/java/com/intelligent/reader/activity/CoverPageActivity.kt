@@ -67,6 +67,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         book_cover_reading.setOnClickListener(this)
         book_cover_download_iv.setOnClickListener(this)
 //        book_cover_catalog_view_nobg.setOnClickListener(this)
+        book_cover_content.topShadow = img_head_shadow
     }
 
     private fun initData(intent: Intent?) {
