@@ -38,6 +38,8 @@ class CategoryFragment : Fragment() {
         content_head_search.setOnClickListener {
             val intent = Intent(activity, SearchBookActivity::class.java)
             startActivity(intent)
+            StartLogClickUtil.upLoadEventLog(activity,
+                    StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.QG_FL_SEARCH)
         }
         mCategoryPageAdapter = CategoryPageAdapter(childFragmentManager)
         category_view_page.adapter = mCategoryPageAdapter
