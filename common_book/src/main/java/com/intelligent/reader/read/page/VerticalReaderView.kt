@@ -23,7 +23,6 @@ import com.intelligent.reader.util.ThemeUtil
 import kotlinx.android.synthetic.main.error_page2.view.*
 import kotlinx.android.synthetic.main.loading_page_reading.view.*
 import kotlinx.android.synthetic.main.vertical_pager_layout.view.*
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.NovelLineBean
 import net.lzbook.kit.data.bean.ReadConfig
@@ -110,7 +109,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
-//                if (mLastVisiblePosition != linearLayoutManager.findLastVisibleItemPosition()) {
+                if (mLastVisiblePosition != linearLayoutManager.findLastVisibleItemPosition()) {
                     mLastVisiblePosition = linearLayoutManager.findLastVisibleItemPosition()
                     setCurrentChapterInfo(mLastVisiblePosition)
                     if (mLastVisiblePosition < (mOriginDataList.size * PRE_LOAD_CHAPTER_SCROLL_SCALE)) {
@@ -118,7 +117,10 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                     } else if (mLastVisiblePosition > (mOriginDataList.size * NEXT_LOAD_CHAPTER_SCROLL_SCALE)) {
                         loadNextChapter(ReadState.sequence + 1)
                     }
-//                }
+                } else if (mOriginDataList[linearLayoutManager.findFirstVisibleItemPosition()].lines[0].sequenceType == PagerScrollAdapter.HEADER_ITEM_TYPE) {
+                    loadPreChapter(ReadState.sequence - 1)
+                }
+
                 mCanScrollVertically = recyclerView.canScrollVertically(1)
             }
         })

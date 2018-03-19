@@ -226,7 +226,9 @@ object ReadSeparateHelper {
                 }
             }
         }
-
+        if (lists.size == 1 && ReadViewEnums.Animation.list == ReadConfig.animation) {
+            lists[0].height = ReadConfig.screenHeight.toFloat()
+        }
     }
 
     private fun disVerticalFirstPage(bean: NovelPageBean) {
@@ -506,7 +508,7 @@ object ReadSeparateHelper {
         val filter = currentChapter.filter {
             it.offset <= offest
         }
-        return if(filter.size - 1 > 0) return filter.size - 1 else 1
+        return if (filter.size - 1 > 0) return filter.size - 1 else 1
     }
 
     fun getChapterNameList(chapterName: String): ArrayList<NovelLineBean> {
