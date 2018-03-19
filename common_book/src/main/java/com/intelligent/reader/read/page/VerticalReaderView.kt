@@ -316,9 +316,9 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 mChapterLoadStat = CHAPTER_WAITING
 
                 // 在获取到上一章数据时，可能存在章节字数过少，造成无法运算上一章拉取逻辑
-                if (preChapterContent.size < 2) {
-                    loadPreChapter(chapter.sequence - 1)
-                }
+//                if (preChapterContent.size < 2) {
+//                    loadPreChapter(chapter.sequence - 1)
+//                }
             }
 
         /**
@@ -358,9 +358,9 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 }
                 mChapterLoadStat = CHAPTER_WAITING
 
-                if (mOriginDataList.size < 3) {
-                    loadPreChapter(chapter.sequence - 1)
-                }
+//                if (mOriginDataList.size < 3) {
+//                    loadPreChapter(chapter.sequence - 1)
+//                }
             }
 
         /**
@@ -545,7 +545,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
 //        val adData = NovelPageBean(arrayListOf(NovelLineBean().apply { this.sequence = PagerScrollAdapter.AD_ITEM_TYPE; this.sequenceType = sequence }), 0,
 //                arrayListOf())
 //        mAdapter.addAdViewToTheChapterLast(sequence, adData)
-        mAdapter.clearUselessChapter(index)
+//        mAdapter.clearUselessChapter(index)
 //
 //        mDataProvider.loadChapterBetweenAd(context, object : DataProvider.OnLoadAdViewCallback(sequence) {
 //

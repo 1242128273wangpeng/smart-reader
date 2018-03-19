@@ -1,10 +1,14 @@
 package com.intelligent.reader.widget;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -28,13 +32,16 @@ import java.util.List;
  * @data 2018/3/1 11:28
  */
 
-public class FeedbackPopWindow extends PopupWindow {
+public class FeedbackPopWindow {
 
-    private View mPopInflater;
+//    private View mPopInflater;
 
-    private FeedbackPopWindow(View inflate, int matchParent, int wrapContent, FeedbackPopWindow.Builder builder) {
-        super(inflate, matchParent, wrapContent);
-        mPopInflater = builder.popInflater;
+    private Dialog mDialog;
+
+    private FeedbackPopWindow(FeedbackPopWindow.Builder builder) {
+//        super(inflate, matchParent, wrapContent);
+//        mPopInflater = builder.popInflater;
+        mDialog = builder.dialog;
     }
 
     public static FeedbackPopWindow.Builder newBuilder(Context context) {
@@ -42,7 +49,7 @@ public class FeedbackPopWindow extends PopupWindow {
     }
 
     public void show() {
-        showAtLocation(mPopInflater, Gravity.BOTTOM, 0, 0);
+        mDialog.show();
     }
 
     public static final class Builder {
@@ -52,6 +59,8 @@ public class FeedbackPopWindow extends PopupWindow {
         OnSubmitClickListener onSubmitClickListener;
 
         View popInflater;
+
+        Dialog dialog;
 
         private Builder(Context context) {
             this.context = context;
@@ -65,11 +74,22 @@ public class FeedbackPopWindow extends PopupWindow {
         public FeedbackPopWindow build() {
             final View popupView = LayoutInflater.from(context).inflate(R.layout.pop_feedback_layout, null);
             this.popInflater = popupView;
-            final FeedbackPopWindow popupWindow = new FeedbackPopWindow(popupView,
-                    FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT, this);
-            popupWindow.setFocusable(true);
-            popupWindow.setTouchable(true);
-            popupWindow.setOutsideTouchable(false);
+//            final FeedbackPopWindow popupWindow = new FeedbackPopWindow(popupView,
+//                    FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT, this);
+//            popupWindow.setFocusable(true);
+//            popupWindow.setTouchable(true);
+//            popupWindow.setOutsideTouchable(false);
+
+            final Dialog dialog = new Dialog(context,R.style.update_dialog);
+            dialog.setContentView(popInflater);
+            Window window = dialog.getWindow();
+            WindowManager.LayoutParams params = window.getAttributes();
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            params.gravity = Gravity.BOTTOM;
+            window.setAttributes(params);
+            dialog.setCanceledOnTouchOutside(true);
+            this.dialog = dialog;
 
             final NightShadowView nightShadowView = (NightShadowView) popInflater.findViewById(R.id.nightShadowView);
             final FrameLayout container = (FrameLayout) popInflater.findViewById(R.id.container);
@@ -133,7 +153,7 @@ public class FeedbackPopWindow extends PopupWindow {
                         if (onSubmitClickListener != null) {
                             onSubmitClickListener.onSubmit(type);
                         }
-                        popupWindow.dismiss();
+                        dialog.dismiss();
                     }
                 }
             });
@@ -142,9 +162,11 @@ public class FeedbackPopWindow extends PopupWindow {
             cancelButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    popupWindow.dismiss();
+                    dialog.dismiss();
                 }
             });
+
+            FeedbackPopWindow popupWindow = new FeedbackPopWindow(this);
             return popupWindow;
         }
     }
