@@ -404,7 +404,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     override fun changeAnimMode(mode: Int) {
 
         readerWidget.changeAnimMode(mode)
-        showMenu(false)
+//        showMenu(false)
     }
 
     fun goBackToHome() = mReadPresenter.goBackToHome()
