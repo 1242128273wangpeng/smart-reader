@@ -369,6 +369,12 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                 and ((findViewWithTag(ReadViewEnums.PageIndex.next) as HorizontalPage).viewState == ReadViewEnums.ViewState.end))
     }
 
+    fun isNextPageLoaded(): Boolean {
+        return ((findViewWithTag(ReadViewEnums.PageIndex.next) != null)
+                and ((findViewWithTag(ReadViewEnums.PageIndex.next) as HorizontalPage).viewState == ReadViewEnums.ViewState.success))
+    }
+
+
     /**
      * 点击屏幕中间区域显示菜单
      */
@@ -529,8 +535,9 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
             MotionEvent.ACTION_DOWN//按下
             -> {
                 shouldGiveUpAction = false
-                bookOver = false
+
                 beforeX = ev.x
+                AppLog.e("kkk","down")
                 return super.dispatchTouchEvent(ev)
             }
             MotionEvent.ACTION_MOVE -> {//移动
@@ -539,8 +546,10 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                     shouldGiveUpAction = true
                     bookOver = true
                     mReadPageChange?.goToBookOver()//跳bookend
-                    return false
+                    AppLog.e("kkk","move2")
+                    return true
                 } else {
+                    AppLog.e("kkk","move1")
                     return super.dispatchTouchEvent(ev)
                 }
             }
@@ -549,6 +558,8 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                     if (!mScroller.isFinished()) {
                         mScroller.abortAnimation()
                     }
+                    bookOver = false
+                    AppLog.e("kkk","up1")
                     return super.dispatchTouchEvent(ev)
                 }
 
@@ -556,7 +567,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
         }
 
         if (shouldGiveUpAction) {
-            return false
+            return true
         }
         return super.dispatchTouchEvent(ev)
     }

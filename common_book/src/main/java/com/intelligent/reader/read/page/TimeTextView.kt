@@ -22,7 +22,7 @@ class TimeTextView : TextView {
             mCalendar.timeInMillis = System.currentTimeMillis()
             text = DateFormat.format("k:mm", mCalendar)
 
-            destroyDrawingCache()
+//            destroyDrawingCache()
             if(isAttach) {
                 postDelayed(changeTimeRunnable, 30000)
             }

@@ -75,4 +75,7 @@ object ReadState : Observable() {
 
     var isMenuShow: Boolean = false
 
+    //跳章时显示menu菜单
+    var isJumpMenuShow: Boolean = false
+
 }

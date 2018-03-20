@@ -320,7 +320,7 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
                         }
                     }
 
-                    if (it.content == "null") {
+                    if (it.content == "null"|| TextUtils.isEmpty(it.content)) {
                         it.content = "文章内容较短，可能非正文，正在抓紧修复中..."
                     }
 
