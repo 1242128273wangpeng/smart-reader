@@ -17,7 +17,7 @@ class TopShadowRecyclerView @JvmOverloads constructor(context: Context, attrs: A
 
     var topShadow: View? = null
 
-    private var distance = 80
+    private var distance = 10
 
     init {
         val density = resources.displayMetrics.density//屏幕密度
@@ -33,13 +33,13 @@ class TopShadowRecyclerView @JvmOverloads constructor(context: Context, attrs: A
                 val visibleChildView = layoutManager.findViewByPosition(position)
 
                 //获取Item的宽
-                val itemWidth = visibleChildView.width
+                val itemHeight = visibleChildView.height
                 //算出该Item还未移出屏幕的高度
-                val itemRight = visibleChildView.right
+                val itemTop = visibleChildView.top
                 //position移出屏幕的数量*高度得出移动的距离
-                val itemPosition = position * itemWidth
+                val itemPosition = position * itemHeight
                 //因为横着的RecyclerV第一个取到的Item position为零所以计算时需要加一个宽
-                val distance = itemPosition - itemRight + itemWidth
+                val distance = itemPosition - itemTop
                 if (distance > this.distance) {
                     it.visibility = View.VISIBLE
                 } else {
