@@ -654,15 +654,15 @@ N多网	        blf1298_10885_001
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/txtqbmfyd_book"
-            // notOverrideResValue getOwner(), "string", "app_name", "TXT全本小说阅读器"
+            // notOverrideResValue getOwner(), "string", "app_name", "TXT全本免费阅读"
             notOverrideResValue getOwner(), "string", "database_name", "txtqbmfydBook.db"
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "0b1405d1df"
             notOverrideResValue getOwner(), "string", "push_key", "DOGRj3vpV9F6KamswYShmdHM"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "24812888"
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "2baf3d5d4f949e5189afbe37a8e1302e"
 
-            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://xiaoshuo.youshiit.com"
-            notOverrideResValue getOwner(), "string", "book_webview_host", "https://bookrank.youshiit.com:443"
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://news.youshiit.com"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://show.youshiit.com:443"
         }
     }
 

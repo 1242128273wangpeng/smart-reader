@@ -18,7 +18,7 @@ class TopShadowListView @JvmOverloads constructor(context: Context, attrs: Attri
 
     var topShadow: View? = null
 
-    private var distance = 80
+    private var distance = 10
 
     private val recordSp = SparseArray<ItemRecord>(0)
     private var currentFirstVisibleItem = 0

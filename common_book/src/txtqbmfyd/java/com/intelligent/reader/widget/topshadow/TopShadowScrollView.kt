@@ -16,7 +16,7 @@ class TopShadowScrollView @JvmOverloads constructor(context: Context, attrs: Att
 
     var topShadow: View? = null
 
-    private var distance = 80
+    private var distance = 10
 
     init {
         val density = resources.displayMetrics.density//屏幕密度
