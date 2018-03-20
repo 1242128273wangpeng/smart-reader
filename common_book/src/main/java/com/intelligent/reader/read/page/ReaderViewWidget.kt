@@ -135,14 +135,15 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
             mAutoReadView?.setOnAutoReadViewLoadCallback(object : AutoReadView.OnAutoReadViewLoadCallback {
                 override fun onAutoReadAble(): Boolean {
                     if (mReaderView != null && mReaderView is HorizontalReaderView) {
-                        return (mReaderView as HorizontalReaderView).isLastPage()
+                        return (mReaderView as HorizontalReaderView).isLastPage() || !(mReaderView as HorizontalReaderView).isNextPageLoaded()
                     } else {
                         return false
                     }
                 }
 
                 override fun onStart() {
-                    mTextureView?.visibility = View.INVISIBLE
+                    mTextureView?.alpha = 0F
+//                    mTextureView?.visibility = View.INVISIBLE
                     mAutoReadView?.visibility = View.VISIBLE
                 }
 
@@ -152,7 +153,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
                 }
 
                 override fun onStop() {
-                    mTextureView?.visibility = View.VISIBLE
+//                    mTextureView?.visibility = View.VISIBLE
                     mAutoReadView?.visibility = View.INVISIBLE
                 }
 
@@ -161,7 +162,7 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
                 }
 
                 override fun onNextPage() {
-                    if (mReaderView != null && mReaderView is HorizontalReaderView) {
+                    if (mReaderView != null && mReaderView is HorizontalReaderView ) {
                         (mReaderView as HorizontalReaderView).onClickRight(false)
                     }
                 }
@@ -169,9 +170,9 @@ class ReaderViewWidget : FrameLayout, IReadWidget, HorizontalEvent {
                 override fun loadBitmap(index: ReadViewEnums.PageIndex): Bitmap? {
                     if (mReaderView != null && mReaderView is HorizontalReaderView) {
                         val view = (mReaderView as HorizontalReaderView).findViewWithTag(index) as HorizontalPage?
-                        if (view?.hasAd == true) {
-                            view.destroyDrawingCache()
-                        }
+//                        if (view?.hasAd == true) {
+//                            view.destroyDrawingCache()
+//                        }
                         return view?.drawingCache
                     }
                     return null

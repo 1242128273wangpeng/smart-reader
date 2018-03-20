@@ -252,12 +252,12 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
 
         initBookState()
         // 初始化view
-        if (count == 0) {
+//        if (count == 0) {
             view?.initView(mReaderViewModel!!)
-        } else {
+//        } else {
             //重绘屏幕
 //            view?.onChangedScreen()
-        }
+//        }
 
         setMode()
         ReadState.chapterCount = ReadState.book?.chapter_count
@@ -455,7 +455,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         if (ReadState.isMenuShow) {
             showMenu(false)
         }
-        if (ReadState.book.book_type == 0) {
+        if (ReadState.book != null && ReadState.requestItem != null && ReadState.book.book_type == 0) {
             val intent = Intent(readReference?.get(), CataloguesActivity::class.java)
             val bundle = Bundle()
             bundle.putSerializable("cover", ReadState.book)
@@ -577,8 +577,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
             iBook.book_source_id = source.book_source_id
             iBook.site = source.host
             iBook.dex = source.dex
-            iBook.parameter = ReadState.book.parameter
-            iBook.extra_parameter = ReadState.book.extra_parameter
             ReadState.book = iBook
         }
         mReaderViewModel?.chapterList?.clear()
@@ -611,10 +609,6 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
             ReadState.book.last_updateSucessTime = System.currentTimeMillis()
             ReadState.book.readed = 1
             if (mReaderViewModel != null) {
-                if (mReaderViewModel?.chapterList != null && mReaderViewModel!!.chapterList!!.size > 0) {
-                    val chapter = mReaderViewModel!!.chapterList!![mReaderViewModel!!.chapterList!!.size - 1]
-                    ReadState.book.extra_parameter = chapter.extra_parameter
-                }
                 bookChapterDao?.deleteBookChapters(0)
                 bookChapterDao?.insertBookChapter(mReaderViewModel?.chapterList)
             }
@@ -797,11 +791,11 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
             return false
         }
 
-        // 显示菜单
-        if (ReadState.isMenuShow) {
-            showMenu(false)
-            return true
-        }
+//        // 显示菜单
+//        if (ReadState.isMenuShow) {
+//            showMenu(false)
+//            return true
+//        }
 
         if (mBookDaoHelper != null && !TextUtils.isEmpty(ReadState.book_id)) {
             isSubed = mBookDaoHelper!!.isBookSubed(ReadState.book_id)
@@ -935,15 +929,24 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
 
                 ReadState.sequence = bundle.getInt("sequence")
                 ReadState.offset = bundle.getInt("offset", 0)
-                ReadState.book = bundle.getSerializable("book") as Book
-                val requestItem = bundle.getSerializable(Constants.REQUEST_ITEM) as RequestItem
-                AppLog.e(TAG, "onActivityResult: " + requestItem.toString())
-                ReadState.book.book_source_id = requestItem.book_source_id
+                val receiveBook = bundle.getSerializable("book") as Book?
+                val requestItem = bundle.getSerializable(Constants.REQUEST_ITEM) as RequestItem?
+                if(receiveBook != null){
+                    ReadState.book = receiveBook
+                }else{
+                    AppLog.e("result", "receiveBook" + receiveBook + "===")
+                }
+                if(requestItem != null){
+                    ReadState.requestItem = requestItem
+                    ReadState.book.book_source_id = requestItem.book_source_id
+                }else{
+                    AppLog.e("result", "requestItem" + ReadState.requestItem.fromType + "===")
+                }
 
                 AppLog.e(TAG, "from" + ReadState.requestItem.fromType + "===")
 
-                if (mReaderViewModel!!.chapterList != null) {
-                    mReaderViewModel!!.chapterList!!.clear()
+                if (mReaderViewModel?.chapterList != null) {
+                    mReaderViewModel?.chapterList?.clear()
                 }
                 myNovelHelper?.isShown = false
                 ReadState.currentPage = 1
@@ -951,16 +954,16 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
                 mReaderViewModel?.preChapter = null
                 ReadState.requestItem.fromType = 1//打点 书籍封面（0）/书架（1）/上一页翻页（2）
                 if (Constants.QG_SOURCE == ReadState.book.site) {
-                    requestItem?.channel_code = 1
+                    ReadState.requestItem?.channel_code = 1
                 } else {
-                    requestItem?.channel_code = 2
+                    ReadState.requestItem?.channel_code = 2
                 }
                 val intent = Intent(act, ReadingActivity::class.java)
                 val extras = Bundle()
                 extras.putInt("sequence", ReadState.sequence)
                 extras.putInt("offset", ReadState.offset)
                 extras.putSerializable("book", ReadState.book)
-                extras.putSerializable(Constants.REQUEST_ITEM, requestItem)
+                extras.putSerializable(Constants.REQUEST_ITEM, ReadState.requestItem)
                 intent.putExtras(extras)
                 act.startActivity(intent)
             }

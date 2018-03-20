@@ -87,6 +87,8 @@ class HorizontalPage : FrameLayout, Observer {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, noticePageListener: NoticePageListener) : super(context, attrs, defStyleAttr) {
         this.noticePageListener = noticePageListener
         isDrawingCacheEnabled = true
+        setChildrenDrawingCacheEnabled(true)
+        setChildrenDrawnWithCacheEnabled(true)
         init()
     }
 
@@ -161,7 +163,7 @@ class HorizontalPage : FrameLayout, Observer {
     }
 
     override fun onDetachedFromWindow() {
-        destroyDrawingCache()
+//        destroyDrawingCache()
 
         ReadConfig.unregistObserver(this)
         mDisposable.clear()
@@ -373,9 +375,9 @@ class HorizontalPage : FrameLayout, Observer {
                 viewState = ReadViewEnums.ViewState.loading
                 viewNotify = ReadViewEnums.NotifyStateState.all
                 removeView(errorView)
-                post {
+//                post {
                     destroyDrawingCache()
-                }
+//                }
             })
             errorView.loading_error_setting.visibility = FrameLayout.GONE
             noticePageListener?.pageChangSuccess(cursor, viewNotify)//游标通知回调
@@ -466,7 +468,11 @@ class HorizontalPage : FrameLayout, Observer {
             entranceArray[index] = true
             if (entranceArray.all { it }) {
                 setCursor(cursor)
-                this@HorizontalPage.destroyDrawingCache()
+//                this@HorizontalPage.destroyDrawingCache()
+            }
+            if(ReadState.isJumpMenuShow){
+                noticePageListener?.onClickMenu(true)
+                ReadState.isJumpMenuShow = false
             }
         }
 
@@ -532,7 +538,7 @@ class HorizontalPage : FrameLayout, Observer {
                     mCursor!!.lastOffset = 1
                     mCursorOffset = -1
                     viewState = start
-                    noticePageListener?.pageChangSuccess(mCursor!!, ReadViewEnums.NotifyStateState.none)//游标通知回调
+                    noticePageListener?.pageChangSuccess(mCursor!!, viewNotify)//游标通知回调
                 } else {
 
                     //画之前清空内容
@@ -563,6 +569,11 @@ class HorizontalPage : FrameLayout, Observer {
                                 val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
                                 layoutParams.topMargin = AppUtils.dip2px(context, 26f)
                                 layoutParams.bottomMargin = AppUtils.dip2px(context, 26f)
+                                if(ReadConfig.MODE == 61){
+                                    mAdFrameLayout.alpha = 0.5f
+                                }else{
+                                    mAdFrameLayout.alpha = 1f
+                                }
                                 mAdFrameLayout.addView(mNovelPageBean!!.adBigView, layoutParams)
                             }
                         }
@@ -594,6 +605,11 @@ class HorizontalPage : FrameLayout, Observer {
 
                         if (mNovelPageBean?.adSmallView != null && mNovelPageBean?.adSmallView?.parent == null) {
                             hasAd = true
+                            if(ReadConfig.MODE == 61){
+                                mAdFrameLayout.alpha = 0.5f
+                            }else{
+                                mAdFrameLayout.alpha = 1f
+                            }
                             mAdFrameLayout.addView(mNovelPageBean!!.adSmallView, param)
                         }
 
@@ -602,7 +618,7 @@ class HorizontalPage : FrameLayout, Observer {
                     //设置top and bottom
                     val chapterProgress = "${cursor.sequence.plus(1)} / ${ReadState.chapterList.size} 章"
                     val pageProgress = "本章第$pageIndex/$pageSum"
-                    if (cursor.sequence<ReadState.chapterList.size) {
+                    if (cursor.sequence<ReadState.chapterList.size && cursor.sequence > -1) {
                         setTopAndBottomViewContext(ReadState.chapterList[cursor.sequence].chapter_name ?: "", chapterProgress, pageProgress)
                     }
 
@@ -620,7 +636,7 @@ class HorizontalPage : FrameLayout, Observer {
             loadView.visibility = View.GONE
             mCursor!!.lastOffset = chapterList.last().offset
             mCursor!!.offset = mNovelPageBean!!.offset
-            mCursor!!.nextOffset = if (pageIndex < chapterList.size) chapterList[pageIndex].offset else 0
+            mCursor!!.nextOffset = if (pageIndex < chapterList.size && pageIndex > -1) chapterList[pageIndex].offset else 0
 
 
 
