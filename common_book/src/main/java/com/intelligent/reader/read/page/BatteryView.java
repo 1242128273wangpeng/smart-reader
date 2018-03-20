@@ -132,10 +132,11 @@ public class BatteryView extends ImageView {
                     if (mBatInfoReceiver.listeners.isEmpty()) {
                         try {
                             getContext().unregisterReceiver(mBatInfoReceiver);
+                            mBatInfoReceiver = null;
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        mBatInfoReceiver = null;
+
                     }
                 }
             }
@@ -158,7 +159,7 @@ public class BatteryView extends ImageView {
                 percent = level / scale;
                 for (BatteryView batteryView : listeners) {
                     batteryView.postInvalidate();
-                    batteryView.destroyDrawingCache();
+//                    batteryView.destroyDrawingCache();
                 }
             }
         }

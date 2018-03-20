@@ -1,5 +1,6 @@
 package com.intelligent.reader.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Point
@@ -10,9 +11,10 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.text.TextUtils
 import android.util.DisplayMetrics
-import android.view.*
-import android.widget.TextView
-import android.widget.Toast
+import android.view.KeyEvent
+import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.CatalogMarkFragment
@@ -211,7 +213,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
             return
         }
 
-        showMenu(false)
+//        showMenu(false)
 
         val isFinish = mReadPresenter.onBackPressed()
         if (isFinish && !isFinishing) {
@@ -308,7 +310,13 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         mReadPresenter.onSaveInstanceState(outState)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) = mReadPresenter.onActivityResult(requestCode, resultCode, data)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(mReadPresenter != null && resultCode == Activity.RESULT_OK ){
+            mReadPresenter.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+
 
     override fun setAutoSpeed(autoReadSpeed: Double) = readerWidget.setAutoReadSpeed(autoReadSpeed)
 
@@ -535,7 +543,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         params.put("channel_code", channelCode)
         params.put("chapter_read", "1")
         params.put("chapter_pages", pageCount)
-        params.put("start_time", startReadTime.toString())
+        params.put("start_time", (startReadTime / 1000L).toString() )
         params.put("end_time", Constants.endReadTime.toString())
         params.put("udid", OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()))
         params.put("app_package", AppUtils.getPackageName())

@@ -427,110 +427,113 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
     }
 
     override fun onClick(v: View) {
-        when (v.id) {
+        if(ReadState.isMenuShow) {
 
-            R.id.novel_jump_previous -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_previous_chapter)
-                //dismissNovelHintLayout();
+            when (v.id) {
 
-                listener?.onJumpPreChapter()
-                refreshJumpPreBtnState()
-            }
-            R.id.novel_jump_next -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_next_chapter)
-                //dismissNovelHintLayout();
+                R.id.novel_jump_previous -> {
+                    StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_previous_chapter)
+                    //dismissNovelHintLayout();
 
-                listener?.onJumpNextChapter()
-                refreshJumpPreBtnState()
+                    listener?.onJumpPreChapter()
+                    refreshJumpPreBtnState()
+                }
+                R.id.novel_jump_next -> {
+                    StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_next_chapter)
+                    //dismissNovelHintLayout();
 
-            }
-            R.id.novel_catalog -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_catalog_btn)
-                listener?.onReadCatalog()
-            }
+                    listener?.onJumpNextChapter()
+                    refreshJumpPreBtnState()
 
-            R.id.novel_read_mode -> {
-                checkOptionLayout(R.id.novel_read_mode)
-            }
+                }
+                R.id.novel_catalog -> {
+                    StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_catalog_btn)
+                    listener?.onReadCatalog()
+                }
 
-            R.id.novel_background -> {
-                checkOptionLayout(R.id.novel_background)
-            }
+                R.id.novel_read_mode -> {
+                    checkOptionLayout(R.id.novel_read_mode)
+                }
 
-            R.id.novel_font -> {
+                R.id.novel_background -> {
+                    checkOptionLayout(R.id.novel_background)
+                }
+
+                R.id.novel_font -> {
 //                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_setting_btn)
 //                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.SET)
 //                changeBottomSettingView(SETTING_DETAIL)
-                checkOptionLayout(R.id.novel_font)
-            }
-            R.id.night_mode_iv//夜间模式
-            -> {
-                if (themeHelper!!.isNight) {
-                    night_mode_iv.setImageResource(R.drawable.icon_read_day)
-                } else {
-                    night_mode_iv.setImageResource(R.drawable.icon_read_night)
+                    checkOptionLayout(R.id.novel_font)
                 }
+                R.id.night_mode_iv//夜间模式
+                -> {
+                    if (themeHelper!!.isNight) {
+                        night_mode_iv.setImageResource(R.drawable.icon_read_day)
+                    } else {
+                        night_mode_iv.setImageResource(R.drawable.icon_read_night)
+                    }
 
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_night_mode)
-                listener?.onChageNightMode()
-            }
-            R.id.font_reduce_iv// 减小字号
-            -> {
-                if (ReadState.sequence < 0) {
-                    return
+                    StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_night_mode)
+                    listener?.onChageNightMode()
                 }
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_font_size_smaller)
-                decreaseFont()
-            }
-            R.id.font_plus_iv// 加大字号
-            -> {
-                if (ReadState.sequence < 0) {
-                    return
+                R.id.font_reduce_iv// 减小字号
+                -> {
+                    if (ReadState.sequence < 0) {
+                        return
+                    }
+                    StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_font_size_smaller)
+                    decreaseFont()
                 }
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_font_size_bigger)
-                increaseFont()
-            }
-        /*case R.id.read_setting_save_power_layout:// 省电模式
+                R.id.font_plus_iv// 加大字号
+                -> {
+                    if (ReadState.sequence < 0) {
+                        return
+                    }
+                    StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_font_size_bigger)
+                    increaseFont()
+                }
+            /*case R.id.read_setting_save_power_layout:// 省电模式
             case R.id.read_setting_save_power:
 
                 changeSavePowerMode();
                 break;*/
-            R.id.read_setting_save_power_layout, R.id.read_setting_auto_power// 跟随系统 更改按钮背景
-            -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_ld_with_system)
-                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.SYSFOLLOW)
-                changeSystemLight()
-            }
-            R.id.read_landscape -> {
-                if (listener != null) {
-                    listener!!.onChangeScreenMode()
+                R.id.read_setting_save_power_layout, R.id.read_setting_auto_power// 跟随系统 更改按钮背景
+                -> {
+                    StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_ld_with_system)
+                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.SYSFOLLOW)
+                    changeSystemLight()
                 }
-            }
-            R.id.read_autoRead -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_auto_read_btn)
-                val data = java.util.HashMap<String, String>()
-                if (Constants.isSlideUp) {
-                    data.put("type", "2")
-                } else {
-                    data.put("type", "1")
+                R.id.read_landscape -> {
+                    if (listener != null) {
+                        listener!!.onChangeScreenMode()
+                    }
                 }
-                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.AUTOREAD, data)
-                listener?.onReadAuto()
-            }
-            R.id.read_full -> {
+                R.id.read_autoRead -> {
+                    StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_auto_read_btn)
+                    val data = java.util.HashMap<String, String>()
+                    if (Constants.isSlideUp) {
+                        data.put("type", "2")
+                    } else {
+                        data.put("type", "1")
+                    }
+                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.AUTOREAD, data)
+                    listener?.onReadAuto()
+                }
+                R.id.read_full -> {
 
-                sharedPreferences?.edit()?.putBoolean("full_screen_read", read_full.isChecked)?.apply()
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_fullscreen_read_btn)
-                ReadConfig.FULL_SCREEN_READ = read_full.isChecked
-                val data = java.util.HashMap<String, String>()
-                if (ReadConfig.FULL_SCREEN_READ) {
-                    data.put("type", "1")
-                } else {
-                    data.put("type", "2")
+                    sharedPreferences?.edit()?.putBoolean("full_screen_read", read_full.isChecked)?.apply()
+                    StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_fullscreen_read_btn)
+                    ReadConfig.FULL_SCREEN_READ = read_full.isChecked
+                    val data = java.util.HashMap<String, String>()
+                    if (ReadConfig.FULL_SCREEN_READ) {
+                        data.put("type", "1")
+                    } else {
+                        data.put("type", "2")
+                    }
+                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.FULLSCREENPAGEREAD, data)
                 }
-                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.FULLSCREENPAGEREAD, data)
-            }
-            else -> {
+                else -> {
+                }
             }
         }
     }
@@ -1008,6 +1011,9 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
 //            val resizeProgress = progress.times(ReadState.chapterList.size).div(100)
             if (!ReadState.chapterList.isEmpty()
                     && progress <= ReadState.chapterList.size && progress >= 0) {
+                novel_jump_previous.isClickable = true
+                novel_jump_previous.isEnabled = true
+                novel_jump_previous.alpha = 1f
 //                ReadState.novel_progress = resizeProgress
                 changeBottomSettingView(SETTING_OPTION)
                 AppLog.e("progress1", progress.toString())

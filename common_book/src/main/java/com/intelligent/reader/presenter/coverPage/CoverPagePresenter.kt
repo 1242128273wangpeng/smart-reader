@@ -684,12 +684,14 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
                 bookVo?.labels = currentSource?.labels
             }
         }
-        if (bookVo != null && bookCoverUtil != null) {
-            bookCoverUtil?.saveHistory(bookVo)
-        }
+
         coverPageContract!!.showLoadingSuccess()
         coverPageContract!!.showCoverDetail(bookVo!!)
         coverPageContract!!.changeDownloadButtonStatus()
+
+        if (bookVo != null && bookCoverUtil != null) {
+            bookCoverUtil?.saveHistory(bookVo)
+        }
     }
 
 
