@@ -253,9 +253,9 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         initBookState()
         // 初始化view
 //        if (count == 0) {
-            view?.initView(mReaderViewModel!!)
+        view?.initView(mReaderViewModel!!)
 //        } else {
-            //重绘屏幕
+        //重绘屏幕
 //            view?.onChangedScreen()
 //        }
 
@@ -931,15 +931,15 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
                 ReadState.offset = bundle.getInt("offset", 0)
                 val receiveBook = bundle.getSerializable("book") as Book?
                 val requestItem = bundle.getSerializable(Constants.REQUEST_ITEM) as RequestItem?
-                if(receiveBook != null){
+                if (receiveBook != null) {
                     ReadState.book = receiveBook
-                }else{
+                } else {
                     AppLog.e("result", "receiveBook" + receiveBook + "===")
                 }
-                if(requestItem != null){
+                if (requestItem != null) {
                     ReadState.requestItem = requestItem
                     ReadState.book.book_source_id = requestItem.book_source_id
-                }else{
+                } else {
                     AppLog.e("result", "requestItem" + ReadState.requestItem.fromType + "===")
                 }
 
@@ -1068,6 +1068,10 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         dealManualDialogShow()
 
         jumpNextChapterLog(2)
+    }
+
+    fun onJumpChapter(sequence: Int) {
+        changeMarkState()
     }
 
     private fun jumpNextChapterLog(type: Int) {

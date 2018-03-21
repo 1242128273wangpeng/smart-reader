@@ -266,8 +266,8 @@ android {
 
     sourceSets {
         main {
-            java.srcDirs = ['src/main/java']
-            resources.srcDirs = ['src/main/java']
+//            java.srcDirs = ['src/main/java']
+//            resources.srcDirs = ['src/main/java']
             aidl.srcDirs = ['src/main/java']
             jniLibs.srcDirs = ['libs']
         }
