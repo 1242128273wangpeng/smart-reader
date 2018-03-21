@@ -1,4 +1,4 @@
-package com.lee.example;
+package com.intelligent.reader.media;
 
 
 import com.dycm_adsdk.PlatformSDK;

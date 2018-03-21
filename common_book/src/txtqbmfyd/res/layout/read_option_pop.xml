@@ -3,6 +3,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:paddingTop="10dp"
         android:paddingRight="16dp">
 
@@ -64,4 +65,11 @@
                 android:soundEffectsEnabled="true"
                 />
     </LinearLayout>
+
+    <net.lzbook.kit.book.view.NightShadowView
+            android:id="@+id/nightShadowView"
+            android:layout_width="120dp"
+            android:visibility="gone"
+            app:cornerRadius="3dp"
+            android:layout_height="135dp"/>
 </FrameLayout>
