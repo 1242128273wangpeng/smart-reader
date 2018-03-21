@@ -61,7 +61,7 @@ class TopShadowListView @JvmOverloads constructor(context: Context, attrs: Attri
         var height = 0
         for (i in 0 until currentFirstVisibleItem) {
             val itemRecord = recordSp.get(i)
-            height += itemRecord.height
+            height += itemRecord?.height ?: 0
         }
         var itemRecord: ItemRecord? = recordSp.get(currentFirstVisibleItem)
         if (itemRecord == null) {

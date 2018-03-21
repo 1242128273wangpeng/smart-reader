@@ -29,17 +29,7 @@ class TopShadowRecyclerView @JvmOverloads constructor(context: Context, attrs: A
         topShadow?.let {
             val layoutManager = layoutManager
             if (layoutManager is LinearLayoutManager) {
-                val position = layoutManager.findFirstVisibleItemPosition()
-                val visibleChildView = layoutManager.findViewByPosition(position)
-
-                //获取Item的宽
-                val itemHeight = visibleChildView.height
-                //算出该Item还未移出屏幕的高度
-                val itemTop = visibleChildView.top
-                //position移出屏幕的数量*高度得出移动的距离
-                val itemPosition = position * itemHeight
-                //因为横着的RecyclerV第一个取到的Item position为零所以计算时需要加一个宽
-                val distance = itemPosition - itemTop
+                val distance = getScrollDistance(layoutManager)
                 if (distance > this.distance) {
                     it.visibility = View.VISIBLE
                 } else {
@@ -47,6 +37,19 @@ class TopShadowRecyclerView @JvmOverloads constructor(context: Context, attrs: A
                 }
             }
         }
+    }
+
+    private fun getScrollDistance(layoutManager: LinearLayoutManager): Int {
+        val position = layoutManager.findFirstVisibleItemPosition()
+        val visibleChildView = layoutManager.findViewByPosition(position) ?: return 0
+        //获取Item的宽
+        val itemHeight = visibleChildView.height
+        //算出该Item还未移出屏幕的高度
+        val itemTop = visibleChildView.top
+        //position移出屏幕的数量*高度得出移动的距离
+        val itemPosition = position * itemHeight
+        //因为横着的RecyclerV第一个取到的Item position为零所以计算时需要加一个宽
+        return itemPosition - itemTop
     }
 
 }
