@@ -394,7 +394,7 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
             } catch (e: Exception) {
-                activity.toastShort(R.string.menu_no_market)
+                activity.toastShort(R.string.menu_no_market, false)
             }
 
         }
