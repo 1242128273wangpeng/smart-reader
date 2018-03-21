@@ -449,7 +449,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     if (activity != null && !activity.isFinishing) {
-                        activity.applicationContext.toastShort(textId)
+                        activity.applicationContext.toastShort(textId, false)
                     }
                 }
     }
@@ -460,7 +460,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     if (activity != null && !activity.isFinishing) {
-                        activity.applicationContext.toastShort(text)
+                        activity.applicationContext.toastShort(text, false)
                     }
                 }
     }
