@@ -5,11 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.ReadingActivity
-import com.intelligent.reader.net.NetOwnBook
 import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.read.mode.ReadState
 import com.quduquxie.network.DataCache
-import com.quduquxie.network.DataService
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -21,11 +19,10 @@ import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.Bookmark
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.RequestItem
-import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.data.db.BookDaoHelper
-import net.lzbook.kit.request.RequestExecutorDefault
-import net.lzbook.kit.utils.*
-import java.lang.Exception
+import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.subscribekt
+import net.lzbook.kit.utils.toastShort
 import java.util.*
 
 /**
@@ -113,7 +110,7 @@ class CatalogMarkPresenter : CatalogMark.Presenter {
             isChapterExist = BookHelper.isChapterExist(chapter)
         }
         if (!isChapterExist && NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
-            BaseBookApplication.getGlobalContext().toastShort(R.string.no_net)
+            BaseBookApplication.getGlobalContext().toastShort(R.string.no_net, false)
             return
         }
 
