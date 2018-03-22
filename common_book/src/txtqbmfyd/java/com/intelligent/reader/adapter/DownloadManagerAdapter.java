@@ -1,14 +1,5 @@
 package com.intelligent.reader.adapter;
 
-import android.app.Activity;
-import android.content.res.Resources;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.intelligent.reader.R;
@@ -24,6 +15,15 @@ import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.BookTask;
 import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.data.db.table.ChapterTable;
+
+import android.app.Activity;
+import android.content.res.Resources;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -201,13 +201,13 @@ public class DownloadManagerAdapter extends RemoveModeAdapter implements RemoveM
                         && !book.img_url.equals(ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL)) {
                     Glide.with(this.downloadManagerActivity)
                             .load(book.img_url)
-                            .placeholder(R.drawable.icon_book_cover_default)
-                            .error((R.drawable.icon_book_cover_default))
+                            .placeholder(R.drawable.bookshelf_book_cover_default)
+                            .error((R.drawable.bookshelf_book_cover_default))
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .into(cache.imgBookCover);
                 } else {
                     Glide.with(this.downloadManagerActivity)
-                            .load(R.drawable.icon_book_cover_default)
+                            .load(R.drawable.bookshelf_book_cover_default)
                             .into(cache.imgBookCover);
                 }
                 BookTask task = CacheManager.INSTANCE.getBookTask(book);
