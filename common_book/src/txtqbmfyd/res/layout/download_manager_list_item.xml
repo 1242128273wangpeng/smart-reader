@@ -22,8 +22,8 @@
         android:layout_height="70dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/icon_book_cover_default"/>
+        android:scaleType="fitXY"
+        android:src="@drawable/bookshelf_book_cover_default"/>
 
 
     <ImageView

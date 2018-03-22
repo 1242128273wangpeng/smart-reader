@@ -25,7 +25,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="6dp"
             android:scaleType="fitXY"
-            tools:src="@mipmap/bookshelf_book_cover_default"/>
+            tools:src="@drawable/bookshelf_book_cover_default"/>
 
         <ImageView
             android:id="@+id/img_book_state_finish"

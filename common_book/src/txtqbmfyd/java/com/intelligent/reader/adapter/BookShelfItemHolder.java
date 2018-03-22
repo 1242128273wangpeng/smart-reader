@@ -1,10 +1,5 @@
 package com.intelligent.reader.adapter;
 
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.intelligent.reader.R;
@@ -12,6 +7,11 @@ import com.intelligent.reader.adapter.holder.AbsRecyclerViewHolder;
 
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.bean.Book;
+
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 /**
  * Desc 书架页Item
@@ -67,13 +67,13 @@ public class BookShelfItemHolder extends AbsRecyclerViewHolder<Book> {
         if (!TextUtils.isEmpty(book.img_url) && !book.img_url.equals(ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL)) {
             Glide.with(itemView.getContext().getApplicationContext())
                     .load(book.img_url)
-                    .placeholder(R.drawable.icon_book_cover_default)
-                    .error((R.drawable.icon_book_cover_default))
+                    .placeholder(R.drawable.bookshelf_book_cover_default)
+                    .error((R.drawable.bookshelf_book_cover_default))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(this.imgBookCover);
         } else {
             Glide.with(itemView.getContext().getApplicationContext())
-                    .load(R.drawable.icon_book_cover_default)
+                    .load(R.drawable.bookshelf_book_cover_default)
                     .into(this.imgBookCover);
         }
 
