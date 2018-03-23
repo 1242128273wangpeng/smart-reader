@@ -127,7 +127,7 @@ class CatalogMarkPresenter : CatalogMark.Presenter {
 
     override fun gotoBookMark(activity: Activity, mark: Bookmark) {
         var bundle = Bundle()
-        bundle.putInt("sequence", mark.sequence)
+//        bundle.putInt("sequence", mark.sequence)
         bundle.putInt("offset", mark.offset)
         bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
         bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
