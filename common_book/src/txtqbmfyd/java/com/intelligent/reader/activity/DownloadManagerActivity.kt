@@ -63,6 +63,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
         }
         helper.setOnMenuStateListener(object : DownloadManagerRemoveHelper.OnMenuStateListener {
             override fun onMenuStateChanged(isShown: Boolean) {
+                downloadAdapter.notifyDataSetChanged()
                 isShowing = isShown
                 showSelectAllText(isShown)
                 img_head_menu.visibility = if (isShown) View.GONE else View.VISIBLE
