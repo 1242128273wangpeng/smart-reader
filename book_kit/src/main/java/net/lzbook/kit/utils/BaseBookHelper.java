@@ -1,9 +1,7 @@
 package net.lzbook.kit.utils;
 
-import net.lzbook.kit.R;
 import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.book.download.DownloadState;
-import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.UpdateCallBack;
@@ -19,10 +17,6 @@ import net.lzbook.kit.request.DataCache;
 import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -37,6 +31,7 @@ public abstract class BaseBookHelper {
     private static final String DOWN_PROGRESS = "progress";
     private static final String DOWN_START = "start";
     private static WifiWarningDialog warningDialog;
+    private static ChangeSourceDialog changeSourceDialog;
     static String TAG = "BaseBookHelper";
 
     public static RequestItem getRequestItem(Book iBook) {
@@ -187,45 +182,66 @@ public abstract class BaseBookHelper {
 
     private static void startDownload(final Context context, final Book book, final int startDownIndex) {
         if (CacheManager.INSTANCE.hasOtherSourceStatus(book)) {
-            final MyDialog myDialog = new MyDialog((Activity) context, R.layout.publish_hint_dialog);
-            myDialog.setCanceledOnTouchOutside(false);
-            myDialog.setCancelable(false);
-            Button btn_cancle_clear_cache = (Button) myDialog.findViewById(R.id.publish_stay);
-            Button btn_confirm_clear_cache = (Button) myDialog.findViewById(R.id.publish_leave);
-            final TextView publish_content = (TextView) myDialog.findViewById(R.id.publish_content);
-            final TextView dialog_title = (TextView) myDialog.findViewById(R.id.dialog_title);
-            publish_content.setText(R.string.tip_clear_other_source_cache);
-            btn_cancle_clear_cache.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    myDialog.dismiss();
-                }
-            });
-            btn_confirm_clear_cache.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    publish_content.setVisibility(View.GONE);
-                    dialog_title.setText(R.string.tip_cleaning_cache);
-                    myDialog.findViewById(R.id.change_source_bottom).setVisibility(View.GONE);
-                    myDialog.findViewById(R.id.progress_del).setVisibility(View.VISIBLE);
-                    new Thread() {
-                        public void run() {
-                            super.run();
-                            context.getSharedPreferences(BaseBookHelper.DOWN_INDEX + book.book_id, 0).edit().clear().apply();
+//            final MyDialog myDialog = new MyDialog((Activity) context, R.layout.publish_hint_dialog);
+//            myDialog.setCanceledOnTouchOutside(false);
+//            myDialog.setCancelable(false);
+//            Button btn_cancle_clear_cache = (Button) myDialog.findViewById(R.id.publish_stay);
+//            Button btn_confirm_clear_cache = (Button) myDialog.findViewById(R.id.publish_leave);
+//            final TextView publish_content = (TextView) myDialog.findViewById(R.id.publish_content);
+//            final TextView dialog_title = (TextView) myDialog.findViewById(R.id.dialog_title);
+//            publish_content.setText(R.string.tip_clear_other_source_cache);
+//            btn_cancle_clear_cache.setOnClickListener(new OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    myDialog.dismiss();
+//                }
+//            });
+//            btn_confirm_clear_cache.setOnClickListener(new OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    publish_content.setVisibility(View.GONE);
+//                    dialog_title.setText(R.string.tip_cleaning_cache);
+//                    myDialog.findViewById(R.id.change_source_bottom).setVisibility(View.GONE);
+//                    myDialog.findViewById(R.id.progress_del).setVisibility(View.VISIBLE);
+//                    new Thread() {
+//                        public void run() {
+//                            super.run();
+//                            context.getSharedPreferences(BaseBookHelper.DOWN_INDEX + book.book_id, 0).edit().clear().apply();
+//                            DataCache.deleteOtherSourceCache(book);
+//                            ExtensionsKt.msMainLooperHandler.post(new Runnable() {
+//                                public void run() {
+//                                    myDialog.dismiss();
+//                                    if (!CacheManager.INSTANCE.start(book.book_id, startDownIndex)) {
+//                                        Toast.makeText(context, "启动缓存服务失败", Toast.LENGTH_SHORT).show();
+//                                    }
+//                                }
+//                            });
+//                        }
+//                    }.start();
+//                }
+//            });
+//            myDialog.show();
+            if (changeSourceDialog == null) {
+                changeSourceDialog = new ChangeSourceDialog((Activity) context);
+                changeSourceDialog.setOnConfirmListener(new Function0<Unit>() {
+                    @Override
+                    public Unit invoke() {
+                        changeSourceDialog.showLoading();
+                        context.getSharedPreferences(BaseBookHelper.DOWN_INDEX + book.book_id, 0).edit().clear().apply();
                             DataCache.deleteOtherSourceCache(book);
                             ExtensionsKt.msMainLooperHandler.post(new Runnable() {
                                 public void run() {
-                                    myDialog.dismiss();
+                                    changeSourceDialog.dismiss();
                                     if (!CacheManager.INSTANCE.start(book.book_id, startDownIndex)) {
                                         Toast.makeText(context, "启动缓存服务失败", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
-                        }
-                    }.start();
-                }
-            });
-            myDialog.show();
+                        return null;
+                    }
+                });
+            }
+            changeSourceDialog.show();
         } else if (!CacheManager.INSTANCE.start(book.book_id, startDownIndex)) {
             Toast.makeText(context, "启动缓存服务失败", Toast.LENGTH_SHORT).show();
         }

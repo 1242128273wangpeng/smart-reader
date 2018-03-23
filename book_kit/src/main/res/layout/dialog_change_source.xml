@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="183dp"
+        android:layout_alignParentBottom="true"
+        android:background="#FFFFFF">
+
+        <TextView
+            android:id="@+id/txt_dialog_title"
+            android:textColor="#5d646e"
+            android:textSize="16sp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:text="@string/prompt"/>
+
+        <TextView
+            android:id="@+id/txt_dialog_information"
+            android:textColor="#212832"
+            android:textSize="14sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_dialog_title"
+            android:layout_marginTop="15dp"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="6dp"
+            android:text="@string/tip_clear_other_source_cache"/>
+
+
+        <ProgressBar
+            android:id="@+id/pgbar_loading"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_below="@id/txt_dialog_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:indeterminateDrawable="@drawable/home_clear_cache_loading_bg"
+            android:indeterminateDuration="1000"
+            android:visibility="visible"/>
+
+        <View
+            android:id="@+id/view_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_above="@+id/ll_btn"
+            android:background="#FFEDEEF0"/>
+
+        <LinearLayout
+            android:id="@+id/ll_btn"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_view_height_50"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:textColor="#5d646e"
+                android:textSize="14sp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/background_dialog_button"
+                android:gravity="center"
+                android:minWidth="@dimen/dimen_view_width_24"
+                android:singleLine="true"
+                android:text="@string/cancel"/>
+
+            <View
+                android:layout_width="@dimen/dimen_view_width_0.5"
+                android:layout_height="@dimen/dimen_view_height_30"
+                android:layout_gravity="center_vertical"
+                android:background="#FFF4F5F7"/>
+
+            <Button
+                android:id="@+id/btn_confirm"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/background_dialog_button"
+                android:gravity="center"
+                android:minWidth="@dimen/dimen_view_width_24"
+                android:singleLine="true"
+                android:text="@string/confirm"
+                android:textColor="#FF19DD8B"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <net.lzbook.kit.book.view.NightShadowView
+        android:layout_width="match_parent"
+        android:layout_height="183dp"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"/>
+
+</RelativeLayout>
