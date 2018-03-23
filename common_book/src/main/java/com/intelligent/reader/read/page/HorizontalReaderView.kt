@@ -483,30 +483,37 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 
     //-----禁止左滑-------左滑：上一次坐标 > 当前坐标
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (ReadState.isMenuShow) {
-            mReadPageChange?.showMenu(false)
-            return false
-        } else {
 
-            return if (ReadConfig.animation == ReadViewEnums.Animation.curl) {
-                mHorizontalEvent!!.myDispatchTouchEvent(event)
+        //加try catch 防止 pointerIndex out of range   参考：http://leybreeze.com/blog/?p=2891
+        try {
+            if (ReadState.isMenuShow) {
+                mReadPageChange?.showMenu(false)
+                return false
             } else {
-                super.onTouchEvent(event)
+
+                return if (ReadConfig.animation == ReadViewEnums.Animation.curl) {
+                    mHorizontalEvent!!.myDispatchTouchEvent(event)
+                } else {
+                    super.onTouchEvent(event)
+                }
             }
+        } catch (e: Exception) {
+            return false
         }
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
+        //加try catch 防止 pointerIndex out of range   参考：http://leybreeze.com/blog/?p=2891
+        try {
+            if (mHorizontalEvent?.forceUseTouchEvent() == true) {
+                return true
+            }
 
-        if (mHorizontalEvent?.forceUseTouchEvent() == true) {
-            return true
-        }
-
-        if (ReadConfig.animation == ReadViewEnums.Animation.curl
-                && MotionEvent.ACTION_MOVE == ev?.actionMasked) {
-            //仿真是要先判断出滑动方向的，防止ViewPager先滑动touchSlop长度
-            return touchSlop <= Math.abs(ev.x - mLastMotionX)
-        }
+            if (ReadConfig.animation == ReadViewEnums.Animation.curl
+                    && MotionEvent.ACTION_MOVE == ev?.actionMasked) {
+                //仿真是要先判断出滑动方向的，防止ViewPager先滑动touchSlop长度
+                return touchSlop <= Math.abs(ev.x - mLastMotionX)
+            }
 //        if(!mScroller.isFinished()){
 //            mScroller.abortAnimation()
 //            computeScroll()
@@ -515,14 +522,22 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
 //            }
 //            return false
 //        }
-        return super.onInterceptTouchEvent(ev)
+
+            return super.onInterceptTouchEvent(ev)
+        } catch (e: Exception) {
+            return false
+        }
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
-        return if (ReadConfig.animation == ReadViewEnums.Animation.curl) {
-            super.dispatchTouchEvent(event)
-        } else {
-            prohibitionOfSlidingTouchEvent(event)
+        try {
+            return if (ReadConfig.animation == ReadViewEnums.Animation.curl) {
+                super.dispatchTouchEvent(event)
+            } else {
+                prohibitionOfSlidingTouchEvent(event)
+            }
+        } catch (e: Exception) {
+            return false
         }
     }
 
@@ -545,7 +560,10 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                 if (motionValue < -touchSlop && (findViewWithTag(ReadViewEnums.PageIndex.current) as HorizontalPage).orientationLimit == ReadViewEnums.ScrollLimitOrientation.RIGHT) {
                     shouldGiveUpAction = true
                     bookOver = true
-                    mReadPageChange?.goToBookOver()//跳bookend
+                    post {
+                        if(mReadPageChange != null)
+                           mReadPageChange?.goToBookOver()//跳bookend
+                    }
                     AppLog.e("kkk","move2")
                     return true
                 } else {

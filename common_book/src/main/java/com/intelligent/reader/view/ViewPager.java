@@ -2100,11 +2100,38 @@ public class ViewPager extends ViewGroup {
         }
     }
 
+
+    private boolean canTouch(){
+        // Locate the currently focused item or add it if needed.
+        int curIndex = -1;
+        ItemInfo curItem = null;
+        for (curIndex = 0; curIndex < mItems.size(); curIndex++) {
+            final ItemInfo ii = mItems.get(curIndex);
+            if (ii.position >= mCurItem) {
+                if (ii.position == mCurItem) curItem = ii;
+                break;
+            }
+        }
+        ReadViewEnums.ViewState state = ((HorizontalPage) curItem.object).getViewState();
+        if(curItem != null && (state != ReadViewEnums.ViewState.success
+        && state != ReadViewEnums.ViewState.start && state != ReadViewEnums.ViewState.end)){
+            return false;
+        }
+
+        return true;
+    }
+
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (mScrollState != SCROLL_STATE_IDLE && !mPopulatePending) {
             return false;
         }
+
+        if(ev.getActionMasked() == MotionEvent.ACTION_DOWN){
+            if (!canTouch()) return false;
+        }
+
         /*
          * This method JUST determines whether we want to intercept the motion.
          * If we return true, onMotionEvent will be called and we do the actual
@@ -2246,6 +2273,11 @@ public class ViewPager extends ViewGroup {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+
+        if(ev.getActionMasked() == MotionEvent.ACTION_DOWN){
+            if (!canTouch()) return false;
+        }
+
         if (mFakeDragging) {
             // A fake drag is in progress already, ignore this real one
             // but still eat the touch events.

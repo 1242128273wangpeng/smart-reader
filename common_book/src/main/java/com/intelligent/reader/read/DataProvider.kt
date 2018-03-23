@@ -308,30 +308,31 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
 
         val chapter = chapters[Math.min(sequence, chapters.size - 1)]
 
-        addDisposable(mReaderRepository.requestSingleChapter(book.site, chapter)
-                .map {
-                    mReaderRepository.writeChapterCache(it, ReadState.book)
+        if(chapter != null){
+            addDisposable(mReaderRepository.requestSingleChapter(book.site, chapter)
+                    .map {
+                        mReaderRepository.writeChapterCache(it, ReadState.book)
 
-                    if (!TextUtils.isEmpty(it.content)) {
-                        it.isSuccess = true
-                        // 自动切源需要就更新目录
-                        if (it.flag == 1 && !TextUtils.isEmpty(it.content)) {
-                            mReaderRepository.updateBookCurrentChapter(it.book_id, it, it.sequence)
+                        if (!TextUtils.isEmpty(it.content)) {
+                            it.isSuccess = true
+                            // 自动切源需要就更新目录
+                            if (it.flag == 1 && !TextUtils.isEmpty(it.content)) {
+                                mReaderRepository.updateBookCurrentChapter(it.book_id, it, it.sequence)
+                            }
                         }
+
+                        if (it.content == "null"|| TextUtils.isEmpty(it.content)) {
+                            it.content = "文章内容较短，可能非正文，正在抓紧修复中..."
+                        }
+
+                        val separateContent = ReadSeparateHelper.initTextSeparateContent(it.content, it.chapter_name)
+                        NovelChapter(it, separateContent)
                     }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ novelChapter ->
 
-                    if (it.content == "null"|| TextUtils.isEmpty(it.content)) {
-                        it.content = "文章内容较短，可能非正文，正在抓紧修复中..."
-                    }
-
-                    val separateContent = ReadSeparateHelper.initTextSeparateContent(it.content, it.chapter_name)
-                    NovelChapter(it, separateContent)
-                }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ novelChapter ->
-
-//                    if (novelChapter.chapter.content != "null" && novelChapter.chapter.content.isNotEmpty()) {
+                        //                    if (novelChapter.chapter.content != "null" && novelChapter.chapter.content.isNotEmpty()) {
 //                        if (ReadState.sequence != -1 && book.site != RequestFactory.RequestHost.QG.requestHost &&
 //                                novelChapter.chapter.content.length <= Constants.CONTENT_ERROR_COUNT) {
 ////                            mReadDataListener.loadDataInvalid("当前章节内容异常，推荐换源。")
@@ -350,10 +351,12 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
 //                        mReadDataListener.loadDataSuccess(novelChapter.chapter, type)
 ////                        mReadDataListener.loadDataError("章节内容为空")
 //                    }
-                }, { throwable ->
-                    throwable.printStackTrace()
-                    mReadDataListener.loadDataError(throwable.message.toString())
-                }))
+                    }, { throwable ->
+                        throwable.printStackTrace()
+                        mReadDataListener.loadDataError(throwable.message.toString())
+                    }))
+        }
+
     }
 
     @Synchronized

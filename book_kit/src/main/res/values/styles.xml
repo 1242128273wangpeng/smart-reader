@@ -91,4 +91,9 @@
         <attr format="dimension"
               name="cornerRadius"/>
     </declare-styleable>
+
+    <style name="BottomPopupDialog">
+        <item name="android:windowEnterAnimation">@anim/home_clear_cache_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/home_clear_cache_exit_anim</item>
+    </style>
 </resources>
