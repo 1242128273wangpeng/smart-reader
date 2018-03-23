@@ -1,5 +1,22 @@
 package com.intelligent.reader.activity;
 
+import com.intelligent.reader.R;
+import com.intelligent.reader.app.BookApplication;
+import com.intelligent.reader.util.DynamicParamter;
+
+import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.data.bean.Book;
+import net.lzbook.kit.data.bean.Chapter;
+import net.lzbook.kit.data.db.BookChapterDao;
+import net.lzbook.kit.data.db.BookDaoHelper;
+import net.lzbook.kit.user.UserManager;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.SharedPreferencesUtils;
+import net.lzbook.kit.utils.ShieldManager;
+import net.lzbook.kit.utils.StatServiceUtils;
+
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -19,23 +36,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-
-import com.intelligent.reader.R;
-import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.util.DynamicParamter;
-
-import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.Book;
-import net.lzbook.kit.data.bean.Chapter;
-import net.lzbook.kit.data.db.BookChapterDao;
-import net.lzbook.kit.data.db.BookDaoHelper;
-import net.lzbook.kit.user.UserManager;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.SharedPreferencesUtils;
-import net.lzbook.kit.utils.ShieldManager;
-import net.lzbook.kit.utils.StatServiceUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -461,6 +461,12 @@ public class SplashActivity extends FrameActivity {
 
             //请求广告
             initAdSwitch();
+            // 5 初始化屏蔽
+            try {
+                initShield();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             initSplashAd();
 
             // 4 加载默认书籍
@@ -472,12 +478,6 @@ public class SplashActivity extends FrameActivity {
 //                e.printStackTrace();
 //            }
 
-            // 5 初始化屏蔽
-            try {
-                initShield();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
             // 6 其他信息初始化
             try {

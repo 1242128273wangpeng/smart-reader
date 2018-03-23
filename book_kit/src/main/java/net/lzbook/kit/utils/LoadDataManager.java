@@ -15,19 +15,14 @@ import net.lzbook.kit.data.bean.BookEvent;
 import net.lzbook.kit.data.bean.ChapterErrorBean;
 import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.net.custom.service.NetService;
-import net.lzbook.kit.net.volley.request.VolleyDataService;
 import net.lzbook.kit.request.own.OWNParser;
-import net.lzbook.kit.request.own.OtherRequestService;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -101,7 +96,7 @@ public class LoadDataManager {
         //青果书籍完结和连载状态的更新
         final BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
         final ArrayList<Book> qgBooks = bookDaoHelper.getBooksNotFinishQG();
-        if (qgBooks == null || qgBooks.isEmpty()) {
+        if (qgBooks == null) {
             return;
         }
         StringBuffer idBuffer = new StringBuffer();
@@ -120,6 +115,10 @@ public class LoadDataManager {
 
         String udid = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext());
         String url = DataUtil.QGBuildUrl(context, builder.toString(), udid, true);
+        if (qgBooks.isEmpty()) {
+            EventBus.getDefault().post(new BookEvent(BookEvent.PULL_BOOK_STATUS));
+            return;
+        }
         DataService.checkBookUpdate(url, new DataServiceNew.DataServiceCallBack() {
             @Override
             public void onSuccess(Object result) {
@@ -206,6 +205,7 @@ public class LoadDataManager {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {
                     }
+
                     @Override
                     public void onNext(@NonNull NoBodyEntity noBodyEntity) {
                     }
