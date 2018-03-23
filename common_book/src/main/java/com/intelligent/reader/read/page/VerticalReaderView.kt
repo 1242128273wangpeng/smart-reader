@@ -262,8 +262,9 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 mAdapter.setLoadViewState(PagerScrollAdapter.LOAD_VIEW_FAIL_STATE)
                 if (mOriginDataList.size == 0) {
                     showErrorPage()
+                } else {
+                    dismissLoadPage()
                 }
-                dismissLoadPage()
             }
 
             override fun loadDataInvalid(message: String) {
@@ -273,6 +274,13 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                 }
             }
         })
+    }
+
+    private fun addBookHomePage(chapter: Chapter) {
+        if (chapter.sequence == 0 && checkLoadChapterValid(-1)) {
+            mAdapter.addPreChapter(-1, arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";sequence = -1;sequenceType = -1 }), 0, ArrayList())))
+            mAdapter.showHeaderView(false)
+        }
     }
 
     private fun handleChapter(chapter: Chapter, index: ReadViewEnums.PageIndex, reLoad: Boolean) {
@@ -387,13 +395,6 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                     loadNextChapter(chapter.sequence + 1)
                 }
             }
-        }
-    }
-
-    private fun addBookHomePage(chapter: Chapter) {
-        if (chapter.sequence == 0 && checkLoadChapterValid(-1)) {
-            mAdapter.addPreChapter(-1, arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";sequence = -1;sequenceType = -1 }), 0, ArrayList())))
-            mAdapter.showHeaderView(false)
         }
     }
 
@@ -703,6 +704,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
 
     private fun showErrorPage() {
         page_rv.visibility = GONE
+        load_page.visibility = GONE
         error_page.visibility = View.VISIBLE
     }
 

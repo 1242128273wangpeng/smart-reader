@@ -3,6 +3,7 @@ package com.intelligent.reader.read
 import android.app.Activity
 import android.content.Context
 import android.text.TextUtils
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
@@ -281,7 +282,14 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
                                 runOnMain {
                                     mReadDataListener.loadDataError("拉取章节时无网络")
                                 }
+                                Log.d("DataProvider", "getChapterList e" + e.printStackTrace())
                                 e.printStackTrace()
+                            }, {
+                                Log.d("DataProvider", "getChapterList e" + "onComplete")
+                            }, { d ->
+                                if (d.isDisposed) {
+                                    Log.d("DataProvider", "getChapterList isDisposed" + d.isDisposed)
+                                }
                             }))
         }
     }
@@ -320,7 +328,7 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
                         }
                     }
 
-                    if (it.content == "null"|| TextUtils.isEmpty(it.content)) {
+                    if (it.content == "null" || TextUtils.isEmpty(it.content)) {
                         it.content = "文章内容较短，可能非正文，正在抓紧修复中..."
                     }
 
@@ -331,19 +339,19 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ novelChapter ->
 
-//                    if (novelChapter.chapter.content != "null" && novelChapter.chapter.content.isNotEmpty()) {
+                    //                    if (novelChapter.chapter.content != "null" && novelChapter.chapter.content.isNotEmpty()) {
 //                        if (ReadState.sequence != -1 && book.site != RequestFactory.RequestHost.QG.requestHost &&
 //                                novelChapter.chapter.content.length <= Constants.CONTENT_ERROR_COUNT) {
 ////                            mReadDataListener.loadDataInvalid("当前章节内容异常，推荐换源。")
 //                        }
 
-                        ReadState.chapterId = novelChapter.chapter.chapter_id
-                        //加章末广告
-                        if (ReadConfig.animation != ReadViewEnums.Animation.list) {
-                            loadAd(novelChapter)
-                        }
-                        chapterCache.put(sequence, novelChapter)
-                        mReadDataListener.loadDataSuccess(novelChapter.chapter, type)
+                    ReadState.chapterId = novelChapter.chapter.chapter_id
+                    //加章末广告
+                    if (ReadConfig.animation != ReadViewEnums.Animation.list) {
+                        loadAd(novelChapter)
+                    }
+                    chapterCache.put(sequence, novelChapter)
+                    mReadDataListener.loadDataSuccess(novelChapter.chapter, type)
 //                    } else {
 //                        novelChapter.separateList = ReadSeparateHelper.initTextSeparateContent("文章内容较短，可能非正文，正在抓紧修复中...", novelChapter.chapter.chapter_name)
 //                        novelChapter.chapter.content = "文章内容较短，可能非正文，正在抓紧修复中..."
