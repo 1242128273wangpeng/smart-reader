@@ -16,6 +16,8 @@
 
 package com.intelligent.reader.flip;
 
+import net.lzbook.kit.data.bean.ReadConfig;
+
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.graphics.SurfaceTexture;
@@ -530,9 +532,9 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
     @Override
     public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
         if(mWidth == 0 || mHeight == width) {
-            mWidth = width;
-            mHeight = height;
-            mGLThread.onWindowResize(width, height);
+            mWidth = ReadConfig.INSTANCE.getScreenWidth();
+            mHeight = ReadConfig.INSTANCE.getScreenHeight();
+            mGLThread.onWindowResize(mWidth, mHeight);
         }
     }
 

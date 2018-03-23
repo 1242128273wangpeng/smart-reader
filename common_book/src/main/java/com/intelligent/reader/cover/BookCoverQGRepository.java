@@ -151,8 +151,13 @@ public class BookCoverQGRepository implements BookCoverRepository {
     private Observable<List<Chapter>> getChapterListData(final String bookId) {
         return Observable.create(new ObservableOnSubscribe<List<com.quduquxie.bean.Chapter>>() {
             @Override
-            public void subscribe(ObservableEmitter<List<com.quduquxie.bean.Chapter>> e) throws Exception {
-                e.onNext(DataService.getChapterList(null, bookId, 1, Integer.MAX_VALUE - 1, mUdId));
+            public void subscribe(ObservableEmitter<List<com.quduquxie.bean.Chapter>> e) {
+                try {
+                    e.onNext(DataService.getChapterList(null, bookId, 1, Integer.MAX_VALUE - 1, mUdId));
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                    e.onError(e1);
+                }
                 e.onComplete();
             }
         }).map(new Function<List<com.quduquxie.bean.Chapter>, List<Chapter>>() {

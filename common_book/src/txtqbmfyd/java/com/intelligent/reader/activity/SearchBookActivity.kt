@@ -166,7 +166,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         }
 
         if (search_result_input != null) {
-            search_result_input!!.setOnClickListener(this)
+//            search_result_input!!.setOnClickListener(this)
             search_result_input!!.onFocusChangeListener = this
             search_result_input!!.addTextChangedListener(this)
             search_result_input!!.setOnEditorActionListener(this)
@@ -587,14 +587,18 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                     search_result_input!!.text.clear()
                     search_result_input!!.editableText.clear()
                     search_result_input!!.text = null
+                    searchViewHelper!!.showHitstoryList()
                 } else {
                     if (!ziyougb) {
                         search_result_input!!.setText(mSearchPresenter!!.word)
                         search_result_input!!.setSelection(mSearchPresenter!!.word!!.length)
                     }
+                    searchViewHelper!!.setShowHintEnabled(true)
+                    val finalContent = AppUtils.deleteAllIllegalChar(mSearchPresenter!!.word)
+                    searchViewHelper!!.showHintList(finalContent)
+                    searchViewHelper!!.notifyListChanged()
                 }
             }
-            searchViewHelper!!.showHitstoryList()
             ziyougb = true
         } else {
             ziyougb = false

@@ -299,7 +299,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         }
 
         ReadState.chapterList.clear()
-        DataProvider.getInstance().clear()
+//        DataProvider.getInstance().clear()
 
 //        PlatformSDK.lifecycle().onDestroy()
         DataProvider.getInstance().readingActivity = null
