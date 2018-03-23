@@ -125,7 +125,7 @@ class HorizontalPage : FrameLayout, Observer {
 
     override fun getDrawingCache(): Bitmap? {
         if (ReadViewEnums.PageIndex.current.equals(tag) && (hasAd || hasBigAd)) {
-            destroyDrawingCache()
+//            destroyDrawingCache()
         }
         return super.getDrawingCache()
     }
@@ -202,7 +202,10 @@ class HorizontalPage : FrameLayout, Observer {
         mDisposable.clear()
         ReadConfig.registObserver(this)
         mAdFrameLayout.removeAllViews()
-        removeView(errorView)
+        post {
+            removeView(errorView)
+        }
+
         setupView()
         pageView.setCursor(cursor)
     }
@@ -236,11 +239,11 @@ class HorizontalPage : FrameLayout, Observer {
     }
 
     private fun onJumpChapter() {
+        viewState = ReadViewEnums.ViewState.other
         mAdFrameLayout.removeAllViews()
         if (tag == ReadViewEnums.PageIndex.current) {
             noticePageListener?.onJumpChapter()
         }
-        viewState = ReadViewEnums.ViewState.other
     }
 
 //    //段末广告 8-1
@@ -374,10 +377,11 @@ class HorizontalPage : FrameLayout, Observer {
                 loadView.visibility = View.VISIBLE
                 viewState = ReadViewEnums.ViewState.loading
                 viewNotify = ReadViewEnums.NotifyStateState.all
-                removeView(errorView)
-//                post {
+
+                post {
+                    removeView(errorView)
                     destroyDrawingCache()
-//                }
+                }
             })
             errorView.loading_error_setting.visibility = FrameLayout.GONE
             noticePageListener?.pageChangSuccess(cursor, viewNotify)//游标通知回调
@@ -437,6 +441,7 @@ class HorizontalPage : FrameLayout, Observer {
             }
 
             if (!DataProvider.getInstance().isCacheExistBySequence(cursor.curBook.sequence)) {
+                viewState = ReadViewEnums.ViewState.loading
                 loadView.visibility = View.VISIBLE
             }
             DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.current, object : DataProvider.ReadDataListener() {
@@ -460,16 +465,31 @@ class HorizontalPage : FrameLayout, Observer {
                     showChangeSourceDialog(message)
                 }
             })
+
+            if(cursor.sequence == -1){
+                DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.next, object : DataProvider.ReadDataListener() {
+                    override fun loadDataSuccess(c: Chapter?, type: ReadViewEnums.PageIndex) = checkEntrance(cursor, 2)
+                    override fun loadDataError(message: String) = checkEntrance(cursor, 2)
+                    override fun loadDataInvalid(message: String) {
+                        showChangeSourceDialog(message)
+                    }
+                })
+            }
         }
 
         fun checkEntrance(cursor: ReadCursor, index: Int) {
+
+            if (viewState == ReadViewEnums.ViewState.success){
+                return
+            }
+
             //当前章拉去成功 执行一般方法
             //true 通知其他页面加载
-            entranceArray[index] = true
-            if (entranceArray.all { it }) {
+//            entranceArray[index] = true
+//            if (entranceArray.all { it }) {
                 setCursor(cursor)
 //                this@HorizontalPage.destroyDrawingCache()
-            }
+//            }
             if(ReadState.isJumpMenuShow){
                 noticePageListener?.onClickMenu(true)
                 ReadState.isJumpMenuShow = false

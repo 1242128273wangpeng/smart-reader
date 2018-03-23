@@ -104,6 +104,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
         setContentView(R.layout.download_manager)
         initView()
         CacheManager.listeners.add(this)
+        Constants.isDownloadManagerActivity = true
     }
 
     override fun onResume() {
@@ -250,6 +251,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
     override fun onDestroy() {
         super.onDestroy()
         CacheManager.listeners.remove(this)
+        Constants.isDownloadManagerActivity = false
     }
 
     private fun showSelectAllText(isShow: Boolean) {
