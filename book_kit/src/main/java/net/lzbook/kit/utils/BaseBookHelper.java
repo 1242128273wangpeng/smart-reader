@@ -28,11 +28,15 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
+
 public abstract class BaseBookHelper {
     public static final int CHAPTER_CACHE_COUNT = 5;
     private static final String DOWN_INDEX = "down_index";
     private static final String DOWN_PROGRESS = "progress";
     private static final String DOWN_START = "start";
+    private static WifiWarningDialog warningDialog;
     static String TAG = "BaseBookHelper";
 
     public static RequestItem getRequestItem(Book iBook) {
@@ -138,33 +142,48 @@ public abstract class BaseBookHelper {
         } else if (NetWorkUtils.getNetWorkType(context) != NetWorkUtils.NETWORK_MOBILE || (net.lzbook.kit.constants.Constants.isDownloadManagerActivity && net.lzbook.kit.constants.Constants.hadShownMobilNetworkConfirm)) {
             startDownload(context, book, startDownIndex);
         } else {
-            final MyDialog myDialog = new MyDialog((Activity) context, R.layout.publish_hint_dialog);
-            myDialog.setCanceledOnTouchOutside(false);
-            myDialog.setCancelable(false);
-            Button btn_cancle_clear_cache = (Button) myDialog.findViewById(R.id.publish_stay);
-            Button btn_confirm_clear_cache = (Button) myDialog.findViewById(R.id.publish_leave);
-            TextView publish_content = (TextView) myDialog.findViewById(R.id.publish_content);
-            ((TextView) myDialog.findViewById(R.id.dialog_title)).setText(R.string.prompt);
-            publish_content.setText(R.string.tip_network_mobile);
-            btn_cancle_clear_cache.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    myDialog.dismiss();
-                }
-            });
-            btn_confirm_clear_cache.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    myDialog.dismiss();
-                    if (net.lzbook.kit.constants.Constants.isDownloadManagerActivity) {
-                        net.lzbook.kit.constants.Constants.hadShownMobilNetworkConfirm = true;
+//            final MyDialog myDialog = new MyDialog((Activity) context, R.layout.publish_hint_dialog);
+//            myDialog.setCanceledOnTouchOutside(false);
+//            myDialog.setCancelable(false);
+//            Button btn_cancle_clear_cache = (Button) myDialog.findViewById(R.id.publish_stay);
+//            Button btn_confirm_clear_cache = (Button) myDialog.findViewById(R.id.publish_leave);
+//            TextView publish_content = (TextView) myDialog.findViewById(R.id.publish_content);
+//            ((TextView) myDialog.findViewById(R.id.dialog_title)).setText(R.string.prompt);
+//            publish_content.setText(R.string.tip_network_mobile);
+//            btn_cancle_clear_cache.setOnClickListener(new OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    myDialog.dismiss();
+//                }
+//            });
+//            btn_confirm_clear_cache.setOnClickListener(new OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    myDialog.dismiss();
+//                    if (net.lzbook.kit.constants.Constants.isDownloadManagerActivity) {
+//                        net.lzbook.kit.constants.Constants.hadShownMobilNetworkConfirm = true;
+//                    }
+//                    BaseBookHelper.startDownload(context, book, startDownIndex);
+//                }
+//            });
+//            myDialog.show();
+            if (warningDialog == null) {
+                warningDialog = new WifiWarningDialog((Activity) context);
+                warningDialog.setOnConfirmListener(new Function0<Unit>() {
+                    @Override
+                    public Unit invoke() {
+                        if (net.lzbook.kit.constants.Constants.isDownloadManagerActivity) {
+                            net.lzbook.kit.constants.Constants.hadShownMobilNetworkConfirm = true;
+                        }
+                        BaseBookHelper.startDownload(context, book, startDownIndex);
+                        return null;
                     }
-                    BaseBookHelper.startDownload(context, book, startDownIndex);
-                }
-            });
-            myDialog.show();
+                });
+            }
+            warningDialog.show();
         }
     }
+
 
     private static void startDownload(final Context context, final Book book, final int startDownIndex) {
         if (CacheManager.INSTANCE.hasOtherSourceStatus(book)) {
