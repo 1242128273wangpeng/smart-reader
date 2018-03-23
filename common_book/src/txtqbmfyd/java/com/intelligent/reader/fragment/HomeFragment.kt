@@ -420,6 +420,8 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
             clearCacheDialog.show()
         }
 
+        txt_clear_cache_message.text = "0B"
+
     }
 
     private fun setNightMode(isEvent: Boolean) {
