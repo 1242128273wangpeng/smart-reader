@@ -127,7 +127,6 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
             popupWindow.isOutsideTouchable = false
             popupWindow.showAsDropDown(header_ibtn_more)
 
-
             inflate.read_option_pop_change_source.setOnClickListener {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_change_source_btn)
                 presenter?.changeSource()

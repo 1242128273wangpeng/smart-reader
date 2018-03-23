@@ -366,6 +366,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
         ReadState.offset = offset
         ReadConfig.jump = true
         read_catalog_mark_drawer.closeDrawers()
+        mReadPresenter.onJumpChapter(sequence)
     }
 
     //上一章
@@ -404,7 +405,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     override fun changeAnimMode(mode: Int) {
 
         readerWidget.changeAnimMode(mode)
-        showMenu(false)
+//        showMenu(false)
     }
 
     fun goBackToHome() = mReadPresenter.goBackToHome()
