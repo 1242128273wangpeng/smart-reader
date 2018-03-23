@@ -4,6 +4,7 @@ import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.encrypt.URLBuilderIntterface;
+import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.OpenUDID;
 
@@ -17,9 +18,9 @@ public class UrlUtils {
 
 
     //正式线上API，域名例子：api.wubutianxia.com
-//    public static String BOOK_NOVEL_DEPLOY_HOST = "http://test5.api.bookapi.cn:8080";
+//    public static String BOOK_NOVEL_DEPLOY_HOST = "http://test5.api.bookapi.cn:8088";
     //正式线上webview地址，域名例子：bookwebview.wubutianxia.com
-//    public static String BOOK_WEBVIEW_HOST = "http://test5.api.bookapi.cn:8080";
+//    public static String BOOK_WEBVIEW_HOST = "http://test5.api.bookapi.cn:8088";
     public static String BOOK_NOVEL_DEPLOY_HOST = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST;
 //    //正式线上webview地址，域名例子：bookwebview.wubutianxia.com
     public static String BOOK_WEBVIEW_HOST = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST;
@@ -37,7 +38,9 @@ public class UrlUtils {
 
     public static void setBookNovelDeployHost(String bookNovelDeployHost) {
         if (!TextUtils.isEmpty(bookNovelDeployHost)) {
+            AppLog.e("UrlUtils","BOOK_NOVEL_DEPLOY_HOST: " + BOOK_NOVEL_DEPLOY_HOST);
             BOOK_NOVEL_DEPLOY_HOST = bookNovelDeployHost;
+            AppLog.e("UrlUtils","bookNovelDeployHost: " + bookNovelDeployHost);
         }
     }
 
@@ -47,7 +50,9 @@ public class UrlUtils {
 
     public static void setBookWebviewHost(String bookWebviewHost) {
         if (!TextUtils.isEmpty(bookWebviewHost)) {
+            AppLog.e("UrlUtils","BOOK_WEBVIEW_HOST: " + BOOK_WEBVIEW_HOST);
             BOOK_WEBVIEW_HOST = bookWebviewHost;
+            AppLog.e("UrlUtils","bookWebviewHost: " + bookWebviewHost);
         }
     }
 
