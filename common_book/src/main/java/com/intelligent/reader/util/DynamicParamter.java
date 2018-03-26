@@ -1,18 +1,11 @@
 package com.intelligent.reader.util;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.preference.PreferenceManager;
-import android.text.TextUtils;
+import com.google.gson.JsonObject;
 
 import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
 import com.baidu.mobstat.SendStrategyEnum;
 import com.baidu.mobstat.StatService;
-
-import com.google.gson.JsonObject;
-
 import com.umeng.onlineconfig.OnlineConfigAgent;
 import com.umeng.onlineconfig.UmengOnlineConfigureListener;
 
@@ -29,6 +22,12 @@ import net.lzbook.kit.utils.Tools;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -148,6 +147,7 @@ public class DynamicParamter {
                     @Override
                     public void onError(@NonNull Throwable e) {
                         e.printStackTrace();
+                        AppLog.e(TAG, "jsonString: onError " + e.toString());
                         startRequestCDNDynamic();
                     }
 
@@ -306,6 +306,7 @@ public class DynamicParamter {
                         public void onError(@NonNull Throwable e) {
                             e.printStackTrace();
                             startRequestCDNDynamic();
+                            AppLog.d("startRequestCDNDynamic", "onError" + e.toString());
                         }
 
                         @Override
@@ -315,7 +316,7 @@ public class DynamicParamter {
                     });
         } else {
             isReloadDynamic = true;
-            setUMDynamicParamter();
+//            setUMDynamicParamter();
         }
     }
 
