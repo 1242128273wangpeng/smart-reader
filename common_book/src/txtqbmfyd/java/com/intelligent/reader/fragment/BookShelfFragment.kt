@@ -272,7 +272,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
         val isShowAd = !bookShelfRemoveHelper.isRemoveMode && isResumed && !Constants.isHideAD
         doAsync {
             presenter.queryBookListAndAd(activity, isShowAd)
-            runOnMain {
+            uiThread {
                 bookShelfReAdapter.setUpdate_table(presenter.filterUpdateTableList())
                 bookShelfReAdapter.notifyDataSetChanged()
                 presenter.uploadFirstOpenLog(sharedPreferences)

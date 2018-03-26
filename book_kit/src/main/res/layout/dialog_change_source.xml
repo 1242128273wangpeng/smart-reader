@@ -3,12 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="183dp"
-        android:layout_alignParentBottom="true"
         android:background="#FFFFFF">
 
         <TextView
@@ -96,7 +95,6 @@
     <net.lzbook.kit.book.view.NightShadowView
         android:layout_width="match_parent"
         android:layout_height="183dp"
-        android:layout_alignParentBottom="true"
         android:visibility="gone"/>
 
 </RelativeLayout>

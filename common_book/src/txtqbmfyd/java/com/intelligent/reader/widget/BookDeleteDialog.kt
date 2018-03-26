@@ -1,8 +1,8 @@
 package com.intelligent.reader.widget
 
 import android.app.Activity
+import android.view.Gravity
 import android.view.View
-import android.widget.FrameLayout
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.txtqbmfyd.dialog_delete_book.*
 import net.lzbook.kit.book.view.MyDialog
@@ -13,7 +13,7 @@ import net.lzbook.kit.data.bean.Book
  */
 class BookDeleteDialog(private val activity: Activity) {
 
-    private val dialog = MyDialog(activity, R.layout.dialog_delete_book)
+    private val dialog = MyDialog(activity, R.layout.dialog_delete_book, Gravity.BOTTOM)
 
     private var confirmListener: ((books: ArrayList<Book>?, isOnlyDeleteCache: Boolean) -> Unit)? = null
     private var abrogateListener: (() -> Unit)? = null
@@ -22,11 +22,10 @@ class BookDeleteDialog(private val activity: Activity) {
     init {
 
         val window = dialog.window
-        val layoutParams = window.attributes
-        layoutParams.width = FrameLayout.LayoutParams.MATCH_PARENT
-        layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT
-        window.attributes = layoutParams
         window.setWindowAnimations(R.style.BottomPopupDialog)
+
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.setCancelable(true)
 
         dialog.btn_confirm.setOnClickListener {
             confirmListener?.invoke(books, dialog.ckb_delete_cache.isChecked)

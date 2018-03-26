@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
 
     <TextView
@@ -11,7 +11,6 @@
         style="@style/style_text_large_dark"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_above="@+id/ll_num_pickers"
         android:background="@color/white"
         android:gravity="center"
         android:text="@string/prompt"/>
@@ -20,8 +19,8 @@
         android:id="@+id/ll_num_pickers"
         android:layout_width="match_parent"
         android:layout_height="152dp"
-        android:layout_above="@+id/view_divider"
         android:background="@color/white"
+        android:layout_below="@+id/txt_dialog_title"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -140,8 +139,8 @@
         android:id="@+id/ll_btn"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_view_height_50"
-        android:layout_alignParentBottom="true"
         android:background="@color/white"
+        android:layout_below="@+id/ll_num_pickers"
         android:orientation="horizontal">
 
         <Button
@@ -175,6 +174,11 @@
             android:textColor="@color/colorPrimary"
             android:textSize="14sp"/>
     </LinearLayout>
+
+    <net.lzbook.kit.book.view.NightShadowView
+            android:layout_width="match_parent"
+            android:layout_height="252dp"
+            android:visibility="gone"/>
 
 </RelativeLayout>
 
