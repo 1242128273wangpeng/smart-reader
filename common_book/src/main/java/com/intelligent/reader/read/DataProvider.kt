@@ -41,6 +41,8 @@ import java.util.*
  */
 class DataProvider : DisposableAndroidViewModel(), Observer {
 
+    private var mReadDataListener: ReadDataListener? = null
+
     override fun update(o: Observable?, arg: Any?) {
         if (ReadState.STATE_EVENT.SEQUENCE_CHANGE == arg) {
             val novelChapter = chapterCache.get(ReadState.sequence)
@@ -130,6 +132,7 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
      *  @param mReadDataListener 请求单章后监听
      */
     fun loadChapter(book: Book, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
+        this.mReadDataListener = mReadDataListener
         val requestItem = RequestItem.fromBook(book)
         when (type) {
             ReadViewEnums.PageIndex.current -> {
@@ -145,6 +148,7 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
     }
 
     fun loadChapter2(book: Book, sequence: Int, type: ReadViewEnums.PageIndex, mReadDataListener: ReadDataListener) {
+        this.mReadDataListener = mReadDataListener
         val requestItem = RequestItem.fromBook(book)
         when (type) {
             ReadViewEnums.PageIndex.current -> {
@@ -316,7 +320,7 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
 
         val chapter = chapters[Math.min(sequence, chapters.size - 1)]
 
-        if(chapter != null){
+        if (chapter != null ) {
             addDisposable(mReaderRepository.requestSingleChapter(book.site, chapter)
                     .map {
                         mReaderRepository.writeChapterCache(it, ReadState.book)
@@ -329,9 +333,9 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
                             }
                         }
 
-                    if (it.content == "null" || TextUtils.isEmpty(it.content)) {
-                        it.content = "文章内容较短，可能非正文，正在抓紧修复中..."
-                    }
+                        if (it.content == "null" || TextUtils.isEmpty(it.content)) {
+                            it.content = "文章内容较短，可能非正文，正在抓紧修复中..."
+                        }
 
                         val separateContent = ReadSeparateHelper.initTextSeparateContent(it.content, it.chapter_name)
                         NovelChapter(it, separateContent)
@@ -340,19 +344,19 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ novelChapter ->
 
-//                    if (novelChapter.chapter.content != "null" && novelChapter.chapter.content.isNotEmpty()) {
+                        //                    if (novelChapter.chapter.content != "null" && novelChapter.chapter.content.isNotEmpty()) {
 //                        if (ReadState.sequence != -1 && book.site != RequestFactory.RequestHost.QG.requestHost &&
 //                                novelChapter.chapter.content.length <= Constants.CONTENT_ERROR_COUNT) {
 ////                            mReadDataListener.loadDataInvalid("当前章节内容异常，推荐换源。")
 //                        }
 
-                    ReadState.chapterId = novelChapter.chapter.chapter_id
-                    //加章末广告
-                    if (ReadConfig.animation != ReadViewEnums.Animation.list) {
-                        loadAd(novelChapter)
-                    }
-                    chapterCache.put(sequence, novelChapter)
-                    mReadDataListener.loadDataSuccess(novelChapter.chapter, type)
+                        ReadState.chapterId = novelChapter.chapter.chapter_id
+                        //加章末广告
+                        if (ReadConfig.animation != ReadViewEnums.Animation.list) {
+                            loadAd(novelChapter)
+                        }
+                        chapterCache.put(sequence, novelChapter)
+                        mReadDataListener.loadDataSuccess(novelChapter.chapter, type)
 //                    } else {
 //                        novelChapter.separateList = ReadSeparateHelper.initTextSeparateContent("文章内容较短，可能非正文，正在抓紧修复中...", novelChapter.chapter.chapter_name)
 //                        novelChapter.chapter.content = "文章内容较短，可能非正文，正在抓紧修复中..."
@@ -483,6 +487,8 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
     fun clear() {
         chapterCache.clear()
         unSubscribe()
+        this.mReadDataListener?.loadDataError("请求失败，请重新请求")
+        this.mReadDataListener = null
     }
 
     abstract class ReadDataListener {
