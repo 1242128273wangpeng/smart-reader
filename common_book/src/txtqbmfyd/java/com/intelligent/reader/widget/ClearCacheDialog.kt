@@ -1,8 +1,8 @@
 package com.intelligent.reader.widget
 
 import android.app.Activity
+import android.view.Gravity
 import android.view.View
-import android.widget.FrameLayout
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.txtqbmfyd.dialog_clear_cache.*
 import net.lzbook.kit.book.view.MyDialog
@@ -16,7 +16,7 @@ import net.lzbook.kit.book.view.MyDialog
  */
 class ClearCacheDialog(val activity: Activity) {
 
-    private val dialog = MyDialog(activity, R.layout.dialog_clear_cache)
+    private val dialog = MyDialog(activity, R.layout.dialog_clear_cache, Gravity.BOTTOM)
 
     private var confirmListener: (() -> Unit)? = null
     private var cancelListener: (() -> Unit)? = null
@@ -24,11 +24,10 @@ class ClearCacheDialog(val activity: Activity) {
     init {
 
         val window = dialog.window
-        val layoutParams = window.attributes
-        layoutParams.width = FrameLayout.LayoutParams.MATCH_PARENT
-        layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT
-        window.attributes = layoutParams
         window.setWindowAnimations(R.style.BottomPopupDialog)
+
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.setCancelable(true)
 
         dialog.btn_confirm.setOnClickListener {
             confirmListener?.invoke()

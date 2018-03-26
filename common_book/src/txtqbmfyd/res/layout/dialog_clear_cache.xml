@@ -2,12 +2,11 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="174dp"
-        android:layout_alignParentBottom="true"
         android:background="@color/white">
 
         <TextView
@@ -92,7 +91,6 @@
     <net.lzbook.kit.book.view.NightShadowView
         android:layout_width="match_parent"
         android:layout_height="174dp"
-        android:layout_alignParentBottom="true"
         android:visibility="gone"/>
 
 </RelativeLayout>
