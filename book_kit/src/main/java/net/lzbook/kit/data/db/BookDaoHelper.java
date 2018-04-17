@@ -522,6 +522,12 @@ public class BookDaoHelper {
 //    }
 
     public synchronized void deleteBook(String book_id) {
+        for (Book book : books) {
+            if (book_id.equals(book.book_id)) {
+                books.remove(book);
+                break;
+            }
+        }
         this.mDao.deleteSubBook(book_id);
     }
 }
