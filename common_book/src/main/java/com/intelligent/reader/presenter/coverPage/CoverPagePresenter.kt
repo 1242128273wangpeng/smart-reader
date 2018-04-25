@@ -1,7 +1,8 @@
 package com.intelligent.reader.presenter.coverPage
 
 import android.app.Activity
-import android.content.*
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.Gravity
@@ -13,16 +14,15 @@ import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.activity.SearchBookActivity
 import com.intelligent.reader.adapter.CoverSourceAdapter
 import com.intelligent.reader.cover.*
+import com.intelligent.reader.widget.ConfirmDialog
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
-import com.intelligent.reader.widget.ConfirmDialog
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.MyDialog
@@ -40,14 +40,15 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 /**
+ * 封面
  * Created by zhenXiang on 2017\11\15 0015.
+ * Modify by JoannChen on 2018-04-23
  */
-
 class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: CoverPageContract,
-                         val activity: Activity, val onClickListener: View.OnClickListener)
+                         val activity: Activity, onClickListener: View.OnClickListener)
     : BookCoverUtil.OnDownloadState, BookCoverUtil.OnDownLoadService, BookCoverViewModel.BookCoverViewCallback {
 
-    var downloadService: DownloadService? = null
+    //    var downloadService: DownloadService? = null
     var bookVo: CoverPage.BookVoBean? = null
     var bookCoverUtil: BookCoverUtil? = null
     var bookDaoHelper: BookDaoHelper? = null
@@ -55,18 +56,18 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
     var isNeedShowMoreTags: Boolean = false
     var currentSource: CoverPage.SourcesBean? = null
     var books = ArrayList<Book>()
-    val markIndexs = ArrayList<Int>()
+    private val markIndex = ArrayList<Int>()
     var mRandom: Random = Random()
     var mRecommendBooks = ArrayList<Book>()
     var bookSourceList: ArrayList<CoverPage.SourcesBean> = ArrayList<CoverPage.SourcesBean>()
-    val GET_CATEGORY_OK = 0x10 + 1
-    val GET_CATEGORY_ERROR = GET_CATEGORY_OK + 1
-    val DOWNLOAD_STATE_FINISH = 1;
-    val DOWNLOAD_STATE_LOCKED = 2;
-    val DOWNLOAD_STATE_NOSTART = 3;
-    val DOWNLOAD_STATE_OTHER = 4;
+    //    val GET_CATEGORY_OK = 0x10 + 1
+//    val GET_CATEGORY_ERROR = GET_CATEGORY_OK + 1
+//    val DOWNLOAD_STATE_FINISH = 1
+//    val DOWNLOAD_STATE_LOCKED = 2
+//    val DOWNLOAD_STATE_NOSTART = 3
+//    val DOWNLOAD_STATE_OTHER = 4
     var mBookCoverViewModel: BookCoverViewModel? = null
-
+    var mDialog: MyDialog? = null
 
     init {
         preferences = BaseBookApplication.getGlobalContext().getSharedPreferences("onlineconfig_agent_online_setting_" + AppUtils.getPackageName(), 0);
@@ -91,12 +92,12 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
             showToastShort("该小说暂无其他来源！")
             return
         }
-        val coverSourceDialog = MyDialog(activity, R.layout.dialog_read_source, Gravity.CENTER)
-        coverSourceDialog.setCanceledOnTouchOutside(true)
-        val sourceView = coverSourceDialog.findViewById(R.id.change_source_list) as ListView
-        val dialog_top_title = coverSourceDialog.findViewById(R.id.dialog_top_title) as TextView
-        val change_source_statement = coverSourceDialog.findViewById(R.id.change_source_statement) as RelativeLayout
-        change_source_statement.visibility = View.GONE
+        mDialog = MyDialog(activity, R.layout.dialog_read_source, Gravity.CENTER)
+        mDialog?.setCanceledOnTouchOutside(true)
+        val sourceView = mDialog?.findViewById(R.id.change_source_list) as ListView
+//        val dialog_top_title = mDialog?.findViewById(R.id.dialog_top_title) as TextView
+        val changeSourceStatement = mDialog?.findViewById(R.id.change_source_statement) as RelativeLayout
+        changeSourceStatement.visibility = View.GONE
 
 
         val bookSourceAdapter = CoverSourceAdapter(activity, bookSourceList)
@@ -108,69 +109,69 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
         }
 
 
-        sourceView.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+        sourceView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             val source = bookSourceAdapter.getItem(position) as CoverPage.SourcesBean
-            if (source != null) {
-                if (requestItem != null && !TextUtils.isEmpty(source.book_source_id)) {
-                    requestItem.book_id = source.book_id
-                    requestItem.book_source_id = source.book_source_id
-                    requestItem.host = source.host
-                    requestItem.dex = source.dex
-                    val iterator = source.source.entries.iterator()
-                    val list = java.util.ArrayList<String>()
-                    while (iterator.hasNext()) {
-                        val entry = iterator.next()
-                        val value = entry.value
-                        list.add(value)
-                    }
-                    if (list.size > 0) {
-                        requestItem.parameter = list[0]
-                    }
-                    if (list.size > 1) {
-                        requestItem.extra_parameter = list[1]
-                    }
+            if (!TextUtils.isEmpty(source.book_source_id)) {
+                requestItem.book_id = source.book_id
+                requestItem.book_source_id = source.book_source_id
+                requestItem.host = source.host
+                requestItem.dex = source.dex
+                val iterator = source.source.entries.iterator()
+                val list = java.util.ArrayList<String>()
+                while (iterator.hasNext()) {
+                    val entry = iterator.next()
+                    val value = entry.value
+                    list.add(value)
                 }
-
-                currentSource = source
-                coverPageContract!!.loadCoverWhenSourceChange()
-
-                coverPageContract!!.showCurrentSources(currentSource!!.host)
-
-                coverSourceDialog.dismiss()
+                if (list.size > 0) {
+                    requestItem.parameter = list[0]
+                }
+                if (list.size > 1) {
+                    requestItem.extra_parameter = list[1]
+                }
             }
+
+            currentSource = source
+            coverPageContract.loadCoverWhenSourceChange()
+
+            coverPageContract.showCurrentSources(currentSource!!.host)
+
+            mDialog?.dismiss()
+
         }
 
-        val change_source_original_web = coverSourceDialog.findViewById(R.id.change_source_original_web) as TextView
-        change_source_original_web.setText(R.string.cancel)
-        val change_source_continue = coverSourceDialog.findViewById(R.id.change_source_continue) as TextView
+        val changeSourceOriginalWeb = mDialog?.findViewById(R.id.change_source_original_web) as TextView
+        changeSourceOriginalWeb.setText(R.string.cancel)
 
-        change_source_original_web.setOnClickListener {
+        val changeSourceContinue = mDialog?.findViewById(R.id.change_source_continue) as TextView
+
+        changeSourceOriginalWeb.setOnClickListener {
             val data = HashMap<String, String>()
             data.put("type", "2")
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SOURCECHANGEPOPUP, data)
-            coverSourceDialog?.dismiss()
+            mDialog?.dismiss()
         }
-        change_source_continue.setOnClickListener {
-            if (bookSourceList != null && bookSourceList.size == 0) {
+        changeSourceContinue.setOnClickListener {
+            if (bookSourceList.size == 0) {
                 showToastShort("当前书籍不能阅读，先去看看其他书吧")
                 return@setOnClickListener
             }
             continueReading()
-            coverSourceDialog.dismiss()
+            mDialog?.dismiss()
         }
 
-        if (!coverSourceDialog.isShowing()) {
+        if (mDialog?.isShowing!!) {
             try {
-                coverSourceDialog.show()
+                mDialog?.show()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 
-    //model层回调成功  和 失败
+    //model层回调成功和失败
     override fun onCoverDetail(coverPage: CoverPage?) {
-        handleOK(coverPage!!, coverPage!!.bookVo.host == Constants.QG_SOURCE, isNeedShowMoreTags)
+        handleOK(coverPage!!, coverPage.bookVo.host == Constants.QG_SOURCE, isNeedShowMoreTags)
     }
 
     override fun onFail(msg: String?) {
@@ -204,9 +205,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
             }
             bundle.putSerializable("book", book)
         }
-        if (requestItem != null) {
-            bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
-        }
+        bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
         intent.setClass(activity, ReadingActivity::class.java)
         intent.putExtras(bundle)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -242,19 +241,21 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
             } else {
                 continueReading()
             }
-            dialog.dismiss()
+            mDialog?.dismiss()
         }
         dialog.setOnCancelListener {
             val data = HashMap<String, String>()
             data.put("type", "2")
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
-            dialog.dismiss()
+            if (!activity.isFinishing) {
+                dialog.dismiss()
+            }
         }
         dialog
     }
 
     private fun showReadingSourceDialog() {
-        if(!activity.isFinishing){
+        if (!activity.isFinishing) {
             clearCacheDialog.show()
         }
 //        ConfirmPopWindow.newBuilder(activity).title("转码")
@@ -293,7 +294,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
 //                    }
 //
 //                }).build().show()
-        val readingSourceDialog = MyDialog(activity, R.layout.dialog_read_source, Gravity.CENTER)
+//        val readingSourceDialog = MyDialog(activity, R.layout.dialog_read_source, Gravity.CENTER)
 //        readingSourceDialog.setCanceledOnTouchOutside(true)
 //        val change_source_head = readingSourceDialog.findViewById(R.id.dialog_top_title) as TextView
 //        change_source_head.text = "转码"
@@ -350,8 +351,8 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
     }
 
     fun bookCoverReading() {
-        if (bookSourceList != null && bookSourceList.size == 0) {
-            if (requestItem != null && Constants.QG_SOURCE == requestItem.host) {
+        if (bookSourceList.size == 0) {
+            if (Constants.QG_SOURCE == requestItem.host) {
                 showReadingSourceDialog()
                 requestItem.fromType = 1// 打点统计 当前页面来源，所有可能来源的映射唯一字符串。书架(0)/目录页(1)/上一页翻页(2)/书籍封面(3)
             } else {
@@ -363,37 +364,50 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
     }
 
     private fun showChangeSourceNoticeDialog(source: CoverPage.SourcesBean) {
-        if (!activity.isFinishing()) {
-            val confirm_change_source_dialog = MyDialog(activity, R.layout.pop_confirm_layout)
-            confirm_change_source_dialog.setCanceledOnTouchOutside(true)
-            val dialog_cancel = confirm_change_source_dialog.findViewById(R.id.cancelBt) as Button
-            dialog_cancel.setText(R.string.book_cover_continue_read_cache)
+        if (!activity.isFinishing) {
+            mDialog = MyDialog(activity, R.layout.pop_confirm_layout)
 
-            val dialog_confirm = confirm_change_source_dialog.findViewById(R.id.okBt) as Button
-            dialog_confirm.setText(R.string.book_cover_confirm_change_source)
-            val dialog_information = confirm_change_source_dialog.findViewById(R.id.publish_content) as TextView
-            dialog_information.setText(R.string.book_cover_change_source_prompt)
-            dialog_cancel.setOnClickListener {
-                if (confirm_change_source_dialog != null && confirm_change_source_dialog.isShowing()) {
-                    confirm_change_source_dialog.dismiss()
+            mDialog?.let {
+                it.setCanceledOnTouchOutside(true)
+                val dialogCancel = it.findViewById(R.id.cancelBt) as Button
+                dialogCancel.setText(R.string.book_cover_continue_read_cache)
+
+                val dialogConfirm = it.findViewById(R.id.okBt) as Button
+                dialogConfirm.setText(R.string.book_cover_confirm_change_source)
+                val dialogInformation = it.findViewById(R.id.publish_content) as TextView
+                dialogInformation.setText(R.string.book_cover_change_source_prompt)
+                dialogCancel.setOnClickListener {
+                    mDialog?.let {
+                        if (it.isShowing) {
+                            it.dismiss()
+                        }
+                    }
+                    readingCustomaryBook(source, false)
                 }
-                readingCustomaryBook(source, false)
-            }
-            dialog_confirm.setOnClickListener {
-                if (confirm_change_source_dialog != null && confirm_change_source_dialog.isShowing()) {
-                    confirm_change_source_dialog.dismiss()
+                dialogConfirm.setOnClickListener {
+
+                    mDialog?.let {
+                        if (it.isShowing) {
+                            it.dismiss()
+                        }
+                        intoReadingActivity(source)
+                    }
+
                 }
-                intoReadingActivity(source)
+
+                it.setOnCancelListener({
+                    mDialog?.dismiss()
+                })
+                if (!it.isShowing) {
+                    try {
+                        it.show()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
             }
 
-            confirm_change_source_dialog.setOnCancelListener(DialogInterface.OnCancelListener { confirm_change_source_dialog.dismiss() })
-            if (!confirm_change_source_dialog.isShowing()) {
-                try {
-                    confirm_change_source_dialog.show()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
+
         }
     }
 
@@ -413,26 +427,26 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
         }
 
 
-        if (requestItem != null) {
-            requestItem.book_id = source.book_id
-            requestItem.book_source_id = source.book_source_id
-            requestItem.host = source.host
-            requestItem.dex = source.dex
-            val iterator = source.source.entries.iterator()
-            val list = java.util.ArrayList<String>()
-            while (iterator.hasNext()) {
-                val entry = iterator.next()
-                val value = entry.value
-                list.add(value)
-            }
-            if (list.size > 0) {
-                requestItem.parameter = list[0]
-            }
-            if (list.size > 1) {
-                requestItem.extra_parameter = list[1]
-            }
-            bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
+//        if (requestItem != null) {
+        requestItem.book_id = source.book_id
+        requestItem.book_source_id = source.book_source_id
+        requestItem.host = source.host
+        requestItem.dex = source.dex
+        val iterator = source.source.entries.iterator()
+        val list = java.util.ArrayList<String>()
+        while (iterator.hasNext()) {
+            val entry = iterator.next()
+            val value = entry.value
+            list.add(value)
         }
+        if (list.size > 0) {
+            requestItem.parameter = list[0]
+        }
+        if (list.size > 1) {
+            requestItem.extra_parameter = list[1]
+        }
+        bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
+//        }
 
         if (book != null) {
             book = changeBookInformation(source, book)
@@ -484,16 +498,15 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
     private fun readingCustomaryBook(source: CoverPage.SourcesBean?, isCurrentSource: Boolean) {
         val intent = Intent()
         val bundle = Bundle()
+
         if (bookDaoHelper == null || bookCoverUtil == null || bookVo == null) {
             return
         }
-        val book: Book?
 
-        if (source == null) {//说明是青果源的书
-            book = bookDaoHelper!!.getBook(requestItem.book_id, 0)
-
+        val book: Book? = if (source == null) {//说明是青果源的书
+            bookDaoHelper!!.getBook(requestItem.book_id, 0)
         } else {
-            book = bookDaoHelper!!.getBook(source.book_id, 0)
+            bookDaoHelper!!.getBook(source.book_id, 0)
         }
 
         if (book != null && book.sequence != -2) {
@@ -502,6 +515,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
         } else {
             bundle.putInt("sequence", -1)
         }
+
         if (book != null) {
             if (isCurrentSource) {
                 book.last_updatetime_native = source!!.update_time
@@ -511,9 +525,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
             }
             bundle.putSerializable("book", book)
         }
-        if (requestItem != null) {
-            bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
-        }
+        bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
         intent.setClass(activity, ReadingActivity::class.java)
         intent.putExtras(bundle)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -528,9 +540,9 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
 
     fun getBookCoverInfo(isNeedShowMoreTags: Boolean) {
         this.isNeedShowMoreTags = isNeedShowMoreTags
-        if (requestItem != null) {
-            mBookCoverViewModel!!.getCoverDetail(requestItem.book_id, requestItem.book_source_id, requestItem.host)
-        }
+//        if (requestItem != null) {
+        mBookCoverViewModel!!.getCoverDetail(requestItem.book_id, requestItem.book_source_id, requestItem.host)
+//        }
     }
 
     /**
@@ -540,17 +552,24 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
         if (bookDaoHelper == null || requestItem == null)
             return
 
-        coverPageContract!!.changeDownloadButtonStatus()
+        coverPageContract.changeDownloadButtonStatus()
         if (bookDaoHelper!!.isBookSubed(requestItem.book_id)) {
-            coverPageContract!!.onStartStatus(true)
+            coverPageContract.onStartStatus(true)
         } else {
-            coverPageContract!!.onStartStatus(false)
+            coverPageContract.onStartStatus(false)
         }
     }
 
     fun destory() {
         try {
-            if (requestItem != null && !bookDaoHelper!!.isBookSubed(requestItem.book_id)) {
+
+            mDialog?.let {
+                it.dismiss()
+                it.cancel()
+            }
+
+
+            if (!bookDaoHelper!!.isBookSubed(requestItem.book_id)) {
                 activity.deleteDatabase("book_chapter_" + requestItem.book_id)
             }
         } catch (e: IndexOutOfBoundsException) {
@@ -594,7 +613,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
                 }
             }
         } else {
-            if (bookSourceList != null && bookSourceList.size == 0) {
+            if (bookSourceList.size == 0) {
                 showToastShort("当前书籍不能缓存，先去看看其他书吧")
             } else {
                 if (bookDaoHelper == null) {
@@ -609,7 +628,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
                         }
                         val succeed = bookDaoHelper!!.insertBook(insertBook)
                         if (succeed) {
-                            coverPageContract!!.successAddIntoShelf(true)
+                            coverPageContract.successAddIntoShelf(true)
                             showToastShort("成功添加到书架！")
                             BaseBookHelper.startDownBookTask(activity, requestItem.toBook(), 0)
                         }
@@ -619,7 +638,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
                 }
             }
         }
-        coverPageContract!!.changeDownloadButtonStatus()
+        coverPageContract.changeDownloadButtonStatus()
     }
 
     /**
@@ -630,18 +649,23 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
         if (isQG) {//如果是青果的数据，就先进行一次类型转换
             bookVo = (objects as CoverPage).bookVo
 
-            coverPageContract!!.showArrow(true)
+            coverPageContract.showArrow(true)
 
-        } else if (objects != null) {
+        } else {
             bookVo = (objects as CoverPage).bookVo
             if (bookVo != null) {
-                if (requestItem != null && !TextUtils.isEmpty(requestItem.book_id)) {
+
+//                requestItem.book_id?:bookVo?.book_id
+
+                if (!TextUtils.isEmpty(requestItem.book_id)) {
                     bookVo?.book_id = requestItem.book_id
                 }
-                if (requestItem != null && !TextUtils.isEmpty(requestItem.book_source_id)) {
+
+
+                if (!TextUtils.isEmpty(requestItem.book_source_id)) {
                     bookVo?.book_source_id = requestItem.book_source_id
                 }
-                if (requestItem != null && !TextUtils.isEmpty(requestItem.host)) {
+                if (!TextUtils.isEmpty(requestItem.host)) {
                     bookVo?.host = requestItem.host
                 }
                 if (requestItem != null) {
@@ -651,26 +675,29 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
                 val sources = objects.sources
 
                 if (sources.size < 2) {
-                    coverPageContract!!.setCompound()
+                    coverPageContract.setCompound()
                 }
                 if (bookSourceList == null) {
-                    bookSourceList = java.util.ArrayList<CoverPage.SourcesBean>()
+                    bookSourceList = java.util.ArrayList()
                 }
                 bookSourceList.clear()
                 if (sources != null) {
-                    bookSourceList?.addAll(sources)
-                    for (i in bookSourceList?.indices) {
-                        val source = bookSourceList.get(i)
+                    bookSourceList.addAll(sources)
+
+                    for (i in bookSourceList.indices) {
+                        val source = bookSourceList[i]
                         if (requestItem.book_source_id == source.book_source_id) {
                             currentSource = source
                         }
                     }
+
+
                     if (currentSource != null && !TextUtils.isEmpty(currentSource!!.host)) {
                         coverPageContract.showCurrentSources(currentSource!!.host)
                     } else {
-                        if (bookSourceList != null && bookSourceList.size > 0) {
-                            currentSource = bookSourceList.get(0)
-                            coverPageContract!!.showCurrentSources(currentSource!!.host)
+                        if (bookSourceList.size > 0) {
+                            currentSource = bookSourceList[0]
+                            coverPageContract.showCurrentSources(currentSource!!.host)
                         }
                     }
                 }
@@ -685,9 +712,9 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
             }
         }
 
-        coverPageContract!!.showLoadingSuccess()
-        coverPageContract!!.showCoverDetail(bookVo!!)
-        coverPageContract!!.changeDownloadButtonStatus()
+        coverPageContract.showLoadingSuccess()
+        coverPageContract.showCoverDetail(bookVo!!)
+        coverPageContract.changeDownloadButtonStatus()
 
         if (bookVo != null && bookCoverUtil != null) {
             bookCoverUtil?.saveHistory(bookVo)
@@ -698,8 +725,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
     fun goToBookSearchActivity(view: View) {
         val intent = Intent()
         if (view is RecommendItemView) {
-            val item = view as RecommendItemView
-            intent.putExtra("word", item.title)
+            intent.putExtra("word", view.title)
             intent.putExtra("search_type", "0")
             intent.putExtra("filter_type", "0")
             intent.putExtra("filter_word", "ALL")
@@ -738,12 +764,12 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
                 data1.put("bookid", insertBook.book_id)
                 StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFEDIT, data1)
                 showToastShort("成功添加到书架！")
-                coverPageContract!!.successAddIntoShelf(true)
+                coverPageContract.successAddIntoShelf(true)
             }
         } else {
             if (isNeedRemoveFun) {
 
-                coverPageContract!!.successAddIntoShelf(false)
+                coverPageContract.successAddIntoShelf(false)
 
                 //移除书架的打点
                 StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.b_details_click_book_remove)
@@ -752,14 +778,16 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
                 data2.put("type", "2")
                 data2.put("bookid", requestItem.book_id)
                 StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFEDIT, data2)
-                coverPageContract!!.changeDownloadButtonStatus()
+                coverPageContract.changeDownloadButtonStatus()
 
-                coverPageContract!!.setShelfBtnClickable(false)
-                val cleanDialog = MyDialog(activity, R.layout.dialog_download_clean)
-                cleanDialog.setCanceledOnTouchOutside(false)
-                cleanDialog.setCancelable(false)
-                (cleanDialog.findViewById(R.id.dialog_msg) as TextView).setText(R.string.tip_cleaning_cache)
-                cleanDialog.show()
+                coverPageContract.setShelfBtnClickable(false)
+                mDialog = MyDialog(activity, R.layout.dialog_download_clean)
+                mDialog?.setCanceledOnTouchOutside(false)
+                mDialog?.setCancelable(false)
+                (mDialog?.findViewById(R.id.dialog_msg) as TextView).setText(R.string.tip_cleaning_cache)
+
+
+                mDialog?.show()
 
                 Observable.create(ObservableOnSubscribe<Boolean> { e ->
                     CacheManager.remove(requestItem.book_id)
@@ -771,9 +799,9 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
                 }).subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe {
-                            cleanDialog.dismiss()
-                            coverPageContract!!.setShelfBtnClickable(true)
-                            coverPageContract!!.changeDownloadButtonStatus()
+                            mDialog?.dismiss()
+                            coverPageContract.setShelfBtnClickable(true)
+                            coverPageContract.changeDownloadButtonStatus()
                         }
             } else {
                 showToastShort("已在书架中！")
@@ -791,7 +819,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
             if (Constants.QG_SOURCE == requestItem.host) {
                 enterCatalogues(intent, 0, false)
             } else {
-                if (bookSourceList != null && bookSourceList.size == 0) {
+                if (bookSourceList.size == 0) {
                     showToastShort("当前书籍不能阅读，先去看看其他书吧")
                 } else {
                     enterCatalogues(intent, 0, false)
@@ -804,7 +832,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
             if (Constants.QG_SOURCE == requestItem.host) {
                 enterCatalogues(intent, bookVo!!.serial_number - 1, true)
             } else {
-                if (bookSourceList != null && bookSourceList.size == 0) {
+                if (bookSourceList.size == 0) {
                     showToastShort("当前书籍不能阅读，先去看看其他书吧")
                 } else {
                     enterCatalogues(intent, bookVo!!.serial_number - 1, true)
@@ -835,17 +863,15 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
     }
 
     private fun showToastShort(s: String) {
-        if (activity != null) {
-            Toast.makeText(activity, s, Toast.LENGTH_SHORT).show()
-        }
+        Toast.makeText(activity, s, Toast.LENGTH_SHORT).show()
     }
 
     override fun changeState() {
-        coverPageContract!!.changeDownloadButtonStatus()
+        coverPageContract.changeDownloadButtonStatus()
     }
 
     override fun downLoadService() {
-        coverPageContract!!.changeDownloadButtonStatus()
+        coverPageContract.changeDownloadButtonStatus()
     }
 
 
@@ -853,7 +879,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
      * 获取推荐的书
      */
     fun getRecommend() {
-        var bookIds: String = getBookOnLineIds(bookDaoHelper!!)
+        val bookIds: String = getBookOnLineIds(bookDaoHelper!!)
 //        if (requestItem != null && requestItem.book_id != null && !TextUtils.isEmpty(bookIds)) {
         NetService.userService.requestCoverRecommend(requestItem.book_id, bookIds)
                 .subscribeOn(Schedulers.io())
@@ -862,17 +888,17 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
                     override fun onSubscribe(d: Disposable) {}
                     override fun onNext(bean: CoverRecommendBean) {
                         AppLog.e("aaa", bean.toString())
-                        if (bean != null && bean.data != null && bean.data.map != null) {
+                        if (bean.data != null && bean.data.map != null) {
                             if (preferences != null) {
-                                var scale = preferences!!.getString(Constants.RECOMMEND_BOOKCOVER, "2,2,0")!!.split(",")
-                                if (scale != null && scale.size >= 2) {
+                                val scale = preferences!!.getString(Constants.RECOMMEND_BOOKCOVER, "2,2,0")!!.split(",")
+                                if (scale.size >= 2) {
                                     if (!TextUtils.isEmpty(scale[0])) {
                                         AppLog.e("cover", scale[0])
                                         addZNBooks(bean, Integer.parseInt(scale[0]))
                                     }
                                     if (!TextUtils.isEmpty(scale[1])) {
                                         AppLog.e("cover", scale[1])
-                                        addQGBookss(bean, Integer.parseInt(scale[1]))
+                                        addQGBooks(bean, Integer.parseInt(scale[1]))
                                     }
                                 }
                                 coverPageContract.showRecommend(mRecommendBooks)
@@ -899,23 +925,23 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
      */
     fun addZNBooks(bean: CoverRecommendBean, znSize: Int) {
         var znIndex = -1
-        markIndexs.clear()
+        markIndex.clear()
         if (bean.data.map.znList != null && bean.data.map.znList.size > 0) {
-            for (i in 0..znSize - 1) {//推荐位 智能只取 3本
+            for (i in 0 until znSize) {//推荐位 智能只取 3本
 
                 znIndex = mRandom.nextInt(bean.data.map.znList.size)
-                if (markIndexs.contains(znIndex)) {
+                if (markIndex.contains(znIndex)) {
                     while (true) {
                         znIndex = mRandom.nextInt(bean.data.map.znList.size)
-                        if (!markIndexs.contains(znIndex)) {
+                        if (!markIndex.contains(znIndex)) {
                             break
                         }
                     }
                 }
-                markIndexs.add(znIndex)
+                markIndex.add(znIndex)
                 val book = Book()
                 val znBean = bean.data.map.znList[znIndex]
-                if (requestItem != null && requestItem.book_id != znBean.bookId) {
+                if (requestItem.book_id != znBean.bookId) {
                     if (znBean.serialStatus == "FINISH") {
                         book.status = 2
                     } else {
@@ -938,7 +964,6 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
                     book.last_updateSucessTime = System.currentTimeMillis()
                     book.readPersonNum = znBean.readerCountDescp + ""
                     mRecommendBooks.add(book)
-
                 }
 
             }
@@ -948,23 +973,23 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
     /**
      * 添加推荐的青果的书
      */
-    fun addQGBookss(bean: CoverRecommendBean, qgSize: Int) {
-        markIndexs.clear()
+    fun addQGBooks(bean: CoverRecommendBean, qgSize: Int) {
+        markIndex.clear()
         var qgIndex = -1
-        for (i in 0..qgSize - 1) {//推荐位 青果只取 3本
+        for (i in 0 until qgSize) {//推荐位 青果只取 3本
             qgIndex = mRandom.nextInt(bean.data.map.qgList.size)
-            if (markIndexs.contains(qgIndex)) {
+            if (markIndex.contains(qgIndex)) {
                 while (true) {
                     qgIndex = mRandom.nextInt(bean.data.map.qgList.size)
-                    if (!markIndexs.contains(qgIndex)) {
+                    if (!markIndex.contains(qgIndex)) {
                         break
                     }
                 }
             }
-            markIndexs.add(qgIndex)
+            markIndex.add(qgIndex)
             val book = Book()
             val qgBean = bean.data.map.qgList[qgIndex]
-            if (requestItem != null && requestItem.book_id != qgBean.id) {
+            if (requestItem.book_id != qgBean.id) {
                 if (qgBean.serialStatus == "FINISH") {
                     book.status = 2
                 } else {
@@ -994,27 +1019,27 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
     /**
      * 获取书架上的书Id
      */
-    fun getBookOnLineIds(bookDaoHelper: BookDaoHelper): String {
-        if (bookDaoHelper != null) {
-            books.clear()
-            books = bookDaoHelper!!.getBooksOnLineList()
-            val sb = StringBuilder()
-            if (books != null && books.size > 0) {
-                for (i in books.indices) {
-                    val book = books.get(i)
-                    sb.append(book.book_id)
-                    sb.append(if (i == books.size - 1) "" else ",")
-                }
-                return sb.toString()
+    private fun getBookOnLineIds(bookDaoHelper: BookDaoHelper): String {
+
+        books.clear()
+        books = bookDaoHelper.booksOnLineList
+        val sb = StringBuilder()
+        if (books.size > 0) {
+            for (i in books.indices) {
+                val book = books.get(i)
+                sb.append(book.book_id)
+                sb.append(if (i == books.size - 1) "" else ",")
             }
+            return sb.toString()
         }
+
         return ""
     }
 
-    //解绑
-    fun unSub() {
-        mBookCoverViewModel?.unSubscribe()
-    }
+//    //解绑
+//    fun unSub() {
+//        mBookCoverViewModel?.unSubscribe()
+//    }
 
     fun getBook(): Book? {
         if (bookCoverUtil == null || bookDaoHelper == null || bookVo == null) {

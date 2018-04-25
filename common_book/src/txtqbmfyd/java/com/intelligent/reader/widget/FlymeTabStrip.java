@@ -13,7 +13,6 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -33,7 +32,6 @@ import net.lzbook.kit.utils.AppUtils;
  *         博客地址：http://blog.csdn.net/u010072711
  */
 public class FlymeTabStrip extends HorizontalScrollView {
-    private static final String TAG = "TabStrip";
     /**
      * 指示器容器
      */
@@ -105,7 +103,7 @@ public class FlymeTabStrip extends HorizontalScrollView {
     private Paint paint;
     private Context context;
 
-    private RectF mBrounds;//rect
+    private RectF mBounds;//rect
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public FlymeTabStrip(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -133,6 +131,9 @@ public class FlymeTabStrip extends HorizontalScrollView {
      */
     private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         this.context = context;
+
+        mBounds = new RectF();
+
         // 取消横向的滚动条
         setHorizontalScrollBarEnabled(false);
         // 指示器容器初始化
@@ -145,7 +146,7 @@ public class FlymeTabStrip extends HorizontalScrollView {
         addView(container);
 
         // 获取屏幕相关信息
-        DisplayMetrics dm = getResources().getDisplayMetrics();
+//        DisplayMetrics dm = getResources().getDisplayMetrics();
 
         TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs,
                 R.styleable.FlymeTabStrip, defStyleAttr, defStyleRes);
@@ -177,7 +178,6 @@ public class FlymeTabStrip extends HorizontalScrollView {
 //                selectedTextSize = typedArray.getDimensionPixelSize(attr, (int) TypedValue.applyDimension(
 //                        TypedValue.COMPLEX_UNIT_SP, 18, dm)) / 3;
                 selectedTextSize = (int) typedArray.getDimension(attr, AppUtils.sp2px(context.getResources(), selectedTextSize));
-            } else {
             }
         }
         // typedArray回收
@@ -196,23 +196,21 @@ public class FlymeTabStrip extends HorizontalScrollView {
         if (tabCount == 0) {
             return;
         }
-        // 获取onMeasure后的高
-        final int height = getHeight();
+
+        final int height = getHeight(); // 获取onMeasure后的高
+
         /*
          * 画指示器下方的线
 		 */
-        // 设置颜色
-        paint.setColor(indicatorColor);
-        // 当前指示tab位置
-        View currentTab = container.getChildAt(currentPosition);
-        // 当前tab的左边相对父容器的左边距
-        float leftPadding = currentTab.getLeft();
-        // 当前tab的右边相对于父容器左边距
-        float rightPadding = currentTab.getRight();
-        float tempPadding = 20f;
-        // 如果出现位移
 
-        float centerPosition = 0.0f;
+        paint.setColor(indicatorColor);// 设置颜色
+        View currentTab = container.getChildAt(currentPosition); // 当前指示tab位置
+        float leftPadding = currentTab.getLeft(); // 当前tab的左边相对父容器的左边距
+        float rightPadding = currentTab.getRight();// 当前tab的右边相对于父容器左边距
+        float tempPadding = 20f;
+
+        // 如果出现位移
+        float centerPosition;
 
         if (currentPositionOffset >= 0f && currentPosition < tabCount - 1) {
             View nextTab = container.getChildAt(currentPosition + 1);
@@ -228,9 +226,9 @@ public class FlymeTabStrip extends HorizontalScrollView {
 
         // 绘制
 //        canvas.drawRect(left, height - indicatorHeight, right, height, paint);
-        mBrounds = new RectF();
-        mBrounds.set(left, height - indicatorHeight, right, height);
-        canvas.drawRoundRect(mBrounds, AppUtils.px2dip(context,20f),AppUtils.px2dip(context,20f),paint);
+
+        mBounds.set(left, height - indicatorHeight, right, height);
+        canvas.drawRoundRect(mBounds, AppUtils.px2dip(context, 20f), AppUtils.px2dip(context, 20f), paint);
     }
 
     /**
@@ -266,7 +264,16 @@ public class FlymeTabStrip extends HorizontalScrollView {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onGlobalLayout() {
-                getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                // android4.1 以下版本找不到该方法 removeOnGlobalLayoutListener()
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }else{
+                    getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+
+
+
                 currentPosition = viewPager.getCurrentItem();
                 scrollToChild(currentPosition, 0);
             }
@@ -294,7 +301,7 @@ public class FlymeTabStrip extends HorizontalScrollView {
         TextView tvTab = new TextView(context);
         tvTab.setText(title);
         tvTab.setTextColor(textColor);
-        tvTab.setTextSize(TypedValue.COMPLEX_UNIT_PX ,textSize);
+        tvTab.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         tvTab.setGravity(Gravity.CENTER);
         tvTab.setSingleLine();
         tvTab.setFocusable(true);
@@ -318,10 +325,10 @@ public class FlymeTabStrip extends HorizontalScrollView {
             if (i == selectedPosition) {
                 // 设置选中的指示器文字颜色和大小
                 tab.setTextColor(indicatorColor);
-                tab.setTextSize(TypedValue.COMPLEX_UNIT_PX ,selectedTextSize);
+                tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, selectedTextSize);
             } else {
                 tab.setTextColor(textColor);
-                tab.setTextSize(TypedValue.COMPLEX_UNIT_PX ,textSize);
+                tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
             }
         }
     }
@@ -332,10 +339,9 @@ public class FlymeTabStrip extends HorizontalScrollView {
      */
     private float formatPercent(float percent) {
 
-        float adsP = (float) Math.abs(percent - 0.5f);
+        float adsP = Math.abs(percent - 0.5f);
 
-        float valueP = Math.abs(0.5f - adsP);
-        return valueP;
+        return Math.abs(0.5f - adsP);
     }
 
     /**
@@ -350,11 +356,12 @@ public class FlymeTabStrip extends HorizontalScrollView {
         public void onPageScrollStateChanged(int state) {
             if (state == ViewPager.SCROLL_STATE_IDLE) {  // 0 空闲状态  pager处于空闲状态
                 scrollToChild(viewPager.getCurrentItem(), 0);
-            } else if (state == ViewPager.SCROLL_STATE_SETTLING) { // 2 正在自动沉降，相当于松手后，pager恢复到一个完整pager的过程
-
-            } else if (state == ViewPager.SCROLL_STATE_DRAGGING) {  // 1 viewpager正在被滑动,处于正在拖拽中
-
             }
+//            else if (state == ViewPager.SCROLL_STATE_SETTLING) {
+//                // 2 正在自动沉降，相当于松手后，pager恢复到一个完整pager的过程
+//            } else if (state == ViewPager.SCROLL_STATE_DRAGGING) {
+//                // 1 viewpager正在被滑动,处于正在拖拽中
+//            }
         }
 
         /**
@@ -369,7 +376,7 @@ public class FlymeTabStrip extends HorizontalScrollView {
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             currentPosition = position;
             currentPositionOffset = positionOffset;
-            // 处理指示器下方横线的滚动,scrollToChild会不断调用ondraw方法，绘制在重绘下划线，这就是移动动画效果
+            // 处理指示器下方横线的滚动,scrollToChild会不断调用onDraw方法，绘制在重绘下划线，这就是移动动画效果
             scrollToChild(position, (int) (positionOffset * container.getChildAt(position).getWidth()));
             invalidate();
         }

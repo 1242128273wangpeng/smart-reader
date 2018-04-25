@@ -47,7 +47,7 @@ public class PageContentView extends View {
 
 
     private void init() {
-        mDrawTextHelper = new DrawTextHelper(getResources());
+        mDrawTextHelper = new DrawTextHelper(getContext());
     }
 
     public void setContent(NovelPageBean pageLines) {

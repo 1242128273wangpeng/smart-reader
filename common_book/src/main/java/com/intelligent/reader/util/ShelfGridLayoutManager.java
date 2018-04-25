@@ -28,6 +28,8 @@ public class ShelfGridLayoutManager extends GridLayoutManager {
             super.onLayoutChildren(recycler, state);
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
     }
 }
