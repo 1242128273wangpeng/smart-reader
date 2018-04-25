@@ -1,5 +1,6 @@
 package net.lzbook.kit.data.bean;
 
+import android.graphics.Paint;
 import android.view.ViewGroup;
 
 import net.lzbook.kit.constants.ReadConstants;
@@ -96,7 +97,15 @@ public class NovelLineBean implements Serializable {
             char c = lineContent.charAt(i);
             if (i == length - 1 && isEndPunct(c)) {
                 Rect rect = new Rect();
-                ReadConfig.INSTANCE.getMPaint().getTextBounds(String.valueOf(c), 0, 1, rect);
+
+                Paint mPant = ReadConfig.INSTANCE.getMPaint();
+                if(mPant== null){
+                    return;
+                }
+
+                mPant.getTextBounds(String.valueOf(c), 0, 1, rect);
+
+
                 star -= marg;
                 star -= rect.left;
                 star += (ReadConstants.chineseWth / 2 - rect.width()) / 2;
