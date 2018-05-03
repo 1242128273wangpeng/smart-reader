@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'org.greenrobot.greendao'
 
 dependencies {
     compile fileTree(include: '*.jar', dir: 'libs')
@@ -57,6 +58,7 @@ dependencies {
     compile 'com.aliyun.ams:alicloud-android-ut:5.1.0'
     compile 'com.aliyun.ams:alicloud-android-utils:1.0.3'
     compile project(':retrofit-tag')
+    compile "org.greenrobot:greendao:$greendao_version"
 }
 
 configurations.all {
@@ -81,6 +83,11 @@ android {
         multiDexEnabled true
         versionCode 1
         versionName "1.0"
+    }
+    greendao{
+        schemaVersion 1
+        targetGenDir 'src/main/java'
+        daoPackage 'net.lzbook.kit.data.greendao.dao'
     }
     buildTypes {
         release {

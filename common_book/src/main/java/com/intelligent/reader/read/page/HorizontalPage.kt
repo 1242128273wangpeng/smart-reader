@@ -101,7 +101,7 @@ class HorizontalPage : FrameLayout, Observer {
 
 
     private fun init() {
-        mDrawTextHelper = DrawTextHelper(context)
+        mDrawTextHelper = DrawTextHelper(context.resources)
         loadView = inflate(context, R.layout.loading_page_reading, null)
         errorView = inflate(context, R.layout.error_page2, null)
         readTop = inflate(context, R.layout.read_top, null)

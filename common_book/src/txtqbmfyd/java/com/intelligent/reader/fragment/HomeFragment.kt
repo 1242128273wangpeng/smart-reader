@@ -417,7 +417,10 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
 
         rl_clear_cache.setOnClickListener {
             presenter.uploadClearCacheClickLog()
-            clearCacheDialog.show()
+            if(activity != null){
+                clearCacheDialog.show()
+            }
+
         }
 
         txt_clear_cache_message.text = "0B"

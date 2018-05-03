@@ -113,7 +113,10 @@ object UserManager : IWXAPIEventHandler {
             val registerApp = mWXApi?.registerApp(mWXAppID)
             log("registerApp", registerApp)
 
-            mTencent = Tencent.createInstance(mQQAppID, context?.getApplicationContext())
+            try {
+                mTencent = Tencent.createInstance(mQQAppID, context?.getApplicationContext())
+            } catch (e: Exception) {
+            }
 
             mSharedPreferences = context.getSharedPreferences(UserConstants.USER_INFO_FILE, Context.MODE_PRIVATE)
 

@@ -20,12 +20,14 @@ import com.intelligent.reader.presenter.search.SearchPresenter
 import com.intelligent.reader.presenter.search.SearchView
 import com.intelligent.reader.view.ScrollForGridView
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.data.search.SearchAutoCompleteBean
 import net.lzbook.kit.data.search.SearchCommonBean
 import net.lzbook.kit.data.search.SearchHotBean
 import net.lzbook.kit.utils.StatServiceUtils
 
 class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText: EditText, private val mSearchPresenter: SearchPresenter?) : SearchPresenter.SearchSuggestCallBack, SearchView.HelpView {
+
 
     private var mContext: Context? = null
     private var activity: Activity? = null
@@ -49,6 +51,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
     var context: Context? = null
     private var searchHotWordAdapter: SearchHotWordAdapter? = null
     private var mSearchHelpPresenter: SearchHelpPresenter? = null
+    private var loadingPage: LoadingPage? = null
 
     init {
         init(activity, activity, rootLayout, searchEditText)
@@ -71,6 +74,19 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
 
     fun setShowHintEnabled(showHint: Boolean) {
         mShouldShowHint = showHint
+    }
+
+    override fun showLoading(){
+        if (loadingPage == null && this.activity != null) {
+            loadingPage = LoadingPage(this.activity, mRootLayout, LoadingPage.setting_result)
+        }
+    }
+
+    override fun dimissLoading() {
+        if(loadingPage != null){
+            loadingPage!!.onSuccess()
+        }
+
     }
 
     fun showHintList(searchWord: String?) {
