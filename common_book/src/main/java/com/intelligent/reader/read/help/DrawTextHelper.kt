@@ -1,6 +1,6 @@
 package com.intelligent.reader.read.help
 
-import android.content.Context
+import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -15,15 +15,16 @@ import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.SensitiveWords
 import java.util.*
 
-class DrawTextHelper(private val context: Context) {
+class DrawTextHelper(private val resources: Resources) {
 
     private val textPaint: Paint
 
+    private val readSensitiveWord: SensitiveWords?
     private var readSensitiveWords: List<String>? = null
     private var noReadSensitive = false
 
     init {
-        val readSensitiveWord = SensitiveWords.getReadSensitiveWords()
+        this.readSensitiveWord = SensitiveWords.getReadSensitiveWords()
         if (readSensitiveWord != null && readSensitiveWord.list.size > 0) {
             readSensitiveWords = readSensitiveWord.getList()
             noReadSensitive = false
@@ -45,18 +46,57 @@ class DrawTextHelper(private val context: Context) {
      */
     private fun setPaintColor(paint: Paint, type: Int): Paint {
 
-        val color = when (ReadConfig.MODE) {
-            51 -> if (type == 0) R.color.reading_backdrop_first else R.color.reading_text_color_first
-            52 -> if (type == 0) R.color.reading_backdrop_second else R.color.reading_text_color_second
-            53 -> if (type == 0) R.color.reading_backdrop_third else R.color.reading_text_color_third
-            54 -> if (type == 0) R.color.reading_backdrop_fourth else R.color.reading_text_color_fourth
-            55 -> if (type == 0) R.color.reading_backdrop_fifth else R.color.reading_text_color_fifth
-            56 -> if (type == 0) R.color.reading_backdrop_sixth else R.color.reading_text_color_sixth
-            61 -> if (type == 0) R.color.reading_backdrop_night else R.color.reading_text_color_night
-            else -> if (type == 0) R.color.reading_backdrop_first else R.color.reading_text_color_first
+        val color_int: Int
+        if (ReadConfig.MODE == 51) {
+            if (type == 0) {
+                color_int = R.color.reading_backdrop_first
+            } else {
+                color_int = R.color.reading_text_color_first
+            }
+        } else if (ReadConfig.MODE == 52) {
+            if (type == 0) {
+                color_int = R.color.reading_backdrop_second
+            } else {
+                color_int = R.color.reading_text_color_second
+            }
+        } else if (ReadConfig.MODE == 53) {
+            if (type == 0) {
+                color_int = R.color.reading_backdrop_third
+            } else {
+                color_int = R.color.reading_text_color_third
+            }
+        } else if (ReadConfig.MODE == 54) {
+            if (type == 0) {
+                color_int = R.color.reading_backdrop_fourth
+            } else {
+                color_int = R.color.reading_text_color_fourth
+            }
+        } else if (ReadConfig.MODE == 55) {
+            if (type == 0) {
+                color_int = R.color.reading_backdrop_fifth
+            } else {
+                color_int = R.color.reading_text_color_fifth
+            }
+        } else if (ReadConfig.MODE == 56) {
+            if (type == 0) {
+                color_int = R.color.reading_backdrop_sixth
+            } else {
+                color_int = R.color.reading_text_color_sixth
+            }
+        } else if (ReadConfig.MODE == 61) {
+            if (type == 0) {
+                color_int = R.color.reading_backdrop_night
+            } else {
+                color_int = R.color.reading_text_color_night
+            }
+        } else {
+            if (type == 0) {
+                color_int = R.color.reading_backdrop_first
+            } else {
+                color_int = R.color.reading_text_color_first
+            }
         }
-
-        paint.color = ContextCompat.getColor(context, color)
+        paint.color = resources.getColor(color_int)
         return paint
 
     }
@@ -69,58 +109,55 @@ class DrawTextHelper(private val context: Context) {
         val pageLines = pageBean.lines
         val chapterNameList = pageBean.chapterNameLines
 
-        if (!pageLines.isEmpty()) {
-            when {
-            // 封面页
-                pageLines[0].lineContent.startsWith("txtzsydsq_homepage") -> {//pageHeight = drawHomePage(canvas);
-                }
-            // 章节首页
-                pageLines[0].lineContent.startsWith("chapter_homepage") -> drawChapterPage(canvas, pageLines, chapterNameList)
-                else -> drawPageLine(canvas, pageLines)
+        if (pageLines != null && !pageLines.isEmpty()) {
 
+            if (pageLines[0].lineContent.startsWith("txtzsydsq_homepage")) {// 封面页
+                //                pageHeight = drawHomePage(canvas);
+            } else if (pageLines[0].lineContent.startsWith("chapter_homepage")) {// 章节首页
+                drawChapterPage(canvas, pageLines, chapterNameList)
+            } else {
+                for (i in pageLines.indices) {
+                    val text = pageLines[i]
+                    replaceSensitiveWords(text)
+                    if (" " != text.lineContent) {
+                        if (text.type == 1) {
+                            drawLineIntervalText(canvas, text, text.indexY)
+                        } else {
+                            canvas.drawText(text.lineContent, ReadConfig.mLineStart, text.indexY, ReadConfig.mPaint!!)
+                        }
+                    }
+                }
             }
         }
     }
 
     @Synchronized
     fun drawText(canvas: Canvas?, pageBean: NovelPageBean): Float {
-        setPaintColor(ReadConfig.mPaint!!, 1)
-
         val pageLines = pageBean.lines
-
-        if (!pageLines.isEmpty()) {
-            when {
-            // 封面页
-                pageLines[0].lineContent.startsWith("txtzsydsq_homepage") -> ReadConfig.screenHeight.toFloat()
-            // 章节首页
-                pageLines[0].lineContent.startsWith("chapter_homepage") -> drawChapterPage(canvas, pageBean)
-                else -> {
-                    drawPageLine(canvas, pageLines)
-                    return pageBean.height
+        if (ReadConfig.mPaint != null) {
+            setPaintColor(ReadConfig.mPaint!!, 1)
+        }
+        if (pageLines != null && !pageLines.isEmpty()) {
+            if (pageLines[0].lineContent.startsWith("txtzsydsq_homepage")) {// 封面页
+                return ReadConfig.screenHeight.toFloat()
+            } else if (pageLines[0].lineContent.startsWith("chapter_homepage")) {// 章节首页
+                return drawChapterPage(canvas, pageBean)
+            } else {
+                for (i in pageLines.indices) {
+                    val text = pageLines[i]
+                    replaceSensitiveWords(text)
+                    if (" " != text.lineContent) {
+                        if (text.type == 1) {
+                            drawLineIntervalText(canvas, text, text.indexY)//开始画行
+                        } else {
+                            canvas?.drawText(text.lineContent, ReadConfig.mLineStart, text.indexY, ReadConfig.mPaint!!)//每段最后一行
+                        }
+                    }
                 }
+                return pageBean.height
             }
         }
-
         return ReadConfig.screenHeight.toFloat()
-    }
-
-
-    /**
-     * 画行
-     */
-    private fun drawPageLine(canvas: Canvas?, pageLines: ArrayList<NovelLineBean>) {
-
-        for (i in pageLines.indices) {
-            val text = pageLines[i]
-            replaceSensitiveWords(text)
-            if (" " != text.lineContent) {
-                if (text.type == 1) {
-                    drawLineIntervalText(canvas, text, text.indexY)//开始画行
-                } else {
-                    canvas?.drawText(text.lineContent, ReadConfig.mLineStart, text.indexY, ReadConfig.mPaint)//每段最后一行
-                }
-            }
-        }
     }
 
     private fun replaceSensitiveWords(bean: NovelLineBean) {
@@ -138,58 +175,54 @@ class DrawTextHelper(private val context: Context) {
         if (novelLineBean == null || novelLineBean.arrLenths.size != novelLineBean.lineContent.length) {
             return
         }
-
-        //until：区间包头不包尾
-        for (i in 0 until novelLineBean.lineContent.length) {
+        for (i in 0..novelLineBean.lineContent.length - 1) {
             val c = novelLineBean.lineContent[i]
-            canvas?.drawText(c.toString(), novelLineBean.arrLenths[i], total_y, ReadConfig.mPaint)
+            canvas?.drawText(c.toString(), novelLineBean.arrLenths[i], total_y, ReadConfig.mPaint!!)
         }
 
     }
 
-    /**
-     * 上下滑动首页
-     */
+    //上下滑动首页
     private fun drawChapterPage(canvas: Canvas, pageLines: List<NovelLineBean>, chapterNameList: ArrayList<NovelLineBean>?) {
         textPaint.textSize = ReadConfig.FONT_CHAPTER_SIZE * ReadConfig.screenScaledDensity
-        var fmChapter: FontMetrics
-        var fontHeightChapter: Float
+        var fm_chapter: FontMetrics
+        var m_iFontHeight_chapter: Float
+
+        val y_chapter: Float
 
         // 章节头顶部间距
-        val headSpacing = 39 * ReadConfig.screenScaledDensity
+        y_chapter = 39 * ReadConfig.screenScaledDensity
 
         setPaintColor(textPaint, 1)
-        ReadConfig.mPaint?.let {
-            setPaintColor(it, 1)
-        }
+        setPaintColor(ReadConfig.mPaint!!, 1)
 
-
+        val size_c: Int
 
         // 章节头
         if (chapterNameList != null && !chapterNameList.isEmpty()) {
-            val size = chapterNameList.size
-            for (i in 0 until size) {
+            size_c = chapterNameList.size
+            for (i in 0..size_c - 1) {
                 if (i == 0) {
-                    if (!TextUtils.isEmpty(chapterNameList[0].lineContent)) {
+                    if (chapterNameList[0] != null && !TextUtils.isEmpty(chapterNameList[0].lineContent)) {
                         val chapterNameRemain = chapterNameList[0]
 
                         textPaint.textSize = 16 * ReadConfig.screenScaledDensity
-                        canvas.drawText(chapterNameRemain.lineContent, ReadConfig.READ_CONTENT_PAGE_LEFT_SPACE * ReadConfig.screenScaledDensity, headSpacing, textPaint)
+                        canvas.drawText(chapterNameRemain.lineContent, ReadConfig.READ_CONTENT_PAGE_LEFT_SPACE * ReadConfig.screenScaledDensity, y_chapter, textPaint)
                     }
                 } else {
                     textPaint.textSize = 23 * ReadConfig.screenScaledDensity
-                    fmChapter = textPaint.fontMetrics
-                    fontHeightChapter = fmChapter.descent - fmChapter.ascent + 0.5f * ReadConfig.FONT_CHAPTER_DEFAULT.toFloat() * ReadConfig.screenScaledDensity
-                    canvas.drawText(chapterNameList[i].lineContent, ReadConfig.READ_CONTENT_PAGE_LEFT_SPACE * ReadConfig.screenScaledDensity, headSpacing + fontHeightChapter * i, textPaint)
+                    fm_chapter = textPaint.fontMetrics
+                    m_iFontHeight_chapter = fm_chapter.descent - fm_chapter.ascent + 0.5f * ReadConfig.FONT_CHAPTER_DEFAULT.toFloat() * ReadConfig.screenScaledDensity
+                    canvas.drawText(chapterNameList[i].lineContent, ReadConfig.READ_CONTENT_PAGE_LEFT_SPACE * ReadConfig.screenScaledDensity, y_chapter + m_iFontHeight_chapter * i, textPaint)
                 }
             }
 
             var i = 0
-            val pageLineSize = pageLines.size
-            while (i < pageLineSize) {
+            val j = pageLines.size
+            while (i < j) {
                 val text = pageLines[i]
                 replaceSensitiveWords(text)
-                if (!TextUtils.isEmpty(text.lineContent)) {
+                if (text != null && !TextUtils.isEmpty(text.lineContent)) {
                     if (text.lineContent != " " && text.lineContent != "chapter_homepage  ") {
                         if (text.type == 1) {
                             drawLineIntervalText(canvas, text, text.indexY)
@@ -203,35 +236,36 @@ class DrawTextHelper(private val context: Context) {
         }
     }
 
-    /**
+    /*
      * 章节首页提示效果
      */
     private fun drawChapterPage(canvas: Canvas?, pageBean: NovelPageBean): Float {
         textPaint.textSize = ReadConfig.FONT_CHAPTER_SIZE * ReadConfig.screenScaledDensity
-        var fmChapter: FontMetrics
-        var fontHeightChapter: Float
-        val headSpacing = 65 * ReadConfig.screenScaledDensity
+        var fm_chapter: FontMetrics
+        var m_iFontHeight_chapter: Float
+        val y_chapter: Float
+        y_chapter = 65 * ReadConfig.screenScaledDensity
 
         setPaintColor(textPaint, 1)
         setPaintColor(ReadConfig.mPaint!!, 1)
+        val size_c: Int
 
         val chapterNameList = pageBean.chapterNameLines
         var hasContent = false
         val pageLines = pageBean.lines
-
         // 章节头
-        if (chapterNameList.isNotEmpty()) {
-            val listSize = chapterNameList.size
-            for (i in 0 until listSize) {
+        if (chapterNameList != null && !chapterNameList.isEmpty()) {
+            size_c = chapterNameList.size
+            for (i in 0..size_c - 1) {
                 if (i == 0) {
                     val chapterNameRemain = chapterNameList[0].lineContent
                     textPaint.textSize = 16 * ReadConfig.screenScaledDensity
-                    canvas?.drawText(chapterNameRemain, ReadConfig.READ_CONTENT_PAGE_LEFT_SPACE * ReadConfig.screenScaledDensity, headSpacing, textPaint)
+                    canvas?.drawText(chapterNameRemain, ReadConfig.READ_CONTENT_PAGE_LEFT_SPACE * ReadConfig.screenScaledDensity, y_chapter, textPaint)
                 } else {
                     textPaint.textSize = 23 * ReadConfig.screenScaledDensity
-                    fmChapter = textPaint.fontMetrics
-                    fontHeightChapter = fmChapter.descent - fmChapter.ascent + 0.5f * ReadConfig.FONT_CHAPTER_DEFAULT.toFloat() * ReadConfig.screenScaledDensity
-                    canvas?.drawText(chapterNameList[i].lineContent, ReadConfig.READ_CONTENT_PAGE_LEFT_SPACE * ReadConfig.screenScaledDensity, headSpacing + fontHeightChapter * i, textPaint)
+                    fm_chapter = textPaint.fontMetrics
+                    m_iFontHeight_chapter = fm_chapter.descent - fm_chapter.ascent + 0.5f * ReadConfig.FONT_CHAPTER_DEFAULT.toFloat() * ReadConfig.screenScaledDensity
+                    canvas?.drawText(chapterNameList[i].lineContent, ReadConfig.READ_CONTENT_PAGE_LEFT_SPACE * ReadConfig.screenScaledDensity, y_chapter + m_iFontHeight_chapter * i, textPaint)
                 }
             }
 
@@ -241,7 +275,7 @@ class DrawTextHelper(private val context: Context) {
                 hasContent = true
                 val text = pageLines[i]
                 replaceSensitiveWords(text)
-                if (!TextUtils.isEmpty(text.lineContent)) {
+                if (text != null && !TextUtils.isEmpty(text.lineContent)) {
                     if (" " != text.lineContent && "chapter_homepage  " != text.lineContent) {
                         if (text.type == 1) {
                             drawLineIntervalText(canvas, text, text.indexY)

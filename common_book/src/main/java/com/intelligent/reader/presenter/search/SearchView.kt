@@ -23,6 +23,8 @@ interface SearchView {
         fun onSuggestBack()
         fun setEditText(text: String?)
         fun onHistoryClear()
+        fun showLoading()
+        fun dimissLoading()
     }
 
     interface View {
@@ -33,5 +35,6 @@ interface SearchView {
         fun setHotWordAdapter(hotWords: MutableList<SearchHotBean.DataBean>?)
         fun onSuggestBack()
         fun setEditText(text: String?)
+
     }
 }

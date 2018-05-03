@@ -111,6 +111,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
         if (NetWorkUtils.getNetWorkTypeNew(context) == "无") {
             getCacheDataFromShare(false)
         } else {
+            view?.showLoading()
             AppLog.e("url", UrlUtils.getBookNovelDeployHost() + "===" + NetWorkUtils.getNetWorkTypeNew(context))
             val searchService = NetService.userService
             searchService.hotWord
@@ -133,6 +134,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
 
                         override fun onComplete() {
                             AppLog.e("complete", "complete")
+                            view?.dimissLoading()
                         }
                     })
 

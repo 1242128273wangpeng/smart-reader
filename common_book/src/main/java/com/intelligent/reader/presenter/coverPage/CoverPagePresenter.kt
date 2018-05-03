@@ -241,7 +241,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
             } else {
                 continueReading()
             }
-            mDialog?.dismiss()
+            dialog?.dismiss()
         }
         dialog.setOnCancelListener {
             val data = HashMap<String, String>()

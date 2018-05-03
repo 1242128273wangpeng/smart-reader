@@ -30,7 +30,7 @@ public abstract class BaseBookHelper {
     private static final String DOWN_INDEX = "down_index";
     private static final String DOWN_PROGRESS = "progress";
     private static final String DOWN_START = "start";
-    private static WifiWarningDialog warningDialog;
+    //    private static WifiWarningDialog warningDialog;
     private static ChangeSourceDialog changeSourceDialog;
     static String TAG = "BaseBookHelper";
 
@@ -162,8 +162,8 @@ public abstract class BaseBookHelper {
 //                }
 //            });
 //            myDialog.show();
-            if (warningDialog == null) {
-                warningDialog = new WifiWarningDialog((Activity) context);
+            if (context != null) {
+                WifiWarningDialog warningDialog = new WifiWarningDialog((Activity) context);
                 warningDialog.setOnConfirmListener(new Function0<Unit>() {
                     @Override
                     public Unit invoke() {
@@ -174,8 +174,9 @@ public abstract class BaseBookHelper {
                         return null;
                     }
                 });
+                warningDialog.show();
             }
-            warningDialog.show();
+
         }
     }
 
@@ -228,15 +229,15 @@ public abstract class BaseBookHelper {
                     public Unit invoke() {
                         changeSourceDialog.showLoading();
                         context.getSharedPreferences(BaseBookHelper.DOWN_INDEX + book.book_id, 0).edit().clear().apply();
-                            DataCache.deleteOtherSourceCache(book);
-                            ExtensionsKt.msMainLooperHandler.post(new Runnable() {
-                                public void run() {
-                                    changeSourceDialog.dismiss();
-                                    if (!CacheManager.INSTANCE.start(book.book_id, startDownIndex)) {
-                                        Toast.makeText(context, "启动缓存服务失败", Toast.LENGTH_SHORT).show();
-                                    }
+                        DataCache.deleteOtherSourceCache(book);
+                        ExtensionsKt.msMainLooperHandler.post(new Runnable() {
+                            public void run() {
+                                changeSourceDialog.dismiss();
+                                if (!CacheManager.INSTANCE.start(book.book_id, startDownIndex)) {
+                                    Toast.makeText(context, "启动缓存服务失败", Toast.LENGTH_SHORT).show();
                                 }
-                            });
+                            }
+                        });
                         return null;
                     }
                 });

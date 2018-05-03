@@ -187,6 +187,9 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 
     protected void onVisible() {
         if (type != null) {
+            if (jsInterfaceHelper == null && contentView != null && context != null) {
+                jsInterfaceHelper = new JSInterfaceHelper(context, contentView);
+            }
             if (type.equals("rank")) {//榜单
                 jsInterfaceHelper.setRankingWebVisible();
                 notifyWebLog();//通知 H5 打点
@@ -347,18 +350,24 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        AppLog.e("webviewFrag","exit");
         if (contentView != null) {
             contentView.clearCache(true); //清空缓存
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                 if (contentLayout != null) {
                     contentLayout.removeView(contentView);
-
                 }
                 contentView.stopLoading();
+                // 退出时调用此方法，移除绑定的服务，否则某些特定系统会报错
+                contentView.getSettings().setJavaScriptEnabled(false);
+                contentView.clearHistory();
                 contentView.removeAllViews();
                 contentView.destroy();
             } else {
                 contentView.stopLoading();
+                // 退出时调用此方法，移除绑定的服务，否则某些特定系统会报错
+                contentView.getSettings().setJavaScriptEnabled(false);
+                contentView.clearHistory();
                 contentView.removeAllViews();
                 contentView.destroy();
                 if (contentLayout != null) {

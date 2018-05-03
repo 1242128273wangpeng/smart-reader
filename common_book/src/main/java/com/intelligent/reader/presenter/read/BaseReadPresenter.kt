@@ -852,7 +852,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
     fun onPause(mCurPageSequence: Int, mCurPageOffset: Int) {
         isFromCover = false
         if (isSubed) {
-            if (ReadState.book.book_type == 0) {
+            if (!TextUtils.isEmpty(ReadState.book_id) && ReadState.book.book_type == 0) {
                 myNovelHelper?.saveBookmark(ReadState.book_id, mCurPageSequence,
                         mCurPageOffset, mBookDaoHelper)
                 // 统计阅读章节数
@@ -962,6 +962,8 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
                 val extras = Bundle()
                 extras.putInt("sequence", ReadState.sequence)
                 extras.putInt("offset", ReadState.offset)
+                if(ReadState.book == null)
+                    return
                 extras.putSerializable("book", ReadState.book)
                 extras.putSerializable(Constants.REQUEST_ITEM, ReadState.requestItem)
                 intent.putExtras(extras)
@@ -1331,6 +1333,8 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
                     val bundle = Bundle()
                     bundle.putInt("sequence", ReadState.sequence)
                     bundle.putInt("offset", ReadState.offset)
+                    if(ReadState.book == null)
+                        return
                     bundle.putSerializable("book", ReadState.book)
                     bundle.putSerializable(Constants.REQUEST_ITEM, ReadState.requestItem)
                     val fresh = Intent(mActivityWeakReference.get(), ReadingActivity::class.java)
