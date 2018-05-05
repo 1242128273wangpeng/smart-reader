@@ -181,7 +181,7 @@ public class StartLogClickUtil {
     public static final String POPUPSHELFADD = "POPUPSHELFADD";//阅读页加入书架弹窗加入
     public static final String POPUPSHELFADDCANCLE = "POPUPSHELFADDCANCLE";//阅读页加入书架弹窗取消
     public static final String SET = "SET";//点击阅读页内设置
-
+    public static final String DEFAULTSETTING = "DEFAULTSETTINGS";//点击阅读页内设置
 
     //'阅读页设置
     public static final String LIGHTEDIT = "LIGHTEDIT";//点击亮度调整

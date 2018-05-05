@@ -272,6 +272,7 @@ public class Constants {
     public static boolean hadShownMobilNetworkConfirm = false;
 
     public static int WIFI_AUTO_CACHE_COUNT = 20;
+    public static String UPLOAD_OLDUSER_READ_SETTING = "upload_olduser_read_setting"; // 老用户每天上传一次阅读页设置
 
     /*
          * 初始化
