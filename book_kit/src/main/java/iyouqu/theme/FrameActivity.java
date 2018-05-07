@@ -122,11 +122,11 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
             }
         });
 
+        super.onCreate(paramBundle);
 
         lifecycleRegistry = new LifecycleRegistry(this);
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
 
-        super.onCreate(paramBundle);
         if (isFirst) {
             hasGetPackageName();
         }
