@@ -1412,17 +1412,17 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
 
                 val currentTime = System.currentTimeMillis()
                 val b = AppUtils.isToday(first_time, currentTime)
-                if (!b) {
+//                if (!b) {
 
                     val data = HashMap<String, String>()
-                    data.put("READGAP", Constants.READ_INTERLINEAR_SPACE.toString() + "")
-                    data.put("FONT", Constants.FONT_SIZE.toString() + "")
+                    data.put("READGAP",ReadConfig.READ_INTERLINEAR_SPACE.toString())
+                    data.put("FONT", ReadConfig.FONT_SIZE.toString())
                     data.put("PAGETURN", Constants.PAGE_MODE.toString() + "")
-                    data.put("BACKGROUNDCOLOR", Constants.MODE.toString() + "")
+                    data.put("BACKGROUNDCOLOR", ReadConfig.MODE.toString())
                     data.put("lightvalue", sp!!.getInt("screen_bright", -1).toString() + "")
                     StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.DEFAULTSETTING, data)
                     sp!!.edit()?.putLong(Constants.UPLOAD_OLDUSER_READ_SETTING, currentTime)?.apply()
-                }
+//                }
             }
 
     }
