@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fl_content"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/rl_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/img_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start|center"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:contentDescription="@string/module_name"
+            android:src="@drawable/download_manager_item_uncheck_icon"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/rl_item_content"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:paddingBottom="14dp"
+            android:paddingEnd="6dp"
+            android:paddingLeft="14dp"
+            android:paddingRight="6dp"
+            android:paddingStart="14dp"
+            android:paddingTop="14dp">
+
+            <ImageView
+                android:id="@+id/img_book_cover"
+                android:layout_width="55dp"
+                android:layout_height="75dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="1dp"
+                android:layout_marginStart="1dp"
+                android:contentDescription="@string/module_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/download_manager_item_cover_shadow_bg"/>
+
+            <ImageView
+                android:id="@+id/img_download_action"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/module_name"
+                android:paddingBottom="5dp"
+                android:paddingTop="4.5dp"
+                android:src="@drawable/download_manager_item_action_bg"/>
+
+            <TextView
+                android:id="@+id/txt_task_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/img_download_action"
+                android:layout_alignEnd="@id/img_download_action"
+                android:layout_alignLeft="@id/img_download_action"
+                android:layout_alignRight="@id/img_download_action"
+                android:layout_alignStart="@id/img_download_action"
+                android:layout_alignTop="@id/img_download_action"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="@string/default_title"
+                android:textColor="#3ECC96"
+                android:textSize="12sp"/>
+
+            <TextView
+                android:id="@+id/txt_book_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/img_book_cover"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@id/img_book_cover"
+                android:layout_toLeftOf="@id/img_download_action"
+                android:layout_toRightOf="@id/img_book_cover"
+                android:layout_toStartOf="@id/img_download_action"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="@string/default_title"
+                android:textColor="#303135"
+                android:textSize="16sp"/>
+
+            <ProgressBar
+                android:id="@+id/pgbar_task_progress"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_alignLeft="@+id/txt_book_name"
+                android:layout_alignParentBottom="true"
+                android:layout_alignStart="@+id/txt_book_name"
+                android:layout_marginBottom="8dp"
+                android:layout_toLeftOf="@id/img_download_action"
+                android:layout_toStartOf="@id/img_download_action"
+                android:progressDrawable="@drawable/download_manager_item_pgbar_main_bg"/>
+
+            <TextView
+                android:id="@+id/txt_task_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/pgbar_task_progress"
+                android:layout_marginBottom="14dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@id/img_book_cover"
+                android:layout_toRightOf="@id/img_book_cover"
+                android:text="@string/cached"
+                android:textColor="#999EA6"
+                android:textSize="12sp"/>
+        </RelativeLayout>
+    </RelativeLayout>
+</FrameLayout>

@@ -17,6 +17,7 @@ import com.intelligent.reader.adapter.BookRecommendAdapter
 import com.intelligent.reader.presenter.coverPage.CoverPageContract
 import com.intelligent.reader.presenter.coverPage.CoverPagePresenter
 import com.intelligent.reader.read.help.BookHelper
+import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbmfyd.act_book_cover.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager

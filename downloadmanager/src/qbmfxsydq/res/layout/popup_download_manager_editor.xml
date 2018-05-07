@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_remove"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="#FAFAFA">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#E8E8E8"/>
+
+    <LinearLayout
+        android:id="@+id/ll_content"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/btn_select_all"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="140dp"
+                android:layout_height="38dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/download_manager_remove_select_all_bg_sel"
+                android:gravity="center"
+                android:text="@string/select_all"
+                android:textColor="@drawable/download_manager_remove_select_all_text_color_sel"
+                android:textSize="16sp"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/btn_delete"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="140dp"
+                android:layout_height="38dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/download_manager_remove_delete_bg_sel"
+                android:gravity="center"
+                android:text="@string/delete"
+                android:textColor="@drawable/download_manager_remove_delete_text_color_sel"
+                android:textSize="16sp"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <net.lzbook.kit.book.view.NightShadowView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/ll_content"
+        android:layout_alignEnd="@id/ll_content"
+        android:layout_alignLeft="@id/ll_content"
+        android:layout_alignRight="@id/ll_content"
+        android:layout_alignStart="@id/ll_content"
+        android:layout_alignTop="@id/ll_content"
+        android:visibility="gone"/>
+</RelativeLayout>

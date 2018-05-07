@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.LifecycleRegistry;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -59,7 +62,7 @@ import kotlin.jvm.functions.Function2;
 import swipeback.SwipeBackHelper;
 
 public abstract class FrameActivity extends AppCompatActivity implements SwipeBackHelper.SlideBackManager,
-        SwipeBackHelper.SlideAnimListener {
+        SwipeBackHelper.SlideAnimListener, LifecycleOwner {
     protected final static int commonLockTime = 5 * 60 * 1000;
     public static final float ALPHA_FADE_TO = 0.3F;
     // 全局亮度
@@ -106,6 +109,9 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
     public boolean isMIUISupport = false;
     public boolean isFlymeSupport = false;
 
+
+    private LifecycleRegistry lifecycleRegistry;
+
     @SuppressLint("NewApi")
     public void onCreate(Bundle paramBundle) {
 
@@ -115,6 +121,10 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
                 return createViewWithPressState(parent, name, context, attrs);
             }
         });
+
+
+        lifecycleRegistry = new LifecycleRegistry(this);
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
 
         super.onCreate(paramBundle);
         if (isFirst) {
@@ -352,6 +362,8 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
     protected void onResume() {
         super.onResume();
 
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
+
         if (shouldShowNightShadow())
             nightShift(mThemeHelper.isNight(), false);
 
@@ -399,7 +411,9 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
     @Override
     protected void onStop() {
         super.onStop();
-        AppLog.e(TAG, "onStop");
+
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP);
+
         if (!isAppOnForeground()) {
             isActive = false;
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.HOME);
@@ -417,6 +431,8 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
     @Override
     protected void onStart() {
         super.onStart();
+
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START);
 
         if (!isCurrentRunningForeground) {
             inTime = System.currentTimeMillis();
@@ -485,6 +501,9 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
     @Override
     protected void onPause() {
         super.onPause();
+
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE);
+
         StatService.onPause(getApplicationContext());
     }
 
@@ -690,13 +709,15 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         }
 
         super.onDestroy();
+
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
+
 //        getWindow().getDecorView().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
 //        if(getWindow().getDecorView() instanceof  ViewGroup){
 //            ((ViewGroup)getWindow().getDecorView()).removeAllViews();
 //        }
+
         ATManager.removeActivity(this);
-
-
     }
 
     @Override
@@ -742,5 +763,11 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
     @Override
     public void onSlideFinishAnimEnd() {
 
+    }
+
+    @NonNull
+    @Override
+    public Lifecycle getLifecycle() {
+        return lifecycleRegistry;
     }
 }

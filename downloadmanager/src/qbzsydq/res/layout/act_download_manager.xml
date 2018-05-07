@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <RelativeLayout
+        android:id="@+id/rl_head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#CE3D3E"
+        android:fitsSystemWindows="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp">
+
+            <ImageView
+                android:id="@+id/img_head_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/module_name"
+                android:padding="6dp"
+                android:src="@drawable/download_manager_head_back_icon"/>
+
+            <TextView
+                android:id="@+id/txt_head_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/download_manager"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"/>
+
+            <ImageView
+                android:id="@+id/img_head_more"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:contentDescription="@string/module_name"
+                android:paddingBottom="2dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="2dp"
+                android:src="@drawable/download_manager_head_more_icon"/>
+
+            <TextView
+                android:id="@+id/txt_head_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:paddingBottom="2dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="2dp"
+                android:text="@string/cancel"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recl_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl_head"/>
+
+    <LinearLayout
+        android:id="@+id/ll_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rl_head"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="@string/module_name"
+            android:src="@drawable/download_manager_empty"/>
+
+        <TextView
+            android:id="@+id/txt_empty_find"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:gravity="center_horizontal"
+            android:text="@string/download_manager_empty_prompt"
+            android:textColor="#282828"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/img_head_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl_head"
+        android:scaleType="fitXY"
+        android:src="@mipmap/top_shadow"
+        android:contentDescription="@string/module_name"
+        android:visibility="gone"/>
+</RelativeLayout>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="download_manager_item_header">48dp</dimen>
+    <dimen name="download_manager_item_first_header">36dp</dimen>
+    <dimen name="download_manager_popup_height">50dp</dimen>
+</resources>

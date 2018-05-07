@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="false"
+    android:focusable="false"
+    android:paddingBottom="3dp">
+
+    <View
+        android:id="@+id/v_divider"
+        android:layout_width="match_parent"
+        android:layout_height="7.5dp"
+        android:layout_marginBottom="12dp"
+        android:background="#f4f5f7"/>
+
+    <ImageView
+        android:id="@+id/img_indicate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/v_divider"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="4dp"
+        android:src="@drawable/download_manager_item_header_indicate_bg"/>
+
+    <TextView
+        android:id="@+id/txt_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/v_divider"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="3dp"
+        android:layout_marginLeft="17dp"
+        android:layout_marginStart="17dp"
+        android:layout_toEndOf="@id/img_indicate"
+        android:layout_toRightOf="@id/img_indicate"
+        android:text="@string/cached"
+        android:textColor="#303135"
+        android:textSize="18sp"/>
+</RelativeLayout>

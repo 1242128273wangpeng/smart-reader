@@ -1,0 +1,22 @@
+ext {
+
+    javaMaxHeapSize = '4G'
+
+    compileSdkVersion = 25
+    buildToolsVersion = "25.0.3"
+
+    minSdkVersion = 14
+    targetSdkVersion = 22
+
+    applicationId = "cc.kdqbxs.reader"
+
+    minifyEnable = false
+    shrinkResEnable = minifyEnable
+
+    kotlin_version = '1.2.10'
+    greendao_version = '3.2.2'
+    support_version = '25.3.1'
+    arouter_api_version = '1.3.1'
+    arouter_compiler_version = '1.1.4'
+    lifecycle_version = '1.1.1'
+}

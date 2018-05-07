@@ -11,10 +11,10 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.BookEndSourceAdapter
-import com.intelligent.reader.adapter.SourceAdapter
 import com.intelligent.reader.presenter.bookEnd.BookEndContract
 import com.intelligent.reader.presenter.bookEnd.BookEndPresenter
 import com.intelligent.reader.read.mode.ReadState
+import iyouqu.theme.BaseCacheableActivity
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants

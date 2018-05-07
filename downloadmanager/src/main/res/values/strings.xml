@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="module_name">下载管理</string>
+
+    <string name="edit">编辑</string>
+    <string name="cancel">取消</string>
+    <string name="delete">删除</string>
+    <string name="complete">完成</string>
+    <string name="select_all">全选</string>
+    <string name="select_all_cancel">取消全选</string>
+    <string name="download_manager">缓存管理</string>
+
+    <string name="status_downloading">缓存中</string>
+    <string name="status_wait">等待缓存</string>
+    <string name="status_finish">缓存完成</string>
+    <string name="status_pause">已暂停</string>
+    <string name="status_no_cache">无缓存</string>
+    <string name="status_wifi_require">非Wi-Fi状态下已自动暂停</string>
+
+    <string name="go_to_book_store">去书城</string>
+
+    <string name="cached">已缓存</string>
+    <string name="not_cache">未缓存</string>
+
+    <string name="edit_cache">编辑缓存</string>
+    <string name="sort_for_update_time">按更新时间排序</string>
+    <string name="sort_for_reading_time">按最后阅读排序</string>
+
+    <string name="default_title">正义的秘密</string>
+    <string name="default_message">有人说过,衡量一个作家是否优秀,就看他能不能担负起社会责任.东野吾做到了.</string>
+
+    <string name="delete_cache">删除缓存</string>
+
+    <string name="prompt">提示</string>
+
+    <string name="download_manager_empty_prompt">当前无缓存</string>
+
+    <string name="download_manager_delete_empty">您还没有选择书籍</string>
+
+    <!--<string name="download_manager_no_book_desc">暂无缓存书籍，去书城逛逛吧~</string>-->
+</resources>

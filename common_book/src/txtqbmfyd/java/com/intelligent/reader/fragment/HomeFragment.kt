@@ -47,6 +47,8 @@ import net.lzbook.kit.constants.SPKeys
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.router.RouterConfig
+import net.lzbook.kit.router.RouterUtil
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.update.ApkUpdateUtils
 import java.util.*
@@ -118,7 +120,7 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
     private val homeMenuPopup: HomeMenuPopup by lazy {
         val popup = HomeMenuPopup(activity)
         popup.setOnDownloadClickListener {
-            startActivity(Intent(activity, DownloadManagerActivity::class.java))
+            RouterUtil.navigation(RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
             presenter.uploadDownloadManagerLog()
         }
         popup.setOnSortingClickListener {

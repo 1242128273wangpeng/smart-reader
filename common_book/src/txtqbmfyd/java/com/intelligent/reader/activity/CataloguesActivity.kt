@@ -24,6 +24,7 @@ import com.intelligent.reader.presenter.catalogues.CataloguesContract
 import com.intelligent.reader.presenter.catalogues.CataloguesPresenter
 import com.intelligent.reader.receiver.OffLineDownLoadReceiver
 import de.greenrobot.event.EventBus
+import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.main.layout_empty_catalog.*
 import kotlinx.android.synthetic.txtqbmfyd.act_catalog.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil

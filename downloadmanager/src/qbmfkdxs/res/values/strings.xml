@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="download_manager_empty_prompt">暂无缓存书籍，去书城逛逛吧!</string>
+    <string name="status_wait">等待中</string>
+    <string name="status_no_cache">未缓存</string>
+    <string name="status_finish">已缓存</string>
+</resources>

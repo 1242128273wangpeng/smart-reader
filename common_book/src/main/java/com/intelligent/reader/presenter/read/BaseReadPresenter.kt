@@ -61,6 +61,8 @@ import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.router.RouterConfig
+import net.lzbook.kit.router.RouterUtil
 import net.lzbook.kit.utils.*
 import java.io.UnsupportedEncodingException
 import java.lang.ref.WeakReference
@@ -152,9 +154,8 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         getSavedState(savedInstanceState)
         RepairHelp.showFixMsg(readReference?.get(), ReadState?.book, {
             if (readReference != null && readReference?.get() != null && !readReference?.get()!!.isFinishing) {
-                val intent_download = Intent(readReference?.get(), DownloadManagerActivity::class.java)
                 try {
-                    readReference?.get()?.startActivity(intent_download)
+                    RouterUtil.navigation(RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
                     readReference?.get()?.finish()
                 } catch (e: Exception) {
                     e.printStackTrace()

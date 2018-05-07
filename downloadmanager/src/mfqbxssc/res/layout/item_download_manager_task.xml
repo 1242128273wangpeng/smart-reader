@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fl_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/rl_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/img_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:contentDescription="@string/module_name"
+            android:src="@drawable/download_manager_item_check_icon"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/rl_item"
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:layout_alignParentTop="true"
+            android:paddingBottom="0dp"
+            android:paddingEnd="0dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="0dp"
+            android:paddingStart="15dp"
+            android:paddingTop="8dp">
+
+            <ImageView
+                android:id="@+id/img_task_action"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:contentDescription="@string/module_name"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/img_task_action"
+                android:layout_toStartOf="@id/img_task_action"
+                android:orientation="vertical"
+                android:paddingBottom="4dp"
+                android:paddingTop="0dp">
+
+                <TextView
+                    android:id="@+id/txt_book_name"
+                    style="@style/download_manager_book_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="@string/default_title"/>
+
+                <ProgressBar
+                    android:id="@+id/pgbar_task_progress"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_marginTop="10dp"
+                    android:progressDrawable="@drawable/download_manager_item_pgbar_main_bg"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:id="@+id/txt_task_state"
+                        style="@style/download_manager_task_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:text="@string/default_title"/>
+
+                    <TextView
+                        android:id="@+id/txt_task_progress"
+                        style="@style/download_manager_task_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginRight="2dp"
+                        android:layout_toEndOf="@id/txt_task_state"
+                        android:layout_toRightOf="@id/txt_task_state"
+                        android:text="@string/default_title"/>
+                </RelativeLayout>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/v_divider"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@id/rl_item"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
+            android:background="@color/divider_E8E8E8"/>
+    </RelativeLayout>
+</FrameLayout>
