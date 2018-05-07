@@ -1,20 +1,19 @@
 package com.intelligent.reader.read.help
 
-import com.intelligent.reader.R
-import com.intelligent.reader.read.mode.NovelPageBean
-
-import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.NovelLineBean
-import net.lzbook.kit.data.bean.ReadConfig
-import net.lzbook.kit.data.bean.SensitiveWords
 import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Paint.FontMetrics
+import android.support.v4.content.ContextCompat
 import android.text.TextUtils
-
-import java.util.ArrayList
+import com.intelligent.reader.R
+import com.intelligent.reader.read.mode.NovelPageBean
+import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.data.bean.NovelLineBean
+import net.lzbook.kit.data.bean.ReadConfig
+import net.lzbook.kit.data.bean.SensitiveWords
+import java.util.*
 
 class DrawTextHelper(private val resources: Resources) {
 
@@ -99,12 +98,14 @@ class DrawTextHelper(private val resources: Resources) {
         }
         paint.color = resources.getColor(color_int)
         return paint
+
     }
 
     //上下滑动
     @Synchronized
     fun drawVerticalText(canvas: Canvas, pageBean: NovelPageBean) {
         setPaintColor(ReadConfig.mPaint!!, 1)
+
         val pageLines = pageBean.lines
         val chapterNameList = pageBean.chapterNameLines
 
@@ -133,7 +134,9 @@ class DrawTextHelper(private val resources: Resources) {
     @Synchronized
     fun drawText(canvas: Canvas?, pageBean: NovelPageBean): Float {
         val pageLines = pageBean.lines
-        setPaintColor(ReadConfig.mPaint!!, 1)
+        if (ReadConfig.mPaint != null) {
+            setPaintColor(ReadConfig.mPaint!!, 1)
+        }
         if (pageLines != null && !pageLines.isEmpty()) {
             if (pageLines[0].lineContent.startsWith("txtzsydsq_homepage")) {// 封面页
                 return ReadConfig.screenHeight.toFloat()
@@ -255,9 +258,9 @@ class DrawTextHelper(private val resources: Resources) {
             size_c = chapterNameList.size
             for (i in 0..size_c - 1) {
                 if (i == 0) {
-                        val chapterNameRemain = chapterNameList[0].lineContent
-                        textPaint.textSize = 16 * ReadConfig.screenScaledDensity
-                        canvas?.drawText(chapterNameRemain, ReadConfig.READ_CONTENT_PAGE_LEFT_SPACE * ReadConfig.screenScaledDensity, y_chapter, textPaint)
+                    val chapterNameRemain = chapterNameList[0].lineContent
+                    textPaint.textSize = 16 * ReadConfig.screenScaledDensity
+                    canvas?.drawText(chapterNameRemain, ReadConfig.READ_CONTENT_PAGE_LEFT_SPACE * ReadConfig.screenScaledDensity, y_chapter, textPaint)
                 } else {
                     textPaint.textSize = 23 * ReadConfig.screenScaledDensity
                     fm_chapter = textPaint.fontMetrics
@@ -298,7 +301,4 @@ class DrawTextHelper(private val resources: Resources) {
         return stringBuffer.toString()
     }
 
-    companion object {
-        private val TAG = "DrawTextHelper"
-    }
 }

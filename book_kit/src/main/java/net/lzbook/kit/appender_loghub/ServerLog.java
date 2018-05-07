@@ -6,21 +6,49 @@ import net.lzbook.kit.appender_loghub.common.PLItemKey;
 import net.lzbook.kit.user.DeviceID;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.JsonUtils;
 import net.lzbook.kit.utils.OpenUDID;
+
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Keep;
+import org.greenrobot.greendao.annotation.Transient;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * Created by wangjwchn on 16/8/2.
  */
+@Entity
 public class ServerLog {
-    Map<String, Object> mContent = new HashMap<String, Object>();
+    @Transient
+    public static final String MAJORITY = "majority";
+
+    @Transient
+    public static final String MINORITY = "minority";
+
+    @Transient
+    private Map<String, Object> mContent = new HashMap<String, Object>();
+
+    @Id
+    private Long id;
+
+    private String eventType = MAJORITY;
+
+    private String timeStamp;
+
+    private String contentJson;
+
+    public ServerLog() {
+        this.mContent.put("__time__", Integer.valueOf((new Long(System.currentTimeMillis() / 1000L)).intValue()));
+    }
 
     //isClickEvent 标识是否是event点击事件
     public ServerLog(PLItemKey type) {
         if (type.equals(PLItemKey.ZN_APP_APPSTORE)) {
-
+            eventType = MINORITY;
             if (!mContent.containsKey("project")) {
                 mContent.put("project", PLItemKey.ZN_APP_APPSTORE.getProject());
             }
@@ -115,6 +143,15 @@ public class ServerLog {
         mContent.put("__time__", new Long(System.currentTimeMillis() / 1000).intValue());
     }
 
+    @Keep
+    public ServerLog(Long id, String eventType, String timeStamp, String contentJson) {
+        this.id = id;
+        this.eventType = eventType;
+        this.timeStamp = timeStamp;
+        this.contentJson = contentJson;
+        mContent = JsonUtils.fromJson(contentJson);
+    }
+
     public void PutTime(int time) {
         mContent.put("__time__", time);
     }
@@ -132,5 +169,37 @@ public class ServerLog {
 
     public Map<String, Object> GetContent() {
         return mContent;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getEventType() {
+        return this.eventType;
+    }
+
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
+    }
+
+    public String getTimeStamp() {
+        return this.timeStamp;
+    }
+
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    public String getContentJson() {
+        return this.contentJson;
+    }
+
+    public void setContentJson(String contentJson) {
+        this.contentJson = contentJson;
     }
 }

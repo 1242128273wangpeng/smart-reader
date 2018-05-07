@@ -6,6 +6,7 @@ import android.util.Log;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.appender.AndroidLogClient;
+import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage;
 import net.lzbook.kit.appender_loghub.common.PLItemKey;
 import net.lzbook.kit.appender_loghub.util.FormatUtil;
 import net.lzbook.kit.constants.Constants;
@@ -18,7 +19,9 @@ import net.lzbook.kit.utils.OpenUDID;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -178,7 +181,7 @@ public class StartLogClickUtil {
     public static final String POPUPSHELFADD = "POPUPSHELFADD";//阅读页加入书架弹窗加入
     public static final String POPUPSHELFADDCANCLE = "POPUPSHELFADDCANCLE";//阅读页加入书架弹窗取消
     public static final String SET = "SET";//点击阅读页内设置
-
+    public static final String DEFAULTSETTING = "DEFAULTSETTINGS";//点击阅读页内设置
 
     //'阅读页设置
     public static final String LIGHTEDIT = "LIGHTEDIT";//点击亮度调整
@@ -234,10 +237,8 @@ public class StartLogClickUtil {
     public static final String RESOLVEPACKE = "RESOLVEPACKE";
 
 
-    private static final ExecutorService logThreadPool = Executors.newSingleThreadExecutor();
+    private static List<String> prePageList = new ArrayList<>();
 
-
-    private static List<ServerLog> linkList = new LinkedList<ServerLog>();
 
     //上传普通的点击事件
     public static void upLoadEventLog(Context context, String pageCode, String identify) {
@@ -249,16 +250,15 @@ public class StartLogClickUtil {
 
         log.PutContent("code", identify);//点击事件唯一标识
         log.PutContent("page_code", pageCode);
+        log.PutContent("pre_page_code", getPrePageCode(pageCode));
 
-        logThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                AppLog.e("log", log.GetContent().toString());
-                AndroidLogClient.putLog(log);
-            }
-        });
 
+        AppLog.e("log", log.GetContent().toString());
+        if (identify.equals(APPINIT)) log.setEventType(ServerLog.MINORITY);
+
+        AndroidLogStorage.getInstance().accept(log);
     }
+
 
     public static void sendDirectLog(PLItemKey key, String page, String identify, Map<String, String> params) {
         LogGroup logGroup = new LogGroup("", "", key.getProject(), PLItemKey.ZN_APP_EVENT.getLogstore());
@@ -327,26 +327,20 @@ public class StartLogClickUtil {
 
         log.PutContent("os", "android");//手机操作系统
         log.PutContent("log_time", System.currentTimeMillis() + "");//日志产生时间（毫秒数）
-        log.PutContent("network", NetWorkUtils.getNetWorkTypeNew(context));//网络状况
+        log.PutContent("network", NetWorkUtils.NETTYPE);//网络状况
         log.PutContent("longitude", Constants.longitude + "");//经度
         log.PutContent("latitude", Constants.latitude + "");//纬度
         log.PutContent("city_info", Constants.adCityInfo);//城市
         log.PutContent("location_detail", Constants.adLocationDetail);//具体位置信息
+        log.PutContent("pre_page_code", getPrePageCode(pageCode));
 
         //事件对应的额外的参数部分
 
         if (extraParam != null) {
             log.PutContent("data", FormatUtil.forMatMap(extraParam));
         }
-
-
-        logThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                AppLog.e("log", log.GetContent().toString());
-                AndroidLogClient.putLog(log);
-            }
-        });
+        AppLog.e("log", log.GetContent().toString());
+        AndroidLogStorage.getInstance().accept(log);
 
     }
 
@@ -363,17 +357,12 @@ public class StartLogClickUtil {
         }
         log.PutContent("apps", applist);
         log.PutContent("time", System.currentTimeMillis() + "");
-
-        logThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                AppLog.e("log", log.GetContent().toString());
-                AndroidLogClient.putLog(log);
-            }
-        });
-
-
+        AppLog.e("log", log.GetContent().toString());
+        AndroidLogStorage.getInstance().accept(log);
     }
+
+
+
 
 
     //上传用户阅读内容(传参按此格式顺序)
@@ -403,24 +392,11 @@ public class StartLogClickUtil {
             log.PutContent("lon", Constants.longitude + "");//经度
             log.PutContent("lat", Constants.latitude + "");//纬度
 
+
         }
-        linkList.add(log);
+
         AppLog.e("log", log.GetContent().toString());
-        if (linkList != null && linkList.size() > 10) {
-            final List<ServerLog> list = linkList;
-            linkList = new LinkedList<>();
-            logThreadPool.execute(new Runnable() {
-                @Override
-                public void run() {
-                    for (int i = 0; i < list.size(); i++) {
-                        AndroidLogClient.putLog(list.get(i));
-                    }
-                    list.clear();
-                }
-            });
-
-        }
-
+        AndroidLogStorage.getInstance().accept(log);
     }
 
 
@@ -472,14 +448,7 @@ public class StartLogClickUtil {
         log.PutContent("city_info", Constants.adCityInfo);
         log.PutContent("location_detail", Constants.adLocationDetail);
 
-        AppLog.e("log", log.GetContent().toString());
-        logThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                AndroidLogClient.putLog(log);
-            }
-        });
-
+        AndroidLogStorage.getInstance().accept(log);
     }
 
     private static String decode(String content) {
@@ -494,5 +463,39 @@ public class StartLogClickUtil {
         return "";
     }
 
+    //获取prePageCode
+    public synchronized static String getPrePageCode(String pageCode) {
+        String pre_page_code = "";
+
+        if (prePageList.size() == 0 || (prePageList.size() > 0 && pageCode !=null && !prePageList.get(prePageList.size() - 1).equals(pageCode))) {
+            prePageList.add(pageCode);
+            removePre(prePageList);
+        }
+        if (prePageList != null && prePageList.size() != 0) {
+
+            for (int i = 0; i < prePageList.size(); i++) {
+                AppLog.e("loggggg", prePageList.get(i));
+            }
+
+            if (prePageList.size() > 1) {
+                pre_page_code = prePageList.get(prePageList.size() - 2);
+            } else {
+                pre_page_code = prePageList.get(prePageList.size() - 1);
+            }
+
+        } else {
+            pre_page_code = "";
+        }
+        return pre_page_code;
+    }
+
+    public  static void removePre(List<String> prePageList){
+
+        if (prePageList.size() > 6) {
+            for (int i = 0; i < 2; i++)
+                prePageList.remove(prePageList.get(i));
+        }
+
+    }
 
 }

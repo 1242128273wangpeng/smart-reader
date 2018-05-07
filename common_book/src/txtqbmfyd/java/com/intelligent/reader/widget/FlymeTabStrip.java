@@ -263,12 +263,20 @@ public class FlymeTabStrip extends HorizontalScrollView {
         // 更新Tab样式
         updateTabStyle();
         getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onGlobalLayout() {
-                getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                currentPosition = viewPager.getCurrentItem();
-                scrollToChild(currentPosition, 0);
+                try {
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                        getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }else{
+                        getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+
+                    currentPosition = viewPager.getCurrentItem();
+                    scrollToChild(currentPosition, 0);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -350,11 +358,12 @@ public class FlymeTabStrip extends HorizontalScrollView {
         public void onPageScrollStateChanged(int state) {
             if (state == ViewPager.SCROLL_STATE_IDLE) {  // 0 空闲状态  pager处于空闲状态
                 scrollToChild(viewPager.getCurrentItem(), 0);
-            } else if (state == ViewPager.SCROLL_STATE_SETTLING) { // 2 正在自动沉降，相当于松手后，pager恢复到一个完整pager的过程
-
-            } else if (state == ViewPager.SCROLL_STATE_DRAGGING) {  // 1 viewpager正在被滑动,处于正在拖拽中
-
             }
+//            else if (state == ViewPager.SCROLL_STATE_SETTLING) {
+//                // 2 正在自动沉降，相当于松手后，pager恢复到一个完整pager的过程
+//            } else if (state == ViewPager.SCROLL_STATE_DRAGGING) {
+//                // 1 viewpager正在被滑动,处于正在拖拽中
+//            }
         }
 
         /**

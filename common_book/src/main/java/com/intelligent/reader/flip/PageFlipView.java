@@ -339,12 +339,16 @@ public class PageFlipView extends GLTextureView implements GLTextureView.Rendere
     private synchronized void fillTextures() {
 
         if (!isFilledFirstTexture && firstTexture != null && !firstTexture.isRecycled()) {
-            isFilledFirstTexture = mPageFlip.getFirstPage().setFirstTexture(firstTexture);
-            log("fillTextures");
+            if(mPageFlip.getFirstPage() != null){
+                isFilledFirstTexture = mPageFlip.getFirstPage().setFirstTexture(firstTexture);
+                log("fillTextures");
+            }
         }
 
         if (!isFilledSecondTexture && secondTexture != null && !secondTexture.isRecycled()) {
-            isFilledSecondTexture = mPageFlip.getFirstPage().setSecondTexture(secondTexture);
+            if(mPageFlip.getFirstPage() != null){
+                isFilledSecondTexture = mPageFlip.getFirstPage().setSecondTexture(secondTexture);
+            }
         }
 
         if (isFilledFirstTexture && isFilledSecondTexture && getAlpha() != 1.0F) {

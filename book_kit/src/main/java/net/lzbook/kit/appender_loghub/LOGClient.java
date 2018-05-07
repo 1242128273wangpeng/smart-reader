@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 
+import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -22,6 +24,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
@@ -113,10 +116,11 @@ public class LOGClient {
         }
         final byte[] httpPostBodyZipped = GzipFrom(httpPostBody);
         final Map<String, String> httpHeaders = GetHttpHeadersFrom(logStoreName, httpPostBody, httpPostBodyZipped);
-        HttpPostRequest(httpUrl, httpHeaders, httpPostBodyZipped);
+        HttpPostRequest(logGroup.getLogs(), httpUrl, httpHeaders, httpPostBodyZipped);
     }
 
-    public void HttpPostRequest(String url, Map<String, String> headers, byte[] body) throws LogException {
+    public void HttpPostRequest(final List<ServerLog> logList, String url, Map<String, String> headers,
+                                byte[] body) throws LogException {
         URL u;
         try {
             u = new URL(url);
@@ -182,7 +186,10 @@ public class LOGClient {
                             + "\nMessage: fail to connect to the server",
                             request_id);
                 }
-            }// else success
+            } else {
+                // else success
+                AndroidLogStorage.getInstance().consumeSuccess(logList);
+            }
         } catch (IOException e) {
             throw new LogException("LogServerError",
                     "Failed to parse response data", "");

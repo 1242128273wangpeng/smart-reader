@@ -171,6 +171,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         view?.initView(mReaderViewModel!!)
 //        getBookContent()
         startRestInterval()
+        uploadReadSettingEveryDay()
     }
 
     fun initCatalogPresenter(catalogMarkFragment: CatalogMarkFragment?, optionHeader: ReadOptionHeader) {
@@ -264,6 +265,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         ReadState.chapterCount = ReadState.book?.chapter_count
 
         changeMode(ReadConfig.MODE)
+        uploadReadSettingEveryDay()
     }
 
     private fun getSavedState(savedInstanceState: Bundle?) {
@@ -853,7 +855,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
     fun onPause(mCurPageSequence: Int, mCurPageOffset: Int) {
         isFromCover = false
         if (isSubed) {
-            if (ReadState.book.book_type == 0) {
+            if (!TextUtils.isEmpty(ReadState.book_id) && ReadState.book.book_type == 0) {
                 myNovelHelper?.saveBookmark(ReadState.book_id, mCurPageSequence,
                         mCurPageOffset, mBookDaoHelper)
                 // 统计阅读章节数
@@ -963,6 +965,8 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
                 val extras = Bundle()
                 extras.putInt("sequence", ReadState.sequence)
                 extras.putInt("offset", ReadState.offset)
+                if(ReadState.book == null)
+                    return
                 extras.putSerializable("book", ReadState.book)
                 extras.putSerializable(Constants.REQUEST_ITEM, ReadState.requestItem)
                 intent.putExtras(extras)
@@ -1332,6 +1336,8 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
                     val bundle = Bundle()
                     bundle.putInt("sequence", ReadState.sequence)
                     bundle.putInt("offset", ReadState.offset)
+                    if(ReadState.book == null)
+                        return
                     bundle.putSerializable("book", ReadState.book)
                     bundle.putSerializable(Constants.REQUEST_ITEM, ReadState.requestItem)
                     val fresh = Intent(mActivityWeakReference.get(), ReadingActivity::class.java)
@@ -1396,4 +1402,30 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
 //            }
 //        })
     }
+
+
+    //根据广告来区分新老用户，阅读页设置只需要看老用户数据，老用户每天上传一次
+
+    fun uploadReadSettingEveryDay() {
+            //判断用户是否是当日首次打开应用,并上传书架的id
+            if(sp != null){
+                val first_time = sp!!.getLong(Constants.UPLOAD_OLDUSER_READ_SETTING, 0)
+
+                val currentTime = System.currentTimeMillis()
+                val b = AppUtils.isToday(first_time, currentTime)
+//                if (!b) {
+
+                    val data = HashMap<String, String>()
+                    data.put("READGAP",ReadConfig.READ_INTERLINEAR_SPACE.toString())
+                    data.put("FONT", ReadConfig.FONT_SIZE.toString())
+                    data.put("PAGETURN", Constants.PAGE_MODE.toString() + "")
+                    data.put("BACKGROUNDCOLOR", ReadConfig.MODE.toString())
+                    data.put("lightvalue", sp!!.getInt("screen_bright", -1).toString() + "")
+                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.DEFAULTSETTING, data)
+                    sp!!.edit()?.putLong(Constants.UPLOAD_OLDUSER_READ_SETTING, currentTime)?.apply()
+//                }
+            }
+
+    }
+
 }

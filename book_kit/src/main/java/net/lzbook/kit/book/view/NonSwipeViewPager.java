@@ -32,17 +32,27 @@ public class NonSwipeViewPager extends ViewPager {
         // return false;//可行,不拦截事件,
         // return true;//不行,孩子无法处理事件
         //return super.onInterceptTouchEvent(ev);//不行,会有细微移动
-        if (mScrollable) {
-            return super.onInterceptTouchEvent(ev);
-        } else {
-            return false;
+        try {
+            if (mScrollable) {
+                return super.onInterceptTouchEvent(ev);
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return false;
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         //不拦截,否则子孩子都无法收到事件,一般这个自定义的时候都不作处理
-        return super.dispatchTouchEvent(ev);
+        try {
+            return super.dispatchTouchEvent(ev);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public boolean isScrollable() {

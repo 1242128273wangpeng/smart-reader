@@ -596,7 +596,12 @@ public class Page {
         glBindTexture(GL_TEXTURE_2D, mTexIDs[FIRST_TEXTURE_ID]);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        GLUtils.texImage2D(GL_TEXTURE_2D, 0, b, 0);
+        try {
+            GLUtils.texImage2D(GL_TEXTURE_2D, 0, b, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
 
         return !checkErr("first");
     }
@@ -643,7 +648,12 @@ public class Page {
         glBindTexture(GL_TEXTURE_2D, mTexIDs[SECOND_TEXTURE_ID]);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        GLUtils.texImage2D(GL_TEXTURE_2D, 0, b, 0);
+        try {
+            GLUtils.texImage2D(GL_TEXTURE_2D, 0, b, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
 
         return !checkErr("second");
     }

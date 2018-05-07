@@ -209,7 +209,7 @@ public class PageFlip {
     // in single page mode, there is only one page in the index 0
     // in double pages mode, there are two pages, the first one is always active
     // page which is receiving finger events, for example: finger down/move/up
-    private Page mPages[];
+    private Page mPages[] = new Page[PAGE_SIZE];
     private int mPageMode;
 
     // is clicking to flip page
@@ -240,7 +240,6 @@ public class PageFlip {
         mWidthRationOfClickToFlip = WIDTH_RATIO_OF_CLICK_TO_FLIP;
 
         // init pages
-        mPages = new Page[PAGE_SIZE];
         mPageMode = SINGLE_PAGE_MODE;
 
         // key points
@@ -617,13 +616,13 @@ public class PageFlip {
         touchX = mViewRect.toOpenGLX(touchX);
         touchY = mViewRect.toOpenGLY(touchY);
         // check if touch point is contained in page?
-        boolean isContained = false;
-        if (mPages[FIRST_PAGE].contains(touchX, touchY)) {
-            isContained = true;
-        }
+//        boolean isContained = false;
+//        if (mPages != null && mPages.length > 0 && mPages[FIRST_PAGE].contains(touchX, touchY)) {
+//            isContained = true;
+//        }
 
         // point is contained, ready to flip
-        if (isContained) {
+//        if (isContained) {
 //            getFirstPage().setOriginAndDiagonalPoints(false, -touchY);
 
 //        if(isMiddleCurl){
@@ -639,7 +638,7 @@ public class PageFlip {
 
 
 //            mFlipState = PageFlipState.BEGIN_FLIP;
-        }
+//        }
     }
 
 
@@ -660,6 +659,11 @@ public class PageFlip {
      */
     public boolean onFingerMove(float touchX, float touchY) {
 
+        final Page page = mPages[FIRST_PAGE];
+        if(page == null){
+            return false;
+        }
+
         if (mOrientation == Orientation.NONE) {
             if (touchX < mDownTouchP.x) {
                 mOrientation = Orientation.RIGHT;
@@ -676,7 +680,6 @@ public class PageFlip {
         touchY = mViewRect.toOpenGLY(touchY);
 
 
-        final Page page = mPages[FIRST_PAGE];
         final GLPoint originP = page.originP;
         final GLPoint diagonalP = page.diagonalP;
 
@@ -847,7 +850,10 @@ public class PageFlip {
      * @return true if animation is started or animation is not triggered
      */
     public boolean onFingerUp(float touchX, float touchY, boolean forceFlip, boolean shouldBack) {
-
+        final Page page = mPages[FIRST_PAGE];
+        if(page == null){
+            return false;
+        }
 
         if(mOrientation == Orientation.NONE){
             mFlipState = PageFlipState.BEGIN_FLIP;
@@ -860,7 +866,7 @@ public class PageFlip {
         touchY = mViewRect.toOpenGLX(touchY);
 
 
-        final Page page = mPages[FIRST_PAGE];
+//        final Page page = mPages[FIRST_PAGE];
         final GLPoint originP = page.originP;
         final GLPoint diagonalP = page.diagonalP;
 
@@ -1035,7 +1041,7 @@ public class PageFlip {
         else if (mListener != null &&
                 mListener.canFlipForward() &&
                 (ReadConfig.INSTANCE.getFULL_SCREEN_READ()
-                        || page.isXInRange(x, mWidthRationOfClickToFlip))) {
+                        || (page != null && page.isXInRange(x, mWidthRationOfClickToFlip)))) {
             mFlipState = PageFlipState.FORWARD_FLIP;
             mKValue = tanOfForwardAngle;
 

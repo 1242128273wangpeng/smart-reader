@@ -74,19 +74,22 @@ class ReaderOwnRepository private constructor(api: UserService) : ReaderReposito
      */
     private fun getSourceChapter(chapter: Chapter): Observable<Chapter> {
 
-//        if (chapter.curl != null) {
+        if (chapter.curl != null) {
 //            return Observable.create<Chapter> {
 //                val a = URL(chapter.curl)
 //                UrlUtils.BOOK_CONTENT = a.host
 //                chapter.curl?.let { NetService.userService.getChapterContent(it, chapter) }
 //            }
-//        } else {
-//            return null
-//        }
+            val a = URL(chapter.curl)
+            UrlUtils.BOOK_CONTENT = a.host
+            return NetService.userService.getChapterContent(chapter.curl!!, chapter)
+        } else {
+            return Observable.create { e->e.onError(Throwable("content error")) }
+        }
 
-        val a = URL(chapter.curl)
-        UrlUtils.BOOK_CONTENT = a.host
-        return NetService.userService.getChapterContent(chapter.curl!!, chapter)
+//        val a = URL(chapter.curl)
+//        UrlUtils.BOOK_CONTENT = a.host
+//        return NetService.userService.getChapterContent(chapter.curl!!, chapter)
     }
 
     //空实现

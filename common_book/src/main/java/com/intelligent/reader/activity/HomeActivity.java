@@ -32,6 +32,7 @@ import com.intelligent.reader.util.EventBookStore;
 
 import net.lzbook.kit.app.ActionConstants;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage;
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
 import net.lzbook.kit.book.view.NonSwipeViewPager;
 import net.lzbook.kit.constants.Constants;
@@ -47,6 +48,7 @@ import net.lzbook.kit.utils.JSInterfaceHelper;
 import net.lzbook.kit.utils.LoadDataManager;
 import net.lzbook.kit.utils.MD5Utils;
 import net.lzbook.kit.utils.ToastUtils;
+import net.lzbook.kit.utils.oneclick.AntiShake;
 import net.lzbook.kit.utils.update.ApkUpdateUtils;
 
 import java.io.File;
@@ -87,6 +89,7 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
     private ApkUpdateUtils apkUpdateUtils;
     private MyReceiver receiver;
     private LoadDataManager mLoadDataManager;
+    private AntiShake shake = new AntiShake();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -115,6 +118,7 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
         initPositon();
         checckUrlIsTest();
         EventBus.getDefault().register(this);
+        AndroidLogStorage.getInstance().clear();
     }
 
     private void checckUrlIsTest() {
@@ -361,6 +365,7 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        AndroidLogStorage.getInstance().clear();
         HomeActivity.this.unregisterReceiver(receiver);
         if (frameHelper != null) {
             frameHelper.restoreState();
@@ -425,6 +430,9 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
 
             @Override
             public void doAnotherWeb(String url, String name) {
+                if (shake.check()){
+                    return;
+                }
                 AppLog.e(TAG, "doAnotherWeb");
                 try {
                     Intent intent = new Intent();
@@ -451,7 +459,13 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
             @Override
             public void doCover(final String host, final String book_id, final String book_source_id, final String name, final String author, final
             String parameter, final String extra_parameter) {
-                AppLog.e(TAG, "doCover");
+                if (shake.check()){
+                    return;
+                }
+                Map<String, String> data = new HashMap<>();
+                data.put("BOOKID", book_id);
+                data.put("source", "WEBVIEW");
+                StartLogClickUtil.upLoadEventLog(HomeActivity.this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data);
 
                 RequestItem requestItem = new RequestItem();
                 requestItem.book_id = book_id;

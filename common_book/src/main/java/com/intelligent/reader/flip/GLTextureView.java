@@ -532,16 +532,16 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
     @Override
     public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
         if(mWidth == 0 || mHeight == width) {
-            mWidth = ReadConfig.INSTANCE.getScreenWidth();
-            mHeight = ReadConfig.INSTANCE.getScreenHeight();
-            mGLThread.onWindowResize(mWidth, mHeight);
+            mWidth = width;
+            mHeight = height;
+            mGLThread.onWindowResize(width, height);
         }
     }
 
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-        // Surface will be destroyed when we return
         mWidth = 0;
+        // Surface will be destroyed when we return
         mGLThread.surfaceDestroyed();
         if(null != mRenderer) {
             mRenderer.onSurfaceDestroyed();

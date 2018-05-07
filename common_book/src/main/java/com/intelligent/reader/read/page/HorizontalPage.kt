@@ -43,7 +43,7 @@ import java.util.*
  * 4、状态改变通知父类 （ 页面状态 章节状态 ） ？父类游标
  * 5、父类检查 三个item 的状态 tag 做出整体的判断
  * 页面状态逻辑
- * 默认loding
+ * 默认loading
  * 如果当前页为loading 禁止vp滑动
  * error
  * 重新加载数据
@@ -51,6 +51,7 @@ import java.util.*
  * Created by wt on 2017/12/14.
  */
 class HorizontalPage : FrameLayout, Observer {
+
 
     private var mDrawTextHelper: DrawTextHelper? = null
     private lateinit var loadView: View
@@ -71,14 +72,20 @@ class HorizontalPage : FrameLayout, Observer {
     var hasAd = false
     var hasBigAd = false
     var noticePageListener: NoticePageListener? = null
+
     var mNovelPageBean: NovelPageBean? = null
 
     var orientationLimit = ReadViewEnums.ScrollLimitOrientation.NONE
 
-    internal var mDisposable: CompositeDisposable = CompositeDisposable()
+    private var mDisposable: CompositeDisposable = CompositeDisposable()
 
 //    var drawCacheBitmap:Bitmap? = null
 //    var innerCanvas:Canvas? = null
+
+
+    constructor(context: Context?) : super(context)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     constructor(context: Context, noticePageListener: NoticePageListener) : this(context, null, noticePageListener)
 
@@ -88,9 +95,10 @@ class HorizontalPage : FrameLayout, Observer {
         this.noticePageListener = noticePageListener
         isDrawingCacheEnabled = true
         setChildrenDrawingCacheEnabled(true)
-        setChildrenDrawnWithCacheEnabled(true)
+        isChildrenDrawnWithCacheEnabled = true
         init()
     }
+
 
     private fun init() {
         mDrawTextHelper = DrawTextHelper(context.resources)
@@ -113,18 +121,18 @@ class HorizontalPage : FrameLayout, Observer {
         addView(mAdFrameLayout, layoutParams)
         addView(loadView)
 
-        loadView.setOnTouchListener { v, event ->
+        loadView.setOnTouchListener { _, _ ->
             requestDisallowInterceptTouchEvent(true)
             true
         }
-        errorView.setOnTouchListener { v, event ->
+        errorView.setOnTouchListener { _, _ ->
             requestDisallowInterceptTouchEvent(true)
             true
         }
     }
 
     override fun getDrawingCache(): Bitmap? {
-        if (ReadViewEnums.PageIndex.current.equals(tag) && (hasAd || hasBigAd)) {
+        if (ReadViewEnums.PageIndex.current == tag && (hasAd || hasBigAd)) {
 //            destroyDrawingCache()
         }
         return super.getDrawingCache()
@@ -212,7 +220,7 @@ class HorizontalPage : FrameLayout, Observer {
 
     private fun onReSeparate() = DataProvider.getInstance().onReSeparate()
 
-    fun onRedrawPage() {
+    private fun onRedrawPage() {
         mAdFrameLayout.removeAllViews()
 
         if (tag == ReadViewEnums.PageIndex.current) {
@@ -334,7 +342,7 @@ class HorizontalPage : FrameLayout, Observer {
             homePage.slogan_tv.setTextView(2f, context.resources.getString(R.string.slogan))
             homePage.product_name_tv.setTextView(1f, context.resources.getString(R.string.app_name))
             //封面字颜色
-            var color = ReadQueryUtil.getHomePageColor(resources)
+            val color = ReadQueryUtil.getHomePageColor(resources)
             homePage.book_name_tv.setTextColor(color)
             homePage.book_auth_tv.setTextColor(color)
             homePage.slogan_tv.setTextColor(color)
@@ -367,7 +375,7 @@ class HorizontalPage : FrameLayout, Observer {
                     noticePageListener?.onClickMenu(true)
                 }
             }
-            errorView.loading_error_reload.setOnTouchListener { v, event ->
+            errorView.loading_error_reload.setOnTouchListener { _, _ ->
                 parent?.requestDisallowInterceptTouchEvent(true)
                 return@setOnTouchListener false
             }
@@ -423,7 +431,7 @@ class HorizontalPage : FrameLayout, Observer {
             }
         }
 
-        var entranceArray = arrayOf(false, false, false)
+        private var entranceArray = arrayOf(false, false, false)
         /**
          * 入口模式
          * 加载3章至内存
@@ -466,7 +474,7 @@ class HorizontalPage : FrameLayout, Observer {
 //                }
 //            })
 
-            if(cursor.sequence == -1){
+            if (cursor.sequence == -1) {
                 DataProvider.getInstance().loadChapter(cursor.curBook, cursor.sequence, ReadViewEnums.PageIndex.next, object : DataProvider.ReadDataListener() {
                     override fun loadDataSuccess(c: Chapter?, type: ReadViewEnums.PageIndex) = checkEntrance(cursor, 2)
                     override fun loadDataError(message: String) = checkEntrance(cursor, 2)
@@ -479,7 +487,7 @@ class HorizontalPage : FrameLayout, Observer {
 
         fun checkEntrance(cursor: ReadCursor, index: Int) {
 
-            if (viewState == ReadViewEnums.ViewState.success){
+            if (viewState == ReadViewEnums.ViewState.success) {
                 return
             }
 
@@ -487,10 +495,10 @@ class HorizontalPage : FrameLayout, Observer {
             //true 通知其他页面加载
 //            entranceArray[index] = true
 //            if (entranceArray.all { it }) {
-                setCursor(cursor)
+            setCursor(cursor)
 //                this@HorizontalPage.destroyDrawingCache()
 //            }
-            if(ReadState.isJumpMenuShow){
+            if (ReadState.isJumpMenuShow) {
                 noticePageListener?.onClickMenu(true)
                 ReadState.isJumpMenuShow = false
             }
@@ -567,10 +575,10 @@ class HorizontalPage : FrameLayout, Observer {
                         postInvalidate()
                     }
 
-                    if (cursor.sequence == ReadState.chapterCount - 1 && pageIndex == pageSum) {
-                        orientationLimit = ReadViewEnums.ScrollLimitOrientation.RIGHT
+                    orientationLimit = if (cursor.sequence == ReadState.chapterCount - 1 && pageIndex == pageSum) {
+                        ReadViewEnums.ScrollLimitOrientation.RIGHT
                     } else {
-                        orientationLimit = ReadViewEnums.ScrollLimitOrientation.NONE
+                        ReadViewEnums.ScrollLimitOrientation.NONE
                     }
 
                     try {
@@ -589,9 +597,9 @@ class HorizontalPage : FrameLayout, Observer {
                                 val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
                                 layoutParams.topMargin = AppUtils.dip2px(context, 26f)
                                 layoutParams.bottomMargin = AppUtils.dip2px(context, 26f)
-                                if(ReadConfig.MODE == 61){
+                                if (ReadConfig.MODE == 61) {
                                     mAdFrameLayout.alpha = 0.5f
-                                }else{
+                                } else {
                                     mAdFrameLayout.alpha = 1f
                                 }
                                 mAdFrameLayout.addView(mNovelPageBean!!.adBigView, layoutParams)
@@ -625,9 +633,9 @@ class HorizontalPage : FrameLayout, Observer {
 
                         if (mNovelPageBean?.adSmallView != null && mNovelPageBean?.adSmallView?.parent == null) {
                             hasAd = true
-                            if(ReadConfig.MODE == 61){
+                            if (ReadConfig.MODE == 61) {
                                 mAdFrameLayout.alpha = 0.5f
-                            }else{
+                            } else {
                                 mAdFrameLayout.alpha = 1f
                             }
                             mAdFrameLayout.addView(mNovelPageBean!!.adSmallView, param)
@@ -638,7 +646,7 @@ class HorizontalPage : FrameLayout, Observer {
                     //设置top and bottom
                     val chapterProgress = "${cursor.sequence.plus(1)} / ${ReadState.chapterList.size} 章"
                     val pageProgress = "本章第$pageIndex/$pageSum"
-                    if (cursor.sequence<ReadState.chapterList.size && cursor.sequence > -1) {
+                    if (cursor.sequence < ReadState.chapterList.size && cursor.sequence > -1) {
                         setTopAndBottomViewContext(ReadState.chapterList[cursor.sequence].chapter_name ?: "", chapterProgress, pageProgress)
                     }
 
@@ -689,12 +697,18 @@ class HorizontalPage : FrameLayout, Observer {
         }
 
         override fun onTouchEvent(event: MotionEvent): Boolean {
+
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                performClick()
+            }
             return if (viewState == ReadViewEnums.ViewState.loading || viewState == ReadViewEnums.ViewState.error) {
                 return false
             } else {
                 mGestureDetector.onTouchEvent(event)
             }
         }
+
+
 
         private val mGestureDetector by lazy {
             val detector = GestureDetector(context, object : GestureDetector.OnGestureListener {
@@ -706,11 +720,8 @@ class HorizontalPage : FrameLayout, Observer {
 //                    }
 //                    time = System.currentTimeMillis()
 
-                    if (ReadConfig.animation == ReadViewEnums.Animation.curl) {
-                        return isTouchMenuArea(event)
-                    } else {
-                        return true
-                    }
+                    return if (ReadConfig.animation == ReadViewEnums.Animation.curl) isTouchMenuArea(event) else true
+
                 }
 
                 override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
