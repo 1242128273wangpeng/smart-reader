@@ -1,5 +1,6 @@
 package com.intelligent.reader.activity;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.util.DynamicParamter;
@@ -10,6 +11,7 @@ import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.db.BookChapterDao;
 import net.lzbook.kit.data.db.BookDaoHelper;
+import net.lzbook.kit.router.RouterConfig;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
@@ -44,6 +46,7 @@ import iyouqu.theme.FrameActivity;
 
 import static android.view.KeyEvent.KEYCODE_BACK;
 
+@Route(path = RouterConfig.SPLASH_ACTIVITY)
 public class SplashActivity extends FrameActivity {
     private static String TAG = "SplashActivity";
     private final MHandler handler = new MHandler(this);

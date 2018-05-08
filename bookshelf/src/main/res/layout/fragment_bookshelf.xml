@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/bookshelf_main"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/white">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bookshelf_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
 
     <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
         android:id="@+id/bookshelf_refresh_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.intelligent.reader.widget.topshadow.TopShadowRecyclerView
+        <com.dingyue.bookshelf.TopShadowRecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -129,7 +130,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="fitXY"
-        android:visibility="gone"
-        android:src="@drawable/top_shadow_bg"/>
+        android:src="@drawable/top_shadow_bg"
+        android:visibility="gone"/>
 
 </RelativeLayout>

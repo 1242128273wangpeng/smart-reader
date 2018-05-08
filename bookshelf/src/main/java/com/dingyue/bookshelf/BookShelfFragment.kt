@@ -1,4 +1,4 @@
-package com.intelligent.reader.fragment
+package com.dingyue.bookshelf
 
 import android.content.Context
 import android.content.Intent
@@ -11,21 +11,10 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.intelligent.reader.BuildConfig
-import com.intelligent.reader.R
-import com.intelligent.reader.activity.HomeActivity
-import com.intelligent.reader.adapter.BookShelfReAdapter
-import com.intelligent.reader.app.BookApplication
-import com.intelligent.reader.presenter.bookshelf.BookShelfPresenter
-import com.intelligent.reader.presenter.bookshelf.BookShelfView
-import com.intelligent.reader.read.help.BookHelper
-import com.intelligent.reader.util.BookShelfRemoveHelper
-import com.intelligent.reader.util.ShelfGridLayoutManager
-import com.intelligent.reader.widget.BookDeleteDialog
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import kotlinx.android.synthetic.main.fragment_bookshelf.*
 import kotlinx.android.synthetic.main.layout_head.view.*
-import kotlinx.android.synthetic.txtqbmfyd.fragment_bookshelf.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.constants.Constants
@@ -35,6 +24,7 @@ import net.lzbook.kit.data.bean.BookUpdate
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
+import net.lzbook.kit.router.BookRouter
 import net.lzbook.kit.utils.*
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -214,9 +204,11 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity.applicationContext)
 
         fragmentCallback.frameHelper()
-        if (activity is HomeActivity) {
-            frameBookHelper = (activity as HomeActivity).frameHelper
-        }
+
+        //TODO
+//        if (activity is HomeActivity) {
+//            frameBookHelper = (activity as HomeActivity).frameHelper
+//        }
 
         frameBookHelper?.setDownNotify {
             updateUI()
@@ -255,9 +247,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
     override fun onDestroy() {
         super.onDestroy()
 
-        if (BuildConfig.DEBUG) {
-            BookApplication.getRefWatcher().watch(this)
-        }
+//        if (BuildConfig.DEBUG) {
+//            BookApplication.getRefWatcher().watch(this)
+//        }
 
         frameBookHelper?.recycleCallback()
 
@@ -438,7 +430,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
         if (Constants.isShielding && !noBookSensitive && bookSensitiveWords.contains(book.book_id.toString())) {
             ToastUtils.showToastNoRepeat("抱歉，该小说已下架！")
         } else {
-            BookHelper.goToCoverOrRead(activity.applicationContext, activity, book, 0)
+            BookRouter.navigateCoverOrRead(activity, book, 0)
             AppLog.e(TAG, "goToCoverOrRead")
         }
     }

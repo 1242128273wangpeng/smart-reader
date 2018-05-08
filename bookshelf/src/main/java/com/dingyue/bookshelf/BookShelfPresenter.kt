@@ -1,4 +1,4 @@
-package com.intelligent.reader.presenter.bookshelf
+package com.dingyue.bookshelf
 
 import android.app.Activity
 import android.app.NotificationManager
@@ -6,9 +6,8 @@ import android.content.*
 import android.os.IBinder
 import android.text.TextUtils
 import android.view.ViewGroup
-import com.intelligent.reader.R
+import com.dingyue.bookshelf.contract.BookHelperContract
 import com.intelligent.reader.presenter.IPresenter
-import com.intelligent.reader.read.help.BookHelper
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
@@ -64,7 +63,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
         if (bookDaoHelper.booksCount > 0 && updateService != null) {
             val list = bookDaoHelper.booksList
             AppLog.e(tag, "BookUpdateCount: " + list.size)
-            updateService?.checkUpdate(BookHelper.getBookUpdateTaskData(list, updateCallBack))
+            updateService?.checkUpdate(BookHelperContract.loadBookUpdateTaskData(list, updateCallBack))
         }
     }
 

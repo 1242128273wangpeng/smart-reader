@@ -1,6 +1,4 @@
-package com.intelligent.reader.adapter.holder;
-
-import com.intelligent.reader.adapter.BookShelfReAdapter;
+package com.dingyue.bookshelf;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

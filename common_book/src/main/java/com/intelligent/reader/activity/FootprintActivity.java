@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.intelligent.reader.R;
-import com.intelligent.reader.adapter.BookShelfReAdapter;
+import com.dingyue.bookshelf.BookShelfReAdapter;
 import com.intelligent.reader.adapter.paging.BaseAdapter;
 import com.intelligent.reader.adapter.paging.HisAdapter;
 import com.intelligent.reader.adapter.paging.LoadMoreAdapterWrapper;

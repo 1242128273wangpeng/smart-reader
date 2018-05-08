@@ -1,8 +1,8 @@
 package com.intelligent.reader.adapter.paging;
 
 import com.intelligent.reader.R;
-import com.intelligent.reader.adapter.BookShelfReAdapter;
-import com.intelligent.reader.adapter.holder.AbsRecyclerViewHolder;
+import com.dingyue.bookshelf.BookShelfReAdapter;
+import com.dingyue.bookshelf.AbsRecyclerViewHolder;
 import com.intelligent.reader.adapter.holder.HistoryHolder;
 
 import net.lzbook.kit.data.ormlite.bean.HistoryInfo;

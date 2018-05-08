@@ -1,4 +1,4 @@
-package com.intelligent.reader.adapter;
+package com.dingyue.bookshelf;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
@@ -7,9 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.RelativeLayout;
-
-import com.intelligent.reader.R;
-import com.intelligent.reader.adapter.holder.AbsRecyclerViewHolder;
 
 import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
@@ -47,7 +44,8 @@ public class BookShelfReAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         down_table = new ArrayList<>();
         remove_checked_states = new HashSet<>();
         resetRemovedState();
-        distanceY = (int) mContext.getResources().getDimension(R.dimen.bottom_tab_height);
+
+        distanceY = (int) mContext.getResources().getDimension(R.dimen.dimen_view_height_50);
     }
 
     @Override

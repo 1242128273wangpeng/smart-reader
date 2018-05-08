@@ -10,6 +10,7 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.Toast
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.intelligent.reader.R
@@ -29,6 +30,7 @@ import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.CoverPage
 import net.lzbook.kit.data.bean.RequestItem
+import net.lzbook.kit.router.RouterConfig
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils
@@ -36,6 +38,7 @@ import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.Callable
 
+@Route(path = RouterConfig.COVERPAGE_ACTIVITY)
 class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageContract, CallBackDownload {
     private var loadingPage: LoadingPage? = null
     private var requestItem: RequestItem? = null

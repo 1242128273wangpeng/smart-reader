@@ -1,4 +1,4 @@
-package com.intelligent.reader.util;
+package com.dingyue.bookshelf;
 
 import android.content.Context;
 import android.os.Handler;
@@ -10,9 +10,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.PopupWindow;
-
-import com.intelligent.reader.R;
-import com.intelligent.reader.adapter.BookShelfReAdapter;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;

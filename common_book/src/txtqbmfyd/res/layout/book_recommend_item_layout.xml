@@ -10,7 +10,7 @@
             android:layout_width="70dp"
             android:layout_height="99dp"
             android:scaleType="fitXY"
-            android:src="@mipmap/bookshelf_book_cover_default"/>
+            android:src="@drawable/bookshelf_book_cover_default"/>
 
     <TextView
             android:id="@+id/book_name_tv"

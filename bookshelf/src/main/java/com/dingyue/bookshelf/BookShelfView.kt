@@ -1,4 +1,4 @@
-package com.intelligent.reader.presenter.bookshelf
+package com.dingyue.bookshelf
 
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.data.bean.Book

@@ -1,9 +1,6 @@
-1.0.0版本
-
-1、需要检查的点
- 1.各个壳Gradle配置是否是最新，逐分支检查
- 2.Readme文档完善
- 3.Presenter层抽离，代码完善、优化
- 4.DownloadPager移除
- 5.PopupWindow代码优化
- 6.ListView转RecyclerView
+版本：1.0.0
+修改内容：
+    1、代码由MVC转MVP，Java转Kotlin
+    2、优化代码，移除DownloadPager，列表由ListView转为RecyclerView，优化下载管理删除弹窗
+    3、代码抽离，所有外部依赖资源全部使用中间层的形式进行抽离
+    4、Presenter层代码由ViewModel + LiveData实现

@@ -20,14 +20,14 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.webkit.WebView;
 
+import com.dingyue.bookshelf.BookShelfFragment;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.fragment.BaseFragment;
-import com.intelligent.reader.fragment.BookShelfFragment;
+import com.dingyue.bookshelf.BaseFragment;
 import com.intelligent.reader.fragment.HomeFragment;
 import com.intelligent.reader.fragment.WebViewFragment;
-import com.intelligent.reader.util.BookShelfRemoveHelper;
+import com.dingyue.bookshelf.BookShelfRemoveHelper;
 import com.intelligent.reader.util.EventBookStore;
 
 import net.lzbook.kit.app.ActionConstants;

@@ -1,6 +1,4 @@
-package net.lzbook.kit.book.component.fragment;
-
-import net.lzbook.kit.utils.RemoveAdapterHelper;
+package com.dingyue.bookshelf;
 
 import android.app.Activity;
 import android.content.Context;
@@ -64,7 +62,7 @@ public abstract class BaseFragment extends Fragment {
         //应该是NoeSwpieViewPager
         void getViewPager(ViewPager pager);
 
-        void getRemoveMenuHelper(RemoveAdapterHelper helper);
+        void getRemoveMenuHelper(BookShelfRemoveHelper helper);
 
         //应该是BookShelfFragment
         void getFrameBookRankView(Fragment bookView);

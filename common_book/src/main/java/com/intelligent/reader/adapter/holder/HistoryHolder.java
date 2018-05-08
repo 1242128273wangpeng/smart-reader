@@ -2,8 +2,9 @@ package com.intelligent.reader.adapter.holder;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.dingyue.bookshelf.AbsRecyclerViewHolder;
 import com.intelligent.reader.R;
-import com.intelligent.reader.adapter.BookShelfReAdapter;
+import com.dingyue.bookshelf.BookShelfReAdapter;
 
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.ormlite.bean.HistoryInfo;

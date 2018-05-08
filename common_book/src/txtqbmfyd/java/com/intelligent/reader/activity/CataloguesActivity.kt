@@ -15,6 +15,7 @@ import android.widget.AbsListView
 import android.widget.AbsListView.OnScrollListener
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.BookmarkAdapter
@@ -31,6 +32,7 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.*
+import net.lzbook.kit.router.RouterConfig
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.StatServiceUtils
 import java.util.*
@@ -40,6 +42,8 @@ import java.util.concurrent.Callable
  * CataloguesActivity
  * 小说目录
  */
+
+@Route(path = RouterConfig.CATALOGUES_ACTIVITY)
 class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollListener, OnItemClickListener, CataloguesContract {
 
     internal var colorSelected: Int = 0

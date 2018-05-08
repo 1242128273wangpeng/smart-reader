@@ -1,4 +1,4 @@
-package com.intelligent.reader.util;
+package com.dingyue.bookshelf;
 
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;

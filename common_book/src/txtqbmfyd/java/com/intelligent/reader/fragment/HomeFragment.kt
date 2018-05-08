@@ -19,6 +19,8 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.baidu.mobstat.StatService
+import com.dingyue.bookshelf.BaseFragment
+import com.dingyue.bookshelf.BookShelfFragment
 import com.intelligent.reader.BuildConfig
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.*

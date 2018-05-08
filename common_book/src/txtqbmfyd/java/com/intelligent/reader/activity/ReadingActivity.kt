@@ -15,6 +15,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.CatalogMarkFragment
@@ -44,6 +45,7 @@ import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.data.bean.Source
+import net.lzbook.kit.router.RouterConfig
 import net.lzbook.kit.utils.*
 import java.lang.Exception
 import java.lang.reflect.Method
@@ -54,6 +56,8 @@ import java.util.*
  * ReadingActivity
  * 小说阅读页
  */
+
+@Route(path = RouterConfig.READING_ACTIVITY)
 class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener, ReadSettingView.OnReadSettingListener, ReadPreInterface.View, IReadPageChange
         , ReaderViewWidget.OnAutoReadCallback, CallBackDownload {
 

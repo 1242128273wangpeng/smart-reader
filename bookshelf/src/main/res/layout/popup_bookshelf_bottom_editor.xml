@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_view_height_50"
         android:layout_below="@+id/img_bottom_shadow"
-        android:background="@color/white"
+        android:background="#FFFFFF"
         android:orientation="horizontal">
 
         <Button
