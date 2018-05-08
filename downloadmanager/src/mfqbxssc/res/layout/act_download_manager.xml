@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <RelativeLayout
+        android:id="@+id/rl_head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:fitsSystemWindows="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp">
+
+            <ImageView
+                android:id="@+id/img_head_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="14dp"
+                android:layout_marginStart="14dp"
+                android:contentDescription="@string/module_name"
+                android:paddingBottom="2dp"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:paddingTop="2dp"
+                android:src="@drawable/download_manager_head_back_sel"/>
+
+            <TextView
+                android:id="@+id/txt_head_select_all"
+                style="@style/download_manager_header_action"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="14dp"
+                android:layout_marginStart="14dp"
+                android:gravity="center"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:text="@string/select_all"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/txt_head_title"
+                style="@style/download_manager_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/download_manager"/>
+
+            <ImageView
+                android:id="@+id/img_head_more"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginEnd="14dp"
+                android:layout_marginRight="14dp"
+                android:contentDescription="@string/module_name"
+                android:paddingBottom="2dp"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:paddingTop="2dp"
+                android:src="@drawable/download_manager_head_more_icon"/>
+
+            <TextView
+                android:id="@+id/txt_head_cancel"
+                style="@style/download_manager_header_action"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginEnd="14dp"
+                android:layout_marginRight="14dp"
+                android:gravity="center"
+                android:paddingBottom="2dp"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:paddingTop="2dp"
+                android:text="@string/complete"
+                android:visibility="gone"/>
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recl_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rl_head"/>
+
+    <RelativeLayout
+        android:id="@+id/ll_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rl_head"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/txt_empty_prompt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="230dp"
+            android:gravity="center"
+            android:text="@string/download_manager_empty_prompt"
+            android:textColor="#9B9B9B"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/txt_empty_find"
+            android:layout_width="120dp"
+            android:layout_height="38dp"
+            android:layout_below="@id/txt_empty_prompt"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="17dp"
+            android:background="@drawable/download_manager_empty_bg_sel"
+            android:gravity="center"
+            android:text="@string/go_to_book_store"
+            android:textColor="@drawable/download_manager_empty_text_color_sel"
+            android:textSize="16sp"/>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/img_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl_head"
+        android:scaleType="fitXY"
+        android:src="@mipmap/top_shadow"
+        android:visibility="gone"/>
+</RelativeLayout>

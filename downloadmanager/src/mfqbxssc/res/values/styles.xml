@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 免费全本小说书城 -->
+    <style name="download_manager_header_action">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+
+    <style name="download_manager_title">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+
+    <style name="download_manager_cached_state">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">#E64A4A4A</item>
+    </style>
+
+    <style name="download_manager_book_name">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#323232</item>
+    </style>
+
+    <style name="download_manager_task_info">
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">#838181</item>
+    </style>
+
+    <style name="download_manager_more_action">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#D9000000</item>
+    </style>
+</resources>

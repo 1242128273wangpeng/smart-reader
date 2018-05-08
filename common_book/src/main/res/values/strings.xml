@@ -265,11 +265,4 @@
     <string name="theme_night"></string>
     <string name="mode_day">日间模式</string>
     <string name="mode_night">夜间模式</string>
-
-    <string name="not_wifi_cache_confirm">当前为非Wi-Fi网络，是否继续缓存？</string>
-    <string name="dialog_cache_sure">确定</string>
-    <string name="dialog_title_tip">提示</string>
-    <string name="dialog_cache_complete_with_err">《%1$s》缓存任务已完成, 但部分章节无法缓存</string>
-    <string name="dialog_cache_know">我知道了</string>
-
 </resources>

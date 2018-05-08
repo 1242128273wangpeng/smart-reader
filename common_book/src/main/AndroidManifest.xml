@@ -371,11 +371,6 @@
                 android:screenOrientation="portrait"
                 android:theme="@style/AppThemeTranslucent"/>
         <activity
-                android:name=".activity.DownloadManagerActivity"
-                android:launchMode="singleTop"
-                android:screenOrientation="portrait"
-                android:theme="@style/AppThemeTranslucent"/>
-        <activity
                 android:name=".activity.GuideActivity"
                 android:screenOrientation="portrait"
                 android:theme="@style/AppTheme"/>

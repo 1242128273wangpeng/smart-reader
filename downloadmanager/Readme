@@ -1,0 +1,9 @@
+1.0.0版本
+
+1、需要检查的点
+ 1.各个壳Gradle配置是否是最新，逐分支检查
+ 2.Readme文档完善
+ 3.Presenter层抽离，代码完善、优化
+ 4.DownloadPager移除
+ 5.PopupWindow代码优化
+ 6.ListView转RecyclerView

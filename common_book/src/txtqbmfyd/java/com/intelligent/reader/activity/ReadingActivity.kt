@@ -30,6 +30,7 @@ import com.intelligent.reader.read.page.ReadSettingView
 import com.intelligent.reader.read.page.ReaderViewWidget
 import com.intelligent.reader.reader.ReaderViewModel
 import com.logcat.sdk.LogEncapManager
+import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.txtqbmfyd.act_read.*
 import kotlinx.android.synthetic.txtqbmfyd.reading_page.*

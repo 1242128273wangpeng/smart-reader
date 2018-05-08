@@ -10,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.quduquxie.QuInitialization;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
@@ -96,6 +97,7 @@ public abstract class BaseBookApplication extends Application {
         MultiDex.install(this);
         HttpUtils.getHttpClient();
         initData();
+        initARouter();
     }
 
     private void initData() {
@@ -144,6 +146,14 @@ public abstract class BaseBookApplication extends Application {
         return "";
     }
 
+
+    private void initARouter() {
+        if (Constants.SHOW_LOG) {
+            ARouter.openLog();     // 打印日志
+            ARouter.openDebug();   // 开启调试模式(如果在InstantRun模式下运行，必须开启调试模式！线上版本需要关闭,否则有安全风险)
+        }
+        ARouter.init(g_context);
+    }
 
     @Override
     public void onTerminate() {

@@ -1,7 +1,6 @@
 package com.intelligent.reader.fragment
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -15,7 +14,6 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.intelligent.reader.R
-import com.intelligent.reader.activity.DownloadManagerActivity
 import com.intelligent.reader.adapter.BaseRecyclerHolder
 import com.intelligent.reader.adapter.ListRecyclerAdapter
 import com.intelligent.reader.presenter.read.CatalogMark
@@ -31,6 +29,8 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Bookmark
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.repair_books.RepairHelp
+import net.lzbook.kit.router.RouterConfig
+import net.lzbook.kit.router.RouterUtil
 import net.lzbook.kit.utils.StatServiceUtils
 import java.text.SimpleDateFormat
 import java.util.concurrent.Callable
@@ -142,7 +142,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
             RepairHelp.fixBook(activity, presenter?.getBook(), {
                 if (activity != null && !activity.isFinishing) {
                     try {
-                        activity.startActivity(Intent(activity, DownloadManagerActivity::class.java))
+                        RouterUtil.navigation(RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
                         activity.finish()
                     } catch (e: Exception) {
                         e.printStackTrace()

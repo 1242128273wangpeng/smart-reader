@@ -1,41 +1,30 @@
 package com.intelligent.reader.presenter.catalogues
 
 import android.app.Activity
-import android.app.Notification
-import android.app.PendingIntent
-import android.content.ComponentName
 import android.content.Intent
-import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.Handler
-import android.os.IBinder
 import android.os.Message
-import android.view.Gravity
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
-import com.intelligent.reader.R
-import com.intelligent.reader.activity.DownloadManagerActivity
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.cover.*
-import com.intelligent.reader.presenter.IPresenter
 import com.intelligent.reader.read.help.BookHelper
-import com.intelligent.reader.receiver.DownBookClickReceiver
 import com.quduquxie.network.DataCache
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
-import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.*
 import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.repair_books.RepairHelp
-import net.lzbook.kit.request.RequestExecutor
 import net.lzbook.kit.request.RequestFactory
+import net.lzbook.kit.router.RouterConfig
+import net.lzbook.kit.router.RouterUtil
 import net.lzbook.kit.utils.*
 import java.lang.ref.WeakReference
 import java.util.HashMap
@@ -365,9 +354,8 @@ class CataloguesPresenter(var act: Activity, var book: Book, var requestItem: Re
     //修复
     fun fixBook() {
         RepairHelp.fixBook(activity!!.get(), book, RepairHelp.FixCallBack {
-            val intent_download = Intent(activity!!.get(), DownloadManagerActivity::class.java)
             try {
-                activity!!.get()!!.startActivity(intent_download)
+                RouterUtil.navigation(RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
                 activity!!.get()!!.finish()
             } catch (e: Exception) {
                 e.printStackTrace()

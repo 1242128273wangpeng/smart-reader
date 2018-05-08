@@ -23,13 +23,14 @@ import android.widget.TextView;
 
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
-import com.intelligent.reader.activity.DownloadManagerActivity;
 import com.intelligent.reader.activity.SearchBookActivity;
 import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.widget.topshadow.TopShadowWebView;
 
 import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
+import net.lzbook.kit.router.RouterConfig;
+import net.lzbook.kit.router.RouterUtil;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.CustomWebClient;
@@ -337,9 +338,8 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.content_download_manage:
-                Intent intent_download = new Intent(getActivity(), DownloadManagerActivity.class);
                 try {
-                    startActivity(intent_download);
+                    RouterUtil.INSTANCE.navigation(RouterConfig.DOWNLOAD_MANAGER_ACTIVITY);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
