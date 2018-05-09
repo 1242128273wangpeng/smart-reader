@@ -63,7 +63,7 @@ import iyouqu.theme.BaseCacheableActivity;
  * Created by q on 2015/9/7.
  */
 public class HomeActivity extends BaseCacheableActivity implements BaseFragment.FragmentCallback,
-        FrameBookHelper.CancleUpdateCallback, WebViewFragment.FragmentCallback, CheckNovelUpdateService.OnBookUpdateListener {
+        WebViewFragment.FragmentCallback, CheckNovelUpdateService.OnBookUpdateListener {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
 
@@ -277,9 +277,6 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (frameHelper != null) {
-            frameHelper.onPauseAction();
-        }
     }
 
     /**
@@ -339,7 +336,6 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
         if (frameHelper == null) {
             frameHelper = new FrameBookHelper(getApplicationContext(), HomeActivity.this);
         }
-        frameHelper.setCancleUpdate(this);
     }
 
     @Override
@@ -360,15 +356,11 @@ public class HomeActivity extends BaseCacheableActivity implements BaseFragment.
     }
 
     @Override
-    public void restoreSystemState() {
-        restoreSystemDisplayState();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         AndroidLogStorage.getInstance().clear();
         HomeActivity.this.unregisterReceiver(receiver);
+
         if (frameHelper != null) {
             frameHelper.restoreState();
             frameHelper = null;
