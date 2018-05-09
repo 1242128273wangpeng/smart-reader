@@ -23,11 +23,7 @@ import android.preference.PreferenceManager;
 import java.io.Serializable;
 import java.util.Comparator;
 
-/**
- * <书架页工具类>
- */
 public class FrameBookHelper {
-    public final static String ACTION_SEARCH_UPDATE_BOOK = AppUtils.getPackageName() + ".action.search_update_book";
     static DownLoadNotify downLoadNotify;
     static DownLoadStateCallback downLoadState;
     public SharedPreferencesUtils su;
@@ -36,7 +32,6 @@ public class FrameBookHelper {
     CancleUpdateCallback cancleUpdate;
     BookUpdateService updateBookService;
     NotificationCallback notification;
-    SearchUpdateBook searchUpdateBook;
     BookChanged bookChanged;
     private Context context;
     private Activity activity;
@@ -44,7 +39,6 @@ public class FrameBookHelper {
     private boolean isActivityPause = false;
     private BookDaoHelper bookHelper;
     private DownloadFinishReceiver downloadFinishReceiver;
-    private SearchUpdateBookReceiver searchUpdateReceiver;
 
     // =======================================================
     // 服务
@@ -148,10 +142,6 @@ public class FrameBookHelper {
         this.updateBookService = update;
     }
 
-    public void setSearchUpdateUI(SearchUpdateBook searchUpdate) {
-        this.searchUpdateBook = searchUpdate;
-    }
-
     public void setBookChanged(BookChanged bookChanged) {
         this.bookChanged = bookChanged;
     }
@@ -206,8 +196,6 @@ public class FrameBookHelper {
 
 
         unregistDownloadReceiver();
-        unregistSearchUpdateReceiver();
-
     }
 
     private void unregistDownloadReceiver() {
@@ -241,40 +229,6 @@ public class FrameBookHelper {
         filter.addAction(DownloadFinishReceiver.ACTION_UPDATE_NOTIFY);
         filter.addAction(DownloadFinishReceiver.ACTION_DOWNLOAD_FINISH);
         context.registerReceiver(downloadFinishReceiver, filter);
-    }
-
-    /**
-     * <接收搜索订阅及刷新数据的广播>
-     * <p>
-     * void
-     */
-    public void registSearchUpdateReceiver() {
-        if (searchUpdateReceiver == null) {
-            searchUpdateReceiver = new SearchUpdateBookReceiver();
-        }
-        if (searchUpdateReceiver != null && context != null) {
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(ACTION_SEARCH_UPDATE_BOOK);
-            context.registerReceiver(searchUpdateReceiver, filter);
-            AppLog.d(TAG, "searchUpdateReceiver" + searchUpdateReceiver);
-        }
-    }
-
-    // =============================================
-    // activity相关
-    // ==========================================
-
-    public void unregistSearchUpdateReceiver() {
-        if (searchUpdateReceiver != null && context != null) {
-            AppLog.d(TAG, "unregistSearchUpdateReceiver");
-
-            try {
-                context.unregisterReceiver(searchUpdateReceiver);
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            }
-
-        }
     }
 
     public void recycleCallback() {
@@ -337,10 +291,6 @@ public class FrameBookHelper {
 
     public interface BookChanged {
         void updateBook();
-    }
-
-    public interface SearchUpdateBook {
-        void searchUpdateBook();
     }
 
     /**
@@ -421,21 +371,6 @@ public class FrameBookHelper {
                 return 0;
             }
             return -1;
-        }
-    }
-
-    private class SearchUpdateBookReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            AppLog.d(TAG, "SearchUpdateBookReceiver action : " + intent.getAction());
-            if (intent.getAction() != null) {
-                if (intent.getAction().equals(ACTION_SEARCH_UPDATE_BOOK) && searchUpdateBook != null) {
-                    searchUpdateBook.searchUpdateBook();
-                }
-
-            }
         }
     }
 }

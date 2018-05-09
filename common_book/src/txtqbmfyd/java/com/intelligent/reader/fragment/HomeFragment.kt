@@ -59,7 +59,7 @@ import java.util.concurrent.TimeUnit
 /**
  * 主页面
  */
-class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView {
+class HomeFragment : BaseFragment(), HomeView {
 
     private val TAG = HomeFragment::class.java.simpleName
 
@@ -204,8 +204,6 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
         if (frameHelper == null && actReference != null && actReference.get() != null) {
             frameHelper = (actReference.get() as HomeActivity).frameHelper
         }
-        frameHelper?.setSearchUpdateUI(this)
-        frameHelper?.registSearchUpdateReceiver()
 
         showCacheMessage()
     }
@@ -441,10 +439,6 @@ class HomeFragment : BaseFragment(), FrameBookHelper.SearchUpdateBook, HomeView 
             tv_night_shift.setText(R.string.mode_night)
             bt_night_shift.isChecked = false
         }
-    }
-
-    override fun searchUpdateBook() {
-
     }
 
     fun getDrawerLayout(): DrawerLayout = drawer_layout
