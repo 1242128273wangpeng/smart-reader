@@ -71,10 +71,13 @@ import java.util.concurrent.TimeUnit
 
 class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, WebViewFragment.FragmentCallback, CheckNovelUpdateService.OnBookUpdateListener, HomeView {
 
-    private val homePresenter by lazy { HomePresenter(this) }
+    private val homePresenter by lazy { HomePresenter(this, this.packageManager) }
 
     private var fragmentManager: FragmentManager? = null
 
+    private var homeBroadcastReceiver: HomeBroadcastReceiver? = null
+
+    private lateinit var intentFilter: IntentFilter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,30 +95,24 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
         homePresenter.initParameters()
 
         initData()
-        //注册广播接收器
-        receiver = MyReceiver()
-        filter = IntentFilter()
-        filter.addAction(ActionConstants.DOWN_APP_SUCCESS_ACTION)
 
-        this@HomeActivity.registerReceiver(receiver, filter)
+        registerHomeReceiver()
 
-        apkUpdateUtils = ApkUpdateUtils(this)
-
-        try {
-            apkUpdateUtils.getApkUpdateInfo(this, handler, "HomeActivity")
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        checkAppUpdate()
 
         initPosition()
+
         checkUrlDevelop()
+
         EventBus.getDefault().register(this)
+
         AndroidLogStorage.getInstance().clear()
 
         preferencesUtils = SharedPreferencesUtils(PreferenceManager.getDefaultSharedPreferences(this))
         versionCode = AppUtils.getVersionCode()
 
         adapter?.notifyDataSetChanged()
+
         frameHelper()
 
         showCacheMessage()
@@ -163,7 +160,7 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
 
         AndroidLogStorage.getInstance().clear()
 
-        this@HomeActivity.unregisterReceiver(receiver)
+        this.unregisterReceiver(homeBroadcastReceiver)
 
         EventBus.getDefault().unregister(this)
 
@@ -444,6 +441,33 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
     }
 
     /***
+     * 注册广播接受器
+     * **/
+    private fun registerHomeReceiver() {
+        homeBroadcastReceiver = HomeBroadcastReceiver()
+
+        intentFilter = IntentFilter()
+        intentFilter.addAction(ActionConstants.ACTION_CHECK_UPDATE_FINISH)
+        intentFilter.addAction(ActionConstants.ACTION_DOWNLOAD_APP_SUCCESS)
+
+        this.registerReceiver(homeBroadcastReceiver, intentFilter)
+    }
+
+    /***
+     * 检查版本更新
+     * **/
+    private fun checkAppUpdate() {
+        apkUpdateUtils = ApkUpdateUtils(this)
+
+        try {
+            apkUpdateUtils.getApkUpdateInfo(this, handler, "HomeActivity")
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
+    }
+
+
+    /***
      * 初始化ViewPager的位置：Position
      * **/
     private fun initPosition() {
@@ -487,12 +511,9 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
 
     var frameHelper: FrameBookHelper? = null
 
-    private lateinit var filter: IntentFilter
-
     private var removeMenuHelper: BookShelfRemoveHelper? = null
     private var bookView: BookShelfFragment? = null
     private var isClosed = false
-    private var receiver: MyReceiver? = null
     private var mLoadDataManager: LoadDataManager? = null
     private val shake = AntiShake()
 
@@ -804,18 +825,6 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
         }
     }
 
-    private fun showCacheMessage() {
-        doAsync {
-            var result = "0B"
-            try {
-                result = DataCleanManager.getTotalCacheSize(this)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            uiThread { txt_clear_cache_message?.text = result }
-        }
-    }
-
     private fun setMenuTitleMargin() {
         val statusBarHeight = StatusBarCompat.getStatusBarHeight(this)
         AppLog.e(TAG, "statusBarHeight: $statusBarHeight")
@@ -832,71 +841,29 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
         txt_menu_title.layoutParams = params
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /***
-     * 获取广播数据
-     * **/
-    inner class MyReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            val bundle = intent.extras
-            val count = bundle!!.getInt("count")
-            val filePath = bundle.getString("filePath")
-            val downloadLink = bundle.getString("downloadLink")
-            val md5 = bundle.getString("md5")
-            val fileName = filePath!!.substring(filePath.lastIndexOf("/") + 1)
-            if (count == 100) {
-                AppLog.e("--------------->", MD5Utils.getFileMD5(File(filePath)))
-                if (MD5Utils.getFileMD5(File(filePath))!!.equals(md5!!, ignoreCase = true)) {
-                    setup(filePath)
-                } else {
-                    val errorIntent = Intent()
-                    errorIntent.setClass(context, DownloadErrorActivity::class.java)
-                    errorIntent.putExtra("downloadLink", downloadLink)
-                    errorIntent.putExtra("md5", md5)
-                    errorIntent.putExtra("fileName", fileName)
-                    errorIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    context.startActivity(errorIntent)
-                }
+    private fun showCacheMessage() {
+        doAsync {
+            var result = "0B"
+            try {
+                result = DataCleanManager.getTotalCacheSize(this)
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
+            uiThread { txt_clear_cache_message?.text = result }
         }
     }
 
 
 
 
-    /***
-     * 上传安装应用列表，后期优化，完全移入到Presenter中
-     * **/
-    override fun updateAppList() {
-        GetAppList().execute()
-    }
 
-    /***
-     * 获取用户app列表，后期优化，完全移入到Presenter中
-     * **/
-    internal inner class GetAppList : AsyncTask<Void, Int, String>() {
-        override fun doInBackground(vararg params: Void): String {
-            return AppUtils.scanLocalInstallAppList(packageManager)
-        }
 
-        override fun onPostExecute(s: String) {
-            StartLogClickUtil.upLoadApps(this@HomeActivity, s)
-        }
-    }
+
+
+
+
+
+
 
     /***
      * 移出，不在使用内部类的方式
@@ -946,4 +913,60 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
         override fun getItemPosition(`object`: Any?): Int = PagerAdapter.POSITION_NONE
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /***
+     * 获取广播数据
+     * **/
+    inner class HomeBroadcastReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+
+            if (intent.action == ActionConstants.ACTION_CHECK_UPDATE_FINISH) {
+                if (bookShelfFragment != null) {
+                    bookShelfFragment?.updateUI()
+                }
+            } else if (intent.action == ActionConstants.ACTION_DOWNLOAD_APP_SUCCESS) {
+                val bundle = intent.extras
+
+                if (bundle != null) {
+                    val md5 = bundle.getString("md5")
+                    val count = bundle.getInt("count")
+                    val filePath = bundle.getString("filePath")
+                    val downloadLink = bundle.getString("downloadLink")
+                    val fileName = filePath!!.substring(filePath.lastIndexOf("/") + 1)
+                    if (count == 100) {
+                        if (MD5Utils.getFileMD5(File(filePath))!!.equals(md5!!, ignoreCase = true)) {
+                            setup(filePath)
+                        } else {
+                            val errorIntent = Intent()
+                            errorIntent.setClass(context, DownloadErrorActivity::class.java)
+                            errorIntent.putExtra("downloadLink", downloadLink)
+                            errorIntent.putExtra("md5", md5)
+                            errorIntent.putExtra("fileName", fileName)
+                            errorIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            context.startActivity(errorIntent)
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

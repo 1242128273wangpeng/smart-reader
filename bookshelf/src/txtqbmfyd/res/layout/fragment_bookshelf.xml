@@ -2,17 +2,17 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:fitsSystemWindows="true">
+    android:background="#FFFFFF"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/rl_head_bookshelf"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="#FFFFFF"
         android:visibility="visible">
 
         <ImageView
@@ -65,9 +65,9 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_centerVertical="true"
-            android:padding="11dp"
             android:layout_marginRight="10dp"
             android:layout_toLeftOf="@+id/img_head_menu"
+            android:padding="11dp"
             android:src="@drawable/nbar_search_nor_icon"
             app:onPressChangeAlpha="true"/>
 
@@ -77,10 +77,10 @@
             android:layout_height="48dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:paddingRight="16dp"
-            android:paddingLeft="10dp"
-            android:paddingTop="11dp"
             android:paddingBottom="11dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="16dp"
+            android:paddingTop="11dp"
             android:src="@drawable/nbar_more_nor_icon"
             app:onPressChangeAlpha="true"/>
     </RelativeLayout>
@@ -88,8 +88,7 @@
     <RelativeLayout
         android:id="@+id/bookshelf_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white">
+        android:layout_height="match_parent">
 
         <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
             android:id="@+id/bookshelf_refresh_view"

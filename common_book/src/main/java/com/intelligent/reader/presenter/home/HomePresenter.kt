@@ -1,15 +1,20 @@
 package com.intelligent.reader.presenter.home
 
+import android.content.pm.PackageManager
 import android.preference.PreferenceManager
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.presenter.IPresenter
+import io.reactivex.Observable
+import io.reactivex.ObservableOnSubscribe
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.LoadDataManager
 import net.lzbook.kit.utils.StatServiceUtils
 
 /**
@@ -18,7 +23,7 @@ import net.lzbook.kit.utils.StatServiceUtils
  * Mail tao_qian@dingyuegroup.cn
  * Date 2018/2/28 0028 11:12
  */
-class HomePresenter(override var view: HomeView?) : IPresenter<HomeView> {
+class HomePresenter(override var view: HomeView?, var packageManager: PackageManager) : IPresenter<HomeView> {
 
     /***
      * 初始化参数
@@ -26,9 +31,7 @@ class HomePresenter(override var view: HomeView?) : IPresenter<HomeView> {
     fun initParameters() {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(BookApplication.getGlobalContext())
 
-        /***
-         * 初始化阅读页背景
-         * **/
+        //初始化阅读页背景
         if (sharedPreferences.getInt("content_mode", 51) < 50) {
             Constants.MODE = 51
             ReadConfig.MODE = 51
@@ -42,22 +45,19 @@ class HomePresenter(override var view: HomeView?) : IPresenter<HomeView> {
         val firstTime = sharedPreferences.getLong(Constants.TODAY_FIRST_OPEN_APP, 0)
         val currentTime = System.currentTimeMillis()
 
-        /***
-         * 判断用户是否是当日首次打开应用
-         * **/
+        //判断用户是否是当日首次打开应用
         val result = AppUtils.isToday(firstTime, currentTime)
 
         if (result) {
             Constants.is_user_today_first = false
         } else {
-            /***
-             * 用户首次打开，记录当前时间
-             * **/
+            //用户首次打开，记录当前时间
             Constants.is_user_today_first = true
             sharedPreferences.edit().putLong(Constants.TODAY_FIRST_OPEN_APP, currentTime).apply()
             sharedPreferences.edit().putBoolean(Constants.IS_UPLOAD, false).apply()
-            view?.updateAppList()
+            updateApplicationList()
         }
+
         Constants.upload_userinformation = sharedPreferences.getBoolean(Constants.IS_UPLOAD, false)
     }
 
@@ -203,5 +203,25 @@ class HomePresenter(override var view: HomeView?) : IPresenter<HomeView> {
         data["type"] = if (isChecked) "1" else "0"
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
                 StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.WIFI_AUTOCACHE, data)
+    }
+
+
+
+
+
+
+
+    /***
+     * 上传用户应用列表
+     * **/
+    private fun updateApplicationList() {
+        Observable.create(ObservableOnSubscribe<String> { emitter ->
+            emitter.onNext(AppUtils.scanLocalInstallAppList(packageManager))
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeBy(onNext = { message ->
+                    StartLogClickUtil.upLoadApps(message)
+                })
     }
 }

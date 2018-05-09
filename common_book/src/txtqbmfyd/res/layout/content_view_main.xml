@@ -118,7 +118,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/content_tab_selection"
-        android:layout_below="@id/rl_head_bookshelf"
         android:flipInterval="30"
         android:persistentDrawingCache="animation"/>
 

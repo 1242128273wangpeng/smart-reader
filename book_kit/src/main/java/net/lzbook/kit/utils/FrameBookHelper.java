@@ -1,16 +1,15 @@
 package net.lzbook.kit.utils;
 
+
 import net.lzbook.kit.R;
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
 import net.lzbook.kit.book.download.CacheManager;
 
 import android.app.Activity;
 import android.app.NotificationManager;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
@@ -24,9 +23,6 @@ public class FrameBookHelper {
     BookUpdateService updateBookService;
     static DownLoadNotify downLoadNotify;
     static DownLoadStateCallback downLoadState;
-
-
-    private DownloadFinishReceiver downloadFinishReceiver;
 
     private ServiceConnection updateConnection = new ServiceConnection() {
 
@@ -51,8 +47,6 @@ public class FrameBookHelper {
 
     public FrameBookHelper(Context context, Activity activity) {
         this.context = context;
-
-        registDownloadReceiver();
 
         CheckNovelUpdHelper.delLocalNotify(context);
         DeletebookHelper helper = new DeletebookHelper(context);
@@ -146,25 +140,9 @@ public class FrameBookHelper {
      * void
      */
     public void restoreState() {
-
         if (updateService != null && updateConnection != null) {
             context.unbindService(updateConnection);
         }
-
-        unregistDownloadReceiver();
-    }
-
-    private void unregistDownloadReceiver() {
-        if (downloadFinishReceiver != null) {
-            context.unregisterReceiver(downloadFinishReceiver);
-        }
-    }
-
-    private void registDownloadReceiver() {
-        downloadFinishReceiver = new DownloadFinishReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(DownloadFinishReceiver.ACTION_UPDATE_NOTIFY);
-        context.registerReceiver(downloadFinishReceiver, filter);
     }
 
     public void recycleCallback() {
@@ -218,24 +196,5 @@ public class FrameBookHelper {
 
     public interface BookChanged {
         void updateBook();
-    }
-
-    /**
-     * 全部下载完成和检查更新监听器
-     */
-    public static class DownloadFinishReceiver extends BroadcastReceiver {
-        public static final String ACTION_PACKAGENAME = AppUtils.getPackageName();
-        public static final String ACTION_UPDATE_NOTIFY = ACTION_PACKAGENAME + ".update_notify";
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            if (intent.getAction().equals(ACTION_UPDATE_NOTIFY)) {
-
-                if (downLoadNotify != null) {
-                    downLoadNotify.doNotifyDownload();
-                }
-            }
-        }
     }
 }

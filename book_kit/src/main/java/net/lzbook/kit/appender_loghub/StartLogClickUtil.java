@@ -345,7 +345,7 @@ public class StartLogClickUtil {
     }
 
     //上传用户App列表
-    public static void upLoadApps(Context context, String applist) {
+    public static void upLoadApps(String applist) {
         if (!Constants.dy_ad_new_statistics_switch) {
             return;
         }
