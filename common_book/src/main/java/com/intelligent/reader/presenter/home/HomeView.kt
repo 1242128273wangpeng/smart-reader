@@ -7,4 +7,5 @@ package com.intelligent.reader.presenter.home
  * Date 2018/2/28 0028 11:46
  */
 interface HomeView {
+    fun updateAppList()
 }

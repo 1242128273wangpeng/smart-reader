@@ -327,4 +327,51 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
                 StartLogClickUtil.SHELFEDIT, StartLogClickUtil.DELETE1, data)
     }
+
+
+
+
+
+
+    /********************************** HomeActivity移过来的方法 ************************************/
+    fun uploadHeadSettingLog() {
+        val context = BaseBookApplication.getGlobalContext()
+        StartLogClickUtil.upLoadEventLog(context,
+                StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.PERSONAL)
+        net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(context,
+                net.lzbook.kit.utils.StatServiceUtils.bs_click_mine_menu)
+    }
+
+
+    fun uploadHeadSearchLog(bottomType: Int) {
+        val context = BaseBookApplication.getGlobalContext()
+        when (bottomType) {
+            2 -> StartLogClickUtil.upLoadEventLog(context,
+                    StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH)
+            3 -> StartLogClickUtil.upLoadEventLog(context,
+                    StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH)
+            4 -> StartLogClickUtil.upLoadEventLog(context,
+                    StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.QG_FL_SEARCH)
+            else -> StartLogClickUtil.upLoadEventLog(context,
+                    StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.SEARCH)
+        }
+        net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(context,
+                net.lzbook.kit.utils.StatServiceUtils.bs_click_search_btn)
+    }
+
+
+    fun uploadDownloadManagerLog() {
+        val context = BaseBookApplication.getGlobalContext()
+        net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(context,
+                net.lzbook.kit.utils.StatServiceUtils.bs_click_download_btn)
+        StartLogClickUtil.upLoadEventLog(context,
+                StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.CACHEMANAGE)
+    }
+
+
+    fun uploadBookSortingLog() {
+        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.BOOKSORT)
+    }
+
 }

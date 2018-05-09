@@ -25,6 +25,8 @@ import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.router.BookRouter
+import net.lzbook.kit.router.RouterConfig
+import net.lzbook.kit.router.RouterUtil
 import net.lzbook.kit.utils.*
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -35,6 +37,40 @@ import java.util.concurrent.TimeUnit
 class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
 
     private val presenter: BookShelfPresenter by lazy { BookShelfPresenter(this) }
+
+
+    private val homeMenuPopup: HomeMenuPopup by lazy {
+        val popup = HomeMenuPopup(this.activity.applicationContext)
+        popup.setOnDownloadClickListener {
+            RouterUtil.navigation(RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
+            presenter.uploadDownloadManagerLog()
+        }
+        popup.setOnSortingClickListener {
+            bookSortingDialog.show()
+            presenter.uploadBookSortingLog()
+        }
+        popup
+    }
+
+    private val bookSortingDialog: BookSortingDialog by lazy {
+        val dialog = BookSortingDialog(this.activity)
+        dialog.setOnRecentReadClickListener {
+            StatServiceUtils.statAppBtnClick(this.activity.applicationContext, StatServiceUtils.me_set_cli_shelf_rak_time)
+            settingItemsHelper.putInt(settingItemsHelper.booklistSortType, 0)
+            Constants.book_list_sort_type = 0
+            updateUI()
+        }
+        dialog.setOnUpdateTimeClickListener {
+            StatServiceUtils.statAppBtnClick(this.activity.applicationContext, StatServiceUtils.me_set_cli_shelf_rak_time)
+            settingItemsHelper.putInt(settingItemsHelper.booklistSortType, 1)
+            Constants.book_list_sort_type = 1
+            updateUI()
+        }
+        dialog
+    }
+
+
+    private val settingItemsHelper by lazy { SettingItemsHelper.getSettingHelper(this.activity.applicationContext) }
 
     val bookShelfReAdapter: BookShelfReAdapter by lazy {
         BookShelfReAdapter(activity, presenter.iBookList, presenter.aDViews,
@@ -180,27 +216,33 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
         }
         //悬浮广告 1-2
         if (Constants.isHideAD) return
-//        PlatformSDK.adapp().dycmNativeAd(activity, "1-2", book_shelf_ad, object : AbstractCallback() {
-//            override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
-//                super.onResult(adswitch, views, jsonResult)
-//                if (!adswitch) return
-//                try {
-//                    val jsonObject = JSONObject(jsonResult)
-//                    if (jsonObject.has("state_code")) {
-//                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-//                            ResultCode.AD_REQ_SUCCESS -> {
-//                                book_shelf_ad.addView(views?.get(0))
-//                                book_shelf_ad.postInvalidate()
-//                            }
-//                            ResultCode.AD_REQ_FAILED -> {
-//                            }
-//                        }
-//                    }
-//                } catch (e: JSONException) {
-//                    e.printStackTrace()
-//                }
+
+
+        img_head_setting.setOnClickListener {
+            //TODO
+//            if (dl_content.isOpened) {
+//                dl_content.closeMenu()
+//            } else {
+//                dl_content.openMenu()
 //            }
-//        })
+
+            presenter.uploadHeadSettingLog()
+        }
+
+        txt_head_title.text = "书架"
+
+        img_head_search.setOnClickListener {
+            //TODO
+//            startActivity(Intent(this, SearchBookActivity::class.java))
+            presenter.uploadHeadSearchLog(0)
+        }
+
+        img_head_menu.setOnClickListener {
+            homeMenuPopup.show(img_head_menu)
+            StartLogClickUtil.upLoadEventLog(this.activity.applicationContext,
+                    StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.MORE)
+        }
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -251,10 +293,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
 
     override fun onDestroy() {
         super.onDestroy()
-
-//        if (BuildConfig.DEBUG) {
-//            BookApplication.getRefWatcher().watch(this)
-//        }
 
         frameBookHelper?.recycleCallback()
 

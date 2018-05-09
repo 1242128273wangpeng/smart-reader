@@ -1,136 +1,222 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/bookshelf_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
 
-    <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
-        android:id="@+id/bookshelf_refresh_view"
+    <RelativeLayout
+        android:id="@+id/rl_head_bookshelf"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <com.dingyue.bookshelf.TopShadowRecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alwaysDrawnWithCache="false"
-            android:clipToPadding="false"
-            android:paddingTop="10dp"/>
-    </net.lzbook.kit.pulllist.SuperSwipeRefreshLayout>
-
-    <ImageView
-        android:id="@+id/fab_goto_down_act"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="@dimen/dimen_margin_30"
-        android:layout_marginRight="@dimen/dimen_margin_10"
-        android:visibility="gone"/>
-
-    <FrameLayout
-        android:id="@+id/book_shelf_ad"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="@dimen/dimen_margin_30"
-        android:layout_marginRight="@dimen/dimen_margin_10"/>
-
-    <LinearLayout
-        android:id="@+id/bookshelf_empty"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
+        android:layout_height="48dp"
+        android:background="#FFFFFF"
         android:visibility="visible">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/bookshelf_no_book_icon"/>
-
-        <TextView
-            android:id="@+id/bookshelf_empty_prompt"
-            style="@style/style_text_normal_light"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/bookshelf_no_book_desc"/>
-
-        <TextView
-            android:id="@+id/bookshelf_empty_btn"
-            android:layout_width="120dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="60dp"
-            android:background="@drawable/bookshelf_no_book_btn_bg"
-            android:gravity="center"
-            android:text="@string/bookshelf_no_book_goto"
-            android:textColor="#FFFFFF"
-            android:textSize="@dimen/text_size_huge"
+            android:id="@+id/img_head_setting"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:paddingBottom="11dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="10dp"
+            android:paddingTop="11dp"
+            android:src="@drawable/nbar_personal_nor_icon"
             app:onPressChangeAlpha="true"/>
-    </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/book_shelf_loading"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/color_white"
-        android:visibility="gone">
-
-        <ProgressBar
-            android:id="@+id/loading_progress"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="@dimen/dimen_view_width_250"
-            android:layout_height="@dimen/dimen_view_height_10"
-            android:layout_centerHorizontal="true"
+        <TextView
+            android:id="@+id/txt_head_title"
+            style="@style/style_text_huge_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_marginBottom="@dimen/dimen_margin_10"
-            android:layout_marginTop="@dimen/dimen_margin_30"
-            android:progressDrawable="@drawable/background_splash_progress"/>
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            tools:text="书架"/>
 
-        <ProgressBar
-            android:id="@+id/loading_progressbar"
-            style="@style/CircleProgressBar"
-            android:layout_width="@dimen/dimen_view_width_48"
-            android:layout_height="@dimen/dimen_view_height_48"
-            android:layout_above="@id/loading_progress"
-            android:layout_centerHorizontal="true"
-            android:indeterminateDuration="1000"
-            android:progressDrawable="@drawable/background_splash_progress"/>
+        <ImageView
+            android:id="@+id/content_head_search"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:layout_toLeftOf="@+id/content_download_manage"
+            android:src="@drawable/nbar_search_nor_icon"
+            android:visibility="gone"
+            app:onPressChangeAlpha="true"/>
 
-        <TextView
-            android:id="@+id/loading_message_first"
+        <ImageView
+            android:id="@+id/content_download_manage"
+            android:layout_width="23dp"
+            android:layout_height="23dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="13.5dp"
+            android:src="@drawable/home_head_download"
+            android:visibility="gone"
+            app:onPressChangeAlpha="true"/>
+
+        <ImageView
+            android:id="@+id/img_head_search"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/loading_progress"
-            android:layout_centerHorizontal="true"
-            android:text="新版数据升级中,本过程不消耗流量,"
-            android:textColor="@color/color_black_353535"
-            android:textSize="@dimen/dimen_text_15"
-            android:textStyle="bold"/>
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
+            android:padding="11dp"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/img_head_menu"
+            android:src="@drawable/nbar_search_nor_icon"
+            app:onPressChangeAlpha="true"/>
 
-        <TextView
-            android:id="@+id/loading_message_second"
+        <ImageView
+            android:id="@+id/img_head_menu"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/loading_message_first"
-            android:layout_centerHorizontal="true"
-            android:text="请您耐心等待...."
-            android:textColor="@color/color_black_353535"
-            android:textSize="@dimen/dimen_text_15"
-            android:textStyle="bold"/>
+            android:layout_height="48dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingRight="16dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="11dp"
+            android:paddingBottom="11dp"
+            android:src="@drawable/nbar_more_nor_icon"
+            app:onPressChangeAlpha="true"/>
     </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/img_head_shadow"
+    <RelativeLayout
+        android:id="@+id/bookshelf_main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="fitXY"
-        android:src="@drawable/top_shadow_bg"
-        android:visibility="gone"/>
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
 
-</RelativeLayout>
+        <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
+            android:id="@+id/bookshelf_refresh_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.dingyue.bookshelf.TopShadowRecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:alwaysDrawnWithCache="false"
+                android:clipToPadding="false"
+                android:paddingTop="10dp"/>
+        </net.lzbook.kit.pulllist.SuperSwipeRefreshLayout>
+
+        <ImageView
+            android:id="@+id/fab_goto_down_act"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="@dimen/dimen_margin_30"
+            android:layout_marginRight="@dimen/dimen_margin_10"
+            android:visibility="gone"/>
+
+        <FrameLayout
+            android:id="@+id/book_shelf_ad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="@dimen/dimen_margin_30"
+            android:layout_marginRight="@dimen/dimen_margin_10"/>
+
+        <LinearLayout
+            android:id="@+id/bookshelf_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/bookshelf_no_book_icon"/>
+
+            <TextView
+                android:id="@+id/bookshelf_empty_prompt"
+                style="@style/style_text_normal_light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/bookshelf_no_book_desc"/>
+
+            <TextView
+                android:id="@+id/bookshelf_empty_btn"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="60dp"
+                android:background="@drawable/bookshelf_no_book_btn_bg"
+                android:gravity="center"
+                android:text="@string/bookshelf_no_book_goto"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/text_size_huge"
+                app:onPressChangeAlpha="true"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/book_shelf_loading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/color_white"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:id="@+id/loading_progress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="@dimen/dimen_view_width_250"
+                android:layout_height="@dimen/dimen_view_height_10"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="@dimen/dimen_margin_10"
+                android:layout_marginTop="@dimen/dimen_margin_30"
+                android:progressDrawable="@drawable/background_splash_progress"/>
+
+            <ProgressBar
+                android:id="@+id/loading_progressbar"
+                style="@style/CircleProgressBar"
+                android:layout_width="@dimen/dimen_view_width_48"
+                android:layout_height="@dimen/dimen_view_height_48"
+                android:layout_above="@id/loading_progress"
+                android:layout_centerHorizontal="true"
+                android:indeterminateDuration="1000"
+                android:progressDrawable="@drawable/background_splash_progress"/>
+
+            <TextView
+                android:id="@+id/loading_message_first"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/loading_progress"
+                android:layout_centerHorizontal="true"
+                android:text="新版数据升级中,本过程不消耗流量,"
+                android:textColor="@color/color_black_353535"
+                android:textSize="@dimen/dimen_text_15"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/loading_message_second"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/loading_message_first"
+                android:layout_centerHorizontal="true"
+                android:text="请您耐心等待...."
+                android:textColor="@color/color_black_353535"
+                android:textSize="@dimen/dimen_text_15"
+                android:textStyle="bold"/>
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/img_head_shadow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@drawable/top_shadow_bg"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

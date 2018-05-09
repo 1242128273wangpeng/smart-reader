@@ -59,8 +59,6 @@ public abstract class BaseFragment extends Fragment {
 
     public interface FragmentCallback {
 
-        //应该是NoeSwpieViewPager
-        void getViewPager(ViewPager pager);
 
         void getRemoveMenuHelper(BookShelfRemoveHelper helper);
 

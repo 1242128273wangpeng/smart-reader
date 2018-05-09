@@ -30,7 +30,6 @@ import com.intelligent.reader.cover.BookCoverOtherRepository
 import com.intelligent.reader.cover.BookCoverQGRepository
 import com.intelligent.reader.cover.BookCoverRepositoryFactory
 import com.intelligent.reader.fragment.CatalogMarkFragment
-import com.intelligent.reader.fragment.HomeFragment
 import com.intelligent.reader.presenter.IPresenter
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.help.BookHelper
@@ -1206,7 +1205,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         edit.putInt("content_mode", ReadConfig.MODE)
         edit.apply()
         changeMode(ReadConfig.MODE)
-        EventBus.getDefault().post(HomeFragment.EVENT_CHANGE_NIGHT_MODE)
+        EventBus.getDefault().post(HomeActivity.EVENT_CHANGE_NIGHT_MODE)
     }
 
     private fun submitFeedback(type: Int) {

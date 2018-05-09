@@ -1,8 +1,8 @@
-package com.intelligent.reader.widget
+package com.dingyue.bookshelf
 
 import android.app.Activity
+import android.graphics.Color
 import android.view.Gravity
-import com.intelligent.reader.R
 import kotlinx.android.synthetic.txtqbmfyd.dialog_book_sorting.*
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.utils.SettingItemsHelper
@@ -23,8 +23,8 @@ class BookSortingDialog(val activity: Activity) {
 
     private val settingItemsHelper = SettingItemsHelper.getSettingHelper(activity)
 
-    private val selectedTextColor = activity.resources.getColor(R.color.color_primary)
-    private val unSelectedTextColor = activity.resources.getColor(R.color.text_color_dark)
+    private val selectedTextColor = Color.parseColor("#19DD8B")
+    private val unSelectedTextColor = Color.parseColor("#212832")
 
     init {
 

@@ -10,4 +10,10 @@
 
     <string name="bookshelf_no_book_desc">还没有添加书籍哦~</string>
     <string name="bookshelf_no_book_goto">去找书</string>
+
+    <string name="recent_read_sorting">按最近阅读排序</string>
+    <string name="update_time_sorting">按更新时间排序</string>
+
+    <string name="download_manager">缓存管理</string>
+    <string name="book_sorting">书籍排序</string>
 </resources>

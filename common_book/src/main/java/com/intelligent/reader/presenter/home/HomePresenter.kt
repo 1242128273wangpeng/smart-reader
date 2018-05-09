@@ -1,8 +1,15 @@
 package com.intelligent.reader.presenter.home
 
+import android.preference.PreferenceManager
+import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.presenter.IPresenter
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.book.download.CacheManager
+import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.data.bean.ReadConfig
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.LoadDataManager
 import net.lzbook.kit.utils.StatServiceUtils
 
 /**
@@ -13,14 +20,53 @@ import net.lzbook.kit.utils.StatServiceUtils
  */
 class HomePresenter(override var view: HomeView?) : IPresenter<HomeView> {
 
-    private val tag = "HomePresenter"
+    /***
+     * 初始化参数
+     * **/
+    fun initParameters() {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(BookApplication.getGlobalContext())
 
-    fun uploadHeadSettingLog() {
-        val context = BaseBookApplication.getGlobalContext()
-        StartLogClickUtil.upLoadEventLog(context,
-                StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.PERSONAL)
-        net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(context,
-                net.lzbook.kit.utils.StatServiceUtils.bs_click_mine_menu)
+        /***
+         * 初始化阅读页背景
+         * **/
+        if (sharedPreferences.getInt("content_mode", 51) < 50) {
+            Constants.MODE = 51
+            ReadConfig.MODE = 51
+            sharedPreferences.edit().putInt("content_mode", Constants.MODE).apply()
+            sharedPreferences.edit().putInt("current_light_mode", Constants.MODE).apply()
+        } else {
+            Constants.MODE = sharedPreferences.getInt("content_mode", 51)
+            ReadConfig.MODE = sharedPreferences.getInt("content_mode", 51)
+        }
+
+        val firstTime = sharedPreferences.getLong(Constants.TODAY_FIRST_OPEN_APP, 0)
+        val currentTime = System.currentTimeMillis()
+
+        /***
+         * 判断用户是否是当日首次打开应用
+         * **/
+        val result = AppUtils.isToday(firstTime, currentTime)
+
+        if (result) {
+            Constants.is_user_today_first = false
+        } else {
+            /***
+             * 用户首次打开，记录当前时间
+             * **/
+            Constants.is_user_today_first = true
+            sharedPreferences.edit().putLong(Constants.TODAY_FIRST_OPEN_APP, currentTime).apply()
+            sharedPreferences.edit().putBoolean(Constants.IS_UPLOAD, false).apply()
+            view?.updateAppList()
+        }
+        Constants.upload_userinformation = sharedPreferences.getBoolean(Constants.IS_UPLOAD, false)
+    }
+
+
+    /***
+     * 初始化下载服务
+     * **/
+    fun initDownloadService() {
+        CacheManager.checkService()
     }
 
     fun uploadHeadSearchLog(bottomType: Int) {
@@ -39,13 +85,6 @@ class HomePresenter(override var view: HomeView?) : IPresenter<HomeView> {
                 net.lzbook.kit.utils.StatServiceUtils.bs_click_search_btn)
     }
 
-    fun uploadDownloadManagerLog() {
-        val context = BaseBookApplication.getGlobalContext()
-        net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(context,
-                net.lzbook.kit.utils.StatServiceUtils.bs_click_download_btn)
-        StartLogClickUtil.upLoadEventLog(context,
-                StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.CACHEMANAGE)
-    }
 
     fun uploadBookshelfSelectedLog() {
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
@@ -158,10 +197,6 @@ class HomePresenter(override var view: HomeView?) : IPresenter<HomeView> {
                 StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.SELECTALL1, data)
     }
 
-    fun uploadBookSortingLog() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.BOOKSORT)
-    }
 
     fun uploadAutoCacheLog(isChecked: Boolean) {
         val data = HashMap<String, String>()
