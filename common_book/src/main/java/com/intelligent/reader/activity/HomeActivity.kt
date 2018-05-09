@@ -184,7 +184,7 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
 
         EventBus.getDefault().unregister(this)
 
-        bookShelfFragment?.onRemoveModeAllCheckedListener = null
+//        bookShelfFragment?.onRemoveModeAllCheckedListener = null
 
         try {
             val childFragmentManager = Fragment::class.java.getDeclaredField("mChildFragmentManager")
@@ -910,14 +910,14 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
                 0 -> {
                     if (bookShelfFragment == null) {
                         bookShelfFragment = BookShelfFragment()
-                        bookShelfFragment?.onRemoveModeAllCheckedListener = { isAllChecked ->
-                            AppLog.e(TAG, "isAllChecked: $isAllChecked")
-                            if (isAllChecked) {
-                                txt_editor_select_all.text = getString(R.string.select_all_cancel)
-                            } else {
-                                txt_editor_select_all.text = getString(R.string.select_all)
-                            }
-                        }
+//                        bookShelfFragment?.onRemoveModeAllCheckedListener = { isAllChecked ->
+//                            AppLog.e(TAG, "isAllChecked: $isAllChecked")
+//                            if (isAllChecked) {
+//                                txt_editor_select_all.text = getString(R.string.select_all_cancel)
+//                            } else {
+//                                txt_editor_select_all.text = getString(R.string.select_all)
+//                            }
+//                        }
                     }
                     bookShelfFragment
                 }

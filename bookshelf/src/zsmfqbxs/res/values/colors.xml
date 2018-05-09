@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#1fb7c3</color>
+
+    <color name="book_cover_pressed">#1A000000</color>
+    <color name="base_bg">#fafafa</color>
+    <color name="color_black_282828">#282828</color>
+    <color name="book_shelf_image_mark">#dadada</color>
+    <color name="color_black_aa000000">#aa000000</color>
+    <color name="bookshelf_grid_book_name_text_color_2">#212121</color>
+
+    <color name="bookshelf_update_time_grid_text_color_2">#949494</color>
+    <color name="color_gray_fafafa">#fafafa</color>
+    <!--带点绿-->
+    <color name="color_green_1fb7c3">#1fb7c3</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="text_color_dark">#FF212832</color>
+    <color name="text_color_plain">#FF5D646E</color>
+    <color name="text_color_light">#FF9097A1</color>
+    <color name="text_color_weak">#FFADB4BE</color>
+
+
+
+</resources>
