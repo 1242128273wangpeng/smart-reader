@@ -125,10 +125,9 @@ public class BookCoverUtil {
             stateReceiver = new StateReceiver();
         }
         IntentFilter filter = new IntentFilter();
-        filter.addAction(FrameBookHelper.DownloadFinishReceiver.ACTION_DOWNLOAD_FINISH);
-        filter.addAction(FrameBookHelper.DownloadFinishReceiver.ACTION_DOWNLOAD_LOCKED);
-        if (context != null)
+        if (context != null) {
             context.registerReceiver(stateReceiver, filter);
+        }
     }
 
     public void unRegistReceiver() {
@@ -203,13 +202,6 @@ public class BookCoverUtil {
         @Override
         public void onReceive(Context context, Intent intent) {
             AppLog.d("BookCoverUtil", "DownloadFinishReceiver action : " + intent.getAction());
-            if (intent.getAction().equals(FrameBookHelper.DownloadFinishReceiver.ACTION_DOWNLOAD_FINISH)
-                    || intent.getAction().equals(FrameBookHelper.DownloadFinishReceiver.ACTION_DOWNLOAD_LOCKED)) {
-
-                if (onDownloadState != null) {
-                    onDownloadState.changeState();
-                }
-            }
         }
     }
 }

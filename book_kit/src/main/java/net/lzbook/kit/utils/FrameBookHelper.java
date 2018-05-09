@@ -26,7 +26,6 @@ public class FrameBookHelper {
     static DownLoadStateCallback downLoadState;
 
 
-
     private DownloadFinishReceiver downloadFinishReceiver;
 
     private ServiceConnection updateConnection = new ServiceConnection() {
@@ -164,9 +163,7 @@ public class FrameBookHelper {
     private void registDownloadReceiver() {
         downloadFinishReceiver = new DownloadFinishReceiver();
         IntentFilter filter = new IntentFilter();
-        filter.addAction(DownloadFinishReceiver.ACTION_DOWN_ALL_FINISH);
         filter.addAction(DownloadFinishReceiver.ACTION_UPDATE_NOTIFY);
-        filter.addAction(DownloadFinishReceiver.ACTION_DOWNLOAD_FINISH);
         context.registerReceiver(downloadFinishReceiver, filter);
     }
 
@@ -228,20 +225,12 @@ public class FrameBookHelper {
      */
     public static class DownloadFinishReceiver extends BroadcastReceiver {
         public static final String ACTION_PACKAGENAME = AppUtils.getPackageName();
-        public static final String ACTION_DOWN_ALL_FINISH = ACTION_PACKAGENAME + ".download_all_finish";
         public static final String ACTION_UPDATE_NOTIFY = ACTION_PACKAGENAME + ".update_notify";
-        public static final String ACTION_DOWNLOAD_FINISH = ACTION_PACKAGENAME + ".download_finish";
-        public static final String ACTION_DOWNLOAD_LOCKED = ACTION_PACKAGENAME + ".download_locked";
 
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            if (intent.getAction().equals(ACTION_DOWN_ALL_FINISH)) {
-                if (downLoadState != null) {
-                    downLoadState.changeDownLoadBtn(false);
-                }
-            } else if (intent.getAction().equals(ACTION_UPDATE_NOTIFY) || intent.getAction().equals
-                    (ACTION_DOWNLOAD_FINISH)) {
+            if (intent.getAction().equals(ACTION_UPDATE_NOTIFY)) {
 
                 if (downLoadNotify != null) {
                     downLoadNotify.doNotifyDownload();
