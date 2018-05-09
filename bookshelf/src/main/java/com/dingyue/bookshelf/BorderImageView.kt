@@ -1,4 +1,4 @@
-package com.intelligent.reader.widget
+package com.dingyue.bookshelf
 
 import android.content.Context
 import android.graphics.Canvas

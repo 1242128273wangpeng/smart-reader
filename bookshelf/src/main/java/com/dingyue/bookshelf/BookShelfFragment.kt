@@ -40,12 +40,16 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
         BookShelfReAdapter(activity, presenter.iBookList, presenter.aDViews,
                 BookShelfReAdapter.ShelfItemClickListener { _, position ->
                     AppLog.e(TAG, "BookShelfItemClick")
+
+
                     if (position < 0 || position > presenter.iBookList.size) {
                         return@ShelfItemClickListener
                     }
+
                     if (position == presenter.iBookList.size) {
                         fragmentCallback.setSelectTab(1)
                     }
+
                     if (bookShelfRemoveHelper.isRemoveMode) {
                         bookShelfRemoveHelper.setCheckPosition(position)
                     } else {
@@ -56,6 +60,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
                         presenter.uploadItemClickLog(position)
                     }
                 },
+
                 BookShelfReAdapter.ShelfItemLongClickListener { _, _ ->
                     if (!bookShelfRemoveHelper.isRemoveMode) {
                         bookShelfRemoveHelper.showRemoveMenu(bookshelf_refresh_view)

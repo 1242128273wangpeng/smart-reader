@@ -64,7 +64,9 @@ import iyouqu.theme.BaseCacheableActivity;
  */
 public class HomeActivity extends BaseCacheableActivity implements BaseFragment.FragmentCallback,
         FrameBookHelper.CancleUpdateCallback, WebViewFragment.FragmentCallback, CheckNovelUpdateService.OnBookUpdateListener {
+
     private static final String TAG = HomeActivity.class.getSimpleName();
+
     private final static int BACK = 12;
     private static int BACK_COUNT;
     static Handler handler = new Handler(new Handler.Callback() {

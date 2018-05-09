@@ -18,7 +18,7 @@
             android:src="@drawable/bookshelf_book_cover_shadow_bg"/>
 
 
-        <com.intelligent.reader.widget.BorderImageView
+        <com.dingyue.bookshelf.BorderImageView
             android:id="@+id/img_book_cover"
             android:layout_width="80dp"
             android:layout_height="113dp"
