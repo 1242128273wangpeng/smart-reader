@@ -7,6 +7,7 @@ import android.os.IBinder
 import android.text.TextUtils
 import android.view.ViewGroup
 import com.dingyue.bookshelf.contract.BookHelperContract
+import com.dingyue.contract.CommonContract
 import com.intelligent.reader.presenter.IPresenter
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -101,7 +102,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
             }
             return 0
         } else {
-            Collections.sort(bookList, FrameBookHelper.MultiComparator())
+            Collections.sort(bookList, CommonContract.MultiComparator(Constants.book_list_sort_type))
             iBookList.addAll(bookList)
 //            val adCount = PlatformSDK.config().adCount
             val adCount = 0

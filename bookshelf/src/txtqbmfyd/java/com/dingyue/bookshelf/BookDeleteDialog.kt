@@ -3,7 +3,7 @@ package com.dingyue.bookshelf
 import android.app.Activity
 import android.view.Gravity
 import android.view.View
-import kotlinx.android.synthetic.main.dialog_delete_book.*
+import kotlinx.android.synthetic.txtqbmfyd.dialog_delete_book.*
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.data.bean.Book
 

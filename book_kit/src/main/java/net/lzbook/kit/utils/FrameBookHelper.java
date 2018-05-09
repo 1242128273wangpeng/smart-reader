@@ -3,9 +3,6 @@ package net.lzbook.kit.utils;
 import net.lzbook.kit.R;
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
 import net.lzbook.kit.book.download.CacheManager;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.Book;
-import net.lzbook.kit.data.db.BookDaoHelper;
 
 import android.app.Activity;
 import android.app.NotificationManager;
@@ -15,26 +12,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
-
-import java.io.Serializable;
-import java.util.Comparator;
 
 public class FrameBookHelper {
+    private Context context;
+
+    private CheckNovelUpdateService updateService;
+
+    BookChanged bookChanged;
+    NotificationCallback notification;
+    BookUpdateService updateBookService;
     static DownLoadNotify downLoadNotify;
     static DownLoadStateCallback downLoadState;
-    public SharedPreferencesUtils su;
-    public SharedPreferences preferences;
-    String TAG = "FrameBookHelper";
-    BookUpdateService updateBookService;
-    NotificationCallback notification;
-    BookChanged bookChanged;
-    private Context context;
-    private Activity activity;
-    private CheckNovelUpdateService updateService;
-    private BookDaoHelper bookHelper;
+
+
+
     private DownloadFinishReceiver downloadFinishReceiver;
 
     private ServiceConnection updateConnection = new ServiceConnection() {
@@ -60,23 +52,12 @@ public class FrameBookHelper {
 
     public FrameBookHelper(Context context, Activity activity) {
         this.context = context;
-        this.activity = activity;
 
         registDownloadReceiver();
 
         CheckNovelUpdHelper.delLocalNotify(context);
         DeletebookHelper helper = new DeletebookHelper(context);
         helper.startPendingService();
-
-        if (bookHelper == null) {
-            bookHelper = BookDaoHelper.getInstance();
-        }
-        if (preferences == null) {
-            preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        }
-        if (su == null) {
-            su = new SharedPreferencesUtils(preferences);
-        }
     }
 
     /**
@@ -145,18 +126,14 @@ public class FrameBookHelper {
     public void clickNotification(Intent intent) {
 
         if (intent != null) {
-            AppLog.d(TAG, "click_push: " + intent.getBooleanExtra("click_push", false));
             if (intent.getBooleanExtra("click_push", false)) {
                 String book_id = intent.getStringExtra("book_id");
-                AppLog.d(TAG, "gid: " + book_id);
-                AppLog.d(TAG, "notify: " + notification);
                 if (notification != null) {
                     notification.notification(book_id);
                 }
             }
             if (intent.getBooleanExtra("cancel_finish_ntf", false)) {
-                NotificationManager nftmgr = (NotificationManager) context.getSystemService(Context
-                        .NOTIFICATION_SERVICE);
+                NotificationManager nftmgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 if (nftmgr != null) {
                     nftmgr.cancel(context.getResources().getString(R.string.main_nftmgr_id).hashCode());
                 }
@@ -269,26 +246,6 @@ public class FrameBookHelper {
                 if (downLoadNotify != null) {
                     downLoadNotify.doNotifyDownload();
                 }
-            }
-        }
-    }
-
-    /**
-     * 对booklist进行多类型排序
-     */
-    public static class MultiComparator implements Comparator<Object>, Serializable {
-
-        @Override
-        public int compare(Object o1, Object o2) {
-            if (Constants.book_list_sort_type == 1) {
-
-                return ((Book) o1).last_updatetime_native == ((Book) o2).last_updatetime_native ? 0 : (((Book) o1)
-                        .last_updatetime_native < ((Book) o2).last_updatetime_native ? 1 : -1);
-            } else if (Constants.book_list_sort_type == 2) {
-                return 0;
-            } else {
-                return ((Book) o1).sequence_time == ((Book) o2).sequence_time ? 0 : (((Book) o1).sequence_time < (
-                        (Book) o2).sequence_time ? 1 : -1);
             }
         }
     }

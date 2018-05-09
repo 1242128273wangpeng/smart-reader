@@ -13,8 +13,8 @@ import android.view.View
 import android.view.ViewGroup
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.main.fragment_bookshelf.*
-import kotlinx.android.synthetic.main.layout_head.view.*
+import kotlinx.android.synthetic.txtqbmfyd.fragment_bookshelf.*
+import kotlinx.android.synthetic.txtqbmfyd.layout_head.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.constants.Constants

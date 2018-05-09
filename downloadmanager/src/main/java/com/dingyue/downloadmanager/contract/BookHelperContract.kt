@@ -1,6 +1,7 @@
 package com.dingyue.downloadmanager.contract
 
 import android.content.Context
+import com.dingyue.contract.CommonContract
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
@@ -28,8 +29,8 @@ object BookHelperContract {
 
     fun querySortedBookList(type: Int): List<Book> {
         val books = BookDaoHelper.getInstance().booksOnLineList
-        Collections.sort<Book>(books, MultiComparator(type))
-        Collections.sort<Book>(books, CachedComparator())
+        Collections.sort<Book>(books, CommonContract.MultiComparator(type))
+        Collections.sort<Book>(books, CommonContract.CachedComparator())
         return books
     }
 
@@ -55,47 +56,6 @@ object BookHelperContract {
             false
         } else {
             true
-        }
-    }
-
-    class MultiComparator constructor(val type: Int) : Comparator<Book>, Serializable {
-        override fun compare(book1: Book, book2: Book): Int {
-            return if (type != 1) {
-                when {
-                    book1.sequence_time == book2.sequence_time -> 0
-                    book1.sequence_time < book2.sequence_time -> 1
-                    else -> -1
-                }
-            } else {
-                when {
-                    book1.last_updatetime_native == book2.last_updatetime_native -> 0
-                    book1.last_updatetime_native < book2.last_updatetime_native -> 1
-                    else -> -1
-                }
-            }
-        }
-    }
-
-    class CachedComparator : Comparator<Book> {
-        override fun compare(book1: Book, book2: Book): Int {
-            val status1 = CacheManager.getBookStatus(book1)
-            val status2 = CacheManager.getBookStatus(book2)
-
-            if (status1 == status2) {
-                return 0
-            }
-
-            if (status1 == DownloadState.FINISH && status2 == DownloadState.FINISH) {
-                return 0
-            }
-
-            if (status1 == DownloadState.FINISH && status2 != DownloadState.FINISH) {
-                return 1
-            }
-
-            return if (status1 != DownloadState.FINISH && status2 == DownloadState.FINISH) {
-                -1
-            } else 0
         }
     }
 }
