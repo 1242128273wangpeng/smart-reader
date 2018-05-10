@@ -19,6 +19,7 @@ import android.view.inputmethod.InputMethodManager
 import android.webkit.WebSettings
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.intelligent.reader.R
 import com.intelligent.reader.presenter.search.SearchPresenter
 import com.intelligent.reader.presenter.search.SearchView
@@ -28,10 +29,11 @@ import kotlinx.android.synthetic.txtqbmfyd.activity_search_book.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.data.db.BookDaoHelper
+import net.lzbook.kit.router.RouterConfig
 import net.lzbook.kit.utils.*
 import java.util.*
 
-
+@Route(path = RouterConfig.SEARCHBOOK_ACTIVITY)
 class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListener, SearchViewHelper.OnHistoryClickListener, TextWatcher, OnEditorActionListener, SearchView.AvtView {
 
 //    private var search_result_back: ImageView? = null

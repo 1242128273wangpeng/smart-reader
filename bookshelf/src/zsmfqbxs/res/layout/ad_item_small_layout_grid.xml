@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/item_ad_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+                android:id="@+id/item_ad_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
     >
 
     <RelativeLayout
         android:id="@+id/ad_imageview_rl"
         android:layout_width="match_parent"
         android:layout_height="110dip"
-        android:layout_marginTop="@dimen/dimen_margin_15"
-        android:layout_marginRight="19dp"
         android:layout_marginLeft="19dp"
+        android:layout_marginRight="19dp"
+        android:layout_marginTop="@dimen/dimen_margin_15"
         android:padding="0.5dp"
         >
 
@@ -36,13 +36,13 @@
             android:layout_centerHorizontal="true"
             android:adjustViewBounds="true"
             android:contentDescription="@string/app_name"
-            android:scaleType="fitXY" />
+            android:scaleType="fitXY"/>
 
         <ImageView
             android:id="@+id/item_ad_right_down"
-            android:layout_alignParentBottom="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             />
     </RelativeLayout>
 
@@ -64,7 +64,7 @@
             android:singleLine="true"
             android:text="@string/app_name"
             android:textColor="@color/color_black_323232"
-            android:textSize="@dimen/dimen_text_14" />
+            android:textSize="@dimen/dimen_text_14"/>
     </LinearLayout>
 
     <TextView

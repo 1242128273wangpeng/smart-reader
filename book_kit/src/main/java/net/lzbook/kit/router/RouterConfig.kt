@@ -18,4 +18,6 @@ object RouterConfig {
 
     const val COVERPAGE_ACTIVITY = "/common_book/CoverPageActivity"
 
+    const val SEARCHBOOK_ACTIVITY = "/common_book/SearchBookActivity"
+
 }
