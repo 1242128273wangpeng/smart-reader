@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bookshelf_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff">
+
+    <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
+        android:id="@+id/bookshelf_refresh_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.intelligent.reader.view.ADScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/item_ad_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="19dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bookshef_header_ad_bg"
+                    android:visibility="gone">
+                </RelativeLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:alwaysDrawnWithCache="false"
+                    android:clipToPadding="false"
+                    android:paddingTop="10dp"/>
+            </LinearLayout>
+        </com.intelligent.reader.view.ADScrollView>
+    </net.lzbook.kit.pulllist.SuperSwipeRefreshLayout>
+
+    <FrameLayout
+        android:id="@+id/bookshelf_float_ad"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/dimen_margin_30"
+        android:layout_marginRight="@dimen/dimen_margin_10"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/fab_goto_down_act"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/dimen_margin_30"
+        android:layout_marginRight="@dimen/dimen_margin_10"
+        android:src="@drawable/bookshelf_downlaod_floating_btn"
+        android:visibility="gone"/>
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:orientation="vertical"-->
+    <!--android:gravity="center"-->
+    <!--android:visibility="gone">-->
+    <!--<ImageView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:src="@drawable/bookshelf_empty_icon"/>-->
+    <!--<TextView-->
+    <!--android:id="@+id/bookshelf_empty_prompt"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:layout_marginTop="37dp"-->
+    <!--android:textColor="@color/color_black_282828"-->
+    <!--android:text="@string/mian_bookshelf_empty_hint"-->
+    <!--android:textSize="@dimen/dimen_text_16" />-->
+    <!--<ImageView-->
+    <!--android:id="@+id/bookshelf_empty_btn"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginTop="16dp"-->
+    <!--android:src="@drawable/bookshelf_empty_btn"/>-->
+    <!--</LinearLayout>-->
+    <RelativeLayout
+        android:id="@+id/bookshelf_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/bookshelf_empty_btn"
+            android:layout_centerHorizontal="true"
+            android:text="暂时没有书，去书城逛逛吧"
+            android:textColor="#9b9b9b"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/bookshelf_empty_btn"
+            android:layout_width="120dp"
+            android:layout_height="38dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="17dp"
+            android:background="@drawable/bookshelf_empty_find_bg"
+            android:gravity="center"
+            android:text="去书城"
+            android:textColor="@drawable/cover_bottom_btn_text_selector"
+            android:textSize="16sp"/>
+    </RelativeLayout>
+
+
+</RelativeLayout>
