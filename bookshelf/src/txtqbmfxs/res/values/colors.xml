@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="text_color_dark">#FF212832</color>
+    <color name="text_color_plain">#FF5D646E</color>
+    <color name="text_color_light">#FF9097A1</color>
+    <color name="text_color_weak">#FFADB4BE</color>
+
+    <color name="color_green_87af4c">#87af4c</color>
+    <color name="color_gray_fafafa">#fafafa</color>
+    <color name="bookshelf_book_name_text_color">#212121</color>
+    <color name="bookshelf_last_chapter_text_color">#a5a5a5</color>
+    <color name="color_white">#ffffff</color>
+</resources>
