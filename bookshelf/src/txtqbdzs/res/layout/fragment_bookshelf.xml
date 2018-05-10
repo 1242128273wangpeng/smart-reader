@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:id="@+id/bookshelf_main"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#fafafa">
-
 
     <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
         android:id="@+id/bookshelf_refresh_view"
@@ -20,26 +20,6 @@
             android:paddingTop="10dp"/>
     </net.lzbook.kit.pulllist.SuperSwipeRefreshLayout>
 
-    <ImageView
-        android:id="@+id/fab_goto_down_act"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="@dimen/dimen_margin_30"
-        android:layout_marginRight="@dimen/dimen_margin_10"
-        android:src="@drawable/bookshelf_downlaod_floating_btn"/>
-
-    <ImageView
-        android:id="@+id/bookshelf_float_ad"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_above="@+id/fab_goto_down_act"
-        android:layout_alignLeft="@+id/fab_goto_down_act"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="@dimen/dimen_margin_20"
-        android:layout_marginRight="@dimen/dimen_margin_10"
-        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/bookshelf_empty"

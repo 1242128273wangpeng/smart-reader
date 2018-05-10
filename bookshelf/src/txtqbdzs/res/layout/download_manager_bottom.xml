@@ -4,17 +4,20 @@
     android:id="@+id/remove_delete_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_gray_fafafa">
+    android:background="@color/color_gray_fafafa"
+    android:gravity="center_vertical">
 
     <View
+        android:id="@+id/divi_top"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_view_height_0.5"
-        android:background="@color/color_gray_e8e8e8"/>
+        android:layout_height="@dimen/dimen_view_height_5"
+        android:background="@drawable/bottom_shadow_bg"/>
 
     <LinearLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/divi_top"
         android:background="@color/color_gray_fafafa"
         android:orientation="horizontal">
 

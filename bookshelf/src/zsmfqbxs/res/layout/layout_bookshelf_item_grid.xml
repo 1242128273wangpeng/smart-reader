@@ -15,7 +15,6 @@
         android:id="@+id/bookshelf_information"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dimen_margin_5"
         android:background="@drawable/bookshelf__item_press_bg"
         android:gravity="center">
 
