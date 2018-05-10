@@ -1415,7 +1415,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
 
                 val currentTime = System.currentTimeMillis()
                 val b = AppUtils.isToday(first_time, currentTime)
-//                if (!b) {
+                if (!b) {
 
                     val data = HashMap<String, String>()
                     data.put("READGAP",ReadConfig.READ_INTERLINEAR_SPACE.toString())
@@ -1425,7 +1425,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
                     data.put("lightvalue", sp!!.getInt("screen_bright", -1).toString() + "")
                     StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.DEFAULTSETTING, data)
                     sp!!.edit()?.putLong(Constants.UPLOAD_OLDUSER_READ_SETTING, currentTime)?.apply()
-//                }
+                }
             }
 
     }
