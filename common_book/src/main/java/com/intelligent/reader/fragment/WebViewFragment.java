@@ -337,13 +337,13 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
                     e.printStackTrace();
                 }
                 break;
-            case R.id.content_download_manage:
-                try {
-                    RouterUtil.INSTANCE.navigation(RouterConfig.DOWNLOAD_MANAGER_ACTIVITY);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                break;
+//            case R.id.content_download_manage:
+//                try {
+//                    RouterUtil.INSTANCE.navigation(RouterConfig.DOWNLOAD_MANAGER_ACTIVITY);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//                break;
         }
     }
 

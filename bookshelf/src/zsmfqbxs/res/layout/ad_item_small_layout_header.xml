@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/item_ad_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimen_margin_10"
+                android:layout_marginLeft="@dimen/dimen_margin_19"
+                android:layout_marginRight="@dimen/dimen_margin_19"
+                android:layout_marginTop="@dimen/dimen_margin_10"
+                android:background="@drawable/bookshef_header_ad_bg">
+
+    <RelativeLayout
+        android:id="@+id/item_ad_image_rl"
+        android:layout_width="@dimen/dimen_view_width_64"
+        android:layout_height="@dimen/dimen_view_height_64"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="@dimen/dimen_margin_10"
+        android:layout_marginRight="@dimen/dimen_margin_10"
+        android:layout_marginTop="@dimen/dimen_margin_10"></RelativeLayout>
+
+    <ImageView
+        android:id="@+id/item_ad_image"
+        android:layout_width="@dimen/dimen_view_width_64"
+        android:layout_height="@dimen/dimen_view_height_64"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="@dimen/dimen_margin_10"
+        android:layout_marginRight="@dimen/dimen_margin_10"
+        android:layout_marginTop="@dimen/dimen_margin_10"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/app_name"
+        android:scaleType="fitXY"/>
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/item_ad_image_rl"
+        android:layout_marginLeft="@dimen/dimen_margin_15"
+        android:layout_toRightOf="@id/item_ad_image_rl"
+        android:gravity="right"
+        android:orientation="horizontal">
+        <ImageView
+            android:id="@+id/item_ad_right_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dimen_margin_10"
+            android:layout_marginTop="@dimen/dimen_margin_3"
+            android:src="@drawable/icon_ad_gdt"/>
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/item_ad_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/item_ad_image_rl"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="@dimen/dimen_margin_12"
+        android:layout_marginTop="2dip"
+
+        android:layout_toRightOf="@id/item_ad_image_rl"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/app_name"
+        android:textColor="@color/color_gray_b3b3b3"
+        android:textSize="@dimen/text_size_tiny"/>
+    <TextView
+        android:id="@+id/item_ad_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/item_ad_desc"
+        android:layout_marginBottom="8dip"
+        android:layout_toRightOf="@id/item_ad_image_rl"
+        android:layout_weight="3"
+        android:ellipsize="end"
+        android:paddingRight="40dip"
+        android:singleLine="true"
+        android:text="@string/app_name"
+
+        android:textColor="@color/color_black_323232"
+        android:textSize="@dimen/dimen_text_14"/>
+
+    <View
+        android:id="@+id/divider_line"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dimen_view_height_0.5"
+        android:layout_below="@id/item_ad_image"
+        android:layout_marginLeft="@dimen/dimen_margin_2"
+        android:layout_marginRight="@dimen/dimen_margin_2"
+        android:layout_marginTop="@dimen/dimen_margin_10"
+        android:background="@color/color_gray_e8e8e8"/>
+</RelativeLayout>
