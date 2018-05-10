@@ -14,16 +14,17 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ReadConfig
-import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.*
 
 /**
- * Desc HomeFragment - presenter
+ * Desc HomeActivity - presenter
  * Author qiantao
  * Mail tao_qian@dingyuegroup.cn
  * Date 2018/2/28 0028 11:12
  */
 class HomePresenter(override var view: HomeView?, var packageManager: PackageManager) : IPresenter<HomeView> {
+
+    private var loadDataManager: LoadDataManager? = null
 
     /***
      * 初始化参数
@@ -59,6 +60,13 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
         }
 
         Constants.upload_userinformation = sharedPreferences.getBoolean(Constants.IS_UPLOAD, false)
+
+        loadDataManager = LoadDataManager(BookApplication.getGlobalContext())
+
+        CheckNovelUpdHelper.delLocalNotify(BookApplication.getGlobalContext())
+
+        val deleteBookHelper = DeleteBookHelper(BookApplication.getGlobalContext())
+        deleteBookHelper.startPendingService()
     }
 
 
@@ -68,6 +76,19 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
     fun initDownloadService() {
         CacheManager.checkService()
     }
+
+    /***
+     * 更新书架信息，由于服务器端缓存的问题，可能造成默认接口添加的书籍，书籍状态不正确
+     * **/
+    fun updateBookShelf() {
+        if (loadDataManager != null) {
+            loadDataManager!!.updateShelfBooks()
+        }
+    }
+
+
+
+
 
     fun uploadHeadSearchLog(bottomType: Int) {
         val context = BaseBookApplication.getGlobalContext()
@@ -190,13 +211,6 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
         StatServiceUtils.statAppBtnClick(context, StatServiceUtils.me_set_cli_clear_cache)
     }
 
-    fun uploadEditorSelectAllLog(isAllSelected: Boolean) {
-        val data = HashMap<String, String>()
-        data.put("type", if (isAllSelected) "2" else "1")
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.SELECTALL1, data)
-    }
-
 
     fun uploadAutoCacheLog(isChecked: Boolean) {
         val data = HashMap<String, String>()
@@ -204,6 +218,9 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
                 StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.WIFI_AUTOCACHE, data)
     }
+
+
+
 
 
 

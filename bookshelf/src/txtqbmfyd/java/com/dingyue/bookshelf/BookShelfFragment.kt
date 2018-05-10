@@ -1,5 +1,6 @@
 package com.dingyue.bookshelf
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -11,6 +12,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.txtqbmfyd.fragment_bookshelf.*
@@ -36,18 +38,17 @@ import java.util.concurrent.TimeUnit
  */
 class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
 
-    private val presenter: BookShelfPresenter by lazy { BookShelfPresenter(this) }
-
+    private val bookshelfPresenter: BookShelfPresenter by lazy { BookShelfPresenter(this) }
 
     private val homeMenuPopup: HomeMenuPopup by lazy {
         val popup = HomeMenuPopup(this.activity.applicationContext)
         popup.setOnDownloadClickListener {
             RouterUtil.navigation(RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
-            presenter.uploadDownloadManagerLog()
+            bookshelfPresenter.uploadDownloadManagerLog()
         }
         popup.setOnSortingClickListener {
             bookSortingDialog.show()
-            presenter.uploadBookSortingLog()
+            bookshelfPresenter.uploadBookSortingLog()
         }
         popup
     }
@@ -69,38 +70,37 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
         dialog
     }
 
-
     private val settingItemsHelper by lazy { SettingItemsHelper.getSettingHelper(this.activity.applicationContext) }
 
     val bookShelfReAdapter: BookShelfReAdapter by lazy {
-        BookShelfReAdapter(activity, presenter.iBookList, presenter.aDViews,
+        BookShelfReAdapter(activity, bookshelfPresenter.iBookList, bookshelfPresenter.aDViews,
                 BookShelfReAdapter.ShelfItemClickListener { _, position ->
                     AppLog.e(TAG, "BookShelfItemClick")
 
 
-                    if (position < 0 || position > presenter.iBookList.size) {
+                    if (position < 0 || position > bookshelfPresenter.iBookList.size) {
                         return@ShelfItemClickListener
                     }
 
-                    if (position == presenter.iBookList.size) {
-                        fragmentCallback.setSelectTab(1)
+                    if (position == bookshelfPresenter.iBookList.size) {
+                        bookShelfInterface?.changeHomePagerIndex(1)
                     }
 
                     if (bookShelfRemoveHelper.isRemoveMode) {
                         bookShelfRemoveHelper.setCheckPosition(position)
                     } else {
                         AppLog.e(TAG, "intoNovelContent")
-                        if (position >= presenter.iBookList.size || position < 0) return@ShelfItemClickListener
-                        val book = presenter.iBookList[position]
+                        if (position >= bookshelfPresenter.iBookList.size || position < 0) return@ShelfItemClickListener
+                        val book = bookshelfPresenter.iBookList[position]
                         handleBook(book)
-                        presenter.uploadItemClickLog(position)
+                        bookshelfPresenter.uploadItemClickLog(position)
                     }
                 },
 
                 BookShelfReAdapter.ShelfItemLongClickListener { _, _ ->
                     if (!bookShelfRemoveHelper.isRemoveMode) {
                         bookShelfRemoveHelper.showRemoveMenu(bookshelf_refresh_view)
-                        presenter.uploadItemLongClickLog()
+                        bookshelfPresenter.uploadItemLongClickLog()
                     }
                 })
     }
@@ -116,12 +116,15 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
                 if (isShown) {
                     bookshelf_refresh_view.setPullToRefreshEnabled(false)
                 } else {
-                    if (presenter.iBookList.isNotEmpty()) {
+                    if (bookshelfPresenter.iBookList.isNotEmpty()) {
                         bookshelf_refresh_view.setPullToRefreshEnabled(true)
                         updateUI()
                     }
                 }
-                fragmentCallback.getMenuShownState(isShown)
+                bookShelfInterface?.changeHomeNavigationState(isShown)
+
+                changeHeaderState(isShown)
+
                 if (isShown) {
                     book_shelf_ad.visibility = View.GONE
                 } else {
@@ -130,34 +133,32 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
             }
 
             override fun getAllCheckedState(isAllChecked: Boolean) {
-                fragmentCallback.getAllCheckedState(isAllChecked)
                 onRemoveModeAllCheckedListener?.invoke(isAllChecked)
             }
 
             override fun doHideAd() {
-                presenter.removeAd()
+                bookshelfPresenter.removeAd()
             }
 
         })
+
         helper.setOnMenuDeleteListener(BookShelfRemoveHelper.OnMenuDeleteClickListener { checked_state ->
             if (checked_state.isEmpty()) return@OnMenuDeleteClickListener
             val checkedBooks = ArrayList<Book>()
-            val size = presenter.iBookList.size
+            val size = bookshelfPresenter.iBookList.size
             (0 until size).filter {
                 checked_state.contains(it)
             }.mapTo(checkedBooks) {
-                presenter.iBookList[it]
+                bookshelfPresenter.iBookList[it]
             }
             bookDeleteDialog.show(checkedBooks)
         })
         helper
     }
 
-    private val fragmentCallback: BaseFragment.FragmentCallback by lazy { activity as BaseFragment.FragmentCallback }
     private val bookSensitiveWords: ArrayList<String> = ArrayList()
     private val noBookSensitive = false
 
-    private var frameBookHelper: FrameBookHelper? = null
     private var bookDaoHelper: BookDaoHelper = BookDaoHelper.getInstance()
     private var bookRackUpdateTime: Long = 0
     private var latestLoadDataTime: Long = 0
@@ -174,15 +175,27 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
         dialog.setOnConfirmListener { books, isOnlyDeleteCache ->
             if (books != null && books.isNotEmpty()) {
                 dialog.showLoading()
-                presenter.deleteBooks(books, isOnlyDeleteCache)
+                bookshelfPresenter.deleteBooks(books, isOnlyDeleteCache)
             }
             StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.bs_click_delete_ok_btn)
         }
         dialog.setOnAbrogateListener {
-            presenter.uploadBookDeleteCancelLog()
+            bookshelfPresenter.uploadBookDeleteCancelLog()
             StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.bs_click_delete_cancel_btn)
         }
         dialog
+    }
+
+    private var bookShelfInterface: BookShelfInterface? = null
+
+    override fun onAttach(activity: Activity?) {
+        super.onAttach(activity)
+
+        try {
+            bookShelfInterface = activity as BookShelfInterface
+        } catch (classCastException: ClassCastException) {
+            throw ClassCastException(activity.toString() + " must implement BookShelfInterface")
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -191,7 +204,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         bookRackUpdateTime = AppUtils.getLongPreferences(activity, "book_rack_update_time", System.currentTimeMillis())
-        fragmentCallback.getRemoveMenuHelper(bookShelfRemoveHelper)
         initRecyclerView()
         bookshelf_refresh_view.setOnPullRefreshListener(object : SuperSwipeRefreshLayout.OnPullRefreshListener {
             override fun onRefresh() {
@@ -211,7 +223,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
             }
         })
         bookshelf_empty_btn.setOnClickListener {
-            fragmentCallback.setSelectTab(1)
+            bookShelfInterface?.changeHomePagerIndex(1)
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.TOBOOKCITY)
         }
         //悬浮广告 1-2
@@ -219,28 +231,35 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
 
 
         img_head_setting.setOnClickListener {
-            //TODO
-//            if (dl_content.isOpened) {
-//                dl_content.closeMenu()
-//            } else {
-//                dl_content.openMenu()
-//            }
-
-            presenter.uploadHeadSettingLog()
+            bookShelfInterface?.changeDrawerLayoutState()
+            bookshelfPresenter.uploadHeadSettingLog()
         }
 
         txt_head_title.text = "书架"
 
         img_head_search.setOnClickListener {
-            //TODO
-//            startActivity(Intent(this, SearchBookActivity::class.java))
-            presenter.uploadHeadSearchLog(0)
+            RouterUtil.navigation(RouterConfig.SEARCH_BOOK_ACTIVITY)
+            bookshelfPresenter.uploadHeadSearchLog(0)
         }
 
         img_head_menu.setOnClickListener {
             homeMenuPopup.show(img_head_menu)
             StartLogClickUtil.upLoadEventLog(this.activity.applicationContext,
                     StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.MORE)
+        }
+
+
+
+        txt_editor_select_all.setOnClickListener {
+            val isAllSelected = bookShelfRemoveHelper?.isAllChecked ?: false
+            if (isAllSelected) {
+                txt_editor_select_all.text = getString(R.string.select_all)
+                bookShelfRemoveHelper?.selectAll(false)
+            } else {
+                txt_editor_select_all.text = getString(R.string.select_all_cancel)
+                bookShelfRemoveHelper?.selectAll(true)
+            }
+            bookshelfPresenter.uploadEditorSelectAllLog(isAllSelected)
         }
 
     }
@@ -250,23 +269,12 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity.applicationContext)
 
-        fragmentCallback.frameHelper()
-
-        //TODO
-//        if (activity is HomeActivity) {
-//            frameBookHelper = (activity as HomeActivity).frameHelper
-//        }
-
-        frameBookHelper?.setDownNotify {
-            updateUI()
-        }
-
-        presenter.clickNotification(context, activity.intent)
+        bookshelfPresenter.clickNotification(context, activity.intent)
 
         initUpdateService()
 
         //根据书架数量确定是否刷新
-        if (presenter.iBookList.size > 0) {
+        if (bookshelfPresenter.iBookList.size > 0) {
             bookshelf_refresh_view.isRefreshing = true
         }
     }
@@ -294,9 +302,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
     override fun onDestroy() {
         super.onDestroy()
 
-        frameBookHelper?.recycleCallback()
+        bookshelfPresenter.iBookList.clear()
 
-        presenter.iBookList.clear()
+        rl_head_bookshelf.clearAnimation()
+        rl_head_editor.clearAnimation()
     }
 
     /**
@@ -306,11 +315,11 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
         AppLog.e(TAG, "updateUI")
         val isShowAd = !bookShelfRemoveHelper.isRemoveMode && isResumed && !Constants.isHideAD
         doAsync {
-            presenter.queryBookListAndAd(activity, isShowAd)
+            bookshelfPresenter.queryBookListAndAd(activity, isShowAd)
             uiThread {
-                bookShelfReAdapter.setUpdate_table(presenter.filterUpdateTableList())
+                bookShelfReAdapter.setUpdate_table(bookshelfPresenter.filterUpdateTableList())
                 bookShelfReAdapter.notifyDataSetChanged()
-                presenter.uploadFirstOpenLog(sharedPreferences)
+                bookshelfPresenter.uploadFirstOpenLog(sharedPreferences)
             }
         }
     }
@@ -333,7 +342,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
             if (bookshelf_refresh_view != null) {
                 bookshelf_refresh_view!!.onRefreshComplete()
             }
-            presenter.handleSuccessUpdate(result)
+            bookshelfPresenter.handleSuccessUpdate(result)
             AppUtils.setLongPreferences(activity, "book_rack_update_time", bookRackUpdateTime)
             AppLog.e(TAG, "onSuccess的刷新ui调用")
 //        updateUI()
@@ -370,13 +379,13 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
     }
 
     fun doUpdateBook() {
-        presenter.addUpdateTask(this)
+        bookshelfPresenter.addUpdateTask(this)
     }
 
     override fun doUpdateBook(updateService: CheckNovelUpdateService) {
         if (activity != null) {
             updateService.setBookUpdateListener(activity as CheckNovelUpdateService.OnBookUpdateListener)
-            presenter.addUpdateTask(this)
+            bookshelfPresenter.addUpdateTask(this)
         }
     }
 
@@ -400,12 +409,12 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
     }
 
     private fun initUpdateService() {
-        if (presenter.updateService != null) return
+        if (bookshelfPresenter.updateService != null) return
         val intent = Intent()
         val context = activity.applicationContext
         intent.setClass(context, CheckNovelUpdateService::class.java)
         context.startService(intent)
-        context.bindService(intent, presenter.updateConnection, Context.BIND_AUTO_CREATE)
+        context.bindService(intent, bookshelfPresenter.updateConnection, Context.BIND_AUTO_CREATE)
     }
 
     private fun initRecyclerView() {
@@ -455,7 +464,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
             showToastDelay(R.string.main_update_no_new)
         } else {
             // 刷新间隔大于30秒直接请求更新，
-            presenter.addUpdateTask(this)
+            bookshelfPresenter.addUpdateTask(this)
             AppLog.d(TAG, "刷新间隔大于30秒请求数据")
         }
 
@@ -467,7 +476,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
     private fun handleBook(book: Book) {
         AppLog.e(TAG, "handleBook")
         if (!TextUtils.isEmpty(book.book_id) && book.book_type == 0) {
-            presenter.resetUpdateStatus(book.book_id)
+            bookshelfPresenter.resetUpdateStatus(book.book_id)
         }
 
         if (Constants.isShielding && !noBookSensitive && bookSensitiveWords.contains(book.book_id.toString())) {
@@ -504,5 +513,49 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView {
 
         private val PULL_REFRESH_DELAY = 30 * 1000
         private val TAG = BookShelfFragment::class.java.simpleName
+    }
+
+    interface BookShelfInterface {
+        fun changeHomeNavigationState(state: Boolean)
+
+        fun changeHomePagerIndex(index: Int)
+
+        fun changeDrawerLayoutState()
+    }
+
+
+
+
+
+    /***
+     * 更改头部布局状态
+     * **/
+    private fun changeHeaderState(state: Boolean) {
+
+        val showAnimation = AlphaAnimation(0.0f, 1.0f)
+        showAnimation.duration = 200
+
+        val hideAnimation = AlphaAnimation(1.0f, 0.0f)
+        hideAnimation.duration = 200
+
+        if (state) {
+            if (rl_head_bookshelf.isShown) {
+                rl_head_bookshelf.startAnimation(hideAnimation)
+                rl_head_bookshelf.visibility = View.GONE
+            }
+
+            if (!rl_head_editor.isShown) {
+                rl_head_editor.startAnimation(showAnimation)
+                rl_head_editor.visibility = View.VISIBLE
+            }
+        } else {
+            if (!rl_head_bookshelf.isShown) {
+                rl_head_bookshelf.visibility = View.VISIBLE
+            }
+
+            if (rl_head_editor.isShown) {
+                rl_head_editor.visibility = View.GONE
+            }
+        }
     }
 }

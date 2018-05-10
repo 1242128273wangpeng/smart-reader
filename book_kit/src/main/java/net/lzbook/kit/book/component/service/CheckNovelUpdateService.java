@@ -188,10 +188,10 @@ public class CheckNovelUpdateService extends Service {
 
             books = CheckNovelUpdHelper.combain(this, books);
             if (books != null) {
-                cache_list = books;
-                int n = books.size();
                 Intent intent = new Intent(ActionConstants.ACTION_CHECK_UPDATE_FINISH);
                 sendBroadcast(intent);
+                cache_list = books;
+                int n = books.size();
                 if (n > 0) {
                     if (n == 1) {
                         CheckNovelUpdHelper.MyBook myBook = books.get(0);

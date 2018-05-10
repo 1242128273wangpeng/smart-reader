@@ -38,7 +38,7 @@ import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.Callable
 
-@Route(path = RouterConfig.COVERPAGE_ACTIVITY)
+@Route(path = RouterConfig.COVER_PAGE_ACTIVITY)
 class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageContract, CallBackDownload {
     private var loadingPage: LoadingPage? = null
     private var requestItem: RequestItem? = null

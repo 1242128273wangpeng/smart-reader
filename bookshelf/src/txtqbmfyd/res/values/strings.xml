@@ -16,4 +16,9 @@
 
     <string name="download_manager">缓存管理</string>
     <string name="book_sorting">书籍排序</string>
+
+    <string name="bookshelf_edit_title">编辑书架</string>
+    <string name="select_all">全选</string>
+
+    <string name="select_all_cancel">取消全选</string>
 </resources>

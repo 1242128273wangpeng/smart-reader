@@ -86,6 +86,36 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/rl_head_editor"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:clickable="true"
+        android:fitsSystemWindows="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <TextView
+            style="@style/style_text_huge_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:text="@string/bookshelf_edit_title"/>
+
+        <TextView
+            android:id="@+id/txt_editor_select_all"
+            style="@style/style_text_normal_plain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:text="@string/select_all"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/bookshelf_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
