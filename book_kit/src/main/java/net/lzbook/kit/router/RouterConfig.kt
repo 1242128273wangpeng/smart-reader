@@ -19,7 +19,4 @@ object RouterConfig {
     const val READING_ACTIVITY = "/common_book/ReadingActivity"
 
     const val COVER_PAGE_ACTIVITY = "/common_book/CoverPageActivity"
-
-    const val SEARCHBOOK_ACTIVITY = "/common_book/SearchBookActivity"
-
 }
