@@ -4,6 +4,7 @@ import com.quduquxie.network.DataService;
 import com.quduquxie.network.DataServiceNew;
 
 import net.lzbook.kit.R;
+import net.lzbook.kit.app.ActionConstants;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
@@ -24,7 +25,6 @@ import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.BeanParser;
 import net.lzbook.kit.utils.CheckNovelUpdHelper;
-import net.lzbook.kit.utils.FrameBookHelper.DownloadFinishReceiver;
 import net.lzbook.kit.utils.OpenUDID;
 import net.lzbook.kit.utils.ResourceUtil;
 import net.lzbook.kit.utils.Tools;
@@ -185,14 +185,13 @@ public class CheckNovelUpdateService extends Service {
                     }
                 }
             }
-            ArrayList<Book> booksOnLineList = mBookDaoHelper.getBooksOnLineList();
 
             books = CheckNovelUpdHelper.combain(this, books);
             if (books != null) {
+                Intent intent = new Intent(ActionConstants.ACTION_CHECK_UPDATE_FINISH);
+                sendBroadcast(intent);
                 cache_list = books;
                 int n = books.size();
-                Intent intent = new Intent(DownloadFinishReceiver.ACTION_UPDATE_NOTIFY);
-                sendBroadcast(intent);
                 if (n > 0) {
                     if (n == 1) {
                         CheckNovelUpdHelper.MyBook myBook = books.get(0);

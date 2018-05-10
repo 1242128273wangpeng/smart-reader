@@ -2,6 +2,7 @@ package com.dingyue.bookshelf;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
@@ -18,6 +19,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -34,6 +37,7 @@ import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
 import net.lzbook.kit.book.download.CacheManager;
+import net.lzbook.kit.book.view.ConsumeEvent;
 import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.UpdateCallBack;
@@ -45,6 +49,9 @@ import net.lzbook.kit.data.bean.Source;
 import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
 import net.lzbook.kit.router.BookRouter;
+import net.lzbook.kit.router.RouterConfig;
+import net.lzbook.kit.router.RouterUtil;
+import net.lzbook.kit.utils.AnimationHelper;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.BaseBookHelper;
@@ -52,6 +59,7 @@ import net.lzbook.kit.utils.FrameBookHelper;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
 import net.lzbook.kit.utils.ToastUtils;
+import net.lzbook.kit.utils.oneclick.AntiShake;
 import net.lzbook.kit.utils.pulllist.DividerItemDecoration;
 
 import java.lang.ref.WeakReference;
@@ -69,9 +77,12 @@ import de.greenrobot.event.EventBus;
  * 书架页Fragment
  */
 public class BookShelfFragment extends Fragment implements UpdateCallBack,
-        FrameBookHelper.BookUpdateService, FrameBookHelper.DownLoadStateCallback, FrameBookHelper.DownLoadNotify, FrameBookHelper
-                .NotificationCallback, BookShelfRemoveHelper.OnMenuDeleteClickListener, BookShelfRemoveHelper.OnMenuStateListener, FrameBookHelper
-                .BookChanged, BookShelfReAdapter.ShelfItemClickListener, BookShelfReAdapter.ShelfItemLongClickListener {
+        FrameBookHelper.BookUpdateService, FrameBookHelper.DownLoadStateCallback,
+        FrameBookHelper.DownLoadNotify, FrameBookHelper
+                .NotificationCallback, BookShelfRemoveHelper.OnMenuDeleteClickListener,
+        BookShelfRemoveHelper.OnMenuStateListener, FrameBookHelper
+                .BookChanged, BookShelfReAdapter.ShelfItemClickListener,
+        BookShelfReAdapter.ShelfItemLongClickListener {
 
     public static final String ACTION_CHKHIDE = AppUtils.getPackageName();
     private static final int NO_BOOK_DATA_VIEW_SHOW = 0x14;
@@ -126,6 +137,13 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     private ShowGuideLable mShowGuideLable;//显示引导页
     private Toast toast;
 
+    private ImageView content_head_setting;
+    private TextView content_title;
+    private ImageView content_head_search, content_download_manage;
+    private AntiShake shake = new AntiShake();
+    private RelativeLayout content_head_editor;
+    private ImageView home_edit_back;
+    private TextView home_edit_cancel;
 
     @Override
     public void onAttach(Activity activity) {
@@ -140,13 +158,15 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         isList = false;
         mContext = getActivity();
         versionCode = AppUtils.getVersionCode();
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+                getActivity().getApplicationContext());
         initData();
 
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         return initView(inflater);
     }
@@ -165,16 +185,36 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         if (bookshelf_content != null) {
             bookshelf_main = (RelativeLayout) bookshelf_content.findViewById(R.id.bookshelf_main);
 
+            content_head_setting = (ImageView) bookshelf_content.findViewById(
+                    R.id.content_head_setting);
+            content_head_search = (ImageView) bookshelf_content.findViewById(
+                    R.id.content_head_search);
+            content_download_manage = (ImageView) bookshelf_content.findViewById(
+                    R.id.content_download_manage);
+
+            //长按编辑栏布局
+            content_head_editor = (RelativeLayout) bookshelf_content.findViewById(
+                    R.id.content_head_editor);
+            home_edit_back = (ImageView) bookshelf_content.findViewById(R.id.home_edit_back);
+            home_edit_cancel = (TextView) bookshelf_content.findViewById(R.id.home_edit_cancel);
+
+            initClick();
+
             bookshelf_empty = (LinearLayout) bookshelf_content.findViewById(R.id.bookshelf_empty);
-            bookshelf_empty_btn = (ImageView) bookshelf_content.findViewById(R.id.bookshelf_empty_btn);
+            bookshelf_empty_btn = (ImageView) bookshelf_content.findViewById(
+                    R.id.bookshelf_empty_btn);
             bookshelf_empty.setVisibility(View.GONE);
 
-            bookrack_update_time = AppUtils.getLongPreferences(mContext, "bookrack_update_time", System.currentTimeMillis());
+            bookrack_update_time = AppUtils.getLongPreferences(mContext, "bookrack_update_time",
+                    System.currentTimeMillis());
 
-//            book_shelf_loading = (RelativeLayout) bookshelf_content.findViewById(R.id.book_shelf_loading);
+//            book_shelf_loading = (RelativeLayout) bookshelf_content.findViewById(R.id
+// .book_shelf_loading);
 //            book_shelf_loading.setVisibility(View.GONE);
-            loading_progress_bar = (ProgressBar) bookshelf_content.findViewById(R.id.loading_progressbar);
-//            download_bookshelf = (ImageView) bookshelf_content.findViewById(R.id.fab_goto_down_act);
+            loading_progress_bar = (ProgressBar) bookshelf_content.findViewById(
+                    R.id.loading_progressbar);
+//            download_bookshelf = (ImageView) bookshelf_content.findViewById(R.id
+// .fab_goto_down_act);
 //           if(download_bookshelf.getVisibility()==View.VISIBLE){
 //               isShowDownloadBtn = true;
 //                download_bookshelf.setOnClickListener(new OnClickListener() {
@@ -185,7 +225,8 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
 //                    }
 //                });
 //            }
-//            loading_progress = (ProgressBar) bookshelf_content.findViewById(R.id.loading_progress);
+//            loading_progress = (ProgressBar) bookshelf_content.findViewById(R.id
+// .loading_progress);
 //            loading_message = (TextView) bookshelf_content.findViewById(R.id.loading_message);
 
             //初始化RecyclerView
@@ -237,7 +278,8 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             if (bookshelf_float_ad != null) {
                 bookshelf_float_ad.setVisibility(View.GONE);
             }
-            StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.LONGTIMEBOOKSHELFEDIT);
+            StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELF_PAGE,
+                    StartLogClickUtil.LONGTIMEBOOKSHELFEDIT);
         }
     }
 
@@ -299,10 +341,6 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     }
 
 
-
-
-
-
     @Override
     public void onStart() {
         super.onStart();
@@ -350,7 +388,8 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     /**
      * 根据网络及书架数据设置下拉刷新模式为直接完成或显式下拉
      */
-    protected boolean isPullAction(ArrayList<Book> rackBookList, SuperSwipeRefreshLayout refreshLayout) {
+    protected boolean isPullAction(ArrayList<Book> rackBookList,
+            SuperSwipeRefreshLayout refreshLayout) {
         if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
             refreshLayout.setRefreshing(false);
             showToastDelay(R.string.bookshelf_refresh_network_problem);
@@ -371,11 +410,13 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
 
         getBookListData();
 
-        if( !sharedPreferences.getBoolean(versionCode + Constants.BOOKSHELF_GUIDE_TAG,false) && iBookList.size()>0 && mShowGuideLable != null ){
+        if (!sharedPreferences.getBoolean(versionCode + Constants.BOOKSHELF_GUIDE_TAG, false)
+                && iBookList.size() > 0 && mShowGuideLable != null) {
             mShowGuideLable.showGuidLable();
         }
         if (bookShelfReAdapter == null) {
-            bookShelfReAdapter = new BookShelfReAdapter(getActivity(), iBookList, this, this, isList);
+            bookShelfReAdapter = new BookShelfReAdapter(getActivity(), iBookList, this, this,
+                    isList);
         }
         if (bookShelfReAdapter != null) {
             for (int i = 0; i < bookOnLines.size(); i++) {
@@ -395,16 +436,18 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             StringBuilder bookIdList = new StringBuilder();
             for (int i = 0; i < iBookList.size(); i++) {
                 Book book = iBookList.get(i);
-                if (!TextUtils.isEmpty(book.book_id)){
+                if (!TextUtils.isEmpty(book.book_id)) {
                     bookIdList.append(book.book_id);
                     bookIdList.append((book.readed == 1) ? "_1" : "_0");//1已读，0未读
-                    bookIdList.append((i == iBookList.size()-1) ? "" : "$");
+                    bookIdList.append((i == iBookList.size() - 1) ? "" : "$");
                 }
             }
             Map<String, String> data = new HashMap<>();
             data.put("bookid", bookIdList.toString());
-            StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.BOOKLIST, data);
-            sharedPreferences.edit().putLong(Constants.TODAY_FIRST_POST_BOOKIDS, currentTime).apply();
+            StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE,
+                    StartLogClickUtil.BOOKLIST, data);
+            sharedPreferences.edit().putLong(Constants.TODAY_FIRST_POST_BOOKIDS,
+                    currentTime).apply();
         }
     }
 
@@ -429,31 +472,32 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
 
     private void initListener() {
         if (swipeRefreshLayout != null) {
-            swipeRefreshLayout.setOnPullRefreshListener(new SuperSwipeRefreshLayout.OnPullRefreshListener() {
+            swipeRefreshLayout.setOnPullRefreshListener(
+                    new SuperSwipeRefreshLayout.OnPullRefreshListener() {
 
-                @Override
-                public void onRefresh() {
-                    head_text_view.setText("正在刷新");
-                    head_image_view.setVisibility(View.GONE);
-                    head_pb_view.setVisibility(View.VISIBLE);
-                    checkBookUpdate();
-                }
+                        @Override
+                        public void onRefresh() {
+                            head_text_view.setText("正在刷新");
+                            head_image_view.setVisibility(View.GONE);
+                            head_pb_view.setVisibility(View.VISIBLE);
+                            checkBookUpdate();
+                        }
 
-                @Override
-                public void onPullDistance(int distance) {
-                    // pull distance
-                }
+                        @Override
+                        public void onPullDistance(int distance) {
+                            // pull distance
+                        }
 
-                @Override
-                public void onPullEnable(boolean enable) {
-                    head_pb_view.setVisibility(View.GONE);
-                    head_text_view.setText(enable ? "松开刷新" : "下拉刷新");
-                    head_image_view.setVisibility(View.VISIBLE);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                        head_image_view.setRotation(enable ? 180 : 0);
-                    }
-                }
-            });
+                        @Override
+                        public void onPullEnable(boolean enable) {
+                            head_pb_view.setVisibility(View.GONE);
+                            head_text_view.setText(enable ? "松开刷新" : "下拉刷新");
+                            head_image_view.setVisibility(View.VISIBLE);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                                head_image_view.setRotation(enable ? 180 : 0);
+                            }
+                        }
+                    });
         }
         if (bookshelf_empty_btn != null) {
             bookshelf_empty_btn.setOnClickListener(new OnClickListener() {
@@ -463,7 +507,8 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
                     if (fragmentCallback != null) {
                         fragmentCallback.setSelectTab(1);
 
-                        StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.TOBOOKCITY);
+                        StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELF_PAGE,
+                                StartLogClickUtil.TOBOOKCITY);
                     }
                 }
             });
@@ -476,10 +521,12 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             bookOnLines = new ArrayList<>();
         }
         if (bookShelfReAdapter == null) {
-            bookShelfReAdapter = new BookShelfReAdapter(getActivity(), iBookList, this, this, isList);
+            bookShelfReAdapter = new BookShelfReAdapter(getActivity(), iBookList, this, this,
+                    isList);
         }
 
-        swipeRefreshLayout = (SuperSwipeRefreshLayout) bookshelf_content.findViewById(R.id.bookshelf_refresh_view);
+        swipeRefreshLayout = (SuperSwipeRefreshLayout) bookshelf_content.findViewById(
+                R.id.bookshelf_refresh_view);
         swipeRefreshLayout.setHeaderViewBackgroundColor(0x00000000);
         swipeRefreshLayout.setHeaderView(createHeaderView());
         swipeRefreshLayout.setTargetScrollWithLayout(true);
@@ -493,7 +540,9 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             //有分割线的九宫格
             if (!"cc.quanbennovel".equals(ACTION_CHKHIDE)) {
                 int typeColor = R.color.color_gray_e8e8e8;
-                recyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.BOTH_SET, 2, mContext.getResources().getColor(typeColor)));
+                recyclerView.addItemDecoration(
+                        new DividerItemDecoration(mContext, DividerItemDecoration.BOTH_SET, 2,
+                                mContext.getResources().getColor(typeColor)));
             }
         }
         recyclerView.setLayoutManager(layoutManager);
@@ -514,8 +563,9 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     private ArrayList<Book> getBookListData() {
 
         ArrayList<Book> booksOnLine = bookDaoHelper.getBooksOnLineList();
-        if (bookOnLines == null)
+        if (bookOnLines == null) {
             bookOnLines = new ArrayList<>();
+        }
 
         if (bookOnLines != null) {
             bookOnLines.clear();
@@ -526,7 +576,8 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         if (iBookList != null) {
             iBookList.clear();
             if (!booksOnLine.isEmpty()) {
-                Collections.sort(booksOnLine, new CommonContract.MultiComparator(Constants.book_list_sort_type));
+                Collections.sort(booksOnLine,
+                        new CommonContract.MultiComparator(Constants.book_list_sort_type));
                 iBookList.addAll(booksOnLine);
 
             }
@@ -591,7 +642,8 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             if (bookDaoHelper.getBooksCount() > 0 && updateService != null) {
                 ArrayList<Book> list = bookDaoHelper.getBooksList();
                 AppLog.e("BookUpdateCount", "BookUpdateCount: " + list.size());
-                updateService.checkUpdate(BookHelperContract.INSTANCE.loadBookUpdateTaskData(list, this));
+                updateService.checkUpdate(
+                        BookHelperContract.INSTANCE.loadBookUpdateTaskData(list, this));
             }
         }
     }
@@ -603,7 +655,7 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             public void run() {
                 Activity activity = weakReference.get();
                 if (isAdded() && activity != null) {
-                        showToast(textId);
+                    showToast(textId);
                 }
             }
         }, 2000);
@@ -689,7 +741,8 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             Map<String, String> data = new HashMap<>();
             data.put("bookid", book.book_id);
             data.put("rank", String.valueOf(index + 1));
-            StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.BOOKCLICK, data);
+            StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELF_PAGE,
+                    StartLogClickUtil.BOOKCLICK, data);
         }
     }
 
@@ -705,11 +758,13 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             cancelUpdateStatus(book.book_id);
         }
 
-        if (Constants.isShielding && !noBookSensitive && bookSensitiveWords.contains(String.valueOf(book.book_id))) {
+        if (Constants.isShielding && !noBookSensitive && bookSensitiveWords.contains(
+                String.valueOf(book.book_id))) {
             ToastUtils.showToastNoRepeat("抱歉，该小说已下架！");
         } else {
             BookRouter.INSTANCE.navigateCoverOrRead(activity, book, 0);
-//            BookHelper.goToCoverOrRead(weakReference.get().getApplicationContext(), weakReference.get(), book,0);
+//            BookHelper.goToCoverOrRead(weakReference.get().getApplicationContext(),
+// weakReference.get(), book,0);
         }
     }
 
@@ -743,8 +798,9 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         isShowAD = true;
         updateUI();
         isGetAdEvent = false;
-        if (!isUpdateFinish)
+        if (!isUpdateFinish) {
             isUpdateFinish = true;
+        }
     }
 
     @Override
@@ -754,8 +810,9 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         if (swipeRefreshLayout != null) {
             swipeRefreshLayout.onRefreshComplete();
         }
-        if (!isUpdateFinish)
+        if (!isUpdateFinish) {
             isUpdateFinish = true;
+        }
     }
 
     protected void onUpdateSuccessToast(BookUpdateResult result) {
@@ -789,10 +846,12 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         if (book_name != null && !TextUtils.isEmpty(book_name)) {
 
             if (newsCount == 1) {
-                showToastDelay("《" + book_name + getSelfString(mContext, R.string.bookshelf_one_book_update) + bookUpdate.last_chapter_name);
+                showToastDelay("《" + book_name + getSelfString(mContext,
+                        R.string.bookshelf_one_book_update) + bookUpdate.last_chapter_name);
             } else {
                 int update_size = hasUpdateList.size();
-                showToastDelay("《" + book_name + getSelfString(mContext, R.string.bookshelf_more_book_update) + update_size + getSelfString(mContext,
+                showToastDelay("《" + book_name + getSelfString(mContext,
+                        R.string.bookshelf_more_book_update) + update_size + getSelfString(mContext,
                         R.string.bookshelf_update_chapters));
             }
         }
@@ -806,7 +865,8 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     public void doUpdateBook(CheckNovelUpdateService updateService) {
         Activity activity = weakReference.get();
         if (updateService != null) {
-            updateService.setBookUpdateListener((CheckNovelUpdateService.OnBookUpdateListener) activity);
+            updateService.setBookUpdateListener(
+                    (CheckNovelUpdateService.OnBookUpdateListener) activity);
         }
 
         addUpdateTask();
@@ -835,7 +895,8 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
     /**
      * 菜单删除按钮触发删除动作
      */
-    private void deleteBooks(final ArrayList<Book> deleteBooks, ArrayList<Book> rankList, final boolean justDeleteCache) {
+    private void deleteBooks(final ArrayList<Book> deleteBooks, ArrayList<Book> rankList,
+            final boolean justDeleteCache) {
         final MyDialog myDialog = new MyDialog(getActivity(), R.layout.dialog_download_clean);
         myDialog.setCanceledOnTouchOutside(false);
         myDialog.setCancelable(false);
@@ -860,8 +921,8 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
                 // 删除书架数据库和章节数据库
                 if (bookDaoHelper != null && !justDeleteCache) {
                     bookDaoHelper.deleteBook(deleteBooks);
-                }else{
-                    for (Book book: deleteBooks) {
+                } else {
+                    for (Book book : deleteBooks) {
                         CacheManager.INSTANCE.remove(book.book_id);
                         BaseBookHelper.removeChapterCacheFile(book);
                     }
@@ -872,12 +933,13 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
 
                 handler.obtainMessage(REFRESH_DATA_AFTER_DELETE).sendToTarget();
 
-                if(justDeleteCache) {
+                if (justDeleteCache) {
                     Map<String, String> data1 = new HashMap<>();
                     data1.put("type", "1");
                     data1.put("number", String.valueOf(size));
                     data1.put("bookids", sb.toString());
-                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.DELETE1, data1);
+                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELFEDIT_PAGE,
+                            StartLogClickUtil.DELETE1, data1);
                 }
             }
         }).start();
@@ -918,7 +980,8 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
                 public void onClick(View view) {
                     deleteDialog.dismiss();
                     deleteBooks(deleteBooks, bookOnLines, checkBox.isChecked());
-                    StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.bs_click_delete_ok_btn);
+                    StatServiceUtils.statAppBtnClick(mContext,
+                            StatServiceUtils.bs_click_delete_ok_btn);
                 }
             });
             button.setOnClickListener(new OnClickListener() {
@@ -926,8 +989,10 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
                     deleteDialog.dismiss();
                     Map<String, String> data = new HashMap<>();
                     data.put("type", "2");
-                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELFEDIT, StartLogClickUtil.DELETE1, data);
-                    StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.bs_click_delete_cancel_btn);
+                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELFEDIT,
+                            StartLogClickUtil.DELETE1, data);
+                    StatServiceUtils.statAppBtnClick(mContext,
+                            StatServiceUtils.bs_click_delete_cancel_btn);
                 }
             });
             deleteDialog.show();
@@ -951,8 +1016,28 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             }
             updateUI();
         }
-        if (fragmentCallback != null) {
-            fragmentCallback.getMenuShownState(state);
+//        if (fragmentCallback != null) {
+//            fragmentCallback.getMenuShownState(state);
+//        }
+        showEditor(state);
+    }
+
+    public void showEditor(boolean state) {
+        if (state) {
+            if (!content_head_editor.isShown()) {
+                Animation showAnimation = new AlphaAnimation(0.0f, 1.0f);
+                showAnimation.setDuration(200);
+                content_head_editor.startAnimation(showAnimation);
+                content_head_editor.setVisibility(View.VISIBLE);
+
+            }
+//            AnimationHelper.smoothScrollTo(viewPager, 0);
+        } else {
+            if (content_head_editor.isShown()) {
+                content_head_editor.setVisibility(View.GONE);
+
+            }
+//            AnimationHelper.smoothScrollTo(viewPager, 0);
         }
     }
 
@@ -1008,6 +1093,76 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
         return headerView;
     }
 
+    public void initClick() {
+
+        content_head_setting.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (shake.check(R.id.content_head_setting)) {
+                    return;
+                }
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE,
+                        StartLogClickUtil.PERSONAL);
+                RouterUtil.INSTANCE.navigation(RouterConfig.SETTING_ACTIVITY);
+                EventBus.getDefault().post(new ConsumeEvent(R.id.redpoint_home_setting));
+//                startActivity(new Intent(context, SettingActivity.class));
+                net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext,
+                        net.lzbook.kit.utils.StatServiceUtils.bs_click_mine_menu);
+            }
+        });
+        content_head_search.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RouterUtil.INSTANCE.navigation(RouterConfig.SEARCHBOOK_ACTIVITY);
+//                if(bottomType ==2){
+//                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil
+// .RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH);
+//                }else if(bottomType==3){
+//                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.TOP_PAGE,
+// StartLogClickUtil.QG_BDY_SEARCH);
+//                }else if(bottomType == 4){
+//                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.CLASS_PAGE,
+// StartLogClickUtil.QG_FL_SEARCH);
+//                }else{
+//                    StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE,
+// StartLogClickUtil.SEARCH);
+//                }
+
+                net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext,
+                        net.lzbook.kit.utils.StatServiceUtils.bs_click_search_btn);
+            }
+        });
+        content_download_manage.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RouterUtil.INSTANCE.navigation(RouterConfig.DOWNLOAD_MANAGER_ACTIVITY);
+
+//                downloadIntent.setClass(context, DownloadManagerActivity.class);
+//                startActivity(downloadIntent);
+                net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(mContext,
+                        net.lzbook.kit.utils.StatServiceUtils.bs_click_download_btn);
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.MAIN_PAGE,
+                        StartLogClickUtil.CACHEMANAGE);
+            }
+        });
+        home_edit_back.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bookShelfRemoveHelper.dismissRemoveMenu();
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELFEDIT_PAGE,
+                        StartLogClickUtil.CANCLE1);
+            }
+        });
+        home_edit_cancel.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bookShelfRemoveHelper.dismissRemoveMenu();
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.SHELFEDIT_PAGE,
+                        StartLogClickUtil.CANCLE1);
+            }
+        });
+    }
+
     public static class UiHandler extends Handler {
         private WeakReference<BookShelfFragment> reference;
 
@@ -1041,11 +1196,11 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
 
 
     //显示引导图
-    public interface ShowGuideLable{
+    public interface ShowGuideLable {
         void showGuidLable();
     }
 
-    public void setShowGuideLable(ShowGuideLable mShowGuideLable){
+    public void setShowGuideLable(ShowGuideLable mShowGuideLable) {
         this.mShowGuideLable = mShowGuideLable;
     }
 
@@ -1054,7 +1209,8 @@ public class BookShelfFragment extends Fragment implements UpdateCallBack,
             return;
         }
         if (toast == null) {
-            toast = Toast.makeText(BaseBookApplication.getGlobalContext(), resId, Toast.LENGTH_SHORT);
+            toast = Toast.makeText(BaseBookApplication.getGlobalContext(), resId,
+                    Toast.LENGTH_SHORT);
         } else {
             toast.setText(resId);
         }

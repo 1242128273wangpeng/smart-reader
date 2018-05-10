@@ -49,6 +49,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import iyouqu.theme.ThemeMode
+import net.lzbook.kit.app.ActionConstants
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.DownloadService
@@ -1192,7 +1193,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
             ReadConfig.MODE = sharedPreferences.getInt("current_light_mode", 51)
             readReference?.get()?.mThemeHelper?.setMode(ThemeMode.THEME1)
             data.put("type", "2")
-            StartLogClickUtil.upLoadEventLog(readReference?.get()?.getApplicationContext(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.NIGHTMODE1, data)
+            StartLogClickUtil.upLoadEventLog(readReference?.get()?.applicationContext, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.NIGHTMODE1, data)
         } else {
             edit.putInt("current_light_mode", ReadConfig.MODE)
             //            ReadConfig.MODE = sharedPreferences.getInt("current_night_mode", 61);
@@ -1200,12 +1201,14 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
             ReadConfig.MODE = 61
             readReference?.get()?.mThemeHelper?.setMode(ThemeMode.NIGHT)
             data.put("type", "1")
-            StartLogClickUtil.upLoadEventLog(readReference?.get()?.getApplicationContext(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.NIGHTMODE1, data)
+            StartLogClickUtil.upLoadEventLog(readReference?.get()?.applicationContext, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.NIGHTMODE1, data)
         }
         edit.putInt("content_mode", ReadConfig.MODE)
         edit.apply()
         changeMode(ReadConfig.MODE)
-        EventBus.getDefault().post(HomeActivity.EVENT_CHANGE_NIGHT_MODE)
+
+        val intent = Intent(ActionConstants.ACTION_CHANGE_NIGHT_MODE)
+        mContext.sendBroadcast(intent)
     }
 
     private fun submitFeedback(type: Int) {

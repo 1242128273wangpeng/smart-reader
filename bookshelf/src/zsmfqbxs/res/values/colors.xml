@@ -15,6 +15,7 @@
     <!--带点绿-->
     <color name="color_green_1fb7c3">#1fb7c3</color>
     <color name="transparent">#00000000</color>
+    <color name="color_white"> #ffffff</color>
 
     <color name="text_color_dark">#FF212832</color>
     <color name="text_color_plain">#FF5D646E</color>

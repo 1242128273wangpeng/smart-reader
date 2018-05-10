@@ -115,7 +115,7 @@ public class DownloadIntentService extends IntentService {
                     broakCastIntent.putExtra("filePath", filePath);
                     broakCastIntent.putExtra("md5", md5);
                     broakCastIntent.putExtra("downloadLink", downloadLink);
-                    broakCastIntent.setAction(ActionConstants.DOWN_APP_SUCCESS_ACTION);
+                    broakCastIntent.setAction(ActionConstants.ACTION_DOWNLOAD_APP_SUCCESS);
                     sendBroadcast(broakCastIntent);
                 }
 

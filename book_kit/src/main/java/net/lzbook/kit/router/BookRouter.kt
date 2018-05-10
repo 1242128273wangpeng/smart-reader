@@ -102,7 +102,7 @@ object BookRouter {
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data)
 
             bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
-            val path = RouterConfig.COVERPAGE_ACTIVITY
+            val path = RouterConfig.COVER_PAGE_ACTIVITY
             return RouterUtil.navigation(path, bundle)
         }
     }

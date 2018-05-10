@@ -120,7 +120,7 @@ public class Constants {
     public static int NONET_READHOUR = 24;
     public static int DOWNLOAD = 400;
     // FIXME 上线要改成false
-    public static boolean SHOW_LOG = false;
+    public static boolean SHOW_LOG = true;
     public static boolean DEVELOPER_MODE = false;
     public static boolean isSdCard = false;
     public static boolean isHideAD = false;//全局广告开关
