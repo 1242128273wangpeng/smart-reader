@@ -1,24 +1,30 @@
 package com.intelligent.reader.presenter.home
 
+import android.content.pm.PackageManager
 import android.preference.PreferenceManager
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.presenter.IPresenter
+import io.reactivex.Observable
+import io.reactivex.ObservableOnSubscribe
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ReadConfig
-import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.LoadDataManager
-import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.*
 
 /**
- * Desc HomeFragment - presenter
+ * Desc HomeActivity - presenter
  * Author qiantao
  * Mail tao_qian@dingyuegroup.cn
  * Date 2018/2/28 0028 11:12
  */
-class HomePresenter(override var view: HomeView?) : IPresenter<HomeView> {
+class HomePresenter(override var view: HomeView?, var packageManager: PackageManager) : IPresenter<HomeView> {
+
+    private var loadDataManager: LoadDataManager? = null
 
     /***
      * 初始化参数
@@ -26,9 +32,7 @@ class HomePresenter(override var view: HomeView?) : IPresenter<HomeView> {
     fun initParameters() {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(BookApplication.getGlobalContext())
 
-        /***
-         * 初始化阅读页背景
-         * **/
+        //初始化阅读页背景
         if (sharedPreferences.getInt("content_mode", 51) < 50) {
             Constants.MODE = 51
             ReadConfig.MODE = 51
@@ -42,23 +46,27 @@ class HomePresenter(override var view: HomeView?) : IPresenter<HomeView> {
         val firstTime = sharedPreferences.getLong(Constants.TODAY_FIRST_OPEN_APP, 0)
         val currentTime = System.currentTimeMillis()
 
-        /***
-         * 判断用户是否是当日首次打开应用
-         * **/
+        //判断用户是否是当日首次打开应用
         val result = AppUtils.isToday(firstTime, currentTime)
 
         if (result) {
             Constants.is_user_today_first = false
         } else {
-            /***
-             * 用户首次打开，记录当前时间
-             * **/
+            //用户首次打开，记录当前时间
             Constants.is_user_today_first = true
             sharedPreferences.edit().putLong(Constants.TODAY_FIRST_OPEN_APP, currentTime).apply()
             sharedPreferences.edit().putBoolean(Constants.IS_UPLOAD, false).apply()
-            view?.updateAppList()
+            updateApplicationList()
         }
+
         Constants.upload_userinformation = sharedPreferences.getBoolean(Constants.IS_UPLOAD, false)
+
+        loadDataManager = LoadDataManager(BookApplication.getGlobalContext())
+
+        CheckNovelUpdHelper.delLocalNotify(BookApplication.getGlobalContext())
+
+        val deleteBookHelper = DeleteBookHelper(BookApplication.getGlobalContext())
+        deleteBookHelper.startPendingService()
     }
 
 
@@ -68,6 +76,19 @@ class HomePresenter(override var view: HomeView?) : IPresenter<HomeView> {
     fun initDownloadService() {
         CacheManager.checkService()
     }
+
+    /***
+     * 更新书架信息，由于服务器端缓存的问题，可能造成默认接口添加的书籍，书籍状态不正确
+     * **/
+    fun updateBookShelf() {
+        if (loadDataManager != null) {
+            loadDataManager!!.updateShelfBooks()
+        }
+    }
+
+
+
+
 
     fun uploadHeadSearchLog(bottomType: Int) {
         val context = BaseBookApplication.getGlobalContext()
@@ -190,18 +211,34 @@ class HomePresenter(override var view: HomeView?) : IPresenter<HomeView> {
         StatServiceUtils.statAppBtnClick(context, StatServiceUtils.me_set_cli_clear_cache)
     }
 
-    fun uploadEditorSelectAllLog(isAllSelected: Boolean) {
-        val data = HashMap<String, String>()
-        data.put("type", if (isAllSelected) "2" else "1")
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.SELECTALL1, data)
-    }
-
 
     fun uploadAutoCacheLog(isChecked: Boolean) {
         val data = HashMap<String, String>()
         data["type"] = if (isChecked) "1" else "0"
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
                 StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.WIFI_AUTOCACHE, data)
+    }
+
+
+
+
+
+
+
+
+
+
+    /***
+     * 上传用户应用列表
+     * **/
+    private fun updateApplicationList() {
+        Observable.create(ObservableOnSubscribe<String> { emitter ->
+            emitter.onNext(AppUtils.scanLocalInstallAppList(packageManager))
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeBy(onNext = { message ->
+                    StartLogClickUtil.upLoadApps(message)
+                })
     }
 }

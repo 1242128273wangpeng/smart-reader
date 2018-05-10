@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class DeletebookHelper {
+public class DeleteBookHelper {
     final static boolean isCheckDate = false;// TODO 测试修改为false
     final static boolean isAM = true;// TODO 测试时 根据SERVICE_START_HOUR 修改
     final static boolean isTEST = false;// TODO 测试修改 false
@@ -29,7 +29,7 @@ public class DeletebookHelper {
     FileViewer fileViewer;
     long INTERVAL_DAY_TEST = 2 * 60 * 1000;
 
-    public DeletebookHelper(Context context) {
+    public DeleteBookHelper(Context context) {
         mContext = context;
         init();
     }

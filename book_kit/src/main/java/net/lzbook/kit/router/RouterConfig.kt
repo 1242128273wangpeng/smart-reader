@@ -10,14 +10,13 @@ object RouterConfig {
 
     const val SETTING_ACTIVITY = "/common_book/SettingActivity"
 
+    const val SEARCH_BOOK_ACTIVITY = "/common_book/SearchBookActivity"
+
     const val DOWNLOAD_MANAGER_ACTIVITY = "/downloadmanager/DownloadManagerActivity"
 
     const val CATALOGUES_ACTIVITY = "/common_book/CataloguesActivity"
 
     const val READING_ACTIVITY = "/common_book/ReadingActivity"
 
-    const val COVERPAGE_ACTIVITY = "/common_book/CoverPageActivity"
-
-    const val SEARCHBOOK_ACTIVITY = "/common_book/SearchBookActivity"
-
+    const val COVER_PAGE_ACTIVITY = "/common_book/CoverPageActivity"
 }

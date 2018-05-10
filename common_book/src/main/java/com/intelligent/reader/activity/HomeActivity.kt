@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Resources
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -27,9 +26,7 @@ import com.baidu.mobstat.StatService
 
 import com.dingyue.bookshelf.BookShelfFragment
 import com.intelligent.reader.R
-import com.dingyue.bookshelf.BaseFragment
 import com.intelligent.reader.fragment.WebViewFragment
-import com.dingyue.bookshelf.BookShelfRemoveHelper
 import com.intelligent.reader.event.DownloadManagerToHome
 import com.intelligent.reader.fragment.CategoryFragment
 import com.intelligent.reader.presenter.home.HomePresenter
@@ -43,7 +40,6 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.BookEvent
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.request.UrlUtils
@@ -69,12 +65,19 @@ import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.utils.*
 import java.util.concurrent.TimeUnit
 
-class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, WebViewFragment.FragmentCallback, CheckNovelUpdateService.OnBookUpdateListener, HomeView {
+class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, CheckNovelUpdateService.OnBookUpdateListener, HomeView, BookShelfFragment.BookShelfInterface {
 
-    private val homePresenter by lazy { HomePresenter(this) }
+    private val homePresenter by lazy { HomePresenter(this, this.packageManager) }
 
     private var fragmentManager: FragmentManager? = null
 
+    private var homeBroadcastReceiver: HomeBroadcastReceiver? = null
+
+    private lateinit var intentFilter: IntentFilter
+
+    private var homeAdapter: HomeAdapter? = null
+
+    private var bookShelfFragment: BookShelfFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,32 +94,20 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
 
         homePresenter.initParameters()
 
-        initData()
-        //注册广播接收器
-        receiver = MyReceiver()
-        filter = IntentFilter()
-        filter.addAction(ActionConstants.DOWN_APP_SUCCESS_ACTION)
+        registerHomeReceiver()
 
-        this@HomeActivity.registerReceiver(receiver, filter)
-
-        apkUpdateUtils = ApkUpdateUtils(this)
-
-        try {
-            apkUpdateUtils.getApkUpdateInfo(this, handler, "HomeActivity")
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        checkAppUpdate()
 
         initPosition()
+
         checkUrlDevelop()
+
         EventBus.getDefault().register(this)
+
         AndroidLogStorage.getInstance().clear()
 
         preferencesUtils = SharedPreferencesUtils(PreferenceManager.getDefaultSharedPreferences(this))
         versionCode = AppUtils.getVersionCode()
-
-        adapter?.notifyDataSetChanged()
-        frameHelper()
 
         showCacheMessage()
 
@@ -140,13 +131,13 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        var position = 0
+        val position: Int
 
         if (intent != null && intent.hasExtra("position")) {
             position = intent.getIntExtra("position", 0)
             view_pager!!.currentItem = position
         } else {
-            if (intent != null) {//for bookend
+            if (intent != null) {
                 val intExtra = intent.getIntExtra(EventBookStore.BOOKSTORE, EventBookStore
                         .TYPE_ERROR)
                 if (intExtra != EventBookStore.TYPE_ERROR) {
@@ -163,18 +154,9 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
 
         AndroidLogStorage.getInstance().clear()
 
-        this@HomeActivity.unregisterReceiver(receiver)
+        this.unregisterReceiver(homeBroadcastReceiver)
 
         EventBus.getDefault().unregister(this)
-
-        if (frameHelper != null) {
-            frameHelper!!.restoreState()
-            frameHelper = null
-        }
-
-        removeMenuHelper = null
-
-        bookView = null
 
         try {
             setContentView(R.layout.empty)
@@ -184,35 +166,22 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
 
         EventBus.getDefault().unregister(this)
 
-//        bookShelfFragment?.onRemoveModeAllCheckedListener = null
-
-        try {
-            val childFragmentManager = Fragment::class.java.getDeclaredField("mChildFragmentManager")
-            childFragmentManager.isAccessible = true
-            childFragmentManager.set(this, null)
-
-        } catch (e: NoSuchFieldException) {
-            e.printStackTrace()
-        } catch (e: IllegalAccessException) {
-            e.printStackTrace()
-        }
+        bookShelfFragment?.onRemoveModeAllCheckedListener = null
     }
-
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (dl_content.isOpened) {
+            return if (dl_content.isOpened) {
                 dl_content.closeMenu()
-                return true
+                true
             } else if (view_pager != null && view_pager!!.currentItem != 0) {
                 selectTab(0)
-                return true
-            } else if (removeMenuHelper != null && removeMenuHelper!!.dismissRemoveMenu()) {
-
-                return true
+                true
+            /*} else if (removeMenuHelper != null && removeMenuHelper!!.dismissRemoveMenu()) {
+                true*/
             } else {
                 doubleClickFinish()
-                return true
+                true
             }
         }
         return super.onKeyDown(keyCode, event)
@@ -252,15 +221,13 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
 
         view_pager.isScrollable = false
 
-        fragmentManager?.let {
-            adapter = MainAdapter(it)
-        }
+        homeAdapter = HomeAdapter(supportFragmentManager)
 
-        view_pager.adapter = adapter
+        view_pager.adapter = homeAdapter
 
         selectTab(currentTab)
-        onChangeNavigation(currentTab)
 
+        onChangeNavigation(currentTab)
 
         rl_recommend_search.setOnClickListener {
             startActivity(Intent(this, SearchBookActivity::class.java))
@@ -296,19 +263,6 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
             selectTab(3)
             preferencesUtils.putString(Constants.FINDBOOK_SEARCH, "class")
             homePresenter.uploadCategorySelectedLog()
-        }
-
-        txt_editor_select_all.setOnClickListener {
-            val bookShelfRemoveHelper = bookShelfFragment?.bookShelfRemoveHelper
-            val isAllSelected = bookShelfRemoveHelper?.isAllChecked ?: false
-            if (isAllSelected) {
-                txt_editor_select_all.text = getString(R.string.select_all)
-                bookShelfRemoveHelper?.selectAll(false)
-            } else {
-                txt_editor_select_all.text = getString(R.string.select_all_cancel)
-                bookShelfRemoveHelper?.selectAll(true)
-            }
-            homePresenter.uploadEditorSelectAllLog(isAllSelected)
         }
 
         setMenuTitleMargin()
@@ -437,11 +391,32 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
     }
 
     /***
-     * 初始化数据，移到Presenter中
+     * 注册广播接受器
      * **/
-    private fun initData() {
-        mLoadDataManager = LoadDataManager(this)
+    private fun registerHomeReceiver() {
+        homeBroadcastReceiver = HomeBroadcastReceiver()
+
+        intentFilter = IntentFilter()
+        intentFilter.addAction(ActionConstants.ACTION_ADD_DEFAULT_SHELF)
+        intentFilter.addAction(ActionConstants.ACTION_CHECK_UPDATE_FINISH)
+        intentFilter.addAction(ActionConstants.ACTION_DOWNLOAD_APP_SUCCESS)
+
+        this.registerReceiver(homeBroadcastReceiver, intentFilter)
     }
+
+    /***
+     * 检查版本更新
+     * **/
+    private fun checkAppUpdate() {
+        apkUpdateUtils = ApkUpdateUtils(this)
+
+        try {
+            apkUpdateUtils.getApkUpdateInfo(this, handler, "HomeActivity")
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
+    }
+
 
     /***
      * 初始化ViewPager的位置：Position
@@ -473,27 +448,23 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
         }
     }
 
+    /***
+     * 获取缓存大小
+     * **/
+    private fun showCacheMessage() {
+        doAsync {
+            var result = "0B"
+            try {
+                result = DataCleanManager.getTotalCacheSize(this)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            uiThread { txt_clear_cache_message?.text = result }
+        }
+    }
 
 
-
-
-
-
-
-
-
-
-
-
-    var frameHelper: FrameBookHelper? = null
-
-    private lateinit var filter: IntentFilter
-
-    private var removeMenuHelper: BookShelfRemoveHelper? = null
-    private var bookView: BookShelfFragment? = null
     private var isClosed = false
-    private var receiver: MyReceiver? = null
-    private var mLoadDataManager: LoadDataManager? = null
     private val shake = AntiShake()
 
     override fun receiveUpdateCallBack(preNTF: Notification) {
@@ -515,20 +486,6 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
     }
 
     /**
-     * 接收默认书籍的加载完成刷新
-     */
-    fun onEvent(event: BookEvent) {
-        if (event.msg == BookEvent.DEFAULTBOOK_UPDATED) {
-            if (mLoadDataManager != null)
-                mLoadDataManager!!.updateShelfBooks()
-        } else if (event.msg == BookEvent.PULL_BOOK_STATUS) {
-            if (bookView != null) {
-                bookView!!.updateUI()
-            }
-        }
-    }
-
-    /**
      * 两次返回键退出
      */
     private fun doubleClickFinish() {
@@ -544,34 +501,6 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
         val message = handler.obtainMessage(0)
         message.what = BACK
         handler.sendMessageDelayed(message, 2000)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun getRemoveMenuHelper(helper: BookShelfRemoveHelper) {
-        this.removeMenuHelper = helper
-    }
-
-    override fun getFrameBookRankView(bookView: Fragment) {
-        this.bookView = bookView as BookShelfFragment
-    }
-
-    override fun frameHelper() {
-        if (frameHelper == null) {
-            frameHelper = FrameBookHelper(applicationContext, this@HomeActivity)
-        }
-    }
-
-    override fun getAllCheckedState(isAllChecked: Boolean) {}
-
-    override fun getMenuShownState(state: Boolean) {
-        onMenuShownState(state)
-    }
-
-    override fun setSelectTab(index: Int) {
-        selectTab(index)
     }
 
     override fun webJsCallback(jsInterfaceHelper: JSInterfaceHelper) {
@@ -657,10 +586,6 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
     }
 
     companion object {
-
-        val EVENT_CHANGE_NIGHT_MODE = "event_change_night_mode"
-
-
         private val BACK = 12
         private var BACK_COUNT: Int = 0
 
@@ -671,8 +596,6 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
             true
         })
     }
-
-    private var bookShelfFragment: BookShelfFragment? = null
 
     private lateinit var apkUpdateUtils: ApkUpdateUtils
 
@@ -720,11 +643,8 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
     }
 
 
-
-    private var adapter: MainAdapter? = null
     private var currentTab = 0
     private var versionCode: Int = 0
-    private val titles = arrayOf("书架", "推荐", "榜单", "分类")
     private var b: Boolean = true
     private var bottomType: Int = 0//青果打点搜索 2 推荐  3 榜单
     private lateinit var preferencesUtils: SharedPreferencesUtils
@@ -776,45 +696,6 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
         selectTab(event.tabPosition)
     }
 
-    fun onEventMainThread(event: String) {
-        if (event == EVENT_CHANGE_NIGHT_MODE) {
-            setNightMode(true)
-        }
-    }
-
-
-    fun onMenuShownState(state: Boolean) {
-        if (state) {
-            content_tab_selection.visibility = View.GONE
-            img_bottom_shadow.visibility = View.GONE
-            if (!rl_head_editor.isShown) {
-                val showAnimation = AlphaAnimation(0.0f, 1.0f)
-                showAnimation.duration = 200
-                rl_head_editor.startAnimation(showAnimation)
-                rl_head_editor.visibility = View.VISIBLE
-            }
-            AnimationHelper.smoothScrollTo(view_pager, 0)
-        } else {
-            if (rl_head_editor.isShown) {
-                rl_head_editor.visibility = View.GONE
-            }
-            img_bottom_shadow.visibility = View.VISIBLE
-            content_tab_selection.visibility = View.VISIBLE
-            AnimationHelper.smoothScrollTo(view_pager, 0)
-        }
-    }
-
-    private fun showCacheMessage() {
-        doAsync {
-            var result = "0B"
-            try {
-                result = DataCleanManager.getTotalCacheSize(this)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            uiThread { txt_clear_cache_message?.text = result }
-        }
-    }
 
     private fun setMenuTitleMargin() {
         val statusBarHeight = StatusBarCompat.getStatusBarHeight(this)
@@ -833,75 +714,7 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /***
-     * 获取广播数据
-     * **/
-    inner class MyReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            val bundle = intent.extras
-            val count = bundle!!.getInt("count")
-            val filePath = bundle.getString("filePath")
-            val downloadLink = bundle.getString("downloadLink")
-            val md5 = bundle.getString("md5")
-            val fileName = filePath!!.substring(filePath.lastIndexOf("/") + 1)
-            if (count == 100) {
-                AppLog.e("--------------->", MD5Utils.getFileMD5(File(filePath)))
-                if (MD5Utils.getFileMD5(File(filePath))!!.equals(md5!!, ignoreCase = true)) {
-                    setup(filePath)
-                } else {
-                    val errorIntent = Intent()
-                    errorIntent.setClass(context, DownloadErrorActivity::class.java)
-                    errorIntent.putExtra("downloadLink", downloadLink)
-                    errorIntent.putExtra("md5", md5)
-                    errorIntent.putExtra("fileName", fileName)
-                    errorIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    context.startActivity(errorIntent)
-                }
-            }
-        }
-    }
-
-
-
-
-    /***
-     * 上传安装应用列表，后期优化，完全移入到Presenter中
-     * **/
-    override fun updateAppList() {
-        GetAppList().execute()
-    }
-
-    /***
-     * 获取用户app列表，后期优化，完全移入到Presenter中
-     * **/
-    internal inner class GetAppList : AsyncTask<Void, Int, String>() {
-        override fun doInBackground(vararg params: Void): String {
-            return AppUtils.scanLocalInstallAppList(packageManager)
-        }
-
-        override fun onPostExecute(s: String) {
-            StartLogClickUtil.upLoadApps(this@HomeActivity, s)
-        }
-    }
-
-    /***
-     * 移出，不在使用内部类的方式
-     * **/
-    private inner class MainAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+    private inner class HomeAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 
         override fun getCount(): Int = 4
 
@@ -910,14 +723,15 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
                 0 -> {
                     if (bookShelfFragment == null) {
                         bookShelfFragment = BookShelfFragment()
-//                        bookShelfFragment?.onRemoveModeAllCheckedListener = { isAllChecked ->
-//                            AppLog.e(TAG, "isAllChecked: $isAllChecked")
+
+                        bookShelfFragment?.onRemoveModeAllCheckedListener = { isAllChecked ->
+                            AppLog.e(TAG, "isAllChecked: $isAllChecked")
 //                            if (isAllChecked) {
 //                                txt_editor_select_all.text = getString(R.string.select_all_cancel)
 //                            } else {
 //                                txt_editor_select_all.text = getString(R.string.select_all)
 //                            }
-//                        }
+                        }
                     }
                     bookShelfFragment
                 }
@@ -933,10 +747,6 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
                 val bookShelfFragment = super.instantiateItem(container, position) as BookShelfFragment
                 bookShelfFragment.doUpdateBook()
 
-                if (view_pager != null && frameHelper != null) {
-                    getFrameBookRankView(bookShelfFragment)
-                }
-
                 bookShelfFragment
             } else {
                 super.instantiateItem(container, position)
@@ -946,4 +756,81 @@ class HomeActivity : BaseCacheableActivity(), BaseFragment.FragmentCallback, Web
         override fun getItemPosition(`object`: Any?): Int = PagerAdapter.POSITION_NONE
     }
 
+
+    /***
+     * 接收广播数据
+     * **/
+    inner class HomeBroadcastReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == ActionConstants.ACTION_ADD_DEFAULT_SHELF) {
+                homePresenter.updateBookShelf()
+            } else if (intent.action == ActionConstants.ACTION_CHECK_UPDATE_FINISH) {
+                if (bookShelfFragment != null) {
+                    bookShelfFragment?.updateUI()
+                }
+            } else if (intent.action == ActionConstants.ACTION_DOWNLOAD_APP_SUCCESS) {
+                val bundle = intent.extras
+
+                if (bundle != null) {
+                    val md5 = bundle.getString("md5")
+                    val count = bundle.getInt("count")
+                    val filePath = bundle.getString("filePath")
+                    val downloadLink = bundle.getString("downloadLink")
+                    val fileName = filePath!!.substring(filePath.lastIndexOf("/") + 1)
+
+                    if (count == 100) {
+                        if (MD5Utils.getFileMD5(File(filePath))!!.equals(md5!!, ignoreCase = true)) {
+                            setup(filePath)
+                        } else {
+                            val errorIntent = Intent()
+                            errorIntent.setClass(context, DownloadErrorActivity::class.java)
+                            errorIntent.putExtra("downloadLink", downloadLink)
+                            errorIntent.putExtra("md5", md5)
+                            errorIntent.putExtra("fileName", fileName)
+                            errorIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            context.startActivity(errorIntent)
+                        }
+                    }
+                }
+            } else if (intent.action == ActionConstants.ACTION_CHECK_QING_STATE_SUCCESS) {
+                if (bookShelfFragment != null) {
+                    bookShelfFragment?.updateUI()
+                }
+            } else if (intent.action == ActionConstants.ACTION_CHANGE_NIGHT_MODE) {
+                setNightMode(true)
+            }
+        }
+    }
+
+    /***
+     * 更改底部导航栏状态
+     * **/
+    override fun changeHomeNavigationState(state: Boolean) {
+        if (state) {
+            content_tab_selection.visibility = View.GONE
+            img_bottom_shadow.visibility = View.GONE
+            AnimationHelper.smoothScrollTo(view_pager, 0)
+        } else {
+            img_bottom_shadow.visibility = View.VISIBLE
+            content_tab_selection.visibility = View.VISIBLE
+            AnimationHelper.smoothScrollTo(view_pager, 0)
+        }
+    }
+
+    /***
+     * 改变ViewPager Index
+     * **/
+    override fun changeHomePagerIndex(index: Int) {
+        if (currentTab != index) {
+            view_pager.setCurrentItem(index, false)
+        }
+    }
+
+    override fun changeDrawerLayoutState() {
+        if (dl_content.isOpened) {
+            dl_content.closeMenu()
+        } else {
+            dl_content.openMenu()
+        }
+    }
 }

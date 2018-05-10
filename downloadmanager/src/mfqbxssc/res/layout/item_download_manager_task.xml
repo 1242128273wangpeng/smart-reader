@@ -115,6 +115,6 @@
             android:layout_below="@id/rl_item"
             android:layout_marginLeft="15dp"
             android:layout_marginStart="15dp"
-            android:background="@color/divider_E8E8E8"/>
+            android:background="#E8E8E8"/>
     </RelativeLayout>
 </FrameLayout>

@@ -7,6 +7,7 @@ import com.quduquxie.network.DataService;
 import com.quduquxie.network.DataServiceNew;
 import com.quduquxie.utils.DataUtil;
 
+import net.lzbook.kit.app.ActionConstants;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.NoBodyEntity;
@@ -20,6 +21,7 @@ import net.lzbook.kit.request.own.OWNParser;
 import org.json.JSONException;
 
 import android.content.Context;
+import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
@@ -49,7 +51,6 @@ public class LoadDataManager {
 
     //初始化书架，添加默认书籍
     public void addDefaultBooks() {
-
         Observable<JsonObject> defaultBook = NetService.INSTANCE.getUserService().getDefaultBook();
         defaultBook.subscribeOn(Schedulers.io()).observeOn(Schedulers.io()).subscribe(new Consumer<JsonObject>() {
             @Override
@@ -59,7 +60,10 @@ public class LoadDataManager {
                     if (iBooks != null && iBooks.size() > 0) {
                         saveDefaultBooks(iBooks);
                         sharedPreferencesUtils.putBoolean(Constants.ADD_DEFAULT_BOOKS, true);
-                        EventBus.getDefault().postSticky(new BookEvent(BookEvent.DEFAULTBOOK_UPDATED));
+
+                        Intent intent = new Intent(ActionConstants.ACTION_ADD_DEFAULT_SHELF);
+                        context.sendBroadcast(intent);
+
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -115,10 +119,11 @@ public class LoadDataManager {
 
         String udid = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext());
         String url = DataUtil.QGBuildUrl(context, builder.toString(), udid, true);
+
         if (qgBooks.isEmpty()) {
-            EventBus.getDefault().post(new BookEvent(BookEvent.PULL_BOOK_STATUS));
             return;
         }
+
         DataService.checkBookUpdate(url, new DataServiceNew.DataServiceCallBack() {
             @Override
             public void onSuccess(Object result) {
@@ -144,7 +149,8 @@ public class LoadDataManager {
                         }
                     }
 
-                    EventBus.getDefault().post(new BookEvent(BookEvent.PULL_BOOK_STATUS));
+                    Intent intent = new Intent(ActionConstants.ACTION_CHECK_QING_STATE_SUCCESS);
+                    context.sendBroadcast(intent);
                 }
             }
 
@@ -179,7 +185,6 @@ public class LoadDataManager {
         }
         parameter.put("book_ids", idBuffer.toString());
         parameter.put("book_source_ids", sourceBuffer.toString());
-
     }
 
 

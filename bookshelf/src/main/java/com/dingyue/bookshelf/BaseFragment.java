@@ -59,16 +59,6 @@ public abstract class BaseFragment extends Fragment {
 
     public interface FragmentCallback {
 
-
-        void getRemoveMenuHelper(BookShelfRemoveHelper helper);
-
-        //应该是BookShelfFragment
-        void getFrameBookRankView(Fragment bookView);
-
-        void frameHelper();
-
-        void getAllCheckedState(boolean isAllChecked);
-
         void getMenuShownState(boolean state);
 
         void setSelectTab(int index);

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="determine_delete_book">删除书籍，确定要继续吗？</string>
+    <string name="determine_clear_book">保留书籍仅清除缓存</string>
+
+</resources>

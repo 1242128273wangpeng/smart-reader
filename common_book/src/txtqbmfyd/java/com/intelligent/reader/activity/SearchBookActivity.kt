@@ -33,7 +33,7 @@ import net.lzbook.kit.router.RouterConfig
 import net.lzbook.kit.utils.*
 import java.util.*
 
-@Route(path = RouterConfig.SEARCHBOOK_ACTIVITY)
+@Route(path = RouterConfig.SEARCH_BOOK_ACTIVITY)
 class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListener, SearchViewHelper.OnHistoryClickListener, TextWatcher, OnEditorActionListener, SearchView.AvtView {
 
 //    private var search_result_back: ImageView? = null

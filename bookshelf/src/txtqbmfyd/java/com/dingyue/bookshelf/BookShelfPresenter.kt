@@ -374,4 +374,11 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
                 StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.BOOKSORT)
     }
 
+    fun uploadEditorSelectAllLog(isAllSelected: Boolean) {
+        val data = HashMap<String, String>()
+        data.put("type", if (isAllSelected) "2" else "1")
+        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.SELECTALL1, data)
+    }
+
 }

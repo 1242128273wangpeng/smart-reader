@@ -98,7 +98,7 @@ public class StartLogClickUtil {
     public static final String SELECTALL1 = "SELECTALL";//全选
     public static final String DELETE1 = "DELETE";//删除
     public static final String CANCLE1 = "CANCLE";//右上角取消
-
+    public static final String UPDATEDETAIL = "UPDATEDETAIL";//点击详情
 
     //缓存管理页
     public static final String BOOKCLICK1 = "BOOKCLICK";//书籍点击
@@ -345,7 +345,7 @@ public class StartLogClickUtil {
     }
 
     //上传用户App列表
-    public static void upLoadApps(Context context, String applist) {
+    public static void upLoadApps(String applist) {
         if (!Constants.dy_ad_new_statistics_switch) {
             return;
         }

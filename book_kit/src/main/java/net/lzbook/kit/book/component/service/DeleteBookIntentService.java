@@ -2,7 +2,7 @@ package net.lzbook.kit.book.component.service;
 
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.DeletebookHelper;
+import net.lzbook.kit.utils.DeleteBookHelper;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -11,7 +11,7 @@ public class DeleteBookIntentService extends IntentService {
 
     public static final String ACTION_DO_DELETE = AppUtils.getPackageName() + ".book.action_delete_book";
     String TAG = "DeleteBookIntentService";
-    private DeletebookHelper helper;
+    private DeleteBookHelper helper;
 
     public DeleteBookIntentService() {
         super("DeleteBookIntentService");
@@ -20,7 +20,7 @@ public class DeleteBookIntentService extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
-        helper = new DeletebookHelper(this);
+        helper = new DeleteBookHelper(this);
     }
 
     @Override
