@@ -18,7 +18,6 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.view.*
-import android.view.animation.AlphaAnimation
 import android.webkit.WebView
 import android.widget.LinearLayout
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
@@ -77,7 +76,64 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
 
     private var homeAdapter: HomeAdapter? = null
 
+    private var closed = false
+
+    private var currentIndex = 0
+    private var versionCode: Int = 0
+
+    private var b: Boolean = true
+    private var bottomType: Int = 0//青果打点搜索 2 推荐  3 榜单
+
+    private lateinit var preferencesUtils: SharedPreferencesUtils
+
+    private lateinit var apkUpdateUtils: ApkUpdateUtils
+
     private var bookShelfFragment: BookShelfFragment? = null
+
+    private val recommendFragment: WebViewFragment by lazy {
+        val fragment = WebViewFragment()
+        val bundle = Bundle()
+        bundle.putString("type", "recommend")
+        val uri = URLBuilderIntterface.WEB_RECOMMEND.replace("{packageName}", AppUtils.getPackageName())
+        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
+        fragment.arguments = bundle
+        fragment
+    }
+
+    private val rankingFragment: WebViewFragment by lazy {
+        val fragment = WebViewFragment()
+        val bundle = Bundle()
+        bundle.putString("type", "rank")
+        val uri = URLBuilderIntterface.WEB_RANK.replace("{packageName}", AppUtils.getPackageName())
+        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
+        fragment.arguments = bundle
+        fragment
+    }
+
+    private val categoryFragment: CategoryFragment by lazy {
+        val fragment = CategoryFragment()
+        fragment
+    }
+
+    private val clearCacheDialog: ClearCacheDialog by lazy {
+        val dialog = ClearCacheDialog(this)
+        dialog.setOnConfirmListener {
+            dialog.showLoading()
+            this.doAsync {
+                CacheManager.removeAll()
+                UIHelper.clearAppCache()
+                DataCleanManager.clearAllCache(this.applicationContext)
+                Thread.sleep(1000)
+                uiThread {
+                    dialog.dismiss()
+                    txt_clear_cache_message.text = "0B"
+                }
+            }
+        }
+        dialog
+    }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,7 +175,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
 
         bookShelfFragment?.bookShelfReAdapter?.notifyDataSetChanged()
 
-        selectTab(currentTab)
+        this.changeHomePagerIndex(currentIndex)
 
         StatService.onResume(this)
     }
@@ -142,7 +198,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
                         .TYPE_ERROR)
                 if (intExtra != EventBookStore.TYPE_ERROR) {
                     if (!isFinishing) {
-                        selectTab(intExtra)
+                        this.changeHomePagerIndex(intExtra)
                     }
                 }
             }
@@ -175,10 +231,10 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
                 dl_content.closeMenu()
                 true
             } else if (view_pager != null && view_pager!!.currentItem != 0) {
-                selectTab(0)
+                this.changeHomePagerIndex(0)
                 true
-            /*} else if (removeMenuHelper != null && removeMenuHelper!!.dismissRemoveMenu()) {
-                true*/
+                /*} else if (removeMenuHelper != null && removeMenuHelper!!.dismissRemoveMenu()) {
+                    true*/
             } else {
                 doubleClickFinish()
                 true
@@ -225,42 +281,32 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
 
         view_pager.adapter = homeAdapter
 
-        selectTab(currentTab)
+        this.changeHomePagerIndex(currentIndex)
 
-        onChangeNavigation(currentTab)
-
-        rl_recommend_search.setOnClickListener {
-            startActivity(Intent(this, SearchBookActivity::class.java))
-            homePresenter.uploadHeadSearchLog(bottomType)
-        }
-
-        img_ranking_search.setOnClickListener {
-            startActivity(Intent(this, SearchBookActivity::class.java))
-            homePresenter.uploadHeadSearchLog(bottomType)
-        }
+        onChangeNavigation(currentIndex)
 
         ll_bottom_tab_bookshelf.setOnClickListener {
-            selectTab(0)
+            this.changeHomePagerIndex(0)
             homePresenter.uploadBookshelfSelectedLog()
         }
 
         ll_bottom_tab_recommend.setOnClickListener {
             AppLog.e(TAG, "Selection Selected")
-            selectTab(1)
+            this.changeHomePagerIndex(1)
             preferencesUtils.putString(Constants.FINDBOOK_SEARCH, "recommend")
             homePresenter.uploadRecommendSelectedLog()
         }
 
         ll_bottom_tab_ranking.setOnClickListener {
             AppLog.e(TAG, "Ranking Selected")
-            selectTab(2)
+            this.changeHomePagerIndex(2)
             preferencesUtils.putString(Constants.FINDBOOK_SEARCH, "top")
             homePresenter.uploadRankingSelectedLog()
         }
 
         ll_bottom_tab_category.setOnClickListener {
             AppLog.e(TAG, "Classify Selected")
-            selectTab(3)
+            this.changeHomePagerIndex(3)
             preferencesUtils.putString(Constants.FINDBOOK_SEARCH, "class")
             homePresenter.uploadCategorySelectedLog()
         }
@@ -355,11 +401,11 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
      * 当ViewPager改变时，更新界面信息
      * **/
     private fun onChangeNavigation(position: Int) {
-        currentTab = position
+        currentIndex = position
 
         bottomType = position + 1
 
-        if (currentTab != 0) {
+        if (currentIndex != 0) {
             bookShelfFragment?.bookShelfRemoveHelper?.dismissRemoveMenu()
         }
 
@@ -369,22 +415,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
         ll_bottom_tab_category.isSelected = position == 3
 
         when (position) {
-            0 -> {
-                rl_recommend_head.visibility = View.GONE
-                rl_head_ranking.visibility = View.GONE
-            }
-            1 -> {
-                rl_recommend_head.visibility = View.VISIBLE
-                rl_head_ranking.visibility = View.GONE
-            }
-            2 -> {
-                rl_recommend_head.visibility = View.GONE
-                rl_head_ranking.visibility = View.VISIBLE
-                homePresenter.uploadRankingEntryLog()
-            }
-            else -> {
-                rl_recommend_head.visibility = View.GONE
-                rl_head_ranking.visibility = View.GONE
+            3 -> {
                 homePresenter.uploadCategoryEntryLog()
             }
         }
@@ -409,14 +440,12 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
      * **/
     private fun checkAppUpdate() {
         apkUpdateUtils = ApkUpdateUtils(this)
-
         try {
             apkUpdateUtils.getApkUpdateInfo(this, handler, "HomeActivity")
         } catch (exception: Exception) {
             exception.printStackTrace()
         }
     }
-
 
     /***
      * 初始化ViewPager的位置：Position
@@ -427,12 +456,12 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
         if (intent != null) {
             if (intent.hasExtra(EventBookStore.BOOKSTORE)) {
                 position = intent.getIntExtra(EventBookStore.BOOKSTORE, 0)
-                selectTab(position)
+                this.changeHomePagerIndex(position)
             } else {
                 val intExtra = intent.getIntExtra(EventBookStore.BOOKSTORE, EventBookStore.TYPE_ERROR)
                 if (intExtra != EventBookStore.TYPE_ERROR) {
                     if (!isFinishing) {
-                        selectTab(intExtra)
+                        this.changeHomePagerIndex(intExtra)
                     }
                 }
             }
@@ -463,8 +492,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
         }
     }
 
-
-    private var isClosed = false
     private val shake = AntiShake()
 
     override fun receiveUpdateCallBack(preNTF: Notification) {
@@ -490,14 +517,16 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
      */
     private fun doubleClickFinish() {
         BACK_COUNT++
+
         if (BACK_COUNT == 1) {
             showToastLong(R.string.mian_click_tiwce_exit)
-        } else if (BACK_COUNT > 1 && !isClosed) {
-            isClosed = true
+        } else if (BACK_COUNT > 1 && !closed) {
+            closed = true
             restoreSystemDisplayState()
             ATManager.exitClient()
             finish()
         }
+
         val message = handler.obtainMessage(0)
         message.what = BACK
         handler.sendMessageDelayed(message, 2000)
@@ -597,59 +626,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
         })
     }
 
-    private lateinit var apkUpdateUtils: ApkUpdateUtils
-
-    private val recommendFragment: WebViewFragment by lazy {
-        val fragment = WebViewFragment()
-        val bundle = Bundle()
-        bundle.putString("type", "recommend")
-        val uri = URLBuilderIntterface.WEB_RECOMMEND.replace("{packageName}", AppUtils.getPackageName())
-        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
-        fragment.arguments = bundle
-        fragment
-    }
-
-    private val rankingFragment: WebViewFragment by lazy {
-        val fragment = WebViewFragment()
-        val bundle = Bundle()
-        bundle.putString("type", "rank")
-        val uri = URLBuilderIntterface.WEB_RANK.replace("{packageName}", AppUtils.getPackageName())
-        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
-        fragment.arguments = bundle
-        fragment
-    }
-
-    private val categoryFragment: CategoryFragment by lazy {
-        val fragment = CategoryFragment()
-        fragment
-    }
-
-    private val clearCacheDialog: ClearCacheDialog by lazy {
-        val dialog = ClearCacheDialog(this)
-        dialog.setOnConfirmListener {
-            dialog.showLoading()
-            this.doAsync {
-                CacheManager.removeAll()
-                UIHelper.clearAppCache()
-                DataCleanManager.clearAllCache(this.applicationContext)
-                Thread.sleep(1000)
-                uiThread {
-                    dialog.dismiss()
-                    txt_clear_cache_message.text = "0B"
-                }
-            }
-        }
-        dialog
-    }
-
-
-    private var currentTab = 0
-    private var versionCode: Int = 0
-    private var b: Boolean = true
-    private var bottomType: Int = 0//青果打点搜索 2 推荐  3 榜单
-    private lateinit var preferencesUtils: SharedPreferencesUtils
-
-
     private fun initGuide() {
         val key = versionCode.toString() + Constants.BOOKSHELF_GUIDE_TAG
         if (!preferencesUtils.getBoolean(key)) {
@@ -682,18 +658,11 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
     }
 
 
-    fun selectTab(position: Int) {
-        if (currentTab != position) {
-            view_pager.setCurrentItem(position, false)
-        }
-    }
-
-
     /**
      * EventBus 接收下载管理页面的跳转请求
      */
     fun onEventMainThread(event: DownloadManagerToHome) {
-        selectTab(event.tabPosition)
+        this.changeHomePagerIndex(event.tabPosition)
     }
 
 
@@ -723,15 +692,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
                 0 -> {
                     if (bookShelfFragment == null) {
                         bookShelfFragment = BookShelfFragment()
-
-                        bookShelfFragment?.onRemoveModeAllCheckedListener = { isAllChecked ->
-                            AppLog.e(TAG, "isAllChecked: $isAllChecked")
-//                            if (isAllChecked) {
-//                                txt_editor_select_all.text = getString(R.string.select_all_cancel)
-//                            } else {
-//                                txt_editor_select_all.text = getString(R.string.select_all)
-//                            }
-                        }
                     }
                     bookShelfFragment
                 }
@@ -821,11 +781,14 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
      * 改变ViewPager Index
      * **/
     override fun changeHomePagerIndex(index: Int) {
-        if (currentTab != index) {
+        if (currentIndex != index) {
             view_pager.setCurrentItem(index, false)
         }
     }
 
+    /***
+     * 改变DrawerLayout状态，当书架页点击设置时，显示抽屉布局
+     * **/
     override fun changeDrawerLayoutState() {
         if (dl_content.isOpened) {
             dl_content.closeMenu()

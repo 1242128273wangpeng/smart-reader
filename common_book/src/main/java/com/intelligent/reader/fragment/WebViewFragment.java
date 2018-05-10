@@ -27,6 +27,7 @@ import com.intelligent.reader.activity.SearchBookActivity;
 import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.widget.topshadow.TopShadowWebView;
 
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
 import net.lzbook.kit.router.RouterConfig;
@@ -74,6 +75,12 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 
     private boolean hasRefreshHead = false;
 
+
+    private RelativeLayout rl_recommend_head;
+    private RelativeLayout rl_recommend_search;
+    private RelativeLayout rl_head_ranking;
+    private ImageView img_ranking_search;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -118,6 +125,10 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
         if (rootView != null) {
             contentLayout = (RelativeLayout) rootView.findViewById(R.id.web_content_layout);
             topShadowView = (ImageView) rootView.findViewById(R.id.img_head_shadow);
+            rl_recommend_head = (RelativeLayout) rootView.findViewById(R.id.rl_recommend_head);
+            rl_recommend_search = (RelativeLayout) rootView.findViewById(R.id.rl_recommend_search);
+            rl_head_ranking = (RelativeLayout) rootView.findViewById(R.id.rl_head_ranking);
+            img_ranking_search = (ImageView) rootView.findViewById(R.id.img_ranking_search);
             View title_layout = rootView.findViewById(R.id.title_layout);
             contentView = (TopShadowWebView) rootView.findViewById(R.id.web_content_view);
             contentView.setTopShadow(topShadowView);
@@ -125,11 +136,35 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
                 contentView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             }
 
-//            if (!TextUtils.isEmpty(getArguments().getString("type")) && getArguments().getString("type").equals("category")) {
-            title_layout.setVisibility(View.GONE);
-//            } else {
-//                title_layout.setVisibility(View.VISIBLE);
-//            }
+            if (type.equals("recommend")) {
+                rl_recommend_head.setVisibility(View.VISIBLE);
+                rl_head_ranking.setVisibility(View.GONE);
+                title_layout.setVisibility(View.VISIBLE);
+            } else if (type.equals("rank")) {
+                rl_recommend_head.setVisibility(View.GONE);
+                rl_head_ranking.setVisibility(View.VISIBLE);
+                title_layout.setVisibility(View.VISIBLE);
+            } else {
+                title_layout.setVisibility(View.GONE);
+            }
+
+            rl_recommend_search.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(WebViewFragment.this.context, SearchBookActivity.class));
+                    StartLogClickUtil.upLoadEventLog(context,
+                            StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH);
+                }
+            });
+
+            img_ranking_search.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(WebViewFragment.this.context, SearchBookActivity.class));
+                    StartLogClickUtil.upLoadEventLog(context,
+                            StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH);
+                }
+            });
         }
 
         if (weakReference != null) {

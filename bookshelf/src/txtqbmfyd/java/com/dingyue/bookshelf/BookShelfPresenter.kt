@@ -345,16 +345,18 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
 
     fun uploadHeadSearchLog(bottomType: Int) {
         val context = BaseBookApplication.getGlobalContext()
-        when (bottomType) {
-            2 -> StartLogClickUtil.upLoadEventLog(context,
-                    StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH)
-            3 -> StartLogClickUtil.upLoadEventLog(context,
-                    StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH)
-            4 -> StartLogClickUtil.upLoadEventLog(context,
-                    StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.QG_FL_SEARCH)
-            else -> StartLogClickUtil.upLoadEventLog(context,
-                    StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.SEARCH)
-        }
+//        when (bottomType) {
+//            2 -> StartLogClickUtil.upLoadEventLog(context,
+//                    StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH)
+//            3 -> StartLogClickUtil.upLoadEventLog(context,
+//                    StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH)
+//            4 -> StartLogClickUtil.upLoadEventLog(context,
+//                    StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.QG_FL_SEARCH)
+//            else -> StartLogClickUtil.upLoadEventLog(context,
+//                    StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.SEARCH)
+//        }
+
+        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.SEARCH)
         net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(context,
                 net.lzbook.kit.utils.StatServiceUtils.bs_click_search_btn)
     }
