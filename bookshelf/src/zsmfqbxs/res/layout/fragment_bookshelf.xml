@@ -197,8 +197,8 @@
 
         <ImageView
             android:id="@+id/bookshelf_empty_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="180dp"
+            android:layout_height="70dp"
             android:layout_marginTop="16dp"
             android:src="@drawable/bookshelf_empty_btn"/>
     </LinearLayout>
