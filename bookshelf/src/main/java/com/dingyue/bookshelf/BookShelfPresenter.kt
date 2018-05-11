@@ -8,7 +8,7 @@ import android.text.TextUtils
 import android.view.ViewGroup
 import com.dingyue.bookshelf.contract.BookHelperContract
 import com.dingyue.contract.CommonContract
-import com.intelligent.reader.presenter.IPresenter
+import com.dingyue.contract.IPresenter
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
@@ -372,13 +372,6 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
     fun uploadBookSortingLog() {
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
                 StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.BOOKSORT)
-    }
-
-    fun uploadEditorSelectAllLog(isAllSelected: Boolean) {
-        val data = HashMap<String, String>()
-        data.put("type", if (isAllSelected) "2" else "1")
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.SELECTALL1, data)
     }
 
 }

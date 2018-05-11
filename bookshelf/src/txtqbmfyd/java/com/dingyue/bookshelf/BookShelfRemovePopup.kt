@@ -1,18 +1,18 @@
-package com.dingyue.downloadmanager
+package com.dingyue.bookshelf
 
 import android.content.Context
 import android.view.View
 import android.view.WindowManager
 import com.dingyue.contract.BasePopup
-import kotlinx.android.synthetic.txtqbmfyd.popup_download_manager_editor.view.*
+import kotlinx.android.synthetic.txtqbmfyd.popup_bookshelf_bottom_editor.view.*
 
 /**
- * Desc 底部删除弹窗
- * Author qiantao
- * Mail tao_qian@dingyuegroup.cn
- * Date 2018/4/25 0025 16:39
+ * Desc 请描述这个文件
+ * Author crazylei
+ * Mail crazylei951002@gmail.com
+ * Date 2018/5/11 10:11
  */
-class RemoveMenuPopup(context: Context, layout: Int = R.layout.popup_download_manager_editor,
+class BookShelfRemovePopup(context: Context, layout: Int = R.layout.popup_bookshelf_bottom_editor,
                       width: Int = WindowManager.LayoutParams.MATCH_PARENT,
                       height: Int = WindowManager.LayoutParams.WRAP_CONTENT)
     : BasePopup(context, layout, width, height) {

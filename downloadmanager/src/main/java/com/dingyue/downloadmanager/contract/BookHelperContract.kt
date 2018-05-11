@@ -21,8 +21,6 @@ import java.util.*
  */
 object BookHelperContract {
 
-    private var lastClickTime: Long = 0
-
     fun startDownBookTask(context: Context, book: Book, startDownloadIndex: Int) {
         BaseBookHelper.startDownBookTask(context, book, startDownloadIndex)
     }
@@ -40,22 +38,5 @@ object BookHelperContract {
 
     fun loadLocalBook(id: String?): Book {
         return BookDaoHelper.getInstance().getBook(id, 0)
-    }
-
-    fun insertShelfSortType(type: Int) {
-        Constants.book_list_sort_type = type
-
-        val settingItemsHelper = SettingItemsHelper.getSettingHelper(BaseBookApplication.getGlobalContext())
-        settingItemsHelper.putInt(settingItemsHelper.booklistSortType, type)
-    }
-
-    fun isDoubleClick(time: Long): Boolean {
-        val interval = time - lastClickTime
-        return if (interval > 800) {
-            lastClickTime = time
-            false
-        } else {
-            true
-        }
     }
 }

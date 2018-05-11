@@ -1,8 +1,11 @@
 package com.dingyue.contract
 
+import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Book
+import net.lzbook.kit.utils.SettingItemsHelper
 import java.io.Serializable
 import java.util.Comparator
 
@@ -13,6 +16,8 @@ import java.util.Comparator
  * Date 2018/5/9 10:10
  */
 object CommonContract {
+
+    private var lastClickTime: Long = 0
 
     /***
      * 书籍列表多类型排序
@@ -59,5 +64,27 @@ object CommonContract {
                 -1
             } else 0
         }
+    }
+
+    /***
+     * 防止按钮两次点击
+     * **/
+    fun isDoubleClick(time: Long): Boolean {
+        val interval = time - lastClickTime
+        return if (interval > 800) {
+            lastClickTime = time
+            false
+        } else {
+            true
+        }
+    }
+
+    /***
+     * 书架排序
+     * **/
+    fun insertShelfSortType(type: Int) {
+        Constants.book_list_sort_type = type
+        val settingItemsHelper = SettingItemsHelper.getSettingHelper(BaseBookApplication.getGlobalContext())
+        settingItemsHelper.putInt(settingItemsHelper.booklistSortType, type)
     }
 }

@@ -30,7 +30,7 @@ import com.intelligent.reader.cover.BookCoverOtherRepository
 import com.intelligent.reader.cover.BookCoverQGRepository
 import com.intelligent.reader.cover.BookCoverRepositoryFactory
 import com.intelligent.reader.fragment.CatalogMarkFragment
-import com.intelligent.reader.presenter.IPresenter
+import com.dingyue.contract.IPresenter
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.read.help.NovelHelper
@@ -43,7 +43,6 @@ import com.intelligent.reader.reader.ReaderViewModel
 import com.intelligent.reader.util.EventBookStore
 import com.intelligent.reader.widget.ConfirmDarkPopWindow
 import com.intelligent.reader.widget.FeedbackPopWindow
-import de.greenrobot.event.EventBus
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable

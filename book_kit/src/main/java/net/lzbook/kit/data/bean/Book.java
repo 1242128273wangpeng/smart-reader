@@ -87,6 +87,12 @@ public class Book implements Serializable, Comparable<Book>, Cloneable {
     public int list_version = -1;
     public int c_version = -1;
 
+
+
+    public int item_type = 0;
+    public int item_position = -1;
+
+
     public static boolean isOnlineType(int type) {
         return type == TYPE_ONLINE;
     }

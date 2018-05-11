@@ -52,7 +52,6 @@ import de.greenrobot.event.EventBus
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import iyouqu.theme.BaseCacheableActivity
-import iyouqu.theme.StatusBarCompat
 import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.main.act_home.*
 import kotlinx.android.synthetic.txtqbmfyd.content_view_main.*
@@ -68,8 +67,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
 
     private val homePresenter by lazy { HomePresenter(this, this.packageManager) }
 
-    private var fragmentManager: FragmentManager? = null
-
     private var homeBroadcastReceiver: HomeBroadcastReceiver? = null
 
     private lateinit var intentFilter: IntentFilter
@@ -81,8 +78,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
     private var currentIndex = 0
     private var versionCode: Int = 0
 
-    private var b: Boolean = true
-    private var bottomType: Int = 0//青果打点搜索 2 推荐  3 榜单
+    private var guideDownload: Boolean = true
 
     private lateinit var preferencesUtils: SharedPreferencesUtils
 
@@ -117,8 +113,10 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
 
     private val clearCacheDialog: ClearCacheDialog by lazy {
         val dialog = ClearCacheDialog(this)
+
         dialog.setOnConfirmListener {
             dialog.showLoading()
+
             this.doAsync {
                 CacheManager.removeAll()
                 UIHelper.clearAppCache()
@@ -126,27 +124,23 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
                 Thread.sleep(1000)
                 uiThread {
                     dialog.dismiss()
-                    txt_clear_cache_message.text = "0B"
+                    txt_clear_cache_message.text = applicationContext.getString(R.string.application_cache_size)
                 }
             }
         }
         dialog
     }
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.act_home)
 
-        try {
-            fragmentManager = this.supportFragmentManager
-        } catch (exception: NoSuchMethodError) {
-            exception.printStackTrace()
-        }
+        versionCode = AppUtils.getVersionCode()
+        preferencesUtils = SharedPreferencesUtils(PreferenceManager.getDefaultSharedPreferences(this))
 
         initView()
+        initGuide()
 
         homePresenter.initParameters()
 
@@ -162,9 +156,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
 
         AndroidLogStorage.getInstance().clear()
 
-        preferencesUtils = SharedPreferencesUtils(PreferenceManager.getDefaultSharedPreferences(this))
-        versionCode = AppUtils.getVersionCode()
-
         showCacheMessage()
 
         homePresenter.initDownloadService()
@@ -173,7 +164,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
     override fun onResume() {
         super.onResume()
 
-        bookShelfFragment?.bookShelfReAdapter?.notifyDataSetChanged()
+        bookShelfFragment?.bookShelfAdapter?.notifyDataSetChanged()
 
         this.changeHomePagerIndex(currentIndex)
 
@@ -221,8 +212,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
         }
 
         EventBus.getDefault().unregister(this)
-
-        bookShelfFragment?.onRemoveModeAllCheckedListener = null
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
@@ -233,8 +222,9 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
             } else if (view_pager != null && view_pager!!.currentItem != 0) {
                 this.changeHomePagerIndex(0)
                 true
-                /*} else if (removeMenuHelper != null && removeMenuHelper!!.dismissRemoveMenu()) {
-                    true*/
+            } else if (bookShelfFragment != null && bookShelfFragment!!.checkRemovePopupShow()) {
+                bookShelfFragment?.dismissBookShelfRemovePopup()
+                true
             } else {
                 doubleClickFinish()
                 true
@@ -252,9 +242,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
             if (state == DrawerLayout.MenuState.MENU_OPENED) {
                 showCacheMessage()
 
-                val bookShelfRemoveHelper = bookShelfFragment?.bookShelfRemoveHelper
-                if (bookShelfRemoveHelper?.isRemoveMode == true) {
-                    bookShelfRemoveHelper.dismissRemoveMenu()
+                if (bookShelfFragment != null && bookShelfFragment!!.checkRemovePopupShow()) {
+                    bookShelfFragment?.dismissBookShelfRemovePopup()
                 }
             }
         }
@@ -291,21 +280,18 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
         }
 
         ll_bottom_tab_recommend.setOnClickListener {
-            AppLog.e(TAG, "Selection Selected")
             this.changeHomePagerIndex(1)
             preferencesUtils.putString(Constants.FINDBOOK_SEARCH, "recommend")
             homePresenter.uploadRecommendSelectedLog()
         }
 
         ll_bottom_tab_ranking.setOnClickListener {
-            AppLog.e(TAG, "Ranking Selected")
             this.changeHomePagerIndex(2)
             preferencesUtils.putString(Constants.FINDBOOK_SEARCH, "top")
             homePresenter.uploadRankingSelectedLog()
         }
 
         ll_bottom_tab_category.setOnClickListener {
-            AppLog.e(TAG, "Classify Selected")
             this.changeHomePagerIndex(3)
             preferencesUtils.putString(Constants.FINDBOOK_SEARCH, "class")
             homePresenter.uploadCategorySelectedLog()
@@ -394,7 +380,26 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
             }
         }
 
-        txt_clear_cache_message.text = "0B"
+        txt_clear_cache_message.text = applicationContext.getString(R.string.application_cache_size)
+    }
+
+    private fun initGuide() {
+        val key = versionCode.toString() + Constants.BOOKSHELF_GUIDE_TAG
+        if (!preferencesUtils.getBoolean(key)) {
+            fl_guide_layout.visibility = View.VISIBLE
+            img_guide_remove.visibility = View.VISIBLE
+            fl_guide_layout.setOnClickListener {
+                if (guideDownload) {
+                    img_guide_download.visibility = View.VISIBLE
+                    img_guide_remove.visibility = View.GONE
+                    guideDownload = false
+                } else {
+                    preferencesUtils.putBoolean(key, true)
+                    img_guide_download.visibility = View.GONE
+                    fl_guide_layout.visibility = View.GONE
+                }
+            }
+        }
     }
 
     /***
@@ -403,10 +408,10 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
     private fun onChangeNavigation(position: Int) {
         currentIndex = position
 
-        bottomType = position + 1
-
         if (currentIndex != 0) {
-            bookShelfFragment?.bookShelfRemoveHelper?.dismissRemoveMenu()
+            if (bookShelfFragment != null && bookShelfFragment!!.checkRemovePopupShow()) {
+                bookShelfFragment?.dismissBookShelfRemovePopup()
+            }
         }
 
         ll_bottom_tab_bookshelf.isSelected = position == 0
@@ -573,7 +578,9 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
                 e.printStackTrace()
             }
         })
+
         jsInterfaceHelper.setOnOpenAd { AppLog.e(TAG, "doOpenAd") }
+
         jsInterfaceHelper.setOnEnterCover(JSInterfaceHelper.onEnterCover { host, book_id, book_source_id, name, author, parameter, extra_parameter ->
             if (shake.check()) {
                 return@onEnterCover
@@ -600,10 +607,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
             startActivity(intent)
         })
 
-
         jsInterfaceHelper.setOnEnterCategory { gid, nid, name, lastSort -> AppLog.e(TAG, "doCategory") }
-
-
     }
 
     override fun startLoad(webView: WebView, url: String): String {
@@ -614,37 +618,36 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
         return false
     }
 
-    companion object {
-        private val BACK = 12
-        private var BACK_COUNT: Int = 0
-
-        internal var handler = Handler(Handler.Callback { msg ->
-            when (msg.what) {
-                BACK -> BACK_COUNT = 0
-            }
-            true
-        })
+    /**
+     * EventBus 接收下载管理页面的跳转请求
+     */
+    fun onEventMainThread(event: DownloadManagerToHome) {
+        this.changeHomePagerIndex(event.tabPosition)
     }
 
-    private fun initGuide() {
-        val key = versionCode.toString() + Constants.BOOKSHELF_GUIDE_TAG
-        if (!preferencesUtils.getBoolean(key)) {
-            fl_guide_layout.visibility = View.VISIBLE
-            img_guide_remove.visibility = View.VISIBLE
-            fl_guide_layout.setOnClickListener {
-                if (b) {
-                    img_guide_download.visibility = View.VISIBLE
-                    img_guide_remove.visibility = View.GONE
-                    b = false
-                } else {
-                    preferencesUtils.putBoolean(key, true)
-                    img_guide_download.visibility = View.GONE
-                    fl_guide_layout.visibility = View.GONE
-                }
-            }
+    /***
+     * 设置抽屉布局中标题的Margin
+     * **/
+    private fun setMenuTitleMargin() {
+        val density = resources.displayMetrics.density
+        val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        val left = (12 * density + 0.5f).toInt()
+        var top = 20
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M || isMIUISupport || isFlymeSupport) {
+            top += 20
         }
+        top = (top * density + 0.5f).toInt()
+
+        params.topMargin = top
+        params.leftMargin = left
+
+        txt_menu_title.layoutParams = params
     }
 
+    /***
+     * 是否夜间模式
+     * **/
     private fun setNightMode(isEvent: Boolean) {
         val isNightMode = this.mThemeHelper.isNight
         if (!isEvent) homePresenter.uploadCurModeLog(isNightMode)
@@ -658,32 +661,10 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
     }
 
 
-    /**
-     * EventBus 接收下载管理页面的跳转请求
-     */
-    fun onEventMainThread(event: DownloadManagerToHome) {
-        this.changeHomePagerIndex(event.tabPosition)
-    }
-
-
-    private fun setMenuTitleMargin() {
-        val statusBarHeight = StatusBarCompat.getStatusBarHeight(this)
-        AppLog.e(TAG, "statusBarHeight: $statusBarHeight")
-        val density = resources.displayMetrics.density
-        val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        val left = (12 * density + 0.5f).toInt()
-        var top = 20
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M || isMIUISupport || isFlymeSupport) {
-            top += 20
-        }
-        top = (top * density + 0.5f).toInt()
-        params.topMargin = top
-        params.leftMargin = left
-        txt_menu_title.layoutParams = params
-    }
-
-
-    private inner class HomeAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
+    /***
+     * HomeActivity子页面的Adapter
+     * **/
+    inner class HomeAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 
         override fun getCount(): Int = 4
 
@@ -715,7 +696,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
 
         override fun getItemPosition(`object`: Any?): Int = PagerAdapter.POSITION_NONE
     }
-
 
     /***
      * 接收广播数据
@@ -795,5 +775,17 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
         } else {
             dl_content.openMenu()
         }
+    }
+
+    companion object {
+        private const val BACK = 0x80
+        private var BACK_COUNT: Int = 0
+
+        internal var handler = Handler(Handler.Callback { msg ->
+            when (msg.what) {
+                BACK -> BACK_COUNT = 0
+            }
+            true
+        })
     }
 }

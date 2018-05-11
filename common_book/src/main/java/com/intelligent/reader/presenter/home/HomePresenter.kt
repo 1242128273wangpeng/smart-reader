@@ -3,7 +3,7 @@ package com.intelligent.reader.presenter.home
 import android.content.pm.PackageManager
 import android.preference.PreferenceManager
 import com.intelligent.reader.app.BookApplication
-import com.intelligent.reader.presenter.IPresenter
+import com.dingyue.contract.IPresenter
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers

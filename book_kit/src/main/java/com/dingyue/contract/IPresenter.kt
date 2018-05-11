@@ -1,4 +1,4 @@
-package com.intelligent.reader.presenter
+package com.dingyue.contract
 
 /**
  * Created by xian on 2017/8/8.

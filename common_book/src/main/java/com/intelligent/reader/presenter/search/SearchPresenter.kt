@@ -8,7 +8,7 @@ import android.widget.Toast
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
 import com.intelligent.reader.activity.ReadingActivity
-import com.intelligent.reader.presenter.IPresenter
+import com.dingyue.contract.IPresenter
 import com.intelligent.reader.read.help.BookHelper
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers

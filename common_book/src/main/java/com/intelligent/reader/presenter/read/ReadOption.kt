@@ -1,8 +1,8 @@
 package com.intelligent.reader.presenter.read
 
 import android.support.annotation.IdRes
-import com.intelligent.reader.presenter.IBaseView
-import com.intelligent.reader.presenter.IPresenter
+import com.dingyue.contract.IBaseView
+import com.dingyue.contract.IPresenter
 import net.lzbook.kit.data.db.BookDaoHelper
 
 /**
