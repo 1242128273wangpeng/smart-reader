@@ -2,15 +2,16 @@ package com.dingyue.bookshelf
 
 import android.app.Activity
 import android.app.NotificationManager
-import android.content.*
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.IBinder
 import android.text.TextUtils
 import android.view.ViewGroup
 import com.dingyue.bookshelf.contract.BookHelperContract
 import com.dingyue.contract.CommonContract
 import com.dingyue.contract.IPresenter
-import net.lzbook.kit.app.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.constants.Constants
@@ -19,7 +20,10 @@ import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.BookUpdate
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.data.db.BookDaoHelper
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.BaseBookHelper
+import net.lzbook.kit.utils.doAsync
+import net.lzbook.kit.utils.uiThread
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -195,6 +199,33 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
 //        }, num)
     }
 
+    fun deleteBooks(deleteBooks: java.util.ArrayList<Book>, isOnlyDeleteCache: Boolean) {
+        val size = deleteBooks.size
+        doAsync {
+            val sb = StringBuffer()
+            for (i in 0 until size) {
+                val book = deleteBooks[i]
+                sb.append(book.book_id)
+                sb.append(if (book.readed == 1) "_1" else "_0")
+                sb.append(if (i == size - 1) "" else "$")
+            }
+            // 删除书架数据库和章节数据库
+            if (isOnlyDeleteCache) {
+                deleteBooks.forEach {
+                    CacheManager.remove(it.book_id)
+                    BaseBookHelper.removeChapterCacheFile(it)
+                }
+            } else {
+                bookDaoHelper.deleteBook(deleteBooks)
+            }
+            Thread.sleep(1000)
+            uiThread {
+                view?.onBookDelete()
+            }
+            BookShelfLogger.uploadBookCacheDeleteLog(sb, size, isOnlyDeleteCache)
+        }
+    }
+
     fun handleSuccessUpdate(result: BookUpdateResult) {
         val hasUpdateList = ArrayList<BookUpdate>()
         if (result.items != null && result.items.isNotEmpty()) {
@@ -248,130 +279,6 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
             updateTableList.remove(book_id)
             bookDaoHelper.updateBook(book)
         }
-    }
-
-    fun uploadFirstOpenLog(sp: SharedPreferences) {
-        //判断用户是否是当日首次打开应用,并上传书架的id
-        val lastTime = sp.getLong(Constants.TODAY_FIRST_POST_BOOKIDS, 0)
-        val currentTime = System.currentTimeMillis()
-
-        val isSameDay = AppUtils.isToday(lastTime, currentTime)
-        if (!isSameDay) {
-            val bookIdList = StringBuilder()
-            iBookList.forEachIndexed { index, book ->
-                bookIdList.append(book.book_id)
-                bookIdList.append(if (book.readed == 1) "_1" else "_0")//1已读，0未读
-                bookIdList.append(if (index == iBookList.size) "" else "$")
-            }
-            val data = HashMap<String, String>()
-            data.put("bookid", bookIdList.toString())
-            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                    StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.BOOKLIST, data)
-            sp.edit().putLong(Constants.TODAY_FIRST_POST_BOOKIDS, currentTime).apply()
-        }
-    }
-
-    fun uploadItemClickLog(position: Int) {
-        val data = HashMap<String, String>()
-        data.put("bookid", iBookList[position].book_id)
-        data.put("rank", (position + 1).toString())
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.BOOKCLICK, data)
-    }
-
-    fun uploadItemLongClickLog() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.LONGTIMEBOOKSHELFEDIT)
-    }
-
-    fun deleteBooks(deleteBooks: ArrayList<Book>, isOnlyDeleteCache: Boolean) {
-        val size = deleteBooks.size
-        doAsync {
-            val sb = StringBuffer()
-            for (i in 0 until size) {
-                val book = deleteBooks[i]
-                sb.append(book.book_id)
-                sb.append(if (book.readed == 1) "_1" else "_0")
-                sb.append(if (i == size - 1) "" else "$")
-            }
-            // 删除书架数据库和章节数据库
-            if (isOnlyDeleteCache) {
-                deleteBooks.forEach {
-                    CacheManager.remove(it.book_id)
-                    BaseBookHelper.removeChapterCacheFile(it)
-                }
-            } else {
-                bookDaoHelper.deleteBook(deleteBooks)
-            }
-            Thread.sleep(1000)
-            uiThread {
-                view?.onBookDelete()
-            }
-            uploadBookCacheDeleteLog(sb, size, isOnlyDeleteCache)
-        }
-    }
-
-    private fun uploadBookCacheDeleteLog(sb: StringBuffer, size: Int, isOnlyDeleteCache: Boolean) {
-        val data = HashMap<String, String>()
-        data["type"] = "1"
-        data["number"] = size.toString()
-        data["bookids"] = sb.toString()
-        data["status"] = if (isOnlyDeleteCache) "1" else "2"
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.SHELFEDIT_PAGE, StartLogClickUtil.DELETE1, data)
-    }
-
-    fun uploadBookDeleteCancelLog() {
-        val data = HashMap<String, String>()
-        data["type"] = "2"
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.SHELFEDIT, StartLogClickUtil.DELETE1, data)
-    }
-
-
-
-
-
-
-    /********************************** HomeActivity移过来的方法 ************************************/
-    fun uploadHeadSettingLog() {
-        val context = BaseBookApplication.getGlobalContext()
-        StartLogClickUtil.upLoadEventLog(context,
-                StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.PERSONAL)
-        net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(context,
-                net.lzbook.kit.utils.StatServiceUtils.bs_click_mine_menu)
-    }
-
-
-    fun uploadHeadSearchLog(bottomType: Int) {
-        val context = BaseBookApplication.getGlobalContext()
-        when (bottomType) {
-            2 -> StartLogClickUtil.upLoadEventLog(context,
-                    StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH)
-            3 -> StartLogClickUtil.upLoadEventLog(context,
-                    StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH)
-            4 -> StartLogClickUtil.upLoadEventLog(context,
-                    StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.QG_FL_SEARCH)
-            else -> StartLogClickUtil.upLoadEventLog(context,
-                    StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.SEARCH)
-        }
-        net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(context,
-                net.lzbook.kit.utils.StatServiceUtils.bs_click_search_btn)
-    }
-
-
-    fun uploadDownloadManagerLog() {
-        val context = BaseBookApplication.getGlobalContext()
-        net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(context,
-                net.lzbook.kit.utils.StatServiceUtils.bs_click_download_btn)
-        StartLogClickUtil.upLoadEventLog(context,
-                StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.CACHEMANAGE)
-    }
-
-
-    fun uploadBookSortingLog() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.BOOKSORT)
     }
 
 }

@@ -6,16 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
-
 import net.lzbook.kit.data.bean.Book
-
-import java.util.ArrayList
+import java.util.*
 
 class BookShelfAdapter(private val context: Context, private val bookShelfItemListener: BookShelfAdapter.BookShelfItemListener, private var books: ArrayList<Book>, private val adViews: List<ViewGroup>?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var checkedBooks: ArrayList<Book> = ArrayList()
+    var selectedBooks: ArrayList<Book> = ArrayList()
 
-    var remove = false
+    var isRemove = false
 
     private var updateBooks: ArrayList<String> = ArrayList()
 
@@ -36,7 +34,7 @@ class BookShelfAdapter(private val context: Context, private val bookShelfItemLi
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         if (position >= books.size) {
             if (viewHolder is BookShelfADDHolder) {
-                viewHolder.bind(null, remove, bookShelfItemListener)
+                viewHolder.bind(null, isRemove, bookShelfItemListener)
             }
             return
         }
@@ -51,7 +49,7 @@ class BookShelfAdapter(private val context: Context, private val bookShelfItemLi
         viewHolder.itemView.visibility = View.VISIBLE
 
         if (viewHolder is BookShelfItemHolder) {
-            viewHolder.bind(book, bookShelfItemListener, checkedBooks.contains(book), remove, updateBooks.contains(book.book_id))
+            viewHolder.bind(book, bookShelfItemListener, selectedBooks.contains(book), isRemove, updateBooks.contains(book.book_id))
         } else if (viewHolder is BookShelfADHolder) {
             val view = getAdView(book)
             if (view != null) {
@@ -103,8 +101,8 @@ class BookShelfAdapter(private val context: Context, private val bookShelfItemLi
         return -1
     }
 
-    fun setUpdate_table(update_table: ArrayList<String>) {
-        this.updateBooks = update_table
+    fun setUpdateTableList(list: ArrayList<String>) {
+        this.updateBooks = list
     }
 
     companion object {
@@ -121,43 +119,43 @@ class BookShelfAdapter(private val context: Context, private val bookShelfItemLi
         fun longClickedBookShelfItem(): Boolean
     }
 
-    fun insertRemoveState(remove: Boolean) {
-        this.remove = remove
+    fun insertRemoveState(isRemove: Boolean) {
+        this.isRemove = isRemove
 
-        if (!remove) {
-            checkedBooks.clear()
+        if (!isRemove) {
+            selectedBooks.clear()
         }
 
         notifyDataSetChanged()
     }
 
-    fun insertCheckedPosition(position: Int) {
+    fun insertSelectedPosition(position: Int) {
         if (position > -1 && position < books.size) {
             val book = books[position]
 
-            if (checkedBooks.contains(book)) {
-                checkedBooks.remove(book)
+            if (selectedBooks.contains(book)) {
+                selectedBooks.remove(book)
             } else {
-                checkedBooks.add(book)
+                selectedBooks.add(book)
             }
 
             notifyItemChanged(position)
         }
     }
 
-    fun isCheckAll(): Boolean {
-        return books.size == checkedBooks.size
+    fun isSelectedAll(): Boolean {
+        return books.size == selectedBooks.size
     }
 
     fun insertSelectAllState(all: Boolean) {
         if (all) {
             books.forEach {
-                if (!this.checkedBooks.contains(it)) {
-                    this.checkedBooks.add(it)
+                if (!this.selectedBooks.contains(it)) {
+                    this.selectedBooks.add(it)
                 }
             }
         } else {
-            checkedBooks.clear()
+            selectedBooks.clear()
         }
         notifyDataSetChanged()
     }

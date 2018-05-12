@@ -32,15 +32,14 @@ import net.lzbook.kit.router.RouterConfig
 import net.lzbook.kit.router.RouterUtil
 import net.lzbook.kit.utils.*
 import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
 
 /**
  * 书架页Fragment
  */
-class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, BookShelfMenuManager {
+class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager {
 
     private val bookshelfPresenter: BookShelfPresenter by lazy { BookShelfPresenter(this) }
-    
+
     private val bookSensitiveWords: ArrayList<String> = ArrayList()
 
     private var bookDaoHelper: BookDaoHelper = BookDaoHelper.getInstance()
@@ -60,11 +59,11 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, BookShelfMe
         val popup = HomeMenuPopup(this.activity.applicationContext)
         popup.setOnDownloadClickListener {
             RouterUtil.navigation(RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
-            bookshelfPresenter.uploadDownloadManagerLog()
+            BookShelfLogger.uploadDownloadManagerLog()
         }
         popup.setOnSortingClickListener {
             bookSortingDialog.show()
-            bookshelfPresenter.uploadBookSortingLog()
+            BookShelfLogger.uploadBookSortingLog()
         }
         popup
     }
@@ -72,10 +71,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, BookShelfMe
     private val bookShelfRemovePopup: BookShelfRemovePopup by lazy {
         val popup = BookShelfRemovePopup(this.context)
         popup.setOnDeletedClickListener {
-            handleRemoveShelfAction(bookShelfAdapter.checkedBooks)
+            bookDeleteDialog.show(bookShelfAdapter.selectedBooks)
         }
         popup.setOnCancelClickListener {
-            dismissBookShelfRemovePopup()
+            dismissRemoveMenu()
         }
         popup
     }
@@ -83,10 +82,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, BookShelfMe
     private val bookSortingDialog: BookSortingDialog by lazy {
         val dialog = BookSortingDialog(this.activity)
         dialog.setOnRecentReadClickListener {
-            handleSortBooksAction(0)
+            sortBooks(0)
         }
         dialog.setOnUpdateTimeClickListener {
-            handleSortBooksAction(1)
+            sortBooks(1)
         }
         dialog
     }
@@ -99,7 +98,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, BookShelfMe
                     return
                 }
 
-                if (!bookShelfAdapter.remove) {
+                if (!bookShelfAdapter.isRemove) {
                     if (position == bookshelfPresenter.iBookList.size) {
                         bookShelfInterface?.changeHomePagerIndex(1)
                         return
@@ -111,19 +110,19 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, BookShelfMe
 
                     if (book != null) {
                         handleBook(book)
-                        bookshelfPresenter.uploadItemClickLog(position)
+                        BookShelfLogger.uploadItemClickLog(bookshelfPresenter.iBookList, position)
                     }
                 } else {
-                    bookShelfAdapter.insertCheckedPosition(position)
-                    bookShelfRemovePopup.setSelectedNum(bookShelfAdapter.checkedBooks.size)
-                    txt_editor_select_all.text = if (bookShelfAdapter.isCheckAll()) getString(R.string.select_all_cancel) else getString(R.string.select_all)
+                    bookShelfAdapter.insertSelectedPosition(position)
+                    bookShelfRemovePopup.setSelectedNum(bookShelfAdapter.selectedBooks.size)
+                    txt_editor_select_all.text = if (bookShelfAdapter.isSelectedAll()) getString(R.string.select_all_cancel) else getString(R.string.select_all)
                 }
             }
 
             override fun longClickedBookShelfItem(): Boolean {
-                if (!bookShelfAdapter.remove) {
-                    showBookShelfRemovePopup()
-                    bookshelfPresenter.uploadItemLongClickLog()
+                if (!bookShelfAdapter.isRemove) {
+                    showRemoveMenu()
+                    BookShelfLogger.uploadItemLongClickLog()
                 }
                 return false
             }
@@ -133,16 +132,14 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, BookShelfMe
 
     private val bookDeleteDialog: BookDeleteDialog by lazy {
         val dialog = BookDeleteDialog(activity)
-        dialog.setOnConfirmListener { books, isOnlyDeleteCache ->
+        dialog.setOnConfirmListener { books, isDeleteCacheOnly ->
             if (books != null && books.isNotEmpty()) {
                 dialog.showLoading()
-                bookshelfPresenter.deleteBooks(books, isOnlyDeleteCache)
+                deleteBooks(books, isDeleteCacheOnly)
             }
-            StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.bs_click_delete_ok_btn)
         }
         dialog.setOnAbrogateListener {
-            bookshelfPresenter.uploadBookDeleteCancelLog()
-            StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.bs_click_delete_cancel_btn)
+            BookShelfLogger.uploadBookDeleteCancelLog()
         }
         dialog
     }
@@ -185,14 +182,14 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, BookShelfMe
 
         img_head_setting.setOnClickListener {
             bookShelfInterface?.changeDrawerLayoutState()
-            bookshelfPresenter.uploadHeadSettingLog()
+            BookShelfLogger.uploadHeadSettingLog()
         }
 
         txt_head_title.text = "书架"
 
         img_head_search.setOnClickListener {
             RouterUtil.navigation(RouterConfig.SEARCH_BOOK_ACTIVITY)
-            bookshelfPresenter.uploadHeadSearchLog(0)
+            BookShelfLogger.uploadHeadSearchLog(0)
         }
 
         img_head_menu.setOnClickListener {
@@ -208,10 +205,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, BookShelfMe
             }
             if (txt_editor_select_all.text == getString(R.string.select_all)) {
                 txt_editor_select_all.text = getString(R.string.select_all_cancel)
-                handleCheckAllAction(true)
+                selectAll(true)
             } else {
                 txt_editor_select_all.text = getString(R.string.select_all)
-                handleCheckAllAction(false)
+                selectAll(false)
             }
         }
 
@@ -264,13 +261,13 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, BookShelfMe
      * 查Book数据库更新界面
      */
     fun updateUI() {
-        val isShowAd = !bookShelfAdapter.remove && isResumed && !Constants.isHideAD
+        val isShowAd = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD
         doAsync {
             bookshelfPresenter.queryBookListAndAd(activity, isShowAd)
             uiThread {
-                bookShelfAdapter.setUpdate_table(bookshelfPresenter.filterUpdateTableList())
+                bookShelfAdapter.setUpdateTableList(bookshelfPresenter.filterUpdateTableList())
                 bookShelfAdapter.notifyDataSetChanged()
-                bookshelfPresenter.uploadFirstOpenLog(sharedPreferences)
+                BookShelfLogger.uploadFirstOpenLog(bookshelfPresenter.iBookList, sharedPreferences)
             }
         }
     }
@@ -350,7 +347,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, BookShelfMe
         AppLog.e(TAG, "onBookDelete")
         updateUI()
         bookDeleteDialog.dismiss()
-        dismissBookShelfRemovePopup()
+        dismissRemoveMenu()
         activity.toastShort(R.string.book_delete_success)
     }
 
@@ -464,15 +461,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, BookShelfMe
         private val TAG = BookShelfFragment::class.java.simpleName
     }
 
-    interface BookShelfInterface {
-        fun changeHomeNavigationState(state: Boolean)
-
-        fun changeHomePagerIndex(index: Int)
-
-        fun changeDrawerLayoutState()
-    }
-
-
     /***
      * 更改头部布局状态
      * **/
@@ -496,9 +484,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, BookShelfMe
         }
     }
 
-
-    override fun showBookShelfRemovePopup() {
-
+    override fun showRemoveMenu() {
         bookshelf_refresh_view.setPullToRefreshEnabled(false)
 
         bookshelfPresenter.removeAd()
@@ -520,7 +506,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, BookShelfMe
 //        BookShelfLogger.uploadEditLog()
     }
 
-    override fun dismissBookShelfRemovePopup() {
+    override fun dismissRemoveMenu() {
         bookShelfAdapter.insertRemoveState(false)
 
         bookShelfRemovePopup.dismiss()
@@ -536,27 +522,26 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, BookShelfMe
         BookShelfLogger.uploadShelfEditCancelLog()
     }
 
-    override fun handleCheckAllAction(all: Boolean) {
-        bookShelfAdapter.insertSelectAllState(all)
-        bookShelfRemovePopup.setSelectedNum(bookShelfAdapter.checkedBooks.size)
-        BookShelfLogger.uploadEditorSelectAllLog(all)
+    override fun isRemoveMenuShow(): Boolean = bookShelfAdapter.isRemove
+
+    override fun selectAll(isAll: Boolean) {
+        bookShelfAdapter.insertSelectAllState(isAll)
+        bookShelfRemovePopup.setSelectedNum(bookShelfAdapter.selectedBooks.size)
+        BookShelfLogger.uploadEditorSelectAllLog(isAll)
     }
 
-    override fun handleSortBooksAction(type: Int) {
+    override fun sortBooks(type: Int) {
         CommonContract.insertShelfSortType(type)
         updateUI()
         BookShelfLogger.uploadSortingLog(type)
     }
 
-    override fun handleRemoveShelfAction(books: ArrayList<Book>) {
-        if (books.isEmpty()) {
-            return
-        }
-
-        bookDeleteDialog.show(books)
+    override fun deleteBooks(books: ArrayList<Book>, isDeleteCacheOnly: Boolean) {
+        bookshelfPresenter.deleteBooks(books, isDeleteCacheOnly)
     }
 
-    fun checkRemovePopupShow(): Boolean {
-        return bookShelfAdapter.remove
+    override fun showBooksDetail(books: ArrayList<Book>) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
 }

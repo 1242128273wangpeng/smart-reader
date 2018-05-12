@@ -7,7 +7,7 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.utils.SettingItemsHelper
 import java.io.Serializable
-import java.util.Comparator
+import java.util.*
 
 /**
  * Desc 公共方法
@@ -87,4 +87,10 @@ object CommonContract {
         val settingItemsHelper = SettingItemsHelper.getSettingHelper(BaseBookApplication.getGlobalContext())
         settingItemsHelper.putInt(settingItemsHelper.booklistSortType, type)
     }
+
+    fun queryBookSortingType(): Int {
+        val settingItemsHelper = SettingItemsHelper.getSettingHelper(BaseBookApplication.getGlobalContext())
+        return settingItemsHelper.values.booklist_sort_type
+    }
+
 }

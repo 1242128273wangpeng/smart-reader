@@ -212,7 +212,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
         when {
             dl_content.isOpened -> dl_content.closeMenu()
             view_pager?.currentItem != 0 -> changeHomePagerIndex(0)
@@ -515,7 +514,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             closed = true
             restoreSystemDisplayState()
             ATManager.exitClient()
-            finish()
+            super.onBackPressed()
         }
 
         val message = handler.obtainMessage(0)

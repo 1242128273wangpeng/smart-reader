@@ -3,9 +3,9 @@ package com.dingyue.bookshelf
 import android.app.Activity
 import android.graphics.Color
 import android.view.Gravity
+import com.dingyue.contract.CommonContract
 import kotlinx.android.synthetic.txtqbmfyd.dialog_book_sorting.*
 import net.lzbook.kit.book.view.MyDialog
-import net.lzbook.kit.utils.SettingItemsHelper
 
 
 /**
@@ -20,8 +20,6 @@ class BookSortingDialog(val activity: Activity) {
 
     private var recentReadListener: (() -> Unit)? = null
     private var updateTimeListener: (() -> Unit)? = null
-
-    private val settingItemsHelper = SettingItemsHelper.getSettingHelper(activity)
 
     private val selectedTextColor = Color.parseColor("#19DD8B")
     private val unSelectedTextColor = Color.parseColor("#212832")
@@ -57,7 +55,7 @@ class BookSortingDialog(val activity: Activity) {
     }
 
     fun show() {
-        if (settingItemsHelper.values.booklist_sort_type == 0) {
+        if (CommonContract.queryBookSortingType() == 0) {
             dialog.txt_update_time_sorting.setTextColor(unSelectedTextColor)
             dialog.txt_recent_read_sorting.setTextColor(selectedTextColor)
         } else {
