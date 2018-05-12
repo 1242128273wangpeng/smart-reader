@@ -26,6 +26,8 @@ import com.baidu.mobstat.StatService
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dingyue.contract.CommonContract
+import com.dingyue.contract.HomeLogger
+import com.dingyue.contract.PersonalLogger
 import com.intelligent.reader.R
 import com.intelligent.reader.fragment.CategoryFragment
 import com.intelligent.reader.fragment.WebViewFragment
@@ -34,7 +36,6 @@ import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.util.EventBookStore
 import com.intelligent.reader.widget.ClearCacheDialog
 import com.intelligent.reader.widget.drawer.DrawerLayout
-import de.greenrobot.event.EventBus
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import iyouqu.theme.BaseCacheableActivity
@@ -150,13 +151,13 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         checkUrlDevelop()
 
-        EventBus.getDefault().register(this)
-
         AndroidLogStorage.getInstance().clear()
 
         showCacheMessage()
 
         homePresenter.initDownloadService()
+
+        HomeLogger.uploadHomeBookListInformation()
     }
 
     override fun onResume() {
@@ -198,15 +199,11 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         this.unregisterReceiver(homeBroadcastReceiver)
 
-        EventBus.getDefault().unregister(this)
-
         try {
             setContentView(R.layout.common_empty)
         } catch (exception: Resources.NotFoundException) {
             exception.printStackTrace()
         }
-
-        EventBus.getDefault().unregister(this)
     }
 
     override fun onBackPressed() {
@@ -260,25 +257,25 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         ll_bottom_tab_bookshelf.setOnClickListener {
             this.changeHomePagerIndex(0)
-            homePresenter.uploadBookshelfSelectedLog()
+            HomeLogger.uploadHomeBookShelfSelected()
         }
 
         ll_bottom_tab_recommend.setOnClickListener {
             this.changeHomePagerIndex(1)
             preferencesUtils.putString(Constants.FINDBOOK_SEARCH, "recommend")
-            homePresenter.uploadRecommendSelectedLog()
+            HomeLogger.uploadHomeRecommendSelected()
         }
 
         ll_bottom_tab_ranking.setOnClickListener {
             this.changeHomePagerIndex(2)
             preferencesUtils.putString(Constants.FINDBOOK_SEARCH, "top")
-            homePresenter.uploadRankingSelectedLog()
+            HomeLogger.uploadHomeRankSelected()
         }
 
         ll_bottom_tab_category.setOnClickListener {
             this.changeHomePagerIndex(3)
             preferencesUtils.putString(Constants.FINDBOOK_SEARCH, "class")
-            homePresenter.uploadCategorySelectedLog()
+            HomeLogger.uploadHomeCategorySelected()
         }
 
         setMenuTitleMargin()
@@ -286,7 +283,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         setNightMode(false)
 
         bt_night_shift.setOnCheckedChangeListener { _, isChecked ->
-            homePresenter.uploadModeChangeLog()
+            PersonalLogger.uploadPersonalNightModeChange()
             if (isChecked) {
                 tv_night_shift.setText(R.string.mode_day)
                 ReadConfig.MODE = 61
@@ -309,16 +306,16 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         btn_auto_download.setOnCheckedChangeListener { _, isChecked ->
             preferencesUtils.putBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, isChecked)
-            homePresenter.uploadAutoCacheLog(isChecked)
+            PersonalLogger.uploadPersonalAutoCache(isChecked)
         }
 
         txt_push_setting.setOnClickListener {
-            homePresenter.uploadPushSettingClickLog()
+            PersonalLogger.uploadPersonalPushSetting()
             startActivity(Intent(this, SettingMoreActivity::class.java))
         }
 
         txt_feedback.setOnClickListener {
-            homePresenter.uploadFeedbackClickLog()
+            PersonalLogger.uploadPersonalFeedback()
             Observable.timer(500, TimeUnit.MILLISECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe {
@@ -327,7 +324,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
 
         txt_market.setOnClickListener {
-            homePresenter.uploadMarkClickLog()
+            PersonalLogger.uploadPersonalMark()
             try {
                 val uri = Uri.parse("market://details?id=" + this.packageName)
                 val intent = Intent(Intent.ACTION_VIEW, uri)
@@ -340,7 +337,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
 
         txt_disclaimer_statement.setOnClickListener {
-            homePresenter.uploadDisclaimerClickLog()
+            PersonalLogger.uploadPersonalDisclaimer()
             startActivity(Intent(this, DisclaimerActivity::class.java))
         }
 
@@ -350,7 +347,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         txt_version_name.text = versionName
 
         rl_check_update.setOnClickListener {
-            homePresenter.uploadCheckUpdateLog()
+            PersonalLogger.uploadPersonalCheckUpdate()
             try {
                 apkUpdateUtils.getApkUpdateInfo(this, null, "SettingActivity")
             } catch (e: Exception) {
@@ -359,7 +356,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
 
         rl_clear_cache.setOnClickListener {
-            homePresenter.uploadClearCacheClickLog()
+            PersonalLogger.uploadPersonalClearCache()
 
             if (!this.isFinishing) {
                 clearCacheDialog.show()
@@ -402,12 +399,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         ll_bottom_tab_recommend.isSelected = position == 1
         ll_bottom_tab_ranking.isSelected = position == 2
         ll_bottom_tab_category.isSelected = position == 3
-
-        when (position) {
-            3 -> {
-                homePresenter.uploadCategoryEntryLog()
-            }
-        }
     }
 
     /***
@@ -625,7 +616,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
      * **/
     private fun setNightMode(isEvent: Boolean) {
         val isNightMode = this.mThemeHelper.isNight
-        if (!isEvent) homePresenter.uploadCurModeLog(isNightMode)
+        if (!isEvent) PersonalLogger.uploadPersonalCurrentMode(isNightMode)
         if (isNightMode) {
             tv_night_shift.setText(R.string.mode_day)
             bt_night_shift.isChecked = true

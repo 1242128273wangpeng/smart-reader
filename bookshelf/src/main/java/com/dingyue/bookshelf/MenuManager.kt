@@ -16,7 +16,7 @@ interface MenuManager {
 
     fun isRemoveMenuShow(): Boolean
 
-    fun selectAll(isAll: Boolean)
+    fun selectAll(all: Boolean)
 
     fun sortBooks(type: Int)
 
