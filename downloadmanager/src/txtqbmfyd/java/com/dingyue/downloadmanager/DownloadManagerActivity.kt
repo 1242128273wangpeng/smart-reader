@@ -8,6 +8,7 @@ import android.support.v7.widget.SimpleItemAnimator
 import android.view.Menu
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.dingyue.contract.CommonContract
 import com.dingyue.downloadmanager.contract.BookHelperContract
 import com.dingyue.downloadmanager.contract.CacheManagerContract
 import com.dingyue.downloadmanager.event.DownloadManagerToHome
@@ -134,7 +135,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
             finish()
         }
         txt_head_select_all.setOnClickListener {
-            if (BookHelperContract.isDoubleClick(System.currentTimeMillis())) {
+            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
                 return@setOnClickListener
             }
             if (txt_head_select_all.text == getString(R.string.select_all)) {
@@ -333,7 +334,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
     }
 
     override fun sortBooks(type: Int) {
-        BookHelperContract.insertShelfSortType(type)
+        CommonContract.insertShelfSortType(type)
         downloadManagerViewModel.refreshBooks()
         DownloadManagerLogger.uploadSortingLog(type)
     }

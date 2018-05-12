@@ -2,9 +2,8 @@ package com.intelligent.reader.adapter.holder;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.dingyue.bookshelf.AbsRecyclerViewHolder;
+import net.lzbook.kit.utils.AbsRecyclerViewHolder;
 import com.intelligent.reader.R;
-import com.dingyue.bookshelf.BookShelfReAdapter;
 
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.ormlite.bean.HistoryInfo;
@@ -26,8 +25,8 @@ public class HistoryHolder extends AbsRecyclerViewHolder<HistoryInfo> {
     private final TextView mName, mBrowTime, mAuthor, mDesc;
 
     public HistoryHolder(View itemView,
-                         BookShelfReAdapter.ShelfItemClickListener shelfItemClickListener,
-                         BookShelfReAdapter.ShelfItemLongClickListener shelfItemLongClickListener) {
+            AbsRecyclerViewHolder.ShelfItemClickListener shelfItemClickListener,
+            AbsRecyclerViewHolder.ShelfItemLongClickListener shelfItemLongClickListener) {
         super(itemView, shelfItemClickListener, shelfItemLongClickListener);
 
         mImage = (ImageView) itemView.findViewById(R.id.book_shelf_image);

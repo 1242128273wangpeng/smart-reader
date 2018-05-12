@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import net.lzbook.kit.utils.AbsRecyclerViewHolder;
 import com.intelligent.reader.R;
-import com.dingyue.bookshelf.BookShelfReAdapter;
 import com.intelligent.reader.adapter.paging.BaseAdapter;
 import com.intelligent.reader.adapter.paging.HisAdapter;
 import com.intelligent.reader.adapter.paging.LoadMoreAdapterWrapper;
@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class FootprintActivity extends iyouqu.theme.FrameActivity implements BookShelfReAdapter.ShelfItemClickListener, BookShelfReAdapter.ShelfItemLongClickListener, LoadMoreAdapterWrapper.OnLoad, View.OnClickListener, EmptyRecyclerView.OnItemChangeListener {
+public class FootprintActivity extends iyouqu.theme.FrameActivity implements AbsRecyclerViewHolder.ShelfItemClickListener, AbsRecyclerViewHolder.ShelfItemLongClickListener, LoadMoreAdapterWrapper.OnLoad, View.OnClickListener, EmptyRecyclerView.OnItemChangeListener {
 
     private static final String TAG = FootprintActivity.class.getSimpleName();
     private EmptyRecyclerView mRecyclerView;

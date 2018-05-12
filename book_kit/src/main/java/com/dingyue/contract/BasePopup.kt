@@ -1,4 +1,4 @@
-package com.dingyue.downloadmanager
+package com.dingyue.contract
 
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
@@ -23,8 +23,6 @@ open class BasePopup(var context: Context, var layout: Int, var width: Int, var 
         popupWindow.setBackgroundDrawable(ColorDrawable(0x00000000))   //为PopupWindow设置透明背景.
         popupWindow.width = width
         popupWindow.height = height
-//        popupWindow.isFocusable = true
-//        popupWindow.isOutsideTouchable = true
     }
 
     fun showAsDropDown(view: View, x: Int = 0, y: Int = 0) {

@@ -1,4 +1,4 @@
-package com.dingyue.bookshelf;
+package net.lzbook.kit.utils;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -10,12 +10,12 @@ import android.view.View;
 public abstract class AbsRecyclerViewHolder<T> extends RecyclerView.ViewHolder implements
         View.OnClickListener, View.OnLongClickListener {
 
-    protected BookShelfReAdapter.ShelfItemClickListener mShelfItemClickListener;
-    protected BookShelfReAdapter.ShelfItemLongClickListener mShelfItemLongClickListener;
+    protected AbsRecyclerViewHolder.ShelfItemClickListener mShelfItemClickListener;
+    protected AbsRecyclerViewHolder.ShelfItemLongClickListener mShelfItemLongClickListener;
 
     public AbsRecyclerViewHolder(View itemView,
-                                 BookShelfReAdapter.ShelfItemClickListener shelfItemClickListener,
-                                 BookShelfReAdapter.ShelfItemLongClickListener shelfItemLongClickListener) {
+            AbsRecyclerViewHolder.ShelfItemClickListener shelfItemClickListener,
+            AbsRecyclerViewHolder.ShelfItemLongClickListener shelfItemLongClickListener) {
         super(itemView);
         mShelfItemClickListener = shelfItemClickListener;
         mShelfItemLongClickListener = shelfItemLongClickListener;
@@ -37,6 +37,14 @@ public abstract class AbsRecyclerViewHolder<T> extends RecyclerView.ViewHolder i
             mShelfItemLongClickListener.onItemLongClick(v, getPosition());
         }
         return true;
+    }
+
+    public interface ShelfItemClickListener {
+        void onItemClick(View view, int position);
+    }
+
+    public interface ShelfItemLongClickListener {
+        void onItemLongClick(View view, int position);
     }
 
     public abstract void onBindData(int position, T data, boolean update, boolean isRemoveMode, boolean

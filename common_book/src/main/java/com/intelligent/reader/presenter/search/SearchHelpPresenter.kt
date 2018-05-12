@@ -11,7 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import com.google.gson.Gson
 import com.intelligent.reader.R
-import com.intelligent.reader.presenter.IPresenter
+import com.dingyue.contract.IPresenter
 import com.intelligent.reader.widget.ConfirmDialog
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers

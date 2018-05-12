@@ -1,8 +1,7 @@
 package com.intelligent.reader.adapter.paging;
 
 import com.intelligent.reader.R;
-import com.dingyue.bookshelf.BookShelfReAdapter;
-import com.dingyue.bookshelf.AbsRecyclerViewHolder;
+import net.lzbook.kit.utils.AbsRecyclerViewHolder;
 import com.intelligent.reader.adapter.holder.HistoryHolder;
 
 import net.lzbook.kit.data.ormlite.bean.HistoryInfo;
@@ -18,10 +17,10 @@ import android.view.ViewGroup;
  */
 public class HisAdapter extends BaseAdapter<HistoryInfo> {
     private Context mContext;
-    private BookShelfReAdapter.ShelfItemClickListener shelfItemClickListener;
-    private BookShelfReAdapter.ShelfItemLongClickListener shelfItemLongClickListener;
+    private AbsRecyclerViewHolder.ShelfItemClickListener shelfItemClickListener;
+    private AbsRecyclerViewHolder.ShelfItemLongClickListener shelfItemLongClickListener;
 
-    public HisAdapter(Context context, BookShelfReAdapter.ShelfItemClickListener itemClick, BookShelfReAdapter.ShelfItemLongClickListener itemLongClick) {
+    public HisAdapter(Context context, AbsRecyclerViewHolder.ShelfItemClickListener itemClick, AbsRecyclerViewHolder.ShelfItemLongClickListener itemLongClick) {
         mContext = context;
         shelfItemClickListener = itemClick;
         shelfItemLongClickListener = itemLongClick;
@@ -42,6 +41,4 @@ public class HisAdapter extends BaseAdapter<HistoryInfo> {
         ((AbsRecyclerViewHolder<HistoryInfo>) holder).onBindData(position, info,
                 false, false, false);
     }
-
-
 }

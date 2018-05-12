@@ -7,7 +7,7 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.*
 import com.google.gson.Gson
-import com.intelligent.reader.presenter.IPresenter
+import com.dingyue.contract.IPresenter
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
