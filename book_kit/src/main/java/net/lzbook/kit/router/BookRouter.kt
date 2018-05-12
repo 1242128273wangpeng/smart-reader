@@ -85,7 +85,7 @@ object BookRouter {
 
             StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.bs_click_one_book)
 
-            return RouterUtil.navigation(path, bundle, flags)
+            return RouterUtil.navigation(activity, path, bundle, flags)
         } else {
             if (shake.check()) {
                 return null

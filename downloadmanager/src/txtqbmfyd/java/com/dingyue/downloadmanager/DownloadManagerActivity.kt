@@ -11,10 +11,8 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.dingyue.contract.CommonContract
 import com.dingyue.downloadmanager.contract.BookHelperContract
 import com.dingyue.downloadmanager.contract.CacheManagerContract
-import com.dingyue.downloadmanager.event.DownloadManagerToHome
 import com.dingyue.downloadmanager.recl.DownloadItemDecoration
 import com.dingyue.downloadmanager.recl.DownloadManagerAdapter
-import de.greenrobot.event.EventBus
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbmfyd.act_download_manager.*
 import kotlinx.android.synthetic.txtqbmfyd.item_download_manager_task_header.view.*
@@ -155,7 +153,11 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         }
 
         txt_empty_find.setOnClickListener {
-            EventBus.getDefault().post(DownloadManagerToHome(1))
+
+            val bundle = Bundle()
+            bundle.putInt("position", 1)
+            RouterUtil.navigation(RouterConfig.HOME_ACTIVITY, bundle)
+
             finish()
         }
 

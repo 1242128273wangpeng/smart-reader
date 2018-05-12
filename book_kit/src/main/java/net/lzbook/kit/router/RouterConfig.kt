@@ -6,6 +6,8 @@ package net.lzbook.kit.router
  */
 object RouterConfig {
 
+    const val HOME_ACTIVITY = "/common_book/HomeActivity"
+
     const val SPLASH_ACTIVITY = "/common_book/SplashActivity"
 
     const val SETTING_ACTIVITY = "/common_book/SettingActivity"

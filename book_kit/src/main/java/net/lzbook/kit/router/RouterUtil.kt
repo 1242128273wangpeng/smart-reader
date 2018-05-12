@@ -1,5 +1,6 @@
 package net.lzbook.kit.router
 
+import android.app.Activity
 import android.os.Bundle
 
 import com.alibaba.android.arouter.launcher.ARouter
@@ -24,18 +25,18 @@ object RouterUtil {
         ARouter.getInstance().build(path).with(bundle).navigation()
     }
 
-    fun navigation(path: String, flags: Int) {
+    fun navigation(activity: Activity, path: String, flags: Int) {
         ARouter.getInstance()
                 .build(path)
                 .withFlags(flags)
-                .navigation()
+                .navigation(activity)
     }
 
-    fun navigation(path: String, bundle: Bundle, flags: Int) {
+    fun navigation(activity: Activity, path: String, bundle: Bundle, flags: Int) {
         ARouter.getInstance()
                 .build(path)
                 .with(bundle)
                 .withFlags(flags)
-                .navigation()
+                .navigation(activity)
     }
 }
