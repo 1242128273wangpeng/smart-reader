@@ -30,8 +30,6 @@ import com.intelligent.reader.widget.topshadow.TopShadowWebView;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
-import net.lzbook.kit.router.RouterConfig;
-import net.lzbook.kit.router.RouterUtil;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.CustomWebClient;
@@ -67,9 +65,9 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     private boolean isFirstVisible = true;
 
     private SuperSwipeRefreshLayout swipeRefreshLayout;
-    private ProgressBar head_pb_view;
-    private TextView head_text_view;
-    private ImageView head_image_view;
+    private ProgressBar pgbar_head_loading;
+    private TextView txt_head_prompt;
+    private ImageView img_head_arrow;
 
     private ImageView topShadowView;
 
@@ -436,9 +434,9 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 
                 @Override
                 public void onRefresh() {
-                    head_text_view.setText("正在刷新");
-                    head_image_view.setVisibility(View.GONE);
-                    head_pb_view.setVisibility(View.VISIBLE);
+                    txt_head_prompt.setText("正在刷新");
+                    img_head_arrow.setVisibility(View.GONE);
+                    pgbar_head_loading.setVisibility(View.VISIBLE);
                     checkUpdate();
                 }
 
@@ -449,10 +447,10 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 
                 @Override
                 public void onPullEnable(boolean enable) {
-                    head_pb_view.setVisibility(View.GONE);
-                    head_text_view.setText(enable ? "松开刷新" : "下拉刷新");
-                    head_image_view.setVisibility(View.VISIBLE);
-                    head_image_view.setRotation(enable ? 180 : 0);
+                    pgbar_head_loading.setVisibility(View.GONE);
+                    txt_head_prompt.setText(enable ? "松开刷新" : "下拉刷新");
+                    img_head_arrow.setVisibility(View.VISIBLE);
+                    img_head_arrow.setRotation(enable ? 180 : 0);
                 }
             });
             if (url.contains("recommend")) {
@@ -465,14 +463,14 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 
     private View createHeaderView() {
         View headerView = LayoutInflater.from(swipeRefreshLayout.getContext())
-                .inflate(R.layout.layout_head, null);
-        head_pb_view = (ProgressBar) headerView.findViewById(R.id.head_pb_view);
-        head_text_view = (TextView) headerView.findViewById(R.id.head_text_view);
-        head_text_view.setText("下拉刷新");
-        head_image_view = (ImageView) headerView.findViewById(R.id.head_image_view);
-        head_image_view.setVisibility(View.VISIBLE);
-        head_image_view.setImageResource(R.drawable.pulltorefresh_down_arrow);
-        head_pb_view.setVisibility(View.GONE);
+                .inflate(R.layout.bookshelf_refresh_head, null);
+        pgbar_head_loading = (ProgressBar) headerView.findViewById(R.id.pgbar_head_loading);
+        txt_head_prompt = (TextView) headerView.findViewById(R.id.txt_head_prompt);
+        txt_head_prompt.setText("下拉刷新");
+        img_head_arrow = (ImageView) headerView.findViewById(R.id.img_head_arrow);
+        img_head_arrow.setVisibility(View.VISIBLE);
+        img_head_arrow.setImageResource(R.drawable.pulltorefresh_down_arrow);
+        pgbar_head_loading.setVisibility(View.GONE);
         return headerView;
     }
 

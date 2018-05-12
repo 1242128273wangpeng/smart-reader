@@ -40,8 +40,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.main.act_home.*
-import kotlinx.android.synthetic.txtqbmfyd.content_view_main.*
-import kotlinx.android.synthetic.txtqbmfyd.content_view_menu.*
+import kotlinx.android.synthetic.txtqbmfyd.home_drawer_layout_main.*
+import kotlinx.android.synthetic.txtqbmfyd.home_drawer_layout_menu.*
 import net.lzbook.kit.app.ActionConstants
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
@@ -201,7 +201,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         EventBus.getDefault().unregister(this)
 
         try {
-            setContentView(R.layout.empty)
+            setContentView(R.layout.common_empty)
         } catch (exception: Resources.NotFoundException) {
             exception.printStackTrace()
         }
@@ -217,7 +217,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             else -> doubleClickFinish()
         }
     }
-
 
     /***
      * 初始化View
@@ -327,7 +326,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     }
         }
 
-        txt_mark.setOnClickListener {
+        txt_market.setOnClickListener {
             homePresenter.uploadMarkClickLog()
             try {
                 val uri = Uri.parse("market://details?id=" + this.packageName)

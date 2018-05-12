@@ -245,7 +245,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun onDestroy() {
         try {
-            setContentView(R.layout.empty)
+            setContentView(R.layout.common_empty)
         } catch (e: Resources.NotFoundException) {
             e.printStackTrace()
         }

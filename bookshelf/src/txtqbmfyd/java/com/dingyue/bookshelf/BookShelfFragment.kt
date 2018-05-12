@@ -17,7 +17,7 @@ import com.dingyue.contract.CommonContract
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.txtqbmfyd.fragment_bookshelf.*
-import kotlinx.android.synthetic.txtqbmfyd.layout_head.view.*
+import kotlinx.android.synthetic.txtqbmfyd.bookshelf_refresh_head.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.constants.Constants
@@ -33,9 +33,6 @@ import net.lzbook.kit.router.RouterUtil
 import net.lzbook.kit.utils.*
 import java.util.concurrent.TimeUnit
 
-/**
- * 书架页Fragment
- */
 class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager {
 
     private val bookshelfPresenter: BookShelfPresenter by lazy { BookShelfPresenter(this) }
@@ -52,7 +49,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     private var bookShelfInterface: BookShelfInterface? = null
 
     private val headerView: View by lazy {
-        LayoutInflater.from(bookshelf_refresh_view.context).inflate(R.layout.layout_head, null)
+        LayoutInflater.from(bookshelf_refresh_view.context).inflate(R.layout.bookshelf_refresh_head, null)
     }
 
     private val homeMenuPopup: HomeMenuPopup by lazy {
@@ -164,19 +161,19 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         bookshelf_refresh_view.setOnPullRefreshListener(object : SuperSwipeRefreshLayout.OnPullRefreshListener {
             override fun onRefresh() {
-                headerView.head_text_view.text = "正在刷新"
-                headerView.head_image_view.visibility = View.GONE
-                headerView.head_pb_view.visibility = View.VISIBLE
+                headerView.txt_head_prompt.text = "正在刷新"
+                headerView.img_head_arrow.visibility = View.GONE
+                headerView.pgbar_head_loading.visibility = View.VISIBLE
                 checkBookUpdate()
             }
 
             override fun onPullDistance(distance: Int) {}
 
             override fun onPullEnable(enable: Boolean) {
-                headerView.head_pb_view.visibility = View.GONE
-                headerView.head_text_view.text = if (enable) "松开刷新" else "下拉刷新"
-                headerView.head_image_view.visibility = View.VISIBLE
-                headerView.head_image_view.rotation = (if (enable) 180 else 0).toFloat()
+                headerView.pgbar_head_loading.visibility = View.GONE
+                headerView.txt_head_prompt.text = if (enable) "松开刷新" else "下拉刷新"
+                headerView.img_head_arrow.visibility = View.VISIBLE
+                headerView.img_head_arrow.rotation = (if (enable) 180 else 0).toFloat()
             }
         })
 
@@ -356,7 +353,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     private fun initUpdateService() {
-        if (bookshelfPresenter.updateService != null) return
+        if (bookshelfPresenter.updateService != null) {
+            return
+        }
+
         val intent = Intent()
         val context = activity.applicationContext
         intent.setClass(context, CheckNovelUpdateService::class.java)
@@ -382,10 +382,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     private fun createHeaderView(): View {
-        headerView.head_text_view.text = "下拉刷新"
-        headerView.head_image_view.visibility = View.VISIBLE
-        headerView.head_image_view.setImageResource(R.drawable.pulltorefresh_down_arrow)
-        headerView.head_pb_view.visibility = View.GONE
+        headerView.txt_head_prompt.text = "下拉刷新"
+        headerView.img_head_arrow.visibility = View.VISIBLE
+        headerView.img_head_arrow.setImageResource(R.drawable.pulltorefresh_down_arrow)
+        headerView.pgbar_head_loading.visibility = View.GONE
         return headerView
     }
 
@@ -393,7 +393,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
      * 下拉时检查更新
      */
     private fun checkBookUpdate() {
-
         if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
             bookshelf_refresh_view.isRefreshing = false
             showToastDelay(R.string.bookshelf_refresh_network_problem)
@@ -541,7 +540,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     override fun showBooksDetail(books: ArrayList<Book>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
+    }
 }
