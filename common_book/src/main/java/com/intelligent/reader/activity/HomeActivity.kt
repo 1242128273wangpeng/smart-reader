@@ -17,37 +17,23 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
-import android.view.*
+import android.view.View
+import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.LinearLayout
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.baidu.mobstat.StatService
-
 import com.dingyue.bookshelf.BookShelfFragment
+import com.dingyue.bookshelf.BookShelfInterface
 import com.intelligent.reader.R
-import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.event.DownloadManagerToHome
 import com.intelligent.reader.fragment.CategoryFragment
+import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.util.EventBookStore
 import com.intelligent.reader.widget.ClearCacheDialog
 import com.intelligent.reader.widget.drawer.DrawerLayout
-
-import net.lzbook.kit.app.ActionConstants
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
-import net.lzbook.kit.book.component.service.CheckNovelUpdateService
-import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.ReadConfig
-import net.lzbook.kit.data.bean.RequestItem
-import net.lzbook.kit.request.UrlUtils
-import net.lzbook.kit.utils.oneclick.AntiShake
-import net.lzbook.kit.utils.update.ApkUpdateUtils
-
-import java.io.File
-import java.util.HashMap
-
 import de.greenrobot.event.EventBus
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -56,14 +42,27 @@ import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.main.act_home.*
 import kotlinx.android.synthetic.txtqbmfyd.content_view_main.*
 import kotlinx.android.synthetic.txtqbmfyd.content_view_menu.*
+import net.lzbook.kit.app.ActionConstants
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
+import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.cache.DataCleanManager
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.SPKeys
+import net.lzbook.kit.data.bean.ReadConfig
+import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.encrypt.URLBuilderIntterface
+import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.oneclick.AntiShake
+import net.lzbook.kit.utils.update.ApkUpdateUtils
+import java.io.File
+import java.util.*
 import java.util.concurrent.TimeUnit
 
-class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, CheckNovelUpdateService.OnBookUpdateListener, HomeView, BookShelfFragment.BookShelfInterface {
+class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
+        CheckNovelUpdateService.OnBookUpdateListener, HomeView, BookShelfInterface {
 
     private val homePresenter by lazy { HomePresenter(this, this.packageManager) }
 
@@ -164,8 +163,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
     override fun onResume() {
         super.onResume()
 
-        bookShelfFragment?.bookShelfAdapter?.notifyDataSetChanged()
-
         this.changeHomePagerIndex(currentIndex)
 
         StatService.onResume(this)
@@ -214,23 +211,14 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
         EventBus.getDefault().unregister(this)
     }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            return if (dl_content.isOpened) {
-                dl_content.closeMenu()
-                true
-            } else if (view_pager != null && view_pager!!.currentItem != 0) {
-                this.changeHomePagerIndex(0)
-                true
-            } else if (bookShelfFragment != null && bookShelfFragment!!.checkRemovePopupShow()) {
-                bookShelfFragment?.dismissBookShelfRemovePopup()
-                true
-            } else {
-                doubleClickFinish()
-                true
-            }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        when {
+            dl_content.isOpened -> dl_content.closeMenu()
+            view_pager?.currentItem != 0 -> changeHomePagerIndex(0)
+            bookShelfFragment?.isRemoveMenuShow() == true -> bookShelfFragment?.dismissRemoveMenu()
+            else -> doubleClickFinish()
         }
-        return super.onKeyDown(keyCode, event)
     }
 
 
@@ -242,8 +230,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
             if (state == DrawerLayout.MenuState.MENU_OPENED) {
                 showCacheMessage()
 
-                if (bookShelfFragment != null && bookShelfFragment!!.checkRemovePopupShow()) {
-                    bookShelfFragment?.dismissBookShelfRemovePopup()
+                if (bookShelfFragment?.isRemoveMenuShow() == true) {
+                    bookShelfFragment?.dismissRemoveMenu()
                 }
             }
         }
@@ -408,10 +396,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback, 
     private fun onChangeNavigation(position: Int) {
         currentIndex = position
 
-        if (currentIndex != 0) {
-            if (bookShelfFragment != null && bookShelfFragment!!.checkRemovePopupShow()) {
-                bookShelfFragment?.dismissBookShelfRemovePopup()
-            }
+        if (currentIndex != 0 && bookShelfFragment?.isRemoveMenuShow() == true) {
+            bookShelfFragment?.dismissRemoveMenu()
         }
 
         ll_bottom_tab_bookshelf.isSelected = position == 0
