@@ -28,20 +28,12 @@
             tools:src="@drawable/bookshelf_book_cover_default"/>
 
         <ImageView
-            android:id="@+id/img_book_state_finish"
+            android:id="@+id/img_book_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="6dp"
             android:src="@drawable/bookshelf_book_state_finish_icon"
             android:visibility="visible"/>
-
-        <ImageView
-            android:id="@+id/img_book_state_update"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="6dp"
-            android:src="@drawable/bookshelf_book_state_update_icon"
-            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/txt_book_name"
