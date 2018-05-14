@@ -5,7 +5,7 @@
           android:state_focused="false"
           android:state_pressed="false"/>
 
-    <item android:color="@color/color_white"
-          android:state_pressed="true"/><!--是否按下，如一个按钮触摸或者点击,true按下-->
+    <item android:color="#FFFFFF"
+          android:state_pressed="true"/>
 
 </selector>

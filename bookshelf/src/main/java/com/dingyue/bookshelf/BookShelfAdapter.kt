@@ -9,13 +9,15 @@ import android.widget.RelativeLayout
 import net.lzbook.kit.data.bean.Book
 import java.util.*
 
-class BookShelfAdapter(private val context: Context, private val bookShelfItemListener: BookShelfAdapter.BookShelfItemListener, private var books: ArrayList<Book>, private val adViews: List<ViewGroup>?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class BookShelfAdapter(private val context: Context,
+                       private val bookShelfItemListener: BookShelfAdapter.BookShelfItemListener,
+                       private var books: ArrayList<Book>, private val adViews: List<ViewGroup>?,
+                       private val hasAddView: Boolean = false)
+    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var selectedBooks: ArrayList<Book> = ArrayList()
 
     var isRemove = false
-
-    private var updateBooks: ArrayList<String> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder? {
         return when (viewType) {
@@ -49,7 +51,7 @@ class BookShelfAdapter(private val context: Context, private val bookShelfItemLi
         viewHolder.itemView.visibility = View.VISIBLE
 
         if (viewHolder is BookShelfItemHolder) {
-            viewHolder.bind(book, bookShelfItemListener, selectedBooks.contains(book), isRemove, updateBooks.contains(book.book_id))
+            viewHolder.bind(book, bookShelfItemListener, selectedBooks.contains(book), isRemove)
         } else if (viewHolder is BookShelfADHolder) {
             val view = getAdView(book)
             if (view != null) {
@@ -66,14 +68,17 @@ class BookShelfAdapter(private val context: Context, private val bookShelfItemLi
     }
 
     override fun getItemCount(): Int {
-        return if (books.size > 0) {
-            if (books.size >= 50) {
-                books.size
-            } else {
-                books.size + 1
+        if (hasAddView) {
+            if (books.size > 0) {
+                if (books.size >= 50) {
+                    return 50
+                }
+                return books.size + 1
             }
-        } else 0
+        }
+        return books.size
     }
+
 
     private fun getAdView(book: Book?): View? {
         if (adViews == null || adViews.isEmpty() || book == null) {
@@ -99,10 +104,6 @@ class BookShelfAdapter(private val context: Context, private val bookShelfItemLi
             }
         }
         return -1
-    }
-
-    fun setUpdateTableList(list: ArrayList<String>) {
-        this.updateBooks = list
     }
 
     companion object {

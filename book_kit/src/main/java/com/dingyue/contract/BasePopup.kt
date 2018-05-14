@@ -33,7 +33,7 @@ open class BasePopup(var context: Context, var layout: Int, var width: Int, var 
         popupWindow.showAtLocation(parent, gravity, x, y)
     }
 
-    fun dismiss() {
+    open fun dismiss() {
         popupWindow.dismiss()
     }
 }

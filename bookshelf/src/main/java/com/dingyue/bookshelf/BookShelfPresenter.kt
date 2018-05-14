@@ -1,10 +1,7 @@
 package com.dingyue.bookshelf
 
 import android.app.Activity
-import android.app.NotificationManager
 import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
 import android.text.TextUtils
@@ -69,21 +66,6 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
             val list = bookDaoHelper.booksList
             AppLog.e(tag, "BookUpdateCount: " + list.size)
             updateService?.checkUpdate(BookHelperContract.loadBookUpdateTaskData(list, updateCallBack))
-        }
-    }
-
-    fun clickNotification(context: Context, intent: Intent) {
-        AppLog.d(tag, "click_push: " + intent.getBooleanExtra("click_push", false))
-        if (intent.getBooleanExtra("click_push", false)) {
-            val bookId = intent.getStringExtra("book_id")
-            AppLog.d(tag, "gid: " + bookId)
-            AppLog.d(tag, "notify: ")
-            view?.notification(bookId)
-        }
-        if (intent.getBooleanExtra("cancel_finish_ntf", false)) {
-            val notifyManager = context.getSystemService(Context
-                    .NOTIFICATION_SERVICE) as NotificationManager
-            notifyManager.cancel(context.resources.getString(R.string.main_nftmgr_id).hashCode())
         }
     }
 
@@ -250,23 +232,23 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
         }
     }
 
-    /**
-     * 过滤出更新状态的表
-     */
-    fun filterUpdateTableList(): ArrayList<String> {
-        iBookList.asSequence().forEach { book: Book? ->
-            if (book?.update_status == 1) {
-                if (!updateTableList.contains(book.book_id)) {
-                    updateTableList.add(book.book_id)
-                }
-            } else {
-                if (updateTableList.contains(book?.book_id)) {
-                    updateTableList.remove(book?.book_id)
-                }
-            }
-        }
-        return updateTableList
-    }
+//    /**
+//     * 过滤出更新状态的表
+//     */
+//    fun filterUpdateTableList(): ArrayList<String> {
+//        iBookList.asSequence().forEach { book: Book? ->
+//            if (book?.update_status == 1) {
+//                if (!updateTableList.contains(book.book_id)) {
+//                    updateTableList.add(book.book_id)
+//                }
+//            } else {
+//                if (updateTableList.contains(book?.book_id)) {
+//                    updateTableList.remove(book?.book_id)
+//                }
+//            }
+//        }
+//        return updateTableList
+//    }
 
     /**
      * 取消数据库中更新状态

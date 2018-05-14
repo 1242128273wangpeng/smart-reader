@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:ignore="RtlHardcoded">
 
     <LinearLayout
-        android:id="@id/container"
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#ffffff"
@@ -13,13 +15,12 @@
         android:orientation="vertical">
 
         <RadioGroup
-            android:id="@+id/rg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <RadioButton
-                android:id="@+id/btn_recent"
+                android:id="@+id/rbtn_recent_read_sorting"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_margin="15dp"
@@ -35,7 +36,7 @@
                 android:background="#e8e8e8"/>
 
             <RadioButton
-                android:id="@+id/btn_time"
+                android:id="@+id/rbtn_update_time_sorting"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_margin="15dp"

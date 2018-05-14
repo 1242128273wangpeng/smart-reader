@@ -22,6 +22,4 @@ interface MenuManager {
 
     fun deleteBooks(books: ArrayList<Book>, isDeleteCacheOnly: Boolean)
 
-    fun showBooksDetail(books: ArrayList<Book>)
-
 }

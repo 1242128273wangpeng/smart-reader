@@ -2,8 +2,10 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:ignore="RtlHardcoded">
 
     <RelativeLayout
         android:id="@+id/relative_parent"
@@ -14,7 +16,7 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@id/container"
+            android:id="@+id/ll_container"
             android:layout_width="wrap_content"
             android:layout_height="90dp"
             android:layout_marginBottom="10dp"
@@ -24,7 +26,7 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/linear_huancun"
+                android:id="@+id/ll_download_manager"
                 android:layout_width="wrap_content"
                 android:layout_height="45dp"
                 android:background="@drawable/bookshelf_title_right_top_select"
@@ -50,15 +52,14 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linear_paixu"
+                android:id="@+id/ll_book_sorting"
                 android:layout_width="wrap_content"
                 android:layout_height="45dp"
                 android:background="@drawable/bookshelf_title_right_select"
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:paddingLeft="15dp"
-                android:paddingRight="21dp"
-                >
+                android:paddingRight="21dp">
 
                 <ImageView
                     android:layout_width="16dp"
@@ -79,10 +80,10 @@
         <net.lzbook.kit.book.view.NightShadowView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/container"
-            android:layout_alignLeft="@+id/container"
-            android:layout_alignRight="@+id/container"
-            android:layout_alignTop="@+id/container"
+            android:layout_alignBottom="@+id/ll_container"
+            android:layout_alignLeft="@+id/ll_container"
+            android:layout_alignRight="@+id/ll_container"
+            android:layout_alignTop="@+id/ll_container"
             android:visibility="gone"
             app:cornerRadius="5dp"/>
 
