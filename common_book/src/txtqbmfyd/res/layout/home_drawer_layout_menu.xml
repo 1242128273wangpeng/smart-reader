@@ -113,7 +113,7 @@
         android:textColor="@color/color_text_most"/>
 
     <TextView
-        android:id="@+id/txt_mark"
+        android:id="@+id/txt_market"
         style="@style/style_text_normal_dark"
         android:layout_width="match_parent"
         android:layout_height="45dp"
@@ -187,5 +187,4 @@
             android:gravity="center_vertical"
             tools:text="23.56MB"/>
     </RelativeLayout>
-
 </LinearLayout>

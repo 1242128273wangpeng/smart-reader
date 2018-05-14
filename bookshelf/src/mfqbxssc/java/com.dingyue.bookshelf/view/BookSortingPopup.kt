@@ -42,6 +42,10 @@ class BookSortingPopup(private val activity: Activity) {
             onRecentReadSortingClickListener?.invoke()
         }
 
+        popupWindow.setOnDismissListener{
+            setBackgroundAlpha(1.0f)
+        }
+
     }
 
     fun show(view: View) {
@@ -57,7 +61,6 @@ class BookSortingPopup(private val activity: Activity) {
     }
 
     fun dismiss() {
-        setBackgroundAlpha(1.0f)
         popupWindow.dismiss()
     }
 

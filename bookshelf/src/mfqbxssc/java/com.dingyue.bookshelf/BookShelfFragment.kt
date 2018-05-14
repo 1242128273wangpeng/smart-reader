@@ -19,7 +19,6 @@ import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.mfqbxssc.fragment_bookshelf.*
 import kotlinx.android.synthetic.mfqbxssc.layout_head.view.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.view.ConsumeEvent
 import net.lzbook.kit.constants.Constants
@@ -61,14 +60,16 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                                 getString(R.string.select_all)
                 } else {
                     handleBook(book)
-                    BookShelfLogger.uploadItemClickLog(presenter.iBookList, position)
+                    book?.let {
+                        BookShelfLogger.uploadBookShelfBookClick(it, position)
+                    }
                 }
             }
 
             override fun longClickedBookShelfItem(): Boolean {
                 if (!isRemoveMenuShow()) {
                     showRemoveMenu()
-                    BookShelfLogger.uploadItemLongClickLog()
+                    BookShelfLogger.uploadBookShelfLongClickBookShelfEdit()
                 }
                 return false
             }
@@ -79,12 +80,12 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     private val headMenuPopup: HeadMenuPopup by lazy {
         val popup = HeadMenuPopup(activity)
         popup.onDownloadManagerClickListener = {
-            RouterUtil.navigation(RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.CACHEMANAGE)
+            RouterUtil.navigation(activity, RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
+            BookShelfLogger.uploadBookShelfCacheManager()
         }
         popup.onBookSortingClickListener = {
             bookSortingPopup.show(rl_content)
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.BOOKSORT)
+            BookShelfLogger.uploadBookShelfBookSort()
         }
         popup
     }
@@ -117,7 +118,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             deleteBooks(books, isDeleteCacheOnly)
         }
         dialog.onCancelListener = {
-            BookShelfLogger.uploadBookDeleteCancelLog()
+            BookShelfLogger.uploadBookShelfEditDelete(0, null, false)
         }
         dialog
     }
@@ -157,28 +158,26 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         })
         bookshelf_empty_btn.setOnClickListener {
             bookShelfInterface?.changeHomePagerIndex(1)
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.TOBOOKCITY)
+            BookShelfLogger.uploadBookShelfToBookCity()
         }
 
         img_head_setting.setOnClickListener {
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.PERSONAL)
-            net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(activity, net.lzbook.kit.utils.StatServiceUtils.bs_click_mine_menu)
+            BookShelfLogger.uploadBookShelfPersonal()
             EventBus.getDefault().post(ConsumeEvent(R.id.redpoint_home_setting))
-            RouterUtil.navigation(RouterConfig.SETTING_ACTIVITY)
+            RouterUtil.navigation(activity, RouterConfig.SETTING_ACTIVITY)
         }
 
         rl_head_search.setOnClickListener {
             //TODO 在 mfqbxssc 的 SearchBookActivity 中接收此 bundle，并将值赋给 isSatyHistory
             val bundle = Bundle()
             bundle.putBoolean("isShowLastSearch", false)
-            RouterUtil.navigation(RouterConfig.SEARCH_BOOK_ACTIVITY, bundle)
-            net.lzbook.kit.utils.StatServiceUtils.statAppBtnClick(activity, net.lzbook.kit.utils.StatServiceUtils.bs_click_search_btn)
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.SEARCH)
+            RouterUtil.navigation(activity, RouterConfig.SEARCH_BOOK_ACTIVITY, bundle)
+            BookShelfLogger.uploadBookShelfSearch()
         }
 
         img_head_menu.setOnClickListener {
             headMenuPopup.show(img_head_menu)
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.MORE)
+            BookShelfLogger.uploadBookShelfMore()
         }
 
         txt_head_select_all.setOnClickListener {
@@ -293,9 +292,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         doAsync {
             presenter.queryBookListAndAd(activity, isShowAd)
             uiThread {
-//                bookShelfAdapter.setUpdateTableList(presenter.filterUpdateTableList())
                 bookShelfAdapter.notifyDataSetChanged()
-                BookShelfLogger.uploadFirstOpenLog(presenter.iBookList, sharedPreferences)
             }
         }
     }
@@ -578,7 +575,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         rl_head_remove.visibility = View.GONE
         bookshelf_float_ad.visibility = View.VISIBLE
 
-        BookShelfLogger.uploadShelfEditCancelLog()
+        BookShelfLogger.uploadBookShelfEditCancel()
     }
 
     override fun isRemoveMenuShow(): Boolean = bookShelfAdapter.isRemove
@@ -586,13 +583,13 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     override fun selectAll(isAll: Boolean) {
         bookShelfAdapter.insertSelectAllState(isAll)
         removeMenuPopup.setSelectedNum(bookShelfAdapter.selectedBooks.size)
-        BookShelfLogger.uploadEditorSelectAllLog(isAll)
+        BookShelfLogger.uploadBookShelfEditSelectAll(isAll)
     }
 
     override fun sortBooks(type: Int) {
         CommonContract.insertShelfSortType(type)
         updateUI()
-        BookShelfLogger.uploadSortingLog(type)
+        BookShelfLogger.uploadBookShelfSortType(type)
     }
 
     override fun deleteBooks(books: ArrayList<Book>, isDeleteCacheOnly: Boolean) {

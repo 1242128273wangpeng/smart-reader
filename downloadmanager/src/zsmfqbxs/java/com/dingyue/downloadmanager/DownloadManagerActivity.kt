@@ -8,6 +8,7 @@ import android.support.v7.widget.SimpleItemAnimator
 import android.view.Menu
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.dingyue.contract.CommonContract
 import com.dingyue.downloadmanager.contract.BookHelperContract
 import com.dingyue.downloadmanager.contract.CacheManagerContract
 import com.dingyue.downloadmanager.recl.DownloadItemDecoration
@@ -140,7 +141,7 @@ class DownloadManagerActivity : BaseCacheableActivity(),
         }
 
         img_head_back.setOnClickListener {
-            DownloadManagerLogger.uploadBackLog()
+            DownloadManagerLogger.uploadCacheManagerBack()
             finish()
         }
 
@@ -150,6 +151,7 @@ class DownloadManagerActivity : BaseCacheableActivity(),
 
         img_head_more.setOnClickListener {
             topMenuPopup.show(img_head_more)
+            DownloadManagerLogger.uploadCacheManagerMore()
         }
 
         recl_content.addItemDecoration(DownloadItemDecoration(object : DownloadItemDecoration.DownloadHeaderInterface {
@@ -198,7 +200,7 @@ class DownloadManagerActivity : BaseCacheableActivity(),
         } else {
             //如果是从通知栏过来, 且已经退出到home了, 要回到应用中
             if (isTaskRoot) {
-                RouterUtil.navigation(RouterConfig.SPLASH_ACTIVITY)
+                RouterUtil.navigation(this, RouterConfig.SPLASH_ACTIVITY)
             }
             super.onBackPressed()
         }
@@ -233,7 +235,7 @@ class DownloadManagerActivity : BaseCacheableActivity(),
 
         if (!downloadManagerAdapter.remove) {
             if (book != null) {
-                DownloadManagerLogger.uploadBookClickLog(book)
+                DownloadManagerLogger.uploadCacheManagerBookClick(book)
                 BookRouter.navigateCoverOrRead(this, book, BookRouter.NAVIGATE_TYPE_DOWNLOAD)
             }
         } else {
@@ -302,7 +304,7 @@ class DownloadManagerActivity : BaseCacheableActivity(),
 
         txt_head_cancel.visibility = View.VISIBLE
 
-        DownloadManagerLogger.uploadEditLog()
+        DownloadManagerLogger.uploadCacheManagerEdit()
     }
 
     override fun dismissMenu() {
@@ -316,27 +318,27 @@ class DownloadManagerActivity : BaseCacheableActivity(),
         txt_head_title.text = getString(R.string.download_manager)
         txt_head_cancel.visibility = View.GONE
         img_head_more.visibility = View.VISIBLE
-        DownloadManagerLogger.uploadCancelLog()
+        DownloadManagerLogger.uploadCacheMangerEditCancel()
     }
 
-    override fun checkAll(isAll: Boolean) {
-        downloadManagerAdapter.insertSelectAllState(isAll)
+    override fun checkAll(all: Boolean) {
+        downloadManagerAdapter.insertSelectAllState(all)
         removeMenuPopup.setSelectedNum(downloadManagerAdapter.checkedBooks.size)
-        DownloadManagerLogger.uploadRemoveSelectAllLog(isAll)
+        DownloadManagerLogger.uploadCacheManagerEditSelectAll(all)
     }
 
     override fun sortBooks(type: Int) {
-        BookHelperContract.insertShelfSortType(type)
+        CommonContract.insertShelfSortType(type)
         downloadManagerViewModel.refreshBooks()
-        DownloadManagerLogger.uploadSortingLog(type)
+        DownloadManagerLogger.uploadCacheManagerSort(type)
     }
 
     override fun deleteCache(books: ArrayList<Book>) {
-        DownloadManagerLogger.uploadDeleteLog()
+        DownloadManagerLogger.uploadCacheManagerEditDeleteLog()
         if (books.isNotEmpty()) {
             managerDeleteDialog.show()
             downloadManagerViewModel.deleteCache(books)
-            DownloadManagerLogger.uploadDialogConfirmLog(books)
+            DownloadManagerLogger.uploadCacheManagerEditDelete(books)
         }
     }
 }

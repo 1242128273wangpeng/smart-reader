@@ -65,7 +65,7 @@ object BookRouter {
             bundle.putBoolean("is_last_chapter", false)
             bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
             val path = RouterConfig.CATALOGUES_ACTIVITY
-            return RouterUtil.navigation(path, bundle)
+            return RouterUtil.navigation(activity, path, bundle)
         } else if ((book.sequence > -1 || book.readed == 1 || NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE
                         && isCached(book)) && BookDaoHelper.getInstance().isBookSubed(book.book_id)) {
 
@@ -85,7 +85,7 @@ object BookRouter {
 
             StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.bs_click_one_book)
 
-            return RouterUtil.navigation(path, bundle, flags)
+            return RouterUtil.navigation(activity, path, bundle, flags)
         } else {
             if (shake.check()) {
                 return null
@@ -103,7 +103,7 @@ object BookRouter {
 
             bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
             val path = RouterConfig.COVER_PAGE_ACTIVITY
-            return RouterUtil.navigation(path, bundle)
+            return RouterUtil.navigation(activity, path, bundle)
         }
     }
 

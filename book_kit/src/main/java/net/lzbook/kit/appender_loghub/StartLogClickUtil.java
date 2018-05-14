@@ -20,19 +20,116 @@ import net.lzbook.kit.utils.OpenUDID;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-/**
- * Created by Administrator on 2017\8\14 0014.
- */
 
 public class StartLogClickUtil {
+
+
+    /***
+     * HomeActivity相关点位
+     * **/
+    //HomeActivity
+    public static final String PAGE_HOME = "MAIN";
+    //HomeActivity功能
+    public static final String ACTION_HOME_BOOK_LIST = "BOOKLIST";
+    public static final String ACTION_HOME_BOOK_SHELF = "BOOKSHELF";
+    public static final String ACTION_HOME_RECOMMEND = "RECOMMEND";
+    public static final String ACTION_HOME_TOP = "TOP";
+    public static final String ACTION_HOME_CLASS = "CLASS";
+    public static final String ACTION_HOME_PERSONAL = "PERSONAL";
+    public static final String ACTION_HOME_SEARCH = "SEARCH";
+    public static final String ACTION_HOME_CACHE_MANAGE = "CACHEMANAGE";
+
+    /***
+     * 书架相关点位
+     * **/
+    //书架页
+    public static final String PAGE_SHELF = "SHELF";
+    //书架页功能
+    public static final String ACTION_SHELF_MORE = "MORE";
+    public static final String ACTION_SHELF_SEARCH = "SEARCH";
+    public static final String ACTION_SHELF_PERSONAL = "PERSONAL";
+    public static final String ACTION_SHELF_BOOK_SORT = "BOOKSORT";
+    public static final String ACTION_SHELF_BOOK_CLICK = "BOOKCLICK";
+    public static final String ACTION_SHELF_TO_BOOK_CITY = "TOBOOKCITY";
+    public static final String ACTION_SHELF_CACHE_MANAGE = "CACHEMANAGE";
+    public static final String ACTION_SHELF_LONG_TIME_BOOK_SHELF_EDIT = "LONGTIMEBOOKSHELFEDIT";
+
+    //书架编辑页面
+    public static final String PAGE_SHELF_EDIT = "SHELFEDIT";
+    //书架编辑页功能
+    public static final String ACTION_SHELF_EDIT_BACK = "BACK";
+    public static final String ACTION_SHELF_EDIT_CANCEL = "CANCLE";
+    public static final String ACTION_SHELF_EDIT_DELETE = "DELETE";
+    public static final String ACTION_SHELF_EDIT_SELECT_ALL = "SELECTALL";
+
+    //书架排序弹窗
+    public static final String PAGE_SHELF_SORT = "SHELFSORT";
+    //书架排序弹窗功能
+    public static final String ACTION_SHELF_SORT_CANCEL = "CANCLE";
+    public static final String ACTION_SHELF_SORT_BOOK_SORT = "BOOKSORT";
+
+
+    /***
+     * 个人中心相关点位
+     * **/
+    //个人中心页
+    public static final String PAGE_PERSONAL = "PEASONAL";
+    //个人中心页功能
+    public static final String ACTION_PERSONAL_BACK = "BACK";//屏幕左上方点击返回按钮
+    public static final String ACTION_PERSONAL_HELP = "HELP";//点击帮助与反馈
+    public static final String ACTION_PERSONAL_LOGIN = "LOGIN";//点击登录
+    public static final String ACTION_PERSONAL_LOGOUT = "LOGOUT";//点击退出登录
+    public static final String ACTION_PERSONAL_COMMENT = "COMMENT";//点击去评分
+    public static final String ACTION_PERSONAL_VERSION = "VERSION";//点击当前版本
+    public static final String ACTION_PERSONAL_HISTORY = "HISTORY";//点击浏览足迹
+    public static final String ACTION_PERSONAL_PROCTCOL = "PROCTCOL";//点击使用协议
+    public static final String ACTION_PERSONAL_MORE_SET = "MORESET";//点击更多设置
+    public static final String ACTION_PERSONAL_NIGHT_MODE = "NIGHTMODE";//点击夜间模式
+    public static final String ACTION_PERSONAL_CACHE_CLEAR = "CACHECLEAR";//点击清除缓存
+    public static final String ACTION_PERSONAL_VERSION_UPDATE = "VERSIONUPDATE";//点击版本更新
+    public static final String ACTION_PERSONAL_WIFI_AUTO_CACHE = "WIFI_AUTOCACHE";//点击WIFI自动缓存
+
+
+    /***
+     * 下载管理页相关点位
+     * **/
+    //下载管理页
+    public static final String PAGE_CACHE_MANAGER = "CACHEMANAGE";
+    //下载管理页功能
+    public static final String ACTION_CACHE_MANAGER_BACK = "BACK";//返回
+    public static final String ACTION_CACHE_MANAGER_MORE = "MORE";//更多按钮点击
+    public static final String ACTION_CACHE_MANAGER_SORT = "SORT";//排序
+    public static final String ACTION_CACHE_MANAGER_BOOK_CLICK = "BOOKCLICK";//书籍点击
+    public static final String ACTION_CACHE_MANAGER_CACHE_BUTTON = "CACHEBUTTON";//缓存按钮点击
+    public static final String ACTION_CACHE_MANAGER_CACHE_EDIT = "CACHEEDIT";//长按编辑列表
+    public static final String ACTION_CACHE_MANAGER_TO_BOOK_CITY = "TOBOOKCITY";//跳转到书城
+
+    //下载管理编辑页面
+    public static final String PAGE_CACHE_MANAGER_EDIT = "CHCHEEDIT";
+    //下载管理编辑页面功能
+    public static final String ACTION_CACHE_MANAGER_EDIT_BACK = "BACK";//返回
+    public static final String ACTION_CACHE_MANAGER_EDIT_CANCEL = "CANCLE";//取消
+    public static final String ACTION_CACHE_MANAGER_EDIT_DELETE = "DELETE";//删除
+    public static final String ACTION_CACHE_MANAGER_EDIT_SELECT_ALL = "SELECTALL";//全选
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     //页面编码
     public static final String SYSTEM_PAGE = "SYSTEM";//APP通用

@@ -181,18 +181,18 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
 //        }, num)
     }
 
-    fun deleteBooks(deleteBooks: java.util.ArrayList<Book>, isOnlyDeleteCache: Boolean) {
+    fun deleteBooks(deleteBooks: java.util.ArrayList<Book>, onlyDeleteCache: Boolean) {
         val size = deleteBooks.size
         doAsync {
-            val sb = StringBuffer()
+            val stringBuilder = StringBuilder()
             for (i in 0 until size) {
                 val book = deleteBooks[i]
-                sb.append(book.book_id)
-                sb.append(if (book.readed == 1) "_1" else "_0")
-                sb.append(if (i == size - 1) "" else "$")
+                stringBuilder.append(book.book_id)
+                stringBuilder.append(if (book.readed == 1) "_1" else "_0")
+                stringBuilder.append(if (i == size - 1) "" else "$")
             }
             // 删除书架数据库和章节数据库
-            if (isOnlyDeleteCache) {
+            if (onlyDeleteCache) {
                 deleteBooks.forEach {
                     CacheManager.remove(it.book_id)
                     BaseBookHelper.removeChapterCacheFile(it)
@@ -200,11 +200,12 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
             } else {
                 bookDaoHelper.deleteBook(deleteBooks)
             }
+
             Thread.sleep(1000)
             uiThread {
                 view?.onBookDelete()
             }
-            BookShelfLogger.uploadBookCacheDeleteLog(sb, size, isOnlyDeleteCache)
+            BookShelfLogger.uploadBookShelfEditDelete(size, stringBuilder, onlyDeleteCache)
         }
     }
 

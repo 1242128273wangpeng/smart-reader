@@ -279,7 +279,7 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
             mBookEndPresenter = null
         }
         try {
-            setContentView(R.layout.empty)
+            setContentView(R.layout.common_empty)
         } catch (e: Resources.NotFoundException) {
             e.printStackTrace()
         }

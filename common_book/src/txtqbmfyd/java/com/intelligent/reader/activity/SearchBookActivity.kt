@@ -379,7 +379,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         }
 
         try {
-            setContentView(R.layout.empty)
+            setContentView(R.layout.common_empty)
         } catch (e: Resources.NotFoundException) {
             e.printStackTrace()
         }

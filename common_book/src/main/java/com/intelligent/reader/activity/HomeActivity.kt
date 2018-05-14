@@ -25,8 +25,10 @@ import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.baidu.mobstat.StatService
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
+import com.dingyue.contract.CommonContract
+import com.dingyue.contract.HomeLogger
+import com.dingyue.contract.PersonalLogger
 import com.intelligent.reader.R
-import com.intelligent.reader.event.DownloadManagerToHome
 import com.intelligent.reader.fragment.CategoryFragment
 import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.presenter.home.HomePresenter
@@ -34,14 +36,13 @@ import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.util.EventBookStore
 import com.intelligent.reader.widget.ClearCacheDialog
 import com.intelligent.reader.widget.drawer.DrawerLayout
-import de.greenrobot.event.EventBus
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.main.act_home.*
-import kotlinx.android.synthetic.txtqbmfyd.content_view_main.*
-import kotlinx.android.synthetic.txtqbmfyd.content_view_menu.*
+import kotlinx.android.synthetic.txtqbmfyd.home_drawer_layout_main.*
+import kotlinx.android.synthetic.txtqbmfyd.home_drawer_layout_menu.*
 import net.lzbook.kit.app.ActionConstants
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
@@ -55,7 +56,6 @@ import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
-import net.lzbook.kit.utils.oneclick.AntiShake
 import net.lzbook.kit.utils.update.ApkUpdateUtils
 import java.io.File
 import java.util.*
@@ -151,13 +151,13 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         checkUrlDevelop()
 
-        EventBus.getDefault().register(this)
-
         AndroidLogStorage.getInstance().clear()
 
         showCacheMessage()
 
         homePresenter.initDownloadService()
+
+        HomeLogger.uploadHomeBookListInformation()
     }
 
     override fun onResume() {
@@ -182,8 +182,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             view_pager!!.currentItem = position
         } else {
             if (intent != null) {
-                val intExtra = intent.getIntExtra(EventBookStore.BOOKSTORE, EventBookStore
-                        .TYPE_ERROR)
+                val intExtra = intent.getIntExtra(EventBookStore.BOOKSTORE, EventBookStore.TYPE_ERROR)
                 if (intExtra != EventBookStore.TYPE_ERROR) {
                     if (!isFinishing) {
                         this.changeHomePagerIndex(intExtra)
@@ -200,15 +199,11 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         this.unregisterReceiver(homeBroadcastReceiver)
 
-        EventBus.getDefault().unregister(this)
-
         try {
-            setContentView(R.layout.empty)
-        } catch (e: Resources.NotFoundException) {
-            e.printStackTrace()
+            setContentView(R.layout.common_empty)
+        } catch (exception: Resources.NotFoundException) {
+            exception.printStackTrace()
         }
-
-        EventBus.getDefault().unregister(this)
     }
 
     override fun onBackPressed() {
@@ -219,7 +214,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             else -> doubleClickFinish()
         }
     }
-
 
     /***
      * 初始化View
@@ -263,25 +257,25 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         ll_bottom_tab_bookshelf.setOnClickListener {
             this.changeHomePagerIndex(0)
-            homePresenter.uploadBookshelfSelectedLog()
+            HomeLogger.uploadHomeBookShelfSelected()
         }
 
         ll_bottom_tab_recommend.setOnClickListener {
             this.changeHomePagerIndex(1)
             preferencesUtils.putString(Constants.FINDBOOK_SEARCH, "recommend")
-            homePresenter.uploadRecommendSelectedLog()
+            HomeLogger.uploadHomeRecommendSelected()
         }
 
         ll_bottom_tab_ranking.setOnClickListener {
             this.changeHomePagerIndex(2)
             preferencesUtils.putString(Constants.FINDBOOK_SEARCH, "top")
-            homePresenter.uploadRankingSelectedLog()
+            HomeLogger.uploadHomeRankSelected()
         }
 
         ll_bottom_tab_category.setOnClickListener {
             this.changeHomePagerIndex(3)
             preferencesUtils.putString(Constants.FINDBOOK_SEARCH, "class")
-            homePresenter.uploadCategorySelectedLog()
+            HomeLogger.uploadHomeCategorySelected()
         }
 
         setMenuTitleMargin()
@@ -289,7 +283,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         setNightMode(false)
 
         bt_night_shift.setOnCheckedChangeListener { _, isChecked ->
-            homePresenter.uploadModeChangeLog()
+            PersonalLogger.uploadPersonalNightModeChange()
             if (isChecked) {
                 tv_night_shift.setText(R.string.mode_day)
                 ReadConfig.MODE = 61
@@ -307,19 +301,21 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         val isAutoDownload = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, true)
+
         btn_auto_download.isChecked = isAutoDownload
-        btn_auto_download.setOnCheckedChangeListener { view, isChecked ->
+
+        btn_auto_download.setOnCheckedChangeListener { _, isChecked ->
             preferencesUtils.putBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, isChecked)
-            homePresenter.uploadAutoCacheLog(isChecked)
+            PersonalLogger.uploadPersonalAutoCache(isChecked)
         }
 
         txt_push_setting.setOnClickListener {
-            homePresenter.uploadPushSettingClickLog()
+            PersonalLogger.uploadPersonalPushSetting()
             startActivity(Intent(this, SettingMoreActivity::class.java))
         }
 
         txt_feedback.setOnClickListener {
-            homePresenter.uploadFeedbackClickLog()
+            PersonalLogger.uploadPersonalFeedback()
             Observable.timer(500, TimeUnit.MILLISECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe {
@@ -327,8 +323,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     }
         }
 
-        txt_mark.setOnClickListener {
-            homePresenter.uploadMarkClickLog()
+        txt_market.setOnClickListener {
+            PersonalLogger.uploadPersonalMark()
             try {
                 val uri = Uri.parse("market://details?id=" + this.packageName)
                 val intent = Intent(Intent.ACTION_VIEW, uri)
@@ -341,7 +337,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
 
         txt_disclaimer_statement.setOnClickListener {
-            homePresenter.uploadDisclaimerClickLog()
+            PersonalLogger.uploadPersonalDisclaimer()
             startActivity(Intent(this, DisclaimerActivity::class.java))
         }
 
@@ -351,7 +347,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         txt_version_name.text = versionName
 
         rl_check_update.setOnClickListener {
-            homePresenter.uploadCheckUpdateLog()
+            PersonalLogger.uploadPersonalCheckUpdate()
             try {
                 apkUpdateUtils.getApkUpdateInfo(this, null, "SettingActivity")
             } catch (e: Exception) {
@@ -360,7 +356,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
 
         rl_clear_cache.setOnClickListener {
-            homePresenter.uploadClearCacheClickLog()
+            PersonalLogger.uploadPersonalClearCache()
 
             if (!this.isFinishing) {
                 clearCacheDialog.show()
@@ -403,12 +399,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         ll_bottom_tab_recommend.isSelected = position == 1
         ll_bottom_tab_ranking.isSelected = position == 2
         ll_bottom_tab_category.isSelected = position == 3
-
-        when (position) {
-            3 -> {
-                homePresenter.uploadCategoryEntryLog()
-            }
-        }
     }
 
     /***
@@ -482,18 +472,16 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
     }
 
-    private val shake = AntiShake()
-
-    override fun receiveUpdateCallBack(preNTF: Notification) {
+    override fun receiveUpdateCallBack(notification: Notification) {
         val intent = Intent(this, HomeActivity::class.java)
         val pending = PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        preNTF.contentIntent = pending
+        notification.contentIntent = pending
     }
 
-    /**
+    /***
      * 打开安装包文件
-     */
-    fun setup(filePath: String) {
+     * **/
+    fun setupApplication(filePath: String) {
         val intent = Intent()
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.action = Intent.ACTION_VIEW
@@ -502,9 +490,9 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         startActivity(intent)
     }
 
-    /**
-     * 两次返回键退出
-     */
+    /***
+     * 两次返回键退出应用
+     * **/
     private fun doubleClickFinish() {
         BACK_COUNT++
 
@@ -548,7 +536,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             }
         }
         jsInterfaceHelper.setOnAnotherWebClick(JSInterfaceHelper.onAnotherWebClick { url, name ->
-            if (shake.check()) {
+            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
                 return@onAnotherWebClick
             }
             AppLog.e(TAG, "doAnotherWeb")
@@ -567,7 +555,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         jsInterfaceHelper.setOnOpenAd { AppLog.e(TAG, "doOpenAd") }
 
         jsInterfaceHelper.setOnEnterCover(JSInterfaceHelper.onEnterCover { host, book_id, book_source_id, name, author, parameter, extra_parameter ->
-            if (shake.check()) {
+            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
                 return@onEnterCover
             }
             val data = HashMap<String, String>()
@@ -592,7 +580,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             startActivity(intent)
         })
 
-        jsInterfaceHelper.setOnEnterCategory { gid, nid, name, lastSort -> AppLog.e(TAG, "doCategory") }
+        jsInterfaceHelper.setOnEnterCategory { _, _, _, _ -> AppLog.e(TAG, "doCategory") }
     }
 
     override fun startLoad(webView: WebView, url: String): String {
@@ -601,13 +589,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
     override fun supportSlideBack(): Boolean {
         return false
-    }
-
-    /**
-     * EventBus 接收下载管理页面的跳转请求
-     */
-    fun onEventMainThread(event: DownloadManagerToHome) {
-        this.changeHomePagerIndex(event.tabPosition)
     }
 
     /***
@@ -635,7 +616,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
      * **/
     private fun setNightMode(isEvent: Boolean) {
         val isNightMode = this.mThemeHelper.isNight
-        if (!isEvent) homePresenter.uploadCurModeLog(isNightMode)
+        if (!isEvent) PersonalLogger.uploadPersonalCurrentMode(isNightMode)
         if (isNightMode) {
             tv_night_shift.setText(R.string.mode_day)
             bt_night_shift.isChecked = true
@@ -705,7 +686,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
                     if (count == 100) {
                         if (MD5Utils.getFileMD5(File(filePath))!!.equals(md5!!, ignoreCase = true)) {
-                            setup(filePath)
+                            setupApplication(filePath)
                         } else {
                             val errorIntent = Intent()
                             errorIntent.setClass(context, DownloadErrorActivity::class.java)

@@ -17,33 +17,77 @@ import java.util.*
  */
 object DownloadManagerLogger {
 
-    fun uploadBackLog() {
+    fun uploadCacheManagerBack() {
         val data = HashMap<String, String>()
         data["type"] = "1"
+
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                "CACHEMANAGE", StartLogClickUtil.BACK, data)
+                StartLogClickUtil.PAGE_CACHE_MANAGER, StartLogClickUtil.ACTION_CACHE_MANAGER_BACK, data)
     }
 
-    fun uploadEditLog() {
-        StatServiceUtils.statAppBtnClick(BaseBookApplication.getGlobalContext(),
-                StatServiceUtils.bs_down_m_click_edit)
+    fun uploadCacheManagerBookClick(book: Book) {
+        val data = HashMap<String, String>()
+        data["STATUS"] = if (CacheManager.getBookStatus(book) === DownloadState.FINISH) "1" else "0"
+
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.CACHEEDIT1)
+                StartLogClickUtil.PAGE_CACHE_MANAGER, StartLogClickUtil.ACTION_CACHE_MANAGER_BOOK_CLICK, data)
     }
 
-    fun uploadCancelLog() {
-        StatServiceUtils.statAppBtnClick(BaseBookApplication.getGlobalContext(),
-                StatServiceUtils.bs_down_m_click_cancel)
+    fun uploadCacheManagerButtonClick(status: DownloadState, bookId: String, progress: Int) {
+        val context = BaseBookApplication.getGlobalContext()
+        val data = HashMap<String, String>()
+        if (status == DownloadState.NOSTART) {
+            data["type"] = "1"
+            data["bookid"] = bookId
+        } else if (status == DownloadState.DOWNLOADING || status == DownloadState.WAITTING) {
+            data["type"] = "2"
+            data[ChapterTable.SPEED] = "$progress/100"
+        } else {
+            data["type"] = "1"
+        }
+        data["bookid"] = bookId
+
+        StartLogClickUtil.upLoadEventLog(context,  StartLogClickUtil.PAGE_CACHE_MANAGER,
+                StartLogClickUtil.ACTION_CACHE_MANAGER_CACHE_BUTTON, data)
+    }
+
+    fun uploadCacheManagerEdit() {
+        val context = BaseBookApplication.getGlobalContext()
+
+        StatServiceUtils.statAppBtnClick(context, StatServiceUtils.bs_down_m_click_edit)
+
+        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.PAGE_CACHE_MANAGER,
+                StartLogClickUtil.ACTION_CACHE_MANAGER_CACHE_EDIT)
+    }
+
+    fun uploadCacheManagerMore() {
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.CHCHEEDIT_PAGE, StartLogClickUtil.CANCLE)
+                StartLogClickUtil.PAGE_CACHE_MANAGER, StartLogClickUtil.ACTION_CACHE_MANAGER_MORE)
     }
 
-    fun uploadDeleteLog() {
-        StatServiceUtils.statAppBtnClick(BaseBookApplication.getGlobalContext(),
-                StatServiceUtils.bs_down_m_click_delete)
+    fun uploadCacheManagerBookCity() {
+        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                StartLogClickUtil.PAGE_CACHE_MANAGER, StartLogClickUtil.ACTION_CACHE_MANAGER_TO_BOOK_CITY)
     }
 
-    fun uploadDialogConfirmLog(books: List<Book>) {
+    fun uploadCacheManagerSort(type: Int) {
+        val data = HashMap<String, String>()
+        data["type"] = type.toString()
+
+        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                StartLogClickUtil.PAGE_CACHE_MANAGER, StartLogClickUtil.ACTION_CACHE_MANAGER_SORT, data)
+    }
+
+    fun uploadCacheMangerEditCancel() {
+        val context = BaseBookApplication.getGlobalContext()
+
+        StatServiceUtils.statAppBtnClick(context, StatServiceUtils.bs_down_m_click_cancel)
+
+        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.PAGE_CACHE_MANAGER_EDIT,
+                StartLogClickUtil.ACTION_CACHE_MANAGER_EDIT_CANCEL)
+    }
+
+    fun uploadCacheManagerEditDelete(books: List<Book>) {
         val data = HashMap<String, String>()
 
         val bookIds = StringBuilder()
@@ -71,47 +115,25 @@ object DownloadManagerLogger {
         data["status"] = status.toString()
         data["bookid"] = bookIds.toString()
         data["number"] = books.size.toString()
+
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.CHCHEEDIT_PAGE, StartLogClickUtil.DELETE, data)
+                StartLogClickUtil.PAGE_CACHE_MANAGER_EDIT, StartLogClickUtil.ACTION_CACHE_MANAGER_EDIT_DELETE, data)
     }
 
-    fun uploadRemoveSelectAllLog(checkedAll: Boolean) {
-        StatServiceUtils.statAppBtnClick(BaseBookApplication.getGlobalContext(),
-                StatServiceUtils.bs_down_m_click_select_all)
+    fun uploadCacheManagerEditSelectAll(checkedAll: Boolean) {
+        val context = BaseBookApplication.getGlobalContext()
+
         val data = HashMap<String, String>()
         data["type"] = if (checkedAll) "1" else "2"
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.CHCHEEDIT_PAGE, StartLogClickUtil.SELECTALL, data)
+
+        StatServiceUtils.statAppBtnClick(context, StatServiceUtils.bs_down_m_click_select_all)
+
+        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.PAGE_CACHE_MANAGER_EDIT,
+                StartLogClickUtil.ACTION_CACHE_MANAGER_EDIT_SELECT_ALL, data)
     }
 
-    fun uploadBookClickLog(book: Book) {
-        val data = HashMap<String, String>()
-        data["STATUS"] = if (CacheManager.getBookStatus(book) === DownloadState.FINISH) "1" else "0"
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.BOOKCLICK1, data)
+    fun uploadCacheManagerEditDeleteLog() {
+        StatServiceUtils.statAppBtnClick(BaseBookApplication.getGlobalContext(),
+                StatServiceUtils.bs_down_m_click_delete)
     }
-
-    fun uploadSortingLog(type: Int) {
-        val data = HashMap<String, String>()
-        data["type"] = type.toString()
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.CACHEMANAGE_PAGE, StartLogClickUtil.SORT, data)
-    }
-
-    fun uploadItemClickLog(status: DownloadState, bookId: String, progress: Int) {
-        val context = BaseBookApplication.getGlobalContext()
-        val data = HashMap<String, String>()
-        if (status == DownloadState.NOSTART) {
-            data["type"] = "1"
-            data["bookid"] = bookId
-        } else if (status == DownloadState.DOWNLOADING || status == DownloadState.WAITTING) {
-            data["type"] = "2"
-            data[ChapterTable.SPEED] = "$progress/100"
-        } else {
-            data["type"] = "1"
-        }
-        data["bookid"] = bookId
-        StartLogClickUtil.upLoadEventLog(context, "CACHEMANAGE", StartLogClickUtil.CACHEBUTTON, data)
-    }
-
 }

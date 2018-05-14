@@ -42,6 +42,7 @@ class BookSortingDialog(val activity: Activity) {
         }
         dialog.txt_cancel.setOnClickListener {
             dialog.dismiss()
+            BookShelfLogger.uploadBookShelfSortCancel()
         }
     }
 
