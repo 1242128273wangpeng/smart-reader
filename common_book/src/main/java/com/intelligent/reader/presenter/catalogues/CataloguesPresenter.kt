@@ -355,7 +355,7 @@ class CataloguesPresenter(var act: Activity, var book: Book, var requestItem: Re
     fun fixBook() {
         RepairHelp.fixBook(activity!!.get(), book, RepairHelp.FixCallBack {
             try {
-                RouterUtil.navigation(RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
+                RouterUtil.navigation(act, RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
                 activity!!.get()!!.finish()
             } catch (e: Exception) {
                 e.printStackTrace()

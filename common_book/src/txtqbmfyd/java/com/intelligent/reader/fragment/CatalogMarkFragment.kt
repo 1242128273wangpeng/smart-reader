@@ -142,7 +142,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
             RepairHelp.fixBook(activity, presenter?.getBook(), {
                 if (activity != null && !activity.isFinishing) {
                     try {
-                        RouterUtil.navigation(RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
+                        RouterUtil.navigation(activity, RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
                         activity.finish()
                     } catch (e: Exception) {
                         e.printStackTrace()

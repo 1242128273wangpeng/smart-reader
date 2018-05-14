@@ -12,7 +12,6 @@ import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.data.bean.Book
-import net.lzbook.kit.utils.loge
 
 class DownloadManagerTaskHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -115,7 +114,7 @@ class DownloadManagerTaskHolder(itemView: View) : RecyclerView.ViewHolder(itemVi
                 } else {
                     BookHelperContract.startDownBookTask(context, book, 0)
                 }
-                DownloadManagerLogger.uploadItemClickLog(status, book.book_id, task.progress)
+                DownloadManagerLogger.uploadCacheManagerButtonClick(status, book.book_id, task.progress)
             }
         }
     }

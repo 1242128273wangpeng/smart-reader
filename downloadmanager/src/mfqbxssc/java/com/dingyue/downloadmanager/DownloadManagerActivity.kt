@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.View
 import android.widget.Toast
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.dingyue.contract.CommonContract
 import com.dingyue.downloadmanager.contract.BookHelperContract
 import com.dingyue.downloadmanager.contract.CacheManagerContract
 import com.dingyue.downloadmanager.recl.DownloadItemDecoration
@@ -131,14 +132,14 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
 
     private fun initView() {
         img_head_back.setOnClickListener {
-            DownloadManagerLogger.uploadBackLog()
+            DownloadManagerLogger.uploadCacheManagerBack()
             finish()
         }
         txt_head_cancel.setOnClickListener {
             dismissMenu()
         }
         txt_head_select_all.setOnClickListener {
-            if (BookHelperContract.isDoubleClick(System.currentTimeMillis())) {
+            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
                 return@setOnClickListener
             }
             if (txt_head_select_all.text == getString(R.string.select_all)) {
@@ -154,14 +155,17 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         }
 
         img_head_more.setOnClickListener {
+            DownloadManagerLogger.uploadCacheManagerMore()
             topMenuPopup.show(img_head_more)
         }
 
         txt_empty_find.setOnClickListener {
 
+            DownloadManagerLogger.uploadCacheManagerBookCity()
+
             val bundle = Bundle()
             bundle.putInt("position", 1)
-            RouterUtil.navigation(RouterConfig.HOME_ACTIVITY, bundle)
+            RouterUtil.navigation(this, RouterConfig.HOME_ACTIVITY, bundle)
 
             finish()
         }
@@ -236,7 +240,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         } else {
             //如果是从通知栏过来, 且已经退出到home了, 要回到应用中
             if (isTaskRoot) {
-                RouterUtil.navigation(RouterConfig.SPLASH_ACTIVITY)
+                RouterUtil.navigation(this, RouterConfig.SPLASH_ACTIVITY)
             }
             super.onBackPressed()
         }
@@ -293,7 +297,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         txt_head_select_all.visibility = View.VISIBLE
         txt_head_cancel.visibility = View.VISIBLE
 
-        DownloadManagerLogger.uploadEditLog()
+        DownloadManagerLogger.uploadCacheManagerEdit()
     }
 
     override fun dismissMenu() {
@@ -308,29 +312,30 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         txt_head_select_all.text = getString(R.string.select_all)
         txt_head_select_all.visibility = View.GONE
         txt_head_cancel.visibility = View.GONE
-        DownloadManagerLogger.uploadCancelLog()
+
+        DownloadManagerLogger.uploadCacheMangerEditCancel()
     }
 
-    override fun checkAll(isAll: Boolean) {
-        downloadManagerAdapter.insertSelectAllState(isAll)
+    override fun checkAll(all: Boolean) {
+        downloadManagerAdapter.insertSelectAllState(all)
         removeMenuPopup.setSelectedNum(downloadManagerAdapter.checkedBooks.size)
-        DownloadManagerLogger.uploadRemoveSelectAllLog(isAll)
+        DownloadManagerLogger.uploadCacheManagerEditSelectAll(all)
     }
 
     override fun sortBooks(type: Int) {
-        BookHelperContract.insertShelfSortType(type)
+        CommonContract.insertShelfSortType(type)
         downloadManagerViewModel.refreshBooks()
-        DownloadManagerLogger.uploadSortingLog(type)
+        DownloadManagerLogger.uploadCacheManagerSort(type)
     }
 
     override fun deleteCache(books: ArrayList<Book>) {
-        DownloadManagerLogger.uploadDeleteLog()
+        DownloadManagerLogger.uploadCacheManagerEditDeleteLog()
         if (books.isNotEmpty()) {
             managerDeleteDialog.show()
 
             downloadManagerViewModel.deleteCache(books)
 
-            DownloadManagerLogger.uploadDialogConfirmLog(books)
+            DownloadManagerLogger.uploadCacheManagerEditDelete(books)
         } else {
             Toast.makeText(this, R.string.download_manager_delete_empty, Toast.LENGTH_LONG).show()
         }
@@ -343,7 +348,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
 
         if (!downloadManagerAdapter.remove) {
             if (book != null) {
-                DownloadManagerLogger.uploadBookClickLog(book)
+                DownloadManagerLogger.uploadCacheManagerBookClick(book)
                 BookRouter.navigateCoverOrRead(this, book, BookRouter.NAVIGATE_TYPE_DOWNLOAD)
             }
         } else {

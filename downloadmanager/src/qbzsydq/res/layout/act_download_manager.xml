@@ -107,7 +107,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/rl_head"
         android:scaleType="fitXY"
-        android:src="@mipmap/top_shadow"
+        android:src="@drawable/download_manager_head_shadow"
         android:contentDescription="@string/module_name"
         android:visibility="gone"/>
 </RelativeLayout>

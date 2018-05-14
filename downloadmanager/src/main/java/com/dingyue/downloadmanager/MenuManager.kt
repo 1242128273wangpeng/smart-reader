@@ -14,7 +14,7 @@ interface MenuManager {
 
     fun dismissMenu()
 
-    fun checkAll(isAll: Boolean)
+    fun checkAll(all: Boolean)
 
     fun sortBooks(type: Int)
 

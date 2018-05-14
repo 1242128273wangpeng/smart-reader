@@ -129,7 +129,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
 
     private fun initView() {
         img_head_back.setOnClickListener {
-            DownloadManagerLogger.uploadBackLog()
+            DownloadManagerLogger.uploadCacheManagerBack()
             finish()
         }
         txt_head_select_all.setOnClickListener {
@@ -150,9 +150,12 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
 
         img_head_more.setOnClickListener {
             topMenuPopup.show(img_head_more)
+            DownloadManagerLogger.uploadCacheManagerMore()
         }
 
         txt_empty_find.setOnClickListener {
+
+            DownloadManagerLogger.uploadCacheManagerBookCity()
 
             val bundle = Bundle()
             bundle.putInt("position", 1)
@@ -283,7 +286,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
 
         if (!downloadManagerAdapter.remove) {
             if (book != null) {
-                DownloadManagerLogger.uploadBookClickLog(book)
+                DownloadManagerLogger.uploadCacheManagerBookClick(book)
                 BookRouter.navigateCoverOrRead(this, book, BookRouter.NAVIGATE_TYPE_DOWNLOAD)
             }
         } else {
@@ -312,7 +315,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         txt_head_select_all.text = getString(R.string.select_all)
         txt_head_select_all.visibility = View.VISIBLE
 
-        DownloadManagerLogger.uploadEditLog()
+        DownloadManagerLogger.uploadCacheManagerEdit()
     }
 
     override fun dismissMenu() {
@@ -326,27 +329,28 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         txt_head_title.text = getString(R.string.download_manager)
         txt_head_select_all.text = getString(R.string.select_all)
         txt_head_select_all.visibility = View.GONE
-        DownloadManagerLogger.uploadCancelLog()
+
+        DownloadManagerLogger.uploadCacheMangerEditCancel()
     }
 
     override fun checkAll(isAll: Boolean) {
         downloadManagerAdapter.insertSelectAllState(isAll)
         removeMenuPopup.setSelectedNum(downloadManagerAdapter.checkedBooks.size)
-        DownloadManagerLogger.uploadRemoveSelectAllLog(isAll)
+        DownloadManagerLogger.uploadCacheManagerEditSelectAll(isAll)
     }
 
     override fun sortBooks(type: Int) {
         CommonContract.insertShelfSortType(type)
         downloadManagerViewModel.refreshBooks()
-        DownloadManagerLogger.uploadSortingLog(type)
+        DownloadManagerLogger.uploadCacheManagerSort(type)
     }
 
     override fun deleteCache(books: ArrayList<Book>) {
-        DownloadManagerLogger.uploadDeleteLog()
+        DownloadManagerLogger.uploadCacheManagerEditDeleteLog()
         if (books.isNotEmpty()) {
             managerDeleteDialog.show()
             downloadManagerViewModel.deleteCache(books)
-            DownloadManagerLogger.uploadDialogConfirmLog(books)
+            DownloadManagerLogger.uploadCacheManagerEditDelete(books)
         }
     }
 }

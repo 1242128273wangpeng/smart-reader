@@ -93,6 +93,39 @@ public class StartLogClickUtil {
     public static final String ACTION_PERSONAL_WIFI_AUTO_CACHE = "WIFI_AUTOCACHE";//点击WIFI自动缓存
 
 
+    /***
+     * 下载管理页相关点位
+     * **/
+    //下载管理页
+    public static final String PAGE_CACHE_MANAGER = "CACHEMANAGE";
+    //下载管理页功能
+    public static final String ACTION_CACHE_MANAGER_BACK = "BACK";//返回
+    public static final String ACTION_CACHE_MANAGER_MORE = "MORE";//更多按钮点击
+    public static final String ACTION_CACHE_MANAGER_SORT = "SORT";//排序
+    public static final String ACTION_CACHE_MANAGER_BOOK_CLICK = "BOOKCLICK";//书籍点击
+    public static final String ACTION_CACHE_MANAGER_CACHE_BUTTON = "CACHEBUTTON";//缓存按钮点击
+    public static final String ACTION_CACHE_MANAGER_CACHE_EDIT = "CACHEEDIT";//长按编辑列表
+    public static final String ACTION_CACHE_MANAGER_TO_BOOK_CITY = "TOBOOKCITY";//跳转到书城
+
+    //下载管理编辑页面
+    public static final String PAGE_CACHE_MANAGER_EDIT = "CHCHEEDIT";
+    //下载管理编辑页面功能
+    public static final String ACTION_CACHE_MANAGER_EDIT_BACK = "BACK";//返回
+    public static final String ACTION_CACHE_MANAGER_EDIT_CANCEL = "CANCLE";//取消
+    public static final String ACTION_CACHE_MANAGER_EDIT_DELETE = "DELETE";//删除
+    public static final String ACTION_CACHE_MANAGER_EDIT_SELECT_ALL = "SELECTALL";//全选
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

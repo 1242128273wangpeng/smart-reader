@@ -154,7 +154,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         RepairHelp.showFixMsg(readReference?.get(), ReadState?.book, {
             if (readReference != null && readReference?.get() != null && !readReference?.get()!!.isFinishing) {
                 try {
-                    RouterUtil.navigation(RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
+                    RouterUtil.navigation(act, RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
                     readReference?.get()?.finish()
                 } catch (e: Exception) {
                     e.printStackTrace()

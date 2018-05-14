@@ -14,15 +14,20 @@ object RouterUtil {
     /**
      * 构建标准的路由请求
      */
-    fun navigation(path: String) {
-        ARouter.getInstance().build(path).navigation()
+    fun navigation(activity: Activity, path: String) {
+        ARouter.getInstance()
+                .build(path)
+                .navigation(activity)
     }
 
     /**
      * 构建标准的路由请求
      */
-    fun navigation(path: String, bundle: Bundle) {
-        ARouter.getInstance().build(path).with(bundle).navigation()
+    fun navigation(activity: Activity, path: String, bundle: Bundle) {
+        ARouter.getInstance()
+                .build(path)
+                .with(bundle)
+                .navigation(activity)
     }
 
     fun navigation(activity: Activity, path: String, flags: Int) {

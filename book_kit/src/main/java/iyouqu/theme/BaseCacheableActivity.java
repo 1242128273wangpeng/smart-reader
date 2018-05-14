@@ -84,7 +84,7 @@ public class BaseCacheableActivity extends FrameActivity {
                         public void run() {
                             finish();
 
-                            RouterUtil.INSTANCE.navigation(RouterConfig.SPLASH_ACTIVITY, Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            RouterUtil.INSTANCE.navigation(BaseCacheableActivity.this, RouterConfig.SPLASH_ACTIVITY, Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         }
                     }
                     , 500);

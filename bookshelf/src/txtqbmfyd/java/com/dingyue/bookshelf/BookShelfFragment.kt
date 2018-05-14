@@ -54,7 +54,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     private val homeMenuPopup: HomeMenuPopup by lazy {
         val popup = HomeMenuPopup(this.activity.applicationContext)
         popup.setOnDownloadClickListener {
-            RouterUtil.navigation(RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
+            RouterUtil.navigation(activity, RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
             BookShelfLogger.uploadBookShelfCacheManager()
         }
         popup.setOnSortingClickListener {
@@ -184,7 +184,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
 
         img_head_search.setOnClickListener {
-            RouterUtil.navigation(RouterConfig.SEARCH_BOOK_ACTIVITY)
+            RouterUtil.navigation(activity, RouterConfig.SEARCH_BOOK_ACTIVITY)
             BookShelfLogger.uploadBookShelfSearch()
         }
 
