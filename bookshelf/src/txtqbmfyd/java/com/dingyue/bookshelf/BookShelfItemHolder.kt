@@ -66,11 +66,11 @@ class BookShelfItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             this.img_book_select_state.visibility = View.GONE
         }
 
-        book_shelf_item.setOnClickListener {
+        rl_book_content.setOnClickListener {
             bookshelfItemListener.clickedBookShelfItem(book, adapterPosition)
         }
 
-        book_shelf_item.setOnLongClickListener {
+        rl_book_content.setOnLongClickListener {
             bookshelfItemListener.longClickedBookShelfItem()
         }
     }

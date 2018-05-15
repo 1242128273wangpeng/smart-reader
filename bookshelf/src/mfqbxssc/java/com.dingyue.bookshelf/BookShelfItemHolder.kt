@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import kotlinx.android.synthetic.mfqbxssc.layout_bookshelf_item_grid.view.*
+import kotlinx.android.synthetic.mfqbxssc.item_bookshelf_book.view.*
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.data.bean.Book
 
@@ -40,11 +40,11 @@ class BookShelfItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                     .placeholder(R.drawable.icon_book_cover_default)
                     .error(R.drawable.icon_book_cover_default)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(book_shelf_image)
+                    .into(img_book_cover)
         } else {
             Glide.with(itemView.context)
                     .load(R.drawable.icon_book_cover_default)
-                    .into(book_shelf_image)
+                    .into(img_book_cover)
         }
 
         if (remove) {
@@ -58,11 +58,11 @@ class BookShelfItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             check_delete.visibility = View.GONE
         }
 
-        book_shelf_item.setOnClickListener {
+        rl_book_content.setOnClickListener {
             bookshelfItemListener.clickedBookShelfItem(book, adapterPosition)
         }
 
-        book_shelf_item.setOnLongClickListener {
+        rl_book_content.setOnLongClickListener {
             bookshelfItemListener.longClickedBookShelfItem()
         }
 

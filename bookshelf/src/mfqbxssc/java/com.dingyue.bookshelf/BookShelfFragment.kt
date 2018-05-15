@@ -104,7 +104,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     private val removeMenuPopup: RemoveMenuPopup by lazy {
         val popup = RemoveMenuPopup(activity)
         popup.onDeleteClickListener = {
-            bookDeleteDialog.show(bookShelfAdapter.selectedBooks)
+            bookShelfDeleteDialog.show(bookShelfAdapter.selectedBooks)
         }
         popup.onDetailClickListener = {
             bookDetailPopup.show(rl_content, bookShelfAdapter.selectedBooks)
@@ -112,8 +112,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         popup
     }
 
-    private val bookDeleteDialog: BookDeleteDialog by lazy {
-        val dialog = BookDeleteDialog(activity)
+    private val bookShelfDeleteDialog: BookShelfDeleteDialog by lazy {
+        val dialog = BookShelfDeleteDialog(activity)
         dialog.onConfirmListener = { books, isDeleteCacheOnly ->
             deleteBooks(books, isDeleteCacheOnly)
         }
@@ -431,7 +431,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     override fun onBookDelete() {
         if (activity != null && !activity.isFinishing) {
             updateUI()
-            bookDeleteDialog.dismiss()
+            bookShelfDeleteDialog.dismiss()
             dismissRemoveMenu()
         }
     }
