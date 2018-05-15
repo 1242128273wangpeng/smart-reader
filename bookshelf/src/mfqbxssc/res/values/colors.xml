@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="bookshelf_remove_menu_delete_enable">#000000</color>
+    <color name="bookshelf_remove_menu_delete_disable">#b3b3b3</color>
+
+</resources>

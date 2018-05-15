@@ -43,6 +43,8 @@ object BookShelfLogger {
     fun uploadBookShelfPersonal() {
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
                 StartLogClickUtil.PAGE_SHELF, StartLogClickUtil.ACTION_SHELF_PERSONAL)
+        StatServiceUtils.statAppBtnClick(BaseBookApplication.getGlobalContext(),
+                StatServiceUtils.bs_click_mine_menu)
     }
 
     /***

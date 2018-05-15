@@ -11,8 +11,6 @@ interface BookShelfView {
 
     fun doUpdateBook(updateService: CheckNovelUpdateService)
 
-    fun notification(gid: String)
-
     fun onBookListQuery(bookList: ArrayList<Book>)
 
     fun onBookDelete()

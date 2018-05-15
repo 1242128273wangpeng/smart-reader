@@ -159,7 +159,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
 
             val bundle = Bundle()
             bundle.putInt("position", 1)
-            RouterUtil.navigation(RouterConfig.HOME_ACTIVITY, bundle)
+            RouterUtil.navigation(this, RouterConfig.HOME_ACTIVITY, bundle)
 
             finish()
         }
@@ -234,7 +234,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         } else {
             //如果是从通知栏过来, 且已经退出到home了, 要回到应用中
             if (isTaskRoot) {
-                RouterUtil.navigation(RouterConfig.SPLASH_ACTIVITY)
+                RouterUtil.navigation(this, RouterConfig.SPLASH_ACTIVITY)
             }
             super.onBackPressed()
         }

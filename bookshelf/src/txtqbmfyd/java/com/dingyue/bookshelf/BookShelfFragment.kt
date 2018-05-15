@@ -16,15 +16,14 @@ import com.dingyue.bookshelf.BookShelfAdapter.BookShelfItemListener
 import com.dingyue.contract.CommonContract
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.txtqbmfyd.fragment_bookshelf.*
 import kotlinx.android.synthetic.txtqbmfyd.bookshelf_refresh_head.view.*
+import kotlinx.android.synthetic.txtqbmfyd.fragment_bookshelf.*
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.BookUpdate
 import net.lzbook.kit.data.bean.BookUpdateResult
-import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.router.BookRouter
 import net.lzbook.kit.router.RouterConfig
@@ -35,10 +34,6 @@ import java.util.concurrent.TimeUnit
 class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager {
 
     private val bookshelfPresenter: BookShelfPresenter by lazy { BookShelfPresenter(this) }
-
-    private val bookSensitiveWords: ArrayList<String> = ArrayList()
-
-    private var bookDaoHelper: BookDaoHelper = BookDaoHelper.getInstance()
 
     private var bookRackUpdateTime: Long = 0
     private var latestLoadDataTime: Long = 0
@@ -124,7 +119,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                 return false
             }
 
-        }, bookshelfPresenter.iBookList, bookshelfPresenter.aDViews)
+        }, bookshelfPresenter.iBookList, bookshelfPresenter.aDViews, true)
     }
 
     private val bookDeleteDialog: BookDeleteDialog by lazy {
@@ -217,8 +212,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity.applicationContext)
 
-        bookshelfPresenter.clickNotification(context, activity.intent)
-
         initUpdateService()
 
         //根据书架数量确定是否刷新
@@ -259,7 +252,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         doAsync {
             bookshelfPresenter.queryBookListAndAd(activity, isShowAd)
             uiThread {
-                bookShelfAdapter.setUpdateTableList(bookshelfPresenter.filterUpdateTableList())
                 bookShelfAdapter.notifyDataSetChanged()
             }
         }
@@ -326,13 +318,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         if (activity != null) {
             updateService.setBookUpdateListener(activity as CheckNovelUpdateService.OnBookUpdateListener)
             bookshelfPresenter.addUpdateTask(this)
-        }
-    }
-
-    override fun notification(gid: String) {
-        if (!TextUtils.isEmpty(gid)) {
-            val book = bookDaoHelper.getBook(gid, 0) as Book
-            handleBook(book)
         }
     }
 
@@ -420,12 +405,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             bookshelfPresenter.resetUpdateStatus(book.book_id)
         }
 
-        if (Constants.isShielding && bookSensitiveWords.contains(book.book_id.toString())) {
-            ToastUtils.showToastNoRepeat("抱歉，该小说已下架！")
-        } else {
-            BookRouter.navigateCoverOrRead(activity, book, 0)
-            AppLog.e(TAG, "goToCoverOrRead")
-        }
+        BookRouter.navigateCoverOrRead(activity, book, 0)
+        AppLog.e(TAG, "goToCoverOrRead")
     }
 
     private fun showToastDelay(textId: Int) {
@@ -515,10 +496,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
     override fun isRemoveMenuShow(): Boolean = bookShelfAdapter.isRemove
 
-    override fun selectAll(all: Boolean) {
-        bookShelfAdapter.insertSelectAllState(all)
+    override fun selectAll(isAll: Boolean) {
+        bookShelfAdapter.insertSelectAllState(isAll)
         bookShelfRemovePopup.setSelectedNum(bookShelfAdapter.selectedBooks.size)
-        BookShelfLogger.uploadBookShelfEditSelectAll(all)
+        BookShelfLogger.uploadBookShelfEditSelectAll(isAll)
     }
 
     override fun sortBooks(type: Int) {
@@ -529,9 +510,5 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
     override fun deleteBooks(books: ArrayList<Book>, isDeleteCacheOnly: Boolean) {
         bookshelfPresenter.deleteBooks(books, isDeleteCacheOnly)
-    }
-
-    override fun showBooksDetail(books: ArrayList<Book>) {
-
     }
 }

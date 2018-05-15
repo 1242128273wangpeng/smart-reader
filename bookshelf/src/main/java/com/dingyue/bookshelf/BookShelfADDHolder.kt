@@ -2,7 +2,7 @@ package com.dingyue.bookshelf
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import kotlinx.android.synthetic.txtqbmfyd.item_bookshelf_add.view.*
+import android.widget.RelativeLayout
 import net.lzbook.kit.data.bean.Book
 
 /**
@@ -14,15 +14,17 @@ import net.lzbook.kit.data.bean.Book
 
 class BookShelfADDHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+    private val rl_add: RelativeLayout = itemView.findViewById(R.id.rl_add) as RelativeLayout
+
     fun bind(book: Book?, remove: Boolean, bookshelfItemListener: BookShelfAdapter.BookShelfItemListener) = with(itemView) {
 
         if (remove) {
-            this.rl_add.visibility = View.INVISIBLE
+            rl_add.visibility = View.INVISIBLE
         } else {
-            this.rl_add.visibility = View.VISIBLE
+            rl_add.visibility = View.VISIBLE
         }
 
-        this.rl_add.setOnClickListener {
+        rl_add.setOnClickListener {
             bookshelfItemListener.clickedBookShelfItem(book, adapterPosition)
         }
     }

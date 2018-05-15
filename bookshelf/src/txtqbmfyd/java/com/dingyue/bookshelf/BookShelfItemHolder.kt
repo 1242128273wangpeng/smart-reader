@@ -19,7 +19,8 @@ import net.lzbook.kit.data.bean.Book
  */
 class BookShelfItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    fun bind(book: Book, bookshelfItemListener: BookShelfAdapter.BookShelfItemListener, contains: Boolean, remove: Boolean, update: Boolean) = with(itemView) {
+    fun bind(book: Book, bookshelfItemListener: BookShelfAdapter.BookShelfItemListener,
+             contains: Boolean, remove: Boolean) = with(itemView) {
 
         if (!TextUtils.isEmpty(book.name)) {
             this.txt_book_name.text = book.name
@@ -29,18 +30,16 @@ class BookShelfItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             book.sequence = book.chapter_count - 1
         }
 
-        // 是否连载
-        if (book.status == 2) {
-            this.img_book_state_finish.visibility = View.VISIBLE
-        } else {
-            this.img_book_state_finish.visibility = View.GONE
-        }
-        // 是否有更新
-        if (!update) {
-            this.img_book_state_update.visibility = View.GONE
-        } else {
-            this.img_book_state_update.visibility = View.VISIBLE
-            this.img_book_state_finish.visibility = View.GONE
+        when {
+            book.update_status == 1 -> { //更新
+                img_book_status.visibility = View.VISIBLE
+                img_book_status.setImageResource(R.drawable.bookshelf_book_state_update_icon)
+            }
+            book.status == 2 -> { //完结
+                img_book_status.visibility = View.VISIBLE
+                img_book_status.setImageResource(R.drawable.bookshelf_book_state_finish_icon)
+            }
+            else -> img_book_status.visibility = View.GONE
         }
 
         if (!TextUtils.isEmpty(book.img_url) && book.img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL) {

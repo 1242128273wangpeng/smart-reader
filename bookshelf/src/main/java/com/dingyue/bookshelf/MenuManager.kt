@@ -16,12 +16,10 @@ interface MenuManager {
 
     fun isRemoveMenuShow(): Boolean
 
-    fun selectAll(all: Boolean)
+    fun selectAll(isAll: Boolean)
 
     fun sortBooks(type: Int)
 
     fun deleteBooks(books: ArrayList<Book>, isDeleteCacheOnly: Boolean)
-
-    fun showBooksDetail(books: ArrayList<Book>)
 
 }
