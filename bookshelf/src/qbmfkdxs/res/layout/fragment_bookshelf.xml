@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    tools:ignore="RtlHardcoded">
+
+    <RelativeLayout
+        android:id="@+id/rl_head"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:fitsSystemWindows="true">
+
+        <RelativeLayout
+            android:id="@+id/rl_head_normal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/img_head_setting"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="18dp"
+                android:background="@drawable/home_head_person_selector"
+                android:scaleType="fitXY"/>
+
+            <net.lzbook.kit.book.view.FirstUsePointView
+                android:id="@+id/redpoint_home_setting"
+                android:layout_width="7dp"
+                android:layout_height="7dp"
+                android:layout_alignRight="@+id/img_head_setting"
+                android:layout_alignTop="@+id/img_head_setting"
+                android:background="#ce3d3e"
+                android:visibility="gone"/>
+
+            <RelativeLayout
+                android:id="@+id/rl_head_search"
+                android:layout_width="match_parent"
+                android:layout_height="29dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="18dp"
+                android:layout_marginRight="18dp"
+                android:layout_toLeftOf="@+id/img_head_menu"
+                android:layout_toRightOf="@+id/img_head_setting"
+                android:background="@drawable/bookshelf_title_shaper"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:paddingLeft="10dp"
+                tools:ignore="RtlSymmetry">
+
+                <ImageView
+                    android:id="@+id/iv"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/bookshelf_icon_search_copy"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="6dp"
+                    android:layout_toRightOf="@+id/iv"
+                    android:text="@string/search_novel"
+                    android:textColor="#b5b5b5"
+                    android:textSize="13sp"/>
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/img_head_menu"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="18dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/home_head_right_selector"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_head_remove"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_alignParentTop="true"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/txt_head_select_all"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:paddingLeft="@dimen/dimen_padding_12"
+                android:paddingRight="@dimen/dimen_padding_12"
+                android:text="@string/select_all"
+                android:textColor="#000000"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:text="@string/edit_bookshelf"
+                android:textColor="#000000"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:id="@+id/txt_remove_head_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/dimen_padding_12"
+                android:paddingRight="@dimen/dimen_padding_12"
+                android:text="@string/done"
+                android:textColor="#000000"
+                android:textSize="16sp"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
+        android:layout_below="@+id/rl_head"
+        android:id="@+id/bookshelf_refresh_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alwaysDrawnWithCache="false"
+            android:clipToPadding="false"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"/>
+
+    </net.lzbook.kit.pulllist.SuperSwipeRefreshLayout>
+
+    <ImageView
+        android:id="@+id/bookshelf_float_ad"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/dimen_margin_30"
+        android:layout_marginRight="@dimen/dimen_margin_10"
+        android:visibility="gone"/>
+
+    <RelativeLayout
+        android:id="@+id/bookshelf_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/bookshelf_empty_btn"
+            android:layout_centerHorizontal="true"
+            android:text="@string/no_book"
+            android:textColor="#9b9b9b"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/bookshelf_empty_btn"
+            android:layout_width="120dp"
+            android:layout_height="38dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="17dp"
+            android:background="@drawable/bookshelf_empty_find_bg"
+            android:gravity="center"
+            android:text="@string/no_book_action"
+            android:textColor="@drawable/cover_bottom_btn_text_selector"
+            android:textSize="16sp"/>
+    </RelativeLayout>
+
+
+</RelativeLayout>

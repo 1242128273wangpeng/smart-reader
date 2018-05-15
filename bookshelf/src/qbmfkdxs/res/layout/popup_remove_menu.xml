@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    tools:ignore="RtlHardcoded">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#e6e6e6"/>
+
+    <Button
+        android:id="@+id/btn_delete"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_centerInParent="true"
+        android:background="@null"
+        android:gravity="center"
+        android:text="@string/delete"
+        android:textColor="@drawable/bookshelf_delete_cancel_text_color"
+        android:textSize="16sp"/>
+
+    <net.lzbook.kit.book.view.NightShadowView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/btn_delete"
+        android:layout_alignLeft="@+id/btn_delete"
+        android:layout_alignRight="@+id/btn_delete"
+        android:layout_alignTop="@+id/btn_delete"
+        android:visibility="gone"/>
+</RelativeLayout>
