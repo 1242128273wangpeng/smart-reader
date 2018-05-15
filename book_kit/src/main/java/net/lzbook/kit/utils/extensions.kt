@@ -145,6 +145,13 @@ fun Context.toastShort(@StringRes id: Int, debug: Boolean = true) {
 
 }
 
+fun Context.toastShortStr(msg: String?) {
+    runOnMain {
+        android.widget.Toast.makeText(this, "$msg", android.widget.Toast.LENGTH_SHORT).show()
+    }
+
+}
+
 fun Context.toastLong(msg: String?, debug: Boolean = true) {
     if (debug && !msDebuggAble) {
         return
