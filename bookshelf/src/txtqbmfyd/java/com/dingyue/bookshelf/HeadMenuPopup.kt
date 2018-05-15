@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.PopupWindow
-import kotlinx.android.synthetic.txtqbmfyd.popup_home_menu.view.*
+import kotlinx.android.synthetic.txtqbmfyd.popup_head_menu.view.*
 
 /**
  * Desc 请描述这个文件
@@ -14,9 +14,9 @@ import kotlinx.android.synthetic.txtqbmfyd.popup_home_menu.view.*
  * Mail tao_qian@dingyuegroup.cn
  * Date 2018/3/6 0006 10:36
  */
-class HomeMenuPopup(context: Context) {
+class HeadMenuPopup(context: Context) {
 
-    private val contentView = LayoutInflater.from(context).inflate(R.layout.popup_home_menu, null)
+    private val contentView = LayoutInflater.from(context).inflate(R.layout.popup_head_menu, null)
     private val popupWindow = PopupWindow(contentView)
 
     private var downloadListener: (() -> Unit)? = null
@@ -26,13 +26,14 @@ class HomeMenuPopup(context: Context) {
         popupWindow.width = LinearLayout.LayoutParams.WRAP_CONTENT
         popupWindow.height = LinearLayout.LayoutParams.WRAP_CONTENT
         popupWindow.isFocusable = true
-        popupWindow.setBackgroundDrawable(ColorDrawable(0x00000000))   //为PopupWindow设置透明背景.
+        popupWindow.setBackgroundDrawable(ColorDrawable(0x00000000))
         popupWindow.isOutsideTouchable = false
 
         contentView.ll_download_manager.setOnClickListener {
             popupWindow.dismiss()
             downloadListener?.invoke()
         }
+
         contentView.ll_book_sorting.setOnClickListener {
             popupWindow.dismiss()
             sortingListener?.invoke()

@@ -2,7 +2,7 @@ package com.dingyue.bookshelf
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import kotlinx.android.synthetic.txtqbmfyd.layout_bookshelf_item_list_ad.view.*
+import kotlinx.android.synthetic.txtqbmfyd.item_bookshelf_ad.view.*
 
 /**
  * Desc 请描述这个文件
@@ -15,8 +15,8 @@ class BookShelfADHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(view: View) = with(itemView) {
 
-        this.book_shelf_item_ad.removeAllViews()
+        this.rl_content.removeAllViews()
 
-        this.book_shelf_item_ad.addView(view)
+        this.rl_content.addView(view)
     }
 }

@@ -8,5 +8,6 @@
 
     <color name="colorPrimary">#FF19DD8B</color>
 
-    <color name="book_cover_pressed">#1A000000</color>
+    <color name="bookshelf_item_pressed">#FFFAFAFA</color>
+    <color name="bookshelf_item_book_pressed">#1A000000</color>
 </resources>

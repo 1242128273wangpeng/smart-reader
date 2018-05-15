@@ -22,13 +22,13 @@ class BookShelfAdapter(private val context: Context,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder? {
         return when (viewType) {
             TYPE_AD -> {
-                BookShelfADHolder(LayoutInflater.from(context).inflate(R.layout.layout_bookshelf_item_list_ad, parent, false))
+                BookShelfADHolder(LayoutInflater.from(context).inflate(R.layout.item_bookshelf_ad, parent, false))
             }
             TYPE_ADD -> {
                 BookShelfADDHolder(LayoutInflater.from(context).inflate(R.layout.item_bookshelf_add, parent, false))
             }
             else -> {
-                BookShelfItemHolder(LayoutInflater.from(context).inflate(R.layout.layout_bookshelf_item_grid, parent, false))
+                BookShelfItemHolder(LayoutInflater.from(context).inflate(R.layout.item_bookshelf_book, parent, false))
             }
         }
     }

@@ -3,16 +3,16 @@ package com.dingyue.bookshelf
 import android.app.Activity
 import android.view.Gravity
 import android.view.View
-import kotlinx.android.synthetic.txtqbmfyd.dialog_delete_book.*
+import kotlinx.android.synthetic.txtqbmfyd.dialog_bookshelf_delete.*
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.data.bean.Book
 
 /**
  * Created by qiantao on 2017/11/17 0017
  */
-class BookDeleteDialog(private val activity: Activity) {
+class BookShelfDeleteDialog(private val activity: Activity) {
 
-    private val dialog = MyDialog(activity, R.layout.dialog_delete_book, Gravity.BOTTOM)
+    private val dialog = MyDialog(activity, R.layout.dialog_bookshelf_delete, Gravity.BOTTOM)
 
     private var confirmListener: ((books: ArrayList<Book>?, isOnlyDeleteCache: Boolean) -> Unit)? = null
     private var abrogateListener: (() -> Unit)? = null
@@ -26,10 +26,11 @@ class BookDeleteDialog(private val activity: Activity) {
         dialog.setCanceledOnTouchOutside(true)
         dialog.setCancelable(true)
 
-        dialog.btn_confirm.setOnClickListener {
+        dialog.btn_dialog_confirm.setOnClickListener {
             confirmListener?.invoke(books, dialog.ckb_delete_cache.isChecked)
         }
-        dialog.btn_cancel.setOnClickListener {
+
+        dialog.btn_dialog_cancel.setOnClickListener {
             dialog.dismiss()
             abrogateListener?.invoke()
         }
@@ -44,13 +45,13 @@ class BookDeleteDialog(private val activity: Activity) {
     }
 
     fun show(books: ArrayList<Book>) {
+        this.books = books
         dialog.txt_dialog_title.text = activity.getString(R.string.prompt)
         dialog.txt_dialog_information.visibility = View.VISIBLE
         dialog.ckb_delete_cache.visibility = View.VISIBLE
         dialog.view_divider.visibility = View.VISIBLE
-        dialog.ll_btn.visibility = View.VISIBLE
-        dialog.pgbar_loading.visibility = View.GONE
-        this.books = books
+        dialog.ll_delete_option.visibility = View.VISIBLE
+        dialog.pgbar_dialog_loading.visibility = View.GONE
         dialog.ckb_delete_cache.isChecked = false
         dialog.show()
     }
@@ -60,12 +61,11 @@ class BookDeleteDialog(private val activity: Activity) {
         dialog.txt_dialog_information.visibility = View.INVISIBLE
         dialog.ckb_delete_cache.visibility = View.INVISIBLE
         dialog.view_divider.visibility = View.INVISIBLE
-        dialog.ll_btn.visibility = View.INVISIBLE
-        dialog.pgbar_loading.visibility = View.VISIBLE
+        dialog.ll_delete_option.visibility = View.INVISIBLE
+        dialog.pgbar_dialog_loading.visibility = View.VISIBLE
     }
 
     fun dismiss() {
         dialog.dismiss()
     }
-
 }

@@ -3,29 +3,31 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
-    android:id="@+id/ll_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:ignore="RtlHardcoded">
 
     <RelativeLayout
-        android:id="@+id/rl_head_bookshelf"
+        android:id="@+id/rl_head_normal"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:visibility="visible">
 
         <ImageView
-            android:id="@+id/img_head_setting"
+            android:id="@+id/img_head_personal"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
+            android:contentDescription="@string/module_name"
             android:paddingBottom="11dp"
             android:paddingLeft="16dp"
             android:paddingRight="10dp"
             android:paddingTop="11dp"
-            android:src="@drawable/nbar_personal_nor_icon"
+            android:src="@drawable/bookshelf_head_personal_icon"
             app:onPressChangeAlpha="true"/>
 
         <TextView
@@ -39,27 +41,29 @@
             tools:text="书架"/>
 
         <ImageView
-            android:id="@+id/img_head_search"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@+id/img_head_menu"
-            android:padding="11dp"
-            android:src="@drawable/nbar_search_nor_icon"
-            app:onPressChangeAlpha="true"/>
-
-        <ImageView
             android:id="@+id/img_head_menu"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:contentDescription="@string/module_name"
             android:paddingBottom="11dp"
             android:paddingLeft="10dp"
             android:paddingRight="16dp"
             android:paddingTop="11dp"
-            android:src="@drawable/nbar_more_nor_icon"
+            android:src="@drawable/bookshelf_head_head_more_icon"
+            app:onPressChangeAlpha="true"/>
+
+        <ImageView
+            android:id="@+id/img_head_search"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/img_head_menu"
+            android:contentDescription="@string/module_name"
+            android:padding="11dp"
+            android:src="@drawable/bookshelf_head_search_icon"
             app:onPressChangeAlpha="true"/>
     </RelativeLayout>
 
@@ -94,17 +98,17 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/bookshelf_main"
+        android:id="@+id/rl_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
-            android:id="@+id/bookshelf_refresh_view"
+            android:id="@+id/srl_refresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <com.dingyue.bookshelf.TopShadowRecyclerView
-                android:id="@+id/recycler_view"
+                android:id="@+id/recl_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:alwaysDrawnWithCache="false"
@@ -112,40 +116,29 @@
                 android:paddingTop="10dp"/>
         </net.lzbook.kit.pulllist.SuperSwipeRefreshLayout>
 
-        <ImageView
-            android:id="@+id/fab_goto_down_act"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="@dimen/dimen_margin_30"
-            android:layout_marginRight="@dimen/dimen_margin_10"
-            android:visibility="gone"/>
-
         <FrameLayout
-            android:id="@+id/book_shelf_ad"
+            android:id="@+id/fl_ad_float"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="@dimen/dimen_margin_30"
-            android:layout_marginRight="@dimen/dimen_margin_10"/>
+            android:layout_marginBottom="30dp"
+            android:layout_marginRight="10dp"/>
 
         <LinearLayout
-            android:id="@+id/bookshelf_empty"
+            android:id="@+id/ll_empty"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/bookshelf_no_book_icon"/>
+                android:src="@drawable/bookshelf_empty_icon"/>
 
             <TextView
-                android:id="@+id/bookshelf_empty_prompt"
                 style="@style/style_text_normal_light"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -153,77 +146,25 @@
                 android:text="@string/bookshelf_no_book_desc"/>
 
             <TextView
-                android:id="@+id/bookshelf_empty_btn"
+                android:id="@+id/txt_empty_add_book"
                 android:layout_width="120dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="60dp"
-                android:background="@drawable/bookshelf_no_book_btn_bg"
+                android:background="@drawable/bookshelf_empty_find_bg"
                 android:gravity="center"
                 android:text="@string/bookshelf_no_book_goto"
                 android:textColor="#FFFFFF"
-                android:textSize="@dimen/text_size_huge"
+                android:textSize="17sp"
                 app:onPressChangeAlpha="true"/>
         </LinearLayout>
-
-        <RelativeLayout
-            android:id="@+id/book_shelf_loading"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/color_white"
-            android:visibility="gone">
-
-            <ProgressBar
-                android:id="@+id/loading_progress"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="@dimen/dimen_view_width_250"
-                android:layout_height="@dimen/dimen_view_height_10"
-                android:layout_centerHorizontal="true"
-                android:layout_centerInParent="true"
-                android:layout_marginBottom="@dimen/dimen_margin_10"
-                android:layout_marginTop="@dimen/dimen_margin_30"
-                android:progressDrawable="@drawable/background_splash_progress"/>
-
-            <ProgressBar
-                android:id="@+id/loading_progressbar"
-                style="@style/CircleProgressBar"
-                android:layout_width="@dimen/dimen_view_width_48"
-                android:layout_height="@dimen/dimen_view_height_48"
-                android:layout_above="@id/loading_progress"
-                android:layout_centerHorizontal="true"
-                android:indeterminateDuration="1000"
-                android:progressDrawable="@drawable/background_splash_progress"/>
-
-            <TextView
-                android:id="@+id/loading_message_first"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/loading_progress"
-                android:layout_centerHorizontal="true"
-                android:text="新版数据升级中,本过程不消耗流量,"
-                android:textColor="@color/color_black_353535"
-                android:textSize="@dimen/dimen_text_15"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/loading_message_second"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/loading_message_first"
-                android:layout_centerHorizontal="true"
-                android:text="请您耐心等待...."
-                android:textColor="@color/color_black_353535"
-                android:textSize="@dimen/dimen_text_15"
-                android:textStyle="bold"/>
-        </RelativeLayout>
 
         <ImageView
             android:id="@+id/img_head_shadow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
-            android:src="@drawable/top_shadow_bg"
+            android:src="@drawable/bookshelf_common_shadow_icon"
             android:visibility="gone"/>
 
     </RelativeLayout>
-
 </LinearLayout>

@@ -462,8 +462,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     }
 
     private View createHeaderView() {
-        View headerView = LayoutInflater.from(swipeRefreshLayout.getContext())
-                .inflate(R.layout.bookshelf_refresh_head, null);
+        View headerView = LayoutInflater.from(swipeRefreshLayout.getContext()).inflate(R.layout.bookstore_refresh_head, null);
         pgbar_head_loading = (ProgressBar) headerView.findViewById(R.id.pgbar_head_loading);
         txt_head_prompt = (TextView) headerView.findViewById(R.id.txt_head_prompt);
         txt_head_prompt.setText("下拉刷新");

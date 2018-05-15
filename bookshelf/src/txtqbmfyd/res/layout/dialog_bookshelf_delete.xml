@@ -36,67 +36,70 @@
             android:layout_below="@+id/txt_dialog_information"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="12dp"
-            android:button="@drawable/dialog_checkbox_selector"
+            android:button="@drawable/bookshelf_delete_check_box_sel"
             android:checked="false"
+            android:paddingEnd="0dp"
             android:paddingLeft="8dp"
+            android:paddingRight="0dp"
+            android:paddingStart="8dp"
             android:text="@string/bookshelf_delete_dialog_check_hint"/>
 
         <ProgressBar
-            android:id="@+id/pgbar_loading"
+            android:id="@+id/pgbar_dialog_loading"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_below="@id/txt_dialog_title"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
-            android:indeterminateDrawable="@drawable/home_clear_cache_loading_bg"
+            android:indeterminateDrawable="@drawable/bookshelf_delete_loading_bg"
             android:indeterminateDuration="1000"
             android:visibility="visible"/>
+
+        <LinearLayout
+            android:id="@+id/ll_delete_option"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_dialog_cancel"
+                style="@style/style_text_normal_plain"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/bookshelf_item_sel"
+                android:gravity="center"
+                android:minWidth="24dp"
+                android:singleLine="true"
+                android:text="@string/cancel"/>
+
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:background="#FFF4F5F7"/>
+
+            <Button
+                android:id="@+id/btn_dialog_confirm"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/bookshelf_item_sel"
+                android:gravity="center"
+                android:minWidth="24dp"
+                android:singleLine="true"
+                android:text="@string/confirm"
+                android:textColor="#FF19DD8B"
+                android:textSize="14sp"/>
+        </LinearLayout>
 
         <View
             android:id="@+id/view_divider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_above="@id/ll_btn"
+            android:layout_above="@id/ll_delete_option"
             android:background="#FFEDEEF0"/>
-
-        <LinearLayout
-            android:id="@+id/ll_btn"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_view_height_50"
-            android:layout_alignParentBottom="true"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/btn_cancel"
-                style="@style/style_text_normal_plain"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/background_dialog_button"
-                android:gravity="center"
-                android:minWidth="@dimen/dimen_view_width_24"
-                android:singleLine="true"
-                android:text="@string/cancel"/>
-
-            <View
-                android:layout_width="@dimen/dimen_view_width_0.5"
-                android:layout_height="@dimen/dimen_view_height_30"
-                android:layout_gravity="center_vertical"
-                android:background="#FFF4F5F7"/>
-
-            <Button
-                android:id="@+id/btn_confirm"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/background_dialog_button"
-                android:gravity="center"
-                android:minWidth="@dimen/dimen_view_width_24"
-                android:singleLine="true"
-                android:text="@string/confirm"
-                android:textColor="@color/colorPrimary"
-                android:textSize="14sp"/>
-        </LinearLayout>
 
     </RelativeLayout>
 

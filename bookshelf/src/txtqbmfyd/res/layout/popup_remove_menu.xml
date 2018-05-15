@@ -2,7 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/rl_remove"
+    android:id="@+id/rl_remove_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,25 +11,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="fitXY"
-        android:src="@drawable/bottom_shadow_bg"/>
+        android:src="@drawable/bookshelf_common_shadow_icon"/>
 
     <LinearLayout
-        android:id="@+id/ll_btn"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_view_height_50"
-        android:layout_below="@+id/img_bottom_shadow"
+        android:layout_height="50dp"
+        android:layout_below="@id/img_bottom_shadow"
         android:background="#FFFFFF"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/btn_cancel"
+            android:id="@+id/btn_remove_cancel"
             style="@style/style_text_normal_plain"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/background_dialog_button"
+            android:background="@drawable/bookshelf_item_sel"
             android:gravity="center"
-            android:minWidth="@dimen/dimen_view_width_24"
+            android:minWidth="24dp"
             android:singleLine="true"
             android:text="@string/cancel"/>
 
@@ -40,22 +39,23 @@
             android:background="#FFE8E9EC"/>
 
         <Button
-            android:id="@+id/btn_delete"
+            android:id="@+id/btn_remove_delete"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/background_dialog_button"
+            android:background="@drawable/bookshelf_item_sel"
             android:gravity="center"
-            android:minWidth="@dimen/dimen_view_width_24"
+            android:minWidth="24dp"
             android:singleLine="true"
             android:text="@string/delete"
-            android:textColor="@color/colorPrimary"
+            android:textColor="#FF19DD8B"
             android:textSize="14sp"
             app:onPressChangeAlpha="true"/>
     </LinearLayout>
+
     <net.lzbook.kit.book.view.NightShadowView
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:layout_below="@+id/img_bottom_shadow"
+        android:layout_below="@id/img_bottom_shadow"
         android:visibility="gone"/>
 </RelativeLayout>

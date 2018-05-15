@@ -12,11 +12,9 @@
         android:layout_centerInParent="true">
 
         <ImageView
-            android:id="@+id/img_book_cover_shadow"
             android:layout_width="92dp"
             android:layout_height="140dp"
-            android:src="@drawable/bookshelf_book_cover_shadow_bg"/>
-
+            android:src="@drawable/bookshelf_item_cover_shadow_bg"/>
 
         <com.dingyue.bookshelf.BorderImageView
             android:id="@+id/img_book_cover"
@@ -25,14 +23,15 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="6dp"
             android:scaleType="fitXY"
-            tools:src="@drawable/bookshelf_book_cover_default"/>
+            tools:src="@drawable/bookshelf_item_cover_icon"/>
 
         <ImageView
             android:id="@+id/img_book_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="6dp"
-            android:src="@drawable/bookshelf_book_state_finish_icon"
+            android:contentDescription="@string/module_name"
+            android:src="@drawable/bookshelf_item_book_finish_icon"
             android:visibility="visible"/>
 
         <TextView
@@ -46,15 +45,15 @@
             android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:maxLines="2"
-            tools:text="书名书名书名书名书名书名"/>
+            tools:text="@string/default_title"/>
 
         <ImageView
-            android:id="@+id/img_check_delete"
+            android:id="@+id/img_book_select_state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_margin="10dp"
-            android:background="@drawable/bookshelf_edit_unselected_icon"
+            android:background="@drawable/bookshelf_item_check_icon"
             android:visibility="visible"
             tools:ignore="RtlHardcoded"/>
 
@@ -62,9 +61,7 @@
             android:layout_width="80dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="6dp"
-            android:background="@drawable/book_cover_sel"
+            android:background="@drawable/bookshelf_item_book_sel"
             android:layout_height="113dp"/>
-
     </RelativeLayout>
-
 </RelativeLayout>

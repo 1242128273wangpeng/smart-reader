@@ -6,7 +6,7 @@ import android.view.View
 
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import kotlinx.android.synthetic.txtqbmfyd.layout_bookshelf_item_grid.view.*
+import kotlinx.android.synthetic.txtqbmfyd.item_bookshelf_book.view.*
 
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.data.bean.Book
@@ -33,11 +33,11 @@ class BookShelfItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         when {
             book.update_status == 1 -> { //更新
                 img_book_status.visibility = View.VISIBLE
-                img_book_status.setImageResource(R.drawable.bookshelf_book_state_update_icon)
+                img_book_status.setImageResource(R.drawable.bookshelf_item_book_update_icon)
             }
             book.status == 2 -> { //完结
                 img_book_status.visibility = View.VISIBLE
-                img_book_status.setImageResource(R.drawable.bookshelf_book_state_finish_icon)
+                img_book_status.setImageResource(R.drawable.bookshelf_item_book_finish_icon)
             }
             else -> img_book_status.visibility = View.GONE
         }
@@ -45,25 +45,25 @@ class BookShelfItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         if (!TextUtils.isEmpty(book.img_url) && book.img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL) {
             Glide.with(itemView.context.applicationContext)
                     .load(book.img_url)
-                    .placeholder(R.drawable.bookshelf_book_cover_default)
-                    .error(R.drawable.bookshelf_book_cover_default)
+                    .placeholder(R.drawable.bookshelf_item_cover_icon)
+                    .error(R.drawable.bookshelf_item_cover_icon)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(this.img_book_cover)
         } else {
             Glide.with(itemView.context.applicationContext)
-                    .load(R.drawable.bookshelf_book_cover_default)
+                    .load(R.drawable.bookshelf_item_cover_icon)
                     .into(this.img_book_cover)
         }
 
         if (remove) {
-            this.img_check_delete.visibility = View.VISIBLE
+            this.img_book_select_state.visibility = View.VISIBLE
             if (contains) {
-                this.img_check_delete.setBackgroundResource(R.drawable.bookshelf_edit_selected_icon)
+                this.img_book_select_state.setBackgroundResource(R.drawable.bookshelf_item_checked_icon)
             } else {
-                this.img_check_delete.setBackgroundResource(R.drawable.bookshelf_edit_unselected_icon)
+                this.img_book_select_state.setBackgroundResource(R.drawable.bookshelf_item_check_icon)
             }
         } else {
-            this.img_check_delete.visibility = View.GONE
+            this.img_book_select_state.visibility = View.GONE
         }
 
         book_shelf_item.setOnClickListener {
