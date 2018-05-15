@@ -264,4 +264,9 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
         }
     }
 
+    fun clear(){
+        view = null
+        aDViews.clear()
+    }
+
 }
