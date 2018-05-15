@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="main_update_no_new">您追看的小说暂无更新</string>
+
+    <string name="search_novel">搜小说</string>
+
+    <string name="determine_delete_book">删除书籍，确定要继续吗？</string>
+    <string name="determine_clear_book">保留书籍仅清除缓存</string>
+
+    <string name="edit_bookshelf">编辑书架</string>
+    <string name="select_all">全选</string>
+    <string name="select_all_cancel">取消全选</string>
+    <string name="done">完成</string>
+    <string name="delete">删除</string>
+
+    <string name="recent_read_sorting">按最近阅读</string>
+    <string name="latest_update_sorting">按最近更新</string>
+
+    <string name="no_book">暂时没有书，去书城逛逛吧</string>
+    <string name="no_book_action">去书城</string>
+
+    <string name="delete_dialog_title">提示</string>
+    <string name="delete_dialog_content">删除书籍，确定要继续吗？</string>
+    <string name="delete_dialog_check">保留书籍仅清除缓存</string>
+    <string name="confirm">确定</string>
+    <string name="cancel">取消</string>
+    <string name="loading_dialog_title">正在清理中...</string>
+
+</resources>

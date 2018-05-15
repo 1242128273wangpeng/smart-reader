@@ -2,7 +2,7 @@ package com.dingyue.bookshelf
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import kotlinx.android.synthetic.txtqbmfyd.layout_bookshelf_item_list_ad.view.*
+import kotlinx.android.synthetic.main.layout_bookshelf_item_list_ad.view.*
 
 /**
  * Desc 请描述这个文件
