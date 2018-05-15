@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/remove_delete_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/color_gray_fafafa">
 
     <View
@@ -12,9 +12,9 @@
         android:background="@color/color_gray_e8e8e8"/>
 
     <LinearLayout
-        android:id="@+id/container"
+        android:id="@+id/rl_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/color_gray_fafafa"
         android:orientation="horizontal">
 
@@ -25,7 +25,7 @@
             android:layout_weight="1">
 
             <Button
-                android:id="@+id/btn_left"
+                android:id="@+id/btn_remove_select_all"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="140dp"
                 android:layout_height="38dp"
@@ -34,7 +34,7 @@
                 android:background="@drawable/bookshelf_delete_cancel_bg"
                 android:gravity="center"
                 android:text="全选"
-                android:textColor="@drawable/bookshelf_delete_cancel_text_color"
+                android:textColor="@drawable/bookshelf_delete_cancel_text_color_sel"
                 android:textSize="@dimen/text_size_large"/>
         </RelativeLayout>
 
@@ -45,7 +45,7 @@
             android:layout_weight="1">
 
             <Button
-                android:id="@+id/btn_right"
+                android:id="@+id/btn_remove_delete"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="140dp"
                 android:layout_height="38dp"
@@ -54,7 +54,7 @@
                 android:background="@drawable/bookshelf_delete_submit_bg"
                 android:gravity="center"
                 android:text="删除"
-                android:textColor="@drawable/bookshelf_delete_submit_text_color"
+                android:textColor="@drawable/bookshelf_delete_submit_text_color_sel"
                 android:textSize="@dimen/text_size_large"/>
         </RelativeLayout>
     </LinearLayout>

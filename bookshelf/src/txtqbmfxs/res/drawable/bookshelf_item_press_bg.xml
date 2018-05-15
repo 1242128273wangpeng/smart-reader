@@ -3,6 +3,5 @@
     <item
         android:drawable="@color/color_gray_f4f4f4"
         android:state_enabled="true"
-        android:state_focused="true"
         android:state_pressed="true"/>
 </selector>
