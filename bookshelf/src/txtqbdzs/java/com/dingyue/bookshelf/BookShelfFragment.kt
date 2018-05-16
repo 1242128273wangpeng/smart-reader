@@ -50,8 +50,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                 if (position < 0 || position >= presenter.iBookList.size) return
                 if (isRemoveMenuShow()) {
                     bookShelfAdapter.insertSelectedPosition(position)
-                    var isSelectAll: Boolean = presenter.iBookList.size == bookShelfAdapter.selectedBooks.size
-                    removeMenuPopup.setSelectedNum(bookShelfAdapter.selectedBooks.size, isSelectAll)
+                    removeMenuPopup.setSelectedNum(bookShelfAdapter.selectedBooks.size, bookShelfAdapter.isSelectedAll())
                 } else {
                     handleBook(book)
                     book?.let {
@@ -431,8 +430,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
     override fun selectAll(isAll: Boolean) {
         bookShelfAdapter.insertSelectAllState(isAll)
-        var isSelectAll: Boolean = presenter.iBookList.size == bookShelfAdapter.selectedBooks.size
-        removeMenuPopup.setSelectedNum(bookShelfAdapter.selectedBooks.size, isSelectAll)
+        removeMenuPopup.setSelectedNum(bookShelfAdapter.selectedBooks.size, bookShelfAdapter.isSelectedAll())
         BookShelfLogger.uploadBookShelfEditSelectAll(isAll)
     }
 

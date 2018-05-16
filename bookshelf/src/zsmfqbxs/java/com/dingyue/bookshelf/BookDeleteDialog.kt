@@ -5,6 +5,7 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
 import com.dingyue.bookshelf.R
+import kotlinx.android.synthetic.zsmfqbxs.dialog_bookshelf_delete.*
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.data.bean.Book
 
@@ -15,13 +16,8 @@ import net.lzbook.kit.data.bean.Book
  */
 class BookDeleteDialog(activity: Activity) {
 
-    private val dialog = MyDialog(activity, R.layout.layout_addshelf_dialog)
+    private val dialog = MyDialog(activity, R.layout.dialog_bookshelf_delete)
 
-    private val title = dialog.findViewById(R.id.dialog_title) as TextView
-    private val content = dialog.findViewById(R.id.tv_update_info_dialog) as TextView
-    private val checkBox = dialog.findViewById(R.id.cb_hint) as CheckBox
-    private val confirm = dialog.findViewById(R.id.bt_ok) as Button
-    private val abrogate = dialog.findViewById(R.id.bt_cancel) as Button
 
     var onConfirmListener: ((books: ArrayList<Book>, isDeleteCacheOnly: Boolean) -> Unit)? = null
     var onCancelListener: (() -> Unit)? = null
@@ -29,18 +25,16 @@ class BookDeleteDialog(activity: Activity) {
     private var books: ArrayList<Book> = ArrayList()
 
     init {
-        title.setText(R.string.prompt)
-        content.gravity = 17
-        content.setText(R.string.determine_delete_book)
-        checkBox.setPadding(0, 0, 0, 0)
-        checkBox.setText(R.string.determine_clear_book)
-        confirm.setText(R.string.confirm)
-        abrogate.setText(R.string.cancel)
-        confirm.setOnClickListener {
+        dialog.txt_delete_title.setText(R.string.prompt)
+        dialog.ckb_delete_cache.setPadding(0, 0, 0, 0)
+        dialog.ckb_delete_cache.setText(R.string.determine_clear_book)
+        dialog.btn_dialog_confirm.setText(R.string.confirm)
+        dialog.btn_dialog_cancel.setText(R.string.cancel)
+        dialog.btn_dialog_confirm.setOnClickListener {
             dialog.dismiss()
-            onConfirmListener?.invoke(books, checkBox.isChecked)
+            onConfirmListener?.invoke(books, dialog.ckb_delete_cache.isChecked)
         }
-        abrogate.setOnClickListener {
+        dialog.btn_dialog_cancel.setOnClickListener {
             dialog.dismiss()
             onCancelListener?.invoke()
         }
@@ -49,7 +43,7 @@ class BookDeleteDialog(activity: Activity) {
     fun show(books: ArrayList<Book>) {
         this.books = books
         dialog.show()
-        checkBox.isChecked = false
+        dialog.ckb_delete_cache.isChecked = false
     }
 
     fun isShow(): Boolean {

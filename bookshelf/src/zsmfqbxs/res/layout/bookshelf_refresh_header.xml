@@ -6,31 +6,30 @@
     android:layout_height="500dp">
 
     <TextView
-        android:id="@+id/head_text_view"
+        android:id="@+id/txt_refresh_prompt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"
         android:padding="10dp"
         android:text="Loading"
-        android:textColor="@color/color_gray_999c9e"/>
+        android:textColor="#999C9E"/>
 
     <ProgressBar
-        android:id="@+id/head_pb_view"
+        android:id="@+id/pgbar_refresh_loading"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/head_text_view"
-        android:layout_toStartOf="@id/head_text_view"/>
+        android:layout_toLeftOf="@id/txt_refresh_prompt"
+        android:layout_toStartOf="@id/txt_refresh_prompt"/>
 
     <ImageView
-        android:id="@+id/head_image_view"
+        android:id="@+id/img_refresh_arrow"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/head_text_view"
-        android:layout_toStartOf="@id/head_text_view"
-        android:contentDescription="@null"
-        android:textColor="@color/color_gray_999c9e"/>
+        android:layout_toLeftOf="@id/txt_refresh_prompt"
+        android:layout_toStartOf="@id/txt_refresh_prompt"
+        android:contentDescription="@string/module_name"/>
 
 </RelativeLayout>

@@ -25,9 +25,9 @@ class BookShelfRemoveMenuPopup(context: Context, layout: Int = R.layout.popup_re
 
     init {
 
-        contentView.rl_container.isFocusable = true
-        contentView.rl_container.isFocusableInTouchMode = true
-        contentView.rl_container.requestFocus()
+        contentView.ll_container.isFocusable = true
+        contentView.ll_container.isFocusableInTouchMode = true
+        contentView.ll_container.requestFocus()
 
         contentView.btn_remove_delete.setOnClickListener {
             onDeleteClickListener?.invoke()
