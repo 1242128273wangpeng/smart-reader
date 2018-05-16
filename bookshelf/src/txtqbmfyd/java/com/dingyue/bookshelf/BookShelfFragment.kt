@@ -147,7 +147,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_bookshelf, container, false)
+        return inflater?.inflate(R.layout.frag_bookshelf, container, false)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {

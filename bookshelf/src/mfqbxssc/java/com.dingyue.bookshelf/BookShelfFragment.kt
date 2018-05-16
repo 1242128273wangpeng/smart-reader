@@ -161,9 +161,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             BookShelfLogger.uploadBookShelfToBookCity()
         }
 
-        img_head_setting.setOnClickListener {
+        img_head_personal.setOnClickListener {
             BookShelfLogger.uploadBookShelfPersonal()
-            EventBus.getDefault().post(ConsumeEvent(R.id.redpoint_home_setting))
+            EventBus.getDefault().post(ConsumeEvent(R.id.fup_head_personal))
             RouterUtil.navigation(activity, RouterConfig.SETTING_ACTIVITY)
         }
 

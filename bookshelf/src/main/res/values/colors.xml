@@ -4,4 +4,8 @@
 
     <color name="color_green_3ecc96">#3ecc96</color>
 
+
+
+    <color name="bookshelf_item_pressed">#FFFAFAFA</color>
+
 </resources>

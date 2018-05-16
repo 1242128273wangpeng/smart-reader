@@ -6,11 +6,15 @@
     <string name="delete_dialog_title">提示</string>
     <string name="delete_dialog_content">删除书籍，确定要继续吗？</string>
     <string name="delete_dialog_check">保留书籍仅清除缓存</string>
-    <string name="confirm">确定</string>
-    <string name="cancel">取消</string>
-    <string name="select_all">全选</string>
-    <string name="select_all_cancel">取消全选</string>
-    <string name="bookshelf_remove_head_title">编辑书架</string>
-    <string name="bookshelf_remove_head_cancel">完成</string>
     <string name="loading_dialog_title">正在清理中...</string>
+
+
+
+
+
+    <string name="bookshelf_head_search_hint">搜小说</string>
+
+    <string name="bookshelf_remove_head_title">编辑书架</string>
+
+    <string name="bookshelf_remove_head_confirm">完成</string>
 </resources>
