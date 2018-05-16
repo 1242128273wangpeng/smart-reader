@@ -27,7 +27,8 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="18dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/home_head_person_selector"/>
+                android:contentDescription="@string/module_name"
+                android:src="@drawable/bookshelf_head_personal_sel"/>
 
             <net.lzbook.kit.book.view.FirstUsePointView
                 android:id="@+id/fup_head_personal"
@@ -45,9 +46,9 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="18dp"
-                android:scaleType="fitXY"
                 android:contentDescription="@string/module_name"
-                android:src="@drawable/home_head_right_selector"/>
+                android:scaleType="fitXY"
+                android:src="@drawable/bookshelf_head_more_sel"/>
 
             <RelativeLayout
                 android:id="@+id/rl_head_search"
@@ -58,7 +59,7 @@
                 android:layout_marginRight="18dp"
                 android:layout_toLeftOf="@id/img_head_menu"
                 android:layout_toRightOf="@id/img_head_personal"
-                android:background="@drawable/bookshelf_title_shaper"
+                android:background="@drawable/bookshelf_head_search_bg"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:paddingLeft="10dp"
@@ -69,8 +70,8 @@
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:layout_centerVertical="true"
-                    android:contentDescription="@string/module_name"
-                    android:background="@drawable/bookshelf_icon_search_copy"/>
+                    android:background="@drawable/bookshelf_head_search_icon"
+                    android:contentDescription="@string/module_name"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -131,89 +132,54 @@
         android:id="@+id/bookshelf_refresh_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/rl_head">
+        android:layout_below="@id/rl_head">
 
-        <net.lzbook.kit.ad.ADScrollView
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="none">
+            android:alwaysDrawnWithCache="false"
+            android:clipToPadding="false"
+            android:paddingTop="10dp"/>
 
-            <LinearLayout
-                android:id="@+id/ll_books_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <RelativeLayout
-                    android:id="@+id/item_ad_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="19dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/bookshef_header_ad_bg"
-                    android:visibility="gone">
-                </RelativeLayout>
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:alwaysDrawnWithCache="false"
-                    android:clipToPadding="false"
-                    android:paddingTop="10dp"/>
-            </LinearLayout>
-        </net.lzbook.kit.ad.ADScrollView>
     </net.lzbook.kit.pulllist.SuperSwipeRefreshLayout>
 
     <FrameLayout
-        android:id="@+id/bookshelf_float_ad"
+        android:id="@+id/fl_ad_float"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="@dimen/dimen_margin_30"
-        android:layout_marginRight="@dimen/dimen_margin_10"
+        android:layout_marginBottom="30dp"
+        android:layout_marginRight="10dp"
         android:visibility="gone"/>
 
-    <ImageView
-        android:id="@+id/fab_goto_down_act"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="@dimen/dimen_margin_30"
-        android:layout_marginRight="@dimen/dimen_margin_10"
-        android:src="@drawable/bookshelf_downlaod_floating_btn"
-        android:visibility="gone"/>
-
-    <RelativeLayout
-        android:id="@+id/bookshelf_empty"
+    <LinearLayout
+        android:id="@+id/ll_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
+        android:orientation="vertical"
         android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/bookshelf_empty_btn"
-            android:layout_centerHorizontal="true"
-            android:text="暂时没有书，去书城逛逛吧"
-            android:textColor="#9b9b9b"
+            android:text="@string/bookshelf_empty_prompt"
+            android:textColor="#FF9B9B9B"
+            android:layout_gravity="center_horizontal"
             android:textSize="18sp"/>
 
         <TextView
-            android:id="@+id/bookshelf_empty_btn"
+            android:id="@+id/txt_empty_add_book"
             android:layout_width="120dp"
             android:layout_height="38dp"
-            android:layout_centerInParent="true"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="17dp"
             android:background="@drawable/bookshelf_empty_find_bg"
             android:gravity="center"
-            android:text="去书城"
-            android:textColor="@drawable/cover_bottom_btn_text_selector"
+            android:text="@string/bookshelf_empty_find"
+            android:textColor="@drawable/bookshelf_empty_find_text_sel"
             android:textSize="16sp"/>
-    </RelativeLayout>
+    </LinearLayout>
 </RelativeLayout>

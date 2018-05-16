@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bookshelf__item_press_bg"
+    android:background="@drawable/bookshelf_detail_bg"
     android:paddingBottom="15dp"
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
@@ -17,8 +17,8 @@
         android:layout_height="122dp"
         android:layout_gravity="center_horizontal"
         android:adjustViewBounds="true"
-        android:background="@drawable/book_mask"
-        android:contentDescription="@string/app_name"
+        android:background="@drawable/bookshelf_item_cover_shadow_icon"
+        android:contentDescription="@string/module_name"
         android:paddingBottom="3dp"
         android:paddingLeft="2dp"
         android:paddingRight="3dp"
@@ -26,15 +26,13 @@
         android:scaleType="fitXY"/>
 
     <RelativeLayout
-        android:id="@+id/rl_book_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/img_book_cover"
+        android:layout_toRightOf="@id/img_book_cover"
         android:gravity="center_vertical"
         android:paddingBottom="2dp"
         android:paddingTop="2dp">
-
 
         <TextView
             android:id="@+id/txt_book_name"
@@ -42,13 +40,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
-            android:layout_marginRight="@dimen/dimen_margin_12"
+            android:layout_marginRight="12dp"
             android:ellipsize="end"
             android:singleLine="true"
-            android:textColor="#323232"
+            android:textColor="#FF323232"
             android:textSize="18sp"
-            tools:text="书名啊暗室逢灯"/>
-
+            tools:text="@string/default_title"/>
 
         <TextView
             android:id="@+id/txt_book_author"
@@ -60,13 +57,12 @@
             android:layout_marginTop="10dp"
             android:ellipsize="end"
             android:singleLine="true"
-            android:textColor="#b3b3b3"
-            android:textSize="@dimen/dimen_text_12"
+            android:textColor="#FFB3B3B3"
+            android:textSize="12sp"
             tools:text="作者"/>
 
-
         <TextView
-            android:id="@+id/txt_book_latest_chapter"
+            android:id="@+id/txt_book_chapter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_book_author"
@@ -77,34 +73,34 @@
             android:lineSpacingExtra="3dp"
             android:maxLines="2"
             android:textColor="#b3b3b3"
-            android:textSize="@dimen/dimen_text_12"
-            tools:text="最新章节最新章节最新章节最新章节最新章节最新章节"/>
+            android:textSize="12sp"
+            tools:text="@string/default_message"/>
 
         <TextView
-            android:id="@+id/txt_book_update_time_title"
+            android:id="@+id/txt_book_update"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/txt_book_latest_chapter"
+            android:layout_below="@+id/txt_book_chapter"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="7dp"
             android:singleLine="true"
             android:textColor="#b3b3b3"
-            android:textSize="@dimen/dimen_text_12"
+            android:textSize="12sp"
             tools:text="更新时间："/>
 
         <TextView
             android:id="@+id/txt_book_update_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/txt_book_latest_chapter"
+            android:layout_below="@+id/txt_book_chapter"
             android:layout_marginRight="13dp"
             android:layout_marginTop="7dp"
-            android:layout_toRightOf="@+id/txt_book_update_time_title"
+            android:layout_toRightOf="@+id/txt_book_update"
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="#b3b3b3"
-            android:textSize="@dimen/dimen_text_12"
+            android:textSize="12sp"
             tools:text="123章"/>
     </RelativeLayout>
 </RelativeLayout>

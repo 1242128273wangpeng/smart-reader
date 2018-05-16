@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:gravity="center"
-                android:text="@string/book_sorting"
+                android:text="@string/book_sort"
                 android:textColor="#FF212832"
                 android:textSize="13sp"/>
         </LinearLayout>

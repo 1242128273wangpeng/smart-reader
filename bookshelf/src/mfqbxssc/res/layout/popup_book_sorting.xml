@@ -10,7 +10,7 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#ffffff"
+        android:background="#FFFFFFFF"
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
@@ -20,14 +20,14 @@
             android:orientation="vertical">
 
             <RadioButton
-                android:id="@+id/rbtn_recent_read_sorting"
+                android:id="@+id/rbtn_sort_read"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_margin="15dp"
-                android:background="#ffffff"
+                android:background="#FFFFFFFF"
                 android:button="@null"
-                android:text="按最近阅读"
-                android:textColor="@drawable/bookshelf_paixu"
+                android:text="@string/sort_for_reading_time"
+                android:textColor="@drawable/bookshelf_sort_text_sel"
                 android:textSize="14sp"/>
 
             <View
@@ -36,14 +36,14 @@
                 android:background="#e8e8e8"/>
 
             <RadioButton
-                android:id="@+id/rbtn_update_time_sorting"
+                android:id="@+id/rbtn_sort_update"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_margin="15dp"
-                android:background="#ffffff"
+                android:background="#FFFFFFFF"
                 android:button="@null"
-                android:text="按最近更新"
-                android:textColor="@drawable/bookshelf_paixu"
+                android:text="@string/sort_for_update_time"
+                android:textColor="@drawable/bookshelf_sort_text_sel"
                 android:textSize="14sp"/>
         </RadioGroup>
     </LinearLayout>

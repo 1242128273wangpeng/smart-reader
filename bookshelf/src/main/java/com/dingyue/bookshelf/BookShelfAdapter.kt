@@ -6,6 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import com.dingyue.contract.HolderType.Type_AD
+import com.dingyue.contract.HolderType.Type_Add
+import com.dingyue.contract.HolderType.Type_Book
 import net.lzbook.kit.data.bean.Book
 import java.util.*
 
@@ -21,14 +24,14 @@ class BookShelfAdapter(private val context: Context,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder? {
         return when (viewType) {
-            TYPE_AD -> {
-                BookShelfADHolder(LayoutInflater.from(context).inflate(R.layout.item_bookshelf_ad, parent, false))
+            Type_AD -> {
+                BookShelfADHolder(parent)
             }
-            TYPE_ADD -> {
+            Type_Add -> {
                 BookShelfADDHolder(LayoutInflater.from(context).inflate(R.layout.item_bookshelf_add, parent, false))
             }
             else -> {
-                BookShelfItemHolder(LayoutInflater.from(context).inflate(R.layout.item_bookshelf_book, parent, false))
+                BookShelfItemHolder(parent)
             }
         }
     }
@@ -95,23 +98,16 @@ class BookShelfAdapter(private val context: Context,
             if (position < books.size) {
                 val book = books[position]
                 if (book.book_type == 0) {
-                    return TYPE_BOOK
+                    return Type_Book
                 } else if (book.book_type == -2) {
-                    return TYPE_AD
+                    return Type_AD
                 }
             } else if (position == books.size) {
-                return TYPE_ADD
+                return Type_Add
             }
         }
         return -1
     }
-
-    companion object {
-        private val TYPE_BOOK = 0
-        private val TYPE_AD = 1
-        private val TYPE_ADD = 2
-    }
-
 
     interface BookShelfItemListener {
 

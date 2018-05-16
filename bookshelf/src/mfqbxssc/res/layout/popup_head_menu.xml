@@ -8,15 +8,14 @@
     tools:ignore="RtlHardcoded">
 
     <RelativeLayout
-        android:id="@+id/relative_parent"
         android:layout_width="142dp"
         android:layout_height="110dp"
-        android:background="@drawable/more_pop_day1"
+        android:background="@drawable/bookshelf_head_popup_bg"
         android:gravity="center"
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/ll_container"
+            android:id="@+id/ll_head_content"
             android:layout_width="wrap_content"
             android:layout_height="90dp"
             android:layout_marginBottom="10dp"
@@ -29,7 +28,7 @@
                 android:id="@+id/ll_download_manager"
                 android:layout_width="wrap_content"
                 android:layout_height="45dp"
-                android:background="@drawable/bookshelf_title_right_top_select"
+                android:background="@drawable/bookshelf_head_menu_first_sel"
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:paddingLeft="15dp"
@@ -38,24 +37,24 @@
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:background="@drawable/more_icon_down"/>
+                    android:background="@drawable/bookshelf_head_popup_download"
+                    android:contentDescription="@string/module_name"/>
 
                 <TextView
-                    android:id="@+id/tv_car_empty"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
                     android:layout_marginLeft="10dp"
                     android:gravity="center"
-                    android:text="缓存管理"
+                    android:text="@string/download_manager"
                     android:textColor="#000000"
                     android:textSize="14sp"/>
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/ll_book_sorting"
+                android:id="@+id/ll_book_sort"
                 android:layout_width="wrap_content"
                 android:layout_height="45dp"
-                android:background="@drawable/bookshelf_title_right_select"
+                android:background="@drawable/bookshelf_head_menu_second_sel"
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:paddingLeft="15dp"
@@ -64,15 +63,15 @@
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:background="@drawable/more_icon_sort"/>
+                    android:background="@drawable/bookshelf_head_popup_sort"
+                    android:contentDescription="@string/module_name"/>
 
                 <TextView
-                    android:id="@+id/tv_car_half"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
                     android:layout_marginLeft="10dp"
                     android:gravity="center"
-                    android:text="书籍排序"
+                    android:text="@string/book_sort"
                     android:textColor="#000000"
                     android:textSize="14sp"/>
             </LinearLayout>
@@ -80,13 +79,11 @@
         <net.lzbook.kit.book.view.NightShadowView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/ll_container"
-            android:layout_alignLeft="@+id/ll_container"
-            android:layout_alignRight="@+id/ll_container"
-            android:layout_alignTop="@+id/ll_container"
+            android:layout_alignBottom="@id/ll_head_content"
+            android:layout_alignLeft="@id/ll_head_content"
+            android:layout_alignRight="@id/ll_head_content"
+            android:layout_alignTop="@id/ll_head_content"
             android:visibility="gone"
             app:cornerRadius="5dp"/>
-
     </RelativeLayout>
-
 </FrameLayout>

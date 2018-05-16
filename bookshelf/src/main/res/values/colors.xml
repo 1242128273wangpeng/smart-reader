@@ -7,5 +7,6 @@
 
 
     <color name="bookshelf_item_pressed">#FFFAFAFA</color>
+    <color name="bookshelf_item_book_pressed">#3ecc96</color>
 
 </resources>

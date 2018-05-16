@@ -35,7 +35,7 @@ class HeadMenuPopup(activity: Activity) {
             popupWindow.dismiss()
             onDownloadManagerClickListener?.invoke()
         }
-        contentView.ll_book_sorting.setOnClickListener {
+        contentView.ll_book_sort.setOnClickListener {
             popupWindow.dismiss()
             onBookSortingClickListener?.invoke()
         }

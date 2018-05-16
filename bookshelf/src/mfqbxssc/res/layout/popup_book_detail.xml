@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rl_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:ignore="RtlHardcoded">
 
     <RelativeLayout
-        android:id="@id/container"
+        android:id="@+id/rl_detail_content"
         android:layout_width="match_parent"
         android:layout_height="180dp"
-        android:background="#ffffff">
+        android:background="#FFFFFFFF">
 
         <android.support.v4.view.ViewPager
-            android:id="@+id/viewPager"
+            android:id="@+id/vp_detail_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
@@ -30,32 +31,32 @@
                 android:layout_height="1dp"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="5dp"
-                android:layout_toLeftOf="@+id/current_num"
-                android:background="#e8e8e8"/>
+                android:layout_toLeftOf="@+id/txt_detail_current"
+                android:background="#FFE8E8E8"/>
 
             <TextView
-                android:id="@+id/current_num"
+                android:id="@+id/txt_detail_current"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/tv_num"
-                android:textColor="#882f46"/>
+                android:layout_toLeftOf="@+id/txt_detail_slash"
+                android:textColor="#FF882F46"/>
 
             <TextView
-                android:id="@+id/tv_num"
+                android:id="@+id/txt_detail_slash"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:text="/"
+                android:text="@string/slash"
                 android:textColor="#323232"/>
 
             <TextView
-                android:id="@+id/total_num"
+                android:id="@+id/txt_detail_total"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/tv_num"
+                android:layout_toRightOf="@id/txt_detail_slash"
                 android:textColor="#323232"/>
 
             <View
@@ -63,17 +64,17 @@
                 android:layout_height="1dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="5dp"
-                android:layout_toRightOf="@+id/total_num"
-                android:background="#e8e8e8"/>
+                android:layout_toRightOf="@id/txt_detail_total"
+                android:background="#FFE8E8E8"/>
         </RelativeLayout>
     </RelativeLayout>
 
     <net.lzbook.kit.book.view.NightShadowView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/container"
-        android:layout_alignLeft="@+id/container"
-        android:layout_alignRight="@+id/container"
-        android:layout_alignTop="@+id/container"
+        android:layout_alignBottom="@id/rl_detail_content"
+        android:layout_alignLeft="@id/rl_detail_content"
+        android:layout_alignRight="@id/rl_detail_content"
+        android:layout_alignTop="@id/rl_detail_content"
         android:visibility="gone"/>
 </RelativeLayout>

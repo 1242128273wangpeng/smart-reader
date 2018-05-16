@@ -2,7 +2,7 @@ package com.dingyue.bookshelf
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import kotlinx.android.synthetic.txtqbmfyd.item_bookshelf_add.view.*
+import kotlinx.android.synthetic.main.item_bookshelf_add.view.*
 import net.lzbook.kit.data.bean.Book
 
 /**
@@ -11,7 +11,6 @@ import net.lzbook.kit.data.bean.Book
  * Mail crazylei951002@gmail.com
  * Date 2018/5/10 21:07
  */
-
 class BookShelfADDHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(book: Book?, remove: Boolean, bookshelfItemListener: BookShelfAdapter.BookShelfItemListener) = with(itemView) {

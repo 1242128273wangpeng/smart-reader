@@ -20,7 +20,6 @@ import java.util.*
 
 class BookDetailAdapter(private val context: Context) : PagerAdapter() {
 
-
     private var books: ArrayList<Book> = ArrayList()
 
     fun update(books: List<Book>) {
@@ -47,9 +46,8 @@ class BookDetailAdapter(private val context: Context) : PagerAdapter() {
         view.txt_book_update_time.text = Tools.compareTime(AppUtils.formatter, book
                 .last_updatetime_native)
 
-        AppLog.e("uuu", book.last_chapter_name + "===")
         val latestChapter = "最新章节：${book.last_chapter_name}"
-        view.txt_book_latest_chapter.text = latestChapter
+        view.txt_book_chapter.text = latestChapter
 
         if (book.img_url.isNotEmpty()) {
             Glide.with(context)

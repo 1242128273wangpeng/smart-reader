@@ -1,7 +1,9 @@
 package com.dingyue.bookshelf
 
 import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import kotlinx.android.synthetic.mfqbxssc.item_bookshelf_book.view.*
@@ -14,21 +16,22 @@ import net.lzbook.kit.data.bean.Book
  * Mail tao_qian@dingyuegroup.cn
  * Date 2018/5/12 0002 14:19
  */
-class BookShelfItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
+        LayoutInflater.from(parent.context).inflate(R.layout.item_bookshelf_book, parent, false)) {
 
     fun bind(book: Book, bookshelfItemListener: BookShelfAdapter.BookShelfItemListener,
              contains: Boolean, remove: Boolean) = with(itemView) {
 
-        if (book.name.isNotEmpty()) book_shelf_name.text = book.name
+        if (book.name.isNotEmpty()) txt_book_name.text = book.name
 
         when {
             book.update_status == 1 -> { //更新
                 img_book_status.visibility = View.VISIBLE
-                img_book_status.setImageResource(R.drawable.book_new)
+                img_book_status.setImageResource(R.drawable.bookshelf_item_book_update_icon)
             }
             book.status == 2 -> { //完结
                 img_book_status.visibility = View.VISIBLE
-                img_book_status.setImageResource(R.drawable.book_end)
+                img_book_status.setImageResource(R.drawable.bookshelf_item_book_finish_icon)
             }
             else -> img_book_status.visibility = View.GONE
         }
@@ -48,14 +51,14 @@ class BookShelfItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         }
 
         if (remove) {
-            check_delete.visibility = View.VISIBLE
+            img_book_select_state.visibility = View.VISIBLE
             if (contains) {
-                check_delete.setBackgroundResource(R.drawable.edit_bookshelf_selected)
+                img_book_select_state.setImageResource(R.drawable.bookshelf_item_checked_icon)
             } else {
-                check_delete.setBackgroundResource(R.drawable.edit_bookshelf_unselected)
+                img_book_select_state.setImageResource(R.drawable.bookshelf_item_check_icon)
             }
         } else {
-            check_delete.visibility = View.GONE
+            img_book_select_state.visibility = View.GONE
         }
 
         rl_book_content.setOnClickListener {

@@ -16,9 +16,9 @@ import net.lzbook.kit.data.bean.Book
  * Mail tao_qian@dingyuegroup.cn
  * Date 2018/5/12 0012 15:49
  */
-class BookDetailPopup(private val activity: Activity, layout: Int = R.layout.popup_book_detail,
-                      width: Int = WindowManager.LayoutParams.MATCH_PARENT,
-                      height: Int = WindowManager.LayoutParams.WRAP_CONTENT)
+class BookShelfDetailPopup(private val activity: Activity, layout: Int = R.layout.popup_book_detail,
+                           width: Int = WindowManager.LayoutParams.MATCH_PARENT,
+                           height: Int = WindowManager.LayoutParams.WRAP_CONTENT)
     : BasePopup(activity, layout, width, height) {
 
     private val bookDetailAdapter = BookDetailAdapter(activity)
@@ -29,13 +29,13 @@ class BookDetailPopup(private val activity: Activity, layout: Int = R.layout.pop
         popupWindow.isOutsideTouchable = true
         popupWindow.animationStyle = R.style.remove_menu_anim_style
 
-        contentView.current_num.text = "1"
-        contentView.viewPager.adapter = bookDetailAdapter
-        contentView.viewPager.setOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        contentView.txt_detail_current.text = "1"
+        contentView.vp_detail_content.adapter = bookDetailAdapter
+        contentView.vp_detail_content.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
             override fun onPageSelected(position: Int) {
-                contentView.current_num.text = (position + 1).toString()
+                contentView.txt_detail_current.text = (position + 1).toString()
             }
 
             override fun onPageScrollStateChanged(state: Int) {}
@@ -52,14 +52,13 @@ class BookDetailPopup(private val activity: Activity, layout: Int = R.layout.pop
         setBackgroundAlpha(0.6f)
         showAsLocation(view)
         bookDetailAdapter.update(books)
-        contentView.viewPager.currentItem = 0
-        contentView.total_num.text = books.size.toString()
+        contentView.vp_detail_content.currentItem = 0
+        contentView.txt_detail_total.text = books.size.toString()
     }
 
     private fun setBackgroundAlpha(bgAlpha: Float) {
-        val lp = activity.window.attributes
-        lp.alpha = bgAlpha
-        activity.window.attributes = lp
+        val attributes = activity.window.attributes
+        attributes.alpha = bgAlpha
+        activity.window.attributes = attributes
     }
-
 }

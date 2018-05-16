@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="bookshelf_remove_menu_delete">删除</string>
-    <string name="bookshelf_remove_menu_detail">查看更新详情</string>
-    <string name="delete_dialog_title">提示</string>
-    <string name="delete_dialog_content">删除书籍，确定要继续吗？</string>
-    <string name="delete_dialog_check">保留书籍仅清除缓存</string>
-    <string name="loading_dialog_title">正在清理中...</string>
-
-
-
-
-
     <string name="bookshelf_head_search_hint">搜小说</string>
 
     <string name="bookshelf_remove_head_title">编辑书架</string>
 
     <string name="bookshelf_remove_head_confirm">完成</string>
+
+    <string name="bookshelf_empty_find">去书城</string>
+
+    <string name="bookshelf_empty_prompt">暂时没有书，去书城逛逛吧!</string>
+
+    <string name="bookshelf_delete_dialog_loading_prompt">正在清理中...</string>
+
+    <string name="bookshelf_remove_menu_detail">查看更新详情</string>
 </resources>

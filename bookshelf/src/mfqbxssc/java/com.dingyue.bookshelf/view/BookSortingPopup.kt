@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.mfqbxssc.popup_book_sorting.view.*
 class BookSortingPopup(private val activity: Activity) {
 
     private val contentView = LayoutInflater.from(activity).inflate(R.layout.popup_book_sorting, null)!!
+
     private val popupWindow = PopupWindow(contentView)
 
     var onTimeSortingClickListener: (() -> Unit)? = null
@@ -33,11 +34,11 @@ class BookSortingPopup(private val activity: Activity) {
         popupWindow.isOutsideTouchable = false
         popupWindow.animationStyle = R.style.remove_menu_anim_style
 
-        contentView.rbtn_update_time_sorting.setOnClickListener {
+        contentView.rbtn_sort_update.setOnClickListener {
             dismiss()
             onTimeSortingClickListener?.invoke()
         }
-        contentView.rbtn_recent_read_sorting.setOnClickListener {
+        contentView.rbtn_sort_read.setOnClickListener {
             dismiss()
             onRecentReadSortingClickListener?.invoke()
         }
@@ -50,11 +51,11 @@ class BookSortingPopup(private val activity: Activity) {
 
     fun show(view: View) {
         if (CommonContract.queryBookSortingType() == 0) {
-            contentView.rbtn_recent_read_sorting.isChecked = true
-            contentView.rbtn_update_time_sorting.isChecked = false
+            contentView.rbtn_sort_read.isChecked = true
+            contentView.rbtn_sort_update.isChecked = false
         } else {
-            contentView.rbtn_update_time_sorting.isChecked = true
-            contentView.rbtn_recent_read_sorting.isChecked = false
+            contentView.rbtn_sort_update.isChecked = true
+            contentView.rbtn_sort_read.isChecked = false
         }
         setBackgroundAlpha(0.6f)
         popupWindow.showAtLocation(view, Gravity.BOTTOM, 0, 0)
