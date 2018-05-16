@@ -119,7 +119,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     private val bookShelfDeleteDialog: BookShelfDeleteDialog by lazy {
         val dialog = BookShelfDeleteDialog(activity)
         dialog.onConfirmListener = { books, isDeleteCacheOnly ->
-            deleteBooks(books, isDeleteCacheOnly)
+            if (books.isNotEmpty()) {
+                deleteBooks(books, isDeleteCacheOnly)
+            }
         }
         dialog.onCancelListener = {
             BookShelfLogger.uploadBookShelfEditDelete(0, null, false)
@@ -131,19 +133,40 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         BookShelfDetailPopup(activity)
     }
 
+    override fun onAttach(activity: Activity?) {
+        super.onAttach(activity)
+        try {
+            bookShelfInterface = activity as BookShelfInterface
+        } catch (classCastException: ClassCastException) {
+            throw ClassCastException(activity.toString() + " must implement BookShelfInterface")
+        }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity.applicationContext)
+
+        initUpdateService()
+
+        if (bookshelfPresenter.iBookList.size > 0) {
+            bookshelf_refresh_view.isRefreshing = true
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.frag_bookshelf, container, false)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        
+
         BookShelfADContract.insertBookShelfType(true)
-        
+
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
         bookRackUpdateTime = AppUtils.getLongPreferences(activity, "book_rack_update_time", System.currentTimeMillis())
-        
+
         initRecyclerView()
-       
+
         bookshelf_refresh_view.setOnPullRefreshListener(object : SuperSwipeRefreshLayout.OnPullRefreshListener {
             override fun onRefresh() {
                 headerView.txt_refresh_prompt.text = "正在刷新"
@@ -204,64 +227,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
 
     }
-    
-    private fun initRecyclerView() {
-        bookshelf_refresh_view.setHeaderViewBackgroundColor(0x00000000)
-        bookshelf_refresh_view.setHeaderView(createHeaderView())
-        bookshelf_refresh_view.isTargetScrollWithLayout = true
-        recycler_view.recycledViewPool.setMaxRecycledViews(0, 12)
-        
-        val bookshelfLayoutManager = ShelfGridLayoutManager(activity, 3)
-
-        val bookshelfShelfSpanSizeLookup = BookShelfSpanSizeLookup(bookShelfAdapter)
-        bookshelfLayoutManager.spanSizeLookup = bookshelfShelfSpanSizeLookup
-        
-        recycler_view.layoutManager = bookshelfLayoutManager
-        recycler_view.isFocusable = false
-        recycler_view.itemAnimator.addDuration = 0
-        recycler_view.itemAnimator.changeDuration = 0
-        recycler_view.itemAnimator.moveDuration = 0
-        recycler_view.itemAnimator.removeDuration = 0
-        (recycler_view.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
-        recycler_view.adapter = bookShelfAdapter
-
-        val bookShelfItemDecoration = BookShelfItemDecoration(bookShelfAdapter)
-        recycler_view.addItemDecoration(bookShelfItemDecoration)
-    }
-
-    private fun createHeaderView(): View {
-        headerView.txt_refresh_prompt.text = "下拉刷新"
-        headerView.img_refresh_arrow.visibility = View.VISIBLE
-        headerView.img_refresh_arrow.setImageResource(R.drawable.pulltorefresh_down_arrow)
-        headerView.pgbar_refresh_loading.visibility = View.GONE
-        return headerView
-    }
-
-    override fun onAttach(activity: Activity?) {
-        super.onAttach(activity)
-        try {
-            bookShelfInterface = activity as BookShelfInterface
-        } catch (classCastException: ClassCastException) {
-            throw ClassCastException(activity.toString() + " must implement BookShelfInterface")
-        }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity.applicationContext)
-
-        initUpdateService()
-
-        if (bookshelfPresenter.iBookList.size > 0) {
-            bookshelf_refresh_view.isRefreshing = true
-        }
-    }
 
     override fun onResume() {
         super.onResume()
         updateUI()
-//        getFloatAd(activity)
     }
 
     private fun initUpdateService() {
@@ -290,6 +259,38 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     override fun onDestroy() {
         super.onDestroy()
         bookshelfPresenter.iBookList.clear()
+    }
+
+    private fun initRecyclerView() {
+        bookshelf_refresh_view.setHeaderViewBackgroundColor(0x00000000)
+        bookshelf_refresh_view.setHeaderView(createHeaderView())
+        bookshelf_refresh_view.isTargetScrollWithLayout = true
+        recycler_view.recycledViewPool.setMaxRecycledViews(0, 12)
+
+        val bookshelfLayoutManager = ShelfGridLayoutManager(activity, 3)
+
+        val bookshelfShelfSpanSizeLookup = BookShelfSpanSizeLookup(bookShelfAdapter)
+        bookshelfLayoutManager.spanSizeLookup = bookshelfShelfSpanSizeLookup
+
+        recycler_view.layoutManager = bookshelfLayoutManager
+        recycler_view.isFocusable = false
+        recycler_view.itemAnimator.addDuration = 0
+        recycler_view.itemAnimator.changeDuration = 0
+        recycler_view.itemAnimator.moveDuration = 0
+        recycler_view.itemAnimator.removeDuration = 0
+        (recycler_view.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        recycler_view.adapter = bookShelfAdapter
+
+        val bookShelfItemDecoration = BookShelfItemDecoration(bookShelfAdapter)
+        recycler_view.addItemDecoration(bookShelfItemDecoration)
+    }
+
+    private fun createHeaderView(): View {
+        headerView.txt_refresh_prompt.text = "下拉刷新"
+        headerView.img_refresh_arrow.visibility = View.VISIBLE
+        headerView.img_refresh_arrow.setImageResource(R.drawable.pulltorefresh_down_arrow)
+        headerView.pgbar_refresh_loading.visibility = View.GONE
+        return headerView
     }
 
     /**

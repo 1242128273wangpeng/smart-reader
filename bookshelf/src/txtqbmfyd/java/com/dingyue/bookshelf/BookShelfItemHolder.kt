@@ -2,7 +2,9 @@ package com.dingyue.bookshelf
 
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -17,7 +19,8 @@ import net.lzbook.kit.data.bean.Book
  * Mail tao_qian@dingyuegroup.cn
  * Date 2018/3/5 0002 14:19
  */
-class BookShelfItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
+        LayoutInflater.from(parent.context).inflate(R.layout.item_bookshelf_book, parent, false)) {
 
     fun bind(book: Book, bookshelfItemListener: BookShelfAdapter.BookShelfItemListener,
              contains: Boolean, remove: Boolean) = with(itemView) {

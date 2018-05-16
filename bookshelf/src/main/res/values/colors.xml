@@ -7,6 +7,8 @@
 
 
     <color name="bookshelf_item_pressed">#FFFAFAFA</color>
+
     <color name="bookshelf_item_book_pressed">#FFF4F4F4</color>
 
+    <color name="bookshelf_remove_background">#FFFFFFFF</color>
 </resources>

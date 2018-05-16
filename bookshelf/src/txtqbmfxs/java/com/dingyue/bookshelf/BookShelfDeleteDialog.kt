@@ -1,19 +1,20 @@
-package com.dingyue.bookshelf.view
+package com.dingyue.bookshelf
 
 import android.app.Activity
 import android.view.View
-import com.dingyue.bookshelf.R
-import kotlinx.android.synthetic.mfqbxssc.dialog_bookshelf_delete.*
+import kotlinx.android.synthetic.txtqbmfxs.dialog_bookshelf_delete.*
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.data.bean.Book
 
 /**
- * Created by qiantao on 2017/11/17 0017
+ * Desc 点击底部删除 弹出dialog
+ * Author zhenxiang
+ * 2018\5\15 0015
  */
 class BookShelfDeleteDialog(activity: Activity) {
 
     private val dialog = MyDialog(activity, R.layout.dialog_bookshelf_delete)
-    
+
     var onConfirmListener: ((books: ArrayList<Book>, isDeleteCacheOnly: Boolean) -> Unit)? = null
     var onCancelListener: (() -> Unit)? = null
 
@@ -51,5 +52,4 @@ class BookShelfDeleteDialog(activity: Activity) {
     fun dismiss() {
         dialog.dismiss()
     }
-
 }
