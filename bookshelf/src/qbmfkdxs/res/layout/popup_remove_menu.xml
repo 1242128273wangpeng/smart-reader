@@ -21,7 +21,7 @@
         android:background="@null"
         android:gravity="center"
         android:text="@string/delete"
-        android:textColor="@drawable/bookshelf_delete_cancel_text_color"
+        android:textColor="@drawable/bookshelf_remove_delete_color_sel"
         android:textSize="16sp"/>
 
     <net.lzbook.kit.book.view.NightShadowView
