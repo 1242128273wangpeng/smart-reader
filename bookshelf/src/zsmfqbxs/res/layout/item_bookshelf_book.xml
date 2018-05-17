@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/rl_main"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
 
-
     <RelativeLayout
+        android:id="@+id/rl_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bookshelf__item_press_bg"
+        android:background="@drawable/bookshelf_item_book_press_bg"
         android:gravity="center">
 
         <RelativeLayout
@@ -18,8 +18,8 @@
             android:layout_height="116dp"
             android:layout_marginLeft="19dp"
             android:layout_marginRight="19dp"
-            android:layout_marginTop="@dimen/dimen_margin_15"
-            android:background="@color/book_shelf_image_mark"
+            android:layout_marginTop="15dp"
+            android:background="#dadada"
             android:gravity="center"
             android:padding="0.5dp">
 
@@ -38,11 +38,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:background="@color/color_black_aa000000"
+                android:background="#aa000000"
                 android:gravity="center"
                 android:padding="1dp"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/text_size_nine"
+                android:textColor="#ffffff"
+                android:textSize="9sp"
                 android:visibility="gone"/>
         </RelativeLayout>
 
@@ -76,8 +76,8 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="@string/app_name"
-                android:textColor="@color/bookshelf_grid_book_name_text_color_2"
-                android:textSize="@dimen/dimen_text_14"/>
+                android:textColor="#212121"
+                android:textSize="14sp"/>
         </LinearLayout>
 
         <RelativeLayout
@@ -105,9 +105,9 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/img_book_status_update"
                 android:singleLine="true"
-                android:text="2014-08-14更新"
-                android:textColor="@color/bookshelf_update_time_grid_text_color_2"
-                android:textSize="@dimen/text_size_tiny"/>
+                android:text="@string/app_name"
+                android:textColor="#949494"
+                android:textSize="10sp"/>
         </RelativeLayout>
     </RelativeLayout>
 

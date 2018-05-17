@@ -4,7 +4,7 @@
                 android:layout_width="match_parent"
                 android:id="@+id/rl_main"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bookshelf_item_press_bg">
+                android:background="@drawable/bookshelf_item_book_press_bg">
 
 
     <ImageView
@@ -34,7 +34,7 @@
             android:layout_alignBottom="@+id/rl_information"
             android:layout_alignParentLeft="true"
             android:layout_alignTop="@+id/rl_information"
-            android:layout_marginLeft="@dimen/dimen_margin_12">
+            android:layout_marginLeft="12dp">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -47,7 +47,7 @@
 
             <ImageView
                 android:id="@+id/img_book_cover"
-                android:layout_width="@dimen/dimen_view_width_60"
+                android:layout_width="60dp"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
                 android:background="@drawable/book_shelf_book_mask"
@@ -70,7 +70,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:layout_marginRight="@dimen/dimen_margin_12"
+                android:layout_marginRight="12dp"
                 android:layout_marginTop="4dp"
                 android:orientation="horizontal">
 
@@ -84,7 +84,7 @@
                     android:singleLine="true"
                     android:text="name"
                     android:textColor="#212121"
-                    android:textSize="@dimen/dimen_text_16"/>
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:id="@+id/txt_book_states_update"
@@ -94,11 +94,11 @@
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
                     android:layout_marginBottom="1dp"
-                    android:layout_marginLeft="@dimen/dimen_margin_5"
-                    android:layout_marginRight="@dimen/dimen_margin_5"
-                    android:text="更新"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/bookshelf_item_update"
                     android:textColor="#f13435"
-                    android:textSize="@dimen/dimen_text_12"
+                    android:textSize="12sp"
                     android:visibility="gone"/>
 
                 <TextView
@@ -109,11 +109,11 @@
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
                     android:layout_marginBottom="1dp"
-                    android:layout_marginLeft="@dimen/dimen_margin_5"
-                    android:layout_marginRight="@dimen/dimen_margin_5"
-                    android:text="完结"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/bookshelf_item_finish"
                     android:textColor="#1f83ff"
-                    android:textSize="@dimen/dimen_text_12"
+                    android:textSize="12sp"
                     android:visibility="gone"/>
             </LinearLayout>
 
@@ -134,7 +134,7 @@
                     android:singleLine="true"
                     android:text="author"
                     android:textColor="#949494"
-                    android:textSize="@dimen/dimen_text_12"/>
+                    android:textSize="12sp"/>
 
                 <View
                     android:id="@+id/author_progress_divider"
@@ -153,9 +153,9 @@
                     android:layout_toRightOf="@+id/author_progress_divider"
                     android:ellipsize="end"
                     android:singleLine="true"
-                    android:text="20/260章"
+                    android:text="@string/bookshelf_item_chapters"
                     android:textColor="#949494"
-                    android:textSize="@dimen/dimen_text_12"/>
+                    android:textSize="12sp"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -173,9 +173,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:singleLine="true"
-                    android:text="2014-08-14更新: "
+                    android:text="@string/bookshelf_item_update_time"
                     android:textColor="#a5a5a5"
-                    android:textSize="@dimen/dimen_text_11"/>
+                    android:textSize="11sp"/>
 
                 <TextView
                     android:id="@+id/txt_book_last_chapter"
@@ -184,16 +184,16 @@
                     android:layout_toRightOf="@+id/txt_book_last_update_time"
                     android:ellipsize="end"
                     android:singleLine="true"
-                    android:text="二百六十章..."
+                    android:text="@string/bookshelf_item_last_chapter"
                     android:textColor="#a5a5a5"
-                    android:textSize="@dimen/dimen_text_11"/>
+                    android:textSize="11sp"/>
             </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_view_height_0.5"
+        android:layout_height="0.5dp"
         android:layout_below="@+id/rl_content"
         android:background="#e8e8e8"/>
 </RelativeLayout>

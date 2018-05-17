@@ -25,19 +25,19 @@ class BookShelfRemoveMenuPopup(context: Context, layout: Int = R.layout.popup_re
 
     init {
 
-        contentView.rl_container.isFocusable = true
-        contentView.rl_container.isFocusableInTouchMode = true
-        contentView.rl_container.requestFocus()
+        contentView.ll_container.isFocusable = true
+        contentView.ll_container.isFocusableInTouchMode = true
+        contentView.ll_container.requestFocus()
 
         contentView.btn_remove_delete.setOnClickListener {
             onDeleteClickListener?.invoke()
         }
 
         contentView.btn_remove_select_all.setOnClickListener {
-            if(contentView.btn_remove_select_all.text == "全选"){
+            if (contentView.btn_remove_select_all.text == "全选") {
                 contentView.btn_remove_select_all.text = "取消全选"
                 isSelectAll = true
-            }else{
+            } else {
                 isSelectAll = false
                 contentView.btn_remove_select_all.text = "全选"
             }
@@ -45,7 +45,7 @@ class BookShelfRemoveMenuPopup(context: Context, layout: Int = R.layout.popup_re
         }
     }
 
-    fun setSelectedNum(num: Int,isSelectAll: Boolean) {
+    fun setSelectedNum(num: Int, isSelectAll: Boolean) {
         contentView.btn_remove_select_all.text = if (isSelectAll) "取消全选" else "全选"
 
         if (num == 0) {
@@ -59,7 +59,7 @@ class BookShelfRemoveMenuPopup(context: Context, layout: Int = R.layout.popup_re
     }
 
     fun show(view: View) {
-        setSelectedNum(0,false)
+        setSelectedNum(0, false)
         showAsLocation(view)
     }
 
