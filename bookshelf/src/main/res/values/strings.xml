@@ -8,9 +8,9 @@
     <string name="text_hint_info">加入书架后, 可从书架找到这本书,方便阅读!</string>
     <string name="text_no_hint">不再接收此提示</string>
 
-
-
     <string name="module_name">书架</string>
+
+    <string name="bookshelf">书架</string>
 
     <string name="default_title">正义的秘密</string>
 
@@ -42,8 +42,15 @@
 
     <string name="book_sort">书架排序</string>
 
-
     <string name="refresh_start">下拉刷新</string>
+
     <string name="refresh_running">正在刷新</string>
+
     <string name="refresh_release">松开刷新</string>
+
+    <string name="bookshelf_edit">编辑书籍</string>
+
+    <string name="bookshelf_delete_fail">书籍删除失败</string>
+
+    <string name="bookshelf_delete_success">书籍删除成功</string>
 </resources>

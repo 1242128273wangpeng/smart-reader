@@ -6,7 +6,5 @@
     <color name="text_color_weak">#FFADB4BE</color>
 
 
-    <color name="colorPrimary">#FF19DD8B</color>
-
     <color name="bookshelf_item_book_pressed">#1A000000</color>
 </resources>
