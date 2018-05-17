@@ -10,7 +10,7 @@
         android:background="#FFFFFF">
 
         <TextView
-            android:id="@+id/txt_dialog_title"
+            android:id="@+id/txt_delete_title"
             style="@style/style_text_large_plain"
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -18,22 +18,22 @@
             android:text="@string/prompt"/>
 
         <TextView
-            android:id="@+id/txt_dialog_information"
+            android:id="@+id/txt_delete_prompt"
             style="@style/style_text_normal_dark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/txt_dialog_title"
+            android:layout_below="@id/txt_delete_title"
             android:layout_marginTop="15dp"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="6dp"
-            android:text="@string/delete_book_dialog_desc"/>
+            android:text="@string/bookshelf_delete_dialog_content"/>
 
         <CheckBox
             android:id="@+id/ckb_delete_cache"
             style="@style/style_text_small_plain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/txt_dialog_information"
+            android:layout_below="@id/txt_delete_prompt"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="12dp"
             android:button="@drawable/bookshelf_delete_check_box_sel"
@@ -42,13 +42,13 @@
             android:paddingLeft="8dp"
             android:paddingRight="0dp"
             android:paddingStart="8dp"
-            android:text="@string/bookshelf_delete_dialog_check_hint"/>
+            android:text="@string/bookshelf_delete_dialog_check"/>
 
         <ProgressBar
-            android:id="@+id/pgbar_dialog_loading"
+            android:id="@+id/pgbar_delete_loading"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_below="@id/txt_dialog_title"
+            android:layout_below="@id/txt_delete_title"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:indeterminateDrawable="@drawable/bookshelf_delete_loading_bg"
@@ -63,7 +63,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btn_dialog_cancel"
+                android:id="@+id/btn_delete_cancel"
                 style="@style/style_text_normal_plain"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -81,7 +81,7 @@
                 android:background="#FFF4F5F7"/>
 
             <Button
-                android:id="@+id/btn_dialog_confirm"
+                android:id="@+id/btn_delete_confirm"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

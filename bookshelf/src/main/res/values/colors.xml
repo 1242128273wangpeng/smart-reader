@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-
-    <color name="color_green_3ecc96">#3ecc96</color>
-
-
-
     <color name="bookshelf_item_pressed">#FFFAFAFA</color>
+
     <color name="bookshelf_item_book_pressed">#FFF4F4F4</color>
 
 </resources>

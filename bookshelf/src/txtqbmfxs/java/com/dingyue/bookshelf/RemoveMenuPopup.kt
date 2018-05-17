@@ -12,9 +12,9 @@ import kotlinx.android.synthetic.txtqbmfxs.popup_remove_menu.view.*
  * 2018\5\15 0015
  */
 
-class BookShelfRemoveMenuPopup(context: Context, layout: Int = R.layout.popup_remove_menu,
-                               width: Int = WindowManager.LayoutParams.MATCH_PARENT,
-                               height: Int = WindowManager.LayoutParams.WRAP_CONTENT)
+class RemoveMenuPopup(context: Context, layout: Int = R.layout.popup_remove_menu,
+                      width: Int = WindowManager.LayoutParams.MATCH_PARENT,
+                      height: Int = WindowManager.LayoutParams.WRAP_CONTENT)
     : BasePopup(context, layout, width, height) {
 
     var onDeleteClickListener: (() -> Unit)? = null
@@ -25,29 +25,26 @@ class BookShelfRemoveMenuPopup(context: Context, layout: Int = R.layout.popup_re
 
     init {
 
-        contentView.rl_container.isFocusable = true
-        contentView.rl_container.isFocusableInTouchMode = true
-        contentView.rl_container.requestFocus()
+        contentView.rl_remove_content.isFocusable = true
+        contentView.rl_remove_content.isFocusableInTouchMode = true
+        contentView.rl_remove_content.requestFocus()
 
         contentView.btn_remove_delete.setOnClickListener {
             onDeleteClickListener?.invoke()
         }
 
         contentView.btn_remove_select_all.setOnClickListener {
-            if(contentView.btn_remove_select_all.text == "全选"){
-                contentView.btn_remove_select_all.text = "取消全选"
-                isSelectAll = true
-            }else{
-                isSelectAll = false
-                contentView.btn_remove_select_all.text = "全选"
+            if (contentView.btn_remove_select_all.text == context.getString(R.string.select_all)) {
+                contentView.btn_remove_select_all.text = context.getString(R.string.cancel_select_all)
+                onSelectClickListener?.invoke(true)
+            } else {
+                contentView.btn_remove_select_all.text = context.getString(R.string.select_all)
+                onSelectClickListener?.invoke(false)
             }
-            onSelectClickListener?.invoke(isSelectAll)
         }
     }
 
-    fun setSelectedNum(num: Int,isSelectAll: Boolean) {
-        contentView.btn_remove_select_all.text = if (isSelectAll) "取消全选" else "全选"
-
+    fun setSelectedNum(num: Int) {
         if (num == 0) {
             contentView.btn_remove_delete.text = context.getString(R.string.delete)
             contentView.btn_remove_delete.isEnabled = false
@@ -58,10 +55,15 @@ class BookShelfRemoveMenuPopup(context: Context, layout: Int = R.layout.popup_re
         }
     }
 
-    fun show(view: View) {
-        setSelectedNum(0,false)
-        showAsLocation(view)
+    fun setSelectAllText(text: String) {
+        contentView.btn_remove_select_all.text = text
     }
 
-
+    fun show(view: View) {
+        setSelectedNum(0)
+        showAsLocation(view)
+        setSelectedNum(0)
+        contentView.btn_remove_select_all.text = context.getString(R.string.select_all)
+        showAsLocation(view)
+    }
 }

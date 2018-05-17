@@ -17,7 +17,7 @@ import com.dingyue.contract.CommonContract
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.txtqbmfyd.bookshelf_refresh_header.view.*
-import kotlinx.android.synthetic.txtqbmfyd.fragment_bookshelf.*
+import kotlinx.android.synthetic.txtqbmfyd.frag_bookshelf.*
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
@@ -32,6 +32,10 @@ import net.lzbook.kit.utils.*
 import java.util.concurrent.TimeUnit
 
 class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager {
+
+    private val popupHeight by lazy {
+        resources.getDimensionPixelSize(R.dimen.bookshelf_popup_height)
+    }
 
     private val bookshelfPresenter: BookShelfPresenter by lazy { BookShelfPresenter(this) }
 
@@ -107,7 +111,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                 } else {
                     bookShelfAdapter.insertSelectedPosition(position)
                     removeMenuPopup.setSelectedNum(bookShelfAdapter.selectedBooks.size)
-                    txt_editor_select_all.text = if (bookShelfAdapter.isSelectedAll()) getString(R.string.select_all_cancel) else getString(R.string.select_all)
+                    txt_editor_select_all.text = if (bookShelfAdapter.isSelectedAll()) getString(R.string.cancel_select_all) else getString(R.string.select_all)
                 }
             }
 
@@ -156,7 +160,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         srl_refresh.setOnPullRefreshListener(object : SuperSwipeRefreshLayout.OnPullRefreshListener {
             override fun onRefresh() {
-                headerView.txt_refresh_prompt.text = "正在刷新"
+                headerView.txt_refresh_prompt.text = getString(R.string.refresh_running)
                 headerView.img_refresh_arrow.visibility = View.GONE
                 headerView.pgbar_refresh_loading.visibility = View.VISIBLE
                 checkBookUpdate()
@@ -166,12 +170,12 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
             override fun onPullEnable(enable: Boolean) {
                 headerView.pgbar_refresh_loading.visibility = View.GONE
-                headerView.txt_refresh_prompt.text = if (enable) "松开刷新" else "下拉刷新"
+                headerView.txt_refresh_prompt.text = if (enable) getString(R.string.refresh_release) else getString(R.string.refresh_start)
                 headerView.img_refresh_arrow.visibility = View.VISIBLE
                 headerView.img_refresh_arrow.rotation = (if (enable) 180 else 0).toFloat()
             }
         })
-        txt_head_title.text = "书架"
+        txt_head_title.text = getString(R.string.bookshelf)
 
         img_head_personal.setOnClickListener {
             bookShelfInterface?.changeDrawerLayoutState()
@@ -193,7 +197,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                 return@setOnClickListener
             }
             if (txt_editor_select_all.text == getString(R.string.select_all)) {
-                txt_editor_select_all.text = getString(R.string.select_all_cancel)
+                txt_editor_select_all.text = getString(R.string.cancel_select_all)
                 selectAll(true)
             } else {
                 txt_editor_select_all.text = getString(R.string.select_all)
@@ -277,13 +281,12 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             }
             bookshelfPresenter.handleSuccessUpdate(result)
             AppUtils.setLongPreferences(activity, "book_rack_update_time", bookRackUpdateTime)
-//        updateUI()
         }
     }
 
     override fun onException(e: Exception) {
         latestLoadDataTime = System.currentTimeMillis()
-        showToastDelay(R.string.bookshelf_refresh_network_problem)
+        showToastDelay(R.string.bookshelf_network_error)
         if (srl_refresh != null) {
             srl_refresh.onRefreshComplete()
         }
@@ -294,17 +297,17 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             return
         }
         if (updateCount == 0) {
-            showToastDelay(R.string.main_update_no_new)
+            showToastDelay(R.string.bookshelf_no_book_update)
         } else {
             val bookName = firstBook?.book_name
             val bookLastChapterName = firstBook?.last_chapter_name
             if (bookName?.isNotEmpty() == true && bookLastChapterName?.isNotEmpty() == true) {
                 if (updateCount == 1 && activity != null) {
-                    showToastDelay("《$bookName${activity.getString(R.string.bookshelf_one_book_update)}" +
+                    showToastDelay("《$bookName${activity.getString(R.string.bookshelf_book_update_chapter)}" +
                             "$bookLastChapterName")
                 } else if (activity != null) {
-                    showToastDelay("《$bookName${activity.getString(R.string.bookshelf_more_book_update)}" +
-                            "$updateCount${activity.getString(R.string.bookshelf_update_chapters)}")
+                    showToastDelay("《$bookName${activity.getString(R.string.bookshelf_books_update_more)}" +
+                            "$updateCount${activity.getString(R.string.bookshelf_books_update_chapters)}")
                 }
             }
         }
@@ -326,7 +329,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         updateUI()
         bookShelfDeleteDialog.dismiss()
         dismissRemoveMenu()
-        activity.toastShort(R.string.book_delete_success)
+        activity.toastShort(R.string.bookshelf_delete_success)
     }
 
     override fun onAdRefresh() {
@@ -363,7 +366,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     private fun createHeaderView(): View {
-        headerView.txt_refresh_prompt.text = "下拉刷新"
+        headerView.txt_refresh_prompt.text = getString(R.string.refresh_start)
         headerView.img_refresh_arrow.visibility = View.VISIBLE
         headerView.img_refresh_arrow.setImageResource(R.drawable.pulltorefresh_down_arrow)
         headerView.pgbar_refresh_loading.visibility = View.GONE
@@ -376,7 +379,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     private fun checkBookUpdate() {
         if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
             srl_refresh.isRefreshing = false
-            showToastDelay(R.string.bookshelf_refresh_network_problem)
+            showToastDelay(R.string.bookshelf_network_error)
             return
         }
 
@@ -386,12 +389,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         // 刷新间隔小于30秒无效
         if (interval <= PULL_REFRESH_DELAY) {
             srl_refresh.onRefreshComplete()
-            AppLog.d(TAG, "刷新间隔小于30秒不请求数据")
-            showToastDelay(R.string.main_update_no_new)
+            showToastDelay(R.string.bookshelf_no_book_update)
         } else {
             // 刷新间隔大于30秒直接请求更新，
             bookshelfPresenter.addUpdateTask(this)
-            AppLog.d(TAG, "刷新间隔大于30秒请求数据")
         }
 
     }
@@ -400,13 +401,11 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
      * 处理被点击或更新通知的book
      */
     private fun handleBook(book: Book) {
-        AppLog.e(TAG, "handleBook")
         if (!TextUtils.isEmpty(book.book_id) && book.book_type == 0) {
             bookshelfPresenter.resetUpdateStatus(book.book_id)
         }
 
         BookRouter.navigateCoverOrRead(activity, book, 0)
-        AppLog.e(TAG, "goToCoverOrRead")
     }
 
     private fun showToastDelay(textId: Int) {
@@ -475,23 +474,25 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         changeHeaderState(true)
 
-        rl_content.setPadding(0, rl_content.paddingTop, 0, 140)
+        rl_content.setPadding(0, rl_content.paddingTop, 0, popupHeight)
 
         txt_editor_select_all.text = getString(R.string.select_all)
     }
 
     override fun dismissRemoveMenu() {
+        srl_refresh.setPullToRefreshEnabled(true)
+
         bookShelfAdapter.insertRemoveState(false)
-
-        removeMenuPopup.dismiss()
-
-        rl_content.setPadding(0, rl_content.paddingTop, 0, 0)
 
         bookShelfInterface?.changeHomeNavigationState(false)
 
+        removeMenuPopup.dismiss()
+
         changeHeaderState(false)
 
-        txt_editor_select_all.text = getString(R.string.select_all_cancel)
+        rl_content.setPadding(0, rl_content.paddingTop, 0, 0)
+
+        txt_editor_select_all.text = getString(R.string.cancel_select_all)
     }
 
     override fun isRemoveMenuShow(): Boolean = bookShelfAdapter.isRemove
