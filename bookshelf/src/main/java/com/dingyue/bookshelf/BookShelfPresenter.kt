@@ -17,12 +17,10 @@ import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.BookUpdate
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.data.db.BookDaoHelper
-import net.lzbook.kit.utils.AppLog
-import net.lzbook.kit.utils.BaseBookHelper
-import net.lzbook.kit.utils.doAsync
-import net.lzbook.kit.utils.uiThread
+import net.lzbook.kit.utils.*
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 /**
  * Created by qiantao on 2017/11/14 0014
@@ -36,8 +34,6 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
     var iBookList: ArrayList<Book> = ArrayList()
 
     var aDViews: ArrayList<ViewGroup> = ArrayList()
-
-    private val updateTableList: ArrayList<String> = ArrayList()
 
     var updateService: CheckNovelUpdateService? = null
 
@@ -233,38 +229,8 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
         }
     }
 
-//    /**
-//     * 过滤出更新状态的表
-//     */
-//    fun filterUpdateTableList(): ArrayList<String> {
-//        iBookList.asSequence().forEach { book: Book? ->
-//            if (book?.update_status == 1) {
-//                if (!updateTableList.contains(book.book_id)) {
-//                    updateTableList.add(book.book_id)
-//                }
-//            } else {
-//                if (updateTableList.contains(book?.book_id)) {
-//                    updateTableList.remove(book?.book_id)
-//                }
-//            }
-//        }
-//        return updateTableList
-//    }
-
-    /**
-     * 取消数据库中更新状态
-     */
-    fun resetUpdateStatus(book_id: String) {
-        val book = Book()
-        book.book_id = book_id
-        book.update_status = 0
-        if (updateTableList.contains(book.book_id)) {
-            updateTableList.remove(book_id)
-            bookDaoHelper.updateBook(book)
-        }
-    }
-
-    fun clear(){
+    fun clear() {
+        logd("presenter clear")
         view = null
         aDViews.clear()
     }

@@ -266,6 +266,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     override fun onDestroy() {
         super.onDestroy()
         bookshelfPresenter.iBookList.clear()
+        bookshelfPresenter.clear()
     }
 
     private fun initRecyclerView() {

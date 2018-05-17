@@ -230,6 +230,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     override fun onDestroy() {
         super.onDestroy()
         presenter.iBookList.clear()
+        presenter.clear()
     }
 
     /**
