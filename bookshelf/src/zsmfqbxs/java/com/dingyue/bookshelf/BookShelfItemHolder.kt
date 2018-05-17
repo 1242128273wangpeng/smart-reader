@@ -4,8 +4,6 @@ import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -47,7 +45,7 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             }
             book.status == 2 -> { //完结
                 img_book_status.visibility = View.VISIBLE
-                img_book_status.setImageResource(R.drawable.bookshelf_book_status_finish)
+                img_book_status.setImageResource(R.drawable.bookshelf_item_book_status_finish)
             }
             else -> {
                 img_book_status.visibility = View.GONE
@@ -80,9 +78,9 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             this.img_book_status_update.setVisibility(View.GONE)
             var typeColor = 0
             if (contains) {
-                typeColor = R.drawable.bookshelf_delete_checked
+                typeColor = R.drawable.bookshelf_item_delete_checked_icon
             } else {
-                typeColor = R.drawable.bookshelf_delete_unchecked
+                typeColor = R.drawable.bookshelf_item_delete_unchecked_icon
             }
             this.img_item_select_state.setBackgroundResource(typeColor)
         } else {
