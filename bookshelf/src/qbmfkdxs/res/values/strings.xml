@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="bookshelf_head_search_hint">搜小说</string>
+
+    <string name="bookshelf_empty_find">去书城</string>
+
+    <string name="bookshelf_empty_prompt">暂时没有书，去书城逛逛吧!</string>
+
+    <string name="bookshelf_remove_head_confirm">完成</string>
+
+    <string name="bookshelf_delete_dialog_loading_prompt">正在清理中...</string>
+</resources>

@@ -26,7 +26,7 @@ class RemoveMenuPopup(context: Context, layout: Int = R.layout.popup_remove_menu
         contentView.ll_content.isFocusableInTouchMode = true
         contentView.ll_content.requestFocus()
 
-        contentView.btn_delete.setOnClickListener {
+        contentView.btn_remove_delete.setOnClickListener {
             onDeleteClickListener?.invoke()
         }
 
@@ -34,12 +34,12 @@ class RemoveMenuPopup(context: Context, layout: Int = R.layout.popup_remove_menu
 
     fun setSelectedNum(num: Int) {
         if (num == 0) {
-            contentView.btn_delete.text = context.getString(R.string.delete)
-            contentView.btn_delete.isEnabled = false
+            contentView.btn_remove_delete.text = context.getString(R.string.delete)
+            contentView.btn_remove_delete.isEnabled = false
         } else {
             val text = context.getString(R.string.delete) + "(" + num + ")"
-            contentView.btn_delete.text = text
-            contentView.btn_delete.isEnabled = true
+            contentView.btn_remove_delete.text = text
+            contentView.btn_remove_delete.isEnabled = true
         }
     }
 
@@ -47,5 +47,4 @@ class RemoveMenuPopup(context: Context, layout: Int = R.layout.popup_remove_menu
         setSelectedNum(0)
         showAsLocation(view)
     }
-
 }
