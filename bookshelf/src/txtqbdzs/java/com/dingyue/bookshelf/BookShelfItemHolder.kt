@@ -3,15 +3,16 @@ package com.dingyue.bookshelf
 
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import kotlinx.android.synthetic.txtqbdzs.layout_bookshelf_item_grid.view.*
+import kotlinx.android.synthetic.txtqbdzs.item_bookshelf_book.view.*
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.Tools
-
+import android.view.ViewGroup
 
 /**
  * Desc 书架页item
@@ -20,7 +21,8 @@ import net.lzbook.kit.utils.Tools
  */
 
 
-class BookShelfItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
+        LayoutInflater.from(parent.context).inflate(R.layout.item_bookshelf_book, parent, false)) {
     fun bind(book: Book, bookshelfItemListener: BookShelfAdapter.BookShelfItemListener,
              contains: Boolean, remove: Boolean) = with(itemView) {
 

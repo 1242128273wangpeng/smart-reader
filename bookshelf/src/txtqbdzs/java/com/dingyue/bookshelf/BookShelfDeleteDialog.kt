@@ -1,11 +1,8 @@
 package com.intelligent.reader.view
 
 import android.app.Activity
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.TextView
 import com.dingyue.bookshelf.R
-import kotlinx.android.synthetic.zsmfqbxs.dialog_bookshelf_delete.*
+import kotlinx.android.synthetic.txtqbdzs.dialog_bookshelf_delete.*
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.data.bean.Book
 
@@ -46,7 +43,7 @@ class BookShelfDeleteDialog(activity: Activity) {
         dialog.ckb_delete_cache.isChecked = false
     }
 
-    fun isShow(): Boolean {
+    fun isShow():Boolean{
         return dialog.isShowing
     }
 
