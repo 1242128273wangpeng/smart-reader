@@ -11,7 +11,7 @@ import net.lzbook.kit.data.bean.Book
  * Author zhenxiang
  * 2018\5\15 0015
  */
-class BookDeleteDialog(activity: Activity) {
+class BookShelfDeleteDialog(activity: Activity) {
 
     private val dialog = MyDialog(activity, R.layout.dialog_bookshelf_delete)
 

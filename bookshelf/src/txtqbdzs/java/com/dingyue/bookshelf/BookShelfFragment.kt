@@ -11,9 +11,8 @@ import android.support.v7.widget.SimpleItemAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.dingyue.bookshelf.*
 import com.dingyue.contract.CommonContract
-import com.intelligent.reader.view.BookDeleteDialog
+import com.intelligent.reader.view.BookShelfDeleteDialog
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.txtqbdzs.frag_bookshelf.*
@@ -78,8 +77,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
     private lateinit var sharedPreferences: SharedPreferences
 
-    private val bookDeleteDialog: BookDeleteDialog by lazy {
-        val dialog = BookDeleteDialog(activity)
+    private val bookDeleteDialog: BookShelfDeleteDialog by lazy {
+        val dialog = BookShelfDeleteDialog(activity)
         dialog.onConfirmListener = { books, isDeleteCacheOnly ->
             if (books != null && books.isNotEmpty()) {
                 if (!bookClearCacheDialog.isShow()) bookClearCacheDialog.show()
