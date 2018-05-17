@@ -54,7 +54,7 @@
             android:layout_marginRight="19.5dp"
             android:layout_marginTop="15.5dp"
             android:contentDescription="@string/app_name"
-            android:src="@drawable/bookshelf_item_book_status_finish"
+            android:src="@drawable/bookshelf_item_book_status_finish_icon"
             android:visibility="gone"/>
 
         <LinearLayout

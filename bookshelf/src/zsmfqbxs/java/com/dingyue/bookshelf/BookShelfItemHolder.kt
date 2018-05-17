@@ -45,7 +45,7 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             }
             book.status == 2 -> { //完结
                 img_book_status.visibility = View.VISIBLE
-                img_book_status.setImageResource(R.drawable.bookshelf_item_book_status_finish)
+                img_book_status.setImageResource(R.drawable.bookshelf_item_book_status_finish_icon)
             }
             else -> {
                 img_book_status.visibility = View.GONE
