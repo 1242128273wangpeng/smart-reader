@@ -1,10 +1,12 @@
-package com.dingyue.bookshelf
+package com.dingyue.bookshelf.view
 
 import android.app.Activity
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.view.WindowManager
+import com.dingyue.bookshelf.BookShelfLogger
+import com.dingyue.bookshelf.R
 import com.dingyue.contract.BasePopup
 import com.dingyue.contract.CommonContract
 import kotlinx.android.synthetic.txtqbmfyd.dialog_bookshelf_sort.view.*
@@ -69,7 +71,7 @@ class BookSortingPopup(private val activity: Activity, layout: Int = R.layout.di
             contentView.txt_sort_read.setTextColor(selectTextColor)
         }
         setBackgroundAlpha(0.6f)
-        showAsLocation(view)
+        showAtLocation(view)
     }
 
     private fun setBackgroundAlpha(bgAlpha: Float) {

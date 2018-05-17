@@ -16,7 +16,7 @@
             android:layout_height="140dp"
             android:src="@drawable/bookshelf_item_cover_shadow_bg"/>
 
-        <com.dingyue.bookshelf.BorderImageView
+        <com.dingyue.bookshelf.view.BorderImageView
             android:id="@+id/img_book_cover"
             android:layout_width="80dp"
             android:layout_height="113dp"

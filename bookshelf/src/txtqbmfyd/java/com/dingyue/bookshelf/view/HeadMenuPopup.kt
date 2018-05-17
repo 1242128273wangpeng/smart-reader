@@ -1,11 +1,10 @@
-package com.dingyue.bookshelf
+package com.dingyue.bookshelf.view
 
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
-import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.PopupWindow
+import android.view.WindowManager
+import com.dingyue.bookshelf.R
+import com.dingyue.contract.BasePopup
 import kotlinx.android.synthetic.txtqbmfyd.popup_head_menu.view.*
 
 /**
@@ -14,28 +13,25 @@ import kotlinx.android.synthetic.txtqbmfyd.popup_head_menu.view.*
  * Mail tao_qian@dingyuegroup.cn
  * Date 2018/3/6 0006 10:36
  */
-class HeadMenuPopup(context: Context) {
-
-    private val contentView = LayoutInflater.from(context).inflate(R.layout.popup_head_menu, null)
-    private val popupWindow = PopupWindow(contentView)
+class HeadMenuPopup(context: Context, layout: Int = R.layout.popup_head_menu,
+                    width: Int = WindowManager.LayoutParams.WRAP_CONTENT,
+                    height: Int = WindowManager.LayoutParams.WRAP_CONTENT)
+    : BasePopup(context, layout, width, height) {
 
     private var downloadListener: (() -> Unit)? = null
     private var sortingListener: (() -> Unit)? = null
 
     init {
-        popupWindow.width = LinearLayout.LayoutParams.WRAP_CONTENT
-        popupWindow.height = LinearLayout.LayoutParams.WRAP_CONTENT
         popupWindow.isFocusable = true
-        popupWindow.setBackgroundDrawable(ColorDrawable(0x00000000))
         popupWindow.isOutsideTouchable = false
 
         contentView.ll_download_manager.setOnClickListener {
-            popupWindow.dismiss()
+            dismiss()
             downloadListener?.invoke()
         }
 
         contentView.ll_book_sorting.setOnClickListener {
-            popupWindow.dismiss()
+            dismiss()
             sortingListener?.invoke()
         }
 
@@ -50,6 +46,6 @@ class HeadMenuPopup(context: Context) {
     }
 
     fun show(view: View) {
-        popupWindow.showAsDropDown(view, 0, 0)
+        showAsDropDown(view)
     }
 }

@@ -12,6 +12,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.dingyue.bookshelf.BookShelfAdapter.BookShelfItemListener
+import com.dingyue.bookshelf.view.BookShelfDeleteDialog
+import com.dingyue.bookshelf.view.BookSortingPopup
+import com.dingyue.bookshelf.view.HeadMenuPopup
+import com.dingyue.bookshelf.view.RemoveMenuPopup
 import com.dingyue.contract.CommonContract
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -245,6 +249,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     override fun onDestroy() {
         super.onDestroy()
         bookshelfPresenter.iBookList.clear()
+        bookshelfPresenter.clear()
     }
 
     /**

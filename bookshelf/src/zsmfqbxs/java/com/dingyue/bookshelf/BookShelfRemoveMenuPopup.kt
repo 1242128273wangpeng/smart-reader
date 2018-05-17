@@ -60,7 +60,7 @@ class BookShelfRemoveMenuPopup(context: Context, layout: Int = R.layout.popup_re
 
     fun show(view: View) {
         setSelectedNum(0,false)
-        showAsLocation(view)
+        showAtLocation(view)
     }
 
 
