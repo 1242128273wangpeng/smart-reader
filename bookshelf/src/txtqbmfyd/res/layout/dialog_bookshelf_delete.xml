@@ -26,7 +26,7 @@
             android:layout_marginTop="15dp"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="6dp"
-            android:text="@string/delete_book_dialog_desc"/>
+            android:text="@string/bookshelf_delete_dialog_content"/>
 
         <CheckBox
             android:id="@+id/ckb_delete_cache"
@@ -42,7 +42,7 @@
             android:paddingLeft="8dp"
             android:paddingRight="0dp"
             android:paddingStart="8dp"
-            android:text="@string/bookshelf_delete_dialog_check_hint"/>
+            android:text="@string/bookshelf_delete_dialog_check"/>
 
         <ProgressBar
             android:id="@+id/pgbar_delete_loading"

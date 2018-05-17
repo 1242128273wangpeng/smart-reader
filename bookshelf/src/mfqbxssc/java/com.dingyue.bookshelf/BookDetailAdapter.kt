@@ -9,7 +9,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import kotlinx.android.synthetic.mfqbxssc.item_book_detail.view.*
 import net.lzbook.kit.data.bean.Book
-import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.Tools
 import java.util.*

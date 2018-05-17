@@ -17,7 +17,7 @@
             android:layout_height="49dp"
             android:background="@drawable/bookshelf_item_sel"
             android:gravity="center"
-            android:text="@string/recent_read_sorting"/>
+            android:text="@string/sort_for_reading_time"/>
 
         <View
             android:layout_width="match_parent"
@@ -31,7 +31,7 @@
             android:layout_height="49dp"
             android:background="@drawable/bookshelf_item_sel"
             android:gravity="center"
-            android:text="@string/update_time_sorting"/>
+            android:text="@string/sort_for_update_time"/>
 
         <View
             android:layout_width="match_parent"

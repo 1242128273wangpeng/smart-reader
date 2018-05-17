@@ -14,6 +14,8 @@
 
     <string name="bookshelf_name">书架</string>
 
+    <string name="bookshelf">书架</string>
+
     <string name="default_title">正义的秘密</string>
 
     <string name="default_message">有人说过,衡量一个作家是否优秀,就看他能不能担负起社会责任.东野吾做到了.</string>
@@ -44,8 +46,25 @@
 
     <string name="book_sort">书架排序</string>
 
-
     <string name="refresh_start">下拉刷新</string>
+
     <string name="refresh_running">正在刷新</string>
+
     <string name="refresh_release">松开刷新</string>
+
+    <string name="bookshelf_edit">编辑书籍</string>
+
+    <string name="bookshelf_delete_fail">书籍删除失败!</string>
+
+    <string name="bookshelf_delete_success">书籍删除成功!</string>
+
+    <string name="bookshelf_network_error">网络不给力!</string>
+
+    <string name="bookshelf_no_book_update">您追看的小说暂无更新!</string>
+
+    <string name="bookshelf_book_update_chapter">》已更新到最新章节：</string>
+
+    <string name="bookshelf_books_update_more">》等</string>
+
+    <string name="bookshelf_books_update_chapters">本，有更新！</string>
 </resources>

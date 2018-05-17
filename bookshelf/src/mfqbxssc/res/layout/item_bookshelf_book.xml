@@ -29,8 +29,8 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="4.2dp"
-            android:layout_marginLeft="3.5dp"
-            android:layout_marginRight="3.5dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
             android:adjustViewBounds="true"
             android:contentDescription="@string/module_name"
             android:scaleType="fitXY"
@@ -56,8 +56,8 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/rl_book_cover_content"
         android:layout_alignTop="@id/rl_book_cover_content"
-        android:layout_marginLeft="1dp"
         android:layout_marginTop="15dp"
+        android:layout_marginLeft="2dp"
         android:contentDescription="@string/module_name"
         android:src="@drawable/bookshelf_item_book_finish_icon"/>
 

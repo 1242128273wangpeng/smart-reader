@@ -46,7 +46,7 @@ class BookShelfDeleteDialog(private val activity: Activity) {
 
     fun show(books: ArrayList<Book>) {
         this.books = books
-        dialog.txt_delete_title.text = activity.getString(R.string.prompt)
+        dialog.txt_delete_title.text = activity.getString(R.string.bookshelf_delete_dialog_title)
         dialog.txt_delete_prompt.visibility = View.VISIBLE
         dialog.ckb_delete_cache.visibility = View.VISIBLE
         dialog.view_divider.visibility = View.VISIBLE
@@ -57,7 +57,7 @@ class BookShelfDeleteDialog(private val activity: Activity) {
     }
 
     fun showLoading() {
-        dialog.txt_delete_title.text = activity.getString(R.string.tip_cleaning_cache)
+        dialog.txt_delete_title.text = activity.getString(R.string.bookshelf_delete_dialog_loading_prompt)
         dialog.txt_delete_prompt.visibility = View.INVISIBLE
         dialog.ckb_delete_cache.visibility = View.INVISIBLE
         dialog.view_divider.visibility = View.INVISIBLE

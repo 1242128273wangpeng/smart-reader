@@ -1,25 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="book_delete_success">书籍删除成功</string>
-    <string name="book_delete_fail">书籍删除失败</string>
+    <string name="bookshelf_empty_find">去找书</string>
 
-    <string name="determine_delete_book">删除书籍，确定要继续吗？</string>
-    <string name="determine_clear_book">保留书籍仅清除缓存</string>
-    <string name="delete_book_dialog_desc">删除后，缓存内容将被清空，你确定要继续吗？</string>
-    <string name="bookshelf_delete_dialog_check_hint">保留书籍仅清除缓存</string>
+    <string name="bookshelf_empty_prompt">还没有添加书籍哦~</string>
 
+    <string name="bookshelf_delete_dialog_loading_prompt">正在清理缓存中...</string>
 
-    <string name="bookshelf_no_book_desc">还没有添加书籍哦~</string>
-    <string name="bookshelf_no_book_goto">去找书</string>
-
-    <string name="recent_read_sorting">按最近阅读排序</string>
-    <string name="update_time_sorting">按更新时间排序</string>
-
-    <string name="download_manager">缓存管理</string>
-    <string name="book_sorting">书籍排序</string>
-
-    <string name="bookshelf_edit_title">编辑书架</string>
-    <string name="select_all">全选</string>
-
-    <string name="select_all_cancel">取消全选</string>
+    <string name="bookshelf_delete_dialog_content">删除后，缓存内容将被清空，你确定要继续吗？</string>
 </resources>
