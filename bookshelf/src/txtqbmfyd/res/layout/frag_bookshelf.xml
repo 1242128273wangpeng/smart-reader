@@ -107,7 +107,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.dingyue.bookshelf.TopShadowRecyclerView
+            <com.dingyue.bookshelf.view.TopShadowRecyclerView
                 android:id="@+id/recl_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

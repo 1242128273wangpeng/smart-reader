@@ -29,7 +29,7 @@ open class BasePopup(var context: Context, var layout: Int, var width: Int, var 
         popupWindow.showAsDropDown(view, x, y)
     }
 
-    fun showAsLocation(parent: View, gravity: Int = Gravity.BOTTOM, x: Int = 0, y: Int = 0) {
+    fun showAtLocation(parent: View, gravity: Int = Gravity.BOTTOM, x: Int = 0, y: Int = 0) {
         popupWindow.showAtLocation(parent, gravity, x, y)
     }
 

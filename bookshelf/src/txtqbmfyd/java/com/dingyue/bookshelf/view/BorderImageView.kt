@@ -1,4 +1,4 @@
-package com.dingyue.bookshelf
+package com.dingyue.bookshelf.view
 
 import android.content.Context
 import android.graphics.Canvas

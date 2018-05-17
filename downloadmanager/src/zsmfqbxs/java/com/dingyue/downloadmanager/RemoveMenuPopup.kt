@@ -68,6 +68,6 @@ class RemoveMenuPopup(context: Context, layout: Int = R.layout.popup_download_ma
     fun show(view: View) {
         setSelectedNum(0)
         contentView.btn_select_all.text = context.getString(R.string.select_all)
-        showAsLocation(view)
+        showAtLocation(view)
     }
 }

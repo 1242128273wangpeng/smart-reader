@@ -1,8 +1,9 @@
-package com.dingyue.bookshelf
+package com.dingyue.bookshelf.view
 
 import android.content.Context
 import android.view.View
 import android.view.WindowManager
+import com.dingyue.bookshelf.R
 import com.dingyue.contract.BasePopup
 import kotlinx.android.synthetic.txtqbmfyd.popup_remove_menu.view.*
 
@@ -57,6 +58,6 @@ class RemoveMenuPopup(context: Context, layout: Int = R.layout.popup_remove_menu
 
     fun show(view: View) {
         setSelectedNum(0)
-        showAsLocation(view)
+        showAtLocation(view)
     }
 }

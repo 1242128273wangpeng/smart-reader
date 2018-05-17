@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v7.widget.SimpleItemAnimator
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,8 +17,8 @@ import com.dingyue.contract.CommonContract
 import de.greenrobot.event.EventBus
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.mfqbxssc.frag_bookshelf.*
 import kotlinx.android.synthetic.mfqbxssc.bookshelf_refresh_header.view.*
+import kotlinx.android.synthetic.mfqbxssc.frag_bookshelf.*
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.view.ConsumeEvent
 import net.lzbook.kit.constants.Constants
@@ -377,9 +376,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
      */
     private fun handleBook(book: Book?) {
         if (book != null && activity != null && !activity.isFinishing) {
-            if (!TextUtils.isEmpty(book.book_id) && book.book_type == 0) {
-                bookshelfPresenter.resetUpdateStatus(book.book_id)
-            }
             BookRouter.navigateCoverOrRead(activity, book, BookRouter.NAVIGATE_TYPE_BOOKSHELF)
         }
     }

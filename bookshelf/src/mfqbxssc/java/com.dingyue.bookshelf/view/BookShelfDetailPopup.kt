@@ -50,7 +50,7 @@ class BookShelfDetailPopup(private val activity: Activity, layout: Int = R.layou
     fun show(view: View, books: ArrayList<Book>) {
         if (books.isEmpty()) return
         setBackgroundAlpha(0.6f)
-        showAsLocation(view)
+        showAtLocation(view)
         bookDetailAdapter.update(books)
         contentView.vp_detail_content.currentItem = 0
         contentView.txt_detail_total.text = books.size.toString()

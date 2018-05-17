@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v7.widget.SimpleItemAnimator
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -310,9 +309,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
      */
     private fun handleBook(book: Book?) {
         if (book != null && activity != null && !activity.isFinishing) {
-            if (!TextUtils.isEmpty(book.book_id) && book.book_type == 0) {
-                presenter.resetUpdateStatus(book.book_id)
-            }
             BookRouter.navigateCoverOrRead(activity, book, BookRouter.NAVIGATE_TYPE_BOOKSHELF)
         }
     }
