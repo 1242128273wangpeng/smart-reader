@@ -83,7 +83,7 @@
                     android:background="#E8E8E8"/>
 
                 <Button
-                    android:id="@+id/btn_dialog_cancel"
+                    android:id="@+id/btn_delete_cancel"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_alignParentLeft="true"
@@ -95,7 +95,7 @@
                     android:textSize="16sp"/>
 
                 <Button
-                    android:id="@+id/btn_dialog_confirm"
+                    android:id="@+id/btn_delete_confirm"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
@@ -118,7 +118,7 @@
             android:visibility="gone">
 
             <ProgressBar
-                android:id="@+id/pgbar_dialog_loading"
+                android:id="@+id/pgbar_delete_loading"
                 android:layout_width="21dp"
                 android:layout_height="21dp"
                 android:indeterminateBehavior="repeat"

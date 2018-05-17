@@ -17,7 +17,7 @@ import com.dingyue.contract.CommonContract
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.txtqbmfyd.bookshelf_refresh_header.view.*
-import kotlinx.android.synthetic.txtqbmfyd.fragment_bookshelf.*
+import kotlinx.android.synthetic.txtqbmfyd.frag_bookshelf.*
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
@@ -32,6 +32,10 @@ import net.lzbook.kit.utils.*
 import java.util.concurrent.TimeUnit
 
 class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager {
+
+    private val popupHeight by lazy {
+        resources.getDimensionPixelSize(R.dimen.bookshelf_popup_height)
+    }
 
     private val bookshelfPresenter: BookShelfPresenter by lazy { BookShelfPresenter(this) }
 
@@ -475,7 +479,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         changeHeaderState(true)
 
-        rl_content.setPadding(0, rl_content.paddingTop, 0, 140)
+        rl_content.setPadding(0, rl_content.paddingTop, 0, popupHeight)
 
         txt_editor_select_all.text = getString(R.string.select_all)
     }
@@ -485,11 +489,11 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         removeMenuPopup.dismiss()
 
-        rl_content.setPadding(0, rl_content.paddingTop, 0, 0)
-
         bookShelfInterface?.changeHomeNavigationState(false)
 
         changeHeaderState(false)
+
+        rl_content.setPadding(0, rl_content.paddingTop, 0, 0)
 
         txt_editor_select_all.text = getString(R.string.select_all_cancel)
     }

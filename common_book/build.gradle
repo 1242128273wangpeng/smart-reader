@@ -939,7 +939,7 @@ dependencies {
     debugCompile 'com.amitshekhar.android:debug-db:1.0.1'
 
     // downloadmanager
-    txtqbmfydCompile project(path: ':downloadmanager', configuration: 'txtqbmfydRelease')
+    txtqbmfydCompile project(path: ':downloadmanager', configuration: 'zsmfqbxsRelease')
 
-    txtqbmfydCompile project(path: ':bookshelf', configuration: 'mfqbxsscRelease')
+    txtqbmfydCompile project(path: ':bookshelf', configuration: 'zsmfqbxsRelease')
 }

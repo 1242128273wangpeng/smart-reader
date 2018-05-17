@@ -20,11 +20,11 @@ class BookShelfDeleteDialog(activity: Activity) {
     private var books: ArrayList<Book> = ArrayList()
 
     init {
-        dialog.btn_dialog_confirm.setOnClickListener {
+        dialog.btn_delete_confirm.setOnClickListener {
             showLoading()
             onConfirmListener?.invoke(books, dialog.ckb_delete_cache.isChecked)
         }
-        dialog.btn_dialog_cancel.setOnClickListener {
+        dialog.btn_delete_cancel.setOnClickListener {
             dialog.dismiss()
             onCancelListener?.invoke()
         }
