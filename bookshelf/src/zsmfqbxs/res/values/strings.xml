@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-
+    <string name="bookshelf_empty_prompt">添加您喜欢的小说!</string>
 </resources>

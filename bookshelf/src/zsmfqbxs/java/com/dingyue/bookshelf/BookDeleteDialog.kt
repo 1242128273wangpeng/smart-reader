@@ -1,6 +1,7 @@
 package com.intelligent.reader.view
 
 import android.app.Activity
+import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
@@ -27,11 +28,11 @@ class BookShelfDeleteDialog(activity: Activity) {
     init {
         dialog.txt_delete_title.setText(R.string.prompt)
         dialog.ckb_delete_cache.setPadding(0, 0, 0, 0)
-        dialog.ckb_delete_cache.setText(R.string.determine_clear_book)
+        dialog.ckb_delete_cache.setText(R.string.bookshelf_delete_dialog_check)
         dialog.btn_dialog_confirm.setText(R.string.confirm)
         dialog.btn_dialog_cancel.setText(R.string.cancel)
         dialog.btn_dialog_confirm.setOnClickListener {
-            dialog.dismiss()
+            showLoading()
             onConfirmListener?.invoke(books, dialog.ckb_delete_cache.isChecked)
         }
         dialog.btn_dialog_cancel.setOnClickListener {
@@ -41,10 +42,24 @@ class BookShelfDeleteDialog(activity: Activity) {
     }
 
     fun show(books: ArrayList<Book>) {
-        this.books = books
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.setCancelable(true)
+        dialog.ll_delete_content.visibility = View.VISIBLE
+        dialog.ll_delete_loading.visibility = View.GONE
+        this.books.clear()
+        this.books.addAll(books)
         dialog.show()
         dialog.ckb_delete_cache.isChecked = false
+
     }
+
+    fun showLoading() {
+        dialog.ll_delete_content.visibility = View.GONE
+        dialog.ll_delete_loading.visibility = View.VISIBLE
+        dialog.setCanceledOnTouchOutside(false)
+        dialog.setCancelable(false)
+    }
+
 
     fun isShow(): Boolean {
         return dialog.isShowing

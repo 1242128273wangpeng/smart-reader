@@ -28,11 +28,11 @@ class BookSortingPopup(private val activity: Activity, layout: Int = R.layout.po
         popupWindow.isOutsideTouchable = false
         popupWindow.animationStyle = R.style.remove_menu_anim_style
 
-        contentView.rbtn_update_time_sorting.setOnClickListener {
+        contentView.rbtn_sort_update.setOnClickListener {
             dismiss()
             onTimeSortingClickListener?.invoke()
         }
-        contentView.rbtn_recent_read_sorting.setOnClickListener {
+        contentView.rbtn_sort_read.setOnClickListener {
             dismiss()
             onRecentReadSortingClickListener?.invoke()
         }
@@ -45,11 +45,11 @@ class BookSortingPopup(private val activity: Activity, layout: Int = R.layout.po
 
     fun show(view: View) {
         if (CommonContract.queryBookSortingType() == 0) {
-            contentView.rbtn_recent_read_sorting.isChecked = true
-            contentView.rbtn_update_time_sorting.isChecked = false
+            contentView.rbtn_sort_read.isChecked = true
+            contentView.rbtn_sort_update.isChecked = false
         } else {
-            contentView.rbtn_update_time_sorting.isChecked = true
-            contentView.rbtn_recent_read_sorting.isChecked = false
+            contentView.rbtn_sort_update.isChecked = true
+            contentView.rbtn_sort_read.isChecked = false
         }
         setBackgroundAlpha(0.6f)
         showAtLocation(view)

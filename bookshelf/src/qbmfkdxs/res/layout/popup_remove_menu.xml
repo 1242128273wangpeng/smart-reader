@@ -5,16 +5,16 @@
     android:id="@+id/ll_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#ffffff"
+    android:background="#FFFFFFFF"
     tools:ignore="RtlHardcoded">
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="#e6e6e6"/>
+        android:background="#FFE6E6E6"/>
 
     <Button
-        android:id="@+id/btn_delete"
+        android:id="@+id/btn_remove_delete"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_centerInParent="true"
@@ -27,9 +27,9 @@
     <net.lzbook.kit.book.view.NightShadowView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/btn_delete"
-        android:layout_alignLeft="@+id/btn_delete"
-        android:layout_alignRight="@+id/btn_delete"
-        android:layout_alignTop="@+id/btn_delete"
+        android:layout_alignBottom="@id/btn_remove_delete"
+        android:layout_alignLeft="@id/btn_remove_delete"
+        android:layout_alignRight="@id/btn_remove_delete"
+        android:layout_alignTop="@id/btn_remove_delete"
         android:visibility="gone"/>
 </RelativeLayout>

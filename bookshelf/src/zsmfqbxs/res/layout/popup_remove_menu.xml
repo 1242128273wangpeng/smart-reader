@@ -31,10 +31,10 @@
                 android:layout_height="38dp"
                 android:layout_centerInParent="true"
                 android:layout_weight="1"
-                android:background="@drawable/bookshelf_delete_cancel_sel"
+                android:background="@drawable/bookshelf_remove_select_all_bg_sel"
                 android:gravity="center"
                 android:text="@string/select_all"
-                android:textColor="@drawable/bookshelf_delete_cancel_text_sel"
+                android:textColor="@drawable/bookshelf_remove_select_all_text_sel"
                 android:textSize="16sp"/>
         </RelativeLayout>
 
@@ -51,10 +51,10 @@
                 android:layout_height="38dp"
                 android:layout_centerInParent="true"
                 android:layout_weight="1"
-                android:background="@drawable/bookshelf_delete_submit_bg"
+                android:background="@drawable/bookshelf_remove_delete_bg"
                 android:gravity="center"
                 android:text="@string/delete"
-                android:textColor="@drawable/bookshelf_delete_submit_text_sel"
+                android:textColor="@drawable/bookshelf_remove_delete_text_sel"
                 android:textSize="16sp"/>
         </RelativeLayout>
     </LinearLayout>

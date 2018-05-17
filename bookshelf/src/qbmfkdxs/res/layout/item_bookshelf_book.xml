@@ -94,7 +94,6 @@
                 android:textSize="12sp"
                 tools:text="二百六十章..."/>
 
-
             <TextView
                 android:id="@+id/txt_book_last_update_time"
                 android:layout_width="wrap_content"
@@ -106,20 +105,20 @@
                 android:layout_marginTop="18dp"
                 android:singleLine="true"
                 android:textColor="#7D8595"
-                android:textSize="10sp"
+                android:textSize="12sp"
                 tools:text="2014-08-14更新"/>
 
             <View
                 android:id="@+id/view_divider"
                 android:layout_width="1dp"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/txt_book_last_update_time"
-                android:layout_alignTop="@+id/txt_book_last_update_time"
+                android:layout_alignBottom="@id/txt_book_last_update_time"
+                android:layout_alignTop="@id/txt_book_last_update_time"
                 android:layout_marginBottom="2dp"
                 android:layout_marginLeft="7dp"
                 android:layout_marginRight="7dp"
                 android:layout_marginTop="2dp"
-                android:layout_toRightOf="@+id/txt_book_last_update_time"
+                android:layout_toRightOf="@id/txt_book_last_update_time"
                 android:background="#7D8595"/>
 
             <TextView
@@ -130,15 +129,12 @@
                 android:layout_marginBottom="4dp"
                 android:layout_marginRight="13dp"
                 android:layout_marginTop="18dp"
-                android:layout_toRightOf="@+id/view_divider"
+                android:layout_toRightOf="@id/view_divider"
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:textColor="#7D8595"
-                android:textSize="10sp"
+                android:textSize="12sp"
                 tools:text="20/260章"/>
-
         </RelativeLayout>
     </RelativeLayout>
-
-
 </RelativeLayout>

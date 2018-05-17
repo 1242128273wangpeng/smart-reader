@@ -110,11 +110,11 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     private lateinit var sharedPreferences: SharedPreferences
 
 
-    private val bookDeleteDialog: BookShelfDeleteDialog by lazy {
+    private val bookkShelfDeleteDialog: BookShelfDeleteDialog by lazy {
         val dialog = BookShelfDeleteDialog(activity)
         dialog.onConfirmListener = { books, isDeleteCacheOnly ->
             if (books.isNotEmpty()) {
-                if (!bookClearCacheDialog.isShow()) bookClearCacheDialog.show()
+
                 deleteBooks(books, isDeleteCacheOnly)
             }
         }
@@ -125,17 +125,13 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
 
-    private val bookClearCacheDialog: BookClearCacheDialog by lazy {
-        val dialog = BookClearCacheDialog(activity)
-        dialog
-    }
 
 
     private val removeMenuPopup: BookShelfRemoveMenuPopup by lazy {
         val popup = BookShelfRemoveMenuPopup(activity)
         popup.onDeleteClickListener = {
-            if(!bookDeleteDialog.isShow()){
-                bookDeleteDialog.show(bookShelfAdapter.selectedBooks)
+            if(!bookkShelfDeleteDialog.isShow()){
+                bookkShelfDeleteDialog.show(bookShelfAdapter.selectedBooks)
             }
         }
         popup.onSelectClickListener = { isSelectAll ->
@@ -364,9 +360,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         if (activity != null && !activity.isFinishing) {
 
             updateUI()
-            bookDeleteDialog.dismiss()
-            if (bookClearCacheDialog.isShow()) {
-                bookClearCacheDialog.dimiss()
+
+            if (bookkShelfDeleteDialog.isShow()) {
+                bookkShelfDeleteDialog.dismiss()
             }
             dismissRemoveMenu()
         }

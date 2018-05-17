@@ -9,7 +9,7 @@
         android:id="@+id/rl_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bookshelf_item_book_press_bg"
+        android:background="@drawable/bookshelf_item_press_bg"
         android:gravity="center">
 
         <RelativeLayout
@@ -28,10 +28,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
-                android:background="@drawable/bookshelf_book_cover_default"
+                android:background="@drawable/bookshelf_item_book_cover_icon"
                 android:contentDescription="@string/app_name"
                 android:scaleType="fitXY"
-                android:src="@drawable/bookshelf_book_cover_default"/>
+                android:src="@drawable/bookshelf_item_book_cover_icon"/>
 
             <TextView
                 android:id="@+id/txt_book_unread_chapters"
@@ -54,7 +54,7 @@
             android:layout_marginRight="19.5dp"
             android:layout_marginTop="15.5dp"
             android:contentDescription="@string/app_name"
-            android:src="@drawable/bookshelf_book_status_finish"
+            android:src="@drawable/bookshelf_item_book_status_finish_icon"
             android:visibility="gone"/>
 
         <LinearLayout
@@ -96,7 +96,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="3dp"
                 android:layout_marginRight="3dp"
-                android:src="@drawable/bookshelf_book_status_update_bg"
+                android:src="@drawable/bookshelf_item_book_update_bg"
                 android:visibility="gone"/>
 
             <TextView

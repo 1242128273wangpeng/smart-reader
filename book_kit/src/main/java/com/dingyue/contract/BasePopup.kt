@@ -20,7 +20,7 @@ open class BasePopup(var context: Context, var layout: Int, var width: Int, var 
     protected val popupWindow = PopupWindow(contentView)
 
     init {
-        popupWindow.setBackgroundDrawable(ColorDrawable(0x00000000))   //为PopupWindow设置透明背景.
+        popupWindow.setBackgroundDrawable(ColorDrawable(0x00000000))
         popupWindow.width = width
         popupWindow.height = height
     }
