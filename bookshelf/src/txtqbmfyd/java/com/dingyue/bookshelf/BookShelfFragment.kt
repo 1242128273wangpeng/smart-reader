@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v7.widget.SimpleItemAnimator
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,7 +56,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             BookShelfLogger.uploadBookShelfCacheManager()
         }
         popup.setOnSortingClickListener {
-            bookSortingDialog.show()
+            bookSortingPopup.show(rl_content)
             BookShelfLogger.uploadBookShelfBookSort()
         }
         popup
@@ -75,15 +74,15 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         popup
     }
 
-    private val bookSortingDialog: BookSortingDialog by lazy {
-        val dialog = BookSortingDialog(this.activity)
-        dialog.setOnRecentReadClickListener {
+    private val bookSortingPopup: BookSortingPopup by lazy {
+        val popup = BookSortingPopup(activity)
+        popup.setOnRecentReadClickListener {
             sortBooks(0)
         }
-        dialog.setOnUpdateTimeClickListener {
+        popup.setOnUpdateTimeClickListener {
             sortBooks(1)
         }
-        dialog
+        popup
     }
 
     val bookShelfAdapter: BookShelfAdapter by lazy {
@@ -401,10 +400,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
      * 处理被点击或更新通知的book
      */
     private fun handleBook(book: Book) {
-        if (!TextUtils.isEmpty(book.book_id) && book.book_type == 0) {
-            bookshelfPresenter.resetUpdateStatus(book.book_id)
-        }
-
         BookRouter.navigateCoverOrRead(activity, book, 0)
     }
 
