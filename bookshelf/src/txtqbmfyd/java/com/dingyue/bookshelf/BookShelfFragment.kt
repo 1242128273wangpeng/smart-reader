@@ -286,7 +286,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
     override fun onException(e: Exception) {
         latestLoadDataTime = System.currentTimeMillis()
-        showToastDelay(R.string.bookshelf_refresh_network_problem)
+        showToastDelay(R.string.bookshelf_network_error)
         if (srl_refresh != null) {
             srl_refresh.onRefreshComplete()
         }
@@ -297,17 +297,17 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             return
         }
         if (updateCount == 0) {
-            showToastDelay(R.string.main_update_no_new)
+            showToastDelay(R.string.bookshelf_no_book_update)
         } else {
             val bookName = firstBook?.book_name
             val bookLastChapterName = firstBook?.last_chapter_name
             if (bookName?.isNotEmpty() == true && bookLastChapterName?.isNotEmpty() == true) {
                 if (updateCount == 1 && activity != null) {
-                    showToastDelay("《$bookName${activity.getString(R.string.bookshelf_one_book_update)}" +
+                    showToastDelay("《$bookName${activity.getString(R.string.bookshelf_book_update_chapter)}" +
                             "$bookLastChapterName")
                 } else if (activity != null) {
-                    showToastDelay("《$bookName${activity.getString(R.string.bookshelf_more_book_update)}" +
-                            "$updateCount${activity.getString(R.string.bookshelf_update_chapters)}")
+                    showToastDelay("《$bookName${activity.getString(R.string.bookshelf_books_update_more)}" +
+                            "$updateCount${activity.getString(R.string.bookshelf_books_update_chapters)}")
                 }
             }
         }
@@ -379,7 +379,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     private fun checkBookUpdate() {
         if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
             srl_refresh.isRefreshing = false
-            showToastDelay(R.string.bookshelf_refresh_network_problem)
+            showToastDelay(R.string.bookshelf_network_error)
             return
         }
 
@@ -389,7 +389,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         // 刷新间隔小于30秒无效
         if (interval <= PULL_REFRESH_DELAY) {
             srl_refresh.onRefreshComplete()
-            showToastDelay(R.string.main_update_no_new)
+            showToastDelay(R.string.bookshelf_no_book_update)
         } else {
             // 刷新间隔大于30秒直接请求更新，
             bookshelfPresenter.addUpdateTask(this)
@@ -480,11 +480,13 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     override fun dismissRemoveMenu() {
+        srl_refresh.setPullToRefreshEnabled(true)
+
         bookShelfAdapter.insertRemoveState(false)
 
-        removeMenuPopup.dismiss()
-
         bookShelfInterface?.changeHomeNavigationState(false)
+
+        removeMenuPopup.dismiss()
 
         changeHeaderState(false)
 

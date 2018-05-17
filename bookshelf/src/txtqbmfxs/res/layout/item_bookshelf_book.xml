@@ -105,7 +105,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_gravity="top|right"
-                    android:layout_marginRight="@dimen/dimen_margin_5"
+                    android:layout_marginRight="5dp"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/module_name"
                     android:src="@drawable/bookshelf_book_status_update"
