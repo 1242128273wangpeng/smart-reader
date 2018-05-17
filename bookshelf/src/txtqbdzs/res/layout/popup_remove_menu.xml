@@ -8,16 +8,16 @@
     android:gravity="center_vertical">
 
     <View
-        android:id="@+id/divi_top"
+        android:id="@+id/view_divider"
         android:layout_width="match_parent"
         android:layout_height="5dp"
-        android:background="@drawable/bookshelf_bottom_shadow"/>
+        android:background="@drawable/bookshelf_common_shadow_bg"/>
 
     <LinearLayout
-        android:id="@+id/ll_container"
+        android:id="@+id/ll_remove_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/divi_top"
+        android:layout_below="@id/view_divider"
         android:background="#fafafa"
         android:orientation="horizontal">
 
@@ -33,11 +33,10 @@
                 android:layout_width="140dp"
                 android:layout_height="38dp"
                 android:layout_centerInParent="true"
-                android:layout_weight="1"
-                android:background="@drawable/bookshelf_delete_cancel_sel"
+                android:background="@drawable/bookshelf_remove_select_all_sel"
                 android:gravity="center"
                 android:text="@string/select_all"
-                android:textColor="@drawable/bookshelf_delete_cancel_text_sel"
+                android:textColor="@drawable/bookshelf_remove_select_all_text_sel"
                 android:textSize="16sp"/>
         </RelativeLayout>
 
@@ -53,11 +52,10 @@
                 android:layout_width="140dp"
                 android:layout_height="38dp"
                 android:layout_centerInParent="true"
-                android:layout_weight="1"
-                android:background="@drawable/bookshelf_delete_submit_sel"
+                android:background="@drawable/bookshelf_remove_delete_sel"
                 android:gravity="center"
                 android:text="@string/delete"
-                android:textColor="@drawable/bookshelf_delete_submit_text_sel"
+                android:textColor="@drawable/bookshelf_remove_delete_text_sel"
                 android:textSize="16sp"/>
         </RelativeLayout>
     </LinearLayout>
@@ -65,10 +63,9 @@
     <net.lzbook.kit.book.view.NightShadowView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/ll_container"
-        android:layout_alignLeft="@+id/ll_container"
-        android:layout_alignRight="@+id/ll_container"
-        android:layout_alignTop="@+id/ll_container"
-        android:visibility="gone"
-        />
+        android:layout_alignBottom="@id/ll_remove_content"
+        android:layout_alignLeft="@id/ll_remove_content"
+        android:layout_alignRight="@id/ll_remove_content"
+        android:layout_alignTop="@id/ll_remove_content"
+        android:visibility="gone"/>
 </RelativeLayout>

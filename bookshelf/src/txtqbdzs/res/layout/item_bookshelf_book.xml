@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:id="@+id/rl_main"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bookshelf_item_book_press_bg">
-
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bookshelf_item_book_sel"
+    tools:ignore="RtlHardcoded">
 
     <ImageView
         android:id="@+id/img_item_select_state"
@@ -14,8 +15,8 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:background="@drawable/icon_delete_checked"
-        android:contentDescription="@string/app_name"
+        android:contentDescription="@string/module_name"
+        android:src="@drawable/bookshelf_item_book_checked_icon"
         android:visibility="gone"/>
 
     <RelativeLayout
@@ -24,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
-        android:layout_toRightOf="@+id/img_item_select_state"
+        android:layout_toRightOf="@id/img_item_select_state"
         android:gravity="clip_vertical">
 
         <FrameLayout
@@ -40,9 +41,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="false"
-                android:contentDescription="@string/app_name"
+                android:contentDescription="@string/module_name"
                 android:scaleType="fitXY"
-                android:src="@drawable/book_shelf_book_mask"
+                android:src="@drawable/bookshelf_item_book_shadow_bg"
                 android:visibility="gone"/>
 
             <ImageView
@@ -50,8 +51,8 @@
                 android:layout_width="60dp"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
-                android:background="@drawable/book_shelf_book_mask"
-                android:contentDescription="@string/app_name"
+                android:background="@drawable/bookshelf_item_book_shadow_bg"
+                android:contentDescription="@string/module_name"
                 android:paddingBottom="3dp"
                 android:paddingLeft="2dp"
                 android:paddingRight="3dp"
@@ -82,22 +83,20 @@
                     android:layout_weight="3"
                     android:ellipsize="end"
                     android:singleLine="true"
-                    android:text="name"
                     android:textColor="#212121"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    tools:text="name"/>
 
                 <TextView
                     android:id="@+id/txt_book_states_update"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
                     android:layout_marginBottom="1dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:text="@string/bookshelf_item_update"
-                    android:textColor="#f13435"
+                    android:text="@string/bookshelf_item_book_update"
+                    android:textColor="#FFF13435"
                     android:textSize="12sp"
                     android:visibility="gone"/>
 
@@ -105,14 +104,12 @@
                     android:id="@+id/txt_book_states_finish"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
                     android:layout_marginBottom="1dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:text="@string/bookshelf_item_finish"
-                    android:textColor="#1f83ff"
+                    android:text="@string/bookshelf_item_book_finish"
+                    android:textColor="#FF1F83FF"
                     android:textSize="12sp"
                     android:visibility="gone"/>
             </LinearLayout>
@@ -132,9 +129,9 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:singleLine="true"
-                    android:text="author"
                     android:textColor="#949494"
-                    android:textSize="12sp"/>
+                    android:textSize="12sp"
+                    tools:text="author"/>
 
                 <View
                     android:id="@+id/author_progress_divider"
@@ -153,9 +150,9 @@
                     android:layout_toRightOf="@+id/author_progress_divider"
                     android:ellipsize="end"
                     android:singleLine="true"
-                    android:text="@string/bookshelf_item_chapters"
                     android:textColor="#949494"
-                    android:textSize="12sp"/>
+                    android:textSize="12sp"
+                    tools:text="@string/default_message"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -173,9 +170,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:singleLine="true"
-                    android:text="@string/bookshelf_item_update_time"
-                    android:textColor="#a5a5a5"
-                    android:textSize="11sp"/>
+                    android:textColor="#FFA5A5A5"
+                    android:textSize="12sp"
+                    tools:text="@string/default_title"/>
 
                 <TextView
                     android:id="@+id/txt_book_last_chapter"
@@ -184,9 +181,9 @@
                     android:layout_toRightOf="@+id/txt_book_last_update_time"
                     android:ellipsize="end"
                     android:singleLine="true"
-                    android:text="@string/bookshelf_item_last_chapter"
-                    android:textColor="#a5a5a5"
-                    android:textSize="11sp"/>
+                    android:textColor="#FFA5A5A5"
+                    android:textSize="12sp"
+                    tools:text="@string/default_message"/>
             </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>

@@ -13,6 +13,7 @@ import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.Tools
 import android.view.ViewGroup
+import java.text.MessageFormat
 
 /**
  * Desc 书架页item
@@ -23,12 +24,14 @@ import android.view.ViewGroup
 
 class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         LayoutInflater.from(parent.context).inflate(R.layout.item_bookshelf_book, parent, false)) {
+    
     fun bind(book: Book, bookshelfItemListener: BookShelfAdapter.BookShelfItemListener,
              contains: Boolean, remove: Boolean) = with(itemView) {
 
-        if (!TextUtils.isEmpty(book.name))
-            this.txt_book_name.text = book.name
-
+        if (!TextUtils.isEmpty(book.name)) {
+            txt_book_name.text = book.name
+        }
+        
         if (!TextUtils.isEmpty(book.author)) {
             txt_book_author.text = book.author
         }
@@ -38,51 +41,57 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         }
 
         if (book.sequence >= 0) {
-            this.txt_book_unread_chapters.text = (book.sequence + 1).toString() + "/" + book.chapter_count + "章"
+            txt_book_unread_chapters.text = MessageFormat.format("{0}/{1}章", book.sequence + 1, book.chapter_count)
         } else {
-            this.txt_book_unread_chapters.text = "未读"
+            txt_book_unread_chapters.text = "未读"
         }
 
         // 是否连载
         if (book.status == 2) {
-            this.txt_book_states_finish.visibility = View.VISIBLE
+            txt_book_states_finish.visibility = View.VISIBLE
         } else {
-            this.txt_book_states_finish.visibility = View.GONE
+            txt_book_states_finish.visibility = View.GONE
         }
         // 是否有更新
         if (book.update_status != 1) {
-            this.txt_book_states_update.visibility = View.GONE
+            txt_book_states_update.visibility = View.GONE
         } else {
-            this.txt_book_states_update.visibility = View.VISIBLE
-            this.txt_book_states_finish.visibility = View.GONE
+            txt_book_states_update.visibility = View.VISIBLE
+            txt_book_states_finish.visibility = View.GONE
         }
-        if (this.txt_book_last_update_time != null) {
-            this.txt_book_last_update_time.text = Tools.compareTime(AppUtils.formatter, book
-                    .last_updatetime_native) + "更新: "
+        if (txt_book_last_update_time != null) {
+            txt_book_last_update_time.text = Tools.compareTime(AppUtils.formatter, book
+                    .last_updatetime_native) + "更新"
         }
 
         if (!TextUtils.isEmpty(book.img_url) && book.img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL) {
-            Glide.with(itemView.getContext().getApplicationContext()).load(book.img_url).placeholder(R.drawable.icon_book_cover_default).error(R.drawable.icon_book_cover_default).diskCacheStrategy(DiskCacheStrategy.ALL).into(this.img_book_cover)
+            Glide.with(itemView.context.applicationContext)
+                    .load(book.img_url)
+                    .placeholder(R.drawable.bookshelf_item_book_cover_icon)
+                    .error(R.drawable.bookshelf_item_book_cover_icon)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(img_book_cover)
         } else {
-            Glide.with(itemView.getContext().getApplicationContext()).load(R.drawable.icon_book_cover_default).into(this.img_book_cover)
+            Glide.with(itemView.context.applicationContext)
+                    .load(R.drawable.bookshelf_item_book_cover_icon)
+                    .into(img_book_cover)
         }
 
-        this.txt_book_last_chapter.text = book.last_chapter_name
-
+        txt_book_last_chapter.text = book.last_chapter_name
 
         if (remove) {
-            this.img_item_select_state.visibility = View.VISIBLE
-            this.txt_book_states_finish.visibility = View.GONE
-            this.txt_book_states_update.visibility = View.GONE
-            var typeColor = 0
+            img_item_select_state.visibility = View.VISIBLE
+            txt_book_states_finish.visibility = View.GONE
+            txt_book_states_update.visibility = View.GONE
+
             if (contains) {
-                typeColor = R.drawable.bookshelf_delete_checked
+                img_item_select_state.setImageResource(R.drawable.bookshelf_item_book_checked_icon)
             } else {
-                typeColor = R.drawable.bookshelf_delete_unchecked
+                img_item_select_state.setImageResource(R.drawable.bookshelf_item_book_check_icon)
             }
-            this.img_item_select_state.setBackgroundResource(typeColor)
+
         } else {
-            this.img_item_select_state.visibility = View.GONE
+            img_item_select_state.visibility = View.GONE
         }
 
         rl_main.setOnClickListener {

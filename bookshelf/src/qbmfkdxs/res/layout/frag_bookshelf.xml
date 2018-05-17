@@ -26,8 +26,8 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="18dp"
-                android:contentDescription="@string/module_name"
                 android:background="@drawable/bookshelf_head_setting_icon_sel"
+                android:contentDescription="@string/module_name"
                 android:scaleType="fitXY"/>
 
             <net.lzbook.kit.book.view.FirstUsePointView
@@ -46,8 +46,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="18dp"
-                android:scaleType="fitXY"
                 android:contentDescription="@string/module_name"
+                android:scaleType="fitXY"
                 android:src="@drawable/bookshelf_head_menu_icon_sel"/>
 
             <RelativeLayout
@@ -70,8 +70,8 @@
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:layout_centerVertical="true"
-                    android:contentDescription="@string/module_name"
-                    android:background="@drawable/bookshelf_head_search_icon"/>
+                    android:background="@drawable/bookshelf_head_search_icon"
+                    android:contentDescription="@string/module_name"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -132,10 +132,10 @@
     </RelativeLayout>
 
     <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
-        android:layout_below="@+id/rl_head"
         android:id="@+id/srl_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/rl_head">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recl_content"

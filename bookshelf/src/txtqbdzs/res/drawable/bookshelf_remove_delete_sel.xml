@@ -4,8 +4,8 @@
     <item android:state_pressed="true">
         <shape>
             <stroke android:width="1dip"
-                    android:color="@color/color_green_3ecc96"/>
-            <solid android:color="@color/color_white_ffffff"/>
+                    android:color="#FF3ECC96"/>
+            <solid android:color="#FFFFFFFF"/>
             <corners android:radius="5dp"/>
         </shape>
     </item>
@@ -13,15 +13,15 @@
     <item android:state_enabled="false">
         <shape>
             <stroke android:width="1dip"
-                    android:color="#bebebe"/>
-            <solid android:color="#fafafa"/>
+                    android:color="#FFBEBEBE"/>
+            <solid android:color="#FFFAFAFA"/>
             <corners android:radius="5dp"/>
         </shape>
     </item>
 
     <item>
         <shape>
-            <solid android:color="@color/color_green_3ecc96"/>
+            <solid android:color="#FF3ECC96"/>
             <corners android:radius="5dp"/>
         </shape>
     </item>

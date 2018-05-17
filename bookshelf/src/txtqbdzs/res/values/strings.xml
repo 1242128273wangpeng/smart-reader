@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="bookshelf_empty_prompt">添加您喜欢的小说</string>
 
-    <string name="bookshelf_item_update">更新</string>
-    <string name="bookshelf_item_finish">完结</string>
-    <string name="bookshelf_item_chapters">20/260章</string>
-    <string name="bookshelf_item_update_time">2014-08-14更新: </string>
-    <string name="bookshelf_item_last_chapter">二百六十章...</string>
+    <string name="bookshelf_delete_dialog_loading_prompt">清理中...</string>
 
+    <string name="bookshelf_item_book_update">更新</string>
+    <string name="bookshelf_item_book_finish">完结</string>
 </resources>

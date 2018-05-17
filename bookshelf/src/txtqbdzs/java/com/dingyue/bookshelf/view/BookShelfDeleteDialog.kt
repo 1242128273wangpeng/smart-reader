@@ -1,6 +1,7 @@
 package com.intelligent.reader.view
 
 import android.app.Activity
+import android.view.View
 import com.dingyue.bookshelf.R
 import kotlinx.android.synthetic.txtqbdzs.dialog_bookshelf_delete.*
 import net.lzbook.kit.book.view.MyDialog
@@ -22,29 +23,34 @@ class BookShelfDeleteDialog(activity: Activity) {
     private var books: ArrayList<Book> = ArrayList()
 
     init {
-        dialog.txt_delete_title.setText(R.string.prompt)
-        dialog.ckb_delete_cache.setPadding(0, 0, 0, 0)
-        dialog.ckb_delete_cache.setText(R.string.determine_clear_book)
-        dialog.btn_dialog_confirm.setText(R.string.confirm)
-        dialog.btn_dialog_cancel.setText(R.string.cancel)
-        dialog.btn_dialog_confirm.setOnClickListener {
-            dialog.dismiss()
+        dialog.btn_delete_confirm.setOnClickListener {
+            showLoading()
             onConfirmListener?.invoke(books, dialog.ckb_delete_cache.isChecked)
         }
-        dialog.btn_dialog_cancel.setOnClickListener {
+
+        dialog.btn_delete_cancel.setOnClickListener {
             dialog.dismiss()
             onCancelListener?.invoke()
         }
     }
 
     fun show(books: ArrayList<Book>) {
-        this.books = books
+        this.books.clear()
+        this.books.addAll(books)
+
+        dialog.setCancelable(true)
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.ll_delete_content.visibility = View.VISIBLE
+        dialog.ll_delete_loading.visibility = View.GONE
         dialog.show()
         dialog.ckb_delete_cache.isChecked = false
     }
 
-    fun isShow():Boolean{
-        return dialog.isShowing
+    private fun showLoading() {
+        dialog.ll_delete_content.visibility = View.GONE
+        dialog.ll_delete_loading.visibility = View.VISIBLE
+        dialog.setCanceledOnTouchOutside(false)
+        dialog.setCancelable(false)
     }
 
     fun dismiss(){

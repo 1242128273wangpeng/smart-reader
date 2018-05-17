@@ -24,21 +24,21 @@ class RemoveMenuPopup(context: Context, layout: Int = R.layout.popup_remove_menu
 
     init {
 
-        contentView.ll_content.isFocusable = true
-        contentView.ll_content.isFocusableInTouchMode = true
-        contentView.ll_content.requestFocus()
+        contentView.rl_remove_content.isFocusable = true
+        contentView.rl_remove_content.isFocusableInTouchMode = true
+        contentView.rl_remove_content.requestFocus()
 
-        contentView.btn_delete.setOnClickListener {
+        contentView.btn_remove_delete.setOnClickListener {
             onDeleteClickListener?.invoke()
         }
 
-        contentView.btn_select_all.setOnClickListener {
-            if (contentView.btn_select_all.text == context.getString(R.string.select_all)) {
+        contentView.btn_remove_select_all.setOnClickListener {
+            if (contentView.btn_remove_select_all.text == context.getString(R.string.select_all)) {
                 onSelectAllClickListener?.invoke(true)
-                contentView.btn_select_all.text = context.getString(R.string.select_all_cancel)
+                contentView.btn_remove_select_all.text = context.getString(R.string.cancel_select_all)
             } else {
                 onSelectAllClickListener?.invoke(false)
-                contentView.btn_select_all.text = context.getString(R.string.select_all)
+                contentView.btn_remove_select_all.text = context.getString(R.string.select_all)
             }
         }
 
@@ -46,18 +46,22 @@ class RemoveMenuPopup(context: Context, layout: Int = R.layout.popup_remove_menu
 
     fun setSelectedNum(num: Int) {
         if (num == 0) {
-            contentView.btn_delete.text = context.getString(R.string.delete)
-            contentView.btn_delete.isEnabled = false
+            contentView.btn_remove_delete.text = context.getString(R.string.delete)
+            contentView.btn_remove_delete.isEnabled = false
         } else {
             val text = context.getString(R.string.delete) + "(" + num + ")"
-            contentView.btn_delete.text = text
-            contentView.btn_delete.isEnabled = true
+            contentView.btn_remove_delete.text = text
+            contentView.btn_remove_delete.isEnabled = true
         }
+    }
+
+    fun setSelectAllText(text: String) {
+        contentView.btn_remove_select_all.text = text
     }
 
     fun show(view: View) {
         setSelectedNum(0)
-        contentView.btn_select_all.text = context.getString(R.string.select_all)
+        contentView.btn_remove_select_all.text = context.getString(R.string.select_all)
         showAsLocation(view)
     }
 

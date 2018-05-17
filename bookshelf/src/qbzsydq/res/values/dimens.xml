@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-
-    <color name="color_green_3ecc96">#3ecc96</color>
-
+    <dimen name="bookshelf_popup_height">60dp</dimen>
 </resources>

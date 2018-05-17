@@ -1,15 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-
-    <string name="mian_bookshelf_empty_hint">添加您喜欢的小说</string>
-    <string name="determine_delete_book">删除书籍，确定要继续吗？</string>
-    <string name="determine_clear_book">保留书籍仅清除缓存</string>
-    <string name="text_hint_info">加入书架后, 可从书架找到这本书,方便阅读!</string>
-    <string name="text_no_hint">不再接收此提示</string>
-
-
-
     <string name="module_name">书架</string>
 
     <string name="bookshelf_name">书架</string>

@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="@color/color_white_ffffff"
+    <item android:drawable="@drawable/bookshelf_delete_confirm_check_bg"
           android:state_enabled="true"
-          android:state_focused="false"
           android:state_pressed="false"/>
-
-    <item android:color="@color/color_green_3ecc96"
+    <item android:drawable="@drawable/bookshelf_delete_confirm_checked_bg"
+          android:state_enabled="true"
           android:state_pressed="true"/>
-
-    <item android:color="#bebebe"
-          android:state_enabled="false"/>
-
 </selector>
