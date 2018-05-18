@@ -61,7 +61,7 @@ class RemoveMenuPopup(context: Context, layout: Int = R.layout.popup_remove_menu
 
     fun show(view: View) {
         setSelectedNum(0, false)
-        showAsLocation(view)
+        showAtLocation(view)
     }
 
 
