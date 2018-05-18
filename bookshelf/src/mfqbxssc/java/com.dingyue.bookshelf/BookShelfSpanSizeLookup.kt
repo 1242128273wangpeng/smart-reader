@@ -17,10 +17,8 @@ class BookShelfSpanSizeLookup(private val bookShelfAdapter: BookShelfAdapter) : 
 
         return try {
             when (type) {
-                HolderType.Type_AD -> 3
-                HolderType.Type_Add -> 1
-                HolderType.Type_Book -> 1
-                else -> 3
+                HolderType.Type_Header_AD -> 3
+                else -> 1
             }
         } catch (exception: Exception) {
             exception.printStackTrace()

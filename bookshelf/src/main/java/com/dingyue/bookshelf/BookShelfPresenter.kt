@@ -3,10 +3,12 @@ package com.dingyue.bookshelf
 import android.app.Activity
 import android.content.ComponentName
 import android.content.ServiceConnection
+import android.graphics.Color
 import android.os.IBinder
 import android.text.TextUtils
 import android.view.ViewGroup
 import com.dingyue.bookshelf.contract.BookHelperContract
+import com.dingyue.bookshelf.contract.BookShelfADContract
 import com.dingyue.contract.CommonContract
 import com.dingyue.contract.IPresenter
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
@@ -21,7 +23,6 @@ import net.lzbook.kit.utils.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-
 /**
  * Created by qiantao on 2017/11/14 0014
  */
@@ -32,6 +33,8 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
     private var bookDaoHelper: BookDaoHelper = BookDaoHelper.getInstance()
 
     var iBookList: ArrayList<Book> = ArrayList()
+
+    var headerAD: ViewGroup? = null
 
     var aDViews: ArrayList<ViewGroup> = ArrayList()
 
@@ -52,7 +55,6 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
             } catch (e: ClassCastException) {
                 e.printStackTrace()
             }
-
         }
     }
 
@@ -68,16 +70,40 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
     /**
      * 查询书籍列表
      */
-    fun queryBookListAndAd(activity: Activity, isShowAd: Boolean) {
-        val adNum = updateBookList()
-        if (isShowAd && iBookList.isNotEmpty()) {
-            updateAd(activity, adNum)
+    fun queryBookListAndAd(activity: Activity, isShowAD: Boolean, isList: Boolean) {
+        val adCount = calculationShelfADCount(isShowAD)
+
+        if (/*isShowAD && */iBookList.isNotEmpty()) {
+
+            if (isList) {
+                requestShelfADs(activity, adCount, true)
+            } else {
+//                when {
+//                    Constants.book_shelf_state == 1 -> {
+//                        requestShelfHeaderAD(activity)
+//                    }
+//
+//                    Constants.book_shelf_state == 2 -> {
+//                        requestShelfADs(activity, adCount, false)
+//                    }
+//
+//                    Constants.book_shelf_state == 3 -> {
+                        requestShelfHeaderAD(activity)
+                        requestShelfADs(activity, adCount, false)
+//                    }
+//                }
+            }
+
         }
     }
 
-    fun updateBookList(): Int {
+    /***
+     * 刷新书籍列表，并计算广告数量
+     * **/
+    private fun calculationShelfADCount(isShowAD: Boolean): Int {
         val bookList = bookDaoHelper.booksOnLineList
         iBookList.clear()
+
         if (bookList.isEmpty()) {
             uiThread {
                 view?.onBookListQuery(bookList)
@@ -86,95 +112,93 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
         } else {
             Collections.sort(bookList, CommonContract.MultiComparator(Constants.book_list_sort_type))
             iBookList.addAll(bookList)
-//            val adCount = PlatformSDK.config().adCount
-            val adCount = 0
-            if (aDViews.isNotEmpty()) {
-                val size = iBookList.size
-                var index = 0
-                var book1 = Book()
-                book1.book_type = -2
-                book1.sequence = index++
-                iBookList.add(0, book1)
-                var i: Int = 1
-                while (size > adCount * i) {
-                    book1 = Book()
-                    book1.book_type = -2
-                    book1.sequence = index++
-                    iBookList.add(adCount * i, book1)
-                    i++
-                }
-            }
+
             uiThread {
                 view?.onBookListQuery(bookList)
             }
-//            return bookList.size / adCount + 1
-            return 0
+
+            return if (isShowAD) {
+                val interval = BookShelfADContract.loadBookShelfADInterval()
+
+                if (interval == 0) {
+                    0
+                } else {
+                    bookList.size / interval + 1
+                }
+            } else {
+                0
+            }
         }
     }
 
-    fun updateAd(activity: Activity, num: Int) {
-//        PlatformSDK.adapp().dycmNativeAd(activity, "1-1", RelativeLayout(activity), object : AbstractCallback() {
-//            override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
-//                DyLogUtils.dd("NativeActivity:" + jsonResult!!)
-//                if (!adswitch) return
-//                try {
-//                    val jsonObject = JSONObject(jsonResult)
-//                    DyLogUtils.e("ADSDK", "执行NativeActivity 回调")
-//                    if (jsonObject.has("state_code")) {
-//                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-//                            ResultCode.AD_REQ_SUCCESS//请求成功
-//                            -> {
-//                                uiThread {
-//                                    if (views != null) {
-//                                        aDViews.clear()
-//                                        updateBookList()
-//                                        aDViews.addAll(views)
-//                                        if (iBookList.isEmpty()) {
-//                                            return@uiThread
-//                                        }
-//                                        val size = iBookList.size
-//                                        var index = 0
-//                                        var book1 = Book()
-//                                        book1.book_type = -2
-//                                        book1.sequence = index++
-//                                        iBookList.add(0, book1)
-//                                        var adCount = PlatformSDK.config().getAdCount()
-//                                        var i: Int = 1
-//                                        while (size > adCount * i) {
-//                                            book1 = Book()
-//                                            book1.book_type = -2
-//                                            book1.sequence = index++
-//                                            iBookList.add(adCount * i, book1)
-//                                            i++
-//                                        }
-//
-//                                        view?.onAdRefresh()
-//
-//                                    }
-//                                    DyLogUtils.e("ADSDK", "请求成功")
-//                                }
-//
-//                            }
-//                            ResultCode.AD_REPAIR_SUCCESS//补充
-//                            -> {
-//                                if (views != null) {
-//                                    aDViews.addAll(views)
-//                                    uiThread {
-//                                        view?.onAdRefresh()
-//                                    }
-//                                }
-//                            }
-//                            ResultCode.AD_REQ_FAILED//请示失败
-//                            -> {
-//                            }
-//                        }
-//                    }
-//                } catch (e: JSONException) {
-//                    e.printStackTrace()
-//                }
-//
-//            }
-//        }, num)
+    /***
+     * 请求书架页广告
+     * **/
+    private fun requestShelfADs(activity: Activity, count: Int, isList: Boolean) {
+        BookShelfADContract.loadBookShelAD(activity, count, object : BookShelfADContract.ADCallback {
+            override fun requestADSuccess(views: List<ViewGroup>) {
+                aDViews.clear()
+                aDViews.addAll(views)
+
+                if (iBookList.isEmpty()) {
+                    return
+                }
+
+                val size = iBookList.size
+
+                var index = 0
+
+                var adBook = Book()
+
+                if (isList) {
+                    adBook.item_type = 1
+                    adBook.item_position = index++
+                    iBookList.add(0, adBook)
+                }
+
+                val interval = BookShelfADContract.loadBookShelfADInterval()
+
+                var i = 1
+
+                while (size > interval * i) {
+                    adBook = Book()
+                    adBook.item_type = 1
+                    adBook.item_position = index++
+                    iBookList.add(interval * i, adBook)
+                    i++
+                }
+
+                view?.onAdRefresh()
+            }
+
+            override fun requestADRepairSuccess(views: List<ViewGroup>) {
+                aDViews.addAll(views)
+
+                uiThread {
+                    view?.onAdRefresh()
+                }
+            }
+        })
+    }
+
+    /***
+     * 获取九宫格顶部广告
+     * **/
+    private fun requestShelfHeaderAD(activity: Activity) {
+        BookShelfADContract.loadBookShelfHeaderAD(activity, object : BookShelfADContract.HeaderADCallback {
+            override fun requestADSuccess(viewGroup: ViewGroup?) {
+                if (viewGroup != null) {
+                    headerAD = viewGroup
+                    headerAD?.setBackgroundColor(Color.parseColor("#0094D5"))
+                    val adBook = Book()
+                    adBook.item_type = 2
+                    adBook.item_position = 0
+                    iBookList.add(0, adBook)
+
+                    view?.onAdRefresh()
+                }
+            }
+        })
     }
 
     fun deleteBooks(deleteBooks: java.util.ArrayList<Book>, onlyDeleteCache: Boolean) {
@@ -235,4 +259,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
         aDViews.clear()
     }
 
+    fun requestFloatAD(activity: Activity, viewGroup: ViewGroup) {
+        BookShelfADContract.loadBookShelfFloatAD(activity, viewGroup)
+    }
 }

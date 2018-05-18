@@ -99,6 +99,11 @@ public class DynamicParamter {
     //书籍封面页的推荐位
     public String recommend_bookcover;
 
+
+    //书架页1-2开关
+    public String dy_shelf_boundary_switch;
+
+
     public String ad_limit_time_day;
     public String baidu_examine;
     public String user_transfer_first;
@@ -1199,6 +1204,15 @@ public class DynamicParamter {
             try {
                 Constants.new_app_ad_switch = Boolean.parseBoolean(new_app_ad_switch);
             } catch (Exception e) {
+            }
+        }
+
+        //书架页1-2开关
+        if (!TextUtils.isEmpty(dy_shelf_boundary_switch)) {
+            try {
+                Constants.dy_shelf_boundary_switch = java.lang.Boolean.parseBoolean(dy_shelf_boundary_switch);
+            } catch (Exception exception) {
+                exception.printStackTrace();
             }
         }
 

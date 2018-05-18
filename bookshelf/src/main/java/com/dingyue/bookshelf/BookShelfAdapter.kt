@@ -1,6 +1,7 @@
 package com.dingyue.bookshelf
 
 import android.content.Context
+import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -9,12 +10,14 @@ import android.widget.RelativeLayout
 import com.dingyue.contract.HolderType.Type_AD
 import com.dingyue.contract.HolderType.Type_Add
 import com.dingyue.contract.HolderType.Type_Book
+import com.dingyue.contract.HolderType.Type_Header_AD
 import net.lzbook.kit.data.bean.Book
 import java.util.*
 
 class BookShelfAdapter(private val context: Context,
                        private val bookShelfItemListener: BookShelfAdapter.BookShelfItemListener,
                        private var books: ArrayList<Book>, private val adViews: List<ViewGroup>?,
+                       private var headerAD: ViewGroup?,
                        private val hasAddView: Boolean = false)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -25,10 +28,13 @@ class BookShelfAdapter(private val context: Context,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder? {
         return when (viewType) {
             Type_AD -> {
-                BookShelfADHolder(parent)
+                BookShelfADHolder(parent, false)
             }
             Type_Add -> {
                 BookShelfADDHolder(LayoutInflater.from(context).inflate(R.layout.item_bookshelf_add, parent, false))
+            }
+            Type_Header_AD -> {
+                BookShelfADHolder(parent, true)
             }
             else -> {
                 BookShelfItemHolder(parent)
@@ -56,16 +62,19 @@ class BookShelfAdapter(private val context: Context,
         if (viewHolder is BookShelfItemHolder) {
             viewHolder.bind(book, bookShelfItemListener, selectedBooks.contains(book), isRemove)
         } else if (viewHolder is BookShelfADHolder) {
-            val view = getAdView(book)
+            val view = loadADView(book)
+
             if (view != null) {
-
                 val parent = view.parent
-
                 if (parent != null && parent is RelativeLayout) {
                     parent.removeAllViews()
                 }
+                view.setBackgroundColor(Color.parseColor("#0094D5"))
 
+                viewHolder.itemView.visibility = View.VISIBLE
                 viewHolder.bind(view)
+            } else {
+                viewHolder.itemView.visibility = View.GONE
             }
         }
     }
@@ -82,25 +91,35 @@ class BookShelfAdapter(private val context: Context,
         return books.size
     }
 
-
-    private fun getAdView(book: Book?): View? {
-        if (adViews == null || adViews.isEmpty() || book == null) {
-            return null
+    private fun loadADView(book: Book?): View? {
+        return if (book != null) {
+            if (book.item_type == 2) {
+                headerAD
+            } else {
+                if (adViews == null || adViews.isEmpty()) {
+                    null
+                } else {
+                    if (book.item_position < adViews.size) {
+                        adViews[book.item_position]
+                    } else null
+                }
+            }
+        } else {
+            null
         }
-
-        return if (book.sequence < adViews.size) {
-            adViews[book.sequence]
-        } else null
     }
 
     override fun getItemViewType(position: Int): Int {
         if (position >= 0) {
             if (position < books.size) {
                 val book = books[position]
-                if (book.book_type == 0) {
-                    return Type_Book
-                } else if (book.book_type == -2) {
-                    return Type_AD
+                when {
+                    book.item_type == 0 -> return Type_Book
+                    book.item_type == 1 -> return Type_AD
+                    book.item_type == 2 -> return Type_Header_AD
+                    else -> {
+
+                    }
                 }
             } else if (position == books.size) {
                 return Type_Add

@@ -16,7 +16,7 @@ dependencies {
     //compile 'net.iyouqu.android.common:Iyouqu_Volley:1.0.0'
 
 
-    compile 'net.iyouqu.android.common:dycm_ssp_sdk:1.5.1'//新版广告正式环境
+    compile 'net.iyouqu.android.common:dycm_ssp_sdk:1.7.1-SNAPSHOT'//新版广告正式环境
 
     compile 'net.iyouqu.android.common:iyouqu_logencap:1.0.7'
     compile 'net.iyouqu.android.common:QG_SDK:1.0.3'

@@ -7,6 +7,7 @@ import android.widget.Toast;
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.alibaba.sdk.android.feedback.util.ErrorCode;
 import com.alibaba.sdk.android.feedback.util.FeedbackErrorCallback;
+import com.dycm_adsdk.PlatformSDK;
 import com.intelligent.reader.BuildConfig;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
@@ -14,6 +15,7 @@ import com.squareup.leakcanary.RefWatcher;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
 
 import java.util.concurrent.Callable;
 
@@ -33,6 +35,11 @@ public class BookApplication extends BaseBookApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        if (AppUtils.isMainProcess(this)) {
+            // 新版广告SDK
+            PlatformSDK.app().onAppCreate(this);
+        }
 
         if (LeakCanary.isInAnalyzerProcess(this)) {
             return;
@@ -76,5 +83,13 @@ public class BookApplication extends BaseBookApplication {
                 AppLog.e("DataProvider", " throwable :" + throwable.getMessage());
             }
         });
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        if (AppUtils.isMainProcess(this)) {
+            PlatformSDK.app().onTerminate();
+        }
     }
 }

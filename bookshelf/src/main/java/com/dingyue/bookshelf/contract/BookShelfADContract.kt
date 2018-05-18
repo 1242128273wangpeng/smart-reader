@@ -7,7 +7,6 @@ import android.widget.RelativeLayout
 import com.dycm_adsdk.PlatformSDK
 import com.dycm_adsdk.callback.AbstractCallback
 import com.dycm_adsdk.callback.ResultCode
-import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.utils.doAsync
 import net.lzbook.kit.utils.uiThread
 import org.json.JSONException
@@ -44,7 +43,7 @@ object BookShelfADContract {
     /***
      * 获取书架顶部广告位
      * **/
-    fun loadBookShelfTopAD(activity: Activity, viewGroup: ViewGroup?) {
+    fun loadBookShelfHeaderAD(activity: Activity, headerADCallback: HeaderADCallback) {
         doAsync {
             PlatformSDK.adapp().dycmNativeAd(activity, "1-1", null, object : AbstractCallback() {
                 override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
@@ -59,24 +58,13 @@ object BookShelfADContract {
                             when (ResultCode.parser(jsonObject.getInt("state_code"))) {
                                 ResultCode.AD_REQ_SUCCESS -> {
                                     activity.uiThread {
-                                        if (viewGroup != null) {
-                                            viewGroup.removeAllViews()
-
-                                            if (views.isNotEmpty()) {
-                                                viewGroup.addView(views[0])
-                                                viewGroup.visibility = View.VISIBLE
-                                            } else {
-                                                viewGroup.visibility = View.GONE
-                                            }
+                                        if (views.isNotEmpty()) {
+                                            headerADCallback.requestADSuccess(views[0])
                                         }
                                     }
                                 }
                                 else -> {
-                                    activity.uiThread {
-                                        if (viewGroup != null) {
-                                            viewGroup.visibility = View.GONE
-                                        }
-                                    }
+
                                 }
                             }
                         }
@@ -93,81 +81,92 @@ object BookShelfADContract {
      * **/
     fun loadBookShelfFloatAD(activity: Activity, viewGroup: ViewGroup?) {
         doAsync {
-            PlatformSDK.adapp().dycmNativeAd(activity, "1-2", null, object : AbstractCallback() {
-                override fun onResult(adSwitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
-                    super.onResult(adSwitch, views, jsonResult)
-                    if (!adSwitch) return
-                    try {
-                        val jsonObject = JSONObject(jsonResult)
-                        if (jsonObject.has("state_code")) {
-                            activity.uiThread {
-                                when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                                    ResultCode.AD_REQ_SUCCESS -> {
-                                        if (views != null && views.isNotEmpty()) {
-                                            if (viewGroup != null) {
-                                                viewGroup.visibility = View.VISIBLE
-                                                viewGroup.removeAllViews()
-                                                viewGroup.addView(views[0])
+            if (PlatformSDK.adapp() != null) {
+                PlatformSDK.adapp().dycmNativeAd(activity, "1-2", null, object : AbstractCallback() {
+                    override fun onResult(adSwitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
+                        super.onResult(adSwitch, views, jsonResult)
+                        if (!adSwitch) {
+                            return
+                        }
+                        try {
+                            val jsonObject = JSONObject(jsonResult)
+                            if (jsonObject.has("state_code")) {
+                                activity.uiThread {
+                                    when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+                                        ResultCode.AD_REQ_SUCCESS -> {
+                                            if (views != null && views.isNotEmpty()) {
+                                                if (viewGroup != null) {
+                                                    viewGroup.visibility = View.VISIBLE
+                                                    viewGroup.removeAllViews()
+                                                    viewGroup.addView(views[0])
+                                                }
                                             }
                                         }
-                                    }
-                                    else -> {
-                                        if (viewGroup != null) {
-                                            viewGroup.visibility = View.GONE
+                                        else -> {
+                                            if (viewGroup != null) {
+                                                viewGroup.visibility = View.GONE
+                                            }
                                         }
                                     }
                                 }
                             }
+                        } catch (exception: JSONException) {
+                            exception.printStackTrace()
                         }
-                    } catch (exception: JSONException) {
-                        exception.printStackTrace()
                     }
-                }
-            })
+                })
+            }
         }
     }
 
     fun loadBookShelAD(activity: Activity, count: Int, adCallback: ADCallback) {
-        PlatformSDK.adapp().dycmNativeAd(activity.applicationContext, "1-1", RelativeLayout(activity), object : AbstractCallback() {
-            override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
-                if (!adswitch) {
-                    return
-                }
+        doAsync {
+            if (PlatformSDK.adapp() != null) {
+                PlatformSDK.adapp().dycmNativeAd(activity.applicationContext, "1-1", RelativeLayout(activity), object : AbstractCallback() {
+                    override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
+                        if (!adswitch) {
+                            return
+                        }
 
-                try {
-                    val jsonObject = JSONObject(jsonResult)
-                    if (jsonObject.has("state_code")) {
-                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                            ResultCode.AD_REQ_SUCCESS -> {
-                                activity.uiThread {
-                                    if (views != null) {
-                                        adCallback.requestADSuccess(views)
+                        try {
+                            val jsonObject = JSONObject(jsonResult)
+                            if (jsonObject.has("state_code")) {
+                                when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+                                    ResultCode.AD_REQ_SUCCESS -> {
+                                        activity.uiThread {
+                                            if (views != null) {
+                                                adCallback.requestADSuccess(views)
+                                            }
+                                        }
+                                    }
+                                    ResultCode.AD_REPAIR_SUCCESS -> {
+                                        if (views != null) {
+                                            activity.uiThread {
+                                                adCallback.requestADRepairSuccess(views)
+                                            }
+                                        }
+                                    }
+                                    else -> {
+
                                     }
                                 }
                             }
-                            ResultCode.AD_REPAIR_SUCCESS -> {
-                                if (views != null) {
-                                    activity.uiThread {
-                                        adCallback.requestADRepairSuccess(views)
-                                    }
-                                }
-                            }
-                            else -> {
-
-                            }
+                        } catch (exception: JSONException) {
+                            exception.printStackTrace()
                         }
                     }
-                } catch (exception: JSONException) {
-                    exception.printStackTrace()
-                }
-
+                }, count)
             }
-        }, count)
+        }
     }
 
     interface ADCallback {
         fun requestADSuccess(views: List<ViewGroup>)
 
         fun requestADRepairSuccess(views: List<ViewGroup>)
+    }
+
+    interface HeaderADCallback {
+        fun requestADSuccess(viewGroup: ViewGroup?)
     }
 }

@@ -10,5 +10,4 @@
     android:layout_marginTop="10dp"
     android:background="@drawable/bookshelf_item_ad_sel"
     tools:ignore="RtlHardcoded">
-
 </RelativeLayout>

@@ -189,6 +189,7 @@ public class Constants {
        九宫格书架页广告显示类型切换开关
      */
     public static int book_shelf_state = 1;
+    public static boolean dy_shelf_boundary_switch = true; //书架页1-2开关
     public static int dy_shelf_ad_freq = 10;
     public static boolean dy_page_end_ad_switch = true;
     public static int dy_page_end_ad_freq = 1;

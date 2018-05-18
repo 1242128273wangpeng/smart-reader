@@ -11,4 +11,5 @@ object HolderType {
     const val Type_AD = 0x80
     const val Type_Add = 0x81
     const val Type_Book = 0x82
+    const val Type_Header_AD = 0x83
 }
