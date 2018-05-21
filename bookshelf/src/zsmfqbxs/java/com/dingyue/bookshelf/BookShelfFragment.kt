@@ -19,7 +19,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
-import com.dingyue.bookshelf.*
+import com.dingyue.bookshelf.view.RemoveMenuPopup
 import com.dingyue.contract.CommonContract
 import com.intelligent.reader.view.BookShelfDeleteDialog
 import de.greenrobot.event.EventBus
@@ -27,7 +27,6 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.zsmfqbxs.frag_bookshelf.*
 import kotlinx.android.synthetic.zsmfqbxs.bookshelf_refresh_header.view.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.view.ConsumeEvent
 import net.lzbook.kit.constants.Constants
@@ -48,8 +47,6 @@ import java.util.concurrent.TimeUnit
  */
 class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager {
 
-    private val bookSensitiveWords: ArrayList<String> = ArrayList()
-    private val noBookSensitive = false
     private var bookRackUpdateTime: Long = 0
     private var latestLoadDataTime: Long = 0
     private val presenter: BookShelfPresenter by lazy { BookShelfPresenter(this) }
@@ -127,8 +124,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
 
 
-    private val removeMenuPopup: BookShelfRemoveMenuPopup by lazy {
-        val popup = BookShelfRemoveMenuPopup(activity)
+    private val removeMenuPopup: RemoveMenuPopup by lazy {
+        val popup = RemoveMenuPopup(activity)
         popup.onDeleteClickListener = {
             if(!bookkShelfDeleteDialog.isShow()){
                 bookkShelfDeleteDialog.show(bookShelfAdapter.selectedBooks)
@@ -185,38 +182,30 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
     fun initClick() {
         img_empty_btn.setOnClickListener {
-            //            fragmentCallback.setSelectTab(1)
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.TOBOOKCITY)
+            BookShelfLogger.uploadBookShelfToBookCity()
         }
         img_head_setting!!.setOnClickListener(View.OnClickListener {
             if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
                 return@OnClickListener
             }
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.MAIN_PAGE,
-                    StartLogClickUtil.PERSONAL)
+            BookShelfLogger.uploadBookShelfPersonal()
             RouterUtil.navigation(activity, RouterConfig.SETTING_ACTIVITY)
             EventBus.getDefault().post(ConsumeEvent(R.id.redpoint_home_setting))
-            //                startActivity(new Intent(context, SettingActivity.class));
-            StatServiceUtils.statAppBtnClick(activity,
-                    StatServiceUtils.bs_click_mine_menu)
         })
         img_head_search!!.setOnClickListener {
             RouterUtil.navigation(activity, RouterConfig.SEARCH_BOOK_ACTIVITY)
-
-            StatServiceUtils.statAppBtnClick(activity,
-                    StatServiceUtils.bs_click_search_btn)
+            BookShelfLogger.uploadBookShelfSearch()
         }
         img_download_manage!!.setOnClickListener {
             RouterUtil.navigation(activity, RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
-            StatServiceUtils.statAppBtnClick(activity,
-                    StatServiceUtils.bs_click_download_btn)
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.MAIN_PAGE,
-                    StartLogClickUtil.CACHEMANAGE)
+            BookShelfLogger.uploadBookShelfCacheManager()
         }
         home_edit_back!!.setOnClickListener {
+            BookShelfLogger.uploadBookShelfEditBack()
             dismissRemoveMenu()
         }
         home_edit_cancel!!.setOnClickListener {
+            BookShelfLogger.uploadBookShelfEditCancel()
             dismissRemoveMenu()
         }
         img_empty_btn.setOnClickListener {
@@ -445,12 +434,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
      * 处理被点击或更新通知的book
      */
     private fun handleBook(book: Book?) {
-        if (book != null) {
-            if (Constants.isShielding && !noBookSensitive && bookSensitiveWords.contains(book.book_id.toString())) {
-                ToastUtils.showToastNoRepeat("抱歉，该小说已下架！")
-            } else {
-                BookRouter.navigateCoverOrRead(activity, book, 0)
-            }
+        if (book != null && activity != null && !activity.isFinishing) {
+            BookRouter.navigateCoverOrRead(activity, book, 0)
+
         }
     }
 
