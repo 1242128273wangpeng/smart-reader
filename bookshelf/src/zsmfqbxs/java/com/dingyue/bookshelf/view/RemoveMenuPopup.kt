@@ -1,9 +1,10 @@
-package com.dingyue.bookshelf
+package com.dingyue.bookshelf.view
 
 import android.content.Context
 import android.view.View
 import com.dingyue.contract.BasePopup
 import android.view.WindowManager
+import com.dingyue.bookshelf.R
 import kotlinx.android.synthetic.zsmfqbxs.popup_remove_menu.view.*
 
 /**
@@ -12,9 +13,9 @@ import kotlinx.android.synthetic.zsmfqbxs.popup_remove_menu.view.*
  * 2018\5\15 0015
  */
 
-class BookShelfRemoveMenuPopup(context: Context, layout: Int = R.layout.popup_remove_menu,
-                               width: Int = WindowManager.LayoutParams.MATCH_PARENT,
-                               height: Int = WindowManager.LayoutParams.WRAP_CONTENT)
+class RemoveMenuPopup(context: Context, layout: Int = R.layout.popup_remove_menu,
+                      width: Int = WindowManager.LayoutParams.MATCH_PARENT,
+                      height: Int = WindowManager.LayoutParams.WRAP_CONTENT)
     : BasePopup(context, layout, width, height) {
 
     var onDeleteClickListener: (() -> Unit)? = null

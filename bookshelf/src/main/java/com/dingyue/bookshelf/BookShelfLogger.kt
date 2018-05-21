@@ -81,6 +81,8 @@ object BookShelfLogger {
     fun uploadBookShelfCacheManager() {
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
                 StartLogClickUtil.PAGE_SHELF, StartLogClickUtil.ACTION_SHELF_CACHE_MANAGE)
+        StatServiceUtils.statAppBtnClick(BaseBookApplication.getGlobalContext(),
+                StatServiceUtils.bs_click_download_btn)
     }
 
     /***

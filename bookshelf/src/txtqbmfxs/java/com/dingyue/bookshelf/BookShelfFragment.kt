@@ -13,6 +13,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.dingyue.bookshelf.contract.BookShelfADContract
+import com.dingyue.bookshelf.view.BookShelfDeleteDialog
+import com.dingyue.bookshelf.view.RemoveMenuPopup
 import com.dingyue.contract.CommonContract
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -160,7 +162,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                 headerView.img_refresh_arrow.rotation = (if (enable) 180 else 0).toFloat()
             }
         })
-        img_download_float.setOnClickListener { RouterUtil.navigation(activity, RouterConfig.DOWNLOAD_MANAGER_ACTIVITY) }
+        img_download_float.setOnClickListener {
+            RouterUtil.navigation(activity, RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
+            BookShelfLogger.uploadBookShelfCacheManager()
+        }
         img_empty_add_book.setOnClickListener {
             bookShelfInterface?.changeHomePagerIndex(1)
             BookShelfLogger.uploadBookShelfToBookCity()
@@ -359,11 +364,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
      */
     private fun handleBook(book: Book?) {
         if (book != null && activity != null && !activity.isFinishing) {
-            if (!TextUtils.isEmpty(book.book_id) && book.book_type == 0) {
-                bookshelfPresenter.resetUpdateStatus(book.book_id)
-            }
+            BookRouter.navigateCoverOrRead(activity, book, 0)
 
-            BookRouter.navigateCoverOrRead(activity, book, BookRouter.NAVIGATE_TYPE_BOOKSHELF)
         }
     }
 
