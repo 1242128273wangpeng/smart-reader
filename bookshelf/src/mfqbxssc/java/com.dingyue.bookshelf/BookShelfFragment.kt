@@ -3,9 +3,7 @@ package com.dingyue.bookshelf
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v7.widget.SimpleItemAnimator
 import android.view.LayoutInflater
@@ -44,8 +42,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
     private var bookRackUpdateTime: Long = 0
     private var latestLoadDataTime: Long = 0
-
-    private lateinit var sharedPreferences: SharedPreferences
 
     private var bookShelfInterface: BookShelfInterface? = null
 
@@ -155,8 +151,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity.applicationContext)
-
         initUpdateService()
 
         if (bookshelfPresenter.iBookList.size > 0) {
@@ -172,7 +166,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         BookShelfADContract.insertBookShelfType(true)
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
         bookRackUpdateTime = AppUtils.getLongPreferences(activity, "book_rack_update_time", System.currentTimeMillis())
 
         initRecyclerView()

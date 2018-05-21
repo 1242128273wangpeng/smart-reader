@@ -2,7 +2,6 @@
 <resources>
     <string name="module_name">书架</string>
 
-
     <string name="bookshelf">书架</string>
 
     <string name="default_title">正义的秘密</string>

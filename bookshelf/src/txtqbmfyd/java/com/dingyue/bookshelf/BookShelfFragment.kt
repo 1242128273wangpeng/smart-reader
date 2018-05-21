@@ -3,9 +3,7 @@ package com.dingyue.bookshelf
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v7.widget.SimpleItemAnimator
 import android.view.LayoutInflater
@@ -45,8 +43,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
     private var bookRackUpdateTime: Long = 0
     private var latestLoadDataTime: Long = 0
-
-    private lateinit var sharedPreferences: SharedPreferences
 
     private var bookShelfInterface: BookShelfInterface? = null
 
@@ -157,8 +153,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity.applicationContext)
-
         initUpdateService()
 
         //根据书架数量确定是否刷新
@@ -175,7 +169,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         BookShelfADContract.insertBookShelfType(true)
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
         bookRackUpdateTime = AppUtils.getLongPreferences(activity, "book_rack_update_time", System.currentTimeMillis())
 
         initRecyclerView()
@@ -303,8 +296,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
      * 查Book数据库更新界面
      */
     fun updateUI() {
+//        val isShowAD = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD && Constants.book_shelf_state != 0
+        val isShowAD = false
         doAsync {
-            bookshelfPresenter.queryBookListAndAd(activity, false, true)
+            bookshelfPresenter.queryBookListAndAd(activity, isShowAD, true)
             uiThread {
                 bookShelfAdapter.notifyDataSetChanged()
             }
