@@ -7,6 +7,7 @@ import android.widget.RelativeLayout
 import com.dycm_adsdk.PlatformSDK
 import com.dycm_adsdk.callback.AbstractCallback
 import com.dycm_adsdk.callback.ResultCode
+import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.doAsync
 import net.lzbook.kit.utils.uiThread
 import org.json.JSONException
@@ -45,34 +46,36 @@ object BookShelfADContract {
      * **/
     fun loadBookShelfHeaderAD(activity: Activity, headerADCallback: HeaderADCallback) {
         doAsync {
-            PlatformSDK.adapp().dycmNativeAd(activity, "1-1", null, object : AbstractCallback() {
-                override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
-                    super.onResult(adswitch, views, jsonResult)
-                    if (!adswitch) {
-                        return
-                    }
+            if (PlatformSDK.adapp() != null) {
+                PlatformSDK.adapp().dycmNativeAd(activity, "1-1", null, object : AbstractCallback() {
+                    override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
+                        super.onResult(adswitch, views, jsonResult)
+                        if (!adswitch) {
+                            return
+                        }
 
-                    try {
-                        val jsonObject = JSONObject(jsonResult)
-                        if (jsonObject.has("state_code")) {
-                            when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                                ResultCode.AD_REQ_SUCCESS -> {
-                                    activity.uiThread {
-                                        if (views.isNotEmpty()) {
-                                            headerADCallback.requestADSuccess(views[0])
+                        try {
+                            val jsonObject = JSONObject(jsonResult)
+                            if (jsonObject.has("state_code")) {
+                                when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+                                    ResultCode.AD_REQ_SUCCESS -> {
+                                        if (views != null && views.isNotEmpty()) {
+                                            activity.uiThread {
+                                                headerADCallback.requestADSuccess(views[0])
+                                            }
                                         }
                                     }
-                                }
-                                else -> {
+                                    else -> {
 
+                                    }
                                 }
                             }
+                        } catch (exception: JSONException) {
+                            exception.printStackTrace()
                         }
-                    } catch (exception: JSONException) {
-                        exception.printStackTrace()
                     }
-                }
-            })
+                })
+            }
         }
     }
 
@@ -85,16 +88,17 @@ object BookShelfADContract {
                 PlatformSDK.adapp().dycmNativeAd(activity, "1-2", null, object : AbstractCallback() {
                     override fun onResult(adSwitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
                         super.onResult(adSwitch, views, jsonResult)
+                        AppLog.e("书架广告", "书架顶部广告请求：" + views?.size)
                         if (!adSwitch) {
                             return
                         }
                         try {
                             val jsonObject = JSONObject(jsonResult)
                             if (jsonObject.has("state_code")) {
-                                activity.uiThread {
-                                    when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                                        ResultCode.AD_REQ_SUCCESS -> {
-                                            if (views != null && views.isNotEmpty()) {
+                                when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+                                    ResultCode.AD_REQ_SUCCESS -> {
+                                        if (views != null && views.isNotEmpty()) {
+                                            activity.uiThread {
                                                 if (viewGroup != null) {
                                                     viewGroup.visibility = View.VISIBLE
                                                     viewGroup.removeAllViews()
@@ -102,7 +106,9 @@ object BookShelfADContract {
                                                 }
                                             }
                                         }
-                                        else -> {
+                                    }
+                                    else -> {
+                                        activity.uiThread {
                                             if (viewGroup != null) {
                                                 viewGroup.visibility = View.GONE
                                             }
@@ -133,14 +139,16 @@ object BookShelfADContract {
                             if (jsonObject.has("state_code")) {
                                 when (ResultCode.parser(jsonObject.getInt("state_code"))) {
                                     ResultCode.AD_REQ_SUCCESS -> {
-                                        activity.uiThread {
-                                            if (views != null) {
+                                        AppLog.e("书架广告", "书架广告请求成功：" + views?.size)
+                                        if (views != null && views.isNotEmpty()) {
+                                            activity.uiThread {
                                                 adCallback.requestADSuccess(views)
                                             }
                                         }
                                     }
                                     ResultCode.AD_REPAIR_SUCCESS -> {
-                                        if (views != null) {
+                                        AppLog.e("书架广告", "书架广告补余成功：" + views?.size)
+                                        if (views != null && views.isNotEmpty()) {
                                             activity.uiThread {
                                                 adCallback.requestADRepairSuccess(views)
                                             }

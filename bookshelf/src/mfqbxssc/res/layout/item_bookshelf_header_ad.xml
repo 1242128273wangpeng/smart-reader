@@ -4,6 +4,9 @@
     android:id="@+id/rl_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bookshelf_item_ad_sel">
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginTop="10dp"
+    android:background="@drawable/bookshelf_item_header_ad_bg">
 
 </RelativeLayout>

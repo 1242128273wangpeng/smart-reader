@@ -1,7 +1,6 @@
 package com.dingyue.bookshelf
 
 import android.content.Context
-import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -16,8 +15,7 @@ import java.util.*
 
 class BookShelfAdapter(private val context: Context,
                        private val bookShelfItemListener: BookShelfAdapter.BookShelfItemListener,
-                       private var books: ArrayList<Book>, private val adViews: List<ViewGroup>?,
-                       private var headerAD: ViewGroup?,
+                       private var books: ArrayList<Book>,
                        private val hasAddView: Boolean = false)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -62,14 +60,13 @@ class BookShelfAdapter(private val context: Context,
         if (viewHolder is BookShelfItemHolder) {
             viewHolder.bind(book, bookShelfItemListener, selectedBooks.contains(book), isRemove)
         } else if (viewHolder is BookShelfADHolder) {
-            val view = loadADView(book)
+            val view = book.item_view
 
             if (view != null) {
                 val parent = view.parent
                 if (parent != null && parent is RelativeLayout) {
                     parent.removeAllViews()
                 }
-                view.setBackgroundColor(Color.parseColor("#0094D5"))
 
                 viewHolder.itemView.visibility = View.VISIBLE
                 viewHolder.bind(view)
@@ -89,24 +86,6 @@ class BookShelfAdapter(private val context: Context,
             }
         }
         return books.size
-    }
-
-    private fun loadADView(book: Book?): View? {
-        return if (book != null) {
-            if (book.item_type == 2) {
-                headerAD
-            } else {
-                if (adViews == null || adViews.isEmpty()) {
-                    null
-                } else {
-                    if (book.item_position < adViews.size) {
-                        adViews[book.item_position]
-                    } else null
-                }
-            }
-        } else {
-            null
-        }
     }
 
     override fun getItemViewType(position: Int): Int {

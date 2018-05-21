@@ -41,10 +41,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     val bookshelfPresenter: BookShelfPresenter by lazy { BookShelfPresenter(this) }
-    
+
     private var bookRackUpdateTime: Long = 0
     private var latestLoadDataTime: Long = 0
-    
+
     private lateinit var sharedPreferences: SharedPreferences
 
     private var bookShelfInterface: BookShelfInterface? = null
@@ -81,7 +81,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
         popup
     }
-    
+
     private val bookSortingPopup: BookSortingPopup by lazy {
         val popup = BookSortingPopup(activity)
         popup.onTimeSortingClickListener = {
@@ -92,7 +92,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
         popup
     }
-    
+
     val bookShelfAdapter: BookShelfAdapter by lazy {
         BookShelfAdapter(activity, object : BookShelfAdapter.BookShelfItemListener {
             override fun clickedBookShelfItem(book: Book?, position: Int) {
@@ -107,6 +107,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                                 getString(R.string.select_all)
                 } else {
                     handleBook(book)
+
                     book?.let {
                         BookShelfLogger.uploadBookShelfBookClick(it, position)
                     }
@@ -121,9 +122,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                 return false
             }
 
-        }, bookshelfPresenter.iBookList, bookshelfPresenter.aDViews, bookshelfPresenter.headerAD)
+        }, bookshelfPresenter.iBookList)
     }
-    
+
     private val bookShelfDeleteDialog: BookShelfDeleteDialog by lazy {
         val dialog = BookShelfDeleteDialog(activity)
         dialog.onConfirmListener = { books, isDeleteCacheOnly ->
@@ -238,13 +239,12 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
     override fun onResume() {
         super.onResume()
+
         updateUI()
 
-        PlatformSDK.config().setAd_userid("61ba8f318d18467fb8fdbb111fcf3b18")
-
-//        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookshelfPresenter.iBookList.isNotEmpty()) {
+        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookshelfPresenter.iBookList.isNotEmpty()) {
             bookshelfPresenter.requestFloatAD(activity, fl_ad_float)
-//        }
+        }
     }
 
     private fun initUpdateService() {
@@ -451,9 +451,11 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
     override fun showRemoveMenu() {
         srl_refresh.setPullToRefreshEnabled(false)
+
         bookshelfPresenter.removeAd()
         bookShelfAdapter.insertRemoveState(true)
         bookShelfInterface?.changeHomeNavigationState(true)
+
         removeMenuPopup.show(rl_content)
 
         srl_refresh.setPadding(0, srl_refresh.paddingTop, 0, popupHeight)
@@ -476,6 +478,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         fl_ad_float.visibility = View.VISIBLE
 
         BookShelfLogger.uploadBookShelfEditCancel()
+
+        updateUI()
+        bookshelfPresenter.requestFloatAD(activity, fl_ad_float)
     }
 
     override fun isRemoveMenuShow(): Boolean = bookShelfAdapter.isRemove

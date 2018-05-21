@@ -79,7 +79,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                 return false
             }
 
-        }, presenter.iBookList, presenter.aDViews)
+        }, presenter.iBookList, presenter.aDViews, presenter.headerAD)
     }
 
 
@@ -269,9 +269,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
      */
     fun updateUI() {
         if (activity != null && !activity.isFinishing) {
-            val isShowAd = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD
+            val isShowAD = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD
             doAsync {
-                presenter.queryBookListAndAd(activity, isShowAd)
+                presenter.queryBookListAndAd(activity, isShowAD, false)
                 uiThread {
                     bookShelfAdapter.notifyDataSetChanged()
                 }

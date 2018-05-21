@@ -1,6 +1,7 @@
 package net.lzbook.kit.data.bean;
 
 import android.text.TextUtils;
+import android.view.View;
 
 import java.io.Serializable;
 
@@ -90,7 +91,7 @@ public class Book implements Serializable, Comparable<Book>, Cloneable {
 
 
     public int item_type = 0;
-    public int item_position = -1;
+    public View item_view = null;
 
 
     public static boolean isOnlineType(int type) {

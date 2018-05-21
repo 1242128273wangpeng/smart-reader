@@ -158,13 +158,11 @@ class DrawerLayout @JvmOverloads constructor(context: Context, attrs: AttributeS
     }
 
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
-        AppLog.e(TAG, "onInterceptTouchEvent")
         return viewDragHelper.shouldInterceptTouchEvent(event)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         //将触摸事件传递给ViewDragHelper，此操作必不可少
-        AppLog.e(TAG, "onTouchEvent")
         viewDragHelper.processTouchEvent(event)
         return true
     }

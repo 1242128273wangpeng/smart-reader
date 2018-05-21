@@ -3,7 +3,6 @@ package com.dingyue.bookshelf
 import android.app.Activity
 import android.content.ComponentName
 import android.content.ServiceConnection
-import android.graphics.Color
 import android.os.IBinder
 import android.text.TextUtils
 import android.view.ViewGroup
@@ -28,15 +27,9 @@ import kotlin.collections.ArrayList
  */
 class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShelfView> {
 
-    private val tag = "BookShelfPresenter"
-
     private var bookDaoHelper: BookDaoHelper = BookDaoHelper.getInstance()
 
     var iBookList: ArrayList<Book> = ArrayList()
-
-    var headerAD: ViewGroup? = null
-
-    var aDViews: ArrayList<ViewGroup> = ArrayList()
 
     var updateService: CheckNovelUpdateService? = null
 
@@ -47,9 +40,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
             try {
                 updateService = (service as CheckNovelUpdateService.CheckUpdateBinder).service
-                AppLog.d(tag, "auto-updateService $updateService")
                 if (updateService != null) {
-                    AppLog.d(tag, "updateData ")
                     view?.doUpdateBook(updateService!!)
                 }
             } catch (e: ClassCastException) {
@@ -59,10 +50,8 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
     }
 
     fun addUpdateTask(updateCallBack: UpdateCallBack) {
-        AppLog.e(tag, "updateService: $updateService")
         if (bookDaoHelper.booksCount > 0 && updateService != null) {
             val list = bookDaoHelper.booksList
-            AppLog.e(tag, "BookUpdateCount: " + list.size)
             updateService?.checkUpdate(BookHelperContract.loadBookUpdateTaskData(list, updateCallBack))
         }
     }
@@ -73,27 +62,33 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
     fun queryBookListAndAd(activity: Activity, isShowAD: Boolean, isList: Boolean) {
         val adCount = calculationShelfADCount(isShowAD)
 
-        if (/*isShowAD && */iBookList.isNotEmpty()) {
+        if (isShowAD && iBookList.isNotEmpty()) {
 
             if (isList) {
-                requestShelfADs(activity, adCount, true)
+                if (adCount > 0) {
+                    requestShelfADs(activity, adCount, true)
+                }
             } else {
-//                when {
-//                    Constants.book_shelf_state == 1 -> {
-//                        requestShelfHeaderAD(activity)
-//                    }
-//
-//                    Constants.book_shelf_state == 2 -> {
-//                        requestShelfADs(activity, adCount, false)
-//                    }
-//
-//                    Constants.book_shelf_state == 3 -> {
+                when {
+                    Constants.book_shelf_state == 1 -> {
                         requestShelfHeaderAD(activity)
-                        requestShelfADs(activity, adCount, false)
-//                    }
-//                }
-            }
+                    }
 
+                    Constants.book_shelf_state == 2 -> {
+                        if (adCount > 0) {
+                            requestShelfADs(activity, adCount, false)
+                        }
+                    }
+
+                    Constants.book_shelf_state == 3 -> {
+                        requestShelfHeaderAD(activity)
+
+                        if (adCount > 0) {
+                            requestShelfADs(activity, adCount, false)
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -102,7 +97,10 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
      * **/
     private fun calculationShelfADCount(isShowAD: Boolean): Int {
         val bookList = bookDaoHelper.booksOnLineList
-        iBookList.clear()
+
+        iBookList.removeAll {
+            it.item_type != 2
+        }
 
         if (bookList.isEmpty()) {
             uiThread {
@@ -123,7 +121,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
                 if (interval == 0) {
                     0
                 } else {
-                    bookList.size / interval + 1
+                    bookList.size / interval
                 }
             } else {
                 0
@@ -137,46 +135,61 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
     private fun requestShelfADs(activity: Activity, count: Int, isList: Boolean) {
         BookShelfADContract.loadBookShelAD(activity, count, object : BookShelfADContract.ADCallback {
             override fun requestADSuccess(views: List<ViewGroup>) {
-                aDViews.clear()
-                aDViews.addAll(views)
 
                 if (iBookList.isEmpty()) {
                     return
                 }
 
-                val size = iBookList.size
+                val interval = BookShelfADContract.loadBookShelfADInterval() + 1
 
-                var index = 0
-
-                var adBook = Book()
-
-                if (isList) {
-                    adBook.item_type = 1
-                    adBook.item_position = index++
-                    iBookList.add(0, adBook)
+                val range = if (isList) {
+                    views.indices
+                } else {
+                    1 until views.size + 1
                 }
 
-                val interval = BookShelfADContract.loadBookShelfADInterval()
-
-                var i = 1
-
-                while (size > interval * i) {
-                    adBook = Book()
-                    adBook.item_type = 1
-                    adBook.item_position = index++
-                    iBookList.add(interval * i, adBook)
-                    i++
+                for (i in range) {
+                    if (i * interval < iBookList.size) {
+                        if (iBookList[i * interval].item_type == 1) {
+                            iBookList[i * interval].item_view = views[if (isList) i else i - 1]
+                        } else if (iBookList[i * interval].item_type == 0) {
+                            val adBook = Book()
+                            adBook.item_type = 1
+                            adBook.item_view = views[if (isList) i else i - 1]
+                            iBookList.add(i * interval, adBook)
+                        }
+                    }
                 }
 
                 view?.onAdRefresh()
             }
 
             override fun requestADRepairSuccess(views: List<ViewGroup>) {
-                aDViews.addAll(views)
 
-                uiThread {
-                    view?.onAdRefresh()
+                var last = 0
+
+                for (i in iBookList.indices) {
+                    if (iBookList[i].item_type == 1) {
+                        last = i
+                    }
                 }
+
+                val interval = BookShelfADContract.loadBookShelfADInterval() + 1
+
+                for (i in 1 until views.size + 1) {
+                    if (i * interval < iBookList.size) {
+                        if (iBookList[last + (i * interval)].item_type == 1) {
+                            iBookList[last + (i * interval)].item_view = views[i - 1]
+                        } else if (iBookList[last + (i * interval)].item_type == 0) {
+                            val adBook = Book()
+                            adBook.item_type = 1
+                            adBook.item_view = views[i - 1]
+                            iBookList.add(last + (i * interval), adBook)
+                        }
+                    }
+                }
+
+                view?.onAdRefresh()
             }
         })
     }
@@ -188,17 +201,23 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
         BookShelfADContract.loadBookShelfHeaderAD(activity, object : BookShelfADContract.HeaderADCallback {
             override fun requestADSuccess(viewGroup: ViewGroup?) {
                 if (viewGroup != null) {
-                    headerAD = viewGroup
-                    headerAD?.setBackgroundColor(Color.parseColor("#0094D5"))
-                    val adBook = Book()
-                    adBook.item_type = 2
-                    adBook.item_position = 0
-                    iBookList.add(0, adBook)
+                    if (iBookList.size > 0 && iBookList[0].item_type == 2) {
+                        iBookList[0].item_view = viewGroup
+                    } else {
+                        val adBook = Book()
+                        adBook.item_type = 2
+                        adBook.item_view = viewGroup
+                        iBookList.add(0, adBook)
+                    }
 
                     view?.onAdRefresh()
                 }
             }
         })
+    }
+
+    fun requestFloatAD(activity: Activity, viewGroup: ViewGroup) {
+        BookShelfADContract.loadBookShelfFloatAD(activity, viewGroup)
     }
 
     fun deleteBooks(deleteBooks: java.util.ArrayList<Book>, onlyDeleteCache: Boolean) {
@@ -245,21 +264,12 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
     }
 
     fun removeAd() {
-        iBookList.filter {
-            //若当前的书籍是广告
-            it.book_type == -2
-        }.forEach { book ->
-            iBookList.remove(book)
+        iBookList.removeAll {
+            it.item_type == 1
         }
     }
 
     fun clear() {
-        logd("presenter clear")
         view = null
-        aDViews.clear()
-    }
-
-    fun requestFloatAD(activity: Activity, viewGroup: ViewGroup) {
-        BookShelfADContract.loadBookShelfFloatAD(activity, viewGroup)
     }
 }
