@@ -76,7 +76,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                 return false
             }
 
-        }, presenter.iBookList, presenter.aDViews, presenter.headerAD)
+        }, presenter.iBookList)
     }
 
 

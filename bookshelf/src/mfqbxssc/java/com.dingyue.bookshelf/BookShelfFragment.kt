@@ -247,15 +247,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
     }
 
-    private fun initUpdateService() {
-        if (bookshelfPresenter.updateService != null) return
-        val intent = Intent()
-        val context = activity.applicationContext
-        intent.setClass(context, CheckNovelUpdateService::class.java)
-        context.startService(intent)
-        context.bindService(intent, bookshelfPresenter.updateConnection, Context.BIND_AUTO_CREATE)
-    }
-
     override fun onDetach() {
         super.onDetach()
         try {
@@ -274,6 +265,15 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         super.onDestroy()
         bookshelfPresenter.iBookList.clear()
         bookshelfPresenter.clear()
+    }
+
+    private fun initUpdateService() {
+        if (bookshelfPresenter.updateService != null) return
+        val intent = Intent()
+        val context = activity.applicationContext
+        intent.setClass(context, CheckNovelUpdateService::class.java)
+        context.startService(intent)
+        context.bindService(intent, bookshelfPresenter.updateConnection, Context.BIND_AUTO_CREATE)
     }
 
     private fun initRecyclerView() {
@@ -323,18 +323,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
     }
 
-    override fun onBookListQuery(bookList: ArrayList<Book>) {
-        if (activity != null && !activity.isFinishing) {
-            if (bookList.isEmpty()) {
-                srl_refresh.setPullToRefreshEnabled(false)
-                ll_empty.visibility = View.VISIBLE
-            } else {
-                srl_refresh.setPullToRefreshEnabled(true)
-                ll_empty.visibility = View.GONE
-            }
-        }
-    }
-
     /**
      * 下拉时检查更新
      */
@@ -357,6 +345,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             // 刷新间隔大于30秒直接请求更新，
             bookshelfPresenter.addUpdateTask(this)
         }
+    }
+
+    fun doUpdateBook() {
+        bookshelfPresenter.addUpdateTask(this)
     }
 
     private fun showToastDelay(textId: Int) {
@@ -414,6 +406,31 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
     }
 
+    override fun doUpdateBook(updateService: CheckNovelUpdateService) {
+        updateService.setBookUpdateListener(activity as CheckNovelUpdateService.OnBookUpdateListener)
+        bookshelfPresenter.addUpdateTask(this)
+    }
+
+    override fun onBookListQuery(bookList: ArrayList<Book>) {
+        if (activity != null && !activity.isFinishing) {
+            if (bookList.isEmpty()) {
+                srl_refresh.setPullToRefreshEnabled(false)
+                ll_empty.visibility = View.VISIBLE
+            } else {
+                srl_refresh.setPullToRefreshEnabled(true)
+                ll_empty.visibility = View.GONE
+            }
+        }
+    }
+
+    override fun onBookDelete() {
+        if (activity != null && !activity.isFinishing) {
+            updateUI()
+            bookShelfDeleteDialog.dismiss()
+            dismissRemoveMenu()
+        }
+    }
+
     override fun onSuccessUpdateHandle(updateCount: Int, firstBook: BookUpdate?) {
         if (updateCount == 0) {
             showToastDelay(R.string.bookshelf_no_book_update)
@@ -432,20 +449,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
     }
 
-    fun doUpdateBook() {
-        bookshelfPresenter.addUpdateTask(this)
-    }
-
-    override fun doUpdateBook(updateService: CheckNovelUpdateService) {
-        updateService.setBookUpdateListener(activity as CheckNovelUpdateService.OnBookUpdateListener)
-        bookshelfPresenter.addUpdateTask(this)
-    }
-
-    override fun onBookDelete() {
+    override fun onAdRefresh() {
         if (activity != null && !activity.isFinishing) {
-            updateUI()
-            bookShelfDeleteDialog.dismiss()
-            dismissRemoveMenu()
+            bookShelfAdapter.notifyDataSetChanged()
         }
     }
 
@@ -501,11 +507,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         bookshelfPresenter.deleteBooks(books, isDeleteCacheOnly)
     }
 
-    override fun onAdRefresh() {
-        if (activity != null && !activity.isFinishing) {
-            bookShelfAdapter.notifyDataSetChanged()
-        }
-    }
 
     companion object {
         private const val PULL_REFRESH_DELAY = 30 * 1000
