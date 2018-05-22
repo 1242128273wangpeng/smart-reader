@@ -52,7 +52,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="19.5dp"
             android:layout_marginTop="15.5dp"
-            android:contentDescription="@string/app_name"
+            android:contentDescription="@string/module_name"
             android:src="@drawable/bookshelf_item_book_status_finish_icon"
             android:visibility="gone"/>
 
@@ -74,7 +74,7 @@
                 android:layout_weight="3"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:text="@string/app_name"
+                android:text="@string/module_name"
                 android:textColor="#212121"
                 android:textSize="14sp"/>
         </LinearLayout>
@@ -104,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/img_book_status_update"
                 android:singleLine="true"
-                android:text="@string/app_name"
+                android:text="@string/module_name"
                 android:textColor="#949494"
                 android:textSize="10sp"/>
         </RelativeLayout>
@@ -118,6 +118,6 @@
         android:layout_marginRight="12dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/icon_delete_checked"
-        android:contentDescription="@string/app_name"
+        android:contentDescription="@string/module_name"
         android:visibility="visible"/>
 </RelativeLayout>

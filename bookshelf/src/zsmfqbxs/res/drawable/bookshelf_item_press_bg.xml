@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:drawable="#FFF4F4F4"
+        android:drawable="@drawable/bookshelf_item_book_pressed"
         android:state_enabled="true"
         android:state_pressed="true"/>
 </selector>
