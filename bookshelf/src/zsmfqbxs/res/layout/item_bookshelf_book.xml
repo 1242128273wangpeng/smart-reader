@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:id="@+id/rl_main"
@@ -19,7 +18,7 @@
             android:layout_marginLeft="19dp"
             android:layout_marginRight="19dp"
             android:layout_marginTop="15dp"
-            android:background="#dadada"
+            android:background="#FFDADADA"
             android:gravity="center"
             android:padding="0.5dp">
 

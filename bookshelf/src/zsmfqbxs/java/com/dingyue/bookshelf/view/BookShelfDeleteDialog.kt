@@ -1,10 +1,7 @@
-package com.intelligent.reader.view
+package com.dingyue.bookshelf.view
 
 import android.app.Activity
 import android.view.View
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.TextView
 import com.dingyue.bookshelf.R
 import kotlinx.android.synthetic.zsmfqbxs.dialog_bookshelf_delete.*
 import net.lzbook.kit.book.view.MyDialog
@@ -26,7 +23,7 @@ class BookShelfDeleteDialog(activity: Activity) {
     private var books: ArrayList<Book> = ArrayList()
 
     init {
-        dialog.txt_delete_title.setText(R.string.prompt)
+        dialog.txt_delete_title.setText(R.string.bookshelf_delete_dialog_title)
         dialog.ckb_delete_cache.setPadding(0, 0, 0, 0)
         dialog.ckb_delete_cache.setText(R.string.bookshelf_delete_dialog_check)
         dialog.btn_dialog_confirm.setText(R.string.confirm)

@@ -2,9 +2,9 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_enabled="true"
           android:state_pressed="false"
-          android:drawable="@drawable/bookshelf_delete_cancle_unchecked_bg" />
+          android:drawable="@drawable/bookshelf_delete_cancel_unchecked_bg" />
 
     <item android:state_enabled="true"
           android:state_pressed="true"
-          android:drawable="@drawable/bookshelf_delete_cancle_checked_bg" />
+          android:drawable="@drawable/bookshelf_delete_cancel_checked_bg" />
 </selector>

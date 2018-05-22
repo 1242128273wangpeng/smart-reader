@@ -25,7 +25,7 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
     fun bind(book: Book, bookshelfItemListener: BookShelfAdapter.BookShelfItemListener,
              contains: Boolean, remove: Boolean) = with(itemView) {
         if (!TextUtils.isEmpty(book.name)) {
-            txt_book_name.setText(book.name)
+            txt_book_name.text = book.name
         }
 
         if (book.sequence + 1 > book.chapter_count) {
