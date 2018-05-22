@@ -13,7 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.dingyue.bookshelf.view.RemoveMenuPopup
 import com.dingyue.contract.CommonContract
-import com.intelligent.reader.view.BookShelfDeleteDialog
+import com.dingyue.bookshelf.view.BookShelfDeleteDialog
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.txtqbdzs.frag_bookshelf.*
@@ -70,7 +70,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                 return false
             }
 
-        }, presenter.iBookList, presenter.aDViews)
+        }, presenter.iBookList)
     }
 
     private val headerView: View by lazy {
@@ -192,7 +192,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         if (activity != null && !activity.isFinishing) {
             val isShowAd = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD
             doAsync {
-                presenter.queryBookListAndAd(activity, isShowAd)
+                presenter.queryBookListAndAd(activity, isShowAd,true)
                 uiThread {
                     bookShelfAdapter.notifyDataSetChanged()
                 }

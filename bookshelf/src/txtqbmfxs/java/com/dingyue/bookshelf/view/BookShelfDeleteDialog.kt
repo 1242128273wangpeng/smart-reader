@@ -33,12 +33,12 @@ class BookShelfDeleteDialog(activity: Activity) {
     }
 
     fun show(books: ArrayList<Book>) {
-        dialog.setCanceledOnTouchOutside(true)
-        dialog.setCancelable(true)
-        dialog.ll_delete_content.visibility = View.VISIBLE
-        dialog.ll_delete_loading.visibility = View.GONE
         this.books.clear()
         this.books.addAll(books)
+        dialog.setCancelable(true)
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.ll_delete_content.visibility = View.VISIBLE
+        dialog.ll_delete_loading.visibility = View.GONE
         dialog.show()
         dialog.ckb_delete_cache.isChecked = false
     }
@@ -50,7 +50,12 @@ class BookShelfDeleteDialog(activity: Activity) {
         dialog.setCancelable(false)
     }
 
-    fun dismiss() {
+
+    fun isShow(): Boolean {
+        return dialog.isShowing
+    }
+
+    fun dismiss(){
         dialog.dismiss()
     }
 }
