@@ -10,9 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.dingyue.bookshelf.contract.BookShelfADContract
+import com.dingyue.bookshelf.view.BookShelfDeleteDialog
 import com.dingyue.bookshelf.view.RemoveMenuPopup
 import com.dingyue.contract.CommonContract
-import com.intelligent.reader.view.BookShelfDeleteDialog
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.txtqbdzs.frag_bookshelf.*
@@ -54,7 +54,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     private val removeMenuPopup: RemoveMenuPopup by lazy {
         val popup = RemoveMenuPopup(activity)
         popup.onDeleteClickListener = {
-            bookDeleteDialog.show(bookShelfAdapter.selectedBooks)
+            bookShelfDeleteDialog.show(bookShelfAdapter.selectedBooks)
         }
         popup.onSelectClickListener = { isSelectAll ->
 
@@ -89,7 +89,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }, bookShelfPresenter.iBookList)
     }
 
-    private val bookDeleteDialog: BookShelfDeleteDialog by lazy {
+    private val bookShelfDeleteDialog: BookShelfDeleteDialog by lazy {
         val dialog = BookShelfDeleteDialog(activity)
         dialog.onConfirmListener = { books, isDeleteCacheOnly ->
             if (books.isNotEmpty()) {
@@ -353,7 +353,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     override fun onBookDelete() {
         if (activity != null && !activity.isFinishing) {
             updateUI()
-            bookDeleteDialog.dismiss()
+            bookShelfDeleteDialog.dismiss()
             dismissRemoveMenu()
         }
     }
