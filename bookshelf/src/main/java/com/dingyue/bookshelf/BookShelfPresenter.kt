@@ -21,6 +21,7 @@ import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.utils.*
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.LinkedHashMap
 
 /**
  * Created by qiantao on 2017/11/14 0014
@@ -30,6 +31,8 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
     private var bookDaoHelper: BookDaoHelper = BookDaoHelper.getInstance()
 
     var iBookList: ArrayList<Book> = ArrayList()
+
+    private val adBookMap = LinkedHashMap<Int, Book>()
 
     var updateService: CheckNovelUpdateService? = null
 
@@ -60,7 +63,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
      * 查询书籍列表
      */
     fun queryBookListAndAd(activity: Activity, isShowAD: Boolean, isList: Boolean) {
-        val adCount = calculationShelfADCount(isShowAD)
+        val adCount = calculationShelfADCount(isShowAD, isList)
 
         if (isShowAD && iBookList.isNotEmpty()) {
 
@@ -95,7 +98,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
     /***
      * 刷新书籍列表，并计算广告数量
      * **/
-    private fun calculationShelfADCount(isShowAD: Boolean): Int {
+    private fun calculationShelfADCount(isShowAD: Boolean, isList: Boolean): Int {
         val bookList = bookDaoHelper.booksOnLineList
 
         iBookList.removeAll {
@@ -111,6 +114,17 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
             Collections.sort(bookList, CommonContract.MultiComparator(Constants.book_list_sort_type))
             iBookList.addAll(bookList)
 
+            if (adBookMap.isNotEmpty()) {
+                val iterator = adBookMap.entries.iterator()
+
+                while (iterator.hasNext()) {
+                    val entry = iterator.next()
+                    if (entry.value.item_view != null) {
+                        iBookList.add(entry.key, entry.value)
+                    }
+                }
+            }
+
             uiThread {
                 view?.onBookListQuery(bookList)
             }
@@ -121,7 +135,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
                 if (interval == 0) {
                     0
                 } else {
-                    bookList.size / interval
+                    bookList.size / interval + (if (isList) 1 else 0)
                 }
             } else {
                 0
@@ -133,66 +147,66 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
      * 请求书架页广告
      * **/
     private fun requestShelfADs(activity: Activity, count: Int, isList: Boolean) {
+
+        val interval = BookShelfADContract.loadBookShelfADInterval() + 1
+
+        var adBook: Book
+
+        if (isList) {
+            adBook = Book()
+            adBook.item_type = 1
+            adBook.item_view = null
+            adBookMap[0] = adBook
+        }
+
+        for (i in 1 until count) {
+            val key = i * interval
+            if (key < iBookList.size) {
+                adBook = Book()
+                adBook.item_type = 1
+                adBook.item_view = null
+                adBookMap[key] = adBook
+            }
+        }
+
         BookShelfADContract.loadBookShelAD(activity, count, object : BookShelfADContract.ADCallback {
             override fun requestADSuccess(views: List<ViewGroup>) {
-
-                if (iBookList.isEmpty()) {
-                    return
-                }
-
-                val interval = BookShelfADContract.loadBookShelfADInterval() + 1
-
-                val range = if (isList) {
-                    views.indices
-                } else {
-                    1 until views.size + 1
-                }
-
-                for (i in range) {
-                    if (i * interval < iBookList.size) {
-                        if (iBookList[i * interval].item_type == 1) {
-                            iBookList[i * interval].item_view = views[if (isList) i else i - 1]
-                        } else if (iBookList[i * interval].item_type == 0) {
-                            val adBook = Book()
-                            adBook.item_type = 1
-                            adBook.item_view = views[if (isList) i else i - 1]
-                            iBookList.add(i * interval, adBook)
-                        }
-                    }
-                }
-
+                handleADResult(views)
                 view?.onAdRefresh()
             }
 
             override fun requestADRepairSuccess(views: List<ViewGroup>) {
-
-                var last = 0
-
-                for (i in iBookList.indices) {
-                    if (iBookList[i].item_type == 1) {
-                        last = i
-                    }
-                }
-
-                val interval = BookShelfADContract.loadBookShelfADInterval() + 1
-
-                for (i in 1 until views.size + 1) {
-                    if (i * interval < iBookList.size) {
-                        if (iBookList[last + (i * interval)].item_type == 1) {
-                            iBookList[last + (i * interval)].item_view = views[i - 1]
-                        } else if (iBookList[last + (i * interval)].item_type == 0) {
-                            val adBook = Book()
-                            adBook.item_type = 1
-                            adBook.item_view = views[i - 1]
-                            iBookList.add(last + (i * interval), adBook)
-                        }
-                    }
-                }
-
+                handleADResult(views)
                 view?.onAdRefresh()
             }
         })
     }
+
+    private fun handleADResult(views: List<ViewGroup>) {
+        var index = 0
+
+        val iterator = adBookMap.entries.iterator()
+
+        while (iterator.hasNext()) {
+            val entry = iterator.next()
+            if (entry.value.item_view == null) {
+                if (index < views.size) {
+                    entry.value.item_view = views[index]
+
+                    if (iBookList[entry.key].item_type == 1) {
+                        iBookList[entry.key].item_view = entry.value.item_view
+                    } else {
+                        iBookList.add(entry.key, entry.value)
+                    }
+
+                    index += 1
+                } else {
+                    break
+                }
+            }
+        }
+    }
+
 
     /***
      * 获取九宫格顶部广告
@@ -271,5 +285,31 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
 
     fun clear() {
         view = null
+
+        iBookList.forEach {
+            if (it.item_type == 1 || it.item_type == 2) {
+                if (it.item_view != null) {
+                    it.item_view.removeAllViews()
+                    it.item_view = null
+                }
+            }
+        }
+
+        if (adBookMap.isNotEmpty()) {
+            val iterator = adBookMap.entries.iterator()
+
+            while (iterator.hasNext()) {
+                val entry = iterator.next()
+
+                if (entry.value.item_view != null) {
+                    entry.value.item_view.removeAllViews()
+                    entry.value.item_view = null
+                }
+            }
+        }
+
+        iBookList.clear()
+
+        adBookMap.clear()
     }
 }

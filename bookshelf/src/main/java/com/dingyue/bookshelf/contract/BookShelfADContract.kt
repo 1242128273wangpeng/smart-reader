@@ -88,7 +88,7 @@ object BookShelfADContract {
                 PlatformSDK.adapp().dycmNativeAd(activity, "1-2", null, object : AbstractCallback() {
                     override fun onResult(adSwitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
                         super.onResult(adSwitch, views, jsonResult)
-                        AppLog.e("书架广告", "书架顶部广告请求：" + views?.size)
+                        AppLog.e("书架广告", "书架悬浮广告请求：" + views?.size)
                         if (!adSwitch) {
                             return
                         }

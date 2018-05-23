@@ -272,15 +272,23 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         srl_refresh.setHeaderView(createHeaderView())
         srl_refresh.isTargetScrollWithLayout = true
         recl_content.recycledViewPool.setMaxRecycledViews(0, 12)
-        val layoutManager = ShelfGridLayoutManager(activity, 3)
-        recl_content.layoutManager = layoutManager
-        recl_content.isFocusable = false//放弃焦点
+
+        val bookshelfLayoutManager = ShelfGridLayoutManager(activity, 3)
+
+        val bookshelfShelfSpanSizeLookup = BookShelfSpanSizeLookup(bookShelfAdapter)
+        bookshelfLayoutManager.spanSizeLookup = bookshelfShelfSpanSizeLookup
+
+        recl_content.layoutManager = bookshelfLayoutManager
+        recl_content.isFocusable = false
         recl_content.itemAnimator.addDuration = 0
         recl_content.itemAnimator.changeDuration = 0
         recl_content.itemAnimator.moveDuration = 0
         recl_content.itemAnimator.removeDuration = 0
+
         (recl_content.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+
         recl_content.adapter = bookShelfAdapter
+
         recl_content.topShadow = img_head_shadow
     }
 

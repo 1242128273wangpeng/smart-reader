@@ -5,10 +5,7 @@
     android:id="@+id/rl_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="15dp"
-    android:layout_marginRight="19dp"
     android:layout_marginTop="10dp"
-    android:background="@drawable/bookshelf_item_ad_sel"
     tools:ignore="RtlHardcoded">
 
 </RelativeLayout>

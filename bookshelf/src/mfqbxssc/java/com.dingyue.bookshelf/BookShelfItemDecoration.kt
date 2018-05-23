@@ -6,7 +6,7 @@ import android.view.View
 import com.dingyue.contract.HolderType
 
 /**
- * Desc 书架item比重
+ * Desc 书架item装饰
  * Author crazylei
  * Mail crazylei951002@gmail.com
  * Date 2018/5/16 10:40

@@ -256,7 +256,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
     override fun onDestroy() {
         super.onDestroy()
-        bookshelfPresenter.iBookList.clear()
+        bookshelfPresenter.clear()
         bookshelfPresenter.clear()
     }
 
@@ -479,7 +479,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         BookShelfLogger.uploadBookShelfEditCancel()
 
         updateUI()
-        bookshelfPresenter.requestFloatAD(activity, fl_ad_float)
+
+        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookshelfPresenter.iBookList.isNotEmpty()) {
+            bookshelfPresenter.requestFloatAD(activity, fl_ad_float)
+        }
     }
 
     override fun isRemoveMenuShow(): Boolean = bookShelfAdapter.isRemove

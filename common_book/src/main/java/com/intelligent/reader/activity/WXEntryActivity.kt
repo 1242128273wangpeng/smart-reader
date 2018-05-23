@@ -1,4 +1,4 @@
-package cn.txtqbmfyd.reader.wxapi
+package cc.quanbennovel.wxapi
 
 import android.app.Activity
 import android.content.Intent

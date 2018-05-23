@@ -3,16 +3,14 @@ package com.dingyue.bookshelf
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v7.widget.SimpleItemAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.dingyue.bookshelf.view.BookDeleteDialog
-import com.dingyue.bookshelf.view.BookSortingPopup
+import com.dingyue.bookshelf.view.BookShelfDeleteDialog
+import com.dingyue.bookshelf.view.BookShelfSortingPopup
 import com.dingyue.bookshelf.view.HeadMenuPopup
 import com.dingyue.bookshelf.view.RemoveMenuPopup
 import com.dingyue.contract.CommonContract
@@ -44,18 +42,54 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         resources.getDimensionPixelSize(R.dimen.bookshelf_popup_height)
     }
 
+    val bookshelfPresenter: BookShelfPresenter by lazy { BookShelfPresenter(this) }
+
     private var bookRackUpdateTime: Long = 0
     private var latestLoadDataTime: Long = 0
-    private lateinit var sharedPreferences: SharedPreferences
 
     private var bookShelfInterface: BookShelfInterface? = null
 
-    val presenter: BookShelfPresenter by lazy { BookShelfPresenter(this) }
+    private val refreshHeader: View by lazy {
+        LayoutInflater.from(srl_refresh.context)
+                .inflate(R.layout.bookshelf_refresh_header, null)
+    }
+
+    private val headMenuPopup: HeadMenuPopup by lazy {
+        val popup = HeadMenuPopup(activity)
+        popup.onDownloadManagerClickListener = {
+            RouterUtil.navigation(activity, RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
+            BookShelfLogger.uploadBookShelfCacheManager()
+        }
+        popup.onBookSortingClickListener = {
+            bookShelfSortingPopup.show(rl_content)
+            BookShelfLogger.uploadBookShelfBookSort()
+        }
+        popup
+    }
+
+    private val removeMenuPopup: RemoveMenuPopup by lazy {
+        val popup = RemoveMenuPopup(activity)
+        popup.onDeleteClickListener = {
+            bookShelfDeleteDialog.show(bookShelfAdapter.selectedBooks)
+        }
+        popup
+    }
+
+    private val bookShelfSortingPopup: BookShelfSortingPopup by lazy {
+        val popup = BookShelfSortingPopup(activity)
+        popup.onTimeSortingClickListener = {
+            sortBooks(1)
+        }
+        popup.onRecentReadSortingClickListener = {
+            sortBooks(0)
+        }
+        popup
+    }
 
     val bookShelfAdapter: BookShelfAdapter by lazy {
         BookShelfAdapter(activity, object : BookShelfAdapter.BookShelfItemListener {
             override fun clickedBookShelfItem(book: Book?, position: Int) {
-                if (position < 0 || position >= presenter.iBookList.size) return
+                if (position < 0 || position >= bookshelfPresenter.iBookList.size) return
                 if (isRemoveMenuShow()) {
                     bookShelfAdapter.insertSelectedPosition(position)
                     removeMenuPopup.setSelectedNum(bookShelfAdapter.selectedBooks.size)
@@ -80,43 +114,12 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                 return false
             }
 
-        }, presenter.iBookList)
+        }, bookshelfPresenter.iBookList)
     }
 
-    private val headMenuPopup: HeadMenuPopup by lazy {
-        val popup = HeadMenuPopup(activity)
-        popup.onDownloadManagerClickListener = {
-            RouterUtil.navigation(activity, RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
-            BookShelfLogger.uploadBookShelfCacheManager()
-        }
-        popup.onBookSortingClickListener = {
-            bookSortingPopup.show(rl_content)
-            BookShelfLogger.uploadBookShelfBookSort()
-        }
-        popup
-    }
 
-    private val bookSortingPopup: BookSortingPopup by lazy {
-        val popup = BookSortingPopup(activity)
-        popup.onTimeSortingClickListener = {
-            sortBooks(1)
-        }
-        popup.onRecentReadSortingClickListener = {
-            sortBooks(0)
-        }
-        popup
-    }
-
-    private val removeMenuPopup: RemoveMenuPopup by lazy {
-        val popup = RemoveMenuPopup(activity)
-        popup.onDeleteClickListener = {
-            bookDeleteDialog.show(bookShelfAdapter.selectedBooks)
-        }
-        popup
-    }
-
-    private val bookDeleteDialog: BookDeleteDialog by lazy {
-        val dialog = BookDeleteDialog(activity)
+    private val bookShelfDeleteDialog: BookShelfDeleteDialog by lazy {
+        val dialog = BookShelfDeleteDialog(activity)
         dialog.onConfirmListener = { books, isDeleteCacheOnly ->
             deleteBooks(books, isDeleteCacheOnly)
         }
@@ -126,14 +129,34 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         dialog
     }
 
+    override fun onAttach(activity: Activity?) {
+        super.onAttach(activity)
+        try {
+            bookShelfInterface = activity as BookShelfInterface
+        } catch (classCastException: ClassCastException) {
+            throw ClassCastException(activity.toString() + " must implement BookShelfInterface")
+        }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        initUpdateService()
+
+        if (bookshelfPresenter.iBookList.size > 0) {
+            srl_refresh.isRefreshing = true
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.frag_bookshelf, container, false)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
         bookRackUpdateTime = AppUtils.getLongPreferences(activity, "book_rack_update_time", System.currentTimeMillis())
+
         initRecyclerView()
+
         srl_refresh.setOnPullRefreshListener(object : SuperSwipeRefreshLayout.OnPullRefreshListener {
             override fun onRefresh() {
                 refreshHeader.txt_refresh_title.text = getString(R.string.refresh_running)
@@ -151,6 +174,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                 refreshHeader.img_refresh_arrow.rotation = (if (enable) 180 else 0).toFloat()
             }
         })
+
         txt_empty.setOnClickListener {
             bookShelfInterface?.changeHomePagerIndex(1)
             BookShelfLogger.uploadBookShelfToBookCity()
@@ -191,63 +215,15 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         txt_remove_head_cancel.setOnClickListener {
             dismissRemoveMenu()
         }
-
-    }
-
-    private val refreshHeader: View by lazy {
-        LayoutInflater.from(srl_refresh.context)
-                .inflate(R.layout.bookshelf_refresh_header, null)
-    }
-
-    private fun initRecyclerView() {
-        srl_refresh.setHeaderViewBackgroundColor(0x00000000)
-        srl_refresh.setHeaderView(refreshHeader)
-        srl_refresh.isTargetScrollWithLayout = true
-        recl_content.recycledViewPool.setMaxRecycledViews(0, 12)
-        val layoutManager = ShelfGridLayoutManager(activity, 1)
-        recl_content.layoutManager = layoutManager
-        recl_content.isFocusable = false
-        recl_content.itemAnimator.addDuration = 0
-        recl_content.itemAnimator.changeDuration = 0
-        recl_content.itemAnimator.moveDuration = 0
-        recl_content.itemAnimator.removeDuration = 0
-        (recl_content.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
-        recl_content.adapter = bookShelfAdapter
-    }
-
-    override fun onAttach(activity: Activity?) {
-        super.onAttach(activity)
-        try {
-            bookShelfInterface = activity as BookShelfInterface
-        } catch (classCastException: ClassCastException) {
-            throw ClassCastException(activity.toString() + " must implement BookShelfInterface")
-        }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity.applicationContext)
-
-        initUpdateService()
-
-        if (presenter.iBookList.size > 0) {
-            srl_refresh.isRefreshing = true
-        }
     }
 
     override fun onResume() {
         super.onResume()
         updateUI()
-    }
 
-    private fun initUpdateService() {
-        if (presenter.updateService != null) return
-        val intent = Intent()
-        val context = activity.applicationContext
-        intent.setClass(context, CheckNovelUpdateService::class.java)
-        context.startService(intent)
-        context.bindService(intent, presenter.updateConnection, Context.BIND_AUTO_CREATE)
+//        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookshelfPresenter.iBookList.isNotEmpty()) {
+        bookshelfPresenter.requestFloatAD(activity, fl_ad_float)
+//        }
     }
 
     override fun onDetach() {
@@ -266,34 +242,48 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter.iBookList.clear()
-        presenter.clear()
+        bookshelfPresenter.clear()
+    }
+
+    private fun initUpdateService() {
+        if (bookshelfPresenter.updateService != null) return
+        val intent = Intent()
+        val context = activity.applicationContext
+        intent.setClass(context, CheckNovelUpdateService::class.java)
+        context.startService(intent)
+        context.bindService(intent, bookshelfPresenter.updateConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    private fun initRecyclerView() {
+        srl_refresh.setHeaderViewBackgroundColor(0x00000000)
+        srl_refresh.setHeaderView(refreshHeader)
+        srl_refresh.isTargetScrollWithLayout = true
+
+        recl_content.recycledViewPool.setMaxRecycledViews(0, 12)
+
+        val layoutManager = ShelfGridLayoutManager(activity, 1)
+
+        recl_content.layoutManager = layoutManager
+        recl_content.isFocusable = false
+        recl_content.itemAnimator.addDuration = 0
+        recl_content.itemAnimator.changeDuration = 0
+        recl_content.itemAnimator.moveDuration = 0
+        recl_content.itemAnimator.removeDuration = 0
+        (recl_content.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        recl_content.adapter = bookShelfAdapter
     }
 
     /**
      * 查Book数据库更新界面
      */
     fun updateUI() {
-        val isShowAd = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD
+        val isShowAD = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD
         doAsync {
-            presenter.queryBookListAndAd(activity, isShowAd, true)
+            bookshelfPresenter.queryBookListAndAd(activity, true, true)
             uiThread {
                 bookShelfAdapter.notifyDataSetChanged()
             }
         }
-    }
-
-    override fun onBookListQuery(bookList: ArrayList<Book>) {
-        if (activity != null && !activity.isFinishing) {
-            if (bookList.isEmpty()) {
-                srl_refresh.setPullToRefreshEnabled(false)
-                rl_empty.visibility = View.VISIBLE
-            } else {
-                srl_refresh.setPullToRefreshEnabled(true)
-                rl_empty.visibility = View.GONE
-            }
-        }
-
     }
 
     /**
@@ -316,8 +306,12 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             showToastDelay(R.string.bookshelf_no_book_update)
         } else {
             // 刷新间隔大于30秒直接请求更新，
-            presenter.addUpdateTask(this)
+            bookshelfPresenter.addUpdateTask(this)
         }
+    }
+
+    fun doUpdateBook() {
+        bookshelfPresenter.addUpdateTask(this)
     }
 
     private fun showToastDelay(textId: Int) {
@@ -358,7 +352,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             if (srl_refresh != null) {
                 srl_refresh.onRefreshComplete()
             }
-            presenter.handleSuccessUpdate(result)
+            bookshelfPresenter.handleSuccessUpdate(result)
             AppUtils.setLongPreferences(activity, "book_rack_update_time", bookRackUpdateTime)
             updateUI()
         }
@@ -371,6 +365,32 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             if (srl_refresh != null) {
                 srl_refresh.onRefreshComplete()
             }
+        }
+    }
+
+    override fun doUpdateBook(updateService: CheckNovelUpdateService) {
+        updateService.setBookUpdateListener(activity as CheckNovelUpdateService.OnBookUpdateListener)
+        bookshelfPresenter.addUpdateTask(this)
+    }
+
+    override fun onBookListQuery(bookList: ArrayList<Book>) {
+        if (activity != null && !activity.isFinishing) {
+            if (bookList.isEmpty()) {
+                srl_refresh.setPullToRefreshEnabled(false)
+                rl_empty.visibility = View.VISIBLE
+            } else {
+                srl_refresh.setPullToRefreshEnabled(true)
+                rl_empty.visibility = View.GONE
+            }
+        }
+
+    }
+
+    override fun onBookDelete() {
+        if (activity != null && !activity.isFinishing) {
+            updateUI()
+            bookShelfDeleteDialog.dismiss()
+            dismissRemoveMenu()
         }
     }
 
@@ -392,27 +412,15 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
     }
 
-    fun doUpdateBook() {
-        presenter.addUpdateTask(this)
-    }
-
-    override fun doUpdateBook(updateService: CheckNovelUpdateService) {
-        updateService.setBookUpdateListener(activity as CheckNovelUpdateService.OnBookUpdateListener)
-        presenter.addUpdateTask(this)
-
-    }
-
-    override fun onBookDelete() {
+    override fun onAdRefresh() {
         if (activity != null && !activity.isFinishing) {
-            updateUI()
-            bookDeleteDialog.dismiss()
-            dismissRemoveMenu()
+            bookShelfAdapter.notifyDataSetChanged()
         }
     }
 
     override fun showRemoveMenu() {
         srl_refresh.setPullToRefreshEnabled(false)
-        presenter.removeAd()
+        bookshelfPresenter.removeAd()
         bookShelfAdapter.insertRemoveState(true)
         bookShelfInterface?.changeHomeNavigationState(true)
         removeMenuPopup.show(rl_content)
@@ -434,9 +442,14 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         txt_remove_head_select_all.text = getString(R.string.cancel_select_all)
         rl_head_normal.visibility = View.VISIBLE
         rl_head_remove.visibility = View.GONE
-        fl_ad_float.visibility = View.VISIBLE
 
         BookShelfLogger.uploadBookShelfEditCancel()
+
+        updateUI()
+
+//        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookshelfPresenter.iBookList.isNotEmpty()) {
+            bookshelfPresenter.requestFloatAD(activity, fl_ad_float)
+//        }
     }
 
     override fun isRemoveMenuShow(): Boolean = bookShelfAdapter.isRemove
@@ -454,13 +467,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     override fun deleteBooks(books: ArrayList<Book>, isDeleteCacheOnly: Boolean) {
-        presenter.deleteBooks(books, isDeleteCacheOnly)
-    }
-
-    override fun onAdRefresh() {
-        if (activity != null && !activity.isFinishing) {
-            bookShelfAdapter.notifyDataSetChanged()
-        }
+        bookshelfPresenter.deleteBooks(books, isDeleteCacheOnly)
     }
 
     companion object {

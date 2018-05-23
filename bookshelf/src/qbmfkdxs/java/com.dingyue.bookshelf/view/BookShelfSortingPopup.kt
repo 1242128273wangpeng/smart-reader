@@ -1,7 +1,6 @@
 package com.dingyue.bookshelf.view
 
 import android.app.Activity
-import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.view.WindowManager
 import com.dingyue.bookshelf.R
@@ -15,9 +14,9 @@ import kotlinx.android.synthetic.qbmfkdxs.popup_book_sorting.view.*
  * Mail tao_qian@dingyuegroup.cn
  * Date 2018/5/11 0011 18:38
  */
-class BookSortingPopup(private val activity: Activity, layout: Int = R.layout.popup_book_sorting,
-                       width: Int = WindowManager.LayoutParams.MATCH_PARENT,
-                       height: Int = WindowManager.LayoutParams.WRAP_CONTENT)
+class BookShelfSortingPopup(private val activity: Activity, layout: Int = R.layout.popup_book_sorting,
+                            width: Int = WindowManager.LayoutParams.MATCH_PARENT,
+                            height: Int = WindowManager.LayoutParams.WRAP_CONTENT)
     : BasePopup(activity, layout, width, height) {
 
     var onTimeSortingClickListener: (() -> Unit)? = null
