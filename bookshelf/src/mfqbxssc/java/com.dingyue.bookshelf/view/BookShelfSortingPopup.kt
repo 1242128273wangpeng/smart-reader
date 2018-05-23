@@ -14,9 +14,9 @@ import kotlinx.android.synthetic.mfqbxssc.popup_book_sorting.view.*
  * Mail tao_qian@dingyuegroup.cn
  * Date 2018/5/11 0011 18:38
  */
-class BookSortingPopup(private val activity: Activity, layout: Int = R.layout.popup_book_sorting,
-                       width: Int = WindowManager.LayoutParams.MATCH_PARENT,
-                       height: Int = WindowManager.LayoutParams.WRAP_CONTENT)
+class BookShelfSortingPopup(private val activity: Activity, layout: Int = R.layout.popup_book_sorting,
+                            width: Int = WindowManager.LayoutParams.MATCH_PARENT,
+                            height: Int = WindowManager.LayoutParams.WRAP_CONTENT)
     : BasePopup(activity, layout, width, height) {
 
     var onTimeSortingClickListener: (() -> Unit)? = null

@@ -17,7 +17,7 @@ import java.util.*
  * Created by Administrator on 2017\8\2 0002
  */
 
-class BookDetailAdapter(private val context: Context) : PagerAdapter() {
+class BookShelfDetailAdapter(private val context: Context) : PagerAdapter() {
 
     private var books: ArrayList<Book> = ArrayList()
 

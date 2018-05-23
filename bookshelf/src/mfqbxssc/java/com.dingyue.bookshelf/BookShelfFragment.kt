@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import com.dingyue.bookshelf.contract.BookShelfADContract
 import com.dingyue.bookshelf.view.*
 import com.dingyue.contract.CommonContract
-import com.dycm_adsdk.PlatformSDK
 import de.greenrobot.event.EventBus
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -78,8 +77,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         popup
     }
 
-    private val bookSortingPopup: BookSortingPopup by lazy {
-        val popup = BookSortingPopup(activity)
+    private val bookSortingPopup: BookShelfSortingPopup by lazy {
+        val popup = BookShelfSortingPopup(activity)
         popup.onTimeSortingClickListener = {
             sortBooks(1)
         }
@@ -142,7 +141,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         super.onAttach(activity)
         try {
             bookShelfInterface = activity as BookShelfInterface
-            PlatformSDK.config().setAd_userid("51ba8f318d18467fb8fdaa111fcf3b18")
         } catch (classCastException: ClassCastException) {
             throw ClassCastException(activity.toString() + " must implement BookShelfInterface")
         }
@@ -235,9 +233,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         updateUI()
 
-        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookshelfPresenter.iBookList.isNotEmpty()) {
+//        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookshelfPresenter.iBookList.isNotEmpty()) {
             bookshelfPresenter.requestFloatAD(activity, fl_ad_float)
-        }
+//        }
     }
 
     override fun onDetach() {
@@ -306,9 +304,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
      */
     fun updateUI() {
         if (activity != null && !activity.isFinishing) {
-            val isShowAD = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD && Constants.book_shelf_state != 0
+//            val isShowAD = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD && Constants.book_shelf_state != 0
             doAsync {
-                bookshelfPresenter.queryBookListAndAd(activity, isShowAD, false)
+                bookshelfPresenter.queryBookListAndAd(activity, true, false)
                 uiThread {
                     bookShelfAdapter.notifyDataSetChanged()
                 }
@@ -474,7 +472,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         txt_editor_select_all.text = getString(R.string.cancel_select_all)
         rl_head_normal.visibility = View.VISIBLE
         rl_head_remove.visibility = View.GONE
-        fl_ad_float.visibility = View.VISIBLE
 
         BookShelfLogger.uploadBookShelfEditCancel()
 

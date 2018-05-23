@@ -153,6 +153,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+
+        BookShelfADContract.insertBookShelfType(false)
+
         bookRackUpdateTime = AppUtils.getLongPreferences(activity, "book_rack_update_time", System.currentTimeMillis())
 
         initRecyclerView()
@@ -221,9 +224,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         super.onResume()
         updateUI()
 
-//        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookshelfPresenter.iBookList.isNotEmpty()) {
-        bookshelfPresenter.requestFloatAD(activity, fl_ad_float)
-//        }
+        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookshelfPresenter.iBookList.isNotEmpty()) {
+            bookshelfPresenter.requestFloatAD(activity, fl_ad_float)
+        }
     }
 
     override fun onDetach() {
@@ -279,7 +282,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     fun updateUI() {
         val isShowAD = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD
         doAsync {
-            bookshelfPresenter.queryBookListAndAd(activity, true, true)
+            bookshelfPresenter.queryBookListAndAd(activity, isShowAD, true)
             uiThread {
                 bookShelfAdapter.notifyDataSetChanged()
             }
@@ -447,9 +450,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         updateUI()
 
-//        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookshelfPresenter.iBookList.isNotEmpty()) {
+        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookshelfPresenter.iBookList.isNotEmpty()) {
             bookshelfPresenter.requestFloatAD(activity, fl_ad_float)
-//        }
+        }
     }
 
     override fun isRemoveMenuShow(): Boolean = bookShelfAdapter.isRemove

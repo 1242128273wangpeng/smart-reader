@@ -159,7 +159,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
             adBookMap[0] = adBook
         }
 
-        for (i in 1 until count) {
+        for (i in 1 until count + 1) {
             val key = i * interval
             if (key < iBookList.size) {
                 adBook = Book()

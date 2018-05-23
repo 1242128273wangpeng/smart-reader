@@ -4,7 +4,7 @@ import android.app.Activity
 import android.support.v4.view.ViewPager
 import android.view.View
 import android.view.WindowManager
-import com.dingyue.bookshelf.BookDetailAdapter
+import com.dingyue.bookshelf.BookShelfDetailAdapter
 import com.dingyue.bookshelf.R
 import com.dingyue.contract.BasePopup
 import kotlinx.android.synthetic.mfqbxssc.popup_book_detail.view.*
@@ -21,7 +21,7 @@ class BookShelfDetailPopup(private val activity: Activity, layout: Int = R.layou
                            height: Int = WindowManager.LayoutParams.WRAP_CONTENT)
     : BasePopup(activity, layout, width, height) {
 
-    private val bookDetailAdapter = BookDetailAdapter(activity)
+    private val bookShelfDetailAdapter = BookShelfDetailAdapter(activity)
 
     init {
 
@@ -30,7 +30,7 @@ class BookShelfDetailPopup(private val activity: Activity, layout: Int = R.layou
         popupWindow.animationStyle = R.style.remove_menu_anim_style
 
         contentView.txt_detail_current.text = "1"
-        contentView.vp_detail_content.adapter = bookDetailAdapter
+        contentView.vp_detail_content.adapter = bookShelfDetailAdapter
         contentView.vp_detail_content.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
@@ -51,7 +51,7 @@ class BookShelfDetailPopup(private val activity: Activity, layout: Int = R.layou
         if (books.isEmpty()) return
         setBackgroundAlpha(0.6f)
         showAtLocation(view)
-        bookDetailAdapter.update(books)
+        bookShelfDetailAdapter.update(books)
         contentView.vp_detail_content.currentItem = 0
         contentView.txt_detail_total.text = books.size.toString()
     }
