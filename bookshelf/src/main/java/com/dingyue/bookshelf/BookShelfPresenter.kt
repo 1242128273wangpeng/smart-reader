@@ -36,6 +36,9 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
 
     var updateService: CheckNovelUpdateService? = null
 
+    /***
+     * 检查更新服务Connection, 当Service启动后调用书架检查更新方法
+     * **/
     val updateConnection = object : ServiceConnection {
 
         override fun onServiceDisconnected(name: ComponentName) {}
@@ -52,6 +55,9 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
         }
     }
 
+    /***
+     * 添加检查更新任务，调用Service进行检查更新
+     * **/
     fun addUpdateTask(updateCallBack: UpdateCallBack) {
         if (bookDaoHelper.booksCount > 0 && updateService != null) {
             val list = bookDaoHelper.booksList
@@ -59,9 +65,9 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
         }
     }
 
-    /**
-     * 查询书籍列表
-     */
+    /***
+     * 更新书架书籍列表，并请求书架广告
+     * **/
     fun queryBookListAndAd(activity: Activity, isShowAD: Boolean, isList: Boolean) {
         val adCount = calculationShelfADCount(isShowAD, isList)
 
@@ -96,7 +102,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
     }
 
     /***
-     * 刷新书籍列表，并计算广告数量
+     * 刷新书籍列表，并计算请求广告数量。 注：将adBookMap插入到列表中，主要是为了解决刷新列表时，广告抖动的问题。
      * **/
     private fun calculationShelfADCount(isShowAD: Boolean, isList: Boolean): Int {
         val bookList = bookDaoHelper.booksOnLineList
@@ -114,6 +120,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
             Collections.sort(bookList, CommonContract.MultiComparator(Constants.book_list_sort_type))
             iBookList.addAll(bookList)
 
+            //将之前请求到广告的item，添加到列表中，防止刷新列表是，广告抖动问题
             if (adBookMap.isNotEmpty()) {
                 val iterator = adBookMap.entries.iterator()
 
@@ -135,6 +142,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
                 if (interval == 0) {
                     0
                 } else {
+                    //如果当前书架展示为列表时，请求广告数量加1。主要是因为列表形式的广告，position为0需要插入一条多余的广告
                     bookList.size / interval + (if (isList) 1 else 0)
                 }
             } else {
@@ -144,7 +152,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
     }
 
     /***
-     * 请求书架页广告
+     * 请求书架列表中广告。注：列表中广告请求，返回结果中不一定包含所有广告，剩余广告将由补余策略回传
      * **/
     private fun requestShelfADs(activity: Activity, count: Int, isList: Boolean) {
 
@@ -152,6 +160,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
 
         var adBook: Book
 
+        //创建相应广告位置的Bean
         if (isList) {
             adBook = Book()
             adBook.item_type = 1
@@ -182,6 +191,9 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
         })
     }
 
+    /***
+     * 处理书架列表中广告请求结果。返回结果先保存到adBookMap中，再添加或更新到列表中
+     * **/
     private fun handleADResult(views: List<ViewGroup>) {
         var index = 0
 
@@ -230,10 +242,16 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
         })
     }
 
+    /***
+     * 请求书架悬浮广告
+     * **/
     fun requestFloatAD(activity: Activity, viewGroup: ViewGroup) {
         BookShelfADContract.loadBookShelfFloatAD(activity, viewGroup)
     }
 
+    /***
+     * 删除书籍
+     * **/
     fun deleteBooks(deleteBooks: java.util.ArrayList<Book>, onlyDeleteCache: Boolean) {
         val size = deleteBooks.size
         doAsync {
@@ -244,7 +262,8 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
                 stringBuilder.append(if (book.readed == 1) "_1" else "_0")
                 stringBuilder.append(if (i == size - 1) "" else "$")
             }
-            // 删除书架数据库和章节数据库
+
+            //删除数据库和章节缓存。可只清除章节缓存
             if (onlyDeleteCache) {
                 deleteBooks.forEach {
                     CacheManager.remove(it.book_id)
@@ -258,10 +277,14 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
             uiThread {
                 view?.onBookDelete()
             }
+
             BookShelfLogger.uploadBookShelfEditDelete(size, stringBuilder, onlyDeleteCache)
         }
     }
 
+    /***
+     * 处理书籍检查更新结果
+     * **/
     fun handleSuccessUpdate(result: BookUpdateResult) {
         val hasUpdateList = ArrayList<BookUpdate>()
         if (result.items != null && result.items.isNotEmpty()) {
@@ -277,12 +300,18 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
         }
     }
 
+    /***
+     * 移除列表中的广告Bean，九宫格形式的书架，在书架编辑状态下，顶部广告位不隐藏，所以只隐藏item_type为1的广告Bean
+     * **/
     fun removeAd() {
         iBookList.removeAll {
             it.item_type == 1
         }
     }
 
+    /***
+     * 清除缓存，主要清除Presenter中的View引用，以及List和Map中，每个Bean中的View
+     * **/
     fun clear() {
         view = null
 
