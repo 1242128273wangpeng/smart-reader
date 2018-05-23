@@ -59,7 +59,7 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
 
             txt_book_latest_chapter.text = book.last_chapter_name
 
-            val updateTime = "${Tools.compareTime(AppUtils.formatter, book.last_checkupdatetime)}更新"
+            val updateTime = "${Tools.compareTime(AppUtils.formatter, book.last_updatetime_native)}更新"
             txt_book_last_update_time.text = updateTime
         }
 
