@@ -46,8 +46,8 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
                 if (updateService != null) {
                     view?.doUpdateBook(updateService!!)
                 }
-            } catch (e: ClassCastException) {
-                e.printStackTrace()
+            } catch (exception: ClassCastException) {
+                exception.printStackTrace()
             }
         }
     }

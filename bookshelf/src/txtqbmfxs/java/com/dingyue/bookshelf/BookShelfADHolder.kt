@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.txtqbmfxs.item_bookshelf_ad.view.*
  * Mail crazylei951002@gmail.com
  * Date 2018/5/10 21:07
  */
-class BookShelfADHolder(parent: ViewGroup,isHeaderAd: Boolean) : RecyclerView.ViewHolder(
+class BookShelfADHolder(parent: ViewGroup, isHeaderAd: Boolean) : RecyclerView.ViewHolder(
         LayoutInflater.from(parent.context).inflate(R.layout.item_bookshelf_ad, parent, false)) {
 
     fun bind(view: View) = with(itemView) {

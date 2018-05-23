@@ -50,7 +50,6 @@ class BookShelfDeleteDialog(activity: Activity) {
         dialog.setCancelable(false)
     }
 
-
     fun isShow(): Boolean {
         return dialog.isShowing
     }
