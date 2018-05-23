@@ -21,7 +21,6 @@ import java.text.MessageFormat
  * 2018\5\15 0015
  */
 
-
 class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         LayoutInflater.from(parent.context).inflate(R.layout.item_bookshelf_book, parent, false)) {
     

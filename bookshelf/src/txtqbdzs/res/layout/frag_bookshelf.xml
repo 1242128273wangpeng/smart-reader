@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rl_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFAFAFA">
+    android:background="#FFFAFAFA"
+    tools:ignore="RtlHardcoded">
 
     <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
         android:id="@+id/srl_refresh"
@@ -19,6 +21,16 @@
             android:clipToPadding="false"
             android:paddingTop="10dp"/>
     </net.lzbook.kit.pulllist.SuperSwipeRefreshLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_ad_float"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="30dp"
+        android:layout_marginRight="10dp"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/ll_empty"
@@ -48,6 +60,7 @@
             android:layout_width="180dp"
             android:layout_height="70dp"
             android:layout_marginTop="16dp"
+            android:contentDescription="@string/module_name"
             android:src="@drawable/bookshelf_empty_find_icon"/>
     </LinearLayout>
 </RelativeLayout>
