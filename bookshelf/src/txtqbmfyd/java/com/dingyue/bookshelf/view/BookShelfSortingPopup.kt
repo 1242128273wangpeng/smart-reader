@@ -17,9 +17,9 @@ import kotlinx.android.synthetic.txtqbmfyd.dialog_bookshelf_sort.view.*
  * Mail tao_qian@dingyuegroup.cn
  * Date 2018/5/17 0017 11:43
  */
-class BookSortingPopup(private val activity: Activity, layout: Int = R.layout.dialog_bookshelf_sort,
-                       width: Int = WindowManager.LayoutParams.MATCH_PARENT,
-                       height: Int = WindowManager.LayoutParams.WRAP_CONTENT)
+class BookShelfSortingPopup(private val activity: Activity, layout: Int = R.layout.dialog_bookshelf_sort,
+                            width: Int = WindowManager.LayoutParams.MATCH_PARENT,
+                            height: Int = WindowManager.LayoutParams.WRAP_CONTENT)
     : BasePopup(activity, layout, width, height) {
 
     private var recentReadListener: (() -> Unit)? = null

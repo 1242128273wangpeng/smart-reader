@@ -171,9 +171,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         super.onResume()
         updateUI()
 
-//        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookShelfPresenter.iBookList.isNotEmpty()) {
+        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookShelfPresenter.iBookList.isNotEmpty()) {
             bookShelfPresenter.requestFloatAD(activity, fl_ad_float)
-//        }
+        }
     }
 
     override fun onDetach() {
@@ -242,7 +242,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         if (activity != null && !activity.isFinishing) {
             val isShowAD = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD
             doAsync {
-                bookShelfPresenter.queryBookListAndAd(activity, true,true)
+                bookShelfPresenter.queryBookListAndAd(activity, isShowAD,true)
                 uiThread {
                     bookShelfAdapter.notifyDataSetChanged()
                 }
@@ -411,9 +411,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         updateUI()
 
-//        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookShelfPresenter.iBookList.isNotEmpty()) {
+        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookShelfPresenter.iBookList.isNotEmpty()) {
             bookShelfPresenter.requestFloatAD(activity, fl_ad_float)
-//        }
+        }
     }
 
     override fun isRemoveMenuShow(): Boolean = bookShelfAdapter.isRemove

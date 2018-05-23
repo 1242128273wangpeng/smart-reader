@@ -12,7 +12,7 @@ import android.view.ViewGroup
 import com.dingyue.bookshelf.BookShelfAdapter.BookShelfItemListener
 import com.dingyue.bookshelf.contract.BookShelfADContract
 import com.dingyue.bookshelf.view.BookShelfDeleteDialog
-import com.dingyue.bookshelf.view.BookSortingPopup
+import com.dingyue.bookshelf.view.BookShelfSortingPopup
 import com.dingyue.bookshelf.view.HeadMenuPopup
 import com.dingyue.bookshelf.view.RemoveMenuPopup
 import com.dingyue.contract.CommonContract
@@ -21,7 +21,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.txtqbmfyd.bookshelf_refresh_header.view.*
 import kotlinx.android.synthetic.txtqbmfyd.frag_bookshelf.*
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.BookUpdate
@@ -57,7 +56,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             BookShelfLogger.uploadBookShelfCacheManager()
         }
         popup.setOnSortingClickListener {
-            bookSortingPopup.show(rl_content)
+            bookShelfSortingPopup.show(rl_content)
             BookShelfLogger.uploadBookShelfBookSort()
         }
         popup
@@ -75,8 +74,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         popup
     }
 
-    private val bookSortingPopup: BookSortingPopup by lazy {
-        val popup = BookSortingPopup(activity)
+    private val bookShelfSortingPopup: BookShelfSortingPopup by lazy {
+        val popup = BookShelfSortingPopup(activity)
         popup.setOnRecentReadClickListener {
             sortBooks(0)
         }
@@ -497,6 +496,12 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         rl_content.setPadding(0, rl_content.paddingTop, 0, 0)
 
         txt_editor_select_all.text = getString(R.string.cancel_select_all)
+
+        updateUI()
+
+//        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookshelfPresenter.iBookList.isNotEmpty()) {
+//            bookshelfPresenter.requestFloatAD(activity, fl_ad_float)
+//        }
     }
 
     override fun isRemoveMenuShow(): Boolean = bookShelfAdapter.isRemove
