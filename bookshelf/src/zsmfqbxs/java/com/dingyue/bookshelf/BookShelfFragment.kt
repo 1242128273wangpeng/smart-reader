@@ -461,6 +461,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         bookShelfInterface?.changeHomeNavigationState(false)
         
         changeHeaderState(false)
+        updateUI()
         
         BookShelfLogger.uploadBookShelfEditCancel()
     }

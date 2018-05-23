@@ -1,4 +1,4 @@
-package com.intelligent.reader.view
+package com.dingyue.bookshelf.view
 
 import android.app.Activity
 import android.view.View
@@ -51,6 +51,11 @@ class BookShelfDeleteDialog(activity: Activity) {
         dialog.ll_delete_loading.visibility = View.VISIBLE
         dialog.setCanceledOnTouchOutside(false)
         dialog.setCancelable(false)
+    }
+
+
+    fun isShow(): Boolean {
+        return dialog.isShowing
     }
 
     fun dismiss(){

@@ -88,7 +88,7 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentLeft="true"
                     android:layout_toLeftOf="@id/view_divider"
-                    android:background="@drawable/dialog_btn_left_selector"
+                    android:background="@drawable/bookshelf_delete_cancel_bg_sel"
                     android:gravity="center"
                     android:text="@string/cancel"
                     android:textColor="@drawable/bookshelf_delete_cancel_text_sel"

@@ -63,16 +63,15 @@
                 android:textColor="#777777"
                 android:textSize="14sp"
                 tools:ignore="RtlSymmetry"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_alignParentTop="true"
+                android:background="#E8E8E8"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_alignParentTop="true"
-                    android:background="#E8E8E8"/>
 
                 <View
                     android:id="@+id/view_divider"
@@ -88,7 +87,7 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentLeft="true"
                     android:layout_toLeftOf="@id/view_divider"
-                    android:background="@drawable/bookshelf_delete_cancel_sel"
+                    android:background="@drawable/bookshelf_delete_cancel_bg_sel"
                     android:gravity="center"
                     android:text="@string/cancel"
                     android:textColor="@drawable/bookshelf_delete_cancel_text_sel"
@@ -100,10 +99,10 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
                     android:layout_toRightOf="@id/view_divider"
-                    android:background="@drawable/bookshelf_delete_confirm_sel"
+                    android:background="@drawable/bookshelf_delete_confirm_bg_sel"
                     android:gravity="center"
                     android:text="@string/confirm"
-                    android:textColor="@drawable/dialog_confirm_selector"
+                    android:textColor="@drawable/bookshelf_delete_confirm_text_sel"
                     android:textSize="16sp"/>
             </RelativeLayout>
         </LinearLayout>
