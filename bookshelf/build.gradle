@@ -49,10 +49,19 @@ android {
 dependencies {
     compile fileTree(include: '*.jar', dir: 'libs')
     compile project(path: ':book_kit')
+    compile project(path: ':resource')
     compile "com.android.support:appcompat-v7:$support_version"
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
     compile "com.alibaba:arouter-api:$arouter_api_version"
     kapt "com.alibaba:arouter-compiler:$arouter_compiler_version"
+
+    mfqbxsscCompile project(path: ':resource', configuration: 'mfqbxsscRelease')
+    qbmfkdxsCompile project(path: ':resource', configuration: 'qbmfkdxsRelease')
+    qbzsydqCompile project(path: ':resource', configuration: 'qbzsydqRelease')
+    txtqbdzsCompile project(path: ':resource', configuration: 'txtqbdzsRelease')
+    txtqbmfxsCompile project(path: ':resource', configuration: 'txtqbmfxsRelease')
+    txtqbmfydCompile project(path: ':resource', configuration: 'txtqbmfydRelease')
+    zsmfqbxsCompile project(path: ':resource', configuration: 'zsmfqbxsRelease')
 }

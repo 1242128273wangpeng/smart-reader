@@ -9,6 +9,7 @@ import android.support.v7.widget.SimpleItemAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.dingyue.bookshelf.contract.BookShelfADContract
 import com.dingyue.bookshelf.view.BookShelfDeleteDialog
 import com.dingyue.bookshelf.view.BookShelfSortingPopup
 import com.dingyue.bookshelf.view.HeadMenuPopup

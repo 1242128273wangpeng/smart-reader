@@ -60,8 +60,8 @@ public class BookRecommendAdapter extends BaseAdapter {
         }
         Book book = mList.get(position);
         Glide.with(parent.getContext().getApplicationContext()).load(book.img_url)
-                .placeholder(net.lzbook.kit.R.drawable.icon_book_cover_default)
-                .error(net.lzbook.kit.R.drawable.icon_book_cover_default)
+                .placeholder(R.drawable.common_book_cover_default_icon)
+                .error(R.drawable.common_book_cover_default_icon)
                 .diskCacheStrategy(DiskCacheStrategy.ALL).into(hodler.book_img_iv);
         hodler.book_name_tv.setText(book.name);
         hodler.book_info_tv.setText(book.desc);

@@ -58,4 +58,12 @@ dependencies {
 
     compile "com.alibaba:arouter-api:$arouter_api_version"
     kapt "com.alibaba:arouter-compiler:$arouter_compiler_version"
+
+    mfqbxsscCompile project(path: ':resource', configuration: 'mfqbxsscRelease')
+    qbmfkdxsCompile project(path: ':resource', configuration: 'qbmfkdxsRelease')
+    qbzsydqCompile project(path: ':resource', configuration: 'qbzsydqRelease')
+    txtqbdzsCompile project(path: ':resource', configuration: 'txtqbdzsRelease')
+    txtqbmfxsCompile project(path: ':resource', configuration: 'txtqbmfxsRelease')
+    txtqbmfydCompile project(path: ':resource', configuration: 'txtqbmfydRelease')
+    zsmfqbxsCompile project(path: ':resource', configuration: 'zsmfqbxsRelease')
 }

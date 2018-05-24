@@ -16,7 +16,7 @@
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:background="@drawable/bookshelf_item_selected_icon"
-        android:contentDescription="@string/app_name"
+        android:contentDescription="@string/module_name"
         android:visibility="gone"/>
 
     <RelativeLayout
@@ -37,8 +37,8 @@
             android:layout_marginLeft="12dp"
             android:layout_marginTop="10dp"
             android:adjustViewBounds="true"
-            android:background="@drawable/bookshelf_item_book_cover_shadow_icon"
-            android:contentDescription="@string/app_name"
+            android:background="@drawable/common_book_cover_default_icon"
+            android:contentDescription="@string/module_name"
             android:paddingBottom="3dp"
             android:paddingLeft="2dp"
             android:paddingRight="3dp"
@@ -55,6 +55,7 @@
             android:layout_marginLeft="-5dp"
             android:layout_marginTop="9dp"
             android:adjustViewBounds="true"
+            android:contentDescription="@string/module_name"
             android:src="@drawable/bookshelf_item_book_finish_icon"
             android:visibility="visible"/>
 

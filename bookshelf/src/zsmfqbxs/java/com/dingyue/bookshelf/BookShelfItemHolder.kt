@@ -33,10 +33,10 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         }
 
         if (book.sequence + 1 == book.chapter_count) {
-            txt_book_unread_chapters.setVisibility(View.GONE)
+            txt_book_unread_chapters.visibility = View.GONE
         } else {
-            txt_book_unread_chapters.setVisibility(View.VISIBLE)
-            txt_book_unread_chapters.setText((book.sequence + 1).toString() + "/" + book.chapter_count + "章")
+            txt_book_unread_chapters.visibility = View.VISIBLE
+            txt_book_unread_chapters.text = (book.sequence + 1).toString() + "/" + book.chapter_count + "章"
         }
 
         when {
@@ -53,38 +53,37 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             }
         }
 
-
-
-
         if (txt_book_last_update_time != null) {
-            txt_book_last_update_time.setText(Tools.compareTime(AppUtils.formatter, book
-                    .last_updatetime_native) + "更新")
+            txt_book_last_update_time.text = Tools.compareTime(AppUtils.formatter, book
+                    .last_updatetime_native) + "更新"
         }
 
         if ((!TextUtils.isEmpty(book.img_url) && book.img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL)) {
-            Glide.with(itemView.getContext().getApplicationContext()).load(
-                    book.img_url).placeholder(R.drawable.icon_book_cover_default).error(
-                    R.drawable.icon_book_cover_default).diskCacheStrategy(
-                    DiskCacheStrategy.ALL).into(img_book_cover)
+            Glide.with(itemView.context.applicationContext)
+                    .load(book.img_url)
+                    .placeholder(R.drawable.common_book_cover_default_icon)
+                    .error(R.drawable.common_book_cover_default_icon)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(img_book_cover)
         } else {
-            Glide.with(itemView.getContext().getApplicationContext()).load(
-                    R.drawable.icon_book_cover_default).into(img_book_cover)
+            Glide.with(itemView.context.applicationContext)
+                    .load(R.drawable.common_book_cover_default_icon)
+                    .into(img_book_cover)
         }
 
 
         if (remove) {
-            this.img_item_select_state.setVisibility(View.VISIBLE)
-            this.img_book_status.setVisibility(View.GONE)
-            this.img_book_status_update.setVisibility(View.GONE)
-            var typeColor = 0
+            img_item_select_state.visibility = View.VISIBLE
+            img_book_status.visibility = View.GONE
+            img_book_status_update.visibility = View.GONE
+
             if (contains) {
-                typeColor = R.drawable.bookshelf_item_delete_checked_icon
+                img_item_select_state.setImageResource(R.drawable.bookshelf_item_delete_checked_icon)
             } else {
-                typeColor = R.drawable.bookshelf_item_delete_unchecked_icon
+                img_item_select_state.setImageResource(R.drawable.bookshelf_item_delete_unchecked_icon)
             }
-            this.img_item_select_state.setBackgroundResource(typeColor)
         } else {
-            this.img_item_select_state.setVisibility(View.GONE)
+            img_item_select_state.visibility = View.GONE
         }
 
         rl_main.setOnClickListener {

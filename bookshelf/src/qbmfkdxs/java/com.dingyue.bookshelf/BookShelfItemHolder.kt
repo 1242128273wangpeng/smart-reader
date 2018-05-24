@@ -26,14 +26,14 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
                 && book.img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL) {
             Glide.with(itemView.context.applicationContext)
                     .load(book.img_url)
-                    .placeholder(R.drawable.icon_book_cover_default)
-                    .error(R.drawable.icon_book_cover_default)
+                    .placeholder(R.drawable.common_book_cover_default_icon)
+                    .error(R.drawable.common_book_cover_default_icon)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(img_book_cover)
         } else {
             Glide.with(itemView.context.applicationContext)
                     .load(R.drawable.icon_book_cover_default)
-                    .into(img_book_cover)
+                    .into(common_book_cover_default_icon)
         }
 
         if (book.name.isNotEmpty()) txt_book_name.text = book.name

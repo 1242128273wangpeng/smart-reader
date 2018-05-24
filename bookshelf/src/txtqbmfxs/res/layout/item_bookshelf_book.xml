@@ -41,7 +41,7 @@
                 android:adjustViewBounds="false"
                 android:contentDescription="@string/module_name"
                 android:scaleType="fitXY"
-                android:src="@drawable/bookshelf_item_cover_shadow"
+                android:src="@drawable/common_book_cover_shadow_icon"
                 android:visibility="gone"/>
 
             <ImageView
@@ -50,7 +50,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
                 android:adjustViewBounds="true"
-                android:src="@drawable/bookshelf_item_cover_icon"
+                android:src="@drawable/common_book_cover_default_icon"
                 android:contentDescription="@string/module_name"
                 android:paddingBottom="3dp"
                 android:paddingLeft="2dp"

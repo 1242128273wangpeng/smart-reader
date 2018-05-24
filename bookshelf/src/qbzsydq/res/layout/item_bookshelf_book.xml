@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="0.5dp"
-        android:layout_toRightOf="@+id/img_book_select_state">
+        android:layout_toRightOf="@id/img_book_select_state">
 
         <FrameLayout
             android:id="@+id/fl_book_cover"
@@ -41,7 +41,7 @@
                 android:layout_height="match_parent"
                 android:contentDescription="@string/module_name"
                 android:scaleType="fitXY"
-                android:src="@drawable/bookshelf_item_book_cover_shadow_icon"/>
+                android:src="@drawable/common_book_cover_shadow_icon"/>
 
             <ImageView
                 android:id="@+id/img_book_cover"
@@ -53,10 +53,9 @@
                 android:layout_marginRight="3dp"
                 android:layout_marginTop="2dp"
                 android:adjustViewBounds="true"
-                android:background="@drawable/bookshelf_item_book_cover_default_icon"
                 android:contentDescription="@string/module_name"
                 android:scaleType="fitXY"
-                android:src="@drawable/bookshelf_item_book_cover_default_icon"/>
+                android:src="@drawable/common_book_cover_default_icon"/>
         </FrameLayout>
 
         <ImageView

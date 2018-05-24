@@ -43,11 +43,17 @@ class DownloadManagerTaskHolder(itemView: View) : RecyclerView.ViewHolder(itemVi
         if (img_book != null) {
 
             if (!TextUtils.isEmpty(book.img_url) && book.img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL) {
-                Glide.with(context).load(book.img_url).placeholder(R.drawable.icon_book_cover_default).error(R.drawable.icon_book_cover_default).diskCacheStrategy(DiskCacheStrategy.ALL).into(img_book)
+                Glide.with(context)
+                        .load(book.img_url)
+                        .placeholder(R.drawable.common_book_cover_default_icon)
+                        .error(R.drawable.common_book_cover_default_icon)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(img_book)
             } else {
-                Glide.with(context).load(R.drawable.icon_book_cover_default).into(img_book)
+                Glide.with(context)
+                        .load(R.drawable.common_book_cover_default_icon)
+                        .into(img_book)
             }
-
         }
         txt_download_progress.visibility = View.GONE
         if (txt_download_progress != null && task.progress > 0) {

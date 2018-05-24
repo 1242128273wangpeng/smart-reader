@@ -43,8 +43,9 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="6dp"
                 android:layout_marginStart="6dp"
+                android:contentDescription="@string/module_name"
                 android:scaleType="fitXY"
-                android:src="@drawable/icon_book_cover_default"/>
+                android:src="@drawable/common_book_cover_default_icon"/>
 
             <ImageView
                 android:id="@+id/img_download_action"

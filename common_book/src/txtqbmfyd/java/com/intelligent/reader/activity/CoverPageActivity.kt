@@ -310,9 +310,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
             if (book_cover_image != null && !TextUtils.isEmpty(bookVo.img_url) && bookVo
                     .img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL) {
-                Glide.with(applicationContext).load(bookVo.img_url).placeholder(net.lzbook.kit.R.drawable.icon_book_cover_default).error(net.lzbook.kit.R.drawable.icon_book_cover_default).diskCacheStrategy(DiskCacheStrategy.ALL).into(book_cover_image)
+                Glide.with(applicationContext).load(bookVo.img_url).placeholder(R.drawable.common_book_cover_default_icon).error(R.drawable.common_book_cover_default_icon).diskCacheStrategy(DiskCacheStrategy.ALL).into(book_cover_image)
             } else {
-                Glide.with(applicationContext).load(net.lzbook.kit.R.drawable.icon_book_cover_default).into(book_cover_image)
+                Glide.with(applicationContext).load(R.drawable.common_book_cover_default_icon).into(book_cover_image)
             }
 
             if (book_cover_title != null && !TextUtils.isEmpty(bookVo.name)) {

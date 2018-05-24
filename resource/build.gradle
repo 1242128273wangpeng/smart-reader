@@ -1,0 +1,58 @@
+apply plugin: 'com.android.library'
+
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    publishNonDefault true
+
+    defaultConfig {
+
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+
+        versionCode 1
+        versionName "1.0"
+
+        //所有资源必须以 resource_ 开头，以解决资源冲突
+        //resourcePrefix "resource_"
+
+        kapt {
+            arguments {
+                arg("moduleName", project.getName())
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled rootProject.ext.minifyEnable
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    productFlavors {
+        mfqbxssc {}
+        qbmfkdxs {}
+        qbzsydq {}
+        txtqbdzs {}
+        txtqbmfxs {}
+        txtqbmfyd {}
+        zsmfqbxs {}
+    }
+}
+
+dependencies {
+    compile fileTree(include: '*.jar', dir: 'libs')
+    compile project(path: ':book_kit')
+    compile "com.android.support:appcompat-v7:$support_version"
+
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    compile "com.alibaba:arouter-api:$arouter_api_version"
+    kapt "com.alibaba:arouter-compiler:$arouter_compiler_version"
+}

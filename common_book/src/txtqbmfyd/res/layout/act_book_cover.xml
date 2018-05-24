@@ -115,7 +115,7 @@
                                 android:layout_height="match_parent"
                                 android:contentDescription="@string/app_name"
                                 android:scaleType="fitXY"
-                                android:src="@mipmap/cover_book_shadow"/>
+                                android:src="@drawable/common_book_cover_shadow_icon"/>
 
                         <ImageView
                                 android:id="@+id/book_cover_image"
@@ -127,8 +127,7 @@
                                 android:layout_marginLeft="2dp"
                                 android:layout_marginBottom="3dp"
                                 android:scaleType="fitXY"
-                                android:background="@drawable/bookshelf_book_cover_default"
-                                android:src="@drawable/bookshelf_book_cover_default"/>
+                                android:src="@drawable/common_book_cover_default_icon"/>
                     </FrameLayout>
 
                     <LinearLayout

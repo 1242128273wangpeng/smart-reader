@@ -14,7 +14,8 @@
         <ImageView
             android:layout_width="92dp"
             android:layout_height="140dp"
-            android:src="@drawable/bookshelf_item_cover_shadow_bg"/>
+            android:contentDescription="@string/module_name"
+            android:src="@drawable/common_book_cover_shadow_icon"/>
 
         <com.dingyue.bookshelf.view.BorderImageView
             android:id="@+id/img_book_cover"
@@ -23,7 +24,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="6dp"
             android:scaleType="fitXY"
-            tools:src="@drawable/bookshelf_item_cover_icon"/>
+            tools:src="@drawable/common_book_cover_default_icon"/>
 
         <ImageView
             android:id="@+id/img_book_status"

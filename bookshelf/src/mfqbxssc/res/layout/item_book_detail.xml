@@ -17,7 +17,7 @@
         android:layout_height="122dp"
         android:layout_gravity="center_horizontal"
         android:adjustViewBounds="true"
-        android:background="@drawable/bookshelf_item_cover_shadow_icon"
+        android:background="@drawable/common_book_cover_default_icon"
         android:contentDescription="@string/module_name"
         android:paddingBottom="3dp"
         android:paddingLeft="2dp"
