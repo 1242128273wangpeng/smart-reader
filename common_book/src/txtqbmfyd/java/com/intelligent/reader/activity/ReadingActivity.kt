@@ -379,7 +379,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     //上一章
     override fun onJumpPreChapter() {
         if (ReadState.sequence == 0) {
-            showToastShort(net.lzbook.kit.R.string.is_first_chapter)
+            this.showToastMessage(net.lzbook.kit.R.string.is_first_chapter)
             return
         }
         ReadState.sequence--
@@ -392,7 +392,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
     //下一章
     override fun onJumpNextChapter() {
         if (ReadState.book?.book_type != 0) {
-            showToastShort(net.lzbook.kit.R.string.last_chapter_tip)
+            this.showToastMessage(net.lzbook.kit.R.string.last_chapter_tip)
             return
         }
         ReadState.sequence++

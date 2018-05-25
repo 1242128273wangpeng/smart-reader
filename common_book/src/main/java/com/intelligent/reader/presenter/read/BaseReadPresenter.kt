@@ -448,7 +448,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         if (sourcesList?.isNotEmpty() == true) {
             myNovelHelper?.showSourceDialog(ReadState.currentChapter?.curl, sourcesList)
         } else {
-            readReference?.get()?.showToastShort("暂无其它来源")
+            readReference?.get()?.showToastMessage("暂无其它来源！")
         }
     }
 
@@ -648,7 +648,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
             }
         }
         if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
-            readReference?.get()?.showToastShort("网络不给力，请稍后再试")
+            readReference?.get()?.showToastMessage("网络不给力，请稍后再试！")
             return
         }
         BookHelper.startDownBookTask(readReference?.get(), ReadState.book, Math.max(ReadState.sequence, 0))
@@ -988,7 +988,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
     }
 
     override fun showToast(str: Int) {
-        readReference?.get()?.showToastShort(str)
+        readReference?.get()?.showToastMessage(str)
     }
 
     override fun downLoadNovelMore() {
@@ -1097,7 +1097,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         }
 
         if (ReadState.sequence == -1) {
-            readReference?.get()?.showToastShort("请到错误章节反馈")
+            readReference?.get()?.showToastMessage("请到错误章节反馈！")
             return
         }
 
@@ -1213,7 +1213,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
 
     private fun submitFeedback(type: Int) {
         if (NetWorkUtils.getNetWorkType(readReference?.get()) == NetWorkUtils.NETWORK_NONE) {
-            readReference?.get()?.showToastShort("网络异常")
+            readReference?.get()?.showToastMessage("网络异常！")
             return
         }
         val chapterErrorBean = ChapterErrorBean()
@@ -1228,7 +1228,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
-                        readReference?.get()?.showToastShort("已发送")
+                        readReference?.get()?.showToastMessage("已发送！")
                     }, { e -> e.printStackTrace() })
             disposable.add(time)
 //            handler.postDelayed({ readReference?.get()?.showToastShort("已发送") }, 1000)
@@ -1264,7 +1264,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    readReference?.get()?.showToastShort("已发送")
+                    readReference?.get()?.showToastMessage("已发送！")
                 }, { e -> e.printStackTrace() })
         disposable.add(time)
     }

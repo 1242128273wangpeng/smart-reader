@@ -413,7 +413,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         updateUI()
         bookShelfDeleteDialog.dismiss()
         dismissRemoveMenu()
-        activity.toastShort(R.string.bookshelf_delete_success)
+        activity.showToastMessage(R.string.bookshelf_delete_success)
     }
 
     override fun onSuccessUpdateHandle(updateCount: Int, firstBook: BookUpdate?) {

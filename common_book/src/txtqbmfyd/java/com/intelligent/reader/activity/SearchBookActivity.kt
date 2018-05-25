@@ -20,6 +20,7 @@ import android.webkit.WebSettings
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.presenter.search.SearchPresenter
 import com.intelligent.reader.presenter.search.SearchView
@@ -530,7 +531,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                     keyword = search_result_input!!.text.toString()
                 }
                 if (keyword != null && TextUtils.isEmpty(keyword.trim { it <= ' ' })) {
-                    showToastShort(R.string.search_click_check_isright)
+                    this.showToastMessage(R.string.search_click_check_isright)
                 } else {
                     hideInputMethod(search_result_input)
                     if (keyword != null && !TextUtils.isEmpty(keyword.trim { it <= ' ' }) && searchViewHelper != null) {
@@ -674,7 +675,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                 keyword = search_result_input!!.text.toString()
             }
             if (keyword != null && keyword.trim { it <= ' ' } == "") {
-                showToastShort(R.string.search_click_check_isright)
+                this.showToastMessage(R.string.search_click_check_isright)
             } else {
 
                 hideInputMethod(v)

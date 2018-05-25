@@ -38,7 +38,6 @@ import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.baidu.mobstat.StatService;
 
@@ -78,7 +77,6 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
     public ThemeHelper mThemeHelper;
     protected String TAG = "FrameActivity";
     protected View mNightShadowView;
-    private Toast toast;
     private String mode;
     //检测自身是不是前台运行app
     private boolean isCurrentRunningForeground = true;
@@ -533,60 +531,6 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         return true;
     }
 
-    public void showToastShort(String s) {
-        if (TextUtils.isEmpty(s)) {
-            return;
-        }
-        if (toast == null) {
-            toast = Toast.makeText(this, s, Toast.LENGTH_SHORT);
-        } else {
-            toast.setText(s);
-        }
-        if (toast != null) {
-            toast.show();
-        }
-    }
-
-    public void showToastShort(int resId) {
-        if (TextUtils.isEmpty(String.valueOf(resId))) {
-            return;
-        }
-        if (toast == null) {
-            toast = Toast.makeText(this, resId, Toast.LENGTH_SHORT);
-        } else {
-            toast.setText(resId);
-        }
-        if (toast != null) {
-            toast.show();
-        }
-    }
-
-    public void showToastLong(String s) {
-        if (TextUtils.isEmpty(s)) {
-            return;
-        }
-        if (toast == null) {
-            toast = Toast.makeText(this, s, Toast.LENGTH_LONG);
-        } else {
-            toast.setText(s);
-        }
-        if (toast != null)
-            toast.show();
-    }
-
-    public void showToastLong(int resId) {
-        if (TextUtils.isEmpty(String.valueOf(resId))) {
-            return;
-        }
-        if (toast == null) {
-            toast = Toast.makeText(this, resId, Toast.LENGTH_LONG);
-        } else {
-            toast.setText(resId);
-        }
-        if (toast != null)
-            toast.show();
-    }
-
     public String getVersion() {
         String version = "0.0.0";
         PackageManager pm = getPackageManager();
@@ -692,7 +636,6 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
     public void finish() {
         super.finish();
         ATManager.removeActivity(this);
-        toast = null;
 
         if (isTaskRoot()) {
             overridePendingTransition(R.anim.slide_left_in, 0);

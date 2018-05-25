@@ -398,7 +398,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
             }
             StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ORIGINALLINK, data)
         } else {
-            activity.get()?.toastShort("无法查看原文链接", false)
+            activity.get()?.showToastMessage("无法查看原文链接！")
         }
     }
 

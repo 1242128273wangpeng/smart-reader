@@ -333,7 +333,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
             } catch (e: Exception) {
-                this.toastShort(R.string.menu_no_market, false)
+                this.showToastMessage(R.string.menu_no_market)
             }
 
         }
@@ -499,7 +499,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         BACK_COUNT++
 
         if (BACK_COUNT == 1) {
-            showToastLong(R.string.mian_click_tiwce_exit)
+            this.showToastMessage(R.string.mian_click_tiwce_exit)
         } else if (BACK_COUNT > 1 && !closed) {
             closed = true
             restoreSystemDisplayState()

@@ -12,6 +12,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import android.widget.PopupWindow
+import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.presenter.read.ReadOption
@@ -26,8 +27,6 @@ import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.onEnd
-import net.lzbook.kit.utils.toastShort
-
 
 /**
  * Created by xian on 2017/8/8.
@@ -94,21 +93,21 @@ class ReadOptionHeader : FrameLayout, ReadOption.View {
             data.put("chapterid", ReadState.chapterId ?: "")
             when (result) {
                 1 -> {
-                    context.toastShort("书签添加成功", false)
+                    context.showToastMessage("书签添加成功！")
                     isMarkPage = true
                     header_ibtn_bookmark.isSelected = true
                     data.put("type", "1")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, data)
                 }
                 2 -> {
-                    context.toastShort("书签已删除", false)
+                    context.showToastMessage("书签已删除！")
                     isMarkPage = false
                     header_ibtn_bookmark.isSelected = false
                     data.put("type", "2")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, data)
                 }
                 else -> {
-                    context.toastShort(R.string.add_mark_fail, false)
+                    context.showToastMessage(R.string.add_mark_fail)
                 }
             }
         }

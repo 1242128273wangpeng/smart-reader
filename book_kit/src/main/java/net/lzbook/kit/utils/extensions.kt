@@ -124,53 +124,6 @@ fun Any.loge(vararg param: Any) {
     logWithLevel(this, LOG_LEVEL.ERR, param.asList())
 }
 
-
-fun Context.toastShort(msg: String?, debug: Boolean = true) {
-    if (debug && !msDebuggAble) {
-        return
-    }
-    runOnMain {
-        android.widget.Toast.makeText(this, "$msg", android.widget.Toast.LENGTH_SHORT).show()
-    }
-
-}
-
-fun Context.toastShort(@StringRes id: Int, debug: Boolean = true) {
-    if (debug && !msDebuggAble) {
-        return
-    }
-    runOnMain {
-        android.widget.Toast.makeText(this, id, android.widget.Toast.LENGTH_SHORT).show()
-    }
-
-}
-
-fun Context.toastShortStr(msg: String?) {
-    runOnMain {
-        android.widget.Toast.makeText(this, "$msg", android.widget.Toast.LENGTH_SHORT).show()
-    }
-
-}
-
-fun Context.toastLong(msg: String?, debug: Boolean = true) {
-    if (debug && !msDebuggAble) {
-        return
-    }
-    runOnMain {
-        android.widget.Toast.makeText(this, "$msg", android.widget.Toast.LENGTH_LONG).show()
-    }
-}
-
-fun Context.toastLong(@StringRes id: Int, debug: Boolean = true) {
-    if (debug && !msDebuggAble) {
-        return
-    }
-    runOnMain {
-        android.widget.Toast.makeText(this, id, android.widget.Toast.LENGTH_LONG).show()
-    }
-
-}
-
 fun Any?.toMap(): Map<String, String> {
     val map = mutableMapOf<String, String>()
     if (this != null) {

@@ -414,7 +414,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
             }
         } else {
-            showToastShort(R.string.book_cover_no_resource)
+            this.showToastMessage(R.string.book_cover_no_resource)
             if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
                 finish()
             }

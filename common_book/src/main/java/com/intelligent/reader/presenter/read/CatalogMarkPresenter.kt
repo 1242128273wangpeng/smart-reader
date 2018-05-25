@@ -3,6 +3,7 @@ package com.intelligent.reader.presenter.read
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.read.help.BookHelper
@@ -22,7 +23,6 @@ import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.subscribekt
-import net.lzbook.kit.utils.toastShort
 import java.util.*
 
 /**
@@ -110,7 +110,7 @@ class CatalogMarkPresenter : CatalogMark.Presenter {
             isChapterExist = BookHelper.isChapterExist(chapter)
         }
         if (!isChapterExist && NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
-            BaseBookApplication.getGlobalContext().toastShort(R.string.no_net, false)
+            BaseBookApplication.getGlobalContext().showToastMessage(R.string.no_net)
             return
         }
 
