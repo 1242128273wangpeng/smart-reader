@@ -12,6 +12,8 @@ import android.widget.AdapterView
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.dingyue.contract.IPresenter
+import com.dingyue.contract.util.showToastMessage
+import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.widget.ConfirmDialog
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -155,7 +157,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
             AppLog.e("urlbean", cacheHotWords)
         } else {
             if (!hasNet) {
-                ToastUtils.showToastNoRepeat("网络不给力哦")
+                BookApplication.getGlobalContext().showToastMessage("网络不给力哦！", 0L)
             }
             view?.showLinearParent(false)
         }

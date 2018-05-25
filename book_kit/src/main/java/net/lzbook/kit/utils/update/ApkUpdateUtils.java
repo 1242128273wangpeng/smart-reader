@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dingyue.contract.util.CommonUtil;
 import com.google.gson.JsonObject;
 
 import net.lzbook.kit.R;
@@ -23,7 +24,6 @@ import net.lzbook.kit.net.custom.service.NetService;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
-import net.lzbook.kit.utils.ToastUtils;
 
 import org.json.JSONException;
 
@@ -87,7 +87,7 @@ public class ApkUpdateUtils {
 
                     @Override
                     public void onError(@NonNull Throwable e) {
-                        ToastUtils.showToastNoRepeat("网络不给力哦");
+                        CommonUtil.showToastMessage("网络不给力哦!", 0L);
                     }
 
                     @Override

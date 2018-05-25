@@ -11,6 +11,8 @@ import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import com.dingyue.contract.util.CommonUtil
+import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
 import com.intelligent.reader.activity.ReadingActivity
@@ -99,7 +101,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
         val bookTask = CacheManager.getBookTask(mBook)
 
         if (bookTask.state == DownloadState.FINISH) {
-            ToastUtils.showToastNoRepeat("离线缓存已完成")
+            context.showToastMessage("离线缓存已完成！")
             return
         }
 

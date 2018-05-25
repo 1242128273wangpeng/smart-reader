@@ -3,6 +3,7 @@ package com.intelligent.reader.read.page
 import android.content.Context
 import android.util.AttributeSet
 import android.view.*
+import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.read.DataProvider
@@ -21,7 +22,6 @@ import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.utils.AppLog
-import net.lzbook.kit.utils.ToastUtils
 
 /**
  * 水平滑动PageView容器
@@ -146,7 +146,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                         override fun loadDataSuccess(c: Chapter?, type: ReadViewEnums.PageIndex) = Unit
                         override fun loadDataError(message: String) = Unit
                         override fun loadDataInvalid(message: String) {
-                            ToastUtils.showToastNoRepeat(message)
+                            context.showToastMessage(message)
                             if (context is ReadingActivity) {
                                 (context as ReadingActivity).showChangeSourceDialog()
                             }
@@ -160,7 +160,7 @@ class HorizontalReaderView : ViewPager, IReadView, HorizontalPage.NoticePageList
                         override fun loadDataSuccess(c: Chapter?, type: ReadViewEnums.PageIndex) = Unit
                         override fun loadDataError(message: String) = Unit
                         override fun loadDataInvalid(message: String) {
-                            ToastUtils.showToastNoRepeat(message)
+                            context.showToastMessage(message)
                             if (context is ReadingActivity) {
                                 (context as ReadingActivity).showChangeSourceDialog()
                             }

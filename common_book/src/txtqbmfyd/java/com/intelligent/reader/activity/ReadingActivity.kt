@@ -16,6 +16,8 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.dingyue.contract.util.CommonUtil
+import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.CatalogMarkFragment
@@ -469,7 +471,7 @@ class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener
 //        toast.duration = Toast.LENGTH_SHORT
 //        toast.setGravity(Gravity.CENTER, 0, 0)
 //        toast.show()
-        ToastUtils.showToastNoRepeat("已退出自动阅读")
+        this.showToastMessage("已退出自动阅读！")
         auto_menu.visibility = View.GONE
     }
 

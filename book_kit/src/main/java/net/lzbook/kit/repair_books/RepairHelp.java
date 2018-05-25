@@ -4,9 +4,7 @@ import net.lzbook.kit.R;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.download.CacheManager;
-import net.lzbook.kit.book.download.DownloadState;
 import net.lzbook.kit.book.view.MyDialog;
-import net.lzbook.kit.data.NullCallBack;
 import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.db.BookChapterDao;
@@ -19,7 +17,6 @@ import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.BaseBookHelper;
 import net.lzbook.kit.utils.NetWorkUtils;
-import net.lzbook.kit.utils.ToastUtils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -29,6 +26,8 @@ import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
+
+import com.dingyue.contract.util.CommonUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -200,7 +199,7 @@ public class RepairHelp {
                 BookFix bookFix = instance.getBookFix(book.book_id);
                 if (!TextUtils.isEmpty(bookFix.book_id)) {
                     if (bookFix.fix_type == 1) {
-                        ToastUtils.showToastNoRepeat("本书问题章节已精修完成");
+                        CommonUtil.showToastMessage("本书问题章节已精修完成！", 0L);
                         instance.deleteBookFix(bookFix.book_id);
                     } else if (bookFix.fix_type == 2) {
                         if (NetWorkUtils.isNetworkAvailable(activity) && bookFix.dialog_flag != 1) {
@@ -229,7 +228,7 @@ public class RepairHelp {
                     if (NetWorkUtils.isNetworkAvailable(activity)) {
                         fixBook(instance, book, bookFix, fixCallBack);
                     } else {
-                        ToastUtils.showToastNoRepeat("网络不给力，请检查网络连接");
+                        CommonUtil.showToastMessage("网络不给力，请检查网络连接！", 0L);
                     }
                     Map<String, String> data2 = new HashMap<>();
                     data2.put("type", "1");
@@ -365,7 +364,7 @@ public class RepairHelp {
                                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                                         @Override
                                         public void run() {
-                                            ToastUtils.showToastNoRepeat("网络不给力，请检查网络连接");
+                                            CommonUtil.showToastMessage("网络不给力，请检查网络连接！", 0L);
                                         }
                                     });
                                 }

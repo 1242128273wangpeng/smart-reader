@@ -3,17 +3,14 @@ package com.intelligent.reader.read.page;
 import com.intelligent.reader.R;
 import com.intelligent.reader.widget.SignSeekBar;
 
-import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.utils.StatServiceUtils;
-import net.lzbook.kit.utils.ToastUtils;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;

@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.dingyue.contract.util.CommonUtil;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.SearchBookActivity;
@@ -36,7 +37,6 @@ import net.lzbook.kit.utils.CustomWebClient;
 import net.lzbook.kit.utils.ExtensionsKt;
 import net.lzbook.kit.utils.JSInterfaceHelper;
 import net.lzbook.kit.utils.NetWorkUtils;
-import net.lzbook.kit.utils.ToastUtils;
 
 import java.lang.ref.WeakReference;
 
@@ -477,7 +477,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 
         if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
             swipeRefreshLayout.setRefreshing(false);
-            ToastUtils.showToastNoRepeat("网络不给力");
+            CommonUtil.showToastMessage("网络不给力！", 0L);
             return;
         }
 

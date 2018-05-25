@@ -6,21 +6,19 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.dingyue.contract.util.CommonUtil;
 import com.intelligent.reader.R;
 
 import net.lzbook.kit.book.view.NightShadowView;
 import net.lzbook.kit.utils.StatServiceUtils;
-import net.lzbook.kit.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,7 +146,7 @@ public class FeedbackPopWindow {
                         }
                     }
                     if (type == -1) {
-                        ToastUtils.showToastNoRepeat("请选择错误类型");
+                        CommonUtil.showToastMessage("请选择错误类型！", 0L);
                     } else {
                         if (onSubmitClickListener != null) {
                             onSubmitClickListener.onSubmit(type);

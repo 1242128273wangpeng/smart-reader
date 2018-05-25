@@ -10,6 +10,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
+import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.read.DataProvider
@@ -29,7 +30,6 @@ import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
-import net.lzbook.kit.utils.ToastUtils
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -268,7 +268,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
             }
 
             override fun loadDataInvalid(message: String) {
-                ToastUtils.showToastNoRepeat(message)
+                context.showToastMessage(message)
                 if (context is ReadingActivity) {
                     (context as ReadingActivity).showChangeSourceDialog()
                 }
@@ -585,7 +585,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
                     // 顶部
                 } else if (mLastY - event.y < -20) {
                     if (ReadState.sequence == -1) {
-                        ToastUtils.showToastNoRepeat(resources.getString(R.string.is_first_chapter))
+                        context.showToastMessage(R.string.is_first_chapter)
                     }
                 }
             }
@@ -610,7 +610,7 @@ class VerticalReaderView : FrameLayout, IReadView, PagerScrollAdapter.OnLoadView
     private fun smoothScrollUp(event: KeyEvent) {
         if (event.action == KeyEvent.ACTION_UP) {
             if (mLastVisiblePosition == 0) {
-                ToastUtils.showToastNoRepeat(resources.getString(R.string.is_first_chapter))
+                context.showToastMessage(R.string.is_first_chapter)
                 return
             }
             page_rv.smoothScrollBy(0, -AppUtils.dp2px(resources, 300f).toInt())

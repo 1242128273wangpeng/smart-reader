@@ -28,6 +28,8 @@ import com.dingyue.bookshelf.BookShelfInterface
 import com.dingyue.contract.CommonContract
 import com.dingyue.contract.HomeLogger
 import com.dingyue.contract.PersonalLogger
+import com.dingyue.contract.util.CommonUtil
+import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.fragment.CategoryFragment
 import com.intelligent.reader.fragment.WebViewFragment
@@ -453,7 +455,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
      * **/
     private fun checkUrlDevelop() {
         if (UrlUtils.getBookNovelDeployHost().contains("test") || UrlUtils.getBookWebviewHost().contains("test")) {
-            ToastUtils.showToastNoRepeat("请注意！！请求的是测试地址！！！")
+            this.showToastMessage("请注意！！请求的是测试地址！！！", 0L)
         }
     }
 

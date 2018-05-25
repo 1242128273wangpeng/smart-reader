@@ -8,6 +8,7 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
+import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.read.DataProvider
@@ -29,7 +30,6 @@ import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.ToastUtils
 import net.lzbook.kit.utils.runOnMain
 import java.util.*
 
@@ -505,7 +505,7 @@ class HorizontalPage : FrameLayout, Observer {
         }
 
         private fun showChangeSourceDialog(message: String) {
-            ToastUtils.showToastNoRepeat(message)
+            context.showToastMessage(message)
             if (context is ReadingActivity) {
                 (context as ReadingActivity).showChangeSourceDialog()
             }

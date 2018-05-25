@@ -8,6 +8,8 @@ import android.view.View
 import android.widget.*
 import com.google.gson.Gson
 import com.dingyue.contract.IPresenter
+import com.dingyue.contract.util.showToastMessage
+import com.intelligent.reader.app.BookApplication
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -157,7 +159,7 @@ class SearchViewPresenter(override var view: SearchView.View?) : IPresenter<Sear
             AppLog.e("urlbean", cacheHotWords)
         } else {
             if (!hasNet) {
-                ToastUtils.showToastNoRepeat("网络不给力哦")
+                BookApplication.getGlobalContext().showToastMessage("网络不给力哦！", 0L)
             }
             view?.showLinearParent(false)
         }
