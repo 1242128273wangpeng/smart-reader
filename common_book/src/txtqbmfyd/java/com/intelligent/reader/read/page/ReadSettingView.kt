@@ -461,9 +461,6 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                 }
 
                 R.id.novel_font -> {
-//                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_setting_btn)
-//                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.SET)
-//                changeBottomSettingView(SETTING_DETAIL)
                     checkOptionLayout(R.id.novel_font)
                 }
                 R.id.night_mode_iv//夜间模式

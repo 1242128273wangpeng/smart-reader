@@ -197,11 +197,6 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKENDPAGE_PAGE, StartLogClickUtil.BACK, data)
                 finish()
             }
-//            R.id.ad_view -> {
-//                if (Constants.DEVELOPER_MODE) {
-//                    Toast.makeText(this@BookEndActivity, "你点击了广告", Toast.LENGTH_SHORT).show()
-//                }
-//            }
         }
     }
 
