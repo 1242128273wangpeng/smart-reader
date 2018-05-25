@@ -136,13 +136,12 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         dialog
     }
 
-    override fun onAttach(activity: Activity?) {
-        super.onAttach(activity)
-
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
         try {
-            bookShelfInterface = activity as BookShelfInterface
+            bookShelfInterface = context as BookShelfInterface
         } catch (classCastException: ClassCastException) {
-            throw ClassCastException(activity.toString() + " must implement BookShelfInterface")
+            throw ClassCastException(context.toString() + " must implement BookShelfInterface")
         }
     }
 
@@ -315,7 +314,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             srl_refresh.isRefreshing = false
 
             if (isAdded) {
-                activity.applicationContext.showToastMessage(R.string.bookshelf_network_error, 2000)
+                activity.applicationContext.showToastMessage(R.string.bookshelf_network_error, 2000L)
             }
             return
         }
@@ -328,7 +327,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             srl_refresh.onRefreshComplete()
 
             if (isAdded) {
-                activity.applicationContext.showToastMessage(R.string.bookshelf_no_book_update, 2000)
+                activity.applicationContext.showToastMessage(R.string.bookshelf_no_book_update, 2000L)
             }
         } else {
             // 刷新间隔大于30秒直接请求更新，
@@ -384,7 +383,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         latestLoadDataTime = System.currentTimeMillis()
 
         if (isAdded) {
-            activity.applicationContext.showToastMessage(R.string.bookshelf_network_error, 2000)
+            activity.applicationContext.showToastMessage(R.string.bookshelf_network_error, 2000L)
         }
 
         if (srl_refresh != null) {
@@ -413,7 +412,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         updateUI()
         bookShelfDeleteDialog.dismiss()
         dismissRemoveMenu()
-        activity.showToastMessage(R.string.bookshelf_delete_success)
+        activity.applicationContext.showToastMessage(R.string.bookshelf_delete_success)
     }
 
     override fun onSuccessUpdateHandle(updateCount: Int, firstBook: BookUpdate?) {
@@ -422,7 +421,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
         if (updateCount == 0) {
             if (isAdded) {
-                activity.applicationContext.showToastMessage(R.string.bookshelf_no_book_update, 2000)
+                activity.applicationContext.showToastMessage(R.string.bookshelf_no_book_update, 2000L)
             }
         } else {
             val bookName = firstBook?.book_name
@@ -432,12 +431,12 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                     if (isAdded) {
                         activity.applicationContext.showToastMessage(
                                 "《$bookName${activity.getString(R.string.bookshelf_book_update_chapter)}" + "$bookLastChapterName",
-                                2000)
+                                2000L)
                     }
                 } else if (activity != null) {
                     activity.applicationContext.showToastMessage(
                             "《$bookName${activity.getString(R.string.bookshelf_books_update_more)}" + "$updateCount${activity.getString(R.string.bookshelf_books_update_chapters)}",
-                            2000)
+                            2000L)
                 }
             }
         }

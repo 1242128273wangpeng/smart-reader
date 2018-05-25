@@ -7,9 +7,9 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SimpleItemAnimator
 import android.view.Menu
 import android.view.View
-import android.widget.Toast
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.dingyue.contract.CommonContract
+import com.dingyue.contract.util.showToastMessage
 import com.dingyue.downloadmanager.contract.BookHelperContract
 import com.dingyue.downloadmanager.contract.CacheManagerContract
 import com.dingyue.downloadmanager.recl.DownloadItemDecoration
