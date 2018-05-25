@@ -101,7 +101,7 @@ public class ApkUpdateUtils {
         String fileName = AppUtils.getPackageName() + "_" + apkUpdateInfo.updateVersion + ".apk";
         if (apkUpdateInfo.isUpdate.equals("1")) {
             if (apkUpdateInfo.isForceUpdate.equals("1")) {
-                Toast.makeText(BaseBookApplication.getGlobalContext(), "有新版本，需更新", Toast.LENGTH_SHORT).show();
+                CommonUtil.showToastMessage("有新版本，可以更新！", 0L);
                 doForcedUpdate(apkUpdateInfo.downloadLink, apkUpdateInfo.updateContent, apkUpdateInfo.md5, fileName);
             } else {
                 if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_WIFI) {
@@ -122,7 +122,7 @@ public class ApkUpdateUtils {
                 doNormalUpdate(apkUpdateInfo.downloadLink, apkUpdateInfo.updateContent, apkUpdateInfo.md5, fileName);
             }
         } else {
-            Toast.makeText(BaseBookApplication.getGlobalContext(), "已是最新版本，暂无更新", Toast.LENGTH_SHORT).show();
+            CommonUtil.showToastMessage("已是最新版本，暂无更新！", 0L);
         }
 
     }

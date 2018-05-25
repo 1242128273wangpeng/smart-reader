@@ -1,5 +1,6 @@
 package com.intelligent.reader.read.help;
 
+import com.dingyue.contract.util.CommonUtil;
 import com.intelligent.reader.R;
 import com.intelligent.reader.read.mode.ReadState;
 import com.intelligent.reader.widget.ConfirmDialog;
@@ -467,7 +468,7 @@ public class NovelHelper {
                 case CONTENT_ERROR:
                 case SOURCE_ERROR:
                     if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE && mBook.book_type == 0) {
-                        Toast.makeText(activity, R.string.err_no_net, Toast.LENGTH_SHORT).show();
+                        CommonUtil.showToastMessage(R.string.err_no_net, 0L);
                     }
                     return true;
                 case CONTENT_NORMAL:

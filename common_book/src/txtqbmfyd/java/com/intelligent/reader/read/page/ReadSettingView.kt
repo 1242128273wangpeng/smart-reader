@@ -18,6 +18,7 @@ import android.widget.FrameLayout
 import android.widget.RadioGroup
 import android.widget.SeekBar
 import android.widget.Toast
+import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.read.help.ReadSettingHelper
@@ -1090,7 +1091,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                     }
                 } else {
                     if (NetWorkUtils.getNetWorkType(BaseBookApplication.getGlobalContext()) == NetWorkUtils.NETWORK_NONE) {
-                        Toast.makeText(context, R.string.net_error, Toast.LENGTH_SHORT).show()
+                        context.showToastMessage(R.string.net_error)
                         return
                     } else {
                         if (listener != null) {
@@ -1105,7 +1106,7 @@ class ReadSettingView : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedC
                     }
                 } else {
                     if (NetWorkUtils.getNetWorkType(BaseBookApplication.getGlobalContext()) == NetWorkUtils.NETWORK_NONE) {
-                        Toast.makeText(context, R.string.net_error, Toast.LENGTH_SHORT).show()
+                        context.showToastMessage(R.string.net_error)
                         return
                     } else {
                         if (listener != null) {

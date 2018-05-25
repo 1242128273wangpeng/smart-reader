@@ -312,7 +312,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
 
             DownloadManagerLogger.uploadCacheManagerEditDelete(books)
         } else {
-            Toast.makeText(this, R.string.download_manager_delete_empty, Toast.LENGTH_LONG).show()
+            this.showToastMessage(R.string.download_manager_delete_empty)
         }
     }
 

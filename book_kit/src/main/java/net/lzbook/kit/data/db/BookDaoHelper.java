@@ -4,6 +4,8 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.dingyue.contract.util.CommonUtil;
+
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
@@ -189,20 +191,20 @@ public class BookDaoHelper {
     public synchronized boolean insertBook(Book book) {
         int MAX_COUNT = 49;
         if (book == null || TextUtils.isEmpty(book.book_id) || TextUtils.isEmpty(book.book_source_id)) {
-            Toast.makeText(mContext, "订阅失败，资源有误", Toast.LENGTH_SHORT).show();
+            CommonUtil.showToastMessage("订阅失败，资源有误！", 0L);
             return false;
         }
         switch (book.book_type) {
             case Book.TYPE_ONLINE:
                 Book tempBook = (Book) book;
                 if (books.size() > MAX_COUNT) {
-                    Toast.makeText(mContext, "书架已满，请整理书架", Toast.LENGTH_SHORT).show();
+                    CommonUtil.showToastMessage("书架已满，请整理书架！", 0L);
                     return false;
                 } else if (books.contains(book)) {
-                    Toast.makeText(mContext, "已在书架中", Toast.LENGTH_SHORT).show();
+                    CommonUtil.showToastMessage("已在书架中！", 0L);
                     return false;
                 } else if (TextUtils.isEmpty(tempBook.book_id) || tempBook.name == null || tempBook.name.equals("")) {
-                    Toast.makeText(mContext, "订阅失败，资源有误", Toast.LENGTH_SHORT).show();
+                    CommonUtil.showToastMessage("订阅失败，资源有误！", 0L);
                     return false;
                 } else {
                     // 这里是为了在已经有目录的前提下，添加到书架的时候引起的chapter_count不一致做的修复

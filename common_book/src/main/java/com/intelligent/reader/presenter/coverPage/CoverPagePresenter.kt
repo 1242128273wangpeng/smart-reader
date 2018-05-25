@@ -8,6 +8,7 @@ import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
 import android.widget.*
+import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CataloguesActivity
 import com.intelligent.reader.activity.ReadingActivity
@@ -863,7 +864,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
     }
 
     private fun showToastShort(s: String) {
-        Toast.makeText(activity, s, Toast.LENGTH_SHORT).show()
+        activity.showToastMessage(s)
     }
 
     override fun changeState() {

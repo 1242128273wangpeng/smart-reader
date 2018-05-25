@@ -9,6 +9,7 @@ import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 import android.text.TextUtils
 import android.widget.Toast
+import com.dingyue.contract.util.showToastMessage
 import com.quduquxie.network.DataService
 import com.tencent.mm.opensdk.utils.Log
 import net.lzbook.kit.R
@@ -293,7 +294,7 @@ class DownloadService : Service(), Runnable {
                         break
                     } else {
                         runOnMain {
-                            Toast.makeText(this@DownloadService, R.string.toast_net_weak, Toast.LENGTH_SHORT).show()
+                            this.showToastMessage(R.string.toast_net_weak)
                         }
                         synchronized(lock) {
                             try {
@@ -419,7 +420,7 @@ class DownloadService : Service(), Runnable {
                         } else {
 
                             runOnMain {
-                                Toast.makeText(this@DownloadService, R.string.toast_net_weak, Toast.LENGTH_SHORT).show()
+                                this.showToastMessage(R.string.toast_net_weak)
                             }
 
                             synchronized(lock) {
@@ -543,7 +544,7 @@ class DownloadService : Service(), Runnable {
                     } else {
 
                         runOnMain {
-                            Toast.makeText(this@DownloadService, R.string.toast_net_weak, Toast.LENGTH_SHORT).show()
+                            this.showToastMessage(R.string.toast_net_weak)
                         }
 
                         synchronized(lock) {

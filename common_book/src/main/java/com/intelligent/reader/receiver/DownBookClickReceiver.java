@@ -1,5 +1,6 @@
 package com.intelligent.reader.receiver;
 
+import com.dingyue.contract.util.CommonUtil;
 import com.intelligent.reader.activity.HomeActivity;
 import com.intelligent.reader.activity.ReadingActivity;
 
@@ -64,7 +65,7 @@ public class DownBookClickReceiver extends BroadcastReceiver {
                         ctt.startActivity(intent);
                     }
                 } else {
-                    Toast.makeText(ctt, "资源已删除", Toast.LENGTH_SHORT).show();
+                    CommonUtil.showToastMessage("资源已删除！", 0L);
                 }
             }
         }

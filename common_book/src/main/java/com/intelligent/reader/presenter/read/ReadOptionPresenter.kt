@@ -111,7 +111,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
         reading_all_down.setOnClickListener(View.OnClickListener {
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_all)
             if (NetWorkUtils.getNetWorkType(context) == NetWorkUtils.NETWORK_NONE) {
-                Toast.makeText(context, context.getText(R.string.game_network_none), Toast.LENGTH_LONG).show()
+                activity.get()?.showToastMessage(R.string.game_network_none)
                 return@OnClickListener
             }
             BaseBookHelper.startDownBookTask(activity.get(), mBook, 0)
@@ -129,7 +129,7 @@ class ReadOptionPresenter : ReadOption.Presenter {
         reading_current_down.setOnClickListener(View.OnClickListener {
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_from_now)
             if (NetWorkUtils.getNetWorkType(context) == NetWorkUtils.NETWORK_NONE) {
-                Toast.makeText(context, context.getText(R.string.game_network_none), Toast.LENGTH_LONG).show()
+                activity.get()?.showToastMessage(R.string.game_network_none)
                 return@OnClickListener
             }
             BaseBookHelper.startDownBookTask(activity.get(), mBook, sequence)
@@ -165,13 +165,13 @@ class ReadOptionPresenter : ReadOption.Presenter {
 
     private fun showToastShort(s: String) {
         if (activity.get() != null) {
-            Toast.makeText(activity.get(), s, Toast.LENGTH_SHORT).show()
+            activity.get()?.showToastMessage(s)
         }
     }
 
     private fun showToastShort(@StringRes s: Int) {
         if (activity.get() != null) {
-            Toast.makeText(activity.get(), s, Toast.LENGTH_SHORT).show()
+            activity.get()?.showToastMessage(s)
         }
     }
 

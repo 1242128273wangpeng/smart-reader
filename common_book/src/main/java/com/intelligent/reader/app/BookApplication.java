@@ -7,6 +7,7 @@ import android.widget.Toast;
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.alibaba.sdk.android.feedback.util.ErrorCode;
 import com.alibaba.sdk.android.feedback.util.FeedbackErrorCallback;
+import com.dingyue.contract.util.CommonUtil;
 import com.dycm_adsdk.PlatformSDK;
 import com.intelligent.reader.BuildConfig;
 import com.squareup.leakcanary.LeakCanary;
@@ -49,7 +50,7 @@ public class BookApplication extends BaseBookApplication {
         FeedbackAPI.addErrorCallback(new FeedbackErrorCallback() {
             @Override
             public void onError(Context context, String errorMessage, ErrorCode code) {
-                Toast.makeText(context, "ErrMsg is: " + errorMessage, Toast.LENGTH_SHORT).show();
+                CommonUtil.showToastMessage("ErrorMessage is: " + errorMessage, 0L);
             }
         });
         // Feedback activity的回调

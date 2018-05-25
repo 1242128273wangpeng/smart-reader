@@ -9,6 +9,7 @@ import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
 import com.intelligent.reader.activity.ReadingActivity
 import com.dingyue.contract.IPresenter
+import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.read.help.BookHelper
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -298,14 +299,14 @@ class SearchPresenter(private val mContext: Context, override var view: SearchVi
             }
             val succeed = bookDaoHelper!!.insertBook(book)
             if (succeed) {
-                Toast.makeText(mContext.applicationContext, R.string.bookshelf_insert_success, Toast.LENGTH_SHORT).show()
+                mContext.showToastMessage(R.string.bookshelf_insert_success)
             }
         }
 
         jsInterfaceHelper.setOnDeleteBook { book_id ->
             AppLog.e(TAG, "doDeleteBook")
             bookDaoHelper!!.deleteBook(book_id)
-            Toast.makeText(mContext.applicationContext, R.string.bookshelf_delete_success, Toast.LENGTH_SHORT).show()
+            mContext.showToastMessage(R.string.bookshelf_delete_success)
         }
     }
 

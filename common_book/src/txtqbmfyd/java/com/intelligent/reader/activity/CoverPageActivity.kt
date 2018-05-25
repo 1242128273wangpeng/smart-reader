@@ -13,6 +13,7 @@ import android.widget.Toast
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.BookRecommendAdapter
 import com.intelligent.reader.presenter.coverPage.CoverPageContract
@@ -267,8 +268,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         if (loadingPage != null) {
             loadingPage?.onError()
         }
-        Toast.makeText(this, "请求失败", Toast.LENGTH_SHORT).show()
-
+        this.showToastMessage("请求失败！")
     }
 
     override fun showRecommendError() {

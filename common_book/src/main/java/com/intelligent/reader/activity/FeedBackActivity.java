@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dingyue.contract.util.CommonUtil;
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.FeedBackAdapter;
 import com.umeng.fb.FeedbackAgent;
@@ -182,7 +183,7 @@ public class FeedBackActivity extends Activity implements View.OnClickListener, 
                     // 数据同步
                     refreshData();
                 } else {
-                    Toast.makeText(getApplicationContext(), "反馈不能为空！", Toast.LENGTH_SHORT).show();
+                    CommonUtil.showToastMessage("反馈不能为空！", 0L);
                 }
                 break;
         }

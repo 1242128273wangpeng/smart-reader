@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Message
 import android.view.View
 import android.widget.Toast
+import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.cover.*
 import com.intelligent.reader.read.help.BookHelper
@@ -390,9 +391,7 @@ class CataloguesPresenter(var act: Activity, var book: Book, var requestItem: Re
 
     private fun showToastShort(s: String) {
         if (activity != null) {
-            Toast.makeText(activity!!.get(), s, Toast.LENGTH_SHORT).show()
+            activity!!.get()?.showToastMessage(s)
         }
     }
-
-
 }

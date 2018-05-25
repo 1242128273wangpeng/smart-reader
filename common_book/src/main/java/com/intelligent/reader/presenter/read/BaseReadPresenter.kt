@@ -31,6 +31,8 @@ import com.intelligent.reader.cover.BookCoverQGRepository
 import com.intelligent.reader.cover.BookCoverRepositoryFactory
 import com.intelligent.reader.fragment.CatalogMarkFragment
 import com.dingyue.contract.IPresenter
+import com.dingyue.contract.util.CommonUtil
+import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.read.help.NovelHelper
@@ -615,8 +617,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
                 bookChapterDao?.insertBookChapter(mReaderViewModel?.chapterList)
             }
             val succeed = mBookDaoHelper?.insertBook(ReadState.book)
-            Toast.makeText(readReference?.get(), if (succeed!!) R.string.reading_add_succeed else R.string.reading_add_fail,
-                    Toast.LENGTH_SHORT).show()
+            mContext.showToastMessage(if (succeed!!) R.string.reading_add_succeed else R.string.reading_add_fail)
         }
         val map1 = HashMap<String, String>()
         if (ReadState.book != null) {
@@ -1320,7 +1321,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
             data.put("bookid", ReadState.book_id)
             StartLogClickUtil.upLoadEventLog(readReference?.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ORIGINALLINK, data)
         } else {
-            Toast.makeText(readReference?.get(), "无法查看原文链接", Toast.LENGTH_SHORT).show()
+            mContext.showToastMessage("无法查看原文链接！")
         }
     }
 

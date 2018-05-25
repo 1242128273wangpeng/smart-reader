@@ -12,6 +12,7 @@ import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.NotificationCompat
 import android.widget.Toast
+import com.dingyue.contract.util.showToastMessage
 import net.lzbook.kit.R
 import net.lzbook.kit.app.ActionConstants
 import net.lzbook.kit.app.BaseBookApplication
@@ -117,12 +118,12 @@ object CacheManager {
                 runOnMain {
 
                     if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
-                        Toast.makeText(app, app.getString(R.string.game_network_none), Toast.LENGTH_SHORT).show()
+                        app.showToastMessage(R.string.game_network_none)
                     } else if (t is IOException && !FileUtils.checkLeftSpace()) {
-                        Toast.makeText(app, app.getString(R.string.tip_space_not_enough), Toast.LENGTH_SHORT).show()
+                        app.showToastMessage(R.string.tip_space_not_enough)
                     } else {
-                        Toast.makeText(app, String.format(app.getString(R.string.toast_cache_paused)
-                                , bookTask.book.name), Toast.LENGTH_SHORT).show()
+                        app.showToastMessage(String.format(app.getString(R.string.toast_cache_paused)
+                                , bookTask.book.name))
                     }
 
                     listeners.forEach {
@@ -140,8 +141,8 @@ object CacheManager {
                 runOnMain {
 
                     if (bookTask.state == DownloadState.PAUSEED && !bookTask.isAutoState) {
-                        Toast.makeText(app, String.format(app.getString(R.string.toast_cache_paused)
-                                , bookTask.book.name), Toast.LENGTH_SHORT).show()
+                        app.showToastMessage(String.format(app.getString(R.string.toast_cache_paused)
+                                , bookTask.book.name))
                     }
 
                     listeners.forEach {
@@ -189,7 +190,7 @@ object CacheManager {
                     LocalBroadcastManager.getInstance(BaseBookApplication.getGlobalContext()).sendBroadcast(intent)
                 } else if (!bookTask.isAutoState) {
                     runOnMain {
-                        Toast.makeText(app, String.format(app.getString(R.string.toast_cache_complete), bookTask.book.name), Toast.LENGTH_SHORT).show()
+                        app.showToastMessage(String.format(app.getString(R.string.toast_cache_complete), bookTask.book.name))
                     }
                 }
 
