@@ -28,7 +28,6 @@ import com.dingyue.bookshelf.BookShelfInterface
 import com.dingyue.contract.CommonContract
 import com.dingyue.contract.HomeLogger
 import com.dingyue.contract.PersonalLogger
-import com.dingyue.contract.util.CommonUtil
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.fragment.CategoryFragment
@@ -42,7 +41,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.ThemeMode
-import kotlinx.android.synthetic.main.act_home.*
+import kotlinx.android.synthetic.txtqbmfyd.act_home.*
 import kotlinx.android.synthetic.txtqbmfyd.home_drawer_layout_main.*
 import kotlinx.android.synthetic.txtqbmfyd.home_drawer_layout_menu.*
 import net.lzbook.kit.app.ActionConstants
