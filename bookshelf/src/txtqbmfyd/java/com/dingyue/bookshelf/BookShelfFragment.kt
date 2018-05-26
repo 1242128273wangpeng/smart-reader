@@ -1,6 +1,5 @@
 package com.dingyue.bookshelf
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -20,6 +19,7 @@ import com.dingyue.contract.util.showToastMessage
 import kotlinx.android.synthetic.txtqbmfyd.bookshelf_refresh_header.view.*
 import kotlinx.android.synthetic.txtqbmfyd.frag_bookshelf.*
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.BookUpdate
@@ -223,9 +223,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         super.onResume()
         updateUI()
 
-//        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookShelfPresenter.iBookList.isNotEmpty()) {
-//            bookShelfPresenter.requestFloatAD(activity, fl_ad_float)
-//        }
+        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookShelfPresenter.iBookList.isNotEmpty()) {
+            bookShelfPresenter.requestFloatAD(activity, fl_ad_float)
+        }
     }
 
     override fun onDetach() {
@@ -296,8 +296,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
      * 查Book数据库更新界面
      */
     fun updateUI() {
-//        val isShowAD = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD && Constants.book_shelf_state != 0
-        val isShowAD = false
+        val isShowAD = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD && Constants.book_shelf_state != 0
         doAsync {
             bookShelfPresenter.queryBookListAndAd(activity, isShowAD, true)
             uiThread {
@@ -483,9 +482,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         updateUI()
 
-//        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookShelfPresenter.iBookList.isNotEmpty()) {
-//            bookShelfPresenter.requestFloatAD(activity, fl_ad_float)
-//        }
+        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookShelfPresenter.iBookList.isNotEmpty()) {
+            bookShelfPresenter.requestFloatAD(activity, fl_ad_float)
+        }
     }
 
     override fun isRemoveMenuShow(): Boolean = bookShelfAdapter.isRemove

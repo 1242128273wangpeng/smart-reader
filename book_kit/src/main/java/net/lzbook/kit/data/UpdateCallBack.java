@@ -1,6 +1,5 @@
 package net.lzbook.kit.data;
 
-
 import net.lzbook.kit.data.bean.BookUpdateResult;
 
 public interface UpdateCallBack {
