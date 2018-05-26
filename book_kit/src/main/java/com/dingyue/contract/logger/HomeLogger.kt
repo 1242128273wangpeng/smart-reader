@@ -1,4 +1,4 @@
-package com.dingyue.contract
+package com.dingyue.contract.logger
 
 import android.preference.PreferenceManager
 import net.lzbook.kit.app.BaseBookApplication

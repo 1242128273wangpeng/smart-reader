@@ -1,4 +1,4 @@
-package com.dingyue.contract
+package com.dingyue.contract.logger
 
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil

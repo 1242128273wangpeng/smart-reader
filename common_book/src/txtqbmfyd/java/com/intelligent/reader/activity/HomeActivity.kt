@@ -26,8 +26,8 @@ import com.baidu.mobstat.StatService
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dingyue.contract.CommonContract
-import com.dingyue.contract.HomeLogger
-import com.dingyue.contract.PersonalLogger
+import com.dingyue.contract.logger.HomeLogger
+import com.dingyue.contract.logger.PersonalLogger
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.fragment.CategoryFragment
