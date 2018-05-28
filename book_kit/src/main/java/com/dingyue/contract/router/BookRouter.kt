@@ -1,4 +1,4 @@
-package net.lzbook.kit.router
+package com.dingyue.contract.router
 
 import android.app.Activity
 import android.content.Intent

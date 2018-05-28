@@ -9,7 +9,6 @@ import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
-import android.widget.Toast
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -31,7 +30,7 @@ import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.CoverPage
 import net.lzbook.kit.data.bean.RequestItem
-import net.lzbook.kit.router.RouterConfig
+import com.dingyue.contract.router.RouterConfig
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils

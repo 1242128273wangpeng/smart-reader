@@ -30,7 +30,7 @@ import kotlinx.android.synthetic.txtqbmfyd.activity_search_book.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.data.db.BookDaoHelper
-import net.lzbook.kit.router.RouterConfig
+import com.dingyue.contract.router.RouterConfig
 import net.lzbook.kit.utils.*
 import java.util.*
 

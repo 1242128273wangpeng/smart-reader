@@ -29,8 +29,8 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Bookmark
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.repair_books.RepairHelp
-import net.lzbook.kit.router.RouterConfig
-import net.lzbook.kit.router.RouterUtil
+import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
 import net.lzbook.kit.utils.StatServiceUtils
 import java.text.SimpleDateFormat
 import java.util.concurrent.Callable

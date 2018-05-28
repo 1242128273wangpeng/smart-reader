@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.view.View
-import android.widget.Toast
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.cover.*
@@ -24,8 +23,8 @@ import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.request.RequestFactory
-import net.lzbook.kit.router.RouterConfig
-import net.lzbook.kit.router.RouterUtil
+import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
 import net.lzbook.kit.utils.*
 import java.lang.ref.WeakReference
 import java.util.HashMap

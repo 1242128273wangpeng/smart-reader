@@ -22,7 +22,6 @@ import android.view.InflateException
 import android.view.KeyEvent
 import android.view.View
 import android.widget.ImageButton
-import android.widget.Toast
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.*
 import com.intelligent.reader.cover.BookCoverLocalRepository
@@ -31,7 +30,6 @@ import com.intelligent.reader.cover.BookCoverQGRepository
 import com.intelligent.reader.cover.BookCoverRepositoryFactory
 import com.intelligent.reader.fragment.CatalogMarkFragment
 import com.dingyue.contract.IPresenter
-import com.dingyue.contract.util.CommonUtil
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.help.BookHelper
@@ -62,8 +60,8 @@ import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.request.UrlUtils
-import net.lzbook.kit.router.RouterConfig
-import net.lzbook.kit.router.RouterUtil
+import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
 import net.lzbook.kit.utils.*
 import java.io.UnsupportedEncodingException
 import java.lang.ref.WeakReference

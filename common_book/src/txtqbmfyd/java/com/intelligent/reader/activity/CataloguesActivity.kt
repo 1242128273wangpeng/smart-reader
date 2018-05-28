@@ -32,7 +32,7 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.*
-import net.lzbook.kit.router.RouterConfig
+import com.dingyue.contract.router.RouterConfig
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.StatServiceUtils
 import java.util.*

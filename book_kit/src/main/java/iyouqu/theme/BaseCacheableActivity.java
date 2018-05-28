@@ -8,8 +8,8 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import net.lzbook.kit.app.ActionConstants;
 import net.lzbook.kit.receiver.CacheUpdateReceiver;
-import net.lzbook.kit.router.RouterConfig;
-import net.lzbook.kit.router.RouterUtil;
+import com.dingyue.contract.router.RouterConfig;
+import com.dingyue.contract.router.RouterUtil;
 
 import static net.lzbook.kit.utils.ExtensionsKt.loge;
 import static net.lzbook.kit.utils.ExtensionsKt.msMainLooperHandler;

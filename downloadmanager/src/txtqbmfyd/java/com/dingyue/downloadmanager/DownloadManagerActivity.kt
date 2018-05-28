@@ -20,9 +20,9 @@ import net.lzbook.kit.book.download.CallBackDownload
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Book
-import net.lzbook.kit.router.BookRouter
-import net.lzbook.kit.router.RouterConfig
-import net.lzbook.kit.router.RouterUtil
+import com.dingyue.contract.router.BookRouter
+import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
 import net.lzbook.kit.utils.uiThread
 
 /**

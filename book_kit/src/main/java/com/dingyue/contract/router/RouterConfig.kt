@@ -1,4 +1,4 @@
-package net.lzbook.kit.router
+package com.dingyue.contract.router
 
 /**
  * Created on 2018/4/19.
