@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 
-package net.lzbook.kit.book.view;
+package com.intelligent.reader.view;
 
 
-import net.lzbook.kit.R;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.utils.AppUtils;
@@ -45,6 +44,8 @@ import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.intelligent.reader.R;
 
 import java.util.HashMap;
 import java.util.Map;
