@@ -44,12 +44,6 @@ public class OtherRequestExecutor extends RequestExecutorDefault {
         OtherRequestService.requestOwnChapterList(context, requestItem, requestChaptersCallBack);
     }
 
-    /*@Override
-    public void requestUpdate(Context context, RequestItem requestItem, int update_count, long update_time,
-                              VolleyDataService.DataServiceCallBack dataServiceCallBack) throws Exception {
-        OtherRequestService.requestOwnUpdate(context, requestItem, update_count, update_time, dataServiceCallBack);
-    }*/
-
     @Override
     public Chapter requestSingleChapter(int dex, BookDaoHelper bookDaoHelper, BookChapterDao bookChapterDao, Chapter chapter)
             throws Exception {

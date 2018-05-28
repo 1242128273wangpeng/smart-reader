@@ -1,19 +1,14 @@
 package com.intelligent.reader.reader
 
-import android.text.TextUtils
 import com.intelligent.reader.DisposableAndroidViewModel
 import com.intelligent.reader.repository.BookCoverRepository
 import com.intelligent.reader.repository.ReaderRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.data.bean.Chapter
-import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.bean.SourceItem
-import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.purchase.SingleChapterBean
 import net.lzbook.kit.user.bean.RecommendBooksEndResp
-import net.lzbook.kit.utils.NetWorkUtils
 import java.util.*
 
 /**

@@ -21,14 +21,6 @@ public class FootprintUtils {
                 daoUtils.deleteMiniData(HistoryInforTable.TABLE_NAME, HistoryInforTable.LAST_BROW_TIME);
             }
             daoUtils.createOrUpdate(info);
-//            if (daoUtils.isBookExist(info.getBook_id())){
-//                daoUtils.update(info);
-//            }else {
-//                if (daoUtils.countOf() >= 200){
-//                    daoUtils.deleteMiniData(HistoryInforTable.TABLE_NAME, HistoryInforTable.LAST_BROW_TIME);
-//                }
-//                daoUtils.insert(info);
-//            }
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

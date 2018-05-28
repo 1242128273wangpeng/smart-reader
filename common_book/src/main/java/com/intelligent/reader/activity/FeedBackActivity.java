@@ -14,7 +14,6 @@ import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dingyue.contract.util.CommonUtil;
 import com.intelligent.reader.R;

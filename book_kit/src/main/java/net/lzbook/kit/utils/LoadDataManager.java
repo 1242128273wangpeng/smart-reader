@@ -12,7 +12,6 @@ import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.NoBodyEntity;
 import net.lzbook.kit.data.bean.Book;
-import net.lzbook.kit.data.bean.BookEvent;
 import net.lzbook.kit.data.bean.ChapterErrorBean;
 import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.net.custom.service.NetService;
@@ -28,7 +27,6 @@ import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import de.greenrobot.event.EventBus;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;

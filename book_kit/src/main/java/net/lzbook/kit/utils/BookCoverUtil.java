@@ -1,11 +1,6 @@
 package net.lzbook.kit.utils;
 
-import net.lzbook.kit.R;
-import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.book.component.service.DownloadService;
-import net.lzbook.kit.book.download.DownloadState;
 import net.lzbook.kit.book.view.RecommendItemView;
-import net.lzbook.kit.data.NullCallBack;
 import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.CoverPage;
 import net.lzbook.kit.data.bean.RecommendItem;
@@ -20,7 +15,6 @@ import android.content.IntentFilter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 

@@ -52,14 +52,6 @@ public class OWNParser {
         bookVo.labels = bookVoObject.getString("labels");
         bookVo.img_url = bookVoObject.getString("img_url");
         bookVo.url = bookVoObject.getString("url");
-//
-//        if (!bookVoObject.isNull("status")) {
-//            if ("SERIALIZE".equals(bookVoObject.getString("status"))) {
-//                bookVo.status = 1;
-//            } else if ("FINISH".equals(bookVoObject.getString("status"))) {
-//                bookVo.status = 2;
-//            }
-//        }
 
         if (!bookVoObject.isNull("source")) {
             JSONObject sourceObject = bookVoObject.getJSONObject("source");
@@ -541,25 +533,4 @@ public class OWNParser {
         logData.bookSourceId = book.book_source_id;
         return logData;
     }
-
-    /*public static SensitiveWords getSensitiveWords(String json) throws JSONException {
-        JSONObject jsonRoot = new JSONObject(json);
-        if (!jsonRoot.getBoolean("sucess") || jsonRoot.isNull("model")) {
-            return null;
-        }
-
-        SensitiveWords sensitiveWords = new SensitiveWords();
-        sensitiveWords.sucess = jsonRoot.getBoolean("sucess");
-        JSONObject jsonObject = jsonRoot.optJSONObject("model");
-        sensitiveWords.type = jsonObject.getString("type");
-        sensitiveWords.digest = jsonObject.getString("digest");
-        JSONArray jsonArray = jsonObject.getJSONArray("list");
-        List<String> list = new ArrayList<>();
-        for (int i = 0; i < jsonArray.length(); i++) {
-            list.add((String) jsonArray.get(i));
-        }
-        sensitiveWords.list = list;
-        AppLog.e(TAG, "SensitiveWords: " + list.toString());
-        return sensitiveWords;
-    }*/
 }

@@ -70,64 +70,6 @@ public class ShieldManager {
         }
     }
 
-//    //获取书籍屏蔽、阅读页屏蔽
-//    public void loadSensitiveWords(String type) {
-//
-//        String filePath = "";
-//        String digest = BookApplication.getUdid();
-//
-//        switch (type) {
-//            case "read":
-//                filePath = Constants.APP_PATH_CACHE + "read";
-//                break;
-//            case "gid":
-//                filePath = Constants.APP_PATH_CACHE + "gid";
-//                break;
-//            case "location":
-//                filePath = Constants.APP_PATH_CACHE + "location";
-//                break;
-//            case "adCode":
-//                filePath = Constants.APP_PATH_CACHE + "adCode";
-//        }
-//
-//        File file = new File(filePath);
-//        AppLog.e(TAG, "File : " + file.exists());
-//        SensitiveWords sensitiveWords;
-//        if (file.exists() && file.canRead()) {
-//            sensitiveWords = (SensitiveWords) FileUtils.deserialize(filePath);
-//            if (sensitiveWords != null && !TextUtils.isEmpty(sensitiveWords.getDigest())) {
-//                digest = sensitiveWords.getDigest();
-//                switch (type) {
-//                    case "read":
-//                        BookApplication.setReadSensitiveWords(sensitiveWords);
-//                        break;
-//                    case "gid":
-//                        BookApplication.setBookSensitiveWords(sensitiveWords);
-//                        break;
-//                    case "location":
-//                        BookApplication.setLocationSensitiveWords(sensitiveWords);
-//                        break;
-//                    case "adCode":
-//                        BookApplication.setAdcodeSensitiveWords(sensitiveWords);
-//                    default:
-//
-//                }
-//            }
-//        }
-//
-//        String url = DataUtil.buildUrlNew(DataUtil.GET_SHIELD_INFORMATION, false, type, digest);
-//        OtherRequestService.getSensitiveWords(sensitiveWordsCallBack, url, digest, filePath);
-//    }
-
-//    final OtherRequestService.DataServiceTagCallBack sensitiveWordsCallBack = new OtherRequestService.DataServiceTagCallBack() {
-//        @Override
-//        public void onSuccess(Object result, Object tag) {
-//        }
-//
-//        @Override
-//        public void onError(Exception error, Object tag) {
-//        }
-//    };
 
     public void startAchieveUserLocation() {
         //初始化定位
@@ -157,49 +99,6 @@ public class ShieldManager {
 
     public void stopAchieveUserLocation() {
         mLocationClient.onDestroy();
-
-//        Constants.isShielding = judgeShield();
-//        AppLog.e(TAG, "是否需要屏蔽：" + Constants.isShielding);
     }
 
-//    //判断是否开启屏蔽
-//    public boolean judgeShield() {
-//        //判断地域编码
-//        List<String> adCode = BookApplication.getAdcodeSensitiveWords().getList();
-//        for (int i = 0; i < adCode.size(); i++) {
-//            if (Constants.adCode.startsWith(adCode.get(i))) {
-//                return true;
-//            }
-//        }
-//
-//        //判断经纬度
-//        double longitudeStart = 0;
-//        double longitudeEnd = 0;
-//        double latitudeStart = 0;
-//        double latitudeEnd = 0;
-//
-//        List<String> location = BookApplication.getLocationSensitiveWords().getList();
-//        for (int i = 0; i < location.size(); i++) {
-//            AppLog.e(TAG, "JudgeShield: " + location.get(i));
-//            if (!TextUtils.isEmpty(location.get(i))) {
-//                String[] message = location.get(i).split("#");
-//                if (message.length > 0) {
-//                    latitudeStart = Double.valueOf(message[0]);
-//                }
-//                if (message.length > 1) {
-//                    longitudeStart = Double.valueOf(message[1]);
-//                }
-//                if (message.length > 2) {
-//                    latitudeEnd = Double.valueOf(message[2]);
-//                }
-//                if (message.length > 3) {
-//                    longitudeEnd = Double.valueOf(message[3]);
-//                }
-//            }
-//            if (Constants.longitude >= longitudeStart && Constants.longitude <= longitudeEnd && Constants.latitude >= latitudeStart && Constants.latitude <= latitudeEnd) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
 }

@@ -22,7 +22,7 @@ object HomeLogger {
      * 上传书架信息
      * **/
     fun uploadHomeBookListInformation() {
-        val books = BookDaoHelper.getInstance().getInitBooksOnLineList()
+        val books = BookDaoHelper.getInstance().initBooksOnLineList
 
         if (books.isNotEmpty()) {
             val lastTime = SharedPreUtil.getLong(SharedPreUtil.HOME_TODAY_FIRST_POST_BOOKIDS)
