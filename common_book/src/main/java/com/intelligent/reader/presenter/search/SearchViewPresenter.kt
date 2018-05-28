@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.*
 import com.google.gson.Gson
 import com.dingyue.contract.IPresenter
+import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.app.BookApplication
 import io.reactivex.Observer
@@ -34,7 +35,7 @@ class SearchViewPresenter(override var view: SearchView.View?) : IPresenter<Sear
     private var hotWords: MutableList<SearchHotBean.DataBean>? = ArrayList()
     private var suggest: String? = null
     private var searchType: String? = null
-    private var sharedPreferencesUtils: SharedPreferencesUtils? = null
+    private lateinit var sharedPreUtil: SharedPreUtil
     private var gson: Gson? = null
     private var authorsBean: MutableList<SearchAutoCompleteBean.DataBean.AuthorsBean> = ArrayList()
     private var labelBean: MutableList<SearchAutoCompleteBean.DataBean.LabelBean> = ArrayList()
@@ -44,7 +45,7 @@ class SearchViewPresenter(override var view: SearchView.View?) : IPresenter<Sear
 
     init {
         gson = Gson()
-        sharedPreferencesUtils = SharedPreferencesUtils(PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext()))
+        sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
     }
 
     fun initHistoryData(context: Context?) {
@@ -150,10 +151,10 @@ class SearchViewPresenter(override var view: SearchView.View?) : IPresenter<Sear
      * if hasn't net getData from sharepreferenecs cache
      */
     fun getCacheDataFromShare(hasNet: Boolean) {
-        if (!TextUtils.isEmpty(sharedPreferencesUtils!!.getString(Constants.SERARCH_HOT_WORD))) {
+        if (!TextUtils.isEmpty(sharedPreUtil.getString(SharedPreUtil.SERARCH_HOT_WORD))) {
             view?.showLinearParent(true)
             hotWords!!.clear()
-            val cacheHotWords = sharedPreferencesUtils!!.getString(Constants.SERARCH_HOT_WORD)
+            val cacheHotWords = sharedPreUtil.getString(Constants.SERARCH_HOT_WORD)
             val searchHotBean = gson!!.fromJson(cacheHotWords, SearchHotBean::class.java)
             parseResult(searchHotBean, false)
             AppLog.e("urlbean", cacheHotWords)
@@ -175,11 +176,11 @@ class SearchViewPresenter(override var view: SearchView.View?) : IPresenter<Sear
             if (hotWords != null && hotWords!!.size >= 0) {
                 view?.showLinearParent(true)
                 if (hasNet) {
-                    sharedPreferencesUtils!!.putString(Constants.SERARCH_HOT_WORD, gson!!.toJson(value, SearchHotBean::class.java))
+                    sharedPreUtil!!.putString(SharedPreUtil.SERARCH_HOT_WORD, gson!!.toJson(value, SearchHotBean::class.java))
                 }
                 view?.setHotWordAdapter(hotWords)
             } else {
-                sharedPreferencesUtils!!.putString(Constants.SERARCH_HOT_WORD, "")
+                sharedPreUtil!!.putString(SharedPreUtil.SERARCH_HOT_WORD, "")
                 view?.showLinearParent(false)
             }
         }

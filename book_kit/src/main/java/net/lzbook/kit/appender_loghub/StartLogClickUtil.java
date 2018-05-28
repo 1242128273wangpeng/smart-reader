@@ -1,8 +1,11 @@
 package net.lzbook.kit.appender_loghub;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
+
+import com.logcat.sdk.LogEncapManager;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.appender.AndroidLogClient;
@@ -20,6 +23,7 @@ import net.lzbook.kit.utils.OpenUDID;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -460,6 +464,32 @@ public class StartLogClickUtil {
 
 
 
+
+    public static void sendZnUserLog() {
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("udid", OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));
+        parameters.put("app_package", AppUtils.getPackageName());
+        parameters.put("app_version", AppUtils.getVersionName());
+        parameters.put("app_version_code", String.valueOf(AppUtils.getVersionCode()));
+        parameters.put("app_channel_id", AppUtils.getChannelId());
+        parameters.put("phone_identity", AppUtils.getIMEI(BaseBookApplication.getGlobalContext()));
+        parameters.put("vendor", Build.MODEL);
+        parameters.put("os", Constants.APP_SYSTEM_PLATFORM + android.os.Build.VERSION.RELEASE);
+        parameters.put("operator", AppUtils.getProvidersName(BaseBookApplication.getGlobalContext()));
+        parameters.put("network", NetWorkUtils.NETTYPE);
+        if (null != BaseBookApplication.getDisplayMetrics()) {
+            String resolution_ratio = BaseBookApplication.getDisplayMetrics().widthPixels + "*" +
+                    BaseBookApplication.getDisplayMetrics().heightPixels;
+            parameters.put("resolution_ratio", resolution_ratio);
+        }
+        parameters.put("longitude", String.valueOf(Constants.longitude));
+        parameters.put("latitude", String.valueOf(Constants.latitude));
+        parameters.put("city_info", Constants.adCityInfo);
+        parameters.put("location_detail", Constants.adLocationDetail);
+        parameters.put("logstore", "zn_user");
+
+        LogEncapManager.getInstance().sendLog(parameters, "zn_user");
+    }
 
 
     //上传用户阅读内容(传参按此格式顺序)

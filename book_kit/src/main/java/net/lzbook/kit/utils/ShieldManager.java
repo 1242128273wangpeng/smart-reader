@@ -4,6 +4,8 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.dingyue.contract.util.SharedPreUtil;
+
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 
@@ -19,7 +21,7 @@ public class ShieldManager {
     public AMapLocationClientOption mLocationOption = null;
     //声明AMapLocationClient类对象
     public AMapLocationClient mLocationClient = null;
-    public SharedPreferencesUtils sharedPreferencesUtils;
+    public SharedPreUtil sharedPreUtil;
     //声明定位回调监听器
     private Context context;
     public AMapLocationListener mLocationListener = new AMapLocationListener() {
@@ -57,14 +59,14 @@ public class ShieldManager {
         }
     };
 
-    public ShieldManager(Context context, SharedPreferencesUtils sharedPreferencesUtils) {
+    public ShieldManager(Context context, SharedPreUtil sharedPreUtil) {
         this.context = context;
-        this.sharedPreferencesUtils = sharedPreferencesUtils;
+        this.sharedPreUtil = sharedPreUtil;
     }
 
     private void initBook() {
         LoadDataManager loadDataManager = new LoadDataManager(context);
-        if (!sharedPreferencesUtils.getBoolean(Constants.ADD_DEFAULT_BOOKS)) {
+        if (!sharedPreUtil.getBoolean(SharedPreUtil.Companion.getADD_DEFAULT_BOOKS())) {
             // 首次安装新用户添加默认书籍
             loadDataManager.addDefaultBooks();
         }

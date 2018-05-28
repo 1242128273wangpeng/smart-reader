@@ -1,12 +1,16 @@
 package com.dingyue.contract.logger
 
+import android.os.Build
 import android.preference.PreferenceManager
 import com.dingyue.contract.util.SharedPreUtil
+import com.logcat.sdk.LogEncapManager
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.OpenUDID
 import java.util.HashMap
 
 /**
@@ -25,7 +29,8 @@ object HomeLogger {
         val books = BookDaoHelper.getInstance().initBooksOnLineList
 
         if (books.isNotEmpty()) {
-            val lastTime = SharedPreUtil.getLong(SharedPreUtil.HOME_TODAY_FIRST_POST_BOOKIDS)
+            val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+            val lastTime = sharedPreUtil.getLong(SharedPreUtil.HOME_TODAY_FIRST_POST_BOOKIDS)
             val currentTime = System.currentTimeMillis()
 
             val isSameDay = AppUtils.isToday(lastTime, currentTime)
@@ -37,7 +42,7 @@ object HomeLogger {
                     bookIdList.append(if (book.readed == 1) "_1" else "_0")//1已读，0未读
                     bookIdList.append(if (index == books.size-1) "" else "$")
                 }
-                SharedPreUtil.putLong(SharedPreUtil.HOME_TODAY_FIRST_POST_BOOKIDS, currentTime)
+                sharedPreUtil.putLong(SharedPreUtil.HOME_TODAY_FIRST_POST_BOOKIDS, currentTime)
 
                 val data = HashMap<String, String>()
                 data["bookid"] = bookIdList.toString()
@@ -47,6 +52,7 @@ object HomeLogger {
             }
         }
     }
+
 
     /***
      * HomeActivity点击书架
