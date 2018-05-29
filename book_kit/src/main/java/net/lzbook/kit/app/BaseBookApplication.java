@@ -25,7 +25,6 @@ import net.lzbook.kit.encrypt.v17.MainExtractor;
 import net.lzbook.kit.encrypt.v17.URLBuilder;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.DeviceHelper;
 import net.lzbook.kit.utils.ExtensionsKt;
 import net.lzbook.kit.utils.HttpUtils;
 import net.lzbook.kit.utils.LogcatHelper;
@@ -114,7 +113,6 @@ public abstract class BaseBookApplication extends Application {
             LogcatHelper.getInstance(this).stop();
         }
 
-        DeviceHelper.setContext(this);
         initDaoSession();
 
         QuInitialization.init(this);
