@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.baidu.mobstat.StatService;
+import com.dingyue.contract.util.SharedPreUtil;
 import com.intelligent.reader.R;
 import com.intelligent.reader.util.PagerDesc;
 import com.intelligent.reader.widget.topshadow.TopShadowWebView;
@@ -69,7 +70,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     private CustomWebClient customWebClient;
     private JSInterfaceHelper jsInterfaceHelper;
     private Handler handler;
-    private SharedPreferences mSharedPreferences;
+    private SharedPreUtil sharedPreUtil;
     private String fromType = "";
     private PagerDesc mPagerDesc;
     private int h5Margin;
@@ -95,8 +96,8 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             currentTitle = intent.getStringExtra("title");
             names.add(currentTitle);
         }
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        fromType = mSharedPreferences.getString(Constants.FINDBOOK_SEARCH, "other");
+        sharedPreUtil = new SharedPreUtil(SharedPreUtil.Companion.getSHARE_DEFAULT());
+        fromType = sharedPreUtil.getString(SharedPreUtil.Companion.getHOME_FINDBOOK_SEARCH(), "other");
         initView();
 
         initJSHelp();

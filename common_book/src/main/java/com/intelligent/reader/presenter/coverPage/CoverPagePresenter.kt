@@ -2,12 +2,12 @@ package com.intelligent.reader.presenter.coverPage
 
 import android.app.Activity
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
 import android.widget.*
+import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CataloguesActivity
@@ -53,7 +53,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
     var bookVo: CoverPage.BookVoBean? = null
     var bookCoverUtil: BookCoverUtil? = null
     var bookDaoHelper: BookDaoHelper? = null
-    var preferences: SharedPreferences? = null
+    var sharePreUtil: SharedPreUtil ? = null
     var isNeedShowMoreTags: Boolean = false
     var currentSource: CoverPage.SourcesBean? = null
     var books = ArrayList<Book>()
@@ -71,7 +71,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
     var mDialog: MyDialog? = null
 
     init {
-        preferences = BaseBookApplication.getGlobalContext().getSharedPreferences("onlineconfig_agent_online_setting_" + AppUtils.getPackageName(), 0);
+        sharePreUtil = SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
         mBookCoverViewModel = BookCoverViewModel(BookCoverRepositoryFactory.getInstance(BookCoverOtherRepository.getInstance(NetService.userService),
                 BookCoverQGRepository.getInstance(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())), BookCoverLocalRepository.getInstance(BaseBookApplication.getGlobalContext())))
         mBookCoverViewModel?.setBookCoverViewCallback(this)
@@ -890,8 +890,9 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
                     override fun onNext(bean: CoverRecommendBean) {
                         AppLog.e("aaa", bean.toString())
                         if (bean.data != null && bean.data.map != null) {
-                            if (preferences != null) {
-                                val scale = preferences!!.getString(Constants.RECOMMEND_BOOKCOVER, "2,2,0")!!.split(",")
+                            if (sharePreUtil != null) {
+                                val scale = sharePreUtil!!.getString(SharedPreUtil.RECOMMEND_BOOKCOVER, "2,2,0").split(",")
+
                                 if (scale.size >= 2) {
                                     if (!TextUtils.isEmpty(scale[0])) {
                                         AppLog.e("cover", scale[0])

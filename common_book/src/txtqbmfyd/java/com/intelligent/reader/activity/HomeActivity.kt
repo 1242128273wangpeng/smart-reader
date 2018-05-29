@@ -28,6 +28,7 @@ import com.dingyue.bookshelf.BookShelfInterface
 import com.dingyue.contract.CommonContract
 import com.dingyue.contract.logger.HomeLogger
 import com.dingyue.contract.logger.PersonalLogger
+import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.fragment.CategoryFragment
@@ -80,7 +81,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
     private var guideDownload: Boolean = true
 
-    private lateinit var preferencesUtils: SharedPreferencesUtils
+    private lateinit var sharedPreUtil: SharedPreUtil
 
     private lateinit var apkUpdateUtils: ApkUpdateUtils
 
@@ -137,7 +138,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         setContentView(R.layout.act_home)
 
         versionCode = AppUtils.getVersionCode()
-        preferencesUtils = SharedPreferencesUtils(PreferenceManager.getDefaultSharedPreferences(this))
+        sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
 
         initView()
         initGuide()
@@ -263,19 +264,19 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         ll_bottom_tab_recommend.setOnClickListener {
             this.changeHomePagerIndex(1)
-            preferencesUtils.putString(Constants.FINDBOOK_SEARCH, "recommend")
+            sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "recommend")
             HomeLogger.uploadHomeRecommendSelected()
         }
 
         ll_bottom_tab_ranking.setOnClickListener {
             this.changeHomePagerIndex(2)
-            preferencesUtils.putString(Constants.FINDBOOK_SEARCH, "top")
+            sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "top")
             HomeLogger.uploadHomeRankSelected()
         }
 
         ll_bottom_tab_category.setOnClickListener {
             this.changeHomePagerIndex(3)
-            preferencesUtils.putString(Constants.FINDBOOK_SEARCH, "class")
+            sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "class")
             HomeLogger.uploadHomeCategorySelected()
         }
 
@@ -288,25 +289,24 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             if (isChecked) {
                 tv_night_shift.setText(R.string.mode_day)
                 ReadConfig.MODE = 61
-                preferencesUtils.putInt("current_light_mode", ReadConfig.MODE)
+                sharedPreUtil.putInt(SharedPreUtil.READ_CURRENT_LIGHT_MODE, ReadConfig.MODE)
                 mThemeHelper.setMode(ThemeMode.NIGHT)
             } else {
                 tv_night_shift.setText(R.string.mode_night)
                 ReadConfig.MODE = 51
-                preferencesUtils.putInt("current_night_mode", ReadConfig.MODE)
+                sharedPreUtil.putInt(SharedPreUtil.CURRENT_NIGHT_MODE, ReadConfig.MODE)
                 mThemeHelper.setMode(ThemeMode.THEME1)
             }
-            preferencesUtils.putInt("content_mode", ReadConfig.MODE)
+            sharedPreUtil.putInt(SharedPreUtil.CONTENT_MODE, ReadConfig.MODE)
             nightShift(isChecked, true)
         }
 
-        val isAutoDownload = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, true)
+        val isAutoDownload = sharedPreUtil.getBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE,true)
 
         btn_auto_download.isChecked = isAutoDownload
 
         btn_auto_download.setOnCheckedChangeListener { _, isChecked ->
-            preferencesUtils.putBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, isChecked)
+            sharedPreUtil.putBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE, isChecked)
             PersonalLogger.uploadPersonalAutoCache(isChecked)
         }
 
@@ -368,8 +368,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     }
 
     private fun initGuide() {
-        val key = versionCode.toString() + Constants.BOOKSHELF_GUIDE_TAG
-        if (!preferencesUtils.getBoolean(key)) {
+        val key = SharedPreUtil.BOOKSHELF_GUIDE_TAG
+        if (!sharedPreUtil.getBoolean(key)) {
             fl_guide_layout.visibility = View.VISIBLE
             img_guide_remove.visibility = View.VISIBLE
             fl_guide_layout.setOnClickListener {
@@ -378,7 +378,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     img_guide_remove.visibility = View.GONE
                     guideDownload = false
                 } else {
-                    preferencesUtils.putBoolean(key, true)
+                    sharedPreUtil.putBoolean(key, true)
                     img_guide_download.visibility = View.GONE
                     fl_guide_layout.visibility = View.GONE
                 }

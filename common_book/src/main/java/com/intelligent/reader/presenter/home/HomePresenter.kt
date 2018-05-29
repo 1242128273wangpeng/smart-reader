@@ -4,6 +4,7 @@ import android.content.pm.PackageManager
 import android.preference.PreferenceManager
 import com.intelligent.reader.app.BookApplication
 import com.dingyue.contract.IPresenter
+import com.dingyue.contract.util.SharedPreUtil
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -29,20 +30,21 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
      * 初始化参数
      * **/
     fun initParameters() {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(BookApplication.getGlobalContext())
+        val sharePreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+//        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(BookApplication.getGlobalContext())
 
         //初始化阅读页背景
-        if (sharedPreferences.getInt("content_mode", 51) < 50) {
+        if (sharePreUtil.getInt(SharedPreUtil.CONTENT_MODE) < 50) {
             Constants.MODE = 51
             ReadConfig.MODE = 51
-            sharedPreferences.edit().putInt("content_mode", Constants.MODE).apply()
-            sharedPreferences.edit().putInt("current_light_mode", Constants.MODE).apply()
+            sharePreUtil.putInt(SharedPreUtil.CONTENT_MODE, Constants.MODE)
+            sharePreUtil.putInt(SharedPreUtil.CURRENT_NIGHT_MODE, Constants.MODE)
         } else {
-            Constants.MODE = sharedPreferences.getInt("content_mode", 51)
-            ReadConfig.MODE = sharedPreferences.getInt("content_mode", 51)
+            Constants.MODE = sharePreUtil.getInt(SharedPreUtil.CONTENT_MODE)
+            ReadConfig.MODE = sharePreUtil.getInt(SharedPreUtil.CONTENT_MODE)
         }
 
-        val firstTime = sharedPreferences.getLong(Constants.TODAY_FIRST_OPEN_APP, 0)
+        val firstTime = sharePreUtil.getLong(SharedPreUtil.HOME_TODAY_FIRST_OPEN_APP)
         val currentTime = System.currentTimeMillis()
 
         //判断用户是否是当日首次打开应用
@@ -53,12 +55,12 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
         } else {
             //用户首次打开，记录当前时间
             Constants.is_user_today_first = true
-            sharedPreferences.edit().putLong(Constants.TODAY_FIRST_OPEN_APP, currentTime).apply()
-            sharedPreferences.edit().putBoolean(Constants.IS_UPLOAD, false).apply()
+            sharePreUtil.putLong(SharedPreUtil.HOME_TODAY_FIRST_OPEN_APP, currentTime)
+            sharePreUtil.putBoolean(SharedPreUtil.HOME_IS_UPLOAD, false)
             updateApplicationList()
         }
 
-        Constants.upload_userinformation = sharedPreferences.getBoolean(Constants.IS_UPLOAD, false)
+        Constants.upload_userinformation = sharePreUtil.getBoolean(SharedPreUtil.HOME_IS_UPLOAD)
 
         loadDataManager = LoadDataManager(BookApplication.getGlobalContext())
 
@@ -66,6 +68,20 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
 
         val deleteBookHelper = DeleteBookHelper(BookApplication.getGlobalContext())
         deleteBookHelper.startPendingService()
+        val premVersionCode = Constants.preVersionCode
+        val currentVersionCode = AppUtils.getVersionCode()
+
+        if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
+            //
+            if (!Constants.upload_userinformation || premVersionCode != currentVersionCode) {
+                // 获取用户基础数据
+                StartLogClickUtil.sendZnUserLog()
+                Constants.upload_userinformation = true
+                Constants.preVersionCode = currentVersionCode
+                sharePreUtil.putBoolean(Constants.IS_UPLOAD, Constants.upload_userinformation)
+            }
+        }
+
     }
 
 
