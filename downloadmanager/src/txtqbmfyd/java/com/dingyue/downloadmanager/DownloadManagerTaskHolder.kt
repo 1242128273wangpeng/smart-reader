@@ -11,7 +11,6 @@ import kotlinx.android.synthetic.txtqbmfyd.item_download_manager_task.view.*
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.constants.ReplaceConstants
-import net.lzbook.kit.data.bean.Book
 
 class DownloadManagerTaskHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 

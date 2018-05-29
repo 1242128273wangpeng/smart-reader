@@ -10,8 +10,6 @@ import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
-import com.dingyue.contract.util.CommonUtil
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
@@ -25,7 +23,6 @@ import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.Bookmark
 import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.db.BookDaoHelper

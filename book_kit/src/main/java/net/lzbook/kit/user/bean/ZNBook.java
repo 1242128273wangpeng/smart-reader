@@ -1,7 +1,5 @@
 package net.lzbook.kit.user.bean;
 
-import net.lzbook.kit.data.bean.Book;
-
 /**
  * 类描述：
  * 创建人：Zach

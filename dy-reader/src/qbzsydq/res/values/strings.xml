@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="origin_text">原网页</string>
+    <string name="trans_coding_text">转码声明</string>
+
+    <string name="no_net">网络不给力，请稍后重试</string>
+    <string name="translate_code_disclaimer">转码声明</string>
+    <string name="read_end_tip">客官请留步...</string>
+    <string name="end_to_bookshelf">我的书架</string>
+    <string name="end_to_bookstore">去书城看看</string>
+</resources>

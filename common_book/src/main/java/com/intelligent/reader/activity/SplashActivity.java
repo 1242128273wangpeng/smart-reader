@@ -8,7 +8,6 @@ import com.intelligent.reader.util.DynamicParamter;
 
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.db.BookChapterDao;
 import net.lzbook.kit.data.db.BookDaoHelper;
@@ -16,7 +15,6 @@ import com.dingyue.contract.router.RouterConfig;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.SharedPreferencesUtils;
 import net.lzbook.kit.utils.ShieldManager;
 import net.lzbook.kit.utils.StatServiceUtils;
 
@@ -24,7 +22,6 @@ import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;

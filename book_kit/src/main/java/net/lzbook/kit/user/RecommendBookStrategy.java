@@ -2,7 +2,6 @@ package net.lzbook.kit.user;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.user.bean.RecommendBooksEndResp;
 import net.lzbook.kit.user.bean.RecommendBooksResp;
 

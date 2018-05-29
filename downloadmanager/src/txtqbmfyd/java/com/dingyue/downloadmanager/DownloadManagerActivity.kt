@@ -19,7 +19,6 @@ import kotlinx.android.synthetic.txtqbmfyd.item_download_manager_task_header.vie
 import net.lzbook.kit.book.download.CallBackDownload
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.Book
 import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
@@ -186,7 +185,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
                     }
 
                     if (position == 0) {
-                        view.findViewById(R.id.view_divider).visibility = View.GONE
+                        view.view_divider.visibility = View.GONE
                     }
 
                     view

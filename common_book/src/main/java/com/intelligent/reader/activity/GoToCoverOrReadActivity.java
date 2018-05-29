@@ -3,7 +3,6 @@ package com.intelligent.reader.activity;
 import com.intelligent.reader.read.help.BookHelper;
 
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.utils.StatServiceUtils;
 

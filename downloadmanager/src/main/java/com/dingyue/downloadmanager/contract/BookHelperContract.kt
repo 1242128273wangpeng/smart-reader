@@ -2,15 +2,8 @@ package com.dingyue.downloadmanager.contract
 
 import android.content.Context
 import com.dingyue.contract.CommonContract
-import net.lzbook.kit.app.BaseBookApplication
-import net.lzbook.kit.book.download.CacheManager
-import net.lzbook.kit.book.download.DownloadState
-import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.utils.BaseBookHelper
-import net.lzbook.kit.utils.SettingItemsHelper
-import java.io.Serializable
 import java.util.*
 
 /**

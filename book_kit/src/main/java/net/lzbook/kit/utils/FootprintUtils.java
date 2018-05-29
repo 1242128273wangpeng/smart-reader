@@ -1,6 +1,7 @@
 package net.lzbook.kit.utils;
 
-import net.lzbook.kit.data.bean.Book;
+import com.ding.basic.bean.Book;
+
 import net.lzbook.kit.data.db.table.HistoryInforTable;
 import net.lzbook.kit.data.ormlite.bean.HistoryInfo;
 import net.lzbook.kit.data.ormlite.dao.DaoUtils;

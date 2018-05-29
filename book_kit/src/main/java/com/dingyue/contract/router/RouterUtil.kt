@@ -30,6 +30,13 @@ object RouterUtil {
                 .navigation(activity)
     }
 
+    fun navigationWithCode(activity: Activity, path: String, bundle: Bundle, code: Int) {
+        ARouter.getInstance()
+                .build(path)
+                .with(bundle)
+                .navigation(activity, code)
+    }
+
     fun navigation(activity: Activity, path: String, flags: Int) {
         ARouter.getInstance()
                 .build(path)

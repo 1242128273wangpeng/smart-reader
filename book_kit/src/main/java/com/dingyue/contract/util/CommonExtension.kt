@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.support.annotation.StringRes
+import android.view.View
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
@@ -65,4 +66,17 @@ fun Context.showToastMessage(message: String, delay: Long) {
             .subscribe {
                 showToastMessage(message)
             }
+}
+
+fun View.preventClickShake(listener: View.OnClickListener) {
+    this.setOnClickListener {
+        if(isClickable) {
+            listener.onClick(it)
+            postDelayed({
+                isClickable = true
+            }, 200)
+        }
+
+        isClickable = false
+    }
 }

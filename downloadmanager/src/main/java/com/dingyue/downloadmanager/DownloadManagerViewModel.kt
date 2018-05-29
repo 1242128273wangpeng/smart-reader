@@ -7,10 +7,8 @@ import android.arch.lifecycle.MutableLiveData
 import com.dingyue.downloadmanager.contract.BookHelperContract
 import com.dingyue.downloadmanager.contract.CacheManagerContract
 import io.reactivex.Observable
-import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.Book
 import java.util.*
 
 class DownloadManagerViewModel(application: Application) : AndroidViewModel(application) {

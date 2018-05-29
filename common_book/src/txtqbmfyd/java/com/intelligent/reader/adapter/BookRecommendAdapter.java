@@ -4,8 +4,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.intelligent.reader.R;
 
-import net.lzbook.kit.data.bean.Book;
-
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;

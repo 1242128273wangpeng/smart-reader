@@ -1,7 +1,5 @@
 package com.dingyue.downloadmanager
 
-import net.lzbook.kit.data.bean.Book
-
 /**
  * Desc 菜单管理器
  * Author qiantao

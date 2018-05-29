@@ -18,7 +18,6 @@ import iyouqu.theme.BaseCacheableActivity
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.bean.Source
 import java.util.*

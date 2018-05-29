@@ -7,7 +7,6 @@ import com.intelligent.reader.activity.ReadingActivity;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.RequestItem;
 import net.lzbook.kit.data.db.BookChapterDao;

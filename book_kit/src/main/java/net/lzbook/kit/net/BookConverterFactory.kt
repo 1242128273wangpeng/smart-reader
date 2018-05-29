@@ -1,6 +1,5 @@
 package net.lzbook.kit.net
 
-import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.request.own.OWNParser

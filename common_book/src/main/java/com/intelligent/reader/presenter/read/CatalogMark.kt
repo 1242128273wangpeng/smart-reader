@@ -3,7 +3,6 @@ package com.intelligent.reader.presenter.read
 import android.app.Activity
 import com.dingyue.contract.IBaseView
 import com.dingyue.contract.IPresenter
-import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.Bookmark
 import net.lzbook.kit.data.bean.Chapter
 

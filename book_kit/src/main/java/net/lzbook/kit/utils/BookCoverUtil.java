@@ -1,7 +1,6 @@
 package net.lzbook.kit.utils;
 
 import net.lzbook.kit.book.view.RecommendItemView;
-import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.CoverPage;
 import net.lzbook.kit.data.bean.RecommendItem;
 import net.lzbook.kit.data.db.BookDaoHelper;

@@ -8,7 +8,6 @@ import com.intelligent.reader.widget.ChangeSourcePopWindow;
 
 import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.constants.ReadConstants;
-import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.NovelLineBean;
 import net.lzbook.kit.data.bean.Source;
@@ -30,7 +29,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

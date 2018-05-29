@@ -27,7 +27,6 @@ import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
-import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.CoverPage
 import net.lzbook.kit.data.bean.RequestItem
 import com.dingyue.contract.router.RouterConfig

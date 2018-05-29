@@ -1,6 +1,5 @@
 package com.intelligent.reader.presenter.coverPage
 
-import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.CoverPage
 
 /**

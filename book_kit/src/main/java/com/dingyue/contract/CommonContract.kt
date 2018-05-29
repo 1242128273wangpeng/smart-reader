@@ -1,10 +1,10 @@
 package com.dingyue.contract
 
+import com.ding.basic.bean.Book
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.utils.SettingItemsHelper
 import java.io.Serializable
 import java.util.*
@@ -26,16 +26,21 @@ object CommonContract {
         override fun compare(book1: Book, book2: Book): Int {
             return if (type != 1) {
                 when {
-                    book1.sequence_time == book2.sequence_time -> 0
-                    book1.sequence_time < book2.sequence_time -> 1
+                    book1.last_read_time == book2.last_read_time -> 0
+                    book1.last_read_time < book2.last_read_time -> 1
                     else -> -1
                 }
             } else {
-                when {
-                    book1.last_updatetime_native == book2.last_updatetime_native -> 0
-                    book1.last_updatetime_native < book2.last_updatetime_native -> 1
-                    else -> -1
-                }
+                val lastChapter1 = book1.last_chapter
+                val lastChapter2 = book2.last_chapter
+
+                if (lastChapter1 != null && lastChapter2 != null) {
+                    when {
+                        lastChapter1.update_time == lastChapter2.update_time -> 0
+                        lastChapter1.update_time < lastChapter2.update_time -> 1
+                        else -> -1
+                    }
+                } else 0
             }
         }
     }

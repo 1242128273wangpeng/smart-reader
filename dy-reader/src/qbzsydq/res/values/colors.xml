@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="transparent">#00000000</color>
+    <color name="base_bg">#ffffff</color>
+    <color name="read_catalog_mark_title_color">#565D67</color>
+    <color name="read_catalog_mark_des_color">#858C96</color>
+
+    <color name="read_option_main">#C2B282</color>
+    <color name="read_item_mark_title_color">
+        #e5000000
+    </color>
+    <color name="read_item_mark_des_color">
+        #7f000000
+    </color>
+    <color name="color_read_catalog_mark_pop_txt">
+        #cc000000
+    </color>
+    <color name="bg_read_catalog_mark_pop_divider">
+        #19000000
+    </color>
+    <color name="read_item_catalog_chapter_text_color">
+        #e5000000
+    </color>
+    <color name="read_item_catalog_current_chapter_text_color">
+        #CCC2B282
+    </color>
+    <color name="read_item_catalog_uncached_chapter_text_color">
+        #4c000000
+    </color>
+    <color name="read_option_bg">#f2212020</color>
+    <color name="color_gray_cbcbcb">#cbcbcb</color>
+    <color name="read_option_text">#65ffffff</color>
+    <color name="read_option_page_stroke_bg6">#666666</color>
+    <color name="read_option_text_pressed">#4cffffff</color>
+    <color name="color_divider">#e8e8e8</color>
+    <color name="changesource_text_color">#323232</color>
+    <color name="color_divider_item">#F5F5F5</color>
+
+</resources>

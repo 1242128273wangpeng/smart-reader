@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.dingyue.downloadmanager.DownloadManagerTaskHolder
 import com.dingyue.downloadmanager.R
-import net.lzbook.kit.data.bean.Book
 
 /**
  * Created on 2018/4/24.

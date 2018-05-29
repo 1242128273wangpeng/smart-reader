@@ -942,4 +942,6 @@ dependencies {
     txtqbmfydCompile project(path: ':downloadmanager', configuration: 'txtqbmfydRelease')
 
     txtqbmfydCompile project(path: ':bookshelf', configuration: 'txtqbmfydRelease')
+
+    txtqbmfydCompile project(path: ':dy-reader', configuration: 'qbzsydqRelease')
 }

@@ -1,7 +1,6 @@
 package net.lzbook.kit.statistic
 
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.statistic.model.Search
 

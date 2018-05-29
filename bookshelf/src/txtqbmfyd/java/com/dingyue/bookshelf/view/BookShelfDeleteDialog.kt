@@ -6,7 +6,6 @@ import android.view.View
 import com.dingyue.bookshelf.R
 import kotlinx.android.synthetic.txtqbmfyd.dialog_bookshelf_delete.*
 import net.lzbook.kit.book.view.MyDialog
-import net.lzbook.kit.data.bean.Book
 
 /**
  * Created by qiantao on 2017/11/17 0017

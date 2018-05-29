@@ -8,6 +8,7 @@ import android.support.v7.widget.SimpleItemAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.ding.basic.bean.Book
 import com.dingyue.bookshelf.BookShelfAdapter.BookShelfItemListener
 import com.dingyue.bookshelf.contract.BookShelfADContract
 import com.dingyue.bookshelf.view.BookShelfDeleteDialog
@@ -21,11 +22,11 @@ import kotlinx.android.synthetic.txtqbmfyd.frag_bookshelf.*
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
-import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.BookUpdate
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
 import com.dingyue.contract.router.BookRouter
+import com.dingyue.contract.router.BookRouter.NAVIGATE_TYPE_BOOKSHELF
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import net.lzbook.kit.utils.*
@@ -342,7 +343,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
      * 处理被点击或更新通知的book
      */
     private fun handleBook(book: Book) {
-        BookRouter.navigateCoverOrRead(activity, book, 0)
+        BookRouter.navigateCoverOrRead(activity, book, NAVIGATE_TYPE_BOOKSHELF)
     }
 
     /***

@@ -21,4 +21,11 @@ object RouterConfig {
     const val READING_ACTIVITY = "/common_book/ReadingActivity"
 
     const val COVER_PAGE_ACTIVITY = "/common_book/CoverPageActivity"
+
+    const val READER_ACTIVITY = "/dy_reader/ReaderActivity"
+
+    const val DISCLAIMER_ACTIVITY = "/dy_reader/DisclaimerActivity"
+
+    const val BOOK_END_ACTIVITY = "/dy_reader/BookEndActivity"
+
 }

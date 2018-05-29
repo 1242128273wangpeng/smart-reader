@@ -4,7 +4,6 @@ import com.dingyue.contract.util.CommonUtil;
 import com.intelligent.reader.activity.HomeActivity;
 import com.intelligent.reader.activity.ReadingActivity;
 
-import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.db.BookDaoHelper;
 
 import android.app.ActivityManager;
@@ -12,7 +11,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 public class DownBookClickReceiver extends BroadcastReceiver {
     public static final String action = "cn.txtzsydsq.reader.receiver.CLICK_DOWN_BOOK";

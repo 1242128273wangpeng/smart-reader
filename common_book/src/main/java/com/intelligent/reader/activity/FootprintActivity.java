@@ -20,7 +20,6 @@ import com.intelligent.reader.util.EventBookStore;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.EmptyRecyclerView;
 import net.lzbook.kit.book.view.MyDialog;
-import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.db.table.HistoryInforTable;
 import net.lzbook.kit.data.ormlite.bean.HistoryInfo;
 import net.lzbook.kit.data.ormlite.dao.DaoUtils;

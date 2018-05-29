@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_white_ffffff"
+        android:clipToPadding="true"
+        android:orientation="vertical">
+    
+    <RelativeLayout
+            android:id="@+id/rl_disclaimer_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            android:background="@color/top_navigation_bg_color"
+            android:focusableInTouchMode="true">
+    
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/top_bar_height">
+        
+            <ImageView
+                    android:id="@+id/btn_left_setting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:padding="14dp"
+                    android:src="@mipmap/cover_top_back"/>
+        
+            <TextView
+                    android:id="@+id/tv_title_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:text="@string/disclaimer_statement"
+                    android:textColor="@color/color_white_ffffff"
+                    android:textSize="18sp"/>
+        </RelativeLayout>
+    </RelativeLayout>
+    
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/rl_disclaimer_layout"
+            android:scrollbars="none">
+        
+        <TextView
+                android:id="@+id/tv_disclaimer_statement"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:lineSpacingExtra="8dp"
+                android:padding="8dp"
+                android:text="@string/disclaimer_statement_description"
+                android:textColor="@color/color_black_E6000000"
+                android:textSize="14sp"/>
+    </ScrollView>
+</LinearLayout>

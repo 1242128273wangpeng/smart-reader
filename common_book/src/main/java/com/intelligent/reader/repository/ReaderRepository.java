@@ -1,14 +1,10 @@
 package com.intelligent.reader.repository;
 
-import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.SourceItem;
-import net.lzbook.kit.purchase.SingleChapterBean;
 import net.lzbook.kit.user.bean.RecommendBooksEndResp;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
 
 import io.reactivex.Observable;
 

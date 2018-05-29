@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/ll_reset_layout"
+        android:layout_width="234dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/color_white_fafafa"
+        android:orientation="vertical"
+        android:scrollbars="vertical"
+        android:gravity="center_horizontal"
+        android:paddingBottom="@dimen/padding_10"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp">
+    
+    <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        
+        <TextView
+                android:id="@+id/tv_reading_time"
+                android:layout_width="wrap_content"
+                android:layout_height="90dp"
+                android:text="您已近连续阅读30分钟,\n让眼睛休息一下吧! "
+                android:drawableLeft="@drawable/ic_remind"
+                android:drawablePadding="@dimen/padding_12"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/color_black_353535"
+                android:textSize="14sp"
+                android:layout_marginBottom="0dp"
+                android:layout_marginTop="0dp"
+                android:lineSpacingExtra="6dp"
+                />
+        
+        <ImageView
+                android:id="@+id/iv_close"
+                android:paddingRight="@dimen/padding_6"
+                android:paddingTop="@dimen/padding_6"
+                android:paddingLeft="@dimen/padding_6"
+                android:paddingBottom="@dimen/padding_6"
+                android:src="@drawable/ic_rest"
+                android:layout_gravity="right|top"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+    </FrameLayout>
+    
+    <RelativeLayout
+            android:id="@+id/rest_ad"
+            android:layout_width="214dp"
+            android:layout_height="321dp">
+    </RelativeLayout>
+    
+    <RelativeLayout
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp">
+        
+        <Button
+                android:id="@+id/rest"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:layout_toLeftOf="@+id/continue_read"
+                android:layout_marginRight="40dp"
+                android:background="@drawable/btn_dialog_background"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="休息一下"
+                android:minWidth="24dp"
+                android:textColor="@color/color_gray_9c9c9c"
+                android:textSize="16sp"/>
+        
+        <Button
+                android:id="@+id/continue_read"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/btn_dialog_background"
+                android:gravity="center"
+                android:singleLine="true"
+                android:minWidth="24dp"
+                android:text="继续看"
+                android:textColor="@color/theme_primary"
+                android:textSize="16sp"/>
+    </RelativeLayout>
+
+</LinearLayout>

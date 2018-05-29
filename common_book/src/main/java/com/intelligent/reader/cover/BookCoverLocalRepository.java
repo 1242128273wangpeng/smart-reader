@@ -2,7 +2,6 @@ package com.intelligent.reader.cover;
 
 import com.intelligent.reader.repository.BookCoverRepository;
 
-import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.Bookmark;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.CoverPage;

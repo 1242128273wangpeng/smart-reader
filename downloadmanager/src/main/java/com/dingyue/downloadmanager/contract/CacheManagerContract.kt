@@ -3,7 +3,6 @@ package com.dingyue.downloadmanager.contract
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.CallBackDownload
 import net.lzbook.kit.book.download.DownloadState
-import net.lzbook.kit.data.bean.Book
 
 /**
  * Desc 抽象 CacheManager 方法的调用

@@ -1,8 +1,6 @@
 package net.lzbook.kit.request.own;
 
-import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.Chapter;
-import net.lzbook.kit.data.bean.ChapterErrorBean;
 import net.lzbook.kit.data.bean.RequestItem;
 import net.lzbook.kit.data.db.BookChapterDao;
 import net.lzbook.kit.data.db.BookDaoHelper;
@@ -10,16 +8,12 @@ import net.lzbook.kit.encrypt.URLBuilderIntterface;
 import net.lzbook.kit.net.volley.request.Parser;
 import net.lzbook.kit.net.volley.request.VolleyDataService;
 import net.lzbook.kit.request.UrlUtils;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.MurmurHash;
 
 import org.json.JSONException;
 
 import android.content.Context;
 import android.os.Handler;
-import android.text.TextUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 

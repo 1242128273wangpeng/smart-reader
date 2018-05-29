@@ -5,7 +5,6 @@ import net.lzbook.kit.book.download.DownloadState;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.UpdateCallBack;
-import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.BookUpdateTaskData;
 import net.lzbook.kit.data.bean.BookUpdateTaskData.UpdateTaskFrom;
 import net.lzbook.kit.data.bean.Chapter;
@@ -17,7 +16,6 @@ import net.lzbook.kit.request.DataCache;
 import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.dingyue.contract.util.CommonUtil;
 

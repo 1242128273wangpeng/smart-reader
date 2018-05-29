@@ -4,7 +4,6 @@ import android.text.TextUtils;
 
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
-import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.input.MultiInputStreamHelper;
 import net.lzbook.kit.utils.FileUtils;

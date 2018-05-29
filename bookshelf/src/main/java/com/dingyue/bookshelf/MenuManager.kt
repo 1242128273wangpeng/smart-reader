@@ -1,6 +1,6 @@
 package com.dingyue.bookshelf
 
-import net.lzbook.kit.data.bean.Book
+import com.ding.basic.bean.Book
 
 /**
  * Desc 菜单管理器

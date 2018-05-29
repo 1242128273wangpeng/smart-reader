@@ -1,7 +1,6 @@
 package net.lzbook.kit.net
 
 import io.reactivex.Observable
-import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.CacheTaskConfig
 import net.lzbook.kit.data.bean.Chapter
 import retrofit2.http.GET

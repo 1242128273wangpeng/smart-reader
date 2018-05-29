@@ -4,7 +4,6 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
-import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.db.table.ChapterTable
 import net.lzbook.kit.utils.StatServiceUtils
 import java.util.*

@@ -14,7 +14,6 @@ import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.book.download.DownloadState;
 import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.BookTask;
 import net.lzbook.kit.utils.AppLog;
 

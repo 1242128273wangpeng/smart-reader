@@ -4,7 +4,6 @@ import com.intelligent.reader.repository.ReaderRepository
 import com.quduquxie.network.DataService
 import io.reactivex.Observable
 import net.lzbook.kit.app.BaseBookApplication
-import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.SourceItem
 import net.lzbook.kit.data.db.BookDaoHelper

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="reading_cover_top_padding">60px</dimen>
+    <dimen name="reading_cover_bottom_padding">40px</dimen>
+    <dimen name="dimen_width_15">15dip</dimen>
+
+    <dimen name="padding_4">4dip</dimen>
+    <dimen name="padding_6">6dip</dimen>
+    <dimen name="padding_10">10dip</dimen>
+
+    <dimen name="text_size_12">12sp</dimen>
+    <dimen name="text_size_14">14sp</dimen>
+    <dimen name="text_size_15">15sp</dimen>
+    <dimen name="text_size_16">16sp</dimen>
+    <dimen name="text_size_17">17sp</dimen>
+    <dimen name="text_size_18">18sp</dimen>
+
+    <dimen name="dimen_view_height_160">160dip</dimen>
+
+</resources>

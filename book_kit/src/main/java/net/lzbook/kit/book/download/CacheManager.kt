@@ -11,7 +11,6 @@ import android.preference.PreferenceManager
 import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.NotificationCompat
-import android.widget.Toast
 import com.dingyue.contract.util.showToastMessage
 import net.lzbook.kit.R
 import net.lzbook.kit.app.ActionConstants
@@ -21,7 +20,6 @@ import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.constants.SPKeys
-import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.BookTask
 import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.data.db.BookDaoHelper

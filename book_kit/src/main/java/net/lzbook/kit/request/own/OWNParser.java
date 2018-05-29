@@ -1,7 +1,6 @@
 package net.lzbook.kit.request.own;
 
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.BookUpdate;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.CoverPage;

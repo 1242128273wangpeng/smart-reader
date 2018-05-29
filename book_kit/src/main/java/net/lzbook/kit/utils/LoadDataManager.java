@@ -11,7 +11,6 @@ import net.lzbook.kit.app.ActionConstants;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.NoBodyEntity;
-import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.bean.ChapterErrorBean;
 import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.net.custom.service.NetService;

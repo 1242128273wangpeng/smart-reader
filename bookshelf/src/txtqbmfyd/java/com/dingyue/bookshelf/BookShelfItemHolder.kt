@@ -11,7 +11,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import kotlinx.android.synthetic.txtqbmfyd.item_bookshelf_book.view.*
 
 import net.lzbook.kit.constants.ReplaceConstants
-import net.lzbook.kit.data.bean.Book
 
 /**
  * Desc 书架页Item

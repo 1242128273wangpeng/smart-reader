@@ -6,12 +6,10 @@ import android.text.TextUtils
 import com.intelligent.reader.repository.ReaderRepository
 import io.reactivex.Observable
 import net.lzbook.kit.app.BaseBookApplication
-import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.SourceItem
 import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.data.db.BookDaoHelper
-import net.lzbook.kit.purchase.SingleChapterBean
 import net.lzbook.kit.request.DataCache
 import net.lzbook.kit.request.RequestFactory
 import net.lzbook.kit.request.WriteFileFailException

@@ -2,7 +2,6 @@ package com.intelligent.reader.reader
 
 import com.intelligent.reader.repository.ReaderRepository
 import io.reactivex.Observable
-import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.SourceItem
 import net.lzbook.kit.request.RequestFactory

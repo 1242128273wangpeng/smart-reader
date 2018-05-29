@@ -70,9 +70,12 @@ dependencies {
     compile("android.arch.lifecycle:extensions:$lifecycle_version") {
         exclude group: 'com.android.support'
     }
+
     compile("android.arch.lifecycle:runtime:$lifecycle_version") {
         exclude group: 'com.android.support'
     }
+
+    compile project(':basic')
 }
 
 configurations.all {

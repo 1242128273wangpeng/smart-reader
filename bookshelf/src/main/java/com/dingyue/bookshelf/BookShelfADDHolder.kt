@@ -3,7 +3,6 @@ package com.dingyue.bookshelf
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import kotlinx.android.synthetic.main.item_bookshelf_add.view.*
-import net.lzbook.kit.data.bean.Book
 
 /**
  * Desc 书架添加书籍Item

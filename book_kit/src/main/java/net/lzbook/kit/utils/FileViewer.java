@@ -1,7 +1,6 @@
 package net.lzbook.kit.utils;
 
 import net.lzbook.kit.constants.ReplaceConstants;
-import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.data.db.BookDaoHelper;
 
 import android.content.Context;
