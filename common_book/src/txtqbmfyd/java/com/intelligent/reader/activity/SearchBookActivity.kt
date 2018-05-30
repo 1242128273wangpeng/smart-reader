@@ -29,7 +29,6 @@ import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.txtqbmfyd.activity_search_book.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.data.db.BookDaoHelper
 import com.dingyue.contract.router.RouterConfig
 import net.lzbook.kit.utils.*
 import java.util.*
@@ -50,7 +49,6 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 //    private var search_result_hint: FrameLayout? = null
 
     private var searchViewHelper: SearchViewHelper? = null
-    private var bookDaoHelper: BookDaoHelper? = null
     private var handler: Handler? = Handler()
 
     private var customWebClient: CustomWebClient? = null
@@ -189,7 +187,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     private fun initData() {
         if (mSearchPresenter == null) {
-            mSearchPresenter = SearchPresenter(this, this)
+            mSearchPresenter = SearchPresenter( this, this)
         }
         val intent = intent
         if (intent != null) {
@@ -199,9 +197,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             searchViewHelper!!.setSearchWord(mSearchPresenter!!.word)
         }
 
-        if (bookDaoHelper == null) {
-            bookDaoHelper = BookDaoHelper.getInstance()
-        }
+
     }
 
     private fun loadDataFromNet() {

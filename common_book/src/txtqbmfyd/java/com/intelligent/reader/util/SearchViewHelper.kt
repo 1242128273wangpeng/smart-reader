@@ -12,6 +12,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
+import com.ding.basic.bean.SearchAutoCompleteBean
+import com.ding.basic.bean.SearchHotBean
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.SearchHotWordAdapter
 import com.intelligent.reader.adapter.SearchSuggestAdapter
@@ -21,9 +23,7 @@ import com.intelligent.reader.presenter.search.SearchView
 import com.intelligent.reader.view.ScrollForGridView
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.data.search.SearchAutoCompleteBean
 import net.lzbook.kit.data.search.SearchCommonBean
-import net.lzbook.kit.data.search.SearchHotBean
 import net.lzbook.kit.utils.StatServiceUtils
 
 class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText: EditText, private val mSearchPresenter: SearchPresenter?) : SearchPresenter.SearchSuggestCallBack, SearchView.HelpView {
