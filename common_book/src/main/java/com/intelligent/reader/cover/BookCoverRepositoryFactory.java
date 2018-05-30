@@ -40,19 +40,15 @@ public class BookCoverRepositoryFactory implements BookCoverRepository {
      */
     private final BookCoverRepository mCoverBookLocalRepository;
 
-    private BookCoverRepositoryFactory(BookCoverRepository coverBookCoverRepository, BookCoverRepository coverQGBookCoverRepository,
-                                       BookCoverRepository coverBookCoverLocalRepository) {
-        this.mCoverBookRepository = coverBookCoverRepository;
-        this.mCoverQGBookRepository = coverQGBookCoverRepository;
-        this.mCoverBookLocalRepository = coverBookCoverLocalRepository;
+    private BookCoverRepositoryFactory() {
+
     }
 
-    public static BookCoverRepositoryFactory getInstance(BookCoverRepository coverBookRepository, BookCoverRepository coverQGBookRepository,
-                                                         BookCoverRepository coverBookLocalRepository) {
+    public static BookCoverRepositoryFactory getInstance() {
         if (INSTANCE == null) {
             synchronized (BookCoverRepositoryFactory.class) {
                 if (INSTANCE == null) {
-                    INSTANCE = new BookCoverRepositoryFactory(coverBookRepository, coverQGBookRepository, coverBookLocalRepository);
+                    INSTANCE = new BookCoverRepositoryFactory();
                 }
             }
         }

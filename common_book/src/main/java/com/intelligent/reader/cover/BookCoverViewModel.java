@@ -1,17 +1,26 @@
 package com.intelligent.reader.cover;
 
-import com.intelligent.reader.DisposableAndroidViewModel;
-import com.intelligent.reader.repository.BookCoverRepository;
+import android.text.TextUtils;
 
-import net.lzbook.kit.data.bean.Bookmark;
-import net.lzbook.kit.data.bean.Chapter;
-import net.lzbook.kit.data.bean.CoverPage;
+import com.ding.basic.bean.Book;
+import com.ding.basic.bean.Bookmark;
+import com.ding.basic.bean.Chapter;
+import com.ding.basic.database.helper.BookDataProviderHelper;
+import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.request.RequestSubscriber;
+import com.intelligent.reader.DisposableAndroidViewModel;
+import com.orhanobut.logger.Logger;
+
+import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.book.download.CacheManager;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -24,131 +33,125 @@ import io.reactivex.schedulers.Schedulers;
 
 public class BookCoverViewModel extends DisposableAndroidViewModel {
 
-    private final BookCoverRepository mBookCoverRepository;
+    private BookCoverViewCallback bookCoverViewCallback;
 
-    private BookCoverViewCallback mBookCoverViewCallback;
+    private BookChapterViewCallback bookChapterViewCallback;
 
-    private BookChapterViewCallback mBookChapterViewCallback;
+    private BookDataProviderHelper bookDataProviderHelper = BookDataProviderHelper.Companion.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext());
 
-    public BookCoverViewModel(BookCoverRepository bookCoverRepository) {
+    public BookCoverViewModel() {
         super();
-        this.mBookCoverRepository = bookCoverRepository;
     }
 
-    /**
+    /***
      * 获取书籍封面
-     * 请把每个带有Observable的事件请求放入事件流容器中  “BookCoverViewModel.addDisposable(disposable)”
-     * 最后在UI界面处于onStop状态 “unSubscribe” 解除订阅，防止未处理事件流回到已销毁的UI界面，造成内存溢出风险
-     */
-    public void getCoverDetail(String bookId, String sourceId, String host) {
-        Disposable disposable = mBookCoverRepository.getCoverDetail(bookId, sourceId, host)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<CoverPage>() {
-                    @Override
-                    public void accept(CoverPage coverPage) throws Exception {
-                        if (mBookCoverViewCallback != null) {
-                            mBookCoverViewCallback.onCoverDetail(coverPage);
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        throwable.printStackTrace();
-                        if (mBookCoverViewCallback != null) {
-                            mBookCoverViewCallback.onFail(throwable.getMessage());
-                        }
-                    }
-                });
-        addDisposable(disposable);
+     * **/
+    public void requestBookDetail(String book_id, String book_source_id, String book_chapter_id) {
+        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestBookDetail(book_id, book_source_id, book_chapter_id, new RequestSubscriber<Book>() {
+            @Override
+            public void requestResult(@Nullable Book result) {
+                if (bookCoverViewCallback != null) {
+                    bookCoverViewCallback.requestCoverDetailSuccess(result);
+                }
+            }
+
+            @Override
+            public void requestError(@NotNull String message) {
+                Logger.e("请求封面异常！");
+                if (bookCoverViewCallback != null) {
+                    bookCoverViewCallback.requestCoverDetailFail(message);
+                }
+            }
+
+            @Override
+            public void requestComplete() {
+                Logger.i("请求封面完成！");
+            }
+        });
     }
 
-    /**
+    /***
      * 获取书籍目录
-     */
-    public void getChapterList(final RequestItem requestItem) {
-        Disposable disposable = mBookCoverRepository.getChapterList(requestItem)
-                .doOnNext(new Consumer<List<Chapter>>() {
-                    @Override
-                    public void accept(List<Chapter> chapters) throws Exception {
-                        // 已被订阅则加入数据库
-                        mBookCoverRepository.saveBookChapterList(chapters, requestItem);
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<Chapter>>() {
-                    @Override
-                    public void accept(List<Chapter> chapters) throws Exception {
-                        if (mBookChapterViewCallback != null) {
-                            mBookChapterViewCallback.onChapterList(chapters);
+     * **/
+    public void requestBookCatalog(final Book book) {
+        if (!TextUtils.isEmpty(book.getBook_id()) && !TextUtils.isEmpty(book.getBook_source_id())) {
+            RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                    .requestCatalog(book.getBook_id(), book.getBook_source_id(), book.getBook_chapter_id())
+                    .subscribeOn(Schedulers.io())
+                    .doOnNext(new Consumer<List<com.ding.basic.bean.Chapter>>() {
+                        @Override
+                        public void accept(List<com.ding.basic.bean.Chapter> chapters) throws Exception {
+                            CacheManager.INSTANCE.freshBook(book.getBook_id(), false);
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread()).subscribe(
+                    new Consumer<List<com.ding.basic.bean.Chapter>>() {
+                        @Override
+                        public void accept(List<com.ding.basic.bean.Chapter> result) throws Exception {
+                            if (bookChapterViewCallback != null) {
+                                bookChapterViewCallback.requestCatalogSuccess(result);
+                            }
                         }
                     }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        if (mBookChapterViewCallback != null) {
-                            mBookChapterViewCallback.onFail(throwable.getMessage());
+                    , new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable message) throws Exception {
+                            Logger.e("获取章节目录异常！");
+                            if (bookChapterViewCallback != null) {
+                                bookChapterViewCallback.requestCatalogFail(message.getMessage());
+                            }
                         }
-                    }
-                });
-        addDisposable(disposable);
+                    });
+        } else {
+            if (bookChapterViewCallback != null) {
+                bookChapterViewCallback.requestCatalogFail("参数异常！");
+            }
+        }
     }
 
     /**
      * 根据书籍id获取书签
      */
     public void getBookMarkList(String bookId) {
-        Disposable disposable = mBookCoverRepository.getBookMarkList(bookId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<ArrayList<Bookmark>>() {
-                    @Override
-                    public void accept(ArrayList<Bookmark> bookmarks) throws Exception {
-                        if (mBookChapterViewCallback != null) {
-                            mBookChapterViewCallback.onBookMarkList(bookmarks);
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        throwable.printStackTrace();
-                    }
-                });
-        addDisposable(disposable);
+        if (bookChapterViewCallback != null) {
+            bookChapterViewCallback.requestBookmarkList(bookDataProviderHelper.getBookMarks(bookId));
+        }
     }
 
     /**
      * 删除书签
      */
     public void deleteBookMark(ArrayList<Integer> ids) {
-        mBookCoverRepository.deleteBookMark(ids);
+        bookDataProviderHelper.deleteBookMark(ids);
     }
 
     public void setBookCoverViewCallback(BookCoverViewCallback bookCoverViewCallback) {
-        this.mBookCoverViewCallback = bookCoverViewCallback;
+        this.bookCoverViewCallback = bookCoverViewCallback;
     }
 
     public void setBookChapterViewCallback(BookChapterViewCallback bookChapterViewCallback) {
-        this.mBookChapterViewCallback = bookChapterViewCallback;
+        this.bookChapterViewCallback = bookChapterViewCallback;
     }
 
-    /**
-     * 暂不使用生命周期组件，可暂使用引用回调，或data binding通知UI改变状态
-     */
+    /***
+     * 请求书籍详情回调
+     * **/
     public interface BookCoverViewCallback {
 
-        void onCoverDetail(CoverPage coverPage);
+        void requestCoverDetailFail(String message);
 
-        void onFail(String msg);
+        void requestCoverDetailSuccess(Book book);
     }
 
+    /***
+     * 请求目录和书签回调
+     * **/
     public interface BookChapterViewCallback {
 
-        void onChapterList(List<Chapter> chapters);
+        void requestCatalogFail(String message);
 
-        void onBookMarkList(List<Bookmark> bookmarks);
+        void requestCatalogSuccess(List<Chapter> chapters);
 
-        void onFail(String msg);
+        void requestBookmarkList(ArrayList<Bookmark> bookmarks);
     }
 }

@@ -6,21 +6,18 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.view.View
+import com.ding.basic.bean.Bookmark
+import com.ding.basic.bean.Chapter
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.cover.*
 import com.intelligent.reader.read.help.BookHelper
-import com.quduquxie.network.DataCache
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.*
-import net.lzbook.kit.data.db.BookChapterDao
-import net.lzbook.kit.data.db.BookDaoHelper
-import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.repair_books.RepairHelp
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
@@ -61,8 +58,7 @@ class CataloguesPresenter(var act: Activity, var book: Book, var requestItem: Re
         requestFactory = RequestFactory()
         mBookDaoHelper = BookDaoHelper.getInstance()
 
-        mBookCoverViewModel = BookCoverViewModel(BookCoverRepositoryFactory.getInstance(BookCoverOtherRepository.getInstance(NetService.userService),
-                BookCoverQGRepository.getInstance(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())), BookCoverLocalRepository.getInstance(BaseBookApplication.getGlobalContext())))
+        mBookCoverViewModel = BookCoverViewModel()
         mBookCoverViewModel?.setBookChapterViewCallback(this)
 
         bookCoverUtil = BookCoverUtil(activity!!.get(), onClickListener)
@@ -84,28 +80,13 @@ class CataloguesPresenter(var act: Activity, var book: Book, var requestItem: Re
         }
     }
 
-    //model层回调成功 和 失败
-    override fun onFail(msg: String?) {
-        cataloguesContract?.requestCatalogError()
-    }
 
-    override fun onChapterList(chapters: MutableList<Chapter>?) {
-        if (chapters == null) {
-            showToastShort("获取数据失败")
-        } else {
-            this.chapterList = chapters as ArrayList<Chapter>
-            cataloguesContract!!.requestCatalogSuccess(chapterList)
-        }
-    }
 
-    override fun onBookMarkList(bookmarks: MutableList<Bookmark>?) {
 
-        bookmarkList = (bookmarks as ArrayList<Bookmark>?)!!
 
-        if (bookmarks != null) {
-            cataloguesContract.notifyDataChange(false, bookmarkList)
-        }
-    }
+
+
+
 
 
     fun loadBookMark() {
@@ -122,7 +103,7 @@ class CataloguesPresenter(var act: Activity, var book: Book, var requestItem: Re
 //            }
 //        }
         if (requestItem != null) {
-            mBookCoverViewModel!!.getChapterList(requestItem)
+            mBookCoverViewModel!!.requestBookCatalog(requestItem)
         }
     }
 
@@ -390,6 +371,29 @@ class CataloguesPresenter(var act: Activity, var book: Book, var requestItem: Re
     private fun showToastShort(s: String) {
         if (activity != null) {
             activity!!.get()?.showToastMessage(s)
+        }
+    }
+
+
+
+
+    override fun requestCatalogFail(msg: String?) {
+        cataloguesContract.requestCatalogError()
+    }
+
+    override fun requestCatalogSuccess(chapters: MutableList<Chapter>?) {
+        if (chapters == null) {
+            showToastShort("获取数据失败")
+        } else {
+            this.chapterList = chapters as ArrayList<Chapter>
+            cataloguesContract.requestCatalogSuccess(chapterList)
+        }
+    }
+
+    override fun requestBookmarkList(bookmarks: ArrayList<Bookmark>?) {
+        if (bookmarks != null) {
+            bookmarkList = bookmarks
+            cataloguesContract.notifyDataChange(false, bookmarkList)
         }
     }
 }

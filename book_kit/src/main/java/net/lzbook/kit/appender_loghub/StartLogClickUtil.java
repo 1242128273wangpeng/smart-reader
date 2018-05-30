@@ -177,6 +177,7 @@ public class StartLogClickUtil {
     public static final String SCREENSCROLL = "SCREENSCROLL";//屏幕滑动
     public static final String CASHERESULT = "CASHERESULT";//缓存结果
     public static final String SYSTEM_SEARCHRESULT = "SEARCHRESULT";//被动搜索结果
+    public static final String UPDATE = "UPDATE";//数据库升级
 
 
     //主页

@@ -1,20 +1,32 @@
 package com.intelligent.reader.activity;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.ding.basic.bean.Book;
+import com.ding.basic.database.helper.BookDataProviderHelper;
+import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.request.RequestSubscriber;
 import com.dingyue.contract.util.SharedPreUtil;
+import com.dycm_adsdk.PlatformSDK;
+import com.google.gson.Gson;
+import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.util.DynamicParamter;
 
+import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
+import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.Chapter;
-import net.lzbook.kit.data.db.BookChapterDao;
-import net.lzbook.kit.data.db.BookDaoHelper;
+import net.lzbook.kit.constants.ReplaceConstants;
 import com.dingyue.contract.router.RouterConfig;
+import com.orhanobut.logger.Logger;
+
+import net.lzbook.kit.data.db.help.ChapterDaoHelper;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.ShieldManager;
 import net.lzbook.kit.utils.StatServiceUtils;
 
@@ -31,18 +43,34 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import iyouqu.theme.FrameActivity;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 import static android.view.KeyEvent.KEYCODE_BACK;
+
+import org.jetbrains.annotations.NotNull;
 
 @Route(path = RouterConfig.SPLASH_ACTIVITY)
 public class SplashActivity extends FrameActivity {
@@ -52,6 +80,9 @@ public class SplashActivity extends FrameActivity {
     public int complete_count = 0;
     public ViewGroup ad_view;
     private SharedPreUtil sharedPreUtil;
+
+    private TextView txt_upgrade;
+    private ProgressBar progress_upgrade;
 
     public static void checkAndInstallShotCut(Context ctt) {
         if (!queryShortCut(ctt)) {
@@ -165,14 +196,6 @@ public class SplashActivity extends FrameActivity {
 //        }
     }
 
-//    private void initBook() {
-//        LoadDataManager loadDataManager = new LoadDataManager(getApplicationContext());
-//        if (!sharePreferenceUtils.getBoolean(Constants.ADD_DEFAULT_BOOKS)) {
-//            // 首次安装新用户添加默认书籍
-//            loadDataManager.addDefaultBooks();
-//        }
-//    }
-
     private void initShield() {
         ShieldManager shieldManager = new ShieldManager(getApplicationContext(), sharedPreUtil);
         shieldManager.startAchieveUserLocation();
@@ -196,10 +219,175 @@ public class SplashActivity extends FrameActivity {
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_IMMERSIVE
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+        String bookDBName = ReplaceConstants.getReplaceConstants().DATABASE_NAME;
+        File bookDBFile = getDatabasePath(bookDBName);
+
+        String[] databaseList = databaseList();
+        List<String> chapterDBList = new ArrayList<>();
+        for (String name : databaseList) {
+            if (name.startsWith("book_chapter_") && !name.contains("journal")) {
+                chapterDBList.add(name.replace("book_chapter_", ""));
+            }
+        }
+
+        if (bookDBFile.exists()) {
+            setContentView(R.layout.act_splash_upgradedb);
+            TextView txt_name = (TextView) findViewById(R.id.txt_name);
+            txt_name.setText(R.string.app_name);
+            upgradeBookDB(bookDBName, chapterDBList);
+        } else {
+            doOnCreate();
+        }
+    }
+
+    private void onUpgradeProgress(int progress) {
+        if (txt_upgrade == null) {
+            txt_upgrade = (TextView) findViewById(R.id.txt_upgrade);
+        }
+        if (progress_upgrade == null) {
+            progress_upgrade = (ProgressBar) findViewById(R.id.progress_upgrade);
+            progress_upgrade.setMax(100);
+        }
+
+        if(NetWorkUtils.getNetWorkType(this) == NetWorkUtils.NETWORK_NONE) {
+            txt_upgrade.setText(getString(R.string.db_upgrade_nonet, progress));
+        }else{
+            txt_upgrade.setText(getString(R.string.db_upgrade_hasnet, progress));
+        }
+        progress_upgrade.setProgress(progress);
+    }
+
+    private void upgradeBookDB(String bookDBName, final List<String> chapterDBList) {
+        float percent = 1;
+        if (!chapterDBList.isEmpty()) {
+            percent = 0.2F;
+        }
+
+        final float weight = percent;
+
+        BookDataProviderHelper.Companion.upgradeFromOld(this, bookDBName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer integer) throws Exception {
+                        onUpgradeProgress((int) (integer * weight));
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+                        if(BuildConfig.CHANNEL_NAME.equals("DEBUG")) {
+                            Toast.makeText(SplashActivity.this, "upgradeBookDB error \r\n"
+                                    + Log.getStackTraceString(throwable), Toast.LENGTH_LONG).show();
+                            for (int i = 0; i < 1000; i++) {
+                                Toast.makeText(SplashActivity.this, "升级数据库失败, 请把手机给开发同学!!!", Toast.LENGTH_LONG).show();
+                            }
+                            //拷贝旧的数据到sdcard, 给开发小伙伴
+                            copyOldDB2SD();
+                        }
+
+                        Map<String, String> data = new HashMap<>();
+                        data.put("status", "2");
+                        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext()
+                                , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.UPDATE, data);
+
+                        deleteOldDB();
+                        doOnCreate();
+                    }
+                }, new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        upgradeChapterDB(chapterDBList, 1 - weight);
+                    }
+                });
+    }
+
+    private void upgradeChapterDB(List<String> chapterDBList, final Float weight) {
+        if (!chapterDBList.isEmpty()) {
+            ChapterDaoHelper.Companion.upgradeFromOld(this, chapterDBList)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<Integer>() {
+                        @Override
+                        public void accept(Integer integer) throws Exception {
+                            onUpgradeProgress((int) (100 * (1 - weight) + integer * weight));
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            throwable.printStackTrace();
+                            if(BuildConfig.CHANNEL_NAME.equals("DEBUG")) {
+                                Toast.makeText(SplashActivity.this, "upgradeChapterDB error \r\n"
+                                        + Log.getStackTraceString(throwable), Toast.LENGTH_LONG).show();
+                                for (int i = 0; i < 1000; i++) {
+                                    Toast.makeText(SplashActivity.this, "升级数据库失败, 请把手机给开发同学!!!", Toast.LENGTH_LONG).show();
+                                }
+                                //拷贝旧的数据到sdcard, 给开发小伙伴
+                                copyOldDB2SD();
+                            }
+                            Map<String, String> data = new HashMap<>();
+                            data.put("status", "2");
+                            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext()
+                                    , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.UPDATE, data);
+                            //删除之前的数据库
+                            deleteOldDB();
+                            doOnCreate();
+                        }
+                    }, new Action() {
+                        @Override
+                        public void run() throws Exception {
+                            Map<String, String> data = new HashMap<>();
+                            data.put("status", "1");
+                            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext()
+                                    , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.UPDATE, data);
+                            //删除之前的数据库
+                            deleteOldDB();
+                            doOnCreate();
+                        }
+                    });
+        } else {
+            Map<String, String> data = new HashMap<>();
+            data.put("status", "1");
+            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext()
+                    , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.UPDATE, data);
+            //删除之前的数据库
+            deleteOldDB();
+            doOnCreate();
+        }
+    }
+
+    private void copyOldDB2SD() {
+        String[] strings = databaseList();
+        new File("/sdcard/novel").mkdirs();
+        for (String db : strings) {
+            kotlin.io.FilesKt.copyTo(getDatabasePath(db)
+                    , new File("/sdcard/novel/" + db),
+                    true
+                    , 64 * 1024
+            );
+        }
+    }
+
+    private void deleteOldDB() {
+        //TODO 测试数据库升级时, 注释掉方法体
+        String[] strings = databaseList();
+
+        for (String name : strings) {
+            if (name.startsWith("book_chapter_")) {
+                deleteDatabase(name);
+            }
+        }
+
+        deleteDatabase(ReplaceConstants.getReplaceConstants().DATABASE_NAME);
+    }
+
+    private void doOnCreate() {
 
         try {
             setContentView(R.layout.act_splash);
@@ -210,12 +398,9 @@ public class SplashActivity extends FrameActivity {
         ad_view = (ViewGroup) findViewById(R.id.ad_view);
         complete_count = 0;
         initialization_count = 0;
-        AppLog.e("oncreat", "oncreat go");
-        sharedPreUtil = new SharedPreUtil(SharedPreUtil.Companion.getSHARE_DEFAULT());
 
-        // 初始化任务
-        InitTask initTask = new InitTask();
-        initTask.execute();
+        initializeDataFusion();
+
 
         // 安装快捷方式
         new InstallShotCutTask().execute();
@@ -224,8 +409,66 @@ public class SplashActivity extends FrameActivity {
         if (UserManager.INSTANCE.isUserLogin()) {
             StatServiceUtils.statAppBtnClick(getApplication(), StatServiceUtils.user_login_succeed);
         }
-
     }
+
+    private void initializeDataFusion() {
+
+        List<Book> books = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks();
+
+        if (books != null) {
+
+            List<Book> upBooks = new ArrayList<>();
+
+            for (Book book : books) {
+                if (TextUtils.isEmpty(book.getBook_chapter_id())) {
+                    upBooks.add(book);
+                }
+            }
+
+            if (upBooks.isEmpty()) {
+                Logger.e("开屏页更新书籍book_chapter_id等信息的接口不执行,书架没有书籍要修复 ");
+
+                startInitTask();
+                return;
+            }
+
+            Gson gson = new Gson();
+
+            Logger.i("initializeDataFusion Json: " + gson.toJson(upBooks));
+
+            RequestBody checkBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8")
+                    , gson.toJson(upBooks));
+
+            RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                    .requestBookShelfUpdate(checkBody, new RequestSubscriber<Boolean>() {
+                        @Override
+                        public void requestResult(Boolean result) {
+                            if (result) {
+                                Logger.i("数据融合，书架信息升级成功！");
+                            } else {
+                                Logger.e("数据融合，书架信息升级异常！");
+                            }
+                            startInitTask();
+                        }
+
+                        @Override
+                        public void requestError(@NotNull String message) {
+                            Logger.e("数据融合，书架信息升级异常！");
+                            startInitTask();
+                        }
+                    });
+        }else{
+            startInitTask();
+        }
+    }
+
+    private void startInitTask(){
+        // 初始化任务
+        InitTask initTask = new InitTask();
+        initTask.execute();
+    }
+
+    private boolean isGo = true;
 
     private void initSplashAd() {
 //        if (ad_view != null) {
@@ -358,40 +601,27 @@ public class SplashActivity extends FrameActivity {
     @Override
     protected void onResume() {
         super.onResume();
-//        PlatformSDK.lifecycle().onResume();
-    }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
+        if(PlatformSDK.lifecycle()!= null){
+            PlatformSDK.lifecycle().onResume();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        PlatformSDK.lifecycle().onPause();
+        if(PlatformSDK.lifecycle()!= null){
+            PlatformSDK.lifecycle().onPause();
+        }
     }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
 
     @Override
     protected void onDestroy() {
-//        try {
-//            setContentView(R.layout.empty);
-//        } catch (Resources.NotFoundException e) {
-//            e.printStackTrace();
-//        }
-//
-//        if (context != null) {
-//            context = null;
-//        }
 
-        AppLog.e(TAG, "ondestory执行");
-//        PlatformSDK.lifecycle().onDestroy();
+        if(PlatformSDK.lifecycle() != null){
+            PlatformSDK.lifecycle().onDestroy();
+        }
+
         super.onDestroy();
     }
 
@@ -417,13 +647,10 @@ public class SplashActivity extends FrameActivity {
             }
             switch (msg.what) {
                 case 0:
-                    UserManager.INSTANCE.initPlatform(splashActivity, null);
-                    AppLog.e(TAG, "handler执行");
                     splashActivity.initGuide();
                     break;
             }
         }
-
     }
 
     public class InitTask extends AsyncTask<Void, Void, Void> {
@@ -443,23 +670,28 @@ public class SplashActivity extends FrameActivity {
             if(sharedPreUtil == null){
                 sharedPreUtil = new SharedPreUtil(SharedPreUtil.Companion.getSHARE_DEFAULT());
             }
-            boolean b = sharedPreUtil.getBoolean(SharedPreUtil.Companion.getUPDATE_CHAPTER_SOURCE_ID());
+
+            boolean b = sharedPreUtil.getBoolean(Constants.UPDATE_CHAPTER_SOURCE_ID, false);
             if (!b) {
-                BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
-                ArrayList<Book> bookOnlineList = bookDaoHelper.getBooksOnLineList();
-                for (int i = 0; i < bookOnlineList.size(); i++) {
-                    Book iBook = bookOnlineList.get(i);
-                    if (!TextUtils.isEmpty(iBook.book_id)) {
-                        BookChapterDao bookChapterDao = new BookChapterDao(BookApplication.getGlobalContext(), iBook.book_id);
-                        Chapter lastChapter = bookChapterDao.getLastChapter();
-                        if (lastChapter != null) {
-                            lastChapter.book_source_id = iBook.book_source_id;
-                            bookChapterDao.updateBookCurrentChapter(lastChapter, lastChapter.sequence);
+                List<Book> bookOnlineList = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks();
+                if (bookOnlineList != null && bookOnlineList.size() > 0) {
+                    for (int i = 0; i < bookOnlineList.size(); i++) {
+                        Book iBook = bookOnlineList.get(i);
+                        if (!TextUtils.isEmpty(iBook.getBook_id())) {
+                            ChapterDaoHelper bookChapterDao = ChapterDaoHelper.Companion.loadChapterDataProviderHelper(BookApplication.getGlobalContext(), iBook.getBook_id());
+                            com.ding.basic.bean.Chapter lastChapter = bookChapterDao.queryLastChapter();
+                            if (lastChapter != null) {
+                                lastChapter.setBook_source_id(iBook.getBook_source_id());
+                                bookChapterDao.updateChapterBySequence(lastChapter);
+                            }
                         }
                     }
                 }
-                sharedPreUtil.putBoolean(SharedPreUtil.Companion.getUPDATE_CHAPTER_SOURCE_ID(), true);
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putBoolean(Constants.UPDATE_CHAPTER_SOURCE_ID, true).apply();
             }
+
+            UserManager.INSTANCE.initPlatform(SplashActivity.this, null);
+
 
             //请求广告
             initAdSwitch();
@@ -493,7 +725,6 @@ public class SplashActivity extends FrameActivity {
                 SplashActivity.this.getWindowManager().getDefaultDisplay().getMetrics(dm);
                 sharedPreUtil.putInt(SharedPreUtil.Companion.getSCREEN_WIDTH(),dm.widthPixels);
                 sharedPreUtil.putInt(SharedPreUtil.Companion.getSCREEN_HEIGHT(),dm.heightPixels);
-//                BookApplication.getGlobalContext().setDisplayMetrics(dm);
                 AppUtils.initDensity(getApplicationContext());
 
                 // 判断是否小说推送，检查小说是否更新
@@ -502,9 +733,13 @@ public class SplashActivity extends FrameActivity {
                     CheckNovelUpdateService.startChkUpdService(getApplicationContext());
                 }
 
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception exception) {
+                exception.printStackTrace();
             }
+
+            //开启缓存服务
+            CacheManager.INSTANCE.checkService();
+
             return null;
         }
     }

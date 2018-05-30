@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
+import com.ding.basic.bean.Book
 import com.intelligent.reader.DisposableAndroidViewModel
 import com.intelligent.reader.cover.BookCoverLocalRepository
 import com.intelligent.reader.cover.BookCoverOtherRepository
@@ -99,9 +100,7 @@ class DataProvider : DisposableAndroidViewModel(), Observer {
     //工厂
     var mReaderRepository: ReaderRepository = ReaderRepositoryFactory.getInstance(ReaderOwnRepository.getInstance())
 
-    var mBookCoverRepository: BookCoverRepository = BookCoverRepositoryFactory.getInstance(BookCoverOtherRepository.getInstance(NetService.userService)
-            , BookCoverQGRepository.getInstance(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()))
-            , BookCoverLocalRepository.getInstance(BaseBookApplication.getGlobalContext()))
+    var mBookCoverRepository: BookCoverRepository = BookCoverRepositoryFactory.getInstance()
 
 
     fun preLoad(start: Int, end: Int) {

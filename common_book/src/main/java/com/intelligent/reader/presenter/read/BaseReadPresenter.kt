@@ -424,8 +424,7 @@ open class BaseReadPresenter(val act: ReadingActivity) : IPresenter<ReadPreInter
         }
 
         //ViewModel
-        mReaderViewModel = ReaderViewModel(ReaderRepositoryFactory.getInstance(ReaderOwnRepository.getInstance()), BookCoverRepositoryFactory.getInstance(BookCoverOtherRepository.getInstance(NetService.userService),
-                BookCoverQGRepository.getInstance(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())), BookCoverLocalRepository.getInstance(BaseBookApplication.getGlobalContext())))
+        mReaderViewModel = ReaderViewModel()
 
         //换源监听
         mReaderViewModel?.setReaderBookSourceViewCallback(object : ReaderViewModel.ReaderBookSourceViewCallback {

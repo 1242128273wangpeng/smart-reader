@@ -7,175 +7,341 @@ import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
 import android.widget.*
+import com.ding.basic.bean.Book
+import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CataloguesActivity
 import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.activity.SearchBookActivity
-import com.intelligent.reader.adapter.CoverSourceAdapter
 import com.intelligent.reader.cover.*
 import com.intelligent.reader.widget.ConfirmDialog
+import com.intelligent.reader.widget.TransformReadDialog
+import com.orhanobut.logger.Logger
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.book.view.RecommendItemView
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.CoverPage
-import net.lzbook.kit.data.db.BookChapterDao
-import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.data.recommend.CoverRecommendBean
-import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.utils.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-/**
- * 封面
- * Created by zhenXiang on 2017\11\15 0015.
- * Modify by JoannChen on 2018-04-23
- */
-class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: CoverPageContract,
-                         val activity: Activity, onClickListener: View.OnClickListener)
+class CoverPagePresenter(private val bookId: String?, private var bookSourceId: String?, private var bookChapterId: String?, val coverPageContract: CoverPageContract, val activity: Activity, val onClickListener: View.OnClickListener)
     : BookCoverUtil.OnDownloadState, BookCoverUtil.OnDownLoadService, BookCoverViewModel.BookCoverViewCallback {
+    
+    var coverDetail: Book? = null
+    var showMoreLabel: Boolean = false
 
-    //    var downloadService: DownloadService? = null
-    var bookVo: CoverPage.BookVoBean? = null
+    var downloadService: DownloadService? = null
     var bookCoverUtil: BookCoverUtil? = null
-    var bookDaoHelper: BookDaoHelper? = null
-    var sharePreUtil: SharedPreUtil ? = null
-    var isNeedShowMoreTags: Boolean = false
-    var currentSource: CoverPage.SourcesBean? = null
+    var sharePreUtil: SharedPreUtil? = null
     var books = ArrayList<Book>()
-    private val markIndex = ArrayList<Int>()
-    var mRandom: Random = Random()
-    var mRecommendBooks = ArrayList<Book>()
-    var bookSourceList: ArrayList<CoverPage.SourcesBean> = ArrayList<CoverPage.SourcesBean>()
-    //    val GET_CATEGORY_OK = 0x10 + 1
-//    val GET_CATEGORY_ERROR = GET_CATEGORY_OK + 1
-//    val DOWNLOAD_STATE_FINISH = 1
-//    val DOWNLOAD_STATE_LOCKED = 2
-//    val DOWNLOAD_STATE_NOSTART = 3
-//    val DOWNLOAD_STATE_OTHER = 4
     var mBookCoverViewModel: BookCoverViewModel? = null
-    var mDialog: MyDialog? = null
+    val mDisposables: CompositeDisposable = CompositeDisposable()
 
     init {
         sharePreUtil = SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
-        mBookCoverViewModel = BookCoverViewModel(BookCoverRepositoryFactory.getInstance(BookCoverOtherRepository.getInstance(NetService.userService),
-                BookCoverQGRepository.getInstance(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())), BookCoverLocalRepository.getInstance(BaseBookApplication.getGlobalContext())))
+        mBookCoverViewModel = BookCoverViewModel()
         mBookCoverViewModel?.setBookCoverViewCallback(this)
 
-        if (bookDaoHelper == null) {
-            bookDaoHelper = BookDaoHelper.getInstance()
-        }
-
         bookCoverUtil = BookCoverUtil(activity, onClickListener)
+
         bookCoverUtil?.registReceiver()
         bookCoverUtil?.setOnDownloadState(this)
         bookCoverUtil?.setOnDownLoadService(this)
-
     }
 
+    private val transformReadDialog: TransformReadDialog by lazy {
 
-    fun showCoverSourceDialog() {
-        if (Constants.QG_SOURCE == requestItem.host || bookSourceList.size == 1) {//青果
-            showToastShort("该小说暂无其他来源！")
+        val dialog = TransformReadDialog(activity)
+
+//        dialog.setOnConfirmListener {
+//            val data = HashMap<String, String>()
+//            data.put("type", "1")
+//            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+//
+//            requestItem.fromType = 3// 打点统计 当前页面来源，所有可能来源的映射唯一字符串。书架(0)/目录页(1)/上一页翻页(2)/书籍封面(3)
+//            if (bookDaoHelper!!.isBookSubed(bookVo!!.book_id)) {
+//                val book = bookDaoHelper!!.getBook(bookVo!!.book_id, 0)
+//                if (Constants.QG_SOURCE == requestItem.host) {
+//                    readingCustomaryBook(null, false)
+//
+//                } else {
+//                    if (currentSource?.book_source_id == book?.book_source_id) {
+//                        //直接进入阅读
+//                        readingCustomaryBook(currentSource, true)
+//                    } else {
+//                        //弹出切源提示
+//                        showChangeSourceNoticeDialog(currentSource!!)
+//                    }
+//                }
+//            } else {
+//                continueReading()
+//            }
+//            dialog?.dismiss()
+//        }
+//        dialog.setOnCancelListener {
+//            val data = HashMap<String, String>()
+//            data.put("type", "2")
+//            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+//            if (!activity.isFinishing) {
+//                dialog.dismiss()
+//            }
+//        }
+        dialog
+    }
+    
+    /***
+     * 获取书籍详情
+     * **/
+    fun requestBookDetail(showMoreLabel: Boolean) {
+        this.showMoreLabel = showMoreLabel
+        mBookCoverViewModel!!.requestBookDetail(bookId, bookSourceId, bookChapterId)
+    }
+
+    /***
+     * 获取书籍详情失败
+     * **/
+    override fun requestCoverDetailFail(msg: String?) {
+        coverPageContract.showLoadingFail()
+    }
+
+    /***
+     * 获取书籍详情成功
+     * **/
+    override fun requestCoverDetailSuccess(book: Book?) {
+        handleCoverDetailSuccess(book)
+    }
+
+    /***
+     * 处理书籍信息
+     * **/
+    private fun handleCoverDetailSuccess(book: Book?) {
+        if (book != null) {
+            this.coverDetail = book
+
+            if (coverDetail != null && bookCoverUtil != null) {
+                bookCoverUtil?.saveHistory(coverDetail)
+            }
+        }
+
+        coverPageContract.showLoadingSuccess()
+        coverPageContract.showCoverDetail(coverDetail)
+        coverPageContract.changeDownloadButtonStatus()
+    }
+    
+    /***
+     * 跳转到目录页
+     * **/
+    fun startCatalogActivity(clickedCatalog: Boolean) {
+        if (coverDetail == null) {
             return
         }
-        mDialog = MyDialog(activity, R.layout.dialog_read_source, Gravity.CENTER)
-        mDialog?.setCanceledOnTouchOutside(true)
-        val sourceView = mDialog?.findViewById(R.id.change_source_list) as ListView
-//        val dialog_top_title = mDialog?.findViewById(R.id.dialog_top_title) as TextView
-        val changeSourceStatement = mDialog?.findViewById(R.id.change_source_statement) as RelativeLayout
-        changeSourceStatement.visibility = View.GONE
 
+        val intent = Intent()
 
-        val bookSourceAdapter = CoverSourceAdapter(activity, bookSourceList)
+        if (clickedCatalog) {
+            handleCatalogAction(intent, 0, false)
+        } else {
+            handleCatalogAction(intent, coverDetail!!.last_chapter!!.serial_number - 1, true)
+        }
+    }
+    
+    /***
+     * 处理跳转目录操作
+     * **/
+    private fun handleCatalogAction(intent: Intent, sequence: Int, indexLast: Boolean) {
+        if (coverDetail != null && bookCoverUtil != null) {
 
-        sourceView.adapter = bookSourceAdapter
+            val bundle = Bundle()
+            bundle.putInt("sequence", sequence)
+            bundle.putBoolean("fromCover", true)
+            bundle.putBoolean("is_last_chapter", indexLast)
+            bundle.putSerializable("cover", coverDetail)
 
-        if (bookSourceList.size > 4) {
-            sourceView.layoutParams.height = activity.getResources().getDimensionPixelOffset(R.dimen.dimen_view_height_240)
+            intent.setClass(activity, CataloguesActivity::class.java)
+            intent.putExtras(bundle)
+
+            activity.startActivity(intent)
+        }
+    }
+    
+    /***
+     * 处理添加、移除书架操作
+     * **/
+    fun handleBookShelfAction(removeAble: Boolean) {
+        if (coverDetail == null || TextUtils.isEmpty(coverDetail!!.book_id)) {
+            return
         }
 
+        val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(bookId!!)
 
-        sourceView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
-            val source = bookSourceAdapter.getItem(position) as CoverPage.SourcesBean
-            if (!TextUtils.isEmpty(source.book_source_id)) {
-                requestItem.book_id = source.book_id
-                requestItem.book_source_id = source.book_source_id
-                requestItem.host = source.host
-                requestItem.dex = source.dex
-                val iterator = source.source.entries.iterator()
-                val list = java.util.ArrayList<String>()
-                while (iterator.hasNext()) {
-                    val entry = iterator.next()
-                    val value = entry.value
-                    list.add(value)
-                }
-                if (list.size > 0) {
-                    requestItem.parameter = list[0]
-                }
-                if (list.size > 1) {
-                    requestItem.extra_parameter = list[1]
-                }
+        if (book != null) {
+            Logger.v("书籍已订阅！")
+
+            if (removeAble) {
+                coverPageContract.insertBookShelfResult(false)
+
+                //移除书架的打点
+                StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.b_details_click_book_remove)
+
+                activity.applicationContext.showToastMessage("成功从书架移除！")
+
+                val data = HashMap<String, String>()
+                data["type"] = "2"
+                data["bookid"] = coverDetail!!.book_id
+
+                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFEDIT, data)
+
+                coverPageContract.changeDownloadButtonStatus()
+
+                coverPageContract.changeShelfButtonClickable(false)
+
+                val cleanDialog = MyDialog(activity, R.layout.dialog_download_clean)
+                cleanDialog.setCanceledOnTouchOutside(false)
+                cleanDialog.setCancelable(false)
+                (cleanDialog.findViewById(R.id.dialog_msg) as TextView).setText(R.string.tip_cleaning_cache)
+                cleanDialog.show()
+
+                Observable.create(ObservableOnSubscribe<Boolean> { emitter ->
+                    CacheManager.remove(coverDetail!!.book_id)
+
+                    RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBook(coverDetail!!.book_id)
+
+                    BaseBookHelper.removeChapterCacheFile(coverDetail!!)
+
+                    emitter.onNext(true)
+                    emitter.onComplete()
+                }).subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe {
+                            Logger.v("移除书架成功！")
+                            cleanDialog.dismiss()
+                            coverPageContract.changeShelfButtonClickable(true)
+                            coverPageContract.changeDownloadButtonStatus()
+                        }
+
+            } else {
+                activity.applicationContext.showToastMessage("已在书架中！")
+            }
+        } else {
+            Logger.v("书籍未订阅！")
+
+            if (coverDetail == null) {
+                activity.applicationContext.showToastMessage("书籍信息异常，请稍后再试！")
             }
 
-            currentSource = source
-            coverPageContract.loadCoverWhenSourceChange()
+            coverDetail?.last_update_success_time = System.currentTimeMillis()
 
-            coverPageContract.showCurrentSources(currentSource!!.host)
+            val result = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(coverDetail!!)
 
-            mDialog?.dismiss()
+            if (result <= 0) {
+                Logger.v("加入书架失败！")
+                activity.applicationContext.showToastMessage("加入书架失败！")
+            } else {
+                Logger.v("加入书架成功！")
 
+                val data = HashMap<String, String>()
+                data["type"] = "1"
+                data["bookid"] = coverDetail!!.book_id
+
+                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFEDIT, data)
+
+                activity.applicationContext.showToastMessage("成功添加到书架！")
+
+                coverPageContract.insertBookShelfResult(true)
+            }
         }
+    }
 
-        val changeSourceOriginalWeb = mDialog?.findViewById(R.id.change_source_original_web) as TextView
-        changeSourceOriginalWeb.setText(R.string.cancel)
+    /***
+     * 处理跳转阅读页请求
+     * **/
+    fun handleReadingAction() {
+        if (activity.isFinishing) {
+            return
+        }
+        val readingSourceDialog = MyDialog(activity, R.layout.dialog_read_source, Gravity.CENTER)
+        readingSourceDialog.setCanceledOnTouchOutside(true)
 
-        val changeSourceContinue = mDialog?.findViewById(R.id.change_source_continue) as TextView
+        val change_source_head = readingSourceDialog.findViewById(R.id.dialog_top_title) as TextView
+        change_source_head.text = "转码"
 
-        changeSourceOriginalWeb.setOnClickListener {
+        val change_source_original_web = readingSourceDialog.findViewById(R.id.change_source_original_web) as TextView
+        change_source_original_web.setText(R.string.cancel)
+
+        val change_source_continue = readingSourceDialog.findViewById(R.id.change_source_continue) as TextView
+
+        change_source_original_web.setOnClickListener {
             val data = HashMap<String, String>()
-            data.put("type", "2")
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SOURCECHANGEPOPUP, data)
-            mDialog?.dismiss()
-        }
-        changeSourceContinue.setOnClickListener {
-            if (bookSourceList.size == 0) {
-                showToastShort("当前书籍不能阅读，先去看看其他书吧")
-                return@setOnClickListener
-            }
-            continueReading()
-            mDialog?.dismiss()
+            data["type"] = "2"
+            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+
+            readingSourceDialog.dismiss()
         }
 
-        if (mDialog?.isShowing!!) {
+        change_source_continue.setOnClickListener {
+            val data = HashMap<String, String>()
+            data["type"] = "1"
+            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+
+            val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(bookId!!)
+            if (book != null) {
+                if (book.book_type == "qg") {
+                    readingShelfBook()
+                } else {
+                    if (coverDetail?.book_source_id == book.book_source_id) {
+                        readingShelfBook()
+                        readingSourceDialog.dismiss()
+                    } else {
+                        intoReadingActivity()
+                        readingSourceDialog.dismiss()
+                    }
+                }
+            } else {
+                continueReading()
+            }
+
+            if (readingSourceDialog.isShowing) {
+                readingSourceDialog.dismiss()
+            }
+        }
+
+        if (!readingSourceDialog.isShowing) {
             try {
-                mDialog?.show()
-            } catch (e: Exception) {
-                e.printStackTrace()
+                readingSourceDialog.show()
+            } catch (exception: Exception) {
+                exception.printStackTrace()
             }
         }
     }
 
-    //model层回调成功和失败
-    override fun onCoverDetail(coverPage: CoverPage?) {
-        handleOK(coverPage!!, coverPage.bookVo.host == Constants.QG_SOURCE, isNeedShowMoreTags)
-    }
 
-    override fun onFail(msg: String?) {
-        coverPageContract.showCoverError()
-    }
+
+
+
+
+
+
+
+
+
+
+
 
 
     /**
@@ -530,20 +696,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         activity.startActivity(intent)
     }
-
-    /**
-     *
-     * 获取书籍封面信息
-     * isNeedShowMoreTags 是否需要显示多个标签，目前只有免费小说书城，其他都是单个标签
-     */
-
-    fun getBookCoverInfo(isNeedShowMoreTags: Boolean) {
-        this.isNeedShowMoreTags = isNeedShowMoreTags
-//        if (requestItem != null) {
-        mBookCoverViewModel!!.getCoverDetail(requestItem.book_id, requestItem.book_source_id, requestItem.host)
-//        }
-    }
-
+    
     /**
      * onresume 时设置底部三个按钮的状态
      */
@@ -639,88 +792,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
         }
         coverPageContract.changeDownloadButtonStatus()
     }
-
-    /**
-     * isNeedShowMoreTags 是否需要显示多个标签 目前免费小说书城改版需要显示多个标签，其他只需要一个标签
-     */
-    fun handleOK(objects: Any, isQG: Boolean, isNeedShowMoreTags: Boolean) {
-
-        if (isQG) {//如果是青果的数据，就先进行一次类型转换
-            bookVo = (objects as CoverPage).bookVo
-
-            coverPageContract.showArrow(true)
-
-        } else {
-            bookVo = (objects as CoverPage).bookVo
-            if (bookVo != null) {
-
-//                requestItem.book_id?:bookVo?.book_id
-
-                if (!TextUtils.isEmpty(requestItem.book_id)) {
-                    bookVo?.book_id = requestItem.book_id
-                }
-
-
-                if (!TextUtils.isEmpty(requestItem.book_source_id)) {
-                    bookVo?.book_source_id = requestItem.book_source_id
-                }
-                if (!TextUtils.isEmpty(requestItem.host)) {
-                    bookVo?.host = requestItem.host
-                }
-                if (requestItem != null) {
-                    bookVo?.dex = requestItem.dex
-                }
-
-                val sources = objects.sources
-
-                if (sources.size < 2) {
-                    coverPageContract.setCompound()
-                }
-                if (bookSourceList == null) {
-                    bookSourceList = java.util.ArrayList()
-                }
-                bookSourceList.clear()
-                if (sources != null) {
-                    bookSourceList.addAll(sources)
-
-                    for (i in bookSourceList.indices) {
-                        val source = bookSourceList[i]
-                        if (requestItem.book_source_id == source.book_source_id) {
-                            currentSource = source
-                        }
-                    }
-
-
-                    if (currentSource != null && !TextUtils.isEmpty(currentSource!!.host)) {
-                        coverPageContract.showCurrentSources(currentSource!!.host)
-                    } else {
-                        if (bookSourceList.size > 0) {
-                            currentSource = bookSourceList[0]
-                            coverPageContract.showCurrentSources(currentSource!!.host)
-                        }
-                    }
-                }
-            }
-        }
-        if (bookVo != null && currentSource != null) {
-            bookVo?.wordCountDescp = currentSource?.wordCountDescp
-            bookVo?.readerCountDescp = currentSource?.readerCountDescp
-            bookVo?.score = currentSource?.score
-            if (isNeedShowMoreTags) {
-                bookVo?.labels = currentSource?.labels
-            }
-        }
-
-        coverPageContract.showLoadingSuccess()
-        coverPageContract.showCoverDetail(bookVo!!)
-        coverPageContract.changeDownloadButtonStatus()
-
-        if (bookVo != null && bookCoverUtil != null) {
-            bookCoverUtil?.saveHistory(bookVo)
-        }
-    }
-
-
+    
     fun goToBookSearchActivity(view: View) {
         val intent = Intent()
         if (view is RecommendItemView) {
@@ -739,109 +811,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
      * 是否存在书架
      */
     fun isBookSubed(): Boolean = bookDaoHelper!!.isBookSubed(requestItem.book_id)
-
-    /**
-     * isNeedRemoveFun 是否需要移除的功能 ， 目前免费小说书城不需要移出书架，其他几个壳任然保持之前移出书架
-     */
-    fun addBookIntoShelf(isNeedRemoveFun: Boolean) {
-        if (bookDaoHelper == null || bookCoverUtil == null) {
-            return
-        }
-        if (!bookDaoHelper!!.isBookSubed(requestItem.book_id)) {
-            val insertBook = bookCoverUtil?.getCoverBook(bookDaoHelper, bookVo)
-            if (currentSource != null) {
-                insertBook?.last_updatetime_native = currentSource!!.update_time
-            }
-            if (bookVo!!.host == Constants.QG_SOURCE) {
-                insertBook?.last_updatetime_native = bookVo?.update_time
-            }
-            insertBook?.last_updateSucessTime = System.currentTimeMillis()
-            val succeed = bookDaoHelper!!.insertBook(insertBook)
-            if (succeed && insertBook != null) {
-                val data1 = HashMap<String, String>()
-                data1.put("type", "1")
-                data1.put("bookid", insertBook.book_id)
-                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFEDIT, data1)
-                showToastShort("成功添加到书架！")
-                coverPageContract.successAddIntoShelf(true)
-            }
-        } else {
-            if (isNeedRemoveFun) {
-
-                coverPageContract.successAddIntoShelf(false)
-
-                //移除书架的打点
-                StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.b_details_click_book_remove)
-                showToastShort("成功从书架移除！")
-                val data2 = HashMap<String, String>()
-                data2.put("type", "2")
-                data2.put("bookid", requestItem.book_id)
-                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFEDIT, data2)
-                coverPageContract.changeDownloadButtonStatus()
-
-                coverPageContract.setShelfBtnClickable(false)
-                mDialog = MyDialog(activity, R.layout.dialog_download_clean)
-                mDialog?.setCanceledOnTouchOutside(false)
-                mDialog?.setCancelable(false)
-                (mDialog?.findViewById(R.id.dialog_msg) as TextView).setText(R.string.tip_cleaning_cache)
-
-
-                mDialog?.show()
-
-                Observable.create(ObservableOnSubscribe<Boolean> { e ->
-                    CacheManager.remove(requestItem.book_id)
-
-                    bookDaoHelper?.deleteBook(requestItem.toBook(), false)
-
-                    e.onNext(true)
-                    e.onComplete()
-                }).subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe {
-                            mDialog?.dismiss()
-                            coverPageContract.setShelfBtnClickable(true)
-                            coverPageContract.changeDownloadButtonStatus()
-                        }
-            } else {
-                showToastShort("已在书架中！")
-            }
-
-        }
-    }
-
-    /**
-     * isClickCatalog 是否是点击查看目录进入到目录页
-     */
-    fun goToCataloguesAct(isClickCatalog: Boolean) {
-        val intent = Intent()
-        if (isClickCatalog) {
-            if (Constants.QG_SOURCE == requestItem.host) {
-                enterCatalogues(intent, 0, false)
-            } else {
-                if (bookSourceList.size == 0) {
-                    showToastShort("当前书籍不能阅读，先去看看其他书吧")
-                } else {
-                    enterCatalogues(intent, 0, false)
-                }
-            }
-        } else {
-
-            if (bookVo == null)
-                return
-            if (Constants.QG_SOURCE == requestItem.host) {
-                enterCatalogues(intent, bookVo!!.serial_number - 1, true)
-            } else {
-                if (bookSourceList.size == 0) {
-                    showToastShort("当前书籍不能阅读，先去看看其他书吧")
-                } else {
-                    enterCatalogues(intent, bookVo!!.serial_number - 1, true)
-                }
-            }
-        }
-
-    }
-
-
+    
     /**
      * 点击查看目录或者最新章节后的跳转操作
 
@@ -862,7 +832,7 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
     }
 
     private fun showToastShort(s: String) {
-        activity.showToastMessage(s)
+        activity.applicationContext.showToastMessage(s)
     }
 
     override fun changeState() {
@@ -1047,5 +1017,4 @@ class CoverPagePresenter(val requestItem: RequestItem, val coverPageContract: Co
         }
         return bookCoverUtil!!.getCoverBook(bookDaoHelper, bookVo)
     }
-
 }
