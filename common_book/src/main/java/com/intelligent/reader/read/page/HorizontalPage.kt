@@ -10,8 +10,6 @@ import android.view.View
 import android.widget.FrameLayout
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
-import com.intelligent.reader.activity.ReadingActivity
-import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.help.DrawTextHelper
 import com.intelligent.reader.read.mode.NovelChapter
 import com.intelligent.reader.read.mode.NovelPageBean

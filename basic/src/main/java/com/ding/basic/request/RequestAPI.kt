@@ -133,4 +133,8 @@ internal object RequestAPI {
                               , type: Int, startChapterID: String): Flowable<BasicResult<CacheTaskConfig>> {
         return requestService.requestDownTaskConfig(bookID, bookSourceID, type, startChapterID)
     }
+
+    fun requestCoverRecommend(book_id: String, recommend: String): Flowable<CoverRecommendBean>? {
+        return requestService.requestCoverRecommend(book_id, recommend)
+    }
 }

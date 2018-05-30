@@ -3,10 +3,11 @@ package com.intelligent.reader.adapter.holder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import net.lzbook.kit.utils.AbsRecyclerViewHolder;
+
+import com.ding.basic.bean.HistoryInfo;
 import com.intelligent.reader.R;
 
 import net.lzbook.kit.constants.ReplaceConstants;
-import net.lzbook.kit.data.ormlite.bean.HistoryInfo;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.Tools;
 
@@ -52,7 +53,7 @@ public class HistoryHolder extends AbsRecyclerViewHolder<HistoryInfo> {
         }
 
         if (this.mBrowTime != null) {
-            this.mBrowTime.setText(Tools.logTime(AppUtils.min_formatter, book.getLast_brow_time()));
+            this.mBrowTime.setText(Tools.logTime(AppUtils.min_formatter, book.getBrowse_time()));
         }
 
         if (!TextUtils.isEmpty(book.getImg_url()) && !book.getImg_url().equals(ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL)) {

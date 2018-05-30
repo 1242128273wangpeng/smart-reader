@@ -1,7 +1,6 @@
 package com.intelligent.reader.adapter;
 
 import com.intelligent.reader.R;
-import com.intelligent.reader.read.help.BookHelper;
 import com.quduquxie.network.DataCache;
 
 import net.lzbook.kit.constants.Constants;

@@ -138,6 +138,10 @@ class LocalRequestRepository private constructor(private var context: Context) :
         return null
     }
 
+    override fun requestCoverRecommend(book_id: String, recommend: String): Flowable<CoverRecommendBean>? {
+        return null
+    }
+
     fun checkBookSubscribe(book_id: String): Book? {
         return BookDataProviderHelper.loadBookDataProviderHelper(context = context).checkBookSubscribe(book_id)
     }

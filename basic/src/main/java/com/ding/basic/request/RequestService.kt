@@ -75,6 +75,13 @@ interface RequestService {
 
         // cdn原创
         const val DYNAMIC_YC = "https://public.qingoo.cn/dpzn/{packageName}.json"
+
+
+
+
+
+        //书籍封面页推荐
+        const val COVER_RECOMMEND = "/v4/recommend/{book_id}/coverPage"
     }
 
     @GET(DEFAULT_BOOK)
@@ -158,5 +165,11 @@ interface RequestService {
     /************************************* 缓存相关 *************************************/
     @GET(DOWN_TASK_CONFIG)
     fun requestDownTaskConfig(@Query(value = "bookId") str: String, @Query(value = "bookSourceId") str2: String, @Query(value = "type") i: Int, @Query(value = "chapterId") str3: String): Flowable<BasicResult<CacheTaskConfig>>
+
+
+
+    @FormUrlEncoded
+    @POST(COVER_RECOMMEND)
+    fun requestCoverRecommend(@Path("book_id") book_id: String, @Field("recommanded") bookIds: String): Flowable<CoverRecommendBean>
 
 }

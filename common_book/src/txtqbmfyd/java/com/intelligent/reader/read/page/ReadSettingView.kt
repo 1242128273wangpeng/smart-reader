@@ -19,7 +19,6 @@ import android.widget.RadioGroup
 import android.widget.SeekBar
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
-import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.read.help.ReadSettingHelper
 import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.reader.ReaderViewModel

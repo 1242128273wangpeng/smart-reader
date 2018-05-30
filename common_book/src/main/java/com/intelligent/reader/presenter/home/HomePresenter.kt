@@ -93,15 +93,6 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
     }
 
     /***
-     * 更新书架信息，由于服务器端缓存的问题，可能造成默认接口添加的书籍，书籍状态不正确
-     * **/
-    fun updateBookShelf() {
-        if (loadDataManager != null) {
-            loadDataManager!!.updateShelfBooks()
-        }
-    }
-
-    /***
      * 上传用户应用列表
      * **/
     private fun updateApplicationList() {

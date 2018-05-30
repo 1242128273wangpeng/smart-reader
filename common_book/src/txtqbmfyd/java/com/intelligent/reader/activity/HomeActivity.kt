@@ -556,26 +556,14 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
                 return@onEnterCover
             }
-            val data = HashMap<String, String>()
-            data["BOOKID"] = book_id
-            data["source"] = "WEBVIEW"
-            StartLogClickUtil.upLoadEventLog(this@HomeActivity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data)
 
-            val requestItem = RequestItem()
-            requestItem.book_id = book_id
-            requestItem.book_source_id = book_source_id
-            requestItem.host = host
-            requestItem.name = name
-            requestItem.author = author
-            requestItem.parameter = parameter
-            requestItem.extra_parameter = extra_parameter
-
-            val intent = Intent()
-            intent.setClass(applicationContext, CoverPageActivity::class.java)
-            val bundle = Bundle()
-            bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
-            intent.putExtras(bundle)
-            startActivity(intent)
+            if (!isFinishing) {
+                val intent = Intent()
+                intent.putExtra("book_id", book_id)
+                intent.putExtra("book_source_id", book_source_id)
+                intent.setClass(applicationContext, CoverPageActivity::class.java)
+                startActivity(intent)
+            }
         })
 
         jsInterfaceHelper.setOnEnterCategory { _, _, _, _ -> AppLog.e(TAG, "doCategory") }
@@ -666,9 +654,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
      * **/
     inner class HomeBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == ActionConstants.ACTION_ADD_DEFAULT_SHELF) {
-                homePresenter.updateBookShelf()
-            } else if (intent.action == ActionConstants.ACTION_CHECK_UPDATE_FINISH) {
+            if (intent.action == ActionConstants.ACTION_CHECK_UPDATE_FINISH) {
                 if (bookShelfFragment != null) {
                     bookShelfFragment?.updateUI()
                 }

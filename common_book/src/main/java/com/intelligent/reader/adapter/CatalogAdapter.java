@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.CataloguesActivity;
-import com.intelligent.reader.read.help.BookHelper;
 import com.quduquxie.network.DataCache;
 
 import net.lzbook.kit.constants.Constants;

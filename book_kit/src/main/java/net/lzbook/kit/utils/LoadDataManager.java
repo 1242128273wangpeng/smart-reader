@@ -36,9 +36,6 @@ public class LoadDataManager {
             public void requestResult(Boolean result) {
                 if (result) {
                     sharedPreferencesUtils.putBoolean(Constants.ADD_DEFAULT_BOOKS, true);
-
-                    Intent intent = new Intent(ActionConstants.ACTION_ADD_DEFAULT_SHELF);
-                    context.sendBroadcast(intent);
                 }
             }
 

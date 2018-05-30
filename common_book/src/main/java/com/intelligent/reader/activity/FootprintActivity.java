@@ -16,7 +16,6 @@ import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.paging.BaseAdapter;
 import com.intelligent.reader.adapter.paging.HisAdapter;
 import com.intelligent.reader.adapter.paging.LoadMoreAdapterWrapper;
-import com.intelligent.reader.read.help.BookHelper;
 import com.intelligent.reader.util.EventBookStore;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;

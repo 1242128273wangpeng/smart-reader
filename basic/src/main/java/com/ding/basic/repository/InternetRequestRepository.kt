@@ -102,4 +102,8 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
                                        , type: Int, startChapterID: String): Flowable<BasicResult<CacheTaskConfig>>? {
         return RequestAPI.requestDownTaskConfig(bookID, bookSourceID, type, startChapterID)
     }
+
+    override fun requestCoverRecommend(book_id: String, recommend: String): Flowable<CoverRecommendBean>? {
+        return RequestAPI.requestCoverRecommend(book_id, recommend)
+    }
 }

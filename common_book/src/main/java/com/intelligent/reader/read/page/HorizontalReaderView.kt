@@ -5,8 +5,6 @@ import android.util.AttributeSet
 import android.view.*
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
-import com.intelligent.reader.activity.ReadingActivity
-import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.adapter.HorizontalAdapter
 import com.intelligent.reader.read.animation.ShiftTransformer
 import com.intelligent.reader.read.animation.SlideTransformer

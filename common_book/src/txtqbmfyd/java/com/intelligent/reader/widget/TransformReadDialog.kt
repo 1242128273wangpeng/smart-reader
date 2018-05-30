@@ -17,8 +17,8 @@ import net.lzbook.kit.book.view.MyDialog
 class TransformReadDialog(val activity: Activity) {
     private val dialog = MyDialog(activity, R.layout.dialog_transform_read, Gravity.BOTTOM)
 
-    private var confirmListener: (() -> Unit)? = null
     private var cancelListener: (() -> Unit)? = null
+    private var continueListener: (() -> Unit)? = null
 
     init {
 
@@ -41,7 +41,7 @@ class TransformReadDialog(val activity: Activity) {
         dialog.setCancelable(true)
 
         dialog.btn_confirm.setOnClickListener {
-            confirmListener?.invoke()
+            continueListener?.invoke()
         }
         dialog.btn_cancel.setOnClickListener {
             dialog.dismiss()
@@ -49,12 +49,12 @@ class TransformReadDialog(val activity: Activity) {
         }
     }
 
-    fun setOnConfirmListener(listener: () -> Unit) {
-        confirmListener = listener
+    fun insertCancelListener(listener: () -> Unit) {
+        cancelListener = listener
     }
 
-    fun setOnCancelListener(listener: () -> Unit) {
-        cancelListener = listener
+    fun insertContinueListener(listener: () -> Unit) {
+        continueListener = listener
     }
 
     fun show() {

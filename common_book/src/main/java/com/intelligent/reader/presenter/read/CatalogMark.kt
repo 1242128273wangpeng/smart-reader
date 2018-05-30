@@ -1,6 +1,7 @@
 package com.intelligent.reader.presenter.read
 
 import android.app.Activity
+import com.ding.basic.bean.Book
 import com.dingyue.contract.IBaseView
 import com.dingyue.contract.IPresenter
 import net.lzbook.kit.data.bean.Bookmark

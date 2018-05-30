@@ -12,8 +12,6 @@ import android.view.*
 import android.widget.FrameLayout
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
-import com.intelligent.reader.activity.ReadingActivity
-import com.intelligent.reader.read.DataProvider
 import com.intelligent.reader.read.help.HorizontalEvent
 import com.intelligent.reader.read.help.IReadPageChange
 import com.intelligent.reader.read.help.IReadView

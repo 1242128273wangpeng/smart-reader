@@ -9,21 +9,6 @@ import net.lzbook.kit.data.bean.CoverPage
 
 interface CoverPageContract {
 
-    fun showRecommend(recommendBean: ArrayList<Book>) //获取推荐的书
-    fun showCoverError()
-    fun showRecommendError()
-    fun setShelfBtnClickable(clickable: Boolean)
-    fun successAddIntoShelf(isAddIntoShelf: Boolean) //是否成功加入书架
-    fun showArrow(isQGTitle: Boolean) //是否显示多源的下拉箭头
-    fun setCompound()
-    fun showCurrentSources(currentSource: String) // 显示来源地址
-
-    fun loadCoverWhenSourceChange() //换源重新加载书籍封面
-
-    fun onStartStatus(isBookSubed: Boolean) //onresume执行时改变状态
-
-
-
     /***
      * 加载封面页失败
      * **/
@@ -54,4 +39,18 @@ interface CoverPageContract {
      * **/
     fun changeShelfButtonClickable(clickable: Boolean)
 
+    /***
+     * 书籍订阅状态改变
+     * **/
+    fun bookSubscribeState(subscribe: Boolean)
+
+    /***
+     * 封面页推荐成功
+     * **/
+    fun showRecommendSuccess(recommendBean: ArrayList<Book>)
+
+    /***
+     * 封面页推荐失败
+     * **/
+    fun showRecommendFail()
 }

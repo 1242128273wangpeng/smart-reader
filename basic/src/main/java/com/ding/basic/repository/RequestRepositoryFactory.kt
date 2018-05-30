@@ -509,6 +509,25 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
 
+    override fun requestCoverRecommend(book_id: String, recommend: String, requestSubscriber: RequestSubscriber<CoverRecommendBean>) {
+        InternetRequestRepository.loadInternetRequestRepository(context).requestCoverRecommend(book_id, recommend)!!
+        .compose(SchedulerHelper.schedulerHelper<CoverRecommendBean>())
+                .subscribeWith(object : ResourceSubscriber<CoverRecommendBean>() {
+                    override fun onNext(result: CoverRecommendBean?) {
+                        requestSubscriber.onNext(result)
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        requestSubscriber.onError(throwable)
+                    }
+
+                    override fun onComplete() {
+                        requestSubscriber.onComplete()
+                    }
+                })
+    }
+
+
     override fun checkChapterCache(chapter: Chapter?): Boolean {
         if (chapter == null) {
             return false

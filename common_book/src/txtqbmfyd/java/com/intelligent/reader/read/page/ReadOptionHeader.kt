@@ -14,8 +14,6 @@ import android.widget.FrameLayout
 import android.widget.PopupWindow
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
-import com.intelligent.reader.activity.ReadingActivity
-import com.intelligent.reader.presenter.read.ReadOption
 import com.intelligent.reader.read.mode.ReadState
 import kotlinx.android.synthetic.txtqbmfyd.read_option_header.view.*
 import kotlinx.android.synthetic.txtqbmfyd.read_option_pop.view.*
@@ -31,7 +29,7 @@ import net.lzbook.kit.utils.onEnd
 /**
  * Created by xian on 2017/8/8.
  */
-class ReadOptionHeader : FrameLayout, ReadOption.View {
+class ReadOptionHeader : FrameLayout {
 
     override var presenter: ReadOption.Presenter? = null
 

@@ -9,6 +9,7 @@ import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.txtqbmfyd.act_login.*
+import kotlinx.android.synthetic.txtqbmfyd.pop_confirm_layout.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.user.Platform
@@ -95,10 +96,10 @@ class LoginActivity : FrameActivity() {
         progressDialog!!.setCanceledOnTouchOutside(false)
         progressDialog!!.setCancelable(true)
 
-        progressDialog!!.findViewById(R.id.publish_content).setVisibility(View.GONE)
+        progressDialog!!.publish_content.visibility = View.GONE
         (progressDialog!!.findViewById(R.id.dialog_title) as TextView).setText(R.string.tips_login)
-        progressDialog!!.findViewById(R.id.change_source_bottom).setVisibility(View.GONE)
-        progressDialog!!.findViewById(R.id.pgbar_loading).setVisibility(View.VISIBLE)
+        progressDialog!!.change_source_bottom.visibility = View.GONE
+        progressDialog!!.progress_del.visibility = View.VISIBLE
         progressDialog!!.setOnDismissListener {
             flagLoginEnd = true
         }

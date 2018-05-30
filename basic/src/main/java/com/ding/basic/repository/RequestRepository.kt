@@ -43,6 +43,9 @@ interface RequestRepository {
 
     fun requestUserInformation(token: String, appid: String, openid: String, requestSubscriber: RequestSubscriber<QQSimpleInfo>)
 
+    fun requestCoverRecommend(book_id: String, recommend: String, requestSubscriber: RequestSubscriber<CoverRecommendBean>)
+
+
     /************************* 本地数据 *************************/
 
     fun checkBookSubscribe(book_id: String): Book?

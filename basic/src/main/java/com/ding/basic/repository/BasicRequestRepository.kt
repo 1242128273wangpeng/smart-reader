@@ -39,7 +39,7 @@ interface BasicRequestRepository {
 
     fun requestFeedback(parameters: Map<String, String>): Flowable<NoBodyEntity>?
 
-
+    fun requestCoverRecommend(book_id: String, recommend: String): Flowable<CoverRecommendBean>?
 
 
 

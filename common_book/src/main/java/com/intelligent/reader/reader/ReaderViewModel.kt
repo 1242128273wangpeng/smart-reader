@@ -1,7 +1,6 @@
 package com.intelligent.reader.reader
 
 import com.intelligent.reader.DisposableAndroidViewModel
-import com.intelligent.reader.repository.BookCoverRepository
 import com.intelligent.reader.repository.ReaderRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers

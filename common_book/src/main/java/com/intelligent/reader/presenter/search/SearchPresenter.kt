@@ -6,10 +6,8 @@ import android.os.Bundle
 import android.text.TextUtils
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
-import com.intelligent.reader.activity.ReadingActivity
 import com.dingyue.contract.IPresenter
 import com.dingyue.contract.util.showToastMessage
-import com.intelligent.reader.read.help.BookHelper
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable

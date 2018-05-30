@@ -9,10 +9,7 @@ import android.view.View
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
 import com.dingyue.contract.util.showToastMessage
-import com.intelligent.reader.activity.ReadingActivity
 import com.intelligent.reader.cover.*
-import com.intelligent.reader.read.help.BookHelper
-import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.book.download.CacheManager

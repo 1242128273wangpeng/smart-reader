@@ -4,20 +4,19 @@ import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
-import android.view.ViewGroup
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
+import com.ding.basic.repository.RequestRepositoryFactory
+import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.BookRecommendAdapter
 import com.intelligent.reader.presenter.coverPage.CoverPageContract
 import com.intelligent.reader.presenter.coverPage.CoverPagePresenter
-import com.intelligent.reader.read.help.BookHelper
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbmfyd.act_book_cover.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -25,9 +24,10 @@ import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.CallBackDownload
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
 import com.dingyue.contract.router.RouterConfig
+import com.intelligent.reader.read.mode.ReadState.requestItem
+import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import java.text.MessageFormat
@@ -37,22 +37,28 @@ import java.util.concurrent.Callable
 @Route(path = RouterConfig.COVER_PAGE_ACTIVITY)
 class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageContract, CallBackDownload {
     private var loadingPage: LoadingPage? = null
-    private var mCoverPagePresenter: CoverPagePresenter? = null
-    private var mRecommendList: ArrayList<Book>? = null
-    private lateinit var mBookRecommedAdapter: BookRecommendAdapter
-    private var mBookDownlLoadState: DownloadState = DownloadState.NOSTART
+    private var coverPagePresenter: CoverPagePresenter? = null
+
+    private var recommendList: ArrayList<Book>? = null
+    private lateinit var bookRecommendAdapter: BookRecommendAdapter
+    private var bookDownloadState: DownloadState = DownloadState.NOSTART
+
+
+    private var bookId: String? = null
+    private var bookSourceId: String? = null
+    private var bookChapterId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         StatServiceUtils.statAppBtnClick(this, StatServiceUtils.cover_into)
         setContentView(R.layout.act_book_cover)
-        initData(intent)
+        initializeIntent(intent)
         initListener()
     }
 
 
     override fun onNewIntent(intent: Intent) {
-        initData(intent)
+        initializeIntent(intent)
     }
 
     private fun initListener() {
@@ -69,85 +75,73 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         book_cover_content.topShadow = img_head_shadow
     }
 
-    private fun initData(intent: Intent?) {
-
+    private fun initializeIntent(intent: Intent?) {
         if (intent != null) {
-            if (intent.hasExtra(Constants.REQUEST_ITEM)) {
-                requestItem = intent.getSerializableExtra(Constants.REQUEST_ITEM) as RequestItem
+            if (intent.hasExtra("book_id")) {
+                bookId = intent.getStringExtra("book_id")
+            }
+
+            if (intent.hasExtra("book_source_id")) {
+                bookSourceId = intent.getStringExtra("book_source_id")
+            }
+            if (intent.hasExtra("book_chapter_id")) {
+                bookChapterId = intent.getStringExtra("book_chapter_id")
             }
         }
-        requestItem?.let {
-            mCoverPagePresenter = CoverPagePresenter(it, this, this, this)
-            loadCoverInfo()
-        }
-        mBookRecommedAdapter = BookRecommendAdapter()
-        book_recommend_lv.adapter = mBookRecommedAdapter
-        book_recommend_lv.setOnItemClickListener { _, _, position, _ ->
-            mRecommendList?.let {
-                val book = it[position]
-                val data = HashMap<String, String>()
-                if (requestItem != null && requestItem!!.book_id != null) {
-                    data.put("bookid", requestItem!!.book_id)
-                    data.put("Tbookid", book.book_id)
+
+        if (!TextUtils.isEmpty(bookId) && (!TextUtils.isEmpty(bookSourceId) || !TextUtils.isEmpty(bookChapterId))) {
+            coverPagePresenter = CoverPagePresenter(bookId, bookSourceId, bookChapterId,this, this, this)
+            requestBookDetail()
+
+
+            bookRecommendAdapter = BookRecommendAdapter()
+
+            book_recommend_lv.adapter = bookRecommendAdapter
+            book_recommend_lv.setOnItemClickListener { _, _, position, _ ->
+                recommendList?.let {
+                    val book = it[position]
+                    val data = HashMap<String, String>()
+                    if (requestItem != null && requestItem!!.book_id != null) {
+                        data["bookid"] = requestItem!!.book_id
+                        data["Tbookid"] = book.book_id
+                    }
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.RECOMMENDEDBOOK, data)
+                    BookRouter.navigateCoverOrRead(this, book, BookRouter.NAVIGATE_TYPE_RECOMMEND)
                 }
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.RECOMMENDEDBOOK, data)
-                BookHelper.goToCoverOrRead(this, this, book, 2)
             }
         }
     }
 
-    private fun loadCoverInfo() {
+    private fun requestBookDetail() {
 
         if (loadingPage != null) {
-            loadingPage?.onSuccess()
+            loadingPage!!.onSuccess()
         }
 
-        loadingPage = LoadingPage(this, findViewById(R.id.book_cover_main) as ViewGroup,
+        loadingPage = LoadingPage(this, findViewById(R.id.book_cover_main),
                 LoadingPage.setting_result)
 
-        requestItem?.let {
-            mCoverPagePresenter?.requestBookDetail(false)
-            it.channel_code = 2
+        if (coverPagePresenter != null) {
+            coverPagePresenter?.requestBookDetail(false)
         }
 
         if (loadingPage != null) {
-            loadingPage?.setReloadAction(Callable<Void> {
-                mCoverPagePresenter?.requestBookDetail(false)
+            loadingPage!!.setReloadAction(Callable<Void> {
+                if (coverPagePresenter != null) {
+                    coverPagePresenter?.requestBookDetail(false)
+                }
                 null
             })
         }
-
-        mCoverPagePresenter?.getRecommend()
     }
 
 
     override fun onTaskStatusChange(book_id: String?) {
-        getBookDownLoadState(book_id)
+        requestBookDownloadState(book_id)
     }
 
     override fun onTaskFinish(book_id: String?) {
-        getBookDownLoadState(book_id)
-    }
-
-    private fun getBookDownLoadState(book_id: String?) {
-        requestItem?.let {
-            if (book_id == it.toBook().book_id) {
-                val downlLoadState = CacheManager.getBookStatus(it.toBook())
-                mBookDownlLoadState = downlLoadState
-                Log.d("Cover Page", "getBookDownLoadState downlLoadState: " + downlLoadState)
-                when (downlLoadState) {
-                    DownloadState.FINISH -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_finish)
-                    DownloadState.PAUSEED -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_pause)
-                    DownloadState.NOSTART -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_normal)
-                    DownloadState.DOWNLOADING -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_running)
-                    else -> {
-                    }
-                }
-            }
-            if (!mCoverPagePresenter!!.isBookSubed()) {
-                book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_normal)
-            }
-        }
+        requestBookDownloadState(book_id)
     }
 
     override fun onTaskFailed(book_id: String?, t: Throwable?) {
@@ -158,8 +152,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun onResume() {
         super.onResume()
-        if (mCoverPagePresenter != null) {
-            mCoverPagePresenter?.checkBookStatus()
+        if (coverPagePresenter != null) {
+            coverPagePresenter?.refreshNavigationState()
         }
         CacheManager.listeners.add(this)
     }
@@ -171,42 +165,44 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
 
     override fun onClick(view: View) {
-        if (mCoverPagePresenter != null) {
-            mCoverPagePresenter?.goToBookSearchActivity(view)
+        if (coverPagePresenter != null) {
+            coverPagePresenter?.checkStartSearchActivity(view)
         }
         when (view.id) {
             R.id.book_cover_back -> {
                 val data = HashMap<String, String>()
-                data.put("type", "1")
+                data["type"] = "1"
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.BACK, data)
                 finish()
             }
 
-            R.id.book_cover_bookshelf -> if (mCoverPagePresenter != null) {
-                mCoverPagePresenter?.handleBookShelfAction(true)
+            R.id.book_cover_bookshelf -> if (coverPagePresenter != null) {
+                coverPagePresenter?.handleBookShelfAction(true)
             }
 
             R.id.book_cover_reading -> {
                 //转码阅读点击的统计
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_trans_read)
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEREAD)
-                if (mCoverPagePresenter != null) {
-                    mCoverPagePresenter?.bookCoverReading()
+                if (coverPagePresenter != null) {
+                    coverPagePresenter?.handleReadingAction()
                 }
             }
 
             R.id.book_cover_download_iv -> {
-                requestItem?.let {
+                bookId?.let {
                     StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_all_load)
-                    val data3 = HashMap<String, String>()
-                    data3.put("bookId", it.book_id)
-                    if (mCoverPagePresenter != null) {
-                        getBookDownLoadState(it.book_id)
-                        if (mBookDownlLoadState == DownloadState.DOWNLOADING) {
-                            CacheManager.stop(it.book_id)
+                    val dataDownload = HashMap<String, String>()
+                    dataDownload["bookId"] = it
+
+                    if (coverPagePresenter != null) {
+                        requestBookDownloadState(it)
+
+                        if (bookDownloadState == DownloadState.DOWNLOADING) {
+                            CacheManager.stop(it)
                         } else {
-                            mCoverPagePresenter?.downLoadBook()
-                            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CASHEALL, data3)
+                            coverPagePresenter?.handleDownloadAction()
+                            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CASHEALL, dataDownload)
                         }
                     }
                 }
@@ -215,13 +211,13 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 //书籍详情页查看目录点击
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_to_catalogue)
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CATALOG)
-                if (mCoverPagePresenter != null) {
-                    mCoverPagePresenter?.startCatalogActivity(true)
+                if (coverPagePresenter != null) {
+                    coverPagePresenter?.startCatalogActivity(true)
                 }
             }
             R.id.book_cover_last_chapter_tv -> {
-                if (mCoverPagePresenter != null) {
-                    mCoverPagePresenter?.startCatalogActivity(false)
+                if (coverPagePresenter != null) {
+                    coverPagePresenter?.startCatalogActivity(false)
                 }
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.LATESTCHAPTER)
             }
@@ -236,75 +232,46 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             e.printStackTrace()
         }
 
-        if (mCoverPagePresenter != null) {
-            mCoverPagePresenter?.destory()
+        if (coverPagePresenter != null) {
+            coverPagePresenter?.destroy()
         }
         super.onDestroy()
     }
 
+    /***
+     * 获取下载状态
+     * **/
+    private fun requestBookDownloadState(book_id: String?) {
+        if (!TextUtils.isEmpty(book_id)) {
 
-    override fun showRecommend(recommendBean: ArrayList<Book>) {
-        mRecommendList = recommendBean
-//        Log.e("showRecommend", "showRecommend : recommendBeans size" + recommendBean.size)
-        mBookRecommedAdapter.setData(recommendBean)
-    }
+            book_cover_download_iv.visibility = View.VISIBLE
 
-    override fun showCoverError() {
-        if (loadingPage != null) {
-            loadingPage?.onError()
-        }
-        this.showToastMessage("请求失败！")
-    }
+            book_id?.let {
+                val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(it)
 
-    override fun showRecommendError() {
+                if (book != null) {
 
-    }
+                    val downloadState = CacheManager.getBookStatus(book)
 
-    override fun successAddIntoShelf(isAddIntoShelf: Boolean) {
-        if (isAddIntoShelf) {
-            book_cover_bookshelf.setText(R.string.book_cover_remove_bookshelf)
-//            setRemoveBtn()
-        } else {
-            book_cover_bookshelf.setText(R.string.book_cover_add_bookshelf)
-//            setAddShelfBtn()
-        }
-    }
+                    bookDownloadState = downloadState
 
-    override fun showArrow(isQGTitle: Boolean) {
-        if (isQGTitle) {
-            if (book_cover_source_form != null) {
-                book_cover_source_form.text = "青果阅读"
+                    when (downloadState) {
+                        DownloadState.FINISH -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_finish)
+                        DownloadState.PAUSEED -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_pause)
+                        DownloadState.NOSTART -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_normal)
+                        DownloadState.DOWNLOADING -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_running)
+                        else -> {
+
+                        }
+                    }
+                } else {
+                    book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_normal)
+                }
             }
-        }
-    }
-
-    override fun showCurrentSources(currentSource: String) {
-        book_cover_source_form.text = currentSource
-    }
-
-    override fun setCompound() {
-        book_cover_source_form.setCompoundDrawables(null, null, null, null)
-    }
-
-    override fun setShelfBtnClickable(clickable: Boolean) {
-        book_cover_bookshelf.isClickable = clickable
-    }
-
-
-    override fun loadCoverWhenSourceChange() {
-        loadCoverInfo()
-    }
-
-    override fun onStartStatus(isBookSubed: Boolean) {
-        if (isBookSubed) {
-            book_cover_bookshelf.setText(R.string.book_cover_remove_bookshelf)
-//            setRemoveBtn()
         } else {
-//            setAddShelfBtn()
+            book_cover_download_iv.visibility = View.GONE
         }
     }
-
-
 
 
     override fun showLoadingFail() {
@@ -321,7 +288,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     }
 
     override fun showCoverDetail(book: Book?) {
-        if(isFinishing){
+        if (isFinishing) {
             return
         }
 
@@ -417,18 +384,23 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     }
 
     override fun changeDownloadButtonStatus() {
-        val book = mCoverPagePresenter?.getBook() ?: return
+        val book = coverPagePresenter?.loadCoverBook() ?: return
         val status = CacheManager.getBookStatus(book)
-        mBookDownlLoadState = status
-        mCoverPagePresenter?.let {
+        bookDownloadState = status
+
+        coverPagePresenter?.let {
             when (status) {
                 DownloadState.FINISH -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_finish)
                 DownloadState.PAUSEED -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_pause)
                 DownloadState.NOSTART -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_normal)
                 DownloadState.DOWNLOADING -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_running)
+                else -> {
+
+                }
             }
         }
-        if (!mCoverPagePresenter!!.isBookSubed()) {
+
+        if (!coverPagePresenter!!.checkBookSubscribe()) {
             book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_normal)
         }
     }
@@ -445,5 +417,20 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         if (book_cover_bookshelf != null) {
             book_cover_bookshelf.isClickable = clickable
         }
+    }
+
+    override fun bookSubscribeState(subscribe: Boolean) {
+        if (subscribe) {
+            book_cover_bookshelf!!.setText(R.string.book_cover_remove_bookshelf)
+        }
+    }
+
+    override fun showRecommendSuccess(recommendBean: ArrayList<Book>) {
+        recommendList = recommendBean
+        bookRecommendAdapter.setData(recommendBean)
+    }
+
+    override fun showRecommendFail() {
+
     }
 }
