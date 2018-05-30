@@ -1,10 +1,10 @@
 package com.dingyue.downloadmanager
 
+import com.ding.basic.bean.Book
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
-import net.lzbook.kit.data.db.table.ChapterTable
 import net.lzbook.kit.utils.StatServiceUtils
 import java.util.*
 
@@ -40,7 +40,7 @@ object DownloadManagerLogger {
             data["bookid"] = bookId
         } else if (status == DownloadState.DOWNLOADING || status == DownloadState.WAITTING) {
             data["type"] = "2"
-            data[ChapterTable.SPEED] = "$progress/100"
+            data["speed"] = "$progress/100"
         } else {
             data["type"] = "1"
         }

@@ -1,12 +1,10 @@
 package com.intelligent.reader.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -27,7 +25,6 @@ import com.intelligent.reader.widget.topshadow.TopShadowWebView;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.RequestItem;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;

@@ -5,6 +5,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.ding.basic.bean.LocalLog;
 import com.logcat.sdk.LogEncapManager;
 
 import net.lzbook.kit.app.BaseBookApplication;
@@ -27,6 +28,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+/**
+ * Created by Administrator on 2017\8\14 0014.
+ */
 
 public class StartLogClickUtil {
 
@@ -349,13 +354,13 @@ public class StartLogClickUtil {
         final ServerLog log = getCommonLog();
 
 
-        log.PutContent("code", identify);//点击事件唯一标识
-        log.PutContent("page_code", pageCode);
-        log.PutContent("pre_page_code", getPrePageCode(pageCode));
+        log.putContent("code", identify);//点击事件唯一标识
+        log.putContent("page_code", pageCode);
+        log.putContent("pre_page_code", getPrePageCode(pageCode));
 
 
-        AppLog.e("log", log.GetContent().toString());
-        if (identify.equals(APPINIT)) log.setEventType(ServerLog.MINORITY);
+        AppLog.e("log", log.getContent().toString());
+        if (identify.equals(APPINIT)) log.setEventType(LocalLog.getMINORITY());
 
         AndroidLogStorage.getInstance().accept(log);
     }
@@ -364,12 +369,12 @@ public class StartLogClickUtil {
     public static void sendDirectLog(PLItemKey key, String page, String identify, Map<String, String> params) {
         LogGroup logGroup = new LogGroup("", "", key.getProject(), PLItemKey.ZN_APP_EVENT.getLogstore());
         ServerLog log = getCommonLog();
-        log.PutContent("code", identify);//点击事件唯一标识
-        log.PutContent("page_code", page);
+        log.putContent("code", identify);//点击事件唯一标识
+        log.putContent("page_code", page);
 
         Set<Map.Entry<String, String>> entries = params.entrySet();
         for (Map.Entry<String, String> entry : entries) {
-            log.PutContent(entry.getKey(), entry.getValue());
+            log.putContent(entry.getKey(), entry.getValue());
         }
 
         logGroup.PutLog(log);
@@ -389,22 +394,22 @@ public class StartLogClickUtil {
     private static ServerLog getCommonLog() {
         final ServerLog log = new ServerLog(PLItemKey.ZN_APP_EVENT);
 
-        log.PutContent("project", PLItemKey.ZN_APP_EVENT.getProject());
-        log.PutContent("logstore", PLItemKey.ZN_APP_EVENT.getLogstore());
+        log.putContent("project", PLItemKey.ZN_APP_EVENT.getProject());
+        log.putContent("logstore", PLItemKey.ZN_APP_EVENT.getLogstore());
 
         if (UserManager.INSTANCE.isUserLogin()) {
-            log.PutContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
+            log.putContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
         } else {
-            log.PutContent("uid", "");
+            log.putContent("uid", "");
         }
 
-        log.PutContent("os", "android");//手机操作系统
-        log.PutContent("log_time", System.currentTimeMillis() + "");//日志产生时间（毫秒数）
-        log.PutContent("network", NetWorkUtils.NETTYPE);//网络状况
-        log.PutContent("longitude", Constants.longitude + "");//经度
-        log.PutContent("latitude", Constants.latitude + "");//纬度
-        log.PutContent("city_info", Constants.adCityInfo);//城市
-        log.PutContent("location_detail", Constants.adLocationDetail);//具体位置信息
+        log.putContent("os", "android");//手机操作系统
+        log.putContent("log_time", System.currentTimeMillis() + "");//日志产生时间（毫秒数）
+        log.putContent("network", NetWorkUtils.NETTYPE);//网络状况
+        log.putContent("longitude", Constants.longitude + "");//经度
+        log.putContent("latitude", Constants.latitude + "");//纬度
+        log.putContent("city_info", Constants.adCityInfo);//城市
+        log.putContent("location_detail", Constants.adLocationDetail);//具体位置信息
         return log;
     }
 
@@ -415,32 +420,32 @@ public class StartLogClickUtil {
         }
         final ServerLog log = new ServerLog(PLItemKey.ZN_APP_EVENT);
 
-        log.PutContent("project", PLItemKey.ZN_APP_EVENT.getProject());
-        log.PutContent("logstore", PLItemKey.ZN_APP_EVENT.getLogstore());
-        log.PutContent("code", identify);//点击事件唯一标识
-        log.PutContent("page_code", pageCode);
+        log.putContent("project", PLItemKey.ZN_APP_EVENT.getProject());
+        log.putContent("logstore", PLItemKey.ZN_APP_EVENT.getLogstore());
+        log.putContent("code", identify);//点击事件唯一标识
+        log.putContent("page_code", pageCode);
 
         if (UserManager.INSTANCE.isUserLogin()) {
-            log.PutContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
+            log.putContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
         } else {
-            log.PutContent("uid", "");
+            log.putContent("uid", "");
         }
 
-        log.PutContent("os", "android");//手机操作系统
-        log.PutContent("log_time", System.currentTimeMillis() + "");//日志产生时间（毫秒数）
-        log.PutContent("network", NetWorkUtils.NETTYPE);//网络状况
-        log.PutContent("longitude", Constants.longitude + "");//经度
-        log.PutContent("latitude", Constants.latitude + "");//纬度
-        log.PutContent("city_info", Constants.adCityInfo);//城市
-        log.PutContent("location_detail", Constants.adLocationDetail);//具体位置信息
-        log.PutContent("pre_page_code", getPrePageCode(pageCode));
+        log.putContent("os", "android");//手机操作系统
+        log.putContent("log_time", System.currentTimeMillis() + "");//日志产生时间（毫秒数）
+        log.putContent("network", NetWorkUtils.NETTYPE);//网络状况
+        log.putContent("longitude", Constants.longitude + "");//经度
+        log.putContent("latitude", Constants.latitude + "");//纬度
+        log.putContent("city_info", Constants.adCityInfo);//城市
+        log.putContent("location_detail", Constants.adLocationDetail);//具体位置信息
+        log.putContent("pre_page_code", getPrePageCode(pageCode));
 
         //事件对应的额外的参数部分
 
         if (extraParam != null) {
-            log.PutContent("data", FormatUtil.forMatMap(extraParam));
+            log.putContent("data", FormatUtil.forMatMap(extraParam));
         }
-        AppLog.e("log", log.GetContent().toString());
+        AppLog.e("log", log.getContent().toString());
         AndroidLogStorage.getInstance().accept(log);
 
     }
@@ -452,13 +457,13 @@ public class StartLogClickUtil {
         }
         final ServerLog log = new ServerLog(PLItemKey.ZN_APP_APPSTORE);
         if (UserManager.INSTANCE.isUserLogin()) {
-            log.PutContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
+            log.putContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
         } else {
-            log.PutContent("uid", "");
+            log.putContent("uid", "");
         }
-        log.PutContent("apps", applist);
-        log.PutContent("time", System.currentTimeMillis() + "");
-        AppLog.e("log", log.GetContent().toString());
+        log.putContent("apps", applist);
+        log.putContent("time", System.currentTimeMillis() + "");
+        AppLog.e("log", log.getContent().toString());
         AndroidLogStorage.getInstance().accept(log);
     }
 
@@ -499,30 +504,30 @@ public class StartLogClickUtil {
         }
         ServerLog log = new ServerLog(PLItemKey.ZN_APP_READ_CONTENT);
         if (UserManager.INSTANCE.isUserLogin()) {
-            log.PutContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
+            log.putContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
         } else {
-            log.PutContent("uid", "");
+            log.putContent("uid", "");
         }
         if (params != null) {
-            log.PutContent("book_id", params[0]);//书籍唯一字符串
-            log.PutContent("chapter_id", params[1]);//阅读章节唯一字符串
-            log.PutContent("source_ids", params[2]);//使用书籍源，中间有切换源则多个源使用分隔符"`"进行连接，尽量准确获取（不丢数据）
-            log.PutContent("page_num", params[3]);//当前阅读章节被切分的总页数
-            log.PutContent("pager", params[4]);//章节页数索引，即当前为第几页
-            log.PutContent("page_size", params[5]);//当前页尺寸，可以是byte或总字数（包括所有字符，需要知道当前页内容）
-            log.PutContent("from", params[6]);//当前页面来源，所有可能来源的映射唯一字符串。书籍封面/书架/上一页翻页等等（不包括退出App后在进入来源）
-            log.PutContent("begin_time", params[7]);//进入当前页时间戳（秒数）
-            log.PutContent("end_time", params[8]);//退出当前页时间戳（秒数）（不包括用户退出App在进来，即该时间表示为用户主动翻页和主动退出阅读）
-            log.PutContent("read_time", params[9]);//总阅读时长秒数（考虑中间退出App的时长不应该包括进来，即排除打电话等时间）
-            log.PutContent("has_exit", params[10]);//是否有阅读中间退出行为
-            log.PutContent("channel_code", params[11]);//书籍来源1为青果，2为智能
-            log.PutContent("lon", Constants.longitude + "");//经度
-            log.PutContent("lat", Constants.latitude + "");//纬度
+            log.putContent("book_id", params[0]);//书籍唯一字符串
+            log.putContent("chapter_id", params[1]);//阅读章节唯一字符串
+            log.putContent("source_ids", params[2]);//使用书籍源，中间有切换源则多个源使用分隔符"`"进行连接，尽量准确获取（不丢数据）
+            log.putContent("page_num", params[3]);//当前阅读章节被切分的总页数
+            log.putContent("pager", params[4]);//章节页数索引，即当前为第几页
+            log.putContent("page_size", params[5]);//当前页尺寸，可以是byte或总字数（包括所有字符，需要知道当前页内容）
+            log.putContent("from", params[6]);//当前页面来源，所有可能来源的映射唯一字符串。书籍封面/书架/上一页翻页等等（不包括退出App后在进入来源）
+            log.putContent("begin_time", params[7]);//进入当前页时间戳（秒数）
+            log.putContent("end_time", params[8]);//退出当前页时间戳（秒数）（不包括用户退出App在进来，即该时间表示为用户主动翻页和主动退出阅读）
+            log.putContent("read_time", params[9]);//总阅读时长秒数（考虑中间退出App的时长不应该包括进来，即排除打电话等时间）
+            log.putContent("has_exit", params[10]);//是否有阅读中间退出行为
+            log.putContent("channel_code", params[11]);//书籍来源1为青果，2为智能
+            log.putContent("lon", Constants.longitude + "");//经度
+            log.putContent("lat", Constants.latitude + "");//纬度
 
 
         }
 
-        AppLog.e("log", log.GetContent().toString());
+        AppLog.e("log", log.getContent().toString());
         AndroidLogStorage.getInstance().accept(log);
     }
 
@@ -533,21 +538,21 @@ public class StartLogClickUtil {
         }
         final ServerLog log = new ServerLog(PLItemKey.ZN_APP_FEEDBACK);
         if (UserManager.INSTANCE.isUserLogin()) {
-            log.PutContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
+            log.putContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
         } else {
-            log.PutContent("uid", "");
+            log.putContent("uid", "");
         }
         if (bean != null) {
-            log.PutContent("bookSourceId", bean.bookSourceId);
-            log.PutContent("bookName", decode(bean.bookName));
-            log.PutContent("author", decode(bean.author));
-            log.PutContent("bookChapterId", bean.bookChapterId);
-            log.PutContent("chapterId", bean.chapterId);
-            log.PutContent("chapterName", decode(bean.chapterName));
-            log.PutContent("serial", String.valueOf(bean.serial));
-            log.PutContent("host", bean.host);
-            log.PutContent("type", String.valueOf(bean.type));
-            log.PutContent("channel_code", bean.channelCode);
+            log.putContent("bookSourceId", bean.bookSourceId);
+            log.putContent("bookName", decode(bean.bookName));
+            log.putContent("author", decode(bean.author));
+            log.putContent("bookChapterId", bean.bookChapterId);
+            log.putContent("chapterId", bean.chapterId);
+            log.putContent("chapterName", decode(bean.chapterName));
+            log.putContent("serial", String.valueOf(bean.serial));
+            log.putContent("host", bean.host);
+            log.putContent("type", String.valueOf(bean.type));
+            log.putContent("channel_code", bean.channelCode);
         }
 
         String channelId = AppUtils.getChannelId();
@@ -560,20 +565,20 @@ public class StartLogClickUtil {
         String latitude = Constants.latitude + "";
         String cityCode = Constants.cityCode;
 
-        log.PutContent("packageName", packageName);
-        log.PutContent("version", version);
-        log.PutContent("version_code", version_code);
-        log.PutContent("channelId", channelId);
-        log.PutContent("os", os);
-        log.PutContent("udid", udid);
-        log.PutContent("longitude", longitude);
-        log.PutContent("latitude", latitude);
-        log.PutContent("cityCode", cityCode);
+        log.putContent("packageName", packageName);
+        log.putContent("version", version);
+        log.putContent("version_code", version_code);
+        log.putContent("channelId", channelId);
+        log.putContent("os", os);
+        log.putContent("udid", udid);
+        log.putContent("longitude", longitude);
+        log.putContent("latitude", latitude);
+        log.putContent("cityCode", cityCode);
 
-        log.PutContent("os", "android");
-        log.PutContent("network", NetWorkUtils.getNetWorkTypeNew(BaseBookApplication.getGlobalContext()));
-        log.PutContent("city_info", Constants.adCityInfo);
-        log.PutContent("location_detail", Constants.adLocationDetail);
+        log.putContent("os", "android");
+        log.putContent("network", NetWorkUtils.getNetWorkTypeNew(BaseBookApplication.getGlobalContext()));
+        log.putContent("city_info", Constants.adCityInfo);
+        log.putContent("location_detail", Constants.adLocationDetail);
 
         AndroidLogStorage.getInstance().accept(log);
     }

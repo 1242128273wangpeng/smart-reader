@@ -1,42 +1,24 @@
 package net.lzbook.kit.utils;
 
-import com.google.gson.JsonObject;
+import android.content.Context;
+import android.content.Intent;
+import android.preference.PreferenceManager;
 
-import com.quduquxie.bean.BookListMode;
-import com.quduquxie.network.DataService;
-import com.quduquxie.network.DataServiceNew;
-import com.quduquxie.utils.DataUtil;
+import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.request.RequestSubscriber;
+import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.ActionConstants;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.NoBodyEntity;
 import net.lzbook.kit.data.bean.ChapterErrorBean;
-import net.lzbook.kit.data.db.BookDaoHelper;
-import net.lzbook.kit.net.custom.service.NetService;
-import net.lzbook.kit.request.own.OWNParser;
 
-import org.json.JSONException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import android.content.Context;
-import android.content.Intent;
-import android.preference.PreferenceManager;
-import android.text.TextUtils;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
-
 public class LoadDataManager {
-
-    private static final String TAG = LoadDataManager.class.getSimpleName();
 
     private Context context;
     private SharedPreferencesUtils sharedPreferencesUtils;
@@ -48,142 +30,29 @@ public class LoadDataManager {
 
     //初始化书架，添加默认书籍
     public void addDefaultBooks() {
-        Observable<JsonObject> defaultBook = NetService.INSTANCE.getUserService().getDefaultBook();
-        defaultBook.subscribeOn(Schedulers.io()).observeOn(Schedulers.io()).subscribe(new Consumer<JsonObject>() {
+
+        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestDefaultBooks(new RequestSubscriber<Boolean>() {
             @Override
-            public void accept(@NonNull JsonObject jsonObject) throws Exception {
-                try {
-                    ArrayList<Book> iBooks = OWNParser.parserOwnDefaultBook(jsonObject.toString(), BaseBookApplication.getGlobalContext());
-                    if (iBooks != null && iBooks.size() > 0) {
-                        saveDefaultBooks(iBooks);
-                        sharedPreferencesUtils.putBoolean(Constants.ADD_DEFAULT_BOOKS, true);
+            public void requestResult(Boolean result) {
+                if (result) {
+                    sharedPreferencesUtils.putBoolean(Constants.ADD_DEFAULT_BOOKS, true);
 
-                        Intent intent = new Intent(ActionConstants.ACTION_ADD_DEFAULT_SHELF);
-                        context.sendBroadcast(intent);
-
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
-                throwable.printStackTrace();
-            }
-        });
-
-
-    }
-
-    /**
-     * 数据库存入加入默认书籍
-     */
-    private void saveDefaultBooks(ArrayList<Book> iBooks) {
-        BookDaoHelper daoHelper = BookDaoHelper.getInstance();
-        for (Book iBook : iBooks) {
-            if (!daoHelper.isBookSubed(iBook.book_id)) {
-                if (daoHelper.insertBook(iBook)) {
-                    AppLog.i(TAG, "iBook.last_updateSucessTime = " + iBook.last_updateSucessTime);
-                }
-            }
-        }
-    }
-
-    public void updateShelfBooks() {
-        //智能书籍完结和连载状态的更新
-        updateZNBookState();
-
-        //青果书籍完结和连载状态的更新
-        final BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
-        final ArrayList<Book> qgBooks = bookDaoHelper.getBooksNotFinishQG();
-        if (qgBooks == null) {
-            return;
-        }
-        StringBuffer idBuffer = new StringBuffer();
-        for (int i = 0; i < qgBooks.size(); i++) {
-            Book book = qgBooks.get(i);
-            if (!TextUtils.isEmpty(book.book_id)) {
-                if (i == qgBooks.size() - 1) {
-                    idBuffer.append("id=").append(book.book_id);
-                } else {
-                    idBuffer.append("id=").append(book.book_id).append("&");
-                }
-            }
-        }
-        StringBuilder builder = new StringBuilder();
-        builder.append(DataUtil.BOOK_BATCH_URL).append("?" + idBuffer.toString());
-
-        String udid = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext());
-        String url = DataUtil.QGBuildUrl(context, builder.toString(), udid, true);
-
-        if (qgBooks.isEmpty()) {
-            return;
-        }
-
-        DataService.checkBookUpdate(url, new DataServiceNew.DataServiceCallBack() {
-            @Override
-            public void onSuccess(Object result) {
-                if (result != null) {
-                    BookListMode bookListMode = (BookListMode) result;
-                    AppLog.e("LoadDataManager.checkBookUpdate", "booklistMode.success" + bookListMode.success);
-                    for (com.quduquxie.bean.Book book : bookListMode.bookList) {
-                        AppLog.e("LoadDataManager.checkBookUpdate", "book信息：" + book.id_book + "/" + book.name + "/" + book.attribute_book);
-                        for (int i = 0; i < qgBooks.size(); i++) {
-
-                            Book qgBook = qgBooks.get(i);
-                            if (qgBook.book_id.equals(book.id_book)) {
-                                if ("finish".equals(book.attribute_book)) {
-                                    qgBook.status = 2;
-                                } else if ("serialize".equals(book.attribute_book)) {
-                                    qgBook.status = 1;
-                                }
-                                if (bookDaoHelper.updateBook(qgBook)) {
-                                    AppLog.e("LoadDataManager.checkBookUpdate", "书架青果书籍: " + book.name + "完结/连载状态已更新!");
-                                }
-                            }
-
-                        }
-                    }
-
-                    Intent intent = new Intent(ActionConstants.ACTION_CHECK_QING_STATE_SUCCESS);
+                    Intent intent = new Intent(ActionConstants.ACTION_ADD_DEFAULT_SHELF);
                     context.sendBroadcast(intent);
                 }
             }
 
             @Override
-            public void onError(Exception error) {
-                error.printStackTrace();
+            public void requestError(@NotNull String message) {
+                Logger.i("获取默认书籍异常！ " + message);
+            }
+
+            @Override
+            public void requestComplete() {
+                Logger.i("获取默认书籍完成！");
             }
         });
     }
-
-
-    private void updateZNBookState() {
-        final BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
-        ArrayList<Book> books = bookDaoHelper.getOwnBooksList();
-        if (books == null || books.isEmpty()) {
-            return;
-        }
-        HashMap<String, String> parameter = new HashMap<>();
-        StringBuffer idBuffer = new StringBuffer();
-        StringBuffer sourceBuffer = new StringBuffer();
-        for (int i = 0; i < books.size(); i++) {
-            Book book = books.get(i);
-            if (!TextUtils.isEmpty(book.book_id) && !TextUtils.isEmpty(book.book_source_id)) {
-                if (i == books.size() - 1) {
-                    idBuffer.append(book.book_id);
-                    sourceBuffer.append(book.book_source_id);
-                } else {
-                    idBuffer.append(book.book_id + "$$");
-                    sourceBuffer.append(book.book_source_id + "$$");
-                }
-            }
-        }
-        parameter.put("book_ids", idBuffer.toString());
-        parameter.put("book_source_ids", sourceBuffer.toString());
-    }
-
 
     //阅读页错误反馈
     public void submitBookError(ChapterErrorBean chapterErrorBean) {
@@ -200,33 +69,21 @@ public class LoadDataManager {
         data.put("type", String.valueOf(chapterErrorBean.type));
 
 
-        Observable<NoBodyEntity> send = NetService.INSTANCE.getUserService().sendFeedBack(data);
-        send.observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Observer<NoBodyEntity>() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d) {
-                    }
+        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestFeedback(data, new RequestSubscriber<Boolean>() {
+            @Override
+            public void requestResult(@Nullable Boolean result) {
 
-                    @Override
-                    public void onNext(@NonNull NoBodyEntity noBodyEntity) {
-                    }
+            }
 
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-                        try {
-                            e.toString();
-                        } finally {
-                            e.printStackTrace();
-                        }
-                    }
+            @Override
+            public void requestError(@NotNull String message) {
 
-                    @Override
-                    public void onComplete() {
+            }
 
-                    }
-                });
+            @Override
+            public void requestComplete() {
 
-
+            }
+        });
     }
 }

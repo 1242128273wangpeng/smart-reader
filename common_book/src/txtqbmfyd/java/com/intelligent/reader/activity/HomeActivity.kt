@@ -11,7 +11,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
@@ -52,9 +51,7 @@ import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.cache.DataCleanManager
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.constants.SPKeys
 import net.lzbook.kit.data.bean.ReadConfig
-import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*

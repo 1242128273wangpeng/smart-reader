@@ -1,9 +1,9 @@
 package net.lzbook.kit.cache;
 
+import net.lzbook.kit.constants.ReplaceConstants;
+
 import android.content.Context;
 import android.os.Environment;
-
-import net.lzbook.kit.constants.ReplaceConstants;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -69,9 +69,11 @@ public class DataCleanManager {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) && cache.exists()) {
             deleteDir(cache);
         } else {
-            cache = new File(context.getCacheDir(), ReplaceConstants.getReplaceConstants().APP_PATH);
-            if (cache.exists()) {
-                deleteDir(cache);
+            if(context != null){
+                cache = new File(context.getCacheDir(), ReplaceConstants.getReplaceConstants().APP_PATH);
+                if (cache.exists()) {
+                    deleteDir(cache);
+                }
             }
         }
 //            }
@@ -82,14 +84,20 @@ public class DataCleanManager {
     private static boolean deleteDir(File dir) {
         if (dir != null && dir.isDirectory()) {
             String[] children = dir.list();
-            for (int i = 0; i < children.length; i++) {
-                boolean success = deleteDir(new File(dir, children[i]));
-                if (!success) {
-                    return false;
+            if(children != null && children.length > 0){
+                for (int i = 0; i < children.length; i++) {
+                    boolean success = deleteDir(new File(dir, children[i]));
+                    if (!success) {
+                        return false;
+                    }
                 }
             }
         }
-        return dir.delete();
+        if(dir != null){
+            return dir.delete();
+        }else{
+            return false;
+        }
     }
 
     // 获取文件
@@ -118,7 +126,7 @@ public class DataCleanManager {
         double kiloByte = size / 1024;
         if (kiloByte < 1) {
             // return size + "Byte";
-            return "0B";
+            return "0K";
         }
 
         double megaByte = kiloByte / 1024;

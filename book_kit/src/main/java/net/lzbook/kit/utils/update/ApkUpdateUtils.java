@@ -13,29 +13,25 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ding.basic.bean.ApplicationUpdate;
+import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.request.RequestSubscriber;
 import com.dingyue.contract.util.CommonUtil;
-import com.google.gson.JsonObject;
+import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.R;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.MyDialog;
-import net.lzbook.kit.net.custom.service.NetService;
-import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
 
-import org.json.JSONException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
-
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Administrator on 2016/9/21.
@@ -51,78 +47,65 @@ public class ApkUpdateUtils {
     public void getApkUpdateInfo(final Context context, final Handler handler, final String from) throws Exception {
         Map<String, String> params = new HashMap<>();
         String versionName = AppUtils.getVersionName();
-//        versionName = versionName.substring(0,3);
         params.put("versionName", versionName);
 
-        NetService.INSTANCE.getUserService().checkAppUpdate(params)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Observer<JsonObject>() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d) {
-                        AppLog.e("ApkUpdateUtils", "开始检查是否需要升级应用");
-                    }
-
-                    @Override
-                    public void onNext(@NonNull JsonObject result) {
-                        try {
-                            ApkUpdateInfo apkUpdateInfo = new ApkUpdateInfo(result.toString());
-                            final ApkUpdateInfo finalApkUpdateInfo = apkUpdateInfo;
-//                            handler.post(new Runnable() {
-//                                @Override
-//                                public void run() {
+        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestApplicationUpdate(params, new RequestSubscriber<ApplicationUpdate>() {
+            @Override
+            public void requestResult(@Nullable final ApplicationUpdate result) {
+                if (result != null) {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
                             if ("SettingActivity".equals(from)) {
                                 type = 2;
-                                doUpdateFromSettingACT(finalApkUpdateInfo);
+                                doUpdateFromSettingACT(result);
                             } else if ("HomeActivity".equals(from)) {
                                 type = 1;
-                                doUpdate(finalApkUpdateInfo);
+                                doUpdate(result);
                             }
-//                                }
-//                            });
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
-                    }
+                    });
+                }
+            }
 
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-                        CommonUtil.showToastMessage("网络不给力哦!", 0L);
-                    }
+            @Override
+            public void requestError(@NotNull String message) {
+                CommonUtil.showToastMessage(message);
+            }
 
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+            @Override
+            public void requestComplete() {
+                Logger.e("获取版本更新完成！");
+            }
+        });
     }
 
-    public void doUpdate(ApkUpdateInfo apkUpdateInfo) {
-        String fileName = AppUtils.getPackageName() + "_" + apkUpdateInfo.updateVersion + ".apk";
-        if (apkUpdateInfo.isUpdate.equals("1")) {
-            if (apkUpdateInfo.isForceUpdate.equals("1")) {
-                CommonUtil.showToastMessage("有新版本，可以更新！", 0L);
-                doForcedUpdate(apkUpdateInfo.downloadLink, apkUpdateInfo.updateContent, apkUpdateInfo.md5, fileName);
+    public void doUpdate(ApplicationUpdate applicationUpdate) {
+        String fileName = AppUtils.getPackageName() + "_" + applicationUpdate.updateVersion + ".apk";
+        if (applicationUpdate.isUpdate.equals("1")) {
+            if (applicationUpdate.isForceUpdate.equals("1")) {
+                Toast.makeText(BaseBookApplication.getGlobalContext(), "有新版本，需更新", Toast.LENGTH_SHORT).show();
+                doForcedUpdate(applicationUpdate.downloadLink, applicationUpdate.updateContent, applicationUpdate.md5, fileName);
             } else {
                 if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_WIFI) {
-                    doSilentUpdate(apkUpdateInfo.downloadLink, apkUpdateInfo.md5, fileName);
+                    doSilentUpdate(applicationUpdate.downloadLink, applicationUpdate.md5, fileName);
                 } else {
-                    doNormalUpdate(apkUpdateInfo.downloadLink, apkUpdateInfo.updateContent, apkUpdateInfo.md5, fileName);
+                    doNormalUpdate(applicationUpdate.downloadLink, applicationUpdate.updateContent, applicationUpdate.md5, fileName);
                 }
             }
         }
     }
 
-    public void doUpdateFromSettingACT(ApkUpdateInfo apkUpdateInfo) {
-        String fileName = AppUtils.getPackageName() + "_" + apkUpdateInfo.updateVersion + ".apk";
-        if (apkUpdateInfo.isUpdate.equals("1")) {
-            if (apkUpdateInfo.isForceUpdate.equals("1")) {
-                doForcedUpdate(apkUpdateInfo.downloadLink, apkUpdateInfo.updateContent, apkUpdateInfo.md5, fileName);
+    public void doUpdateFromSettingACT(ApplicationUpdate applicationUpdate) {
+        String fileName = AppUtils.getPackageName() + "_" + applicationUpdate.updateVersion + ".apk";
+        if (applicationUpdate.isUpdate.equals("1")) {
+            if (applicationUpdate.isForceUpdate.equals("1")) {
+                doForcedUpdate(applicationUpdate.downloadLink, applicationUpdate.updateContent, applicationUpdate.md5, fileName);
             } else {
-                doNormalUpdate(apkUpdateInfo.downloadLink, apkUpdateInfo.updateContent, apkUpdateInfo.md5, fileName);
+                doNormalUpdate(applicationUpdate.downloadLink, applicationUpdate.updateContent, applicationUpdate.md5, fileName);
             }
         } else {
-            CommonUtil.showToastMessage("已是最新版本，暂无更新！", 0L);
+            Toast.makeText(BaseBookApplication.getGlobalContext(), "已是最新版本，暂无更新", Toast.LENGTH_SHORT).show();
         }
 
     }

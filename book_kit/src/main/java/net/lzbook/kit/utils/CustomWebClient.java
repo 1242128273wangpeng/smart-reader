@@ -3,8 +3,11 @@ package net.lzbook.kit.utils;
 import net.lzbook.kit.app.BaseBookApplication;
 
 import android.annotation.SuppressLint;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.net.http.SslError;
 import android.view.View;
 import android.webkit.HttpAuthHandler;
@@ -14,6 +17,9 @@ import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import com.androidquery.util.Common;
+import com.dingyue.contract.util.CommonUtil;
 
 public class CustomWebClient extends WebViewClient {
     private final static String TAG = "CustomWebClient";
@@ -39,10 +45,39 @@ public class CustomWebClient extends WebViewClient {
      * return false,current WebView handle url, defult: false
      */
 
+    @Override
     public boolean shouldOverrideUrlLoading(final WebView view, String url) {
-        AppLog.d(TAG, "shouldOverrideUrlLoading url" + url);
-        if (override != null) {
-            return override.onOverride(view, url);
+        // 如下方案可在非微信内部WebView的H5页面中调出微信支付
+        if(url.startsWith("weixin://wap/pay?")) {
+            try {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(url));
+                context.startActivity(intent);
+                return true;
+            } catch (Exception exception) {
+                if (exception instanceof ActivityNotFoundException) {
+                    CommonUtil.showToastMessage("未找到微信客户端，请先安装微信！");
+                }
+                exception.printStackTrace();
+                return true;
+            }
+        }
+
+        if (url.startsWith("alipays://platformapi/startApp?")) {
+            try {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(url));
+                context.startActivity(intent);
+                return true;
+            } catch (Exception exception) {
+                if (exception instanceof ActivityNotFoundException) {
+                    CommonUtil.showToastMessage("未找到支付宝客户端，请先安装支付宝！");
+                }
+                exception.printStackTrace();
+                return  super.shouldOverrideUrlLoading(view, url);
+            }
         }
         return super.shouldOverrideUrlLoading(view, url);
     }

@@ -2,6 +2,7 @@ package com.dingyue.bookshelf
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import com.ding.basic.bean.Book
 import kotlinx.android.synthetic.main.item_bookshelf_add.view.*
 
 /**

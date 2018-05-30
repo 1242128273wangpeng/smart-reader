@@ -1,5 +1,7 @@
 package net.lzbook.kit.data.bean;
 
+import com.ding.basic.bean.BookUpdate;
+
 import java.util.ArrayList;
 
 public class BookUpdateResult {

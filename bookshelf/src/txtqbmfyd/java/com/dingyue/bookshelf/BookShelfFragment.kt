@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.ding.basic.bean.Book
+import com.ding.basic.bean.BookUpdate
 import com.dingyue.bookshelf.BookShelfAdapter.BookShelfItemListener
 import com.dingyue.bookshelf.contract.BookShelfADContract
 import com.dingyue.bookshelf.view.BookShelfDeleteDialog
@@ -22,7 +23,6 @@ import kotlinx.android.synthetic.txtqbmfyd.frag_bookshelf.*
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
-import net.lzbook.kit.data.bean.BookUpdate
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
 import com.dingyue.contract.router.BookRouter
@@ -398,13 +398,13 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
     }
 
-    override fun onBookListQuery(bookList: ArrayList<Book>) {
-        if (bookList.isEmpty()) {
-            srl_refresh?.setPullToRefreshEnabled(false)
-            ll_empty?.visibility = View.VISIBLE
-        } else {
+    override fun onBookListQuery(books: List<Book>?) {
+        if (books != null && books.isNotEmpty()) {
             srl_refresh?.setPullToRefreshEnabled(true)
             ll_empty?.visibility = View.GONE
+        } else {
+            srl_refresh?.setPullToRefreshEnabled(false)
+            ll_empty?.visibility = View.VISIBLE
         }
     }
 

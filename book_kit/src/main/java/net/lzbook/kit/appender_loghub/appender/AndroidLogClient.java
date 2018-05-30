@@ -15,18 +15,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class AndroidLogClient {
 
-    //华南 大数据
     public static final String endPoint = "cn-shenzhen.log.aliyuncs.com";// Endpoint
     public static final String accessKeyId = "LTAIHv56dMm1Dd5Z"; // 使用您的阿里云访问密钥
     public static final String accessKeySecret = "30hIE7U1i6D4azaCwsWnFWS19G4yAb"; // 使用您的阿里云访问密钥
-
-    //广告的阿里云相关
-    public static final String adEndPoint = "cn-shanghai.log.aliyuncs.com";// Endpoint
-    public static final String adAccessKeyId = "LTAIHv56dMm1Dd5Z"; // 使用您的阿里云访问密钥
-    public static final String adAccessKeySecret = "30hIE7U1i6D4azaCwsWnFWS19G4yAb"; // 使用您的阿里云访问密钥
-
-//    "cn-shanghai.log.aliyuncs.com", "LTAIHv56dMm1Dd5Z", "30hIE7U1i6D4azaCwsWnFWS19G4yAb","basestatistics"
-
     //	private final static Logger logger = LoggerFactory.getLogger(AndroidLogClient.class);
     // 定义发送队列
     private static volatile Queue<LogGroup> send_queue = new ConcurrentLinkedQueue<LogGroup>();
@@ -43,19 +34,19 @@ public class AndroidLogClient {
             Map<String, LogGroup> map = new HashMap<>();
             if (logList != null && logList.size() > 0) {
                 for (int i = 0; i < logList.size(); i++) {
-                    if (!logList.get(i).GetContent().containsKey("project") || !logList.get(i).GetContent().containsKey("logstore")) {
+                    if (!logList.get(i).getContent().containsKey("project") || !logList.get(i).getContent().containsKey("logstore")) {
 //						loggerer.error("log not containsKey : project || logstore");
                         continue;
                     }
-                    String project = (String) logList.get(i).GetContent().get("project");
-                    String logstore = (String) logList.get(i).GetContent().get("logstore");
+                    String project = (String) logList.get(i).getContent().get("project");
+                    String logstore = (String) logList.get(i).getContent().get("logstore");
                     String unikey = project + "_" + logstore;
                     if (!map.containsKey(unikey)) {
                         LogGroup logGroup = new LogGroup("", "", project, logstore);
                         map.put(unikey, logGroup);
                     }
                     map.get(unikey).PutLog(logList.get(i));
-                    AppLog.e("ad", (String) logList.get(i).GetContent().get("project"));
+                    AppLog.e("ad", (String) logList.get(i).getContent().get("project"));
                 }
                 if (!map.values().isEmpty()) {
                     for (LogGroup logGroup : map.values()) {

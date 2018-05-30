@@ -1,16 +1,19 @@
 package com.intelligent.reader.receiver;
 
-import com.dingyue.contract.util.CommonUtil;
+import com.ding.basic.bean.Book;
+import com.ding.basic.repository.RequestRepositoryFactory;
+import com.dy.reader.activity.ReaderActivity;
 import com.intelligent.reader.activity.HomeActivity;
-import com.intelligent.reader.activity.ReadingActivity;
 
-import net.lzbook.kit.data.db.BookDaoHelper;
+import net.lzbook.kit.app.BaseBookApplication;
 
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.widget.Toast;
 
 public class DownBookClickReceiver extends BroadcastReceiver {
     public static final String action = "cn.txtzsydsq.reader.receiver.CLICK_DOWN_BOOK";
@@ -28,42 +31,39 @@ public class DownBookClickReceiver extends BroadcastReceiver {
                 }
             }
             if (!isStart) {
-                int gid = paramIntent.getIntExtra("gid", 0);
-                BookDaoHelper mBookDaoHelper = BookDaoHelper.getInstance();
-                if (mBookDaoHelper != null && mBookDaoHelper.isBookSubed(gid)) {
+                String book_id = paramIntent.getStringExtra("book_id");
+                if ((RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                        BaseBookApplication.getGlobalContext()).checkBookSubscribe(book_id) != null)) {
                     Intent intent = new Intent();
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    intent.setClass(ctt, ReadingActivity.class);
-                    if (gid != 0) {
-                        Book book = BookDaoHelper.getInstance().getBook(gid, 0);
+                    intent.setClass(ctt, ReaderActivity.class);
+                    if (!TextUtils.isEmpty(book_id)) {
+                        Book book = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(book_id);
                         Bundle bundle = new Bundle();
-                        bundle.putInt("sequence", book.sequence);
-                        bundle.putInt("offset", book.offset);
+                        bundle.putInt("sequence", book.getSequence());
+                        bundle.putInt("offset", book.getOffset());
                         bundle.putSerializable("book", book);
-                        bundle.putSerializable("nid", book.nid);
                         intent.putExtras(bundle);
                         ctt.startActivity(intent);
                     }
                 }
             } else {
-                int gid = paramIntent.getIntExtra("gid", 0);
-                BookDaoHelper mBookDaoHelper = BookDaoHelper.getInstance();
-                if (mBookDaoHelper != null && mBookDaoHelper.isBookSubed(gid)) {
+                String book_id = paramIntent.getStringExtra("book_id");
+                if ((RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(book_id) != null)) {
                     Intent intent = new Intent();
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    intent.setClass(ctt, ReadingActivity.class);
-                    if (gid != 0) {
-                        Book book = (Book) BookDaoHelper.getInstance().getBook(gid, 0);
+                    intent.setClass(ctt, ReaderActivity.class);
+                    if (!TextUtils.isEmpty(book_id)) {
+                        Book book = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(book_id);
                         Bundle bundle = new Bundle();
-                        bundle.putInt("sequence", book.sequence);
-                        bundle.putInt("offset", book.offset);
+                        bundle.putInt("sequence", book.getSequence());
+                        bundle.putInt("offset", book.getOffset());
                         bundle.putSerializable("book", book);
-                        bundle.putSerializable("nid", book.nid);
                         intent.putExtras(bundle);
                         ctt.startActivity(intent);
                     }
                 } else {
-                    CommonUtil.showToastMessage("资源已删除！", 0L);
+                    Toast.makeText(ctt, "资源已删除", Toast.LENGTH_SHORT).show();
                 }
             }
         }

@@ -26,7 +26,6 @@ import com.intelligent.reader.R
 import com.intelligent.reader.activity.*
 import com.intelligent.reader.cover.BookCoverLocalRepository
 import com.intelligent.reader.cover.BookCoverOtherRepository
-import com.intelligent.reader.cover.BookCoverQGRepository
 import com.intelligent.reader.cover.BookCoverRepositoryFactory
 import com.intelligent.reader.fragment.CatalogMarkFragment
 import com.dingyue.contract.IPresenter

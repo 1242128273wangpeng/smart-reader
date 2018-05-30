@@ -1,12 +1,13 @@
 package net.lzbook.kit.request;
 
+import com.ding.basic.Config;
+
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
-import net.lzbook.kit.encrypt.URLBuilderIntterface;
-import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.OpenUDID;
+import net.lzbook.kit.encrypt.URLBuilderIntterface;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,13 +18,11 @@ import java.util.Map;
 public class UrlUtils {
 
 
-    //正式线上API，域名例子：api.wubutianxia.com
-//    public static String BOOK_NOVEL_DEPLOY_HOST = "http://10.10.60.119:8081";
-////    正式线上webview地址，域名例子：bookwebview.wubutianxia.com
-//    public static String BOOK_WEBVIEW_HOST = "http://10.10.60.119:8081";
+////    //正式线上API，域名例子：api.wubutianxia.com
     public static String BOOK_NOVEL_DEPLOY_HOST = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST;
-//    //正式线上webview地址，域名例子：bookwebview.wubutianxia.com
+    //正式线上webview地址，域名例子：bookwebview.wubutianxia.com
     public static String BOOK_WEBVIEW_HOST = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST;
+
 
     public static String BOOK_CONTENT;
 
@@ -91,7 +90,7 @@ public class UrlUtils {
         if (uriTag == null) {
             return null;
         }
-        String webView_host = BOOK_WEBVIEW_HOST;
+        String webView_host = Config.INSTANCE.loadWebViewHost();
 
         String channelId = AppUtils.getChannelId();
         String version = String.valueOf(AppUtils.getVersionCode());

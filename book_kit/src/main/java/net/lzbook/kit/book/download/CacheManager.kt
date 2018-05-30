@@ -11,7 +11,14 @@ import android.preference.PreferenceManager
 import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.NotificationCompat
-import com.dingyue.contract.util.showToastMessage
+import android.widget.Toast
+import com.ding.basic.bean.Book
+import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.util.DataCache
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.R
 import net.lzbook.kit.app.ActionConstants
 import net.lzbook.kit.app.BaseBookApplication
@@ -21,9 +28,7 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.constants.SPKeys
 import net.lzbook.kit.data.bean.BookTask
-import net.lzbook.kit.data.db.BookChapterDao
-import net.lzbook.kit.data.db.BookDaoHelper
-import net.lzbook.kit.request.DataCache
+import net.lzbook.kit.data.db.help.ChapterDaoHelper
 import net.lzbook.kit.utils.*
 import java.io.File
 import java.io.IOException
@@ -41,10 +46,6 @@ object CacheManager {
 
     val app by lazy {
         BaseBookApplication.getGlobalContext()
-    }
-
-    val bookDao by lazy {
-        BookDaoHelper.getInstance()
     }
 
     val notificationManager by lazy {
@@ -66,7 +67,7 @@ object CacheManager {
 
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
             downloadService = (service as DownloadService.MyBinder).service
-            freshBooks(true)
+            freshBooksAsync(true)
         }
     }
 
@@ -98,12 +99,12 @@ object CacheManager {
                 val data = HashMap<String, String>()
                 data.put("status", "2")
                 data.put("reason", t.javaClass.simpleName + ":" + t.message)
-                data.put("bookId", bookTask.book.book_id)
+                data.put("bookId", bookTask.book.book_id!!)
                 val str = "type"
                 val obj = if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else if (NetWorkUtils.NETWORK_TYPE == 81) "1" else "2"
                 data.put(str, obj)
                 data.put("cache_tyte", if (bookTask.isFullCache) "全本缓存" else "从当前章缓存")
-                data.put("host", bookTask.book.site)
+                data.put("host", bookTask.book.host!!)
                 data.put("start_chapterid", bookTask.start_chapterid)
                 data.put("end_chapterid", bookTask.end_chapterid)
                 data.put("cache_chapters", "" + bookTask.cache_chapters)
@@ -116,12 +117,12 @@ object CacheManager {
                 runOnMain {
 
                     if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
-                        app.showToastMessage(R.string.game_network_none)
+                        Toast.makeText(app, app.getString(R.string.game_network_none), Toast.LENGTH_SHORT).show()
                     } else if (t is IOException && !FileUtils.checkLeftSpace()) {
-                        app.showToastMessage(R.string.tip_space_not_enough)
+                        Toast.makeText(app, app.getString(R.string.tip_space_not_enough), Toast.LENGTH_SHORT).show()
                     } else {
-                        app.showToastMessage(String.format(app.getString(R.string.toast_cache_paused)
-                                , bookTask.book.name))
+                        Toast.makeText(app, String.format(app.getString(R.string.toast_cache_paused)
+                                , bookTask.book.name), Toast.LENGTH_SHORT).show()
                     }
 
                     listeners.forEach {
@@ -139,8 +140,8 @@ object CacheManager {
                 runOnMain {
 
                     if (bookTask.state == DownloadState.PAUSEED && !bookTask.isAutoState) {
-                        app.showToastMessage(String.format(app.getString(R.string.toast_cache_paused)
-                                , bookTask.book.name))
+                        Toast.makeText(app, String.format(app.getString(R.string.toast_cache_paused)
+                                , bookTask.book.name), Toast.LENGTH_SHORT).show()
                     }
 
                     listeners.forEach {
@@ -159,12 +160,12 @@ object CacheManager {
 
                 val data = HashMap<String, String>()
                 data.put("status", "1")
-                data.put("bookId", bookTask.book.book_id)
+                data.put("bookId", bookTask.book.book_id!!)
                 val str = "type"
                 val obj = if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else if (NetWorkUtils.NETWORK_TYPE == 81) "1" else "2"
                 data.put(str, obj)
                 data.put("cache_tyte", if (bookTask.isFullCache) "全本缓存" else "从当前章缓存")
-                data.put("host", bookTask.book.site)
+                data.put("host", bookTask.book.host!!)
                 data.put("start_chapterid", bookTask.start_chapterid)
                 data.put("end_chapterid", bookTask.end_chapterid)
                 data.put("cache_chapters", "" + bookTask.cache_chapters)
@@ -180,15 +181,15 @@ object CacheManager {
                     showFinishNotify(bookTask.book)
                 }
 
-                if (bookTask.isFullCache && bookTask.state != DownloadState.FINISH
-                        && bookTask.book.site != Constants.QG_SOURCE) {
+                if (bookTask.isFullCache && bookTask.state != DownloadState.FINISH) {
+
                     val intent = Intent()
                     intent.action = ActionConstants.ACTION_CACHE_COMPLETE_WITH_ERR
                     intent.putExtra(Constants.REQUEST_ITEM, bookTask.book)
                     LocalBroadcastManager.getInstance(BaseBookApplication.getGlobalContext()).sendBroadcast(intent)
                 } else if (!bookTask.isAutoState) {
                     runOnMain {
-                        app.showToastMessage(String.format(app.getString(R.string.toast_cache_complete), bookTask.book.name))
+                        Toast.makeText(app, String.format(app.getString(R.string.toast_cache_complete), bookTask.book.name), Toast.LENGTH_SHORT).show()
                     }
                 }
 
@@ -214,7 +215,7 @@ object CacheManager {
                     lastUpdateTime = System.currentTimeMillis()
                     runOnMain {
                         listeners.forEach {
-                            it.onTaskFinish(book_id)
+                            it.onTaskProgressUpdate(book_id)
                         }
                     }
                 }
@@ -265,7 +266,7 @@ object CacheManager {
     }
 
     private fun restroeTaskInfo(book: Book): BookTask {
-        val count = BookChapterDao(app, book.book_id).count
+        val count = ChapterDaoHelper.loadChapterDataProviderHelper(app, book.book_id!!).getCount()
         val preferences = app.getSharedPreferences(DOWN_INDEX + book.book_id, 0)
         var start: Int = -1
         var state: DownloadState
@@ -283,8 +284,8 @@ object CacheManager {
                     state = DownloadState.NOSTART
                 }
                 var list: Array<String>? = null
-                if (Constants.QG_SOURCE.equals(book.site)) {
-                    list = File(com.quduquxie.Constants.APP_PATH_BOOK + book.book_id).list()
+                if (Constants.QG_SOURCE.equals(book.host)) {
+                    list = File(Constants.QG_CACHE_PATH + book.book_id).list()
                 } else {
                     list = File(ReplaceConstants.getReplaceConstants().APP_PATH_BOOK + book.book_id).list()
                 }
@@ -341,7 +342,7 @@ object CacheManager {
 
     fun hasOtherSourceStatus(book: Book): Boolean {
 
-        if (Constants.QG_SOURCE.equals(book.site)) {
+        if (Constants.QG_SOURCE.equals(book.host)) {
             return false
         }
 
@@ -363,8 +364,8 @@ object CacheManager {
             return DownloadState.NOSTART
         }
 
-        if (workMap.containsKey(book.book_id)) {
-            return workMap[book.book_id]!!.state
+        if (workMap.containsKey(book.book_id!!)) {
+            return workMap[book.book_id!!]!!.state
         } else {
             return getBookTask(book).state
         }
@@ -379,7 +380,7 @@ object CacheManager {
     @Synchronized
     fun freshBook(book_id: String, needRefreshProgress: Boolean) {
         checkService()
-        val book = bookDao.getBook(book_id, 0)
+        val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(book_id)
         if (book != null) {
             val bookTask = workMap[book.book_id]
 
@@ -395,18 +396,36 @@ object CacheManager {
                 if (needRefreshProgress && bookTask.state != DownloadState.DOWNLOADING && bookTask.state != DownloadState.WAITTING && bookTask.state != DownloadState.WAITTING_WIFI) {
 
                     workMap.put(book_id, restroeTaskInfo(book))
-                } else {
+                }else{
                     //避免其他地方修改书籍信息时不同步的问题
-                    bookTask.book = book.clone()
+                    //TODO 修复转成kotlin后clone的问题
+                    bookTask.book = book
                 }
             }
         }
     }
 
     fun freshBooks(needRefreshProgress: Boolean) {
-        bookDao.booksOnLineList.forEach {
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks()?.forEach {
             freshBook(it.book_id, needRefreshProgress)
         }
+    }
+
+    fun freshBooksAsync(needRefreshProgress: Boolean, callback:(() ->Unit)? = null){
+        Observable.create<Boolean> {
+
+            freshBooks(needRefreshProgress)
+
+            it.onNext(true)
+            it.onComplete()
+        }.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeBy(
+                        onNext = {
+                            callback?.invoke()
+                        },
+                        onError = {it.printStackTrace()}
+                )
     }
 
     @Synchronized
@@ -521,8 +540,8 @@ object CacheManager {
             if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_WIFI) {
                 workMap.values.forEach {
 
-                    val bookChapterDao = BookChapterDao(app, it.book_id)
-                    val count = bookChapterDao.count
+                    val bookChapterDao = ChapterDaoHelper.loadChapterDataProviderHelper(app, it.book_id)
+                    val count = bookChapterDao.getCount()
 
                     if (it.state == DownloadState.WAITTING_WIFI) {
                         it.state = DownloadState.WAITTING

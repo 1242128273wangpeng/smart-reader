@@ -35,6 +35,7 @@ import com.dy.reader.setting.ReaderStatus
 import com.dycm_adsdk.PlatformSDK
 import com.dycm_adsdk.callback.AbstractCallback
 import com.dycm_adsdk.callback.ResultCode
+import kotlinx.android.synthetic.main.reading_resttime.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.DownloadService
@@ -495,7 +496,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
                                     mDialog = MyDialog(readReference?.get(), R.layout.reading_resttime, Gravity.CENTER, false)
                                     mDialog?.let {
                                         val rest_ad = it.findViewById(R.id.rest_ad) as RelativeLayout//容器
-                                        it.findViewById(R.id.iv_close).setOnClickListener { mDialog?.dismiss() }
+                                        it.iv_close.setOnClickListener { mDialog?.dismiss() }
                                         //广告 3-1
                                         rest_ad.addView(views?.get(0))
                                         rest_ad.postInvalidate()

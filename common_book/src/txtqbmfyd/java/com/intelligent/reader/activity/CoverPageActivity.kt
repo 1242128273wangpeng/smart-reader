@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.ding.basic.bean.Book
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.BookRecommendAdapter
@@ -28,7 +29,6 @@ import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.data.bean.CoverPage
-import net.lzbook.kit.data.bean.RequestItem
 import com.dingyue.contract.router.RouterConfig
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils

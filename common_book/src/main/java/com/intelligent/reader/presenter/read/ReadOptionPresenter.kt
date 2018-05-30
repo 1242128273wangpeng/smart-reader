@@ -24,7 +24,6 @@ import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Bookmark
-import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*

@@ -229,6 +229,10 @@ public class FileUtils {
                     if (!deleteDir(new File(dir, file))) {
                         return false;
                     }
+                    try {
+                        Thread.sleep(1);
+                    }catch (InterruptedException e){
+                    }
                 }
             }
         }

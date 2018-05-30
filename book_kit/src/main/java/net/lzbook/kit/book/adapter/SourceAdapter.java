@@ -3,18 +3,18 @@
  */
 package net.lzbook.kit.book.adapter;
 
+import com.ding.basic.bean.Source;
+
+import net.lzbook.kit.R;
+import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.Tools;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
-import com.ding.basic.bean.Source;
-
-import net.lzbook.kit.R;
-import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.Tools;
 
 import java.util.List;
 

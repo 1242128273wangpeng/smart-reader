@@ -72,7 +72,7 @@ public class LogGroup {
         JSONArray log_arrays = new JSONArray();
 
         for (ServerLog log : mContent) {
-            Map<String, Object> map = log.GetContent();
+            Map<String, Object> map = log.getContent();
             JSONObject json_log = new JSONObject(map);
             log_arrays.add(json_log);
         }

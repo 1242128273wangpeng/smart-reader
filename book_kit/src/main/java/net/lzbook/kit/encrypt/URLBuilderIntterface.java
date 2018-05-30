@@ -31,6 +31,10 @@ public interface URLBuilderIntterface {
     // dex
     public static final String DEX_CHECK = "/v3/dynamic/check/encryption/{premVersion}";
 
+    public static final String AUTHOR_V4 = "/v4/author/homepage/page";
+    // 搜索
+    public static final String SEARCH_V4 = "/v4/search/page";
+
     // webview精选页面
     public static final String WEB_RECOMMEND = "/{packageName}/v3/recommend/index.do";
     // webview排行页面

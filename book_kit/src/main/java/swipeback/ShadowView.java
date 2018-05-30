@@ -13,7 +13,7 @@ import android.view.View;
  * Date 2017/11/20
  */
 
-public class ShadowView extends View {
+class ShadowView extends View {
 
     private Drawable mDrawable;
 

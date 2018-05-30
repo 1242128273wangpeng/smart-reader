@@ -4,7 +4,6 @@ package com.intelligent.reader.repository;
 import net.lzbook.kit.data.bean.Bookmark;
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.CoverPage;
-import net.lzbook.kit.data.bean.RequestItem;
 
 import java.util.ArrayList;
 import java.util.List;

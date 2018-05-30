@@ -15,7 +15,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.data.search.SearchAutoCompleteBean
 import net.lzbook.kit.data.search.SearchCommonBean

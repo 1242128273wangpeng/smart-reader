@@ -225,11 +225,9 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
                 jsInterfaceHelper = new JSInterfaceHelper(context, contentView);
             }
             if (type.equals("rank")) {//榜单
-                jsInterfaceHelper.setRankingWebVisible();
                 notifyWebLog();//通知 H5 打点
             }
             if (type.equals("recommend")) {//推荐
-                jsInterfaceHelper.setRecommendVisible();
                 notifyWebLog();
             }
             if (type.equals("category_female")) {//分类-女频
@@ -477,18 +475,28 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 
         if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
             swipeRefreshLayout.setRefreshing(false);
-            CommonUtil.showToastMessage("网络不给力！", 0L);
+            CommonUtil.showToastMessage("网络不给力！");
             return;
         }
 
         swipeRefreshLayout.onRefreshComplete();
-        ExtensionsKt.uiThread(this, new Function1<Object, Unit>() {
-            @Override
-            public Unit invoke(Object o) {
-                AppLog.e(TAG, "call back jsMethod s: javascript:refreshNew()");
-                contentView.loadUrl("javascript:refreshNew()");
-                return null;
-            }
-        });
+        loadData("javascript:refreshNew()");
+    }
+
+    private void loadData(final String s) {
+        if (!TextUtils.isEmpty(s) && contentView != null) {
+            contentView.post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        AppLog.e(TAG, "call back jsMethod s: " + s);
+                        contentView.loadUrl(s);
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                        weakReference.get().finish();
+                    }
+                }
+            });
+        }
     }
 }

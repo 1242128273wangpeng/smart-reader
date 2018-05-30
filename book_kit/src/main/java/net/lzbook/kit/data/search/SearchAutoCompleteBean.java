@@ -16,24 +16,24 @@ public class SearchAutoCompleteBean implements Serializable {
      * data : {"label":[{"suggest":"大主宰","wordtype":"label","pv":"9235"}],"name":[{"suggest":"大主宰","wordtype":"name","pv":"1372678"},{"suggest":"大主宰外传","wordtype":"name","pv":"517"},{"suggest":"混沌大主宰","wordtype":"name","pv":"479"},{"suggest":"斗破苍穹之大主宰","wordtype":"name","pv":"330"},{"suggest":"大主宰天蚕土豆","wordtype":"name","pv":"301"},{"suggest":"神通大主宰","wordtype":"name","pv":"297"},{"suggest":"诸天大主宰","wordtype":"name","pv":"233"},{"suggest":"大主宰_沦陷的书生","wordtype":"name","pv":"212"},{"suggest":"隋唐大主宰","wordtype":"name","pv":"211"},{"suggest":"大主宰之萧玄传奇","wordtype":"name","pv":"165"},{"suggest":"武动乾坤之大主宰","wordtype":"name","pv":"111"},{"suggest":"斗破大主宰","wordtype":"name","pv":"110"},{"suggest":"NPC大主宰","wordtype":"name","pv":"82"},{"suggest":"傲世大主宰","wordtype":"name","pv":"77"},{"suggest":"召唤大主宰","wordtype":"name","pv":"50"}],"authors":[{"suggest":"大主宰","wordtype":"author","pv":"2"},{"suggest":"幕后大主宰","wordtype":"author","pv":"1"}]}
      */
 
-    private String respCode;
-    private String message;
+    private String suc;
+    private Object errCode;
     private DataBean data;
 
-    public String getRespCode() {
-        return respCode;
+    public String getSuc() {
+        return suc;
     }
 
-    public void setRespCode(String respCode) {
-        this.respCode = respCode;
+    public void setSuc(String suc) {
+        this.suc = suc;
     }
 
-    public String getMessage() {
-        return message;
+    public Object getErrCode() {
+        return errCode;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setErrCode(Object errCode) {
+        this.errCode = errCode;
     }
 
     public DataBean getData() {
@@ -212,8 +212,8 @@ public class SearchAutoCompleteBean implements Serializable {
     @Override
     public String toString() {
         return "SearchAutoCompleteBean{" +
-                "suc='" + respCode + '\'' +
-                ", message=" + message +
+                "suc='" + suc + '\'' +
+                ", errCode=" + errCode +
                 ", data=" + data +
                 '}';
     }

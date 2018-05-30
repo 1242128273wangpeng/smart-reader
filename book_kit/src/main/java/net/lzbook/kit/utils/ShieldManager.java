@@ -4,12 +4,15 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.ding.basic.Config;
 import com.dingyue.contract.util.SharedPreUtil;
+import com.dycm_adsdk.PlatformSDK;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 /**
  * 屏蔽管理类
@@ -39,6 +42,35 @@ public class ShieldManager {
                             + aMapLocation.getStreet() + " "
                             + aMapLocation.getStreetNum() + " "
                             + "(" + Constants.longitude + ", " + Constants.latitude + ")";
+
+
+                    String longitude = String.valueOf(aMapLocation.getLongitude());
+                    Config.INSTANCE.insertRequestParameter("longitude", longitude);
+
+                    String latitude = String.valueOf(aMapLocation.getLatitude());
+                    Config.INSTANCE.insertRequestParameter("latitude", latitude);
+
+                    String cityCode = aMapLocation.getCityCode();
+                    Config.INSTANCE.insertRequestParameter("cityCode", cityCode);
+
+                    if (!Constants.isHideAD && PlatformSDK.config() != null) {
+                        if (!TextUtils.isEmpty(cityCode)) {
+                            PlatformSDK.config().setCityCode(Integer.valueOf(cityCode));
+                        }
+
+                        PlatformSDK.config().setCityName(Constants.adCityInfo);
+
+                        if (!TextUtils.isEmpty(latitude)) {
+                            PlatformSDK.config().setLatitude(Float.valueOf(latitude));
+                        }
+
+                        if (!TextUtils.isEmpty(longitude)) {
+                            PlatformSDK.config().setLongitude(Float.valueOf(longitude));
+                        }
+                        PlatformSDK.config().setAd_userid(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));
+                        PlatformSDK.config().setChannel_code(AppUtils.getChannelId());
+                    }
+
                     AppLog.e(TAG, "城市信息：" + aMapLocation.getCity() + "城市编码：" + aMapLocation.getCityCode() + " 经度：" + aMapLocation.getLongitude() + " 纬度：" + aMapLocation.getLatitude());
                     AppLog.e(TAG, "城区信息：" + aMapLocation.getDistrict() + " 街道信息：" + aMapLocation.getStreet() + " 门牌号：" + aMapLocation.getStreetNum() + " 地区编码：" + aMapLocation.getAdCode());
                     stopAchieveUserLocation();

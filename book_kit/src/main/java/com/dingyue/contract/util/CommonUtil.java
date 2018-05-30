@@ -24,7 +24,7 @@ public class CommonUtil {
     /***
      * 展示Toast
      * **/
-    private static void showToastMessage(@StringRes int id) {
+    public static void showToastMessage(@StringRes int id) {
         if (mToast == null) {
             mToast = Toast.makeText(BaseBookApplication.getGlobalContext(), id, Toast.LENGTH_SHORT);
             mToast.show();
@@ -38,7 +38,7 @@ public class CommonUtil {
     /***
      * 展示Toast
      * **/
-    private static void showToastMessage(String message) {
+    public static void showToastMessage(String message) {
         if (mToast == null) {
             mToast = Toast.makeText(BaseBookApplication.getGlobalContext(), message, Toast.LENGTH_SHORT);
             mToast.show();

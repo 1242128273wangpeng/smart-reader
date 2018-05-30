@@ -33,7 +33,11 @@
         <service
                 android:name=".book.component.service.DeleteBookIntentService"
                 android:label="缓存文件服务"/>
-        
+
+        <service
+            android:name=".utils.download.DownloadAPKService"
+            android:label="APK下载服务"/>
+
     </application>
 
 </manifest>

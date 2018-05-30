@@ -32,6 +32,16 @@ public class ActionConstants {
     public static final String ACTION_CHANGE_NIGHT_MODE = PACKAGE_NAME + "_change_night_mode";
 
 
+    /***
+     * 下载书籍完成
+     * **/
+    public static final String ACTION_DOWNLOAD_BOOK_FINISH = PACKAGE_NAME + ".download_finish";
+
+    /***
+     * 下载书籍锁定
+     * **/
+    public static final String ACTION_DOWNLOAD_BOOK_LOCKED = PACKAGE_NAME + ".download_locked";
+
 
     public static final String ACTION_CACHE_COMPLETE_WITH_ERR = "ACTION_CACHE_COMPLETE_WITH_ERR";
 	

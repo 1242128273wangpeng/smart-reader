@@ -355,7 +355,10 @@ public class AppUtils {
      */
     public static String getPhoneNumber(Context context) {
         TelephonyManager tm = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
-        String _PhoneNumbber = tm.getLine1Number();
+        String _PhoneNumbber = "";
+        if (tm != null) {
+            _PhoneNumbber = tm.getLine1Number();
+        }
         if (_PhoneNumbber != null && _PhoneNumbber.length() > 0) {
             _PhoneNumbber = _PhoneNumbber.replace("#", "");
             _PhoneNumbber = _PhoneNumbber.replace("*", "");
@@ -364,25 +367,41 @@ public class AppUtils {
     }
 
     public static String getProvidersName(Context context) {
-        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
         String providersName = "";
-        String subscriberId = telephonyManager.getSubscriberId();
-
-        if (subscriberId != null) {
-            if (subscriberId.startsWith("46000") || subscriberId.startsWith("46002") || subscriberId.startsWith("46007")) {
-                providersName = "中国移动";
-            } else if (subscriberId.startsWith("46001")) {
-                providersName = "中国联通";
-            } else if (subscriberId.startsWith("46003")) {
-                providersName = "中国电信";
+        if (context != null) {
+            if (checkPermission(context)) {
+                try {
+                    TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
+                    String subscriberId = telephonyManager.getSubscriberId();
+                    if (subscriberId != null) {
+                        if (subscriberId.startsWith("46000") || subscriberId.startsWith("46002") || subscriberId.startsWith("46007")) {
+                            providersName = "中国移动";
+                        } else if (subscriberId.startsWith("46001")) {
+                            providersName = "中国联通";
+                        } else if (subscriberId.startsWith("46003")) {
+                            providersName = "中国电信";
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
+
+
         return providersName;
     }
 
     public static String getIMEI(Context context) {
-        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
-        return telephonyManager.getDeviceId();
+
+        String deviceId = "";
+        try {
+            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
+            deviceId = telephonyManager.getDeviceId();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return deviceId;
     }
 
     /**
@@ -449,7 +468,7 @@ public class AppUtils {
      * 获取包名
      */
     public static String getPackageName() {
-       initValues();
+        initValues();
         return APPLICATION_ID;
     }
 
@@ -517,7 +536,10 @@ public class AppUtils {
 
         //获取手机IMEI
         TelephonyManager TelephonyMgr = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
-        String IMEI = TelephonyMgr.getDeviceId();
+        String IMEI = "";
+        if (TelephonyMgr != null) {
+            IMEI = TelephonyMgr.getDeviceId();
+        }
 
         //获取WLAN MAC Address
         WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
@@ -588,7 +610,7 @@ public class AppUtils {
             TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             //4G
             if (nSubType == TelephonyManager.NETWORK_TYPE_LTE
-                    && !telephonyManager.isNetworkRoaming()) {
+                    && telephonyManager != null && !telephonyManager.isNetworkRoaming()) {
                 netType = "4G";
             } else if (nSubType == TelephonyManager.NETWORK_TYPE_UMTS || nSubType == TelephonyManager.NETWORK_TYPE_HSDPA || nSubType == TelephonyManager.NETWORK_TYPE_EVDO_0 && !telephonyManager.isNetworkRoaming()) {
                 netType = "3G";
@@ -653,14 +675,18 @@ public class AppUtils {
     }
 
     public static String getProcessName(Context context) {
-        List<ActivityManager.RunningAppProcessInfo> runningApps = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getRunningAppProcesses();
-        if (runningApps == null) {
-            return null;
-        }
-        for (ActivityManager.RunningAppProcessInfo proInfo : runningApps) {
-            if (proInfo.pid == android.os.Process.myPid() && proInfo.processName != null) {
-                return proInfo.processName;
+        try {
+            List<ActivityManager.RunningAppProcessInfo> runningApps = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getRunningAppProcesses();
+            if (runningApps == null) {
+                return null;
             }
+            for (ActivityManager.RunningAppProcessInfo proInfo : runningApps) {
+                if (proInfo.pid == android.os.Process.myPid() && proInfo.processName != null) {
+                    return proInfo.processName;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -669,11 +695,11 @@ public class AppUtils {
         return getPackageName().equals(getProcessName(context));
     }
 
-    public static String colorHoHex(int color){
-        String red =  Integer.toHexString((color & 0xff0000) >> 16);
-        String green =  Integer.toHexString((color & 0x00ff00) >> 8);
+    public static String colorHoHex(int color) {
+        String red = Integer.toHexString((color & 0xff0000) >> 16);
+        String green = Integer.toHexString((color & 0x00ff00) >> 8);
         String blue = Integer.toHexString((color & 0x0000ff));
-        return "#"+red+green+blue;
+        return "#" + red + green + blue;
     }
 
 
@@ -686,5 +712,19 @@ public class AppUtils {
             return true;
         }
         return false;
+    }
+
+    public static boolean checkPermission(Context context) {
+        boolean flag = false;
+        if (context != null) {
+            try {
+                PackageManager pm = context.getPackageManager();
+                flag = (PackageManager.PERMISSION_GRANTED ==
+                        pm.checkPermission("android.permission.READ_PHONE_STATE", "com.intelligent.reader"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return flag;
     }
 }

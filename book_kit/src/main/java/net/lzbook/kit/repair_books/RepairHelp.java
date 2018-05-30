@@ -5,14 +5,17 @@ import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.book.view.MyDialog;
-import net.lzbook.kit.data.bean.Chapter;
-import net.lzbook.kit.data.db.BookChapterDao;
-import net.lzbook.kit.data.db.BookDaoHelper;
-import net.lzbook.kit.data.update.UpdateBean;
-import net.lzbook.kit.repair_books.bean.BookFix;
-import net.lzbook.kit.repair_books.bean.FixContentState;
-import net.lzbook.kit.request.DataCache;
-import net.lzbook.kit.request.UrlUtils;
+import com.ding.basic.bean.Book;
+import com.ding.basic.bean.BookFix;
+import com.ding.basic.bean.Chapter;
+import com.ding.basic.bean.ContextFixState;
+import com.ding.basic.bean.FixContent;
+import com.ding.basic.bean.UpdateBean;
+import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.util.DataCache;
+import com.dingyue.contract.util.CommonUtil;
+
+import net.lzbook.kit.data.db.help.ChapterDaoHelper;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.BaseBookHelper;
 import net.lzbook.kit.utils.NetWorkUtils;
@@ -26,8 +29,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.dingyue.contract.util.CommonUtil;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,19 +40,19 @@ import java.util.Map;
 public class RepairHelp {
     private static final String TAG = RepairHelp.class.getSimpleName();
 
-    public static synchronized void parserData(UpdateBean.DataBean repairData) {
+    public static synchronized void parserData(UpdateBean repairData) {
         if (repairData == null) {
             return;
         }
 
-        final List<UpdateBean.DataBean.FixBookBean> fix_books = repairData.getFix_book();
-        final List<UpdateBean.DataBean.FixContentBean> fix_contents = repairData.getFix_content();
+        final List<BookFix> fix_books = repairData.getFix_books();
+        final List<FixContent> fix_contents = repairData.getFix_contents();
 
         if (fix_books != null && !fix_books.isEmpty()) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    saveFixBook(fix_books);
+                    saveBookFix(fix_books);
                 }
             }).start();
         }
@@ -66,48 +67,44 @@ public class RepairHelp {
         }
     }
 
-    private static void saveFixBook(List<UpdateBean.DataBean.FixBookBean> fix_books) {
-        BookDaoHelper instance = BookDaoHelper.getInstance();
-        if (instance == null) {
-            return;
-        }
-        for (UpdateBean.DataBean.FixBookBean fixBookBean : fix_books) {
-            Book book = instance.getBook(fixBookBean.getBook_id(), 0);
-            if (!TextUtils.isEmpty(book.book_id)) {
-                if (book.list_version == -1 || book.c_version == -1) {
-                    book.list_version = fixBookBean.getList_version();
-                    book.c_version = fixBookBean.getC_version();
-                    boolean isupdateBookSucess = instance.updateBook(book);
-                    AppLog.d(TAG, "saveFixBook -- book.name = " + book.name + "isupdateBookSucess = " + isupdateBookSucess);
+    private static void saveBookFix(List<BookFix> fix_books) {
+        for (BookFix BookFixBean : fix_books) {
+            Book book = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(BookFixBean.getBook_id());
+            if (book != null && !TextUtils.isEmpty(book.getBook_id())) {
+                if (book.getList_version() == -1 || book.getC_version() == -1) {
+                    book.setList_version(BookFixBean.getList_version());
+                    book.setC_version(BookFixBean.getC_version());
+                    RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book);
                 } else {
                     BookFix bookFix = new BookFix();
-                    bookFix.book_id = fixBookBean.getBook_id();
-                    bookFix.list_version = fixBookBean.getList_version();
-                    bookFix.c_version = fixBookBean.getC_version();
-                    bookFix.fix_type = 2;
-                    boolean isinsertBookFixSucess = instance.insertBookFix(bookFix);
-                    AppLog.d(TAG, "saveFixBook -- book.name = " + book.name + "isinsertBookFixSucess = " + isinsertBookFixSucess);
+                    bookFix.setBook_id(BookFixBean.getBook_id());
+                    bookFix.setList_version(BookFixBean.getList_version());
+                    bookFix.setC_version(BookFixBean.getC_version());
+                    bookFix.setFix_type(2);
+
+                    RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBookFix(bookFix);
                 }
             }
         }
     }
 
-    private static void fixChapterContent(List<UpdateBean.DataBean.FixContentBean> fix_contents) {
-        for (UpdateBean.DataBean.FixContentBean fixContentBook : fix_contents) {
+    private static void fixChapterContent(List<FixContent> fix_contents) {
+        for (FixContent fixContentBook : fix_contents) {
             if (fixContentBook.getChapters() != null && !fixContentBook.getChapters().isEmpty()) {
                 if (TextUtils.isEmpty(fixContentBook.getBook_id())) {
                     continue;
                 }
-                BookChapterDao chapterDao = new BookChapterDao(BaseBookApplication.getGlobalContext(), fixContentBook.getBook_id());
-                FixContentState fixState = new FixContentState();
+                ChapterDaoHelper chapterDao = ChapterDaoHelper.Companion.loadChapterDataProviderHelper(BaseBookApplication.getGlobalContext(), fixContentBook.getBook_id());
+                ContextFixState fixState = new ContextFixState();
+
                 boolean isNoChapterID = false;
-                for (UpdateBean.DataBean.FixContentBean.ChaptersBean c : fixContentBook.getChapters()) {
+                for (Chapter c : fixContentBook.getChapters()) {
                     //1.修复章节表
-                    if (TextUtils.isEmpty(c.getId())) {
+                    if (TextUtils.isEmpty(c.getChapter_id())) {
                         fixState.addMsgState(false);
                         continue;
                     }
-                    Chapter chapter = chapterDao.getChapterById(c.getId());
+                    Chapter chapter = chapterDao.getChapterById(c.getChapter_id());
                     if (chapter == null) {
                         // 根据章节id找不到该章节,这种情况可能是2016年数据流改版之前缓存的书籍
                         // 处理方式: 进入fix_book逻辑
@@ -115,69 +112,56 @@ public class RepairHelp {
                         isNoChapterID = true;
                         continue;
                     }
-                    chapter.book_source_id = c.getBook_souce_id();
-                    chapter.chapter_name = c.getName();
-                    chapter.sort = c.getSerial_number();
-                    chapter.site = c.getHost();
-                    chapter.curl = c.getUrl();
-                    chapter.chapter_status = c.getStatus();
-                    chapter.time = c.getUpdate_time();
-                    chapter.word_count = c.getWord_count();
-                    boolean isUpdateChapterByIdSucess = chapterDao.updateChapterById(chapter);
+                    chapter.setBook_source_id(c.getBook_source_id());
+                    chapter.setName(c.getName());
+                    chapter.setHost(c.getHost());
+                    chapter.setUrl(c.getUrl());
+                    chapter.setChapter_status(c.getChapter_status());
+                    chapter.setUpdate_time(c.getUpdate_time());
+                    chapter.setWord_count(c.getWord_count());
+                    boolean isUpdateChapterByIdSucess = chapterDao.updateChapter(chapter);
                     fixState.addMsgState(isUpdateChapterByIdSucess);
-                    AppLog.d(TAG, "fixChapterContent --- chapter.chapter_name = " + chapter.chapter_name + "isUpdateChapterByIdSucess = " + isUpdateChapterByIdSucess);
+                    AppLog.d(TAG, "fixChapterContent --- chapter.chapter_name = " + chapter.getName() + "isUpdateChapterByIdSucess = " + isUpdateChapterByIdSucess);
                     //2.修复章节缓存内容
                     fixChapterContent(chapter, fixState);
 
                 }
 
-                BookDaoHelper instance = BookDaoHelper.getInstance();
                 if (fixState.getFixState()) {
-                    if (instance != null) {
-                        Book book = instance.getBook(fixContentBook.getBook_id(), 0);
-                        if (!TextUtils.isEmpty(book.book_id)) {
-                            book.list_version = fixContentBook.getList_version();
-                            book.c_version = fixContentBook.getC_version();
-                            instance.updateBook(book);
-                            if (fixState.getSaveFixState()) {
-                                BookFix bookFix = new BookFix();
-                                bookFix.book_id = book.book_id;
-                                bookFix.fix_type = 1;
-                                boolean isinsertBookFixSucess = instance.insertBookFix(bookFix);
-                                AppLog.d(TAG, "fixChapterContent --- book.name = " + book.name + "isinsertBookFixSucess = " + isinsertBookFixSucess);
-                            }
+                    Book book = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(fixContentBook.getBook_id());
+                    if (!TextUtils.isEmpty(book.getBook_id())) {
+                        book.setList_version(fixContentBook.getList_version());
+                        book.setC_version(fixContentBook.getC_version());
+                        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book);
+                        if (fixState.getSaveFixState()) {
+                            BookFix bookFix = new BookFix();
+                            bookFix.setBook_id(book.getBook_id());
+                            bookFix.setFix_type(1);
+                            RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBookFix(bookFix);
                         }
                     }
                 }
 
                 if (isNoChapterID) {
                     BookFix bookFix = new BookFix();
-                    bookFix.book_id = fixContentBook.getBook_id();
-                    bookFix.list_version = fixContentBook.getList_version();
-                    bookFix.c_version = fixContentBook.getC_version();
-                    bookFix.fix_type = 2;
-                    boolean isinsertBookSucess = instance.insertBookFix(bookFix);
-                    AppLog.d(TAG, "isNoChapterID -- isinsertBookSucess = " + isinsertBookSucess);
+                    bookFix.setBook_id(fixContentBook.getBook_id());
+                    bookFix.setList_version(fixContentBook.getList_version());
+                    bookFix.setC_version(fixContentBook.getC_version());
+                    bookFix.setFix_type(2);
+                    RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBookFix(bookFix);
                 }
 
             }
         }
     }
 
-    private static void fixChapterContent(Chapter chapter, FixContentState fixState) {
-        if (chapter != null && !TextUtils.isEmpty(chapter.curl) && DataCache.isChapterExists(chapter)) {
+    private static void fixChapterContent(Chapter chapter, ContextFixState fixState) {
+        if (chapter != null && DataCache.isNewCacheExists(chapter)) {
 
             try {
-                String url = UrlUtils.buildContentUrl(chapter.curl);
-                chapter.content = BaseBookApplication.getGlobalContext().getMainExtractorInterface().extract(url);
-                if (!TextUtils.isEmpty(chapter.content)) {
-                    chapter.content = chapter.content.replace("\\n", "\n");
-                    chapter.content = chapter.content.replace("\\n\\n", "\n");
-                    chapter.content = chapter.content.replace("\\n \\n", "\n");
-                    chapter.content = chapter.content.replace("\\", "");
-                }
+                chapter.setContent(RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestChapterContentSync(chapter));
 
-                String content = chapter.content;
+                String content = chapter.getContent();
                 if (TextUtils.isEmpty(content)) {
                     content = "null";
                 }
@@ -192,18 +176,15 @@ public class RepairHelp {
 
     public static void showFixMsg(Activity activity, Book book, FixCallBack fixCallBack) {
 
-        BookDaoHelper instance = BookDaoHelper.getInstance();
-        if (instance != null) {
-            if (instance.isBookSubed(book.book_id)) {
-                BookFix bookFix = instance.getBookFix(book.book_id);
-                if (!TextUtils.isEmpty(bookFix.book_id)) {
-                    if (bookFix.fix_type == 1) {
-                        CommonUtil.showToastMessage("本书问题章节已精修完成！", 0L);
-                        instance.deleteBookFix(bookFix.book_id);
-                    } else if (bookFix.fix_type == 2) {
-                        if (NetWorkUtils.isNetworkAvailable(activity) && bookFix.dialog_flag != 1) {
-                            showFixHintDialog(activity, instance, book, bookFix, fixCallBack);
-                        }
+        if ((RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(book.getBook_id()) != null)) {
+            BookFix bookFix = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBookFix(book.getBook_id());
+            if (bookFix != null && !TextUtils.isEmpty(bookFix.getBook_id())) {
+                if (bookFix.getFix_type() == 1) {
+                    CommonUtil.showToastMessage("本书问题章节已精修完成");
+                    RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBookFix(bookFix.getBook_id());
+                } else if (bookFix.getFix_type() == 2) {
+                    if (NetWorkUtils.isNetworkAvailable(activity) && bookFix.getDialog_flag() != 1) {
+                        showFixHintDialog(activity, book, bookFix, fixCallBack);
                     }
                 }
             }
@@ -213,7 +194,7 @@ public class RepairHelp {
 
 
     private static boolean isComfire = false;
-    private static void showFixHintDialog(final Activity activity, final BookDaoHelper instance, final Book book, final BookFix bookFix, final FixCallBack fixCallBack) {
+    private static void showFixHintDialog(final Activity activity, final Book book, final BookFix bookFix, final FixCallBack fixCallBack) {
         if (activity != null && !activity.isFinishing()) {
             isComfire = false;
             final MyDialog myDialog = new MyDialog(activity, R.layout.fixbook_hint_dialog);
@@ -225,9 +206,9 @@ public class RepairHelp {
                     isComfire = true;
                     myDialog.dismiss();
                     if (NetWorkUtils.isNetworkAvailable(activity)) {
-                        fixBook(instance, book, bookFix, fixCallBack);
+                        fixBook(book, bookFix, fixCallBack);
                     } else {
-                        CommonUtil.showToastMessage("网络不给力，请检查网络连接！", 0L);
+                        CommonUtil.showToastMessage("网络不给力，请检查网络连接");
                     }
                     Map<String, String> data2 = new HashMap<>();
                     data2.put("type", "1");
@@ -244,8 +225,8 @@ public class RepairHelp {
             myDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
-                    bookFix.dialog_flag = 1;
-                    instance.updateBookFix(bookFix);
+                    bookFix.setDialog_flag(1);
+                    RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBookFix(bookFix);
                     if (!isComfire) {
                         Map<String, String> data2 = new HashMap<>();
                         data2.put("type", "2");
@@ -263,7 +244,7 @@ public class RepairHelp {
         }
     }
 
-    private static void fixBook(final BookDaoHelper instance, final Book book, final BookFix bookFix, final FixCallBack fixCallBack) {
+    private static void fixBook(final Book book, final BookFix bookFix, final FixCallBack fixCallBack) {
         //1.删除缓存
         //2.删除目录
         //3.清除缓存队列中信息
@@ -274,18 +255,17 @@ public class RepairHelp {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                BookChapterDao bookChapterDao = new BookChapterDao(BaseBookApplication.getGlobalContext(), book.book_id);
+                ChapterDaoHelper bookChapterDao = ChapterDaoHelper.Companion.loadChapterDataProviderHelper(BaseBookApplication.getGlobalContext(), book.getBook_id());
                 BaseBookHelper.removeChapterCacheFile(book);
-                CacheManager.INSTANCE.remove(book.book_id);
-                bookChapterDao.deleteBookChapters(0);
+                CacheManager.INSTANCE.remove(book.getBook_id());
+                bookChapterDao.deleteAllChapters();
 
 
-                book.list_version = bookFix.list_version;
-                book.c_version = bookFix.c_version;
-                instance.updateBook(book);
-                CacheManager.INSTANCE.start(book.book_id, 0);
-                boolean isdeleteBookFixSucess = instance.deleteBookFix(book.book_id);
-                AppLog.d(TAG, "删除修复状态信息 -- isdeleteBookFixSucess = " + isdeleteBookFixSucess);
+                book.setList_version(bookFix.getList_version());
+                book.setC_version(bookFix.getC_version());
+                RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book);
+                CacheManager.INSTANCE.start(book.getBook_id(), 0);
+                RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBookFix(book.getBook_id());
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
@@ -301,15 +281,12 @@ public class RepairHelp {
     }
 
     public static boolean isShowFixBtn(Context context, String book_id) {
-        BookDaoHelper instance = BookDaoHelper.getInstance();
-        if (instance != null) {
-            if (instance.isBookSubed(book_id)) {
-                BookFix bookFix = instance.getBookFix(book_id);
-                if (!TextUtils.isEmpty(bookFix.book_id)) {
-                    if (bookFix.fix_type == 2) {
-                        if (NetWorkUtils.isNetworkAvailable(context)) {
-                            return true;
-                        }
+        if ((RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(book_id) != null)) {
+            BookFix bookFix = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBookFix(book_id);
+            if (bookFix != null && !TextUtils.isEmpty(bookFix.getBook_id())) {
+                if (bookFix.getFix_type() == 2) {
+                    if (NetWorkUtils.isNetworkAvailable(context)) {
+                        return true;
                     }
                 }
             }
@@ -331,42 +308,38 @@ public class RepairHelp {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                BookDaoHelper instance = BookDaoHelper.getInstance();
-                if (instance != null) {
-                    if (instance.isBookSubed(book.book_id)) {
-                        BookFix bookFix = instance.getBookFix(book.book_id);
-                        if (!TextUtils.isEmpty(bookFix.book_id)) {
-                            if (bookFix.fix_type == 2) {
-                                if (NetWorkUtils.isNetworkAvailable(context)) {
-                                    BookChapterDao bookChapterDao = new BookChapterDao(BaseBookApplication.getGlobalContext(), book.book_id);
-                                    BaseBookHelper.removeChapterCacheFile(book);
-                                    CacheManager.INSTANCE.remove(book.book_id);
-                                    bookChapterDao.deleteBookChapters(0);
+                if ((RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(book.getBook_id()) != null)) {
+                    BookFix bookFix = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBookFix(book.getBook_id());
+                    if (bookFix != null && !TextUtils.isEmpty(bookFix.getBook_id())) {
+                        if (bookFix.getFix_type() == 2) {
+                            if (NetWorkUtils.isNetworkAvailable(context)) {
+                                ChapterDaoHelper bookChapterDao = ChapterDaoHelper.Companion.loadChapterDataProviderHelper(BaseBookApplication.getGlobalContext(), book.getBook_id());
+                                BaseBookHelper.removeChapterCacheFile(book);
+                                CacheManager.INSTANCE.remove(book.getBook_id());
+                                bookChapterDao.deleteAllChapters();
 
 
-                                    book.list_version = bookFix.list_version;
-                                    book.c_version = bookFix.c_version;
-                                    instance.updateBook(book);
-                                    CacheManager.INSTANCE.start(book.book_id, 0);
-                                    boolean isdeleteBookFixSucess = instance.deleteBookFix(book.book_id);
-                                    AppLog.d(TAG, "删除修复状态信息 -- isdeleteBookFixSucess = " + isdeleteBookFixSucess);
-                                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if (fixCallBack != null) {
-                                                fixCallBack.toDownLoadActivity();
-                                            }
+                                book.setList_version(bookFix.getList_version());
+                                book.setC_version(bookFix.getC_version());
+                                RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book);
+                                CacheManager.INSTANCE.start(book.getBook_id(), 0);
+                                RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBookFix(book.getBook_id());
+                                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (fixCallBack != null) {
+                                            fixCallBack.toDownLoadActivity();
                                         }
-                                    });
+                                    }
+                                });
 
-                                } else {
-                                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            CommonUtil.showToastMessage("网络不给力，请检查网络连接！", 0L);
-                                        }
-                                    });
-                                }
+                            } else {
+                                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        CommonUtil.showToastMessage("网络不给力，请检查网络连接");
+                                    }
+                                });
                             }
                         }
                     }

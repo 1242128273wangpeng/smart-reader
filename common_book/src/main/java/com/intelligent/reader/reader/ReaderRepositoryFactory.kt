@@ -4,7 +4,6 @@ import com.intelligent.reader.repository.ReaderRepository
 import io.reactivex.Observable
 import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.SourceItem
-import net.lzbook.kit.request.RequestFactory
 import net.lzbook.kit.user.bean.RecommendBooksEndResp
 
 /**

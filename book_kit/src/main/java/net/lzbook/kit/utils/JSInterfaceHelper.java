@@ -1,14 +1,21 @@
 package net.lzbook.kit.utils;
 
+import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import com.ding.basic.bean.Book;
+import com.ding.basic.repository.RequestRepositoryFactory;
+
+import net.lzbook.kit.request.UrlUtils;
+
 import android.content.Context;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.request.UrlUtils;
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class JSInterfaceHelper implements WebViewJsInterface {
@@ -18,9 +25,12 @@ public class JSInterfaceHelper implements WebViewJsInterface {
     String TAG = "JSInterfaceHelper";
     onEnterAppClick enterApp;
     onAnotherWebClick anotherWeb;
+    onGameAppClick gameAppClick;
+    onWebGameClick webGameClick;
     onSearchClick search;
     onEnterCover cover;
     onEnterRead read;
+    onTurnRead toRead;
     onEnterCategory mCategory;
     onOpenAd ad;
     OnShowToastListener showToast;
@@ -29,14 +39,12 @@ public class JSInterfaceHelper implements WebViewJsInterface {
     OnInsertBook insertBook;
     OnDeleteBook deleteBook;
     OnH5PagerInfoListener pagerInfo;
-    onTurnRead toRead;
     String strings;
     private boolean isLogin = false;
 
     onSearchWordClick searchWordClick;
-    private boolean isRecommendVisible = false;
-    private boolean isRankingVisible = false;
-    private boolean isCategoryVisible = false;
+
+
 
     public JSInterfaceHelper(Context context, WebView webView) {
         super();
@@ -44,10 +52,6 @@ public class JSInterfaceHelper implements WebViewJsInterface {
         this.webView = webView;
         handler = new Handler();
 
-    }
-
-    public interface onTurnRead{
-        void turnRead(String book_id, String book_source_id, String host, String name, String author, String parameter, String extra_parameter, String update_type, final String last_chapter_name, final int serial_number, final String img_url, final long update_time,final String desc,final String label,final String status,final String bookType);
     }
 
     public void setBookString(String strings) {
@@ -68,6 +72,14 @@ public class JSInterfaceHelper implements WebViewJsInterface {
 
     public void setOnAnotherWebClick(onAnotherWebClick another) {
         this.anotherWeb = another;
+    }
+
+    public void setOnWebGameClick(onWebGameClick webGameClick) {
+        this.webGameClick = webGameClick;
+    }
+
+    public void setOnGameAppClick(onGameAppClick gameAppClick) {
+        this.gameAppClick = gameAppClick;
     }
 
     public void setOnSearchClick(onSearchClick search) {
@@ -92,10 +104,6 @@ public class JSInterfaceHelper implements WebViewJsInterface {
 
     public void setOnH5PagerInfo(OnH5PagerInfoListener info) {
         this.pagerInfo = info;
-    }
-
-    public void setOnTurnRead(onTurnRead turnRead){
-        this.toRead = turnRead;
     }
 
     @Override
@@ -189,6 +197,43 @@ public class JSInterfaceHelper implements WebViewJsInterface {
                 }
             }
         });
+    }
+
+    @Override
+    @JavascriptInterface
+    public void openWebGame(final String url, final String name) {
+        if (url == null || name == null)
+            return;
+
+
+        handler.post(new Runnable() {
+
+            @Override
+            public void run() {
+                if (webGameClick != null) {
+                    webGameClick.openWebGame(url, name);
+                }
+            }
+        });
+
+    }
+
+    @Override
+    @JavascriptInterface
+    public void downloadGame(final String url, final String name) {
+        if (url == null || name == null)
+            return;
+
+
+        handler.post(new Runnable() {
+
+            @Override
+            public void run() {
+                if (gameAppClick != null) {
+                    gameAppClick.downloadGame(url, name);
+                }
+            }
+        });
 
     }
 
@@ -271,27 +316,29 @@ public class JSInterfaceHelper implements WebViewJsInterface {
         });
     }
 
-    @Override
-    @JavascriptInterface
-    public void turnToRead(final String book_id, final String book_source_id, final String host, final String name, final String author, final String parameter, final String extra_parameter, final String update_type, final String last_chapter_name, final String serial_number, final String img_url, final String update_time, final String desc, final String label, final String status, final String bookType) {
-        if(!book_id.equals("") && !book_source_id.equals("")){
-
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if(toRead != null){
-                        toRead.turnRead(book_id, book_source_id, host, name, author, parameter, extra_parameter, update_type, last_chapter_name, Integer.valueOf(serial_number), img_url, Long.valueOf(update_time),desc,label,status,bookType);
-                    }
-                }
-            });
-        }
-    }
-
 
     // ========================================================
     // js调用 java 方法 并传参 ; js-->java :tell what to do
     // ======================================================
+    //去重书架上的书
+    @Override
+    @JavascriptInterface
 
+    public String uploadBookShelfList() {
+
+        List<Book> bookShelfList = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks();
+        StringBuilder bookIdList = new StringBuilder();
+
+        if (bookShelfList != null && bookShelfList.size() > 0) {
+            for (int i = 0; i < bookShelfList.size(); i++) {
+                Book book = bookShelfList.get(i);
+                if(i > 0) bookIdList.append(",");
+                bookIdList.append(book.getBook_id());
+            }
+        }
+
+        return bookIdList.toString();
+    }
 
     //收集打点信息,用于统计信息，提供给h5打点数据的通道
     @Override
@@ -302,9 +349,10 @@ public class JSInterfaceHelper implements WebViewJsInterface {
             Map<String, String> data = UrlUtils.getDataParams(urlData);
             //截取页面编码
             String pageCode = data.get("page_code");
+            data.remove("page_code");
             //截取功能编码
             String functionCode = data.get("func_code");
-
+            data.remove("func_code");
             StartLogClickUtil.upLoadEventLog(context, pageCode, functionCode, data);
         }
     }
@@ -387,10 +435,19 @@ public class JSInterfaceHelper implements WebViewJsInterface {
         void doAnotherWeb(String url, String name);
     }
 
+    public interface onGameAppClick {
+        void downloadGame(String url, String name);
+    }
+
+    public interface onWebGameClick {
+        void openWebGame(String url, String name);
+    }
+
     public interface onSearchClick {
         void doSearch(final String keyWord, final String search_type, final String filter_type, final String filter_word, final String sort_type);
     }
 
+    //搜索优化新增
 
     public interface onSearchWordClick{
         void sendSearchWord(final String searchWord, final String search_type);
@@ -398,6 +455,32 @@ public class JSInterfaceHelper implements WebViewJsInterface {
 
     public void setSearchWordClick(onSearchWordClick searchWordClick){
         this.searchWordClick = searchWordClick;
+    }
+
+    public interface onTurnRead{
+        void turnRead(String book_id, String book_source_id, String host, String name, String author, String parameter, String extra_parameter, String update_type, final String last_chapter_name, final int serial_number, final String img_url, final long update_time,final String desc,final String label,final String status,final String bookType);
+    }
+
+    public void setOnTurnRead(onTurnRead turnRead){
+        this.toRead = turnRead;
+    }
+
+
+
+    @Override
+    @JavascriptInterface
+    public void turnToRead(final String book_id, final String book_source_id, final String host, final String name, final String author, final String parameter, final String extra_parameter, final String update_type, final String last_chapter_name, final String serial_number, final String img_url, final String update_time, final String desc, final String label, final String status, final String bookType) {
+        if(!book_id.equals("") && !book_source_id.equals("")){
+
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(toRead != null){
+                        toRead.turnRead(book_id, book_source_id, host, name, author, parameter, extra_parameter, update_type, last_chapter_name, Integer.valueOf(serial_number), img_url, Long.valueOf(update_time),desc,label,status,bookType);
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -451,33 +534,5 @@ public class JSInterfaceHelper implements WebViewJsInterface {
         void onH5PagerInfo(int x, int y, int width, int height);
     }
 
-    @Override
-    @JavascriptInterface
-    public boolean isRecommendVisible() {
-        return false;
-    }
 
-    @Override
-    @JavascriptInterface
-    public boolean isRankingVisible() {
-        return isRankingVisible;
-    }
-
-    @Override
-    @JavascriptInterface
-    public boolean isCategoryVisible() {
-        return false;
-    }
-
-    public void setRecommendVisible() {
-        isRecommendVisible = true;
-    }
-
-    public void setRankingWebVisible() {
-        isRankingVisible = true;
-    }
-
-    public void setCategoryVisible() {
-        isCategoryVisible = true;
-    }
 }

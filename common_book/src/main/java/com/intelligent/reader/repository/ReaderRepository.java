@@ -1,5 +1,7 @@
 package com.intelligent.reader.repository;
 
+import com.ding.basic.bean.Book;
+
 import net.lzbook.kit.data.bean.Chapter;
 import net.lzbook.kit.data.bean.SourceItem;
 import net.lzbook.kit.user.bean.RecommendBooksEndResp;

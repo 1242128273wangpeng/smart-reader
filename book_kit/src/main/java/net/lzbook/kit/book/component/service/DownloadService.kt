@@ -7,28 +7,33 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
+import android.support.v4.app.ServiceCompat.stopForeground
 import android.text.TextUtils
 import android.widget.Toast
-import com.dingyue.contract.util.showToastMessage
-import com.quduquxie.network.DataService
+import com.ding.basic.bean.BasicResult
+import com.ding.basic.bean.CacheTaskConfig
+import com.ding.basic.bean.Chapter
+import com.ding.basic.bean.PackageInfo
+import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.request.RequestSubscriber
+import com.ding.basic.rx.SchedulerHelper
+import com.ding.basic.util.DataCache
 import com.tencent.mm.opensdk.utils.Log
+import io.reactivex.Flowable
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.R
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.*
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.BookTask
-import net.lzbook.kit.data.bean.CacheTaskConfig
-import net.lzbook.kit.data.bean.Chapter
-import net.lzbook.kit.data.db.BookChapterDao
+import net.lzbook.kit.data.db.help.ChapterDaoHelper
 import net.lzbook.kit.encrypt.v17.util.NovelException
-import net.lzbook.kit.net.CacheNetApi
-import net.lzbook.kit.net.PackageInfo
-import net.lzbook.kit.request.DataCache
-import net.lzbook.kit.request.UrlUtils
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.runOnMain
 import java.io.ByteArrayInputStream
 import java.io.IOException
+import java.util.*
 
 
 /**
@@ -91,29 +96,36 @@ class DownloadService : Service(), Runnable {
                     DataCache.deleteOtherSourceCache(task.book)
                 }
 
-                val bookChapterDao = BookChapterDao(this, task.book_id)
+                val bookChapterDao = ChapterDaoHelper.loadChapterDataProviderHelper(this, task.book_id)
 
-                if (bookChapterDao.count <= 0) {
+                if (bookChapterDao.getCount() <= 0) {
 
-                    CacheNetApi.getChapterList(task.book).subscribekt(
-                            onNext = { ret ->
-                                if (ret.size > 0) {
-                                    bookChapterDao.deleteBookChapters(0);
-                                    bookChapterDao.insertBookChapter(ret);
-                                    downBook(task, ret, bookChapterDao)
-                                } else {
-                                    CacheManager.innerListener.onTaskFailed(task.book_id,
-                                            IllegalArgumentException("server return null chapter list"))
-                                }
-                            },
-                            onError = { t ->
-                                t.printStackTrace()
-                                CacheManager.innerListener.onTaskFailed(task.book_id, t)
-                            }
-                    )
+                    RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                            .requestCatalog(task.book_id, task.book.book_source_id
+                                    ?: "", task.book.book_chapter_id)
+                            .subscribeBy(
+                                    onNext = {chapters ->
+                                        if (chapters != null) {
+                                            if (chapters.isNotEmpty()) {
+                                                bookChapterDao.deleteAllChapters()
+                                                bookChapterDao.insertOrUpdateChapter(chapters)
+                                                downBook(task, chapters, bookChapterDao)
+                                            } else {
+                                                CacheManager.innerListener.onTaskFailed(task.book_id,
+                                                        IllegalArgumentException("server return null chapter list"))
+                                            }
+                                        } else {
+                                            CacheManager.innerListener.onTaskFailed(task.book_id, IllegalArgumentException("null"))
+                                        }
+                                    },
+                                    onError = {
+                                        CacheManager.innerListener.onTaskFailed(task.book_id, it)
+                                    }
+
+                            )
 
                 } else {
-                    downBook(task, bookChapterDao.queryBookChapter(), bookChapterDao)
+                    downBook(task, bookChapterDao.queryAllChapters(), bookChapterDao)
                 }
 
             } else {
@@ -129,7 +141,7 @@ class DownloadService : Service(), Runnable {
         }
     }
 
-    fun downBook(task: BookTask, chapterList: List<Chapter>, chapterDao: BookChapterDao) {
+    fun downBook(task: BookTask, chapterList: List<Chapter>, chapterDao: ChapterDaoHelper) {
 
         if (task.state != DownloadState.DOWNLOADING) {
             CacheManager.innerListener.onTaskStatusChange(task.book_id)
@@ -151,104 +163,111 @@ class DownloadService : Service(), Runnable {
         val chapterMap = mutableMapOf<String, Chapter>()
 
         chapterList.forEach {
-            chapterMap.put(it.chapter_id, it)
+            chapterMap.put(it.chapter_id!!, it)
         }
 
-        if (!task.isAutoState && !Constants.QG_SOURCE.equals(task.book.site)) {
-            CacheNetApi.getTaskConfig(task.book, if (task.startSequence != 0) 1 else 0
-                    , chapterList[task.startSequence].chapter_id).subscribekt(
-                    onNext = { ret ->
-                        if ("20000" == ret.respCode) {
+        if (!task.isAutoState) {
+            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                    .requestDownTaskConfig(task.book_id, task.book.book_source_id ?: ""
+                            , if (task.startSequence != 0) 1 else 0
+                            , chapterList[task.startSequence].chapter_id!!)!!
+                    .subscribeBy(
+                            onNext = { ret ->
+                                if (ret.isAvalable() && ret.data!!.fileUrlList != null) {
 
-                            //清空上次的内容
-                            parsedList.clear()
+                                    //清空上次的内容
+                                    parsedList.clear()
 
-                            for (url in (ret.data as CacheTaskConfig).fileUrlList) {
-                                if (task.state == DownloadState.DOWNLOADING) {
-                                    val path = url.substring(url.lastIndexOf("/") + 1)
+                                    for (url in ret.data!!.fileUrlList!!) {
 
-                                    val info = PackageInfo.parse(path)
-                                    if (info == null) {
+                                        if (task.state == DownloadState.DOWNLOADING) {
+                                            val path = url.substring(url.lastIndexOf("/") + 1)
 
-                                        CacheManager.innerListener.onTaskFailed(task.book_id, IllegalArgumentException("package file name err"))
-                                        break
-                                    }
-                                    if (info.startIndex < task.endSequence && info!!.startIndex < info.endIndex) {
+                                            val info = PackageInfo.parse(path)
+                                            if (info == null) {
 
-                                        val subList = chapterList.subList(Math.max(info!!.startIndex - 1, 0), Math.min(info!!.endIndex, chapterList.size))
+                                                CacheManager.innerListener.onTaskFailed(task.book_id, IllegalArgumentException("package file name err"))
+                                                break
+                                            }
+                                            if (info.startIndex < task.endSequence && info!!.startIndex < info.endIndex) {
 
-                                        if (!DataCache.isRangeCached(task.book, subList)) {
-                                            val start = System.currentTimeMillis()
+                                                val subList = chapterList.subList(Math.max(info!!.startIndex - 1, 0), Math.min(info!!.endIndex, chapterList.size))
 
-                                            val list = (ret.data as CacheTaskConfig).fileUrlList
-                                            if (!parsePackage(list, info, url, task, chapterMap)) {
-                                                CacheManager.innerListener.onTaskFailed(task.book_id, IOException("cant save chapter file"))
-                                                return@subscribekt
+                                                if (!DataCache.isRangeCached(task.book, subList)) {
+                                                    val start = System.currentTimeMillis()
+
+                                                    val list = ret.data!!.fileUrlList!!
+                                                    if (!parsePackage(list, info, url, task, chapterMap)) {
+                                                        CacheManager.innerListener.onTaskFailed(task.book_id, IOException("cant save chapter file"))
+                                                        return@subscribeBy
+                                                    }
+
+                                                    task.cache_times += System.currentTimeMillis() - start
+                                                    if (task.state == DownloadState.DOWNLOADING) {
+                                                        task.startSequence = Math.min(info.endIndex, task.endSequence)
+                                                        task.progress = DataCache.getCacheChapterIDs(task.book).size * 100 / task.endSequence
+                                                        task.progress = Math.min(100, task.progress)
+                                                        progressNofitycation(task)
+                                                        CacheManager.innerListener.onTaskProgressUpdate(task.book_id)
+                                                    }
+                                                } else {
+                                                    if (task.state == DownloadState.DOWNLOADING) {
+                                                        task.startSequence = Math.min(info.endIndex, task.endSequence)
+                                                        task.progress = DataCache.getCacheChapterIDs(task.book).size * 100 / task.endSequence
+                                                        task.progress = Math.min(100, task.progress)
+                                                        progressNofitycation(task)
+                                                        CacheManager.innerListener.onTaskProgressUpdate(task.book_id)
+                                                    }
+                                                    parsedList.addAll(subList)
+                                                    task.processChapterCount += subList.size
+                                                    task.startSequence += subList.size
+                                                }
                                             }
 
-                                            task.cache_times += System.currentTimeMillis() - start
-                                            if (task.state == DownloadState.DOWNLOADING) {
-                                                task.startSequence = Math.min(info.endIndex, task.endSequence)
-                                                task.progress = DataCache.getCacheChapterIDs(task.book).size * 100 / task.endSequence
-                                                task.progress = Math.min(100, task.progress)
-                                                progressNofitycation(task)
-                                                CacheManager.innerListener.onTaskProgressUpdate(task.book_id)
-                                            }
                                         } else {
-                                            if (task.state == DownloadState.DOWNLOADING) {
-                                                task.startSequence = Math.min(info.endIndex, task.endSequence)
-                                                task.progress = DataCache.getCacheChapterIDs(task.book).size * 100 / task.endSequence
-                                                task.progress = Math.min(100, task.progress)
-                                                progressNofitycation(task)
-                                                CacheManager.innerListener.onTaskProgressUpdate(task.book_id)
-                                            }
-                                            parsedList.addAll(subList)
-                                            task.processChapterCount += subList.size
-                                            task.startSequence += subList.size
+                                            break
                                         }
                                     }
+                                    if (task.state == DownloadState.DOWNLOADING) {
 
-                                } else {
-                                    break
-                                }
-                            }
-                            if (task.state == DownloadState.DOWNLOADING) {
+                                        if (task.processChapterCount >= task.shouldCacheCount && (task.shouldCacheCount != chapterList.size || task.progress == 100)) {
+                                            stopForeground(true)
+                                            task.startSequence = task.endSequence
+                                            if (task.progress == 100) {
+                                                task.state = DownloadState.FINISH
+                                            } else {
+                                                task.state = DownloadState.PAUSEED
+                                            }
+                                            CacheManager.innerListener.onTaskFinish(task.book_id)
+                                            stopForeground(true)
+                                        } else {
 
-                                if (task.processChapterCount >= task.shouldCacheCount && (task.shouldCacheCount != chapterList.size || task.progress == 100)) {
-                                    stopForeground(true)
-                                    task.startSequence = task.endSequence
-                                    if (task.progress == 100) {
-                                        task.state = DownloadState.FINISH
+                                            val unCacheList = chapterList.subList(task.beginSequence, chapterList.size).filter {
+                                                !parsedList.contains(it)
+                                            }
+                                            downChapters(task, unCacheList)
+
+                                            parsedList.clear()
+                                        }
                                     } else {
-                                        task.state = DownloadState.PAUSEED
+                                        CacheManager.innerListener.onTaskStatusChange(task.book_id)
+                                        stopForeground(true)
                                     }
-                                    CacheManager.innerListener.onTaskFinish(task.book_id)
-                                    stopForeground(true)
+
+                                    //清空上次的内容
+                                    parsedList.clear()
+                                } else if (ret.code == CacheTaskConfig.USE_CHAPTER_BY_CHAPTER) {
+                                    downChapterOneByOne(task, chapterList, false)
                                 } else {
 
-                                    val unCacheList = chapterList.subList(task.beginSequence, chapterList.size).filter {
-                                        !parsedList.contains(it)
-                                    }
-                                    downChapters(task, unCacheList)
-
-                                    parsedList.clear()
+                                    CacheManager.innerListener.onTaskFailed(task.book_id, IllegalArgumentException("server err : " + ret.code))
                                 }
-                            } else {
-                                CacheManager.innerListener.onTaskStatusChange(task.book_id)
-                                stopForeground(true)
+                            },
+                            onError = { t ->
+                                t.printStackTrace()
+                                CacheManager.innerListener.onTaskFailed(task.book_id, t)
                             }
-                        } else if ("60001" == ret.respCode) {
-                            downChapterOneByOne(task, chapterList, false)
-                        } else {
-
-                            CacheManager.innerListener.onTaskFailed(task.book_id, IllegalArgumentException("server err : " + ret.respCode))
-                        }
-                    },
-                    onError = { t ->
-                        t.printStackTrace()
-                        CacheManager.innerListener.onTaskFailed(task.book_id, t)
-                    }
-            )
+                    )
         } else {
             downChapterOneByOne(task, chapterList, false)
         }
@@ -266,7 +285,7 @@ class DownloadService : Service(), Runnable {
                     bytes = getHttpData(url)
 
                     data.put("STATUS", "1")
-                    data.put("bookid", task.book.book_id)
+                    data.put("bookid", task.book.book_id!!)
                     data.put("type", if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else "1")
                     data.put("url1", fileUrlList.get(0))
                     data.put("url2", fileUrlList.last())
@@ -282,7 +301,7 @@ class DownloadService : Service(), Runnable {
                     if (tryTimes >= RETRY_TIMES) {
                         data.put("STATUS", "2");
                         data.put("reason", e.javaClass.simpleName + ":" + e.message)
-                        data.put("bookid", task.book.book_id)
+                        data.put("bookid", task.book.book_id!!)
                         data.put("type", if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else "1")
                         data.put("url1", fileUrlList.get(0))
                         data.put("url2", fileUrlList.last())
@@ -294,7 +313,7 @@ class DownloadService : Service(), Runnable {
                         break
                     } else {
                         runOnMain {
-                            this.showToastMessage(R.string.toast_net_weak)
+                            Toast.makeText(this@DownloadService, R.string.toast_net_weak, Toast.LENGTH_SHORT).show()
                         }
                         synchronized(lock) {
                             try {
@@ -315,7 +334,7 @@ class DownloadService : Service(), Runnable {
                     val z = parse(bytes!!, info, task, chapterMap)
                     val data = HashMap<String, String>()
                     data.put("STATUS", "1")
-                    data.put("bookid", task.book.book_id);
+                    data.put("bookid", task.book.book_id!!);
                     data.put("type", if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else "1")
                     data.put("url1", fileUrlList.get(0))
                     data.put("url2", fileUrlList.last())
@@ -330,7 +349,7 @@ class DownloadService : Service(), Runnable {
                     val data = HashMap<String, String>()
                     data.put("STATUS", "2")
                     data.put("reason", e2.javaClass.simpleName + ":" + e2.message)
-                    data.put("bookid", task.book.book_id);
+                    data.put("bookid", task.book.book_id!!);
                     data.put("type", if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else "1")
                     data.put("url1", fileUrlList.get(0))
                     data.put("url2", fileUrlList.last())
@@ -342,7 +361,7 @@ class DownloadService : Service(), Runnable {
                 }
             }
         }
-        return false;
+        return false
     }
 
     val parsedList = ArrayList<Chapter>()
@@ -400,7 +419,7 @@ class DownloadService : Service(), Runnable {
             }
 
 
-            if (!DataCache.isChapterExists(chapter)) {
+            if (!DataCache.isNewCacheExists(chapter)) {
                 var tryTimes = 0
                 while (tryTimes < RETRY_TIMES) {
                     tryTimes++
@@ -412,6 +431,8 @@ class DownloadService : Service(), Runnable {
                         if (!DataCache.saveChapter(sourceChapter.content, sourceChapter)) {
                             throw IOException("cant save chapter")
                         }
+
+                        break
                     } catch (e: Exception) {
                         if (tryTimes >= RETRY_TIMES || e is NovelException) {
                             CacheManager.innerListener.onTaskFailed(task.book_id, e)
@@ -420,7 +441,7 @@ class DownloadService : Service(), Runnable {
                         } else {
 
                             runOnMain {
-                                this.showToastMessage(R.string.toast_net_weak)
+                                Toast.makeText(this@DownloadService, R.string.toast_net_weak, Toast.LENGTH_SHORT).show()
                             }
 
                             synchronized(lock) {
@@ -489,50 +510,104 @@ class DownloadService : Service(), Runnable {
 
                 try {
 
-                    //青果
-                    if (Constants.QG_SOURCE == task.book.site) {
-                        val udid = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())
-                        val list = BeanParser.buildQGChapterList(ArrayList(chapterList), task.startSequence, DOWN_SIZE)
-                        if (list.size > 0) {
-                            DataService.getChapterBatch(this@DownloadService, list, list[0], DOWN_SIZE, true, udid)
-                            tempCacheChapterCount += list.size
-                            tempChapterCount += list.size
-                        }
-                    } else {
-                        for (i in 0 until DOWN_SIZE) {
-                            val index = task.startSequence + tempChapterCount
-                            if (index < chapterList.size) {
-                                if (!DataCache.isChapterExists(chapterList[index])) {
-                                    val sourceChapter = getSourceChapter(chapterList[index])
-                                    if (TextUtils.isEmpty(sourceChapter.content)) {
-                                        sourceChapter.content = "null"
-                                    }
-//                                    if(DataCache.isChapterContentAvailable(sourceChapter.content)) {
-                                    if (!DataCache.saveChapter(sourceChapter.content, sourceChapter)) {
-                                        throw IOException("cant save chapter")
-                                    }
-                                    tempCacheChapterCount++
-//                                    }
-                                }
+                    val sourceArr = mutableListOf<Flowable<Chapter>>()
+                    var index = task.startSequence
+                    while (sourceArr.size < DOWN_SIZE && index < chapterList.size) {
 
-                                tempChapterCount++
+                        if (task.state != DownloadState.DOWNLOADING) {
+                            stopForeground(true)
+                            CacheManager.innerListener.onTaskStatusChange(task.book_id)
+                            return
+                        }
+
+                        if (!DataCache.isNewCacheExists(chapterList[index])) {
+                            val flowable = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication
+                                    .getGlobalContext()).requestChapterContent(chapterList[index])
+                            flowable.subscribeOn(Schedulers.io())
+                                    .observeOn(Schedulers.io())
+                            sourceArr.add(flowable)
+                        }
+
+                        index++
+                        tempChapterCount++
+
+                        if(tempChapterCount > 10){
+                            if (task.state == DownloadState.DOWNLOADING) {
+
+                                task.progress = DataCache.getCacheChapterIDs(task.book).size * 100 / task.endSequence
+                                task.progress = Math.min(100, task.progress)
+                                progressNofitycation(task)
+                                CacheManager.innerListener.onTaskProgressUpdate(task.book_id)
                             }
                         }
                     }
 
+                    if (sourceArr.isEmpty()) {
+                        if (task.state == DownloadState.DOWNLOADING) {
 
-                    if (task.state == DownloadState.DOWNLOADING) {
+                            task.cache_chapters += tempCacheChapterCount
+                            task.startSequence += tempChapterCount
 
-                        task.cache_chapters += tempCacheChapterCount
-                        task.startSequence += tempChapterCount
+                            task.cache_times += System.currentTimeMillis() - startTime
+                            task.progress = DataCache.getCacheChapterIDs(task.book).size * 100 / task.endSequence
+                            task.progress = Math.min(100, task.progress)
+                            progressNofitycation(task)
+                            CacheManager.innerListener.onTaskProgressUpdate(task.book_id)
+                        }
+                    } else {
 
-                        task.cache_times += System.currentTimeMillis() - startTime
-                        task.progress = DataCache.getCacheChapterIDs(task.book).size * 100 / task.endSequence
-                        task.progress = Math.min(100, task.progress)
-                        progressNofitycation(task)
-                        CacheManager.innerListener.onTaskProgressUpdate(task.book_id)
+                        var error: Throwable? = null
+
+                        Flowable.zipArray<Chapter, List<Chapter>>({
+                            it.toList() as List<Chapter>
+                        }, false, Flowable.bufferSize(), sourceArr.toTypedArray())
+                                .subscribeBy(onNext = {
+                                    it.forEach {
+                                        val sourceChapter = it
+                                        if (TextUtils.isEmpty(sourceChapter.content)) {
+                                            sourceChapter.content = "null"
+                                        }
+//                                    if(DataCache.isChapterContentAvailable(sourceChapter.content)) {
+                                        if (!DataCache.saveChapter(sourceChapter.content, sourceChapter)) {
+                                            throw IOException("cant save chapter")
+                                        }
+
+
+                                        tempCacheChapterCount++
+                                    }
+
+//                                    synchronized(sourceArr as Object){
+//                                        sourceArr.notify()
+//                                    }
+                                }, onError = {
+                                    error = it
+
+//                                    synchronized(sourceArr as Object){
+//                                        sourceArr.notify()
+//                                    }
+                                })
+
+//                        synchronized(sourceArr as Object){
+//                            sourceArr.wait()
+//                        }
+
+                        if (error != null) {
+                            throw  error!!
+                        }
+
+                        if (task.state == DownloadState.DOWNLOADING) {
+
+                            task.cache_chapters += tempCacheChapterCount
+                            task.startSequence += tempChapterCount
+
+                            task.cache_times += System.currentTimeMillis() - startTime
+                            task.progress = DataCache.getCacheChapterIDs(task.book).size * 100 / task.endSequence
+                            task.progress = Math.min(100, task.progress)
+                            progressNofitycation(task)
+                            CacheManager.innerListener.onTaskProgressUpdate(task.book_id)
+                        }
                     }
-
+                    //停止重试的
                     break
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -544,7 +619,7 @@ class DownloadService : Service(), Runnable {
                     } else {
 
                         runOnMain {
-                            this.showToastMessage(R.string.toast_net_weak)
+                            Toast.makeText(this@DownloadService, R.string.toast_net_weak, Toast.LENGTH_SHORT).show()
                         }
 
                         synchronized(lock) {
@@ -578,14 +653,8 @@ class DownloadService : Service(), Runnable {
 
     @Throws(Exception::class)
     private fun getSourceChapter(chapter: Chapter): Chapter {
-        if (!(chapter == null || TextUtils.isEmpty(chapter.curl))) {
-            chapter.content = BaseBookApplication.getGlobalContext().mainExtractorInterface.extract(UrlUtils.buildContentUrl(chapter.curl))
-            if (!TextUtils.isEmpty(chapter.content)) {
-                chapter.content = chapter.content.replace("\\n", "\n")
-                chapter.content = chapter.content.replace("\\n\\n", "\n")
-                chapter.content = chapter.content.replace("\\n \\n", "\n")
-                chapter.content = chapter.content.replace("\\", "")
-            }
+        if (chapter != null) {
+            chapter.content = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestChapterContentSync(chapter)
         }
         return chapter
     }

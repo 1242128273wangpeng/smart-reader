@@ -30,7 +30,6 @@ import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.book.view.RecommendItemView
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.CoverPage
-import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.data.recommend.CoverRecommendBean

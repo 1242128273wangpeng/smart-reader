@@ -2,6 +2,8 @@ package net.lzbook.kit.data.bean;
 
 import net.lzbook.kit.data.UpdateCallBack;
 
+import com.ding.basic.bean.Book;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class BookUpdateTaskData {
@@ -12,7 +14,7 @@ public class BookUpdateTaskData {
     //更新的小说
     public ArrayList<Book> books;
     //更新结构的回调接口
-    public UpdateCallBack mCallBack;
+    public WeakReference<UpdateCallBack> mCallBack;
     private int hash;
 
     public static BookUpdateTaskData getData() {

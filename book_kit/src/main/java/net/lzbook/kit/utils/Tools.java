@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 public class Tools {
     private static int[] count_rating = new int[]{4, 5};
     private static Random random = new Random();
+    private static String userWord = "";
 
     /**
      * return int 4 or 5
@@ -80,9 +81,6 @@ public class Tools {
      * list
      */
     public static ArrayList<String> getHistoryWord(Context mContext) {
-        if (mContext == null) {
-            return null;
-        }
         ArrayList<String> list = new ArrayList<String>();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
         String historyKeyStr = sp.getString("search_history", "");
@@ -92,12 +90,20 @@ public class Tools {
             for (String historyKey : historyKeys) {
                 list.add(historyKey);
                 index++;
-                if (index > 9) {
+                if (index > 29) { //搜索优化改版，保留最近搜索过的30条搜索历史
                     break;
                 }
             }
         }
         return list;
+    }
+
+    public static void setUserSearchWord(String keyWord){
+        userWord = keyWord;
+    }
+
+    public static String getKeyWord(){
+        return userWord;
     }
 
     /**
@@ -244,7 +250,6 @@ public class Tools {
             return null;
         }
     }
-
     public static boolean isNumeric(String str) {
         Pattern pattern = Pattern.compile("[0-9]*");
         Matcher isNum = pattern.matcher(str);

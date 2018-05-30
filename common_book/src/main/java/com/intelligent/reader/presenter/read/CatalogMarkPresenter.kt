@@ -18,7 +18,6 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.Bookmark
 import net.lzbook.kit.data.bean.Chapter
-import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.subscribekt

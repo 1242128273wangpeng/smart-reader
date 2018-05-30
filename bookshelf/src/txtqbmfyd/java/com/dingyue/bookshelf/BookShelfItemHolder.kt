@@ -8,6 +8,7 @@ import android.view.ViewGroup
 
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.ding.basic.bean.Book
 import kotlinx.android.synthetic.txtqbmfyd.item_bookshelf_book.view.*
 
 import net.lzbook.kit.constants.ReplaceConstants
@@ -37,7 +38,8 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
                 img_book_status.visibility = View.VISIBLE
                 img_book_status.setImageResource(R.drawable.bookshelf_item_book_update_icon)
             }
-            book.status == 2 -> { //完结
+
+            book.status == "FINISH" -> { //完结
                 img_book_status.visibility = View.VISIBLE
                 img_book_status.setImageResource(R.drawable.bookshelf_item_book_finish_icon)
             }

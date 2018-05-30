@@ -36,6 +36,9 @@
 -keep class net.lzbook.kit.data.search.**{*;}
 -keep class net.lzbook.kit.data.update.**{*;}
 -keep class net.lzbook.kit.data.recommend.**{*;}
+-keep class net.lzbook.kit.net.Result {*;}
+-keep class net.lzbook.kit.user.bean.**{*;}
+-keep class com.ding.basic.bean.**{*;}
 
 ##---------------End: proguard configuration for Gson  ----------
 

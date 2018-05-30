@@ -250,7 +250,8 @@ abstract class AbsGLAnimation(val glSurfaceView: GLSurfaceView) : IGLAnimation {
         when (status) {
             Status.SLIDING_TO_LEFT -> {
                 if (!useVelocity) {
-                    if (-dx >= width / 3) {
+//                    if (-dx >= width / 3) {
+                    if (xVelocity < 0) {
 
                         targetPointF.x = width - width.toFloat() * (1 + getMargin()) - (width - originPoint.x)
                         targetPointF.y = 0F
@@ -279,7 +280,8 @@ abstract class AbsGLAnimation(val glSurfaceView: GLSurfaceView) : IGLAnimation {
             }
             Status.SLIDING_TO_RIGHT -> {
                 if (!useVelocity) {
-                    if (dx >= width / 3) {
+//                    if (dx >= width / 3) {
+                    if (xVelocity > 0) {
                         targetPointF.x = width.toFloat() + originPoint.x
                         targetPointF.y = 0F
 

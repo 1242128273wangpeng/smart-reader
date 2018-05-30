@@ -8,6 +8,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.ding.basic.bean.Book;
+
 import net.lzbook.kit.R;
 import net.lzbook.kit.app.ActionConstants;
 import net.lzbook.kit.book.download.CacheManager;
@@ -59,7 +61,7 @@ public class CacheUpdateReceiver extends BroadcastReceiver {
 
                 txt_title.setText(
                         String.format(activity.getString(R.string.dialog_cache_complete_with_err),
-                                book.name));
+                                book.getName()));
 
                 txt_go.setOnClickListener(new View.OnClickListener() {
                     @Override

@@ -10,7 +10,6 @@ import android.widget.RelativeLayout
 import com.intelligent.reader.DisposableAndroidViewModel
 import com.intelligent.reader.cover.BookCoverLocalRepository
 import com.intelligent.reader.cover.BookCoverOtherRepository
-import com.intelligent.reader.cover.BookCoverQGRepository
 import com.intelligent.reader.cover.BookCoverRepositoryFactory
 import com.intelligent.reader.read.help.ReadSeparateHelper
 import com.intelligent.reader.read.mode.NovelChapter
@@ -29,7 +28,6 @@ import net.lzbook.kit.data.bean.*
 import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.net.custom.service.NetService
-import net.lzbook.kit.request.RequestFactory
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.OpenUDID
 import net.lzbook.kit.utils.runOnMain

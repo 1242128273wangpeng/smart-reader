@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import net.lzbook.kit.utils.AbsRecyclerViewHolder;
+
+import com.ding.basic.bean.Book;
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.paging.BaseAdapter;
 import com.intelligent.reader.adapter.paging.HisAdapter;
@@ -37,7 +39,6 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
     private static final String TAG = FootprintActivity.class.getSimpleName();
     private EmptyRecyclerView mRecyclerView;
     private BaseAdapter mLoadMoreAdapter;
-    private DaoUtils mDaoUtils;
     private List<Book> mDataSet;
     private HisAdapter mHisAdapter;
     private ImageView mBack;

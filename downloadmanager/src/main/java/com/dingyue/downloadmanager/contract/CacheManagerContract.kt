@@ -1,5 +1,6 @@
 package com.dingyue.downloadmanager.contract
 
+import com.ding.basic.bean.Book
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.CallBackDownload
 import net.lzbook.kit.book.download.DownloadState

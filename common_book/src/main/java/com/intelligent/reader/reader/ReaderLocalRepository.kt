@@ -10,8 +10,6 @@ import net.lzbook.kit.data.bean.Chapter
 import net.lzbook.kit.data.bean.SourceItem
 import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.data.db.BookDaoHelper
-import net.lzbook.kit.request.DataCache
-import net.lzbook.kit.request.RequestFactory
 import net.lzbook.kit.request.WriteFileFailException
 import net.lzbook.kit.user.bean.RecommendBooksEndResp
 

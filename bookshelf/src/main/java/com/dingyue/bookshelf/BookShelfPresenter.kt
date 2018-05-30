@@ -6,17 +6,19 @@ import android.content.ServiceConnection
 import android.os.IBinder
 import android.text.TextUtils
 import android.view.ViewGroup
+import com.ding.basic.bean.Book
+import com.ding.basic.bean.BookUpdate
+import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.bookshelf.contract.BookHelperContract
 import com.dingyue.bookshelf.contract.BookShelfADContract
 import com.dingyue.contract.CommonContract
 import com.dingyue.contract.IPresenter
+import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
-import net.lzbook.kit.data.bean.BookUpdate
 import net.lzbook.kit.data.bean.BookUpdateResult
-import net.lzbook.kit.data.db.BookDaoHelper
 import net.lzbook.kit.utils.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -26,8 +28,6 @@ import kotlin.collections.LinkedHashMap
  * Created by qiantao on 2017/11/14 0014
  */
 class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShelfView> {
-
-    private var bookDaoHelper: BookDaoHelper = BookDaoHelper.getInstance()
 
     var iBookList: ArrayList<Book> = ArrayList()
 
@@ -58,9 +58,12 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
      * 添加检查更新任务，调用Service进行检查更新
      * **/
     fun addUpdateTask(updateCallBack: UpdateCallBack) {
-        if (bookDaoHelper.booksCount > 0 && updateService != null) {
-            val list = bookDaoHelper.booksList
-            updateService?.checkUpdate(BookHelperContract.loadBookUpdateTaskData(list, updateCallBack))
+
+        val count =  RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBookCount()
+
+        if (count > 0 && updateService != null) {
+            val books = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadReadBooks()
+            updateService?.checkUpdate(BookHelperContract.loadBookUpdateTaskData(books, updateCallBack))
         }
     }
 
@@ -104,49 +107,53 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
      * 刷新书籍列表，并计算请求广告数量。 注：将adBookMap插入到列表中，主要是为了解决刷新列表时，广告抖动的问题。
      * **/
     private fun calculationShelfADCount(isShowAD: Boolean, isList: Boolean): Int {
-        val bookList = bookDaoHelper.booksOnLineList
+        val books = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks()
 
-        iBookList.removeAll {
-            it.item_type != 2
-        }
-
-        if (bookList.isEmpty()) {
-            uiThread {
-                view?.onBookListQuery(bookList)
+        if (books != null) {
+            iBookList.removeAll {
+                it.item_type != 2
             }
-            return 0
-        } else {
-            Collections.sort(bookList, CommonContract.MultiComparator(Constants.book_list_sort_type))
-            iBookList.addAll(bookList)
 
-            //将之前请求到广告的item，添加到列表中，防止刷新列表是，广告抖动问题
-            if (adBookMap.isNotEmpty()) {
-                val iterator = adBookMap.entries.iterator()
+            if (books.isEmpty()) {
+                uiThread {
+                    view?.onBookListQuery(books)
+                }
+                return 0
+            } else {
+                Collections.sort(books, CommonContract.MultiComparator(Constants.book_list_sort_type))
+                iBookList.addAll(books)
 
-                while (iterator.hasNext()) {
-                    val entry = iterator.next()
-                    if (entry.value.item_view != null) {
-                        iBookList.add(entry.key, entry.value)
+                //将之前请求到广告的item，添加到列表中，防止刷新列表是，广告抖动问题
+                if (adBookMap.isNotEmpty()) {
+                    val iterator = adBookMap.entries.iterator()
+
+                    while (iterator.hasNext()) {
+                        val entry = iterator.next()
+                        if (entry.value.item_view != null) {
+                            iBookList.add(entry.key, entry.value)
+                        }
                     }
                 }
-            }
 
-            uiThread {
-                view?.onBookListQuery(bookList)
-            }
-
-            return if (isShowAD) {
-                val interval = BookShelfADContract.loadBookShelfADInterval()
-
-                if (interval == 0) {
-                    0
-                } else {
-                    //如果当前书架展示为列表时，请求广告数量加1。主要是因为列表形式的广告，position为0需要插入一条多余的广告
-                    bookList.size / interval + (if (isList) 1 else 0)
+                uiThread {
+                    view?.onBookListQuery(books)
                 }
-            } else {
-                0
+
+                return if (isShowAD) {
+                    val interval = BookShelfADContract.loadBookShelfADInterval()
+
+                    if (interval == 0) {
+                        0
+                    } else {
+                        //如果当前书架展示为列表时，请求广告数量加1。主要是因为列表形式的广告，position为0需要插入一条多余的广告
+                        books.size / interval + (if (isList) 1 else 0)
+                    }
+                } else {
+                    0
+                }
             }
+        } else {
+            return 0
         }
     }
 
@@ -269,7 +276,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
                     BaseBookHelper.removeChapterCacheFile(it)
                 }
             } else {
-                bookDaoHelper.deleteBook(deleteBooks)
+                RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBooks(deleteBooks)
             }
 
             Thread.sleep(1000)
@@ -317,7 +324,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
         iBookList.forEach {
             if (it.item_type == 1 || it.item_type == 2) {
                 if (it.item_view != null) {
-                    it.item_view.removeAllViews()
+                    it.item_view?.removeAllViews()
                     it.item_view = null
                 }
             }
@@ -330,7 +337,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
                 val entry = iterator.next()
 
                 if (entry.value.item_view != null) {
-                    entry.value.item_view.removeAllViews()
+                    entry.value.item_view?.removeAllViews()
                     entry.value.item_view = null
                 }
             }

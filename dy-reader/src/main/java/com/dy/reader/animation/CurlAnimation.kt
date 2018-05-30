@@ -176,10 +176,16 @@ class CurlAnimation : PageFlip, IGLAnimation {
                             xVelocity > 0
                         }
                     } else {
+//                        if (status == Status.SLIDING_TO_LEFT) {
+//                            forceFlip or (x.toInt() < glSurfaceView.width / 2)
+//                        } else {
+//                            forceFlip or (x.toInt() > glSurfaceView.width / 2)
+//                        }
+
                         if (status == Status.SLIDING_TO_LEFT) {
-                            forceFlip or (x.toInt() < glSurfaceView.width / 2)
+                            xVelocity < 0
                         } else {
-                            forceFlip or (x.toInt() > glSurfaceView.width / 2)
+                            xVelocity > 0
                         }
                     }
                 }

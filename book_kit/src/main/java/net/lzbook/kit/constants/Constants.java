@@ -1,13 +1,13 @@
 package net.lzbook.kit.constants;
 
+import android.content.Context;
+import android.os.Environment;
+
 import net.lzbook.kit.R;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.ResourceUtil;
 
 import org.apache.http.protocol.HTTP;
-
-import android.content.Context;
-import android.os.Environment;
 
 import java.io.File;
 
@@ -46,6 +46,8 @@ public class Constants {
     public static final String DY_SHELF_AD_SWITCH = "DY_shelf_ad_switch";
     //九宫格书架页广告显示类型切换开关 1表示横向header, 2 表示九宫格列表形式
     public static final String BOOK_SHELF_STATE = "book_shelf_state";
+ 	//书架1-2广告开关
+    public static final String DY_SHELF_BOUNDARY_SWITCH = "DY_shelf_boundary_switch";
     //书架广告频率
     public static final String DY_SHELF_AD_FREQ = "DY_shelf_ad_freq";
     //章节末广告开关
@@ -129,6 +131,10 @@ public class Constants {
     public static boolean ad_huajiao_switch = false;
     public static String ad_huajiao_access_address = "http://h.open.huajiao.com?channelid=quanbenzhuishu";
     public static String SDCARD_PATH = Environment.getExternalStorageDirectory().getAbsolutePath();
+
+    //老版青果缓存路径
+    public static String QG_CACHE_PATH = SDCARD_PATH + "/quanben/book/";
+
     public static String CHARSET = HTTP.UTF_8;
     public static boolean isNetWorkError = false;
     public static int manualReadedCount = 0;
@@ -189,7 +195,6 @@ public class Constants {
        九宫格书架页广告显示类型切换开关
      */
     public static int book_shelf_state = 1;
-    public static boolean dy_shelf_boundary_switch = true; //书架页1-2开关
     public static int dy_shelf_ad_freq = 10;
     public static boolean dy_page_end_ad_switch = true;
     public static int dy_page_end_ad_freq = 1;
@@ -210,6 +215,8 @@ public class Constants {
     public static boolean dy_is_new_reading_end = false;
     //新壳广告开关
     public static boolean new_app_ad_switch = false;
+    //书架页悬浮广告位
+    public static boolean dy_shelf_boundary_switch = true;
     //阅读页上下翻页展示广告开关
     public static boolean dy_ad_readPage_slide_switch_new = true;
     public static int ad_limit_time_day = 2;//新用户前三天不显示ad
@@ -245,7 +252,7 @@ public class Constants {
     //新的用户广告数据搜集接口域名获取key
     public static String DY_AD_NEW_REQUEST_DOMAIN_NAME = "DY_ad_new_request_domain_name";
     //源相关字段
-    public static String QG_SOURCE = "api.qingoo.cn";
+    public static String QG_SOURCE = "open.qingoo.cn";
     public static String YS_SOURCE = "b.easou.com";
     public static String SG_SOURCE = "k.sogou.com";
     //public static final String CONTENT_ERROR = "文章内容较短,可能非正文,正在抓紧修复中";
@@ -273,6 +280,15 @@ public class Constants {
     public static boolean hadShownMobilNetworkConfirm = false;
 
     public static int WIFI_AUTO_CACHE_COUNT = 20;
+
+    public static final String SERARCH_HOT_WORD_YOUHUA = "search_hot_word_youhua";// 4个替壳 新版搜索热词,防止升级用户首次没网，从缓存拿数据时报错
+
+
+
+    //书架推荐书籍比例 智能：青果
+    public static String sRecommendRateForShelf = "1,2";
+    //书末推荐书籍比例 智能：青果  智能：青果
+    public static String sRecommendRateForBookend = "1,2,0,3";
     public static String UPLOAD_OLDUSER_READ_SETTING = "upload_olduser_read_setting"; // 老用户每天上传一次阅读页设置
 
     /*

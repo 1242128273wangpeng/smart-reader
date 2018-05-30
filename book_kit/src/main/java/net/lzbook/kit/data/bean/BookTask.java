@@ -2,7 +2,7 @@ package net.lzbook.kit.data.bean;
 
 
 import net.lzbook.kit.book.download.DownloadState;
-
+import com.ding.basic.bean.Book;
 
 public class BookTask {
     public Book book;
@@ -36,14 +36,10 @@ public class BookTask {
         if (book == null) {
             throw new IllegalArgumentException("book may not be null");
         } else {
-            try {
-                //避免换源时， 任务无法刷新的问题
-                this.book = book.clone();
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-                throw new IllegalArgumentException("book cant clone");
-            }
-            this.book_id = book.book_id;
+            //避免换源时， 任务无法刷新的问题
+            //TODO 修复转成kotlin后clone的问题
+            this.book = book.clone();
+            this.book_id = book.getBook_id();
             this.state = state;
             this.startSequence = startSequence;
             this.endSequence = endSequence;
@@ -54,11 +50,11 @@ public class BookTask {
         if (o == null || !(o instanceof BookTask)) {
             return super.equals(o);
         }
-        return this.book.book_id.equals(((BookTask) o).book.book_id);
+        return this.book.getBook_id().equals(((BookTask) o).book.getBook_id());
     }
 
     public int hashCode() {
-        return this.book.book_id.hashCode();
+        return this.book.getBook_id().hashCode();
     }
 
     public String toString() {

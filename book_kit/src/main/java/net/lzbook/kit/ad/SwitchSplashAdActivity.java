@@ -11,6 +11,17 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+
+import com.dycm_adsdk.PlatformSDK;
+import com.dycm_adsdk.callback.AbstractCallback;
+import com.dycm_adsdk.callback.ResultCode;
+import com.dycm_adsdk.utils.DyLogUtils;
+
+import net.lzbook.kit.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import static android.view.KeyEvent.KEYCODE_BACK;
 import static net.lzbook.kit.utils.ExtensionsKt.msMainLooperHandler;
@@ -28,7 +39,51 @@ public class SwitchSplashAdActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_switch_splash_ad);
         final FrameLayout fm = (FrameLayout) findViewById(R.id.container);
+        final LinearLayout linerClose = (LinearLayout) findViewById(R.id.ll_close_switch);
         setVisibility(fm, false);
+        linerClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        if (PlatformSDK.config().getAdSwitch("11-1")) {
+            PlatformSDK.adapp().dycmSplashAd(this, "11-1", fm, new AbstractCallback() {
+                @Override
+                public void onResult(boolean adswitch, String jsonResult) {
+                    super.onResult(adswitch, jsonResult);
+                    if (!adswitch) return;
+                    try {
+                        JSONObject jsonObject = new JSONObject(jsonResult);
+                        if (jsonObject.has("state_code")) {
+                            switch (ResultCode.parser(jsonObject.getInt("state_code"))) {
+                                case AD_REQ_SUCCESS://广告请求成功
+                                    DyLogUtils.dd("AD_REQ_SUCCESS" + jsonResult);
+                                    setVisibility(fm, true);
+                                    linerClose.setVisibility(View.VISIBLE);
+                                    break;
+                                case AD_REQ_FAILED://广告请求失败
+                                    DyLogUtils.dd("AD_REQ_FAILED" + jsonResult);
+                                    SwitchSplashAdActivity.this.finish();
+                                    break;
+                                case AD_DISMISSED_CODE://开屏页面关闭
+                                    SwitchSplashAdActivity.this.finish();
+                                    break;
+                                case AD_ONCLICKED_CODE://开屏页面点击
+                                    DyLogUtils.dd("AD_ONCLICKED_CODE" + jsonResult);
+                                    break;
+                                case AD_ONTICK_CODE://剩余显示时间
+                                    DyLogUtils.dd("AD_ONTICK_CODE" + jsonResult);
+                                    break;
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
 
         msMainLooperHandler.postDelayed(new Runnable() {
             @Override
@@ -59,13 +114,17 @@ public class SwitchSplashAdActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-//        PlatformSDK.lifecycle().onResume();
+        if(PlatformSDK.lifecycle()!= null){
+            PlatformSDK.lifecycle().onResume();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        PlatformSDK.lifecycle().onPause();
+        if(PlatformSDK.lifecycle()!= null){
+            PlatformSDK.lifecycle().onPause();
+        }
     }
 
     @Override
@@ -80,6 +139,8 @@ public class SwitchSplashAdActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        PlatformSDK.lifecycle().onDestroy();
+        if(PlatformSDK.lifecycle()!= null){
+            PlatformSDK.lifecycle().onDestroy();
+        }
     }
 }

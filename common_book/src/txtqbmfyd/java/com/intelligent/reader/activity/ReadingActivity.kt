@@ -16,6 +16,7 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.ding.basic.bean.Book
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication

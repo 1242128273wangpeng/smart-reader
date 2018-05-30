@@ -50,7 +50,7 @@ public class BookApplication extends BaseBookApplication {
         FeedbackAPI.addErrorCallback(new FeedbackErrorCallback() {
             @Override
             public void onError(Context context, String errorMessage, ErrorCode code) {
-                CommonUtil.showToastMessage("ErrorMessage is: " + errorMessage, 0L);
+                CommonUtil.showToastMessage("ErrorMessage is: " + errorMessage);
             }
         });
         // Feedback activity的回调

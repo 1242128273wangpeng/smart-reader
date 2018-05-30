@@ -1,35 +1,35 @@
 package net.lzbook.kit.app;
 
-import android.app.ActivityManager;
+import static net.lzbook.kit.utils.ExtensionsKt.loge;
+
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
-import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
 
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.quduquxie.QuInitialization;
+import com.ding.basic.Config;
+import com.ding.basic.bean.LoginResp;
+import com.ding.basic.database.helper.BookDataProviderHelper;
+import com.dycm_adsdk.PlatformSDK;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.greendao.dao.DaoMaster;
-import net.lzbook.kit.data.greendao.dao.DaoSession;
-import net.lzbook.kit.data.greendao.helper.ReaderDBOpenHelper;
 import net.lzbook.kit.encrypt.MainExtractorInterface;
 import net.lzbook.kit.encrypt.URLBuilderIntterface;
 import net.lzbook.kit.encrypt.v17.MainExtractor;
 import net.lzbook.kit.encrypt.v17.URLBuilder;
-import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.ExtensionsKt;
-import net.lzbook.kit.utils.HttpUtils;
 import net.lzbook.kit.utils.LogcatHelper;
+import net.lzbook.kit.utils.OpenUDID;
 
-import static net.lzbook.kit.utils.ExtensionsKt.loge;
+import java.util.HashMap;
 
 
 public abstract class BaseBookApplication extends Application {
@@ -39,10 +39,6 @@ public abstract class BaseBookApplication extends Application {
     private static URLBuilderIntterface urlBuilderIntterface;
     protected SharedPreferences sp;
     private MainExtractorInterface mainExtractorInterface;
-
-    private static DaoSession daoSession;
-
-    private static final String READER_DB_NAME = "reader.db";
 
     public static BaseBookApplication getGlobalContext() {
         return g_context;
@@ -75,10 +71,19 @@ public abstract class BaseBookApplication extends Application {
         super.onCreate();
         this.sCtx = this;
         loge(this, "onCreate");
+
 		if (AppUtils.isMainProcess(this)) {
+
             CacheManager.INSTANCE.checkService();
+
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.APPINIT);
+
+            //加载数据库
+            BookDataProviderHelper.Companion.loadBookDataProviderHelper(this);
+
+            PlatformSDK.app().onAppCreate(this);
+            Config.INSTANCE.beginInit(this);
         }
-//        PlatformSDK.app().onAppCreate(this);
     }
 
     @Override
@@ -94,7 +99,6 @@ public abstract class BaseBookApplication extends Application {
         Constants.SHOW_LOG = ExtensionsKt.msDebuggAble =(getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)!= 0;
         //分割dex防止方法数过多
         MultiDex.install(this);
-        HttpUtils.getHttpClient();
         initData();
         initARouter();
     }
@@ -113,37 +117,15 @@ public abstract class BaseBookApplication extends Application {
             LogcatHelper.getInstance(this).stop();
         }
 
-        initDaoSession();
+        initializeRequestParameters();
 
-        QuInitialization.init(this);
-
-        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.APPINIT);
-    }
-    public static DaoSession getDaoSession() {
-        return daoSession;
     }
 
-    private void initDaoSession() {
-        if (!getCurProcessName(this).equals(AppUtils.getPackageName())) return;
-        AppLog.e("AndroidLog", "initDaoSession");
-        ReaderDBOpenHelper helper = new ReaderDBOpenHelper(this, READER_DB_NAME);
-        SQLiteDatabase db = helper.getWritableDatabase();
-        DaoMaster daoMaster = new DaoMaster(db);
-        daoSession = daoMaster.newSession();
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        PlatformSDK.app().onTerminate();
     }
-
-    private String getCurProcessName(Context context) {
-        int pid = android.os.Process.myPid();
-        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        if (activityManager == null) return "";
-        for (ActivityManager.RunningAppProcessInfo appProcess : activityManager.getRunningAppProcesses()) {
-            if (appProcess.pid == pid) {
-                return appProcess.processName;
-            }
-        }
-        return "";
-    }
-
 
     private void initARouter() {
         if (Constants.SHOW_LOG) {
@@ -153,9 +135,47 @@ public abstract class BaseBookApplication extends Application {
         ARouter.init(g_context);
     }
 
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-//        PlatformSDK.app().onTerminate();
+    private void initializeRequestParameters() {
+
+        Config.INSTANCE.initializeLogger();
+
+        HashMap<String, String> parameters = new HashMap<>();
+
+        String packageName = AppUtils.getPackageName();
+        parameters.put("packageName", packageName);
+
+        String version = String.valueOf(AppUtils.getVersionCode());
+        parameters.put("version", version);
+
+        String channelId = AppUtils.getChannelId();
+        parameters.put("channelId", channelId);
+
+        String os = Constants.APP_SYSTEM_PLATFORM;
+        parameters.put("os", os);
+
+        String udid = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext());
+        parameters.put("udid", udid);
+
+        parameters.put("longitude", "0.0");
+
+        parameters.put("latitude", "0.0");
+
+        parameters.put("cityCode", "");
+
+        LoginResp userInfo = UserManager.INSTANCE.getMUserInfo();
+
+        String loginToken = null;
+
+        if (null != userInfo) {
+            loginToken = userInfo.getLogin_token();
+        }
+
+        if (loginToken == null) {
+            parameters.put("loginToken", "");
+        } else {
+            parameters.put("loginToken", loginToken);
+        }
+
+        Config.INSTANCE.insertRequestParameters(parameters);
     }
 }

@@ -1,22 +1,16 @@
 package com.intelligent.reader.presenter.bookEnd
 
 import android.app.Activity
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.view.View
-import android.widget.Button
-import android.widget.TextView
-import com.intelligent.reader.R
 import com.intelligent.reader.activity.CataloguesActivity
 import com.intelligent.reader.activity.HomeActivity
 import com.intelligent.reader.activity.SearchBookActivity
-import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.read.mode.ReadState
 import com.intelligent.reader.util.EventBookStore
-import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.book.view.RecommendItemView
@@ -24,7 +18,6 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.*
 import net.lzbook.kit.data.db.BookChapterDao
 import net.lzbook.kit.data.db.BookDaoHelper
-import net.lzbook.kit.request.own.OtherRequestService
 import net.lzbook.kit.utils.*
 import java.lang.ref.WeakReference
 import java.util.ArrayList

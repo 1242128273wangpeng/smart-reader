@@ -164,7 +164,6 @@ public class CoverRecommendBean implements Serializable {
                 private String label;
                 private String sourceImageUrl;
                 private String imageId;
-                private AttributeBean attribute;
                 private String host;
                 private String url;
                 private String terminal;
@@ -262,14 +261,6 @@ public class CoverRecommendBean implements Serializable {
 
                 public void setImageId(String imageId) {
                     this.imageId = imageId;
-                }
-
-                public AttributeBean getAttribute() {
-                    return attribute;
-                }
-
-                public void setAttribute(AttributeBean attribute) {
-                    this.attribute = attribute;
                 }
 
                 public String getHost() {
@@ -478,32 +469,6 @@ public class CoverRecommendBean implements Serializable {
 
                 public void setSelfBookPrice(int selfBookPrice) {
                     this.selfBookPrice = selfBookPrice;
-                }
-
-                public static class AttributeBean {
-                    /**
-                     * gid : 200002434
-                     * nid : 0
-                     */
-
-                    private String gid;
-                    private String nid;
-
-                    public String getGid() {
-                        return gid;
-                    }
-
-                    public void setGid(String gid) {
-                        this.gid = gid;
-                    }
-
-                    public String getNid() {
-                        return nid;
-                    }
-
-                    public void setNid(String nid) {
-                        this.nid = nid;
-                    }
                 }
             }
 

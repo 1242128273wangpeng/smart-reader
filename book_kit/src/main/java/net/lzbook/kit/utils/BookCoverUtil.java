@@ -1,10 +1,11 @@
 package net.lzbook.kit.utils;
 
+import net.lzbook.kit.app.ActionConstants;
 import net.lzbook.kit.book.view.RecommendItemView;
-import net.lzbook.kit.data.bean.CoverPage;
+import com.ding.basic.bean.Book;
+import com.ding.basic.bean.HistoryInfo;
+
 import net.lzbook.kit.data.bean.RecommendItem;
-import net.lzbook.kit.data.db.BookDaoHelper;
-import net.lzbook.kit.data.ormlite.bean.HistoryInfo;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -118,65 +119,36 @@ public class BookCoverUtil {
             stateReceiver = new StateReceiver();
         }
         IntentFilter filter = new IntentFilter();
+        filter.addAction(ActionConstants.ACTION_DOWNLOAD_BOOK_FINISH);
+        filter.addAction(ActionConstants.ACTION_DOWNLOAD_BOOK_LOCKED);
         if (context != null) {
+            try {
+                unRegisterReceiver();
+            }catch (Exception e){}
             context.registerReceiver(stateReceiver, filter);
         }
     }
 
-    public void unRegistReceiver() {
+    public void unRegisterReceiver() {
         if (stateReceiver != null && context != null) {
             context.unregisterReceiver(stateReceiver);
         }
     }
 
-    //新的获取封面书籍的方法
-    public Book getCoverBook(BookDaoHelper bookDaoHelper, CoverPage.BookVoBean coverResult) {
 
-        Book book;
-        if (bookDaoHelper != null && coverResult != null && bookDaoHelper.isBookSubed(coverResult.book_id)) {
-            book = (Book) bookDaoHelper.getBook(coverResult.book_id, 0);
-        } else {
-            book = new Book();
-            if (coverResult != null) {
-                book.book_id = coverResult.book_id;
-                book.book_source_id = coverResult.book_source_id;
-                book.name = coverResult.name;
-                book.category = coverResult.labels;
-                book.author = coverResult.author;
-                book.chapter_count = coverResult.serial_number;
-                book.last_chapter_name = coverResult.last_chapter_name;
-                book.img_url = coverResult.img_url;
-                book.status = coverResult.book_status;
-                book.site = coverResult.host;
-                book.dex = coverResult.dex;
-                book.last_updatetime_native = coverResult.update_time;
-                book.parameter = coverResult.parameter;
-                book.extra_parameter = coverResult.extra_parameter;
-            }
-        }
-        return book;
-    }
-
-    /**
-     * 保存浏览足迹
-     *
-     * @return 保存是否成功
-     */
-    public boolean saveHistory(CoverPage.BookVoBean book) {
-
+    public boolean saveHistory(Book book) {
         HistoryInfo info = new HistoryInfo();
-        info.setName(book.name);
-        info.setBook_id(book.book_id);
-        info.setBook_source_id(book.book_source_id);
-        info.setCategory(book.labels);
-        info.setAuthor(book.author);
-        info.setChapter_count(book.serial_number);
-        info.setLast_chapter_name(book.last_chapter_name);
-        info.setImg_url(book.img_url);
-        info.setSite(book.host);
-        info.setStatus(book.book_status);
-        info.setDesc(book.desc);
-        info.setLast_brow_time(System.currentTimeMillis());
+        info.setName(book.getName());
+        info.setBook_id(book.getBook_id());
+        info.setBook_source_id(book.getBook_source_id());
+        info.setLabel(book.getLabel());
+        info.setAuthor(book.getAuthor());
+        info.setChapter_count(book.getChapter_count());
+        info.setImg_url(book.getImg_url());
+        info.setHost(book.getHost());
+        info.setStatus(book.getStatus());
+        info.setDesc(book.getDesc());
+        info.setBrowse_time(System.currentTimeMillis());
 
         return FootprintUtils.saveHistoryData(info);
     }
@@ -195,6 +167,13 @@ public class BookCoverUtil {
         @Override
         public void onReceive(Context context, Intent intent) {
             AppLog.d("BookCoverUtil", "DownloadFinishReceiver action : " + intent.getAction());
+            if (intent.getAction().equals(ActionConstants.ACTION_DOWNLOAD_BOOK_FINISH)
+                    || intent.getAction().equals(ActionConstants.ACTION_DOWNLOAD_BOOK_LOCKED)) {
+
+                if (onDownloadState != null) {
+                    onDownloadState.changeState();
+                }
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ package com.intelligent.reader.adapter;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.ding.basic.bean.Book;
 import com.intelligent.reader.R;
 
 import android.text.TextUtils;

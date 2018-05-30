@@ -31,6 +31,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import iyouqu.theme.ThemeMode
+import kotlinx.android.synthetic.main.dialog_feedback.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.MyDialog
@@ -472,9 +473,9 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             }
 
             if (ReaderSettings.instance.isLandscape) {
-                myDialog!!.findViewById(R.id.sv_feedback).layoutParams.height = activity.get()?.resources!!.getDimensionPixelOffset(R.dimen.dimen_view_height_160)
+                myDialog?.sv_feedback?.layoutParams?.height = activity.get()?.resources!!.getDimensionPixelOffset(R.dimen.dimen_view_height_160)
             } else {
-                myDialog!!.findViewById(R.id.sv_feedback).layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
+                myDialog?.sv_feedback?.layoutParams?.height = FrameLayout.LayoutParams.WRAP_CONTENT
             }
 
             for (relativeLayout in relativeLayouts) {

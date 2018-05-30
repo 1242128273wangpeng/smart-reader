@@ -1,5 +1,7 @@
 package com.dingyue.downloadmanager
 
+import com.ding.basic.bean.Book
+
 /**
  * Desc 菜单管理器
  * Author qiantao
@@ -12,7 +14,7 @@ interface MenuManager {
 
     fun dismissMenu()
 
-    fun checkAll(all: Boolean)
+    fun checkAll(isAll: Boolean)
 
     fun sortBooks(type: Int)
 

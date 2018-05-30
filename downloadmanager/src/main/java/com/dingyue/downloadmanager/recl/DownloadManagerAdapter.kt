@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.ding.basic.bean.Book
 import com.dingyue.downloadmanager.DownloadManagerTaskHolder
 import com.dingyue.downloadmanager.R
 

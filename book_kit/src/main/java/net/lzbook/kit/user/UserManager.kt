@@ -6,7 +6,15 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import com.alibaba.fastjson.JSON
+import com.ding.basic.bean.LoginResp
+import com.ding.basic.bean.QQSimpleInfo
+import com.ding.basic.bean.RefreshResp
+import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.request.RequestSubscriber
+import com.dycm_adsdk.PlatformSDK
 import com.google.gson.Gson
+import com.google.gson.JsonObject
+import com.orhanobut.logger.Logger
 import com.tencent.mm.opensdk.constants.ConstantsAPI
 import com.tencent.mm.opensdk.modelbase.BaseReq
 import com.tencent.mm.opensdk.modelbase.BaseResp
@@ -17,14 +25,10 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory
 import com.tencent.tauth.IUiListener
 import com.tencent.tauth.Tencent
 import com.tencent.tauth.UiError
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
-import net.lzbook.kit.net.custom.service.NetService
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.user.bean.LoginReq
-import net.lzbook.kit.user.bean.LoginResp
 import net.lzbook.kit.utils.log
-import net.lzbook.kit.utils.subscribekt
 import net.lzbook.kit.utils.toMap
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
@@ -97,39 +101,46 @@ object UserManager : IWXAPIEventHandler {
 
             mInitCallback = callback
 
-            val appInfo = context.packageManager
-                    .getApplicationInfo(context.packageName,
-                            PackageManager.GET_META_DATA)
+            if (context.packageManager != null) {
+                val appInfo = context.packageManager
+                        .getApplicationInfo(context.packageName,
+                                PackageManager.GET_META_DATA)
 
-            mWXAppID = appInfo.metaData[UserConstants.WECHAT_APPID].toString()
-            mQQAppID = appInfo.metaData[UserConstants.QQ_APPID].toString()
-            log("initPlatform", mWXAppID, mQQAppID)
-            if (mWXAppID == null || mQQAppID == null) {
-                log("initPlatform", "cant init with null params")
-                return
+                if (appInfo != null) {
+
+                    mWXAppID = appInfo.metaData[UserConstants.WECHAT_APPID].toString()
+                    mQQAppID = appInfo.metaData[UserConstants.QQ_APPID].toString()
+                    log("initPlatform", mWXAppID, mQQAppID)
+                    if (mWXAppID == null || mQQAppID == null) {
+                        log("initPlatform", "cant init with null params")
+                        return
+                    }
+                    // 通过WXAPIFactory工厂，获取IWXAPI的实例
+                    mWXApi = WXAPIFactory.createWXAPI(context?.applicationContext, mWXAppID, true);
+                    val registerApp = mWXApi?.registerApp(mWXAppID)
+                    log("registerApp", registerApp)
+
+                    try {
+                        mTencent = Tencent.createInstance(mQQAppID, context?.getApplicationContext())
+                    } catch (exception: ExceptionInInitializerError) {
+                        exception.printStackTrace()
+                    }
+
+                    mSharedPreferences = context.getSharedPreferences(UserConstants.USER_INFO_FILE, Context.MODE_PRIVATE)
+
+                    val user_info = mSharedPreferences?.getString(UserConstants.KEY_USER_INFO, null)
+
+                    if (user_info != null) {
+                        mUserInfo = mGson.fromJson(user_info, LoginResp::class.java)
+                        mUserState.set(true)
+
+                        refreshToken()
+                    } else {
+                        mInitCallback?.invoke(true)
+                    }
+                }
             }
-            // 通过WXAPIFactory工厂，获取IWXAPI的实例
-            mWXApi = WXAPIFactory.createWXAPI(context?.applicationContext, mWXAppID, true);
-            val registerApp = mWXApi?.registerApp(mWXAppID)
-            log("registerApp", registerApp)
 
-            try {
-                mTencent = Tencent.createInstance(mQQAppID, context?.getApplicationContext())
-            } catch (e: Exception) {
-            }
-
-            mSharedPreferences = context.getSharedPreferences(UserConstants.USER_INFO_FILE, Context.MODE_PRIVATE)
-
-            val user_info = mSharedPreferences?.getString(UserConstants.KEY_USER_INFO, null)
-
-            if (user_info != null) {
-                mUserInfo = mGson.fromJson(user_info, LoginResp::class.java)
-                mUserState.set(true)
-
-                refreshToken()
-            } else {
-                mInitCallback?.invoke(true)
-            }
         } else {
             callback?.invoke(true)
         }
@@ -178,6 +189,15 @@ object UserManager : IWXAPIEventHandler {
             req.state = "wechat_sdk_demo_test" + Random().nextFloat()
             mWXApi?.sendReq(req)
         } else if (Platform.QQ == platform) {
+
+            if (mTencent == null) {
+                try {
+                    mTencent = Tencent.createInstance(mQQAppID, activity?.applicationContext)
+                } catch (exception: ExceptionInInitializerError) {
+                    exception.printStackTrace()
+                }
+            }
+
             mTencent?.login(activity, "get_simple_userinfo", object : IUiListener {
                 override fun onComplete(ret: Any?) {
                     log("login", ret)
@@ -189,51 +209,52 @@ object UserManager : IWXAPIEventHandler {
                         val openid = jsonObject.getString("openid")
                         val access_token = jsonObject.getString("access_token")
 
-                        val observable = NetService.userService.getSimpleUserInfo(access_token, mQQAppID, openid)
-                        observable.subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribekt(
-                                        onNext = { ret ->
-                                            log("getSimpleUserInfo", ret)
+                        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestUserInformation(access_token, mQQAppID, openid, object : RequestSubscriber<QQSimpleInfo>() {
+                            override fun requestResult(result: QQSimpleInfo?) {
+                                if (result != null) {
+                                    log("getSimpleUserInfo", result)
 
-                                            var figureurl: String = ret.figureurl_qq_2 ?: ret.figureurl_qq_1 ?: ""
+                                    var figureurl: String = result.figureurl_qq_2
+                                            ?: result.figureurl_qq_1 ?: ""
 
-                                            val qqReq = LoginReq.createQQReq(BaseBookApplication.getGlobalContext(), ret.nickname,
-                                                    figureurl,
-                                                    ret.gender,
-                                                    openid)
+                                    val qqReq = LoginReq.createQQReq(BaseBookApplication.getGlobalContext(), result.nickname, figureurl, result.gender, openid)
 
-                                            val login = NetService.userService.login(qqReq.toMap())
-                                            login.subscribeOn(Schedulers.io())
-                                                    .observeOn(AndroidSchedulers.mainThread())
-                                                    .subscribeOn(Schedulers.io())
-                                                    .subscribekt(
-                                                            onNext = {
-
-                                                                resp: LoginResp? ->
-                                                                if (resp != null && resp.state.equals("success", true)) {
-                                                                    mUserState.set(true)
-                                                                    mUserInfo = resp
-                                                                    saveUserInfo()
-                                                                    mSuccessCallback?.invoke(resp)
-                                                                } else {
-                                                                    mFailureCallback?.invoke("${resp?.msg}")
-                                                                }
-                                                            },
-                                                            onError = { t ->
-                                                                t.printStackTrace()
-                                                                mFailureCallback?.invoke("${t.message}")
-                                                            }
-                                                    )
-                                        },
-                                        onError = { ret ->
-                                            log("getSimpleUserInfo", ret)
-                                            ret.printStackTrace()
-                                            mFailureCallback?.invoke("${ret.message}")
+                                    RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestLoginAction(qqReq.toMap(), object : RequestSubscriber<LoginResp>() {
+                                        override fun requestResult(result: LoginResp?) {
+                                            if (result != null && result.state.equals("success", true)) {
+                                                mUserState.set(true)
+                                                mUserInfo = result
+                                                saveUserInfo()
+                                                mSuccessCallback?.invoke(result)
+                                            } else {
+                                                mFailureCallback?.invoke("${result?.msg}")
+                                            }
                                         }
-                                )
-                    } else {
 
+                                        override fun requestError(message: String) {
+                                            Logger.e("QQ登陆异常！")
+                                            mFailureCallback?.invoke(message)
+                                        }
+
+                                        override fun requestComplete() {
+
+                                        }
+                                    })
+                                }
+                            }
+
+                            override fun requestError(message: String) {
+                                Logger.e("获取用户信息异常！")
+                                mFailureCallback?.invoke(message)
+                            }
+
+                            override fun requestComplete() {
+
+                            }
+
+                        })
+
+                    } else {
                         mFailureCallback?.invoke("code $code")
                     }
 
@@ -271,48 +292,55 @@ object UserManager : IWXAPIEventHandler {
             }
             mUserState.set(false)
             mSharedPreferences?.edit()?.clear()?.apply()
-            val logout = NetService.userService.logout(mutableMapOf(Pair("loginToken", mUserInfo!!.login_token), Pair("uid", mUserInfo!!.uid), Pair("uidThird", mUserInfo!!.uid_third)))
-            logout.subscribeOn(Schedulers.io())
-                    .subscribekt(
-                            onNext = { ret ->
-                                log("logout", "${ret.toString()}")
-                                if (ret["state"]?.asString?.equals("success", true) ?: false) {
-                                    callback?.invoke(true)
-                                }
-                            },
-                            onError = { t ->
-                                t.printStackTrace()
-                                callback?.invoke(false)
-                            }
-                    )
+
+            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestLogoutAction(mutableMapOf(Pair("loginToken", mUserInfo!!.login_token), Pair("uid", mUserInfo!!.uid), Pair("uidThird", mUserInfo!!.uid_third)), object : RequestSubscriber<JsonObject>() {
+                override fun requestResult(result: JsonObject?) {
+                    log("logout", result.toString())
+
+                    if (result != null && result["state"]?.asString?.equals("success", true) == true) {
+                        callback?.invoke(true)
+                    }
+                }
+
+                override fun requestError(message: String) {
+                    Logger.e("登出异常！")
+                    callback?.invoke(false)
+                }
+
+                override fun requestComplete() {
+
+                }
+            })
+
         } else {
             callback?.invoke(true)
         }
     }
 
     fun refreshToken() {
-        val refreshToken = NetService.userService.refreshToken(mutableMapOf(Pair("loginToken", mUserInfo!!.login_token), Pair("uid", mUserInfo!!.uid), Pair("uidThird", mUserInfo!!.uid_third)))
-        refreshToken.subscribeOn(Schedulers.io())
-                .subscribekt(
-                        onNext = { ret ->
-                            log("refreshToken", "${ret.toString()}")
-                            if (ret != null && ret.state.equals("success", true)) {
-                                mUserInfo!!.login_token = ret.login_token!!
-                                saveUserInfo()
-                            } else {
-                                log("refreshToken", "${ret.msg}")
-                                mUserState.set(false)
-                                mSharedPreferences?.edit()?.clear()?.apply()
-                            }
-                            mInitCallback?.invoke(true)
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestRefreshToken(mutableMapOf(Pair("loginToken", mUserInfo!!.login_token), Pair("uid", mUserInfo!!.uid), Pair("uidThird", mUserInfo!!.uid_third)), object : RequestSubscriber<RefreshResp>() {
+            override fun requestResult(result: RefreshResp?) {
+                log("refreshToken", result.toString())
+                if (result != null && result.state.equals("success", true)) {
+                    mUserInfo!!.login_token = result.login_token!!
+                    saveUserInfo()
+                } else {
+                    log("refreshToken", "${result?.msg}")
+                    mUserState.set(false)
+                    mSharedPreferences?.edit()?.clear()?.apply()
+                }
+                mInitCallback?.invoke(true)
+            }
 
-                        },
-                        onError = { t ->
-                            t.printStackTrace()
-                            log("refreshToken", t)
-                            mInitCallback?.invoke(true)
-                        }
-                )
+            override fun requestError(message: String) {
+                Logger.e("刷新Token异常！")
+                mInitCallback?.invoke(true)
+            }
+
+            override fun requestComplete() {
+
+            }
+        })
     }
 
     fun handleIntent(intent: Intent?) {
@@ -343,29 +371,29 @@ object UserManager : IWXAPIEventHandler {
                     log("onResp : " + auth.code)
                     val weChatReq = LoginReq.createWeChatReq(BaseBookApplication.getGlobalContext(), auth.code)
 
-                    val observable = NetService.userService.login(weChatReq.toMap())
-                    val disposable = observable.subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeOn(Schedulers.io())
-                            .subscribekt(
-                                    onNext = { resp: LoginResp? ->
-                                        log("onNext", resp)
-                                        if (resp != null && resp.state.equals("success", true)) {
-                                            mUserState.set(true)
-                                            mUserInfo = resp
-                                            saveUserInfo()
-                                            mSuccessCallback?.invoke(resp)
-                                        } else {
+                    RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestLoginAction(weChatReq.toMap(), object : RequestSubscriber<LoginResp>() {
+                        override fun requestResult(result: LoginResp?) {
+                            if (result != null && result.state.equals("success", true)) {
+                                mUserState.set(true)
+                                mUserInfo = result
+                                saveUserInfo()
+                                mSuccessCallback?.invoke(result)
+                            } else {
+                                mFailureCallback?.invoke("${result?.msg}")
+                            }
+                        }
 
-                                            mFailureCallback?.invoke("${resp?.msg}")
-                                        }
-                                    },
-                                    onError = { t: Throwable ->
-                                        log("onError", t)
-                                        t.printStackTrace()
-                                        mFailureCallback?.invoke("${t.message}")
-                                    }
-                            )
+                        override fun requestError(message: String) {
+                            Logger.e("微信登陆异常！")
+                            mFailureCallback?.invoke(message)
+                        }
+
+                        override fun requestComplete() {
+
+                        }
+                    })
+
+
                 } else {
                     mFailureCallback?.invoke("unknown")
                 }

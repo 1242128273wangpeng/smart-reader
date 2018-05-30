@@ -8,6 +8,7 @@ import android.support.v7.widget.SimpleItemAnimator
 import android.view.Menu
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.ding.basic.bean.Book
 import com.dingyue.contract.CommonContract
 import com.dingyue.downloadmanager.contract.BookHelperContract
 import com.dingyue.downloadmanager.contract.CacheManagerContract
@@ -239,19 +240,21 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         }
     }
 
-    override fun onTaskFinish(book_id: String?) {
+    override fun onTaskFinish(book_id: String) {
         val book = BookHelperContract.loadLocalBook(book_id)
 
-        if (CacheManagerContract.loadBookDownloadState(book) == DownloadState.FINISH) {
-            val data = downloadBooks
-            for (b in data) {
-                if (b.book_id != null && book.book_id != null && b.book_id == book.book_id) {
-                    data.remove(b)
-                    break
+        if (book != null) {
+            if (CacheManagerContract.loadBookDownloadState(book) == DownloadState.FINISH) {
+                val data = downloadBooks
+                for (b in data) {
+                    if (b.book_id.isNotEmpty() && book.book_id.isNotEmpty() && b.book_id == book.book_id) {
+                        data.remove(b)
+                        break
+                    }
                 }
             }
+            downloadManagerViewModel.refreshBooks()
         }
-        downloadManagerViewModel.refreshBooks()
     }
 
 

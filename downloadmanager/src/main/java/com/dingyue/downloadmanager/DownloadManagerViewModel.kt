@@ -4,9 +4,11 @@ import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import com.ding.basic.bean.Book
 import com.dingyue.downloadmanager.contract.BookHelperContract
 import com.dingyue.downloadmanager.contract.CacheManagerContract
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.constants.Constants
 import java.util.*

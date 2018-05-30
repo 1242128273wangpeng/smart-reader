@@ -1,8 +1,10 @@
 package com.dingyue.downloadmanager.contract
 
 import android.content.Context
+import com.ding.basic.bean.Book
+import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.contract.CommonContract
-import net.lzbook.kit.data.db.BookDaoHelper
+import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.utils.BaseBookHelper
 import java.util.*
 
@@ -18,8 +20,8 @@ object BookHelperContract {
         BaseBookHelper.startDownBookTask(context, book, startDownloadIndex)
     }
 
-    fun querySortedBookList(type: Int): List<Book> {
-        val books = BookDaoHelper.getInstance().booksOnLineList
+    fun querySortedBookList(type: Int): List<Book>? {
+        val books = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks()
         Collections.sort<Book>(books, CommonContract.MultiComparator(type))
         Collections.sort<Book>(books, CommonContract.CachedComparator())
         return books
@@ -29,7 +31,7 @@ object BookHelperContract {
         BaseBookHelper.removeChapterCacheFile(book)
     }
 
-    fun loadLocalBook(id: String?): Book {
-        return BookDaoHelper.getInstance().getBook(id, 0)
+    fun loadLocalBook(id: String): Book? {
+        return RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(id)
     }
 }

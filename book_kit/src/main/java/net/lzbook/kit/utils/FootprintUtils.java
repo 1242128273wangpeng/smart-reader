@@ -1,12 +1,11 @@
 package net.lzbook.kit.utils;
 
 import com.ding.basic.bean.Book;
+import com.ding.basic.bean.HistoryInfo;
+import com.ding.basic.database.helper.BookDataProviderHelper;
 
-import net.lzbook.kit.data.db.table.HistoryInforTable;
-import net.lzbook.kit.data.ormlite.bean.HistoryInfo;
-import net.lzbook.kit.data.ormlite.dao.DaoUtils;
+import net.lzbook.kit.app.BaseBookApplication;
 
-import java.sql.SQLException;
 
 /**
  * Created by yuchao on 2017/6/20 0020.
@@ -16,32 +15,29 @@ public class FootprintUtils {
 
 
     public static boolean saveHistoryData(HistoryInfo info) {
-        try {
-            DaoUtils daoUtils = new DaoUtils(HistoryInfo.class);
-            if (daoUtils.countOf() >= 200) {
-                daoUtils.deleteMiniData(HistoryInforTable.TABLE_NAME, HistoryInforTable.LAST_BROW_TIME);
-            }
-            daoUtils.createOrUpdate(info);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+        BookDataProviderHelper bookDataHelper = BookDataProviderHelper.Companion.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext());
+        if (bookDataHelper.getHistoryCount() >= 200) {
+            bookDataHelper.deleteSmallTimeHistory();
         }
+        bookDataHelper.insertOrUpdateHistory(info);
         return true;
     }
 
     public static boolean saveHistoryShelf(Book book) {
         HistoryInfo info = new HistoryInfo();
-        info.setName(book.name);
-        info.setBook_id(book.book_id);
-        info.setBook_source_id(book.book_source_id);
-        info.setCategory(book.category);
-        info.setAuthor(book.author);
-        info.setChapter_count(book.chapter_count);
-        info.setLast_chapter_name(book.last_chapter_name);
-        info.setImg_url(book.img_url);
-        info.setSite(book.site);
-        info.setStatus(book.status);
-        info.setLast_brow_time(System.currentTimeMillis());
+        info.setName(book.getName());
+        info.setBook_id(book.getBook_id());
+        info.setBook_source_id(book.getBook_source_id());
+        info.setLabel(book.getLabel());
+        info.setAuthor(book.getAuthor());
+        info.setChapter_count(book.getChapter_count());
+
+
+        info.setImg_url(book.getImg_url());
+        info.setHost(book.getHost());
+        info.setStatus(book.getStatus());
+        info.setDesc(book.getDesc());
+        info.setBrowse_time(System.currentTimeMillis());
 
         return saveHistoryData(info);
     }

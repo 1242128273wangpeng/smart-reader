@@ -1,7 +1,9 @@
 package net.lzbook.kit.utils;
 
+import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.ReplaceConstants;
-import net.lzbook.kit.data.db.BookDaoHelper;
+import com.ding.basic.bean.Book;
+import com.ding.basic.repository.RequestRepositoryFactory;
 
 import android.content.Context;
 import android.os.Handler;
@@ -144,7 +146,7 @@ public class FileViewer {
 
 
     protected Book getBook(String gid) {
-        Book isbook = (Book) BookDaoHelper.getInstance().getBook(gid, 0);
+        Book isbook = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(gid);
         return isbook;
     }
 

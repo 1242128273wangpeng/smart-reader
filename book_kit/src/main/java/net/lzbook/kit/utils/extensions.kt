@@ -220,3 +220,29 @@ fun TextView.resolveTextColor(@AttrRes attr: Int) {
 
     }
 }
+
+fun View.antiShakeClick(callback: (View) -> Unit) {
+    this.setOnClickListener {
+        if(isClickable) {
+            callback.invoke(it)
+            postDelayed({
+                isClickable = true
+            }, 200)
+        }
+
+        isClickable = false
+    }
+}
+
+fun View.antiShakeClick(listener:View.OnClickListener) {
+    this.setOnClickListener {
+        if(isClickable) {
+            listener.onClick(it)
+            postDelayed({
+                isClickable = true
+            }, 200)
+        }
+
+        isClickable = false
+    }
+}

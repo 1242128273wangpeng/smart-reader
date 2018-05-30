@@ -146,7 +146,7 @@ public class FeedbackPopWindow {
                         }
                     }
                     if (type == -1) {
-                        CommonUtil.showToastMessage("请选择错误类型！", 0L);
+                        CommonUtil.showToastMessage("请选择错误类型！");
                     } else {
                         if (onSubmitClickListener != null) {
                             onSubmitClickListener.onSubmit(type);

@@ -17,7 +17,6 @@ import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import android.widget.RadioGroup
 import android.widget.SeekBar
-import android.widget.Toast
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.ReadingActivity
@@ -37,7 +36,6 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ReadConfig
-import net.lzbook.kit.request.DataCache
 import net.lzbook.kit.utils.*
 import java.text.NumberFormat
 import java.util.*
