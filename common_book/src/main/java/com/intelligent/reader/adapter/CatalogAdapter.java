@@ -11,12 +11,12 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.ding.basic.bean.Chapter;
+import com.ding.basic.util.DataCache;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.CataloguesActivity;
-import com.quduquxie.network.DataCache;
 
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.Chapter;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -93,13 +93,9 @@ public class CatalogAdapter extends BaseAdapter {
         Chapter chapter = list.get(position);
 //        String text = (chapter.sequence + 1) + " " + chapter.chapter_name;
 //        viewCache.getChapterName().setText(text);
-        viewCache.getChapterName().setText(chapter.chapter_name);
+        viewCache.getChapterName().setText(chapter.getName());
         boolean chapterExist;
-        if (book_site.equals(Constants.QG_SOURCE)) {
-            chapterExist = DataCache.isChapterExists(chapter.chapter_id, chapter.book_id);
-        } else {
-            chapterExist = BookHelper.isChapterExist(chapter);
-        }
+        chapterExist = DataCache.isChapterCached(chapter);
         if (chapterExist) {
             viewCache.getHasCache().setVisibility(View.VISIBLE);
             viewCache.getHasCache().setText(already_cached);
@@ -108,7 +104,7 @@ public class CatalogAdapter extends BaseAdapter {
             viewCache.getHasCache().setVisibility(View.GONE);
         }
 
-        if (chapter.sequence == selectedItem) {
+        if (chapter.getSequence() == selectedItem) {
             textColor = R.color.dialog_recommend;
             viewCache.getChapterName().setTextColor(resources.getColor(textColor));
         } else {

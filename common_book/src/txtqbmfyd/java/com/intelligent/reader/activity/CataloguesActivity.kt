@@ -1,13 +1,9 @@
-/**
- * @Title: CataloguesActivity.java
- * *
- * @Description: 小说目录页
- */
 package com.intelligent.reader.activity
 
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.text.TextUtils
 import android.view.Menu
 import android.view.View
 import android.view.View.OnClickListener
@@ -17,6 +13,9 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
+import com.ding.basic.bean.Book
+import com.ding.basic.bean.Bookmark
+import com.ding.basic.bean.Chapter
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.BookmarkAdapter
 import com.intelligent.reader.adapter.CatalogAdapter
@@ -30,9 +29,9 @@ import kotlinx.android.synthetic.main.layout_empty_catalog.*
 import kotlinx.android.synthetic.txtqbmfyd.act_catalog.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.*
 import com.dingyue.contract.router.RouterConfig
+import net.lzbook.kit.data.bean.EventBookmark
+import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.StatServiceUtils
 import java.util.*
@@ -49,24 +48,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     internal var colorSelected: Int = 0
     internal var colorNormal: Int = 0
     internal var sortIcon = 0//背景色
-    //    private var catalog_root: FrameLayout? = null
-//    private var rl_catalog_novel: RelativeLayout? = null
-//    private var catalog_novel_name: TextView? = null
-//    private var catalog_novel_close: ImageView? = null
-//    private var tab_catalog: RadioButton? = null
-//    private var tab_bookmark: RadioButton? = null
-//    private var catalog_main: ListView? = null
-//    private var bookmark_main: ListView? = null
-//    private var bookmark_empty: LinearLayout? = null
-//    private var bookmark_empty_message: TextView? = null
-//    private var catalog_empty_refresh: TextView? = null
-//    private var catalog_chapter_hint: TextView? = null
-//    private var catalog_chapter_count: TextView? = null
-//    private var tv_catalog_novel_sort: TextView? = null
-//    private var iv_catalog_novel_sort: ImageView? = null
-//    private var iv_back_reading: ImageView? = null
-    //当前页标识
-//    private var currentView: View? = null
+
     //是否是最后一页
     private var is_last_chapter: Boolean = false
     //是否来源于封面页
@@ -76,8 +58,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     //加载页
     private var loadingPage: LoadingPage? = null
     private var sequence: Int = 0
-    //小说ID
-    private val nid: Int = 0
     //小说
     private var book: Book? = null
     //小说帮助类
@@ -94,8 +74,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
      */
     private var scrollState: Int = 0
     private var downLoadReceiver: OffLineDownLoadReceiver? = null
-    private var requestItem: RequestItem? = null
-    //    private var iv_fixbook: ImageView? = null
     private var mCataloguesPresenter: CataloguesPresenter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -150,38 +128,38 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
             }
         }
 
-        requestItem = bundle.getSerializable(Constants.REQUEST_ITEM) as RequestItem
+        if (bundle.containsKey("cover")) {
+            book = bundle.getSerializable("cover") as Book
+        }
 
-        if (requestItem == null || requestItem!!.book_id == null || requestItem!!.host == null) {
+        if (book == null || TextUtils.isEmpty(book?.book_id)) {
             exitAndUpdate()
             return
         }
 
         sequence = Math.max(bundle.getInt("sequence"), 0)
-        AppLog.e(TAG, "CataloguesActivity: " + sequence)
         is_last_chapter = bundle.getBoolean("is_last_chapter", false)
         fromCover = bundle.getBoolean("fromCover", true)
         fromEnd = bundle.getBoolean("fromEnd", false)
-        book = bundle.getSerializable("cover") as Book
+
         if (book != null) {
             catalog_novel_name!!.text = book!!.name
-//            if (RepairHelp.isShowFixBtn(this, book!!.book_id)) {
-//                iv_fixbook!!.visibility = View.VISIBLE
-//            } else {
-//                iv_fixbook!!.visibility = View.GONE
-//            }
-
+            if (RepairHelp.isShowFixBtn(this, book!!.book_id)) {
+                iv_fixbook!!.visibility = View.VISIBLE
+            } else {
+                iv_fixbook!!.visibility = View.GONE
+            }
         }
 
-
-        if (requestItem != null && book != null) {
-            mCataloguesPresenter = CataloguesPresenter(this, book!!, requestItem!!, this, this, fromCover)
+        if (book != null) {
+            mCataloguesPresenter = CataloguesPresenter(this, book!!, this, this, fromCover)
         }
+
         getChapterData()
+
         if (mCataloguesPresenter != null) {
             mCataloguesPresenter!!.loadBookMark()
         }
-
     }
 
     private fun getChapterData() {
@@ -224,17 +202,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         }
     }
 
-//    private fun showNullBookMarkNoteLayout() {
-//        if (currentView === tab_bookmark) {
-//            if (bookmarkList != null && bookmarkList!!.size == 0) {
-//                rl_layout_empty_online.visibility = View.VISIBLE
-//            } else {
-//                rl_layout_empty_online.visibility = View.GONE
-//            }
-//        } else {
-//            rl_layout_empty_online.visibility = View.GONE
-//        }
-//    }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
@@ -254,7 +221,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     }
 
     private fun initCatalogAndBookmark() {
-        mCatalogAdapter = CatalogAdapter(this, chapterList, requestItem!!.host)
+        mCatalogAdapter = CatalogAdapter(this, chapterList, "")
         catalog_main!!.adapter = mCatalogAdapter
         if (is_last_chapter) {
             mCatalogAdapter!!.setSelectedItem(chapterList!!.size)
@@ -543,17 +510,13 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
 
         this.bookmarkList = bookmarkList
 
-        if (mBookmarkAdapter == null)
+        if (mBookmarkAdapter == null) {
             mBookmarkAdapter = BookmarkAdapter(this, bookmarkList)
-//        if (bookmark_main != null)
-//            bookmark_main!!.adapter = mBookmarkAdapter
+        }
 
         if (mBookmarkAdapter != null) {
             mBookmarkAdapter!!.notifyDataSetChanged()
         }
-//        if (isCatalog) {
-//            showNullBookMarkNoteLayout()
-//        }
     }
 
 

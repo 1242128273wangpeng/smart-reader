@@ -1,8 +1,7 @@
 package com.intelligent.reader.activity;
 
+import com.dy.reader.help.ReadSettingHelper;
 import com.intelligent.reader.R;
-import com.intelligent.reader.read.help.ReadSettingHelper;
-import com.intelligent.reader.read.mode.ReadState;
 import com.intelligent.reader.read.page.PreviewPageView;
 
 import net.lzbook.kit.book.view.SwitchButton;

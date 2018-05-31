@@ -1,12 +1,9 @@
-/**
- *
- */
 package com.intelligent.reader.adapter;
 
+import com.ding.basic.bean.Bookmark;
 import com.intelligent.reader.R;
 
 import net.lzbook.kit.book.adapter.AdapterBase;
-import net.lzbook.kit.data.bean.Bookmark;
 import net.lzbook.kit.data.bean.EventBookmark;
 import net.lzbook.kit.utils.ResourceUtil;
 

@@ -1,10 +1,9 @@
 package com.intelligent.reader.adapter;
 
+import com.ding.basic.bean.Chapter;
+import com.ding.basic.util.DataCache;
 import com.intelligent.reader.R;
-import com.quduquxie.network.DataCache;
 
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.Chapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -46,11 +45,7 @@ public class CataloguesAdapter extends RecyclerView.Adapter<CataloguesAdapter.Vi
         Chapter chapter = mList.get(position);
 
         boolean chapterExist;
-        if (Constants.QG_SOURCE.equals(chapter.site)) {
-            chapterExist = DataCache.isChapterExists(chapter.chapter_id, chapter.book_id);
-        } else {
-            chapterExist = BookHelper.isChapterExist(chapter);
-        }
+            chapterExist = DataCache.isChapterCached(chapter);
 
         if (chapterExist) {
             holder.chapterCacheTv.setVisibility(View.VISIBLE);
@@ -58,7 +53,7 @@ public class CataloguesAdapter extends RecyclerView.Adapter<CataloguesAdapter.Vi
             holder.chapterCacheTv.setVisibility(View.GONE);
         }
 
-        if (chapter.sequence == mSelectedItem) {
+        if (chapter.getSequence() == mSelectedItem) {
             holder.chapterNameTv.setTextColor(mContext.getResources().getColor(R.color.dialog_recommend));
         } else {
             if (chapterExist) {
@@ -67,7 +62,7 @@ public class CataloguesAdapter extends RecyclerView.Adapter<CataloguesAdapter.Vi
                 holder.chapterNameTv.setTextColor(mContext.getResources().getColor(R.color.text_color_light));
             }
         }
-        holder.chapterNameTv.setText(chapter.chapter_name);
+        holder.chapterNameTv.setText(chapter.getName());
         holder.itemView.setOnClickListener(new OnChapterClickListener(position, chapter));
     }
 
