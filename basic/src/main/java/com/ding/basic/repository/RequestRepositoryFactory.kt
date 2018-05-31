@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 class RequestRepositoryFactory private constructor(private val context: Context) : RequestRepository {
+
     companion object {
 
         @Volatile
@@ -228,6 +229,25 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         InternetRequestRepository.loadInternetRequestRepository(context = context).requestAutoComplete(word)!!
                 .debounce(400,TimeUnit.MILLISECONDS)
                 .compose(SchedulerHelper.schedulerHelper<SearchAutoCompleteBean>())
+                .subscribe({ result ->
+                    if (result != null) {
+                        requestSubscriber.onNext(result)
+                    } else {
+                        requestSubscriber.onError(Throwable("获取自动补全异常！"))
+                    }
+                }, { throwable ->
+                    requestSubscriber.onError(throwable)
+                }, {
+                    Logger.v("获取自动补全完成！")
+                })
+    }
+
+
+
+    override fun requestAutoCompleteV4(word: String, requestSubscriber: RequestSubscriber<SearchAutoCompleteBeanYouHua>) {
+        InternetRequestRepository.loadInternetRequestRepository(context = context).requestAutoCompleteV4(word)!!
+                .debounce(400,TimeUnit.MILLISECONDS)
+                .compose(SchedulerHelper.schedulerHelper<SearchAutoCompleteBeanYouHua>())
                 .subscribe({ result ->
                     if (result != null) {
                         requestSubscriber.onNext(result)

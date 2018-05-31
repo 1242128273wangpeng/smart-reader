@@ -12,12 +12,12 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
-import com.ding.basic.bean.SearchAutoCompleteBean
+import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.bean.SearchHotBean
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.SearchHotWordAdapter
 import com.intelligent.reader.adapter.SearchSuggestAdapter
-import com.intelligent.reader.presenter.search.SearchHelpPresenter
+import com.intelligent.reader.presenter.search.SearchHelpYouHuaPresenter
 import com.intelligent.reader.presenter.search.SearchPresenter
 import com.intelligent.reader.presenter.search.SearchView
 import com.intelligent.reader.view.ScrollForGridView
@@ -50,7 +50,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
     private var mOnHistoryClickListener: OnHistoryClickListener? = null
     var context: Context? = null
     private var searchHotWordAdapter: SearchHotWordAdapter? = null
-    private var mSearchHelpPresenter: SearchHelpPresenter? = null
+    private var mSearchHelpPresenter: SearchHelpYouHuaPresenter? = null
     private var loadingPage: LoadingPage? = null
 
     init {
@@ -65,7 +65,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         if (mContext != null)
             mResources = mContext!!.resources
 
-        mSearchHelpPresenter = SearchHelpPresenter(this)
+        mSearchHelpPresenter = SearchHelpYouHuaPresenter(this)
 
         initHistoryView()
         initSuggestListView()
@@ -366,7 +366,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         mSearchHelpPresenter?.resetHotWordList(mContext!!)
     }
 
-    override fun onSearchResult(suggestList: List<SearchCommonBean>, transmitBean: SearchAutoCompleteBean) {
+    override fun onSearchResult(suggestList: List<SearchCommonBean>, transmitBean: SearchAutoCompleteBeanYouHua) {
         mSearchHelpPresenter?.onSearchResult(suggestList, transmitBean)
     }
 

@@ -27,6 +27,8 @@ interface BasicRequestRepository {
 
     fun requestAutoComplete(word: String): Flowable<SearchAutoCompleteBean>?
 
+    fun requestAutoCompleteV4(word: String): Flowable<SearchAutoCompleteBeanYouHua>? //搜索V4接口
+
     fun requestHotWords(): Flowable<SearchHotBean>?
 
     fun requestChapterContent(chapter: Chapter): Flowable<BasicResult<Chapter>>

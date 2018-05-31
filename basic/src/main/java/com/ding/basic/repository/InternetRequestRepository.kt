@@ -58,6 +58,10 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestAutoComplete(word)
     }
 
+    override fun requestAutoCompleteV4(word: String): Flowable<SearchAutoCompleteBeanYouHua>? {
+        return RequestAPI.requestAutoCompleteV4(word)
+    }
+
     override fun requestHotWords(): Flowable<SearchHotBean>? {
         return RequestAPI.requestHotWords()
     }
