@@ -80,6 +80,9 @@ internal object RequestAPI {
     fun requestAutoComplete(word: String): Flowable<SearchAutoCompleteBean>? {
         return requestService.requestAutoComplete(word)
     }
+    fun requestAutoCompleteV4(word: String): Flowable<SearchAutoCompleteBeanYouHua>? {
+        return requestService.requestAutoCompleteV4(word)
+    }
 
     fun requestHotWords(): Flowable<SearchHotBean>? {
         return requestService.requestHotWords()
