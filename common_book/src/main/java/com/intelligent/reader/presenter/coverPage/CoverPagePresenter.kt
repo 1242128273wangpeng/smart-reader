@@ -90,7 +90,7 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
      * **/
     fun requestBookDetail(showMoreLabel: Boolean) {
         this.showMoreLabel = showMoreLabel
-        bookCoverViewModel!!.requestBookDetail(book_id, book_source_id, book_chapter_id)
+        bookCoverViewModel?.requestBookDetail(book_id, book_source_id, book_chapter_id)
     }
 
     /***

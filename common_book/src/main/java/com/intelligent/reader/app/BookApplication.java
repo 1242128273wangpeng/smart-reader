@@ -8,6 +8,7 @@ import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.alibaba.sdk.android.feedback.util.ErrorCode;
 import com.alibaba.sdk.android.feedback.util.FeedbackErrorCallback;
 import com.dingyue.contract.util.CommonUtil;
+import com.dy.reader.Reader;
 import com.dycm_adsdk.PlatformSDK;
 import com.intelligent.reader.BuildConfig;
 import com.squareup.leakcanary.LeakCanary;
@@ -71,6 +72,8 @@ public class BookApplication extends BaseBookApplication {
         }
         registerActivityLifecycleCallbacks(ActivityLifecycleHelper.build());
         setRxJavaErrorHandler();
+
+        Reader.INSTANCE.init(this);
     }
 
     /**
