@@ -58,25 +58,26 @@ public class BookRecommendAdapter extends BaseAdapter {
             hodler = (ViewHolder) convertView.getTag();
         }
         Book book = mList.get(position);
-        Glide.with(parent.getContext().getApplicationContext()).load(book.img_url)
+        Glide.with(parent.getContext().getApplicationContext()).load(book.getImg_url())
                 .placeholder(R.drawable.common_book_cover_default_icon)
                 .error(R.drawable.common_book_cover_default_icon)
                 .diskCacheStrategy(DiskCacheStrategy.ALL).into(hodler.book_img_iv);
-        hodler.book_name_tv.setText(book.name);
-        hodler.book_info_tv.setText(book.desc);
-        hodler.book_author_tv.setText(book.author);
+        hodler.book_name_tv.setText(book.getName());
+        hodler.book_info_tv.setText(book.getDesc());
+        hodler.book_author_tv.setText(book.getAuthor());
 
-        if (!TextUtils.isEmpty(book.category)) {
-            hodler.book_cover_category.setText(book.category);
+        if (!TextUtils.isEmpty(book.getLabel())) {
+            hodler.book_cover_category.setText(book.getLabel());
         } else {
             hodler.book_cover_category.setText("未分类");
         }
 
-        if (1 == book.status) {
-            hodler.book_cover_status.setText(parent.getContext().getString(R.string.book_cover_state_writing));
-        } else {
+        if ("FINISH".equals(book.getStatus())) {
             hodler.book_cover_status.setText(parent.getContext().getString(R.string.book_cover_state_written));
+        } else {
+            hodler.book_cover_status.setText(parent.getContext().getString(R.string.book_cover_state_writing));
         }
+
         return convertView;
     }
 

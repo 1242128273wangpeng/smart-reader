@@ -63,20 +63,20 @@ public class BookmarkAdapter extends AdapterBase {
         }
         viewCache.getImageViewDelete().setTag(R.id.tag_first, bookmark);
 
-        viewCache.getChapterName().setText(TextUtils.isEmpty(bookmark.chapter_name) ? "未知" : bookmark.chapter_name);
+        viewCache.getChapterName().setText(TextUtils.isEmpty(bookmark.getChapter_name()) ? "未知" : bookmark.getChapter_name());
         if ("night".equals(ResourceUtil.mode)) {
             viewCache.getChapterName().setTextColor(mContext.getResources().getColor(R.color.color_gray_797979));
         } else {
             viewCache.getChapterName().setTextColor(mContext.getResources().getColor(R.color.color_black_343434));
         }
-        String content = handleBookmarkData(bookmark.chapter_content);
+        String content = handleBookmarkData(bookmark.getChapter_content());
         viewCache.getDesc().setText(content);
         if ("night".equals(ResourceUtil.mode)) {
             viewCache.getDesc().setTextColor(mContext.getResources().getColor(R.color.color_gray_5d5d5d));
         } else {
             viewCache.getDesc().setTextColor(mContext.getResources().getColor(R.color.color_gray_6e6e6e));
         }
-        long datetime = bookmark.last_time;
+        long datetime = bookmark.getInsert_time();
         viewCache.getTime().setText(dateFormat.format(datetime));
         if ("night".equals(ResourceUtil.mode)) {
             viewCache.getTime().setTextColor(mContext.getResources().getColor(R.color.color_gray_5a5959));

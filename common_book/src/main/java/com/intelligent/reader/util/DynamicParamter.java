@@ -1,25 +1,28 @@
 package com.intelligent.reader.util;
 
+import com.ding.basic.Config;
+import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.request.RequestAPI;
+import com.ding.basic.request.RequestService;
+import com.ding.basic.request.RequestSubscriber;
 import com.google.gson.JsonObject;
 
 import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
 import com.baidu.mobstat.SendStrategyEnum;
 import com.baidu.mobstat.StatService;
-import com.umeng.onlineconfig.OnlineConfigAgent;
-import com.umeng.onlineconfig.UmengOnlineConfigureListener;
+import com.orhanobut.logger.Logger;
 
+import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
-import net.lzbook.kit.net.DynamicService;
-import net.lzbook.kit.net.custom.service.DynamicApi;
-import net.lzbook.kit.net.custom.service.NetService;
-import net.lzbook.kit.net.custom.service.UserService;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.Tools;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,6 +39,7 @@ import java.util.List;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 
@@ -134,38 +138,36 @@ public class DynamicParamter {
     public void setDynamicParamter() {
 
         AppLog.d("startRequestCDNDynamic", "/v3/dynamic/dynamicParameter");
-        mDynamicUrl = UserService.DYNAMIC_PARAMAS;
-        NetService.INSTANCE.getUserService().getDynamicParams()
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe(new Observer<JsonObject>() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d) {
+        mDynamicUrl = RequestService.DYNAMIC_PARAMETERS;
 
-                    }
+        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext()).requestDynamicParameters(new RequestSubscriber<JsonObject>() {
+            @Override
+            public void requestResult(@Nullable JsonObject result) {
+                if (result != null) {
+                    checkResult(result.toString());
+                }
+            }
 
-                    @Override
-                    public void onNext(@NonNull JsonObject jsonObject) {
-                        checkResult(jsonObject.toString());
-                    }
+            @Override
+            public void requestError(@NotNull String message) {
+                Logger.e("请求动态参数异常！");
+                startRequestCDNDynamic();
+            }
 
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-                        e.printStackTrace();
-                        AppLog.e(TAG, "jsonString: onError " + e.toString());
-                        startRequestCDNDynamic();
-                    }
+            @Override
+            public void requestComplete() {
 
-                    @Override
-                    public void onComplete() {
-                    }
-                });
+            }
+        });
 
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         UrlUtils.setBookNovelDeployHost(sp.getString(Constants.NOVEL_HOST, ""));
         UrlUtils.setBookWebviewHost(sp.getString(Constants.WEBVIEW_HOST, ""));
-        NetService.INSTANCE.initService();
+
+        Config.INSTANCE.insertRequestAPIHost(sp.getString(Constants.NOVEL_HOST, ""));
+        Config.INSTANCE.insertWebViewHost(sp.getString(Constants.WEBVIEW_HOST, ""));
 
         baidu_stat_id = getConfigParams("baidu_stat_id");
         push_key = getConfigParams("push_key");
@@ -284,20 +286,15 @@ public class DynamicParamter {
         if (!TextUtils.isEmpty(url)) {
             url = url.replace("{packageName}", AppUtils.getPackageName());
             AppLog.d("startRequestCDNDynamic", url);
-            DynamicService.INSTANCE.getDynamicApi()
-                    .requestCDNDynamicPar(url)
+            RequestAPI.INSTANCE.requestCDNDynamicPar(url)
                     .subscribeOn(Schedulers.io())
-                    .subscribe(new Observer<ResponseBody>() {
-                        @Override
-                        public void onSubscribe(@NonNull Disposable d) {
-
-                        }
+                    .subscribe(new Consumer<JsonObject>() {
 
                         @Override
-                        public void onNext(@NonNull ResponseBody body) {
+                        public void accept(JsonObject jsonObject) throws Exception {
                             try {
-                                if (body != null) {
-                                    checkResult(body.string());
+                                if (jsonObject != null) {
+                                    checkResult(jsonObject.toString());
                                 } else {
                                     throw new Exception("requestCDNDynamicPar call back body is null");
                                 }
@@ -306,39 +303,32 @@ public class DynamicParamter {
                                 startRequestCDNDynamic();
                             }
                         }
-
+                    }, new Consumer<Throwable>() {
                         @Override
-                        public void onError(@NonNull Throwable e) {
-                            e.printStackTrace();
+                        public void accept(Throwable throwable) throws Exception {
+                            throwable.printStackTrace();
                             startRequestCDNDynamic();
-                            AppLog.d("startRequestCDNDynamic", "onError" + e.toString());
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            AppLog.d("requestCDNDynamicPar", "onComplete");
                         }
                     });
         } else {
-            isReloadDynamic = true;
-//            setUMDynamicParamter();
+            isReloadDynamic = false;
         }
     }
 
     private synchronized String getDynamicUrl() {
-        if (UserService.DYNAMIC_PARAMAS.equals(mDynamicUrl)) {
-            mDynamicUrl = DynamicApi.DYNAMIC_ZN;
-        } else if (DynamicApi.DYNAMIC_ZN.equals(mDynamicUrl)) {
-            mDynamicUrl = DynamicApi.DYNAMIC_CM;
-        } else if (DynamicApi.DYNAMIC_CM.equals(mDynamicUrl)) {
-            mDynamicUrl = DynamicApi.DYNAMIC_YC;
+        if (RequestService.DYNAMIC_PARAMETERS.equals(mDynamicUrl)) {
+            mDynamicUrl = RequestService.DYNAMIC_ZN;
+        } else if (RequestService.DYNAMIC_ZN.equals(mDynamicUrl)) {
+            mDynamicUrl = RequestService.DYNAMIC_CM;
+        } else if (RequestService.DYNAMIC_CM.equals(mDynamicUrl)) {
+            mDynamicUrl = RequestService.DYNAMIC_YC;
         } else {
             mDynamicUrl = "";
         }
         return mDynamicUrl;
     }
 
-    private static String mDynamicUrl = UserService.DYNAMIC_PARAMAS;
+    private static String mDynamicUrl = RequestService.DYNAMIC_PARAMETERS;
 
 
     private String getConfigParams(String key) {
@@ -352,112 +342,6 @@ public class DynamicParamter {
         if (sp != null) {
             sp.edit().putString(key, value).apply();
         }
-    }
-
-    private void setUMDynamicParamter() {
-
-        // 更新在线参数
-        OnlineConfigAgent.getInstance().updateOnlineConfig(context);
-        OnlineConfigAgent.getInstance().setOnlineConfigListener(new UmengOnlineConfigureListener() {
-            @Override
-            public void onDataReceived(JSONObject data) {
-                if (data != null) {
-                    parserJSONObject(data, false);
-                    isReloadDynamic = false;
-                    AppLog.d("um_param", "onDataReceived value :" + data.toString());
-                }
-            }
-
-        });
-        baidu_stat_id = OnlineConfigAgent.getInstance().getConfigParams(context, "baidu_stat_id");
-        push_key = OnlineConfigAgent.getInstance().getConfigParams(context, "push_key");
-        ban_gids = OnlineConfigAgent.getInstance().getConfigParams(context, "ban_gids");
-//        splash_loading_time = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.SPLASH_LOADING_TIME);
-//        splash_ad_type = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.SPLASH_AD_TYPE);
-        channel_limit = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.CHANNEL_LIMIT);
-        day_limit = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DAY_LIMIT);
-        ad_limit_time_day = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.AD_LIMIT_TIME_DAY);
-        baidu_examine = OnlineConfigAgent.getInstance().getConfigParams(context, "baidu_examine");
-        network_limit = OnlineConfigAgent.getInstance().getConfigParams(context, "network_limit");
-        dy_ad_new_request_domain_name = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_AD_NEW_REQUEST_DOMAIN_NAME);
-        user_transfer_first = OnlineConfigAgent.getInstance().getConfigParams(context, "user_transfer_first");
-        user_transfer_second = OnlineConfigAgent.getInstance().getConfigParams(context, "user_transfer_second");
-        recommend_bookcover = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.RECOMMEND_BOOKCOVER);
-
-        //广告总开关
-        dy_ad_switch = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_AD_SWITCH);
-        //广告，新的请求开关
-        dy_ad_new_request_switch = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_AD_NEW_REQUEST_SWITCH);
-        //新的统计开关
-        dy_ad_new_statistics_switch = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_AD_NEW_STATISTICS_SWITCH);
-        //阅读页翻页统计开关
-        dy_readPage_statistics_switch = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_READPAGE_STATISTICS_SWITCH);
-        //阅读页上下翻页展示广告开关
-        dy_ad_readPage_slide_switch_new = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_AD_READPAGE_SLIDE_SWITCH_NEW);
-        //老的广告统计开关
-        dy_ad_old_request_switch = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_AD_OLD_REQUEST_SWITCH);
-        //X小时内新用户不显示广告设置
-        dy_adfree_new_user = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_ADFREE_NEW_USER);
-        //开屏页开关
-        dy_splash_ad_switch = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_SPLASH_AD_SWITCH);
-        //书架页开关
-        dy_shelf_ad_switch = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_SHELF_AD_SWITCH);
-         /*
-          0-关闭书架页广告位；两种形式都不开启
-          1-开启书架页广告位A样式:顶部横幅书架页广告
-          2-开启书架页广告位B样式：九宫格原生书架页广告
-          3-开启书架页广告位两种样式
-           九宫格书架页广告显示类型切换开关
-         */
-        book_shelf_state = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.BOOK_SHELF_STATE);
-        //书架页广告间隔频率设置
-        dy_shelf_ad_freq = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_SHELF_AD_FREQ);
-        //章节末开关
-        dy_page_end_ad_switch = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_PAGE_END_AD_SWITCH);
-        //章节末广告间隔频率设置
-        dy_page_end_ad_freq = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_PAGE_END_AD_FREQ);
-        //书末广告开关
-        dy_book_end_ad_switch = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_BOOK_END_AD_SWITCH);
-        //休息页广告
-        dy_rest_ad_switch = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_REST_AD_SWITCH);
-        //休息页广告休息时间设置
-        dy_rest_ad_sec = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_REST_AD_SEC);
-        //切屏广告开关
-        isShowSwitchSplashAd = OnlineConfigAgent.getInstance().getConfigParams(context, "DY_activited_switch_ad");
-        //切屏广告显示间隔
-        switchSplashAdSec = OnlineConfigAgent.getInstance().getConfigParams(context, "DY_switch_ad_sec");
-        //切屏广告关闭按钮出现的时间
-        switchSplashAdCloseSec = OnlineConfigAgent.getInstance().getConfigParams(context, "DY_switch_ad_close_sec");
-        //章节间开关
-        dy_page_middle_ad_switch = OnlineConfigAgent.getInstance().getConfigParams(context, "DY_page_middle_ad_switch");
-        //章节内开关
-        dy_page_in_chapter_ad_switch = OnlineConfigAgent.getInstance().getConfigParams(context, "DY_page_in_chapter_ad_switch");
-        //章节间广告展示频率
-        native_ad_page_interstitial_count = OnlineConfigAgent.getInstance().getConfigParams(context, "DY_mid_page_frequence");
-        //章节内广告展示频率(隔章)
-        native_ad_page_gap_in_chapter = OnlineConfigAgent.getInstance().getConfigParams(context, "DY_in_chapter_frequence");
-        //章节内展现广告要求的最小数量
-        native_ad_page_in_chapter_limit = OnlineConfigAgent.getInstance().getConfigParams(context, "DY_page_in_chapter_limit");
-        //上下翻页间隔5章时出现弹窗广告
-        land_scroll_chapter_frequence = OnlineConfigAgent.getInstance().getConfigParams(context, "land_scroll_chapter_frequence");
-        //是否启用新版书末UI
-        dy_is_new_reading_end = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DY_IS_NEW_READING_END);
-
-        //api的host
-        novel_host = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.NOVEL_HOST);
-
-        //webView的host
-        webView_host = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.WEBVIEW_HOST);
-
-        //每天下载书籍量限制
-        download_limit = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.DOWNLOAD_LIMIT);
-
-        //每日无网络阅读限制
-//        nonet_readhour = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.NONET_READTIME);
-        //无网络限制开关
-        noNetReadNumber = OnlineConfigAgent.getInstance().getConfigParams(context, Constants.noNetReadNumber);
-
-        installParam();
     }
 
     private void parserJSONObject(JSONObject data, boolean isOwn) {

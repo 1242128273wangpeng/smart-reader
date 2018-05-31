@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.ding.basic.bean.Book;
 import com.intelligent.reader.widget.DownloadFinishErrorDialog;
 import com.intelligent.reader.widget.DownloadWaitingWifiDialog;
 

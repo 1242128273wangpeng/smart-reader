@@ -1,13 +1,17 @@
 package com.intelligent.reader.activity;
 
+import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.utils.StatServiceUtils;
 
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.ding.basic.bean.Book;
+import com.ding.basic.repository.RequestRepositoryFactory;
+import com.dingyue.contract.router.BookRouter;
 
 
 public class GoToCoverOrReadActivity extends Activity {
@@ -37,31 +41,40 @@ public class GoToCoverOrReadActivity extends Activity {
         System.err.println("GoToCoverOrReadActivity onNewIntent");
 
         StatServiceUtils.statAppBtnClick(GoToCoverOrReadActivity.this, StatServiceUtils.download_read);
-        BookDaoHelper helper = BookDaoHelper.getInstance();
 
         Book book = (Book) intent.getSerializableExtra(Constants.REQUEST_ITEM);
-        book = helper.getBook(book.book_id, 0);
-        System.err.println("GoToCoverOrReadActivity helper book : " + book);
-        BookHelper.goToCatalogOrRead(this, this, book);
+        book = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(book.getBook_id());
+
+        if (book != null) {
+            BookRouter.INSTANCE.navigateCoverOrRead( this, book, BookRouter.NAVIGATE_TYPE_BOOKSHELF);
+        }
+
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.cancel(getIntent().getIntExtra(Constants.NOTIFY_ID, Constants
-                .DOWNLOAD - 1));
+
+        if (notificationManager != null) {
+            notificationManager.cancel(getIntent().getIntExtra(Constants.NOTIFY_ID, Constants.DOWNLOAD - 1));
+        }
+
         this.finish();
     }
 
     @Override
     protected void onDestroy() {
-        System.err.println("GoToCoverOrReadActivity onDestroy");
         StatServiceUtils.statAppBtnClick(GoToCoverOrReadActivity.this, StatServiceUtils.download_read);
-        BookDaoHelper helper = BookDaoHelper.getInstance();
 
         Book book = (Book) getIntent().getSerializableExtra(Constants.REQUEST_ITEM);
-        book = helper.getBook(book.book_id, 0);
-        System.err.println("GoToCoverOrReadActivity helper book : " + book);
-        BookHelper.goToCatalogOrRead(this, this, book);
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.cancel(getIntent().getIntExtra(Constants.NOTIFY_ID, Constants
-                .DOWNLOAD - 1));
+        book = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(book.getBook_id());
+
+        if(book != null){
+            BookRouter.INSTANCE.navigateCoverOrRead( this, book, BookRouter.NAVIGATE_TYPE_BOOKSHELF);
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+            if (notificationManager != null) {
+                notificationManager.cancel(getIntent().getIntExtra(Constants.NOTIFY_ID, Constants
+                        .DOWNLOAD - 1));
+            }
+        }
         super.onDestroy();
     }
 }

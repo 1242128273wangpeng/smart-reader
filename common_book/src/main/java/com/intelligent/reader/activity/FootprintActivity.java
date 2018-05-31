@@ -9,9 +9,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.utils.AbsRecyclerViewHolder;
 
-import com.ding.basic.bean.Book;
+import com.ding.basic.bean.HistoryInfo;
+import com.ding.basic.database.helper.BookDataProviderHelper;
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.paging.BaseAdapter;
 import com.intelligent.reader.adapter.paging.HisAdapter;
@@ -21,9 +23,6 @@ import com.intelligent.reader.util.EventBookStore;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.EmptyRecyclerView;
 import net.lzbook.kit.book.view.MyDialog;
-import net.lzbook.kit.data.db.table.HistoryInforTable;
-import net.lzbook.kit.data.ormlite.bean.HistoryInfo;
-import net.lzbook.kit.data.ormlite.dao.DaoUtils;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.StatServiceUtils;
@@ -38,7 +37,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
     private static final String TAG = FootprintActivity.class.getSimpleName();
     private EmptyRecyclerView mRecyclerView;
     private BaseAdapter mLoadMoreAdapter;
-    private List<Book> mDataSet;
+    private List<HistoryInfo> mDataSet;
     private HisAdapter mHisAdapter;
     private ImageView mBack;
     private TextView mClearDataTV;
@@ -50,12 +49,16 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
     private TextView mTypeInfoTV;
     private boolean currLoginState;
 
+    private BookDataProviderHelper mBookDataHelper;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         StatServiceUtils.statAppBtnClick(this, StatServiceUtils.his_into);
         setContentView(R.layout.activity_footprint);
         currLoginState = !UserManager.INSTANCE.isUserLogin();
+        mBookDataHelper = BookDataProviderHelper.Companion.loadBookDataProviderHelper(
+                BaseBookApplication.getGlobalContext());
         initView();
         initListener();
     }
@@ -119,8 +122,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
 
         int dataCount = 0;
         try {
-            mDaoUtils = new DaoUtils(HistoryInfo.class);
-            dataCount = (int) mDaoUtils.countOf();
+            dataCount = (int) mBookDataHelper.getHistoryCount();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -156,8 +158,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
         }
 
         try {
-            mDaoUtils = new DaoUtils(HistoryInfo.class);
-            mDataSet = mDaoUtils.queryDataForPagingLoad(HistoryInforTable.LAST_BROW_TIME, 0L, (long) LoadMoreAdapterWrapper.PAGE_SIZE);
+            mDataSet = mBookDataHelper.queryHistoryPaging(0L, LoadMoreAdapterWrapper.PAGE_SIZE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -211,7 +212,14 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
         }
 
         if (info != null) {
-            BookHelper.goToCover(this, info);
+            Intent intent = new Intent();
+            intent.setClass(this, CoverPageActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("book_id", info.getBook_id());
+            bundle.putString("book_source_id", info.getBook_source_id());
+            intent.putExtras(bundle);
+            startActivity(intent);
+            StatServiceUtils.statAppBtnClick(this.getApplicationContext(), StatServiceUtils.cover_into_his);
         }
     }
 
@@ -227,9 +235,9 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
             public void run() {
 
                 AppLog.d(TAG, "pagePosition = " + pagePosition);
-                List<Book> dataSet = null;
+                List<HistoryInfo> dataSet = null;
                 try {
-                    dataSet = mDaoUtils.queryDataForPagingLoad(HistoryInforTable.LAST_BROW_TIME, (long) pagePosition, (long) pageSize);
+                    dataSet = mBookDataHelper.queryHistoryPaging((long)pagePosition, (long) pageSize);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -326,10 +334,10 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
             dialog_comfire.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mHisAdapter != null && mLoadMoreAdapter != null && mDaoUtils != null) {
+                    if (mHisAdapter != null && mLoadMoreAdapter != null && mBookDataHelper != null) {
                         mHisAdapter.updateData(null);
                         mLoadMoreAdapter.notifyDataSetChanged();
-                        mDaoUtils.deleteAll();
+                        mBookDataHelper.deleteAllHistory();
                     }
                     myDialog.dismiss();
                 }

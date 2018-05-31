@@ -412,19 +412,17 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             public void doCover(final String host, final String book_id, final String book_source_id, final String name, final String author, final String parameter, final String extra_parameter) {
                 AppLog.e(TAG, "doCover");
 
-                RequestItem requestItem = new RequestItem();
-                requestItem.book_id = book_id;
-                requestItem.book_source_id = book_source_id;
-                requestItem.host = host;
-                requestItem.name = name;
-                requestItem.author = author;
-                requestItem.parameter = parameter;
-                requestItem.extra_parameter = extra_parameter;
+                Map<String, String> data = new HashMap<>();
+                data.put("BOOKID", book_id);
+                data.put("source", "WEBVIEW");
+                StartLogClickUtil.upLoadEventLog(FindBookDetail.this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data);
+
 
                 Intent intent = new Intent();
                 intent.setClass(getApplicationContext(), CoverPageActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(Constants.REQUEST_ITEM, requestItem);
+                bundle.putString("book_id", book_id);
+                bundle.putString("book_source_id", book_source_id);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }

@@ -26,7 +26,6 @@ import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.ReplaceConstants
 import com.dingyue.contract.router.RouterConfig
-import com.intelligent.reader.read.mode.ReadState.requestItem
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils
@@ -101,10 +100,15 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 recommendList?.let {
                     val book = it[position]
                     val data = HashMap<String, String>()
-                    if (requestItem != null && requestItem!!.book_id != null) {
-                        data["bookid"] = requestItem!!.book_id
+
+                    if (bookId != null && !TextUtils.isEmpty(bookId)) {
+                        data["bookid"] = bookId!!
+                    }
+
+                    if (!TextUtils.isEmpty(book.book_id)) {
                         data["Tbookid"] = book.book_id
                     }
+
                     StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.RECOMMENDEDBOOK, data)
                     BookRouter.navigateCoverOrRead(this, book, BookRouter.NAVIGATE_TYPE_RECOMMEND)
                 }
