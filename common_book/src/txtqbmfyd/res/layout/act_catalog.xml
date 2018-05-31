@@ -104,7 +104,7 @@
                 android:listSelector="@android:color/transparent"
                 android:layerType="software"/>
 
-        <com.intelligent.reader.view.RecyclerViewFastScroller
+        <com.dy.reader.view.RecyclerViewFastScroller
                 android:id="@+id/catalog_fastscroller"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

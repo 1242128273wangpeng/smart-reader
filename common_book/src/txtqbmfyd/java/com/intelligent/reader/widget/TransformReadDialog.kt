@@ -2,10 +2,9 @@ package com.intelligent.reader.widget
 
 import android.app.Activity
 import android.view.Gravity
-import android.view.View
 import android.widget.FrameLayout
 import com.intelligent.reader.R
-import kotlinx.android.synthetic.txtqbmfyd.dialog_confirm_layout.*
+import kotlinx.android.synthetic.txtqbmfyd.dialog_transform_read.*
 import net.lzbook.kit.book.view.MyDialog
 
 /**
@@ -40,10 +39,10 @@ class TransformReadDialog(val activity: Activity) {
         dialog.setCanceledOnTouchOutside(true)
         dialog.setCancelable(true)
 
-        dialog.btn_confirm.setOnClickListener {
+        dialog.txt_transform_read_continue.setOnClickListener {
             continueListener?.invoke()
         }
-        dialog.btn_cancel.setOnClickListener {
+        dialog.txt_transform_read_cancel.setOnClickListener {
             dialog.dismiss()
             cancelListener?.invoke()
         }
@@ -58,9 +57,9 @@ class TransformReadDialog(val activity: Activity) {
     }
 
     fun show() {
-        dialog.txt_dialog_information.visibility = View.VISIBLE
-        dialog.view_divider.visibility = View.VISIBLE
-        dialog.ll_btn.visibility = View.VISIBLE
+//        dialog.txt_dialog_information.visibility = View.VISIBLE
+//        dialog.view_divider.visibility = View.VISIBLE
+//        dialog.ll_btn.visibility = View.VISIBLE
         dialog.show()
     }
 
