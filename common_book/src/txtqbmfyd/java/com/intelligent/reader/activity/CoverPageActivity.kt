@@ -90,8 +90,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
         if (!TextUtils.isEmpty(bookId) && (!TextUtils.isEmpty(bookSourceId) || !TextUtils.isEmpty(bookChapterId))) {
             coverPagePresenter = CoverPagePresenter(bookId, bookSourceId, bookChapterId,this, this, this)
-            requestBookDetail()
 
+            requestBookDetail()
 
             bookRecommendAdapter = BookRecommendAdapter()
 
