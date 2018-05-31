@@ -22,6 +22,7 @@ import okhttp3.RequestBody
 import org.json.JSONException
 import java.io.IOException
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 class RequestRepositoryFactory private constructor(private val context: Context) : RequestRepository {
@@ -225,6 +226,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
     override fun requestAutoComplete(word: String, requestSubscriber: RequestSubscriber<SearchAutoCompleteBean>) {
         InternetRequestRepository.loadInternetRequestRepository(context = context).requestAutoComplete(word)!!
+                .debounce(400,TimeUnit.MILLISECONDS)
                 .compose(SchedulerHelper.schedulerHelper<SearchAutoCompleteBean>())
                 .subscribe({ result ->
                     if (result != null) {

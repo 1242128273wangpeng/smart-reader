@@ -9,12 +9,19 @@ import android.text.TextUtils
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
+import com.ding.basic.bean.SearchAutoCompleteBean
+import com.ding.basic.bean.SearchHotBean
+import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.request.RequestSubscriber
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.dingyue.contract.IPresenter
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.widget.ConfirmDialog
+import com.orhanobut.logger.Logger
+import io.reactivex.Observable
+import io.reactivex.ObservableOnSubscribe
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -22,14 +29,12 @@ import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.search.SearchAutoCompleteBean
 import net.lzbook.kit.data.search.SearchCommonBean
-import net.lzbook.kit.data.search.SearchHotBean
-import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
 import java.lang.ref.WeakReference
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by yuchao on 2017/12/1 0001.
@@ -77,7 +82,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
     }
 
     private fun startSearch(searchWord: String?, searchType: String?) {
-        if (searchWord != null && searchWord != "") {
+        if (searchWord != null && !TextUtils.isEmpty(searchWord)) {
             addHistoryWord(searchWord)
             view?.onStartSearch(searchWord, searchType)
         }
@@ -88,7 +93,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
             mHistoryDatas = ArrayList<String>()
         }
 
-        if (keyword == null || keyword == "") {
+        if (keyword == null || TextUtils.isEmpty(keyword)) {
             return
         }
         if (mHistoryDatas!!.contains(keyword)) {
@@ -110,35 +115,55 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
 
     fun resetHotWordList(context: Context) {
 
-        if (NetWorkUtils.getNetWorkTypeNew(context) == "无") {
+        if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
             getCacheDataFromShare(false)
         } else {
             view?.showLoading()
             AppLog.e("url", UrlUtils.getBookNovelDeployHost() + "===" + NetWorkUtils.getNetWorkTypeNew(context))
-            val searchService = NetService.userService
-            searchService.hotWord
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : Observer<SearchHotBean> {
-                        override fun onSubscribe(d: Disposable) {
+//            val searchService = NetService.userService
+//            searchService.hotWord
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(object : Observer<SearchHotBean> {
+//                        override fun onSubscribe(d: Disposable) {
+//
+//                        }
+//
+//                        override fun onNext(value: SearchHotBean) {
+//                            AppLog.e("result", value.toString())
+//                            parseResult(value, true)
+//                        }
+//
+//                        override fun onError(e: Throwable) {
+//                            getCacheDataFromShare(true)
+//                            AppLog.e("error", e.toString())
+//                        }
+//
+//                        override fun onComplete() {
+//                            AppLog.e("complete", "complete")
+//                            view?.dimissLoading()
+//                        }
+//                    })
 
-                        }
 
-                        override fun onNext(value: SearchHotBean) {
-                            AppLog.e("result", value.toString())
-                            parseResult(value, true)
-                        }
 
-                        override fun onError(e: Throwable) {
-                            getCacheDataFromShare(true)
-                            AppLog.e("error", e.toString())
-                        }
+            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestHotWords(object : RequestSubscriber<com.ding.basic.bean.SearchHotBean>() {
+                override fun requestResult(result: SearchHotBean?) {
+                    parseResult(result, true)
+                    view?.dimissLoading()
+                }
 
-                        override fun onComplete() {
-                            AppLog.e("complete", "complete")
-                            view?.dimissLoading()
-                        }
-                    })
+                override fun requestError(message: String) {
+                    Logger.e("获取搜索热词异常！")
+                    getCacheDataFromShare(true)
+                    view?.dimissLoading()
+                }
+
+                override fun requestComplete() {
+
+                }
+            })
+
 
             AppLog.e("url", UrlUtils.getBookNovelDeployHost() + "===" + NetWorkUtils.getNetWorkTypeNew(context))
         }
@@ -169,7 +194,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
     fun parseResult(value: SearchHotBean?, hasNet: Boolean) {
         hotWords!!.clear()
         if (value != null && value.data != null) {
-            hotWords = value.data
+            hotWords = value.data as MutableList<SearchHotBean.DataBean>?
             if (hotWords != null && hotWords!!.size >= 0) {
                 view?.showLinearParent(true)
                 if (hasNet) {
@@ -240,15 +265,15 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
         authorsBean.clear()
         labelBean.clear()
         bookNameBean.clear()
-        if (transmitBean.data != null) {
-            if (transmitBean.data.authors != null) {
-                authorsBean = transmitBean.data.authors
+        if (transmitBean != null && transmitBean.data != null) {
+            if (transmitBean.data!!.authors != null) {
+                authorsBean = transmitBean.data!!.authors as MutableList<SearchAutoCompleteBean.DataBean.AuthorsBean>
             }
-            if (transmitBean.data.label != null) {
-                labelBean = transmitBean.data.label
+            if (transmitBean.data!!.label != null) {
+                labelBean = transmitBean.data!!.label as MutableList<SearchAutoCompleteBean.DataBean.LabelBean>
             }
-            if (transmitBean.data.name != null) {
-                bookNameBean = transmitBean.data.name
+            if (transmitBean.data!!.name != null) {
+                bookNameBean = transmitBean.data!!.name as MutableList<SearchAutoCompleteBean.DataBean.NameBean>
             }
         }
         for (item in suggestList) {
@@ -319,12 +344,12 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
         StatServiceUtils.statAppBtnClick(context, StatServiceUtils.b_search_click_allhotword)
         val hotWord = hotWords!![position].word
         val data = HashMap<String, String>()
-        data.put("topicword", hotWord)
+        data.put("topicword", hotWord.toString())
         StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TOPIC, data)
 
         AppLog.e("wordType", hotWord + hotWords!![position].wordType + "")
 
-        view?.hotItemClick(hotWord, hotWords!![position].wordType.toString() + "")
+        view?.hotItemClick(hotWord.toString(), hotWords!![position].wordType.toString() + "")
     }
 
     fun setSearchType(type: String) {
