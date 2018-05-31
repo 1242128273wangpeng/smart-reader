@@ -19,7 +19,7 @@
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
 
-        <com.intelligent.reader.read.page.BatteryView
+        <com.dy.reader.page.BatteryView
             android:id="@+id/novel_content_battery_view"
             android:layout_width="16dp"
             android:layout_height="11dp"
