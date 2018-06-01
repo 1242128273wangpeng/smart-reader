@@ -73,7 +73,7 @@ public class BookApplication extends BaseBookApplication {
         registerActivityLifecycleCallbacks(ActivityLifecycleHelper.build());
         setRxJavaErrorHandler();
 
-        Reader.INSTANCE.init(this);
+        Reader.INSTANCE.init(this); //阅读页
     }
 
     /**

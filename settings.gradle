@@ -1,1 +1,1 @@
-include ':common_book', ':book_kit', ':bookshelf', ':resource',':dy-compile-plugin', ':downloadmanager', ':basic', ':dy-reader'
+include ':common_book', ':book_kit', ':bookshelf', ':resource', ':dy-compile-plugin', ':downloadmanager', ':basic', ':dy-reader'
