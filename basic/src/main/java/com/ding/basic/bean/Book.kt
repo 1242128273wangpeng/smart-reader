@@ -152,6 +152,7 @@ open class Book : Serializable, Comparable<Book>, Cloneable {
     var item_type: Int = 0
     //广告布局
     @Ignore
+    @Transient
     var item_view: ViewGroup? = null
 
     //统计打点 当前页面是来自书籍封面/书架/上一页翻页
