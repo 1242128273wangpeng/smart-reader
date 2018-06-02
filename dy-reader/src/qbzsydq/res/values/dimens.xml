@@ -13,4 +13,7 @@
     <dimen name="margin_22">22dip</dimen>
 
     <dimen name="top_bar_height">48dp</dimen>
+
+
+    <dimen name="source_item_height">70dp</dimen>
 </resources>

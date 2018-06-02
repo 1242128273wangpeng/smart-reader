@@ -131,10 +131,10 @@
                                 android:id="@+id/iv_title_right"
                                 android:layout_width="130dp"
                                 android:layout_height="40dp"
-                                android:background="@drawable/book_end_btn_selector_bookshelf"
+                                android:background="@drawable/book_end_bookshelf_bg_sel"
                                 android:gravity="center"
                                 android:text="@string/end_to_bookshelf"
-                                android:textColor="@drawable/book_end_text_selector_bookshelf"
+                                android:textColor="@drawable/book_end_bookshelf_txt_sel"
                                 android:textSize="@dimen/text_size_14"/>
                     </LinearLayout>
 
@@ -148,10 +148,10 @@
                                 android:id="@+id/iv_back_bookstore"
                                 android:layout_width="130sp"
                                 android:layout_height="40dp"
-                                android:background="@drawable/book_end_btn_selector_bookstore"
+                                android:background="@drawable/book_end_bookstore_bg_sel"
                                 android:gravity="center"
                                 android:text="@string/end_to_bookstore"
-                                android:textColor="@drawable/book_end_text_selector_bookstore"
+                                android:textColor="@drawable/book_end_bookstore_txt_sel"
                                 android:textSize="@dimen/text_size_14"/>
                     </LinearLayout>
                 </LinearLayout>

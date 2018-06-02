@@ -427,14 +427,11 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         }
 
         val bundle = Bundle()
-        bundle.putString("bookName", ReaderStatus.book.name)
-        bundle.putString("book_id", ReaderStatus.book.book_id)
-        bundle.putString("book_category", ReaderStatus.book.label)
         bundle.putSerializable("book", ReaderStatus.book)
-        bundle.putString("thememode", currentThemeMode)
-        bundle.putString("chapterid", ReaderStatus.chapterId)
+        bundle.putString("book_id", ReaderStatus.book.book_id)
+        bundle.putString("book_name", ReaderStatus.book.name)
+        bundle.putString("chapter_id", ReaderStatus.chapterId)
         RouterUtil.navigation(act, RouterConfig.BOOK_END_ACTIVITY, bundle)
-
     }
 
 
