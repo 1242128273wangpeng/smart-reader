@@ -58,13 +58,10 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
 public class CheckNovelUpdateService extends Service {
-    public static final String ACTION_CHKUPDATE =
-            AppUtils.getPackageName() + ".action_check_update";
+    public static final String ACTION_CHKUPDATE = AppUtils.getPackageName() + ".action_check_update";
     public static final String CLICK_ACTION = "cn.txtzsydsq.reader.receiver.CLICK_BOOK_UPDATE";
-    public static final int novel_upd_notify_id = ResourceUtil.getStringById(
-            R.string.app_name).hashCode();
-    public static final int novel_update_notify_id = (ResourceUtil.getStringById(R.string.app_name)
-            + "Update").hashCode();
+    public static final int novel_upd_notify_id = ResourceUtil.getStringById(R.string.app_name).hashCode();
+    public static final int novel_update_notify_id = (ResourceUtil.getStringById(R.string.app_name) + "Update").hashCode();
     private final static String mFormat = "k:mm";
     private static final long FINISH_BOOK_REFRESHTIME = 24 * 60 * 60 * 1000;
     private static final long NOT_READ_END_REFRESHTIME = 60 * 60 * 1000;
@@ -154,9 +151,8 @@ public class CheckNovelUpdateService extends Service {
     private void innerOnSuccess(BookUpdateResult result) {
         if (result != null) {
             ArrayList<BookUpdate> list = result.items;
-            if (list == null) {
+            if (list == null)
                 return;
-            }
             ArrayList<CheckNovelUpdHelper.MyBook> books = new ArrayList<>();
             String last_chapter_name = null;
             for (int i = 0; i < list.size(); i++) {
@@ -164,8 +160,7 @@ public class CheckNovelUpdateService extends Service {
                 if (!TextUtils.isEmpty(item.getBook_id()) && item.getUpdate_count() != 0) {
                     last_chapter_name = item.getLast_chapter_name();
                     if (!TextUtils.isEmpty(item.getBook_name())) {
-                        CheckNovelUpdHelper.MyBook myBook = new CheckNovelUpdHelper.MyBook(
-                                item.getBook_name(), item.getBook_id(), item.getUpdate_count());
+                        CheckNovelUpdHelper.MyBook myBook = new CheckNovelUpdHelper.MyBook(item.getBook_name(), item.getBook_id(), item.getUpdate_count());
                         books.add(myBook);
                     }
                 }
@@ -184,13 +179,9 @@ public class CheckNovelUpdateService extends Service {
                 if (n > 0) {
                     if (n == 1) {
                         CheckNovelUpdHelper.MyBook myBook = books.get(0);
-                        showNotification(getBookNameString2(books) + getString(
-                                R.string.notification_update_catalog), last_chapter_name,
-                                myBook.book_id);
+                        showNotification(getBookNameString2(books) + getString(R.string.notification_update_catalog), last_chapter_name, myBook.book_id);
                     } else {
-                        String txt = "《" + books.get(0).name + "》" + getString(
-                                R.string.notification_update_end) + n + getString(
-                                R.string.notification_update_book_count);
+                        String txt = "《" + books.get(0).name + "》" + getString(R.string.notification_update_end) + n + getString(R.string.notification_update_book_count);
                         showNotification(txt, getBookNameString2(books), "");
                     }
                 }
@@ -199,14 +190,12 @@ public class CheckNovelUpdateService extends Service {
     }
 
     private String getBookNameString2(ArrayList<CheckNovelUpdHelper.MyBook> names) {
-        if (names == null || names.size() == 0) {
+        if (names == null || names.size() == 0)
             return null;
-        }
         StringBuilder sb = new StringBuilder();
         for (CheckNovelUpdHelper.MyBook b : names) {
-            if (!TextUtils.isEmpty(b.name)) {
+            if (!TextUtils.isEmpty(b.name))
                 sb.append("《").append(b.name).append("》");
-            }
         }
         return sb.toString();
     }
@@ -214,8 +203,7 @@ public class CheckNovelUpdateService extends Service {
     private void checkInterval() {
         if (isUpdateTime()) {
 
-            List<Book> books = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                    BaseBookApplication.getGlobalContext()).loadReadBooks();
+            List<Book> books = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadReadBooks();
 
             if (books != null) {
                 BookUpdateTaskData bookUpdateTaskData = new BookUpdateTaskData();
@@ -223,7 +211,7 @@ public class CheckNovelUpdateService extends Service {
                 bookUpdateTaskData.books = checkBookUpdate((ArrayList<Book>) books);
                 bookUpdateTaskData.from = BookUpdateTaskData.UpdateTaskFrom.FROM_SELF;
                 selfCallBack = new SelfCallBack();
-                bookUpdateTaskData.mCallBack = new WeakReference<UpdateCallBack>(selfCallBack);
+            	bookUpdateTaskData.mCallBack = new WeakReference<UpdateCallBack>(selfCallBack);
 
                 Logger.i("检查更新服务: 添加检查更新任务！");
 
@@ -279,8 +267,7 @@ public class CheckNovelUpdateService extends Service {
             }
         }
 
-        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).updateBooks(checkUpdateBooks);
+        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBooks(checkUpdateBooks);
 
         if (checkUpdateBooks.size() > 0) {
             if (UPDATE_OWN_SUCCESS) {
@@ -295,158 +282,66 @@ public class CheckNovelUpdateService extends Service {
         }
     }
 
-    private void handleCheckBookUpdate(ArrayList<Book> checkUpdateBooks,
-            final BookUpdateTaskData data, final BookUpdateResult updateResult) {
+    private void handleCheckBookUpdate(ArrayList<Book> checkUpdateBooks, final BookUpdateTaskData data, final BookUpdateResult updateResult) {
 
         final ArrayList<Book> ownBookclone = (ArrayList<Book>) checkUpdateBooks.clone();
 
         final HashMap<String, Book> bookItems = getBookItems(ownBookclone);
 
-        RequestBody checkBody = RequestBody.create(
-                MediaType.parse("application/json; charset=utf-8"),
-                enclosureUpdateParameters(ownBookclone));
+        RequestBody checkBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), enclosureUpdateParameters(ownBookclone));
 
-        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).requestBookUpdate(checkBody, bookItems,
-                new RequestSubscriber<List<BookUpdate>>() {
-                    @Override
-                    public void requestResult(@Nullable List<BookUpdate> result) {
-                        Logger.i("检查更新服务: 请求已返回");
+        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestBookUpdate(checkBody, bookItems, new RequestSubscriber<List<BookUpdate>>() {
+            @Override
+            public void requestResult(@Nullable List<BookUpdate> result) {
+                Logger.i("检查更新服务: 请求已返回");
 
-                        ArrayList<BookUpdate> bookUpdates;
-                        try {
-                            if (result != null && result.size() > 0) {
-                                bookUpdates = new ArrayList<>();
+                ArrayList<BookUpdate> bookUpdates;
+                try {
+                    if (result != null && result.size() > 0) {
+                        bookUpdates = new ArrayList<>();
 
-                                for (int i = 0; i < result.size(); i++) {
-                                    BookUpdate bookUpdate = changeChapters(bookItems,
-                                            result.get(i));
+                        for (int i = 0; i < result.size(); i++) {
+                            BookUpdate bookUpdate = changeChapters(bookItems, result.get(i));
 
-                                    if (bookUpdate != null) {
-                                        bookUpdates.add(bookUpdate);
-                                    }
-                                }
-                                if (bookUpdates.size() > 0) {
-                                    updateTotalCount = updateTotalCount + bookUpdates.size();
-                                    hasUpdatedCount = hasUpdatedCount + bookUpdates.size();
-                                    if (bookUpdates.size() > 0) {
-                                        mUpdateBooks.addAll(bookUpdates);
-                                    }
-                                }
+                            if (bookUpdate != null) {
+                                bookUpdates.add(bookUpdate);
                             }
-                        } catch (Exception exception) {
-                            exception.printStackTrace();
                         }
-
-                        UPDATE_OWN_SUCCESS = true;
-                    }
-
-                    @Override
-                    public void requestError(@NotNull String message) {
-                        Logger.e("检查更新服务: 检查书籍更新异常！");
-
-                        updateResult.items = null;
-
-                        UPDATE_OWN_SUCCESS = true;
-
-                        if (data.mCallBack != null) {
-                            checkOnSuccess(data, updateResult);
+                        if (bookUpdates.size() > 0) {
+                            updateTotalCount = updateTotalCount + bookUpdates.size();
+                            hasUpdatedCount = hasUpdatedCount + bookUpdates.size();
+                            if (bookUpdates.size() > 0) {
+                                mUpdateBooks.addAll(bookUpdates);
+                            }
                         }
                     }
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
 
-                    @Override
-                    public void requestComplete() {
-                        Logger.i("检查更新服务: 检查书籍更新完成！");
-                        checkOnSuccess(data, updateResult);
-                    }
-                });
+                UPDATE_OWN_SUCCESS = true;
+            }
 
-//        Observable.create(new ObservableOnSubscribe<HashMap<String, String>>() {
-//            @Override
-//            public void subscribe(@NonNull ObservableEmitter<HashMap<String, String>> e) throws
-// Exception {
-//                AppLog.e(TAG, "开始更新自有的书籍...");
-//                HashMap<String, String> parameter = new HashMap<>();
-//                parameter.put("data", arrToJson(ownBookclone));
-//                e.onNext(parameter);
-//                e.onComplete();
-//                AppLog.d(TAG, "subscribe run on " + Thread.currentThread().getName());
-//            }
-//        }).flatMap(new Function<HashMap<String, String>, Observable<UpdateBean>>() {
-//            @Override
-//            public Observable<UpdateBean> apply(@NonNull HashMap<String, String> parameter)
-// throws Exception {
-//                return NetService.INSTANCE.getUserService().getUpdatedZnBooks(parameter);
-//            }
-//        }).subscribeOn(Schedulers.io()).observeOn(Schedulers.io()).subscribe(new
-// Observer<UpdateBean>() {
-//            @Override
-//            public void onSubscribe(@NonNull Disposable d) {
-//                AppLog.e("checkUpdate", "开始拉取更新接口");
-//                AppLog.d(TAG, "onSubscribe run on " + Thread.currentThread().getName());
-//            }
-//
-//            @Override
-//            public void onNext(@NonNull UpdateBean s) {
-//                AppLog.d(TAG, "onNext run on " + Thread.currentThread().getName());
-//                UPDATE_OWN_SUCCESS = true;
-//                ArrayList<BookUpdate> bookUpdateLists;
-//                try {
-//                    ArrayList<BookUpdate> resultLists = OWNParser.parserBookUpdateInfo(s,
-// bookItems);
-//                    if (resultLists != null && resultLists.size() > 0) {
-//                        bookUpdateLists = new ArrayList<>();
-//                        for (int i = 0; i < resultLists.size(); i++) {
-//                            BookUpdate bookUpdate = changeChapters(bookItems, resultLists.get(i));
-//                            if (bookUpdate != null) {
-//                                bookUpdateLists.add(bookUpdate);
-//                            }
-//                        }
-//                        if (bookUpdateLists.size() > 0) {
-//                            updateTotalCount = updateTotalCount + bookUpdateLists.size();
-//                            hasUpdatedCount = hasUpdatedCount + bookUpdateLists.size();
-//                            if (bookUpdateLists.size() > 0) {
-//                                AppLog.e(TAG, "RequestUpdateSuccess: " + bookUpdateLists
-// .toString());
-//                                mUpdateBooks.addAll(bookUpdateLists);
-//                            }
-//                        }
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            @Override
-//            public void onError(@NonNull Throwable e) {
-//                AppLog.e(TAG, "自有书籍更新失败" + e);
-//                updateResult.items = null;
-//                UPDATE_OWN_SUCCESS = true;
-//                if (data.mCallBack != null) {
-//                    checkOnSuccess(data, updateResult);
-//                }
-//                AppLog.d(TAG, "onError run on " + Thread.currentThread().getName());
-//            }
-//
-//            @Override
-//            public void onComplete() {
-//                checkOnSuccess(data, updateResult);
-//                AppLog.d(TAG, "onComplete run on " + Thread.currentThread().getName());
-//            }
-//        });
+            @Override
+            public void requestError(@NotNull String message) {
+                Logger.e("检查更新服务: 检查书籍更新异常！");
+
+                updateResult.items = null;
+
+                UPDATE_OWN_SUCCESS = true;
+
+                if (data.mCallBack != null) {
+                    checkOnSuccess(data, updateResult);
+                }
+            }
+
+            @Override
+            public void requestComplete() {
+                Logger.i("检查更新服务: 检查书籍更新完成！");
+                checkOnSuccess(data, updateResult);
+            }
+        });
     }
-
-//    private void dealBookMark(BookDaoHelper bookDaoHelper, String book_id, int newChapterSize) {
-//        //修改这本书的sequence属性
-//        Book book = bookDaoHelper.getBook(book_id, 0);
-//        if (book.getSequence() > newChapterSize) {
-//            book.setSequence(newChapterSize);
-//            book.setOffset(0);
-//        }
-//        bookDaoHelper.updateBook(book);
-//        //删除这本书保存的所有书签
-//        bookDaoHelper.deleteBookMark(book_id);
-//    }
 
     private boolean isUpdateTime() {
         if (startTimeOffSet == -1) {
@@ -548,8 +443,7 @@ public class CheckNovelUpdateService extends Service {
             if (onBookUpdateListenerWef != null && onBookUpdateListenerWef.get() != null) {
                 onBookUpdateListenerWef.get().receiveUpdateCallBack(preNTF);
             } else {
-                PendingIntent pendingintent = PendingIntent.getActivity(getApplicationContext(), 0,
-                        new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent pendingintent = PendingIntent.getActivity(getApplicationContext(), 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
                 preNTF.contentIntent = pendingintent;
             }
             nftmgr.notify(novel_upd_notify_id, preNTF);
@@ -568,9 +462,8 @@ public class CheckNovelUpdateService extends Service {
     private boolean shouldAlarm() {
         SharedPreferences sp;
         sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        if (!sp.getBoolean("push_time", true)) {
+        if (!sp.getBoolean("push_time", true))
             return true;
-        }
         int startHour = sp.getInt("push_time_start_hour", 7);
         int startMinute = sp.getInt("push_time_start_minute", 0);
         int stopHour = sp.getInt("push_time_stop_hour", 23);
@@ -579,9 +472,8 @@ public class CheckNovelUpdateService extends Service {
         int curHour = c.get(Calendar.HOUR_OF_DAY);
         int curMinute = c.get(Calendar.MINUTE);
         int cur = curHour * 60 + curMinute;
-        if (startHour * 60 + startMinute >= stopHour * 60 + stopMinute) {
+        if (startHour * 60 + startMinute >= stopHour * 60 + stopMinute)
             return true;
-        }
         return (cur >= startHour * 60 + startMinute && cur <= stopHour * 60 + stopMinute);
     }
 
@@ -644,9 +536,7 @@ public class CheckNovelUpdateService extends Service {
         for (Book book : books) {
             if (book != null && !TextUtils.isEmpty(book.getBook_id())) {
 
-                ChapterDaoHelper bookChapterDao =
-                        ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
-                                getApplicationContext(), book.getBook_id());
+                ChapterDaoHelper bookChapterDao = ChapterDaoHelper.Companion.loadChapterDataProviderHelper(getApplicationContext(), book.getBook_id());
                 Chapter lastChapter = bookChapterDao.queryLastChapter();
 
                 if (lastChapter == null || TextUtils.isEmpty(lastChapter.getChapter_id())) {
@@ -678,14 +568,11 @@ public class CheckNovelUpdateService extends Service {
         Book book = bookItems.get(bookUpdate.getBook_id());
         BookUpdate resUpdate = null;
         if (!bookUpdate.getChapterList().isEmpty()) {
-            ChapterDaoHelper bookChapterDao =
-                    ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
-                            BaseBookApplication.getGlobalContext(), book.getBook_id());
+            ChapterDaoHelper bookChapterDao = ChapterDaoHelper.Companion.loadChapterDataProviderHelper(BaseBookApplication.getGlobalContext(), book.getBook_id());
             // 增加更新章节
             bookChapterDao.insertOrUpdateChapter(bookUpdate.getChapterList());
             // 更新书架信息
-            Chapter lastchapter = bookUpdate.getChapterList().get(
-                    bookUpdate.getChapterList().size() - 1);
+            Chapter lastchapter = bookUpdate.getChapterList().get(bookUpdate.getChapterList().size() - 1);
             book.setChapter_count(bookChapterDao.getCount());
             book.setLast_chapter(lastchapter);
             book.setUpdate_status(1);
@@ -700,29 +587,19 @@ public class CheckNovelUpdateService extends Service {
             if (Constants.DEVELOPER_MODE) {
                 StringBuilder update_log = new StringBuilder();
                 update_log.append("book_id : ").append(book.getBook_id()).append(" \\\n");
-                update_log.append("book_source_id : ").append(book.getBook_source_id()).append(
-                        " \\\n");
+                update_log.append("book_source_id : ").append(book.getBook_source_id()).append(" \\\n");
                 update_log.append("book_name : ").append(bookUpdate.getBook_name()).append(" \\\n");
-                update_log.append("update_count_service : ").append(
-                        bookUpdate.getChapterList().size()).append(" \\\n");
-                update_log.append("update_count_local : ").append(book.getChapter_count()).append(
-                        " \\\n");
-                update_log.append("last_chapter_name_service : ").append(
-                        lastchapter.getName()).append(" \\\n");
-                update_log.append("last_chapter_name_local : ").append(book.getName()).append(
-                        " \\\n");
-                update_log.append("update_time : ").append(
-                        Tools.logTime(AppUtils.log_formatter, lastchapter.getUpdate_time())).append(
-                        " \\\n");
-                update_log.append("system_time : ").append(
-                        Tools.logTime(AppUtils.log_formatter, System.currentTimeMillis())).append(
-                        " \\\n");
+                update_log.append("update_count_service : ").append(bookUpdate.getChapterList().size()).append(" \\\n");
+                update_log.append("update_count_local : ").append(book.getChapter_count()).append(" \\\n");
+                update_log.append("last_chapter_name_service : ").append(lastchapter.getName()).append(" \\\n");
+                update_log.append("last_chapter_name_local : ").append(book.getName()).append(" \\\n");
+                update_log.append("update_time : ").append(Tools.logTime(AppUtils.log_formatter, lastchapter.getUpdate_time())).append(" \\\n");
+                update_log.append("system_time : ").append(Tools.logTime(AppUtils.log_formatter, System.currentTimeMillis())).append(" \\\n");
                 DataCache.saveUpdateLog(update_log.toString());
             }
         }
         // 没有返回更新章节的书籍更新book.last_updateUpdateTime, 有更新的书籍更新对应信息
-        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).updateBook(book);
+        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book);
 
         return resUpdate;
     }

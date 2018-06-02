@@ -7,9 +7,10 @@ import android.widget.Toast;
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.alibaba.sdk.android.feedback.util.ErrorCode;
 import com.alibaba.sdk.android.feedback.util.FeedbackErrorCallback;
+import com.ding.basic.database.BookDatabase;
+import com.ding.basic.database.helper.BookDataProviderHelper;
 import com.dingyue.contract.util.CommonUtil;
 import com.dy.reader.Reader;
-import com.dycm_adsdk.PlatformSDK;
 import com.intelligent.reader.BuildConfig;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
@@ -38,12 +39,13 @@ public class BookApplication extends BaseBookApplication {
     public void onCreate() {
         super.onCreate();
 
-        if (AppUtils.isMainProcess(this)) {
-            // 新版广告SDK
-            PlatformSDK.app().onAppCreate(this);
-        }
+        Reader.INSTANCE.init(this);
 
         if (LeakCanary.isInAnalyzerProcess(this)) {
+            return;
+        }
+
+        if (!AppUtils.isMainProcess(this)) {
             return;
         }
 
@@ -73,7 +75,6 @@ public class BookApplication extends BaseBookApplication {
         registerActivityLifecycleCallbacks(ActivityLifecycleHelper.build());
         setRxJavaErrorHandler();
 
-        Reader.INSTANCE.init(this); //阅读页
     }
 
     /**
@@ -87,13 +88,5 @@ public class BookApplication extends BaseBookApplication {
                 AppLog.e("DataProvider", " throwable :" + throwable.getMessage());
             }
         });
-    }
-
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-        if (AppUtils.isMainProcess(this)) {
-            PlatformSDK.app().onTerminate();
-        }
     }
 }

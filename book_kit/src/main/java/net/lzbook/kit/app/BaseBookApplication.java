@@ -38,7 +38,6 @@ public abstract class BaseBookApplication extends Application {
     private static DisplayMetrics dm;
     private static URLBuilderIntterface urlBuilderIntterface;
     protected SharedPreferences sp;
-    private MainExtractorInterface mainExtractorInterface;
 
     public static BaseBookApplication getGlobalContext() {
         return g_context;
@@ -53,17 +52,8 @@ public abstract class BaseBookApplication extends Application {
         return urlBuilderIntterface;
     }
 
-
-
     public static DisplayMetrics getDisplayMetrics() {
         return dm;
-    }
-
-    public MainExtractorInterface getMainExtractorInterface() {
-        if (mainExtractorInterface == null) {
-            mainExtractorInterface = new MainExtractor();
-        }
-        return mainExtractorInterface;
     }
 
     @Override
@@ -91,10 +81,6 @@ public abstract class BaseBookApplication extends Application {
         this.sCtx = this;
         super.attachBaseContext(base);
         loge(this, "attachBaseContext");
-
-//        final Thread.UncaughtExceptionHandler parent = Thread.getDefaultUncaughtExceptionHandler();
-//
-//        Thread.setDefaultUncaughtExceptionHandler(new StatisticUncaughtExceptionHandler(parent));
 
         Constants.SHOW_LOG = ExtensionsKt.msDebuggAble =(getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)!= 0;
         //分割dex防止方法数过多

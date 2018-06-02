@@ -1,7 +1,6 @@
 package com.intelligent.reader.presenter.coverPage
 
 import com.ding.basic.bean.Book
-import net.lzbook.kit.data.bean.CoverPage
 
 /**
  * Created by zhenXiang on 2017\11\15 0015.

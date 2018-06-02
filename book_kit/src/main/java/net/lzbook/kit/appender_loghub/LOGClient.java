@@ -119,8 +119,7 @@ public class LOGClient {
         HttpPostRequest(logGroup.getLogs(), httpUrl, httpHeaders, httpPostBodyZipped);
     }
 
-    public void HttpPostRequest(final List<ServerLog> logList, String url, Map<String, String> headers,
-                                byte[] body) throws LogException {
+    public void HttpPostRequest(final List<ServerLog> logList, String url, Map<String, String> headers, byte[] body) throws LogException {
         URL u;
         try {
             u = new URL(url);
@@ -186,10 +185,8 @@ public class LOGClient {
                             + "\nMessage: fail to connect to the server",
                             request_id);
                 }
-            } else {
-                // else success
-                AndroidLogStorage.getInstance().consumeSuccess(logList);
-            }
+            }// else success
+            AndroidLogStorage.getInstance().consumeSuccess(logList);
         } catch (IOException e) {
             throw new LogException("LogServerError",
                     "Failed to parse response data", "");

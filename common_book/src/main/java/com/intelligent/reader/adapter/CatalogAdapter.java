@@ -16,8 +16,6 @@ import com.ding.basic.util.DataCache;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.CataloguesActivity;
 
-import net.lzbook.kit.constants.Constants;
-
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -91,14 +89,13 @@ public class CatalogAdapter extends BaseAdapter {
             return convertView;
         }
         Chapter chapter = list.get(position);
-//        String text = (chapter.sequence + 1) + " " + chapter.chapter_name;
-//        viewCache.getChapterName().setText(text);
         viewCache.getChapterName().setText(chapter.getName());
         boolean chapterExist;
+
         chapterExist = DataCache.isChapterCached(chapter);
         if (chapterExist) {
-            viewCache.getHasCache().setVisibility(View.VISIBLE);
             viewCache.getHasCache().setText(already_cached);
+            viewCache.getHasCache().setVisibility(View.VISIBLE);
             viewCache.getChapterName().setTextColor(Color.YELLOW);
         } else {
             viewCache.getHasCache().setVisibility(View.GONE);
@@ -126,17 +123,6 @@ public class CatalogAdapter extends BaseAdapter {
         selectedItem = position;
     }
 
-    public void recycleResource() {
-
-        if (this.resources != null) {
-            this.resources = null;
-        }
-
-        if (this.context != null) {
-            this.context = null;
-        }
-    }
-
     class ViewCache {
         private View baseView;
         private TextView textView;
@@ -148,14 +134,14 @@ public class CatalogAdapter extends BaseAdapter {
 
         public TextView getChapterName() {
             if (textView == null) {
-                textView = (TextView) baseView.findViewById(R.id.catalog_chapter_name);
+                textView = baseView.findViewById(R.id.catalog_chapter_name);
             }
             return textView;
         }
 
         public TextView getHasCache() {
             if (has_cache == null) {
-                has_cache = (TextView) baseView.findViewById(R.id.catalog_chapter_cache);
+                has_cache = baseView.findViewById(R.id.catalog_chapter_cache);
             }
 
             return has_cache;

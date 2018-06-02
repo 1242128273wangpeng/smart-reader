@@ -1,7 +1,5 @@
 package net.lzbook.kit.ad;
 
-import net.lzbook.kit.R;
-
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;

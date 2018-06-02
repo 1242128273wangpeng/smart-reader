@@ -40,7 +40,7 @@ class LoadingDialogFragment : DialogFragment() {
         val dialog = super.onCreateDialog(savedInstanceState)
         dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.window.requestFeature(Window.FEATURE_NO_TITLE)
-        if (fm.findFragmentByTag(ReadSettingFragment.TAG) == null) {
+        if (fm?.findFragmentByTag(ReadSettingFragment.TAG) == null) {
             dialog.window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }
         dialog.window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);

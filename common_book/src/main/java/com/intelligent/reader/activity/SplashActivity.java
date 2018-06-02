@@ -1,35 +1,5 @@
 package com.intelligent.reader.activity;
 
-import com.alibaba.android.arouter.facade.annotation.Route;
-import com.ding.basic.bean.Book;
-import com.ding.basic.database.helper.BookDataProviderHelper;
-import com.ding.basic.repository.RequestRepositoryFactory;
-import com.ding.basic.request.RequestSubscriber;
-import com.dingyue.contract.util.SharedPreUtil;
-import com.dycm_adsdk.PlatformSDK;
-import com.google.gson.Gson;
-import com.intelligent.reader.BuildConfig;
-import com.intelligent.reader.R;
-import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.util.DynamicParamter;
-
-import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
-import net.lzbook.kit.book.download.CacheManager;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.constants.ReplaceConstants;
-import com.dingyue.contract.router.RouterConfig;
-import com.orhanobut.logger.Logger;
-
-import net.lzbook.kit.data.db.help.ChapterDaoHelper;
-import net.lzbook.kit.user.UserManager;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.NetWorkUtils;
-import net.lzbook.kit.utils.ShieldManager;
-import net.lzbook.kit.utils.StatServiceUtils;
-
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -53,6 +23,39 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
+import com.ding.basic.bean.Book;
+import com.ding.basic.bean.Chapter;
+import com.ding.basic.database.helper.BookDataProviderHelper;
+import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.request.RequestSubscriber;
+import com.dingyue.contract.router.RouterConfig;
+import com.dingyue.contract.util.SharedPreUtil;
+import com.dycm_adsdk.PlatformSDK;
+
+import com.google.gson.Gson;
+import com.intelligent.reader.BuildConfig;
+import com.intelligent.reader.R;
+import com.intelligent.reader.app.BookApplication;
+import com.intelligent.reader.util.DynamicParamter;
+import com.orhanobut.logger.Logger;
+
+import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
+import net.lzbook.kit.book.download.CacheManager;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.constants.ReplaceConstants;
+import net.lzbook.kit.data.db.help.ChapterDaoHelper;
+import net.lzbook.kit.user.UserManager;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.NetWorkUtils;
+import net.lzbook.kit.utils.ShieldManager;
+import net.lzbook.kit.utils.StatServiceUtils;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -69,8 +72,6 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
 import static android.view.KeyEvent.KEYCODE_BACK;
-
-import org.jetbrains.annotations.NotNull;
 
 @Route(path = RouterConfig.SPLASH_ACTIVITY)
 public class SplashActivity extends FrameActivity {
@@ -157,32 +158,6 @@ public class SplashActivity extends FrameActivity {
     }
 
     private void gotoActivity(int versionCode, boolean firstGuide) {
-
-//        //2017.8.25阅读页改版上线时,因缺少文案,除五步替壳外.其他壳临时限制不显示开屏引导
-//        if (firstGuide && !"cc.kdqbxs.reader".equals(AppUtils.getPackageName())) {
-//            firstGuide = false;
-//            Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
-//            editor.putBoolean(versionCode + "first_guide", false);
-//            editor.apply();
-//        }
-
-//        if (firstGuide) {
-//            Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
-//            editor.putBoolean(versionCode + "first_guide", false);
-//            editor.apply();
-//
-//            try {
-//                Intent intent = new Intent();
-//                intent.setClass(SplashActivity.this, GuideActivity.class);
-//                intent.putExtra("fromA", "Loading");
-//                startActivity(intent);
-//                finish();
-//            } catch (ActivityNotFoundException e) {
-//                e.printStackTrace();
-//            } catch (SecurityException e) {
-//                e.printStackTrace();
-//            }
-//        } else {
         Intent intent = new Intent();
         intent.setClass(SplashActivity.this, HomeActivity.class);
         try {
@@ -193,7 +168,6 @@ public class SplashActivity extends FrameActivity {
             e.printStackTrace();
         }
         finish();
-//        }
     }
 
     private void initShield() {
@@ -237,7 +211,7 @@ public class SplashActivity extends FrameActivity {
 
         if (bookDBFile.exists()) {
             setContentView(R.layout.act_splash_upgradedb);
-            TextView txt_name = (TextView) findViewById(R.id.txt_name);
+            TextView txt_name = findViewById(R.id.txt_name);
             txt_name.setText(R.string.app_name);
             upgradeBookDB(bookDBName, chapterDBList);
         } else {
@@ -247,10 +221,10 @@ public class SplashActivity extends FrameActivity {
 
     private void onUpgradeProgress(int progress) {
         if (txt_upgrade == null) {
-            txt_upgrade = (TextView) findViewById(R.id.txt_upgrade);
+            txt_upgrade = findViewById(R.id.txt_upgrade);
         }
         if (progress_upgrade == null) {
-            progress_upgrade = (ProgressBar) findViewById(R.id.progress_upgrade);
+            progress_upgrade = findViewById(R.id.progress_upgrade);
             progress_upgrade.setMax(100);
         }
 
@@ -395,7 +369,7 @@ public class SplashActivity extends FrameActivity {
             e.printStackTrace();
         }
 
-        ad_view = (ViewGroup) findViewById(R.id.ad_view);
+        ad_view = findViewById(R.id.ad_view);
         complete_count = 0;
         initialization_count = 0;
 
@@ -468,50 +442,8 @@ public class SplashActivity extends FrameActivity {
         initTask.execute();
     }
 
-    private boolean isGo = true;
-
     private void initSplashAd() {
-//        if (ad_view != null) {
-//            if (Constants.isHideAD){
-//                AppLog.e(TAG, "Limited AD display!");
         handler.sendEmptyMessage(0);
-//                return;
-//            }
-//            PlatformSDK.adapp().dycmSplashAd(this,"10-1",ad_view, new AbstractCallback() {
-//                @Override
-//                public void onResult(boolean adswitch, String jsonResult) {
-//                    if (adswitch) {
-//                        try {
-//                            JSONObject jsonObject = new JSONObject(jsonResult);
-//                            if (jsonObject.has("state_code")) {
-//                                switch (ResultCode.parser(jsonObject.getInt("state_code"))) {
-//                                    case AD_REQ_SUCCESS://广告请求成功
-//                                        DyLogUtils.dd("AD_REQ_SUCCESS" + jsonResult);
-//                                        break;
-//                                    case AD_REQ_FAILED://广告请求失败
-//                                        DyLogUtils.dd("AD_REQ_FAILED" + jsonResult);
-//                                        handler.sendEmptyMessage(0);
-//                                        break;
-//                                    case AD_DISMISSED_CODE://开屏页面关闭
-//                                        handler.sendEmptyMessage(0);
-//                                        break;
-//                                    case AD_ONCLICKED_CODE://开屏页面点击
-//                                        DyLogUtils.dd("AD_ONCLICKED_CODE" + jsonResult);
-//                                        break;
-//                                    case AD_ONTICK_CODE://剩余显示时间
-//                                        DyLogUtils.dd("AD_ONTICK_CODE" + jsonResult);
-//                                        break;
-//                                }
-//                            }
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    } else {
-//                        handler.sendEmptyMessage(0);
-//                    }
-//                }
-//            });
-//    }
     }
 
     //初始化广告开关
@@ -630,7 +562,7 @@ public class SplashActivity extends FrameActivity {
         return keyCode == KEYCODE_BACK || super.onKeyDown(keyCode, event);
     }
 
-    static class MHandler extends Handler {
+    public class MHandler extends Handler {
 
         private WeakReference<SplashActivity> weakReference;
 
@@ -679,7 +611,7 @@ public class SplashActivity extends FrameActivity {
                         Book iBook = bookOnlineList.get(i);
                         if (!TextUtils.isEmpty(iBook.getBook_id())) {
                             ChapterDaoHelper bookChapterDao = ChapterDaoHelper.Companion.loadChapterDataProviderHelper(BookApplication.getGlobalContext(), iBook.getBook_id());
-                            com.ding.basic.bean.Chapter lastChapter = bookChapterDao.queryLastChapter();
+                            Chapter lastChapter = bookChapterDao.queryLastChapter();
                             if (lastChapter != null) {
                                 lastChapter.setBook_source_id(iBook.getBook_source_id());
                                 bookChapterDao.updateChapterBySequence(lastChapter);
@@ -692,7 +624,6 @@ public class SplashActivity extends FrameActivity {
 
             UserManager.INSTANCE.initPlatform(SplashActivity.this, null);
 
-
             //请求广告
             initAdSwitch();
             // 5 初始化屏蔽
@@ -701,17 +632,8 @@ public class SplashActivity extends FrameActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
             initSplashAd();
-
-            // 4 加载默认书籍
-//            try {
-//                if (NetWorkUtils.getNetWorkType(BaseBookApplication.getGlobalContext()) != NetWorkUtils.NETWORK_NONE) {
-//                    initBook();
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-
 
             // 6 其他信息初始化
             try {

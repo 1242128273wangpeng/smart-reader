@@ -6,6 +6,7 @@ dependencies {
     compile fileTree(include: '*.jar', dir: 'libs')
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
     compile 'net.iyouqu.android.common:iyouqu_logencap:1.0.7'
 
     compile 'net.youqu:ibook-token:2.0.0'

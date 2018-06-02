@@ -285,7 +285,7 @@ class ReaderSettings {
             if (field == null) {
                 var inputStream: InputStream? = null
                 try {
-                    inputStream = Reader.context.assets.open("read_page_bg_default.png")
+                    inputStream = Reader.context.resources.openRawResource(R.raw.read_page_bg_default)
                     field = BitmapFactory.decodeStream(inputStream)
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -337,7 +337,7 @@ class ReaderSettings {
             if (backgroundBitmap == null) {
                 var inputStream: InputStream? = null
                 try {
-                    inputStream = Reader.context.assets.open("read_page_bg_default.png")
+                    inputStream = Reader.context.resources.openRawResource(R.raw.read_page_bg_default)
                     backgroundBitmap = BitmapFactory.decodeStream(inputStream)
                 } catch (e: Exception) {
                     e.printStackTrace()

@@ -91,9 +91,7 @@
             android:normalScreens="true"
             android:smallScreens="true"
             android:xlargeScreens="true"/>
-    <!--适配全面屏手机-->
-    <meta-data android:name="android.max_aspect"
-               android:value="2.1"/>
+
     <application
             android:name=".app.BookApplication"
             android:allowBackup="true"
@@ -102,7 +100,11 @@
             android:largeHeap="true"
             android:resizeableActivity="true"
             tools:replace="android:allowBackup">
-
+        <!--适配全面屏手机-->
+        <meta-data android:name="android.max_aspect"
+            android:value="2.2"/>
+        <!--huawei-->
+        <meta-data android:name="android.notch_support" android:value="true"/>
         <!-- start for GaoDe Map -->
         <service android:name="com.amap.api.location.APSService"/>
 

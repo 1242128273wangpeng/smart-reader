@@ -16,7 +16,9 @@ import java.util.concurrent.atomic.AtomicBoolean
 import android.graphics.Bitmap
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import com.bumptech.glide.Glide
 import com.dy.reader.ReadMediaManager
+import com.dy.reader.Reader
 import net.lzbook.kit.utils.AppLog
 
 
@@ -195,7 +197,15 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
                 adBean?.view?.apply {
                     if (this.parent != null) {
                         this.buildDrawingCache()
-                        load(drawingCache?.copy(Bitmap.Config.ARGB_4444, false))
+                        var copy:Bitmap? = null
+                        try {
+                            copy = drawingCache?.copy(Bitmap.Config.ARGB_4444, false)
+                        }catch (e:Exception){
+                            e.printStackTrace()
+                            Glide.get(Reader.context).clearMemory()
+                        }
+                        this.destroyDrawingCache()
+                        load(copy)
                     } else {
                         ReadMediaManager.frameLayout?.removeAllViews()
                         if (this.parent != null) {
@@ -204,7 +214,15 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
                         ReadMediaManager.frameLayout?.addView(this)
                         ReadMediaManager.frameLayout?.post {
                             this.buildDrawingCache()
-                            load(drawingCache?.copy(Bitmap.Config.ARGB_4444, false))
+                            var copy:Bitmap? = null
+                            try {
+                                copy = drawingCache?.copy(Bitmap.Config.ARGB_4444, false)
+                            }catch (e:Exception){
+                                e.printStackTrace()
+                                Glide.get(Reader.context).clearMemory()
+                            }
+                            this.destroyDrawingCache()
+                            load(copy)
                             ReadMediaManager.frameLayout?.removeAllViews()
 
                         }

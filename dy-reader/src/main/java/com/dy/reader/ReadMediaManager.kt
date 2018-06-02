@@ -19,6 +19,7 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.user.UserManager
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.OpenUDID
 import org.json.JSONException
 import org.json.JSONObject
 import java.lang.ref.WeakReference
@@ -70,7 +71,8 @@ object ReadMediaManager {
     ): ArrayList<NovelPageBean> {
         removeOldAd(group)
         if (Constants.isHideAD || NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE || page.size < 3) return page
-        setAdConfig()
+
+
         //check 5-2 or 6-2 adView
         if (readerSettings.animation != GLReaderView.AnimationType.LIST && page.size - 8 > frequency && within) {
             var count = page.size - 8
@@ -95,8 +97,12 @@ object ReadMediaManager {
                 requestAd(last.adType, generateAdMark(8, 10), (AppHelper.screenHeight - last.height).toInt())
             }
         } else if (!readerSettings.isLandscape) {//6-3 adView
-            last.adType = generateAdType(group, page.size - 1)
-            requestAd(last.adType, generateAdMark(8, 10), (AppHelper.screenHeight - last.height).toInt())
+            mActivity?.get()?.apply {
+                last.adType = generateAdType(group, page.size - 1)
+//            requestAd(last.adType, generateAdMark(8, 10), (AppHelper.screenHeight - last.height).toInt())
+                val adMark = generateAdMark(8, 10)
+                PlatformSDK.adapp().dycmNativeAd(this, adMark, null, AdCallback(last.adType, adMark, (AppHelper.screenHeight - last.height).toInt(), tonken))
+            }
         }
 
         //check 5-1 or 6-1 adView
@@ -202,17 +208,7 @@ object ReadMediaManager {
      * 清除所有广告
      */
     fun clearAllAd() = adCache.map.clear()
-    /**
-     * 设置广告config
-     */
-    private fun setAdConfig() = PlatformSDK.config().apply {
-        setAd_userid(UserManager.mUserInfo?.uid ?: "")
-        setChannel_code(if(TextUtils.isEmpty(AppUtils.getChannelId())) "" else AppUtils.getChannelId())
-        setCityCode(if (Constants.cityCode.isEmpty()) 0 else Constants.cityCode.toInt())
-        setCityName(Constants.adCityInfo ?: "")
-        setLatitude(Constants.latitude.toFloat())
-        setLongitude(Constants.longitude.toFloat())
-    }
+
     /**
      * 删除其他无用广告
      */

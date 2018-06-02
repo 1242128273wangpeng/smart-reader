@@ -18,7 +18,6 @@ import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.androidquery.util.Common;
 import com.dingyue.contract.util.CommonUtil;
 
 public class CustomWebClient extends WebViewClient {

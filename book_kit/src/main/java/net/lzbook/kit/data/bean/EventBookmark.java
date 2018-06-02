@@ -1,6 +1,7 @@
 package net.lzbook.kit.data.bean;
 
 import com.ding.basic.bean.Bookmark;
+
 /**
  * 书签事件
  */

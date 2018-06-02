@@ -1,7 +1,9 @@
 package com.intelligent.reader.activity;
 
-import com.dy.reader.help.ReadSettingHelper;
+import com.dy.reader.setting.ReaderSettings;
+import com.dy.reader.setting.ReaderStatus;
 import com.intelligent.reader.R;
+import com.dy.reader.help.ReadSettingHelper;
 import com.intelligent.reader.read.page.PreviewPageView;
 
 import net.lzbook.kit.book.view.SwitchButton;
@@ -74,7 +76,7 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         //阅读页翻页模式
-        Constants.PAGE_MODE = sharedPreferences.getInt("page_mode", Constants.PAGE_MODE_DELAULT);
+        ReaderSettings.Companion.getInstance().setAnimation_mode(sharedPreferences.getInt("page_mode", Constants.PAGE_MODE_DELAULT));
 
         //自动阅读
         boolean isAutoBrightness = sharedPreferences.getBoolean("auto_brightness", true);
@@ -191,11 +193,11 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
     }
 
     private void initPageMode() {
-        if (Constants.PAGE_MODE == 0) {
+        if (ReaderSettings.Companion.getInstance().getAnimation_mode() == 0) {
             reading_setting_animation_group.check(R.id.reading_animation_slide);
-        } else if (Constants.PAGE_MODE == 1) {
+        } else if (ReaderSettings.Companion.getInstance().getAnimation_mode() == 1) {
             reading_setting_animation_group.check(R.id.reading_animation_simulation);
-        } else if (Constants.PAGE_MODE == 2) {
+        } else if (ReaderSettings.Companion.getInstance().getAnimation_mode() == 2) {
             reading_setting_animation_group.check(R.id.reading_animation_translation);
         }
     }
@@ -352,7 +354,7 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-        AppLog.d("ReadSettingView", "ReadConfig.READ_INTERLINEAR_SPACE " + ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE());
+        AppLog.d("ReadSettingBottomDetail", "ReadConfig.readInterlineaSpace " + ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE());
         ReadConfig.INSTANCE.setREAD_PARAGRAPH_SPACE(sharedPreferences.getInt("read_paragraph_space", 10) * 0.1f);//阅读页段间距
         try {
             ReadConfig.INSTANCE.setREAD_PARAGRAPH_SPACE(Float.valueOf(numFormat.format(ReadConfig.INSTANCE.getREAD_PARAGRAPH_SPACE())));
@@ -368,11 +370,11 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
             sharedPreferences.edit().putInt("read_content_page_left_space", 20).apply();
         }
 
-        AppLog.d("ReadSettingView", "isCustomSpaceSetted_ReadConfig.READ_INTERLINEAR_SPACE " + ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE());
+        AppLog.d("ReadSettingBottomDetail", "isCustomSpaceSetted_ReadConfig.readInterlineaSpace " + ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE());
         if (ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE() == 0.5f || ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE() == 0.2f || ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE() == 1.0f || ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE() == 1.5f) {
-            AppLog.d("ReadSettingView", "READ_CONTENT_PAGE_LEFT_SPACE—— " + ReadConfig.INSTANCE.getREAD_CONTENT_PAGE_LEFT_SPACE());
-            AppLog.d("ReadSettingView", "READ_CONTENT_PAGE_TOP_SPACE—— " + ReadConfig.INSTANCE.getREAD_CONTENT_PAGE_TOP_SPACE());
-            AppLog.d("ReadSettingView", "READ_PARAGRAPH_SPACE—— " + ReadConfig.INSTANCE.getREAD_PARAGRAPH_SPACE());
+            AppLog.d("ReadSettingBottomDetail", "readContentPageLeftSpace—— " + ReadConfig.INSTANCE.getREAD_CONTENT_PAGE_LEFT_SPACE());
+            AppLog.d("ReadSettingBottomDetail", "readContentPageTopSpace—— " + ReadConfig.INSTANCE.getREAD_CONTENT_PAGE_TOP_SPACE());
+            AppLog.d("ReadSettingBottomDetail", "readParagraphSpace—— " + ReadConfig.INSTANCE.getREAD_PARAGRAPH_SPACE());
             if (ReadConfig.INSTANCE.getREAD_CONTENT_PAGE_LEFT_SPACE() == 20 && (ReadConfig.INSTANCE.getREAD_CONTENT_PAGE_TOP_SPACE()) == 45
                     && ReadConfig.INSTANCE.getREAD_PARAGRAPH_SPACE() == 1.0f) {
 
@@ -428,7 +430,7 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
         page_editor.putInt("page_mode", mode);
         page_editor.apply();
 
-        Constants.PAGE_MODE = mode;
+        ReaderSettings.Companion.getInstance().setAnimation_mode(mode);
     }
 
     public void setInterLinearSpaceMode() {

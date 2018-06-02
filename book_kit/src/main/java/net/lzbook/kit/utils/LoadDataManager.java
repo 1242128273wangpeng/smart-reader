@@ -1,14 +1,12 @@
 package net.lzbook.kit.utils;
 
 import android.content.Context;
-import android.content.Intent;
 import android.preference.PreferenceManager;
 
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestSubscriber;
 import com.orhanobut.logger.Logger;
 
-import net.lzbook.kit.app.ActionConstants;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.ChapterErrorBean;
@@ -20,11 +18,9 @@ import java.util.HashMap;
 
 public class LoadDataManager {
 
-    private Context context;
     private SharedPreferencesUtils sharedPreferencesUtils;
 
     public LoadDataManager(Context context) {
-        this.context = context;
         sharedPreferencesUtils = new SharedPreferencesUtils(PreferenceManager.getDefaultSharedPreferences(context));
     }
 

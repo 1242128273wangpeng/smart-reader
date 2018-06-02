@@ -14,7 +14,6 @@ import android.widget.TextView
 import com.ding.basic.bean.Chapter
 import com.dy.reader.R
 import com.dy.reader.ReadMediaManager
-import com.dy.reader.helper.AppHelper
 import com.dy.reader.helper.ReadSeparateHelper
 import com.dy.reader.mode.NovelLineBean
 import com.dy.reader.page.PageContentView
@@ -247,7 +246,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
             ad_fl.removeAllViews()
             if (page.isLastPage) {//6-3
                 val adView = ReadMediaManager.adCache.get(page.adType)
-                itemView.layoutParams.height = page.height.toInt() + LAST_PAGE_EXTEND_HEIGHT
+
                 adView?.view?.apply {
 
                     val map = HashMap<String, String>()
@@ -265,14 +264,14 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
                     PlatformSDK.config().setExpandInfo(map)
 
                     ad_fl.visibility = View.VISIBLE
-                    val adViewLayoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, if (ReaderSettings.instance.isLandscape) AD_LANDSCAPE_VIEW_HEIGHT else AD_PORTRAIT_VIEW_HEIGHT)
+                    val adViewLayoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                     if (this.parent != null) {
                         (this.tag as ViewGroup).removeAllViews()
                     }
                     this.tag = ad_fl
                     ad_fl.alpha = if (ReaderSettings.instance.readThemeMode == 61) 0.5f else 1f
                     ad_fl.addView(this, adViewLayoutParams)
-                    itemView.layoutParams.height = (page.height + adViewLayoutParams.height).toInt() + LAST_PAGE_AD_EXTEND_HEIGHT
+                    itemView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
                 }
             } else {
                 ad_fl.visibility = View.GONE
@@ -413,7 +412,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
 
                 PlatformSDK.config().setExpandInfo(map)
 
-                val layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                val layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 val adView = ReadMediaManager.adCache.get(page.adType)
                 adView?.view?.apply {
                     if (this.parent != null) {

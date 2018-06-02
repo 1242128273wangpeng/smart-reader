@@ -1,8 +1,7 @@
 package net.lzbook.kit.data.bean;
 
-import com.ding.basic.bean.BookUpdate;
-
 import java.util.ArrayList;
+import com.ding.basic.bean.BookUpdate;
 
 public class BookUpdateResult {
     //小说更新结果

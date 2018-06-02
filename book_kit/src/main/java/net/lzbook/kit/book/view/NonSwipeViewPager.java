@@ -38,8 +38,8 @@ public class NonSwipeViewPager extends ViewPager {
             } else {
                 return false;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         return false;
     }
@@ -49,8 +49,8 @@ public class NonSwipeViewPager extends ViewPager {
         //不拦截,否则子孩子都无法收到事件,一般这个自定义的时候都不作处理
         try {
             return super.dispatchTouchEvent(ev);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         return false;
     }

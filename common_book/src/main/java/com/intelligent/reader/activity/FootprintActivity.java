@@ -48,7 +48,6 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
     private TextView mLoginInfo;
     private TextView mTypeInfoTV;
     private boolean currLoginState;
-
     private BookDataProviderHelper mBookDataHelper;
 
     @Override

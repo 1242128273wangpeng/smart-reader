@@ -8,7 +8,6 @@ import android.preference.PreferenceManager
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.text.TextUtils
-import android.util.EventLog
 import android.view.KeyEvent
 import android.view.SurfaceHolder
 import android.view.View
@@ -19,8 +18,6 @@ import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.R
-import com.dy.reader.R.id.ad_view
-import com.dy.reader.R.id.recyclerView
 import com.dy.reader.ReadMediaManager
 import com.dy.reader.data.DataProvider
 import com.dy.reader.event.EventLoading
@@ -387,6 +384,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
             showLoadingDialog(LoadingDialogFragment.DialogType.ERROR, event.retry)
         } else if (event.type == EventLoading.Type.SUCCESS) {
 
+            showAd()
             mLoadingFragment.dismissDiaslog(isResume)
         }
     }
@@ -566,7 +564,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                     recyclerView.visibility = View.GONE
                     glSurfaceView.visibility = View.VISIBLE
                     glSurfaceView.requestRender()
-                    showAd()
                 }
             }
         }

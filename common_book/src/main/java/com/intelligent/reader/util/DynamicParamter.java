@@ -1,16 +1,21 @@
 package com.intelligent.reader.util;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
+import android.text.TextUtils;
+
+import com.baidu.android.pushservice.PushConstants;
+import com.baidu.android.pushservice.PushManager;
+import com.baidu.mobstat.SendStrategyEnum;
+import com.baidu.mobstat.StatService;
 import com.ding.basic.Config;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestAPI;
 import com.ding.basic.request.RequestService;
 import com.ding.basic.request.RequestSubscriber;
 import com.google.gson.JsonObject;
-
-import com.baidu.android.pushservice.PushConstants;
-import com.baidu.android.pushservice.PushManager;
-import com.baidu.mobstat.SendStrategyEnum;
-import com.baidu.mobstat.StatService;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.BaseBookApplication;
@@ -26,22 +31,12 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.preference.PreferenceManager;
-import android.text.TextUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import io.reactivex.Observer;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
 
 public class DynamicParamter {
 
@@ -84,6 +79,8 @@ public class DynamicParamter {
       九宫格书架页广告显示类型切换开关
     */
     public String book_shelf_state;
+	//书架页1-2开关
+    public String dy_shelf_boundary_switch;
     //书架页广告间隔频率设置
     public String dy_shelf_ad_freq;
     //章节末开关
@@ -102,11 +99,6 @@ public class DynamicParamter {
     public String dy_page_in_chapter_ad_switch;
     //书籍封面页的推荐位
     public String recommend_bookcover;
-
-
-    //书架页1-2开关
-    public String dy_shelf_boundary_switch;
-
 
     public String ad_limit_time_day;
     public String baidu_examine;
@@ -134,14 +126,12 @@ public class DynamicParamter {
         sp = context.getSharedPreferences("onlineconfig_agent_online_setting_" + AppUtils.getPackageName(), 0);
     }
 
-
     public void setDynamicParamter() {
 
         AppLog.d("startRequestCDNDynamic", "/v3/dynamic/dynamicParameter");
         mDynamicUrl = RequestService.DYNAMIC_PARAMETERS;
 
-        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).requestDynamicParameters(new RequestSubscriber<JsonObject>() {
+        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestDynamicParameters(new RequestSubscriber<JsonObject>() {
             @Override
             public void requestResult(@Nullable JsonObject result) {
                 if (result != null) {
@@ -161,8 +151,8 @@ public class DynamicParamter {
             }
         });
 
-
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+
         UrlUtils.setBookNovelDeployHost(sp.getString(Constants.NOVEL_HOST, ""));
         UrlUtils.setBookWebviewHost(sp.getString(Constants.WEBVIEW_HOST, ""));
 
@@ -205,6 +195,9 @@ public class DynamicParamter {
            九宫格书架页广告显示类型切换开关
          */
         book_shelf_state = getConfigParams(Constants.BOOK_SHELF_STATE);
+        //书架页1-2广告开关
+        dy_shelf_boundary_switch = getConfigParams(Constants.DY_SHELF_BOUNDARY_SWITCH);
+
         //书架页广告间隔频率设置
         dy_shelf_ad_freq = getConfigParams(Constants.DY_SHELF_AD_FREQ);
         //章节末开关
@@ -381,6 +374,12 @@ public class DynamicParamter {
                 }
             }
 
+            if (!data.isNull(Constants.DY_SHELF_BOUNDARY_SWITCH)) {
+                dy_shelf_boundary_switch = data.getString(Constants.DY_SHELF_BOUNDARY_SWITCH);
+                if (isOwn) {
+                    putConfigParams(Constants.DY_SHELF_BOUNDARY_SWITCH, dy_shelf_boundary_switch);
+                }
+            }
             if (!data.isNull(Constants.BAIDU_STAT_ID)) {
                 baidu_stat_id = data.getString(Constants.BAIDU_STAT_ID);
                 if (isOwn) {
@@ -1088,15 +1087,6 @@ public class DynamicParamter {
             try {
                 Constants.new_app_ad_switch = Boolean.parseBoolean(new_app_ad_switch);
             } catch (Exception e) {
-            }
-        }
-
-        //书架页1-2开关
-        if (!TextUtils.isEmpty(dy_shelf_boundary_switch)) {
-            try {
-                Constants.dy_shelf_boundary_switch = java.lang.Boolean.parseBoolean(dy_shelf_boundary_switch);
-            } catch (Exception exception) {
-                exception.printStackTrace();
             }
         }
 

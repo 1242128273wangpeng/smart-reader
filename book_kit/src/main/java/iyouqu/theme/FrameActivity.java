@@ -84,7 +84,6 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
     private boolean isDarkStatusBarText = false;
     private String packageName;
 
-
     public static int UI_OPTIONS_IMMERSIVE_STICKY = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
             | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
@@ -94,19 +93,10 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
     public static int UI_OPTIONS_NORMAL = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             | View.SYSTEM_UI_FLAG_VISIBLE;
 
-    public static int UI_OPTIONS_LOW_PROFILE = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            | View.SYSTEM_UI_FLAG_LOW_PROFILE;
-
-
     private SwipeBackHelper swipeBackHelper;
-
-    public SwipeBackHelper getSwipeBackHelper() {
-        return swipeBackHelper;
-    }
 
     public boolean isMIUISupport = false;
     public boolean isFlymeSupport = false;
-
 
     private LifecycleRegistry lifecycleRegistry;
 
@@ -134,7 +124,6 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             if (isDarkStatusBarText) {
                 isMIUISupport = new MIUIHelper().setStatusBarLightMode(this, true);
                 isFlymeSupport = new FlymeHelper().setStatusBarLightMode(this, true);
@@ -155,55 +144,20 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
 
         initThemeHelper();
         initTheme();
-//        ATManager.addActivity(this);
-//        StatusBarCompat.compat(this, getStatusBarColorId());
     }
 
     protected View createViewWithPressState(View parent, String name, Context context, AttributeSet attrs) {
-
-
         View view = getDelegate().createView(parent, name, context, attrs);
 
         if (view != null && hasItemStateAttr(attrs)) {
 
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.item_state);
             boolean changeAlpha = typedArray.getBoolean(R.styleable.item_state_onPressChangeAlpha, false);
-//            Drawable pressDrawable = null;
-//            Drawable unableDrawable = null;
-//
-//            for (int i = 0; i < typedArray.getIndexCount(); i++) {
-//                int attr = typedArray.getIndex(i);
-//                if (R.styleable.item_state_onPressBackground == attr) {
-//                    pressDrawable = typedArray.getDrawable(attr);
-//                }
-//                if (R.styleable.item_state_onUnableBackground == attr) {
-//                    unableDrawable = typedArray.getDrawable(attr);
-//                }
-//            }
 
             typedArray.recycle();
 
 
             Drawable background = view.getBackground();
-
-//            if (pressDrawable != null || unableDrawable != null) {
-//                StateListDrawable stateBackground = new StateListDrawable();
-//
-//                if (pressDrawable != null) {
-//                    stateBackground.addState(new int[]{
-//                            android.R.attr.state_pressed
-//                            , android.R.attr.state_enabled}, pressDrawable);
-//                }
-//
-////                if (unableDrawable != null) {
-////                    stateBackground.addState(new int[]{-android.R.attr.state_enabled}, unableDrawable);
-////                }
-//
-//                stateBackground.addState(new int[]{}, background);
-//
-//                background = stateBackground;
-//            }
-
 
             if (changeAlpha && parent != null && parent instanceof ViewGroup) {
                 ((ViewGroup) parent).setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
@@ -312,14 +266,11 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
      * 修改模式
      */
     protected void setMode() {
+
     }
 
 
     public void nightShift(boolean flag, boolean animate) {
-//        mThemeHelper.showAnimation(this);
-//        mThemeHelper.toggleThemeSetting(this);
-//        StatusBarCompat.compat(this);
-
         ViewGroup decorView = (ViewGroup) getWindow().getDecorView();
         if (flag) {
             if (mNightShadowView == null) {
@@ -438,12 +389,6 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
             data.put("time", String.valueOf(inTime - outTime));
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.ACTIVATE, data);
         }
-//        if (!isCurrentRunningForeground && !Constants.isHideAD && Constants.isShowSwitchSplashAd && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
-//            boolean isShowSwitchSplash = inTime - outTime > Constants.switchSplash_ad_sec * 1000;
-//            if (isShowSwitchSplash) {
-//                startActivity(new Intent(this, SwitchSplashAdActivity.class));
-//            }
-//        }
     }
 
 
@@ -654,11 +599,6 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         super.onDestroy();
 
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
-
-//        getWindow().getDecorView().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-//        if(getWindow().getDecorView() instanceof  ViewGroup){
-//            ((ViewGroup)getWindow().getDecorView()).removeAllViews();
-//        }
 
         ATManager.removeActivity(this);
     }
