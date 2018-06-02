@@ -69,7 +69,7 @@ object BookRouter {
 
             bundle.putSerializable("book", book)
 
-            val path = RouterConfig.READING_ACTIVITY
+            val path = RouterConfig.READER_ACTIVITY
             val flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
 
             StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.bs_click_one_book)

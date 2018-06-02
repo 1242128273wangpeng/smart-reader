@@ -32,6 +32,7 @@ android {
 
     productFlavors {
         qbzsydq {}
+        txtqbmfyd {}
     }
 
 }
@@ -47,4 +48,5 @@ dependencies {
     kapt "com.alibaba:arouter-compiler:$arouter_compiler_version"
 
     qbzsydqCompile project(path: ':resource', configuration: 'txtqbmfydRelease')
+    txtqbmfydCompile project(path: ':resource', configuration: 'txtqbmfydRelease')
 }

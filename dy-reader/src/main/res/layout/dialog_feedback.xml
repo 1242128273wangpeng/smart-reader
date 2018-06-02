@@ -24,7 +24,7 @@
                 android:padding="@dimen/padding_10"
                 android:gravity="center"
                 android:textStyle="bold"
-                android:textColor="@color/color_black_E6000000"
+                android:textColor="#E6000000"
                 android:textSize="20sp"/>
 
         <ScrollView
@@ -156,7 +156,7 @@
         <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:background="@color/color_white_eaeaea"/>
+                android:background="#eaeaea"/>
 
         <LinearLayout
                 android:layout_width="match_parent"
@@ -168,16 +168,16 @@
                     android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:background="@drawable/dialog_feedback_btn_left_selector"
-                    android:textColor="@color/color_black_99000000"
+                    android:textColor="#99000000"
                     android:gravity="center"
-                    android:text="@string/cancel"
-                    android:textSize="@dimen/dimen_text_16"/>
+                    android:text="取消"
+                    android:textSize="16sp"/>
 
             <View
-                    android:layout_width="@dimen/dimen_view_width_0.5"
+                    android:layout_width="0.5dp"
                     android:layout_height="20dp"
                     android:layout_gravity="center_vertical"
-                    android:background="@color/color_white_eaeaea"/>
+                    android:background="#eaeaea"/>
 
             <Button
                     android:id="@+id/feedback_submit"
@@ -188,7 +188,7 @@
                     android:textColor="@color/color_brown_c2b282"
                     android:gravity="center"
                     android:text="提交"
-                    android:textSize="@dimen/dimen_text_16"/>
+                    android:textSize="16sp"/>
         </LinearLayout>
 
     </LinearLayout>

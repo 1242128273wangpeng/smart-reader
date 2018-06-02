@@ -943,5 +943,5 @@ dependencies {
 
     txtqbmfydCompile project(path: ':bookshelf', configuration: 'txtqbmfydRelease')
 
-    txtqbmfydCompile project(path: ':dy-reader', configuration: 'qbzsydqRelease')
+    txtqbmfydCompile project(path: ':dy-reader', configuration: 'txtqbmfydRelease')
 }
