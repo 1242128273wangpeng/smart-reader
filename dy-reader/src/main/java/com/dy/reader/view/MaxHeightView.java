@@ -1,15 +1,17 @@
-package com.intelligent.reader.widget;
+package com.dy.reader.view;
 
 /**
  * Created by carbs on 2016/5/12.
  */
-import com.intelligent.reader.R;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+
+import com.dy.reader.R;
+
 
 /**
  * 先判断是否设定了mMaxHeight，如果设定了mMaxHeight，则直接使用mMaxHeight的值，

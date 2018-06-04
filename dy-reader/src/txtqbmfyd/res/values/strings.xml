@@ -8,4 +8,6 @@
     <string name="read_end_tip">客官请留步...</string>
     <string name="end_to_bookshelf">我的书架</string>
     <string name="end_to_bookstore">去书城看看</string>
+
+    <string name="novel_no_bookmark">还没有添加书签哦~</string>
 </resources>

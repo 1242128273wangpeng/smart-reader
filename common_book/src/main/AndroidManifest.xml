@@ -206,7 +206,7 @@
 
         </activity>
         <activity
-                android:name=".activity.ReadingActivity"
+                android:name="com.dy.reader.activity.ReaderActivity"
                 android:hardwareAccelerated="true"
                 android:launchMode="singleTask"
                 android:configChanges="orientation|keyboardHidden|screenSize|uiMode|navigation"
@@ -235,7 +235,7 @@
 
         <!-- 免责声明页 -->
         <activity
-                android:name=".activity.DisclaimerActivity"
+                android:name="com.dy.reader.activity.DisclaimerActivity"
                 android:screenOrientation="portrait"
                 android:theme="@style/AppThemeTranslucent"/>
 

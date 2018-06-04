@@ -153,6 +153,12 @@ class ReadSettingHeader : FrameLayout{
             }
 
 
+            inflate.read_option_pop_feedback.setOnClickListener{
+                presenter?.readFeedBack()
+
+                popupWindow.dismiss()
+                EventBus.getDefault().post(EventSetting(EventSetting.Type.MENU_STATE_CHANGE, false))
+            }
         }
 
         // 初始化动画

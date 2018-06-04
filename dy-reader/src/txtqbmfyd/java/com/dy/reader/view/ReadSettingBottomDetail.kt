@@ -24,10 +24,15 @@ import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import iyouqu.theme.ThemeHelper
+import kotlinx.android.synthetic.txtqbmfyd.read_option_background.view.*
 import kotlinx.android.synthetic.txtqbmfyd.read_option_bottom.view.*
 import kotlinx.android.synthetic.txtqbmfyd.read_option_detail.view.*
+import kotlinx.android.synthetic.txtqbmfyd.read_option_font.view.*
+import kotlinx.android.synthetic.txtqbmfyd.read_option_mode.view.*
+import kotlinx.android.synthetic.txtqbmfyd.read_option_reading_info.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.utils.*
 import org.greenrobot.eventbus.EventBus
 import java.text.NumberFormat
@@ -101,7 +106,21 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         read_full.isChecked = readerSettings.isFullScreenRead
 
         resetBtn(Constants.isSlideUp)
-
+        function_layout.viewTreeObserver.addOnGlobalLayoutListener {
+            function_layout_shadowView.layoutParams.height = function_layout.height
+            function_layout.requestLayout()
+        }
+        font_seekbar.configBuilder
+                .min(10f)
+                .max(30f)
+                .sectionCount(10)
+                //                .thumbColor(ContextCompat.getColor(getContext(), R.color.color_60))
+//                .sectionTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
+                .sectionTextSize(16)
+                .setUnit("字号: ")
+                //                .sectionTextPosition(SignSeekBar.TextPosition.BELOW_SECTION_MARK)
+                .build()
+        setFontSize()
     }
 
     private fun resetBtn(isSlideUp: Boolean) {
@@ -234,8 +253,8 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
     fun showMenu(isShow: Boolean) {
         if (isShow) {
-            read_setting_reduce_text!!.isEnabled = readerSettings.fontSize > 10
-            read_setting_increase_text!!.isEnabled = readerSettings.fontSize < 30
+            font_reduce_iv!!.isEnabled = readerSettings.fontSize > 10
+            font_plus_iv!!.isEnabled = readerSettings.fontSize < 30
             novel_bottom_options.visibility = View.VISIBLE
             novel_bottom_options.startAnimation(popUpInAnimation)
 
@@ -251,14 +270,13 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             }
 
             if (ThemeHelper.getInstance(context).isNight) {
-                txt_night.text = "白天"
-                ibtn_night.setImageResource(R.drawable.read_option_day_selector)
+                night_mode_iv.setImageResource(R.drawable.icon_read_night)
             } else {
-                txt_night.text = "夜间"
-                ibtn_night.setImageResource(R.drawable.read_option_night_selector)
+                night_mode_iv.setImageResource(R.drawable.icon_read_day)
             }
             setFontSize()
         } else {
+            resetOptionLayout()
             if (novel_bottom_options != null && novel_bottom_options!!.isShown) {
                 novel_bottom_options!!.startAnimation(popDownOutAnimation)
             }
@@ -271,33 +289,41 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
     private fun showChapterProgress() {
         if (ReaderStatus.position.group == -1) {
+            if (novel_hint_chapter != null) {
+                novel_hint_chapter!!.text = "封面"
+            }
         } else {
             if (novel_hint_chapter != null) {
                 novel_hint_chapter!!.text = if (TextUtils.isEmpty(ReaderStatus.chapterName)) "" else ReaderStatus.chapterName
             }
-            if (novel_hint_sequence != null) {
-                novel_hint_sequence!!.text = (ReaderStatus.position.group + 1).toString() + "/" + ReaderStatus.chapterCount + "章"
-            }
+//            if (novel_hint_sequence != null) {
+//                novel_hint_sequence!!.text = (ReaderStatus.position.group + 1).toString() + "/" + ReaderStatus.chapterCount + "章"
+//            }
         }
 
+    }
+    private fun resetOptionLayout() {
+
+        function_layout_shadowView.layoutParams.height = 0
     }
 
     private fun initListener() {
 
         novel_jump_previous?.preventClickShake(this)
-
-
+        novel_read_mode?.preventClickShake(this)
+        novel_background?.preventClickShake(this)
         novel_jump_next?.preventClickShake(this)
-
+        novel_font?.preventClickShake(this)
+        font_iv?.preventClickShake(this)
         novel_jump_progress?.setOnSeekBarChangeListener(this)
 
         novel_catalog?.preventClickShake(this)
 
-        novel_feedback?.preventClickShake(this)
+//        novel_feedback?.preventClickShake(this)
 
-        novel_setting?.preventClickShake(this)
+        font_iv?.preventClickShake(this)
 
-        novel_night?.preventClickShake(this)
+        night_mode_iv?.preventClickShake(this)
 
         read_setting_backdrop_group?.setOnCheckedChangeListener(this)
 
@@ -348,9 +374,9 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
         read_setting_animation_group?.setOnCheckedChangeListener(this)
 
-        read_setting_reduce_text?.preventClickShake(this)
+        font_reduce_iv?.preventClickShake(this)
 
-        read_setting_increase_text?.preventClickShake(this)
+        font_plus_iv?.preventClickShake(this)
 
 
         read_setting_brightness_progress?.setOnSeekBarChangeListener(this)
@@ -362,7 +388,34 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         read_autoRead?.preventClickShake(this)
         read_full?.preventClickShake(this)
 
+        font_seekbar.setOnProgressChangedListener(object : SignSeekBar.OnProgressChangedListener {
+            override fun onProgressChanged(signSeekBar: SignSeekBar?, progress: Int, progressFloat: Float, fromUser: Boolean) {
+//                ReadConfig.FONT_SIZE = progressFloat.toInt()
+//                readSettingHelper?.saveFontSize()
+                setFontValue(progressFloat.toInt())
+            }
 
+            override fun getProgressOnActionUp(signSeekBar: SignSeekBar?, progress: Int, progressFloat: Float) {
+//                ReadConfig.FONT_SIZE = progressFloat.toInt()
+//                readSettingHelper?.saveFontSize()
+                setFontValue(progressFloat.toInt())
+            }
+
+            override fun getProgressOnFinally(signSeekBar: SignSeekBar?, progress: Int, progressFloat: Float, fromUser: Boolean) {
+//                ReadConfig.FONT_SIZE = progressFloat.toInt()
+//                readSettingHelper?.saveFontSize()
+
+                setFontValue(progressFloat.toInt())
+            }
+        })
+
+    }
+
+    private fun setFontValue(value: Int) {
+        if (value % 2 == 0) {
+            readerSettings.fontSize = value
+//            readSettingHelper?.saveFontSize()
+        }
     }
 
     override fun onClick(v: View) {
@@ -393,29 +446,37 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 presenter?.readCatalogLog()
             }
 
-            R.id.novel_feedback -> {
-                presenter?.readFeedBack()
+            R.id.novel_read_mode -> {
+                checkOptionLayout(R.id.novel_read_mode)
             }
 
-            R.id.novel_setting -> {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_setting_btn)
-                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.SET)
-                changeBottomSettingView(SETTING_DETAIL)
+            R.id.novel_background -> {
+                checkOptionLayout(R.id.novel_background)
             }
-            R.id.novel_night//夜间模式
+
+            R.id.novel_font , R.id.font_iv-> {
+                checkOptionLayout(R.id.novel_font)
+            }
+
+//            R.id.font_iv -> {
+//                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_setting_btn)
+//                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.SET)
+//                changeBottomSettingView(SETTING_DETAIL)
+//            }
+            R.id.night_mode_iv//夜间模式
             -> {
                 if (ThemeHelper.getInstance(context).isNight) {
-                    txt_night.text = "夜间"
-                    ibtn_night.setImageResource(R.drawable.read_option_night_selector)
+//                    txt_night.text = "夜间"
+                    night_mode_iv.setImageResource(R.drawable.icon_read_day)
                 } else {
-                    txt_night.text = "白天"
-                    ibtn_night.setImageResource(R.drawable.read_option_day_selector)
+//                    txt_night.text = "白天"
+                    night_mode_iv.setImageResource(R.drawable.icon_read_night)
 
                 }
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_night_mode)
                 presenter?.chageNightMode()
             }
-            R.id.read_setting_reduce_text// 减小字号
+            R.id.font_reduce_iv// 减小字号
             -> {
                 if (ReaderStatus.position.group < 0) {
                     return
@@ -423,7 +484,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_font_size_smaller)
                 decreaseFont()
             }
-            R.id.read_setting_increase_text// 加大字号
+            R.id.font_plus_iv// 加大字号
             -> {
                 if (ReaderStatus.position.group < 0) {
                     return
@@ -477,6 +538,45 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         }
     }
 
+    private fun checkOptionLayout(id: Int) {
+        when (id) {
+            R.id.novel_read_mode -> {
+                novel_jump_layout.visibility = View.GONE
+                novel_read_mode_layout.visibility = View.VISIBLE
+                novel_read_font_layout.visibility = View.GONE
+                novel_read_background_layout.visibility = View.GONE
+
+                read_mode_iv.setImageResource(R.drawable.icon_read_mode_checked)
+                bg_iv.setImageResource(R.drawable.icon_read_bg_normal)
+                font_iv.setImageResource(R.drawable.icon_read_font_normal)
+            }
+
+            R.id.novel_background -> {
+                novel_jump_layout.visibility = View.GONE
+                novel_read_mode_layout.visibility = View.GONE
+                novel_read_font_layout.visibility = View.GONE
+                novel_read_background_layout.visibility = View.VISIBLE
+
+                read_mode_iv.setImageResource(R.drawable.icon_read_mode_normal)
+                bg_iv.setImageResource(R.drawable.icon_read_bg_checked)
+                font_iv.setImageResource(R.drawable.icon_read_font_normal)
+            }
+
+            R.id.novel_font -> {
+                novel_jump_layout.visibility = View.GONE
+                novel_read_mode_layout.visibility = View.GONE
+                novel_read_background_layout.visibility = View.GONE
+                novel_read_font_layout.visibility = View.VISIBLE
+
+                read_mode_iv.setImageResource(R.drawable.icon_read_mode_normal)
+                bg_iv.setImageResource(R.drawable.icon_read_bg_normal)
+                font_iv.setImageResource(R.drawable.icon_read_font_checked)
+            }
+
+
+        }
+    }
+
     private fun refreshJumpPreBtnState(sequence: Int) {
         if (sequence <= 0) {
             novel_jump_previous.isClickable = false
@@ -516,11 +616,11 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     private fun decreaseFont() {
         if (readerSettings.fontSize > 10) {
             if (readerSettings.fontSize == 30) {
-                read_setting_increase_text!!.isEnabled = true
+                font_plus_iv!!.isEnabled = true
             }
             readerSettings.fontSize -= 2
             if (readerSettings.fontSize <= 10) {
-                read_setting_reduce_text!!.isEnabled = false
+                font_reduce_iv!!.isEnabled = false
             }
             setFontSize()
         }
@@ -536,11 +636,11 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     private fun increaseFont() {
         if (readerSettings.fontSize < 30) {
             if (readerSettings.fontSize == 10) {
-                read_setting_reduce_text!!.isEnabled = true
+                font_reduce_iv!!.isEnabled = true
             }
             readerSettings.fontSize += 2
             if (readerSettings.fontSize >= 30) {
-                read_setting_increase_text!!.isEnabled = false
+                font_plus_iv!!.isEnabled = false
             }
 
             setFontSize()
@@ -552,9 +652,10 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     }
 
     fun setFontSize() {
-        if (read_setting_text_size != null) {
-            read_setting_text_size!!.text = readerSettings.fontSize.toString()
-        }
+//        if (read_setting_text_size != null) {
+//            read_setting_text_size!!.text = readerSettings.fontSize.toString()
+//        }
+        font_seekbar.setProgress(readerSettings.fontSize.toFloat())
     }
 
     fun changeChapter(sequence: Int) {
@@ -824,10 +925,10 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
         if (fromUser && seekBar.id == R.id.novel_jump_progress) {
-            novel_hint_layout.visibility = View.VISIBLE
-            novel_hint_layout.alpha = 1F
+//            novel_hint_layout.visibility = View.VISIBLE
+//            novel_hint_layout.alpha = 1F
             anim?.cancel()
-            anim = novel_hint_layout.animate()
+//            anim = novel_hint_layout.animate()
             anim?.alpha(0F)
             anim?.duration = 1000
             anim?.startDelay = 1000
@@ -842,13 +943,13 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 changeBottomSettingView(SETTING_OPTION)
                 if (progress == 0) {
                     novel_hint_chapter.text = ReaderStatus.chapterList[progress].name
-                    novel_hint_sequence.text = progress.plus(1).toString() + "/" + ReaderStatus.chapterList.size
+//                    novel_hint_sequence.text = progress.plus(1).toString() + "/" + ReaderStatus.chapterList.size
                 } else if (progress == ReaderStatus.chapterList.size - 1) {
                     novel_hint_chapter.text = ReaderStatus.chapterList[ReaderStatus.chapterList.size - 1].name
-                    novel_hint_sequence.text = ReaderStatus.chapterList.size.toString() + "/" + ReaderStatus.chapterList.size
+//                    novel_hint_sequence.text = ReaderStatus.chapterList.size.toString() + "/" + ReaderStatus.chapterList.size
                 } else {
                     novel_hint_chapter.text = ReaderStatus.chapterList[progress - 1].name
-                    novel_hint_sequence.text = progress.toString() + "/" + ReaderStatus.chapterList.size
+//                    novel_hint_sequence.text = progress.toString() + "/" + ReaderStatus.chapterList.size
                 }
             }
 //            ReaderStatus.position.group = progress

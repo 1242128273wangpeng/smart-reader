@@ -1,11 +1,4 @@
-package com.intelligent.reader.widget;
-
-import com.intelligent.reader.R;
-import com.intelligent.reader.adapter.SourceAdapter;
-
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.view.NightShadowView;
-import net.lzbook.kit.data.bean.Source;
+package com.dy.reader.view;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -17,10 +10,20 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+
+import com.ding.basic.bean.Source;
+import com.dy.reader.R;
+import com.dy.reader.adapter.SourceAdapter;
+
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.book.view.NightShadowView;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +59,7 @@ public class ChangeSourcePopWindow {
 
         Context context;
 
-        List<Source> sourceList;
+        ArrayList<Source> sourceList;
 
         View popInflater;
 
@@ -68,7 +71,7 @@ public class ChangeSourcePopWindow {
             this.context = context;
         }
 
-        public ChangeSourcePopWindow.Builder setSourceData(List<Source> sourceList) {
+        public ChangeSourcePopWindow.Builder setSourceData(ArrayList<Source> sourceList) {
             this.sourceList = sourceList;
             return this;
         }
@@ -79,7 +82,7 @@ public class ChangeSourcePopWindow {
         }
 
         public ChangeSourcePopWindow build() {
-            View popupView = LayoutInflater.from(context).inflate(R.layout.change_source_pop_layout, null);
+            final View popupView = LayoutInflater.from(context).inflate(R.layout.change_source_pop_layout, null);
             this.popInflater = popupView;
 //            final ChangeSourcePopWindow popupWindow = new ChangeSourcePopWindow(this);
 //            popupWindow.setFocusable(true);
@@ -100,13 +103,14 @@ public class ChangeSourcePopWindow {
             ListView changeSourceList = (ListView) popupView.findViewById(R.id.change_source_list);
             TextView cleanTv = (TextView) popupView.findViewById(R.id.change_source_original_web);
 
-            final MaxHeightView container = (MaxHeightView) popupView.findViewById(R.id.container);
+
             final NightShadowView nightShadowView = (NightShadowView) popInflater.findViewById(R.id.nightShadowView);
+            final FrameLayout container = (FrameLayout) popupView.findViewById(R.id.container);
             container.post(new Runnable() {
                 @Override
                 public void run() {
                     nightShadowView.getLayoutParams().height = container.getHeight();
-                    container.requestLayout();
+                    popupView.requestLayout();
                 }
             });
 

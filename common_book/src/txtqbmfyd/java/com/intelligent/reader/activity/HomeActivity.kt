@@ -27,6 +27,8 @@ import com.dingyue.bookshelf.BookShelfInterface
 import com.dingyue.contract.CommonContract
 import com.dingyue.contract.logger.HomeLogger
 import com.dingyue.contract.logger.PersonalLogger
+import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
@@ -336,7 +338,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         txt_disclaimer_statement.setOnClickListener {
             PersonalLogger.uploadPersonalDisclaimer()
-            startActivity(Intent(this, DisclaimerActivity::class.java))
+            RouterUtil.navigation(this,RouterConfig.DISCLAIMER_ACTIVITY)
         }
 
         val versionName = "V${AppUtils.getVersionName()}"

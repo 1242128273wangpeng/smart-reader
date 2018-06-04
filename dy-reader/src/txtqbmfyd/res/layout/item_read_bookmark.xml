@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/bookmark_content_layout"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:paddingLeft="15dp"
+              android:paddingLeft="16dp"
+              android:paddingRight="16dp"
+              android:background="@drawable/read_setting_background_press"
               android:orientation="vertical">
 
     <TextView
@@ -14,7 +17,7 @@
             android:ellipsize="end"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@color/read_item_mark_title_color"
+            android:textColor="@color/reading_setting_text_color"
             android:text="name"/>
 
     <TextView
@@ -22,21 +25,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:maxLines="1"
+            android:layout_marginBottom="10dp"
+            android:maxLines="2"
             android:ellipsize="end"
-            android:textSize="14sp"
-            android:textColor="@color/read_item_mark_des_color"
+            style="@style/style_text_normal_weak"
             android:text="说明"/>
 
-    <TextView
-            android:id="@+id/item_bookmark_time"
+    <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:textSize="12sp"
-            android:textColor="@color/read_item_mark_des_color"
-            android:text="更新"/>
+            android:layout_height="wrap_content">
+
+        <TextView
+                android:id="@+id/item_bookmark_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textSize="10sp"
+                android:textColor="#FF9097A1"
+                android:text="更新"/>
+
+        <TextView
+                android:id="@+id/item_bookmark_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_alignParentRight="true"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textSize="10sp"
+                android:textColor="#FF9097A1"
+                android:text="删除"/>
+    </RelativeLayout>
+
 </LinearLayout>

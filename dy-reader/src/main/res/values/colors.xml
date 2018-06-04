@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#ce3d3e</color>
+
     <!--阅读页相关-->
     <color name="reading_default_pageback_color">#D0BD9C</color>
 
