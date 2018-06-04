@@ -26,6 +26,11 @@ android {
                 arg("moduleName", project.getName())
             }
         }
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath true
+            }
+        }
     }
 
     buildTypes {
@@ -34,6 +39,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    flavorDimensions "default"
 
     productFlavors {
         mfqbxssc {}
@@ -53,6 +60,7 @@ dependencies {
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
+//    annotationProcessor "android.arch.persistence.room:compiler:$arch_version"
 
     compile "com.alibaba:arouter-api:$arouter_api_version"
     kapt "com.alibaba:arouter-compiler:$arouter_compiler_version"

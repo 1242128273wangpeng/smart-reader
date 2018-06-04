@@ -19,7 +19,7 @@ class DownloadManagerAdapter constructor(private val context: Context, private v
 
     var checkedBooks = ArrayList<Book>()
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return DownloadManagerTaskHolder(LayoutInflater.from(context).inflate(R.layout.item_download_manager_task, parent, false))
     }
 

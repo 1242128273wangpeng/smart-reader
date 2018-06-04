@@ -21,6 +21,12 @@ android {
             }
         }
 
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath true
+            }
+        }
+
     }
 
     buildTypes {
@@ -30,9 +36,16 @@ android {
         }
     }
 
+    flavorDimensions "default"
+
     productFlavors {
+        mfqbxssc {}
+        qbmfkdxs {}
         qbzsydq {}
+        txtqbdzs {}
+        txtqbmfxs {}
         txtqbmfyd {}
+        zsmfqbxs {}
     }
 
 }
@@ -46,7 +59,7 @@ dependencies {
 
     compile "com.alibaba:arouter-api:$arouter_api_version"
     kapt "com.alibaba:arouter-compiler:$arouter_compiler_version"
+//    annotationProcessor "android.arch.persistence.room:compiler:$arch_version"
 
-    qbzsydqCompile project(path: ':resource', configuration: 'txtqbmfydRelease')
-    txtqbmfydCompile project(path: ':resource', configuration: 'txtqbmfydRelease')
+    api project(':resource')
 }

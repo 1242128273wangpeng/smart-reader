@@ -26,6 +26,12 @@ android {
                 arg("moduleName", project.getName())
             }
         }
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath true
+            }
+        }
     }
 
     buildTypes {
@@ -34,6 +40,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    flavorDimensions "default"
 
     productFlavors {
         mfqbxssc {}
@@ -54,12 +62,7 @@ dependencies {
 
     compile "com.alibaba:arouter-api:$arouter_api_version"
     kapt "com.alibaba:arouter-compiler:$arouter_compiler_version"
+//    annotationProcessor "android.arch.persistence.room:compiler:$arch_version"
 
-    mfqbxsscCompile project(path: ':resource', configuration: 'txtqbmfydRelease')
-    qbmfkdxsCompile project(path: ':resource', configuration: 'txtqbmfydRelease')
-    qbzsydqCompile project(path: ':resource', configuration: 'txtqbmfydRelease')
-    txtqbdzsCompile project(path: ':resource', configuration: 'txtqbmfydRelease')
-    txtqbmfxsCompile project(path: ':resource', configuration: 'txtqbmfydRelease')
-    txtqbmfydCompile project(path: ':resource', configuration: 'txtqbmfydRelease')
-    zsmfqbxsCompile project(path: ':resource', configuration: 'txtqbmfydRelease')
+    api project(':resource')
 }

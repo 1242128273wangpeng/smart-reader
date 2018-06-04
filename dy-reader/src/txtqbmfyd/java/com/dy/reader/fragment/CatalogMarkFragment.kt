@@ -37,7 +37,7 @@ import java.text.SimpleDateFormat
 import java.util.concurrent.Callable
 
 /**
- * Created by xian on 2017/8/17.
+ * Created by xian on 2017/8/17
  */
 class CatalogMarkFragment : Fragment(), CatalogMark.View {
 
@@ -52,10 +52,10 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
             inflater.inflate(R.layout.read_catalog_mark_layout, container, false)
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val dividerCatalog = ShapeItemDecoration(activity, DividerItemDecoration.VERTICAL)
-        val dividerBookmark = ShapeItemDecoration(activity, DividerItemDecoration.VERTICAL)
+        val dividerCatalog = ShapeItemDecoration(requireActivity(), DividerItemDecoration.VERTICAL)
+        val dividerBookmark = ShapeItemDecoration(requireActivity(), DividerItemDecoration.VERTICAL)
 
         dividerCatalog.setDrawable(ColorDrawable(Color.parseColor("#0c000000")))
         dividerBookmark.setDrawable(ColorDrawable(Color.parseColor("#0c000000")))
@@ -65,7 +65,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
 
         val catalogAdapter = ListRecyclerAdapter(chapterList, R.layout.item_read_catalog, ChapterHolder::class.java)
         catalogAdapter.itemClick = View.OnClickListener { v ->
-            presenter?.gotoChapter(activity, v.tag as Chapter)
+            presenter.gotoChapter(requireActivity(), v.tag as Chapter)
         }
         catalog_main.adapter = catalogAdapter
         catalog_main.layoutManager = object : LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false) {
@@ -87,12 +87,12 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
 
         val bookmarkAdapter = ListRecyclerAdapter(bookMarkList, R.layout.item_read_bookmark, BookMarkHolder::class.java)
         bookmarkAdapter.itemClick = View.OnClickListener { v ->
-            presenter?.gotoBookMark(activity, v.tag as Bookmark)
+            presenter.gotoBookMark(requireActivity(), v.tag as Bookmark)
         }
 
         bookmarkAdapter.itemLongClick = View.OnLongClickListener { v: View ->
             rl_left_pop_bg.visibility = View.VISIBLE
-            val transX = activity.window.decorView.width - rl_catalog_novel.width
+            val transX = requireActivity().window.decorView.width - rl_catalog_novel.width
             val inflate = LayoutInflater.from(context).inflate(R.layout.pop_catalog_mark_delete, null)
 
             val popupWindow = PopupWindow(inflate, FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
@@ -102,11 +102,11 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
             popupWindow.showAtLocation(rl_left_pop_bg, Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, -transX / 2, 0)
             inflate.txt_delete_mark.tag = v.tag
             inflate.txt_delete_mark.setOnClickListener { v ->
-                presenter?.deleteBookMark(activity, v.tag as Bookmark)
+                presenter.deleteBookMark(requireActivity(), v.tag as Bookmark)
                 popupWindow.dismiss()
             }
             inflate.txt_clear_mark.setOnClickListener { v ->
-                presenter?.deleteAllBookMark(activity)
+                presenter.deleteAllBookMark(requireActivity())
                 popupWindow.dismiss()
             }
 
@@ -138,23 +138,23 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
 
     private fun initListener() {
         iv_fixbook.setOnClickListener {
-            RepairHelp.fixBook(activity, presenter?.getBook(), {
-                if (activity != null && !activity.isFinishing) {
-                    RouterUtil.navigation(activity, RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
+            RepairHelp.fixBook(activity, presenter.getBook(), {
+                if (activity != null && !requireActivity().isFinishing) {
+                    RouterUtil.navigation(requireActivity(), RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
                 }
             })
-            presenter?.onClickFixBook(activity)
+            presenter.onClickFixBook(requireActivity())
         }
 
         read_rg_catlog_mark.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.tab_catalog -> {
                     tv_catalog_novel_sort.visibility = View.VISIBLE
-                    presenter?.loadCatalog(reverse)
+                    presenter.loadCatalog(reverse)
                 }
                 R.id.tab_bookmark -> {
                     tv_catalog_novel_sort.visibility = View.GONE
-                    presenter?.loadBookMark(activity, 1)//用于标识只有为1的时候才打点书签
+                    presenter.loadBookMark(requireActivity(), 1)//用于标识只有为1的时候才打点书签
                 }
                 else -> {
 
@@ -174,16 +174,16 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
             }
 //            iv_catalog_novel_sort.setImageResource(sortIcon.resourceId)
             tv_catalog_novel_sort.setText(if (!reverse) R.string.catalog_negative else R.string.catalog_positive)
-            presenter?.loadCatalog(reverse)
+            presenter.loadCatalog(reverse)
         }
     }
 
 
     fun loadData() {
         if (catalog_main.visibility == View.VISIBLE) {
-            presenter?.loadCatalog(reverse)
+            presenter.loadCatalog(reverse)
         } else {
-            presenter?.loadBookMark(activity, 2)
+            presenter.loadBookMark(requireActivity(), 2)
         }
     }
 
@@ -249,7 +249,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
             loadingPage = LoadingPage(activity, view as FrameLayout)
             loadingPage!!.setCustomBackgroud()
             loadingPage!!.setReloadAction(Callable<Void> {
-                presenter?.loadCatalog(false)
+                presenter.loadCatalog(false)
                 null
             })
         }

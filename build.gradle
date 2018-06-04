@@ -7,7 +7,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.1.2'
         classpath 'com.alibaba:fastjson:1.2.35'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.10'
         classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2'
@@ -29,6 +29,17 @@ allprojects {
 
         maven {
             url 'http://maven.aliyun.com/nexus/content/repositories/releases/'
+        }
+    }
+}
+
+subprojects {
+    project.configurations.all {
+        resolutionStrategy.eachDependency { details ->
+            if (details.requested.group == 'com.android.support'
+                    && !details.requested.name.contains('multidex')) {
+                details.useVersion "27.1.1"
+            }
         }
     }
 }

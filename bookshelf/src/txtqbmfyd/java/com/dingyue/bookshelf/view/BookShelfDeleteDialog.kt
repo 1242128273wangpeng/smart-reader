@@ -45,7 +45,8 @@ class BookShelfDeleteDialog(private val activity: Activity) {
         abrogateListener = listener
     }
 
-    fun show(books: ArrayList<Book>) {
+    fun show(books: ArrayList<Book>?) {
+        if (books == null) return
         this.books = books
         dialog.txt_delete_title.text = activity.getString(R.string.bookshelf_delete_dialog_title)
         dialog.txt_delete_prompt.visibility = View.VISIBLE
