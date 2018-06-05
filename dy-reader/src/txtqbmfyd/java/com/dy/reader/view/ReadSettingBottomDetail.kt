@@ -16,6 +16,7 @@ import android.widget.RadioGroup
 import android.widget.SeekBar
 import com.dingyue.contract.util.preventClickShake
 import com.dy.reader.R
+import com.dy.reader.event.EventLoading
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.event.EventSetting
 import com.dy.reader.page.Position
@@ -35,6 +36,8 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.utils.*
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.text.NumberFormat
 
 
@@ -269,11 +272,6 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 showChapterProgress()
             }
 
-            if (ThemeHelper.getInstance(context).isNight) {
-                night_mode_iv.setImageResource(R.drawable.icon_read_night)
-            } else {
-                night_mode_iv.setImageResource(R.drawable.icon_read_day)
-            }
             setFontSize()
         } else {
             resetOptionLayout()
@@ -417,6 +415,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 //            readSettingHelper?.saveFontSize()
         }
     }
+
 
     override fun onClick(v: View) {
         if(!ReaderStatus.isMenuShow) {
@@ -663,7 +662,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             val index = Math.max(ReaderStatus.position.group, 0)
             novel_jump_progress!!.progress = index
         }
-        showChapterProgress()
+//        showChapterProgress()
         refreshJumpPreBtnState(sequence)
     }
 

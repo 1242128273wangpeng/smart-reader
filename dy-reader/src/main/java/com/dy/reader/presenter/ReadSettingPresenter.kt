@@ -418,7 +418,6 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         }
         edit.putInt("content_mode", ReaderSettings.instance.readThemeMode)
         edit.apply()
-
         changeNight()
     }
 

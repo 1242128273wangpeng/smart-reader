@@ -51,7 +51,7 @@ public class SourceAdapter extends BaseAdapter {
         Source source = data.get(position);
         if (convertView == null) {
             viewHolder = new ViewHolder();
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_book_end_serial_chapter, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_bookend_serial_chapter, parent, false);
             viewHolder.book_source_name = (TextView) convertView.findViewById(R.id.site_text);
             viewHolder.bestSource_text = (TextView) convertView.findViewById(R.id.bestSource_text);
             viewHolder.book_source_chapter_name = (TextView) convertView.findViewById(R.id.new_text);

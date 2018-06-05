@@ -17,6 +17,7 @@ import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import iyouqu.theme.FrameActivity
+import kotlinx.android.synthetic.txtqbmfyd.read_option_reading_info.*
 import kotlinx.android.synthetic.txtqbmfyd.read_setting_layout.*
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.CallBackDownload
@@ -96,7 +97,8 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
 
             if (KeyEvent.KEYCODE_BACK == keyCode) {
                 if (event.action == MotionEvent.ACTION_UP) {
-                    activity?.finish()
+                    activity?.onBackPressed()
+//                    activity?.finish()
                 }
                 true
             } else {
@@ -117,6 +119,19 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onRecieveEvent(event: EventReaderConfig) {
+
+        if(event.type == ReaderSettings.ConfigType.CHAPTER_SUCCESS ){
+            if (ReaderStatus.position.group == -1) {
+                if (dialog.novel_hint_chapter != null) {
+                    dialog.novel_hint_chapter!!.text = "封面"
+                }
+            } else {
+                if (dialog.novel_hint_chapter != null) {
+                    dialog.novel_hint_chapter!!.text = if (TextUtils.isEmpty(ReaderStatus.chapterName)) "" else ReaderStatus.chapterName
+                }
+            }
+        }
+
         if(ReaderSettings.instance.animation != GLReaderView.AnimationType.LIST) {
             when (event.type) {
                 ReaderSettings.ConfigType.CHAPTER_REFRESH -> {
@@ -125,8 +140,11 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
                 ReaderSettings.ConfigType.FONT_REFRESH -> {
                     canTouch = false
                 }
+
             }
         }
+
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

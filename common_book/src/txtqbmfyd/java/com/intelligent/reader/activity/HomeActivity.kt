@@ -20,6 +20,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.LinearLayout
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.baidu.mobstat.StatService
 import com.dingyue.bookshelf.BookShelfFragment
@@ -31,6 +32,8 @@ import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
+import com.dy.reader.event.EventSetting
+import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
 import com.intelligent.reader.fragment.CategoryFragment
 import com.intelligent.reader.fragment.WebViewFragment
@@ -39,6 +42,7 @@ import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.util.EventBookStore
 import com.intelligent.reader.widget.ClearCacheDialog
 import com.intelligent.reader.widget.drawer.DrawerLayout
+import de.greenrobot.event.EventBus
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import iyouqu.theme.BaseCacheableActivity
@@ -62,6 +66,7 @@ import java.io.File
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+@Route(path = RouterConfig.HOME_ACTIVITY)
 class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         CheckNovelUpdateService.OnBookUpdateListener, HomeView, BookShelfInterface {
 
@@ -165,6 +170,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         super.onResume()
 
         this.changeHomePagerIndex(currentIndex)
+        this.setNightMode(false)
 
         StatService.onResume(this)
     }
@@ -285,18 +291,19 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         bt_night_shift.setOnCheckedChangeListener { _, isChecked ->
             PersonalLogger.uploadPersonalNightModeChange()
+            ReaderSettings.instance.initValues()
             if (isChecked) {
                 tv_night_shift.setText(R.string.mode_day)
-                ReadConfig.MODE = 61
-                sharedPreUtil.putInt(SharedPreUtil.READ_CURRENT_LIGHT_MODE, ReadConfig.MODE)
+                ReaderSettings.instance.readLightThemeMode = ReaderSettings.instance.readThemeMode
+                ReaderSettings.instance.readThemeMode = 61
                 mThemeHelper.setMode(ThemeMode.NIGHT)
             } else {
                 tv_night_shift.setText(R.string.mode_night)
-                ReadConfig.MODE = 51
-                sharedPreUtil.putInt(SharedPreUtil.CURRENT_NIGHT_MODE, ReadConfig.MODE)
+                ReaderSettings.instance.readThemeMode = ReaderSettings.instance.readLightThemeMode
                 mThemeHelper.setMode(ThemeMode.THEME1)
             }
-            sharedPreUtil.putInt(SharedPreUtil.CONTENT_MODE, ReadConfig.MODE)
+//            sharedPreUtil.putInt(SharedPreUtil.CONTENT_MODE, ReadConfig.MODE)
+            ReaderSettings.instance.save()
             nightShift(isChecked, true)
         }
 
@@ -599,6 +606,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         txt_menu_title.layoutParams = params
     }
 
+
+
     /***
      * 是否夜间模式
      * **/
@@ -732,7 +741,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     companion object {
         private const val BACK = 0x80
         private var BACK_COUNT: Int = 0
-
         internal var handler = Handler(Handler.Callback { msg ->
             when (msg.what) {
                 BACK -> BACK_COUNT = 0

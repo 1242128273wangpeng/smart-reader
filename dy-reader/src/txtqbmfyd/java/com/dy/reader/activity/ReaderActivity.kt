@@ -270,6 +270,17 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         mReadPresenter.onStop()
     }
 
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean =
+            if(keyCode == KeyEvent.KEYCODE_BACK ){
+                onBackPressed()
+                true
+            }else{
+                super.onKeyDown(keyCode, event)
+            }
+
+
+
+
 
     override fun onBackPressed() {
         if (read_catalog_mark_drawer.isDrawerOpen(GravityCompat.START)) {
@@ -379,6 +390,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 novel_chapter.text = "${ReaderStatus.position.group + 1}/${ReaderStatus.chapterCount}章"
                 if (ReaderStatus.position.group < ReaderStatus.chapterList.size) {
                     novel_title.text = "${ReaderStatus.chapterList[ReaderStatus.position.group].name}"
+                    EventBus.getDefault().post(EventReaderConfig(ReaderSettings.ConfigType.CHAPTER_SUCCESS, null))
                 }
             } else {
                 novel_bottom.visibility = View.GONE

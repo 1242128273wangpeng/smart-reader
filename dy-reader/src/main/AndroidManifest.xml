@@ -5,7 +5,28 @@
     <application
         android:allowBackup="true"
         android:supportsRtl="true">
-        <activity android:name=".activity.ReaderActivity"/>
+        <!--<activity android:name=".activity.ReaderActivity"/>-->
+        <activity
+            android:name="com.dy.reader.activity.ReaderActivity"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTask"
+            android:configChanges="orientation|keyboardHidden|screenSize|uiMode|navigation"
+            android:screenOrientation="nosensor"
+            android:theme="@style/Theme.DesignDemo"/>
+
+        <!-- 免责声明页 -->
+        <activity
+            android:name="com.dy.reader.activity.DisclaimerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeTranslucent"/>
+
+        <activity
+            android:name="com.dy.reader.activity.BookEndActivity"
+            android:launchMode="singleTask"
+            android:label="@string/title_activity_act_book_over"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeTranslucent"/>
+
     </application>
 
 </manifest>
