@@ -38,5 +38,7 @@
 
 
     <color name="read_setting_menu_pressed_bg">#80000000</color>
-
+    <color name="dialog_recommend">#FF1CA66E</color>
+    <color name="colorAccent">#FF19DD8B</color>
+    <color name="colorPrimary">#FF19DD8B</color>
 </resources>

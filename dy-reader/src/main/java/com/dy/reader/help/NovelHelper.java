@@ -8,6 +8,7 @@ import com.dy.reader.R;
 import com.dy.reader.event.EventSetting;
 import com.dy.reader.setting.ReaderSettings;
 import com.dy.reader.setting.ReaderStatus;
+import com.dy.reader.view.ChangeSourcePopWindow;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
@@ -190,80 +191,95 @@ public class NovelHelper {
         if (actReference == null || actReference.get() == null || actReference.get().isFinishing()) {
             return;
         }
-        final Activity activity = actReference.get();
-        final MyDialog sourceDialog = new MyDialog(activity, R.layout.dialog_read_source, Gravity.CENTER);
-        sourceDialog.setCanceledOnTouchOutside(true);
-        TextView change_source_disclaimer_message = (TextView) sourceDialog.findViewById(R.id.change_source_disclaimer_message);
-        TextView change_source_original_web = (TextView) sourceDialog.findViewById(R.id.change_source_original_web);
-        TextView change_source_continue = (TextView) sourceDialog.findViewById(R.id.change_source_continue);
+        if(AppUtils.getPackageName().equals("cn.txtqbmfyd.reader")){
+            ChangeSourcePopWindow.newBuilder(actReference.get()).setSourceData(sources)
+                    .setOnSourceItemClick(new ChangeSourcePopWindow.OnSourceItemClickListener() {
+                        @Override
+                        public void onSourceItemClick(Source source) {
+                            if (source != null && !TextUtils.isEmpty(source.getHost())) {
+                                if (sourceCallBack != null) {
+                                    sourceCallBack.showCatalogActivity(source);
+                                }
+                            }
+                        }
+                    }).build().show();
+        }else{
+            final Activity activity = actReference.get();
+            final MyDialog sourceDialog = new MyDialog(activity, R.layout.dialog_read_source, Gravity.CENTER);
+            sourceDialog.setCanceledOnTouchOutside(true);
+            TextView change_source_disclaimer_message = (TextView) sourceDialog.findViewById(R.id.change_source_disclaimer_message);
+            TextView change_source_original_web = (TextView) sourceDialog.findViewById(R.id.change_source_original_web);
+            TextView change_source_continue = (TextView) sourceDialog.findViewById(R.id.change_source_continue);
 
-        if (ReaderStatus.INSTANCE.getCurrentChapter() != null && ReaderStatus.INSTANCE.getCurrentChapter().getStatus() != ChapterState.CONTENT_NORMAL) {
-            change_source_disclaimer_message.setText(ReaderStatus.INSTANCE.getCurrentChapter().getStatus().getState());
-            change_source_original_web.setVisibility(View.INVISIBLE);
-            change_source_continue.setText(R.string.jump_next_chapter);
-        }
-
-        ListView change_source_list = (ListView) sourceDialog.findViewById(R.id.change_source_list);
-
-        final SourceAdapter sourceListAdapter = new SourceAdapter(activity, sources);
-        change_source_list.setAdapter(sourceListAdapter);
-
-        if (ReaderSettings.Companion.getInstance().isLandscape()) {
-            if (sources.size() > 1) {
-                change_source_list.getLayoutParams().height = activity.getResources().getDimensionPixelOffset(R.dimen.dimen_view_height_80);
+            if (ReaderStatus.INSTANCE.getCurrentChapter() != null && ReaderStatus.INSTANCE.getCurrentChapter().getStatus() != ChapterState.CONTENT_NORMAL) {
+                change_source_disclaimer_message.setText(ReaderStatus.INSTANCE.getCurrentChapter().getStatus().getState());
+                change_source_original_web.setVisibility(View.INVISIBLE);
+                change_source_continue.setText(R.string.jump_next_chapter);
             }
-        } else {
-            if (sources.size() > 3) {
-                change_source_list.getLayoutParams().height = activity.getResources().getDimensionPixelOffset(R.dimen.dimen_view_height_135);
+
+            ListView change_source_list = (ListView) sourceDialog.findViewById(R.id.change_source_list);
+
+            final SourceAdapter sourceListAdapter = new SourceAdapter(activity, sources);
+            change_source_list.setAdapter(sourceListAdapter);
+
+            if (ReaderSettings.Companion.getInstance().isLandscape()) {
+                if (sources.size() > 1) {
+                    change_source_list.getLayoutParams().height = activity.getResources().getDimensionPixelOffset(R.dimen.dimen_view_height_80);
+                }
+            } else {
+                if (sources.size() > 3) {
+                    change_source_list.getLayoutParams().height = activity.getResources().getDimensionPixelOffset(R.dimen.dimen_view_height_135);
+                }
             }
-        }
 
-        change_source_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Source source = (Source) sourceListAdapter.getItem(position);
+            change_source_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Source source = (Source) sourceListAdapter.getItem(position);
 
-                if (source != null && !TextUtils.isEmpty(source.getHost())) {
-                    if (sourceCallBack != null) {
-                        sourceCallBack.showCatalogActivity(source);
+                    if (source != null && !TextUtils.isEmpty(source.getHost())) {
+                        if (sourceCallBack != null) {
+                            sourceCallBack.showCatalogActivity(source);
+                        }
+                    }
+
+                    Map<String, String> map1 = new HashMap<String, String>();
+                    map1.put("type", "2");
+                    StartLogClickUtil.upLoadEventLog(actReference.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
+                    dismissDialog(sourceDialog);
+                }
+            });
+
+            change_source_original_web.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Map<String, String> map1 = new HashMap<String, String>();
+                    map1.put("type", "1");
+                    StartLogClickUtil.upLoadEventLog(actReference.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
+                    dismissDialog(sourceDialog);
+                }
+            });
+            change_source_continue.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Map<String, String> map1 = new HashMap<String, String>();
+                    map1.put("type", "1");
+                    StartLogClickUtil.upLoadEventLog(actReference.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
+                    dismissDialog(sourceDialog);
+                    if (ReaderStatus.INSTANCE.getCurrentChapter() != null && ReaderStatus.INSTANCE.getCurrentChapter().getStatus() != ChapterState.CONTENT_NORMAL) {
+                        EventBus.getDefault().post(new EventSetting(EventSetting.Type.MENU_STATE_CHANGE, null));
                     }
                 }
-
-                Map<String, String> map1 = new HashMap<String, String>();
-                map1.put("type", "2");
-                StartLogClickUtil.upLoadEventLog(actReference.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
-                dismissDialog(sourceDialog);
-            }
-        });
-
-        change_source_original_web.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Map<String, String> map1 = new HashMap<String, String>();
-                map1.put("type", "1");
-                StartLogClickUtil.upLoadEventLog(actReference.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
-                dismissDialog(sourceDialog);
-            }
-        });
-        change_source_continue.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Map<String, String> map1 = new HashMap<String, String>();
-                map1.put("type", "1");
-                StartLogClickUtil.upLoadEventLog(actReference.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
-                dismissDialog(sourceDialog);
-                if (ReaderStatus.INSTANCE.getCurrentChapter() != null && ReaderStatus.INSTANCE.getCurrentChapter().getStatus() != ChapterState.CONTENT_NORMAL) {
-                    EventBus.getDefault().post(new EventSetting(EventSetting.Type.MENU_STATE_CHANGE, null));
+            });
+            if (!sourceDialog.isShowing()) {
+                try {
+                    sourceDialog.show();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
-        });
-        if (!sourceDialog.isShowing()) {
-            try {
-                sourceDialog.show();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
+
     }
 
 

@@ -1,4 +1,4 @@
-package com.intelligent.reader.widget;
+package com.dy.reader.view;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -14,8 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+
 import com.dingyue.contract.util.CommonUtil;
-import com.intelligent.reader.R;
+import com.dy.reader.R;
 
 import net.lzbook.kit.book.view.NightShadowView;
 import net.lzbook.kit.utils.StatServiceUtils;
@@ -72,11 +73,6 @@ public class FeedbackPopWindow {
         public FeedbackPopWindow build() {
             final View popupView = LayoutInflater.from(context).inflate(R.layout.pop_feedback_layout, null);
             this.popInflater = popupView;
-//            final FeedbackPopWindow popupWindow = new FeedbackPopWindow(popupView,
-//                    FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT, this);
-//            popupWindow.setFocusable(true);
-//            popupWindow.setTouchable(true);
-//            popupWindow.setOutsideTouchable(false);
 
             final Dialog dialog = new Dialog(context,R.style.update_dialog);
             dialog.setContentView(popInflater);
@@ -146,7 +142,7 @@ public class FeedbackPopWindow {
                         }
                     }
                     if (type == -1) {
-                        CommonUtil.showToastMessage("请选择错误类型！");
+                        CommonUtil.showToastMessage("请选择错误类型");
                     } else {
                         if (onSubmitClickListener != null) {
                             onSubmitClickListener.onSubmit(type);

@@ -4,7 +4,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/text_size_14</item>
-        <item name="android:textColor">@color/color_black_99000000</item>
+        <item name="android:textColor">#FFF4F5F7</item>
         <item name="android:layout_alignParentLeft">true</item>
     </style>
     <style name="checkBox_feedback_btn_style">
@@ -24,10 +24,22 @@
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:backgroundDimAmount">0.6</item>
-
         <!-- Dialog进入及退出动画 -->
         <item name="android:windowAnimationStyle">@null</item>
-
-        <item name="android:windowTranslucentStatus">false</item>
     </style>
+    <style name="update_dialog"
+           parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="style_text_normal_weak">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#FFADB4BE</item>
+    </style>
+
 </resources>

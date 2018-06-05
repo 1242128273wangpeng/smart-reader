@@ -2,6 +2,7 @@ package com.dy.reader.activity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
@@ -24,16 +25,19 @@ public class DisclaimerActivity extends iyouqu.theme.FrameActivity {
         if (getIntent() != null) {
             isFromReadingPage = getIntent().getBooleanExtra("isFromReadingPage", false);
             if (isFromReadingPage) {
-                ((TextView) findViewById(R.id.tv_title_name)).setText(getResources().getString(R.string.translate_code_disclaimer));
-                ((TextView) findViewById(R.id.tv_disclaimer_statement)).setText(getResources().getString(R.string.translate_code_description));
+                ((TextView) findViewById(R.id.txt_head_title)).setText(
+                        getResources().getString(R.string.translate_code_disclaimer));
+                ((TextView) findViewById(R.id.txt_content)).setText(
+                        getResources().getString(R.string.translate_code_description));
             }
         }
-        findViewById(R.id.btn_left_setting).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.img_head_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Map<String, String> data = new HashMap<>();
                 data.put("type", "1");
-                StartLogClickUtil.upLoadEventLog(DisclaimerActivity.this, StartLogClickUtil.PROCTCOL_PAGE, StartLogClickUtil.BACK, data);
+                StartLogClickUtil.upLoadEventLog(DisclaimerActivity.this,
+                        StartLogClickUtil.PROCTCOL_PAGE, StartLogClickUtil.BACK, data);
                 finish();
             }
         });
