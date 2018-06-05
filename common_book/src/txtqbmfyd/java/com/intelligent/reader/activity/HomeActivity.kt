@@ -657,7 +657,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             }
         }
 
-        override fun getItemPosition(`object`: Any?): Int = PagerAdapter.POSITION_NONE
+        override fun getItemPosition(`object`: Any): Int = PagerAdapter.POSITION_NONE
     }
 
     /***

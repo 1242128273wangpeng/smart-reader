@@ -15,7 +15,7 @@ class ListRecyclerAdapter<T, C : BaseRecyclerHolder<T>>(val datas: List<T>, @Lay
 
     var isEditMode = false
 
-    override fun onBindViewHolder(holder: C?, position: Int) {
+    override fun onBindViewHolder(holder: C, position: Int) {
         try {
             if (datas.size > position)
                 holder?.onBindData(position, datas[position], isEditMode)
@@ -28,7 +28,7 @@ class ListRecyclerAdapter<T, C : BaseRecyclerHolder<T>>(val datas: List<T>, @Lay
         return datas.size
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): C {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): C {
         if (inflater == null)
             inflater = LayoutInflater.from(parent!!.context)
         var view: View? = null

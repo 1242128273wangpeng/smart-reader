@@ -23,7 +23,7 @@ class BookShelfAdapter(private val context: Context,
 
     var isRemove = false
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder? {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             Type_AD -> {
                 BookShelfADHolder(parent, false)

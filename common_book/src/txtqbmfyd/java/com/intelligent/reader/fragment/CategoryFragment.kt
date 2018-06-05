@@ -33,7 +33,7 @@ class CategoryFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
             inflater.inflate(R.layout.category_fragment_layout, container, false)
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         content_head_search.setOnClickListener {
             val intent = Intent(activity, SearchBookActivity::class.java)
@@ -101,7 +101,7 @@ class CategoryFragment : Fragment() {
             else -> manCategoryFragment
         }
 
-        override fun getItemPosition(`object`: Any?): Int = PagerAdapter.POSITION_NONE
+        override fun getItemPosition(`object`: Any): Int = PagerAdapter.POSITION_NONE
 
         override fun getPageTitle(position: Int): CharSequence = titles[position]
     }

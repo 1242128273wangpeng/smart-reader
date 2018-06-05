@@ -75,7 +75,7 @@ class DrawerLayout @JvmOverloads constructor(context: Context, attrs: AttributeS
     private inner class CoordinatorCallback : ViewDragHelper.Callback() {
 
         override fun onEdgeDragStarted(edgeFlags: Int, pointerId: Int) {
-            viewDragHelper.captureChildView(mainView, pointerId)
+            viewDragHelper.captureChildView(mainView ?: return, pointerId)
         }
 
         override fun tryCaptureView(child: View, pointerId: Int): Boolean {
@@ -86,17 +86,17 @@ class DrawerLayout @JvmOverloads constructor(context: Context, attrs: AttributeS
             }
         }
 
-        override fun onViewCaptured(capturedChild: View?, activePointerId: Int) {
+        override fun onViewCaptured(capturedChild: View, activePointerId: Int) {
             if (capturedChild === menuView) {
-                viewDragHelper.captureChildView(mainView, activePointerId)
+                viewDragHelper.captureChildView(mainView ?: return, activePointerId)
             }
         }
 
         override fun getViewHorizontalDragRange(child: View): Int {
-            return measuredWidth -child.measuredWidth
+            return measuredWidth - child.measuredWidth
         }
 
-        override fun clampViewPositionHorizontal(child: View?, left: Int, dx: Int): Int {
+        override fun clampViewPositionHorizontal(child: View, left: Int, dx: Int): Int {
             var l = left
             if (l < 0) {
                 l = 0
@@ -110,7 +110,7 @@ class DrawerLayout @JvmOverloads constructor(context: Context, attrs: AttributeS
             }
         }
 
-        override fun onViewReleased(releasedChild: View?, xvel: Float, yvel: Float) {
+        override fun onViewReleased(releasedChild: View, xvel: Float, yvel: Float) {
             super.onViewReleased(releasedChild, xvel, yvel)
             //            Log.e(TAG, "onViewReleased: xvel: " + xvel);
             if (dragOrientation == LEFT_TO_RIGHT) {
@@ -129,7 +129,7 @@ class DrawerLayout @JvmOverloads constructor(context: Context, attrs: AttributeS
 
         }
 
-        override fun onViewPositionChanged(changedView: View?, left: Int, top: Int, dx: Int, dy: Int) {
+        override fun onViewPositionChanged(changedView: View, left: Int, top: Int, dx: Int, dy: Int) {
             mainLeft = left
 
             moveView(screenHeight)
@@ -205,12 +205,12 @@ class DrawerLayout @JvmOverloads constructor(context: Context, attrs: AttributeS
     }
 
     fun openMenu() {
-        viewDragHelper.smoothSlideViewTo(mainView, menuWidth, 0)
+        viewDragHelper.smoothSlideViewTo(mainView ?: return, menuWidth, 0)
         ViewCompat.postInvalidateOnAnimation(this@DrawerLayout)
     }
 
     fun closeMenu() {
-        viewDragHelper.smoothSlideViewTo(mainView, 0, 0)
+        viewDragHelper.smoothSlideViewTo(mainView ?: return, 0, 0)
         ViewCompat.postInvalidateOnAnimation(this@DrawerLayout)
     }
 
