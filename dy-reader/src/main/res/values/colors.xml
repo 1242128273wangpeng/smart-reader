@@ -69,4 +69,14 @@
     <dimen name="padding_12">12dip</dimen>
     <color name="top_navigation_bg_color">#ce3d3e</color>
     <color name="color_brown_c2b282">#C2B282</color>
+
+
+
+
+    <color name="reader_backdrop_first">#C2B282</color>
+    <color name="reader_backdrop_second">#F7F0DE</color>
+    <color name="reader_backdrop_third">#DEE9E1</color>
+    <color name="reader_backdrop_fourth">#FFFFFF</color>
+    <color name="reader_backdrop_fifth">#E2ECF6</color>
+    <color name="reader_backdrop_sixth">#111111</color>
 </resources>

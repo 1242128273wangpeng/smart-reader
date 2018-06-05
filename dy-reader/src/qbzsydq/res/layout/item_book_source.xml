@@ -46,4 +46,10 @@
         android:textColor="#FF858C96"
         android:textSize="12sp"
         tools:text="@string/default_title"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_alignParentBottom="true"
+        android:background="#E8E8E8"/>
 </RelativeLayout>

@@ -8,12 +8,11 @@ import android.graphics.Color
 import android.os.Bundle
 import android.graphics.drawable.ColorDrawable
 import android.view.*
-import com.alibaba.sdk.android.feedback.impl.FeedbackAPI.activity
 import com.dy.reader.R
 import com.dy.reader.Reader
 import com.dy.reader.helper.AppHelper
 import com.dy.reader.util.ThemeUtil
-import kotlinx.android.synthetic.main.read_error_page3.*
+import kotlinx.android.synthetic.main.frag_loading_dialog.*
 
 
 class LoadingDialogFragment : DialogFragment() {
@@ -44,7 +43,7 @@ class LoadingDialogFragment : DialogFragment() {
             dialog.window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }
         dialog.window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        dialog.setContentView(R.layout.read_error_page3)
+        dialog.setContentView(R.layout.frag_loading_dialog)
         val window = dialog.window
         window.setGravity(Gravity.CENTER) //可设置dialog的位置
 //        window.decorView.setPadding(0, 0, 0, 0) //消除边距
@@ -55,10 +54,10 @@ class LoadingDialogFragment : DialogFragment() {
         dialog.setCanceledOnTouchOutside(true)
 
 
-        dialog.tv_loading_progress?.setTextColor(Reader.context.resources.getColor(ThemeUtil.modeLoadTextColor))
+        dialog.txt_loading_prompt?.setTextColor(Reader.context.resources.getColor(ThemeUtil.modeLoadTextColor))
 
-        ThemeUtil.getModePrimaryBackground(activity.resources, dialog.loading_load)
-        ThemeUtil.getModePrimaryBackground(activity.resources, dialog.loading_error)
+        ThemeUtil.getModePrimaryBackground(activity.resources, dialog.rl_loading_content)
+        ThemeUtil.getModePrimaryBackground(activity.resources, dialog.rl_loading_error)
 
 
         dialog.setCancelable(false)
@@ -75,14 +74,14 @@ class LoadingDialogFragment : DialogFragment() {
         })
         dialog.setOnShowListener({
             if (DialogType.LOADING == dialogType) {
-                dialog.loading_error?.visibility = View.GONE
-                dialog.loading_load?.visibility = View.VISIBLE
+                dialog.rl_loading_error?.visibility = View.GONE
+                dialog.rl_loading_content?.visibility = View.VISIBLE
             } else {
-                dialog.loading_error?.visibility = View.VISIBLE
-                dialog.loading_load?.visibility = View.GONE
-                dialog.loading_error_reload?.setOnClickListener({
-                    dialog.loading_error?.visibility = View.GONE
-                    dialog.loading_load?.visibility = View.VISIBLE
+                dialog.rl_loading_error?.visibility = View.VISIBLE
+                dialog.rl_loading_content?.visibility = View.GONE
+                dialog.txt_loading_error_reload?.setOnClickListener({
+                    dialog.rl_loading_error?.visibility = View.GONE
+                    dialog.rl_loading_content?.visibility = View.VISIBLE
                     AppHelper.mainHandler.postDelayed({
                         callback?.invoke()
                     }, 500)
@@ -112,14 +111,14 @@ class LoadingDialogFragment : DialogFragment() {
                 }
             } else if (isDialogShowing()) {
                 if (DialogType.LOADING == dialogType) {
-                    dialog?.loading_error?.visibility = View.GONE
-                    dialog?.loading_load?.visibility = View.VISIBLE
+                    dialog?.rl_loading_error?.visibility = View.GONE
+                    dialog?.rl_loading_content?.visibility = View.VISIBLE
                 } else {
-                    dialog?.loading_error?.visibility = View.VISIBLE
-                    dialog?.loading_load?.visibility = View.GONE
-                    dialog?.loading_error_reload?.setOnClickListener({
-                        dialog?.loading_error?.visibility = View.GONE
-                        dialog?.loading_load?.visibility = View.VISIBLE
+                    dialog?.rl_loading_error?.visibility = View.VISIBLE
+                    dialog?.rl_loading_content?.visibility = View.GONE
+                    dialog?.txt_loading_error_reload?.setOnClickListener({
+                        dialog?.rl_loading_error?.visibility = View.GONE
+                        dialog?.rl_loading_content?.visibility = View.VISIBLE
                         AppHelper.mainHandler.postDelayed({
                             retry?.invoke()
                         }, 500)

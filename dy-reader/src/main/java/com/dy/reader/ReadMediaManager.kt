@@ -274,7 +274,7 @@ object ReadMediaManager {
                         && ResultCode.AD_REQ_SUCCESS == ResultCode.parser(jsonObject.getInt("state_code"))
                         && !views.isEmpty()
                         && views[0].parent == null) {
-                    views[0].id = R.id.ad_view
+                    views[0].id = R.id.pac_reader_ad
                     adCache.put(adType, AdBean(height, views[0], true, mark))
                     loadAdComplete?.invoke(adType)
                 } else {

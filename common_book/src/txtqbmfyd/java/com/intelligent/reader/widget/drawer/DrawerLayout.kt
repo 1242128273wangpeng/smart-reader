@@ -2,11 +2,6 @@ package com.intelligent.reader.widget.drawer
 
 import android.content.Context
 import android.graphics.Canvas
-import android.os.Parcel
-import android.os.Parcelable
-import android.support.v4.os.ParcelableCompat
-import android.support.v4.os.ParcelableCompatCreatorCallbacks
-import android.support.v4.view.AbsSavedState
 import android.support.v4.view.ViewCompat
 import android.support.v4.widget.ViewDragHelper
 import android.util.AttributeSet
@@ -16,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.intelligent.reader.widget.drawer.DrawerLayout.MenuState.MENU_CLOSED
 import com.intelligent.reader.widget.drawer.DrawerLayout.MenuState.MENU_OPENED
-import net.lzbook.kit.utils.AppLog
 
 
 /**
@@ -112,7 +106,6 @@ class DrawerLayout @JvmOverloads constructor(context: Context, attrs: AttributeS
 
         override fun onViewReleased(releasedChild: View, xvel: Float, yvel: Float) {
             super.onViewReleased(releasedChild, xvel, yvel)
-            //            Log.e(TAG, "onViewReleased: xvel: " + xvel);
             if (dragOrientation == LEFT_TO_RIGHT) {
                 if (xvel > SPRING_BACK_VELOCITY || mainView?.left ?: 0 > springBackDistance) {
                     openMenu()

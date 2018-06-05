@@ -61,5 +61,4 @@ public class PageContentView extends View {
         super.onDraw(canvas);
         DrawTextHelper.INSTANCE.drawVerticalText(canvas, mPageBean);
     }
-
 }

@@ -6,10 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-/**
- * Created by xian on 2017/8/17.
- */
-class ListRecyclerAdapter<T, C : BaseRecyclerHolder<T>>(val datas: List<T>, @LayoutRes val itemLayout: Int, val clazz: Class<C>, var itemClick: View.OnClickListener? = null, var itemLongClick: View.OnLongClickListener? = null) : RecyclerView.Adapter<C>() {
+class ListRecyclerAdapter<T, C : BaseRecyclerHolder<T>>(private val dataList: List<T>, @LayoutRes private val itemLayout: Int, private val clazz: Class<C>, var itemClick: View.OnClickListener? = null, var itemLongClick: View.OnLongClickListener? = null) : RecyclerView.Adapter<C>() {
 
     private var inflater: LayoutInflater? = null
 
@@ -17,15 +14,15 @@ class ListRecyclerAdapter<T, C : BaseRecyclerHolder<T>>(val datas: List<T>, @Lay
 
     override fun onBindViewHolder(holder: C?, position: Int) {
         try {
-            if (datas.size > position)
-                holder?.onBindData(position, datas[position], isEditMode)
-        } catch (e: Exception) {
-            e.printStackTrace()
+            if (dataList.size > position)
+                holder?.onBindData(position, dataList[position], isEditMode)
+        } catch (exception: Exception) {
+            exception.printStackTrace()
         }
     }
 
     override fun getItemCount(): Int {
-        return datas.size
+        return dataList.size
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): C {
@@ -34,8 +31,8 @@ class ListRecyclerAdapter<T, C : BaseRecyclerHolder<T>>(val datas: List<T>, @Lay
         var view: View? = null
         try {
             view = inflater!!.inflate(itemLayout, parent, false)
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (exception: Exception) {
+            exception.printStackTrace()
         }
         val holder = clazz.getConstructor(View::class.java).newInstance(view)
         holder.onItemClick = this.itemClick

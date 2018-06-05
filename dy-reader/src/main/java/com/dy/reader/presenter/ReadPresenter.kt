@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.preference.PreferenceManager
-import android.provider.Settings
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.InflateException
@@ -491,7 +490,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
                         when (ResultCode.parser(jsonObject.getInt("state_code"))) {
                             ResultCode.AD_REQ_SUCCESS -> {
                                 try {
-                                    mDialog = MyDialog(readReference?.get(), R.layout.reading_resttime, Gravity.CENTER, false)
+                                    mDialog = MyDialog(readReference?.get(), R.layout.dialog_reader_rest, Gravity.CENTER, false)
                                     mDialog?.let {
                                         val rest_ad = it.findViewById(R.id.rest_ad) as RelativeLayout//容器
                                         it.findViewById<ImageView>(R.id.iv_close).setOnClickListener { mDialog?.dismiss() }

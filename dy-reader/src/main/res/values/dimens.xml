@@ -15,6 +15,10 @@
     <dimen name="text_size_17">17sp</dimen>
     <dimen name="text_size_18">18sp</dimen>
 
-    <dimen name="dimen_view_height_160">160dip</dimen>
+    <dimen name="dimen_view_height_160">160dp</dimen>
 
+
+
+
+    <dimen name="feedback_content_height">160dp</dimen>
 </resources>

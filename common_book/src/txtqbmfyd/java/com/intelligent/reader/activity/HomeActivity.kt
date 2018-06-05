@@ -215,7 +215,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
     override fun onBackPressed() {
         when {
-            dl_content.isOpened -> dl_content.closeMenu()
+            dl_home_content.isOpened -> dl_home_content.closeMenu()
             view_pager?.currentItem != 0 -> changeHomePagerIndex(0)
             bookShelfFragment?.isRemoveMenuShow() == true -> bookShelfFragment?.dismissRemoveMenu()
             else -> doubleClickFinish()
@@ -226,7 +226,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
      * 初始化View
      * **/
     private fun initView() {
-        dl_content.setOnMenuStateChangeListener { state ->
+        dl_home_content.setOnMenuStateChangeListener { state ->
             if (state == DrawerLayout.MenuState.MENU_OPENED) {
                 showCacheMessage()
 
@@ -731,10 +731,10 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
      * 改变DrawerLayout状态，当书架页点击设置时，显示抽屉布局
      * **/
     override fun changeDrawerLayoutState() {
-        if (dl_content.isOpened) {
-            dl_content.closeMenu()
+        if (dl_home_content.isOpened) {
+            dl_home_content.closeMenu()
         } else {
-            dl_content.openMenu()
+            dl_home_content.openMenu()
         }
     }
 

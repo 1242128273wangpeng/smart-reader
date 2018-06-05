@@ -316,7 +316,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
             }
 //            R.id.iv_back_reading -> finish()
             R.id.catalog_empty_refresh -> getChapterData()
-            R.id.tab_catalog -> {
+/*            R.id.tab_catalog -> {
                 if (catalog_main != null) {
                     catalog_main!!.visibility = View.VISIBLE
                 }
@@ -341,7 +341,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
 //                }
 //                currentView = tab_bookmark
 //                showNullBookMarkNoteLayout()
-            }
+            }*/
             R.id.tv_catalog_novel_sort//正序、逆序
                 , R.id.tv_catalog_novel_sort -> if (chapterList != null && !chapterList!!.isEmpty()) {
                 //书签点击的统计

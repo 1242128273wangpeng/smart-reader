@@ -1,0 +1,64 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="200dp">
+
+    <TextView
+        android:id="@+id/txt_reader_loading_sequence"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="27dp"
+        android:layout_marginRight="27dp"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        tools:text="第一章"/>
+
+    <TextView
+        android:id="@+id/txt_reader_loading_chapter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txt_reader_loading_sequence"
+        android:layout_marginLeft="27dp"
+        android:layout_marginRight="27dp"
+        android:layout_marginTop="16dp"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        tools:text="章节名字"/>
+
+    <ProgressBar
+        android:id="@+id/pgbar_reader_loading_progress"
+        style="@style/reader_circle_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txt_reader_loading_chapter"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:indeterminateDuration="1000"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/txt_reader_loading_prompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pgbar_reader_loading_progress"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:text="@string/loading_prompt"
+        android:textSize="18sp"/>
+
+    <Button
+        android:id="@+id/btn_reader_loading_refresh"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="174dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/txt_reader_loading_prompt"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/reader_loading_refresh"
+        android:gravity="center"
+        android:text="@string/refresh"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"/>
+</RelativeLayout>

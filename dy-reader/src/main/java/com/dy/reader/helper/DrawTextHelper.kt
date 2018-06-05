@@ -300,7 +300,7 @@ object DrawTextHelper {
         textPaint.color = Color.parseColor("#80000000")
         textPaint.textAlign = Paint.Align.LEFT
         if (canvas != null) {
-            drawSpacingText(canvas, Reader.context.resources.getString(R.string.slogan), Reader.context.resources.getDimension(R.dimen.reading_cover_top_padding).toInt(), 11f, sloganPaddingY)
+            drawSpacingText(canvas, Reader.context.resources.getString(R.string.reader_slogan), Reader.context.resources.getDimension(R.dimen.reading_cover_top_padding).toInt(), 11f, sloganPaddingY)
         }
 
         // 书籍名称
@@ -331,12 +331,12 @@ object DrawTextHelper {
         textPaint.color = Color.parseColor("#80000000")
         textPaint.textAlign = Paint.Align.LEFT
         if (canvas != null) {
-            drawSpacingText(canvas, Reader.context.resources.getString(R.string.app_name), Reader.context.resources.getDimension(R.dimen.reading_cover_bottom_padding).toInt(), 11f, paddingBottom)
+            drawSpacingText(canvas, Reader.context.resources.getString(R.string.application_name), Reader.context.resources.getDimension(R.dimen.reading_cover_bottom_padding).toInt(), 11f, paddingBottom)
         }
         textPaint.textAlign = Paint.Align.CENTER
         paddingBottom -= textPaint.fontMetrics.descent - textPaint.fontMetrics.ascent
 
-        val iconBitmap = BitmapFactory.decodeResource(Reader.context.resources, R.drawable.icon_home_page)
+        val iconBitmap = BitmapFactory.decodeResource(Reader.context.resources, R.drawable.reader_application_icon)
         // 计算左边位置
         val left = AppHelper.screenWidth / 2 - iconBitmap.getWidth() / 2
         // 计算上边位置
