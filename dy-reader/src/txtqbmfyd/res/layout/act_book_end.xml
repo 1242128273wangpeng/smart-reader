@@ -1,65 +1,51 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/base_bg"
+    android:background="#FFFFFFFF"
     android:orientation="vertical"
-    android:paddingTop="0dp">
+    tools:ignore="RtlHardcoded">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:background="@color/colorPrimary"
+        android:background="#FF19DD8B"
         android:fitsSystemWindows="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/top_bar_height">
+            android:layout_height="48dp">
 
             <ImageView
                 android:id="@+id/iv_back"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
+                android:contentDescription="@string/module_name"
                 android:gravity="center"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:src="@drawable/cover_top_back"/>
+                android:src="@drawable/common_back_icon"/>
 
             <TextView
-                android:id="@+id/name_bookend"
+                android:id="@+id/txt_title"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_alignParentTop="true"
-                android:layout_toLeftOf="@+id/imageView"
-                android:layout_toRightOf="@+id/iv_back"
+                android:layout_centerInParent="true"
                 android:gravity="center"
                 android:singleLine="true"
-                android:text="@string/read_end_tip"
-                android:textColor="#ffffff"
-                android:textSize="18sp"/>
-
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:gravity="center"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:src="@drawable/cover_top_back"
-                android:visibility="invisible"/>
+                android:textColor="#FFFFFFFF"
+                android:textSize="18sp"
+                tools:text="@string/default_title"/>
         </RelativeLayout>
     </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/color_divider"/>
+        android:background="#E8E8E8"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -67,54 +53,49 @@
         android:scrollbars="none">
 
         <LinearLayout
-            android:id="@+id/over_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="0dp">
+            android:orientation="vertical">
 
             <RelativeLayout
-                android:id="@+id/ad_view"
+                android:id="@+id/rl_book_end_ad"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:layout_marginLeft="0dp"
-                android:layout_marginRight="0dp"
-                android:visibility="gone"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:visibility="gone">
             </RelativeLayout>
 
             <TextView
-                android:id="@+id/textView_endInfo"
+                android:id="@+id/txt_prompt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="5dp"
-                android:layout_marginTop="@dimen/padding_10"
-                android:gravity="center"
-                android:text="@string/book_end_info"
-                android:textColor="@color/changesource_text_color"
-                android:textSize="@dimen/text_size_16"/>
+                android:layout_marginTop="10dp"
+                android:gravity="left"
+                android:textColor="#FF323232"
+                android:textSize="16sp"
+                tools:text="@string/default_message"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:background="@color/color_divider"/>
+                android:background="#FFE8E8E8"/>
 
-            <ListView
-                android:id="@+id/sourcelist_bookend"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rl_source"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/base_bg"
-                android:divider="@color/color_divider"
-                android:dividerHeight="0.5dp">
-            </ListView>
-
+                android:background="#FFFFFFFF"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_alignParentTop="true">
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -130,14 +111,14 @@
                         android:gravity="center">
 
                         <TextView
-                            android:id="@+id/iv_title_right"
+                            android:id="@+id/txt_bookshelf"
                             android:layout_width="130dp"
                             android:layout_height="40dp"
-                            android:background="@drawable/book_end_btn_selector_bookshelf"
+                            android:background="@drawable/book_end_bookshelf_bg_sel"
                             android:gravity="center"
-                            android:text="@string/end_to_bookshelf"
-                            android:textColor="@drawable/book_end_text_selector_bookshelf"
-                            android:textSize="@dimen/text_size_14"/>
+                            android:text="@string/book_end_bookshelf"
+                            android:textColor="@drawable/book_end_bookshelf_txt_sel"
+                            android:textSize="14sp"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -147,98 +128,22 @@
                         android:gravity="center">
 
                         <TextView
-                            android:id="@+id/iv_back_bookstore"
+                            android:id="@+id/txt_bookstore"
                             android:layout_width="130sp"
                             android:layout_height="40dp"
-                            android:background="@drawable/book_end_btn_selector_bookstore"
+                            android:background="@drawable/book_end_bookstore_bg_sel"
                             android:gravity="center"
-                            android:text="@string/end_to_bookstore"
-                            android:textColor="@drawable/book_end_text_selector_bookstore"
-                            android:textSize="@dimen/text_size_14"/>
+                            android:text="@string/book_end_bookstore"
+                            android:textColor="@drawable/book_end_bookstore_txt_sel"
+                            android:textSize="14sp"/>
                     </LinearLayout>
                 </LinearLayout>
             </RelativeLayout>
-            <!--<View
-                         android:layout_width="match_parent"
-                         android:layout_height="@dimen/dimen_height_0.5"
-                         android:background="?attr/color_divider"/>-->
+
             <View
-                android:id="@+id/view"
                 android:layout_width="match_parent"
                 android:layout_height="12dp"
-                android:background="@color/color_divider_item"/>
-
-            <!--<RelativeLayout
-                         android:id="@+id/bookend_ad_layout"
-                         android:layout_width="match_parent"
-                         android:layout_marginBottom="@dimen/dimen_margin_10"
-                         android:layout_height="wrap_content">
-
-                         <ImageView
-                             android:id="@+id/item_ad_image"
-                             android:layout_width="@dimen/dimen_view_width_64"
-                             android:layout_height="@dimen/dimen_view_height_64"
-                             android:layout_marginLeft="@dimen/dimen_margin_10"
-                             android:contentDescription="@string/app_name"
-                             android:layout_gravity="center_horizontal"
-                             android:layout_alignParentLeft="true"
-                             android:layout_alignParentTop="true"
-                             android:adjustViewBounds="true"
-                             android:scaleType="fitXY" />
-
-
-
-                         <TextView
-                             android:layout_alignTop="@id/item_ad_image"
-                             android:layout_marginLeft="@dimen/dimen_margin_15"
-                             android:layout_marginRight="@dimen/dimen_margin_12"
-                             android:layout_toRightOf="@id/item_ad_image"
-                             android:id="@+id/item_ad_title"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:ellipsize="end"
-                             android:singleLine="true"
-                             android:textColor="?attr/bookshelf_book_name_text_color"
-                             android:textSize="@dimen/dimen_text_16" />
-
-
-
-                         <RatingBar
-                             android:id="@+id/item_ad_extension"
-                             style="@style/promotion"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:isIndicator="true"
-                             android:numStars="5"
-                             android:rating="4"
-                             android:stepSize="1"
-                             android:layout_centerVertical="true"
-                             android:layout_alignLeft="@+id/item_ad_title"
-                             android:layout_alignStart="@+id/item_ad_title" />
-
-                         <TextView
-                             android:id="@+id/item_ad_desc"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:layout_alignBottom="@id/item_ad_image"
-                             android:layout_toRightOf="@id/item_ad_image"
-                             android:layout_marginRight="@dimen/dimen_margin_10"
-                             android:maxLines="1"
-                             android:ellipsize="end"
-                             android:layout_marginLeft="15dp"
-                             android:textColor="?attr/bookshelf_update_time_text_color"
-                             android:textSize="@dimen/dimen_text_12" />
-
-                         <ImageView
-                             android:layout_alignTop="@id/item_ad_image"
-                             android:id="@+id/item_ad_right_down"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:layout_marginRight="@dimen/dimen_margin_10"
-                             android:layout_alignParentRight="true"
-                             android:layout_alignParentEnd="true" />
-
-                     </RelativeLayout>-->
+                android:background="#FFF5F5F5"/>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

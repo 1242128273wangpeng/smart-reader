@@ -2,29 +2,26 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.dy.reader">
 
-
     <application
         android:allowBackup="true"
         android:supportsRtl="true">
-        <!--<activity android:name=".activity.ReaderActivity"/>-->
+
         <activity
-            android:name="com.dy.reader.activity.ReaderActivity"
+            android:name=".activity.ReaderActivity"
             android:hardwareAccelerated="true"
             android:launchMode="singleTask"
             android:configChanges="orientation|keyboardHidden|screenSize|uiMode|navigation"
             android:screenOrientation="nosensor"
             android:theme="@style/Theme.DesignDemo"/>
 
-        <!-- 免责声明页 -->
         <activity
-            android:name="com.dy.reader.activity.DisclaimerActivity"
+            android:name=".activity.DisclaimerActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeTranslucent"/>
 
         <activity
-            android:name="com.dy.reader.activity.BookEndActivity"
+            android:name=".activity.BookEndActivity"
             android:launchMode="singleTask"
-            android:label="@string/title_activity_act_book_over"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeTranslucent"/>
 

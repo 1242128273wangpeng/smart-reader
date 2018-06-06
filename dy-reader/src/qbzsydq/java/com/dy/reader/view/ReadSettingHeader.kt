@@ -73,8 +73,16 @@ class ReadSettingHeader : FrameLayout{
 
         ibtn_reader_download.setOnClickListener {
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_btn)
-            presenter?.cache()
+
+            if (mBookDownlLoadState == DownloadState.DOWNLOADING) {
+                CacheManager.stop(ReaderStatus.book.book_id)
+            } else {
+                presenter?.cache()
+            }
+
+            EventBus.getDefault().post(EventSetting(EventSetting.Type.MENU_STATE_CHANGE, false))
         }
+
         ibtn_reader_more?.setOnClickListener {
 
             presenter?.showMore()
@@ -135,8 +143,6 @@ class ReadSettingHeader : FrameLayout{
                 presenter?.bookInfo()
                 popupWindow.dismiss()
             }
-
-
         }
 
         // 初始化动画
@@ -152,15 +158,9 @@ class ReadSettingHeader : FrameLayout{
 
 
     fun updateStatus() {
-
-        if (txt_reader_book_name != null) {
-            txt_reader_book_name.text = ReaderStatus.book.name
-        }
-
         if (ReaderStatus.position.group == -1) {
             txt_reader_source.visibility = View.GONE
         } else {
-            //显示原网站地址
             if (Constants.QG_SOURCE == ReaderStatus.book.host) {
                 txt_reader_source.text = "青果阅读"
                 txt_reader_source.visibility = View.VISIBLE

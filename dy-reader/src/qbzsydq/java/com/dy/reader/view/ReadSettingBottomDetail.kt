@@ -126,12 +126,12 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         when (id) {
             SETTING_OPTION -> {
                 rl_reader_option_bottom!!.visibility = View.VISIBLE
-                read_setting_detail!!.visibility = View.GONE
+                ll_reader_setting_detail!!.visibility = View.GONE
             }
 
             SETTING_DETAIL -> {
                 EventBus.getDefault().post(EventSetting(EventSetting.Type.DISMISS_TOP_MENU))
-                read_setting_detail!!.visibility = View.VISIBLE
+                ll_reader_setting_detail!!.visibility = View.VISIBLE
                 rl_reader_option_bottom!!.visibility = View.GONE
 
                 rg_reader_backdrop_group.setOnCheckedChangeListener(null)
@@ -147,7 +147,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             }
 
             else -> {
-                read_setting_detail!!.visibility = View.GONE
+                ll_reader_setting_detail!!.visibility = View.GONE
                 rl_reader_option_bottom!!.visibility = View.GONE
             }
         }
@@ -251,7 +251,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             popDownOutAnimation?.onEnd {
                 rl_reader_option_bottom!!.visibility = View.GONE
             }
-            read_setting_detail!!.visibility = View.GONE
+            ll_reader_setting_detail!!.visibility = View.GONE
         }
     }
 
@@ -271,7 +271,6 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     private fun initListener() {
 
         txt_reader_chapter_previous?.preventClickShake(this)
-
 
         txt_reader_chapter_next?.preventClickShake(this)
 

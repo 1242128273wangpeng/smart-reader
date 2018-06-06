@@ -4,5 +4,5 @@
             android:drawable="@drawable/reader_option_group_border_bg"/>
 
     <item android:state_checked="true"
-          android:drawable="@drawable/read_option_checked_group_border"/>
+          android:drawable="@drawable/reader_option_group_border_check_bg"/>
 </selector>

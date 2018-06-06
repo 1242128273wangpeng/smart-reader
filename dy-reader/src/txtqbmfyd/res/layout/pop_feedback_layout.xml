@@ -45,12 +45,12 @@
                     android:paddingTop="19dp">
 
                     <TextView
-                        style="@style/checkBox_feedback_txt_style"
+                        style="@style/reader_feedback_txt_style"
                         android:text="当前章节为空、乱码"/>
 
                     <CheckBox
                         android:id="@+id/feedback_rb_1"
-                        style="@style/checkBox_feedback_btn_style"/>
+                        style="@style/reader_feedback_check_style"/>
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -61,12 +61,12 @@
                     android:paddingTop="19dp">
 
                     <TextView
-                        style="@style/checkBox_feedback_txt_style"
+                        style="@style/reader_feedback_txt_style"
                         android:text="书籍缓存后无法阅读"/>
 
                     <CheckBox
                         android:id="@+id/feedback_rb_2"
-                        style="@style/checkBox_feedback_btn_style"/>
+                        style="@style/reader_feedback_check_style"/>
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -77,12 +77,12 @@
                     android:paddingTop="19dp">
 
                     <TextView
-                        style="@style/checkBox_feedback_txt_style"
+                        style="@style/reader_feedback_txt_style"
                         android:text="章节或内容重复"/>
 
                     <CheckBox
                         android:id="@+id/feedback_rb_3"
-                        style="@style/checkBox_feedback_btn_style"/>
+                        style="@style/reader_feedback_check_style"/>
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -93,12 +93,12 @@
                     android:paddingTop="19dp">
 
                     <TextView
-                        style="@style/checkBox_feedback_txt_style"
+                        style="@style/reader_feedback_txt_style"
                         android:text="章节顺序错误"/>
 
                     <CheckBox
                         android:id="@+id/feedback_rb_4"
-                        style="@style/checkBox_feedback_btn_style"/>
+                        style="@style/reader_feedback_check_style"/>
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -109,12 +109,12 @@
                     android:paddingTop="19dp">
 
                     <TextView
-                        style="@style/checkBox_feedback_txt_style"
+                        style="@style/reader_feedback_txt_style"
                         android:text="内容错字、少字"/>
 
                     <CheckBox
                         android:id="@+id/feedback_rb_5"
-                        style="@style/checkBox_feedback_btn_style"/>
+                        style="@style/reader_feedback_check_style"/>
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -125,12 +125,12 @@
                     android:paddingTop="19dp">
 
                     <TextView
-                        style="@style/checkBox_feedback_txt_style"
+                        style="@style/reader_feedback_txt_style"
                         android:text="段落排版内容"/>
 
                     <CheckBox
                         android:id="@+id/feedback_rb_6"
-                        style="@style/checkBox_feedback_btn_style"/>
+                        style="@style/reader_feedback_check_style"/>
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -141,12 +141,12 @@
                     android:paddingTop="19dp">
 
                     <TextView
-                        style="@style/checkBox_feedback_txt_style"
+                        style="@style/reader_feedback_txt_style"
                         android:text="缓存失败"/>
 
                     <CheckBox
                         android:id="@+id/feedback_rb_7"
-                        style="@style/checkBox_feedback_btn_style"/>
+                        style="@style/reader_feedback_check_style"/>
                 </RelativeLayout>
             </LinearLayout>
         </ScrollView>

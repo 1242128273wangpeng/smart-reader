@@ -93,12 +93,12 @@
         android:layout_width="match_parent"
         android:layout_height="26dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/transparent"
+        android:background="@android:color/transparent"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
 
         <com.dy.reader.page.BatteryView
-            android:id="@+id/bv_reader_battery"
+            android:id="@+id/novel_content_battery_view"
             android:layout_width="16dp"
             android:layout_height="11dp"
             android:layout_centerVertical="true"
@@ -111,7 +111,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="6dp"
-            android:layout_toRightOf="@+id/bv_reader_battery"
+            android:layout_toRightOf="@+id/novel_content_battery_view"
             android:gravity="center_vertical"
             android:textSize="10sp"/>
 
@@ -121,7 +121,7 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:layout_centerVertical="true"
-            android:background="@color/transparent"
+            android:background="@android:color/transparent"
             android:gravity="center"
             android:textSize="10sp"/>
 

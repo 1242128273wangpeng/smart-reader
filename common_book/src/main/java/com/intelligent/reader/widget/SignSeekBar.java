@@ -263,7 +263,7 @@ public class SignSeekBar extends View {
         valueTextPaint.setTextSize(mSignTextSize);
         valueTextPaint.setColor(mSignTextColor);
 
-        mThumbBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_read_seekbar_thumb);
+        mThumbBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.reader_option_seek_bar_thumb_icon);
 
         mThumbRadiusOnDragging = (int) (mThumbBitmap.getHeight() / 2.5);
 

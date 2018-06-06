@@ -4,9 +4,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import com.ding.basic.bean.Source
-import com.dy.reader.holder.SourceHolder
 import com.dy.reader.listener.SourceClickListener
 import java.util.ArrayList
+
+import com.dy.reader.holder.SourceHolder
 
 class SourceAdapter(private var sources: ArrayList<Source>, private var sourceClickListener: SourceClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

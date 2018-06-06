@@ -125,4 +125,9 @@
     <string name="cache_all_chapter">全部缓存</string>
     <string name="cache_start_current">从当前章节缓存</string>
 
+
+
+    <string name="source_recommend">[推荐]</string>
+    <string name="source_new">最新</string>
+
 </resources>

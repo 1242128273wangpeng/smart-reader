@@ -21,4 +21,6 @@
 
 
     <dimen name="feedback_content_height">160dp</dimen>
+
+    <dimen name="source_item_height">70dp</dimen>
 </resources>

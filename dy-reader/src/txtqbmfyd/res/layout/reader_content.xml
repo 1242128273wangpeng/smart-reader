@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/reader_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.ReaderActivity"
+    tools:ignore="RtlHardcoded,SmallSp">
+
+    <FrameLayout
+        android:id="@+id/pac_reader_ad_cache"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="26dp"
+        android:paddingTop="26dp">
+    </FrameLayout>
+
+    <com.dy.reader.view.BlockMenuGestureFrameLayout
+        android:id="@+id/fl_menu_gesture"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.dy.reader.page.GLReaderView
+            android:id="@+id/glSurfaceView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <com.dy.reader.page.RecyclerReadView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+    </com.dy.reader.view.BlockMenuGestureFrameLayout>
+
+    <com.dy.reader.page.PageAdContainer
+        android:id="@+id/pac_reader_ad"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="26dp"
+        android:paddingTop="26dp"
+        android:visibility="gone">
+    </com.dy.reader.page.PageAdContainer>
+
+    <RelativeLayout
+        android:id="@+id/rl_reader_header"
+        android:layout_width="match_parent"
+        android:layout_height="26dp">
+
+        <TextView
+            android:id="@+id/txt_reader_original_page"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="20dp"
+            android:gravity="center"
+            android:text="@string/original_web_page"
+            android:textSize="10sp"/>
+
+        <TextView
+            android:id="@+id/txt_reader_chapter_name"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@+id/txt_reader_translate_code"
+            android:layout_toRightOf="@+id/txt_reader_original_page"
+            android:gravity="center"
+            android:maxLines="1"
+            tools:text="章节"
+            android:textSize="10sp"
+            android:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/txt_reader_translate_code"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:gravity="center"
+            android:text="@string/translate_code"
+            android:textSize="10sp"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_reader_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="26dp"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/transparent"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <com.dy.reader.page.BatteryView
+            android:id="@+id/novel_content_battery_view"
+            android:layout_width="16dp"
+            android:layout_height="11dp"
+            android:layout_centerVertical="true"
+            android:scrollbars="none"
+            android:src="@drawable/reading_batty_day"/>
+
+        <com.dy.reader.page.TimeTextView
+            android:id="@+id/txt_reader_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="6dp"
+            android:layout_toRightOf="@+id/novel_content_battery_view"
+            android:gravity="center_vertical"
+            android:textSize="10sp"/>
+
+        <TextView
+            android:id="@+id/txt_reader_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:textSize="10sp"/>
+
+        <TextView
+            android:id="@+id/txt_reader_page"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:textSize="10sp"/>
+    </RelativeLayout>
+
+</RelativeLayout>

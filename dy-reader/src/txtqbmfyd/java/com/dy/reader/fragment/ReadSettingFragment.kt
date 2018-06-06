@@ -18,7 +18,7 @@ import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.txtqbmfyd.read_option_reading_info.*
-import kotlinx.android.synthetic.txtqbmfyd.read_setting_layout.*
+import kotlinx.android.synthetic.txtqbmfyd.frag_read_setting.*
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.CallBackDownload
 import org.greenrobot.eventbus.EventBus
@@ -32,14 +32,14 @@ import org.greenrobot.eventbus.ThreadMode
 class ReadSettingFragment : DialogFragment() , CallBackDownload {
     override fun onTaskStatusChange(book_id: String?) {
         if(dialog != null){
-            dialog.readSettingHeader.setBookDownLoadState(book_id)
+            dialog.rsh_option_header.setBookDownLoadState(book_id)
         }
 
     }
 
     override fun onTaskFinish(book_id: String?) {
         if(dialog != null){
-            dialog.readSettingHeader.setBookDownLoadState(book_id)
+            dialog.rsh_option_header.setBookDownLoadState(book_id)
         }
 
     }
@@ -62,21 +62,15 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mPresenter = ReadSettingPresenter(act = activity as ReaderActivity)
-
-
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = Dialog(activity, R.style.dialog_menu)
 
-//        dialog.getWindow().setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-//        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE)
-//        dialog.window.setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN, WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
-        dialog.setContentView(R.layout.read_setting_layout)
+        dialog.setContentView(R.layout.frag_read_setting)
         val window = dialog.window
 
         window.setGravity(Gravity.CENTER) //可设置dialog的位置
-//        window.decorView.setPadding(0, 0, 0, 0) //消除边距
         val lp = window.attributes
         lp.width = WindowManager.LayoutParams.MATCH_PARENT   //设置宽度充满屏幕
         lp.height = WindowManager.LayoutParams.MATCH_PARENT
@@ -85,11 +79,11 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
         dialog.setCancelable(false)
         dialog.setOnShowListener {
             activity?.window?.decorView?.systemUiVisibility = FrameActivity.UI_OPTIONS_NORMAL
-            dialog.readSettingHeader.showMenu(true)
-            dialog.readSettingBottomDetail.showMenu(true)
+            dialog.rsh_option_header.showMenu(true)
+            dialog.rsbd_option_bottom_detail.showMenu(true)
 
             //拦截连点
-            dialog.read_setting_root.canTouchCallbak = {
+            dialog.rl_read_setting_content.canTouchCallbak = {
                 canTouch
             }
         }
@@ -98,7 +92,6 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
             if (KeyEvent.KEYCODE_BACK == keyCode) {
                 if (event.action == MotionEvent.ACTION_UP) {
                     activity?.onBackPressed()
-//                    activity?.finish()
                 }
                 true
             } else {
@@ -106,14 +99,11 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
             }
         }
         if (!TextUtils.isEmpty(ReaderStatus.book.book_id)) {
-            dialog.readSettingHeader.setBookDownLoadState(ReaderStatus.book.book_id)
+            dialog.rsh_option_header.setBookDownLoadState(ReaderStatus.book.book_id)
             CacheManager.listeners.add(this)
         }
         return dialog
     }
-
-//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
-//            inflater.inflate(R.layout.read_setting_layout, container, false)
 
     private var canTouch = true
 
@@ -143,8 +133,6 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
 
             }
         }
-
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -157,22 +145,18 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
 
     override fun onResume() {
         super.onResume()
-        dialog.readSettingBottomDetail.readPresenter = (activity as ReaderActivity).mReadPresenter
-        dialog.readSettingHeader.presenter = mPresenter
-        dialog.readSettingBottomDetail.presenter = mPresenter
-        dialog.readSettingBottomDetail.currentThemeMode = themeMode
-        dialog.readSettingBottomDetail.setNovelMode(ReaderSettings.instance.readThemeMode)
-        dialog.read_setting_root.setOnClickListener {
+        dialog.rsbd_option_bottom_detail.readPresenter = (activity as ReaderActivity).mReadPresenter
+        dialog.rsh_option_header.presenter = mPresenter
+        dialog.rsbd_option_bottom_detail.presenter = mPresenter
+        dialog.rsbd_option_bottom_detail.currentThemeMode = themeMode
+        dialog.rsbd_option_bottom_detail.setNovelMode(ReaderSettings.instance.readThemeMode)
+        dialog.rl_read_setting_content.setOnClickListener {
             dismiss()
         }
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this)
         }
         canTouch = true
-
-
-
-
     }
 
     override fun onStop() {
@@ -186,9 +170,9 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onRecieveEvent(event: EventSetting) {
         if (event.type == EventSetting.Type.REFRESH_MODE) {
-            dialog.readSettingBottomDetail.setMode()
+            dialog.rsbd_option_bottom_detail.setMode()
         } else if (event.type == EventSetting.Type.DISMISS_TOP_MENU) {
-            dialog.readSettingHeader.showMenu(false)
+            dialog.rsh_option_header.showMenu(false)
         }
     }
 
