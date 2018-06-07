@@ -39,6 +39,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
+import com.dingyue.contract.router.RouterConfig
 
 import java.util.ArrayList
 import java.util.Collections
@@ -49,7 +50,6 @@ import de.greenrobot.event.EventBus
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.main.layout_empty_catalog.*
 import kotlinx.android.synthetic.qbzsydq.act_catalog.*
-import net.lzbook.kit.router.RouterConfig
 import net.lzbook.kit.utils.antiShakeClick
 
 /**

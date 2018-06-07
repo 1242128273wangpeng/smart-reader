@@ -26,14 +26,11 @@ import com.intelligent.reader.R
 import com.intelligent.reader.adapter.SearchHotWordAdapter
 import com.intelligent.reader.adapter.SearchSuggestAdapter
 
-import com.intelligent.reader.presenter.search.SearchPresenter
 import com.intelligent.reader.view.ScrollForGridView
 
 import android.content.Context.INPUT_METHOD_SERVICE
 import com.ding.basic.bean.SearchAutoCompleteBean
 import com.ding.basic.bean.SearchHotBean
-import com.intelligent.reader.presenter.search.SearchHelpPresenter
-import com.intelligent.reader.presenter.search.SearchView
 import net.lzbook.kit.book.view.LoadingPage
 
 class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText: EditText, private val mSearchPresenter: SearchPresenter?) : SearchPresenter.SearchSuggestCallBack, SearchView.HelpView {

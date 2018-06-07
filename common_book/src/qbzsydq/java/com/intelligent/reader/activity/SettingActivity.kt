@@ -22,6 +22,9 @@ import android.widget.Toast
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.bumptech.glide.Glide
+import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
+import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
 import com.intelligent.reader.util.EventBookStore
@@ -33,8 +36,6 @@ import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.book.view.SwitchButton
 import net.lzbook.kit.cache.DataCleanManager
 import net.lzbook.kit.constants.SPKeys
-import net.lzbook.kit.router.RouterConfig
-import net.lzbook.kit.router.RouterUtil
 import net.lzbook.kit.user.UserManager
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.*
@@ -384,10 +385,6 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_more)
                 startActivity(Intent(this@SettingActivity, SettingMoreActivity::class.java))
             }
-            R.id.rl_style_change -> {
-                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_theme_change)
-                startActivity(Intent(this@SettingActivity, StyleChangeActivity::class.java))
-            }
             R.id.tv_login_info -> Toast.makeText(applicationContext, R.string.enter_community, Toast.LENGTH_SHORT).show()
             R.id.iv_mine_image, R.id.user_login_layout_left -> Toast.makeText(applicationContext, R.string.enter_community, Toast.LENGTH_SHORT).show()
             R.id.check_update_rl -> {
@@ -410,14 +407,14 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
                 } catch (e: Exception) {
-                    showToastShort(R.string.menu_no_market)
+                    this.applicationContext.showToastMessage(R.string.menu_no_market)
                 }
 
             }
 
             R.id.disclaimer_statement_rl -> {
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.PROCTCOL)
-                RouterUtil.navigation(RouterConfig.DISCLAIMER_ACTIVITY)
+                RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY)
             }
             R.id.rl_history_setting -> {
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.PERSON_HISTORY)

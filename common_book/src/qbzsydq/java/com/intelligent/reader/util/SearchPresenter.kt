@@ -1,23 +1,21 @@
-package com.intelligent.reader.presenter.search
+package com.intelligent.reader.util
 
-import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.widget.Toast
 import com.ding.basic.bean.Book
-import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
+import com.ding.basic.bean.SearchAutoCompleteBean
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.dingyue.contract.IPresenter
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
-import com.dingyue.contract.util.showToastMessage
-import com.dy.reader.setting.ReaderStatus
+import com.dingyue.contract.router.BookRouter
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
-import com.intelligent.reader.util.SearchPresenter
+import com.intelligent.reader.activity.SearchBookActivity
+import com.intelligent.reader.presenter.search.SearchPresenter
 import com.orhanobut.logger.Logger
-import io.reactivex.disposables.Disposable
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.constants.Constants
@@ -29,7 +27,6 @@ import net.lzbook.kit.statistic.buildSearch
 import net.lzbook.kit.statistic.model.Search
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.FootprintUtils
 import net.lzbook.kit.utils.JSInterfaceHelper
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -39,7 +36,7 @@ import java.util.*
  * Created by yuchao on 2017/8/2 0002.
  */
 
-class SearchPresenter(private val mContext: Activity, override var view: SearchView.AvtView?) : IPresenter<SearchView.AvtView> {
+class SearchPresenter(private val activity: SearchBookActivity, private val mContext: Context, override var view: SearchView.AvtView?) : IPresenter<SearchView.AvtView> {
     private val wordInfoMap = HashMap<String, WordInfo>()
 
     var word: String? = null
@@ -51,8 +48,7 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
     var fromClass: String? = null
     private val url_tag: String? = null
     private var searchSuggestCallBack: SearchSuggestCallBack? = null
-    private var transmitBean: SearchAutoCompleteBeanYouHua? = null
-    private var disposable: Disposable? = null
+    private var transmitBean: SearchAutoCompleteBean? = null
 
     fun startSearchSuggestData(searchWord: String?) {
         var searchWord = searchWord
@@ -66,15 +62,14 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
             e.printStackTrace()
         }
 
-
         if (searchWord != null && !TextUtils.isEmpty(searchWord)) {
-            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestAutoCompleteV4(searchWord, object : RequestSubscriber<SearchAutoCompleteBeanYouHua>() {
-                override fun requestResult(result: SearchAutoCompleteBeanYouHua?) {
+            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestAutoComplete(searchWord, object : RequestSubscriber<SearchAutoCompleteBean>() {
+                override fun requestResult(result: SearchAutoCompleteBean?) {
                     val resultSuggest = ArrayList<SearchCommonBean>()
                     resultSuggest.clear()
                     transmitBean = result
                     AppLog.e("bean", result.toString())
-                    if (result != null && result.respCode == "20000"&& result.data != null) {
+                    if (result != null && result.suc == "200" && result.data != null) {
                         for (i in 0 until result.data!!.authors!!.size) {
                             val searchCommonBean = SearchCommonBean()
                             searchCommonBean.suggest = result.data!!.authors!![i].suggest
@@ -185,63 +180,18 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
             val intent = Intent()
             intent.setClass(mContext, CoverPageActivity::class.java)
             val bundle = Bundle()
-            bundle.putString("book_id", book_id)
+            bundle.putString("book_id",book_id)
             bundle.putString("book_source_id", book_source_id)
             intent.putExtras(bundle)
             mContext.startActivity(intent)
         }
-
-        jsInterfaceHelper.setSearchWordClick(JSInterfaceHelper.onSearchWordClick { searchWord, search_type ->
-            word = searchWord
-            searchType = search_type
-
-            startLoadData()
-
-            view?.onNoneResultSearch(searchWord)
-        })
-
-        jsInterfaceHelper.setOnTurnRead(JSInterfaceHelper.onTurnRead { book_id, book_source_id, host, name, author, parameter, extra_parameter, update_type, last_chapter_name, serial_number, img_url, update_time, desc, label, status, bookType ->
-
-
-            val book = Book()
-            book.book_id = book_id
-            book.book_source_id = book_source_id
-            book.host = host
-            book.author = author
-            book.name = name
-            book.last_chapter?.name = last_chapter_name
-            book.chapter_count = serial_number
-            book.img_url = img_url
-            book.last_chapter?.update_time = update_time
-            book.sequence = -1
-            book.desc = desc
-            book.label = label
-
-            book.status = status
-
-            //bookType为是否付费书籍标签 除快读外不加
-
-            FootprintUtils.saveHistoryShelf(book)
-            val bundle = Bundle()
-
-            bundle.putInt("sequence", 0)
-            bundle.putInt("offset", 0)
-            bundle.putSerializable("book", ReaderStatus.book)
-            RouterUtil.navigation(mContext,RouterConfig.READER_ACTIVITY,bundle)
-        })
 
         jsInterfaceHelper.setOnEnterRead { host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count, updateTime, parameter, extra_parameter, dex ->
             AppLog.e(TAG, "doRead")
             val coverBook = genCoverBook(host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count,
                     updateTime, parameter, extra_parameter, dex)
             AppLog.e(TAG, "DoRead : " + coverBook.sequence)
-
-            val bundle = Bundle()
-            bundle.putInt("sequence", 0)
-            bundle.putInt("offset", 0)
-            bundle.putSerializable("book", coverBook)
-
-            RouterUtil.navigation(mContext,RouterConfig.READER_ACTIVITY,bundle)
+            BookRouter.navigateCoverOrRead(activity, coverBook, 0)
         }
 
         val booksOnLine = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks()
@@ -272,7 +222,7 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
             }
             val succeed = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(book)
             if (succeed > 0) {
-                mContext.showToastMessage(R.string.bookshelf_insert_success)
+                Toast.makeText(mContext.applicationContext, R.string.bookshelf_insert_success, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -281,7 +231,7 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
             RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBook(book_id)
             CacheManager.stop(book_id)
             CacheManager.resetTask(book_id)
-            mContext.showToastMessage(R.string.bookshelf_delete_success)
+            Toast.makeText(mContext.applicationContext, R.string.bookshelf_delete_success, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -321,7 +271,6 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
             params.put("filter_type", filterType ?: "")
             params.put("filter_word", filterWord ?: "")
             params.put("sort_type", sortType ?: "")
-            params.put("searchEmpty", "1")
             AppLog.e("kk", "$searchWord==$searchType==$filterType==$filterWord===$sortType")
             mUrl = UrlUtils.buildWebUrl(URLBuilderIntterface.SEARCH, params)
         }
@@ -350,7 +299,7 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
     }
 
     interface SearchSuggestCallBack {
-        fun onSearchResult(suggestList: List<SearchCommonBean>, transmitBean: SearchAutoCompleteBeanYouHua)
+        fun onSearchResult(suggestList: List<SearchCommonBean>, transmitBean: SearchAutoCompleteBean)
     }
 
     private inner class WordInfo {
@@ -371,6 +320,4 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
         private val TAG = SearchPresenter::class.java.simpleName
 
     }
-
-
 }

@@ -78,7 +78,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         popUpInAnimation = AnimationUtils.loadAnimation(context, R.anim.pop_up_in)
         popDownOutAnimation = AnimationUtils.loadAnimation(context, R.anim.pop_down_out)
 
-        skbar_reader_brightness_change!!.max = 235
+        skbar_reader_brightness_change?.max = 235
 
         if(!readerSettings.isAutoBrightness) {
             setScreenBrightProgress()
@@ -125,14 +125,14 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     private fun changeBottomSettingView(id: Int) {
         when (id) {
             SETTING_OPTION -> {
-                rl_reader_option_bottom!!.visibility = View.VISIBLE
-                ll_reader_setting_detail!!.visibility = View.GONE
+                rl_reader_option_bottom?.visibility = View.VISIBLE
+                ll_reader_setting_detail?.visibility = View.GONE
             }
 
             SETTING_DETAIL -> {
                 EventBus.getDefault().post(EventSetting(EventSetting.Type.DISMISS_TOP_MENU))
-                ll_reader_setting_detail!!.visibility = View.VISIBLE
-                rl_reader_option_bottom!!.visibility = View.GONE
+                ll_reader_setting_detail?.visibility = View.VISIBLE
+                rl_reader_option_bottom?.visibility = View.GONE
 
                 rg_reader_backdrop_group.setOnCheckedChangeListener(null)
 
@@ -147,8 +147,8 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             }
 
             else -> {
-                ll_reader_setting_detail!!.visibility = View.GONE
-                rl_reader_option_bottom!!.visibility = View.GONE
+                ll_reader_setting_detail?.visibility = View.GONE
+                rl_reader_option_bottom?.visibility = View.GONE
             }
         }
     }
@@ -187,9 +187,9 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
         val screenBrightness =  readerSettings.screenBrightness
         if (screenBrightness > 0) {
-            skbar_reader_brightness_change!!.progress = screenBrightness
+            skbar_reader_brightness_change?.progress = screenBrightness
         }
-        skbar_reader_brightness_change!!.progress = 0
+        skbar_reader_brightness_change?.progress = 0
     }
 
 
@@ -197,13 +197,13 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
     private fun initPageMode() {
         if (readerSettings.animation_mode == 1) {
-            rg_reader_animation_group!!.check(R.id.rbtn_reader_animation_simulation)
+            rg_reader_animation_group?.check(R.id.rbtn_reader_animation_simulation)
         } else if (readerSettings.animation_mode == 2) {
-            rg_reader_animation_group!!.check(R.id.rbtn_reader_animation_translation)
+            rg_reader_animation_group?.check(R.id.rbtn_reader_animation_translation)
         } else if (readerSettings.animation_mode == 3) {
-            rg_reader_animation_group!!.check(R.id.rbtn_reader_animation_up_down)
+            rg_reader_animation_group?.check(R.id.rbtn_reader_animation_up_down)
         }else{
-            rg_reader_animation_group!!.check(R.id.rbtn_reader_animation_slide)
+            rg_reader_animation_group?.check(R.id.rbtn_reader_animation_slide)
         }
     }
 
@@ -212,16 +212,16 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         val screenBrightness = readerSettings.screenBrightness
 
         if (screenBrightness >= 0) {
-            skbar_reader_brightness_change!!.progress = screenBrightness
+            skbar_reader_brightness_change?.progress = screenBrightness
         } else {
-            skbar_reader_brightness_change!!.progress = 5
+            skbar_reader_brightness_change?.progress = 5
         }
     }
 
     fun showMenu(isShow: Boolean) {
         if (isShow) {
-            img_reader_font_reduce!!.isEnabled = readerSettings.fontSize > 10
-            img_reader_font_increase!!.isEnabled = readerSettings.fontSize < 30
+            img_reader_font_reduce?.isEnabled = readerSettings.fontSize > 10
+            img_reader_font_increase?.isEnabled = readerSettings.fontSize < 30
             rl_reader_option_bottom.visibility = View.VISIBLE
             rl_reader_option_bottom.startAnimation(popUpInAnimation)
 
@@ -229,9 +229,9 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             skbar_reader_chapter_change.max = ReaderStatus.chapterList.size - 1
             if (rl_reader_change_chapter != null) {
                 if (ReaderStatus.chapterList.size < 1 || ReaderStatus.position.group < 1) {
-                    skbar_reader_chapter_change!!.progress = 0
+                    skbar_reader_chapter_change?.progress = 0
                 } else {
-                    skbar_reader_chapter_change!!.progress = ReaderStatus.position.group
+                    skbar_reader_chapter_change?.progress = ReaderStatus.position.group
                 }
                 showChapterProgress()
             }
@@ -246,12 +246,12 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             setFontSize()
         } else {
             if (rl_reader_option_bottom != null && rl_reader_option_bottom!!.isShown) {
-                rl_reader_option_bottom!!.startAnimation(popDownOutAnimation)
+                rl_reader_option_bottom?.startAnimation(popDownOutAnimation)
             }
             popDownOutAnimation?.onEnd {
-                rl_reader_option_bottom!!.visibility = View.GONE
+                rl_reader_option_bottom?.visibility = View.GONE
             }
-            ll_reader_setting_detail!!.visibility = View.GONE
+            ll_reader_setting_detail?.visibility = View.GONE
         }
     }
 
@@ -259,10 +259,10 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         if (ReaderStatus.position.group == -1) {
         } else {
             if (txt_current_chapter_name != null) {
-                txt_current_chapter_name!!.text = if (TextUtils.isEmpty(ReaderStatus.chapterName)) "" else ReaderStatus.chapterName
+                txt_current_chapter_name?.text = if (TextUtils.isEmpty(ReaderStatus.chapterName)) "" else ReaderStatus.chapterName
             }
             if (txt_current_chapter_sequence != null) {
-                txt_current_chapter_sequence!!.text = (ReaderStatus.position.group + 1).toString() + "/" + ReaderStatus.chapterCount + "章"
+                txt_current_chapter_sequence?.text = (ReaderStatus.position.group + 1).toString() + "/" + ReaderStatus.chapterCount + "章"
             }
         }
 
@@ -501,11 +501,11 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     private fun decreaseFont() {
         if (readerSettings.fontSize > 10) {
             if (readerSettings.fontSize == 30) {
-                img_reader_font_increase!!.isEnabled = true
+                img_reader_font_increase?.isEnabled = true
             }
             readerSettings.fontSize -= 2
             if (readerSettings.fontSize <= 10) {
-                img_reader_font_reduce!!.isEnabled = false
+                img_reader_font_reduce?.isEnabled = false
             }
             setFontSize()
         }
@@ -521,11 +521,11 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     private fun increaseFont() {
         if (readerSettings.fontSize < 30) {
             if (readerSettings.fontSize == 10) {
-                img_reader_font_reduce!!.isEnabled = true
+                img_reader_font_reduce?.isEnabled = true
             }
             readerSettings.fontSize += 2
             if (readerSettings.fontSize >= 30) {
-                img_reader_font_increase!!.isEnabled = false
+                img_reader_font_increase?.isEnabled = false
             }
 
             setFontSize()
@@ -538,14 +538,14 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
     fun setFontSize() {
         if (txt_reader_font_size != null) {
-            txt_reader_font_size!!.text = readerSettings.fontSize.toString()
+            txt_reader_font_size?.text = readerSettings.fontSize.toString()
         }
     }
 
     fun changeChapter(sequence: Int) {
         if (skbar_reader_chapter_change != null && skbar_reader_chapter_change!!.isShown && ReaderStatus.chapterCount - 1 != 0) {
             val index = Math.max(ReaderStatus.position.group, 0)
-            skbar_reader_chapter_change!!.progress = index
+            skbar_reader_chapter_change?.progress = index
         }
         showChapterProgress()
         refreshJumpPreBtnState(sequence)
@@ -621,10 +621,10 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             openSystemLight()
         } else {
             if (screenBrightness >= 0) {
-                skbar_reader_brightness_change!!.progress = screenBrightness
+                skbar_reader_brightness_change?.progress = screenBrightness
                 setScreenBrightness(screenBrightness)
             } else {
-                skbar_reader_brightness_change!!.progress = 5
+                skbar_reader_brightness_change?.progress = 5
                 setScreenBrightness(20)
             }
         }
@@ -776,24 +776,24 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 switchSpaceState()
             } else {
                 isCustomReadingSpace = true
-                rg_reader_spacing_group!!.clearCheck()
+                rg_reader_spacing_group?.clearCheck()
             }
         } else {
             isCustomReadingSpace = true
-            rg_reader_spacing_group!!.clearCheck()
+            rg_reader_spacing_group?.clearCheck()
         }
     }
 
     // 单选切换行间距
     private fun switchSpaceState() {
         if (readerSettings.readInterlineaSpace == 0.2f) {
-            rg_reader_spacing_group!!.check(R.id.rbtn_reader_spacing_0_2)
+            rg_reader_spacing_group?.check(R.id.rbtn_reader_spacing_0_2)
         } else if (readerSettings.readInterlineaSpace == 0.3f) {
-            rg_reader_spacing_group!!.check(R.id.rbtn_reader_spacing_0_5)
+            rg_reader_spacing_group?.check(R.id.rbtn_reader_spacing_0_5)
         } else if (readerSettings.readInterlineaSpace == 0.4f) {
-            rg_reader_spacing_group!!.check(R.id.rbtn_reader_spacing_1_0)
+            rg_reader_spacing_group?.check(R.id.rbtn_reader_spacing_1_0)
         } else if (readerSettings.readInterlineaSpace == 0.5f) {
-            rg_reader_spacing_group!!.check(R.id.rbtn_reader_spacing_1_5)
+            rg_reader_spacing_group?.check(R.id.rbtn_reader_spacing_1_5)
         }
     }
 
@@ -883,7 +883,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         this.detachAllViewsFromParent()
 
         if (rg_reader_backdrop_group != null) {
-            rg_reader_backdrop_group!!.removeAllViews()
+            rg_reader_backdrop_group?.removeAllViews()
         }
 
         System.gc()

@@ -11,14 +11,14 @@
     <RelativeLayout
         android:id="@+id/rl_head"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:background="#CE3D3E"
         android:fitsSystemWindows="true">
 
         <RelativeLayout
             android:id="@+id/rl_head_normal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="48dp">
 
             <ImageView
                 android:id="@+id/img_head_setting"

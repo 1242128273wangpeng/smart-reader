@@ -8,13 +8,14 @@ import android.text.TextUtils
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
-import android.widget.RelativeLayout
 import android.widget.Toast
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
 import com.ding.basic.repository.RequestRepositoryFactory
+import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.util.showToastMessage
 import com.dycm_adsdk.PlatformSDK
 import com.dycm_adsdk.callback.AbstractCallback
 import com.dycm_adsdk.callback.ResultCode
@@ -30,16 +31,15 @@ import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
-import net.lzbook.kit.router.RouterConfig
 import net.lzbook.kit.utils.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
 import java.util.concurrent.Callable
+import kotlin.collections.ArrayList
 
-@Route(path = RouterConfig.COVERPAGE_ACTIVITY)
+@Route(path = RouterConfig.COVER_PAGE_ACTIVITY)
 class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageContract {
-
     private var mBackground = 0
     private var mTextColor = 0
     private var loadingPage: LoadingPage? = null
@@ -226,13 +226,11 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
             if (!TextUtils.isEmpty(book.host)) {
                 if (Constants.QG_SOURCE == book.host) {
-                    showCurrentSources(host = "青果阅读")
+                    book_cover_source_form.text = "青果阅读"
                 } else {
-                    showCurrentSources(host = book.host)
+                    book_cover_source_form.text = book.host
                 }
             }
-
-            ableChangeSource(false)
 
             if (book.desc != null && !TextUtils.isEmpty(book.desc)) {
                 book_cover_description!!.text = book.desc
@@ -252,7 +250,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 }
             }
         } else {
-            showToastShort(R.string.book_cover_no_resource)
+            this.applicationContext.showToastMessage(R.string.book_cover_no_resource)
             if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
                 finish()
             }
@@ -300,22 +298,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         }
     }
 
-    override fun showCurrentSources(host: String?) {
-        if (book_cover_source_form != null) {
-            if (host == null) {
-                book_cover_source_form.visibility = View.GONE
-            } else {
-                book_cover_source_form.text = host
-                book_cover_source_form.visibility = View.VISIBLE
-            }
-
-        }
-    }
-
-    override fun reloadBookCoverDetail() {
-        requestBookDetail()
-    }
-
     override fun bookSubscribeState(subscribe: Boolean) {
         if (subscribe) {
             book_cover_bookshelf!!.setText(R.string.book_cover_remove_bookshelf)
@@ -338,19 +320,14 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         Toast.makeText(this, "请求失败", Toast.LENGTH_SHORT).show()
     }
 
-    override fun ableChangeSource(able: Boolean) {
-        if (able) {
-            if (book_cover_source_form != null) {
-                book_cover_source_form.setCompoundDrawables(null, null, null, null)
-            }
-        }
+    override fun showRecommendSuccess(recommendBean: ArrayList<Book>) {
+
     }
 
-    override fun setCompoundDrawables() {
-        if (book_cover_source_form != null) {
-            book_cover_source_form.setCompoundDrawables(null, null, null, null)
-        }
+    override fun showRecommendFail() {
+
     }
+
 
     override fun onClick(view: View) {
         if (coverPagePresenter != null) {

@@ -26,10 +26,10 @@ import com.dy.reader.adapter.ListRecyclerAdapter
 import com.dy.reader.presenter.CatalogMark
 import com.dy.reader.presenter.CatalogMarkPresenter
 import com.dy.reader.setting.ReaderStatus
-import kotlinx.android.synthetic.qbzsydq.item_reader_bookmark.view.*
 import kotlinx.android.synthetic.qbzsydq.popup_catalog_mark_delete.view.*
 import kotlinx.android.synthetic.qbzsydq.frag_catalog_mark.*
 import kotlinx.android.synthetic.qbzsydq.frag_catalog_mark.view.*
+import kotlinx.android.synthetic.qbzsydq.item_reader_bookmark.view.*
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.utils.StatServiceUtils
@@ -50,10 +50,10 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
             inflater.inflate(R.layout.frag_catalog_mark, container, false)
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val dividerCatalog = ShapeItemDecoration(activity, DividerItemDecoration.VERTICAL)
-        val dividerBookmark = ShapeItemDecoration(activity, DividerItemDecoration.VERTICAL)
+        val dividerCatalog = ShapeItemDecoration(requireActivity(), DividerItemDecoration.VERTICAL)
+        val dividerBookmark = ShapeItemDecoration(requireActivity(), DividerItemDecoration.VERTICAL)
 
         dividerCatalog.setDrawable(ColorDrawable(Color.parseColor("#0c000000")))
         dividerBookmark.setDrawable(ColorDrawable(Color.parseColor("#0c000000")))
@@ -63,10 +63,10 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
 
         val catalogAdapter = ListRecyclerAdapter(chapterList, R.layout.item_reader_catalog, ChapterHolder::class.java)
         catalogAdapter.itemClick = View.OnClickListener { v ->
-            presenter?.gotoChapter(activity, v.tag as Chapter)
+            presenter?.gotoChapter(requireActivity(), v.tag as Chapter)
         }
         recl_catalog_content.adapter = catalogAdapter
-        recl_catalog_content.layoutManager = object : LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false) {
+        recl_catalog_content.layoutManager = object : LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false) {
             override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State) {
                 super.onLayoutChildren(recycler, state)
                 val firstVisibleItemPosition = findFirstVisibleItemPosition()
@@ -85,12 +85,12 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
 
         val bookmarkAdapter = ListRecyclerAdapter(bookMarkList, R.layout.item_reader_bookmark, BookMarkHolder::class.java)
         bookmarkAdapter.itemClick = View.OnClickListener { v ->
-            presenter?.gotoBookMark(activity, v.tag as Bookmark)
+            presenter?.gotoBookMark(requireActivity(), v.tag as Bookmark)
         }
 
         bookmarkAdapter.itemLongClick = View.OnLongClickListener { v: View ->
             view_content_mask.visibility = View.VISIBLE
-            val transX = activity.window.decorView.width - rl_book_content.width
+            val transX = requireActivity().window.decorView.width - rl_book_content.width
             val inflate = LayoutInflater.from(context).inflate(R.layout.popup_catalog_mark_delete, null)
 
             val popupWindow = PopupWindow(inflate, FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
@@ -100,11 +100,11 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
             popupWindow.showAtLocation(view_content_mask, Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, -transX / 2, 0)
             inflate.txt_delete_mark.tag = v.tag
             inflate.txt_delete_mark.setOnClickListener { v ->
-                presenter?.deleteBookMark(activity, v.tag as Bookmark)
+                presenter?.deleteBookMark(requireActivity(), v.tag as Bookmark)
                 popupWindow.dismiss()
             }
             inflate.txt_clear_mark.setOnClickListener { v ->
-                presenter?.deleteAllBookMark(activity)
+                presenter?.deleteAllBookMark(requireActivity())
                 popupWindow.dismiss()
             }
 
@@ -114,7 +114,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
             true
         }
         recl_mark_content.adapter = bookmarkAdapter
-        recl_mark_content.layoutManager = object : LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false) {
+        recl_mark_content.layoutManager = object : LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false) {
             override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State) {
                 super.onLayoutChildren(recycler, state)
                 val firstVisibleItemPosition = findFirstVisibleItemPosition()
@@ -136,12 +136,12 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
 
     private fun initListener() {
         img_fix_book.setOnClickListener {
-            RepairHelp.fixBook(activity, presenter?.getBook(), {
-                if (activity != null && !activity.isFinishing) {
-                    RouterUtil.navigation(activity, RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
+            RepairHelp.fixBook(requireActivity(), presenter?.getBook(), {
+                if (requireActivity() != null && !requireActivity().isFinishing) {
+                    RouterUtil.navigation(requireActivity(), RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
                 }
             })
-            presenter?.onClickFixBook(activity)
+            presenter?.onClickFixBook(requireActivity())
         }
 
         rg_catalog_mark.setOnCheckedChangeListener { _, checkedId ->
@@ -152,7 +152,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
                 }
                 R.id.rbtn_bookmark -> {
                     ckb_catalog_order.visibility = View.GONE
-                    presenter?.loadBookMark(activity, 1)//用于标识只有为1的时候才打点书签
+                    presenter?.loadBookMark(requireActivity(), 1)//用于标识只有为1的时候才打点书签
                 }
                 else -> {
 
@@ -177,12 +177,12 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
         if (recl_catalog_content.visibility == View.VISIBLE) {
             presenter?.loadCatalog(reverse)
         } else {
-            presenter?.loadBookMark(activity, 2)
+            presenter?.loadBookMark(requireActivity(), 2)
         }
     }
 
     fun fixBook() {
-        if (RepairHelp.isShowFixBtn(activity, ReaderStatus.book.book_id)) {
+        if (RepairHelp.isShowFixBtn(requireActivity(), ReaderStatus.book.book_id)) {
             img_fix_book.visibility = View.VISIBLE
         } else {
             img_fix_book.visibility = View.GONE
@@ -240,7 +240,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
     override fun onLoading() {
         loadingPage?.onSuccess()
         if (!dataLoaded) {
-            loadingPage = LoadingPage(activity, view as FrameLayout)
+            loadingPage = LoadingPage(requireActivity(), view as FrameLayout)
             loadingPage!!.setCustomBackgroud()
             loadingPage!!.setReloadAction(Callable<Void> {
                 presenter?.loadCatalog(false)
@@ -269,23 +269,20 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
 
                 txt.text = "${chapter.name}"
 
-                var chapterExist = false
+                val chapterExist = DataCache.isChapterCached(chapter)
 
-                chapterExist = DataCache.isChapterCached(chapter)
+                var color: Int
 
-
-                var txtColor = 0
-                if (chapterExist) {
-                    txtColor = R.color.read_item_catalog_chapter_text_color
-                } else {
-                    txtColor = R.color.read_item_catalog_uncached_chapter_text_color
+                color = when {
+                    chapterExist -> Color.parseColor("#E5000000")
+                    else -> Color.parseColor("#4C000000")
                 }
 
                 if (chapter.name?.equals(ReaderStatus.chapterName) == true) {
-                    txtColor = R.color.read_item_catalog_current_chapter_text_color
+                    color = Color.parseColor("#CCC2B282")
                 }
 
-                txt.setTextColor(itemView.context.resources.getColor(txtColor))
+                txt.setTextColor(color)
             }
         }
     }

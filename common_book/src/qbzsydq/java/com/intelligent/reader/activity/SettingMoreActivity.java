@@ -14,9 +14,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.intelligent.reader.R;
+import com.intelligent.reader.view.CustomDialog;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.view.CustomDialog;
 import net.lzbook.kit.book.view.SwitchButton;
 import net.lzbook.kit.book.view.TimePicker;
 import net.lzbook.kit.constants.Constants;

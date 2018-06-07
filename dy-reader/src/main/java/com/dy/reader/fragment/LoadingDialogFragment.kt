@@ -12,7 +12,7 @@ import com.dy.reader.R
 import com.dy.reader.Reader
 import com.dy.reader.helper.AppHelper
 import com.dy.reader.util.ThemeUtil
-import kotlinx.android.synthetic.txtqbmfyd.frag_loading_dialog.*
+import kotlinx.android.synthetic.qbzsydq.frag_loading_dialog.*
 
 class LoadingDialogFragment : DialogFragment() {
 
@@ -30,7 +30,7 @@ class LoadingDialogFragment : DialogFragment() {
         val dialog = super.onCreateDialog(savedInstanceState)
         dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.window.requestFeature(Window.FEATURE_NO_TITLE)
-        if (fm.findFragmentByTag(ReadSettingFragment.TAG) == null) {
+        if (fm?.findFragmentByTag(ReadSettingFragment.TAG) == null) {
             dialog.window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }
         dialog.window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);

@@ -15,11 +15,6 @@
             android:theme="@style/Theme.DesignDemo"/>
 
         <activity
-            android:name=".activity.DisclaimerActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeTranslucent"/>
-
-        <activity
             android:name=".activity.BookEndActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

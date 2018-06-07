@@ -17,22 +17,13 @@
 
 package com.intelligent.reader.view;
 
-
-import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.utils.AppUtils;
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.util.SparseBooleanArray;
 import android.view.MotionEvent;
@@ -41,17 +32,19 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.intelligent.reader.R;
 
+import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.utils.AppUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 
-
-public class ExpandableTextView extends RelativeLayout implements View.OnClickListener {
+public class ExpandableTextView extends LinearLayout implements View.OnClickListener {
 
     private static final int MAX_COLLAPSED_LINES = 8;
 
@@ -61,7 +54,7 @@ public class ExpandableTextView extends RelativeLayout implements View.OnClickLi
 
     protected TextView mTv;
 
-    protected ImageView mButton;
+    protected TextView mButton;
 
     private boolean mRelayout;
 
@@ -128,22 +121,20 @@ public class ExpandableTextView extends RelativeLayout implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
-        if (mButton.getVisibility() != View.VISIBLE || mTv.getLineCount() < 2) {
+        if (mButton.getVisibility() != View.VISIBLE) {
             return;
         }
 
         mCollapsed = !mCollapsed;
-//        mButton.setText(mCollapsed ? "展开" : "收起");
+        mButton.setText(mCollapsed ? "展开" : "收起");
 //        mButton.setTextColor(Color.GRAY);
-//        mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
-        mButton.setImageDrawable(mCollapsed ? mExpandDrawable : mCollapseDrawable);
-        setCollapsedMarins();
+        mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
         Map<String, String> data = new HashMap<>();
 
         if (mCollapsedStatus != null) {
             mCollapsedStatus.put(mPosition, mCollapsed);
         }
-        if (mCollapsed) {
+        if (mButton.getText().toString().trim().equals("展开")) {
             data.put("type", "2");
         } else {
             data.put("type", "1");
@@ -252,15 +243,13 @@ public class ExpandableTextView extends RelativeLayout implements View.OnClickLi
     }
 
     private void findViews() {
-        mTv = (TextView) findViewById(R.id.expandable_text);
+        mTv = findViewById(R.id.expandable_text);
         mTv.setOnClickListener(this);
-        mButton = (ImageView) findViewById(R.id.expand_collapse);
-//        mButton.setCompoundDrawablePadding(12);
-//        mButton.setText(mCollapsed ? "展开" : "收起");
+        mButton =  findViewById(R.id.expand_collapse);
+        mButton.setCompoundDrawablePadding(12);
+        mButton.setText(mCollapsed ? "展开" : "收起");
 //        mButton.setTextColor(Color.GRAY);
-//        mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
-        mButton.setImageDrawable(mCollapsed ? mExpandDrawable : mCollapseDrawable);
-        setCollapsedMarins();
+        mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
         mButton.setOnClickListener(this);
     }
 
@@ -270,28 +259,12 @@ public class ExpandableTextView extends RelativeLayout implements View.OnClickLi
         boolean isCollapsed = collapsedStatus.get(position, true);
         clearAnimation();
         mCollapsed = isCollapsed;
-//        mButton.setText(mCollapsed ? "展开" : "收起");
+        mButton.setText(mCollapsed ? "展开" : "收起");
 //        mButton.setTextColor(Color.GRAY);
-//        mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
-        mButton.setImageDrawable(mCollapsed ? mExpandDrawable : mCollapseDrawable);
-        setCollapsedMarins();
+        mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
         setText(text);
         getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
         requestLayout();
-    }
-
-    private void setCollapsedMarins() {
-//        if (!mCollapsed) {
-////            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(TRUE);
-//            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(RelativeLayout.BELOW, R.id.expandable_text);
-//            mTv.setMaxLines(Integer.MAX_VALUE);
-//        } else {
-////            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(RelativeLayout.BELOW, TRUE);
-//            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-//            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-//            mTv.setMaxLines(3);
-//            mTv.setEllipsize(TextUtils.TruncateAt.END);
-//        }
     }
 
     public CharSequence getText() {
@@ -303,12 +276,7 @@ public class ExpandableTextView extends RelativeLayout implements View.OnClickLi
 
     public void setText(CharSequence text) {
         mRelayout = true;
-        SpannableStringBuilder spannableString = new SpannableStringBuilder();
-        spannableString.append("简介：");
-        spannableString.append(text);
-        ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.parseColor("#212832"));
-        spannableString.setSpan(colorSpan, 0, 3, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-        mTv.setText(spannableString);
+        mTv.setText(text);
         setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
     }
 

@@ -20,31 +20,37 @@ import org.greenrobot.eventbus.EventBus
 class AutoReadOptionFragment : DialogFragment(), View.OnClickListener {
 
     private val readerSettings = ReaderSettings.instance
-
+    
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
+        
         dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.window.requestFeature(Window.FEATURE_NO_TITLE)
+        
         dialog.setContentView(R.layout.reader_option_autoread)
+        
         val window = dialog.window
 
-        window.setGravity(Gravity.BOTTOM) //可设置dialog的位置
-        window.decorView.setPadding(0, 0, 0, 0) //消除边距
-        val lp = window.attributes
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT   //设置宽度充满屏幕
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT
-        window.attributes = lp
+        window.setGravity(Gravity.BOTTOM)
+        
+        window.decorView.setPadding(0, 0, 0, 0)
+        val layoutParams = window.attributes
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT
+        window.attributes = layoutParams
+        
         dialog.setCanceledOnTouchOutside(true)
 
         dialog.setOnShowListener {
             activity?.window?.decorView?.systemUiVisibility = FrameActivity.UI_OPTIONS_NORMAL
 
-            dialog.txt_speed_accelerate.setOnClickListener(this)
             dialog.txt_speed_decelerate.setOnClickListener(this)
+            dialog.txt_speed_accelerate.setOnClickListener(this)
             dialog.txt_auto_read_stop.setOnClickListener(this)
 
             EventBus.getDefault().post(EventReaderConfig(ReaderSettings.ConfigType.AUTO_PAUSE))
         }
+        
         dialog.setOnKeyListener { _, keyCode, event ->
 
             if (KeyEvent.KEYCODE_BACK == keyCode) {
@@ -73,16 +79,16 @@ class AutoReadOptionFragment : DialogFragment(), View.OnClickListener {
     }
 
     override fun onClick(view: View) {
-        when (view.id) {
-            R.id.txt_speed_accelerate -> {
-                StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.rb_click_auto_read_speed_up)
-                readerSettings.autoReadSpeed = Math.min(20, readerSettings.autoReadSpeed + 1)
-                setRateValue()
-
-            }
+        val i = view.id
+        when (i) {
             R.id.txt_speed_decelerate -> {
                 StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.rb_click_auto_read_speed_down)
                 readerSettings.autoReadSpeed = Math.max(10, readerSettings.autoReadSpeed - 1)
+                setRateValue()
+            }
+            R.id.txt_speed_accelerate -> {
+                StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.rb_click_auto_read_speed_up)
+                readerSettings.autoReadSpeed = Math.min(20, readerSettings.autoReadSpeed + 1)
                 setRateValue()
 
             }
@@ -97,7 +103,7 @@ class AutoReadOptionFragment : DialogFragment(), View.OnClickListener {
         }
     }
 
-    fun setRateValue() {
+    private fun setRateValue() {
         dialog?.txt_auto_read_speed?.text = readerSettings.autoReadSpeed.toString()
     }
 }

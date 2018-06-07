@@ -348,6 +348,9 @@ public class StartLogClickUtil {
     public static final String RESOLVEPACKE = "RESOLVEPACKE";
 
 
+
+    public static final String DROPDOWN = "DROPDOWN";//下拉刷新
+
     private static List<String> prePageList = new ArrayList<>();
 
 

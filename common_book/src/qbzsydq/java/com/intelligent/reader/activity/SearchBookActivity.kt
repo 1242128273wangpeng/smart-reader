@@ -2,8 +2,8 @@ package com.intelligent.reader.activity
 
 import android.content.Context
 import com.intelligent.reader.R
-import com.intelligent.reader.presenter.search.SearchPresenter
-import com.intelligent.reader.presenter.search.SearchView
+import com.intelligent.reader.util.SearchPresenter
+import com.intelligent.reader.util.SearchView
 import com.intelligent.reader.util.SearchViewHelper
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -36,6 +36,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
+import com.dingyue.contract.util.showToastMessage
 
 import java.util.HashMap
 
@@ -129,7 +130,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         search_result_hint = findViewById(R.id.search_result_hint) as FrameLayout
 
         if (mSearchPresenter == null) {
-            mSearchPresenter = SearchPresenter(this, this)
+            mSearchPresenter = SearchPresenter(this,this, this)
         }
 
         if (searchViewHelper == null) {
@@ -217,7 +218,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     private fun initData() {
         if (mSearchPresenter == null) {
-            mSearchPresenter = SearchPresenter(this, this)
+            mSearchPresenter = SearchPresenter(this,this, this)
         }
         val intent = intent
         if (intent != null) {
@@ -231,7 +232,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
     private fun loadDataFromNet() {
 
         if (mSearchPresenter == null) {
-            mSearchPresenter = SearchPresenter(this, this)
+            mSearchPresenter = SearchPresenter(this,this, this)
         }
 
         if (search_result_count != null) {
@@ -298,7 +299,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             customWebClient!!.setStartedAction { url ->
                 AppLog.e(TAG, "onLoadStarted: " + url)
                 if (mSearchPresenter == null) {
-                    mSearchPresenter = SearchPresenter(this@SearchBookActivity, this@SearchBookActivity)
+                    mSearchPresenter = SearchPresenter(this@SearchBookActivity,this@SearchBookActivity, this@SearchBookActivity)
                 }
                 mSearchPresenter!!.setStartedAction()
             }
@@ -314,7 +315,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             customWebClient!!.setFinishedAction {
                 AppLog.e(TAG, "onLoadFinished")
                 if (mSearchPresenter == null) {
-                    mSearchPresenter = SearchPresenter(this@SearchBookActivity, this@SearchBookActivity)
+                    mSearchPresenter = SearchPresenter(this@SearchBookActivity,this@SearchBookActivity, this@SearchBookActivity)
                 }
                 mSearchPresenter!!.onLoadFinished()
                 if (loadingPage != null) {
@@ -369,7 +370,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
     override fun onDestroy() {
 
         if (mSearchPresenter == null) {
-            mSearchPresenter = SearchPresenter(this, this)
+            mSearchPresenter = SearchPresenter(this, this, this)
         }
         mSearchPresenter!!.onDestroy()
         mSearchPresenter = null
@@ -436,7 +437,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         }
 
         if (mSearchPresenter == null) {
-            mSearchPresenter = SearchPresenter(this, this)
+            mSearchPresenter = SearchPresenter(this, this, this)
         }
         mSearchPresenter!!.word = search_result_input!!.text.toString()
 
@@ -555,13 +556,13 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                     keyword = search_result_input!!.text.toString()
                 }
                 if (keyword != null && TextUtils.isEmpty(keyword.trim { it <= ' ' })) {
-                    showToastShort(R.string.search_click_check_isright)
+                    this.applicationContext.showToastMessage(R.string.search_click_check_isright)
                 } else {
                     hideInputMethod(search_result_input)
                     if (keyword != null && !TextUtils.isEmpty(keyword.trim { it <= ' ' }) && searchViewHelper != null) {
                         searchViewHelper!!.addHistoryWord(keyword)
                         if (mSearchPresenter == null) {
-                            mSearchPresenter = SearchPresenter(this, this)
+                            mSearchPresenter = SearchPresenter(this, this, this)
                         }
 
                         if (mSearchPresenter!!.fromClass != null && mSearchPresenter!!.fromClass != "other") {
@@ -608,7 +609,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             if (searchViewHelper != null && search_result_input != null) {
                 searchViewHelper!!.setShowHintEnabled(true)
                 if (mSearchPresenter == null) {
-                    mSearchPresenter = SearchPresenter(this, this)
+                    mSearchPresenter = SearchPresenter(this, this, this)
                 }
                 if (TextUtils.isEmpty(mSearchPresenter!!.word)) {
                     search_result_input!!.text.clear()
@@ -678,7 +679,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     override fun OnHistoryClick(history: String?, searchType: String?) {
         if (mSearchPresenter == null) {
-            mSearchPresenter = SearchPresenter(this, this)
+            mSearchPresenter = SearchPresenter(this, this, this)
         }
         mSearchPresenter!!.setHotWordType(history, searchType)
         loadDataFromNet()
@@ -694,7 +695,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                 keyword = search_result_input!!.text.toString()
             }
             if (keyword != null && keyword.trim { it <= ' ' } == "") {
-                showToastShort(R.string.search_click_check_isright)
+                this.applicationContext.showToastMessage(R.string.search_click_check_isright)
             } else {
 
                 hideInputMethod(v)

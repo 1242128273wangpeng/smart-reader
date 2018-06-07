@@ -16,10 +16,12 @@ import com.dy.reader.R
 import com.dy.reader.event.EventSetting
 import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderStatus
-import kotlinx.android.synthetic.main.popup_reader_option_header_more.view.*
+import kotlinx.android.synthetic.qbzsydq.popup_reader_option_header_more.view.*
 import kotlinx.android.synthetic.qbzsydq.reader_option_header.view.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.book.download.CacheManager
+import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.onEnd
@@ -28,6 +30,8 @@ import org.greenrobot.eventbus.EventBus
 class ReadSettingHeader : FrameLayout{
 
     var presenter: ReadSettingPresenter? = null
+
+    private var bookDownloadState: DownloadState = DownloadState.NOSTART
 
     var isOutAnimationRun = false
 
@@ -74,7 +78,7 @@ class ReadSettingHeader : FrameLayout{
         ibtn_reader_download.setOnClickListener {
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_btn)
 
-            if (mBookDownlLoadState == DownloadState.DOWNLOADING) {
+            if (bookDownloadState == DownloadState.DOWNLOADING) {
                 CacheManager.stop(ReaderStatus.book.book_id)
             } else {
                 presenter?.cache()
