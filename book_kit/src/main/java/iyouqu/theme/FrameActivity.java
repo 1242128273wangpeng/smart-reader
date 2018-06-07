@@ -95,6 +95,7 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
 
     private SwipeBackHelper swipeBackHelper;
 
+
     public boolean isMIUISupport = false;
     public boolean isFlymeSupport = false;
 
@@ -144,6 +145,10 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
 
         initThemeHelper();
         initTheme();
+    }
+
+    public SwipeBackHelper getSwipeBackHelper() {
+        return swipeBackHelper;
     }
 
     protected View createViewWithPressState(View parent, String name, Context context, AttributeSet attrs) {

@@ -80,6 +80,8 @@ public class StartLogClickUtil {
     public static final String ACTION_SHELF_SORT_CANCEL = "CANCLE";
     public static final String ACTION_SHELF_SORT_BOOK_SORT = "BOOKSORT";
 
+    //福利中心
+    public static final String ADPAGE = "ADPAGE";   //屏幕左上方点击返回按钮
 
     /***
      * 个人中心相关点位
@@ -229,6 +231,8 @@ public class StartLogClickUtil {
     public static final String SEARCHBUTTON = "SEARCHBUTTON";//自动补全点击“搜索”按钮
     public static final String SHELFADD = "SHELFADD";//点击加入书架
     public static final String CLEAR = "CLEAR";//点击清空，重回搜索页
+    public static final String HOTREADCHANGE = "HOTREADCHANGE";//点击换一换
+    public static final String HOTREADCLICK = "HOTREADCLICK";//热门阅读-书籍点击
 
     public static final String BARLIST = "BARLIST"; //搜索框下拉历史词点击
 

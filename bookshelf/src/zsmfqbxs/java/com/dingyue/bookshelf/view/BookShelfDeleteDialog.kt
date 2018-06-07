@@ -2,10 +2,10 @@ package com.dingyue.bookshelf.view
 
 import android.app.Activity
 import android.view.View
+import com.ding.basic.bean.Book
 import com.dingyue.bookshelf.R
 import kotlinx.android.synthetic.zsmfqbxs.dialog_bookshelf_delete.*
 import net.lzbook.kit.book.view.MyDialog
-import net.lzbook.kit.data.bean.Book
 
 /**
  * Desc 点击底部删除 弹出dialog

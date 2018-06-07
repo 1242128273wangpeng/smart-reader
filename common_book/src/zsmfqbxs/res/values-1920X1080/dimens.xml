@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="search_hot_distance">12dp</dimen>
+    <dimen name="search_recommend_top">20dp</dimen>
+    <dimen name="shelf_book_height">116dp</dimen>
+</resources>

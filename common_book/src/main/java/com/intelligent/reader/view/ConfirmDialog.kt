@@ -8,7 +8,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import com.intelligent.reader.R
-import kotlinx.android.synthetic.txtqbmfyd.dialog_confirm_layout.*
+import kotlinx.android.synthetic.main.dialog_confirm_layout.*
 import net.lzbook.kit.book.view.MyDialog
 
 /**

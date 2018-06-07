@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/padding_16">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/text_size_18"
+            android:text="喜欢这本书的人还喜欢"
+            android:textColor="@color/color_black"
+            android:textSize="@dimen/text_size_16"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_more_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="@dimen/dimen_margin_16"
+            android:drawableLeft="@drawable/icon_refresh"
+            android:drawablePadding="@dimen/padding_10"
+            android:text="换一换"
+            android:textColor="@color/color_gray_3c3b3b"
+            android:textSize="@dimen/text_size_14" />
+    </RelativeLayout>
+
+    <GridView
+        android:id="@+id/gv_recommend_book"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_margin_18"
+        android:layout_marginRight="@dimen/dimen_margin_18"
+        android:layout_marginTop="@dimen/dimen_margin_16"
+        android:gravity="center"
+        android:horizontalSpacing="@dimen/dimen_width_30"
+        android:numColumns="3"
+        android:scrollbars="none" />
+
+</LinearLayout>
