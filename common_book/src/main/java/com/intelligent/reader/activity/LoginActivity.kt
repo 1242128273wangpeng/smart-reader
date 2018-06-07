@@ -8,8 +8,8 @@ import android.widget.TextView
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import iyouqu.theme.FrameActivity
-import kotlinx.android.synthetic.txtqbmfyd.act_login.*
-import kotlinx.android.synthetic.txtqbmfyd.pop_confirm_layout.*
+import kotlinx.android.synthetic.zsmfqbxs.act_login.*
+import kotlinx.android.synthetic.main.pop_confirm_layout.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.user.Platform

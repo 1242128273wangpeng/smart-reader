@@ -23,6 +23,9 @@
     <string name="origin_text">原网页</string>
     <string name="trans_coding_text">转码声明</string>
 
+    <string name="welfare_center">福利中心</string>
+    <string name="db_upgrade_hasnet">正在进入应用，马上就好（%1$d%%）</string>
+    <string name="db_upgrade_nonet">正在优化应用，马上就好（%1$d%%）</string>
 
     <string name="search_title_text">输入书名、作者或关键词</string>
     <string name="publish_confirm_hint">提示</string>
@@ -265,4 +268,5 @@
     <string name="theme_night"></string>
     <string name="mode_day">日间模式</string>
     <string name="mode_night">夜间模式</string>
+
 </resources>

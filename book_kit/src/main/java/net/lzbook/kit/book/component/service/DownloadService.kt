@@ -669,7 +669,7 @@ class DownloadService : Service(), Runnable {
 
                 var notifyIntent: Intent? = null
                 try {
-                    notifyIntent = Intent(CacheManager.app, Class.forName("com.intelligent.reader.activity.DownloadManagerActivity"))
+                    notifyIntent = Intent(CacheManager.app, Class.forName("com.dingyue.downloadmanager.DownloadManagerActivity"))
                 } catch (e: Exception) {
                     e.printStackTrace()
                     return
