@@ -8,7 +8,11 @@ import android.support.v7.widget.SimpleItemAnimator
 import android.view.Menu
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.ding.basic.bean.Book
 import com.dingyue.contract.CommonContract
+import com.dingyue.contract.router.BookRouter
+import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dingyue.downloadmanager.contract.BookHelperContract
 import com.dingyue.downloadmanager.contract.CacheManagerContract
@@ -20,10 +24,6 @@ import kotlinx.android.synthetic.qbzsydq.item_download_manager_task_header.view.
 import net.lzbook.kit.book.download.CallBackDownload
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.Book
-import net.lzbook.kit.router.BookRouter
-import net.lzbook.kit.router.RouterConfig
-import net.lzbook.kit.router.RouterUtil
 import net.lzbook.kit.utils.uiThread
 import java.util.*
 
@@ -237,12 +237,12 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         downloadManagerAdapter.notifyDataSetChanged()
     }
 
-    override fun onTaskFinish(book_id: String?) {
+    override fun onTaskFinish(book_id: String) {
         val book = BookHelperContract.loadLocalBook(book_id)
-        if (CacheManagerContract.loadBookDownloadState(book) == DownloadState.FINISH) {
+        if (book != null && CacheManagerContract.loadBookDownloadState(book) == DownloadState.FINISH) {
             val data = downloadBooks
             for (b in data) {
-                if (b.book_id != null && book.book_id != null && b.book_id == book.book_id) {
+                if (b.book_id == book.book_id) {
                     data.remove(b)
                     break
                 }
@@ -291,10 +291,10 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         DownloadManagerLogger.uploadCacheMangerEditCancel()
     }
 
-    override fun checkAll(all: Boolean) {
-        downloadManagerAdapter.insertSelectAllState(all)
+    override fun checkAll(isAll: Boolean) {
+        downloadManagerAdapter.insertSelectAllState(isAll)
         removeMenuPopup.setSelectedNum(downloadManagerAdapter.checkedBooks.size)
-        DownloadManagerLogger.uploadCacheManagerEditSelectAll(all)
+        DownloadManagerLogger.uploadCacheManagerEditSelectAll(isAll)
     }
 
     override fun sortBooks(type: Int) {

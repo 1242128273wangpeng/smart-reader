@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/home_title_background">
+
+    <ListView
+        android:id="@+id/download_manager_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:cacheColorHint="@color/transparent"
+        android:divider="@color/color_divider"
+        android:dividerHeight="0dp"
+        android:fadingEdge="none"
+        android:paddingBottom="9dp"
+        android:scrollbars="none"/>
+
+    <RelativeLayout
+        android:id="@+id/empty_bookshelf"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/iv_bookshelf_nobok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dimen_margin_115"
+            android:src="@drawable/huancun_empty"/>
+
+        <TextView
+            android:id="@+id/download_empty_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_bookshelf_nobok"
+            android:layout_marginTop="@dimen/dimen_margin_30"
+            android:gravity="center_horizontal"
+            android:text="当前无缓存"
+            android:textColor="@color/color_black_282828"
+            android:textSize="@dimen/text_size_16"/>
+    </RelativeLayout>
+</FrameLayout>
