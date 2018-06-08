@@ -18,6 +18,7 @@ import com.ding.basic.bean.Book
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
+import com.dy.media.MediaLifecycle
 import com.dy.reader.R
 import com.dy.reader.R.id.ad_view
 import com.dy.reader.R.id.recyclerView
@@ -299,7 +300,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         AppHelper.glSurfaceView = null
         mReadPresenter.onDestroy()
         ReaderStatus.chapterList.clear()
-        PlatformSDK.lifecycle()?.onDestroy()
+        MediaLifecycle.onDestroy()
         ReadMediaManager.onDestroy()
     }
 

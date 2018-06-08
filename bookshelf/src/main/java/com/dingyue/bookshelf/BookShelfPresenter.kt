@@ -10,16 +10,19 @@ import com.ding.basic.bean.Book
 import com.ding.basic.bean.BookUpdate
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.bookshelf.contract.BookHelperContract
-import com.dingyue.bookshelf.contract.BookShelfADContract
 import com.dingyue.contract.CommonContract
 import com.dingyue.contract.IPresenter
+import com.dy.media.IMediaControl
+import com.dy.media.MediaControl
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.BaseBookHelper
+import net.lzbook.kit.utils.doAsync
+import net.lzbook.kit.utils.uiThread
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
@@ -140,7 +143,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
                 }
 
                 return if (isShowAD) {
-                    val interval = BookShelfADContract.loadBookShelfADInterval()
+                    val interval = MediaControl.loadBookShelfMediaInterval()
 
                     if (interval == 0) {
                         0
@@ -162,7 +165,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
      * **/
     private fun requestShelfADs(activity: Activity, count: Int, isList: Boolean) {
 
-        val interval = BookShelfADContract.loadBookShelfADInterval() + 1
+        val interval = MediaControl.loadBookShelfMediaInterval() + 1
 
         var adBook: Book
 
@@ -184,13 +187,13 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
             }
         }
 
-        BookShelfADContract.loadBookShelAD(activity, count, object : BookShelfADContract.ADCallback {
-            override fun requestADSuccess(views: List<ViewGroup>) {
+        MediaControl.loadBookShelMedia(activity, count, object : IMediaControl.MediaCallback {
+            override fun requestMediaSuccess(views: List<ViewGroup>) {
                 handleADResult(views)
                 view?.onAdRefresh()
             }
 
-            override fun requestADRepairSuccess(views: List<ViewGroup>) {
+            override fun requestMediaRepairSuccess(views: List<ViewGroup>) {
                 handleADResult(views)
                 view?.onAdRefresh()
             }
@@ -230,8 +233,8 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
      * 获取九宫格顶部广告
      * **/
     private fun requestShelfHeaderAD(activity: Activity) {
-        BookShelfADContract.loadBookShelfHeaderAD(activity, object : BookShelfADContract.HeaderADCallback {
-            override fun requestADSuccess(viewGroup: ViewGroup?) {
+        MediaControl.loadBookShelfHeaderMedia(activity, object : IMediaControl.HeaderMediaCallback {
+            override fun requestMediaSuccess(viewGroup: ViewGroup?) {
                 if (viewGroup != null) {
                     if (iBookList.size > 0 && iBookList[0].item_type == 2) {
                         iBookList[0].item_view = viewGroup
@@ -252,7 +255,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
      * 请求书架悬浮广告
      * **/
     fun requestFloatAD(activity: Activity, viewGroup: ViewGroup) {
-        BookShelfADContract.loadBookShelfFloatAD(activity, viewGroup)
+        MediaControl.loadBookShelfFloatMedia(activity, viewGroup)
     }
 
     /***

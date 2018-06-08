@@ -11,18 +11,16 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.preference.PreferenceManager
-import android.provider.Settings
 import android.text.TextUtils
-import android.view.Gravity
 import android.view.InflateException
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.RelativeLayout
+import android.view.View
 import android.widget.Toast
 import com.ding.basic.bean.Book
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
+import com.dy.media.MediaControl
+import com.dy.media.ReaderRestDialog
 import com.dy.reader.R
 import com.dy.reader.activity.ReaderActivity
 import com.dy.reader.data.DataProvider
@@ -34,13 +32,9 @@ import com.dy.reader.page.BatteryView
 import com.dy.reader.page.Position
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import com.dycm_adsdk.PlatformSDK
-import com.dycm_adsdk.callback.AbstractCallback
-import com.dycm_adsdk.callback.ResultCode
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.DownloadService
-import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
 import net.lzbook.kit.utils.AppLog
@@ -48,8 +42,6 @@ import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.SharedPreferencesUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import org.greenrobot.eventbus.EventBus
-import org.json.JSONException
-import org.json.JSONObject
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -77,6 +69,13 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
     var currentThemeMode: String? = null
 
     private val handler = Handler(Looper.getMainLooper())
+
+    private val readerRestDialog: ReaderRestDialog? by lazy {
+        readReference?.get()?.let {
+            ReaderRestDialog(it)
+        }
+        null
+    }
 
     init {
         readReference = WeakReference(act)
@@ -109,18 +108,26 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
             return
         }
         initBookState()
-        startRestInterval()
+        MediaControl.startRestMedia {
+            if (readerRestDialog?.isShowing() == true) {
+                return@startRestMedia
+            }
+            MediaControl.loadRestMedia(readReference?.get(), { view: View? ->
+                if (readReference?.get()?.isFinishing == true) return@loadRestMedia
+                readerRestDialog?.show(view)
+            })
+        }
     }
 
-    fun loadData(useReadStatus:Boolean = false) {
+    fun loadData(useReadStatus: Boolean = false) {
 
         act.showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
-        if(useReadStatus){
+        if (useReadStatus) {
             ReaderStatus.book.sequence = ReaderStatus.position.group
             ReaderStatus.book.offset = ReaderStatus.position.offset
         }
         ReaderStatus.prepare(ReaderStatus.book, { flag ->
-            if(flag) {
+            if (flag) {
                 ReaderStatus.position = DataProvider.queryPosition(ReaderStatus.book.book_id, ReaderStatus.book.sequence, ReaderStatus.book.offset)
                 act.showReader()
             }
@@ -208,7 +215,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
                 ReaderSettings.instance.isLandscape = false
                 readReference?.get()?.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
             } else if (sp?.getInt("screen_mode", 3) == Configuration.ORIENTATION_LANDSCAPE && readReference?.get()?.getResources()!!
-                            .getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
+                    .getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
                 if (!is_dot_orientation) {
                     is_dot_orientation = true
                 }
@@ -361,7 +368,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
     }
 
     fun onResume() {
-        if(!ReaderSettings.instance.isAutoBrightness){
+        if (!ReaderSettings.instance.isAutoBrightness) {
             setScreenBrightness(ReaderSettings.instance.screenBrightness)
         }
     }
@@ -398,7 +405,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         }
     }
 
-    fun onStop(){
+    fun onStop() {
         ReaderSettings.instance.save()
     }
 
@@ -411,9 +418,9 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
             handler.removeCallbacksAndMessages(null)
         }
 
-        if (mDialog != null && mDialog!!.isShowing()) {
-            mDialog!!.dismiss()
-        }
+//        if (mDialog != null && mDialog!!.isShowing()) {
+//            mDialog!!.dismiss()
+//        }
 
     }
 
@@ -460,62 +467,62 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         StartLogClickUtil.upLoadEventLog(readReference?.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ORIGINALLINK, data)
     }
 
-    var intervalRunnable: Runnable? = null
-    fun startRestInterval() {
-        if (!Constants.isHideAD) {
-            val runtime = if (PlatformSDK.config().restAd_sec == 0) {
-                30.times(60000).toLong()
-            } else {
-                PlatformSDK.config().restAd_sec.times(60000).toLong()
-            }
-            if (intervalRunnable == null) {
-                intervalRunnable = Runnable {
-                    restAd()
-                    handler.postDelayed(intervalRunnable, runtime)
-                }
-                handler.postDelayed(intervalRunnable, runtime)
-            }
-        }
-    }
+//    var intervalRunnable: Runnable? = null
+//    fun startRestInterval() {
+//        if (!Constants.isHideAD) {
+//            val runtime = if (PlatformSDK.config().restAd_sec == 0) {
+//                30.times(60000).toLong()
+//            } else {
+//                PlatformSDK.config().restAd_sec.times(60000).toLong()
+//            }
+//            if (intervalRunnable == null) {
+//                intervalRunnable = Runnable {
+//                    restAd()
+//                    handler.postDelayed(intervalRunnable, runtime)
+//                }
+//                handler.postDelayed(intervalRunnable, runtime)
+//            }
+//        }
+//    }
 
-    var mDialog: MyDialog? = null
-
-    fun restAd() {
-        if (mDialog != null && mDialog!!.isShowing) {
-            return
-        }
-        PlatformSDK.adapp().dycmNativeAd(readReference?.get(), "3-1", null, object : AbstractCallback() {
-            override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
-                super.onResult(adswitch, views, jsonResult)
-                if (!adswitch) return
-                try {
-                    val jsonObject = JSONObject(jsonResult)
-                    if (jsonObject.has("state_code")) {
-                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                            ResultCode.AD_REQ_SUCCESS -> {
-                                try {
-                                    mDialog = MyDialog(readReference?.get(), R.layout.reading_resttime, Gravity.CENTER, false)
-                                    mDialog?.let {
-                                        val rest_ad = it.findViewById(R.id.rest_ad) as RelativeLayout//容器
-                                        it.findViewById<ImageView>(R.id.iv_close).setOnClickListener { mDialog?.dismiss() }
-                                        //广告 3-1
-                                        rest_ad.addView(views?.get(0))
-                                        rest_ad.postInvalidate()
-                                        if (readReference?.get()?.isFinishing == false) {
-                                            mDialog?.show()
-                                        }
-                                    }
-                                } catch (e: Exception) {
-                                }
-                            }
-                            ResultCode.AD_REQ_FAILED -> {
-                            }
-                        }
-                    }
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                }
-            }
-        })
-    }
+//    var mDialog: MyDialog? = null
+//
+//    fun restAd() {
+//        if (mDialog != null && mDialog!!.isShowing) {
+//            return
+//        }
+//        PlatformSDK.adapp().dycmNativeAd(readReference?.get(), "3-1", null, object : AbstractCallback() {
+//            override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
+//                super.onResult(adswitch, views, jsonResult)
+//                if (!adswitch) return
+//                try {
+//                    val jsonObject = JSONObject(jsonResult)
+//                    if (jsonObject.has("state_code")) {
+//                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+//                            ResultCode.AD_REQ_SUCCESS -> {
+//                                try {
+//                                    mDialog = MyDialog(readReference?.get(), R.layout.reading_resttime, Gravity.CENTER, false)
+//                                    mDialog?.let {
+//                                        val rest_ad = it.findViewById(R.id.rest_ad) as RelativeLayout//容器
+//                                        it.findViewById<ImageView>(R.id.iv_close).setOnClickListener { mDialog?.dismiss() }
+//                                        //广告 3-1
+//                                        rest_ad.addView(views?.get(0))
+//                                        rest_ad.postInvalidate()
+//                                        if (readReference?.get()?.isFinishing == false) {
+//                                            mDialog?.show()
+//                                        }
+//                                    }
+//                                } catch (e: Exception) {
+//                                }
+//                            }
+//                            ResultCode.AD_REQ_FAILED -> {
+//                            }
+//                        }
+//                    }
+//                } catch (e: JSONException) {
+//                    e.printStackTrace()
+//                }
+//            }
+//        })
+//    }
 }

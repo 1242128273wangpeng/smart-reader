@@ -10,6 +10,8 @@ import com.alibaba.sdk.android.feedback.util.FeedbackErrorCallback;
 import com.ding.basic.database.BookDatabase;
 import com.ding.basic.database.helper.BookDataProviderHelper;
 import com.dingyue.contract.util.CommonUtil;
+import com.dy.media.MediaControl;
+import com.dy.media.MediaLifecycle;
 import com.dy.reader.Reader;
 import com.intelligent.reader.BuildConfig;
 import com.squareup.leakcanary.LeakCanary;
@@ -75,6 +77,7 @@ public class BookApplication extends BaseBookApplication {
         registerActivityLifecycleCallbacks(ActivityLifecycleHelper.build());
         setRxJavaErrorHandler();
 
+        MediaLifecycle.INSTANCE.onAppCreate(this);
     }
 
     /**
@@ -88,5 +91,11 @@ public class BookApplication extends BaseBookApplication {
                 AppLog.e("DataProvider", " throwable :" + throwable.getMessage());
             }
         });
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        MediaLifecycle.INSTANCE.onTerminate();
     }
 }

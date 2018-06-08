@@ -11,7 +11,6 @@ import com.ding.basic.bean.QQSimpleInfo
 import com.ding.basic.bean.RefreshResp
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
-import com.dycm_adsdk.PlatformSDK
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
@@ -26,7 +25,6 @@ import com.tencent.tauth.IUiListener
 import com.tencent.tauth.Tencent
 import com.tencent.tauth.UiError
 import net.lzbook.kit.app.BaseBookApplication
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.user.bean.LoginReq
 import net.lzbook.kit.utils.log
 import net.lzbook.kit.utils.toMap

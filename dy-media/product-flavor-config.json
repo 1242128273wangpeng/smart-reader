@@ -1,0 +1,51 @@
+{
+  "mfqbxssc": {
+    "applicationId": "cc.kdqbxs.reader",
+    "versionCode": 1,
+    "versionName": "1.0",
+    "hasAd": true
+  },
+
+  "qbmfkdxs": {
+    "applicationId": "cc.quanbennovel",
+    "versionCode": 1,
+    "versionName": "1.0",
+    "hasAd": true
+  },
+
+  "qbzsydq": {
+    "applicationId": "cn.qbzsydsq.reader",
+    "versionCode": 1,
+    "versionName": "1.0",
+    "hasAd": true
+  },
+
+  "txtqbdzs": {
+    "applicationId": "cc.remennovel",
+    "versionCode": 1,
+    "versionName": "1.0",
+    "hasAd": false
+  },
+
+  "txtqbmfxs": {
+    "applicationId": "cc.lianzainovel",
+    "versionCode": 1,
+    "versionName": "1.0",
+    "hasAd": true
+  },
+
+  "txtqbmfyd": {
+    "applicationId": "cn.txtqbmfyd.reader",
+    "versionCode": 1,
+    "versionName": "1.0",
+    "hasAd": true
+  },
+
+  "zsmfqbxs": {
+    "applicationId": "cc.mianfeinovel",
+    "versionCode": 1,
+    "versionName": "1.0",
+    "hasAd": true
+  }
+
+}

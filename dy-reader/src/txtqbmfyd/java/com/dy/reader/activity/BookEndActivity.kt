@@ -14,6 +14,7 @@ import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBooksEndResp
 import com.ding.basic.bean.Source
 import com.dingyue.contract.router.RouterConfig
+import com.dy.media.MediaLifecycle
 import com.dy.reader.R
 import com.dy.reader.presenter.BookEndContract
 import com.dy.reader.presenter.BookEndPresenter
@@ -217,7 +218,7 @@ class BookEndActivity : BaseCacheableActivity(), View.OnClickListener, BookEndCo
         } catch (e: Resources.NotFoundException) {
             e.printStackTrace()
         }
-        PlatformSDK.lifecycle()?.onDestroy()
+        MediaLifecycle.onDestroy()
         super.onDestroy()
     }
 

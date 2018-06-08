@@ -45,7 +45,7 @@ dependencies {
 
 //    annotationProcessor "android.arch.persistence.room:compiler:$arch_version"
 
-    compile project(':basic')
+    api project(':basic')
 
 }
 

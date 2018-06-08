@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_reset_layout"
+    android:layout_width="234dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="#fafafa"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="10dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:scrollbars="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_reading_time"
+            android:layout_width="wrap_content"
+            android:layout_height="90dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="0dp"
+            android:layout_marginTop="0dp"
+            android:drawableLeft="@drawable/ic_remind"
+            android:drawablePadding="12dp"
+            android:gravity="center_vertical"
+            android:lineSpacingExtra="6dp"
+            android:text="您已近连续阅读30分钟,\n让眼睛休息一下吧! "
+            android:textColor="#353535"
+            android:textSize="14sp"/>
+
+        <ImageView
+            android:id="@+id/img_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|top"
+            android:paddingBottom="6dp"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
+            android:paddingTop="6dp"
+            android:src="@drawable/ic_rest"/>
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_ad"
+        android:layout_width="214dp"
+        android:layout_height="321dp">
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/rest"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_marginRight="40dp"
+            android:layout_toLeftOf="@+id/continue_read"
+            android:background="@drawable/dialog_reader_rest_bg"
+            android:gravity="center"
+            android:minWidth="24dp"
+            android:singleLine="true"
+            android:text="休息一下"
+            android:textColor="#9c9c9c"
+            android:textSize="16sp"/>
+
+        <Button
+            android:id="@+id/continue_read"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/dialog_reader_rest_bg"
+            android:gravity="center"
+            android:minWidth="24dp"
+            android:singleLine="true"
+            android:text="继续看"
+            android:textColor="#3ECC96"
+            android:textSize="16sp"/>
+    </RelativeLayout>
+
+</LinearLayout>

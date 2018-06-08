@@ -88,10 +88,10 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
         bookmarkAdapter.itemClick = View.OnClickListener { v ->
             when (v.id) {
                 R.id.bookmark_content_layout -> {
-                    presenter.gotoBookMark(activity, v.tag as Bookmark)
+                    presenter.gotoBookMark(requireActivity(), v.tag as Bookmark)
                 }
                 R.id.item_bookmark_delete -> {
-                    presenter.deleteBookMark(activity, v.tag as Bookmark)
+                    presenter.deleteBookMark(requireActivity(), v.tag as Bookmark)
                 }
             }
         }
