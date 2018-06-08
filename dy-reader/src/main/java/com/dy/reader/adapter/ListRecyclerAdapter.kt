@@ -9,7 +9,7 @@ import android.view.ViewGroup
 /**
  * Created by xian on 2017/8/17.
  */
-class ListRecyclerAdapter<T, C : BaseRecyclerHolder<T>>(val datas: List<T>, @LayoutRes val itemLayout: Int, val clazz: Class<C>, var itemClick: View.OnClickListener? = null, var itemLongClick: View.OnLongClickListener? = null) : RecyclerView.Adapter<C>() {
+class ListRecyclerAdapter<T, C : BaseRecyclerHolder<T>>(val datas: List<T>, @LayoutRes private val itemLayout: Int, private val clazz: Class<C>, var itemClick: View.OnClickListener? = null, var itemLongClick: View.OnLongClickListener? = null) : RecyclerView.Adapter<C>() {
 
     private var inflater: LayoutInflater? = null
 
@@ -18,7 +18,7 @@ class ListRecyclerAdapter<T, C : BaseRecyclerHolder<T>>(val datas: List<T>, @Lay
     override fun onBindViewHolder(holder: C, position: Int) {
         try {
             if (datas.size > position)
-                holder?.onBindData(position, datas[position], isEditMode)
+                holder.onBindData(position, datas[position], isEditMode)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -30,7 +30,7 @@ class ListRecyclerAdapter<T, C : BaseRecyclerHolder<T>>(val datas: List<T>, @Lay
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): C {
         if (inflater == null)
-            inflater = LayoutInflater.from(parent!!.context)
+            inflater = LayoutInflater.from(parent.context)
         var view: View? = null
         try {
             view = inflater!!.inflate(itemLayout, parent, false)

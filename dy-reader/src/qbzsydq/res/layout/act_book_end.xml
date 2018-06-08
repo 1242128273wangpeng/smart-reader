@@ -73,7 +73,9 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="10dp"
-                android:gravity="left"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:gravity="left|center"
                 android:textColor="#FF323232"
                 android:textSize="16sp"
                 tools:text="@string/default_message"/>
