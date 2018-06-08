@@ -20,12 +20,6 @@ import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.widget.ConfirmDialog
 import com.orhanobut.logger.Logger
-import io.reactivex.Observable
-import io.reactivex.ObservableOnSubscribe
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
@@ -34,7 +28,6 @@ import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
 import java.lang.ref.WeakReference
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by yuchao on 2017/12/1 0001.
@@ -232,7 +225,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
         }
     }
 
-    private fun clearHistory() {
+    fun clearHistory() {
         if (mHistoryDatas != null)
             mHistoryDatas!!.clear()
         view?.setHistoryHeadersTitleView()
@@ -240,7 +233,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
         Tools.saveHistoryWord(BaseBookApplication.getGlobalContext(), mHistoryDatas)
     }
 
-    private fun result(result: List<SearchCommonBean>) {
+    fun result(result: List<SearchCommonBean>) {
         if (mSuggestList == null)
             return
         mSuggestList!!.clear()

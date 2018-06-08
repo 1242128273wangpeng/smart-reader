@@ -41,4 +41,15 @@
     <color name="dialog_recommend">#FF1CA66E</color>
     <color name="colorAccent">#FF19DD8B</color>
     <color name="colorPrimary">#FF19DD8B</color>
+
+
+
+
+
+
+
+
+
+
+    <color name="reader_popup_item_background">#80000000</color>
 </resources>

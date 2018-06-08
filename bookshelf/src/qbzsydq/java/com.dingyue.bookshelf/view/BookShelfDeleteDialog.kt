@@ -2,10 +2,10 @@ package com.dingyue.bookshelf.view
 
 import android.app.Activity
 import android.view.View
+import com.ding.basic.bean.Book
 import com.dingyue.bookshelf.R
 import kotlinx.android.synthetic.qbzsydq.dialog_bookshelf_delete.*
 import net.lzbook.kit.book.view.MyDialog
-import net.lzbook.kit.data.bean.Book
 
 /**
  * Created by qiantao on 2017/11/17 0017

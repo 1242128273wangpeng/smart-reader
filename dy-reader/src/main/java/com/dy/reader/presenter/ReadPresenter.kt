@@ -68,7 +68,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
 
     var currentThemeMode: String? = null
 
-    private val handler = Handler(Looper.getMainLooper())
+//    private val handler = Handler(Looper.getMainLooper())
 
     private val readerRestDialog: ReaderRestDialog? by lazy {
         readReference?.get()?.let {
@@ -414,9 +414,9 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         BatteryView.clean()
         ReaderStatus.position = Position(book_id = "")
 
-        if (handler != null) {
-            handler.removeCallbacksAndMessages(null)
-        }
+//        if (handler != null) {
+//            handler.removeCallbacksAndMessages(null)
+//        }
 
 //        if (mDialog != null && mDialog!!.isShowing()) {
 //            mDialog!!.dismiss()
@@ -434,14 +434,11 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         }
 
         val bundle = Bundle()
-        bundle.putString("bookName", ReaderStatus.book.name)
-        bundle.putString("book_id", ReaderStatus.book.book_id)
-        bundle.putString("book_category", ReaderStatus.book.label)
         bundle.putSerializable("book", ReaderStatus.book)
-        bundle.putString("thememode", currentThemeMode)
-        bundle.putString("chapterid", ReaderStatus.chapterId)
+        bundle.putString("book_id", ReaderStatus.book.book_id)
+        bundle.putString("book_name", ReaderStatus.book.name)
+        bundle.putString("chapter_id", ReaderStatus.chapterId)
         RouterUtil.navigation(act, RouterConfig.BOOK_END_ACTIVITY, bundle)
-
     }
 
 
@@ -466,63 +463,4 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         data.put("bookid", ReaderStatus.book.book_id)
         StartLogClickUtil.upLoadEventLog(readReference?.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ORIGINALLINK, data)
     }
-
-//    var intervalRunnable: Runnable? = null
-//    fun startRestInterval() {
-//        if (!Constants.isHideAD) {
-//            val runtime = if (PlatformSDK.config().restAd_sec == 0) {
-//                30.times(60000).toLong()
-//            } else {
-//                PlatformSDK.config().restAd_sec.times(60000).toLong()
-//            }
-//            if (intervalRunnable == null) {
-//                intervalRunnable = Runnable {
-//                    restAd()
-//                    handler.postDelayed(intervalRunnable, runtime)
-//                }
-//                handler.postDelayed(intervalRunnable, runtime)
-//            }
-//        }
-//    }
-
-//    var mDialog: MyDialog? = null
-//
-//    fun restAd() {
-//        if (mDialog != null && mDialog!!.isShowing) {
-//            return
-//        }
-//        PlatformSDK.adapp().dycmNativeAd(readReference?.get(), "3-1", null, object : AbstractCallback() {
-//            override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
-//                super.onResult(adswitch, views, jsonResult)
-//                if (!adswitch) return
-//                try {
-//                    val jsonObject = JSONObject(jsonResult)
-//                    if (jsonObject.has("state_code")) {
-//                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-//                            ResultCode.AD_REQ_SUCCESS -> {
-//                                try {
-//                                    mDialog = MyDialog(readReference?.get(), R.layout.reading_resttime, Gravity.CENTER, false)
-//                                    mDialog?.let {
-//                                        val rest_ad = it.findViewById(R.id.rest_ad) as RelativeLayout//容器
-//                                        it.findViewById<ImageView>(R.id.iv_close).setOnClickListener { mDialog?.dismiss() }
-//                                        //广告 3-1
-//                                        rest_ad.addView(views?.get(0))
-//                                        rest_ad.postInvalidate()
-//                                        if (readReference?.get()?.isFinishing == false) {
-//                                            mDialog?.show()
-//                                        }
-//                                    }
-//                                } catch (e: Exception) {
-//                                }
-//                            }
-//                            ResultCode.AD_REQ_FAILED -> {
-//                            }
-//                        }
-//                    }
-//                } catch (e: JSONException) {
-//                    e.printStackTrace()
-//                }
-//            }
-//        })
-//    }
 }

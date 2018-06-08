@@ -5,18 +5,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import com.ding.basic.bean.Book
-import com.ding.basic.bean.SearchAutoCompleteBean
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.dingyue.contract.IPresenter
-import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.setting.ReaderStatus
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
+import com.intelligent.reader.util.SearchPresenter
 import com.orhanobut.logger.Logger
 import io.reactivex.disposables.Disposable
 import net.lzbook.kit.app.BaseBookApplication
@@ -33,7 +32,6 @@ import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.FootprintUtils
 import net.lzbook.kit.utils.JSInterfaceHelper
 import java.io.UnsupportedEncodingException
-import java.lang.ref.WeakReference
 import java.net.URLDecoder
 import java.util.*
 

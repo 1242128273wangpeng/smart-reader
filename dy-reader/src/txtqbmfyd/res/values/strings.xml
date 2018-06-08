@@ -10,4 +10,11 @@
     <string name="end_to_bookstore">去书城看看</string>
 
     <string name="novel_no_bookmark">还没有添加书签哦~</string>
+
+
+
+    <string name="book_end_prompt"><Data><![CDATA[当前章节已全部看完，去看看其它是否有<font color="#ed5b47"><b>更新</b></font>吧!]]></Data></string>
+
+    <string name="book_end_bookshelf">我的书架</string>
+    <string name="book_end_bookstore">去书城看看</string>
 </resources>

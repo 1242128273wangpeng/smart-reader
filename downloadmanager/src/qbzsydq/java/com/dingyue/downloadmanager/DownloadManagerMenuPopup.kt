@@ -16,7 +16,7 @@ import net.lzbook.kit.utils.SettingItemsHelper
  * Mail tao_qian@dingyuegroup.cn
  * Date 2018/3/8 0008 11:40
  */
-class DownloadManagerMenuPopup(private val context: Context) {
+class DownloadManagerMenuPopup(context: Context) {
 
     private val contentView = LayoutInflater.from(context).inflate(R.layout.popup_download_manager_head_more, null)
     private val popupWindow = PopupWindow(contentView)

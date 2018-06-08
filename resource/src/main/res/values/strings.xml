@@ -1,3 +1,21 @@
 <resources>
     <string name="module_name">资源</string>
+
+    <string name="bookshelf">书架</string>
+    <string name="bookstore">书城</string>
+
+    <string name="recommend">推荐</string>
+    <string name="ranking">榜单</string>
+    <string name="category">分类</string>
+
+
+    <string name="submit">提交</string>
+    <string name="cancel">取消</string>
+    <string name="delete">删除</string>
+    <string name="confirm">确定</string>
+
+
+    <string name="default_title">正义的秘密</string>
+    <string name="default_message">有人说过,衡量一个作家是否优秀,就看他能不能担负起社会责任.东野吾做到了.</string>
+
 </resources>

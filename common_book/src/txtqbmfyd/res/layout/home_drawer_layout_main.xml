@@ -2,7 +2,6 @@
 <com.intelligent.reader.widget.drawer.DrawerMain
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/content_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
@@ -13,7 +12,7 @@
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/content_tab_selection"
+        android:layout_above="@+id/ll_home_tab"
         android:flipInterval="30"
         android:persistentDrawingCache="animation"/>
 
@@ -21,13 +20,13 @@
         android:id="@+id/img_bottom_shadow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/content_tab_selection"
+        android:layout_above="@+id/ll_home_tab"
         android:contentDescription="@string/app_name"
         android:scaleType="fitXY"
         android:src="@drawable/bottom_shadow_bg"/>
 
     <LinearLayout
-        android:id="@+id/content_tab_selection"
+        android:id="@+id/ll_home_tab"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
@@ -57,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/bookshelf"
                 android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                android:textSize="@dimen/dimen_text_10"/>
+                android:textSize="10sp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -82,7 +81,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/recommend"
                 android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                android:textSize="@dimen/dimen_text_10"/>
+                android:textSize="10sp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -107,7 +106,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/ranking"
                 android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                android:textSize="@dimen/dimen_text_10"/>
+                android:textSize="10sp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -132,7 +131,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/category"
                 android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                android:textSize="@dimen/dimen_text_10"/>
+                android:textSize="10sp"/>
         </LinearLayout>
     </LinearLayout>
 

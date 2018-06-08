@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">dy-reader</string>
-    <string name="slogan">全本小说免费看</string>
     <string name="loading_read_page">精彩内容即将呈现...</string>
 
     <string name="read_brightness_night">亮度</string>
@@ -30,21 +28,106 @@
     <string name="reading_add_fail">抱歉,添加书架失败,请重试</string>
     <string name="is_first_chapter">当前已经是第一章</string>
 
-    <string name="book_end_info"><Data><![CDATA[当前章节已全部看完，去看看其它是否有<font color="#ed5b47"><b>更新</b></font>吧!]]></Data></string>
+
+
+
+
+
+
+
+
+
+
+    <string name="module_name">阅读器</string>
+
+    <string name="translate_code">转码声明</string>
+
+    <string name="translate_code_description">
+        "      "由于目前绝大多数WAP网页不能被智能移动终端正常浏览，因此，为提升用户体验，本软件有必要对WAP网页进行格式转换。\n
+        "      "转码后您浏览的页面内容仍系来源于第三方，本软件不保证被链接内容的安全性、合法性，同时在转码过程中本软件不会对第三方网站内容做任何实质性修改或编辑。\n
+        "      "如您希望以传统方式查看网页内容或转码页面存在问题，请您直接点击本软件提示的来源地址访问原网站。本软件不保证被链接内容的安全性、合法性，您可以直接访问第三方网页获取相应的信息内容。\n
+    </string>
 
     <string name="disclaimer_statement">服务声明</string>
-    <string name="disclaimer_statement_description">
-        "      "1.本软件皆在为广大小说爱好者提供小说的搜索、链接服务，但软件本身不会对链接于第三方的搜索结果作任何形式的编辑、修改或存储，用户应当自行判断链接于第三方网站上的内容的真实性、完整性、准确性，本软件对用户因此造成的损失不承担任何责任。\n
-        "      "2.为更好的提升在手机终端的阅读体验，本软件同时提供阅读技术转码服务，用户可以自由选择使用或不使用此服务。\n
-        "      "3.通过本软件获得的内容仅限用户个人学习、研究、欣赏，此外的任何使用行为（复制、转载等）用户均应自行获得相关权利人的许可，否则应承担全部法律责任。\n
-        "      "4.用户可以免费下载、安装、使用本软件，但未经许可不得对本软件进行任何形式的反向工程、反向编译、反向汇编；不得使用任何插件、外挂等非法工具接入本软件及系统；不得擅自复制、增加、删除本软件的数据。\n
-        "      "如果您认为通过本软件提供的内容侵犯了您的相关权益，请及时通知我们（3189232789@qq.com）并按照如下要求提供相应的材料： \n
-        "      "1.权利主体信息：包括但不限于权利人的姓名、公司名称、有效身份证明（身份证、护照、营业执照等）、联系方式、联系地址等。权利人委托代理人发出通知的，代理人必须出示权利人的委托书，且代理人发出的每个不同的通知均需获得权利人的分别授权; \n
-        "      "2.权利要求：即明确要求删除的内容的名称、网络地址、准确位置等。\n
-        "      "3.构成侵权的初步证明：包括但不限于作品登记证书、授权证明、许可/转让协议等。\n
-        "      "4.权利人保证：权利人应保证陈述和提交的资料是真实、合法、有效的，并保证承担因虚假陈述及不实造成的全部法律后果。 \n
-        "      "5.签署：通知书应由权利人签字或盖章。\n
-        "      "注：通知书格式可参考：http://www.ncac.gov.cn/chinacopyright/contents/574/20880.html \n
+
+
+    <string name="reader_slogan">全本小说免费看</string>
+
+    <string name="feedback">反馈</string>
+
+    <string name="feedback_chapter_empty">当前章节为空、乱码</string>
+    <string name="feedback_reading_cache_error">书籍缓存后无法阅读</string>
+    <string name="feedback_chapter_content_repeat">章节或内容重复</string>
+    <string name="feedback_chapter_sequence_error">章节顺序错误</string>
+    <string name="feedback_chapter_content_error">内容错字、少字</string>
+    <string name="feedback_typesetting_error">段落排版内容</string>
+    <string name="feedback_cache_fail">缓存失败</string>
+
+
+    <string name="original_web_page">原网页</string>
+
+    <string name="chapter">章节</string>
+
+    <string name="positive_order">正序</string>
+    <string name="reverse_order">倒序</string>
+
+
+    <string name="catalog">目录</string>
+    <string name="bookmark">书签</string>
+
+    <string name="auto_read_speed">自动翻页速度:</string>
+
+    <string name="accelerate">加速</string>
+    <string name="decelerate">减速</string>
+
+    <string name="previous_chapter">上一章</string>
+    <string name="next_chapter">下一章</string>
+
+    <string name="night">夜间</string>
+    <string name="setting">设置</string>
+
+    <string name="brightness">亮度</string>
+    <string name="system">系统</string>
+    <string name="text_size">字号</string>
+    <string name="background">背景</string>
+    <string name="spacing">间距</string>
+    <string name="paging">翻页</string>
+    <string name="pattern">模式</string>
+
+    <string name="animation_slide">滑动</string>
+    <string name="animation_simulation">仿真</string>
+    <string name="animation_translation">平移</string>
+    <string name="animation_up_down">上下</string>
+
+    <string name="landscape_portrait">横/竖屏</string>
+    <string name="auto_read">自动阅读</string>
+    <string name="full_screen">全屏翻页</string>
+
+    <string name="change_source">换源</string>
+    <string name="insert_bookmark">添加书签</string>
+    <string name="book_detail">书籍详情</string>
+
+
+    <string name="change_source_prompt">
+        您将查看的本小说内容由第三方网站提供，本软件仅提供技术转码服务，以便给您更好的阅读体验，您也可根据页面指引直接浏览原网页。
     </string>
+
+    <string name="reading_continue">继续阅读</string>
+    <string name="skip_chapter">跳过此章</string>
+
+    <string name="refresh">刷新</string>
+
+    <string name="loading_prompt">精彩内容即将呈现...</string>
+
+    <string name="network_error">好像没有网络！</string>
+
+    <string name="cache_method">缓存方式</string>
+    <string name="cache_all_chapter">全部缓存</string>
+    <string name="cache_start_current">从当前章节缓存</string>
+
+
+
+    <string name="source_recommend">[推荐]</string>
+    <string name="source_new">最新</string>
 
 </resources>

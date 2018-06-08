@@ -344,7 +344,7 @@ class AutoAnimation(val glSurfaceView: GLSurfaceView) : IGLAnimation {
 
 
     fun loadShadowTexture(): Int {
-        val drawable = glSurfaceView.context.resources.getDrawable(R.drawable.page_shadow)
+        val drawable = glSurfaceView.context.resources.getDrawable(R.drawable.reader_page_shadow_bg)
 
         val bitmap = Bitmap.createBitmap(1000, 1, Bitmap.Config.ARGB_8888)
         drawable.setBounds(0, 0, 1000, 1)

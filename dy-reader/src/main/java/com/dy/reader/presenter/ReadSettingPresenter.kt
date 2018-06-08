@@ -21,12 +21,11 @@ import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.R
 import com.dy.reader.activity.ReaderActivity
 import com.dy.reader.data.DataProvider
-import com.dy.reader.event.EventLoading
+import com.dy.reader.dialog.ReaderFeedbackDialog
 import com.dy.reader.event.EventSetting
 import com.dy.reader.help.NovelHelper
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import com.dy.reader.view.FeedbackPopWindow
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -37,7 +36,6 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ChapterErrorBean
-import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
@@ -155,7 +153,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
      */
     fun clickDownload(context: Context, mBook: Book, sequence: Int) {
 
-        val dialog = MyDialog(activity.get(), R.layout.reading_cache, Gravity.BOTTOM, true)
+        val dialog = MyDialog(activity.get(), R.layout.dialog_reader_cache, Gravity.BOTTOM, true)
         val reading_all_down = dialog.findViewById(R.id.reading_all_down) as TextView
         reading_all_down.setOnClickListener(View.OnClickListener {
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_all)
@@ -377,7 +375,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
                 val uri = Uri.parse(url)
                 val intent = Intent(Intent.ACTION_VIEW, uri)
                 activity.get()?.startActivity(intent)
-            } catch (e: Exception) {
+            }catch (e:Exception){
                 e.printStackTrace()
             }
             val data = java.util.HashMap<String, String>()
@@ -446,91 +444,104 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
     private var type = -1
 
     fun readFeedBack() {
-
-        if (activity != null && activity!!.get() != null && !activity!!.get()!!.isFinishing()) {
-
-
+        if (activity.get() != null && !activity.get()!!.isFinishing) {
             if (ReaderStatus.position.group == -1) {
                 activity.get()?.applicationContext?.showToastMessage("请到错误章节反馈")
                 return
             }
-            if (AppUtils.getPackageName().equals("cn.txtqbmfyd.reader")) {
-                FeedbackPopWindow.newBuilder(activity.get()).setOnSubmitClickListener { type ->
-                    submitFeedback(type)
-                }.build().show()
 
-            } else {
-                myDialog = MyDialog(activity?.get(), R.layout.dialog_feedback)
-                myDialog!!.setCanceledOnTouchOutside(true)
-                val dialog_title = myDialog!!.findViewById(R.id.dialog_title) as TextView
-                dialog_title.setText(R.string.read_bottom_feedback)
-                val checkboxsParent = myDialog!!.findViewById(R.id.feedback_checkboxs_parent) as LinearLayout
-                val checkboxs = arrayOfNulls<CheckBox>(7)
-                val relativeLayouts = arrayOfNulls<RelativeLayout>(7)
-                var index = 0
-                for (i in 0..checkboxsParent.childCount - 1) {
-                    val relativeLayout = checkboxsParent.getChildAt(i) as RelativeLayout
-                    relativeLayouts[i] = relativeLayout
-                    relativeLayouts[i]!!.setTag(i)
-                    for (j in 0..relativeLayout.childCount - 1) {
-                        val v = relativeLayout.getChildAt(j)
-                        if (v is CheckBox) {
-                            checkboxs[index] = v
-                            index++
-                        }
-                    }
-                }
+            val readerFeedbackDialog = ReaderFeedbackDialog(activity.get()!!)
 
-                if (ReaderSettings.instance.isLandscape) {
-                    myDialog!!.findViewById<ScrollView>(R.id.sv_feedback).layoutParams.height = activity?.get()?.getResources()!!.getDimensionPixelOffset(R.dimen.dimen_view_height_160)
-                } else {
-                    myDialog!!.findViewById<ScrollView>(R.id.sv_feedback).layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
-                }
+            readerFeedbackDialog.insertSubmitListener {
 
-                for (relativeLayout in relativeLayouts) {
-                    relativeLayout!!.setOnClickListener({ v ->
-                        for (checkBox in checkboxs) {
-                            checkBox!!.setChecked(false)
-                        }
-                        checkboxs[v.tag as Int]!!.setChecked(true)
-                    })
-                }
-                val submitButton = myDialog!!.findViewById(R.id.feedback_submit) as Button
-                submitButton.setOnClickListener {
-                    StatServiceUtils.statAppBtnClick(activity?.get()?.getApplicationContext(), StatServiceUtils.rb_click_feedback_submit)
-                    for (n in checkboxs.indices) {
-                        if (checkboxs[n]!!.isChecked()) {
-                            type = n + 1
-                        }
-                    }
-                    if (type == -1) {
-                        activity.get()?.applicationContext?.showToastMessage("请选择错误类型")
-                    } else {
-                        //                        data.put("type", "1");
-                        //						StartLogClickUtil.upLoadEventLog(ReadingActivity.this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data);
-                        submitFeedback(type)
-                        dismissDialog()
-                        type = -1
-                    }
-                }
+                StatServiceUtils.statAppBtnClick(activity.get()?.applicationContext, StatServiceUtils.rb_click_feedback_submit)
 
-                val cancelImage = myDialog!!.findViewById(R.id.feedback_cancel) as Button
-                cancelImage.setOnClickListener {
-                    //                    data.put("type", "2");
-                    //                    StartLogClickUtil.upLoadEventLog(ReadingActivity.this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data);
-                    dismissDialog()
-                }
-
-                if (!myDialog!!.isShowing) {
-                    try {
-                        myDialog!!.show()
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-
-                }
+                submitFeedback(it)
             }
+
+            readerFeedbackDialog.insertCancelListener {
+
+            }
+
+            readerFeedbackDialog.show()
         }
+
+
+//        if (activity != null && activity!!.get() != null && !activity!!.get()!!.isFinishing()) {
+//            if (ReaderStatus.position.group == -1) {
+//                activity.get()?.applicationContext?.showToastMessage("请到错误章节反馈")
+//                return
+//            }
+//            myDialog = MyDialog(activity?.get(), R.layout.dialog_reader_feedback)
+//            myDialog!!.setCanceledOnTouchOutside(true)
+//            val dialog_title = myDialog!!.findViewById(R.id.dialog_title) as TextView
+//            dialog_title.setText(R.string.read_bottom_feedback)
+//            val checkboxsParent = myDialog!!.findViewById(R.id.feedback_checkboxs_parent) as LinearLayout
+//            val checkboxs = arrayOfNulls<CheckBox>(7)
+//            val relativeLayouts = arrayOfNulls<RelativeLayout>(7)
+//            var index = 0
+//            for (i in 0..checkboxsParent.childCount - 1) {
+//                val relativeLayout = checkboxsParent.getChildAt(i) as RelativeLayout
+//                relativeLayouts[i] = relativeLayout
+//                relativeLayouts[i]!!.setTag(i)
+//                for (j in 0..relativeLayout.childCount - 1) {
+//                    val v = relativeLayout.getChildAt(j)
+//                    if (v is CheckBox) {
+//                        checkboxs[index] = v
+//                        index++
+//                    }
+//                }
+//            }
+//
+//            if (ReaderSettings.instance.isLandscape) {
+//                myDialog!!.findViewById<ScrollView>(R.id.sv_feedback_content).layoutParams.height = activity?.get()?.getResources()!!.getDimensionPixelOffset(R.dimen.dimen_view_height_160)
+//            } else {
+//                myDialog!!.findViewById<ScrollView>(R.id.sv_feedback_content).layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
+//            }
+//
+//            for (relativeLayout in relativeLayouts) {
+//                relativeLayout!!.setOnClickListener({ v ->
+//                    for (checkBox in checkboxs) {
+//                        checkBox!!.setChecked(false)
+//                    }
+//                    checkboxs[v.tag as Int]!!.setChecked(true)
+//                })
+//            }
+//            val submitButton = myDialog!!.findViewById(R.id.btn_feedback_submit) as Button
+//            submitButton.setOnClickListener {
+//                StatServiceUtils.statAppBtnClick(activity?.get()?.getApplicationContext(), StatServiceUtils.rb_click_feedback_submit)
+//                for (n in checkboxs.indices) {
+//                    if (checkboxs[n]!!.isChecked()) {
+//                        type = n + 1
+//                    }
+//                }
+//                if (type == -1) {
+//                    activity.get()?.applicationContext?.showToastMessage("请选择错误类型")
+//                } else {
+//                    //                        data.put("type", "1");
+//                    //						StartLogClickUtil.upLoadEventLog(ReadingActivity.this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data);
+//                    submitFeedback(type)
+//                    dismissDialog()
+//                    type = -1
+//                }
+//            }
+//
+//            val cancelImage = myDialog!!.findViewById(R.id.btn_feedback_cancel) as Button
+//            cancelImage.setOnClickListener {
+//                //                    data.put("type", "2");
+//                //                    StartLogClickUtil.upLoadEventLog(ReadingActivity.this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data);
+//                dismissDialog()
+//            }
+//
+//            if (!myDialog!!.isShowing) {
+//                try {
+//                    myDialog!!.show()
+//                } catch (e: Exception) {
+//                    e.printStackTrace()
+//                }
+//
+//            }
+//        }
     }
 
     private fun dismissDialog() {

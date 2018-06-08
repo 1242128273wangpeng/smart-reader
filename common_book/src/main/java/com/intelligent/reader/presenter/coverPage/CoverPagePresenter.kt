@@ -37,7 +37,7 @@ import java.util.*
 class CoverPagePresenter(private val book_id: String?, private var book_source_id: String?, private var book_chapter_id: String?, val coverPageContract: CoverPageContract, val activity: Activity, onClickListener: View.OnClickListener)
     : BookCoverUtil.OnDownloadState, BookCoverViewModel.BookCoverViewCallback {
 
-    private var coverDetail: Book? = null
+    var coverDetail: Book? = null
     private var showMoreLabel: Boolean = false
 
     var bookCoverUtil: BookCoverUtil? = null
@@ -122,6 +122,24 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
         coverPageContract.showLoadingSuccess()
         coverPageContract.showCoverDetail(coverDetail)
         coverPageContract.changeDownloadButtonStatus()
+    }
+
+    /**
+     * 去搜索页
+     */
+    fun goToBookSearchActivity(view: View) {
+        val intent = Intent()
+        if (view is RecommendItemView) {
+            val item = view
+            intent.putExtra("word", item.title)
+            intent.putExtra("search_type", "0")
+            intent.putExtra("filter_type", "0")
+            intent.putExtra("filter_word", "ALL")
+            intent.putExtra("sort_type", "0")
+            intent.setClass(activity, SearchBookActivity::class.java)
+            activity.startActivity(intent)
+            return
+        }
     }
 
     /***

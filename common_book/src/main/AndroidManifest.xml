@@ -205,13 +205,13 @@
                 android:theme="@style/AppThemeTranslucent">
 
         </activity>
-        <activity
-                android:name="com.dy.reader.activity.ReaderActivity"
-                android:hardwareAccelerated="true"
-                android:launchMode="singleTask"
-                android:configChanges="orientation|keyboardHidden|screenSize|uiMode|navigation"
-                android:screenOrientation="nosensor"
-                android:theme="@style/Theme.DesignDemo"/>
+        <!--<activity-->
+                <!--android:name="com.dy.reader.activity.ReaderActivity"-->
+                <!--android:hardwareAccelerated="true"-->
+                <!--android:launchMode="singleTask"-->
+                <!--android:configChanges="orientation|keyboardHidden|screenSize|uiMode|navigation"-->
+                <!--android:screenOrientation="nosensor"-->
+                <!--android:theme="@style/Theme.DesignDemo"/>-->
         <activity
                 android:name=".activity.CataloguesActivity"
                 android:screenOrientation="portrait"
@@ -233,11 +233,7 @@
 
         <!-- 设置页 -->
 
-        <!-- 免责声明页 -->
-        <activity
-                android:name="com.dy.reader.activity.DisclaimerActivity"
-                android:screenOrientation="portrait"
-                android:theme="@style/AppThemeTranslucent"/>
+
 
         <!-- 下载apk失败页面 -->
         <activity
@@ -366,12 +362,12 @@
                 android:name=".activity.FootprintActivity"
                 android:screenOrientation="portrait"
                 android:theme="@style/AppThemeTranslucent"/>
-        <activity
-                android:name=".activity.BookEndActivity"
-                android:launchMode="singleTask"
-                android:label="@string/title_activity_act_book_over"
-                android:screenOrientation="portrait"
-                android:theme="@style/AppThemeTranslucent"/>
+        <!--<activity-->
+                <!--android:name=".activity.BookEndActivity"-->
+                <!--android:launchMode="singleTask"-->
+                <!--android:label="@string/title_activity_act_book_over"-->
+                <!--android:screenOrientation="portrait"-->
+                <!--android:theme="@style/AppThemeTranslucent"/>-->
         <activity
                 android:name=".activity.GuideActivity"
                 android:screenOrientation="portrait"

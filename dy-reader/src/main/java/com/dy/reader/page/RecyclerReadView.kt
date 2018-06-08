@@ -26,9 +26,8 @@ import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import com.dy.reader.util.ThemeUtil
 import com.intelligent.reader.read.mode.NovelPageBean
-import kotlinx.android.synthetic.main.error_page2.view.*
-import kotlinx.android.synthetic.main.loading_page_reading.view.*
-import kotlinx.android.synthetic.main.vertical_pager_layout.view.*
+import kotlinx.android.synthetic.main.reader_loading.view.*
+import kotlinx.android.synthetic.main.reader_vertical_pager.view.*
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ReadViewEnums
 import net.lzbook.kit.utils.AppUtils
@@ -91,18 +90,18 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
     private var mIsJumpChapter = false
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.vertical_pager_layout, this)
+        LayoutInflater.from(context).inflate(R.layout.reader_vertical_pager, this)
         mLayoutManager = WrapContentLinearLayoutManager(context)
-        page_rv.layoutManager = mLayoutManager
+        recl_reader_content.layoutManager = mLayoutManager
         mOriginDataList = CopyOnWriteArrayList()
 
         mAdapter = PagerScrollAdapter(context!!)
 
-        loading_error_reload.setOnClickListener {
-            entrance()
-        }
+//        loading_error_reload.setOnClickListener {
+//            entrance()
+//        }
 
-        page_rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        recl_reader_content.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
@@ -134,9 +133,9 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
         mGestureDetector = GestureDetector(this.context, object : GestureDetector.SimpleOnGestureListener() {
 
             override fun onSingleTapUp(e: MotionEvent): Boolean {
-                val childe = page_rv.findChildViewUnder(e.x, e.y)
+                val childe = recl_reader_content.findChildViewUnder(e.x, e.y)
                 if (childe != null) {
-                    val viewHolder = page_rv.getChildViewHolder(childe)
+                    val viewHolder = recl_reader_content.getChildViewHolder(childe)
                     if (viewHolder != null) {
 
                         if (viewHolder is PagerScrollAdapter.AdViewHolder) {
@@ -145,7 +144,7 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
 
                         } else if (viewHolder is PagerScrollAdapter.PagerHolder) {
                             val groupLocation = IntArray(2)
-                            page_rv.getLocationOnScreen(groupLocation)
+                            recl_reader_content.getLocationOnScreen(groupLocation)
                             val evX = (e.x + groupLocation[0]).toInt()
                             val evY = (e.y + groupLocation[1]).toInt()
 
@@ -161,7 +160,7 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
 
         })
 
-        page_rv.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+        recl_reader_content.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
 
             override fun onTouchEvent(rv: RecyclerView?, e: MotionEvent?) {
                 mGestureDetector.onTouchEvent(e)
@@ -175,9 +174,9 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
             override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) = Unit
         })
 
-        loading_error_setting.visibility = View.GONE
+//        loading_error_setting.visibility = View.GONE
 
-        page_rv.setOnTouchListener { _, ev ->
+        recl_reader_content.setOnTouchListener { _, ev ->
             var flag = false
             when (ev?.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
@@ -228,7 +227,7 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
 
         mAdapter = PagerScrollAdapter(context)
         mAdapter.setOnLoadViewClickListener(this)
-        page_rv.adapter = mAdapter
+        recl_reader_content.adapter = mAdapter
 
         if (ReaderStatus.position.group == -1) {
             ReaderStatus.position.group = 0
@@ -312,7 +311,7 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
             mAdapter.setLoadViewState(PagerScrollAdapter.LOAD_VIEW_LOADING_STATE)
         }
         if (TextUtils.isEmpty(chapter.content)) {
-            page_rv.isEnabled = true
+            recl_reader_content.isEnabled = true
             mChapterLoadStat = CHAPTER_WAITING
             mAdapter.setLoadViewState(PagerScrollAdapter.LOAD_VIEW_FAIL_STATE)
             return
@@ -337,9 +336,9 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
                         }
                         if (scrollIndex != -1) {
                             if (currentItemSequence == PagerScrollAdapter.HEADER_ITEM_TYPE) {
-                                page_rv.scrollToPosition(scrollIndex + 1)
+                                recl_reader_content.scrollToPosition(scrollIndex + 1)
                             } else if (currentItemSequence == PagerScrollAdapter.AD_ITEM_TYPE) {
-                                page_rv.scrollToPosition(scrollIndex + 2)
+                                recl_reader_content.scrollToPosition(scrollIndex + 2)
                             }
                         }
                     }
@@ -374,16 +373,16 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
                     addBookHomePage(chapter)
                     if (ReaderStatus.position.group == 0 && ReaderStatus.position.index == 0) {
                         if (mFirstRead) {
-                            page_rv.scrollToPosition(0)
+                            recl_reader_content.scrollToPosition(0)
                         } else {
-                            page_rv.scrollToPosition(1)
+                            recl_reader_content.scrollToPosition(1)
                         }
                     } else {
                         val position = ReaderStatus.position.index
                         if (ReaderStatus.position.index > 0) {
-                            page_rv.scrollToPosition(position)
+                            recl_reader_content.scrollToPosition(position)
                         } else if (ReaderStatus.position.index == 0) {
-                            page_rv.scrollToPosition(1)
+                            recl_reader_content.scrollToPosition(1)
                             ReaderStatus.position.index = 0
                         }
                     }
@@ -598,13 +597,13 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
                 context.applicationContext.showToastMessage(R.string.is_first_chapter)
                 return
             }
-            page_rv.smoothScrollBy(0, -AppUtils.dp2px(resources, 300f).toInt())
+            recl_reader_content.smoothScrollBy(0, -AppUtils.dp2px(resources, 300f).toInt())
         }
     }
 
     private fun smoothScrollDown(event: KeyEvent) {
         if (event.action == KeyEvent.ACTION_UP) {
-            page_rv.smoothScrollBy(0, AppUtils.dp2px(resources, 300f).toInt())
+            recl_reader_content.smoothScrollBy(0, AppUtils.dp2px(resources, 300f).toInt())
         }
     }
 
@@ -646,27 +645,27 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
         if (DataProvider.isCacheExistBySequence(sequence)) {
             return
         }
-        page_rv.visibility = GONE
-        error_page.visibility = GONE
-        load_page.visibility = View.VISIBLE
+        recl_reader_content.visibility = GONE
+//        view_reader_error.visibility = GONE
+        view_reader_loading.visibility = View.VISIBLE
     }
 
     private fun showErrorPage() {
-        page_rv.visibility = GONE
-        error_page.visibility = View.VISIBLE
+        recl_reader_content.visibility = GONE
+//        view_reader_error.visibility = View.VISIBLE
     }
 
     private fun dismissLoadPage() {
-        page_rv.visibility = VISIBLE
-        load_page.visibility = GONE
-        error_page.visibility = GONE
+        recl_reader_content.visibility = VISIBLE
+        view_reader_loading.visibility = GONE
+//        view_reader_error.visibility = GONE
     }
 
     private fun setBackground() {
         ThemeUtil.getModePrimaryBackground(resources, this)
         mAdapter.setTextColor(resources.getColor(ThemeUtil.modeLoadTextColor))
-        ThemeUtil.getModePrimaryBackground(resources, load_page)
-        tv_loading_progress.setTextColor(resources.getColor(ThemeUtil.modeLoadTextColor))
+        ThemeUtil.getModePrimaryBackground(resources, view_reader_loading)
+        txt_reader_loading_message.setTextColor(resources.getColor(ThemeUtil.modeLoadTextColor))
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

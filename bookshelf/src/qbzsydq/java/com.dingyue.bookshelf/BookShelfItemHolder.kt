@@ -6,23 +6,22 @@ import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.ding.basic.bean.Book
 import kotlinx.android.synthetic.qbzsydq.item_bookshelf_book.view.*
 import net.lzbook.kit.constants.ReplaceConstants
-import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.Tools
 
 /**
  * Created by Administrator on 2017/4/13 0013
  */
-
 class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         LayoutInflater.from(parent.context).inflate(R.layout.item_bookshelf_book, parent, false)) {
 
     fun bind(book: Book, bookshelfItemListener: BookShelfAdapter.BookShelfItemListener,
              contains: Boolean, isRemove: Boolean) = with(itemView) {
 
-        if (book.img_url.isNotEmpty() && book.img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL) {
+        if (book.img_url != null && book.img_url!!.isNotEmpty() && book.img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL) {
             Glide.with(itemView.context.applicationContext)
                     .load(book.img_url)
                     .placeholder(R.drawable.common_book_cover_default_icon)
@@ -35,11 +34,11 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
                     .into(img_book_cover)
         }
 
-        if (book.name.isNotEmpty()) {
+        if (book.name != null && book.name!!.isNotEmpty()) {
             txt_book_name.text = book.name
         }
 
-        if (book.last_chapter_name != null) {
+        if (book.last_chapter != null) {
 
             val count: Int = if (book.sequence <= 0) {
                 book.chapter_count
@@ -57,9 +56,9 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
                 img_book_unread_chapters.visibility = View.GONE
             }
 
-            txt_book_latest_chapter.text = book.last_chapter_name
+            txt_book_latest_chapter.text = book.last_chapter?.name
 
-            val updateTime = "${Tools.compareTime(AppUtils.formatter, book.last_updatetime_native)}更新"
+            val updateTime = "${Tools.compareTime(AppUtils.formatter, book.last_chapter!!.update_time)}更新"
             txt_book_last_update_time.text = updateTime
         }
 
@@ -68,7 +67,7 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
                 img_book_status.visibility = View.VISIBLE
                 img_book_status.setImageResource(R.drawable.bookshelf_item_book_update_icon)
             }
-            book.status == 2 -> { //完结
+            book.status == "FINISH" -> { //完结
                 img_book_status.visibility = View.VISIBLE
                 img_book_status.setImageResource(R.drawable.bookshelf_item_book_finish_icon)
             }

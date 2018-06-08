@@ -173,7 +173,7 @@ class OverlapAnimation(glSurfaceView: GLSurfaceView) : TranslationAnimation(glSu
 
 
     fun loadShadowTexture(): Int {
-        val drawable = Reader.context.resources.getDrawable(R.drawable.page_shadow)
+        val drawable = Reader.context.resources.getDrawable(R.drawable.reader_page_shadow_bg)
 
         val bitmap = Bitmap.createBitmap(1000, 1, Bitmap.Config.ARGB_8888)
         drawable.setBounds(0, 0, 1000, 1)

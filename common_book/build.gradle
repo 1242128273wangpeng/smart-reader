@@ -140,7 +140,7 @@ android {
     }
     defaultConfig {
 
-        applicationId "cn.txtqbmfyd.reader"
+        applicationId "cn.qbzsydsq.reader"
 
 //        System.err.println("project.properties = ${project.getProperties()}")
 
@@ -356,6 +356,7 @@ N多网	        blf1298_10885_001
 
             buildConfigField "String", "CHANNEL_NAME", "\"${channel}\""
 
+            fixChannelAppName(getOwner(), "${channel}")
             addManifestPlaceholders([CHANNEL_NAME: "${channel}"])
         }
 
@@ -370,7 +371,7 @@ N多网	        blf1298_10885_001
             buildConfigField "boolean", "IS_LEAKCANARY_DISABLE", "false"
 
             buildConfigField "String", "CHANNEL_NAME", "\"DEBUG\""
-            fixChannelAppName(getOwner())
+            fixChannelAppName(getOwner(), "${channel}")
             addManifestPlaceholders([CHANNEL_NAME: 'DEBUG'])
         }
 
@@ -379,7 +380,7 @@ N多网	        blf1298_10885_001
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources false
-            fixChannelAppName(getOwner())
+            fixChannelAppName(getOwner(), "${channel}")
 
             buildConfigField "String", "CHANNEL_NAME", "\"${channel}\""
 
@@ -504,10 +505,8 @@ N多网	        blf1298_10885_001
             notOverrideResValue getOwner(), "string", "push_key", "l1XQOTrS9hzzdTxSh2pMEobvgUhPoNeM"
 
 
-            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://novel.caotangteach.com"
-
-
-            notOverrideResValue getOwner(), "string", "book_webview_host", "https://shucheng.caotangteach.com:443"
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://yuedu.dushixiaoshuo.cn"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://scpage.dushixiaoshuo.cn:443"
 
 //            System.err.println("zsmfqbxs: app_name => " + getResValues().get("app_name").value)
 //            System.err.println("${defaultConfig.applicationId} defaultConfig.getResValues ${defaultConfig.getResValues()}")
@@ -893,20 +892,22 @@ N多网	        blf1298_10885_001
 }
 
 //配置特殊渠道的应用名称
-private void fixChannelAppName(def flavor) {
+private void fixChannelAppName(def flavor, def channelName) {
     JSONObject appChannelName = JSON.parse(new File("common_book/AppChannelName.json").text);
     JSONObject config = appChannelName.getJSONObject(android.defaultConfig.applicationId)
+    System.err.println("fixChannelAppName : ${config}")
     if (config != null) {
-
-        if (config != null && config.containsKey(flavor.name)) {
-            def app_name = config.getString(flavor.name)
+        System.err.println("fixChannelAppName : ${channelName} : ${config.getString(channelName)}")
+        if (config != null && config.getString(channelName) != null) {
+            def app_name = config.getString(channelName)
+            System.err.println("${android.defaultConfig.applicationId} Flavor: " + channelName + " => " + app_name)
             flavor.resValue "string", "app_name", app_name
             flavor.addManifestPlaceholders([APP_NAME: app_name])
         }
 
         def appNameFeild = flavor.getResValues().get("app_name")
         if (appNameFeild != null) {
-            System.err.println("${android.defaultConfig.applicationId} flavor = ${flavor.name} => ${appNameFeild.value}")
+            System.err.println("${android.defaultConfig.applicationId} flavor = ${channelName} => ${appNameFeild.value}")
         }
     }
 }

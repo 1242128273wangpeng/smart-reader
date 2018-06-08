@@ -35,8 +35,8 @@ import com.dy.reader.setting.ReaderStatus
 import com.dycm_adsdk.PlatformSDK
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.FrameActivity
-import kotlinx.android.synthetic.qbzsydq.act_read.*
-import kotlinx.android.synthetic.qbzsydq.reading_page.*
+import kotlinx.android.synthetic.qbzsydq.act_reader.*
+import kotlinx.android.synthetic.qbzsydq.reader_content.*
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.request.UrlUtils
@@ -48,6 +48,7 @@ import org.greenrobot.eventbus.ThreadMode
 class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     private var mCatalogMarkFragment: CatalogMarkFragment? = null
+
     private val mReadSettingFragment by lazy {
         val readSettingFragment = ReadSettingFragment()
         readSettingFragment.fm = fragmentManager
@@ -66,9 +67,9 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.act_read)
+        setContentView(R.layout.act_reader)
         ReadMediaManager.init(this)
-        ad_view.frameLayout = fl_menu_gesture
+        pac_reader_ad.frameLayout = fl_menu_gesture
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this)
 
@@ -78,26 +79,26 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         mReadPresenter.onCreateInit(savedInstanceState)
 
 
-        read_catalog_mark_drawer.layoutParams.width = AppHelper.screenWidth
-        read_catalog_mark_drawer.layoutParams.height = AppHelper.screenHeight
+        dl_reader_content.layoutParams.width = AppHelper.screenWidth
+        dl_reader_content.layoutParams.height = AppHelper.screenHeight
 
 
-        mCatalogMarkFragment = supportFragmentManager.findFragmentById(R.id.read_catalog_mark_layout) as? CatalogMarkFragment
+        mCatalogMarkFragment = supportFragmentManager.findFragmentById(R.id.fg_catalog_mark) as? CatalogMarkFragment
 
         mReadSettingFragment.setCurrentThemeMode(mReadPresenter.currentThemeMode)
 
         window.setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED)
         window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
 
-        trans_coding_tv.setOnClickListener {
+        txt_reader_translate_code.setOnClickListener {
             showDisclaimerActivity()
         }
-        origin_tv.setOnClickListener {
+        txt_reader_original_page.setOnClickListener {
             onOriginRead()
         }
 
-        read_catalog_mark_drawer.addDrawerListener(mDrawerListener)
-        read_catalog_mark_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        dl_reader_content.addDrawerListener(mDrawerListener)
+        dl_reader_content.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
         if (!ReaderSettings.instance.isLandscape) {
             mReadPresenter.loadData()
@@ -117,14 +118,12 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     private fun initGuide() {
         val sp = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         if (!sp.getBoolean(mReadPresenter.versionCode.toString() + Constants.READING_GUIDE_TAG, false)) {
-            ll_guide_layout!!.visibility = View.VISIBLE
-            iv_guide_reading.visibility = View.VISIBLE
-            ll_guide_layout!!.setOnClickListener {
-                sp.edit()
-                        .putBoolean(mReadPresenter.versionCode.toString() + Constants.READING_GUIDE_TAG, true)
-                        .apply()
-                iv_guide_reading.visibility = View.GONE
-                ll_guide_layout!!.visibility = View.GONE
+            rl_reader_guide!!.visibility = View.VISIBLE
+            img_reader_guide_action.visibility = View.VISIBLE
+            rl_reader_guide!!.setOnClickListener {
+                sp.edit().putBoolean(mReadPresenter.versionCode.toString() + Constants.READING_GUIDE_TAG, true).apply()
+                img_reader_guide_action.visibility = View.GONE
+                rl_reader_guide!!.visibility = View.GONE
             }
         }
     }
@@ -135,7 +134,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
         window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
 
-        read_catalog_mark_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        dl_reader_content.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         mReadPresenter.onNewIntent(intent)
     }
 
@@ -144,13 +143,13 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
         window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
 
-        read_catalog_mark_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        dl_reader_content.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
         mReadPresenter.onConfigurationChanged()
 
-        read_catalog_mark_drawer.layoutParams.width = AppHelper.screenWidth
-        read_catalog_mark_drawer.layoutParams.height = AppHelper.screenHeight
-        read_catalog_mark_drawer.requestLayout()
+        dl_reader_content.layoutParams.width = AppHelper.screenWidth
+        dl_reader_content.layoutParams.height = AppHelper.screenHeight
+        dl_reader_content.requestLayout()
     }
 
     var lastOrientation = Configuration.ORIENTATION_PORTRAIT
@@ -217,13 +216,13 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         override fun onDrawerSlide(drawerView: View, slideOffset: Float) = Unit
         //解锁， 可滑动关闭
         override fun onDrawerOpened(drawerView: View) {
-            read_catalog_mark_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED)
+            dl_reader_content.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED)
             mCatalogMarkFragment?.loadData()
         }
 
         //锁定不可滑出
         override fun onDrawerClosed(drawerView: View) {
-            read_catalog_mark_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            dl_reader_content.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         }
 
         override fun onDrawerStateChanged(newState: Int) = Unit
@@ -267,8 +266,8 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
 
     override fun onBackPressed() {
-        if (read_catalog_mark_drawer.isDrawerOpen(GravityCompat.START)) {
-            read_catalog_mark_drawer.closeDrawers()
+        if (dl_reader_content.isDrawerOpen(GravityCompat.START)) {
+            dl_reader_content.closeDrawers()
             return
         }
 
@@ -287,7 +286,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     override fun onDestroy() {
         super.onDestroy()
-        read_catalog_mark_drawer.removeDrawerListener(mDrawerListener)
+        dl_reader_content.removeDrawerListener(mDrawerListener)
         EventBus.getDefault().unregister(this)
         ReaderStatus.clear()
         DataProvider.clear()
@@ -302,7 +301,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     override fun surfaceCreated(holder: SurfaceHolder?) {
         println("holder surfaceCreated")
         AppHelper.glSurfaceView = glSurfaceView
-        ReadMediaManager.frameLayout = ad_cache
+        ReadMediaManager.frameLayout = pac_reader_ad_cache
 
         if (!EventBus.getDefault().isRegistered(glSurfaceView))
             EventBus.getDefault().register(glSurfaceView)
@@ -322,7 +321,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     fun showDisclaimerActivity() {
         try {
             val bundle = Bundle()
-            bundle.putBoolean("isFromReadingPage", true)
+            bundle.putBoolean("isFromReading", true)
             RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -368,16 +367,16 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
             showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
         } else if (event.type == EventLoading.Type.PROGRESS_CHANGE) {
             if (ReaderStatus.position.group > -1) {
-                novel_bottom.visibility = View.VISIBLE
-                novel_top.visibility = View.VISIBLE
-                novel_page.text = "本章第${ReaderStatus.position.index + 1}/${ReaderStatus.position.groupChildCount}"
-                novel_chapter.text = "${ReaderStatus.position.group + 1}/${ReaderStatus.chapterCount}章"
+                rl_reader_bottom.visibility = View.VISIBLE
+                rl_reader_header.visibility = View.VISIBLE
+                txt_reader_page.text = "本章第${ReaderStatus.position.index + 1}/${ReaderStatus.position.groupChildCount}"
+                txt_reader_progress.text = "${ReaderStatus.position.group + 1}/${ReaderStatus.chapterCount}章"
                 if (ReaderStatus.position.group < ReaderStatus.chapterList.size) {
-                    novel_title.text = "${ReaderStatus.chapterList[ReaderStatus.position.group].name}"
+                    txt_reader_chapter_name.text = "${ReaderStatus.chapterList[ReaderStatus.position.group].name}"
                 }
             } else {
-                novel_bottom.visibility = View.GONE
-                novel_top.visibility = View.GONE
+                rl_reader_bottom.visibility = View.GONE
+                rl_reader_header.visibility = View.GONE
             }
             mReadPresenter?.checkManualDialogShow()
         } else if (event.type == EventLoading.Type.RETRY) {
@@ -426,7 +425,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
             }
             ReaderSettings.ConfigType.CHAPTER_REFRESH -> {
                 hideAd()
-                read_catalog_mark_drawer.closeDrawers()
+                dl_reader_content.closeDrawers()
             }
             ReaderSettings.ConfigType.FONT_REFRESH -> {
                 hideAd()
@@ -434,17 +433,17 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                     ReadMediaManager.tonken++
                     ReadMediaManager.clearAllAd()
                 }
-                read_catalog_mark_drawer.closeDrawers()
+                dl_reader_content.closeDrawers()
             }
             ReaderSettings.ConfigType.GO_TO_BOOKEND -> mReadPresenter.goToBookEnd()
             ReaderSettings.ConfigType.TITLE_COCLOR_REFRESH -> {
                 val titleColor = ReaderSettings.instance.titleColor
-                novel_time.setTextColor(titleColor)
-                origin_tv.setTextColor(titleColor)
-                trans_coding_tv.setTextColor(titleColor)
-                novel_page.setTextColor(titleColor)
-                novel_chapter.setTextColor(titleColor)
-                novel_title.setTextColor(titleColor)
+                txt_reader_time.setTextColor(titleColor)
+                txt_reader_original_page.setTextColor(titleColor)
+                txt_reader_translate_code.setTextColor(titleColor)
+                txt_reader_page.setTextColor(titleColor)
+                txt_reader_progress.setTextColor(titleColor)
+                txt_reader_chapter_name.setTextColor(titleColor)
                 BatteryView.update()
             }
             else -> Unit
@@ -455,7 +454,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     fun onRecieveEvent(event: EventSetting) {
         when (event.type) {
             EventSetting.Type.OPEN_CATALOG -> {
-                read_catalog_mark_drawer.openDrawer(GravityCompat.START)
+                dl_reader_content.openDrawer(GravityCompat.START)
                 mReadSettingFragment.show(!ReaderStatus.isMenuShow)
                 ReaderStatus.isMenuShow = !ReaderStatus.isMenuShow
             }
@@ -499,8 +498,8 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     private fun showAd() {
         //条件
-        if (ad_view != null) {
-            ad_view.alpha = if (mThemeHelper.isNight) 0.5f else 1f
+        if (pac_reader_ad != null) {
+            pac_reader_ad.alpha = if (mThemeHelper.isNight) 0.5f else 1f
         }
         if (ReaderStatus.currentChapter == null) return
         val mChapter = ReaderStatus.currentChapter!!
@@ -510,7 +509,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
             return
         }
         //add广告
-        ad_view.removeAllViews()
+        pac_reader_ad.removeAllViews()
         val adType = ReadMediaManager.generateAdType(ReaderStatus.position.group, ReaderStatus.position.index)
         val adView = ReadMediaManager.adCache.get(adType)
         if (adView != null) {
@@ -522,11 +521,11 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
                     if (ReaderStatus.position.index == count - 2) {//8-1
                         val space = (AppHelper.screenDensity * ReaderSettings.instance.mLineSpace).toInt()
-                        ad_view.addView(adView.view, ReadMediaManager.getLayoutParams(AppHelper.screenHeight - adView.height - AppHelper.dp2px(26)))
-                        ad_view?.visibility = View.VISIBLE
+                        pac_reader_ad.addView(adView.view, ReadMediaManager.getLayoutParams(AppHelper.screenHeight - adView.height - AppHelper.dp2px(26)))
+                        pac_reader_ad?.visibility = View.VISIBLE
                     } else {//5-1 5-2 6-1 6-2
-                        ad_view.addView(adView.view, ReadMediaManager.getLayoutParams())
-                        ad_view?.visibility = View.VISIBLE
+                        pac_reader_ad.addView(adView.view, ReadMediaManager.getLayoutParams())
+                        pac_reader_ad?.visibility = View.VISIBLE
                     }
 
                     if (!PageManager.currentPage.filledAD) {
@@ -570,7 +569,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     }
 
     private fun hideAd() {
-        ad_view?.visibility = View.GONE
+        pac_reader_ad?.visibility = View.GONE
     }
 
     fun showLoadingDialog(type: LoadingDialogFragment.DialogType, retry: (() -> Unit)? = null) {

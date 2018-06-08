@@ -503,5 +503,6 @@
     <color name="divider_bg">#5D646E</color>
     <color name="cover_info_text_color">#5D646E</color>
     <color name="common_press_bg">#FFF4F5F7</color>
-
+    <color name="welfare_center_header_bg">#1fb7c3</color>
+    <color name="welfare_center_header_title">#ffffff</color>
 </resources>

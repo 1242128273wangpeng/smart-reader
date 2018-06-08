@@ -147,6 +147,21 @@ class CataloguesPresenter(var activity: Activity, var book: Book, var catalogues
         activity.setResult(Activity.RESULT_OK, intent)
     }
 
+    fun doDeleteBookmarks(list: ArrayList<Int>) {
+
+        val bookHelper = BookDataProviderHelper.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext())
+        bookHelper.deleteBookMark(list)
+        val marks = bookHelper.getBookMarks(book.book_id!!)
+        if (bookmarkList != null)
+            bookmarkList.clear()
+        if (marks != null && bookmarkList != null) {
+            for (bookmark in marks) {
+                bookmarkList.add(bookmark)
+            }
+        }
+        cataloguesContract.notifyDataChange(true, bookmarkList)
+
+    }
 
     fun removeHandler() {
         myHandler.removeCallbacksAndMessages(null)
