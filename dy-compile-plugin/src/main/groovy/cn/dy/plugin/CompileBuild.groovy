@@ -61,31 +61,24 @@ class CompileBuild implements Plugin<Project> {
             sourceSets {
                 mfqbxssc {
                     java.srcDirs = ['src/main/java', "src/${getName()}/java", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/java"]
-                    res.srcDirs = ['src/main/res', "src/${getName()}/res", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/res"]
                 }
                 qbmfkdxs {
                     java.srcDirs = ['src/main/java', "src/${getName()}/java", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/java"]
-                    res.srcDirs = ['src/main/res', "src/${getName()}/res", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/res"]
                 }
                 qbzsydq {
                     java.srcDirs = ['src/main/java', "src/${getName()}/java", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/java"]
-                    res.srcDirs = ['src/main/res', "src/${getName()}/res", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/res"]
                 }
                 txtqbdzs {
                     java.srcDirs = ['src/main/java', "src/${getName()}/java", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/java"]
-                    res.srcDirs = ['src/main/res', "src/${getName()}/res", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/res"]
                 }
                 txtqbmfxs {
                     java.srcDirs = ['src/main/java', "src/${getName()}/java", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/java"]
-                    res.srcDirs = ['src/main/res', "src/${getName()}/res", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/res"]
                 }
                 txtqbmfyd {
                     java.srcDirs = ['src/main/java', "src/${getName()}/java", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/java"]
-                    res.srcDirs = ['src/main/res', "src/${getName()}/res", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/res"]
                 }
                 zsmfqbxs {
                     java.srcDirs = ['src/main/java', "src/${getName()}/java", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/java"]
-                    res.srcDirs = ['src/main/res', "src/${getName()}/res", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/res"]
                 }
 
             }
