@@ -43,4 +43,6 @@ class MediaControl : IMediaControl {
 
     override fun stopRestMedia() {}
 
+    override fun loadBookEndMedia(context: Context, onCall: (view: View?, isSuccess: Boolean) -> Unit)
+
 }

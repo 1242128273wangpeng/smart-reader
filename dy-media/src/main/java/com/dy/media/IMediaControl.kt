@@ -76,4 +76,7 @@ interface IMediaControl {
     fun loadRestMedia(activity: Activity?, onSuccess: (view: View?) -> Unit)
 
     fun stopRestMedia()
+
+    //阅读完结页
+    fun loadBookEndMedia(context: Context, onCall: (view: View?, isSuccess: Boolean) -> Unit)
 }
