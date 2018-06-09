@@ -11,13 +11,13 @@ import com.dy.reader.R
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.setting.ReaderSettings
 import iyouqu.theme.FrameActivity
-import kotlinx.android.synthetic.qbzsydq.reader_option_autoread.*
+import kotlinx.android.synthetic.qbzsydq.dialog_reader_auto_read_option.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.StatServiceUtils
 import java.util.HashMap
 import org.greenrobot.eventbus.EventBus
 
-class AutoReadOptionFragment : DialogFragment(), View.OnClickListener {
+class AutoReadOptionDialog : DialogFragment(), View.OnClickListener {
 
     private val readerSettings = ReaderSettings.instance
     
@@ -27,7 +27,7 @@ class AutoReadOptionFragment : DialogFragment(), View.OnClickListener {
         dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.window.requestFeature(Window.FEATURE_NO_TITLE)
         
-        dialog.setContentView(R.layout.reader_option_autoread)
+        dialog.setContentView(R.layout.dialog_reader_auto_read_option)
         
         val window = dialog.window
 

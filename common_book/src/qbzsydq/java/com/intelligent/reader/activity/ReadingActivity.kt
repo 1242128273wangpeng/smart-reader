@@ -26,7 +26,7 @@
 //import com.intelligent.reader.read.help.IReadPageChange
 //import com.intelligent.reader.read.mode.ReadState
 //import com.intelligent.reader.read.page.AutoReadMenu
-//import com.dy.reader.view.ReadSettingBottomDetail
+//import com.dy.reader.view.ReaderSettingBottomDetail
 //import com.intelligent.reader.read.page.ReaderViewWidget
 //import com.dy.reader.repository.ReaderViewModel
 //import com.logcat.sdk.LogEncapManager
@@ -52,7 +52,7 @@
 // * ReadingActivity
 // * 小说阅读页
 // */
-//class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener, ReadSettingBottomDetail.OnReadSettingListener, ReadPreInterface.View, IReadPageChange, ReaderViewWidget.OnAutoReadCallback {
+//class ReadingActivity : BaseCacheableActivity(), AutoReadMenu.OnAutoMemuListener, ReaderSettingBottomDetail.OnReadSettingListener, ReadPreInterface.View, IReadPageChange, ReaderViewWidget.OnAutoReadCallback {
 //
 //    // 系统存储设置
 //    private lateinit var mSharedPreferencesUtils: SharedPreferencesUtils
@@ -301,7 +301,7 @@
 //        showStopAutoHint()
 //    }
 //
-//    //ReadSettingBottomDetail start
+//    //ReaderSettingBottomDetail start
 //    override fun onReadCatalog() {
 //        showMenu(false)
 //        mReadPresenter.onReadCatalog()
@@ -388,7 +388,7 @@
 //        showMenu(false)
 //    }
 //
-//    //ReadSettingBottomDetail end
+//    //ReaderSettingBottomDetail end
 //    fun goBackToHome() = mReadPresenter.goBackToHome()
 //
 //    override fun initPresenter(optionPresenter: ReadOptionPresenter?, markPresenter: CatalogMarkPresenter?) {

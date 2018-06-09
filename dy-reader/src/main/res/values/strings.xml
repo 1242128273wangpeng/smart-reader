@@ -130,4 +130,7 @@
     <string name="source_recommend">[推荐]</string>
     <string name="source_new">最新</string>
 
+    <string name="auto_read_prompt">翻页太麻烦，开启自动阅读</string>
+    <string name="not_receive_prompt">不再接收此提示</string>
+
 </resources>

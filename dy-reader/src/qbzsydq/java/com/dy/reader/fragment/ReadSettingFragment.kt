@@ -31,13 +31,13 @@ class ReadSettingFragment : DialogFragment() {
         const val TAG = "menu"
     }
 
-    private var mPresenter: ReadSettingPresenter? = null
+    private var readSettingPresenter: ReadSettingPresenter? = null
 
     var fm: FragmentManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mPresenter = ReadSettingPresenter(act = activity as ReaderActivity)
+        readSettingPresenter = ReadSettingPresenter(act = activity as ReaderActivity)
 
     }
 
@@ -47,11 +47,11 @@ class ReadSettingFragment : DialogFragment() {
         dialog.setContentView(R.layout.frag_read_setting)
         val window = dialog.window
 
-        window.setGravity(Gravity.CENTER) //可设置dialog的位置
-        val lp = window.attributes
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT   //设置宽度充满屏幕
-        lp.height = WindowManager.LayoutParams.MATCH_PARENT
-        window.attributes = lp
+        window.setGravity(Gravity.CENTER)
+        val layoutParams = window.attributes
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT
+        layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
+        window.attributes = layoutParams
 
         dialog.setCancelable(false)
         dialog.setOnShowListener {
@@ -59,12 +59,11 @@ class ReadSettingFragment : DialogFragment() {
             dialog.rsh_option_header.showMenu(true)
             dialog.rsbd_option_bottom_detail.showMenu(true)
 
-            //拦截连点
             dialog.rl_read_setting_content.canTouchCallbak = {
                 canTouch
             }
         }
-        dialog.setOnKeyListener { dialog, keyCode, event ->
+        dialog.setOnKeyListener { _, keyCode, event ->
 
             if (KeyEvent.KEYCODE_BACK == keyCode) {
                 if (event.action == MotionEvent.ACTION_UP) {
@@ -106,8 +105,8 @@ class ReadSettingFragment : DialogFragment() {
     override fun onResume() {
         super.onResume()
         dialog.rsbd_option_bottom_detail.readPresenter = (activity as ReaderActivity).mReadPresenter
-        dialog.rsh_option_header.presenter = mPresenter
-        dialog.rsbd_option_bottom_detail.presenter = mPresenter
+        dialog.rsh_option_header.presenter = readSettingPresenter
+        dialog.rsbd_option_bottom_detail.presenter = readSettingPresenter
         dialog.rsbd_option_bottom_detail.currentThemeMode = themeMode
         dialog.rsbd_option_bottom_detail.setNovelMode(ReaderSettings.instance.readThemeMode)
         dialog.rl_read_setting_content.setOnClickListener {
@@ -163,7 +162,6 @@ class ReadSettingFragment : DialogFragment() {
     override fun onDestroy() {
         super.onDestroy()
         EventBus.getDefault().unregister(this)
-        mPresenter?.clear()
+        readSettingPresenter?.clear()
     }
-
 }
