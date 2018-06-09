@@ -5,6 +5,8 @@ import com.ding.basic.bean.ChapterState;
 import com.ding.basic.bean.Source;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.dy.reader.R;
+import com.dy.reader.dialog.ReaderAddShelfDialog;
+import com.dy.reader.dialog.ReaderAutoReadDialog;
 import com.dy.reader.dialog.ReaderChangeSourceDialog;
 import com.dy.reader.event.EventSetting;
 import com.dy.reader.listener.SourceClickListener;
@@ -37,6 +39,7 @@ import java.util.Map;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
+import kotlin.jvm.functions.Function1;
 
 /**
  * 阅读页工具类
@@ -61,58 +64,55 @@ public class NovelHelper {
         if (AppUtils.getBooleanPreferences(activity, "auto_read_hint", false)) {
             return;
         }
-        final MyDialog myDialog = new MyDialog(activity, R.layout.dialog_reader_auto_read);
-        TextView dialog_title = (TextView) myDialog.findViewById(R.id.dialog_title);
-        dialog_title.setText(R.string.prompt);
-        CheckBox cb_hint = (CheckBox) myDialog.findViewById(R.id.cb_hint);
-        Button bt_cancel = (Button) myDialog.findViewById(R.id.bt_cancel);
-        bt_cancel.setText(R.string.cancel);
-        Button bt_ok = (Button) myDialog.findViewById(R.id.bt_ok);
-        bt_ok.setText(R.string.confirm);
-        TextView tv_update_info_dialog = (TextView) myDialog.findViewById(R.id.tv_update_info_dialog);
-        tv_update_info_dialog.setText(R.string.auto_reading_prompt);
-        tv_update_info_dialog.setGravity(Gravity.CENTER);
-        cb_hint.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+        final ReaderAutoReadDialog readerAutoReadDialog = new ReaderAutoReadDialog(activity);
+
+        readerAutoReadDialog.setCancelListener(new Function0<Unit>() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.rb_click_flip_auto_not_tip);
-                AppUtils.setBooleanPreferences(activity, "auto_read_hint", isChecked);
+            public Unit invoke() {
+                StatServiceUtils.statAppBtnClick(activity,
+                        StatServiceUtils.rb_click_flip_auto_cancel);
+                    try {
+                        readerAutoReadDialog.dismiss();
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                return null;
             }
         });
-        bt_cancel.setOnClickListener(new OnClickListener() {
+
+
+        readerAutoReadDialog.setConfirmListener(new Function0<Unit>() {
             @Override
-            public void onClick(View v) {
-                StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.rb_click_flip_auto_cancel);
-                if (myDialog != null) {
-                    try {
-                        myDialog.dismiss();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-        bt_ok.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.rb_click_flip_auto_ok);
-                if (myDialog != null) {
-                    try {
-                        myDialog.dismiss();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+            public Unit invoke() {
+                try {
+                    readerAutoReadDialog.dismiss();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
                 }
                 if (helperCallBack != null) {
                     helperCallBack.openAutoReading(true);
                 }
+                return null;
             }
         });
-        if (myDialog != null && !myDialog.isShowing() && !activity.isFinishing()) {
+
+        readerAutoReadDialog.setReceiverPromptListener(new Function1<Boolean, Unit>() {
+            @Override
+            public Unit invoke(Boolean isChecked) {
+                StatServiceUtils.statAppBtnClick(activity,
+                        StatServiceUtils.rb_click_flip_auto_not_tip);
+                AppUtils.setBooleanPreferences(activity, "auto_read_hint", isChecked);
+                return null;
+            }
+        });
+
+
+        if (!activity.isFinishing()) {
             try {
-                myDialog.show();
-            } catch (Exception e) {
-                e.printStackTrace();
+                readerAutoReadDialog.show();
+            } catch (Exception exception) {
+                exception.printStackTrace();
             }
         }
     }
@@ -130,72 +130,63 @@ public class NovelHelper {
             return;
         }
 
-        final MyDialog myDialog = new MyDialog(activity, R.layout.dialog_reader_add_shelf);
-        TextView tv_update_info_dialog = (TextView) myDialog.findViewById(R.id.publish_content);
-        TextView dialog_title = (TextView) myDialog.findViewById(R.id.dialog_title);
-        dialog_title.setText(R.string.prompt);
-        tv_update_info_dialog.setText("喜欢就加入书架吧！");
-        tv_update_info_dialog.setGravity(Gravity.CENTER);
-        Button bt_cancel = (Button) myDialog.findViewById(R.id.publish_stay);
-        Button bt_ok = (Button) myDialog.findViewById(R.id.publish_leave);
-        bt_ok.setText("加入书架");
-        bt_cancel.setOnClickListener(new OnClickListener() {
+        final ReaderAddShelfDialog readerAddShelfDialog = new ReaderAddShelfDialog(activity);
+
+        readerAddShelfDialog.setCancelListener(new Function0<Unit>() {
             @Override
-            public void onClick(View v) {
-                if (myDialog != null) {
-                    try {
-
-
-                        myDialog.dismiss();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+            public Unit invoke() {
+                try {
+                    readerAddShelfDialog.dismiss();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
                 }
                 if (helperCallBack != null) {
                     helperCallBack.addBookShelf(false);
                 }
+                return null;
             }
         });
-        bt_ok.setOnClickListener(new OnClickListener() {
+
+        readerAddShelfDialog.setConfirmListener(new Function0<Unit>() {
             @Override
-            public void onClick(View v) {
-                if (myDialog != null) {
-                    try {
-                        myDialog.dismiss();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+            public Unit invoke() {
+                try {
+                    readerAddShelfDialog.dismiss();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
                 }
                 if (helperCallBack != null) {
                     helperCallBack.addBookShelf(true);
                 }
+                return null;
             }
         });
-        if (myDialog != null && !myDialog.isShowing() && !activity.isFinishing()) {
+
+        if (!activity.isFinishing()) {
             try {
-                myDialog.show();
-            } catch (Exception e) {
-                e.printStackTrace();
+                readerAddShelfDialog.show();
+            } catch (Exception exception) {
+                exception.printStackTrace();
             }
         }
     }
 
-    private void dismissDialog(MyDialog sourceDialog) {
-        if (sourceDialog != null && sourceDialog.isShowing()) {
-            sourceDialog.dismiss();
-        }
-    }
 
     public void showSourceDialog(final ArrayList<Source> sources) {
-        if (actReference == null || actReference.get() == null || actReference.get().isFinishing()) {
+        if (actReference == null || actReference.get() == null
+                || actReference.get().isFinishing()) {
             return;
         }
 
         final Activity activity = actReference.get();
-        final ReaderChangeSourceDialog readerChangeSourceDialog = new ReaderChangeSourceDialog(activity);
+        final ReaderChangeSourceDialog readerChangeSourceDialog = new ReaderChangeSourceDialog(
+                activity);
 
-        if (ReaderStatus.INSTANCE.getCurrentChapter() != null && ReaderStatus.INSTANCE.getCurrentChapter().getStatus() != ChapterState.CONTENT_NORMAL) {
-            readerChangeSourceDialog.insertChangeSourcePrompt(ReaderStatus.INSTANCE.getCurrentChapter().getStatus().getState());
+        if (ReaderStatus.INSTANCE.getCurrentChapter() != null
+                && ReaderStatus.INSTANCE.getCurrentChapter().getStatus()
+                != ChapterState.CONTENT_NORMAL) {
+            readerChangeSourceDialog.insertChangeSourcePrompt(
+                    ReaderStatus.INSTANCE.getCurrentChapter().getStatus().getState());
         }
 
         readerChangeSourceDialog.showSourceList(activity, sources, new SourceClickListener() {
@@ -210,7 +201,9 @@ public class NovelHelper {
 
                 Map<String, String> map1 = new HashMap<>();
                 map1.put("type", "2");
-                StartLogClickUtil.upLoadEventLog(actReference.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
+                StartLogClickUtil.upLoadEventLog(actReference.get(),
+                        StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE,
+                        map1);
                 readerChangeSourceDialog.dismiss();
             }
         });
@@ -220,7 +213,9 @@ public class NovelHelper {
             public Unit invoke() {
                 Map<String, String> map1 = new HashMap<>();
                 map1.put("type", "1");
-                StartLogClickUtil.upLoadEventLog(actReference.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
+                StartLogClickUtil.upLoadEventLog(actReference.get(),
+                        StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE,
+                        map1);
                 readerChangeSourceDialog.dismiss();
                 return null;
             }
@@ -231,11 +226,16 @@ public class NovelHelper {
             public Unit invoke() {
                 Map<String, String> map1 = new HashMap<>();
                 map1.put("type", "1");
-                StartLogClickUtil.upLoadEventLog(actReference.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
+                StartLogClickUtil.upLoadEventLog(actReference.get(),
+                        StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE,
+                        map1);
                 readerChangeSourceDialog.dismiss();
 
-                if (ReaderStatus.INSTANCE.getCurrentChapter() != null && ReaderStatus.INSTANCE.getCurrentChapter().getStatus() != ChapterState.CONTENT_NORMAL) {
-                    EventBus.getDefault().post(new EventSetting(EventSetting.Type.MENU_STATE_CHANGE, null));
+                if (ReaderStatus.INSTANCE.getCurrentChapter() != null
+                        && ReaderStatus.INSTANCE.getCurrentChapter().getStatus()
+                        != ChapterState.CONTENT_NORMAL) {
+                    EventBus.getDefault().post(
+                            new EventSetting(EventSetting.Type.MENU_STATE_CHANGE, null));
                 }
 
                 return null;
@@ -243,80 +243,6 @@ public class NovelHelper {
         });
 
         readerChangeSourceDialog.show();
-
-//        final MyDialog sourceDialog = new MyDialog(activity, R.layout.dialog_reader_chang_source, Gravity.CENTER);
-//        sourceDialog.setCanceledOnTouchOutside(true);
-//        TextView txt_change_source_prompt = (TextView) sourceDialog.findViewById(R.id.txt_change_source_prompt);
-//        TextView txt_change_source_cancel = (TextView) sourceDialog.findViewById(R.id.txt_change_source_cancel);
-//        TextView txt_change_source_continue = (TextView) sourceDialog.findViewById(R.id.txt_change_source_continue);
-//
-//        if (ReaderStatus.INSTANCE.getCurrentChapter() != null && ReaderStatus.INSTANCE.getCurrentChapter().getStatus() != ChapterState.CONTENT_NORMAL) {
-//            txt_change_source_prompt.setText(ReaderStatus.INSTANCE.getCurrentChapter().getStatus().getState());
-//            txt_change_source_cancel.setVisibility(View.INVISIBLE);
-//            txt_change_source_continue.setText(R.string.jump_next_chapter);
-//        }
-//
-//        ListView recl_change_source_content = (ListView) sourceDialog.findViewById(R.id.recl_change_source_content);
-//
-//        final SourceAdapter sourceListAdapter = new SourceAdapter(activity, sources);
-//        recl_change_source_content.setAdapter(sourceListAdapter);
-//
-//        if (ReaderSettings.Companion.getInstance().isLandscape()) {
-//            if (sources.size() > 1) {
-//                recl_change_source_content.getLayoutParams().height = activity.getResources().getDimensionPixelOffset(R.dimen.dimen_view_height_80);
-//            }
-//        } else {
-//            if (sources.size() > 3) {
-//                recl_change_source_content.getLayoutParams().height = activity.getResources().getDimensionPixelOffset(R.dimen.dimen_view_height_135);
-//            }
-//        }
-//
-//        recl_change_source_content.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Source source = (Source) sourceListAdapter.getItem(position);
-//
-//                if (source != null && !TextUtils.isEmpty(source.getHost())) {
-//                    if (sourceCallBack != null) {
-//                        sourceCallBack.showCatalogActivity(source);
-//                    }
-//                }
-//
-//                Map<String, String> map1 = new HashMap<String, String>();
-//                map1.put("type", "2");
-//                StartLogClickUtil.upLoadEventLog(actReference.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
-//                dismissDialog(sourceDialog);
-//            }
-//        });
-//
-//        txt_change_source_cancel.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Map<String, String> map1 = new HashMap<String, String>();
-//                map1.put("type", "1");
-//                StartLogClickUtil.upLoadEventLog(actReference.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
-//                dismissDialog(sourceDialog);
-//            }
-//        });
-//        txt_change_source_continue.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Map<String, String> map1 = new HashMap<String, String>();
-//                map1.put("type", "1");
-//                StartLogClickUtil.upLoadEventLog(actReference.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
-//                dismissDialog(sourceDialog);
-//                if (ReaderStatus.INSTANCE.getCurrentChapter() != null && ReaderStatus.INSTANCE.getCurrentChapter().getStatus() != ChapterState.CONTENT_NORMAL) {
-//                    EventBus.getDefault().post(new EventSetting(EventSetting.Type.MENU_STATE_CHANGE, null));
-//                }
-//            }
-//        });
-//        if (!sourceDialog.isShowing()) {
-//            try {
-//                sourceDialog.show();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
     }
 
 
@@ -350,20 +276,22 @@ public class NovelHelper {
      */
     public void saveBookmark(String book_id, int sequence, int offset) {
 
-        Book book = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(book_id);
+        Book book = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext()).loadBook(book_id);
         if (book != null) {
             book.setBook_id(book_id);
             book.setSequence(sequence);
             book.setOffset(offset);
             book.setLast_read_time(System.currentTimeMillis());
-            if ((RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(book.getBook_id()) != null)) {
+            if ((RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                    BaseBookApplication.getGlobalContext()).checkBookSubscribe(book.getBook_id())
+                    != null)) {
                 book.setReaded(1);
             }
 
-//            AppLog.e(TAG, "保存书籍阅读状态: " + book.toString());
-            RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book);
+            RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                    BaseBookApplication.getGlobalContext()).updateBook(book);
 
-//            AppLog.e(TAG, "保存书籍阅读状态: " + ChapterDaoHelper.Companion.loadChapterDataProviderHelper(actReference.get(), book_id).getCount());
         }
     }
 

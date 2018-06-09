@@ -354,7 +354,7 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-        AppLog.d("ReadSettingBottomDetail", "ReadConfig.readInterlineaSpace " + ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE());
+        AppLog.d("ReaderSettingBottomDetail", "ReadConfig.readInterlineaSpace " + ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE());
         ReadConfig.INSTANCE.setREAD_PARAGRAPH_SPACE(sharedPreferences.getInt("read_paragraph_space", 10) * 0.1f);//阅读页段间距
         try {
             ReadConfig.INSTANCE.setREAD_PARAGRAPH_SPACE(Float.valueOf(numFormat.format(ReadConfig.INSTANCE.getREAD_PARAGRAPH_SPACE())));
@@ -370,11 +370,11 @@ public class ReadingSettingActivity extends FrameActivity implements View.OnClic
             sharedPreferences.edit().putInt("read_content_page_left_space", 20).apply();
         }
 
-        AppLog.d("ReadSettingBottomDetail", "isCustomSpaceSetted_ReadConfig.readInterlineaSpace " + ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE());
+        AppLog.d("ReaderSettingBottomDetail", "isCustomSpaceSetted_ReadConfig.readInterlineaSpace " + ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE());
         if (ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE() == 0.5f || ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE() == 0.2f || ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE() == 1.0f || ReadConfig.INSTANCE.getREAD_INTERLINEAR_SPACE() == 1.5f) {
-            AppLog.d("ReadSettingBottomDetail", "readContentPageLeftSpace—— " + ReadConfig.INSTANCE.getREAD_CONTENT_PAGE_LEFT_SPACE());
-            AppLog.d("ReadSettingBottomDetail", "readContentPageTopSpace—— " + ReadConfig.INSTANCE.getREAD_CONTENT_PAGE_TOP_SPACE());
-            AppLog.d("ReadSettingBottomDetail", "readParagraphSpace—— " + ReadConfig.INSTANCE.getREAD_PARAGRAPH_SPACE());
+            AppLog.d("ReaderSettingBottomDetail", "readContentPageLeftSpace—— " + ReadConfig.INSTANCE.getREAD_CONTENT_PAGE_LEFT_SPACE());
+            AppLog.d("ReaderSettingBottomDetail", "readContentPageTopSpace—— " + ReadConfig.INSTANCE.getREAD_CONTENT_PAGE_TOP_SPACE());
+            AppLog.d("ReaderSettingBottomDetail", "readParagraphSpace—— " + ReadConfig.INSTANCE.getREAD_PARAGRAPH_SPACE());
             if (ReadConfig.INSTANCE.getREAD_CONTENT_PAGE_LEFT_SPACE() == 20 && (ReadConfig.INSTANCE.getREAD_CONTENT_PAGE_TOP_SPACE()) == 45
                     && ReadConfig.INSTANCE.getREAD_PARAGRAPH_SPACE() == 1.0f) {
 

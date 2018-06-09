@@ -35,7 +35,7 @@ import java.text.NumberFormat
 /**
  * 阅读页阅读设置
  */
-class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener {
+class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener {
 
     val readerSettings = ReaderSettings.instance
     

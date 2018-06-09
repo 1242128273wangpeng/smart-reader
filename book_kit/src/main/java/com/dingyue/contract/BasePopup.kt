@@ -23,6 +23,9 @@ open class BasePopup(var context: Context, var layout: Int, var width: Int, var 
         popupWindow.setBackgroundDrawable(ColorDrawable(0x00000000))
         popupWindow.width = width
         popupWindow.height = height
+
+        popupWindow.isFocusable = true
+        popupWindow.isOutsideTouchable = false
     }
 
     fun showAsDropDown(view: View, x: Int = 0, y: Int = 0) {
@@ -31,6 +34,10 @@ open class BasePopup(var context: Context, var layout: Int, var width: Int, var 
 
     fun showAtLocation(parent: View, gravity: Int = Gravity.BOTTOM, x: Int = 0, y: Int = 0) {
         popupWindow.showAtLocation(parent, gravity, x, y)
+    }
+
+    fun insertDismissListener(onDismissListener: PopupWindow.OnDismissListener) {
+        popupWindow.setOnDismissListener(onDismissListener)
     }
 
     open fun dismiss() {

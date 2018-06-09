@@ -23,7 +23,7 @@ import com.dy.reader.data.DataProvider
 import com.dy.reader.event.EventLoading
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.event.EventSetting
-import com.dy.reader.fragment.AutoReadOptionFragment
+import com.dy.reader.fragment.AutoReadOptionDialog
 import com.dy.reader.fragment.CatalogMarkFragment
 import com.dy.reader.fragment.LoadingDialogFragment
 import com.dy.reader.fragment.ReadSettingFragment
@@ -105,7 +105,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         }
 
         RepairHelp.showFixMsg(this, ReaderStatus.book, {
-            if (!this!!.isFinishing) {
+            if (!this.isFinishing) {
                 RouterUtil.navigation(this, RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
             }
         })
@@ -463,9 +463,9 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                     val fragmet = fragmentManager.findFragmentByTag("auto")
 
                     if (fragmet == null) {
-                        AutoReadOptionFragment().show(fragmentManager, "auto")
+                        AutoReadOptionDialog().show(fragmentManager, "auto")
                     } else {
-                        if (fragmet is AutoReadOptionFragment) {
+                        if (fragmet is AutoReadOptionDialog) {
                             fragmet.dismissAllowingStateLoss()
                         }
                     }

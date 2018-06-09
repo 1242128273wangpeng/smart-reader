@@ -73,10 +73,10 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@id/view_change_source_divider"
-                android:background="@drawable/reader_change_source_cancel_sel"
+                android:background="@drawable/reader_dialog_cancel_sel"
                 android:gravity="center"
                 android:text="@string/cancel"
-                android:textColor="@drawable/reader_change_source_cancel_txt_sel"
+                android:textColor="@drawable/reader_dialog_cancel_txt_sel"
                 android:textSize="16sp"/>
 
             <TextView
@@ -85,10 +85,10 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:layout_toRightOf="@id/view_change_source_divider"
-                android:background="@drawable/reader_change_source_continue_sel"
+                android:background="@drawable/reader_dialog_confirm_sel"
                 android:gravity="center"
                 android:text="@string/reading_continue"
-                android:textColor="@drawable/reader_change_source_continue_txt_sel"
+                android:textColor="@drawable/reader_dialog_confirm_txt_sel"
                 android:textSize="16sp"/>
 
             <include

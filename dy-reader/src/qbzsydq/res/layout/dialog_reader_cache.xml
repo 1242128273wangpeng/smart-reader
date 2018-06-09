@@ -20,7 +20,7 @@
         android:textSize="18sp"/>
 
     <TextView
-        android:id="@+id/reading_all_down"
+        android:id="@+id/reader_cache_all"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_gravity="center_horizontal"
@@ -34,7 +34,7 @@
         android:textSize="16sp"/>
 
     <TextView
-        android:id="@+id/reading_current_down"
+        android:id="@+id/reader_cache_current_start"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_gravity="center_horizontal"
@@ -49,7 +49,7 @@
         android:textSize="16sp"/>
 
     <TextView
-        android:id="@+id/reading_cache_cancel"
+        android:id="@+id/reader_cache_cancel"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_gravity="center_horizontal"

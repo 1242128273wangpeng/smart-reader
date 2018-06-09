@@ -8,8 +8,6 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.annotation.StringRes
 import android.text.TextUtils
-import android.view.Gravity
-import android.view.View
 import android.widget.*
 import com.ding.basic.bean.*
 import com.ding.basic.database.helper.BookDataProviderHelper
@@ -21,6 +19,7 @@ import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.R
 import com.dy.reader.activity.ReaderActivity
 import com.dy.reader.data.DataProvider
+import com.dy.reader.dialog.ReaderCacheDialog
 import com.dy.reader.dialog.ReaderFeedbackDialog
 import com.dy.reader.event.EventSetting
 import com.dy.reader.help.NovelHelper
@@ -33,7 +32,6 @@ import io.reactivex.schedulers.Schedulers
 import iyouqu.theme.ThemeMode
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ChapterErrorBean
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
@@ -152,62 +150,62 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
      * sequence
      */
     fun clickDownload(context: Context, mBook: Book, sequence: Int) {
+        if (activity.get() != null && !activity.get()!!.isFinishing) {
+            val readerCacheDialog = ReaderCacheDialog(activity.get()!!)
 
-        val dialog = MyDialog(activity.get(), R.layout.dialog_reader_cache, Gravity.BOTTOM, true)
-        val reading_all_down = dialog.findViewById(R.id.reading_all_down) as TextView
-        reading_all_down.setOnClickListener(View.OnClickListener {
-            StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_all)
-            if (NetWorkUtils.getNetWorkType(context) == NetWorkUtils.NETWORK_NONE) {
-                Toast.makeText(context, context.getText(R.string.game_network_none), Toast.LENGTH_LONG).show()
-                return@OnClickListener
-            }
-            BaseBookHelper.startDownBookTask(activity.get(), mBook, 0)
-            dialog.dismiss()
+            readerCacheDialog.cacheAllListener = {
+                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_all)
 
-            val data = java.util.HashMap<String, String>()
-            data.put("bookid", ReaderStatus.book.book_id)
-            if (ReaderStatus.currentChapter != null) {
-                data.put("chapterid", ReaderStatus.currentChapter!!.chapter_id!!)
-            }
-            data.put("type", "1")
-            StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
-        })
-        val reading_current_down = dialog.findViewById(R.id.reading_current_down) as TextView
-        reading_current_down.setOnClickListener(View.OnClickListener {
-            StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_from_now)
-            if (NetWorkUtils.getNetWorkType(context) == NetWorkUtils.NETWORK_NONE) {
-                Toast.makeText(context, context.getText(R.string.game_network_none), Toast.LENGTH_LONG).show()
-                return@OnClickListener
-            }
-            BaseBookHelper.startDownBookTask(activity.get(), mBook, sequence)
+                if (NetWorkUtils.getNetWorkType(context) == NetWorkUtils.NETWORK_NONE) {
+                    context.applicationContext.showToastMessage(R.string.game_network_none)
+                } else {
 
-            dialog.dismiss()
+                    BaseBookHelper.startDownBookTask(activity.get(), mBook, 0)
+                    readerCacheDialog.dismiss()
 
-            val data = java.util.HashMap<String, String>()
-            data.put("bookid", ReaderStatus.book.book_id)
-            if (ReaderStatus.currentChapter != null) {
-                data.put("chapterid", ReaderStatus.currentChapter!!.chapter_id!!)
-            }
-            data.put("type", "2")
-            StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
-        })
-        val cancel = dialog.findViewById(R.id.reading_cache_cancel) as TextView
+                    val data = java.util.HashMap<String, String>()
+                    data["bookid"] = ReaderStatus.book.book_id
+                    if (ReaderStatus.currentChapter != null) {
+                        data["chapterid"] = ReaderStatus.currentChapter!!.chapter_id
+                    }
+                    data["type"] = "1"
+                    StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
 
-        cancel.setOnClickListener {
-            StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_cancel)
-            if (dialog != null && dialog.isShowing) {
-                dialog.dismiss()
-                val data = java.util.HashMap<String, String>()
-                data.put("bookid", ReaderStatus.book.book_id)
-                if (ReaderStatus.currentChapter != null) {
-                    data.put("chapterid", ReaderStatus.currentChapter!!.chapter_id!!)
                 }
-                data.put("type", "0")
+            }
+            readerCacheDialog.cacheCurrentStartListener = {
+                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_from_now)
+                if (NetWorkUtils.getNetWorkType(context) == NetWorkUtils.NETWORK_NONE) {
+                    context.applicationContext.showToastMessage(R.string.game_network_none)
+                } else {
+                    BaseBookHelper.startDownBookTask(activity.get(), mBook, sequence)
+
+                    readerCacheDialog.dismiss()
+
+                    val data = java.util.HashMap<String, String>()
+                    data["bookid"] = ReaderStatus.book.book_id
+                    if (ReaderStatus.currentChapter != null) {
+                        data["chapterid"] = ReaderStatus.currentChapter!!.chapter_id
+                    }
+                    data["type"] = "2"
+                    StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
+                }
+            }
+
+            readerCacheDialog.cacheCancelListener = {
+                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_cancel)
+                readerCacheDialog.dismiss()
+                val data = java.util.HashMap<String, String>()
+                data["bookid"] = ReaderStatus.book.book_id
+                if (ReaderStatus.currentChapter != null) {
+                    data["chapterid"] = ReaderStatus.currentChapter!!.chapter_id
+                }
+                data["type"] = "0"
                 StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
             }
-        }
-        dialog.show()
 
+            readerCacheDialog.show()
+        }
     }
 
     private fun showToastShort(s: String) {
@@ -375,7 +373,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
                 val uri = Uri.parse(url)
                 val intent = Intent(Intent.ACTION_VIEW, uri)
                 activity.get()?.startActivity(intent)
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
             val data = java.util.HashMap<String, String>()
@@ -438,11 +436,6 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             }
         }
     }
-
-    private var myDialog: MyDialog? = null
-
-    private var type = -1
-
     fun readFeedBack() {
         if (activity.get() != null && !activity.get()!!.isFinishing) {
             if (ReaderStatus.position.group == -1) {
@@ -464,89 +457,6 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             }
 
             readerFeedbackDialog.show()
-        }
-
-
-//        if (activity != null && activity!!.get() != null && !activity!!.get()!!.isFinishing()) {
-//            if (ReaderStatus.position.group == -1) {
-//                activity.get()?.applicationContext?.showToastMessage("请到错误章节反馈")
-//                return
-//            }
-//            myDialog = MyDialog(activity?.get(), R.layout.dialog_reader_feedback)
-//            myDialog!!.setCanceledOnTouchOutside(true)
-//            val dialog_title = myDialog!!.findViewById(R.id.dialog_title) as TextView
-//            dialog_title.setText(R.string.read_bottom_feedback)
-//            val checkboxsParent = myDialog!!.findViewById(R.id.feedback_checkboxs_parent) as LinearLayout
-//            val checkboxs = arrayOfNulls<CheckBox>(7)
-//            val relativeLayouts = arrayOfNulls<RelativeLayout>(7)
-//            var index = 0
-//            for (i in 0..checkboxsParent.childCount - 1) {
-//                val relativeLayout = checkboxsParent.getChildAt(i) as RelativeLayout
-//                relativeLayouts[i] = relativeLayout
-//                relativeLayouts[i]!!.setTag(i)
-//                for (j in 0..relativeLayout.childCount - 1) {
-//                    val v = relativeLayout.getChildAt(j)
-//                    if (v is CheckBox) {
-//                        checkboxs[index] = v
-//                        index++
-//                    }
-//                }
-//            }
-//
-//            if (ReaderSettings.instance.isLandscape) {
-//                myDialog!!.findViewById<ScrollView>(R.id.sv_feedback_content).layoutParams.height = activity?.get()?.getResources()!!.getDimensionPixelOffset(R.dimen.dimen_view_height_160)
-//            } else {
-//                myDialog!!.findViewById<ScrollView>(R.id.sv_feedback_content).layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
-//            }
-//
-//            for (relativeLayout in relativeLayouts) {
-//                relativeLayout!!.setOnClickListener({ v ->
-//                    for (checkBox in checkboxs) {
-//                        checkBox!!.setChecked(false)
-//                    }
-//                    checkboxs[v.tag as Int]!!.setChecked(true)
-//                })
-//            }
-//            val submitButton = myDialog!!.findViewById(R.id.btn_feedback_submit) as Button
-//            submitButton.setOnClickListener {
-//                StatServiceUtils.statAppBtnClick(activity?.get()?.getApplicationContext(), StatServiceUtils.rb_click_feedback_submit)
-//                for (n in checkboxs.indices) {
-//                    if (checkboxs[n]!!.isChecked()) {
-//                        type = n + 1
-//                    }
-//                }
-//                if (type == -1) {
-//                    activity.get()?.applicationContext?.showToastMessage("请选择错误类型")
-//                } else {
-//                    //                        data.put("type", "1");
-//                    //						StartLogClickUtil.upLoadEventLog(ReadingActivity.this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data);
-//                    submitFeedback(type)
-//                    dismissDialog()
-//                    type = -1
-//                }
-//            }
-//
-//            val cancelImage = myDialog!!.findViewById(R.id.btn_feedback_cancel) as Button
-//            cancelImage.setOnClickListener {
-//                //                    data.put("type", "2");
-//                //                    StartLogClickUtil.upLoadEventLog(ReadingActivity.this, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data);
-//                dismissDialog()
-//            }
-//
-//            if (!myDialog!!.isShowing) {
-//                try {
-//                    myDialog!!.show()
-//                } catch (e: Exception) {
-//                    e.printStackTrace()
-//                }
-//
-//            }
-//        }
-    }
-
-    private fun dismissDialog() {
-        if (myDialog?.isShowing!!) {
-            myDialog!!.dismiss()
         }
     }
 
