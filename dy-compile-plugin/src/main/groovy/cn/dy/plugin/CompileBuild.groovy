@@ -14,6 +14,8 @@ import org.gradle.api.Project
  */
 class CompileBuild implements Plugin<Project> {
 
+    def ad_version = '1.5.8'
+
     @Override
     void apply(Project project) {
 
@@ -29,7 +31,7 @@ class CompileBuild implements Plugin<Project> {
 
     private void compileFlavorVariant(Project project, JSONObject flavorsConfigJson) {
         project.android {
-            applicationVariants.all { variant ->
+            libraryVariants.all { variant ->
                 ProductFlavor targetFlavor = null
                 variant.getProductFlavors().forEach {
                     flavor ->
@@ -48,28 +50,44 @@ class CompileBuild implements Plugin<Project> {
         JSONObject flavorConfig = flavorsConfigJson.getJSONObject(targetFlavor.name)
         if (flavorConfig != null && flavorConfig.getBoolean("hasAd")) {
             println "携带广告变体为： " + targetFlavor.name
-            String configurationName = targetFlavor.name + "Implementation"
-            project.dependencies.add(configurationName, 'net.iyouqu.android.common:dycm_ssp_sdk:1.1.8')
+            String configurationName = targetFlavor.name + "Api"
+            project.dependencies.add(configurationName,
+                    "net.iyouqu.android.common:dycm_ssp_sdk:$ad_version")
         }
     }
 
     private void setFlavorSourcePath(Project project, JSONObject flavorsConfigJson) {
         project.android {
             sourceSets {
-                kdzsydq {
-//                    java.srcDirs = ['src/main/java', "src/${getName()}/java", 'src/noad/java']
-                    java.srcDirs = ['src/main/java', "src/${getName()}/java", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/java"]
-                }
-
-                qbzsydq {
-//                    java.srcDirs = ['src/main/java', "src/${getName()}/java", 'src/hasad/java']
-                    java.srcDirs = ['src/main/java', "src/${getName()}/java", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/java"]
-                }
-
                 mfqbxssc {
-//                    java.srcDirs = ['src/main/java', "src/${getName()}/java", 'src/hasad/java']
                     java.srcDirs = ['src/main/java', "src/${getName()}/java", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/java"]
+                    res.srcDirs = ['src/main/res', "src/${getName()}/res", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/res"]
                 }
+                qbmfkdxs {
+                    java.srcDirs = ['src/main/java', "src/${getName()}/java", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/java"]
+                    res.srcDirs = ['src/main/res', "src/${getName()}/res", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/res"]
+                }
+                qbzsydq {
+                    java.srcDirs = ['src/main/java', "src/${getName()}/java", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/java"]
+                    res.srcDirs = ['src/main/res', "src/${getName()}/res", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/res"]
+                }
+                txtqbdzs {
+                    java.srcDirs = ['src/main/java', "src/${getName()}/java", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/java"]
+                    res.srcDirs = ['src/main/res', "src/${getName()}/res", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/res"]
+                }
+                txtqbmfxs {
+                    java.srcDirs = ['src/main/java', "src/${getName()}/java", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/java"]
+                    res.srcDirs = ['src/main/res', "src/${getName()}/res", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/res"]
+                }
+                txtqbmfyd {
+                    java.srcDirs = ['src/main/java', "src/${getName()}/java", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/java"]
+                    res.srcDirs = ['src/main/res', "src/${getName()}/res", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/res"]
+                }
+                zsmfqbxs {
+                    java.srcDirs = ['src/main/java', "src/${getName()}/java", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/java"]
+                    res.srcDirs = ['src/main/res', "src/${getName()}/res", "src/${flavorsConfigJson.getJSONObject(getName()).getBoolean("hasAd") ? "hasad" : "noad"}/res"]
+                }
+
             }
         }
     }

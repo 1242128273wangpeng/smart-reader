@@ -14,14 +14,11 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.ding.basic.Config;
 import com.ding.basic.bean.LoginResp;
 import com.ding.basic.database.helper.BookDataProviderHelper;
-import com.dycm_adsdk.PlatformSDK;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.encrypt.MainExtractorInterface;
 import net.lzbook.kit.encrypt.URLBuilderIntterface;
-import net.lzbook.kit.encrypt.v17.MainExtractor;
 import net.lzbook.kit.encrypt.v17.URLBuilder;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppUtils;
@@ -71,7 +68,6 @@ public abstract class BaseBookApplication extends Application {
             //加载数据库
             BookDataProviderHelper.Companion.loadBookDataProviderHelper(this);
 
-            PlatformSDK.app().onAppCreate(this);
             Config.INSTANCE.beginInit(this);
         }
     }
@@ -105,12 +101,6 @@ public abstract class BaseBookApplication extends Application {
 
         initializeRequestParameters();
 
-    }
-
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-        PlatformSDK.app().onTerminate();
     }
 
     private void initARouter() {

@@ -1,9 +1,13 @@
 apply from: "config.gradle"
 
 buildscript {
+    ext.kotlin_version = '1.2.41'
     repositories {
         mavenCentral()
         jcenter()
+        maven {
+            url uri('./maven-local')
+        }
     }
 
     dependencies {
@@ -11,6 +15,8 @@ buildscript {
         classpath 'com.alibaba:fastjson:1.2.35'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.10'
         classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2'
+        classpath 'com.intelligent.reader:dy-compile-plugin:1.0.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -29,6 +35,10 @@ allprojects {
 
         maven {
             url 'http://maven.aliyun.com/nexus/content/repositories/releases/'
+        }
+
+        maven {
+            url uri('./maven-local')
         }
     }
 }

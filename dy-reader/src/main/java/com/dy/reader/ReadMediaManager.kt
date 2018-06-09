@@ -2,24 +2,20 @@ package com.dy.reader
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import com.dy.media.MediaAbstractCallback
+import com.dy.media.MediaCode
+import com.dy.media.MediaControl
 import com.dy.reader.helper.AppHelper
 import com.dy.reader.page.GLReaderView
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import com.dycm_adsdk.PlatformSDK
-import com.dycm_adsdk.callback.AbstractCallback
-import com.dycm_adsdk.callback.ResultCode
 import com.intelligent.reader.read.mode.NovelPageBean
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.user.UserManager
-import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
-import net.lzbook.kit.utils.OpenUDID
 import org.json.JSONException
 import org.json.JSONObject
 import java.lang.ref.WeakReference
@@ -63,11 +59,11 @@ object ReadMediaManager {
      */
     fun insertChapterAd(group: Int,
                         page: ArrayList<NovelPageBean>,
-                        within: Boolean = PlatformSDK.config().getAdSwitch("5-2") and PlatformSDK.config().getAdSwitch("6-2"),
-                        between: Boolean = PlatformSDK.config().getAdSwitch("5-1") and PlatformSDK.config().getAdSwitch("6-1"),
-                        vertical_between: Boolean = PlatformSDK.config().getAdSwitch("5-3") and PlatformSDK.config().getAdSwitch("6-3"),
-                        small: Boolean = PlatformSDK.config().getAdSwitch("8-1"),
-                        frequency: Int = PlatformSDK.config().chapter_limit
+                        within: Boolean = MediaControl.getAdSwitch("5-2") and MediaControl.getAdSwitch("6-2"),
+                        between: Boolean = MediaControl.getAdSwitch("5-1") and MediaControl.getAdSwitch("6-1"),
+                        vertical_between: Boolean = MediaControl.getAdSwitch("5-3") and MediaControl.getAdSwitch("6-3"),
+                        small: Boolean = MediaControl.getAdSwitch("8-1"),
+                        frequency: Int = MediaControl.getChapterFrequency()
     ): ArrayList<NovelPageBean> {
         removeOldAd(group)
         if (Constants.isHideAD || NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE || page.size < 3) return page
@@ -101,7 +97,7 @@ object ReadMediaManager {
                 last.adType = generateAdType(group, page.size - 1)
 //            requestAd(last.adType, generateAdMark(8, 10), (AppHelper.screenHeight - last.height).toInt())
                 val adMark = generateAdMark(8, 10)
-                PlatformSDK.adapp().dycmNativeAd(this, adMark, null, AdCallback(last.adType, adMark, (AppHelper.screenHeight - last.height).toInt(), tonken))
+                MediaControl.dycmNativeAd(this, adMark, null, AdCallback(last.adType, adMark, (AppHelper.screenHeight - last.height).toInt(), tonken))
             }
         }
 
@@ -132,10 +128,10 @@ object ReadMediaManager {
             if (height == AppHelper.screenHeight) {//5-1 5-2 6-1 6-2
                 val space = (AppHelper.screenDensity * readerSettings.readContentPageTopSpace * 2f).toInt()
 //                PlatformSDK.adapp().dycmNativeAd(this, adMark, height - space, width, AdCallback(adType, adMark, height,token))
-                PlatformSDK.adapp().dycmNativeAd(this, adMark, null,AdCallback(adType, adMark, height,token))
+                MediaControl.dycmNativeAd(this, adMark, null,AdCallback(adType, adMark, height,token))
             } else {//8-1
                 val space = (AppHelper.screenDensity * readerSettings.readContentPageTopSpace).toInt()
-                PlatformSDK.adapp().dycmNativeAd(this, adMark, height - space, width, AdCallback(adType, adMark, height,token))
+                MediaControl.dycmNativeAd(this, adMark, height - space, width, AdCallback(adType, adMark, height,token))
             }
         }
     }
@@ -254,7 +250,8 @@ object ReadMediaManager {
      * 广告回调类
      * @param AdType 广告type
      */
-    private class AdCallback(val adType: String, val mark: String, val height: Int,val curTonken: Long) : AbstractCallback() {
+    private class AdCallback(val adType: String, val mark: String, val height: Int,val curTonken: Long)
+        : MediaAbstractCallback() {
 
         override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
             if (!adswitch) {
@@ -271,7 +268,7 @@ object ReadMediaManager {
             try {
                 val jsonObject = JSONObject(jsonResult)
                 if (jsonObject.has("state_code")
-                        && ResultCode.AD_REQ_SUCCESS == ResultCode.parser(jsonObject.getInt("state_code"))
+                        && MediaCode.MEDIA_SUCCESS == MediaCode.getCode(jsonObject.getInt("state_code"))
                         && !views.isEmpty()
                         && views[0].parent == null) {
                     views[0].id = R.id.pac_reader_ad

@@ -2,7 +2,7 @@ apply plugin: 'groovy'
 apply plugin: 'maven'
 
 dependencies {
-    compile 'com.android.tools.build:gradle:3.0.1'
+    compile 'com.android.tools.build:gradle:3.1.2'
     compile group: 'org.javassist', name: 'javassist', version: '3.20.0-GA'
     compile group: 'com.alibaba', name: 'fastjson', version: '1.2.40'
     //gradle sdk
@@ -15,13 +15,13 @@ repositories {
     mavenCentral()
 }
 
-group = 'com.lee.compile'
-version = '0.0.1'
+group = 'com.intelligent.reader'
+version = '1.0.0'
 
 uploadArchives {
     repositories {
         mavenDeployer {
-            repository(url: uri('../repo'))
+            repository(url: uri('../maven-local'))
         }
     }
 }

@@ -2,35 +2,29 @@ package com.dy.reader.activity
 
 import android.content.res.Resources
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.text.Html
 import android.view.View
-import android.view.ViewGroup
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBooksEndResp
 import com.ding.basic.bean.Source
 import com.dingyue.contract.router.RouterConfig
+import com.dy.media.MediaControl
+import com.dy.media.MediaLifecycle
 import com.dy.reader.R
+import com.dy.reader.adapter.SourceAdapter
+import com.dy.reader.listener.SourceClickListener
 import com.dy.reader.presenter.BookEndContract
 import com.dy.reader.presenter.BookEndPresenter
 import com.dy.reader.setting.ReaderStatus
-import com.dycm_adsdk.PlatformSDK
-import com.dycm_adsdk.callback.AbstractCallback
-import com.dycm_adsdk.callback.ResultCode
 import iyouqu.theme.BaseCacheableActivity
+import kotlinx.android.synthetic.txtqbmfyd.act_book_end.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
-import org.json.JSONException
-import org.json.JSONObject
 import java.util.*
 import java.util.concurrent.Callable
-
-import android.support.v7.widget.LinearLayoutManager
-import com.dy.reader.adapter.SourceAdapter
-
-import kotlinx.android.synthetic.txtqbmfyd.act_book_end.*
-import com.dy.reader.listener.SourceClickListener
 
 @Route(path = RouterConfig.BOOK_END_ACTIVITY)
 class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickListener {
@@ -126,31 +120,14 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
 
 
     private fun initBookEndAD() {
-        PlatformSDK.adapp().dycmNativeAd(this, "9-1", null, object : AbstractCallback() {
-            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
-                super.onResult(adswitch, views, jsonResult)
-                if (!adswitch) {
-                    return
-                }
-                try {
-                    val jsonObject = JSONObject(jsonResult)
-                    if (jsonObject.has("state_code")) {
-                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                            ResultCode.AD_REQ_SUCCESS
-                            -> {
-                                rl_book_end_ad.visibility = View.VISIBLE
-                                rl_book_end_ad.addView(views[0])
-                            }
-                            else -> {
-                                rl_book_end_ad.visibility = View.GONE
-                            }
-                        }
-                    }
-                } catch (exception: JSONException) {
-                    exception.printStackTrace()
-                }
+        MediaControl.loadBookEndMedia(this) { view, isSuccess ->
+            if (isSuccess) {
+                rl_book_end_ad.visibility = View.VISIBLE
+                rl_book_end_ad.addView(view)
+            } else {
+                rl_book_end_ad.visibility = View.GONE
             }
-        })
+        }
     }
 
     /***
@@ -175,9 +152,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         } catch (exception: Resources.NotFoundException) {
             exception.printStackTrace()
         }
-
-        PlatformSDK.lifecycle()?.onDestroy()
-
+        MediaLifecycle.onDestroy()
         super.onDestroy()
     }
 
