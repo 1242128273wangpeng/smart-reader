@@ -25,7 +25,7 @@ import com.dy.reader.data.DataProvider
 import com.dy.reader.event.EventLoading
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.event.EventSetting
-import com.dy.reader.fragment.AutoReadOptionFragment
+import com.dy.reader.fragment.AutoReadOptionDialog
 import com.dy.reader.fragment.CatalogMarkFragment
 import com.dy.reader.fragment.LoadingDialogFragment
 import com.dy.reader.fragment.ReadSettingFragment
@@ -34,12 +34,10 @@ import com.dy.reader.page.*
 import com.dy.reader.presenter.ReadPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import com.dycm_adsdk.PlatformSDK
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.txtqbmfyd.act_reader.*
 import kotlinx.android.synthetic.txtqbmfyd.reader_content.*
-import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.request.UrlUtils
@@ -478,9 +476,9 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                     val fragmet = fragmentManager.findFragmentByTag("auto")
 
                     if (fragmet == null) {
-                        AutoReadOptionFragment().show(fragmentManager, "auto")
+                        AutoReadOptionDialog().show(fragmentManager, "auto")
                     } else {
-                        if (fragmet is AutoReadOptionFragment) {
+                        if (fragmet is AutoReadOptionDialog) {
                             fragmet.dismissAllowingStateLoss()
                         }
                     }

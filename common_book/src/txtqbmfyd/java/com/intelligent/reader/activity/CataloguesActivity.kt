@@ -100,7 +100,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     private fun initUI() {
         catalog_recyceler_main.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         catalog_fastscroller.setRecyclerView(catalog_recyceler_main)
-        catalog_fastscroller.setViewsToUse(R.layout.catalog_recyclerview_fast_scroller, R.id.fastscroller_handle)
+        catalog_fastscroller.setViewsToUse(R.layout.catalog_recyclerview_fast_scroller, R.id.img_recycler_view_scroller)
 
         backIv.setOnClickListener(this)
         tv_catalog_novel_sort.setOnClickListener(this)

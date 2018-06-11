@@ -26,8 +26,6 @@ import kotlin.collections.ArrayList
 
 class RequestRepositoryFactory private constructor(private val context: Context) : RequestRepository {
 
-
-
     companion object {
 
         @Volatile
@@ -123,6 +121,11 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 .compose(SchedulerHelper.schedulerHelper<BasicResult<Book>>())
                 .subscribe({ result ->
                     if (result != null) {
+                        if (result.checkAuthInvalid()) {
+                            requestSubscriber.requestAuthAccess(context)
+                        }
+
+
                         if (result.isAvalable()) {
                             requestSubscriber.onNext(result.data)
 

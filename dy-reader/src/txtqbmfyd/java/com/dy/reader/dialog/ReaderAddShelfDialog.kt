@@ -34,9 +34,9 @@ class ReaderAddShelfDialog (activity: Activity) {
         window.attributes = layoutParams
         window.setWindowAnimations(R.style.bottom_popup_dialog)
 
-        dialog.rootLayout.viewTreeObserver.addOnGlobalLayoutListener {
-            dialog.nsv_add_shelf.layoutParams.height = dialog.rootLayout.height
-            dialog.rootLayout.requestLayout()
+        dialog.fl_add_shelf_content.viewTreeObserver.addOnGlobalLayoutListener {
+            dialog.nsv_add_shelf.layoutParams.height = dialog.fl_add_shelf_content.height
+            dialog.fl_add_shelf_content.requestLayout()
         }
 
         dialog.btn_cancel.setOnClickListener {

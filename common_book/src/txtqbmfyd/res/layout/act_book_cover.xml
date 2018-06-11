@@ -285,7 +285,7 @@
                             android:text="9.6分"/>
                 </LinearLayout>
 
-                <com.intelligent.reader.view.ExpandableTextView
+                <com.intelligent.reader.view.ExpandableTextView2
                         android:id="@+id/book_cover_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -315,7 +315,7 @@
                             android:layout_alignParentBottom="true"
                             android:paddingBottom="1dp"
                             android:src="@drawable/icon_close_text"/>
-                </com.intelligent.reader.view.ExpandableTextView>
+                </com.intelligent.reader.view.ExpandableTextView2>
 
 
                 <RelativeLayout

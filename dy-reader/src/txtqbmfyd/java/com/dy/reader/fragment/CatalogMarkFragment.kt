@@ -80,7 +80,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
             }
         }
         catalog_fastscroller.setRecyclerView(catalog_main)
-        catalog_fastscroller.setViewsToUse(R.layout.reader_recyclerview_scroller, R.id.fastscroller_handle)
+        catalog_fastscroller.setViewsToUse(R.layout.reader_recycler_view_scroller, R.id.img_recycler_view_scroller)
 
         val bookmarkAdapter = ListRecyclerAdapter(bookMarkList, R.layout.item_read_bookmark, BookMarkHolder::class.java)
         bookmarkAdapter.itemClick = View.OnClickListener { v ->
@@ -110,7 +110,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
             }
         }
         bookmark_fastscroller.setRecyclerView(bookmark_main)
-        bookmark_fastscroller.setViewsToUse(R.layout.reader_recyclerview_scroller, R.id.fastscroller_handle)
+        bookmark_fastscroller.setViewsToUse(R.layout.reader_recycler_view_scroller, R.id.img_recycler_view_scroller)
 
         initListener()
     }

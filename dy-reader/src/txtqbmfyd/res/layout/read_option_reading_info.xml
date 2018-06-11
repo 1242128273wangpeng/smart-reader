@@ -6,13 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#E6191C1F"
-    android:clickable="true"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:clickable="true"
         android:gravity="center_vertical">
 
         <ImageView
@@ -24,8 +22,7 @@
             android:gravity="center"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:src="@drawable/reader_option_previous_icon"
-            />
+            android:src="@drawable/reader_option_previous_icon"/>
 
         <SeekBar
             android:id="@+id/novel_jump_progress"
@@ -37,7 +34,7 @@
             android:background="#00000000"
             android:maxHeight="3dp"
             android:minHeight="3dp"
-            android:progressDrawable="@drawable/read_option_progress_brightness"
+            android:progressDrawable="@drawable/reader_option_progress_bg"
             android:splitTrack="false"
             android:thumb="@drawable/reader_option_seek_bar_thumb_icon"/>
 
@@ -61,5 +58,4 @@
         android:textColor="@color/reading_setting_text_color"
         android:textSize="@dimen/text_size_12"
         tools:text="第一章 校花贴身高手"/>
-
 </LinearLayout>

@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.BookUpdate
-import com.dingyue.bookshelf.contract.BookShelfADContract
 import com.dingyue.bookshelf.view.BookShelfDeleteDialog
 import com.dingyue.bookshelf.view.RemoveMenuPopup
 import com.dingyue.contract.CommonContract
@@ -121,9 +120,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-        BookShelfADContract.insertBookShelfType(false)
-
         initRecyclerView()
 
         srl_refresh.setOnPullRefreshListener(object : SuperSwipeRefreshLayout.OnPullRefreshListener {

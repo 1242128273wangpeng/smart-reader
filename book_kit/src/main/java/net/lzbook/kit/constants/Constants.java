@@ -291,6 +291,11 @@ public class Constants {
     public static String sRecommendRateForBookend = "1,2,0,3";
     public static String UPLOAD_OLDUSER_READ_SETTING = "upload_olduser_read_setting"; // 老用户每天上传一次阅读页设置
 
+
+
+    public static int authAccessRefreshTime = 30 * 60 * 1000;
+
+
     /*
          * 初始化
          */

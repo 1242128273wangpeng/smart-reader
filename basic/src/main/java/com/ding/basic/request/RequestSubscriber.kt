@@ -1,5 +1,7 @@
 package com.ding.basic.request
 
+import android.content.Context
+import com.ding.basic.repository.RequestRepositoryFactory
 import com.orhanobut.logger.Logger
 import io.reactivex.subscribers.ResourceSubscriber
 
@@ -19,9 +21,7 @@ abstract class RequestSubscriber<T>: ResourceSubscriber<T>() {
 
     override fun onError(throwable: Throwable) {
         throwable.printStackTrace()
-
         Logger.v("网络请求异常: " + throwable.toString() )
-
         requestError(throwable.message ?:"")
     }
 
@@ -29,7 +29,24 @@ abstract class RequestSubscriber<T>: ResourceSubscriber<T>() {
 
     abstract fun requestError(message: String)
 
+    open fun requestRetry()  {
+
+    }
+
     open fun requestComplete() {
 
+    }
+
+    fun requestAuthAccess(context: Context) {
+        RequestRepositoryFactory.loadRequestRepositoryFactory(context = context).requestAuthAccess(object : RequestSubscriber<String>() {
+
+            override fun requestResult(result: String?) {
+
+            }
+
+            override fun requestError(message: String) {
+
+            }
+        })
     }
 }
