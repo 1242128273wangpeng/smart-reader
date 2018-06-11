@@ -1,6 +1,5 @@
 package com.dy.reader.fragment
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -29,7 +28,6 @@ import kotlinx.android.synthetic.txtqbmfyd.item_read_catalog.view.*
 import kotlinx.android.synthetic.txtqbmfyd.read_catalog_mark_layout.*
 import kotlinx.android.synthetic.txtqbmfyd.read_catalog_mark_layout.view.*
 import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.utils.StatServiceUtils
 import java.text.SimpleDateFormat
@@ -82,7 +80,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
             }
         }
         catalog_fastscroller.setRecyclerView(catalog_main)
-        catalog_fastscroller.setViewsToUse(R.layout.read_recyclerview_fast_scroller, R.id.fastscroller_handle)
+        catalog_fastscroller.setViewsToUse(R.layout.reader_recyclerview_scroller, R.id.fastscroller_handle)
 
         val bookmarkAdapter = ListRecyclerAdapter(bookMarkList, R.layout.item_read_bookmark, BookMarkHolder::class.java)
         bookmarkAdapter.itemClick = View.OnClickListener { v ->
@@ -96,31 +94,6 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
             }
         }
 
-//        bookmarkAdapter.itemLongClick = View.OnLongClickListener { v: View ->
-//            rl_left_pop_bg.visibility = View.VISIBLE
-//            val transX = activity.window.decorView.width - rl_catalog_novel.width
-//            val inflate = LayoutInflater.from(context).inflate(R.layout.pop_catalog_mark_delete, null)
-//
-//            val popupWindow = PopupWindow(inflate, FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
-//            popupWindow.setBackgroundDrawable(ColorDrawable(0x00000000));
-//            popupWindow.isFocusable = true
-//            popupWindow.isOutsideTouchable = false
-//            popupWindow.showAtLocation(rl_left_pop_bg, Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, -transX / 2, 0)
-//            inflate.txt_delete_mark.tag = v.tag
-//            inflate.txt_delete_mark.setOnClickListener { v ->
-//                presenter?.deleteBookMark(activity, v.tag as Bookmark)
-//                popupWindow.dismiss()
-//            }
-//            inflate.txt_clear_mark.setOnClickListener { v ->
-//                presenter?.deleteAllBookMark(activity)
-//                popupWindow.dismiss()
-//            }
-//
-//            popupWindow.setOnDismissListener {
-//                rl_left_pop_bg.visibility = View.GONE
-//            }
-//            true
-//        }
         bookmark_main.adapter = bookmarkAdapter
         bookmark_main.layoutManager = object : LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false) {
             override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State) {
@@ -137,7 +110,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
             }
         }
         bookmark_fastscroller.setRecyclerView(bookmark_main)
-        bookmark_fastscroller.setViewsToUse(R.layout.read_recyclerview_fast_scroller, R.id.fastscroller_handle)
+        bookmark_fastscroller.setViewsToUse(R.layout.reader_recyclerview_scroller, R.id.fastscroller_handle)
 
         initListener()
     }

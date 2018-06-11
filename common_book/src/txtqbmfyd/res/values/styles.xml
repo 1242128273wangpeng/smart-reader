@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="BottomPopupDialog">
-        <item name="android:windowEnterAnimation">@anim/home_clear_cache_enter_anim</item>
-        <item name="android:windowExitAnimation">@anim/home_clear_cache_exit_anim</item>
+        <item name="android:windowEnterAnimation">@anim/bottom_dialog_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/bottom_dialog_exit_anim</item>
     </style>
 </resources>

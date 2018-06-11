@@ -137,7 +137,7 @@
             android:layout_gravity="center_horizontal"
             android:gravity="center"
             android:text="@string/cancel"
-            android:background="@drawable/read_setting_background_press"
+            android:background="@drawable/reader_cache_item_sel"
             android:textColor="@color/gray_orange_text_selector"
             android:textSize="14sp"/>
 </LinearLayout>

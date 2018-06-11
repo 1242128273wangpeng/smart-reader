@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:background="@drawable/read_setting_background_press"
+                android:background="@drawable/reader_cache_item_sel"
                 android:layout_height="wrap_content">
 
     <TextView

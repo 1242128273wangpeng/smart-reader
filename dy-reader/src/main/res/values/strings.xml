@@ -133,4 +133,6 @@
     <string name="auto_read_prompt">翻页太麻烦，开启自动阅读</string>
     <string name="not_receive_prompt">不再接收此提示</string>
 
+    <string name="add_shelf_prompt">喜欢就加入书架吧！</string>
+
 </resources>
