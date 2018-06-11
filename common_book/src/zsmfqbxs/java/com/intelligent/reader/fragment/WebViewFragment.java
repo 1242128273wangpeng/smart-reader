@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.router.RouterUtil;
 import com.dingyue.contract.util.CommonUtil;
+import com.dingyue.contract.util.SharedPreUtil;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.SearchBookActivity;
@@ -35,7 +36,6 @@ import net.lzbook.kit.book.view.FirstUsePointView;
 import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
 import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.CustomWebClient;
 import net.lzbook.kit.utils.JSInterfaceHelper;
 import net.lzbook.kit.utils.NetWorkUtils;
@@ -65,6 +65,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     private TextView txt_head_title;
     private ImageView img_head_search;
     private ImageView img_head_download_manage;
+    private SharedPreUtil sharedPreUtil;
 
     @Override
     public void onAttach(Activity activity) {
@@ -78,6 +79,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         handler = new Handler();
+        sharedPreUtil = new SharedPreUtil(SharedPreUtil.Companion.getSHARE_DEFAULT());
         AppLog.e(TAG, "----------->start");
         Bundle bundle = this.getArguments();
         if (bundle != null) {
@@ -89,7 +91,8 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
         AppLog.e(TAG, "onCreateView");
         try {
             rootView = inflater.inflate(R.layout.webview_layout, container, false);
@@ -101,6 +104,10 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
         return rootView;
     }
 
+    public void setTitle(String title) {
+        txt_head_title.setText(title);
+    }
+
     @SuppressLint("JavascriptInterface")
     private void initView() {
         if (rootView != null) {
@@ -109,12 +116,14 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
             fupv_head_setting = (FirstUsePointView) rootView.findViewById(R.id.fupv_head_setting);
             txt_head_title = (TextView) rootView.findViewById(R.id.txt_head_title);
             img_head_search = (ImageView) rootView.findViewById(R.id.img_head_search);
-            img_head_download_manage = (ImageView) rootView.findViewById(R.id.img_head_download_manage);
+            img_head_download_manage = (ImageView) rootView.findViewById(
+                    R.id.img_head_download_manage);
             contentView = rootView.findViewById(R.id.web_content_view);
-            View title_layout = rootView.findViewById(R.id.title_layout);
+//            View title_layout = rootView.findViewById(R.id.txt_head_title);
             if (Build.VERSION.SDK_INT >= 11) {
                 contentView.setLayerType(View.LAYER_TYPE_NONE, null);
             }
+
 
 //            if (type.equals("recommend")) {
 //                txt_head_title.setText(R.string.recommend);
@@ -134,27 +143,34 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
             img_head_search.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String type = StartLogClickUtil.QG_TJY_SEARCH;
-//                    if (type.equals("recommend")) {
-//                        type = StartLogClickUtil.QG_TJY_SEARCH;
-//                    } else if (type.equals("rank")) {
-//                        type = StartLogClickUtil.QG_BDY_SEARCH;
-//                    } else {
-//                        type = StartLogClickUtil.QG_FL_SEARCH;
-//                    }
+
+                    String titleType = sharedPreUtil.getString("HOME_FINDBOOK_SEARCH");
+                    String logType = StartLogClickUtil.MAIN_PAGE;
+                    if (!TextUtils.isEmpty(titleType)) {
+                        if (titleType.equals("recommend")) {
+                            logType = StartLogClickUtil.RECOMMEND_PAGE;
+                        } else if (titleType.equals("top")) {
+                            logType = StartLogClickUtil.TOP_PAGE;
+                        } else if (titleType.equals("class")) {
+                            logType = StartLogClickUtil.CLASS_PAGE;
+                        }
+                    }
 
                     StartLogClickUtil.upLoadEventLog(context,
-                            StartLogClickUtil.RECOMMEND_PAGE, type);
+                            logType, StartLogClickUtil.SEARCH);
 
-                    startActivity(new Intent(WebViewFragment.this.context, SearchBookActivity.class));
+                    startActivity(
+                            new Intent(WebViewFragment.this.context, SearchBookActivity.class));
                 }
             });
 
             img_head_download_manage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    RouterUtil.INSTANCE.navigation(getActivity(),RouterConfig.DOWNLOAD_MANAGER_ACTIVITY);
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.CACHEMANAGE);
+                    RouterUtil.INSTANCE.navigation(getActivity(),
+                            RouterConfig.DOWNLOAD_MANAGER_ACTIVITY);
+                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.MAIN_PAGE,
+                            StartLogClickUtil.CACHEMANAGE);
                 }
             });
         }
@@ -170,7 +186,8 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
         if (contentView != null && customWebClient != null) {
             customWebClient.setWebSettings();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                contentView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+                contentView.getSettings().setMixedContentMode(
+                        WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
             }
             contentView.setWebViewClient(customWebClient);
         }
@@ -364,7 +381,8 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.content_download_manage:
                 try {
-                    RouterUtil.INSTANCE.navigation(getActivity(), RouterConfig.DOWNLOAD_MANAGER_ACTIVITY);
+                    RouterUtil.INSTANCE.navigation(getActivity(),
+                            RouterConfig.DOWNLOAD_MANAGER_ACTIVITY);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -423,12 +441,15 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 //    private void initRefresh() {
 //
 //        // 免费全本小说书城 推荐页添加下拉刷新
-//        if ("cc.kdqbxs.reader".equals(AppUtils.getPackageName()) && !TextUtils.isEmpty(url) && rootView != null) {
-//            swipeRefreshLayout = (SuperSwipeRefreshLayout) rootView.findViewById(R.id.bookshelf_refresh_view);
+//        if ("cc.kdqbxs.reader".equals(AppUtils.getPackageName()) && !TextUtils.isEmpty(url) &&
+// rootView != null) {
+//            swipeRefreshLayout = (SuperSwipeRefreshLayout) rootView.findViewById(R.id
+// .bookshelf_refresh_view);
 //            swipeRefreshLayout.setHeaderViewBackgroundColor(0x00000000);
 //            swipeRefreshLayout.setHeaderView(createHeaderView());
 //            swipeRefreshLayout.setTargetScrollWithLayout(true);
-//            swipeRefreshLayout.setOnPullRefreshListener(new SuperSwipeRefreshLayout.OnPullRefreshListener() {
+//            swipeRefreshLayout.setOnPullRefreshListener(new SuperSwipeRefreshLayout
+// .OnPullRefreshListener() {
 //
 //                @Override
 //                public void onRefresh() {

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.dy.reader.view.BlockTouchRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_read_setting_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.dy.reader.view.ReaderSettingHeader
+        android:id="@+id/rsh_option_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" />
+
+    <com.dy.reader.view.ReaderSettingBottomDetail
+        android:id="@+id/rsbd_option_bottom_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"/>
+
+</com.dy.reader.view.BlockTouchRelativeLayout>

@@ -26,6 +26,8 @@ import kotlin.collections.ArrayList
 
 class RequestRepositoryFactory private constructor(private val context: Context) : RequestRepository {
 
+
+
     companion object {
 
         @Volatile
@@ -241,7 +243,21 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
     }
 
-
+    override fun requestSearchRecommend(bookIds: String, requestSubscriber: RequestSubscriber<SearchRecommendBook>) {
+        InternetRequestRepository.loadInternetRequestRepository(context = context).requestSearchRecommend(bookIds)!!
+                .compose(SchedulerHelper.schedulerHelper<SearchRecommendBook>())
+                .subscribe({ result ->
+                    if (result != null) {
+                        requestSubscriber.onNext(result)
+                    } else {
+                        requestSubscriber.onError(Throwable("获取推荐异常！"))
+                    }
+                }, { throwable ->
+                    requestSubscriber.onError(throwable)
+                }, {
+                    Logger.v("获取推荐完成！")
+                })
+    }
 
     override fun requestAutoCompleteV4(word: String, requestSubscriber: RequestSubscriber<SearchAutoCompleteBeanYouHua>) {
         InternetRequestRepository.loadInternetRequestRepository(context = context).requestAutoCompleteV4(word)!!
@@ -260,6 +276,22 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
     }
 
+    override fun requestSearchOperationV4(requestSubscriber: RequestSubscriber<Result<SearchResult>>) {
+        InternetRequestRepository.loadInternetRequestRepository(context = context).requestHotWordsV4()!!
+                .compose(SchedulerHelper.schedulerHelper<Result<SearchResult>>())
+                .subscribe({ result ->
+                    if (result != null) {
+                        requestSubscriber.requestResult(result)
+                    } else {
+                        requestSubscriber.onError(Throwable("获取搜索热词异常！"))
+                    }
+                }, { throwable ->
+                    requestSubscriber.onError(throwable)
+                }, {
+                    Logger.v("获取搜索热词完成！")
+                })
+    }
+
     override fun requestHotWords(requestSubscriber: RequestSubscriber<SearchHotBean>) {
         InternetRequestRepository.loadInternetRequestRepository(context = context).requestHotWords()!!
                 .compose(SchedulerHelper.schedulerHelper<SearchHotBean>())
@@ -275,6 +307,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                     Logger.v("获取搜索热词完成！")
                 })
     }
+
 
     override fun requestChapterContent(chapter: Chapter): Flowable<Chapter> {
         val content = ChapterCacheUtil.checkChapterCacheExist(chapter)

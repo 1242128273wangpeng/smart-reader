@@ -14,6 +14,8 @@ import retrofit2.Call
  */
 class InternetRequestRepository private constructor(context: Context?) : BasicRequestRepository {
 
+
+
     companion object {
         private var internetRequestRepository: InternetRequestRepository? = null
 
@@ -62,8 +64,16 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestAutoCompleteV4(word)
     }
 
+    override fun requestSearchRecommend(bookIds: String): Flowable<SearchRecommendBook>? {
+        return RequestAPI.requestSearchRecommend(bookIds)
+    }
+
     override fun requestHotWords(): Flowable<SearchHotBean>? {
         return RequestAPI.requestHotWords()
+    }
+
+    override fun requestHotWordsV4(): Flowable<Result<SearchResult>> {
+        return RequestAPI.requestHotWordsV4()
     }
 
     override fun requestChapterContent(chapter: Chapter): Flowable<BasicResult<Chapter>> {

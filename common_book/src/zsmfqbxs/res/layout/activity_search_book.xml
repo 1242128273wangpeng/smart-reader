@@ -14,7 +14,7 @@
 
         <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_view_height_48">
+                android:layout_height="@dimen/dimen_view_height_45">
 
             <ImageView
                     android:id="@+id/search_result_back"

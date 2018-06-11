@@ -15,7 +15,6 @@ import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.setting.ReaderStatus
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
-import com.intelligent.reader.util.SearchPresenter
 import com.orhanobut.logger.Logger
 import io.reactivex.disposables.Disposable
 import net.lzbook.kit.app.BaseBookApplication

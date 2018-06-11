@@ -8,116 +8,66 @@
     android:background="#FFFAFAFA"
     tools:ignore="RtlHardcoded">
 
+
     <RelativeLayout
         android:id="@+id/rl_head"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:fitsSystemWindows="true">
+        android:layout_height="45dp"
+        android:background="#FF1FB7C3">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
+        <ImageView
+            android:id="@+id/img_head_setting"
+            android:layout_width="23dp"
+            android:layout_height="23dp"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:background="#FF1FB7C3">
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:contentDescription="@string/module_name"
+            android:scaleType="fitXY"
+            android:src="@drawable/bookshelf_head_setting_icon"/>
 
-            <ImageView
-                android:id="@+id/img_head_setting"
-                android:layout_width="23dp"
-                android:layout_height="23dp"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="14dp"
-                android:contentDescription="@string/module_name"
-                android:scaleType="fitXY"
-                android:src="@drawable/bookshelf_head_setting_icon"/>
+        <net.lzbook.kit.book.view.FirstUsePointView
+            android:id="@+id/fup_head_setting"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:layout_alignRight="@id/img_head_setting"
+            android:layout_alignTop="@id/img_head_setting"
+            android:background="#ff0000"/>
 
-            <net.lzbook.kit.book.view.FirstUsePointView
-                android:id="@+id/fup_head_setting"
-                android:layout_width="6dp"
-                android:layout_height="6dp"
-                android:layout_alignRight="@id/img_head_setting"
-                android:layout_alignTop="@id/img_head_setting"
-                android:background="#ff0000"/>
+        <TextView
+            android:id="@+id/txt_head_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:text="@string/bookshelf"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"/>
 
-            <TextView
-                android:id="@+id/txt_head_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_centerVertical="true"
-                android:gravity="center_vertical"
-                android:text="@string/bookshelf"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"/>
+        <ImageView
+            android:id="@+id/img_head_download"
+            android:layout_width="23dp"
+            android:layout_height="23dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="14dp"
+            android:contentDescription="@string/module_name"
+            android:scaleType="fitXY"
+            android:src="@drawable/bookshelf_head_download_icon"/>
 
-            <ImageView
-                android:id="@+id/img_head_download"
-                android:layout_width="23dp"
-                android:layout_height="23dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="14dp"
-                android:contentDescription="@string/module_name"
-                android:scaleType="fitXY"
-                android:src="@drawable/bookshelf_head_download_icon"/>
-
-            <ImageView
-                android:id="@+id/img_head_search"
-                android:layout_width="23dp"
-                android:layout_height="23dp"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="21dp"
-                android:layout_toLeftOf="@id/img_head_download"
-                android:contentDescription="@string/module_name"
-                android:scaleType="fitXY"
-                android:src="@drawable/bookshelf_head_search_icon"/>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/rl_head_remove"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_alignParentBottom="true"
-            android:background="#FF1FB7C3"
-            android:visibility="gone">
-
-            <ImageView
-                android:id="@+id/img_editor_back"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
-                android:contentDescription="@string/module_name"
-                android:src="@drawable/bookshelf_head_back_icon"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_centerVertical="true"
-                android:gravity="center_vertical"
-                android:text="@string/bookshelf_edit"
-                android:textColor="#FFFFFFFF"
-                android:textSize="18sp"/>
-
-            <TextView
-                android:id="@+id/home_edit_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:gravity="center_vertical"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
-                android:text="@string/cancel"
-                android:textColor="#FFFFFFFF"
-                android:textSize="16sp"/>
-        </RelativeLayout>
-
+        <ImageView
+            android:id="@+id/img_head_search"
+            android:layout_width="23dp"
+            android:layout_height="23dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="21dp"
+            android:layout_toLeftOf="@id/img_head_download"
+            android:contentDescription="@string/module_name"
+            android:scaleType="fitXY"
+            android:src="@drawable/bookshelf_head_search_icon"/>
     </RelativeLayout>
+
 
     <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
         android:id="@+id/srl_refresh"
@@ -131,7 +81,7 @@
             android:layout_height="match_parent"
             android:alwaysDrawnWithCache="false"
             android:clipToPadding="false"
-            android:paddingTop="10dp"/>
+            />
 
     </net.lzbook.kit.pulllist.SuperSwipeRefreshLayout>
 

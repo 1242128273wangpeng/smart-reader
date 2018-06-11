@@ -1,36 +1,9 @@
 package com.intelligent.reader.search;
-/*
 
-import com.intelligent.reader.R;
-import com.intelligent.reader.activity.CoverPageActivity;
-import com.intelligent.reader.activity.FindBookDetail;
-import com.intelligent.reader.activity.HomeActivity;
-import com.intelligent.reader.activity.ReadingActivity;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.data.search.SearchAutoCompleteBeanYouHua;
-import net.lzbook.kit.data.search.SearchCommonBeanYouHua;
-import net.lzbook.kit.net.custom.service.NetService;
-import net.lzbook.kit.net.custom.service.OwnSearchService;
+import static net.lzbook.kit.statistic.StatisticKt.alilog;
+import static net.lzbook.kit.statistic.StatisticUtilKt.buildSearch;
 
-import com.intelligent.reader.activity.SearchBookActivity;
-import com.intelligent.reader.read.help.BookHelper;
-
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.Book;
-import net.lzbook.kit.data.bean.RequestItem;
-import net.lzbook.kit.data.db.BookDaoHelper;
-import net.lzbook.kit.data.search.SearchAutoCompleteBean;
-import net.lzbook.kit.data.search.SearchCommonBean;
-import net.lzbook.kit.encrypt.URLBuilderIntterface;
-import net.lzbook.kit.request.UrlUtils;
-import net.lzbook.kit.statistic.model.Search;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.FootprintUtils;
-import net.lzbook.kit.utils.JSInterfaceHelper;
-import net.lzbook.kit.utils.oneclick.AntiShake;
-
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -40,6 +13,36 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
 
+import com.ding.basic.bean.Book;
+import com.ding.basic.bean.Chapter;
+import com.ding.basic.bean.SearchAutoCompleteBeanYouHua;
+import com.ding.basic.bean.SearchCommonBeanYouHua;
+import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.request.RequestSubscriber;
+import com.dingyue.contract.router.RouterConfig;
+import com.dingyue.contract.router.RouterUtil;
+import com.intelligent.reader.R;
+import com.intelligent.reader.activity.CoverPageActivity;
+import com.intelligent.reader.activity.FindBookDetail;
+import com.intelligent.reader.activity.SearchBookActivity;
+import com.orhanobut.logger.Logger;
+
+import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.book.download.CacheManager;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.encrypt.URLBuilderIntterface;
+import net.lzbook.kit.request.UrlUtils;
+import net.lzbook.kit.statistic.model.Search;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.FootprintUtils;
+import net.lzbook.kit.utils.JSInterfaceHelper;
+import net.lzbook.kit.utils.oneclick.AntiShake;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -48,32 +51,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.ObservableSource;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
 
-import static net.lzbook.kit.statistic.StatisticKt.alilog;
-import static net.lzbook.kit.statistic.StatisticUtilKt.buildSearch;
-
-*/
 /**
  * Created by yuchao on 2017/8/2 0002.
- *//*
+ */
 
 
 public class SearchHelper {
     private static final String TAG = SearchHelper.class.getSimpleName();
-    private BookDaoHelper bookDaoHelper;
     private Map<String, WordInfo> wordInfoMap = new HashMap<>();
     private SharedPreferences sharedPreferences;
 
@@ -85,17 +72,14 @@ public class SearchHelper {
     private String mUrl;
     private String fromClass;
 
-    private Context mContext;
+    private Activity mContext;
     private String url_tag;
     private Disposable disposable;
 //    private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
 
-    public SearchHelper(Context context){
+    public SearchHelper(Activity context) {
         mContext = context;
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        if (bookDaoHelper == null) {
-            bookDaoHelper = BookDaoHelper.getInstance();
-        }
     }
 
     private class WordInfo {
@@ -115,37 +99,38 @@ public class SearchHelper {
     private SearchSuggestCallBack searchSuggestCallBack;
     private JsNoneResultSearchCall jsNoneResultSearchCall;
 
-    public void setJsNoneResultSearchCall(JsNoneResultSearchCall jsNoneResultSearchCall){
+    public void setJsNoneResultSearchCall(JsNoneResultSearchCall jsNoneResultSearchCall) {
         this.jsNoneResultSearchCall = jsNoneResultSearchCall;
     }
 
-    public void setSearchSuggestCallBack(SearchSuggestCallBack ssb){
+    public void setSearchSuggestCallBack(SearchSuggestCallBack ssb) {
         searchSuggestCallBack = ssb;
     }
 
-    public interface JsNoneResultSearchCall{
+    public interface JsNoneResultSearchCall {
         void onNoneResultSearch(String searchWord);
     }
 
-    public interface SearchSuggestCallBack{
+    public interface SearchSuggestCallBack {
         void onSearchResult(List<Object> suggestList, SearchAutoCompleteBeanYouHua transmitBean);
     }
 
-    public void setStartedAction(){
+    public void setStartedAction() {
         wordInfoMap.put(word, new WordInfo());
     }
 
-    public void onLoadFinished(){
+    public void onLoadFinished() {
         WordInfo wordInfo = wordInfoMap.get(word);
-        if(wordInfo != null)
+        if (wordInfo != null) {
             wordInfo.computeUseTime();
+        }
     }
 
-    public String getWord(){
+    public String getWord() {
         return word;
     }
 
-    public void setWord(String word){
+    public void setWord(String word) {
         this.word = word;
     }
 
@@ -173,7 +158,7 @@ public class SearchHelper {
         sortType = "0";
     }
 
-    public void setInitType(Intent intent){
+    public void setInitType(Intent intent) {
         word = intent.getStringExtra("word");
         fromClass = intent.getStringExtra("from_class");
         searchType = intent.getStringExtra("search_type");
@@ -184,16 +169,18 @@ public class SearchHelper {
     }
 
     private AntiShake shake = new AntiShake();
+
     public void initJSHelp(JSInterfaceHelper jsInterfaceHelper) {
 
-        if (jsInterfaceHelper == null){
+        if (jsInterfaceHelper == null) {
             return;
         }
 
         jsInterfaceHelper.setOnSearchClick(new JSInterfaceHelper.onSearchClick() {
 
             @Override
-            public void doSearch(String keyWord, String search_type, String filter_type, String filter_word, String sort_type) {
+            public void doSearch(String keyWord, String search_type, String filter_type,
+                    String filter_word, String sort_type) {
 
                 AppLog.e("aaa", "aaaa");
                 word = keyWord;
@@ -204,7 +191,7 @@ public class SearchHelper {
 
                 startLoadData(0);
 
-                if (mJsCallSearchCall != null){
+                if (mJsCallSearchCall != null) {
                     mJsCallSearchCall.onJsSearch();
                 }
             }
@@ -213,34 +200,37 @@ public class SearchHelper {
         jsInterfaceHelper.setOnEnterCover(new JSInterfaceHelper.onEnterCover() {
 
             @Override
-            public void doCover(String host, String book_id, String book_source_id, String name, String author, String parameter,
-                                String extra_parameter) {
+            public void doCover(String host, String book_id, String book_source_id, String name,
+                    String author, String parameter,
+                    String extra_parameter) {
 
                 AppLog.e(TAG, "doCover");
                 Map<String, String> data = new HashMap<>();
                 data.put("BOOKID", book_id);
                 data.put("source", "WEBVIEW");
-                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data);
+                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.BOOOKDETAIL_PAGE,
+                        StartLogClickUtil.ENTER, data);
 
-                RequestItem requestItem = new RequestItem();
-                requestItem.book_id = book_id;
-                requestItem.book_source_id = book_source_id;
-                requestItem.host = host;
-                requestItem.name = name;
-                requestItem.author = author;
+                Book book = new Book();
+                book.setBook_id(book_id);
+                book.setBook_source_id(book_source_id);
+                book.setHost(host);
+                book.setName(name);
+                book.setAuthor(author);
 
                 WordInfo wordInfo = wordInfoMap.get(word);
-                if(wordInfo!= null) {
+                if (wordInfo != null) {
                     wordInfo.actioned = true;
-                    alilog(buildSearch(requestItem, word, Search.OP.COVER, wordInfo.computeUseTime()));
+                    alilog(buildSearch(book, word, Search.OP.COVER,
+                            wordInfo.computeUseTime()));
                 }
                 Intent intent = new Intent();
                 intent.setClass(mContext, CoverPageActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(Constants.REQUEST_ITEM, requestItem);
+                bundle.putString("book_id", book_id);
+                bundle.putString("book_source_id", book_source_id);
                 intent.putExtras(bundle);
                 mContext.startActivity(intent);
-
             }
         });
 
@@ -253,8 +243,9 @@ public class SearchHelper {
                 }
                 AppLog.e(TAG, "doAnotherWeb");
                 try {
-                    if(url.contains(URLBuilderIntterface.AUTHOR_V4)){
-                        sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH, "author").apply();//FindBookDetail 返回键时标识
+                    if (url.contains(URLBuilderIntterface.AUTHOR_V4)) {
+                        sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH,
+                                "author").apply();//FindBookDetail 返回键时标识
                     }
                     Intent intent = new Intent();
                     intent.setClass(mContext, FindBookDetail.class);
@@ -276,7 +267,7 @@ public class SearchHelper {
 
                 startLoadData(0);
 
-                if(jsNoneResultSearchCall != null){
+                if (jsNoneResultSearchCall != null) {
                     jsNoneResultSearchCall.onNoneResultSearch(searchWord);
                 }
 
@@ -285,81 +276,76 @@ public class SearchHelper {
 
         jsInterfaceHelper.setOnTurnRead(new JSInterfaceHelper.onTurnRead() {
             @Override
-            public void turnRead(String book_id, String book_source_id, String host, String name, String author, String parameter, String extra_parameter, String update_type, String last_chapter_name, int serial_number, String img_url, long update_time, String desc, String label, String status, String bookType) {
+            public void turnRead(String book_id, String book_source_id, String host, String name,
+                    String author, String parameter, String extra_parameter, String update_type,
+                    String last_chapter_name, int serial_number, String img_url, long update_time,
+                    String desc, String label, String status, String bookType) {
 
-                Intent intent = new Intent();
-                Bundle bundle = new Bundle();
-
-                bundle.putInt("sequence",0);
-                bundle.putInt("offset", 0);
 
                 Book book = new Book();
-                book.book_id = book_id;
-                book.book_source_id = book_source_id;
-                book.site = host;
-                book.author = author;
-                book.name = name;
-                book.parameter = parameter;
-                book.extra_parameter = extra_parameter;
-                book.last_chapter_name = last_chapter_name;
-                book.chapter_count = serial_number;
-                book.img_url = img_url;
-                book.last_updatetime_native = update_time;
-                book.sequence = -1;
-                book.desc = desc;
-                book.category = label;
-                if ("FINISH".equals(status)) {
-                    book.status = 2;
-                } else {
-                    book.status = 1;
-                }
+                book.setBook_id(book_id);
+                book.setBook_source_id(book_source_id);
+                book.setHost(host);
+                book.setAuthor(author);
+                book.setName(name);
+                Chapter chapter = new Chapter();
+                chapter.setName(last_chapter_name);
+                book.setLast_chapter(chapter);
+                book.setChapter_count(serial_number);
+                book.setImg_url(img_url);
+                book.setLast_update_success_time(update_time);
+                book.setSequence(-1);
+                book.setDesc(desc);
+                book.setLabel(label);
+                book.setStatus(status);
+
 //                book.mBookType = Integer.parseInt(bookType);
                 //bookType为是否付费书籍标签 除快读外不加
 
-                bundle.putSerializable("book", book);
                 FootprintUtils.saveHistoryShelf(book);
-                RequestItem requestItem = new RequestItem();
-                requestItem.book_id = book_id;
-                requestItem.book_source_id = book_source_id;
-                requestItem.host = host;
-                requestItem.parameter = parameter;
-                requestItem.extra_parameter = extra_parameter;
-                requestItem.name = name;
-                requestItem.author = author;
-//                requestItem.mBookType = Integer.parseInt(bookType);
-                bundle.putSerializable(Constants.REQUEST_ITEM, requestItem);
 
+                Bundle bundle = new Bundle();
+
+                bundle.putInt("sequence", 0);
+                bundle.putInt("offset", 0);
                 bundle.putSerializable("book", book);
-
-                AppLog.e(TAG, "GotoReading: " + book.site + " : " + requestItem.host);
-                intent.setClass(mContext, ReadingActivity.class);
-                intent.putExtras(bundle);
-                mContext.startActivity(intent);
-
+                int flags = Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                RouterUtil.INSTANCE.navigation(mContext, RouterConfig.READER_ACTIVITY, bundle,
+                        flags);
             }
         });
 
         jsInterfaceHelper.setOnEnterRead(new JSInterfaceHelper.onEnterRead() {
             @Override
-            public void doRead(final String host, final String book_id, final String book_source_id, final String name, final String author, final
-            String status, final String category, final String imgUrl, final String last_chapter, final String chapter_count, final long
-                                       updateTime, final String parameter, final String extra_parameter, final int dex) {
+            public void doRead(final String host, final String book_id, final String book_source_id,
+                    final String name, final String author, final
+            String status, final String category, final String imgUrl, final String last_chapter,
+                    final String chapter_count, final long
+                    updateTime, final String parameter, final String extra_parameter,
+                    final int dex) {
                 AppLog.e(TAG, "doRead");
-                Book coverBook = genCoverBook(host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count,
+                Book coverBook = genCoverBook(host, book_id, book_source_id, name, author, status,
+                        category, imgUrl, last_chapter, chapter_count,
                         updateTime, parameter, extra_parameter, dex);
-                AppLog.e(TAG, "DoRead : " + coverBook.sequence);
+                AppLog.e(TAG, "DoRead : " + coverBook.getSequence());
 
-//                alilog(buildSearch(coverBook, word, Search.OP.RETURN));
+                Bundle bundle = new Bundle();
+                bundle.putInt("sequence", coverBook.getSequence());
+                bundle.putInt("offset", coverBook.getOffset());
+                bundle.putSerializable("book", coverBook);
+                int flags = Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP;
+                RouterUtil.INSTANCE.navigation(mContext, RouterConfig.READER_ACTIVITY, bundle,
+                        flags);
 
-                BookHelper.goToRead(mContext, coverBook);
             }
         });
 
-        ArrayList<Book> booksOnLine = bookDaoHelper.getBooksOnLineList();
+        List<Book> booksOnLine = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext()).loadBooks();
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("[");
         for (int i = 0; i < booksOnLine.size(); i++) {
-            stringBuilder.append("{'id':'").append(booksOnLine.get(i).book_id).append("'}");
+            stringBuilder.append("{'id':'").append(booksOnLine.get(i).getBook_id()).append("'}");
             if (i != booksOnLine.size() - 1) {
                 stringBuilder.append(",");
             }
@@ -370,21 +356,27 @@ public class SearchHelper {
 
         jsInterfaceHelper.setOnInsertBook(new JSInterfaceHelper.OnInsertBook() {
             @Override
-            public void doInsertBook(final String host, final String book_id, final String book_source_id, final String name, final String author,
-                                     final String status, final String category, final String imgUrl, final String last_chapter, final String
-                                             chapter_count, final long updateTime, final String parameter, final String extra_parameter, final int
-                                             dex) {
+            public void doInsertBook(final String host, final String book_id,
+                    final String book_source_id, final String name, final String author,
+                    final String status, final String category, final String imgUrl,
+                    final String last_chapter, final String
+                    chapter_count, final long updateTime, final String parameter,
+                    final String extra_parameter, final int
+                    dex) {
                 AppLog.e(TAG, "doInsertBook");
-                Book book = genCoverBook(host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count,
+                Book book = genCoverBook(host, book_id, book_source_id, name, author, status,
+                        category, imgUrl, last_chapter, chapter_count,
                         updateTime, parameter, extra_parameter, dex);
                 WordInfo wordInfo = wordInfoMap.get(word);
-                if(wordInfo != null) {
+                if (wordInfo != null) {
                     wordInfo.actioned = true;
                     alilog(buildSearch(book, word, Search.OP.BOOKSHELF, wordInfo.computeUseTime()));
                 }
-                boolean succeed = bookDaoHelper.insertBook(book);
-                if (succeed) {
-                    Toast.makeText(mContext.getApplicationContext(), R.string.bookshelf_insert_success, Toast.LENGTH_SHORT).show();
+                long succeed = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                        BaseBookApplication.getGlobalContext()).insertBook(book);
+                if (succeed > 0) {
+                    Toast.makeText(mContext.getApplicationContext(),
+                            R.string.bookshelf_insert_success, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -393,38 +385,38 @@ public class SearchHelper {
             @Override
             public void doDeleteBook(String book_id) {
                 AppLog.e(TAG, "doDeleteBook");
-                bookDaoHelper.deleteBook(book_id);
-                Toast.makeText(mContext.getApplicationContext(), R.string.bookshelf_delete_success, Toast.LENGTH_SHORT).show();
+                RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                        BaseBookApplication.getGlobalContext()).deleteBook(book_id);
+                CacheManager.INSTANCE.stop(book_id);
+                CacheManager.INSTANCE.resetTask(book_id);
+                Toast.makeText(mContext.getApplicationContext(), R.string.bookshelf_delete_success,
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    protected Book genCoverBook(String host, String book_id, String book_source_id, String name, String author, String status, String category,
-                                String imgUrl, String last_chapter, String chapter_count, long update_time, String parameter, String
-                                        extra_parameter, int dex) {
+    protected Book genCoverBook(String host, String book_id, String book_source_id, String name,
+            String author, String status, String category,
+            String imgUrl, String last_chapter, String chapter_count, long update_time,
+            String parameter, String
+            extra_parameter, int dex) {
+
         Book book = new Book();
-
-        if (status.equals("FINISH")) {
-            book.status = 2;
-        } else {
-            book.status = 1;
-        }
-
-        book.book_id = book_id;
-        book.book_source_id = book_source_id;
-        book.name = name;
-        book.category = category;
-        book.author = author;
-        book.img_url = imgUrl;
-        book.site = host;
-        book.last_chapter_name = last_chapter;
-        book.chapter_count = Integer.valueOf(chapter_count);
-        book.last_updatetime_native = update_time;
-        book.parameter = parameter;
-        book.extra_parameter = extra_parameter;
-        book.dex = dex;
-        book.last_updateSucessTime = System.currentTimeMillis();
-        AppLog.i(TAG, "book.dex = " + book.dex);
+        book.setStatus(status);
+        book.setBook_id(book_id);
+        book.setBook_source_id(book_source_id);
+        book.setName(name);
+        book.setLabel(category);
+        book.setAuthor(author);
+        book.setImg_url(imgUrl);
+        book.setHost(host);
+        Chapter chapter = new Chapter();
+        chapter.setName(last_chapter);
+        chapter.setSerial_number(Integer.valueOf(chapter_count));
+        book.setLast_chapter(chapter);
+        book.setChapter_count(Integer.valueOf(chapter_count));
+        book.setLast_check_update_time(update_time);
+        book.setLast_update_success_time(System.currentTimeMillis());
         return book;
     }
 
@@ -433,20 +425,23 @@ public class SearchHelper {
         if (word != null) {
             searchWord = word;
             String channelID = AppUtils.getChannelId();
-            if (channelID.equals("blp1298_10882_001") || channelID.equals("blp1298_10883_001") || channelID.equals("blp1298_10699_001")) {
-                if (Constants.isBaiduExamine && Constants.versionCode == AppUtils.getVersionCode()) {
+            if (channelID.equals("blp1298_10882_001") || channelID.equals("blp1298_10883_001")
+                    || channelID.equals("blp1298_10699_001")) {
+                if (Constants.isBaiduExamine
+                        && Constants.versionCode == AppUtils.getVersionCode()) {
                     searchWord = getReplaceWord();
                     AppLog.e(TAG, searchWord);
                 }
             }
 //
-            if(searchType.equals("2") && isAuthor == 1){
+            if (searchType.equals("2") && isAuthor == 1) {
 
                 Map<String, String> params = new HashMap<>();
                 params.put("author", searchWord);
-                mUrl = URLBuilderIntterface.AUTHOR_V4+"?author="+searchWord;
+                mUrl = URLBuilderIntterface.AUTHOR_V4 + "?author=" + searchWord;
                 try {
-                    sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH, "author").apply();//FindBookDetail 返回键时标识
+                    sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH,
+                            "author").apply();//FindBookDetail 返回键时标识
                     SearchBookActivity.isSatyHistory = true;
                     Intent intent = new Intent();
                     intent.setClass(mContext, FindBookDetail.class);
@@ -460,7 +455,7 @@ public class SearchHelper {
                     e.printStackTrace();
                 }
 
-            }else{
+            } else {
                 Map<String, String> params = new HashMap<>();
                 params.put("keyword", searchWord);
                 params.put("search_type", searchType);
@@ -469,13 +464,15 @@ public class SearchHelper {
                 params.put("sort_type", sortType);
                 params.put("wordType", searchType);
                 params.put("searchEmpty", "1");
-                AppLog.e("kk",searchWord+"=="+searchType+"=="+filterType+"=="+filterWord+"==="+sortType);
+                AppLog.e("kk",
+                        searchWord + "==" + searchType + "==" + filterType + "==" + filterWord
+                                + "===" + sortType);
                 mUrl = UrlUtils.buildWebUrl(URLBuilderIntterface.SEARCH_V4, params);
             }
 
         }
 
-        if (mStartLoadCall != null){
+        if (mStartLoadCall != null) {
             mStartLoadCall.onStartLoad(mUrl);
         }
 
@@ -501,19 +498,23 @@ public class SearchHelper {
         return list;
     }
 
-    */
-/**
-     *根据策略，显示数据的顺序为 两个书名 + 一个间隔 + 两个作者 + 一个间隔 + 两个标签 + 一个间隔 + 剩余书名
-     *//*
+    /*
+     *
+     *根据策略，显示数据的顺序为 两个书名 +一个间隔 +两个作者 +一个间隔 +两个标签 +一个间隔 +剩余书名
+     */
+
 
     public void packageData(SearchAutoCompleteBeanYouHua bean) {
         List<Object> resultSuggest = new ArrayList<>();
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_search_history_gap, null, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_search_history_gap, null,
+                false);
         //两个书名
-        if(bean.getData().getName()!=null&&bean.getData().getName().size() > 0){
-            for(int i=0;i< ((bean.getData().getName().size() >= 2) ? 2 : bean.getData().getName().size()); i++){
-                SearchAutoCompleteBeanYouHua.DataBean.NameBean nameBean = bean.getData().getName().get(i);
-                if(nameBean!=null){
+        if (bean.getData().getName() != null && bean.getData().getName().size() > 0) {
+            for (int i = 0; i < ((bean.getData().getName().size() >= 2) ? 2
+                    : bean.getData().getName().size()); i++) {
+                SearchAutoCompleteBeanYouHua.DataBean.NameBean nameBean =
+                        bean.getData().getName().get(i);
+                if (nameBean != null) {
                     SearchCommonBeanYouHua searchCommonBean = new SearchCommonBeanYouHua();
                     searchCommonBean.setSuggest(nameBean.getSuggest());
                     searchCommonBean.setWordtype(nameBean.getWordtype());
@@ -527,7 +528,7 @@ public class SearchHelper {
                     searchCommonBean.setAuthor(nameBean.getAuthor());
                     searchCommonBean.setParameter(nameBean.getParameter());
                     searchCommonBean.setExtra_parameter(nameBean.getExtraParameter());
-                    searchCommonBean.setBookType(nameBean.getVip()+"");
+                    searchCommonBean.setBookType(nameBean.getVip() + "");
                     //------------------------------------------------------------
 
                     resultSuggest.add(searchCommonBean);
@@ -536,17 +537,19 @@ public class SearchHelper {
             resultSuggest.add(view);
         }
 
-        if(bean.getData().getAuthors()!=null && bean.getData().getAuthors().size() > 0){
+        if (bean.getData().getAuthors() != null && bean.getData().getAuthors().size() > 0) {
 
             //两个作者
-            for(int i=0;i< ((bean.getData().getAuthors().size() >= 2) ? 2 : bean.getData().getAuthors().size());i++){
-                SearchAutoCompleteBeanYouHua.DataBean.AuthorsBean authorsBean = bean.getData().getAuthors().get(i);
-                if(authorsBean!=null){
+            for (int i = 0; i < ((bean.getData().getAuthors().size() >= 2) ? 2
+                    : bean.getData().getAuthors().size()); i++) {
+                SearchAutoCompleteBeanYouHua.DataBean.AuthorsBean authorsBean =
+                        bean.getData().getAuthors().get(i);
+                if (authorsBean != null) {
                     SearchCommonBeanYouHua searchCommonBean = new SearchCommonBeanYouHua();
                     searchCommonBean.setSuggest(bean.getData().getAuthors().get(i).getSuggest());
                     searchCommonBean.setWordtype(bean.getData().getAuthors().get(i).getWordtype());
                     searchCommonBean.setImage_url("");
-                    searchCommonBean.setIsAuthor(bean.getData().getAuthors().get(i).getIsAuthor());
+                    searchCommonBean.setIsAuthor(bean.getData().getAuthors().get(i).isAuthor());
                     resultSuggest.add(searchCommonBean);
 
                 }
@@ -554,12 +557,14 @@ public class SearchHelper {
             resultSuggest.add(view);
         }
 
-        if(bean.getData().getLabel()!=null && bean.getData().getLabel().size() > 0){
+        if (bean.getData().getLabel() != null && bean.getData().getLabel().size() > 0) {
 
             //两个标签
-            for(int i=0;i< ((bean.getData().getLabel().size() >= 2) ? 2 : bean.getData().getLabel().size());i++){
-                SearchAutoCompleteBeanYouHua.DataBean.LabelBean labelBean = bean.getData().getLabel().get(i);
-                if(labelBean!=null){
+            for (int i = 0; i < ((bean.getData().getLabel().size() >= 2) ? 2
+                    : bean.getData().getLabel().size()); i++) {
+                SearchAutoCompleteBeanYouHua.DataBean.LabelBean labelBean =
+                        bean.getData().getLabel().get(i);
+                if (labelBean != null) {
                     SearchCommonBeanYouHua searchCommonBean = new SearchCommonBeanYouHua();
                     searchCommonBean.setSuggest(bean.getData().getLabel().get(i).getSuggest());
                     searchCommonBean.setWordtype(bean.getData().getLabel().get(i).getWordtype());
@@ -569,19 +574,21 @@ public class SearchHelper {
                 }
             }
             resultSuggest.add(view);
-        }else{
-            if(bean.getData().getAuthors() ==null || (bean.getData().getAuthors() != null && bean.getData().getAuthors().size() == 0)) {
+        } else {
+            if (bean.getData().getAuthors() == null || (bean.getData().getAuthors() != null
+                    && bean.getData().getAuthors().size() == 0)) {
                 resultSuggest.remove(view);
             }
         }
 
 
         //其余书名
-        if(bean.getData().getName()!=null){
-            for(int i = 2; i < bean.getData().getName().size(); i++){
+        if (bean.getData().getName() != null) {
+            for (int i = 2; i < bean.getData().getName().size(); i++) {
                 SearchCommonBeanYouHua searchCommonBean = new SearchCommonBeanYouHua();
-                SearchAutoCompleteBeanYouHua.DataBean.NameBean nameBean = bean.getData().getName().get(i);
-                if(nameBean!=null){
+                SearchAutoCompleteBeanYouHua.DataBean.NameBean nameBean =
+                        bean.getData().getName().get(i);
+                if (nameBean != null) {
                     searchCommonBean.setSuggest(nameBean.getSuggest());
                     searchCommonBean.setWordtype(nameBean.getWordtype());
                     searchCommonBean.setImage_url(nameBean.getImgUrl());
@@ -594,7 +601,7 @@ public class SearchHelper {
                     searchCommonBean.setAuthor(nameBean.getAuthor());
                     searchCommonBean.setParameter(nameBean.getParameter());
                     searchCommonBean.setExtra_parameter(nameBean.getExtraParameter());
-                    searchCommonBean.setBookType(nameBean.getVip()+"");
+                    searchCommonBean.setBookType(nameBean.getVip() + "");
                     //------------------------------------------------------------
 
                     resultSuggest.add(searchCommonBean);
@@ -602,8 +609,8 @@ public class SearchHelper {
             }
         }
 
-        for(Object bean1:resultSuggest){
-            AppLog.e("uuu",bean1.toString());
+        for (Object bean1 : resultSuggest) {
+            AppLog.e("uuu", bean1.toString());
         }
         if (searchSuggestCallBack != null) {
             searchSuggestCallBack.onSearchResult(resultSuggest, bean);
@@ -618,11 +625,11 @@ public class SearchHelper {
         return words[index];
     }
 
-    public void onDestroy(){
+    public void onDestroy() {
         Set<String> strings = wordInfoMap.keySet();
-        for (String key: strings){
+        for (String key : strings) {
             WordInfo wordInfo = wordInfoMap.get(key);
-            if(wordInfo != null && !wordInfo.actioned) {
+            if (wordInfo != null && !wordInfo.actioned) {
                 alilog(buildSearch(key, Search.OP.CANCEL, wordInfo.computeUseTime()));
             }
         }
@@ -633,26 +640,26 @@ public class SearchHelper {
 
     private JsCallSearchCall mJsCallSearchCall;
 
-    public void setJsCallSearchCall(JsCallSearchCall jsCallSearchCall){
+    public void setJsCallSearchCall(JsCallSearchCall jsCallSearchCall) {
         mJsCallSearchCall = jsCallSearchCall;
     }
 
-    public interface JsCallSearchCall{
+    public interface JsCallSearchCall {
         void onJsSearch();
     }
 
     private StartLoadCall mStartLoadCall;
 
-    public void setStartLoadCall(StartLoadCall startLoadCall){
+    public void setStartLoadCall(StartLoadCall startLoadCall) {
         mStartLoadCall = startLoadCall;
     }
 
-    public interface StartLoadCall{
+    public interface StartLoadCall {
         void onStartLoad(String url);
     }
 
-    private void recycleDisposable(){
-        if(disposable!=null&&!disposable.isDisposed()){
+    private void recycleDisposable() {
+        if (disposable != null && !disposable.isDisposed()) {
             disposable.dispose();
         }
     }
@@ -666,31 +673,28 @@ public class SearchHelper {
             }
         }
         final String finalQuery = query;
-        recycleDisposable();
-        disposable = Observable.create(new ObservableOnSubscribe<String>() {
-            @Override
-            public void subscribe(ObservableEmitter<String> e) throws Exception {
-                e.onNext(finalQuery);
-                e.onComplete();
-            }
-        }).debounce(400, TimeUnit.MILLISECONDS).subscribeOn(Schedulers.io()).switchMap(new Function<String, ObservableSource<SearchAutoCompleteBeanYouHua>>() {
-            @Override
-            public ObservableSource<SearchAutoCompleteBeanYouHua> apply(String s) throws Exception {
-                return NetService.INSTANCE.getOwnSearchService().searchAutoCompleteSecond(s);
-            }
-        }).observeOn(AndroidSchedulers.mainThread()) .subscribe(new Consumer<SearchAutoCompleteBeanYouHua>() {
-            @Override
-            public void accept(SearchAutoCompleteBeanYouHua bean) throws Exception {
-                                if (SearchAutoCompleteBeanYouHua.REQUESR_SUCCESS.equals(bean.getRespCode()) && bean.getData() != null) {
-                    packageData(bean);
-                }
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
-                AppLog.e("rxjava", "error");
-            }
-        });
+
+
+        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext()).requestAutoCompleteV4(
+
+                finalQuery, new RequestSubscriber<SearchAutoCompleteBeanYouHua>() {
+                    @Override
+                    public void requestResult(@Nullable SearchAutoCompleteBeanYouHua bean) {
+                        if (bean != null
+                                && SearchAutoCompleteBeanYouHua.Companion.getREQUESR_SUCCESS()
+                                .equals(
+                                bean.getRespCode())
+                                && bean.getData() != null) {
+                            packageData(bean);
+                        }
+                    }
+
+                    @Override
+                    public void requestError(@NotNull String message) {
+                        Logger.e("请求自动补全失败！");
+                    }
+                });
+
     }
 }
-*/

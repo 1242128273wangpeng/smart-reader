@@ -232,7 +232,10 @@
                 android:theme="@style/AppThemeTranslucent"/>
 
         <!-- 设置页 -->
-
+        <activity
+            android:name=".activity.SettingActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeTranslucent"/>
 
 
         <!-- 下载apk失败页面 -->
