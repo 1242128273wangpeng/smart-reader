@@ -47,6 +47,8 @@ interface RequestRepository {
 
     fun requestCoverRecommend(book_id: String, recommend: String, requestSubscriber: RequestSubscriber<CoverRecommendBean>)
 
+    fun requestAuthAccess(requestSubscriber: RequestSubscriber<String>)
+
 
     /************************* 本地数据 *************************/
 

@@ -85,6 +85,11 @@ interface RequestService {
 
         //书籍封面页推荐
         const val COVER_RECOMMEND = "/v4/recommend/{book_id}/coverPage"
+
+
+
+        const val AUTH_ACCESS = "/auth/access/getKeys"
+
     }
 
     @GET(DEFAULT_BOOK)
@@ -179,4 +184,10 @@ interface RequestService {
     @POST(COVER_RECOMMEND)
     fun requestCoverRecommend(@Path("book_id") book_id: String, @Field("recommanded") bookIds: String): Flowable<CoverRecommendBean>
 
+
+
+
+
+    @GET(AUTH_ACCESS)
+    fun requestAuthAccess(@Header("accessKey") header: String): Flowable<String>
 }

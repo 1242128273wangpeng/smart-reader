@@ -548,6 +548,24 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
     }
 
+    override fun requestAuthAccess(requestSubscriber: RequestSubscriber<String>) {
+        InternetRequestRepository.loadInternetRequestRepository(context).requestAuthAccess()!!
+                .compose(SchedulerHelper.schedulerHelper<String>())
+                .subscribeWith(object : ResourceSubscriber<String>() {
+                    override fun onNext(result: String?) {
+                        requestSubscriber.onNext(result)
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        requestSubscriber.onError(throwable)
+                    }
+
+                    override fun onComplete() {
+                        requestSubscriber.onComplete()
+                    }
+                })
+    }
+
 
     override fun checkChapterCache(chapter: Chapter?): Boolean {
         if (chapter == null) {

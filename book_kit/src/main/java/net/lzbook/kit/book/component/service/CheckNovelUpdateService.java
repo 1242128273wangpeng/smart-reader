@@ -82,6 +82,7 @@ public class CheckNovelUpdateService extends Service {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             checkInterval();
+            checkAuthAccess();
             timerHandler.sendEmptyMessageDelayed(0, Constants.refreshTime);
         }
     };
@@ -117,6 +118,7 @@ public class CheckNovelUpdateService extends Service {
         if (intent != null) {
             if (ACTION_CHKUPDATE.equals(intent.getAction())) {
                 checkInterval();
+                checkAuthAccess();
                 AppLog.e(TAG, "CheckNovelUpdateService : ACTION_CHKUPDATE");
                 AppUtils.appendLog(ACTION_CHKUPDATE, AppUtils.LOG_TYPE_BAIDUPUSH);
             }
@@ -198,6 +200,22 @@ public class CheckNovelUpdateService extends Service {
                 sb.append("《").append(b.name).append("》");
         }
         return sb.toString();
+    }
+
+    private void checkAuthAccess() {
+        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestAuthAccess(
+
+                new RequestSubscriber<String>() {
+                    @Override
+                    public void requestResult(@Nullable String result) {
+                        Logger.e("CheckAuthAccess: "  + result);
+                    }
+
+                    @Override
+                    public void requestError(@NotNull String message) {
+                        Logger.e("CheckAuthAccess: "  + message);
+                    }
+                });
     }
 
     private void checkInterval() {

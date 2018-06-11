@@ -15,7 +15,6 @@ import retrofit2.Call
 @SuppressLint("StaticFieldLeak")
 class LocalRequestRepository private constructor(private var context: Context) : BasicRequestRepository {
 
-
     companion object {
         private var localRequestRepository: LocalRequestRepository? = null
 
@@ -144,6 +143,10 @@ class LocalRequestRepository private constructor(private var context: Context) :
     }
 
     override fun requestCoverRecommend(book_id: String, recommend: String): Flowable<CoverRecommendBean>? {
+        return null
+    }
+
+    override fun requestAuthAccess(): Flowable<String>? {
         return null
     }
 

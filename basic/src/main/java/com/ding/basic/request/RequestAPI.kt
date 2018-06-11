@@ -140,4 +140,8 @@ internal object RequestAPI {
     fun requestCoverRecommend(book_id: String, recommend: String): Flowable<CoverRecommendBean>? {
         return requestService.requestCoverRecommend(book_id, recommend)
     }
+
+    fun requestAuthAccess(): Flowable<String>? {
+        return requestService.requestAuthAccess("wangpeng12345678")
+    }
 }

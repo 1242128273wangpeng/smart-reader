@@ -1,6 +1,7 @@
 package com.ding.basic.repository
 
 import com.ding.basic.bean.*
+import com.ding.basic.request.RequestAPI
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import okhttp3.RequestBody
@@ -42,6 +43,9 @@ interface BasicRequestRepository {
     fun requestFeedback(parameters: Map<String, String>): Flowable<NoBodyEntity>?
 
     fun requestCoverRecommend(book_id: String, recommend: String): Flowable<CoverRecommendBean>?
+
+
+    fun requestAuthAccess(): Flowable<String>?
 
 
 

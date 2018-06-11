@@ -110,4 +110,8 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
     override fun requestCoverRecommend(book_id: String, recommend: String): Flowable<CoverRecommendBean>? {
         return RequestAPI.requestCoverRecommend(book_id, recommend)
     }
+
+    override fun requestAuthAccess(): Flowable<String>? {
+        return RequestAPI.requestAuthAccess()
+    }
 }
