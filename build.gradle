@@ -2,13 +2,10 @@ apply from: "config.gradle"
 
 buildscript {
     repositories {
-
         maven {
             url uri('./maven-local')
         }
-
         mavenCentral()
-
         jcenter()
     }
 
@@ -23,15 +20,11 @@ buildscript {
 
 allprojects {
     repositories {
-
         maven {
             url uri('./maven-local')
         }
-
         mavenCentral()
-
         google()
-
         maven {
             url "http://20.20.27.101:8081/nexus/content/groups/public/"
             credentials {
@@ -43,8 +36,8 @@ allprojects {
         maven {
             url 'http://maven.aliyun.com/nexus/content/repositories/releases/'
         }
-
         jcenter()
+
     }
 }
 
