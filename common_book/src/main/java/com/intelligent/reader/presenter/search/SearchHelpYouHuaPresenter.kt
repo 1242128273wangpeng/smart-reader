@@ -114,30 +114,6 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
         } else {
             view?.showLoading()
             AppLog.e("url", UrlUtils.getBookNovelDeployHost() + "===" + NetWorkUtils.getNetWorkTypeNew(context))
-//            val searchService = NetService.userService
-//            searchService.hotWord
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(object : Observer<SearchHotBean> {
-//                        override fun onSubscribe(d: Disposable) {
-//
-//                        }
-//
-//                        override fun onNext(value: SearchHotBean) {
-//                            AppLog.e("result", value.toString())
-//                            parseResult(value, true)
-//                        }
-//
-//                        override fun onError(e: Throwable) {
-//                            getCacheDataFromShare(true)
-//                            AppLog.e("error", e.toString())
-//                        }
-//
-//                        override fun onComplete() {
-//                            AppLog.e("complete", "complete")
-//                            view?.dimissLoading()
-//                        }
-//                    })
 
 
 

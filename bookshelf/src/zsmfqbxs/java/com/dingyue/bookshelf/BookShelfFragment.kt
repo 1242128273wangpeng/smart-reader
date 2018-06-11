@@ -5,13 +5,13 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.SimpleItemAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.BookUpdate
-import com.dingyue.bookshelf.contract.BookShelfADContract
 import com.dingyue.bookshelf.view.RemoveMenuPopup
 import com.dingyue.contract.CommonContract
 import com.dingyue.bookshelf.view.BookShelfDeleteDialog
@@ -58,7 +58,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     private val removeMenuPopup: RemoveMenuPopup by lazy {
         val popup = RemoveMenuPopup(requireActivity())
         popup.onDeleteClickListener = {
-            if(!bookShelfDeleteDialog.isShow()){
+            if (!bookShelfDeleteDialog.isShow()) {
                 bookShelfDeleteDialog.show(bookShelfAdapter.selectedBooks)
             }
         }
@@ -134,7 +134,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        BookShelfADContract.insertBookShelfType(true)
+//        BookShelfADContract.insertBookShelfType(true)
 
         initRecyclerView()
         srl_refresh.setOnPullRefreshListener(object : SuperSwipeRefreshLayout.OnPullRefreshListener {
@@ -174,14 +174,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             RouterUtil.navigation(requireActivity(), RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
             BookShelfLogger.uploadBookShelfCacheManager()
         }
-        img_editor_back!!.setOnClickListener {
-            BookShelfLogger.uploadBookShelfEditBack()
-            dismissRemoveMenu()
-        }
-        home_edit_cancel!!.setOnClickListener {
-            BookShelfLogger.uploadBookShelfEditCancel()
-            dismissRemoveMenu()
-        }
+
         txt_empty_add_book.setOnClickListener {
             bookShelfInterface?.changeHomePagerIndex(1)
             BookShelfLogger.uploadBookShelfToBookCity()
@@ -193,7 +186,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         updateUI()
 
 //        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookShelfPresenter.iBookList.isNotEmpty()) {
-            bookShelfPresenter.requestFloatAD(requireActivity(), fl_ad_float)
+        bookShelfPresenter.requestFloatAD(requireActivity(), fl_ad_float)
 //        }
     }
 
@@ -245,10 +238,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         recl_content.itemAnimator.moveDuration = 0
         recl_content.itemAnimator.removeDuration = 0
         (recl_content.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
-        recl_content.adapter = bookShelfAdapter
 
         val bookShelfItemDecoration = BookShelfItemDecoration(dividerHeight, Color.parseColor("#FFE8E8E8"), BookShelfItemDecoration.CROSS_DIVIDER)
         recl_content.addItemDecoration(bookShelfItemDecoration)
+        recl_content.adapter = bookShelfAdapter
     }
 
     private fun createHeaderView(): View {
@@ -317,16 +310,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
     private fun changeHeaderState(state: Boolean) {
         if (state) {
-            if (!rl_head_remove.isShown) {
-                rl_head_remove.visibility = View.VISIBLE
-                fl_ad_float.visibility = View.GONE
-
-            }
+            fl_ad_float.visibility = View.GONE
         } else {
-            if (rl_head_remove.isShown) {
-                rl_head_remove.visibility = View.GONE
-                fl_ad_float.visibility = View.VISIBLE
-            }
+            fl_ad_float.visibility = View.VISIBLE
         }
     }
 
@@ -426,7 +412,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         fl_ad_float.visibility = View.GONE
 
         srl_refresh.setPadding(0, srl_refresh.paddingTop, 0, popupHeight)
-        
+
         changeHeaderState(true)
     }
 
@@ -436,7 +422,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         removeMenuPopup.dismiss()
         srl_refresh.setPadding(0, srl_refresh.paddingTop, 0, 0)
         bookShelfInterface?.changeHomeNavigationState(false)
-        
+
         changeHeaderState(false)
 
         BookShelfLogger.uploadBookShelfEditCancel()

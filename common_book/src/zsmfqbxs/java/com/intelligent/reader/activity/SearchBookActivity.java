@@ -1,6 +1,11 @@
 package com.intelligent.reader.activity;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
+import com.dingyue.contract.router.RouterConfig;
+import com.dingyue.contract.util.CommonUtil;
 import com.intelligent.reader.R;
+import com.intelligent.reader.search.SearchHelper;
+import com.intelligent.reader.util.SearchViewHelper;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.HWEditText;
@@ -40,11 +45,11 @@ import java.util.Map;
 
 import iyouqu.theme.FrameActivity;
 
+@Route(path = RouterConfig.SEARCH_BOOK_ACTIVITY)
+public class SearchBookActivity extends FrameActivity implements OnClickListener, OnFocusChangeListener, SearchViewHelper.OnHistoryClickListener,
+        TextWatcher, OnEditorActionListener, SearchHelper.JsCallSearchCall, SearchHelper.StartLoadCall, SearchHelper.JsNoneResultSearchCall{
 
-public class SearchBookActivity extends FrameActivity /*implements OnClickListener, OnFocusChangeListener, SearchViewHelper.OnHistoryClickListener,
-        TextWatcher, OnEditorActionListener, SearchHelper.JsCallSearchCall, SearchHelper.StartLoadCall, SearchHelper.JsNoneResultSearchCall*/{
-
-   /* private ImageView search_result_back;
+    private ImageView search_result_back;
     private ImageView search_result_button;
     private RelativeLayout search_result_outcome;
     private TextView search_result_count;
@@ -57,7 +62,6 @@ public class SearchBookActivity extends FrameActivity /*implements OnClickListen
     private FrameLayout search_result_hint;
 
     private SearchViewHelper searchViewHelper;
-    private BookDaoHelper bookDaoHelper;
     private Handler handler = new Handler();
 
     private CustomWebClient customWebClient;
@@ -233,9 +237,6 @@ public class SearchBookActivity extends FrameActivity /*implements OnClickListen
             searchViewHelper.setSearchWord(mSearchHelper.getWord());
         }
 
-        if (bookDaoHelper == null) {
-            bookDaoHelper = BookDaoHelper.getInstance();
-        }
     }
 
     private void loadDataFromNet(int isAuthor) {
@@ -401,25 +402,18 @@ public class SearchBookActivity extends FrameActivity /*implements OnClickListen
         }
     }
 
-    *//**
-     * 重载方法
-     *//*
     @Override
     protected void onPause() {
         super.onPause();
     }
 
-    *//**
-     * 重载方法
-     *//*
+
     @Override
     protected void onStop() {
         super.onStop();
     }
 
-    *//**
-     * 重载方法
-     *//*
+
     @Override
     protected void onDestroy() {
         if (mSearchHelper != null) {
@@ -621,7 +615,7 @@ public class SearchBookActivity extends FrameActivity /*implements OnClickListen
                     keyword = search_result_input.getText().toString();
                 }
                 if (keyword != null && TextUtils.isEmpty(keyword.trim())) {
-                    showToastShort(R.string.search_click_check_isright);
+                    CommonUtil.showToastMessage(R.string.search_click_check_isright);
                 } else {
                     hideInputMethod(search_result_input);
                     if (keyword != null && !TextUtils.isEmpty(keyword.trim()) && searchViewHelper != null) {
@@ -786,7 +780,7 @@ public class SearchBookActivity extends FrameActivity /*implements OnClickListen
                 keyword = search_result_input.getText().toString();
             }
             if (keyword != null && keyword.trim().equals("")) {
-                showToastShort(R.string.search_click_check_isright);
+                CommonUtil.showToastMessage(R.string.search_click_check_isright);
             } else {
 
                 searchViewHelper.isFocus = false;
@@ -830,5 +824,5 @@ public class SearchBookActivity extends FrameActivity /*implements OnClickListen
                 loadingPage = new LoadingPage(this, search_result_main, LoadingPage.setting_result);
             }
         }
-    }*/
+    }
 }

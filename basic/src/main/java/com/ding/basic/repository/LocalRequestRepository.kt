@@ -95,7 +95,13 @@ class LocalRequestRepository private constructor(private var context: Context) :
     override fun requestHotWords(): Flowable<SearchHotBean>? {
         return null
     }
+    override fun requestSearchRecommend(bookIds: String): Flowable<SearchRecommendBook>? {
+        return null
+    }
 
+    override fun requestHotWordsV4(): Flowable<Result<SearchResult>>? {
+        return null
+    }
     override fun requestChapterContent(chapter: Chapter): Flowable<BasicResult<Chapter>> {
         chapter.content = ChapterCacheUtil.checkChapterCacheExist(chapter)
 

@@ -32,6 +32,10 @@ interface BasicRequestRepository {
 
     fun requestHotWords(): Flowable<SearchHotBean>?
 
+    fun requestSearchRecommend(bookIds: String): Flowable<SearchRecommendBook>? //搜索推荐
+
+    fun requestHotWordsV4(): Flowable<Result<SearchResult>>?
+
     fun requestChapterContent(chapter: Chapter): Flowable<BasicResult<Chapter>>
 
     fun requestChapterContentSync(chapter_id: String, book_id: String, book_source_id: String, book_chapter_id: String): Call<BasicResult<Chapter>>?

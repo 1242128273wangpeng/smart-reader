@@ -11,7 +11,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="130dp"
+            android:layout_marginTop="120dp"
             android:src="@drawable/icon_network_error"/>
     
     <TextView
@@ -29,23 +29,23 @@
             android:id="@+id/loading_error_linear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="27dp"
+            android:layout_marginTop="18dp"
             android:layout_below="@+id/tv_network_error"
             android:gravity="center">
         
         <Button
                 android:id="@+id/loading_error_reload"
-                android:layout_width="120dp"
+                android:layout_width="130dp"
                 android:layout_height="40dp"
                 android:background="@drawable/bookshelf_no_book_btn_bg"
                 android:gravity="center"
                 android:text="@string/network_error_retry"
-                android:textColor="#FFFFFF"
+                android:textColor="@drawable/net_load_text_color"
                 android:textSize="@dimen/dimen_text_15"/>
         
         <Button
                 android:id="@+id/loading_error_setting"
-                android:layout_width="120dp"
+                android:layout_width="130dp"
                 android:layout_height="40dp"
                 android:background="@drawable/bookshelf_no_book_btn_bg"
                 android:layout_marginLeft="18dp"

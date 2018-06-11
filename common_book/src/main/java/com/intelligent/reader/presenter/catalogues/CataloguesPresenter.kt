@@ -26,15 +26,15 @@ import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.utils.BookCoverUtil
 import net.lzbook.kit.utils.NetWorkUtils
+import java.lang.ref.WeakReference
 import java.util.HashMap
 
 class CataloguesPresenter(var activity: Activity, var book: Book, var cataloguesContract: CataloguesContract,
                           onClickListener: View.OnClickListener, private val fromCover: Boolean)
     : BookCoverUtil.OnDownloadState, BookCoverViewModel.BookChapterViewCallback {
 
-    private var chapterList: ArrayList<Chapter> = ArrayList()
-    private var bookmarkList: ArrayList<Bookmark> = ArrayList()
-
+    var chapterList: ArrayList<Chapter> = ArrayList<Chapter>()
+    var bookmarkList: ArrayList<Bookmark> = ArrayList<Bookmark>()
     val MESSAGE_FETCH_CATALOG = 0
     val MESSAGE_FETCH_BOOKMARK = MESSAGE_FETCH_CATALOG + 1
     val MESSAGE_FETCH_ERROR = MESSAGE_FETCH_BOOKMARK + 1
@@ -50,6 +50,7 @@ class CataloguesPresenter(var activity: Activity, var book: Book, var catalogues
         bookCoverUtil = BookCoverUtil(activity, onClickListener)
         bookCoverUtil?.registReceiver()
         bookCoverUtil?.setOnDownloadState(this)
+//        bookCoverUtil?.setOnDownLoadService(this)
     }
 
     fun requestCatalogList() {
@@ -147,21 +148,21 @@ class CataloguesPresenter(var activity: Activity, var book: Book, var catalogues
         activity.setResult(Activity.RESULT_OK, intent)
     }
 
-    fun doDeleteBookmarks(list: ArrayList<Int>) {
-
-        val bookHelper = BookDataProviderHelper.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext())
-        bookHelper.deleteBookMark(list)
-        val marks = bookHelper.getBookMarks(book.book_id!!)
-        if (bookmarkList != null)
-            bookmarkList.clear()
-        if (marks != null && bookmarkList != null) {
-            for (bookmark in marks) {
-                bookmarkList.add(bookmark)
-            }
-        }
-        cataloguesContract.notifyDataChange(true, bookmarkList)
-
-    }
+//    fun doDeleteBookmarks(list: ArrayList<Int>) {
+//
+//        val bookHelper = BookDataProviderHelper.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext())
+//        bookHelper.deleteBookMark(list)
+//        val marks = bookHelper.getBookMarks(book.book_id!!)
+//        if (bookmarkList != null)
+//            bookmarkList.clear()
+//        if (marks != null && bookmarkList != null) {
+//            for (bookmark in marks) {
+//                bookmarkList.add(bookmark)
+//            }
+//        }
+//        cataloguesContract.notifyDataChange(true, bookmarkList)
+//
+//    }
 
     fun removeHandler() {
         myHandler.removeCallbacksAndMessages(null)
@@ -184,6 +185,26 @@ class CataloguesPresenter(var activity: Activity, var book: Book, var catalogues
         cataloguesContract.deleteBookmarks(deleteList)
 
     }
+
+
+    //删除标签
+
+    fun doDeleteBookmarks(list: ArrayList<Int>) {
+
+        val bookHelper = BookDataProviderHelper.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext())
+        bookHelper.deleteBookMark(list)
+        val marks = bookHelper.getBookMarks(book.book_id!!)
+        if (bookmarkList != null)
+            bookmarkList.clear()
+        if (marks != null && bookmarkList != null) {
+            for (bookmark in marks) {
+                bookmarkList.add(bookmark)
+            }
+        }
+        cataloguesContract.notifyDataChange(true, bookmarkList)
+
+    }
+
 
     //修复
     fun fixBook() {

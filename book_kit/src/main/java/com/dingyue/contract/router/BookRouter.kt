@@ -95,6 +95,8 @@ object BookRouter {
 
             bundle.putString("book_id", book.book_id)
             bundle.putString("book_source_id", book.book_source_id)
+            bundle.putString("book_chapter_id", book.book_chapter_id)
+
 
             val path = RouterConfig.COVER_PAGE_ACTIVITY
             return RouterUtil.navigation(activity, path, bundle)

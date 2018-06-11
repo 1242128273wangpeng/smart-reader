@@ -84,6 +84,15 @@ internal object RequestAPI {
         return requestService.requestAutoCompleteV4(word)
     }
 
+    fun requestHotWordsV4(): Flowable<Result<SearchResult>>{
+        return requestService.requestHotWordV4()
+    }
+
+
+    fun requestSearchRecommend(bookIds: String): Flowable<SearchRecommendBook>{
+        return requestService.requestSearchRecommend(bookIds)
+    }
+
     fun requestHotWords(): Flowable<SearchHotBean>? {
         return requestService.requestHotWords()
     }

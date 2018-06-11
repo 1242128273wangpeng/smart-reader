@@ -3,6 +3,7 @@ package com.ding.basic.request
 import com.ding.basic.bean.*
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
@@ -37,6 +38,13 @@ interface RequestService {
 
         //搜索热词
         const val HOT_WORDS = "/v3/search/hotWords"
+
+
+        //新版搜索热词
+        const val HOT_WORDS_V4 = "/v4/search/hotWords"
+
+        //新版搜索推荐
+        const val SEARCH_RECOMMEND_V4 = "/v4/search/autoOperations"
 
         //完结页推荐
         const val RECOMMEND_FINISH = "/v4/recommend/{book_id}/readPage"
@@ -127,6 +135,12 @@ interface RequestService {
 
     @GET(AUTO_COMPLETE_V4)
     fun requestAutoCompleteV4(@Query("keyword") word: String): Flowable<SearchAutoCompleteBeanYouHua>
+
+    @GET(HOT_WORDS_V4)
+    fun requestHotWordV4(): Flowable<Result<SearchResult>>
+
+    @GET(SEARCH_RECOMMEND_V4)
+    fun requestSearchRecommend(@Query("shelfBooks") shelfBooks: String): Flowable<SearchRecommendBook>
 
 
     @GET(HOT_WORDS)

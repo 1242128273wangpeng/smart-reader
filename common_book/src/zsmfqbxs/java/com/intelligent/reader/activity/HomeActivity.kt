@@ -108,6 +108,11 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
     private val categoryFragment: WebViewFragment by lazy {
         val fragment = WebViewFragment()
+        val bundle = Bundle()
+        bundle.putString("type", "category")
+        val uri = URLBuilderIntterface.WEB_CATEGORY.replace("{packageName}", AppUtils.getPackageName())
+        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
+        fragment.arguments = bundle
         fragment
     }
 
@@ -234,6 +239,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         ll_bottom_tab_recommend.setOnClickListener {
             this.changeHomePagerIndex(1)
+            recommendFragment?.setTitle("推荐");
             sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "recommend")
             HomeLogger.uploadHomeRecommendSelected()
         }
@@ -241,12 +247,14 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         ll_bottom_tab_ranking.setOnClickListener {
             this.changeHomePagerIndex(2)
             sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "top")
+            rankingFragment?.setTitle("榜单");
             HomeLogger.uploadHomeRankSelected()
         }
 
         ll_bottom_tab_category.setOnClickListener {
             this.changeHomePagerIndex(3)
             sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "class")
+            categoryFragment?.setTitle("分类");
             HomeLogger.uploadHomeCategorySelected()
         }
 

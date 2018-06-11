@@ -28,16 +28,19 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             txt_book_name.text = book.name
         }
 
-        if (book.sequence + 1 > book.chapter_count) {
-            book.sequence = book.chapter_count - 1
+        if(book.last_chapter != null){
+            if (book.sequence + 1 > book.last_chapter!!.serial_number) {
+                book.sequence = book.last_chapter!!.serial_number - 1
+            }
+
+            if (book.sequence + 1 == book.last_chapter!!.serial_number) {
+                txt_book_unread_chapters.visibility = View.GONE
+            } else {
+                txt_book_unread_chapters.visibility = View.VISIBLE
+                txt_book_unread_chapters.text = (book.sequence + 2).toString() + "/" + book.last_chapter!!.serial_number + "章"
+            }
         }
 
-        if (book.sequence + 1 == book.chapter_count) {
-            txt_book_unread_chapters.visibility = View.GONE
-        } else {
-            txt_book_unread_chapters.visibility = View.VISIBLE
-            txt_book_unread_chapters.text = (book.sequence + 1).toString() + "/" + book.chapter_count + "章"
-        }
 
         when {
             book.update_status == 1 -> { //更新
@@ -53,9 +56,9 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             }
         }
 
-        if (txt_book_last_update_time != null) {
+        if (txt_book_last_update_time != null && book.last_chapter != null) {
             txt_book_last_update_time.text = Tools.compareTime(AppUtils.formatter, book
-                    .last_update_success_time) + "更新"
+                    .last_chapter!!.update_time) + "更新"
         }
 
         if ((!TextUtils.isEmpty(book.img_url) && book.img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL)) {
