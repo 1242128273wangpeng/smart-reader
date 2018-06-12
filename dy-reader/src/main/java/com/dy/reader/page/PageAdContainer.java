@@ -9,13 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.dy.media.MediaConfig;
+import com.dy.media.MediaControl;
 import com.dy.reader.helper.AppHelper;
-import com.dy.reader.setting.ReaderSettings;
 import com.dy.reader.setting.ReaderStatus;
-import com.dycm_adsdk.PlatformSDK;
-import com.dycm_adsdk.view.NativeView;
-
-import net.lzbook.kit.utils.AppUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +42,8 @@ public class PageAdContainer extends FrameLayout {
         this(context, attrs, 0);
     }
 
-    public PageAdContainer(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public PageAdContainer(@NonNull Context context, @Nullable AttributeSet attrs,
+            int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -100,9 +98,9 @@ public class PageAdContainer extends FrameLayout {
     public void addView(View child, ViewGroup.LayoutParams params) {
         super.addView(child, params);
 
-        Map<String,String > map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
         map.put("book_id", ReaderStatus.INSTANCE.getBook().getBook_id());
-        map.put("book_source_id",ReaderStatus.INSTANCE.getBook().getBook_source_id());
+        map.put("book_source_id", ReaderStatus.INSTANCE.getBook().getBook_source_id());
         map.put("chapter_id", ReaderStatus.INSTANCE.getChapterId());
 
         if ("api.qingoo.cn".equalsIgnoreCase(ReaderStatus.INSTANCE.getBook().getHost())
@@ -112,20 +110,8 @@ public class PageAdContainer extends FrameLayout {
             map.put("channel_code", "A002");
         }
 
-        PlatformSDK.config().setExpandInfo(map);
+        MediaConfig.INSTANCE.setExpandInfo(map);
 
-        try{
-            if(child instanceof NativeView){
-                PlatformSDK.config().ExposureToPlugin((NativeView) child);
-            }else{
-                if(((ViewGroup)child).getChildAt(0)!=null){
-                    if(((ViewGroup)child).getChildAt(0) instanceof NativeView){
-                        PlatformSDK.config().ExposureToPlugin((NativeView)((ViewGroup)child).getChildAt(0));
-                    }
-                }
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        MediaControl.INSTANCE.addPageAd(child);
     }
 }

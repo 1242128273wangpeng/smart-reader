@@ -10,61 +10,61 @@ import com.dycm_adsdk.view.NativeView
  * Mail tao_qian@dingyuegroup.cn
  * Date 2018/6/8 17:03
  */
-object MediaConfig : IMediaConfig {
+object MediaConfig {
 
-    override fun getConfig(): ConfigInterface? = PlatformSDK.config()
+    fun getConfig(): ConfigInterface? = PlatformSDK.config()
 
-    override fun getAdCount(): Int? = PlatformSDK.config()?.adCount
+    fun getAdCount(): Int? = PlatformSDK.config()?.adCount
 
-    override fun getConfigExpireMinutes(): Int? = PlatformSDK.config()?.configExpireMinutes
+    fun getConfigExpireMinutes(): Int? = PlatformSDK.config()?.configExpireMinutes
 
-    override fun getChapter_limit(): Int? = PlatformSDK.config()?.chapter_limit
+    fun getChapter_limit(): Int? = PlatformSDK.config()?.chapter_limit
 
-    override fun getRestAd_sec(): Int? = PlatformSDK.config()?.restAd_sec
+    fun getRestAd_sec(): Int? = PlatformSDK.config()?.restAd_sec
 
-    override fun getSwitch_sec(): Int? = PlatformSDK.config()?.switch_sec
+    fun getSwitch_sec(): Int? = PlatformSDK.config()?.switch_sec
 
-    override fun getAdfree_new_user(): Int? = PlatformSDK.config()?.adfree_new_user
+    fun getAdfree_new_user(): Int? = PlatformSDK.config()?.adfree_new_user
 
-    override fun setChannel_code(channel_code: String) {
+    fun setChannel_code(channel_code: String) {
         PlatformSDK.config().setChannel_code(channel_code)
     }
 
-    override fun setAd_userid(user_id: String) {
+    fun setAd_userid(user_id: String) {
         PlatformSDK.config().setAd_userid(user_id)
     }
 
-    override fun setCityName(cityName: String) {
+    fun setCityName(cityName: String) {
         PlatformSDK.config().setCityName(cityName)
     }
 
-    override fun setCityCode(cityCode: Int) {
+    fun setCityCode(cityCode: Int) {
         PlatformSDK.config().setCityCode(cityCode)
     }
 
-    override fun setLatitude(latitude: Float) {
+    fun setLatitude(latitude: Float) {
         PlatformSDK.config().setLatitude(latitude)
     }
 
-    override fun setLongitude(longitude: Float) {
+    fun setLongitude(longitude: Float) {
         PlatformSDK.config().setLongitude(longitude)
     }
 
-    override fun setBookShelfGrid(grid: Boolean) {
+    fun setBookShelfGrid(grid: Boolean) {
         PlatformSDK.config().setBookShelfGrid(grid)
     }
 
-    override fun setCusTomParam(param: String) {
+    fun setCusTomParam(param: String) {
         PlatformSDK.config().setCusTomParam(param)
     }
 
-    override fun getAdSwitch(ad_mark_id: String): Boolean? = PlatformSDK.config()?.getAdSwitch(ad_mark_id)
+    fun getAdSwitch(ad_mark_id: String): Boolean? = PlatformSDK.config()?.getAdSwitch(ad_mark_id)
 
-    override fun ExposureToPlugin(nativeView: NativeView) {
+    fun ExposureToPlugin(nativeView: NativeView) {
         PlatformSDK.config().ExposureToPlugin(nativeView)
     }
 
-    override fun setExpandInfo(bookmap: Map<String, String>) {
+    fun setExpandInfo(bookmap: Map<String, String>) {
         PlatformSDK.config().setExpandInfo(bookmap)
     }
 }

@@ -8,8 +8,6 @@ import android.content.res.Configuration
 import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.preference.PreferenceManager
 import android.text.TextUtils
 import android.view.InflateException

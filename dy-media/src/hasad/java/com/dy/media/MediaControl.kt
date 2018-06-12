@@ -11,9 +11,9 @@ import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import com.dycm_adsdk.PlatformSDK
 import com.dycm_adsdk.callback.AbstractCallback
-import com.dycm_adsdk.callback.AdResultCallBack
 import com.dycm_adsdk.callback.ResultCode
 import com.dycm_adsdk.utils.DyLogUtils
+import com.dycm_adsdk.view.NativeView
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -252,12 +252,23 @@ object MediaControl : IMediaControl {
             PlatformSDK.config()?.chapter_limit ?: 0
 
     override fun dycmNativeAd(context: Context?, adLocalId: String, view: ViewGroup?,
-                              adResultCallBack: AdResultCallBack) {
-        PlatformSDK.adapp()?.dycmNativeAd(context, adLocalId, view, adResultCallBack)
+                              resultCalback: (switch: Boolean, List<ViewGroup>?, jsonResult: String?) -> Unit) {
+        PlatformSDK.adapp()?.dycmNativeAd(context, adLocalId, view, object : MediaAbstractCallback() {
+            override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
+                super.onResult(adswitch, view, jsonResult)
+                resultCalback.invoke(adswitch, views, jsonResult)
+            }
+        })
     }
 
-    override fun dycmNativeAd(context: Context?, adLocalId: String, height: Int, width: Int, adResultCallBack: AdResultCallBack) {
-        PlatformSDK.adapp()?.dycmNativeAd(context, adLocalId, height, width, adResultCallBack)
+    override fun dycmNativeAd(context: Context?, adLocalId: String, height: Int, width: Int,
+                              resultCalback: (switch: Boolean, views: List<ViewGroup>?, jsonResult: String?) -> Unit) {
+        PlatformSDK.adapp()?.dycmNativeAd(context, adLocalId, height, width, object : MediaAbstractCallback() {
+            override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
+                super.onResult(adswitch, views, jsonResult)
+                resultCalback.invoke(adswitch, views, jsonResult)
+            }
+        })
     }
 
     private var restMediaRunnable: Runnable? = null
@@ -311,6 +322,24 @@ object MediaControl : IMediaControl {
     override fun stopRestMedia() {
         restMediaHandler?.removeCallbacksAndMessages(null)
         restMediaHandler = null
+    }
+
+    override fun addPageAd(child: View) {
+        try {
+            if (child is NativeView) {
+                PlatformSDK.config().ExposureToPlugin(child)
+            } else {
+                if (child is ViewGroup) {
+                    val cChild = child.getChildAt(0)
+                    if (cChild != null && cChild is NativeView) {
+                        PlatformSDK.config().ExposureToPlugin(cChild)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
     }
 
     override fun loadBookEndMedia(context: Context, onCall: (view: View?, isSuccess: Boolean) -> Unit) {

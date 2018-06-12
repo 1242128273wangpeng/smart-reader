@@ -8,7 +8,6 @@ import android.preference.PreferenceManager
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.text.TextUtils
-import android.util.EventLog
 import android.view.KeyEvent
 import android.view.SurfaceHolder
 import android.view.View

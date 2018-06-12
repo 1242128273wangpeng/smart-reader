@@ -19,3 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-dontwarn com.dycm_adsdk.**
+-keep class com.dycm_adsdk.** { *;}
+-keep class com.dingyueads.sdk.** {
+  public protected *;
+}

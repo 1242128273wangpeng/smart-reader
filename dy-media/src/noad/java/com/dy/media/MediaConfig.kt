@@ -1,50 +1,46 @@
 package com.dy.media
 
-import com.dycm_adsdk.PlatformSDK
-import com.dycm_adsdk.inter.ConfigInterface
-import com.dycm_adsdk.view.NativeView
-
 /**
  * Desc 广告配置 无
  * Author qiantao
  * Mail tao_qian@dingyuegroup.cn
  * Date 2018/6/8 17:03
  */
-object MediaConfig : IMediaConfig {
+object MediaConfig {
 
-    override fun getConfig(): ConfigInterface? = null
+    fun getConfig(): Any? = null
 
-    override fun getAdCount(): Int? = null
+    fun getAdCount(): Int? = null
 
-    override fun getConfigExpireMinutes(): Int? = null
+    fun getConfigExpireMinutes(): Int? = null
 
-    override fun getChapter_limit(): Int? = null
+    fun getChapter_limit(): Int? = null
 
-    override fun getRestAd_sec(): Int? = null
+    fun getRestAd_sec(): Int? = null
 
-    override fun getSwitch_sec(): Int? = null
+    fun getSwitch_sec(): Int? = null
 
-    override fun getAdfree_new_user(): Int? = null
+    fun getAdfree_new_user(): Int? = null
 
-    override fun setChannel_code(channel_code: String) {}
+    fun setChannel_code(channel_code: String) {}
 
-    override fun setAd_userid(user_id: String) {}
+    fun setAd_userid(user_id: String) {}
 
-    override fun setCityName(cityName: String) {}
+    fun setCityName(cityName: String) {}
 
-    override fun setCityCode(cityCode: Int) {}
+    fun setCityCode(cityCode: Int) {}
 
-    override fun setLatitude(latitude: Float) {}
+    fun setLatitude(latitude: Float) {}
 
-    override fun setLongitude(longitude: Float) {}
+    fun setLongitude(longitude: Float) {}
 
-    override fun setBookShelfGrid(grid: Boolean) {}
+    fun setBookShelfGrid(grid: Boolean) {}
 
-    override fun setCusTomParam(param: String) {}
+    fun setCusTomParam(param: String) {}
 
-    override fun getAdSwitch(ad_mark_id: String): Boolean? = null
+    fun getAdSwitch(ad_mark_id: String): Boolean? = null
 
-    override fun ExposureToPlugin(nativeView: NativeView) {}
+    fun ExposureToPlugin(nativeView: Any) {}
 
-    override fun setExpandInfo(bookmap: Map<String, String>) {}
+    fun setExpandInfo(bookmap: Map<String, String>) {}
 }

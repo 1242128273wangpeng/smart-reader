@@ -14,10 +14,11 @@ import org.gradle.api.Project
  */
 class CompileBuild implements Plugin<Project> {
 
-    def ad_version = '1.5.8'
+    def ad_version = '1.6.0'
 
     @Override
     void apply(Project project) {
+        project.extensions.create('complieBuild', CompileExtension)
 
         String flavorsConfig = project.properties.get("flavorsConfig")
         JSONObject flavorsConfigJson = JSON.parse(new File(flavorsConfig).text)
@@ -31,7 +32,9 @@ class CompileBuild implements Plugin<Project> {
 
     private void compileFlavorVariant(Project project, JSONObject flavorsConfigJson) {
         project.android {
+
             libraryVariants.all { variant ->
+//                if (variant.buildType.name != "release") return
                 ProductFlavor targetFlavor = null
                 variant.getProductFlavors().forEach {
                     flavor ->
@@ -51,6 +54,7 @@ class CompileBuild implements Plugin<Project> {
         if (flavorConfig != null && flavorConfig.getBoolean("hasAd")) {
             println "携带广告变体为： " + targetFlavor.name
             String configurationName = targetFlavor.name + "Api"
+            println "configurationName: " + configurationName
             project.dependencies.add(configurationName,
                     "net.iyouqu.android.common:dycm_ssp_sdk:$ad_version")
         }
