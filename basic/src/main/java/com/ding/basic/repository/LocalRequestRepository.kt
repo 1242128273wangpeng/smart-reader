@@ -45,7 +45,7 @@ class LocalRequestRepository private constructor(private var context: Context) :
         return null
     }
 
-    override fun requestCoverBatch(requestBody: RequestBody): Flowable<BasicResult<CoverBatchList>>? {
+    override fun requestCoverBatch(requestBody: RequestBody): Flowable<BasicResult<List<Book>>>? {
         return null
     }
 

@@ -125,7 +125,7 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
                                     book.book_type = updateBook!!.book_type
                                     book.book_id = updateBook!!.book_id
                                     book.host = updateBook!!.host
-                                    book.author = updateBook!!.host
+                                    book.author = updateBook!!.author
                                     book.update_status = updateBook!!.update_status
                                     book.book_source_id = updateBook!!.book_source_id
                                     book.img_url = updateBook!!.img_url

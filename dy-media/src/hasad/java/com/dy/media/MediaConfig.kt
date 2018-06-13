@@ -12,7 +12,7 @@ import com.dycm_adsdk.view.NativeView
  */
 object MediaConfig {
 
-    fun getConfig(): ConfigInterface? = PlatformSDK.config()
+    fun getConfig(): Any? = PlatformSDK.config()
 
     fun getAdCount(): Int? = PlatformSDK.config()?.adCount
 
@@ -60,8 +60,10 @@ object MediaConfig {
 
     fun getAdSwitch(ad_mark_id: String): Boolean? = PlatformSDK.config()?.getAdSwitch(ad_mark_id)
 
-    fun ExposureToPlugin(nativeView: NativeView) {
-        PlatformSDK.config().ExposureToPlugin(nativeView)
+    fun ExposureToPlugin(nativeView: Any) {
+        if (nativeView is NativeView) {
+            PlatformSDK.config().ExposureToPlugin(nativeView)
+        }
     }
 
     fun setExpandInfo(bookmap: Map<String, String>) {

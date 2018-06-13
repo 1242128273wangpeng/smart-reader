@@ -222,18 +222,27 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             this.changeHomePagerIndex(1)
             sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "recommend")
             HomeLogger.uploadHomeRecommendSelected()
+            if(recommendFragment != null){
+                recommendFragment.setTitle(getString(R.string.recommend),2)
+            }
         }
 
         ll_bottom_tab_ranking.setOnClickListener {
             this.changeHomePagerIndex(2)
             sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "top")
             HomeLogger.uploadHomeRankSelected()
+            if(rankingFragment != null){
+                rankingFragment.setTitle(getString(R.string.ranking),3)
+            }
         }
 
         ll_bottom_tab_category.setOnClickListener {
             this.changeHomePagerIndex(3)
             sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "class")
             HomeLogger.uploadHomeCategorySelected()
+            if(categoryFragment != null){
+                categoryFragment.setTitle(getString(R.string.category),4)
+            }
         }
     }
 

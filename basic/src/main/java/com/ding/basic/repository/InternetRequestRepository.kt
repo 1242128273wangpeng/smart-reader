@@ -80,9 +80,7 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestBookShelfUpdate(requestBody)
     }
 
-    override fun requestCoverBatch(requestBody: RequestBody): Flowable<BasicResult<CoverBatchList>>? {
-        return RequestAPI.requestCoverBatch(requestBody)
-    }
+
 
 
     override fun requestFeedback(parameters: Map<String, String>): Flowable<NoBodyEntity>? {
@@ -128,7 +126,7 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return MicroAPI.requestBookCatalog(book_id, book_source_id, book_chapter_id)
     }
 
-    override fun requestBookUpdate(requestBody: RequestBody): Flowable<BasicResult<UpdateBean>>? {
-        return MicroAPI.requestBookUpdate(requestBody)
+    override fun requestCoverBatch(requestBody: RequestBody): Flowable<BasicResult<List<Book>>>? {
+        return MicroAPI.requestCoverBatch(requestBody)
     }
 }

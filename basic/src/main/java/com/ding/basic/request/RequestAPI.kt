@@ -108,9 +108,7 @@ internal object RequestAPI {
         return requestService.requestBookShelfUpdate(requestBody)
     }
 
-    fun requestCoverBatch(requestBody: RequestBody):Flowable<BasicResult<CoverBatchList>>?{
-        return requestService.requestCoverBatch(requestBody)
-    }
+
 
     fun requestFeedback(parameters: Map<String, String>): Flowable<NoBodyEntity>? {
         return requestService.requestFeedback(parameters)

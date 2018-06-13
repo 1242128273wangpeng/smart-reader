@@ -412,13 +412,15 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         BatteryView.clean()
         ReaderStatus.position = Position(book_id = "")
 
-//        if (handler != null) {
-//            handler.removeCallbacksAndMessages(null)
-//        }
+        MediaControl.stopRestMedia()
 
-//        if (mDialog != null && mDialog!!.isShowing()) {
-//            mDialog!!.dismiss()
-//        }
+        try {
+            if (readerRestDialog != null && readerRestDialog!!.isShowing()) {
+                readerRestDialog?.dismiss()
+            }
+        } catch (e: Exception) {
+
+        }
 
     }
 

@@ -79,4 +79,7 @@ interface IMediaControl {
 
     //阅读完结页
     fun loadBookEndMedia(context: Context, onCall: (view: View?, isSuccess: Boolean) -> Unit)
+
+    //书封页
+    fun loadBookCoverAd(activity: Activity?, onCall: (view: View?) -> Unit)
 }

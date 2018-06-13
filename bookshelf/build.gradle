@@ -65,5 +65,5 @@ dependencies {
 //    annotationProcessor "android.arch.persistence.room:compiler:$arch_version"
 
     api project(':resource')
-    api project(':dy-media')
+    implementation project(':dy-media')
 }

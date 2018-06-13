@@ -66,4 +66,7 @@ class TransformReadDialog(val activity: Activity) {
     fun dismiss() {
         dialog.dismiss()
     }
+    fun isShow(): Boolean{
+        return dialog.isShowing
+    }
 }

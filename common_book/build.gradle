@@ -926,23 +926,16 @@ dependencies {
     compile fileTree(include: '*.jar', dir: 'libs')
     compile "com.android.support:appcompat-v7:$support_version"
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-
     compile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
-
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile "com.android.support:cardview-v7:$support_version"
     compile 'de.hdodenhof:circleimageview:2.1.0'
     debugCompile 'com.amitshekhar.android:debug-db:1.0.1'
-
     compile "com.alibaba:arouter-api:$arouter_api_version"
     kapt "com.alibaba:arouter-compiler:$arouter_compiler_version"
-
     debugCompile 'com.amitshekhar.android:debug-db:1.0.1'
-
-    compile 'com.android.volley:volley:1.1.0'
-
     implementation project(':bookshelf')
     implementation project(':downloadmanager')
     implementation project(':dy-reader')
-
+    implementation project(':dy-media')
 }

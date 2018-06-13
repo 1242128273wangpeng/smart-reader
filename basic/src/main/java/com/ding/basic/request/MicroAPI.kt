@@ -53,7 +53,7 @@ internal object MicroAPI {
         return microService.requestBookCatalog(book_id, book_source_id, book_chapter_id)
     }
 
-    fun requestBookUpdate(requestBody: RequestBody): Flowable<BasicResult<UpdateBean>>? {
-        return microService.requestBookUpdate(requestBody)
+    fun requestCoverBatch(requestBody: RequestBody):Flowable<BasicResult<List<Book>>>?{
+        return microService.requestCoverBatch(requestBody)
     }
 }

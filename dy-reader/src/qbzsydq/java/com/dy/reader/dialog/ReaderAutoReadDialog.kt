@@ -14,7 +14,7 @@ import net.lzbook.kit.book.view.MyDialog
  */
 class ReaderAutoReadDialog (activity: Activity) {
 
-    private val dialog = MyDialog(activity, R.layout.dialog_reader_auto_read, Gravity.BOTTOM)
+    private val dialog = MyDialog(activity, R.layout.dialog_reader_auto_read, Gravity.CENTER)
 
     var cancelListener: (() -> Unit)? = null
     var confirmListener: (() -> Unit)? = null

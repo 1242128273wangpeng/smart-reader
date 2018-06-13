@@ -18,7 +18,12 @@ interface MicroService {
         const val BOOK_CATALOG = "/union/book/chapter"
 
         //更新
-        const val CHECK_UPDATE = "/union/book/check"
+        const val CHECK_UPDATE = "/v5/book/check"
+
+
+        //书架每天一次批量更新接口
+        const val COVER_BATCH="/union/book/coverBatch"
+
     }
 
     @GET(AUTH_ACCESS)
@@ -42,4 +47,11 @@ interface MicroService {
     @POST(CHECK_UPDATE)
     @Headers("Content-Type: application/json;charset=UTF-8")
     fun requestBookUpdate(@Body json: RequestBody): Flowable<BasicResult<UpdateBean>>
+
+
+
+    @POST(COVER_BATCH)
+    @Headers("Content-Type: application/json;charset=UTF-8")
+    fun requestCoverBatch(@Body json: RequestBody): Flowable<BasicResult<List<Book>>>
+
 }

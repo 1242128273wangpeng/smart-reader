@@ -368,4 +368,31 @@ object MediaControl : IMediaControl {
             }
         })
     }
+
+    override fun loadBookCoverAd(activity: Activity?, onCall: (view: View?) -> Unit) {
+        PlatformSDK.adapp().dycmNativeAd(activity, "1-4",null, object : AbstractCallback() {
+            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
+                super.onResult(adswitch, views, jsonResult)
+                if (!adswitch) {
+                    return
+                }
+                try {
+                    val jsonObject = JSONObject(jsonResult)
+                    if (jsonObject.has("state_code")) {
+                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
+                            ResultCode.AD_REQ_SUCCESS
+                            -> {
+                                onCall.invoke(views[0])
+                            }
+                            else -> {
+                                onCall.invoke(null)
+                            }
+                        }
+                    }
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+            }
+        })
+    }
 }

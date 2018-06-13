@@ -51,7 +51,7 @@ interface BasicRequestRepository {
 
     fun requestBookSources(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<BookSource>>?
 
-    fun requestCoverBatch(requestBody: RequestBody): Flowable<BasicResult<CoverBatchList>>? //书籍批量接口
+    fun requestCoverBatch(requestBody: RequestBody): Flowable<BasicResult<List<Book>>>? //书籍批量接口
 
 
     fun requestLoginAction(parameters: Map<String, String>): Flowable<LoginResp>?

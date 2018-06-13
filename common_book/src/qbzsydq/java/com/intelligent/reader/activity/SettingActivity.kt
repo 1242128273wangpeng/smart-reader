@@ -19,6 +19,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import com.alibaba.android.arouter.facade.annotation.Route
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.bumptech.glide.Glide
@@ -51,6 +52,7 @@ import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.qbzsydq.act_setting_user.*
 
 
+@Route(path = RouterConfig.SETTING_ACTIVITY)
 class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchButton.OnCheckedChangeListener {
     var TAG = SettingActivity::class.java.simpleName
     var handler: Handler = object : Handler() {

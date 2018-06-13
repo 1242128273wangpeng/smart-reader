@@ -426,28 +426,37 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
     override fun requestCoverBatch(checkBody: RequestBody, requestSubscriber: RequestSubscriber<List<Book>>) {
         InternetRequestRepository.loadInternetRequestRepository(context = context).requestCoverBatch(checkBody)!!
-                .compose(SchedulerHelper.schedulerIOHelper<BasicResult<CoverBatchList>>())
+                .compose(SchedulerHelper.schedulerIOHelper<BasicResult<List<Book>>>())
                 .subscribe({ result ->
                     if (result != null) {
-                        val bookUpdates = ArrayList<Book>()
-                        if (result.checkResultAvailable()) {
-                            val updateBooks = result.data!!.coverBatchList
-                            if (updateBooks != null) {
-                                for (i in updateBooks.indices) {
-                                    val updateBook = updateBooks[i]
+                        when {
+                            result.checkPrivateKeyExpire() -> requestSubscriber.requestAuthAccess(context, requestSubscriber)
+                            result.checkResultAvailable() -> {
+
+                                val bookUpdates = ArrayList<Book>()
+                                if (result.checkResultAvailable()) {
+                                    val updateBooks = result.data!!
+                                    if (updateBooks != null) {
+                                        for (i in updateBooks.indices) {
+                                            val updateBook = updateBooks[i]
 
 
-                                    if (TextUtils.isEmpty(updateBook.book_id) || TextUtils.isEmpty(updateBook.book_source_id) ) {
-                                        continue
-                                    } else {
-                                        bookUpdates.add(updateBook)
+                                            if (TextUtils.isEmpty(updateBook.book_id) || TextUtils.isEmpty(updateBook.book_source_id) ) {
+                                                continue
+                                            } else {
+                                                bookUpdates.add(updateBook)
+                                            }
+                                        }
+                                        requestSubscriber.onNext(bookUpdates)
                                     }
+                                } else {
+                                    requestSubscriber.onError(Throwable("获取批量书籍更新异常！"))
                                 }
-                                requestSubscriber.onNext(bookUpdates)
                             }
-                        } else {
-                            requestSubscriber.onError(Throwable("获取批量书籍更新异常！"))
+                            else -> requestSubscriber.onError(Throwable("获取批量书籍更新异常！"))
                         }
+
+
                     } else {
                         requestSubscriber.onError(Throwable("获取批量书籍更新异常！"))
                     }
