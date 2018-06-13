@@ -2,6 +2,7 @@ package com.ding.basic.repository
 
 import android.content.Context
 import com.ding.basic.bean.*
+import com.ding.basic.request.MicroAPI
 import com.ding.basic.request.RequestAPI
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
@@ -13,7 +14,6 @@ import retrofit2.Call
  * Created by crazylei.
  */
 class InternetRequestRepository private constructor(context: Context?) : BasicRequestRepository {
-
 
 
     companion object {
@@ -42,14 +42,6 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
 
     override fun requestDynamicParameters(): Flowable<JsonObject>? {
         return RequestAPI.requestDynamicParameters()
-    }
-
-    override fun requestBookDetail(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Book>>? {
-        return RequestAPI.requestBookDetail(book_id, book_source_id, book_chapter_id)
-    }
-
-    override fun requestCatalog(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Catalog>> {
-        return RequestAPI.requestCatalog(book_id, book_source_id, book_chapter_id)
     }
 
     override fun requestBookSources(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<BookSource>>? {
@@ -121,7 +113,17 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestCoverRecommend(book_id, recommend)
     }
 
-    override fun requestAuthAccess(): Flowable<String>? {
-        return RequestAPI.requestAuthAccess()
+    /***************** 微服务 *****************/
+
+    override fun requestAuthAccess(): Flowable<BasicResult<String>>? {
+        return MicroAPI.requestAuthAccess()
+    }
+
+    override fun requestBookDetail(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Book>>? {
+        return MicroAPI.requestBookDetail(book_id, book_source_id, book_chapter_id)
+    }
+
+    override fun requestBookCatalog(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Catalog>> {
+        return MicroAPI.requestBookCatalog(book_id, book_source_id, book_chapter_id)
     }
 }

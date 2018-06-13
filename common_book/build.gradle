@@ -939,6 +939,8 @@ dependencies {
 
     debugCompile 'com.amitshekhar.android:debug-db:1.0.1'
 
+    compile 'com.android.volley:volley:1.1.0'
+
     implementation project(':bookshelf')
     implementation project(':downloadmanager')
     implementation project(':dy-reader')

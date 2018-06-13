@@ -3,7 +3,6 @@ package com.ding.basic.request
 import com.ding.basic.bean.*
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
-import io.reactivex.Observable
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
@@ -93,11 +92,6 @@ interface RequestService {
 
         //书籍封面页推荐
         const val COVER_RECOMMEND = "/v4/recommend/{book_id}/coverPage"
-
-
-
-        const val AUTH_ACCESS = "/auth/access/getKeys"
-
     }
 
     @GET(DEFAULT_BOOK)
@@ -117,12 +111,6 @@ interface RequestService {
 
     @GET(BOOK_DETAIL)
     fun requestBookDetail(@Query("book_id") book_id: String, @Query("book_source_id") book_source_id: String, @Query("book_chapter_id") book_chapter_id: String): Flowable<BasicResult<Book>>
-
-    @GET(CHAPTER_LIST)
-    fun requestCatalog(@Query("book_id") book_id: String, @Query("book_source_id") book_source_id: String): Flowable<BasicResult<Catalog>>
-
-    @GET(CHAPTER_LIST)
-    fun requestCatalog(@Query("book_id") book_id: String, @Query("book_source_id") book_source_id: String, @Query("book_chapter_id") book_chapter_id: String): Flowable<BasicResult<Catalog>>
 
     @GET(SOURCE_LIST)
     fun requestBookSources(@Query("book_id") book_id: String, @Query("book_source_id") book_source_id: String, @Query("book_chapter_id") book_chapter_id: String): Flowable<BasicResult<BookSource>>
@@ -197,11 +185,4 @@ interface RequestService {
     @FormUrlEncoded
     @POST(COVER_RECOMMEND)
     fun requestCoverRecommend(@Path("book_id") book_id: String, @Field("recommanded") bookIds: String): Flowable<CoverRecommendBean>
-
-
-
-
-
-    @GET(AUTH_ACCESS)
-    fun requestAuthAccess(@Header("accessKey") header: String): Flowable<String>
 }

@@ -1,5 +1,6 @@
 package com.ding.basic
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Environment
 import android.text.TextUtils
@@ -14,17 +15,31 @@ import org.jetbrains.annotations.NotNull
  * Created on 2018/3/13.
  * Created by crazylei.
  */
+@SuppressLint("StaticFieldLeak")
 object Config {
 
     const val Develop: Boolean = true
 
-    private var requestParameters: HashMap<String, String> = HashMap()
-
-
+    //WebView地址
     private var webViewHost: String? = ""
+    //智能API接口
     private var requestAPIHost: String? = ""
+    //微服务API接口
+    private var microAPIHost: String = "http://union2.zn.bookapi.cn"
+
+
+    /***
+     * 鉴权临时秘钥
+     * **/
+    private var accessKey: String = "wangpeng12345678"
+
+    private var privateKey: String = ""
+
+
 
     private var bookContent: String? = null
+
+    private var requestParameters: HashMap<String, String> = HashMap()
 
 
     var SDCARD_PATH = Environment.getExternalStorageDirectory().absolutePath
@@ -35,6 +50,8 @@ object Config {
     const val STYLE = 3
 
     private var context: Context? = null
+
+    private var publicKey: String = ""
 
     fun beginInit(context: Context){
         Config.context = context
@@ -100,10 +117,11 @@ object Config {
         return requestParameters
     }
 
+
     fun initializeLogger() {
 
         val formatStrategy = PrettyFormatStrategy.newBuilder()
-                .tag("DingYue").methodCount(0).showThreadInfo(false).build()
+                .tag("DingYue").methodCount(5).showThreadInfo(false).build()
 
         Logger.addLogAdapter(object : AndroidLogAdapter(formatStrategy) {
             override fun isLoggable(priority: Int, tag: String?): Boolean {
@@ -117,10 +135,69 @@ object Config {
         if (request == null) {
             return null
         }
-
         return URLBuilder.buildUrl(requestAPIHost, request, parameters)
-
     }
 
 
+
+
+
+
+
+
+    fun insertMicroAPIHost(microAPIHost: String) {
+        if (!TextUtils.isEmpty(microAPIHost)) {
+            Config.microAPIHost = microAPIHost
+        }
+    }
+
+    fun loadMicroAPIHost(): String {
+        return microAPIHost
+    }
+
+    fun insertAccessKey(accessKey: String) {
+        if (!TextUtils.isEmpty(accessKey)) {
+            Config.accessKey = accessKey
+        }
+    }
+
+    fun loadAccessKey(): String {
+        return accessKey
+    }
+
+    fun insertPublicKey(publicKey: String) {
+        this.publicKey = publicKey
+
+        val sharedPreferences = context?.getSharedPreferences("Basic_Preference", Context.MODE_PRIVATE)
+        sharedPreferences?.edit()?.putString("Access_Public_Key", publicKey)?.apply()
+    }
+
+    fun loadPublicKey(): String {
+        if (publicKey.isEmpty()) {
+            val sharedPreferences = context?.getSharedPreferences("Basic_Preference", Context.MODE_PRIVATE)
+            if (sharedPreferences != null) {
+                publicKey = sharedPreferences.getString("Access_Public_Key", "")
+            }
+        }
+
+        return publicKey
+    }
+
+    fun insertPrivateKey(privateKey: String) {
+        this.privateKey = privateKey
+
+        val sharedPreferences = context?.getSharedPreferences("Basic_Preference", Context.MODE_PRIVATE)
+        sharedPreferences?.edit()?.putString("Access_Private_Key", publicKey)?.apply()
+    }
+
+    fun loadPrivateKey(): String {
+        if (privateKey.isEmpty()) {
+            val sharedPreferences = context?.getSharedPreferences("Basic_Preference", Context.MODE_PRIVATE)
+            if (sharedPreferences != null) {
+                privateKey = sharedPreferences.getString("Access_Private_Key", "")
+            }
+        }
+
+        return privateKey
+    }
 }

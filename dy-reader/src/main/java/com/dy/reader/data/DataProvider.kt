@@ -3,6 +3,8 @@ package com.dy.reader.data
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
 import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.request.RequestSubscriber
+import com.ding.basic.rx.SchedulerHelper
 import com.dy.reader.ReadMediaManager
 import com.dy.reader.Reader
 import com.dy.reader.page.Position
@@ -18,6 +20,7 @@ import com.dy.reader.repository.ReaderRepository
 import com.dy.reader.repository.ReaderRepositoryFactory
 import com.intelligent.reader.read.mode.NovelChapter
 import com.intelligent.reader.read.mode.NovelPageBean
+import com.orhanobut.logger.Logger
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Function
@@ -158,73 +161,78 @@ object DataProvider {
 
     fun prepare(book: Book, start: Int, callback: ((Boolean) -> Unit)?) {
         val index = Math.max(start, 0)
-        mDisposable.add(requesetFactory.requestCatalog(book.book_id, book.book_source_id, book.book_chapter_id)
-                .subscribeOn(Schedulers.io())
-                .subscribeBy(
-                        onNext = {
-                            ReaderStatus.chapterList.clear()
-                            ReaderStatus.chapterList.addAll(it)
-                            loadPre(ReaderStatus.position.group + 2, ReaderStatus.position.group + 6)
-                            val sourceArr = mutableListOf<Flowable<Chapter>>()
-                            for (i in index until Math.min(index + 3, ReaderStatus.chapterList.size)) {
-                                sourceArr.add(readerRepository.requestSingleChapter(ReaderStatus.chapterList[i]))
-                            }
+        requesetFactory.requestCatalog(book.book_id, book.book_source_id, book.book_chapter_id, object : RequestSubscriber<List<Chapter>>() {
+            override fun requestResult(result: List<Chapter>?) {
+                if (result != null) {
+                    ReaderStatus.chapterList.clear()
+                    ReaderStatus.chapterList.addAll(result)
 
-                            mDisposable.add(Flowable.zipArray<Chapter, List<Chapter>>(Function { it ->
-                                val list = (it.toList() as List<Chapter>)
-                                Collections.sort(list, { first, second ->
-                                    (first.sequence - second.sequence)
-                                })
+                    loadPre(ReaderStatus.position.group + 2, ReaderStatus.position.group + 6)
+                    val sourceArr = mutableListOf<Flowable<Chapter>>()
+                    for (i in index until Math.min(index + 3, ReaderStatus.chapterList.size)) {
+                        sourceArr.add(readerRepository.requestSingleChapter(ReaderStatus.chapterList[i]))
+                    }
 
-                                list
-                            }, true, Flowable.bufferSize(),
-                                    *sourceArr.toTypedArray())
-                                    .subscribeBy(
-                                            onNext = {
+                    mDisposable.add(Flowable.zipArray<Chapter, List<Chapter>>(Function { it ->
+                        val list = (it.toList() as List<Chapter>)
+                        Collections.sort(list, { first, second ->
+                            (first.sequence - second.sequence)
+                        })
 
-                                                ReadMediaManager.tonken++
-                                                ReadMediaManager.adCache.clear()
+                        list
+                    }, true, Flowable.bufferSize(),
+                            *sourceArr.toTypedArray())
+                            .subscribeBy(
+                                    onNext = {
 
-                                                it.forEach {
-                                                    var separateContent = ReadSeparateHelper.initTextSeparateContent(it.content ?: "", it.name ?: "")
-                                                    separateContent = ReadMediaManager.insertChapterAd(it.sequence,separateContent)
-                                                    chapterCache.put(it.sequence, NovelChapter(it, separateContent))
-//                                                    lruCache.put(it.sequence.toLong(), parseChapterPages(it.content!!.replace("\\r\\n", "\r\n")))
-                                                }
+                                        ReadMediaManager.tonken++
+                                        ReadMediaManager.adCache.clear()
 
-                                                callback?.invoke(true)
-                                            },
-                                            onError = {
-                                                it.printStackTrace()
+                                        it.forEach {
+                                            var separateContent = ReadSeparateHelper.initTextSeparateContent(it.content
+                                                    ?: "", it.name ?: "")
+                                            separateContent = ReadMediaManager.insertChapterAd(it.sequence, separateContent)
+                                            chapterCache.put(it.sequence, NovelChapter(it, separateContent))
+                                        }
 
-                                                callback?.invoke(false)
-                                                EventBus.getDefault().post(EventLoading(EventLoading.Type.RETRY, {
-                                                    prepare(book, start, callback)
-                                                }))
-                                            }
-                                    ))
+                                        callback?.invoke(true)
+                                    },
+                                    onError = {
+                                        it.printStackTrace()
 
-                        },
-                        onError = {
-                            it.printStackTrace()
-                            if (index < ReaderStatus.chapterList?.size ?: 0 && chapterCache.get(ReaderStatus.chapterList[index].sequence) != null) {
-                                callback?.invoke(true)
-                            } else {
-                                callback?.invoke(false)
-                                EventBus.getDefault().post(EventLoading(EventLoading.Type.RETRY, {
-                                    prepare(book, start, callback)
-                                }))
-                            }
-                        }
-                ))
+                                        callback?.invoke(false)
+                                        EventBus.getDefault().post(EventLoading(EventLoading.Type.RETRY, {
+                                            prepare(book, start, callback)
+                                        }))
+                                    }
+                            ))
+                }
+            }
+
+            override fun requestError(message: String) {
+                Logger.e("请求目录异常： $message")
+                if (index < ReaderStatus.chapterList.size && chapterCache.get(ReaderStatus.chapterList[index].sequence) != null) {
+                    callback?.invoke(true)
+                } else {
+                    callback?.invoke(false)
+                    EventBus.getDefault().post(EventLoading(EventLoading.Type.RETRY, {
+                        prepare(book, start, callback)
+                    }))
+                }
+            }
+
+            override fun requestRetry() {
+                super.requestRetry()
+                prepare(book, start, callback)
+            }
+        }, SchedulerHelper.Type_IO)
     }
 
     @Synchronized
     fun clear() {
         groupListeners.clear()
-//        lruCache.evictAll()
         chapterCache.clear()
-        ReaderStatus.chapterList?.clear()
+        ReaderStatus.chapterList.clear()
         mDisposable.clear()
     }
 

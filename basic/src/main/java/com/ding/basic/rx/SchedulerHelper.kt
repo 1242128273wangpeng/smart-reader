@@ -10,6 +10,10 @@ import io.reactivex.schedulers.Schedulers
  */
 object SchedulerHelper {
 
+    const val Type_IO = 0x80
+    const val Type_Main = 0x81
+    const val Type_Default = 0x82
+
     fun <T> schedulerHelper(): FlowableTransformer<T, T> {
         return FlowableTransformer { observable ->
             observable
@@ -25,6 +29,25 @@ object SchedulerHelper {
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
+        }
+    }
+
+    fun <T> schedulerHelper(type: Int): FlowableTransformer<T, T> {
+        return when (type) {
+            Type_IO -> FlowableTransformer {
+                it
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+            }
+            Type_Main -> FlowableTransformer {
+                it
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.io())
+            }
+            else -> FlowableTransformer {
+                it
+            }
         }
     }
 }

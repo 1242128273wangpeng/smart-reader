@@ -28,12 +28,6 @@ import android.widget.AbsListView.OnScrollListener
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.Button
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ListView
-import android.widget.RadioButton
-import android.widget.RelativeLayout
 import android.widget.TextView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
@@ -209,14 +203,14 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
             loadingPage!!.setCustomBackgroud()
 
             if (mCataloguesPresenter != null) {
-                mCataloguesPresenter!!.requestCatalogList()
+                mCataloguesPresenter?.requestCatalogList()
             }
 
             if (loadingPage != null) {
-                loadingPage!!.isCategory = true
-                loadingPage!!.setReloadAction(Callable<Void> {
+                loadingPage?.isCategory = true
+                loadingPage?.setReloadAction(Callable<Void> {
                     if (mCataloguesPresenter != null) {
-                        mCataloguesPresenter!!.getRequest()
+                        mCataloguesPresenter?.requestCatalogList()
                     }
                     null
                 })

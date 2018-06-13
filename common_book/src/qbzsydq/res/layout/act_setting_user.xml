@@ -557,40 +557,6 @@
                     android:background="@color/color_lv_gap"/>
 
             <RelativeLayout
-                    android:id="@+id/rl_readpage_setting"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                <View
-                        android:id="@+id/v_divider7"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimen_height_0.5"
-                        android:layout_alignParentTop="true"
-                        android:visibility="gone"
-                        android:background="@color/color_divider"/>
-
-                <TextView
-                        android:id="@+id/tv_readpage_setting"
-                        style="@style/text_setting_style"
-                        android:layout_centerVertical="true"
-                        android:textColor="@color/color_text_most"
-                        android:drawableLeft="@mipmap/setting_readsetting_icon"
-                        android:drawablePadding="@dimen/padding_14"
-                        android:drawableRight="@mipmap/my_more"
-                        android:paddingLeft="@dimen/padding_12"
-                        android:paddingRight="@dimen/padding_12"
-                        android:visibility="gone"
-                        android:text="@string/setting_reading_page"/>
-
-                <View
-                        android:id="@+id/v_divider8"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimen_height_0.5"
-                        android:layout_alignParentBottom="true"
-                        android:background="@color/color_divider"/>
-            </RelativeLayout>
-
-            <RelativeLayout
                     android:id="@+id/rl_setting_more"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimen_height_45">

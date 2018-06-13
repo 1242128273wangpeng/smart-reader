@@ -10,12 +10,9 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.dy.reader.helper.AppHelper;
-import com.dy.reader.setting.ReaderSettings;
 import com.dy.reader.setting.ReaderStatus;
 import com.dycm_adsdk.PlatformSDK;
 import com.dycm_adsdk.view.NativeView;
-
-import net.lzbook.kit.utils.AppUtils;
 
 import java.util.HashMap;
 import java.util.Map;

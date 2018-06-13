@@ -18,7 +18,7 @@ interface RequestRepository {
 
     fun requestBookDetail(book_id: String, book_source_id: String, book_chapter_id: String, requestSubscriber: RequestSubscriber<Book>)
 
-    fun requestCatalog(book_id: String, book_source_id: String, book_chapter_id: String):Flowable<List<Chapter>>
+    fun requestCatalog(book_id: String, book_source_id: String, book_chapter_id: String, requestSubscriber: RequestSubscriber<List<Chapter>>, type: Int)
 
     fun requestBookSources(book_id: String, book_source_id: String, book_chapter_id: String, requestSubscriber: RequestSubscriber<BookSource>)
 

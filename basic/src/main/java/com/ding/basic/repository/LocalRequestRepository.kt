@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import com.ding.basic.bean.*
 import com.ding.basic.database.helper.BookDataProviderHelper
+import com.ding.basic.request.ResultCode
 import com.ding.basic.util.ChapterCacheUtil
 import com.google.gson.JsonObject
 import io.reactivex.BackpressureStrategy
@@ -47,12 +48,12 @@ class LocalRequestRepository private constructor(private var context: Context) :
         return null
     }
 
-    override fun requestCatalog(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Catalog>> {
+    override fun requestBookCatalog(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Catalog>> {
         return Flowable.create({ emitter ->
 
             val result = BasicResult<Catalog>()
 
-            result.code = 100000
+            result.code = ResultCode.LOCAL_RESULT
             result.msg = "catalog from local"
 
             val catalog = Catalog()
@@ -152,7 +153,7 @@ class LocalRequestRepository private constructor(private var context: Context) :
         return null
     }
 
-    override fun requestAuthAccess(): Flowable<String>? {
+    override fun requestAuthAccess(): Flowable<BasicResult<String>>? {
         return null
     }
 
