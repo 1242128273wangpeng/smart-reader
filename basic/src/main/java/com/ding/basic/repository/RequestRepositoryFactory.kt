@@ -433,7 +433,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 .subscribe({ result ->
                     if (result != null) {
                         val bookUpdates = ArrayList<Book>()
-                        if (result.isAvalable()) {
+                        if (result.checkResultAvailable()) {
                             val updateBooks = result.data!!.coverBatchList
                             if (updateBooks != null) {
                                 for (i in updateBooks.indices) {
