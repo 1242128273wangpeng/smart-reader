@@ -12,6 +12,7 @@ import com.dingyue.contract.IPresenter
 import com.dingyue.contract.logger.HomeLogger
 import com.dingyue.contract.util.SharedPreUtil
 import com.google.gson.Gson
+import com.orhanobut.logger.Logger
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -68,7 +69,7 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
             sharePreUtil.putLong(SharedPreUtil.HOME_TODAY_FIRST_OPEN_APP, currentTime)
             sharePreUtil.putBoolean(SharedPreUtil.HOME_IS_UPLOAD, false)
             updateApplicationList()
-            updateCoverBatch()
+//            updateCoverBatch()
 
         }
 
@@ -186,6 +187,7 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
      * **/
     private fun updateApplicationList() {
         Observable.create(ObservableOnSubscribe<String> { emitter ->
+            Logger.e("UpdateApplicationList")
             emitter.onNext(AppUtils.scanLocalInstallAppList(packageManager))
         })
                 .subscribeOn(Schedulers.io())

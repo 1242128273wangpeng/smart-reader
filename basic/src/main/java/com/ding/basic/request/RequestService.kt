@@ -160,7 +160,7 @@ interface RequestService {
     @GET(FEEDBACK_ERROR)
     fun requestFeedback(@QueryMap(encoded = false) params: Map<String, String>): Flowable<NoBodyEntity>
 
-    @POST(COVER_BATCH)
+    @POST(COVER_RECOMMEND)
     @Headers("Content-Type: application/json;charset=UTF-8")
     fun requestCoverBatch(@Body json: RequestBody): Flowable<BasicResult<CoverBatchList>>
 

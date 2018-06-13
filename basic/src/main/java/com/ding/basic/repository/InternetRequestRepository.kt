@@ -76,10 +76,6 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestChapterContentSync(chapter_id, book_id, book_source_id, book_chapter_id)
     }
 
-    override fun requestBookUpdate(requestBody: RequestBody): Flowable<BasicResult<UpdateBean>>? {
-        return RequestAPI.requestBookUpdate(requestBody)
-    }
-
     override fun requestBookShelfUpdate(requestBody: RequestBody): Flowable<BasicResult<CoverList>>? {
         return RequestAPI.requestBookShelfUpdate(requestBody)
     }
@@ -130,5 +126,9 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
 
     override fun requestBookCatalog(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Catalog>> {
         return MicroAPI.requestBookCatalog(book_id, book_source_id, book_chapter_id)
+    }
+
+    override fun requestBookUpdate(requestBody: RequestBody): Flowable<BasicResult<UpdateBean>>? {
+        return MicroAPI.requestBookUpdate(requestBody)
     }
 }

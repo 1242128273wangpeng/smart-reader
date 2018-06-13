@@ -170,9 +170,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                     }
                 }
                 .doOnNext { result ->
-                    if (result.checkPrivateKeyExpire()) {
-
-                    } else if (result != null && result.checkResultAvailable() && result.data!!.chapters != null && result.data!!.chapters!!.isNotEmpty()) {
+                    if (result != null && result.checkResultAvailable() && result.data!!.chapters != null && result.data!!.chapters!!.isNotEmpty()) {
 
                         for (chapter in result.data?.chapters!!) {
                             chapter.host = result.data?.host
@@ -211,7 +209,6 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         requestSubscriber.onError(Throwable("获取章节目录异常！"))
                     }
                 }, {
-                    Logger.e("Error: " + it.toString())
                     requestSubscriber.onError(it)
                 }, {
                     Logger.v("请求目录信息完成！")

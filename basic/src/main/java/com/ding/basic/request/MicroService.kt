@@ -18,7 +18,7 @@ interface MicroService {
         const val BOOK_CATALOG = "/union/book/chapter"
 
         //更新
-        const val CHECK_UPDATE = "/v5/book/check"
+        const val CHECK_UPDATE = "/union/book/check"
     }
 
     @GET(AUTH_ACCESS)

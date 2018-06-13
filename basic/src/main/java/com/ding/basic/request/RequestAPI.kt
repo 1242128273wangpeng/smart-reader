@@ -104,10 +104,6 @@ internal object RequestAPI {
         return requestService.requestChapterContentSync(chapter_id, book_id, book_source_id, book_chapter_id)
     }
 
-    fun requestBookUpdate(requestBody: RequestBody): Flowable<BasicResult<UpdateBean>>? {
-        return requestService.requestBookUpdate(requestBody)
-    }
-
     fun requestBookShelfUpdate(requestBody: RequestBody): Flowable<BasicResult<CoverList>>? {
         return requestService.requestBookShelfUpdate(requestBody)
     }
