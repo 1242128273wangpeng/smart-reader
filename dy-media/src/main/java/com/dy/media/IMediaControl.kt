@@ -64,10 +64,10 @@ interface IMediaControl {
     fun getChapterFrequency(): Int
 
     fun dycmNativeAd(context: Context?, adLocalId: String, view: ViewGroup?,
-                     resultCalback: (switch: Boolean, views: List<ViewGroup>?, jsonResult: String?) -> Unit)
+                     resultCallback: (switch: Boolean, views: List<ViewGroup>?, jsonResult: String?) -> Unit)
 
     fun dycmNativeAd(context: Context?, adLocalId: String, height: Int, width: Int,
-                     resultCalback: (switch: Boolean, views: List<ViewGroup>?, jsonResult: String?) -> Unit)
+                     resultCallback: (switch: Boolean, views: List<ViewGroup>?, jsonResult: String?) -> Unit)
 
     fun startRestMedia(onTime: () -> Unit)
 

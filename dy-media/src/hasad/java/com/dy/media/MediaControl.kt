@@ -124,13 +124,7 @@ object MediaControl : IMediaControl {
         PlatformSDK.config()?.setBookShelfGrid(isGrid)
     }
 
-    override fun loadBookShelfMediaInterval(): Int {
-        return if (PlatformSDK.config() != null) {
-            PlatformSDK.config().adCount
-        } else {
-            10
-        }
-    }
+    override fun loadBookShelfMediaInterval(): Int = PlatformSDK.config()?.adCount ?: 10
 
     override fun loadBookShelfHeaderMedia(activity: Activity,
                                           headerMediaCallback: IMediaControl.HeaderMediaCallback) {
@@ -252,21 +246,21 @@ object MediaControl : IMediaControl {
             PlatformSDK.config()?.chapter_limit ?: 0
 
     override fun dycmNativeAd(context: Context?, adLocalId: String, view: ViewGroup?,
-                              resultCalback: (switch: Boolean, List<ViewGroup>?, jsonResult: String?) -> Unit) {
+                              resultCallback: (switch: Boolean, List<ViewGroup>?, jsonResult: String?) -> Unit) {
         PlatformSDK.adapp()?.dycmNativeAd(context, adLocalId, view, object : MediaAbstractCallback() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
                 super.onResult(adswitch, view, jsonResult)
-                resultCalback.invoke(adswitch, views, jsonResult)
+                resultCallback.invoke(adswitch, views, jsonResult)
             }
         })
     }
 
     override fun dycmNativeAd(context: Context?, adLocalId: String, height: Int, width: Int,
-                              resultCalback: (switch: Boolean, views: List<ViewGroup>?, jsonResult: String?) -> Unit) {
+                              resultCallback: (switch: Boolean, views: List<ViewGroup>?, jsonResult: String?) -> Unit) {
         PlatformSDK.adapp()?.dycmNativeAd(context, adLocalId, height, width, object : MediaAbstractCallback() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
-                resultCalback.invoke(adswitch, views, jsonResult)
+                resultCallback.invoke(adswitch, views, jsonResult)
             }
         })
     }
@@ -327,12 +321,12 @@ object MediaControl : IMediaControl {
     override fun addPageAd(child: View) {
         try {
             if (child is NativeView) {
-                PlatformSDK.config().ExposureToPlugin(child)
+                PlatformSDK.config()?.ExposureToPlugin(child)
             } else {
                 if (child is ViewGroup) {
                     val cChild = child.getChildAt(0)
                     if (cChild != null && cChild is NativeView) {
-                        PlatformSDK.config().ExposureToPlugin(cChild)
+                        PlatformSDK.config()?.ExposureToPlugin(cChild)
                     }
                 }
             }
@@ -343,7 +337,7 @@ object MediaControl : IMediaControl {
     }
 
     override fun loadBookEndMedia(context: Context, onCall: (view: View?, isSuccess: Boolean) -> Unit) {
-        PlatformSDK.adapp().dycmNativeAd(context, "9-1", null, object : AbstractCallback() {
+        PlatformSDK.adapp()?.dycmNativeAd(context, "9-1", null, object : AbstractCallback() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
                 if (!adswitch) {
@@ -370,7 +364,7 @@ object MediaControl : IMediaControl {
     }
 
     override fun loadBookCoverAd(activity: Activity?, onCall: (view: View?) -> Unit) {
-        PlatformSDK.adapp().dycmNativeAd(activity, "1-4",null, object : AbstractCallback() {
+        PlatformSDK.adapp()?.dycmNativeAd(activity, "1-4", null, object : AbstractCallback() {
             override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
                 super.onResult(adswitch, views, jsonResult)
                 if (!adswitch) {

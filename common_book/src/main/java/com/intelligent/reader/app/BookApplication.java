@@ -47,7 +47,7 @@ public class BookApplication extends BaseBookApplication {
             return;
         }
 
-//        MediaLifecycle.INSTANCE.onAppCreate(this);
+        MediaLifecycle.INSTANCE.onAppCreate(this);
 
         // 自定义ErrorCallback
         FeedbackAPI.addErrorCallback(new FeedbackErrorCallback() {

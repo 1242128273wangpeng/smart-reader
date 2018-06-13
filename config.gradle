@@ -8,8 +8,6 @@ ext {
     minSdkVersion = 14
     targetSdkVersion = 22
 
-    applicationId = "cn.qbzsydsq.reader"
-
     minifyEnable = false
     shrinkResEnable = minifyEnable
 
