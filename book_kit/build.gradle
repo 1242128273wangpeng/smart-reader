@@ -7,7 +7,7 @@ dependencies {
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
-    compile 'net.iyouqu.android.common:iyouqu_logencap:1.0.7'
+    compile 'net.iyouqu.android.common:iyouqu_logencap:1.0.9'
 
     compile 'com.amap:AMap_Location:2.4.1'
     compile 'com.baidu:mobstat:3.7.4.2'

@@ -2,6 +2,7 @@ package cn.dy.plugin
 
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONObject
+import com.android.build.gradle.api.BaseVariant
 import com.android.builder.model.ProductFlavor
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -18,8 +19,6 @@ class CompileBuild implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-        project.extensions.create('complieBuild', CompileExtension)
-
         String flavorsConfig = project.properties.get("flavorsConfig")
         JSONObject flavorsConfigJson = JSON.parse(new File(flavorsConfig).text)
 
@@ -34,7 +33,7 @@ class CompileBuild implements Plugin<Project> {
         project.android {
 
             libraryVariants.all { variant ->
-//                if (variant.buildType.name != "release") return
+                if (variant.buildType.name != "release") return
                 ProductFlavor targetFlavor = null
                 variant.getProductFlavors().forEach {
                     flavor ->
@@ -53,10 +52,10 @@ class CompileBuild implements Plugin<Project> {
         JSONObject flavorConfig = flavorsConfigJson.getJSONObject(targetFlavor.name)
         if (flavorConfig != null && flavorConfig.getBoolean("hasAd")) {
             println "携带广告变体为： " + targetFlavor.name
-            String configurationName = targetFlavor.name + "Api"
-            println "configurationName: " + configurationName
-            project.dependencies.add(configurationName,
+            project.dependencies.add("implementation",
                     "net.iyouqu.android.common:dycm_ssp_sdk:$ad_version")
+            project.dependencies.add("implementation",
+                    "com.android.volley:volley:1.1.0")
         }
     }
 
