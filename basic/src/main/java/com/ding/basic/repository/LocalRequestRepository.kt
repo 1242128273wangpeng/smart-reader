@@ -16,6 +16,7 @@ import retrofit2.Call
 @SuppressLint("StaticFieldLeak")
 class LocalRequestRepository private constructor(private var context: Context) : BasicRequestRepository {
 
+
     companion object {
         private var localRequestRepository: LocalRequestRepository? = null
 
@@ -41,6 +42,10 @@ class LocalRequestRepository private constructor(private var context: Context) :
     }
 
     override fun requestDynamicParameters(): Flowable<JsonObject>? {
+        return null
+    }
+
+    override fun requestCoverBatch(requestBody: RequestBody): Flowable<BasicResult<CoverBatchList>>? {
         return null
     }
 

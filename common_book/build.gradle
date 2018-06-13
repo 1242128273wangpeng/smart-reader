@@ -140,7 +140,7 @@ android {
     }
     defaultConfig {
 
-        applicationId "cn.qbzsydsq.reader"
+        applicationId rootProject.applicationId
 
 //        System.err.println("project.properties = ${project.getProperties()}")
 

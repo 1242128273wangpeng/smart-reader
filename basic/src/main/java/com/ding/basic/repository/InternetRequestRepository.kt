@@ -84,6 +84,11 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestBookShelfUpdate(requestBody)
     }
 
+    override fun requestCoverBatch(requestBody: RequestBody): Flowable<BasicResult<CoverBatchList>>? {
+        return RequestAPI.requestCoverBatch(requestBody)
+    }
+
+
     override fun requestFeedback(parameters: Map<String, String>): Flowable<NoBodyEntity>? {
         return RequestAPI.requestFeedback(parameters)
     }

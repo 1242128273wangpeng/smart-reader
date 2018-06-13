@@ -12,6 +12,7 @@ import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.ding.basic.bean.Chapter
+import com.dy.media.MediaConfig
 import com.dy.reader.R
 import com.dy.reader.ReadMediaManager
 import com.dy.reader.helper.ReadSeparateHelper
@@ -20,10 +21,8 @@ import com.dy.reader.page.PageContentView
 import com.dy.reader.page.SpacingTextView
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import com.dycm_adsdk.PlatformSDK
 import com.intelligent.reader.read.mode.NovelPageBean
 import net.lzbook.kit.constants.Constants
-
 import net.lzbook.kit.data.bean.ReadViewEnums
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
@@ -261,7 +260,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
                         map.put("channel_code", "A002")
                     }
 
-                    PlatformSDK.config().setExpandInfo(map)
+                    MediaConfig.setExpandInfo(map)
 
                     fl_reader_content_ad.visibility = View.VISIBLE
                     val adViewLayoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -410,7 +409,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
                     map.put("channel_code", "A002")
                 }
 
-                PlatformSDK.config().setExpandInfo(map)
+                MediaConfig.setExpandInfo(map)
 
                 val layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 val adView = ReadMediaManager.adCache.get(page.adType)

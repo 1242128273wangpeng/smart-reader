@@ -427,6 +427,41 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
 
+    override fun requestCoverBatch(checkBody: RequestBody, requestSubscriber: RequestSubscriber<List<Book>>) {
+        InternetRequestRepository.loadInternetRequestRepository(context = context).requestCoverBatch(checkBody)!!
+                .compose(SchedulerHelper.schedulerIOHelper<BasicResult<CoverBatchList>>())
+                .subscribe({ result ->
+                    if (result != null) {
+                        val bookUpdates = ArrayList<Book>()
+                        if (result.isAvalable()) {
+                            val updateBooks = result.data!!.coverBatchList
+                            if (updateBooks != null) {
+                                for (i in updateBooks.indices) {
+                                    val updateBook = updateBooks[i]
+
+
+                                    if (TextUtils.isEmpty(updateBook.book_id) || TextUtils.isEmpty(updateBook.book_source_id) ) {
+                                        continue
+                                    } else {
+                                        bookUpdates.add(updateBook)
+                                    }
+                                }
+                                requestSubscriber.onNext(bookUpdates)
+                            }
+                        } else {
+                            requestSubscriber.onError(Throwable("获取批量书籍更新异常！"))
+                        }
+                    } else {
+                        requestSubscriber.onError(Throwable("获取批量书籍更新异常！"))
+                    }
+                }, { throwable ->
+                    requestSubscriber.onError(throwable)
+                }, {
+                    Logger.v("请求批量书籍更新完成！")
+                    requestSubscriber.requestComplete()
+                })
+    }
+
     override fun requestBookShelfUpdate(checkBody: RequestBody, requestSubscriber: RequestSubscriber<Boolean>) {
         InternetRequestRepository.loadInternetRequestRepository(context = context).requestBookShelfUpdate(checkBody)!!
                 .compose(SchedulerHelper.schedulerIOHelper<BasicResult<CoverList>>())
@@ -798,7 +833,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                     if (contextFixState.saveFixState) {
                                         val bookFix = BookFix()
                                         bookFix.book_id = book.book_id
-                                        bookFix.fix_type = 1
+                                        bookFix.fix_type = 1  //标识已修复 等待toast提示用户
                                         bookFix.c_version = it.c_version
                                         bookFix.list_version = it.list_version
 
@@ -812,7 +847,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                 bookFix.book_id = it.book_id
                                 bookFix.c_version = it.c_version
                                 bookFix.list_version = it.list_version
-                                bookFix.fix_type = 2
+                                bookFix.fix_type = 2 //标识未修复
                                 LocalRequestRepository.loadLocalRequestRepository(context).insertBookFix(bookFix)
                             }
                         }

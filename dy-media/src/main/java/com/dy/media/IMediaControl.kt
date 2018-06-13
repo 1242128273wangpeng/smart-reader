@@ -5,8 +5,6 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import com.dycm_adsdk.callback.AdResultCallBack
-import java.lang.ref.WeakReference
 
 /**
  * Desc 广告控制
@@ -66,16 +64,18 @@ interface IMediaControl {
     fun getChapterFrequency(): Int
 
     fun dycmNativeAd(context: Context?, adLocalId: String, view: ViewGroup?,
-                     adResultCallBack: AdResultCallBack)
+                     resultCalback: (switch: Boolean, views: List<ViewGroup>?, jsonResult: String?) -> Unit)
 
     fun dycmNativeAd(context: Context?, adLocalId: String, height: Int, width: Int,
-                     adResultCallBack: AdResultCallBack)
+                     resultCalback: (switch: Boolean, views: List<ViewGroup>?, jsonResult: String?) -> Unit)
 
     fun startRestMedia(onTime: () -> Unit)
 
     fun loadRestMedia(activity: Activity?, onSuccess: (view: View?) -> Unit)
 
     fun stopRestMedia()
+
+    fun addPageAd(child: View)
 
     //阅读完结页
     fun loadBookEndMedia(context: Context, onCall: (view: View?, isSuccess: Boolean) -> Unit)

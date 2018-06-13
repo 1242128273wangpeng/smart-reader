@@ -1,10 +1,10 @@
 package com.dy.media
 
 import android.app.Activity
+import android.app.Application
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
-import com.dycm_adsdk.PlatformSDK
 
 /**
  * Desc 广告生命周期
@@ -12,7 +12,7 @@ import com.dycm_adsdk.PlatformSDK
  * Mail tao_qian@dingyuegroup.cn
  * Date 2018/6/7 11:39
  */
-class MediaLifecycle : IMediaLifecycle {
+object MediaLifecycle : IMediaLifecycle {
 
     override fun onAppCreate(application: Application) {}
 

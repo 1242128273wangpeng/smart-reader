@@ -88,6 +88,8 @@ interface RequestService {
 
 
 
+        //书架每天一次批量更新接口
+        const val COVER_BATCH=""
 
 
         //书籍封面页推荐
@@ -158,7 +160,9 @@ interface RequestService {
     @GET(FEEDBACK_ERROR)
     fun requestFeedback(@QueryMap(encoded = false) params: Map<String, String>): Flowable<NoBodyEntity>
 
-
+    @POST(COVER_BATCH)
+    @Headers("Content-Type: application/json;charset=UTF-8")
+    fun requestCoverBatch(@Body json: RequestBody): Flowable<BasicResult<CoverBatchList>>
 
 
     /************************************* 用户相关 *************************************/

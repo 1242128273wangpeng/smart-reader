@@ -2,15 +2,11 @@ package com.intelligent.reader.app;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.alibaba.sdk.android.feedback.util.ErrorCode;
 import com.alibaba.sdk.android.feedback.util.FeedbackErrorCallback;
-import com.ding.basic.database.BookDatabase;
-import com.ding.basic.database.helper.BookDataProviderHelper;
 import com.dingyue.contract.util.CommonUtil;
-import com.dy.media.MediaControl;
 import com.dy.media.MediaLifecycle;
 import com.dy.reader.Reader;
 import com.intelligent.reader.BuildConfig;
@@ -51,6 +47,8 @@ public class BookApplication extends BaseBookApplication {
             return;
         }
 
+        MediaLifecycle.INSTANCE.onAppCreate(this);
+
         // 自定义ErrorCallback
         FeedbackAPI.addErrorCallback(new FeedbackErrorCallback() {
             @Override
@@ -66,7 +64,8 @@ public class BookApplication extends BaseBookApplication {
                 return null;
             }
         });
-        FeedbackAPI.init(this, ReplaceConstants.getReplaceConstants().ALIFEEDBACK_KEY, ReplaceConstants.getReplaceConstants().ALIFEEDBACK_SECRET);
+        FeedbackAPI.init(this, ReplaceConstants.getReplaceConstants().ALIFEEDBACK_KEY,
+                ReplaceConstants.getReplaceConstants().ALIFEEDBACK_SECRET);
         if (BuildConfig.DEBUG) {
             if (!BuildConfig.IS_LEAKCANARY_DISABLE) {
                 sRefWatcher = LeakCanary.install(this);
@@ -77,12 +76,14 @@ public class BookApplication extends BaseBookApplication {
         registerActivityLifecycleCallbacks(ActivityLifecycleHelper.build());
         setRxJavaErrorHandler();
 
-        MediaLifecycle.INSTANCE.onAppCreate(this);
     }
 
     /**
-     * RxJava2 当取消订阅后(dispose())，RxJava抛出的异常后续无法接收(此时后台线程仍在跑，可能会抛出IO等异常),全部由RxJavaPlugin接收，需要提前设置ErrorHandler
-     * 详情：http://engineering.rallyhealth.com/mobile/rxjava/reactive/2017/03/15/migrating-to-rxjava-2.html#Error Handling
+     * RxJava2 当取消订阅后(dispose())，RxJava抛出的异常后续无法接收(此时后台线程仍在跑，可能会抛出IO等异常),
+     * 全部由RxJavaPlugin接收，需要提前设置ErrorHandler
+     * 详情：http://engineering.rallyhealth
+     * .com/mobile/rxjava/reactive/2017/03/15/migrating-to-rxjava-2.html#Error
+     * Handling
      */
     private void setRxJavaErrorHandler() {
         RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
@@ -96,6 +97,8 @@ public class BookApplication extends BaseBookApplication {
     @Override
     public void onTerminate() {
         super.onTerminate();
-        MediaLifecycle.INSTANCE.onTerminate();
+        if (AppUtils.isMainProcess(this)) {
+            MediaLifecycle.INSTANCE.onTerminate();
+        }
     }
 }

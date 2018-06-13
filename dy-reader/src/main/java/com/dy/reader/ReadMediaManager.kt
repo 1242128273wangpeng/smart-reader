@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import com.dy.media.MediaAbstractCallback
 import com.dy.media.MediaCode
 import com.dy.media.MediaControl
 import com.dy.reader.helper.AppHelper
@@ -31,13 +30,13 @@ import java.util.*
 object ReadMediaManager {
 
     val readerSettings = ReaderSettings.instance
-    var frameLayout: FrameLayout ?= null
+    var frameLayout: FrameLayout? = null
 
     val adCache = DataCache()
     var mActivity: WeakReference<Activity>? = null
     //无缓存加载回调
     var loadAdComplete: ((String) -> Unit)? = null
-    var tonken:Long = 1
+    var tonken: Long = 1
     /**
      * 必须初始化!
      */
@@ -97,7 +96,10 @@ object ReadMediaManager {
                 last.adType = generateAdType(group, page.size - 1)
 //            requestAd(last.adType, generateAdMark(8, 10), (AppHelper.screenHeight - last.height).toInt())
                 val adMark = generateAdMark(8, 10)
-                MediaControl.dycmNativeAd(this, adMark, null, AdCallback(last.adType, adMark, (AppHelper.screenHeight - last.height).toInt(), tonken))
+                MediaControl.dycmNativeAd(this, adMark, null, { switch, view, jsonResult ->
+                    this@ReadMediaManager.mediaAction(last.adType, adMark,
+                            (AppHelper.screenHeight - last.height).toInt(), tonken, switch, view, jsonResult)
+                })
             }
         }
 
@@ -121,17 +123,21 @@ object ReadMediaManager {
      * @param height 高度 默认值屏幕高度
      * @param width 宽度 默认值屏幕宽度
      */
-    fun requestAd(adType: String, adMark: String, height: Int = AppHelper.screenHeight, width: Int = AppHelper.screenWidth,token:Long = tonken) {
+    fun requestAd(adType: String, adMark: String, height: Int = AppHelper.screenHeight, width: Int = AppHelper.screenWidth, token: Long = tonken) {
         //
         mActivity?.get().apply {
             adCache.put(adType, AdBean(height, null, true, adMark))
             if (height == AppHelper.screenHeight) {//5-1 5-2 6-1 6-2
                 val space = (AppHelper.screenDensity * readerSettings.readContentPageTopSpace * 2f).toInt()
 //                PlatformSDK.adapp().dycmNativeAd(this, adMark, height - space, width, AdCallback(adType, adMark, height,token))
-                MediaControl.dycmNativeAd(this, adMark, null,AdCallback(adType, adMark, height,token))
+                MediaControl.dycmNativeAd(this, adMark, null, { switch, list, jsonResult ->
+                    mediaAction(adType, adMark, height, token, switch, list, jsonResult)
+                })
             } else {//8-1
                 val space = (AppHelper.screenDensity * readerSettings.readContentPageTopSpace).toInt()
-                MediaControl.dycmNativeAd(this, adMark, height - space, width, AdCallback(adType, adMark, height,token))
+                MediaControl.dycmNativeAd(this, adMark, height - space, width, { switch, views, jsonResult ->
+                    mediaAction(adType, adMark, height, token, switch, views, jsonResult)
+                })
             }
         }
     }
@@ -218,6 +224,7 @@ object ReadMediaManager {
             }
         }
     }
+
     /**
      * 广告容器参数
      */
@@ -247,43 +254,40 @@ object ReadMediaManager {
     }
 
     /**
-     * 广告回调类
-     * @param AdType 广告type
+     * 广告处理
      */
-    private class AdCallback(val adType: String, val mark: String, val height: Int,val curTonken: Long)
-        : MediaAbstractCallback() {
+    private fun mediaAction(adType: String, mark: String, height: Int, curTonken: Long,
+                            adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
 
-        override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
-            if (!adswitch) {
-                if (adCache.get(adType) == null || !adCache.get(adType)!!.loaded) {
-                    adCache.put(adType, AdBean(height, null, false, mark))
-                }
-                return
-            }
-            if (ReadMediaManager.tonken != this.curTonken){
+        if (!adswitch) {
+            if (adCache.get(adType) == null || !adCache.get(adType)!!.loaded) {
                 adCache.put(adType, AdBean(height, null, false, mark))
-                Log.e("AdCallback","token改变了")
-                return
             }
-            try {
-                val jsonObject = JSONObject(jsonResult)
-                if (jsonObject.has("state_code")
-                        && MediaCode.MEDIA_SUCCESS == MediaCode.getCode(jsonObject.getInt("state_code"))
-                        && !views.isEmpty()
-                        && views[0].parent == null) {
-                    views[0].id = R.id.pac_reader_ad
-                    adCache.put(adType, AdBean(height, views[0], true, mark))
-                    loadAdComplete?.invoke(adType)
-                } else {
-                    if (adCache.get(adType) == null || !adCache.get(adType)!!.loaded) {
-                        adCache.put(adType, AdBean(height, null, false, mark))
-                    }
-                }
-            } catch (e: JSONException) {
-                e.printStackTrace()
+            return
+        }
+        if (ReadMediaManager.tonken != curTonken) {
+            adCache.put(adType, AdBean(height, null, false, mark))
+            Log.e("mediaAction", "token改变了")
+            return
+        }
+        try {
+            val jsonObject = JSONObject(jsonResult)
+            if (jsonObject.has("state_code")
+                    && MediaCode.MEDIA_SUCCESS == MediaCode.getCode(jsonObject.getInt("state_code"))
+                    && views?.isEmpty() == false
+                    && views[0].parent == null) {
+                views[0].id = R.id.pac_reader_ad
+                adCache.put(adType, AdBean(height, views[0], true, mark))
+                loadAdComplete?.invoke(adType)
+            } else {
                 if (adCache.get(adType) == null || !adCache.get(adType)!!.loaded) {
                     adCache.put(adType, AdBean(height, null, false, mark))
                 }
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+            if (adCache.get(adType) == null || !adCache.get(adType)!!.loaded) {
+                adCache.put(adType, AdBean(height, null, false, mark))
             }
         }
     }
