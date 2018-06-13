@@ -162,7 +162,6 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         rl_style_change = findViewById(R.id.rl_style_change) as RelativeLayout
         bt_night_shift = findViewById(R.id.bt_night_shift) as SwitchButton
         bt_wifi_auto = findViewById(R.id.bt_wifi_auto) as SwitchButton
-        rl_readpage_setting = findViewById(R.id.rl_readpage_setting) as RelativeLayout
         rl_history_setting = findViewById(R.id.rl_history_setting) as RelativeLayout
         rl_welfare = findViewById(R.id.rl_welfare) as RelativeLayout
         img_welfare = findViewById(R.id.img_welfare) as ImageView
@@ -182,7 +181,6 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         tv_readpage_bbs = findViewById(R.id.tv_readpage_bbs) as TextView
         tv_style_change = findViewById(R.id.tv_style_change) as TextView
         tv_night_shift = findViewById(R.id.tv_night_shift) as TextView
-        tv_readpage_setting = findViewById(R.id.tv_readpage_setting) as TextView
         tv_history_setting = findViewById(R.id.tv_history_setting) as TextView
         tv_setting_more = findViewById(R.id.tv_setting_more) as TextView
         tv_feedback = findViewById(R.id.tv_feedback) as TextView
@@ -429,11 +427,6 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
                 startActivity(welfareIntent)
             }
 
-            R.id.rl_readpage_setting -> {
-                //阅读页设置
-                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_read)
-                startActivity(Intent(this@SettingActivity, ReadingSettingActivity::class.java))
-            }
             R.id.rl_readpage_bbs -> Toast.makeText(applicationContext, R.string.enter_community, Toast.LENGTH_SHORT).show()
             R.id.clear_cache_rl//清除缓存的处理
             -> {

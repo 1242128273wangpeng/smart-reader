@@ -87,6 +87,7 @@ public class SplashActivity extends FrameActivity {
 
     private TextView txt_upgrade;
     private ProgressBar progress_upgrade;
+    private List<Book> books;
 
     public static void checkAndInstallShotCut(Context ctt) {
         if (!queryShortCut(ctt)) {
@@ -402,12 +403,13 @@ public class SplashActivity extends FrameActivity {
 
     private void initializeDataFusion() {
 
-        List<Book> books = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+        books = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
                 BaseBookApplication.getGlobalContext()).loadBooks();
 
         if (books != null) {
 
             List<Book> upBooks = new ArrayList<>();
+
 
             for (Book book : books) {
                 if (TextUtils.isEmpty(book.getBook_chapter_id())) {
@@ -455,6 +457,27 @@ public class SplashActivity extends FrameActivity {
     }
 
     private void startInitTask() {
+
+        //全本追书阅读器升级上来的用户 需要将最后一章节赋值book表的lastChapter
+        if(sharedPreUtil == null){
+            sharedPreUtil = new SharedPreUtil(SharedPreUtil.Companion.getSHARE_DEFAULT());
+        }
+        boolean isDataBaseRemark = sharedPreUtil.getBoolean(SharedPreUtil.Companion.getDATABASE_REMARK(),false);
+        if(!isDataBaseRemark){
+            for(Book book: books){
+                if(book.getLast_chapter() == null || (book.getLast_chapter() != null && TextUtils.isEmpty(book.getLast_chapter().getChapter_id()))){
+                    ChapterDaoHelper chapterDao = ChapterDaoHelper.Companion.loadChapterDataProviderHelper(getApplicationContext(), book.getBook_id());
+
+                    Chapter lastChapter = chapterDao.queryLastChapter();
+                    if(lastChapter != null && !TextUtils.isEmpty(lastChapter.getChapter_id())){
+                        book.setLast_chapter(lastChapter);
+                        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book);
+                    }
+                }
+            }
+            sharedPreUtil.putBoolean(SharedPreUtil.Companion.getDATABASE_REMARK(),true);
+        }
+
         // 初始化任务
         InitTask initTask = new InitTask();
         initTask.execute();

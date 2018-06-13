@@ -170,6 +170,7 @@ public class StartLogClickUtil {
     public static final String BOOKENDPAGE_PAGE = "BOOKENDPAGE";//书籍end页
     public static final String TOSHELF = "TOSHELF"; //完结页点击去书架
     public static final String TOBOOKSTORE = "TOBOOKSTORE"; //完结页点击去书城
+    public static final String AUTHORPAGE_PAGE = "AUTHORPAGE";//作者主页
 
     //APP通用
     public static final String APPINIT = "APPINIT";//客户端启动

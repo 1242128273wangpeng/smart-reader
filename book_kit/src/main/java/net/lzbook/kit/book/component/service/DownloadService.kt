@@ -7,10 +7,8 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
-import android.support.v4.app.ServiceCompat.stopForeground
 import android.text.TextUtils
 import android.widget.Toast
-import com.ding.basic.bean.BasicResult
 import com.ding.basic.bean.CacheTaskConfig
 import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.PackageInfo
@@ -99,35 +97,10 @@ class DownloadService : Service(), Runnable {
                 val bookChapterDao = ChapterDaoHelper.loadChapterDataProviderHelper(this, task.book_id)
 
                 if (bookChapterDao.getCount() <= 0) {
-
-                    RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
-                            .requestCatalog(task.book_id, task.book.book_source_id
-                                    ?: "", task.book.book_chapter_id)
-                            .subscribeBy(
-                                    onNext = {chapters ->
-                                        if (chapters != null) {
-                                            if (chapters.isNotEmpty()) {
-                                                bookChapterDao.deleteAllChapters()
-                                                bookChapterDao.insertOrUpdateChapter(chapters)
-                                                downBook(task, chapters, bookChapterDao)
-                                            } else {
-                                                CacheManager.innerListener.onTaskFailed(task.book_id,
-                                                        IllegalArgumentException("server return null chapter list"))
-                                            }
-                                        } else {
-                                            CacheManager.innerListener.onTaskFailed(task.book_id, IllegalArgumentException("null"))
-                                        }
-                                    },
-                                    onError = {
-                                        CacheManager.innerListener.onTaskFailed(task.book_id, it)
-                                    }
-
-                            )
-
+                    requestBookCatalog(task)
                 } else {
                     downBook(task, bookChapterDao.queryAllChapters(), bookChapterDao)
                 }
-
             } else {
                 synchronized(lock) {
                     try {
@@ -139,6 +112,38 @@ class DownloadService : Service(), Runnable {
                 }
             }
         }
+    }
+
+    fun requestBookCatalog(bookTask: BookTask) {
+
+        val bookChapterDao = ChapterDaoHelper.loadChapterDataProviderHelper(this, bookTask.book_id)
+
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                .requestCatalog(bookTask.book_id, bookTask.book.book_source_id, bookTask.book.book_chapter_id, object : RequestSubscriber<List<Chapter>>() {
+                    override fun requestResult(result: List<Chapter>?) {
+                        if (result != null) {
+                            if (result.isNotEmpty()) {
+                                bookChapterDao.deleteAllChapters()
+                                bookChapterDao.insertOrUpdateChapter(result)
+                                downBook(bookTask, result, bookChapterDao)
+                            } else {
+                                CacheManager.innerListener.onTaskFailed(bookTask.book_id,
+                                        IllegalArgumentException("server return null chapter list"))
+                            }
+                        } else {
+                            CacheManager.innerListener.onTaskFailed(bookTask.book_id, IllegalArgumentException("null"))
+                        }
+                    }
+
+                    override fun requestError(message: String) {
+                        CacheManager.innerListener.onTaskFailed(bookTask.book_id, Throwable(message))
+                    }
+
+                    override fun requestRetry() {
+                        super.requestRetry()
+                        requestBookCatalog(bookTask)
+                    }
+                }, SchedulerHelper.Type_Default)
     }
 
     fun downBook(task: BookTask, chapterList: List<Chapter>, chapterDao: ChapterDaoHelper) {
@@ -163,7 +168,7 @@ class DownloadService : Service(), Runnable {
         val chapterMap = mutableMapOf<String, Chapter>()
 
         chapterList.forEach {
-            chapterMap.put(it.chapter_id!!, it)
+            chapterMap.put(it.chapter_id, it)
         }
 
         if (!task.isAutoState) {
@@ -173,7 +178,7 @@ class DownloadService : Service(), Runnable {
                             , chapterList[task.startSequence].chapter_id!!)!!
                     .subscribeBy(
                             onNext = { ret ->
-                                if (ret.isAvalable() && ret.data!!.fileUrlList != null) {
+                                if (ret.checkResultAvailable() && ret.data!!.fileUrlList != null) {
 
                                     //清空上次的内容
                                     parsedList.clear()

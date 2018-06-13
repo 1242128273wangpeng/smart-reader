@@ -36,6 +36,8 @@ class SharedPreUtil(val type:Int){
         val UPDATE_CHAPTER_SOURCE_ID = "update_chapter_source_id" //更新当前章节
         val AD_LIMIT_TIME_DAY = "ad_limit_time_day"
 
+        val DATABASE_REMARK = "database_remark"
+
         /**
          * HomeActivity
          */

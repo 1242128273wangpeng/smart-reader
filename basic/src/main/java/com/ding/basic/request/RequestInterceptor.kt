@@ -30,7 +30,6 @@ class RequestInterceptor : Interceptor {
         requestParameters["latitude"] = Config.loadRequestParameter("latitude")
         requestParameters["cityCode"] = Config.loadRequestParameter("cityCode")
         requestParameters["longitude"] = Config.loadRequestParameter("longitude")
-//        requestParameters["loginToken"] = Config.loadRequestParameter("loginToken")
 
         return requestParameters
     }

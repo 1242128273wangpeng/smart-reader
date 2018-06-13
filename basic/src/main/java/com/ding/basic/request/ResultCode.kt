@@ -6,10 +6,11 @@ package com.ding.basic.request
 
 interface ResultCode {
     companion object {
-        val OK = 20000
+        //本地封装结果
+        const val LOCAL_RESULT = 100000
 
         //请求成功
-        val RESULT_SUCCESS = 20000
+        const val RESULT_SUCCESS = 20000
 
 
         //签名为空

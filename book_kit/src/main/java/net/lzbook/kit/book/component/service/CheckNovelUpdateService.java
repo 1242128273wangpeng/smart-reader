@@ -16,14 +16,18 @@ import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 
+import com.ding.basic.Config;
+import com.ding.basic.bean.Access;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.BookUpdate;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.bean.CheckItem;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestSubscriber;
+import com.ding.basic.util.AESUtil;
 import com.ding.basic.util.DataCache;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.R;
@@ -134,8 +138,8 @@ public class CheckNovelUpdateService extends Service {
         }
 
         if (isFirst) {
+            timerHandler.sendEmptyMessage(1);
             timerHandler.sendEmptyMessageDelayed(0, Constants.refreshTime);
-            timerHandler.sendEmptyMessageDelayed(1, Constants.authAccessRefreshTime);
             isFirst = false;
         }
 
@@ -226,7 +230,24 @@ public class CheckNovelUpdateService extends Service {
                 BaseBookApplication.getGlobalContext()).requestAuthAccess(new RequestSubscriber<String>() {
                     @Override
                     public void requestResult(@Nullable String result) {
-                        Logger.e("CheckAuthAccess: " + result);
+                        if (result != null && result.length() > 0) {
+                            String message = AESUtil.INSTANCE.decrypt(result, Config.INSTANCE.loadAccessKey());
+
+                            if (message != null && message.length() > 0) {
+                                Access access = new Gson().fromJson(message, Access.class);
+                                if (access != null) {
+                                    if (access.getPublicKey() != null) {
+                                        Config.INSTANCE.insertPublicKey(access.getPublicKey());
+                                    }
+
+                                    if (access.getPrivateKey() != null) {
+                                        Config.INSTANCE.insertPrivateKey(access.getPrivateKey());
+                                    }
+                                }
+                            }
+
+                            Logger.e("CheckAuthAccess: " + result);
+                        }
                     }
 
                     @Override
@@ -583,10 +604,10 @@ public class CheckNovelUpdateService extends Service {
         for (Book book : books) {
             if (book != null && !TextUtils.isEmpty(book.getBook_id())) {
 
-                ChapterDaoHelper bookChapterDao =
-                        ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
-                                getApplicationContext(), book.getBook_id());
-                Chapter lastChapter = bookChapterDao.queryLastChapter();
+//                ChapterDaoHelper bookChapterDao =
+//                        ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
+//                                getApplicationContext(), book.getBook_id());
+                Chapter lastChapter = book.getLast_chapter();
 
                 if (lastChapter == null || TextUtils.isEmpty(lastChapter.getChapter_id())) {
                     Logger.e("检查更新服务: 书籍章节目录为空！");

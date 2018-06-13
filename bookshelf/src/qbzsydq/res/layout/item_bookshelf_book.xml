@@ -79,7 +79,7 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="#323232"
-            android:textSize="12sp"
+            android:textSize="16sp"
             tools:text="书名"/>
 
 

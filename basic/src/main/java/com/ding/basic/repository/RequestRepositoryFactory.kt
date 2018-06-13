@@ -48,7 +48,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         InternetRequestRepository.loadInternetRequestRepository(context).requestDefaultBooks()!!
                 .compose(SchedulerHelper.schedulerIOHelper<BasicResult<CoverList>>())
                 .doOnNext({
-                    if (it != null && it.isAvalable() && it.data?.coverList != null && it.data?.coverList!!.isNotEmpty()) {
+                    if (it != null && it.checkResultAvailable() && it.data?.coverList != null && it.data?.coverList!!.isNotEmpty()) {
                         for (book in it.data?.coverList!!) {
                             if (!TextUtils.isEmpty(book.book_id)) {
 
@@ -63,7 +63,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
                 .subscribe({ result ->
                     if (result != null) {
-                        if (result.isAvalable() && result.data?.coverList != null && result.data?.coverList!!.isNotEmpty()) {
+                        if (result.checkResultAvailable() && result.data?.coverList != null && result.data?.coverList!!.isNotEmpty()) {
                             requestSubscriber.onNext(true)
                         } else {
                             requestSubscriber.onError(Throwable("获取默认书籍异常！"))
@@ -121,31 +121,29 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 .compose(SchedulerHelper.schedulerHelper<BasicResult<Book>>())
                 .subscribe({ result ->
                     if (result != null) {
-                        if (result.checkAuthInvalid()) {
-                            requestSubscriber.requestAuthAccess(context)
-                        }
+                        when {
+                            result.checkPrivateKeyExpire() -> requestSubscriber.requestAuthAccess(context, requestSubscriber)
+                            result.checkResultAvailable() -> {
+                                requestSubscriber.onNext(result.data)
 
+                                synchronized(RequestRepositoryFactory::class.java) {
+                                    if (book_chapter_id == "" && checkBookSubscribe(result.data!!.book_id) != null) {
+                                        val book = loadBook(result.data!!.book_id)
+                                        if (book != null) {
+                                            book.book_chapter_id = result.data!!.book_chapter_id
+                                            book.last_chapter = result.data!!.last_chapter
+                                            book.desc = result.data!!.desc
+                                            book.genre = result.data!!.genre
+                                            book.sub_genre = result.data!!.sub_genre
+                                            book.book_type = result.data!!.book_type
 
-                        if (result.isAvalable()) {
-                            requestSubscriber.onNext(result.data)
-
-                            // 已加入书架 书架没有保存book_chapter_id, 在这里保存
-                            synchronized(RequestRepositoryFactory::class.java) {
-                                if (book_chapter_id == "" && checkBookSubscribe(result!!.data!!.book_id) != null) {
-                                    val book = loadBook(result!!.data!!.book_id)
-                                    book!!.book_chapter_id = result!!.data!!.book_chapter_id
-                                    book!!.last_chapter = result!!.data!!.last_chapter
-                                    book!!.desc = result!!.data!!.desc
-                                    book!!.genre = result!!.data!!.genre
-                                    book!!.sub_genre = result!!.data!!.sub_genre
-                                    book!!.book_type = result!!.data!!.book_type
-
-                                    updateBook(book!!)
-                                    ChapterDaoHelper.loadChapterDataProviderHelper(context, book!!.book_id).updateBookChapterId(book!!.book_chapter_id)
+                                            updateBook(book)
+                                            ChapterDaoHelper.loadChapterDataProviderHelper(context, book!!.book_id).updateBookChapterId(book!!.book_chapter_id)
+                                        }
+                                    }
                                 }
                             }
-                        } else {
-                            requestSubscriber.onError(Throwable("获取书籍信息异常！"))
+                            else -> requestSubscriber.onError(Throwable("获取书籍信息异常！"))
                         }
                     } else {
                         requestSubscriber.onError(Throwable("获取书籍信息异常！"))
@@ -154,15 +152,16 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                     requestSubscriber.onError(throwable)
                 }, {
                     Logger.v("请求书籍信息完成！")
+                    requestSubscriber.onComplete()
                 })
     }
 
-    override fun requestCatalog(book_id: String, book_source_id: String, book_chapter_id: String):Flowable<List<Chapter>> {
-        return LocalRequestRepository.loadLocalRequestRepository(context = context).requestCatalog(book_id, book_source_id, book_chapter_id)
+    override fun requestCatalog(book_id: String, book_source_id: String, book_chapter_id: String, requestSubscriber: RequestSubscriber<List<Chapter>>, type: Int) {
+        LocalRequestRepository.loadLocalRequestRepository(context = context).requestBookCatalog(book_id, book_source_id, book_chapter_id)
                 .flatMap { result ->
                     if (result.data == null || result.data!!.chapters == null || result.data!!.chapters!!.isEmpty()) {
                         Logger.d("本地暂无章节目录，封装网络请求！")
-                        InternetRequestRepository.loadInternetRequestRepository(context).requestCatalog(book_id, book_source_id, book_chapter_id)
+                        InternetRequestRepository.loadInternetRequestRepository(context).requestBookCatalog(book_id, book_source_id, book_chapter_id)
                     } else {
                         Logger.d("本地章节目录正常！")
                         Flowable.create({ emitter ->
@@ -171,7 +170,9 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                     }
                 }
                 .doOnNext { result ->
-                    if (result != null && result.isAvalable() && result.data!!.chapters != null && result.data!!.chapters!!.isNotEmpty()) {
+                    if (result.checkPrivateKeyExpire()) {
+
+                    } else if (result != null && result.checkResultAvailable() && result.data!!.chapters != null && result.data!!.chapters!!.isNotEmpty()) {
 
                         for (chapter in result.data?.chapters!!) {
                             chapter.host = result.data?.host
@@ -200,13 +201,22 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         }
                     }
                 }
-                .map<List<Chapter>> {result->
-                    if ((result.code == ResultCode.OK || result.code == 100000) && result.data != null) {
-                        result.data!!.chapters!!
-                    }else{
-                        throw Throwable("获取章节目录异常！")
+                .compose(SchedulerHelper.schedulerHelper(type))
+                .subscribe({
+                    if (it.checkPrivateKeyExpire()) {
+                        requestSubscriber.requestRetry()
+                    } else if ((it.code == ResultCode.RESULT_SUCCESS || it.code == ResultCode.LOCAL_RESULT) && it.data != null) {
+                        requestSubscriber.onNext(it.data!!.chapters)
+                    } else {
+                        requestSubscriber.onError(Throwable("获取章节目录异常！"))
                     }
-                }
+                }, {
+                    Logger.e("Error: " + it.toString())
+                    requestSubscriber.onError(it)
+                }, {
+                    Logger.v("请求目录信息完成！")
+                    requestSubscriber.onComplete()
+                })
     }
 
     override fun requestBookSources(book_id: String, book_source_id: String, book_chapter_id: String, requestSubscriber: RequestSubscriber<BookSource>) {
@@ -214,7 +224,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 .compose(SchedulerHelper.schedulerHelper<BasicResult<BookSource>>())
                 .subscribe({ result ->
                     if (result != null) {
-                        if (result.isAvalable()) {
+                        if (result.checkResultAvailable()) {
                             requestSubscriber.onNext(result.data)
                         } else {
                             requestSubscriber.onError(Throwable("获取来源列表异常！"))
@@ -316,7 +326,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         val content = ChapterCacheUtil.checkChapterCacheExist(chapter)
         return if (content == null || content.isEmpty()) {
             InternetRequestRepository.loadInternetRequestRepository(context = context).requestChapterContent(chapter).map {
-                if (it.isAvalable()) {
+                if (it.checkResultAvailable()) {
                     if (it.data!!.content != null) {
                         it.data!!.content = it.data!!.content!!.replace("\\n", "\n")
                         it.data!!.content = it.data!!.content!!.replace("\\n \\n", "\n")
@@ -342,7 +352,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     @Throws(IOException::class)
     fun requestChapterContentSync(chapter: Chapter): String {
         var basicResult = InternetRequestRepository.loadInternetRequestRepository(context = context).requestChapterContentSync(chapter.chapter_id, chapter.book_id, chapter.book_source_id, chapter.book_chapter_id)?.execute()?.body()
-        if (basicResult != null && basicResult.isAvalable()) {
+        if (basicResult != null && basicResult.checkResultAvailable()) {
 
             if (basicResult.data!!.content != null) {
                 basicResult.data!!.content = basicResult.data!!.content!!.replace("\\n", "\n")
@@ -362,7 +372,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 .subscribe({ result ->
                     if (result != null) {
                         val bookUpdates = ArrayList<BookUpdate>()
-                        if (result.isAvalable()) {
+                        if (result.checkResultAvailable()) {
                             val updateBooks = result.data!!.books
                             if (updateBooks != null) {
                                 var bookUpdate: BookUpdate
@@ -417,12 +427,47 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
 
+    override fun requestCoverBatch(checkBody: RequestBody, requestSubscriber: RequestSubscriber<List<Book>>) {
+        InternetRequestRepository.loadInternetRequestRepository(context = context).requestCoverBatch(checkBody)!!
+                .compose(SchedulerHelper.schedulerIOHelper<BasicResult<CoverBatchList>>())
+                .subscribe({ result ->
+                    if (result != null) {
+                        val bookUpdates = ArrayList<Book>()
+                        if (result.isAvalable()) {
+                            val updateBooks = result.data!!.coverBatchList
+                            if (updateBooks != null) {
+                                for (i in updateBooks.indices) {
+                                    val updateBook = updateBooks[i]
+
+
+                                    if (TextUtils.isEmpty(updateBook.book_id) || TextUtils.isEmpty(updateBook.book_source_id) ) {
+                                        continue
+                                    } else {
+                                        bookUpdates.add(updateBook)
+                                    }
+                                }
+                                requestSubscriber.onNext(bookUpdates)
+                            }
+                        } else {
+                            requestSubscriber.onError(Throwable("获取批量书籍更新异常！"))
+                        }
+                    } else {
+                        requestSubscriber.onError(Throwable("获取批量书籍更新异常！"))
+                    }
+                }, { throwable ->
+                    requestSubscriber.onError(throwable)
+                }, {
+                    Logger.v("请求批量书籍更新完成！")
+                    requestSubscriber.requestComplete()
+                })
+    }
+
     override fun requestBookShelfUpdate(checkBody: RequestBody, requestSubscriber: RequestSubscriber<Boolean>) {
         InternetRequestRepository.loadInternetRequestRepository(context = context).requestBookShelfUpdate(checkBody)!!
                 .compose(SchedulerHelper.schedulerIOHelper<BasicResult<CoverList>>())
                 .subscribe({ result ->
                     if (result != null) {
-                        if (result.isAvalable() && result.data?.coverList != null && result.data?.coverList!!.isNotEmpty()) {
+                        if (result.checkResultAvailable() && result.data?.coverList != null && result.data?.coverList!!.isNotEmpty()) {
                             val loadRepository = LocalRequestRepository.loadLocalRequestRepository(context)
                             var books: ArrayList<Book> = arrayListOf()
                             result.data?.coverList!!.forEach {
@@ -586,10 +631,14 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
     override fun requestAuthAccess(requestSubscriber: RequestSubscriber<String>) {
         InternetRequestRepository.loadInternetRequestRepository(context).requestAuthAccess()!!
-                .compose(SchedulerHelper.schedulerHelper<String>())
-                .subscribeWith(object : ResourceSubscriber<String>() {
-                    override fun onNext(result: String?) {
-                        requestSubscriber.onNext(result)
+                .compose(SchedulerHelper.schedulerHelper<BasicResult<String>>())
+                .subscribeWith(object : ResourceSubscriber<BasicResult<String>>() {
+                    override fun onNext(result: BasicResult<String>?) {
+                        if (result != null && result.checkResultAvailable()) {
+                            requestSubscriber.onNext(result.data)
+                        } else {
+                            requestSubscriber.onError(Throwable("获取鉴权异常！"))
+                        }
                     }
 
                     override fun onError(throwable: Throwable) {
@@ -784,7 +833,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                     if (contextFixState.saveFixState) {
                                         val bookFix = BookFix()
                                         bookFix.book_id = book.book_id
-                                        bookFix.fix_type = 1
+                                        bookFix.fix_type = 1  //标识已修复 等待toast提示用户
                                         bookFix.c_version = it.c_version
                                         bookFix.list_version = it.list_version
 
@@ -798,7 +847,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                 bookFix.book_id = it.book_id
                                 bookFix.c_version = it.c_version
                                 bookFix.list_version = it.list_version
-                                bookFix.fix_type = 2
+                                bookFix.fix_type = 2 //标识未修复
                                 LocalRequestRepository.loadLocalRequestRepository(context).insertBookFix(bookFix)
                             }
                         }

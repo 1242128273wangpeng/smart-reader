@@ -18,7 +18,7 @@ interface RequestRepository {
 
     fun requestBookDetail(book_id: String, book_source_id: String, book_chapter_id: String, requestSubscriber: RequestSubscriber<Book>)
 
-    fun requestCatalog(book_id: String, book_source_id: String, book_chapter_id: String):Flowable<List<Chapter>>
+    fun requestCatalog(book_id: String, book_source_id: String, book_chapter_id: String, requestSubscriber: RequestSubscriber<List<Chapter>>, type: Int)
 
     fun requestBookSources(book_id: String, book_source_id: String, book_chapter_id: String, requestSubscriber: RequestSubscriber<BookSource>)
 
@@ -40,6 +40,7 @@ interface RequestRepository {
 
     fun requestFeedback(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<Boolean>)
 
+    fun requestCoverBatch(checkBody: RequestBody, requestSubscriber: RequestSubscriber<List<Book>>)
 
     fun requestLoginAction(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<LoginResp>)
 

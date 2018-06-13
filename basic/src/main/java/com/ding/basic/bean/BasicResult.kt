@@ -11,12 +11,12 @@ class BasicResult<T> : Serializable {
 
     var msg: String? = null
 
-    fun checkAuthInvalid(): Boolean {
-        return code ==  ResultCode.SIGN_EMPTY || code == ResultCode.PUBLIC_KEY_EMPTY || code == ResultCode.PRIVATE_KEY_EXPIRE || code == ResultCode.SIGN_INVALID
+    fun checkResultAvailable(): Boolean {
+        return code == ResultCode.RESULT_SUCCESS && data != null
     }
 
-    fun isAvalable(): Boolean {
-        return code == ResultCode.OK && data != null
+    fun checkPrivateKeyExpire(): Boolean {
+        return code == ResultCode.PRIVATE_KEY_EXPIRE
     }
 
     override fun toString(): String {

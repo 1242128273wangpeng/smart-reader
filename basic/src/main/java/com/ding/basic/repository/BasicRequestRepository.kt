@@ -20,12 +20,6 @@ interface BasicRequestRepository {
 
     fun requestDynamicParameters(): Flowable<JsonObject>?
 
-    fun requestBookDetail(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Book>>?
-
-    fun requestCatalog(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Catalog>>
-
-    fun requestBookSources(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<BookSource>>?
-
     fun requestAutoComplete(word: String): Flowable<SearchAutoCompleteBean>?
 
     fun requestAutoCompleteV4(word: String): Flowable<SearchAutoCompleteBeanYouHua>? //搜索V4接口
@@ -49,8 +43,15 @@ interface BasicRequestRepository {
     fun requestCoverRecommend(book_id: String, recommend: String): Flowable<CoverRecommendBean>?
 
 
-    fun requestAuthAccess(): Flowable<String>?
+    fun requestAuthAccess(): Flowable<BasicResult<String>>?
 
+    fun requestBookDetail(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Book>>?
+
+    fun requestBookCatalog(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Catalog>>
+
+    fun requestBookSources(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<BookSource>>?
+
+    fun requestCoverBatch(requestBody: RequestBody): Flowable<BasicResult<CoverBatchList>>? //书籍批量接口
 
 
     fun requestLoginAction(parameters: Map<String, String>): Flowable<LoginResp>?

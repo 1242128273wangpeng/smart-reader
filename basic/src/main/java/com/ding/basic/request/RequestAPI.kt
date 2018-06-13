@@ -63,13 +63,6 @@ internal object RequestAPI {
         return requestService.requestBookDetail(book_id, book_source_id, book_chapter_id)
     }
 
-    fun requestCatalog(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Catalog>> {
-        if (book_chapter_id == "") {
-            return requestService.requestCatalog(book_id, book_source_id)
-        }
-        return requestService.requestCatalog(book_id, book_source_id, book_chapter_id)
-    }
-
     fun requestBookSources(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<BookSource>>? {
         if (book_chapter_id == "") {
             return requestService.requestBookSources(book_id, book_source_id)
@@ -119,6 +112,10 @@ internal object RequestAPI {
         return requestService.requestBookShelfUpdate(requestBody)
     }
 
+    fun requestCoverBatch(requestBody: RequestBody):Flowable<BasicResult<CoverBatchList>>?{
+        return requestService.requestCoverBatch(requestBody)
+    }
+
     fun requestFeedback(parameters: Map<String, String>): Flowable<NoBodyEntity>? {
         return requestService.requestFeedback(parameters)
     }
@@ -148,9 +145,5 @@ internal object RequestAPI {
 
     fun requestCoverRecommend(book_id: String, recommend: String): Flowable<CoverRecommendBean>? {
         return requestService.requestCoverRecommend(book_id, recommend)
-    }
-
-    fun requestAuthAccess(): Flowable<String>? {
-        return requestService.requestAuthAccess("wangpeng12345678")
     }
 }

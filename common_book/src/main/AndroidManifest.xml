@@ -220,10 +220,6 @@
 
 
         <!-- 阅读设置页面 -->
-        <activity
-                android:name=".activity.ReadingSettingActivity"
-                android:screenOrientation="portrait"
-                android:theme="@style/AppThemeTranslucent"/>
 
         <!-- 更多设置 -->
         <activity

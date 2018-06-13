@@ -5,13 +5,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.text.TextUtils
 import android.view.View
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
 import com.ding.basic.database.helper.BookDataProviderHelper
 import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.request.RequestSubscriber
+import com.ding.basic.rx.SchedulerHelper
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.cover.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -20,21 +21,20 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.repair_books.RepairHelp
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.subscribeBy
+import com.orhanobut.logger.Logger
+import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.utils.BookCoverUtil
 import net.lzbook.kit.utils.NetWorkUtils
-import java.lang.ref.WeakReference
 import java.util.HashMap
 
 class CataloguesPresenter(var activity: Activity, var book: Book, var cataloguesContract: CataloguesContract,
                           onClickListener: View.OnClickListener, private val fromCover: Boolean)
     : BookCoverUtil.OnDownloadState, BookCoverViewModel.BookChapterViewCallback {
 
-    var chapterList: ArrayList<Chapter> = ArrayList<Chapter>()
-    var bookmarkList: ArrayList<Bookmark> = ArrayList<Bookmark>()
+    var chapterList: ArrayList<Chapter> = ArrayList()
+    var bookmarkList: ArrayList<Bookmark> = ArrayList()
     val MESSAGE_FETCH_CATALOG = 0
     val MESSAGE_FETCH_BOOKMARK = MESSAGE_FETCH_CATALOG + 1
     val MESSAGE_FETCH_ERROR = MESSAGE_FETCH_BOOKMARK + 1
@@ -50,41 +50,41 @@ class CataloguesPresenter(var activity: Activity, var book: Book, var catalogues
         bookCoverUtil = BookCoverUtil(activity, onClickListener)
         bookCoverUtil?.registReceiver()
         bookCoverUtil?.setOnDownloadState(this)
-//        bookCoverUtil?.setOnDownLoadService(this)
     }
 
     fun requestCatalogList() {
         RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
-                .requestCatalog(book.book_id, book.book_source_id, book.book_chapter_id)
-                .subscribeOn(Schedulers.io())
-                .doOnNext {
-                    CacheManager.freshBook(book.book_id, false)
-                }
-                .observeOn(AndroidSchedulers.mainThread()).subscribeBy(
-                        onNext = { result ->
-                            if (result != null) {
-                                chapterList.clear()
-                                chapterList.addAll(result)
-                                cataloguesContract.requestCatalogSuccess(chapterList)
-                            } else {
-                                cataloguesContract.requestCatalogError()
-                            }
-                        },
-                        onError = {
+                .requestCatalog(book.book_id, book.book_source_id, book.book_chapter_id, object : RequestSubscriber<List<Chapter>>() {
+                    override fun requestResult(result: List<Chapter>?) {
+                        if (result != null) {
+                            chapterList.clear()
+                            chapterList.addAll(result)
+                            cataloguesContract.requestCatalogSuccess(chapterList)
+                        } else {
                             cataloguesContract.requestCatalogError()
                         }
-                )
+
+                        Observable.create<Boolean> {
+                            Logger.e("Refresh CacheManager")
+                            CacheManager.freshBook(book.book_id, false)
+                            it.onNext(true)
+                            it.onComplete()
+                        }.subscribeOn(Schedulers.io())
+                    }
+
+                    override fun requestError(message: String) {
+                        cataloguesContract.requestCatalogError()
+                    }
+
+                    override fun requestRetry() {
+                        super.requestRetry()
+                        requestCatalogList()
+                    }
+                }, SchedulerHelper.Type_Main)
     }
 
     fun loadBookMark() {
-        bookCoverViewModel!!.getBookMarkList(book.book_id)
-    }
-
-    //请求书籍目录
-    fun getRequest() {
-        if (!TextUtils.isEmpty(book.book_id) && !TextUtils.isEmpty(book.book_source_id)) {
-            bookCoverViewModel?.requestBookCatalog(book)
-        }
+        bookCoverViewModel?.getBookMarkList(book.book_id)
     }
 
     override fun changeState() {
@@ -227,19 +227,6 @@ class CataloguesPresenter(var activity: Activity, var book: Book, var catalogues
         }
     }
 
-
-    override fun requestCatalogFail(msg: String?) {
-        cataloguesContract.requestCatalogError()
-    }
-
-    override fun requestCatalogSuccess(chapters: MutableList<Chapter>?) {
-        if (chapters == null) {
-            activity.applicationContext.showToastMessage("获取数据失败")
-        } else {
-            this.chapterList = chapters as ArrayList<Chapter>
-            cataloguesContract.requestCatalogSuccess(chapterList)
-        }
-    }
 
     override fun requestBookmarkList(bookmarks: ArrayList<Bookmark>?) {
         if (bookmarks != null) {

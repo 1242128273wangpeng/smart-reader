@@ -36,16 +36,11 @@ object BookRouter {
 
         val bundle = Bundle()
 
-        val updateBook = Book()
-        updateBook.book_id = book.book_id
-        updateBook.book_source_id = book.book_source_id
-        updateBook.update_status = 0
+        book.update_status = 0
 
-        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(updateBook)
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book)
 
         if (book.readed == -2) {
-            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book)
-
             bundle.putSerializable("cover", book)
             bundle.putInt("sequence", book.sequence)
             bundle.putBoolean("fromCover", true)

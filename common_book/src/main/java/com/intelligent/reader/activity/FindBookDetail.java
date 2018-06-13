@@ -9,22 +9,30 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baidu.mobstat.StatService;
+import com.ding.basic.bean.Book;
+import com.ding.basic.bean.Chapter;
+import com.ding.basic.repository.RequestRepositoryFactory;
 import com.dingyue.contract.util.SharedPreUtil;
 import com.intelligent.reader.R;
 import com.intelligent.reader.util.PagerDesc;
 import com.intelligent.reader.widget.topshadow.TopShadowWebView;
 
+import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.encrypt.URLBuilderIntterface;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
@@ -114,6 +122,12 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         find_detail_content = (TopShadowWebView) findViewById(R.id.rank_content);
 //        find_detail_content.setTopShadow(findViewById(R.id.img_head_shadow));
         initListener();
+        //判断是否是作者主页
+        if (currentUrl.contains(URLBuilderIntterface.AUTHOR_V4)) {
+            find_book_detail_search.setVisibility(View.GONE);
+        } else {
+            find_book_detail_search.setVisibility(View.VISIBLE);
+        }
 
         if (Build.VERSION.SDK_INT >= 11) {
             find_book_detail_main.setLayerType(View.LAYER_TYPE_NONE, null);
@@ -170,6 +184,8 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                 } else if (fromType.equals("recommend")) {
                     data.put("firstrecommend", currentTitle);
                     StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTRECOMMEND_PAGE, StartLogClickUtil.BACK, data);
+                } else if(fromType.equals("author")) {
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.AUTHORPAGE_PAGE, StartLogClickUtil.BACK, data);
                 }
                 clickBackBtn();
                 break;
@@ -236,18 +252,24 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         if (find_detail_content != null) {
             find_detail_content.clearCache(true); //清空缓存
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                if (find_book_detail_main != null) {
-                    find_book_detail_main.removeView(find_detail_content);
+                if (find_detail_content.getParent() != null) {
+                    ((ViewGroup) find_detail_content.getParent()).removeView(find_detail_content);
                 }
                 find_detail_content.stopLoading();
+                // 退出时调用此方法，移除绑定的服务，否则某些特定系统会报错
+                find_detail_content.getSettings().setJavaScriptEnabled(false);
+                find_detail_content.clearHistory();
                 find_detail_content.removeAllViews();
-                //find_detail_content.destroy();
+                find_detail_content.destroy();
             } else {
                 find_detail_content.stopLoading();
+                // 退出时调用此方法，移除绑定的服务，否则某些特定系统会报错
+                find_detail_content.getSettings().setJavaScriptEnabled(false);
+                find_detail_content.clearHistory();
                 find_detail_content.removeAllViews();
-                //find_detail_content.destroy();
-                if (find_book_detail_main != null) {
-                    find_book_detail_main.removeView(find_detail_content);
+                find_detail_content.destroy();
+                if (find_detail_content.getParent() != null) {
+                    ((ViewGroup) find_detail_content.getParent()).removeView(find_detail_content);
                 }
             }
             find_detail_content = null;
@@ -471,6 +493,33 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             });
 
         }
+
+        jsInterfaceHelper.setOnInsertBook(new JSInterfaceHelper.OnInsertBook() {
+            @Override
+            public void doInsertBook(final String host, final String book_id, final String book_source_id, final String name, final String author,
+                                     final String status, final String category, final String imgUrl, final String last_chapter, final String
+                                             chapter_count, final long updateTime, final String parameter, final String extra_parameter, final int
+                                             dex) {
+                AppLog.e(TAG, "doInsertBook");
+                Book book = genCoverBook(host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count, updateTime, parameter, extra_parameter, dex);
+                boolean succeed = (RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                        BaseBookApplication.getGlobalContext()).insertBook(book) > 0);
+                if (succeed) {
+                    Toast.makeText(FindBookDetail.this.getApplicationContext(), R.string.bookshelf_insert_success, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        jsInterfaceHelper.setOnDeleteBook(new JSInterfaceHelper.OnDeleteBook() {
+            @Override
+            public void doDeleteBook(String book_id) {
+                AppLog.e(TAG, "doDeleteBook");
+                RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBook(book_id);
+                CacheManager.INSTANCE.stop(book_id);
+                CacheManager.INSTANCE.resetTask(book_id);
+                Toast.makeText(FindBookDetail.this.getApplicationContext(), R.string.bookshelf_delete_success, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setTitle(final String name) {
@@ -726,5 +775,28 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     @Override
     public boolean supportSlideBack() {
         return isSupport;
+    }
+
+    protected Book genCoverBook(String host, String book_id, String book_source_id, String name, String author, String status, String category,
+                                String imgUrl, String last_chapter, String chapter_count, long update_time, String parameter, String
+                                        extra_parameter, int dex) {
+        Book book = new Book();
+        book.setStatus(status);
+        book.setUpdate_date_fusion(0);
+        book.setBook_id(book_id);
+        book.setBook_source_id(book_source_id);
+        book.setName(name);
+        book.setLabel(category);
+        book.setAuthor(author);
+        book.setImg_url(imgUrl);
+        book.setHost(host);
+        book.setChapter_count(Integer.valueOf(chapter_count));
+
+        Chapter lastChapter = new Chapter();
+        lastChapter.setName(last_chapter);
+        lastChapter.setUpdate_time(update_time);
+        book.setLast_update_success_time(System.currentTimeMillis());
+        return book;
+
     }
 }

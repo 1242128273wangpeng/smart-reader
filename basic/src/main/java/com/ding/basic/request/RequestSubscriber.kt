@@ -1,6 +1,7 @@
 package com.ding.basic.request
 
 import android.content.Context
+import com.ding.basic.bean.Book
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.orhanobut.logger.Logger
 import io.reactivex.subscribers.ResourceSubscriber
@@ -20,8 +21,8 @@ abstract class RequestSubscriber<T>: ResourceSubscriber<T>() {
     }
 
     override fun onError(throwable: Throwable) {
+        Logger.e("网络请求异常: " + throwable.toString() )
         throwable.printStackTrace()
-        Logger.v("网络请求异常: " + throwable.toString() )
         requestError(throwable.message ?:"")
     }
 
@@ -37,15 +38,23 @@ abstract class RequestSubscriber<T>: ResourceSubscriber<T>() {
 
     }
 
-    fun requestAuthAccess(context: Context) {
+    @Synchronized fun requestAuthAccess(context: Context, requestSubscriber: RequestSubscriber<T>) {
         RequestRepositoryFactory.loadRequestRepositoryFactory(context = context).requestAuthAccess(object : RequestSubscriber<String>() {
-
             override fun requestResult(result: String?) {
-
+                if (result != null && result.isNotEmpty()) {
+                    requestSubscriber.requestRetry()
+                } else {
+                    requestSubscriber.requestError("获取鉴权异常！")
+                }
             }
 
             override fun requestError(message: String) {
+                requestSubscriber.requestError("获取鉴权失败！")
+            }
 
+            override fun requestComplete() {
+                super.requestComplete()
+                Logger.e("获取鉴权完成！")
             }
         })
     }
