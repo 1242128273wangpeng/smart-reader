@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import android.view.View.*
-import android.view.ViewGroup
 import android.widget.Toast
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.bumptech.glide.Glide
@@ -16,9 +15,8 @@ import com.ding.basic.bean.Book
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.showToastMessage
-import com.dycm_adsdk.PlatformSDK
-import com.dycm_adsdk.callback.AbstractCallback
-import com.dycm_adsdk.callback.ResultCode
+import com.dy.media.MediaControl
+import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
 import com.intelligent.reader.presenter.coverPage.CoverPageContract
 import com.intelligent.reader.presenter.coverPage.CoverPagePresenter
@@ -32,11 +30,8 @@ import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.*
-import org.json.JSONException
-import org.json.JSONObject
 import java.util.*
 import java.util.concurrent.Callable
-import kotlin.collections.ArrayList
 
 @Route(path = RouterConfig.COVER_PAGE_ACTIVITY)
 class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageContract {
@@ -44,9 +39,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private var mTextColor = 0
     private var loadingPage: LoadingPage? = null
 
-    private var bookId : String? = null
-    private var bookSourceId : String? = null
-    private var bookChapterId : String = ""
+    private var bookId: String? = null
+    private var bookSourceId: String? = null
+    private var bookChapterId: String = ""
 
     private var coverPagePresenter: CoverPagePresenter? = null
 
@@ -95,7 +90,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         }
 
         if (!TextUtils.isEmpty(bookId) && (!TextUtils.isEmpty(bookSourceId) || !TextUtils.isEmpty(bookChapterId))) {
-            coverPagePresenter = CoverPagePresenter(bookId, bookSourceId, bookChapterId,this, this, this)
+            coverPagePresenter = CoverPagePresenter(bookId, bookSourceId, bookChapterId, this, this, this)
             requestBookDetail()
         }
     }
@@ -141,14 +136,12 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         if (coverPagePresenter != null) {
             coverPagePresenter!!.destroy()
         }
-        if (PlatformSDK.lifecycle() != null) {
-            PlatformSDK.lifecycle().onDestroy()
-        }
+        MediaLifecycle.onDestroy()
         super.onDestroy()
     }
 
     override fun showCoverDetail(book: Book?) {
-        if(isFinishing){
+        if (isFinishing) {
             // Monkey
             return
         }
@@ -285,7 +278,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 } else {
                     book_cover_download.setText(R.string.download_status_total)
                 }
-            }else {
+            } else {
                 book_cover_download.setText(R.string.download_status_total)
             }
 
@@ -404,36 +397,12 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     }
 
     private fun initAD() {
-        if(!Constants.isHideAD && PlatformSDK.adapp() != null ){
-
-            PlatformSDK.adapp().dycmNativeAd(this, "1-4",null, object : AbstractCallback() {
-                override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
-                    super.onResult(adswitch, views, jsonResult)
-                    if (!adswitch) {
-                        return
-                    }
-                    try {
-                        val jsonObject = JSONObject(jsonResult)
-                        if (jsonObject.has("state_code")) {
-                            when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                                ResultCode.AD_REQ_SUCCESS
-                                -> {
-                                    if(ad_view != null){
-                                        ad_view.visibility = View.VISIBLE
-                                        ad_view.removeAllViews()
-                                        ad_view.addView(views[0])
-                                    }
-                                }
-                                else -> {
-                                    if(ad_view != null) {
-                                        ad_view.visibility = View.GONE
-                                    }
-                                }
-                            }
-                        }
-                    } catch (e: JSONException) {
-                        e.printStackTrace()
-                    }
+        if (!Constants.isHideAD) {
+            MediaControl.loadBookCoverAd(this, { view ->
+                if (ad_view != null && !this.isFinishing()) {
+                    ad_view.visibility = View.VISIBLE
+                    ad_view.removeAllViews()
+                    ad_view.addView(view)
                 }
             })
         }

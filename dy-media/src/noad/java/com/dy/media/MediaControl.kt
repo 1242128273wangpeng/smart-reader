@@ -67,4 +67,6 @@ object MediaControl : IMediaControl {
 
     }
 
+    override fun loadBookCoverAd(activity: Activity?, onCall: (view: View?) -> Unit) {}
+
 }

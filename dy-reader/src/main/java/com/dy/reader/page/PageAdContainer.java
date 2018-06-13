@@ -13,9 +13,6 @@ import com.dy.media.MediaConfig;
 import com.dy.media.MediaControl;
 import com.dy.reader.helper.AppHelper;
 import com.dy.reader.setting.ReaderStatus;
-import com.dycm_adsdk.PlatformSDK;
-import com.dycm_adsdk.view.NativeView;
-
 
 import java.util.HashMap;
 import java.util.Map;
