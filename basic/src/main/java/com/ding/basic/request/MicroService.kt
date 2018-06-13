@@ -3,6 +3,7 @@ package com.ding.basic.request
 import com.ding.basic.bean.*
 import io.reactivex.Flowable
 import okhttp3.RequestBody
+import retrofit2.Call
 import retrofit2.http.*
 
 interface MicroService {
@@ -18,8 +19,10 @@ interface MicroService {
         const val BOOK_CATALOG = "/union/book/chapter"
 
         //更新
-        const val CHECK_UPDATE = "/v5/book/check"
+        const val CHECK_UPDATE = "/union/book/check"
 
+        //内容
+        const val CHAPTER_CONTENT = "/content/book/content"
 
         //书架每天一次批量更新接口
         const val COVER_BATCH="/union/book/coverBatch"
@@ -47,6 +50,20 @@ interface MicroService {
     @POST(CHECK_UPDATE)
     @Headers("Content-Type: application/json;charset=UTF-8")
     fun requestBookUpdate(@Body json: RequestBody): Flowable<BasicResult<UpdateBean>>
+
+
+
+    @GET(CHAPTER_CONTENT)
+    fun requestChapterContent(@Query("chapter_id") chapter_id: String, @Query("book_id") book_id: String, @Query("book_source_id") book_source_id: String, @Query("book_chapter_id") book_chapter_id: String): Flowable<BasicResult<Chapter>>
+
+    @GET(CHAPTER_CONTENT)
+    fun requestChapterContent(@Query("chapter_id") chapter_id: String, @Query("book_id") book_id: String, @Query("book_source_id") book_source_id: String): Flowable<BasicResult<Chapter>>
+
+    @GET(CHAPTER_CONTENT)
+    fun requestChapterContentSync(@Query("chapter_id") chapter_id: String, @Query("book_id") book_id: String, @Query("book_source_id") book_source_id: String, @Query("book_chapter_id") book_chapter_id: String): Call<BasicResult<Chapter>>
+
+    @GET(CHAPTER_CONTENT)
+    fun requestChapterContentSync(@Query("chapter_id") chapter_id: String, @Query("book_id") book_id: String, @Query("book_source_id") book_source_id: String): Call<BasicResult<Chapter>>
 
 
 

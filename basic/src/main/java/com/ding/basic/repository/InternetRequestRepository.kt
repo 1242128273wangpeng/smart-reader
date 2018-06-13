@@ -15,7 +15,6 @@ import retrofit2.Call
  */
 class InternetRequestRepository private constructor(context: Context?) : BasicRequestRepository {
 
-
     companion object {
         private var internetRequestRepository: InternetRequestRepository? = null
 
@@ -68,14 +67,6 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestHotWordsV4()
     }
 
-    override fun requestChapterContent(chapter: Chapter): Flowable<BasicResult<Chapter>> {
-        return RequestAPI.requestChapterContent(chapter.chapter_id, chapter.book_id, chapter.book_source_id, chapter.book_chapter_id)
-    }
-
-    override fun requestChapterContentSync(chapter_id: String, book_id: String, book_source_id: String, book_chapter_id: String): Call<BasicResult<Chapter>>? {
-        return RequestAPI.requestChapterContentSync(chapter_id, book_id, book_source_id, book_chapter_id)
-    }
-
     override fun requestBookShelfUpdate(requestBody: RequestBody): Flowable<BasicResult<CoverList>>? {
         return RequestAPI.requestBookShelfUpdate(requestBody)
     }
@@ -126,7 +117,19 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return MicroAPI.requestBookCatalog(book_id, book_source_id, book_chapter_id)
     }
 
+    override fun requestBookUpdate(requestBody: RequestBody): Flowable<BasicResult<UpdateBean>>? {
+        return MicroAPI.requestBookUpdate(requestBody)
+    }
+
     override fun requestCoverBatch(requestBody: RequestBody): Flowable<BasicResult<List<Book>>>? {
         return MicroAPI.requestCoverBatch(requestBody)
+    }
+
+    override fun requestChapterContent(chapter: Chapter): Flowable<BasicResult<Chapter>> {
+        return MicroAPI.requestChapterContent(chapter.chapter_id, chapter.book_id, chapter.book_source_id, chapter.book_chapter_id)
+    }
+
+    override fun requestChapterContentSync(chapter_id: String, book_id: String, book_source_id: String, book_chapter_id: String): Call<BasicResult<Chapter>>? {
+        return MicroAPI.requestChapterContentSync(chapter_id, book_id, book_source_id, book_chapter_id)
     }
 }

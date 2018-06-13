@@ -54,9 +54,6 @@ interface RequestService {
         //封面页推荐
         const val RECOMMEND_COVER = "/v4/recommend/{book_id}/coverPage"
 
-        //章节内容
-        const val CHAPTER_CONTENT = "/v5/book/content"
-
         //检查更新
         const val CHECK_UPDATE = "/v5/book/check"
 
@@ -128,21 +125,8 @@ interface RequestService {
     @GET(SEARCH_RECOMMEND_V4)
     fun requestSearchRecommend(@Query("shelfBooks") shelfBooks: String): Flowable<SearchRecommendBook>
 
-
     @GET(HOT_WORDS)
     fun requestHotWords(): Flowable<SearchHotBean>
-
-    @GET(CHAPTER_CONTENT)
-    fun requestChapterContent(@Query("chapter_id") chapter_id: String, @Query("book_id") book_id: String, @Query("book_source_id") book_source_id: String, @Query("book_chapter_id") book_chapter_id: String): Flowable<BasicResult<Chapter>>
-
-    @GET(CHAPTER_CONTENT)
-    fun requestChapterContent(@Query("chapter_id") chapter_id: String, @Query("book_id") book_id: String, @Query("book_source_id") book_source_id: String): Flowable<BasicResult<Chapter>>
-
-    @GET(CHAPTER_CONTENT)
-    fun requestChapterContentSync(@Query("chapter_id") chapter_id: String, @Query("book_id") book_id: String, @Query("book_source_id") book_source_id: String, @Query("book_chapter_id") book_chapter_id: String): Call<BasicResult<Chapter>>
-
-    @GET(CHAPTER_CONTENT)
-    fun requestChapterContentSync(@Query("chapter_id") chapter_id: String, @Query("book_id") book_id: String, @Query("book_source_id") book_source_id: String): Call<BasicResult<Chapter>>
 
     @POST(CHECK_UPDATE)
     @Headers("Content-Type: application/json;charset=UTF-8")

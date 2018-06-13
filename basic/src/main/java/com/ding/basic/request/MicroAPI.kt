@@ -5,6 +5,7 @@ import com.ding.basic.bean.*
 import io.reactivex.Flowable
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -55,5 +56,23 @@ internal object MicroAPI {
 
     fun requestCoverBatch(requestBody: RequestBody):Flowable<BasicResult<List<Book>>>?{
         return microService.requestCoverBatch(requestBody)
+    }
+
+    fun requestBookUpdate(requestBody: RequestBody): Flowable<BasicResult<UpdateBean>>? {
+        return microService.requestBookUpdate(requestBody)
+    }
+
+    fun requestChapterContent(chapter_id: String, book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Chapter>> {
+        if (book_chapter_id == ""){
+            return microService.requestChapterContent(chapter_id, book_id, book_source_id)
+        }
+        return microService.requestChapterContent(chapter_id, book_id, book_source_id, book_chapter_id)
+    }
+
+    fun requestChapterContentSync(chapter_id: String, book_id: String, book_source_id: String, book_chapter_id: String): Call<BasicResult<Chapter>> {
+        if (book_chapter_id == ""){
+            return microService.requestChapterContentSync(chapter_id, book_id, book_source_id)
+        }
+        return microService.requestChapterContentSync(chapter_id, book_id, book_source_id, book_chapter_id)
     }
 }

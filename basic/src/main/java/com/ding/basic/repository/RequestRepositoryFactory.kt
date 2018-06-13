@@ -369,7 +369,9 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 .subscribe({ result ->
                     if (result != null) {
                         val bookUpdates = ArrayList<BookUpdate>()
-                        if (result.checkResultAvailable()) {
+                        if (result.checkPrivateKeyExpire()) {
+                            requestSubscriber.requestRetry()
+                        } else if (result.checkResultAvailable()) {
                             val updateBooks = result.data!!.books
                             if (updateBooks != null) {
                                 var bookUpdate: BookUpdate

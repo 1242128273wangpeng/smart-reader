@@ -341,16 +341,16 @@ public class CheckNovelUpdateService extends Service {
         }
     }
 
-    private void handleCheckBookUpdate(ArrayList<Book> checkUpdateBooks,
+    private void handleCheckBookUpdate(final ArrayList<Book> checkUpdateBooks,
             final BookUpdateTaskData data, final BookUpdateResult updateResult) {
 
-        final ArrayList<Book> ownBookclone = (ArrayList<Book>) checkUpdateBooks.clone();
+        final ArrayList<Book> bookClone = (ArrayList<Book>) checkUpdateBooks.clone();
 
-        final HashMap<String, Book> bookItems = getBookItems(ownBookclone);
+        final HashMap<String, Book> bookItems = getBookItems(bookClone);
 
         RequestBody checkBody = RequestBody.create(
                 MediaType.parse("application/json; charset=utf-8"),
-                enclosureUpdateParameters(ownBookclone));
+                enclosureUpdateParameters(bookClone));
 
         RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
                 BaseBookApplication.getGlobalContext()).requestBookUpdate(checkBody, bookItems,
@@ -404,6 +404,12 @@ public class CheckNovelUpdateService extends Service {
                     public void requestComplete() {
                         Logger.i("检查更新服务: 检查书籍更新完成！");
                         checkOnSuccess(data, updateResult);
+                    }
+
+                    @Override
+                    public void requestRetry() {
+                        super.requestRetry();
+                        handleCheckBookUpdate(checkUpdateBooks, data, updateResult);
                     }
                 });
     }

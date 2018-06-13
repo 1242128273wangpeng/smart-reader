@@ -90,20 +90,6 @@ internal object RequestAPI {
         return requestService.requestHotWords()
     }
 
-    fun requestChapterContent(chapter_id: String, book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Chapter>> {
-        if (book_chapter_id == ""){
-            return requestService.requestChapterContent(chapter_id, book_id, book_source_id)
-        }
-        return requestService.requestChapterContent(chapter_id, book_id, book_source_id, book_chapter_id)
-    }
-
-    fun requestChapterContentSync(chapter_id: String, book_id: String, book_source_id: String, book_chapter_id: String): Call<BasicResult<Chapter>> {
-        if (book_chapter_id == ""){
-            return requestService.requestChapterContentSync(chapter_id, book_id, book_source_id)
-        }
-        return requestService.requestChapterContentSync(chapter_id, book_id, book_source_id, book_chapter_id)
-    }
-
     fun requestBookShelfUpdate(requestBody: RequestBody): Flowable<BasicResult<CoverList>>? {
         return requestService.requestBookShelfUpdate(requestBody)
     }
