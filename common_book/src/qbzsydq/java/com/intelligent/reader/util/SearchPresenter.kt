@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.widget.Toast
 import com.ding.basic.bean.Book
+import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.SearchAutoCompleteBean
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
@@ -247,7 +248,10 @@ class SearchPresenter(private val activity: SearchBookActivity, private val mCon
         book.img_url = imgUrl
         book.host = host
         book.chapter_count = Integer.valueOf(chapter_count)!!
-        book.last_chapter?.update_time = update_time
+        var lastChapter = Chapter()
+        lastChapter.update_time = update_time
+        lastChapter.name = last_chapter
+        book.last_chapter = lastChapter
         book.last_update_success_time = System.currentTimeMillis()
         book.update_date_fusion = 0
         return book

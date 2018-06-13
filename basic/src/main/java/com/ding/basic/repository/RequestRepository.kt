@@ -40,6 +40,7 @@ interface RequestRepository {
 
     fun requestFeedback(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<Boolean>)
 
+    fun requestCoverBatch(checkBody: RequestBody, requestSubscriber: RequestSubscriber<List<Book>>)
 
     fun requestLoginAction(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<LoginResp>)
 

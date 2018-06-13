@@ -99,6 +99,13 @@ open class Book : Serializable, Comparable<Book>, Cloneable {
     @Embedded(prefix = "chapter_")
     var last_chapter: Chapter? = null
 
+
+    @ColumnInfo(name= "score")
+    var score: Float = 0.0f
+
+    @ColumnInfo(name= "uv")
+    var uv: Long = 0
+
     /************************************ 本地字段 ************************************/
     //书籍阅读状态
     @ColumnInfo(name = "readed")

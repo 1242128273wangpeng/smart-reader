@@ -583,10 +583,10 @@ public class CheckNovelUpdateService extends Service {
         for (Book book : books) {
             if (book != null && !TextUtils.isEmpty(book.getBook_id())) {
 
-                ChapterDaoHelper bookChapterDao =
-                        ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
-                                getApplicationContext(), book.getBook_id());
-                Chapter lastChapter = bookChapterDao.queryLastChapter();
+//                ChapterDaoHelper bookChapterDao =
+//                        ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
+//                                getApplicationContext(), book.getBook_id());
+                Chapter lastChapter = book.getLast_chapter();
 
                 if (lastChapter == null || TextUtils.isEmpty(lastChapter.getChapter_id())) {
                     Logger.e("检查更新服务: 书籍章节目录为空！");

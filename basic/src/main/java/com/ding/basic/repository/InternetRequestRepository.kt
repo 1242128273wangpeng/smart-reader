@@ -14,8 +14,6 @@ import retrofit2.Call
  */
 class InternetRequestRepository private constructor(context: Context?) : BasicRequestRepository {
 
-
-
     companion object {
         private var internetRequestRepository: InternetRequestRepository? = null
 
@@ -91,6 +89,11 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
     override fun requestBookShelfUpdate(requestBody: RequestBody): Flowable<BasicResult<CoverList>>? {
         return RequestAPI.requestBookShelfUpdate(requestBody)
     }
+
+    override fun requestCoverBatch(requestBody: RequestBody): Flowable<BasicResult<CoverBatchList>>? {
+        return RequestAPI.requestCoverBatch(requestBody)
+    }
+
 
     override fun requestFeedback(parameters: Map<String, String>): Flowable<NoBodyEntity>? {
         return RequestAPI.requestFeedback(parameters)
