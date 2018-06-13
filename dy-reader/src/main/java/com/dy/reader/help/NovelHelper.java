@@ -1,10 +1,12 @@
 package com.dy.reader.help;
 
+import android.app.Activity;
+import android.text.TextUtils;
+
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.ChapterState;
 import com.ding.basic.bean.Source;
 import com.ding.basic.repository.RequestRepositoryFactory;
-import com.dy.reader.R;
 import com.dy.reader.dialog.ReaderAddShelfDialog;
 import com.dy.reader.dialog.ReaderAutoReadDialog;
 import com.dy.reader.dialog.ReaderChangeSourceDialog;
@@ -14,23 +16,12 @@ import com.dy.reader.setting.ReaderStatus;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.constants.ReadConstants;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
-
-import android.app.Activity;
-import android.text.TextUtils;
-import android.view.Gravity;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -72,11 +63,11 @@ public class NovelHelper {
             public Unit invoke() {
                 StatServiceUtils.statAppBtnClick(activity,
                         StatServiceUtils.rb_click_flip_auto_cancel);
-                    try {
-                        readerAutoReadDialog.dismiss();
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
-                    }
+                try {
+                    readerAutoReadDialog.dismiss();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
                 return null;
             }
         });

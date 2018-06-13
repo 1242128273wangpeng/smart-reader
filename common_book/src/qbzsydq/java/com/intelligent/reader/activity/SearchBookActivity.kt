@@ -36,13 +36,15 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.showToastMessage
 
 import java.util.HashMap
 
 import iyouqu.theme.FrameActivity
 
-
+@Route(path = RouterConfig.SEARCH_BOOK_ACTIVITY)
 class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListener, SearchViewHelper.OnHistoryClickListener, TextWatcher, OnEditorActionListener, SearchView.AvtView {
 
 

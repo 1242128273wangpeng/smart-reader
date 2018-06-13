@@ -16,19 +16,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.dingyue.bookshelf.BookShelfLogger;
+import com.dingyue.contract.router.RouterConfig;
+import com.dingyue.contract.router.RouterUtil;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.SearchBookActivity;
 import com.intelligent.reader.app.BookApplication;
 
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.book.view.ConsumeEvent;
+import net.lzbook.kit.book.view.FirstUsePointView;
 import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.CustomWebClient;
 import net.lzbook.kit.utils.JSInterfaceHelper;
 
 import java.lang.ref.WeakReference;
+
+import de.greenrobot.event.EventBus;
 
 public class WebViewFragment extends Fragment implements View.OnClickListener {
 
@@ -44,6 +54,11 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     private FragmentCallback fragmentCallback;
     private LoadingPage loadingpage;
     private Handler handler;
+    private ImageView img_head_setting;
+    private ImageView img_head_search;
+    private ImageView img_download_manager;
+    private TextView txt_head_title;
+    private int bottomType;//青果打点搜索 2 推荐  3 榜单
 
     @Override
     public void onAttach(Activity activity) {
@@ -78,12 +93,22 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
         initView();
         return rootView;
     }
+    public void setTitle(String title, int logBottomType) {
+        if(txt_head_title != null){
+            txt_head_title.setText(title);
+        }
+        bottomType = logBottomType;
+    }
 
     @SuppressLint("JavascriptInterface")
     private void initView() {
         if (rootView != null) {
             contentLayout = (RelativeLayout) rootView.findViewById(R.id.web_content_layout);
             contentView = (WebView) rootView.findViewById(R.id.web_content_view);
+            img_head_setting = rootView.findViewById(R.id.img_head_setting);
+            img_download_manager = rootView.findViewById(R.id.img_download_manager);
+            img_head_search = rootView.findViewById(R.id.img_head_search);
+            txt_head_title = rootView.findViewById(R.id.txt_head_title);
             if (Build.VERSION.SDK_INT >= 11) {
                 contentView.setLayerType(View.LAYER_TYPE_NONE, null);
             }
@@ -117,6 +142,39 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
         if (fragmentCallback != null && jsInterfaceHelper != null) {
             fragmentCallback.webJsCallback(jsInterfaceHelper);
         }
+
+        img_head_setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    BookShelfLogger.INSTANCE.uploadBookShelfPersonal();
+                    EventBus.getDefault().post(new ConsumeEvent(R.id.fup_head_personal));
+                    RouterUtil.INSTANCE.navigation(requireActivity(), RouterConfig.SETTING_ACTIVITY);
+            }
+        });
+
+        img_head_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RouterUtil.INSTANCE.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY);
+                if(bottomType ==2){
+                    StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH);
+                }else if(bottomType==3){
+                    StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH);
+                }else if(bottomType == 4){
+                    StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.QG_FL_SEARCH);
+                }else{
+                    StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.SEARCH);
+                }
+            }
+        });
+
+        img_download_manager.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RouterUtil.INSTANCE.navigation(requireActivity(), RouterConfig.DOWNLOAD_MANAGER_ACTIVITY);
+                BookShelfLogger.INSTANCE.uploadBookShelfCacheManager();
+            }
+        });
     }
 
     @Override

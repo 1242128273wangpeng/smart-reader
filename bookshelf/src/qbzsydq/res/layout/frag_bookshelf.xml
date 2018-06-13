@@ -18,7 +18,7 @@
         <RelativeLayout
             android:id="@+id/rl_head_normal"
             android:layout_width="match_parent"
-            android:layout_height="48dp">
+            android:layout_height="45dp">
 
             <ImageView
                 android:id="@+id/img_head_setting"

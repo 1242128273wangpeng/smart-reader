@@ -413,7 +413,15 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         ReaderStatus.position = Position(book_id = "")
 
         MediaControl.stopRestMedia()
-        readerRestDialog?.dismiss()
+
+        try {
+            if (readerRestDialog != null && readerRestDialog!!.isShowing()) {
+                readerRestDialog?.dismiss()
+            }
+        } catch (e: Exception) {
+
+        }
+
     }
 
     fun goToBookEnd() {

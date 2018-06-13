@@ -4,6 +4,7 @@ import com.ding.basic.Config
 import com.ding.basic.bean.*
 import io.reactivex.Flowable
 import okhttp3.OkHttpClient
+import okhttp3.RequestBody
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -50,5 +51,9 @@ internal object MicroAPI {
             return microService.requestBookCatalog(book_id, book_source_id)
         }
         return microService.requestBookCatalog(book_id, book_source_id, book_chapter_id)
+    }
+
+    fun requestCoverBatch(requestBody: RequestBody):Flowable<BasicResult<List<Book>>>?{
+        return microService.requestCoverBatch(requestBody)
     }
 }

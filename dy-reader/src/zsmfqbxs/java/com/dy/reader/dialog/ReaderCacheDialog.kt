@@ -14,7 +14,7 @@ import net.lzbook.kit.book.view.MyDialog
  */
 class ReaderCacheDialog(activity: Activity) {
 
-    private val dialog = MyDialog(activity, R.layout.dialog_reader_cache, Gravity.BOTTOM)
+    private val dialog = MyDialog(activity, R.layout.dialog_reader_cache, Gravity.CENTER)
 
     var cacheAllListener: (() -> Unit)? = null
     var cacheCancelListener: (() -> Unit)? = null

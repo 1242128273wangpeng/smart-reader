@@ -3,7 +3,6 @@ package com.intelligent.reader.presenter.coverPage
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.TestLooperManager
 import android.text.TextUtils
 import android.view.View
 import android.widget.*
@@ -19,7 +18,7 @@ import com.intelligent.reader.R
 import com.intelligent.reader.activity.CataloguesActivity
 import com.intelligent.reader.activity.SearchBookActivity
 import com.intelligent.reader.cover.*
-import com.intelligent.reader.widget.TransformReadDialog
+import com.intelligent.reader.view.TransformReadDialog
 import com.orhanobut.logger.Logger
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
@@ -85,6 +84,7 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
         }
         dialog
     }
+
 
     /***
      * 获取书籍详情
@@ -276,7 +276,11 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
         }
 
         if (!activity.isFinishing) {
-            transformReadDialog.show()
+            if(!transformReadDialog.isShow()){
+                    transformReadDialog.show()
+                }
+
+
         }
     }
 

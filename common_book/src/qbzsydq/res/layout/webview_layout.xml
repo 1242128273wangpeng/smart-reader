@@ -1,17 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/web_content_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/web_content_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white_fafafa">
+
+    <RelativeLayout
+        android:id="@+id/rl_head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#CE3D3E"
+        android:fitsSystemWindows="true">
+
+        <RelativeLayout
+            android:id="@+id/rl_head_normal"
+            android:layout_width="match_parent"
+            android:layout_height="45dp">
+
+            <ImageView
+                android:id="@+id/img_head_setting"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="14dp"
+                android:contentDescription="@string/module_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/bookshelf_head_setting_icon"/>
+
+            <net.lzbook.kit.book.view.FirstUsePointView
+                android:id="@+id/fup_head_personal"
+                android:layout_width="7dp"
+                android:layout_height="7dp"
+                android:layout_alignRight="@id/img_head_setting"
+                android:layout_alignTop="@id/img_head_setting"
+                android:background="#FFFFFFFF"/>
+
+            <TextView
+                android:id="@+id/txt_head_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:text="@string/bookshelf"
+                android:textColor="#FFFFFFFF"
+                android:textSize="18sp"/>
+
+            <ImageView
+                android:id="@+id/img_head_search"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="21dp"
+                android:layout_toLeftOf="@+id/img_download_manager"
+                android:contentDescription="@string/module_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/bookshelf_head_search_icon"/>
+
+            <ImageView
+                android:id="@+id/img_download_manager"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="13.5dp"
+                android:contentDescription="@string/module_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/bookshelf_head_download_manager_icon"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <WebView
+        android:id="@+id/web_content_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/color_white_fafafa">
-
-
-        <WebView
-                android:id="@+id/web_content_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbars="none"/>
+        android:layout_below="@+id/rl_head"
+        android:scrollbars="none"/>
 
 
 </RelativeLayout>
