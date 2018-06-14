@@ -503,11 +503,11 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 welfareIntent.setClass(SettingActivity.this, WelfareCenterActivity.class);
                 startActivity(welfareIntent);
                 break;
-            case R.id.rl_readpage_setting:
-                //阅读页设置
-                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_read);
-                startActivity(new Intent(SettingActivity.this, ReadingSettingActivity.class));
-                break;
+//            case R.id.rl_readpage_setting:
+//                //阅读页设置
+//                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_read);
+//                startActivity(new Intent(SettingActivity.this, ReadingSettingActivity.class));
+//                break;
             case R.id.rl_readpage_bbs:
                 Toast.makeText(getApplicationContext(), R.string.enter_community, Toast.LENGTH_SHORT).show();
                 break;

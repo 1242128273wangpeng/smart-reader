@@ -204,7 +204,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
                 loadingPage!!.isCategory = true
                 loadingPage!!.setReloadAction(Callable<Void> {
                     if (mCataloguesPresenter != null) {
-                        mCataloguesPresenter!!.getRequest()
+                        mCataloguesPresenter!!.requestCatalogList()
                     }
                     null
                 })

@@ -54,38 +54,13 @@
                     android:textColor="@color/color_black_323232"
                     android:textSize="@dimen/dimen_text_14"/>
         </RelativeLayout>
-        
-        <LinearLayout
-                android:id="@+id/dialog_lv_gap"
-                android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:layout_height="wrap_content">
-            
-            <ListView
-                    android:id="@+id/change_source_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/change_source_statement"
-                    android:minHeight="@dimen/dimen_view_height_60"
-                    android:cacheColorHint="@color/color_black_00000000"
-                    android:divider="@color/color_gray_e8e8e8"
-                    android:dividerHeight="@dimen/dimen_view_height_0.5"
-                    android:fadingEdge="none"
-                    android:scrollbarFadeDuration="0"
-                    android:fadeScrollbars="false"
-                    android:scrollbars="vertical"
-                    android:scrollbarStyle="insideInset"
-                    android:verticalScrollbarPosition="right"
-                    android:scrollbarThumbVertical="@color/top_navigation_bg_color"
-                    android:scrollbarSize="@dimen/dimen_view_width_5"
-                    android:listSelector="@android:color/transparent"/>
-        </LinearLayout>
+
         
         <RelativeLayout
                 android:id="@+id/change_source_bottom"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dimen_view_height_50"
-                android:layout_below="@id/change_source_list">
+                >
             
             <View
                     android:id="@+id/change_source_bottom_divider"

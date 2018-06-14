@@ -1,4 +1,4 @@
-package com.dy.reader.fragment
+package com.dy.reader.dialog
 
 import android.app.Dialog
 import android.app.DialogFragment
