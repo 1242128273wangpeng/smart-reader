@@ -30,6 +30,7 @@ import com.intelligent.reader.view.ScrollForGridView
 
 import android.content.Context.INPUT_METHOD_SERVICE
 import com.ding.basic.bean.SearchAutoCompleteBean
+import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.bean.SearchHotBean
 import net.lzbook.kit.book.view.LoadingPage
 
@@ -316,7 +317,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         mSearchHelpPresenter?.resetHotWordList(mContext!!)
     }
 
-    override fun onSearchResult(suggestList: List<SearchCommonBean>, transmitBean: SearchAutoCompleteBean) {
+    override fun onSearchResult(suggestList: List<SearchCommonBean>, transmitBean: SearchAutoCompleteBeanYouHua) {
         mSearchHelpPresenter?.onSearchResult(suggestList, transmitBean)
     }
 
