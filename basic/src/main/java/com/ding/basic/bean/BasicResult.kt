@@ -3,7 +3,7 @@ package com.ding.basic.bean
 import com.ding.basic.request.ResultCode
 import java.io.Serializable
 
-class /**/BasicResult<T> : Serializable {
+class BasicResult<T> : Serializable {
 
     var code: Int = 0
 

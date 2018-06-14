@@ -5,6 +5,7 @@ import android.content.Context
 import android.text.TextUtils
 import com.ding.basic.Config
 import com.ding.basic.bean.*
+import com.ding.basic.database.helper.BookDataProviderHelper
 import com.ding.basic.request.RequestSubscriber
 import com.ding.basic.request.ResultCode
 import com.ding.basic.rx.SchedulerHelper
@@ -26,6 +27,7 @@ import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
+import kotlin.concurrent.thread
 
 class RequestRepositoryFactory private constructor(private val context: Context) : RequestRepository {
 
@@ -136,17 +138,14 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                 requestSubscriber.onNext(result.data)
 
                                 synchronized(RequestRepositoryFactory::class.java) {
-                                    if (book_chapter_id == "" && checkBookSubscribe(result.data!!.book_id) != null) {
-                                        val book = loadBook(result.data!!.book_id)
-                                        if (book != null) {
-                                            book.book_chapter_id = result.data!!.book_chapter_id
-                                            book.last_chapter = result.data!!.last_chapter
-                                            book.desc = result.data!!.desc
-                                            book.genre = result.data!!.genre
-                                            book.sub_genre = result.data!!.sub_genre
-                                            book.book_type = result.data!!.book_type
+                                    val book = result.data
+                                    val localBook = LocalRequestRepository.loadLocalRequestRepository(context).loadBook(book_id)
 
-                                            updateBook(book)
+                                    if (book != null && localBook != null) {
+                                        book.last_chapter = localBook.last_chapter
+                                        LocalRequestRepository.loadLocalRequestRepository(context).updateBook(book)
+
+                                        if (localBook.book_chapter_id == "") {
                                             ChapterDaoHelper.loadChapterDataProviderHelper(context, book.book_id).updateBookChapterId(book.book_chapter_id)
                                         }
                                     }
@@ -166,7 +165,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     override fun requestCatalog(book_id: String, book_source_id: String, book_chapter_id: String, requestSubscriber: RequestSubscriber<List<Chapter>>, type: Int) {
-        LocalRequestRepository.loadLocalRequestRepository(context = context).requestBookCatalog(book_id, book_source_id, book_chapter_id)
+        LocalRequestRepository.loadLocalRequestRepository(context).requestBookCatalog(book_id, book_source_id, book_chapter_id)
                 .flatMap { result ->
                     if (result.data == null || result.data!!.chapters == null || result.data!!.chapters!!.isEmpty()) {
                         Logger.d("本地暂无章节目录，封装网络请求！")
@@ -179,29 +178,31 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                     }
                 }
                 .doOnNext { result ->
-                    if (result != null && result.checkResultAvailable() && result.data!!.chapters != null && result.data!!.chapters!!.isNotEmpty()) {
+                    if (result != null && result.checkResultAvailable() && result.data?.chapters != null && result.data?.chapters!!.isNotEmpty()) {
 
                         for (chapter in result.data?.chapters!!) {
-                            chapter.host = result.data?.host
-                            chapter.book_id = result.data?.book_id!!
-                            chapter.book_source_id = result.data?.book_source_id!!
-                            chapter.book_chapter_id = result.data?.book_chapter_id!!
+                            chapter.host = result.data!!.host
+                            chapter.book_id = result.data!!.book_id
+                            chapter.book_source_id = result.data!!.book_source_id
+                            chapter.book_chapter_id = result.data!!.book_chapter_id
                         }
 
-                        val book = LocalRequestRepository.loadLocalRequestRepository(context = context).checkBookSubscribe(book_id)
+                        val book = LocalRequestRepository.loadLocalRequestRepository(context).checkBookSubscribe(book_id)
 
                         if (book != null) {
                             val chapterDaoHelp = ChapterDaoHelper.loadChapterDataProviderHelper(context, book_id)
                             chapterDaoHelp.insertOrUpdateChapter(result.data!!.chapters!!)
                             book.chapter_count = chapterDaoHelp.getCount()
+
                             val lastChapter = chapterDaoHelp.queryLastChapter()
+
                             if (lastChapter != null) {
                                 book.last_chapter = lastChapter
                             }
-                            LocalRequestRepository.loadLocalRequestRepository(context = context).updateBook(book)
+                            LocalRequestRepository.loadLocalRequestRepository(context).updateBook(book)
                         } else {
                             var count = -1
-                            result.data!!.chapters!!.forEach {
+                            result.data?.chapters?.forEach {
                                 count++
                                 it.sequence = count
                             }
@@ -219,7 +220,76 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                             }
                         }
                     } else if ((it.code == ResultCode.RESULT_SUCCESS || it.code == ResultCode.LOCAL_RESULT) && it.data != null) {
-                        requestSubscriber.onNext(it.data!!.chapters)
+                        requestSubscriber.onNext(it.data?.chapters)
+                    } else {
+                        requestSubscriber.onError(Throwable("获取章节目录异常！"))
+                    }
+                }, {
+                    requestSubscriber.onError(it)
+                }, {
+                    Logger.v("请求目录信息完成！")
+                    requestSubscriber.onComplete()
+                })
+    }
+
+    /***
+     * 用于换源操作，其他拉取目录请调用requestCatalog()方法
+     * **/
+    override fun requestBookCatalog(book_id: String, book_source_id: String, book_chapter_id: String, requestSubscriber: RequestSubscriber<List<Chapter>>, type: Int) {
+        InternetRequestRepository.loadInternetRequestRepository(context).requestBookCatalog(book_id, book_source_id, book_chapter_id)
+                .doOnNext { result ->
+                    if (result != null && result.checkResultAvailable() && result.data?.chapters != null && result.data?.chapters!!.isNotEmpty()) {
+
+                        for (chapter in result.data?.chapters!!) {
+                            chapter.host = result.data!!.host
+                            chapter.book_id = result.data!!.book_id
+                            chapter.book_source_id = result.data!!.book_source_id
+                            chapter.book_chapter_id = result.data!!.book_chapter_id
+                        }
+
+                        val book = LocalRequestRepository.loadLocalRequestRepository(context).loadBook(book_id)
+
+                        if (book != null) {
+                            val chapterDaoHelp = ChapterDaoHelper.loadChapterDataProviderHelper(context, book_id)
+                            chapterDaoHelp.deleteAllChapters()
+                            BookDataProviderHelper.loadBookDataProviderHelper(context).deleteBookMark(book_id)
+
+                            chapterDaoHelp.insertOrUpdateChapter(result.data?.chapters!!)
+
+                            val lastChapter = chapterDaoHelp.queryLastChapter()
+
+                            if (lastChapter != null) {
+                                book.host = result.data!!.host
+                                book.book_id = result.data!!.book_id
+                                book.chapter_count = result.data?.chapterCount!!
+                                book.book_source_id = result.data!!.book_source_id
+                                book.book_chapter_id = result.data!!.book_chapter_id
+
+                                book.last_chapter = lastChapter
+
+                                LocalRequestRepository.loadLocalRequestRepository(context).updateBook(book)
+                            }
+                        } else {
+                            var count = -1
+                            result.data?.chapters?.forEach {
+                                count++
+                                it.sequence = count
+                            }
+                        }
+                    }
+                }
+                .compose(SchedulerHelper.schedulerHelper(type))
+                .subscribe({
+                    if (it.checkPrivateKeyExpire()) {
+                        requestAuthAccess {
+                            if (it) {
+                                requestBookCatalog(book_id, book_source_id, book_chapter_id, requestSubscriber, type)
+                            } else {
+                                requestSubscriber.onError(Throwable("鉴权请求异常！"))
+                            }
+                        }
+                    } else if ((it.code == ResultCode.RESULT_SUCCESS || it.code == ResultCode.LOCAL_RESULT) && it.data != null) {
+                        requestSubscriber.onNext(it.data?.chapters)
                     } else {
                         requestSubscriber.onError(Throwable("获取章节目录异常！"))
                     }
@@ -457,53 +527,41 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
 
-    override fun requestCoverBatch(checkBody: RequestBody, requestSubscriber: RequestSubscriber<List<Book>>) {
+    override fun requestCoverBatch(checkBody: RequestBody) {
         InternetRequestRepository.loadInternetRequestRepository(context = context).requestCoverBatch(checkBody)!!
                 .compose(SchedulerHelper.schedulerIOHelper<BasicResult<List<Book>>>())
-                .subscribe({ result ->
-                    if (result != null) {
+                .subscribe({
+                    if (it != null) {
                         when {
-                            result.checkPrivateKeyExpire() -> requestAuthAccess({
+                            it.checkPrivateKeyExpire() -> requestAuthAccess({
                                 if (it) {
-                                    requestCoverBatch(checkBody, requestSubscriber)
+                                    requestCoverBatch(checkBody)
                                 } else {
-                                    requestSubscriber.onError(Throwable("鉴权请求异常！"))
+                                    throw Throwable("鉴权请求异常！")
                                 }
                             })
-                            result.checkResultAvailable() -> {
+                            it.checkResultAvailable() -> {
+                                    for (book in it.data!!) {
+                                        if (!TextUtils.isEmpty(book.book_id) && !TextUtils.isEmpty(book.book_source_id) && !TextUtils.isEmpty(book.book_chapter_id)) {
 
-                                val bookUpdates = ArrayList<Book>()
-                                if (result.checkResultAvailable()) {
-                                    val updateBooks = result.data
-                                    if (updateBooks != null) {
-                                        for (i in updateBooks.indices) {
-                                            val updateBook = updateBooks[i]
+                                            val localBook = RequestRepositoryFactory.loadRequestRepositoryFactory(context).loadBook(book.book_id)
 
-
-                                            if (TextUtils.isEmpty(updateBook.book_id) || TextUtils.isEmpty(updateBook.book_source_id)) {
-                                                continue
-                                            } else {
-                                                bookUpdates.add(updateBook)
+                                            if (localBook != null) {
+                                                book.last_chapter = localBook.last_chapter
+                                                RequestRepositoryFactory.loadRequestRepositoryFactory(context).updateBook(book)
                                             }
                                         }
-                                        requestSubscriber.onNext(bookUpdates)
                                     }
-                                } else {
-                                    requestSubscriber.onError(Throwable("获取批量书籍更新异常！"))
-                                }
                             }
-                            else -> requestSubscriber.onError(Throwable("获取批量书籍更新异常！"))
                         }
-
-
                     } else {
-                        requestSubscriber.onError(Throwable("获取批量书籍更新异常！"))
+                        Logger.e("更新书籍结果异常！")
                     }
                 }, { throwable ->
-                    requestSubscriber.onError(throwable)
+                    throwable.printStackTrace()
+                    Logger.e("更新书籍异常: " + throwable.toString())
                 }, {
-                    Logger.v("请求批量书籍更新完成！")
-                    requestSubscriber.requestComplete()
+                    Logger.e("更新书籍完成！")
                 })
     }
 

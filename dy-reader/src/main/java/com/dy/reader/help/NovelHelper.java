@@ -267,18 +267,15 @@ public class NovelHelper {
      */
     public void saveBookmark(String book_id, int sequence, int offset) {
 
-        Book book = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).loadBook(book_id);
+        Book book = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(book_id);
+
         if (book != null) {
             book.setBook_id(book_id);
-            book.setSequence(sequence);
             book.setOffset(offset);
+            book.setSequence(sequence);
             book.setLast_read_time(System.currentTimeMillis());
-            if ((RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                    BaseBookApplication.getGlobalContext()).checkBookSubscribe(book.getBook_id())
-                    != null)) {
-                book.setReaded(1);
-            }
+
+            book.setReaded(1);
 
             RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
                     BaseBookApplication.getGlobalContext()).updateBook(book);

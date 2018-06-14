@@ -560,8 +560,8 @@ public class CheckNovelUpdateService extends Service {
 
     private HashMap<String, Book> getBookItems(ArrayList<Book> books) {
         HashMap<String, Book> map = new HashMap<>();
-        for (int i = 0; i < books.size(); i++) {
-            map.put(books.get(i).getBook_id(), books.get(i));
+        for (Book book: books) {
+            map.put(book.getBook_id(), book);
         }
         return map;
     }
@@ -577,9 +577,6 @@ public class CheckNovelUpdateService extends Service {
         for (Book book : books) {
             if (book != null && !TextUtils.isEmpty(book.getBook_id())) {
 
-//                ChapterDaoHelper bookChapterDao =
-//                        ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
-//                                getApplicationContext(), book.getBook_id());
                 Chapter lastChapter = book.getLast_chapter();
 
                 if (lastChapter == null || TextUtils.isEmpty(lastChapter.getChapter_id())) {
@@ -610,24 +607,23 @@ public class CheckNovelUpdateService extends Service {
     public BookUpdate changeChapters(HashMap<String, Book> bookItems, BookUpdate bookUpdate) {
         Book book = bookItems.get(bookUpdate.getBook_id());
         BookUpdate resUpdate = null;
-        if (!bookUpdate.getChapterList().isEmpty()) {
+        if (bookUpdate.getChapterList() != null && bookUpdate.getChapterList().size() > 0) {
             ChapterDaoHelper bookChapterDao =
                     ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
                             BaseBookApplication.getGlobalContext(), book.getBook_id());
             // 增加更新章节
             bookChapterDao.insertOrUpdateChapter(bookUpdate.getChapterList());
             // 更新书架信息
-            Chapter lastchapter = bookUpdate.getChapterList().get(
-                    bookUpdate.getChapterList().size() - 1);
+            Chapter lastChapter = bookUpdate.getChapterList().get(bookUpdate.getChapterList().size() - 1);
             book.setChapter_count(bookChapterDao.getCount());
-            book.setLast_chapter(lastchapter);
+            book.setLast_chapter(lastChapter);
             book.setUpdate_status(1);
 
             // 返回bookUpdate
             resUpdate = new BookUpdate();
             resUpdate.setBook_name(book.getName());
             resUpdate.setBook_id(book.getBook_id());
-            resUpdate.setLast_chapter_name(lastchapter.getName());
+            resUpdate.setLast_chapter_name(lastChapter.getName());
             resUpdate.setUpdate_count(bookUpdate.getChapterList().size());
 
             if (Constants.DEVELOPER_MODE) {
@@ -641,11 +637,11 @@ public class CheckNovelUpdateService extends Service {
                 update_log.append("update_count_local : ").append(book.getChapter_count()).append(
                         " \\\n");
                 update_log.append("last_chapter_name_service : ").append(
-                        lastchapter.getName()).append(" \\\n");
+                        lastChapter.getName()).append(" \\\n");
                 update_log.append("last_chapter_name_local : ").append(book.getName()).append(
                         " \\\n");
                 update_log.append("update_time : ").append(
-                        Tools.logTime(AppUtils.log_formatter, lastchapter.getUpdate_time())).append(
+                        Tools.logTime(AppUtils.log_formatter, lastChapter.getUpdate_time())).append(
                         " \\\n");
                 update_log.append("system_time : ").append(
                         Tools.logTime(AppUtils.log_formatter, System.currentTimeMillis())).append(

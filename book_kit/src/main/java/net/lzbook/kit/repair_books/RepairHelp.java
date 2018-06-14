@@ -129,7 +129,7 @@ public class RepairHelp {
 
                 if (fixState.getFixState()) {
                     Book book = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(fixContentBook.getBook_id());
-                    if (!TextUtils.isEmpty(book.getBook_id())) {
+                    if (book != null && !TextUtils.isEmpty(book.getBook_id())) {
                         book.setList_version(fixContentBook.getList_version());
                         book.setC_version(fixContentBook.getC_version());
                         RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book);
@@ -251,7 +251,6 @@ public class RepairHelp {
         //4.全本缓存
         //5.更新书籍version
         //6.删除修复状态信息
-
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -260,12 +259,19 @@ public class RepairHelp {
                 CacheManager.INSTANCE.remove(book.getBook_id());
                 bookChapterDao.deleteAllChapters();
 
-
                 book.setList_version(bookFix.getList_version());
                 book.setC_version(bookFix.getC_version());
+
+                if (book.getLast_chapter() != null) {
+                    book.getLast_chapter().setChapter_id("");
+                }
+
                 RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book);
+
                 CacheManager.INSTANCE.start(book.getBook_id(), 0);
+
                 RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBookFix(book.getBook_id());
+
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
@@ -318,9 +324,13 @@ public class RepairHelp {
                                 CacheManager.INSTANCE.remove(book.getBook_id());
                                 bookChapterDao.deleteAllChapters();
 
-
                                 book.setList_version(bookFix.getList_version());
                                 book.setC_version(bookFix.getC_version());
+
+                                if (book.getLast_chapter() != null) {
+                                    book.getLast_chapter().setChapter_id("");
+                                }
+
                                 RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book);
                                 CacheManager.INSTANCE.start(book.getBook_id(), 0);
                                 RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBookFix(book.getBook_id());

@@ -123,8 +123,6 @@ class DownloadService : Service(), Runnable {
                     override fun requestResult(result: List<Chapter>?) {
                         if (result != null) {
                             if (result.isNotEmpty()) {
-                                bookChapterDao.deleteAllChapters()
-                                bookChapterDao.insertOrUpdateChapter(result)
                                 downBook(bookTask, result, bookChapterDao)
                             } else {
                                 CacheManager.innerListener.onTaskFailed(bookTask.book_id,

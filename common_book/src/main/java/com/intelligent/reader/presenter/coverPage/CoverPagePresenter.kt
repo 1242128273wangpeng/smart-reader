@@ -327,43 +327,13 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
     private fun updateBookInformation() {
         if (coverDetail != null) {
 
-            var book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(coverDetail!!.book_id)
+            val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(coverDetail!!.book_id)
+
             if (book != null) {
+                coverDetail?.last_chapter = book.last_chapter
 
-                //从H5页面直接添加书籍时部分字段补全
-                book.status = coverDetail!!.status   //更新书籍状态
-                book.book_chapter_id = coverDetail!!.book_chapter_id
-                book.name = coverDetail!!.name
-                book.desc = coverDetail!!.desc
-                book.book_type = coverDetail!!.book_type
-                book.book_id = coverDetail!!.book_id
-                book.host = coverDetail!!.host
-                book.author = coverDetail!!.host
-                book.update_status = coverDetail!!.update_status
-                book.book_source_id = coverDetail!!.book_source_id
-                book.img_url = coverDetail!!.img_url
-                book.list_version = coverDetail!!.list_version
-                book.c_version = coverDetail!!.c_version
-                book.label = coverDetail!!.label
-                book.sub_genre = coverDetail!!.sub_genre
-                book.chapters_update_index = coverDetail!!.chapters_update_index
-                book.genre = coverDetail!!.genre
-
-
-
-                val result = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book)
-
-                if (result) {
-                    Logger.v("更新书籍信息成功！")
-                    if (!TextUtils.isEmpty(coverDetail?.book_id)) {
-                        val chapterDaoHelp = ChapterDaoHelper.loadChapterDataProviderHelper(BaseBookApplication.getGlobalContext(), coverDetail!!.book_id)
-                        chapterDaoHelp.deleteAllChapters()
-                    }
-                } else {
-                    Logger.e("更新书籍信息失败！")
-                }
+                RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book)
             }
-
         }
     }
 

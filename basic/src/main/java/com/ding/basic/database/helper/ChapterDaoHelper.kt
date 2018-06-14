@@ -10,7 +10,6 @@ import com.example.android.observability.persistence.ChaptersDatabase
 import com.orhanobut.logger.Logger
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
-import java.io.File
 import java.lang.ref.WeakReference
 
 /**
@@ -100,10 +99,10 @@ class ChapterDaoHelper private constructor(private val chapterDao: ChapterDao) :
         if (chapterList.isNotEmpty()) {
             var isSuc = false
             if (getCount() > 0) {
-                var c = chapterDao.queryLastChapter()
+                val c = chapterDao.queryLastChapter()
                 if (c != null) {
                     var count = c.sequence
-                    var arr = arrayListOf<Chapter>()
+                    val arr = arrayListOf<Chapter>()
                     chapterList.forEach {
                         if (chapterDao.queryChapterCountById(it.chapter_id) <= 0){
                             count++
@@ -148,7 +147,7 @@ class ChapterDaoHelper private constructor(private val chapterDao: ChapterDao) :
     override fun getChapterById(chapter_id: String): Chapter? {
         var chapter: Chapter? = null
         chapter = chapterDao.getChapterById(chapter_id)
-        com.orhanobut.logger.Logger.v("getChapterById, chapter.name = " + chapter?.name)
+        Logger.v("getChapterById, chapter.name = " + chapter?.name)
         return chapter
     }
 
@@ -161,7 +160,7 @@ class ChapterDaoHelper private constructor(private val chapterDao: ChapterDao) :
     override fun queryAllChapters(): List<Chapter> {
         var chapters = arrayListOf<Chapter>()
         chapters.addAll(chapterDao.queryChapters())
-        com.orhanobut.logger.Logger.v("queryAllChapters, chapters.size = " + chapters.size)
+        Logger.v("queryAllChapters, chapters.size = " + chapters.size)
         return chapters
     }
 
@@ -169,7 +168,7 @@ class ChapterDaoHelper private constructor(private val chapterDao: ChapterDao) :
     override fun queryLastChapter(): Chapter? {
         var chapter: Chapter? = null
         chapter = chapterDao.queryLastChapter()
-        com.orhanobut.logger.Logger.v("queryLastChapter, chapter.name = " + chapter?.name)
+        Logger.v("queryLastChapter, chapter.name = " + chapter?.name)
         return chapter
     }
 
@@ -177,7 +176,7 @@ class ChapterDaoHelper private constructor(private val chapterDao: ChapterDao) :
     override fun queryChapterBySequence(sequence: Int): Chapter? {
         var chapter: Chapter? = null
         chapter = chapterDao.queryChapterBySequence(sequence)
-        com.orhanobut.logger.Logger.v("queryChapterBySequence, chapter.name = " + chapter?.name)
+        Logger.v("queryChapterBySequence, chapter.name = " + chapter?.name)
         return chapter
     }
 

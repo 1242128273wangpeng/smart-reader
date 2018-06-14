@@ -193,6 +193,18 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
     private fun getReaderState(readerState: Bundle?) {
         readerState?.let {
             ReaderStatus.book = it.getSerializable("book") as Book
+
+            // 更新ReaderStatus中的book对象部分信息：防止换源后，返回阅读页所带的信息和本地存储的信息不一致
+            val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(ReaderStatus.book.book_id)
+
+            if (book != null) {
+                ReaderStatus.book.host = book.host
+                ReaderStatus.book.book_id = book.book_id
+                ReaderStatus.book.chapter_count = book.chapter_count
+                ReaderStatus.book.book_source_id = book.book_source_id
+                ReaderStatus.book.book_chapter_id = book.book_chapter_id
+            }
+
             ReaderStatus.book.sequence = it.getInt("sequence", ReaderStatus.book.sequence)
             ReaderStatus.position.group = ReaderStatus.book.sequence
             ReaderStatus.position.offset = ReaderStatus.book.offset
@@ -282,13 +294,19 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
             ReaderStatus.book.last_read_time = System.currentTimeMillis()
             ReaderStatus.book.last_update_success_time = System.currentTimeMillis()
             ReaderStatus.book.readed = 1
+
             if (ReaderStatus.chapterList != null) {
                 val helper = ChapterDaoHelper.loadChapterDataProviderHelper(BaseBookApplication.getGlobalContext(), ReaderStatus.book.book_id)
                 helper.deleteAllChapters()
-                helper.insertOrUpdateChapter(ReaderStatus.chapterList!!)
+                helper.insertOrUpdateChapter(ReaderStatus.chapterList)
                 ReaderStatus.book.chapter_count = helper.getCount()
+
+                if (ReaderStatus.chapterList.size > 1) {
+                    ReaderStatus.book.last_chapter = ReaderStatus.chapterList[ReaderStatus.chapterList.size - 1]
+                }
             }
             val succeed = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(ReaderStatus.book)
+
             Toast.makeText(readReference?.get(), if (succeed > 0) R.string.reading_add_succeed else R.string.reading_add_fail,
                     Toast.LENGTH_SHORT).show()
         }

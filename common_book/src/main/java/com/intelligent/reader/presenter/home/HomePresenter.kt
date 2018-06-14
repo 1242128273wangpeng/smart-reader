@@ -1,7 +1,6 @@
 package com.intelligent.reader.presenter.home
 
 import android.content.pm.PackageManager
-import android.preference.PreferenceManager
 import android.text.TextUtils
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.CoverCheckItem
@@ -9,7 +8,6 @@ import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.intelligent.reader.app.BookApplication
 import com.dingyue.contract.IPresenter
-import com.dingyue.contract.logger.HomeLogger
 import com.dingyue.contract.util.SharedPreUtil
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
@@ -69,8 +67,7 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
             sharePreUtil.putLong(SharedPreUtil.HOME_TODAY_FIRST_OPEN_APP, currentTime)
             sharePreUtil.putBoolean(SharedPreUtil.HOME_IS_UPLOAD, false)
             updateApplicationList()
-//            updateCoverBatch()
-
+            updateCoverBatch()
         }
 
         Constants.upload_userinformation = sharePreUtil.getBoolean(SharedPreUtil.HOME_IS_UPLOAD)
@@ -103,75 +100,31 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
     fun updateCoverBatch() {
 
         val books = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks()
+
         if (books != null) {
             val checkBody = RequestBody.create(
                     MediaType.parse("application/json; charset=utf-8"),
-                    getUpdateParameters(books))
+                    loadUpdateParameters(books))
 
-            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestCoverBatch(checkBody, object : RequestSubscriber<List<Book>>() {
-                override fun requestResult(result: List<Book>?) {
-                    if (result != null) {
-                        var updateBook: Book
-                        for (i in result.indices) {
-                            updateBook = result.get(i)
-                            if (!TextUtils.isEmpty(updateBook.book_id) && !TextUtils.isEmpty(updateBook.book_source_id)) {
-                                var book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(updateBook.book_id)
-                                if (book != null) {
-
-                                    book.status = updateBook!!.status   //更新书籍状态
-                                    book.book_chapter_id = updateBook!!.book_chapter_id
-                                    book.name = updateBook!!.name
-                                    book.desc = updateBook!!.desc
-                                    book.book_type = updateBook!!.book_type
-                                    book.book_id = updateBook!!.book_id
-                                    book.host = updateBook!!.host
-                                    book.author = updateBook!!.author
-                                    book.update_status = updateBook!!.update_status
-                                    book.book_source_id = updateBook!!.book_source_id
-                                    book.img_url = updateBook!!.img_url
-                                    book.list_version = updateBook!!.list_version
-                                    book.c_version = updateBook!!.c_version
-                                    book.label = updateBook!!.label
-                                    book.sub_genre = updateBook!!.sub_genre
-                                    book.chapters_update_index = updateBook!!.chapters_update_index
-                                    book.genre = updateBook!!.genre
-
-
-                                    val result = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book)
-                                    if (result) {
-                                        AppLog.e("homeLogger", "coverBatch批量更新书籍信息成功！")
-                                    } else {
-                                        AppLog.e("homeLogger", "coverBatch批量更新书籍信息失败！")
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                override fun requestError(message: String) {
-
-                }
-
-            })
+            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestCoverBatch(checkBody)
         }
     }
 
-    fun getUpdateParameters(books: List<Book>): String {
-        var result: String
-        var checkLists = ArrayList<CoverCheckItem>()
+    private fun loadUpdateParameters(books: List<Book>): String {
+        val checkLists = ArrayList<CoverCheckItem>()
 
         var checkItem: CoverCheckItem
+
         for (i in books.indices) {
-            val book = books.get(i)
+            val book = books[i]
             checkItem = CoverCheckItem()
-            checkItem.book_chapter_id = book.book_chapter_id
             checkItem.book_id = book.book_id
             checkItem.book_source_id = book.book_source_id
+            checkItem.book_chapter_id = book.book_chapter_id
             checkLists.add(checkItem)
         }
-        result = Gson().toJson(checkLists)
-        return result
+
+        return Gson().toJson(checkLists)
     }
 
 
