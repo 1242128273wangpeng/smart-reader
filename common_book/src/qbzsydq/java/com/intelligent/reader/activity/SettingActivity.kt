@@ -511,8 +511,8 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             btn_confirm_clear_cache.antiShakeClick {
                 publish_content.visibility = View.GONE
                 dialog_title.setText(R.string.tip_cleaning_cache)
+                myDialog!!.setCanceledOnTouchOutside(false)//设置点击dialog外面对话框消失
                 myDialog!!.findViewById<View>(R.id.change_source_bottom).visibility = View.GONE
-
                 myDialog!!.findViewById<View>(R.id.progress_del).visibility = View.VISIBLE
                 //添加清除缓存的处理
                 object : Thread() {

@@ -57,7 +57,7 @@ object DataProvider {
                     }
                 }, false)
             } else if (event.type == ReaderSettings.ConfigType.CHAPTER_REFRESH || event.type == ReaderSettings.ConfigType.FONT_REFRESH) {
-                if(event.obj == null || ReaderSettings.instance.animation == GLReaderView.AnimationType.LIST){
+                if (event.obj == null || ReaderSettings.instance.animation == GLReaderView.AnimationType.LIST) {
                     AppLog.e("DataProvider", "CHAPTER_REFRESH, but obj == null or is list animation")
                     return
                 }
@@ -66,7 +66,7 @@ object DataProvider {
 
                     chapterCache.removeOther(position.group)
 
-                    if(event.type == ReaderSettings.ConfigType.CHAPTER_REFRESH) {
+                    if (event.type == ReaderSettings.ConfigType.CHAPTER_REFRESH) {
                         EventBus.getDefault().post(EventLoading(EventLoading.Type.START))
 
                         loadPre(position.group + 2, position.group + 6)
@@ -87,7 +87,7 @@ object DataProvider {
                                                     EventBus.getDefault().post(EventLoading(EventLoading.Type.SUCCESS))
                                                 })
                                             } else {
-                                                it.onFontRefreshed(position,{
+                                                it.onFontRefreshed(position, {
                                                     EventBus.getDefault().post(EventLoading(EventLoading.Type.SUCCESS))
                                                 })
                                             }
@@ -134,7 +134,7 @@ object DataProvider {
             return map[key]
         }
 
-        fun removeOther(key:Int){
+        fun removeOther(key: Int) {
             val oldKeys = map.keys.filter { Math.abs(key - it) > 1 }
             oldKeys.forEach { map.remove(it) }
         }
@@ -146,11 +146,11 @@ object DataProvider {
 
 
     interface GroupRefreshListener {
-        fun onGroupRefreshed(position: Position, callback:(()->Unit)? = null)
+        fun onGroupRefreshed(position: Position, callback: (() -> Unit)? = null)
 
-        fun onFontRefreshed(position: Position, callback:(()->Unit)? = null)
+        fun onFontRefreshed(position: Position, callback: (() -> Unit)? = null)
 
-        fun onPageRefreshed(callback:(()->Unit)? = null)
+        fun onPageRefreshed(callback: (() -> Unit)? = null)
     }
 
     val requesetFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(Reader.context)
@@ -220,11 +220,6 @@ object DataProvider {
                     }))
                 }
             }
-
-            override fun requestRetry() {
-                super.requestRetry()
-                prepare(book, start, callback)
-            }
         }, SchedulerHelper.Type_IO)
     }
 
@@ -278,7 +273,7 @@ object DataProvider {
                 val list = novelChapter.separateList.clone() as ArrayList<NovelPageBean>
                 position.groupChildCount = list.size
 
-                position.index =  findPageIndexByOffset(offset, list)
+                position.index = findPageIndexByOffset(offset, list)
 
             }
         }
@@ -300,9 +295,9 @@ object DataProvider {
             return true
         }
         if (separateList.size > index + 1) {
-            if(separateList[index].offset == separateList[index + 1].offset){
+            if (separateList[index].offset == separateList[index + 1].offset) {
                 return separateList[index].offset == offset
-            }else {
+            } else {
                 return (separateList[index].offset <= offset) && (separateList[index + 1].offset > offset)
             }
         } else if (separateList.size > index) {
@@ -349,12 +344,12 @@ object DataProvider {
         })
     }
 
-    fun loadGroupWithVertical(group: Int, callback: ((Boolean,Chapter?) -> Unit)? = null) {
-        loadGroupForVertical(group,{ success: Boolean, chapter: Chapter? ->
+    fun loadGroupWithVertical(group: Int, callback: ((Boolean, Chapter?) -> Unit)? = null) {
+        loadGroupForVertical(group, { success: Boolean, chapter: Chapter? ->
             if (success) {
-                callback?.invoke(true,chapter)
+                callback?.invoke(true, chapter)
             } else {
-                callback?.invoke(false,null)
+                callback?.invoke(false, null)
             }
         })
     }
@@ -362,19 +357,19 @@ object DataProvider {
     fun getPage(position: Position): NovelPageBean {
         val curPosition = PageManager.currentPage.position
 
-        if(position.index == 0){
+        if (position.index == 0) {
             loadPre(position.group + 2, position.group + 6)
         }
 
         //在加载下一页
-        if(position.group > curPosition.group ||
+        if (position.group > curPosition.group ||
                 (position.group == curPosition.group && position.index > curPosition.index)) {
             if (curPosition.index == 0 && getPageData(curPosition.group + 1) == null) {
                 loadGroup(curPosition.group + 1, null, false)
             }
         }
         //在加载上一页
-        if(position.group < curPosition.group ||
+        if (position.group < curPosition.group ||
                 (position.group == curPosition.group && position.index < curPosition.index)) {
             if (curPosition.index == curPosition.groupChildCount - 1 && getPageData(curPosition.group - 1) == null) {
                 loadGroup(curPosition.group - 1, null, false)
@@ -405,9 +400,9 @@ object DataProvider {
         }
     }
 
-    private fun loadGroup(group: Int, callback: ((Boolean) -> Unit)? = null, force:Boolean = true) {
+    private fun loadGroup(group: Int, callback: ((Boolean) -> Unit)? = null, force: Boolean = true) {
         if (isGroupAvalable(group)) {
-            if(!force && chapterCache.get(group) != null){
+            if (!force && chapterCache.get(group) != null) {
                 AppLog.e("DataProvider", "loadGroup group loaded")
                 callback?.invoke(true)
                 return
@@ -418,8 +413,9 @@ object DataProvider {
                             onNext = {
 
                                 AppLog.e("DataProvider", "onNext = ")
-                                var separateContent = ReadSeparateHelper.initTextSeparateContent(it.content ?: "", it.name ?: "")
-                                separateContent = ReadMediaManager.insertChapterAd(group,separateContent)
+                                var separateContent = ReadSeparateHelper.initTextSeparateContent(it.content
+                                        ?: "", it.name ?: "")
+                                separateContent = ReadMediaManager.insertChapterAd(group, separateContent)
                                 chapterCache.put(it.sequence, NovelChapter(it, separateContent))
 
                                 callback?.invoke(true)
@@ -437,28 +433,29 @@ object DataProvider {
 
     }
 
-    private fun loadGroupForVertical(group: Int, callback: ((Boolean,Chapter?) -> Unit)? = null) {
+    private fun loadGroupForVertical(group: Int, callback: ((Boolean, Chapter?) -> Unit)? = null) {
         if (isGroupAvalable(group)) {
             mDisposable.add(readerRepository.requestSingleChapter(ReaderStatus.chapterList[group])
                     .subscribeOn(Schedulers.io())
                     .subscribeBy(
                             onNext = {
-                                var separateContent = ReadSeparateHelper.initTextSeparateContent(it.content ?: "", it.name ?: "")
-                                separateContent = ReadMediaManager.insertChapterAd(group,separateContent)
+                                var separateContent = ReadSeparateHelper.initTextSeparateContent(it.content
+                                        ?: "", it.name ?: "")
+                                separateContent = ReadMediaManager.insertChapterAd(group, separateContent)
                                 chapterCache.put(it.sequence, NovelChapter(it, separateContent))
                                 runOnMain {
-                                    callback?.invoke(true,it)
+                                    callback?.invoke(true, it)
                                 }
                             },
                             onError = {
                                 it.printStackTrace()
                                 runOnMain {
-                                    callback?.invoke(false,null)
+                                    callback?.invoke(false, null)
                                 }
                             }
                     ))
         } else {
-            callback?.invoke(false,null)
+            callback?.invoke(false, null)
         }
 
     }

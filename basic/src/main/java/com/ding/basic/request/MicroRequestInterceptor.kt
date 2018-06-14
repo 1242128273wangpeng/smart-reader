@@ -53,7 +53,7 @@ class MicroRequestInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
 
-        if (request.url().host() == URL(Config.loadMicroAPIHost()).host || request.url().host() == Config.loadBookContent()) {
+        if (request.url().host() == URL(Config.loadMicroAPIHost()).host || request.url().host() == URL(Config.loadContentAPIHost()).host) {
             when (request.method().toUpperCase()) {
                 "GET" -> {
                     request = buildRequest(request)
@@ -62,7 +62,13 @@ class MicroRequestInterceptor : Interceptor {
                 "POST" -> {
                     if (request.body() != null && request.body() is FormBody) {
                         val map = mutableMapOf<String, String>()
-                        val url = Config.buildUrl(request.url().toString().replace(Config.loadRequestAPIHost(), ""), map)
+
+                        val url = if (request.url().host() == URL(Config.loadMicroAPIHost()).host) {
+                            Config.buildUrl(request.url().toString().replace(Config.loadMicroAPIHost(), ""), map)
+                        } else {
+                            Config.buildUrl(request.url().toString().replace(Config.loadContentAPIHost(), ""), map)
+                        }
+
                         if (url != null) {
                             request = request.newBuilder().url(url).build()
                         }

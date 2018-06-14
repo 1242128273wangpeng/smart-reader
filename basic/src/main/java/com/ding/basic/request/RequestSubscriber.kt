@@ -1,8 +1,5 @@
 package com.ding.basic.request
 
-import android.content.Context
-import com.ding.basic.bean.Book
-import com.ding.basic.repository.RequestRepositoryFactory
 import com.orhanobut.logger.Logger
 import io.reactivex.subscribers.ResourceSubscriber
 
@@ -30,32 +27,7 @@ abstract class RequestSubscriber<T>: ResourceSubscriber<T>() {
 
     abstract fun requestError(message: String)
 
-    open fun requestRetry()  {
-
-    }
-
     open fun requestComplete() {
-
-    }
-
-    @Synchronized fun requestAuthAccess(context: Context, requestSubscriber: RequestSubscriber<T>) {
-        RequestRepositoryFactory.loadRequestRepositoryFactory(context = context).requestAuthAccess(object : RequestSubscriber<String>() {
-            override fun requestResult(result: String?) {
-                if (result != null && result.isNotEmpty()) {
-                    requestSubscriber.requestRetry()
-                } else {
-                    requestSubscriber.requestError("获取鉴权异常！")
-                }
-            }
-
-            override fun requestError(message: String) {
-                requestSubscriber.requestError("获取鉴权失败！")
-            }
-
-            override fun requestComplete() {
-                super.requestComplete()
-                Logger.e("获取鉴权完成！")
-            }
-        })
+        Logger.v("接口请求完成！")
     }
 }

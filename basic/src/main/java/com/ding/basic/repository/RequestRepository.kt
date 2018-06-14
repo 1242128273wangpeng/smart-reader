@@ -52,7 +52,7 @@ interface RequestRepository {
 
     fun requestCoverRecommend(book_id: String, recommend: String, requestSubscriber: RequestSubscriber<CoverRecommendBean>)
 
-    fun requestAuthAccess(requestSubscriber: RequestSubscriber<String>)
+    fun requestAuthAccess(callback: ((Boolean) -> Unit)?)
 
 
     /************************* 本地数据 *************************/

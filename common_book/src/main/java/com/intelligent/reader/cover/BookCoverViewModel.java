@@ -65,12 +65,6 @@ public class BookCoverViewModel extends DisposableAndroidViewModel {
                     public void requestComplete() {
                         Logger.i("请求封面完成！");
                     }
-
-                    @Override
-                    public void requestRetry() {
-                        Logger.e("封面接口重试！");
-                        requestBookDetail(book_id, book_source_id, book_chapter_id);
-                    }
                 });
     }
 

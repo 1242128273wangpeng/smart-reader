@@ -114,7 +114,7 @@ class DownloadService : Service(), Runnable {
         }
     }
 
-    fun requestBookCatalog(bookTask: BookTask) {
+    private fun requestBookCatalog(bookTask: BookTask) {
 
         val bookChapterDao = ChapterDaoHelper.loadChapterDataProviderHelper(this, bookTask.book_id)
 
@@ -137,11 +137,6 @@ class DownloadService : Service(), Runnable {
 
                     override fun requestError(message: String) {
                         CacheManager.innerListener.onTaskFailed(bookTask.book_id, Throwable(message))
-                    }
-
-                    override fun requestRetry() {
-                        super.requestRetry()
-                        requestBookCatalog(bookTask)
                     }
                 }, SchedulerHelper.Type_Default)
     }
@@ -328,8 +323,6 @@ class DownloadService : Service(), Runnable {
                             }
                         }
                     }
-
-
                 }
             }
 
