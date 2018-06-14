@@ -29,7 +29,8 @@ object Config {
     //微服务内容接口
     private var contentAPIHost: String = "http://10.10.7.209:8888"
 
-
+    //设置页福利中心地址
+    const val WelfareHost: String = "https://st.quanbennovel.com/static/welfareCenter/welfareCenter-test1.html"
 
     /***
      * 鉴权临时秘钥

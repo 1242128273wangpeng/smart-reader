@@ -322,7 +322,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
 
     private void showDialog() {
         if (!this.isFinishing()) {
-            final MyDialog myDialog = new MyDialog(this, R.layout.pop_confirm_layout);
+            final MyDialog myDialog = new MyDialog(this, R.layout.publish_hint_dialog);
             myDialog.setCanceledOnTouchOutside(true);
             TextView dialog_title = (TextView) myDialog.findViewById(R.id.dialog_title);
             dialog_title.setText(R.string.prompt);

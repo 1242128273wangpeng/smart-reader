@@ -371,6 +371,23 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
     }
 
+    override fun requestAutoCompleteV5(word: String, requestSubscriber: RequestSubscriber<SearchAutoCompleteBeanYouHua>) {
+        InternetRequestRepository.loadInternetRequestRepository(context = context).requestAutoCompleteV5(word)!!
+                .debounce(400,TimeUnit.MILLISECONDS)
+                .compose(SchedulerHelper.schedulerHelper<SearchAutoCompleteBeanYouHua>())
+                .subscribe({ result ->
+                    if (result != null) {
+                        requestSubscriber.onNext(result)
+                    } else {
+                        requestSubscriber.onError(Throwable("获取自动补全异常！"))
+                    }
+                }, { throwable ->
+                    requestSubscriber.onError(throwable)
+                }, {
+                    Logger.v("获取自动补全完成！")
+                })
+    }
+
     override fun requestSearchOperationV4(requestSubscriber: RequestSubscriber<Result<SearchResult>>) {
         InternetRequestRepository.loadInternetRequestRepository(context = context).requestHotWordsV4()
                 .compose(SchedulerHelper.schedulerHelper<Result<SearchResult>>())

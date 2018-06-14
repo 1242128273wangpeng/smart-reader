@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Html
 import android.view.View
-import android.view.ViewGroup
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBooksEndResp
@@ -24,8 +23,6 @@ import kotlinx.android.synthetic.zsmfqbxs.act_book_end.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
-import org.json.JSONException
-import org.json.JSONObject
 import java.util.*
 import java.util.concurrent.Callable
 

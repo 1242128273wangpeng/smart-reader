@@ -35,6 +35,10 @@ interface RequestService {
         //自动补全V4接口
         const val AUTO_COMPLETE_V4 = "/v4/search/autoComplete"
 
+        //自动补全V5接口
+        const val AUTO_COMPLETE_V5 = "/v5/search/autoComplete"
+
+
         //搜索热词
         const val HOT_WORDS = "/v3/search/hotWords"
 
@@ -118,6 +122,11 @@ interface RequestService {
 
     @GET(AUTO_COMPLETE_V4)
     fun requestAutoCompleteV4(@Query("keyword") word: String): Flowable<SearchAutoCompleteBeanYouHua>
+
+
+    @GET(AUTO_COMPLETE_V5)
+    fun requestAutoCompleteV5(@Query("keyword") word: String): Flowable<SearchAutoCompleteBeanYouHua>
+
 
     @GET(HOT_WORDS_V4)
     fun requestHotWordV4(): Flowable<Result<SearchResult>>

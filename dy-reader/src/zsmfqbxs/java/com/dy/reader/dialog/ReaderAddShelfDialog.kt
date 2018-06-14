@@ -14,6 +14,7 @@ import net.lzbook.kit.book.view.MyDialog
  */
 class ReaderAddShelfDialog (activity: Activity) {
 
+
     private val dialog = MyDialog(activity, R.layout.dialog_reader_add_shelf, Gravity.CENTER)
 
     var cancelListener: (() -> Unit)? = null

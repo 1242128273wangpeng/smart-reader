@@ -24,12 +24,15 @@ import com.dy.reader.data.DataProvider
 import com.dy.reader.event.EventLoading
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.event.EventSetting
-import com.dy.reader.fragment.AutoReadOptionDialog
+import com.dy.reader.dialog.AutoReadOptionDialog
 import com.dy.reader.fragment.CatalogMarkFragment
 import com.dy.reader.fragment.LoadingDialogFragment
 import com.dy.reader.fragment.ReadSettingFragment
 import com.dy.reader.helper.AppHelper
-import com.dy.reader.page.*
+import com.dy.reader.page.BatteryView
+import com.dy.reader.page.GLReaderView
+import com.dy.reader.page.PageManager
+import com.dy.reader.page.Position
 import com.dy.reader.presenter.ReadPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus

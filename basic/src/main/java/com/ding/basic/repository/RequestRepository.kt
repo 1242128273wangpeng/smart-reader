@@ -28,6 +28,8 @@ interface RequestRepository {
 
     fun requestAutoCompleteV4(word: String, requestSubscriber: RequestSubscriber<SearchAutoCompleteBeanYouHua>)  //搜索V4接口
 
+    fun requestAutoCompleteV5(word: String, requestSubscriber: RequestSubscriber<SearchAutoCompleteBeanYouHua>)  //搜索V5
+
     fun requestSearchRecommend(bookIds: String,requestSubscriber: RequestSubscriber<SearchRecommendBook>) //搜索推荐
 
     fun requestHotWords(requestSubscriber: RequestSubscriber<SearchHotBean>)

@@ -54,4 +54,9 @@ public interface URLBuilderIntterface {
 
     public String buildContentUrl(String url, Map<String, String> params);
 
+    /************************** V5接口 **********************/
+
+    // 搜索
+    public static final String SEARCH_V5 = "/v5/search/page";
+
 }
