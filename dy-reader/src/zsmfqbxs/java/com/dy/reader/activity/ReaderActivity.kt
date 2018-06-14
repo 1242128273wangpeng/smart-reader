@@ -17,6 +17,7 @@ import com.ding.basic.bean.Book
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
+import com.dy.media.MediaLifecycle
 import com.dy.reader.R
 import com.dy.reader.ReadMediaManager
 import com.dy.reader.data.DataProvider
@@ -32,7 +33,6 @@ import com.dy.reader.page.*
 import com.dy.reader.presenter.ReadPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import com.dycm_adsdk.PlatformSDK
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.zsmfqbxs.act_reader.*
@@ -293,7 +293,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         AppHelper.glSurfaceView = null
         mReadPresenter.onDestroy()
         ReaderStatus.chapterList.clear()
-        PlatformSDK.lifecycle()?.onDestroy()
+        MediaLifecycle.onDestroy()
         ReadMediaManager.onDestroy()
     }
 

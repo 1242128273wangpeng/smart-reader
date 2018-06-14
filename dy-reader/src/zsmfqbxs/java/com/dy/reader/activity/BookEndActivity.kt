@@ -11,15 +11,14 @@ import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBooksEndResp
 import com.ding.basic.bean.Source
 import com.dingyue.contract.router.RouterConfig
+import com.dy.media.MediaControl
+import com.dy.media.MediaLifecycle
 import com.dy.reader.R
 import com.dy.reader.adapter.SourceAdapter
 import com.dy.reader.listener.SourceClickListener
 import com.dy.reader.presenter.BookEndContract
 import com.dy.reader.presenter.BookEndPresenter
 import com.dy.reader.setting.ReaderStatus
-import com.dycm_adsdk.PlatformSDK
-import com.dycm_adsdk.callback.AbstractCallback
-import com.dycm_adsdk.callback.ResultCode
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.zsmfqbxs.act_book_end.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -134,31 +133,14 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
      * 初始化广告
      * **/
     private fun initBookEndAD() {
-        PlatformSDK.adapp().dycmNativeAd(this, "9-1", null, object : AbstractCallback() {
-            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
-                super.onResult(adswitch, views, jsonResult)
-                if (!adswitch) {
-                    return
-                }
-                try {
-                    val jsonObject = JSONObject(jsonResult)
-                    if (jsonObject.has("state_code")) {
-                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                            ResultCode.AD_REQ_SUCCESS
-                            -> {
-                                rl_book_end_ad.visibility = View.VISIBLE
-                                rl_book_end_ad.addView(views[0])
-                            }
-                            else -> {
-                                rl_book_end_ad.visibility = View.GONE
-                            }
-                        }
-                    }
-                } catch (exception: JSONException) {
-                    exception.printStackTrace()
-                }
+        MediaControl.loadBookEndMedia(this) { view, isSuccess ->
+            if (isSuccess) {
+                rl_book_end_ad.visibility = View.VISIBLE
+                rl_book_end_ad.addView(view)
+            } else {
+                rl_book_end_ad.visibility = View.GONE
             }
-        })
+        }
     }
 
     /***
@@ -184,7 +166,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
             exception.printStackTrace()
         }
 
-        PlatformSDK.lifecycle()?.onDestroy()
+        MediaLifecycle.onDestroy()
 
         super.onDestroy()
     }

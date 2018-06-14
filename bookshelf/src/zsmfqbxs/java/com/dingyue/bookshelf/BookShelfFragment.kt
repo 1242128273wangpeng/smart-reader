@@ -19,6 +19,7 @@ import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
+import com.dy.media.MediaControl
 import de.greenrobot.event.EventBus
 import kotlinx.android.synthetic.zsmfqbxs.frag_bookshelf.*
 import kotlinx.android.synthetic.zsmfqbxs.bookshelf_refresh_header.view.*
@@ -134,7 +135,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-//        BookShelfADContract.insertBookShelfType(true)
+        MediaControl.insertBookShelfMediaType(true)
 
         initRecyclerView()
         srl_refresh.setOnPullRefreshListener(object : SuperSwipeRefreshLayout.OnPullRefreshListener {
@@ -302,7 +303,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
      * 处理被点击或更新通知的book
      */
     private fun handleBook(book: Book?) {
-        if (book != null && requireActivity() != null && !requireActivity()!!.isFinishing) {
+        if (book != null && !requireActivity().isFinishing) {
             BookRouter.navigateCoverOrRead(requireActivity(), book, 0)
 
         }
@@ -317,7 +318,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     override fun onSuccess(result: BookUpdateResult) {
-        if (requireActivity() != null && !requireActivity().isFinishing) {
+        if (!requireActivity().isFinishing) {
             latestLoadDataTime = System.currentTimeMillis()
             if (srl_refresh != null) {
                 srl_refresh!!.onRefreshComplete()
@@ -328,7 +329,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     override fun onException(exception: Exception) {
-        if (requireActivity() != null && !requireActivity().isFinishing) {
+        if (!requireActivity().isFinishing) {
             latestLoadDataTime = System.currentTimeMillis()
             if (isAdded) {
                 requireActivity().applicationContext.showToastMessage(R.string.bookshelf_network_error, 2000L)

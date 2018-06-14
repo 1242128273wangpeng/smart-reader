@@ -3,11 +3,17 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'dy-complie-plugin'
+
+apply plugin: 'maven'
 
 android {
+
+//    defaultPublishConfig 'hasadDebug'
+    defaultPublishConfig 'noadDebug'
+//    defaultPublishConfig 'hasadRelease'
+//    defaultPublishConfig 'noadRelease'
+
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
@@ -26,34 +32,64 @@ android {
                 includeCompileClasspath true
             }
         }
+
+//        sourceSets{
+//            main {
+//                if(android.defaultPublishConfig == "hasad") {
+//                    java.srcDirs = ['src/main/java', 'src/hasad/java']
+//                }else{
+//                    java.srcDirs = ['src/main/java', 'src/noad/java']
+//                }
+//                jniLibs.srcDirs = ['libs']
+//            }
+//        }
     }
 
-    buildTypes {
-        release {
-            minifyEnabled rootProject.ext.minifyEnable
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+    lintOptions {
+        abortOnError false
     }
 
     flavorDimensions "default"
 
     productFlavors {
-        mfqbxssc {}
-        qbmfkdxs {}
-        qbzsydq {}
-        txtqbdzs {}
-        txtqbmfxs {}
-        txtqbmfyd {}
-        zsmfqbxs {}
+        hasad {}
+        noad {}
     }
 
+    android.libraryVariants.all { variant ->
+
+//        variant.preBuild.doFirst {
+//            System.err.println("preBuild ${variant.applicationId}_${variant.buildType.name}_${variant.flavorName}")
+//        }
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "com.android.support:appcompat-v7:$support_version"
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    hasadApi ("net.iyouqu.android.common:dycm_ssp_sdk:1.6.3"){
+        exclude group: 'com.android.volley', module: 'volley'
+    }
+    hasadApi "com.android.volley:volley:1.0.0"
 }
-repositories {
-    mavenCentral()
+
+uploadArchives {
+    repositories.mavenDeployer {
+        repository(url: 'http://20.20.27.101:8081/nexus/content/repositories/releases/') {
+            authentication(userName: 'edwin', password: 'iyouquedwin')
+        }
+
+        snapshotRepository(url: 'http://20.20.27.101:8081/nexus/content/repositories/snapshots/') {
+            authentication(userName: 'edwin', password: 'iyouquedwin')
+        }
+//        repository(url: uri('../maven-local'))
+        pom.version = VERSION_NAME
+        pom.artifactId = "${android.defaultPublishConfig.replace("Debug", "").replace("Release", "")}"
+        pom.groupId = POM_GROUP
+        pom.packaging = 'aar'
+    }
 }
+
+

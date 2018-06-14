@@ -6,9 +6,10 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
 
     publishNonDefault true
+    defaultPublishConfig rootProject.ext.defaultPublishConfig
+
 
     defaultConfig {
 

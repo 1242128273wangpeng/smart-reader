@@ -17,7 +17,9 @@ def releaseTime() {
 android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    lintOptions {
+        abortOnError false
+    }
 
     dexOptions {
         javaMaxHeapSize rootProject.ext.javaMaxHeapSize
@@ -140,7 +142,7 @@ android {
     }
     defaultConfig {
 
-        applicationId "cn.qbzsydsq.reader"
+        applicationId rootProject.ext.applicationId
 
 //        System.err.println("project.properties = ${project.getProperties()}")
 
@@ -709,9 +711,7 @@ N多网	        blf1298_10885_001
     android.applicationVariants.all { variant ->
 
         variant.preBuild.doFirst {
-
-//            System.err.println("preBuild ${variant.applicationId}_${variant.buildType.name}_${variant.flavorName}")
-
+            System.err.println("preBuild ${variant.applicationId}_${variant.buildType.name}_${variant.flavorName}")
         }
 
         variant.checkManifest.doFirst {
@@ -937,5 +937,4 @@ dependencies {
     implementation project(':bookshelf')
     implementation project(':downloadmanager')
     implementation project(':dy-reader')
-    implementation project(':dy-media')
 }
