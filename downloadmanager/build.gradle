@@ -6,9 +6,10 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
 
     publishNonDefault true
+    defaultPublishConfig rootProject.ext.defaultPublishConfig
+
 
     defaultConfig {
 
@@ -33,6 +34,10 @@ android {
             minifyEnabled rootProject.ext.minifyEnable
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    lintOptions {
+        abortOnError false
     }
 
     flavorDimensions "default"

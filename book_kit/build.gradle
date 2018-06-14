@@ -60,7 +60,6 @@ android {
     useLibrary 'org.apache.http.legacy'
 
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
@@ -81,5 +80,8 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    lintOptions {
+        abortOnError false
     }
 }

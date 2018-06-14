@@ -5,7 +5,6 @@ apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
@@ -31,11 +30,11 @@ android {
     }
 
     sourceSets {
-        main {
-//            java.srcDirs = ['src/main/java','src/noad/java']
-            java.srcDirs = ['src/main/java','src/hasad/java']
-        }
         androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
+    }
+
+    lintOptions {
+        abortOnError false
     }
 }
 
