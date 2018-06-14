@@ -23,6 +23,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.bumptech.glide.Glide
+import com.ding.basic.Config
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
@@ -423,7 +424,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             }
             R.id.rl_welfare -> {
                 val welfareIntent = Intent()
-                welfareIntent.putExtra("url", "https://st.quanbennovel.com/static/welfareCenter/welfareCenter.html")
+                welfareIntent.putExtra("url", Config.WelfareHost)
                 welfareIntent.putExtra("title", "福利中心")
                 welfareIntent.setClass(this@SettingActivity, WelfareCenterActivity::class.java)
                 startActivity(welfareIntent)

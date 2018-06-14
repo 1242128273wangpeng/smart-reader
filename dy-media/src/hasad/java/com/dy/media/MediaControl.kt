@@ -265,6 +265,8 @@ object MediaControl : IMediaControl {
         })
     }
 
+
+
     private var restMediaRunnable: Runnable? = null
 
     private var restMediaHandler: Handler? = null
@@ -314,6 +316,7 @@ object MediaControl : IMediaControl {
     }
 
     override fun stopRestMedia() {
+        restMediaRunnable = null
         restMediaHandler?.removeCallbacksAndMessages(null)
         restMediaHandler = null
     }

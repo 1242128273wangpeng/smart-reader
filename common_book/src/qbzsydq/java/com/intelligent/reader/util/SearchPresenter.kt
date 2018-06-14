@@ -165,7 +165,6 @@ class SearchPresenter(private val activity: SearchBookActivity, private val mCon
         }
 
         jsInterfaceHelper.setOnEnterCover { host, book_id, book_source_id, name, author, parameter, extra_parameter ->
-            AppLog.e(TAG, "doCover")
 
             val book = Book()
             book.book_id = book_id
@@ -189,10 +188,8 @@ class SearchPresenter(private val activity: SearchBookActivity, private val mCon
         }
 
         jsInterfaceHelper.setOnEnterRead { host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count, updateTime, parameter, extra_parameter, dex ->
-            AppLog.e(TAG, "doRead")
             val coverBook = genCoverBook(host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count,
                     updateTime, parameter, extra_parameter, dex)
-            AppLog.e(TAG, "DoRead : " + coverBook.sequence)
             BookRouter.navigateCoverOrRead(activity, coverBook, 0)
         }
 
@@ -210,11 +207,9 @@ class SearchPresenter(private val activity: SearchBookActivity, private val mCon
             stringBuilder.append("]")
         }
 
-        AppLog.e(TAG, "StringBuilder : " + stringBuilder.toString())
         jsInterfaceHelper.setBookString(stringBuilder.toString())
 
         jsInterfaceHelper.setOnInsertBook { host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count, updateTime, parameter, extra_parameter, dex ->
-            AppLog.e(TAG, "doInsertBook")
             val book = genCoverBook(host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count,
                     updateTime, parameter, extra_parameter, dex)
             val wordInfo = wordInfoMap[word]
@@ -229,7 +224,6 @@ class SearchPresenter(private val activity: SearchBookActivity, private val mCon
         }
 
         jsInterfaceHelper.setOnDeleteBook { book_id ->
-            AppLog.e(TAG, "doDeleteBook")
             RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBook(book_id)
             CacheManager.stop(book_id)
             CacheManager.resetTask(book_id)
@@ -266,7 +260,6 @@ class SearchPresenter(private val activity: SearchBookActivity, private val mCon
             if (channelID == "blp1298_10882_001" || channelID == "blp1298_10883_001" || channelID == "blp1298_10699_001") {
                 if (Constants.isBaiduExamine && Constants.versionCode == AppUtils.getVersionCode()) {
                     searchWord = replaceWord
-                    AppLog.e(TAG, searchWord)
                 }
             }
 
@@ -321,8 +314,4 @@ class SearchPresenter(private val activity: SearchBookActivity, private val mCon
 
     }
 
-    companion object {
-        private val TAG = SearchPresenter::class.java.simpleName
-
-    }
 }
