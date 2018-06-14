@@ -75,11 +75,6 @@ class CataloguesPresenter(var activity: Activity, var book: Book, var catalogues
                     override fun requestError(message: String) {
                         cataloguesContract.requestCatalogError()
                     }
-
-                    override fun requestRetry() {
-                        super.requestRetry()
-                        requestCatalogList()
-                    }
                 }, SchedulerHelper.Type_Main)
     }
 

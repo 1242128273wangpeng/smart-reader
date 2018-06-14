@@ -61,18 +61,4 @@ internal object MicroAPI {
     fun requestBookUpdate(requestBody: RequestBody): Flowable<BasicResult<UpdateBean>>? {
         return microService.requestBookUpdate(requestBody)
     }
-
-    fun requestChapterContent(chapter_id: String, book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Chapter>> {
-        if (book_chapter_id == ""){
-            return microService.requestChapterContent(chapter_id, book_id, book_source_id)
-        }
-        return microService.requestChapterContent(chapter_id, book_id, book_source_id, book_chapter_id)
-    }
-
-    fun requestChapterContentSync(chapter_id: String, book_id: String, book_source_id: String, book_chapter_id: String): Call<BasicResult<Chapter>> {
-        if (book_chapter_id == ""){
-            return microService.requestChapterContentSync(chapter_id, book_id, book_source_id)
-        }
-        return microService.requestChapterContentSync(chapter_id, book_id, book_source_id, book_chapter_id)
-    }
 }

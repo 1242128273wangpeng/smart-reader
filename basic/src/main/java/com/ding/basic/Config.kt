@@ -26,6 +26,9 @@ object Config {
     private var requestAPIHost: String? = ""
     //微服务API接口
     private var microAPIHost: String = "http://union2.zn.bookapi.cn"
+    //微服务内容接口
+    private var contentAPIHost: String = "http://10.10.7.209:8888"
+
 
 
     /***
@@ -153,6 +156,16 @@ object Config {
 
     fun loadMicroAPIHost(): String {
         return microAPIHost
+    }
+
+    fun insertContentAPIHost(contentAPIHost: String) {
+        if (!TextUtils.isEmpty(contentAPIHost)) {
+            Config.contentAPIHost = contentAPIHost
+        }
+    }
+
+    fun loadContentAPIHost(): String {
+        return contentAPIHost
     }
 
     fun insertAccessKey(accessKey: String) {

@@ -227,34 +227,7 @@ public class CheckNovelUpdateService extends Service {
 
     private void checkAuthAccess() {
         RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).requestAuthAccess(new RequestSubscriber<String>() {
-                    @Override
-                    public void requestResult(@Nullable String result) {
-                        if (result != null && result.length() > 0) {
-                            String message = AESUtil.INSTANCE.decrypt(result, Config.INSTANCE.loadAccessKey());
-
-                            if (message != null && message.length() > 0) {
-                                Access access = new Gson().fromJson(message, Access.class);
-                                if (access != null) {
-                                    if (access.getPublicKey() != null) {
-                                        Config.INSTANCE.insertPublicKey(access.getPublicKey());
-                                    }
-
-                                    if (access.getPrivateKey() != null) {
-                                        Config.INSTANCE.insertPrivateKey(access.getPrivateKey());
-                                    }
-                                }
-                            }
-
-                            Logger.e("CheckAuthAccess: " + result);
-                        }
-                    }
-
-                    @Override
-                    public void requestError(@NotNull String message) {
-                        Logger.e("CheckAuthAccess: " + message);
-                    }
-                });
+                BaseBookApplication.getGlobalContext()).requestAuthAccess(null);
     }
 
     private void checkInterval() {
@@ -404,12 +377,6 @@ public class CheckNovelUpdateService extends Service {
                     public void requestComplete() {
                         Logger.i("检查更新服务: 检查书籍更新完成！");
                         checkOnSuccess(data, updateResult);
-                    }
-
-                    @Override
-                    public void requestRetry() {
-                        super.requestRetry();
-                        handleCheckBookUpdate(checkUpdateBooks, data, updateResult);
                     }
                 });
     }
