@@ -21,9 +21,6 @@ interface MicroService {
         //更新
         const val CHECK_UPDATE = "/union/book/check"
 
-        //内容
-        const val CHAPTER_CONTENT = "/content/book/content"
-
         //书架每天一次批量更新接口
         const val COVER_BATCH="/union/book/coverBatch"
 
