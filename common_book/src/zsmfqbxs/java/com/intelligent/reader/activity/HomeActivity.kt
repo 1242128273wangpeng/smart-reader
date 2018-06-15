@@ -191,6 +191,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         } catch (exception: Resources.NotFoundException) {
             exception.printStackTrace()
         }
+        AppUtils.fixInputMethodManagerLeak(applicationContext)
     }
 
     override fun onBackPressed() {
