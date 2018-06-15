@@ -8,8 +8,8 @@ apply plugin: 'maven'
 
 android {
 
-    defaultPublishConfig 'hasadDebug'
-//    defaultPublishConfig 'noadDebug'
+//    defaultPublishConfig 'hasadDebug'
+    defaultPublishConfig 'noadDebug'
 //    defaultPublishConfig 'hasadRelease'
 //    defaultPublishConfig 'noadRelease'
 
