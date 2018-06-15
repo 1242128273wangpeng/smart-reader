@@ -15,11 +15,14 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
+import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
+import com.bumptech.glide.Glide
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dingyue.contract.CommonContract
@@ -28,6 +31,7 @@ import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
+import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
@@ -41,8 +45,11 @@ import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
+import net.lzbook.kit.utils.download.DownloadAPKService
 import net.lzbook.kit.utils.update.ApkUpdateUtils
 import java.io.File
+import java.lang.reflect.Field
 import java.util.*
 
 @Route(path = RouterConfig.HOME_ACTIVITY)
@@ -168,11 +175,16 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         this.unregisterReceiver(homeBroadcastReceiver)
 
         try {
+            bookShelfFragment = null
+            homeAdapter = null
+            Glide.get(this).clearMemory()
             setContentView(R.layout.common_empty)
         } catch (exception: Resources.NotFoundException) {
             exception.printStackTrace()
         }
+        fixInputMethodManagerLeak(applicationContext)
     }
+
 
     override fun onBackPressed() {
         when {
@@ -433,6 +445,44 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                 intent.putExtra("book_source_id", book_source_id)
                 intent.setClass(applicationContext, CoverPageActivity::class.java)
                 startActivity(intent)
+            }
+        })
+
+        //为webview 加载广告提供回调
+        jsInterfaceHelper.setOnWebGameClick(JSInterfaceHelper.onWebGameClick { url, name ->
+            try {
+                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                    return@onWebGameClick
+                }
+                var title = ""
+                if (TextUtils.isEmpty(name)) {
+                    title = AppUtils.getPackageName()
+                } else {
+                    title = name
+                }
+                val welfareIntent = Intent()
+                welfareIntent.putExtra("url", url)
+                welfareIntent.putExtra("title", title)
+                welfareIntent.setClass(applicationContext, WelfareCenterActivity::class.java)
+                startActivity(welfareIntent)
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+            }
+        })
+
+        jsInterfaceHelper.setOnGameAppClick(JSInterfaceHelper.onGameAppClick { url, name ->
+            AppLog.e("福利中心", "下载游戏: $name : $url")
+
+            try {
+                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                    return@onGameAppClick
+                }
+                val intent = Intent(BookApplication.getGlobalContext(), DownloadAPKService::class.java)
+                intent.putExtra("url", url)
+                intent.putExtra("name", name)
+                startService(intent)
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         })
 
