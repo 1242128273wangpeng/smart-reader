@@ -70,7 +70,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
                 val iBook = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(ReaderStatus.book.book_id)
                 if (iBook != null && source.book_source_id != iBook.book_source_id) {
                     //弹出切源提示
-                    var map2 = java.util.HashMap<String, String>()
+                    val map2 = java.util.HashMap<String, String>()
                     map2.put("type", "1")
                     StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGECONFIRM, map2)
                     intoCatalogActivity(source, true)
@@ -81,42 +81,36 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         intoCatalogActivity(source!!, false)
     }
 
-    private fun intoCatalogActivity(source: Source, b: Boolean) {
-        if ((RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(ReaderStatus.book.book_id) != null)) {
-            val iBook = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(ReaderStatus.book.book_id)
-            if (iBook != null) {
-                iBook.book_source_id = source.book_source_id
-                iBook.book_chapter_id = source.book_chapter_id
-                iBook.host = source.host
-                iBook.last_chapter?.update_time = source.update_time
-                RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(iBook)
-                ReaderStatus.book = iBook
-            }
-            if (b) {
+    private fun intoCatalogActivity(source: Source, changeSource: Boolean) {
+        var book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(ReaderStatus.book.book_id)
+
+        if (book != null) {
+            book.host = source.host
+            book.book_source_id = source.book_source_id
+            book.book_chapter_id = source.book_chapter_id
+
+            if (changeSource) {
                 //停止预缓存逻辑
                 DataProvider.clearPreLoad()
-
-                val bookChapterDao = ChapterDaoHelper.loadChapterDataProviderHelper(BaseBookApplication.getGlobalContext(), ReaderStatus.book.book_id)
-                bookChapterDao.deleteAllChapters()
-                BookDataProviderHelper.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext()).deleteBookMark(ReaderStatus.book.book_id)
             }
         } else {
-            val iBook = ReaderStatus.book
-            iBook.book_source_id = source.book_source_id
-            iBook.book_chapter_id = source.book_chapter_id
-            iBook.host = source.host
-            ReaderStatus.book = iBook
+            book = ReaderStatus.book
+            book.host = source.host
+            book.book_source_id = source.book_source_id
+            book.book_chapter_id = source.book_chapter_id
         }
-        if (ReaderStatus.book != null) {
-            val bundle = Bundle()
-            bundle.putSerializable("cover", ReaderStatus.book)
-            bundle.putString("book_id", ReaderStatus.book.book_id)
-            bundle.putInt("sequence", ReaderStatus.book.sequence)
-            bundle.putBoolean("fromCover", false)
-            val activity = this.activity.get()
-            if (activity is Activity) {
-                RouterUtil.navigationWithCode(activity, RouterConfig.CATALOGUES_ACTIVITY, bundle, 1)
-            }
+
+        val bundle = Bundle()
+        bundle.putSerializable("cover", book)
+        bundle.putString("book_id", book.book_id)
+        bundle.putInt("sequence", ReaderStatus.book.sequence)
+        bundle.putBoolean("fromCover", false)
+        bundle.putBoolean("changeSource", changeSource)
+
+        val activity = this.activity.get()
+
+        if (activity != null) {
+            RouterUtil.navigationWithCode(activity, RouterConfig.CATALOGUES_ACTIVITY, bundle, 1)
         }
     }
 
@@ -436,6 +430,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             }
         }
     }
+
     fun readFeedBack() {
         if (activity.get() != null && !activity.get()!!.isFinishing) {
             if (ReaderStatus.position.group == -1) {

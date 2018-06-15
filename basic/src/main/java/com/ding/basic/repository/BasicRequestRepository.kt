@@ -24,6 +24,8 @@ interface BasicRequestRepository {
 
     fun requestAutoCompleteV4(word: String): Flowable<SearchAutoCompleteBeanYouHua>? //搜索V4接口
 
+    fun requestAutoCompleteV5(word: String): Flowable<SearchAutoCompleteBeanYouHua>? //搜索V5
+
     fun requestHotWords(): Flowable<SearchHotBean>?
 
     fun requestSearchRecommend(bookIds: String): Flowable<SearchRecommendBook>? //搜索推荐

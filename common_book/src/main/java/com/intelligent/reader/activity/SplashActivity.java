@@ -54,7 +54,9 @@ import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
+
 import com.intelligent.reader.util.ShieldManager;
+
 import net.lzbook.kit.utils.StatServiceUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -457,30 +459,39 @@ public class SplashActivity extends FrameActivity {
     }
 
     private void startInitTask() {
-
-        //全本追书阅读器升级上来的用户 需要将最后一章节赋值book表的lastChapter
-        if(sharedPreUtil == null){
-            sharedPreUtil = new SharedPreUtil(SharedPreUtil.Companion.getSHARE_DEFAULT());
-        }
-        boolean isDataBaseRemark = sharedPreUtil.getBoolean(SharedPreUtil.Companion.getDATABASE_REMARK(),false);
-        if(!isDataBaseRemark){
-            for(Book book: books){
-                if(book.getLast_chapter() == null || (book.getLast_chapter() != null && TextUtils.isEmpty(book.getLast_chapter().getChapter_id()))){
-                    ChapterDaoHelper chapterDao = ChapterDaoHelper.Companion.loadChapterDataProviderHelper(getApplicationContext(), book.getBook_id());
-
-                    Chapter lastChapter = chapterDao.queryLastChapter();
-                    if(lastChapter != null && !TextUtils.isEmpty(lastChapter.getChapter_id())){
-                        book.setLast_chapter(lastChapter);
-                        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book);
-                    }
-                }
-            }
-            sharedPreUtil.putBoolean(SharedPreUtil.Companion.getDATABASE_REMARK(),true);
-        }
-
         // 初始化任务
         InitTask initTask = new InitTask();
         initTask.execute();
+    }
+
+    /***
+     * 数据融合二期修改缓存逻辑，升级时同步本地最新章节信息到Book表
+     * **/
+    private void updateBookLastChapter() {
+        if (sharedPreUtil == null) {
+            sharedPreUtil = new SharedPreUtil(SharedPreUtil.Companion.getSHARE_DEFAULT());
+        }
+
+        boolean isDataBaseRemark = sharedPreUtil.getBoolean(
+                SharedPreUtil.Companion.getDATABASE_REMARK(), false);
+
+        if (!isDataBaseRemark) {
+            for (Book book : books) {
+                ChapterDaoHelper chapterDaoHelper =
+                        ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
+                                BaseBookApplication.getGlobalContext(), book.getBook_id());
+
+                Chapter lastChapter = chapterDaoHelper.queryLastChapter();
+
+                if (lastChapter != null && !TextUtils.isEmpty(lastChapter.getChapter_id())) {
+                    book.setLast_chapter(lastChapter);
+
+                    RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                            BaseBookApplication.getGlobalContext()).updateBook(book);
+                }
+            }
+            sharedPreUtil.putBoolean(SharedPreUtil.Companion.getDATABASE_REMARK(), true);
+        }
     }
 
     private boolean isGo = true;
@@ -678,11 +689,14 @@ public class SplashActivity extends FrameActivity {
                 e.printStackTrace();
             }
 
+            updateBookLastChapter();
+
             if (sharedPreUtil == null) {
                 sharedPreUtil = new SharedPreUtil(SharedPreUtil.Companion.getSHARE_DEFAULT());
             }
 
             boolean b = sharedPreUtil.getBoolean(Constants.UPDATE_CHAPTER_SOURCE_ID, false);
+
             if (!b) {
                 List<Book> bookOnlineList =
                         RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(

@@ -17,7 +17,9 @@ def releaseTime() {
 android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    lintOptions {
+        abortOnError false
+    }
 
     dexOptions {
         javaMaxHeapSize rootProject.ext.javaMaxHeapSize
@@ -140,7 +142,7 @@ android {
     }
     defaultConfig {
 
-        applicationId "cn.qbzsydsq.reader"
+        applicationId rootProject.ext.applicationId
 
 //        System.err.println("project.properties = ${project.getProperties()}")
 
@@ -437,20 +439,17 @@ N多网	        blf1298_10885_001
                     AMAP_APIKEY  : "${AMAP_APIKEY_QBZSYDQ}",
                     WECHAT_APPID : "wx1a93a804b313cef5",
                     QQ_APPID     : "1104925088",
-//                    PACKAGE_NAME : "cn.qbzsydsq.reader"
                     IFLYTEK_APPID: "${IFLYTEK_APPID_QBZSYDQ}",
                     PACKAGE_NAME : defaultConfig.applicationId
-
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/qbzsydsq_book"
-//            notOverrideResValue getOwner(), "string", "app_name", "全本追书阅读器"
             notOverrideResValue getOwner(), "string", "database_name", "qbzsydsqBook.db"
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "c2543b8059"
             notOverrideResValue getOwner(), "string", "push_key", "DPAKieWG5BWSyNrq5ZGBCfUH"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23571376"
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "5c2fff1a99656234df13d8b525ca8361"
-            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://zhuishu.lsread.cn"
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://zhuishu.lsread.cn"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://ctbookcity.lsread.cn:443"
         }
 
@@ -709,9 +708,7 @@ N多网	        blf1298_10885_001
     android.applicationVariants.all { variant ->
 
         variant.preBuild.doFirst {
-
-//            System.err.println("preBuild ${variant.applicationId}_${variant.buildType.name}_${variant.flavorName}")
-
+            System.err.println("preBuild ${variant.applicationId}_${variant.buildType.name}_${variant.flavorName}")
         }
 
         variant.checkManifest.doFirst {
@@ -937,5 +934,4 @@ dependencies {
     implementation project(':bookshelf')
     implementation project(':downloadmanager')
     implementation project(':dy-reader')
-    implementation project(':dy-media')
 }

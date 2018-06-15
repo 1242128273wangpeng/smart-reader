@@ -2,6 +2,7 @@ package com.ding.basic.repository
 
 import android.content.Context
 import com.ding.basic.bean.*
+import com.ding.basic.request.ContentAPI
 import com.ding.basic.request.MicroAPI
 import com.ding.basic.request.RequestAPI
 import com.google.gson.JsonObject
@@ -53,6 +54,10 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
 
     override fun requestAutoCompleteV4(word: String): Flowable<SearchAutoCompleteBeanYouHua>? {
         return RequestAPI.requestAutoCompleteV4(word)
+    }
+
+    override fun requestAutoCompleteV5(word: String): Flowable<SearchAutoCompleteBeanYouHua>? {
+        return RequestAPI.requestAutoCompleteV5(word)
     }
 
     override fun requestSearchRecommend(bookIds: String): Flowable<SearchRecommendBook>? {
@@ -126,10 +131,10 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
     }
 
     override fun requestChapterContent(chapter: Chapter): Flowable<BasicResult<Chapter>> {
-        return MicroAPI.requestChapterContent(chapter.chapter_id, chapter.book_id, chapter.book_source_id, chapter.book_chapter_id)
+        return ContentAPI.requestChapterContent(chapter.chapter_id, chapter.book_id, chapter.book_source_id, chapter.book_chapter_id)
     }
 
     override fun requestChapterContentSync(chapter_id: String, book_id: String, book_source_id: String, book_chapter_id: String): Call<BasicResult<Chapter>>? {
-        return MicroAPI.requestChapterContentSync(chapter_id, book_id, book_source_id, book_chapter_id)
+        return ContentAPI.requestChapterContentSync(chapter_id, book_id, book_source_id, book_chapter_id)
     }
 }

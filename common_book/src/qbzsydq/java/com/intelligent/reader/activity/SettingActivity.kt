@@ -23,6 +23,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.bumptech.glide.Glide
+import com.ding.basic.Config
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
@@ -423,7 +424,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             }
             R.id.rl_welfare -> {
                 val welfareIntent = Intent()
-                welfareIntent.putExtra("url", "https://st.quanbennovel.com/static/welfareCenter/welfareCenter.html")
+                welfareIntent.putExtra("url", Config.WelfareHost)
                 welfareIntent.putExtra("title", "福利中心")
                 welfareIntent.setClass(this@SettingActivity, WelfareCenterActivity::class.java)
                 startActivity(welfareIntent)
@@ -511,8 +512,8 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             btn_confirm_clear_cache.antiShakeClick {
                 publish_content.visibility = View.GONE
                 dialog_title.setText(R.string.tip_cleaning_cache)
+                myDialog!!.setCanceledOnTouchOutside(false)//设置点击dialog外面对话框消失
                 myDialog!!.findViewById<View>(R.id.change_source_bottom).visibility = View.GONE
-
                 myDialog!!.findViewById<View>(R.id.progress_del).visibility = View.VISIBLE
                 //添加清除缓存的处理
                 object : Thread() {

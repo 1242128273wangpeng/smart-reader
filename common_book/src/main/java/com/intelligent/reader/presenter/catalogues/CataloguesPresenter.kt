@@ -52,35 +52,37 @@ class CataloguesPresenter(var activity: Activity, var book: Book, var catalogues
         bookCoverUtil?.setOnDownloadState(this)
     }
 
-    fun requestCatalogList() {
-        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
-                .requestCatalog(book.book_id, book.book_source_id, book.book_chapter_id, object : RequestSubscriber<List<Chapter>>() {
-                    override fun requestResult(result: List<Chapter>?) {
-                        if (result != null) {
-                            chapterList.clear()
-                            chapterList.addAll(result)
-                            cataloguesContract.requestCatalogSuccess(chapterList)
-                        } else {
-                            cataloguesContract.requestCatalogError()
-                        }
+    fun requestCatalogList(changeSource: Boolean) {
 
-                        Observable.create<Boolean> {
-                            Logger.e("Refresh CacheManager")
-                            CacheManager.freshBook(book.book_id, false)
-                            it.onNext(true)
-                            it.onComplete()
-                        }.subscribeOn(Schedulers.io())
-                    }
+        val requestSubscriber = object: RequestSubscriber<List<Chapter>>() {
+            override fun requestResult(result: List<Chapter>?) {
+                if (result != null) {
+                    chapterList.clear()
+                    chapterList.addAll(result)
+                    cataloguesContract.requestCatalogSuccess(chapterList)
+                } else {
+                    cataloguesContract.requestCatalogError()
+                }
 
-                    override fun requestError(message: String) {
-                        cataloguesContract.requestCatalogError()
-                    }
+                Observable.create<Boolean> {
+                    CacheManager.freshBook(book.book_id, false)
+                    it.onNext(true)
+                    it.onComplete()
+                }.subscribeOn(Schedulers.io())
+            }
 
-                    override fun requestRetry() {
-                        super.requestRetry()
-                        requestCatalogList()
-                    }
-                }, SchedulerHelper.Type_Main)
+            override fun requestError(message: String) {
+                cataloguesContract.requestCatalogError()
+            }
+        }
+
+        if (changeSource) {
+            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                    .requestBookCatalog(book.book_id, book.book_source_id, book.book_chapter_id, requestSubscriber, SchedulerHelper.Type_Main)
+        } else {
+            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                    .requestCatalog(book.book_id, book.book_source_id, book.book_chapter_id, requestSubscriber, SchedulerHelper.Type_Main)
+        }
     }
 
     fun loadBookMark() {

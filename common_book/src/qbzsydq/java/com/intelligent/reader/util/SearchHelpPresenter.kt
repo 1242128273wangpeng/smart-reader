@@ -10,6 +10,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import com.ding.basic.bean.SearchAutoCompleteBean
+import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.bean.SearchHotBean
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
@@ -38,9 +39,9 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
     private var searchType: String? = null
     private var sharedPreferencesUtils: SharedPreferencesUtils? = null
     private var gson: Gson? = null
-    private var authorsBean: MutableList<SearchAutoCompleteBean.DataBean.AuthorsBean> = ArrayList()
-    private var labelBean: MutableList<SearchAutoCompleteBean.DataBean.LabelBean> = ArrayList()
-    private var bookNameBean: MutableList<SearchAutoCompleteBean.DataBean.NameBean> = ArrayList()
+    private var authorsBean: MutableList<SearchAutoCompleteBeanYouHua.DataBean.AuthorsBean> = ArrayList()
+    private var labelBean: MutableList<SearchAutoCompleteBeanYouHua.DataBean.LabelBean> = ArrayList()
+    private var bookNameBean: MutableList<SearchAutoCompleteBeanYouHua.DataBean.NameBean> = ArrayList()
     private var mHistoryDatas: ArrayList<String>? = ArrayList()
 
     init {
@@ -236,7 +237,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
 
     }
 
-    fun onSearchResult(suggestList: List<SearchCommonBean>, transmitBean: SearchAutoCompleteBean) {
+    fun onSearchResult(suggestList: List<SearchCommonBean>, transmitBean: SearchAutoCompleteBeanYouHua) {
         if (mSuggestList == null) {
             return
         }
@@ -246,13 +247,13 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
         bookNameBean.clear()
         if (transmitBean != null && transmitBean.data != null) {
             if (transmitBean.data!!.authors != null) {
-                authorsBean = transmitBean.data!!.authors as MutableList<SearchAutoCompleteBean.DataBean.AuthorsBean>
+                authorsBean = transmitBean.data!!.authors as MutableList<SearchAutoCompleteBeanYouHua.DataBean.AuthorsBean>
             }
             if (transmitBean.data!!.label != null) {
-                labelBean = transmitBean.data!!.label as MutableList<SearchAutoCompleteBean.DataBean.LabelBean>
+                labelBean = transmitBean.data!!.label as MutableList<SearchAutoCompleteBeanYouHua.DataBean.LabelBean>
             }
             if (transmitBean.data!!.name != null) {
-                bookNameBean = transmitBean.data!!.name as MutableList<SearchAutoCompleteBean.DataBean.NameBean>
+                bookNameBean = transmitBean.data!!.name as MutableList<SearchAutoCompleteBeanYouHua.DataBean.NameBean>
             }
         }
         for (item in suggestList) {

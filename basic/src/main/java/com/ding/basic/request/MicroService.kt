@@ -52,21 +52,6 @@ interface MicroService {
     fun requestBookUpdate(@Body json: RequestBody): Flowable<BasicResult<UpdateBean>>
 
 
-
-    @GET(CHAPTER_CONTENT)
-    fun requestChapterContent(@Query("chapter_id") chapter_id: String, @Query("book_id") book_id: String, @Query("book_source_id") book_source_id: String, @Query("book_chapter_id") book_chapter_id: String): Flowable<BasicResult<Chapter>>
-
-    @GET(CHAPTER_CONTENT)
-    fun requestChapterContent(@Query("chapter_id") chapter_id: String, @Query("book_id") book_id: String, @Query("book_source_id") book_source_id: String): Flowable<BasicResult<Chapter>>
-
-    @GET(CHAPTER_CONTENT)
-    fun requestChapterContentSync(@Query("chapter_id") chapter_id: String, @Query("book_id") book_id: String, @Query("book_source_id") book_source_id: String, @Query("book_chapter_id") book_chapter_id: String): Call<BasicResult<Chapter>>
-
-    @GET(CHAPTER_CONTENT)
-    fun requestChapterContentSync(@Query("chapter_id") chapter_id: String, @Query("book_id") book_id: String, @Query("book_source_id") book_source_id: String): Call<BasicResult<Chapter>>
-
-
-
     @POST(COVER_BATCH)
     @Headers("Content-Type: application/json;charset=UTF-8")
     fun requestCoverBatch(@Body json: RequestBody): Flowable<BasicResult<List<Book>>>

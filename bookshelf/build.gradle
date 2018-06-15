@@ -6,9 +6,9 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
 
     publishNonDefault true
+    defaultPublishConfig rootProject.ext.defaultPublishConfig
 
     defaultConfig {
 
@@ -41,6 +41,10 @@ android {
         }
     }
 
+    lintOptions {
+        abortOnError false
+    }
+
     flavorDimensions "default"
 
     productFlavors {
@@ -65,5 +69,11 @@ dependencies {
 //    annotationProcessor "android.arch.persistence.room:compiler:$arch_version"
 
     api project(':resource')
-    implementation project(':dy-media')
+    if(rootProject.ext.hasad) {
+        System.err.println("bookshelf hasad")
+        api "com.dy.media:hasad:${rootProject.ext.media_version}"
+    }else{
+        System.err.println("bookshelf noad")
+        api "com.dy.media:noad:${rootProject.ext.media_version}"
+    }
 }

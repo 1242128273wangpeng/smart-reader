@@ -77,6 +77,10 @@ internal object RequestAPI {
         return requestService.requestAutoCompleteV4(word)
     }
 
+    fun requestAutoCompleteV5(word: String): Flowable<SearchAutoCompleteBeanYouHua>? {
+        return requestService.requestAutoCompleteV5(word)
+    }
+
     fun requestHotWordsV4(): Flowable<Result<SearchResult>>{
         return requestService.requestHotWordV4()
     }

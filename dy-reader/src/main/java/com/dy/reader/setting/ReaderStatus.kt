@@ -26,6 +26,8 @@ object ReaderStatus {
         chapterList.clear()
         PageManager.clear()
         DataProvider.clear()
+
+
     }
 
 

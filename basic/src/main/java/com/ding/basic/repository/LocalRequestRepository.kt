@@ -17,6 +17,7 @@ import retrofit2.Call
 class LocalRequestRepository private constructor(private var context: Context) : BasicRequestRepository {
 
 
+
     companion object {
         private var localRequestRepository: LocalRequestRepository? = null
 
@@ -95,6 +96,10 @@ class LocalRequestRepository private constructor(private var context: Context) :
     }
 
     override fun requestAutoCompleteV4(word: String): Flowable<SearchAutoCompleteBeanYouHua>? {
+        return null
+    }
+
+    override fun requestAutoCompleteV5(word: String): Flowable<SearchAutoCompleteBeanYouHua>? {
         return null
     }
 

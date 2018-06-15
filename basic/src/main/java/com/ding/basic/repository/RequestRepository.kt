@@ -20,11 +20,15 @@ interface RequestRepository {
 
     fun requestCatalog(book_id: String, book_source_id: String, book_chapter_id: String, requestSubscriber: RequestSubscriber<List<Chapter>>, type: Int)
 
+    fun requestBookCatalog(book_id: String, book_source_id: String, book_chapter_id: String, requestSubscriber: RequestSubscriber<List<Chapter>>, type: Int)
+
     fun requestBookSources(book_id: String, book_source_id: String, book_chapter_id: String, requestSubscriber: RequestSubscriber<BookSource>)
 
     fun requestAutoComplete(word: String, requestSubscriber: RequestSubscriber<SearchAutoCompleteBean>)
 
     fun requestAutoCompleteV4(word: String, requestSubscriber: RequestSubscriber<SearchAutoCompleteBeanYouHua>)  //搜索V4接口
+
+    fun requestAutoCompleteV5(word: String, requestSubscriber: RequestSubscriber<SearchAutoCompleteBeanYouHua>)  //搜索V5
 
     fun requestSearchRecommend(bookIds: String,requestSubscriber: RequestSubscriber<SearchRecommendBook>) //搜索推荐
 
@@ -40,7 +44,7 @@ interface RequestRepository {
 
     fun requestFeedback(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<Boolean>)
 
-    fun requestCoverBatch(checkBody: RequestBody, requestSubscriber: RequestSubscriber<List<Book>>)
+    fun requestCoverBatch(checkBody: RequestBody)
 
     fun requestLoginAction(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<LoginResp>)
 
@@ -52,7 +56,7 @@ interface RequestRepository {
 
     fun requestCoverRecommend(book_id: String, recommend: String, requestSubscriber: RequestSubscriber<CoverRecommendBean>)
 
-    fun requestAuthAccess(requestSubscriber: RequestSubscriber<String>)
+    fun requestAuthAccess(callback: ((Boolean) -> Unit)?)
 
 
     /************************* 本地数据 *************************/

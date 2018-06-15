@@ -107,17 +107,6 @@ class BookEndPresenter(var activity: Activity, contract: BookEndContract) {
             book.host = source.host
             book.book_source_id = source.book_source_id
             book.book_chapter_id = source.book_chapter_id
-            //最好是更新书籍最新章节的全部信息：Chapter
-            book.last_chapter?.update_time = source.update_time
-
-            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book)
-
-            ReaderStatus.book = book
-
-            if (changeSource) {
-                val bookChapterDao = ChapterDaoHelper.loadChapterDataProviderHelper(BaseBookApplication.getGlobalContext(), ReaderStatus.book.book_id)
-                bookChapterDao.deleteAllChapters()
-            }
         } else {
             book = ReaderStatus.book
             book.host = source.host
@@ -127,21 +116,22 @@ class BookEndPresenter(var activity: Activity, contract: BookEndContract) {
 
         CacheManager.stop(ReaderStatus.book.book_id)
 
-        openCategoryPage()
+        openCategoryPage(book, changeSource)
     }
 
     /***
      * 进入目录页
      * **/
-    private fun openCategoryPage() {
+    private fun openCategoryPage(book: Book, changeSource: Boolean) {
         val flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
 
         val bundle = Bundle()
-        bundle.putSerializable("cover", ReaderStatus.book)
-        bundle.putString("book_id", ReaderStatus.book.book_id)
+        bundle.putSerializable("cover", book)
+        bundle.putString("book_id", book.book_id)
         bundle.putInt("sequence", ReaderStatus.book.sequence)
         bundle.putBoolean("fromCover", true)
         bundle.putBoolean("fromEnd", true)
+        bundle.putBoolean("changeSource", changeSource)
 
         RouterUtil.navigation(activity, RouterConfig.CATALOGUES_ACTIVITY, bundle, flags)
     }

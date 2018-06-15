@@ -36,9 +36,12 @@ object BookRouter {
 
         val bundle = Bundle()
 
-        book.update_status = 0
+        val localBook = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(book.book_id)
 
-        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book)
+        if (localBook != null) {
+            book.update_status = 0
+            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book)
+        }
 
         if (book.readed == -2) {
             bundle.putSerializable("cover", book)

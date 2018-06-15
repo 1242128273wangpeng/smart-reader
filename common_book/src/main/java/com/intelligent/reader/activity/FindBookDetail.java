@@ -22,6 +22,7 @@ import com.baidu.mobstat.StatService;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.repository.RequestRepositoryFactory;
+import com.dingyue.contract.CommonContract;
 import com.dingyue.contract.util.SharedPreUtil;
 import com.intelligent.reader.R;
 import com.intelligent.reader.util.PagerDesc;
@@ -405,6 +406,9 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         jsInterfaceHelper.setOnSearchClick(new JSInterfaceHelper.onSearchClick() {
             @Override
             public void doSearch(String keyWord, String search_type, String filter_type, String filter_word, String sort_type) {
+                if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
+                    return;
+                }
                 try {
                     Map<String, String> data = new HashMap<>();
                     data.put("keyword", keyWord);
@@ -434,6 +438,9 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             public void doCover(final String host, final String book_id, final String book_source_id, final String name, final String author, final String parameter, final String extra_parameter) {
                 AppLog.e(TAG, "doCover");
 
+                if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
+                    return;
+                }
                 Map<String, String> data = new HashMap<>();
                 data.put("BOOKID", book_id);
                 data.put("source", "WEBVIEW");
@@ -456,7 +463,9 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             public void doAnotherWeb(String url, String name) {
                 AppLog.e(TAG, "doAnotherWeb");
                 String packageName = AppUtils.getPackageName();
-
+                if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
+                    return;
+                }
                 if ("cc.kdqbxs.reader".equals(packageName) || "cc.quanbennovel".equals(packageName) || "cn.txtkdxsdq.reader".equals(packageName)) {
                     try {
                         Intent intent = new Intent();
