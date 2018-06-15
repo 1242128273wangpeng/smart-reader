@@ -12,8 +12,8 @@ ext {
     minSdkVersion = 14
     targetSdkVersion = 22
 
-    applicationId = "cn.qbzsydsq.reader"
-    defaultPublishConfig = 'qbzsydqDebug'
+    applicationId = "cn.txtqbmfyd.reader"
+    defaultPublishConfig = 'txtqbmfydDebug'
 
     minifyEnable = false
     shrinkResEnable = minifyEnable

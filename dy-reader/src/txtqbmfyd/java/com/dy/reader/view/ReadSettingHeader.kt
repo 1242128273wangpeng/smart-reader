@@ -1,16 +1,13 @@
 package com.dy.reader.view
 
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
 import android.support.annotation.DrawableRes
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
-import android.widget.PopupWindow
 import com.ding.basic.database.helper.BookDataProviderHelper
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.R
@@ -18,7 +15,6 @@ import com.dy.reader.event.EventSetting
 import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderStatus
 import kotlinx.android.synthetic.txtqbmfyd.reader_option_header.view.*
-import kotlinx.android.synthetic.txtqbmfyd.popup_reader_option_header_more.view.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
@@ -94,13 +90,13 @@ class ReadSettingHeader : FrameLayout{
                     v.context.applicationContext.showToastMessage("书签添加成功")
                     isMarkPage = true
                     ibtn_reader_bookmark.isSelected = true
-                    data.put("type", "1")
+                    data["type"] = "1"
                 }
                 2 -> {
                     v.context.applicationContext.showToastMessage("书签已删除")
                     isMarkPage = false
                     ibtn_reader_bookmark.isSelected = false
-                    data.put("type", "2")
+                    data["type"] = "2"
 
                 }
                 else -> {
@@ -117,35 +113,30 @@ class ReadSettingHeader : FrameLayout{
             presenter?.showMore()
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_read_head_more)
 
-            val inflate = LayoutInflater.from(context).inflate(R.layout.popup_reader_option_header_more, null)
 
-            val popupWindow = PopupWindow(inflate, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-            popupWindow.setBackgroundDrawable(ColorDrawable(0x00000000));
-            popupWindow.isFocusable = true
-            popupWindow.isTouchable = true
-            popupWindow.isOutsideTouchable = false
-            popupWindow.showAsDropDown(ibtn_reader_more)
+            val readerHeaderMorePopup = ReaderHeaderMorePopup(context)
 
-            inflate.txt_reader_change_source.setOnClickListener {
+            readerHeaderMorePopup.changeSourceListener = {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_change_source_btn)
                 presenter?.changeSource()
-                popupWindow.dismiss()
+                readerHeaderMorePopup.dismiss()
 
                 EventBus.getDefault().post(EventSetting(EventSetting.Type.MENU_STATE_CHANGE, false))
             }
 
-            inflate.txt_reader_feedback.setOnClickListener{
+            readerHeaderMorePopup.startFeedbackListener = {
                 presenter?.readFeedBack()
-
-                popupWindow.dismiss()
+                readerHeaderMorePopup.dismiss()
                 EventBus.getDefault().post(EventSetting(EventSetting.Type.MENU_STATE_CHANGE, false))
             }
 
-            inflate.txt_reader_book_detail.setOnClickListener {
+            readerHeaderMorePopup.startBookDetailListener = {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_read_head_bookinfo)
                 presenter?.bookInfo()
-                popupWindow.dismiss()
+                readerHeaderMorePopup.dismiss()
             }
+
+            readerHeaderMorePopup.showAsDropDown(ibtn_reader_more)
         }
 
         // 初始化动画
@@ -168,10 +159,10 @@ class ReadSettingHeader : FrameLayout{
         if (book_id == ReaderStatus.book.book_id) {
             bookDownloadState = CacheManager.getBookStatus(ReaderStatus.book)
             when (bookDownloadState) {
-                DownloadState.NOSTART -> ibtn_reader_download.setImageResource(R.drawable.icon_read_option_down_normal)
-                DownloadState.DOWNLOADING -> ibtn_reader_download.setImageResource(R.drawable.icon_read_option_down_running)
-                DownloadState.PAUSEED -> ibtn_reader_download.setImageResource(R.drawable.icon_read_option_down_pause)
-                DownloadState.FINISH -> ibtn_reader_download.setImageResource(R.drawable.icon_read_option_down_finish)
+                DownloadState.NOSTART -> ibtn_reader_download.setImageResource(R.drawable.reader_option_download_icon)
+                DownloadState.DOWNLOADING -> ibtn_reader_download.setImageResource(R.drawable.reader_option_downloading_icon)
+                DownloadState.PAUSEED -> ibtn_reader_download.setImageResource(R.drawable.reader_option_download_pause_icon)
+                DownloadState.FINISH -> ibtn_reader_download.setImageResource(R.drawable.reader_option_download_finish_icon)
                 else -> {
                 }
             }

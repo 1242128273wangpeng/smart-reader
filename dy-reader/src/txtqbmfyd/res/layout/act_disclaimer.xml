@@ -22,6 +22,7 @@
             android:layout_height="22dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="16dp"
+            android:contentDescription="@string/module_name"
             android:src="@drawable/common_back_icon"/>
 
         <TextView
@@ -42,7 +43,7 @@
         android:layout_below="@id/rl_disclaimer"
         android:scaleType="fitXY"
         android:contentDescription="@string/module_name"
-        android:src="@drawable/title_shadow"/>
+        android:src="@drawable/common_header_shadow_icon"/>
 
     <ScrollView
         android:layout_width="match_parent"

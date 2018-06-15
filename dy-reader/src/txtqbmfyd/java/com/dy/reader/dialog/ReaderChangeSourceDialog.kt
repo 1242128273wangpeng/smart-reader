@@ -2,6 +2,7 @@ package com.dy.reader.dialog
 
 import android.app.Activity
 import android.support.v7.widget.LinearLayoutManager
+import android.view.Gravity
 import android.view.View
 import com.ding.basic.bean.Source
 import com.dy.reader.R
@@ -21,7 +22,7 @@ import java.util.ArrayList
 
 class ReaderChangeSourceDialog(activity: Activity) {
 
-    private val dialog = MyDialog(activity, R.layout.dialog_reader_chang_source)
+    private val dialog = MyDialog(activity, R.layout.dialog_reader_chang_source, Gravity.BOTTOM)
 
     private var continueListener: (() -> Unit)? = null
     private var cancelListener: (() -> Unit)? = null

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#E6191C1F"
-    tools:ignore="RtlHardcoded, MissingPrefix">
+    tools:ignore="RtlHardcoded, MissingPrefix, RtlSymmetry">
 
     <RelativeLayout
         android:id="@+id/reading_head_content"
@@ -59,8 +59,7 @@
             android:layout_alignParentRight="true"
             android:background="@null"
             android:contentDescription="@string/module_name"
-            android:padding="16dp"
-            android:scaleType="fitCenter"
+            android:paddingRight="16dp"
             android:src="@drawable/reader_option_more_icon"
             app:onPressChangeAlpha="true"/>
     </RelativeLayout>
