@@ -30,7 +30,6 @@ import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.book.view.RecommendItemView
-import net.lzbook.kit.data.db.help.ChapterDaoHelper
 import net.lzbook.kit.utils.*
 import java.util.*
 
@@ -213,7 +212,7 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
                 val cleanDialog = MyDialog(activity, R.layout.dialog_download_clean)
                 cleanDialog.setCanceledOnTouchOutside(false)
                 cleanDialog.setCancelable(false)
-                (cleanDialog.findViewById(R.id.dialog_msg) as TextView).setText(R.string.tip_cleaning_cache)
+                cleanDialog.findViewById<TextView>(R.id.dialog_msg).setText(R.string.tip_cleaning_cache)
                 cleanDialog.show()
 
                 Observable.create(ObservableOnSubscribe<Boolean> { emitter ->

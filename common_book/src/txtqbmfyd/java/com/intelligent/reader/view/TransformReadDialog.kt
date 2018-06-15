@@ -1,4 +1,4 @@
-package com.intelligent.reader.widget
+package com.intelligent.reader.view
 
 import android.app.Activity
 import android.view.Gravity
