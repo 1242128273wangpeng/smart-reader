@@ -69,6 +69,9 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
 
     private lateinit var mCataloguesAdapter: CataloguesAdapter
 
+    //是否换源
+    private var changeSource: Boolean = false
+
     /**
      * 标识List的滚动状态。
      */
@@ -141,6 +144,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         is_last_chapter = bundle.getBoolean("is_last_chapter", false)
         fromCover = bundle.getBoolean("fromCover", true)
         fromEnd = bundle.getBoolean("fromEnd", false)
+        changeSource = bundle.getBoolean("changeSource", false)
 
         if (book != null) {
             catalog_novel_name!!.text = book!!.name
@@ -170,14 +174,14 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
             loadingPage = LoadingPage(this, LoadingPage.setting_result)
             loadingPage!!.setCustomBackgroud()
             if (mCataloguesPresenter != null) {
-                mCataloguesPresenter!!.requestCatalogList()
+                mCataloguesPresenter!!.requestCatalogList(changeSource)
             }
 
             if (loadingPage != null) {
                 loadingPage!!.isCategory = true
                 loadingPage!!.setReloadAction(Callable<Void> {
                     if (mCataloguesPresenter != null) {
-                        mCataloguesPresenter!!.requestCatalogList()
+                        mCataloguesPresenter!!.requestCatalogList(changeSource)
                     }
                     null
                 })
