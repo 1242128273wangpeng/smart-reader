@@ -14,12 +14,12 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:clickable">false</item>
-        <item name="android:button">@drawable/reader_feedback_checkbox_sel</item>
+        <!--<item name="android:button">@drawable/reader_feedback_check_style</item>-->
     </style>
 
     <style name="reader_circle_progress_bar">
         <item name="android:indeterminateOnly">true</item>
-        <item name="android:indeterminateDrawable">@drawable/reader_loading_progress_bg</item>
+        <!--<item name="android:indeterminateDrawable">@drawable/reader_loading_progress_bg</item>-->
         <item name="android:indeterminateBehavior">repeat</item>
         <item name="android:indeterminateDuration">1500</item>
         <item name="android:minWidth">48dp</item>

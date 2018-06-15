@@ -108,25 +108,25 @@ android {
             zsmfqbxs  : "追书免费全本小说", //阅微替
             txtqbmfxs : "TXT全本免费小说", //鸿雁替
             qbmfxsydq : "全本免费小说阅读器", //五步替
-            txtqbdzs  : "TXT全本免费电子书",
+            txtqbdzs  : "TXT全本免费电子书",//智胜电子书替
             kdqbdzs   : "快读全本电子书",
             txtqbxsydq: "TXT全本小说阅读器",
             txtqbmfyd : "TXT全本免费阅读",
-            qbmfkdxs  : "全本免费快读小说"
+            qbmfkdxs  : "全本免费快读小说"//今日多看
     ]
 
     def appPackageIDConfig = [
             kdzsydq   : "cn.txtzsydsq.reader",
             qbzsydq   : "cn.qbzsydsq.reader",
-            mfqbxssc  : "cc.kdqbxs.reader",
-            zsmfqbxs  : "cc.mianfeinovel",
-            txtqbmfxs : "cc.lianzainovel",
-            qbmfxsydq : "cc.quanben.novel",
-            txtqbdzs  : "cc.remennovel",
+            mfqbxssc  : "cc.kdqbxs.reader",//快读替
+            zsmfqbxs  : "cc.mianfeinovel",//阅微替
+            txtqbmfxs : "cc.lianzainovel",//鸿雁替
+            qbmfxsydq : "cc.quanben.novel",//五步替
+            txtqbdzs  : "cc.remennovel",//智胜电子书替
             kdqbdzs   : "cn.kkqbtxtxs.reader",
             txtqbxsydq: "cn.zsqbydq.reader",
             txtqbmfyd : "cn.txtqbmfyd.reader",
-            qbmfkdxs  : "cc.quanbennovel"
+            qbmfkdxs  : "cc.quanbennovel"//今日多看
     ]
 
     def channel = "dev_channel"
