@@ -208,7 +208,7 @@ public class Constants {
     //统计开关
     public static boolean dy_ad_new_statistics_switch = true;
     //阅读页翻页统计开关
-    public static boolean dy_readPage_statistics_switch = true;
+    public static boolean dy_readPage_statistics_switch = false;
     //老的广告统计开关
     public static boolean dy_ad_old_request_switch = true;
     //是否启用新版章节末UI
