@@ -860,7 +860,9 @@ N多网	        blf1298_10885_001
         }
 
         variant.outputs.all { output ->
+
             if (variant.buildType.debuggable || variant.flavorName.contains("Release")) {
+                outputFileName = "../../" + outputFileName
                 return
             }
 
