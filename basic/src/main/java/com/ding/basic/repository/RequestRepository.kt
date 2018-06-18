@@ -56,6 +56,8 @@ interface RequestRepository {
 
     fun requestCoverRecommend(book_id: String, recommend: String, requestSubscriber: RequestSubscriber<CoverRecommendBean>)
 
+    fun requestBookRecommend(book_id: String, shelfBooks: String, requestSubscriber: RequestSubscriber<RecommendBooks>)
+
     fun requestAuthAccess(callback: ((Boolean) -> Unit)?)
 
 

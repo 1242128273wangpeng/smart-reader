@@ -91,6 +91,9 @@ interface RequestService {
 
         //书籍封面页推荐
         const val COVER_RECOMMEND = "/v4/recommend/{book_id}/coverPage"
+
+        const val BOOK_RECOMMEND = "/v5/search/recommend"
+
     }
 
     @GET(DEFAULT_BOOK)
@@ -174,4 +177,8 @@ interface RequestService {
     @FormUrlEncoded
     @POST(COVER_RECOMMEND)
     fun requestCoverRecommend(@Path("book_id") book_id: String, @Field("recommanded") bookIds: String): Flowable<CoverRecommendBean>
+
+
+    @GET(BOOK_RECOMMEND)
+    fun requestBookRecommend(@Query("book_id") book_id: String, @Query("shelfBooks") shelfBooks: String): Flowable<CommonResult<RecommendBooks>>
 }

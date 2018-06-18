@@ -71,7 +71,7 @@ interface BasicRequestRepository {
 
 
 
-
+    fun requestBookRecommend(book_id: String, shelfBooks: String): Flowable<CommonResult<RecommendBooks>>?
 
 
 }

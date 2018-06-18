@@ -746,6 +746,29 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
     }
 
+
+    override fun requestBookRecommend(book_id: String, shelfBooks: String, requestSubscriber: RequestSubscriber<RecommendBooks>) {
+        InternetRequestRepository.loadInternetRequestRepository(context).requestBookRecommend(book_id, shelfBooks)!!
+                .compose(SchedulerHelper.schedulerHelper())
+                .subscribeWith(object : ResourceSubscriber<CommonResult<RecommendBooks>>() {
+                    override fun onNext(result: CommonResult<RecommendBooks>?) {
+                        if (result != null && result.checkResultAvailable()) {
+                            requestSubscriber.onNext(result.data)
+                        } else {
+                            requestSubscriber.onError(Throwable("推荐接口请求异常！"))
+                        }
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        requestSubscriber.onError(throwable)
+                    }
+
+                    override fun onComplete() {
+                        requestSubscriber.onComplete()
+                    }
+                })
+    }
+
     override fun checkChapterCache(chapter: Chapter?): Boolean {
         if (chapter == null) {
             return false

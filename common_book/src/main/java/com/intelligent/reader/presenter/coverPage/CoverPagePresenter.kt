@@ -8,6 +8,8 @@ import android.view.View
 import android.widget.*
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.CoverRecommendBean
+import com.ding.basic.bean.RecommendBean
+import com.ding.basic.bean.RecommendBooks
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.dingyue.contract.router.RouterConfig
@@ -42,6 +44,9 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
     var bookCoverUtil: BookCoverUtil? = null
     var sharePreUtil: SharedPreUtil? = null
     var bookCoverViewModel: BookCoverViewModel? = null
+
+    var recommendBooks = ArrayList<RecommendBean>()
+
 
     init {
         sharePreUtil = SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
@@ -440,22 +445,31 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
     fun requestCoverRecommend() {
         if (book_id != null && !TextUtils.isEmpty(book_id)) {
             val bookIDs: String = loadBookShelfID()
-            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestCoverRecommend(book_id, bookIDs, object : RequestSubscriber<CoverRecommendBean>() {
-                override fun requestResult(result: CoverRecommendBean?) {
-                    if (result?.data != null && result.data?.map != null) {
+            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestBookRecommend(book_id, bookIDs, object : RequestSubscriber<RecommendBooks>() {
+                override fun requestResult(result: RecommendBooks?) {
+                    if (result != null) {
                         if (sharePreUtil != null) {
-
                             val scale = sharePreUtil!!.getString(SharedPreUtil.RECOMMEND_BOOKCOVER, "2,2,0").split(",")
 
                             if (scale.size >= 2) {
                                 if (!TextUtils.isEmpty(scale[0])) {
-
+                                    val count = Integer.parseInt(scale[0])
+                                    if (result.znList != null && result.znList!!.size > count) {
+                                        for (index in 0 until count) {
+                                            recommendBooks.add(result.znList!![index])
+                                        }
+                                    }
                                 }
                                 if (!TextUtils.isEmpty(scale[1])) {
-
+                                    val count = Integer.parseInt(scale[1])
+                                    if (result.qgList != null && result.qgList!!.size > count) {
+                                        for (index in 0 until count) {
+                                            recommendBooks.add(result.qgList!![index])
+                                        }
+                                    }
                                 }
                             }
-//                            coverPageContract.showRecommendSuccess(mRecommendBooks)
+                            coverPageContract.showRecommendSuccess(recommendBooks)
                         }
                     } else {
                         coverPageContract.showRecommendFail()
