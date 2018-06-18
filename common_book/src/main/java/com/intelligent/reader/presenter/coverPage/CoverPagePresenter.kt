@@ -330,8 +330,11 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
 
             if (book != null) {
                 coverDetail?.last_chapter = book.last_chapter
+                coverDetail?.id = book.id
+                coverDetail?.chapter_count = book.chapter_count
 
-                RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(coverDetail!!)
+               var result =  RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(coverDetail!!)
+                AppLog.e("result",result.toString())
             }
         }
     }
