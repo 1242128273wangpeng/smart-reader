@@ -66,6 +66,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     private ImageView img_head_search;
     private ImageView img_head_download_manage;
     private SharedPreUtil sharedPreUtil;
+    private int bottomType;//青果打点搜索 2 推荐  3 榜单
 
     @Override
     public void onAttach(Activity activity) {
@@ -103,9 +104,11 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 //        initRefresh();
         return rootView;
     }
-
-    public void setTitle(String title) {
-        txt_head_title.setText(title);
+    public void setTitle(String title, int logBottomType) {
+        if(txt_head_title != null){
+            txt_head_title.setText(title);
+        }
+        bottomType = logBottomType;
     }
 
     @SuppressLint("JavascriptInterface")
@@ -144,24 +147,18 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onClick(View v) {
 
-                    String titleType = sharedPreUtil.getString("HOME_FINDBOOK_SEARCH");
-                    String logType = StartLogClickUtil.MAIN_PAGE;
-                    if (!TextUtils.isEmpty(titleType)) {
-                        if (titleType.equals("recommend")) {
-                            logType = StartLogClickUtil.RECOMMEND_PAGE;
-                        } else if (titleType.equals("top")) {
-                            logType = StartLogClickUtil.TOP_PAGE;
-                        } else if (titleType.equals("class")) {
-                            logType = StartLogClickUtil.CLASS_PAGE;
-                        }
+                    RouterUtil.INSTANCE.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY);
+                    if(bottomType ==2){
+                        StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH);
+                    }else if(bottomType==3){
+                        StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH);
+                    }else if(bottomType == 4){
+                        StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.QG_FL_SEARCH);
+                    }else{
+                        StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.SEARCH);
                     }
-
-                    StartLogClickUtil.upLoadEventLog(context,
-                            logType, StartLogClickUtil.SEARCH);
-
-                    startActivity(
-                            new Intent(WebViewFragment.this.context, SearchBookActivity.class));
                 }
+
             });
 
             img_head_download_manage.setOnClickListener(new View.OnClickListener() {

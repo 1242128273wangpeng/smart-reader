@@ -128,29 +128,6 @@ public class DynamicParamter {
 
     public void setDynamicParamter() {
 
-        AppLog.d("startRequestCDNDynamic", "/v3/dynamic/dynamicParameter");
-        mDynamicUrl = RequestService.DYNAMIC_PARAMETERS;
-
-        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestDynamicParameters(new RequestSubscriber<JsonObject>() {
-            @Override
-            public void requestResult(@Nullable JsonObject result) {
-                if (result != null) {
-                    checkResult(result.toString());
-                }
-            }
-
-            @Override
-            public void requestError(@NotNull String message) {
-                Logger.e("请求动态参数异常！");
-                startRequestCDNDynamic();
-            }
-
-            @Override
-            public void requestComplete() {
-
-            }
-        });
-
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
 
         UrlUtils.setBookNovelDeployHost(sp.getString(Constants.NOVEL_HOST, ""));
@@ -247,6 +224,29 @@ public class DynamicParamter {
 
 
         installParam();
+
+        AppLog.d("startRequestCDNDynamic", "/v3/dynamic/dynamicParameter");
+        mDynamicUrl = RequestService.DYNAMIC_PARAMETERS;
+
+        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestDynamicParameters(new RequestSubscriber<JsonObject>() {
+            @Override
+            public void requestResult(@Nullable JsonObject result) {
+                if (result != null) {
+                    checkResult(result.toString());
+                }
+            }
+
+            @Override
+            public void requestError(@NotNull String message) {
+                Logger.e("请求动态参数异常！");
+                startRequestCDNDynamic();
+            }
+
+            @Override
+            public void requestComplete() {
+
+            }
+        });
 
     }
 

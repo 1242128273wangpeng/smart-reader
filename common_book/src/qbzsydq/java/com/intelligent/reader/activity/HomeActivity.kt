@@ -77,35 +77,9 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
     private var bookShelfFragment: BookShelfFragment? = null
 
-    private val recommendFragment: WebViewFragment by lazy {
-        val fragment = WebViewFragment()
-        val bundle = Bundle()
-        bundle.putString("type", "recommend")
-        val uri = URLBuilderIntterface.WEB_RECOMMEND.replace("{packageName}", AppUtils.getPackageName())
-        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
-        fragment.arguments = bundle
-        fragment
-    }
-
-    private val rankingFragment: WebViewFragment by lazy {
-        val fragment = WebViewFragment()
-        val bundle = Bundle()
-        bundle.putString("type", "rank")
-        val uri = URLBuilderIntterface.WEB_RANK.replace("{packageName}", AppUtils.getPackageName())
-        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
-        fragment.arguments = bundle
-        fragment
-    }
-
-    private val categoryFragment: WebViewFragment by lazy {
-        val fragment = WebViewFragment()
-        val bundle = Bundle()
-        bundle.putString("type", "category")
-        val uri = URLBuilderIntterface.WEB_CATEGORY.replace("{packageName}", AppUtils.getPackageName())
-        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
-        fragment.arguments = bundle
-        fragment
-    }
+    private var recommendFragment: WebViewFragment? = null
+    private var rankingFragment: WebViewFragment? = null
+    private var categoryFragment: WebViewFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -176,6 +150,9 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         try {
             bookShelfFragment = null
+            recommendFragment = null
+            rankingFragment = null
+            categoryFragment = null
             homeAdapter = null
             Glide.get(this).clearMemory()
             setContentView(R.layout.common_empty)
@@ -234,8 +211,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             this.changeHomePagerIndex(1)
             sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "recommend")
             HomeLogger.uploadHomeRecommendSelected()
-            if(recommendFragment != null){
-                recommendFragment.setTitle(getString(R.string.recommend),2)
+            if (recommendFragment != null) {
+                recommendFragment!!.setTitle(getString(R.string.recommend), 2)
             }
         }
 
@@ -243,8 +220,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             this.changeHomePagerIndex(2)
             sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "top")
             HomeLogger.uploadHomeRankSelected()
-            if(rankingFragment != null){
-                rankingFragment.setTitle(getString(R.string.ranking),3)
+            if (rankingFragment != null) {
+                rankingFragment!!.setTitle(getString(R.string.ranking), 3)
             }
         }
 
@@ -252,8 +229,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             this.changeHomePagerIndex(3)
             sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "class")
             HomeLogger.uploadHomeCategorySelected()
-            if(categoryFragment != null){
-                categoryFragment.setTitle(getString(R.string.category),4)
+            if (categoryFragment != null) {
+                categoryFragment!!.setTitle(getString(R.string.category), 4)
             }
         }
     }
@@ -512,9 +489,39 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     }
                     bookShelfFragment
                 }
-                1 -> recommendFragment
-                2 -> rankingFragment
-                3 -> categoryFragment
+                1 -> {
+                    if (recommendFragment == null) {
+                        recommendFragment = WebViewFragment()
+                        val bundle = Bundle()
+                        bundle.putString("type", "recommend")
+                        val uri = URLBuilderIntterface.WEB_RECOMMEND.replace("{packageName}", AppUtils.getPackageName())
+                        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
+                        recommendFragment!!.setArguments(bundle)
+                    }
+                    recommendFragment
+                }
+                2 -> {
+                    if (rankingFragment == null) {
+                        rankingFragment = WebViewFragment()
+                        val bundle = Bundle()
+                        bundle.putString("type", "rank")
+                        val uri = URLBuilderIntterface.WEB_RANK.replace("{packageName}", AppUtils.getPackageName())
+                        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
+                        rankingFragment!!.arguments = bundle
+                    }
+                    rankingFragment
+                }
+                3 -> {
+                    if (categoryFragment == null) {
+                        categoryFragment = WebViewFragment()
+                        val bundle = Bundle()
+                        bundle.putString("type", "category")
+                        val uri = URLBuilderIntterface.WEB_CATEGORY.replace("{packageName}", AppUtils.getPackageName())
+                        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
+                        categoryFragment!!.arguments = bundle
+                    }
+                    categoryFragment
+                }
                 else -> null
             }
         }

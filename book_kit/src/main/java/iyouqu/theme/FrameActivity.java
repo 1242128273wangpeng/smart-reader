@@ -40,6 +40,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.baidu.mobstat.StatService;
+import com.umeng.message.PushAgent;
 
 import net.lzbook.kit.R;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
@@ -145,6 +146,9 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
 
         initThemeHelper();
         initTheme();
+
+        //友盟推送
+        PushAgent.getInstance(this).onAppStart();
     }
 
     public SwipeBackHelper getSwipeBackHelper() {
