@@ -27,7 +27,6 @@ import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
-import kotlin.concurrent.thread
 
 class RequestRepositoryFactory private constructor(private val context: Context) : RequestRepository {
 
@@ -553,8 +552,6 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                             it.checkPrivateKeyExpire() -> requestAuthAccess({
                                 if (it) {
                                     requestCoverBatch(checkBody)
-                                } else {
-                                    throw Throwable("鉴权请求异常！")
                                 }
                             })
                             it.checkResultAvailable() -> {
