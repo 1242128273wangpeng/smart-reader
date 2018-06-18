@@ -201,7 +201,7 @@ object Config {
         this.privateKey = privateKey
 
         val sharedPreferences = context?.getSharedPreferences("Basic_Preference", Context.MODE_PRIVATE)
-        sharedPreferences?.edit()?.putString("Access_Private_Key", publicKey)?.apply()
+        sharedPreferences?.edit()?.putString("Access_Private_Key", privateKey)?.apply()
     }
 
     fun loadPrivateKey(): String {

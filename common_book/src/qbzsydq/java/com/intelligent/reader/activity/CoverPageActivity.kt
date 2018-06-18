@@ -12,6 +12,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
+import com.ding.basic.bean.RecommendBean
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.showToastMessage
@@ -313,7 +314,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         Toast.makeText(this, "请求失败", Toast.LENGTH_SHORT).show()
     }
 
-    override fun showRecommendSuccess(recommendBean: ArrayList<Book>) {
+    override fun showRecommendSuccess(recommends: ArrayList<RecommendBean>) {
 
     }
 
