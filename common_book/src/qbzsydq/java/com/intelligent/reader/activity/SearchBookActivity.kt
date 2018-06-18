@@ -371,11 +371,10 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
      */
     override fun onDestroy() {
 
-        if (mSearchPresenter == null) {
-            mSearchPresenter = SearchPresenter(this, this, this)
+        if (mSearchPresenter != null) {
+            mSearchPresenter!!.onDestroy()
+            mSearchPresenter = null
         }
-        mSearchPresenter!!.onDestroy()
-        mSearchPresenter = null
 
         if (search_result_content != null) {
             search_result_content!!.clearCache(true) //清空缓存
