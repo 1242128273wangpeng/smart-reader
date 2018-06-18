@@ -30,7 +30,7 @@ object Config {
     private var contentAPIHost: String = "http://content2.zn.bookapi.cn"
 
     //设置页福利中心地址
-    const val WelfareHost: String = "https://st.quanbennovel.com/static/welfareCenter/welfareCenter-test1.html"
+    const val WelfareHost: String = "https://st.quanbennovel.com/static/welfareCenter/welfareCenter.html"
 
     /***
      * 鉴权临时秘钥

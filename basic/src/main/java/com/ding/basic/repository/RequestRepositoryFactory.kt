@@ -562,6 +562,8 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
                                             if (localBook != null) {
                                                 book.last_chapter = localBook.last_chapter
+                                                book.id = localBook.id
+                                                book.chapter_count = localBook.chapter_count
                                                 RequestRepositoryFactory.loadRequestRepositoryFactory(context).updateBook(book)
                                             }
                                         }

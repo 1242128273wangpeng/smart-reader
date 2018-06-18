@@ -330,8 +330,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         when (view.id) {
             R.id.book_cover_back -> {
                 val data = HashMap<String, String>()
-                data["type"] = "1"
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data)
+                data.put("type", "1")
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE,
+                        StartLogClickUtil.BACK, data)
                 finish()
             }
 
