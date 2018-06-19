@@ -47,7 +47,7 @@ interface RequestService {
         const val HOT_WORDS_V4 = "/v4/search/hotWords"
 
         //新版搜索推荐
-        const val SEARCH_RECOMMEND_V4 = "/v4/search/autoOperations"
+        const val SEARCH_RECOMMEND_V4 = "/v5/search/autoOperations"
 
         //完结页推荐
         const val RECOMMEND_FINISH = "/v4/recommend/{book_id}/readPage"
@@ -91,6 +91,9 @@ interface RequestService {
 
         //书籍封面页推荐
         const val COVER_RECOMMEND = "/v4/recommend/{book_id}/coverPage"
+
+        const val BOOK_RECOMMEND = "/v5/search/recommend"
+
     }
 
     @GET(DEFAULT_BOOK)
@@ -174,4 +177,8 @@ interface RequestService {
     @FormUrlEncoded
     @POST(COVER_RECOMMEND)
     fun requestCoverRecommend(@Path("book_id") book_id: String, @Field("recommanded") bookIds: String): Flowable<CoverRecommendBean>
+
+
+    @GET(BOOK_RECOMMEND)
+    fun requestBookRecommend(@Query("book_id") book_id: String, @Query("shelfBooks") shelfBooks: String): Flowable<CommonResult<RecommendBooks>>
 }

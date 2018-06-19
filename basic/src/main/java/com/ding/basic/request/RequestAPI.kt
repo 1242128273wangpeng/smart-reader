@@ -130,4 +130,8 @@ internal object RequestAPI {
     fun requestCoverRecommend(book_id: String, recommend: String): Flowable<CoverRecommendBean>? {
         return requestService.requestCoverRecommend(book_id, recommend)
     }
+
+    fun requestBookRecommend(book_id: String, shelfBooks: String): Flowable<CommonResult<RecommendBooks>>? {
+        return requestService.requestBookRecommend(book_id, shelfBooks)
+    }
 }

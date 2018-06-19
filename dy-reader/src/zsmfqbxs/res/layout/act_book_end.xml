@@ -11,7 +11,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFCE3D3E"
+        android:background="#1fb7c3"
         android:fitsSystemWindows="true">
 
         <RelativeLayout

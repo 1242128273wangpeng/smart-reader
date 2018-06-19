@@ -117,6 +117,22 @@
                 android:name="UMENG_APPKEY"
                 android:value="${UMENG_APP_KEY}"/>
 
+        <meta-data
+                android:name="UMENG_CHANNEL"
+                android:value="${CHANNEL_NAME}" />
+
+        <meta-data
+                android:name="UMENG_PUSH_SECRET"
+                android:value="${UMENG_PUSH_SECRET}"/>
+
+        <meta-data
+                android:name="UMENG_PUSH_XIAOMI_ID"
+                android:value="${UMENG_PUSH_XIAOMI_ID}"/>
+
+        <meta-data
+                android:name="UMENG_PUSH_XIAOMI_KEY"
+                android:value="${UMENG_PUSH_XIAOMI_KEY}"/>
+
 
         <!-- 您从百度网站获取的APP KEY -->
         <meta-data
@@ -261,6 +277,13 @@
                   android:launchMode="singleTop"
                   android:screenOrientation="portrait"
                   android:theme="@style/AppThemeTranslucent"/>
+
+        <activity
+                android:name=".upush.OfflineNotifyActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Start"
+                android:launchMode="singleTask"
+                android:exported="true"/>
 
         <!-- 推送 -->
         <receiver android:name=".receiver.PushClickReceiver">

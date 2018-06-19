@@ -27,10 +27,10 @@ object Config {
     //微服务API接口
     private var microAPIHost: String = "http://union2.zn.bookapi.cn"
     //微服务内容接口
-    private var contentAPIHost: String = "http://10.10.7.209:8888"
+    private var contentAPIHost: String = "http://content2.zn.bookapi.cn"
 
     //设置页福利中心地址
-    const val WelfareHost: String = "https://st.quanbennovel.com/static/welfareCenter/welfareCenter-test1.html"
+    const val WelfareHost: String = "https://st.quanbennovel.com/static/welfareCenter/welfareCenter.html"
 
     /***
      * 鉴权临时秘钥
@@ -125,7 +125,7 @@ object Config {
     fun initializeLogger() {
 
         val formatStrategy = PrettyFormatStrategy.newBuilder()
-                .tag("DingYue").methodCount(2).showThreadInfo(true).build()
+                .tag("DingYue").methodCount(0).showThreadInfo(true).build()
 
         Logger.addLogAdapter(object : AndroidLogAdapter(formatStrategy) {
             override fun isLoggable(priority: Int, tag: String?): Boolean {
@@ -201,7 +201,7 @@ object Config {
         this.privateKey = privateKey
 
         val sharedPreferences = context?.getSharedPreferences("Basic_Preference", Context.MODE_PRIVATE)
-        sharedPreferences?.edit()?.putString("Access_Private_Key", publicKey)?.apply()
+        sharedPreferences?.edit()?.putString("Access_Private_Key", privateKey)?.apply()
     }
 
     fun loadPrivateKey(): String {

@@ -10,6 +10,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
+import com.ding.basic.bean.RecommendBean
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.util.showToastMessage
@@ -38,7 +39,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private var loadingPage: LoadingPage? = null
     private var coverPagePresenter: CoverPagePresenter? = null
 
-    private var recommendList: ArrayList<Book>? = null
+    private var recommendList: ArrayList<RecommendBean>? = null
     private lateinit var bookRecommendAdapter: BookRecommendAdapter
     private var bookDownloadState: DownloadState = DownloadState.NOSTART
 
@@ -98,19 +99,19 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             book_recommend_lv.adapter = bookRecommendAdapter
             book_recommend_lv.setOnItemClickListener { _, _, position, _ ->
                 recommendList?.let {
-                    val book = it[position]
+                    val recommendBean = it[position]
                     val data = HashMap<String, String>()
 
                     if (bookId != null && !TextUtils.isEmpty(bookId)) {
                         data["bookid"] = bookId!!
                     }
 
-                    if (!TextUtils.isEmpty(book.book_id)) {
-                        data["Tbookid"] = book.book_id
+                    if (!TextUtils.isEmpty(recommendBean.bookId)) {
+                        data["Tbookid"] = recommendBean.bookId!!
                     }
 
                     StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.RECOMMENDEDBOOK, data)
-                    BookRouter.navigateCoverOrRead(this, book, BookRouter.NAVIGATE_TYPE_RECOMMEND)
+//                    BookRouter.navigateCoverOrRead(this, book, BookRouter.NAVIGATE_TYPE_RECOMMEND)
                 }
             }
         }
@@ -137,6 +138,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 null
             })
         }
+
+        coverPagePresenter?.requestCoverRecommend()
     }
 
 
@@ -429,9 +432,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         }
     }
 
-    override fun showRecommendSuccess(recommendBean: ArrayList<Book>) {
-        recommendList = recommendBean
-        bookRecommendAdapter.setData(recommendBean)
+    override fun showRecommendSuccess(recommends: ArrayList<RecommendBean>) {
+        recommendList = recommends
+        bookRecommendAdapter.setData(recommends)
     }
 
     override fun showRecommendFail() {

@@ -1,33 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="296dp"
+    android:id="@+id/fl_feedback_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:background="#00000000"
-    android:orientation="vertical"
-    android:scrollbars="vertical"
-    tools:ignore="RtlHardcoded">
+    android:layout_gravity="bottom">
 
     <LinearLayout
-        android:id="@+id/ll_feedback_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/reader_feedback_bg"
         android:gravity="center"
+        android:background="#E6191C1F"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/dialog_title"
+            android:id="@+id/txt_dialog_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:padding="10dp"
+            android:padding="18dp"
             android:text="@string/feedback"
-            android:textColor="#E6000000"
-            android:textSize="20sp"
+            android:textColor="#FFF4F5F7"
+            android:textSize="16sp"
             android:textStyle="bold"/>
 
         <ScrollView
@@ -46,8 +40,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="13dp">
+                    android:paddingBottom="19dp"
+                    android:paddingTop="19dp">
 
                     <TextView
                         style="@style/reader_feedback_txt_style"
@@ -62,8 +56,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="13dp">
+                    android:paddingBottom="19dp"
+                    android:paddingTop="19dp">
 
                     <TextView
                         style="@style/reader_feedback_txt_style"
@@ -78,8 +72,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="13dp">
+                    android:paddingBottom="19dp"
+                    android:paddingTop="19dp">
 
                     <TextView
                         style="@style/reader_feedback_txt_style"
@@ -94,8 +88,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="13dp">
+                    android:paddingBottom="19dp"
+                    android:paddingTop="19dp">
 
                     <TextView
                         style="@style/reader_feedback_txt_style"
@@ -110,8 +104,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="13dp">
+                    android:paddingBottom="19dp"
+                    android:paddingTop="19dp">
 
                     <TextView
                         style="@style/reader_feedback_txt_style"
@@ -126,8 +120,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="13dp">
+                    android:paddingBottom="19dp"
+                    android:paddingTop="19dp">
 
                     <TextView
                         style="@style/reader_feedback_txt_style"
@@ -142,8 +136,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:paddingBottom="15dp"
-                    android:paddingTop="13dp">
+                    android:paddingBottom="19dp"
+                    android:paddingTop="19dp">
 
                     <TextView
                         style="@style/reader_feedback_txt_style"
@@ -157,52 +151,52 @@
         </ScrollView>
 
         <View
+            android:id="@+id/view_divider"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
+            android:layout_above="@+id/ll_feedback_option"
             android:background="#FFEAEAEA"/>
 
         <LinearLayout
+            android:id="@+id/ll_feedback_option"
             android:layout_width="match_parent"
-            android:layout_height="45dp">
+            android:layout_height="60dp">
 
-            <Button
-                android:id="@+id/btn_feedback_cancel"
+            <TextView
+                android:id="@+id/txt_feedback_cancel"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/reader_feedback_cancel_sel"
+                android:background="@drawable/reader_option_header_popup_item_sel"
                 android:gravity="center"
                 android:text="@string/cancel"
-                android:textColor="#99000000"
-                android:textSize="16sp"/>
+                android:textColor="#FFF4F5F7"
+                android:textSize="14sp"/>
 
             <View
                 android:layout_width="0.5dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:background="#FFEAEAEA"/>
+                android:layout_height="match_parent"
+                android:layout_marginBottom="13dp"
+                android:layout_marginTop="13dp"
+                android:background="#FF5D646E"/>
 
-            <Button
-                android:id="@+id/btn_feedback_submit"
+            <TextView
+                android:id="@+id/txt_feedback_submit"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/reader_feedback_submit_sel"
+                android:background="@drawable/reader_option_header_popup_item_sel"
                 android:gravity="center"
                 android:text="@string/submit"
-                android:textColor="#FFC2B282"
-                android:textSize="16sp"/>
+                android:textColor="#FF1CA66E"
+                android:textSize="14sp"/>
         </LinearLayout>
 
     </LinearLayout>
 
     <net.lzbook.kit.book.view.NightShadowView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/ll_feedback_content"
-        android:layout_alignLeft="@id/ll_feedback_content"
-        android:layout_alignRight="@id/ll_feedback_content"
-        android:layout_alignTop="@id/ll_feedback_content"
-        android:visibility="gone"
-        app:cornerRadius="4dp"/>
-</RelativeLayout>
+        android:id="@+id/nsv_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"/>
+</FrameLayout>

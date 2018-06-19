@@ -883,7 +883,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
         StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE,
                 StartLogClickUtil.HOTREADCLICK, data);
 
-        CoverPageActivity.launcher(mContext, dataBean.getHost(), dataBean.getBookId(),
+        CoverPageActivity.Companion.launcher(mContext, dataBean.getHost(), dataBean.getBookId(),
                 dataBean.getId(), dataBean.getBookName(),
                 dataBean.getAuthorName(), "", "");
 

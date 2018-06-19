@@ -23,7 +23,7 @@
             android:paddingTop="15dp"
             android:text="@string/change_source"
             android:textColor="#FFF4F5F7"
-            android:textSize="@dimen/text_size_16"/>
+            android:textSize="16sp"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recl_change_source_content"

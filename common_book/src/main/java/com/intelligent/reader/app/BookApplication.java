@@ -1,6 +1,8 @@
 package com.intelligent.reader.app;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
@@ -10,13 +12,23 @@ import com.dingyue.contract.util.CommonUtil;
 import com.dy.media.MediaLifecycle;
 import com.dy.reader.Reader;
 import com.intelligent.reader.BuildConfig;
+import com.intelligent.reader.upush.PushMessageHandler;
+import com.intelligent.reader.upush.PushNotificationHandler;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
+import com.umeng.commonsdk.UMConfigure;
+import com.umeng.message.IUmengRegisterCallback;
+import com.umeng.message.PushAgent;
+import com.umeng.message.UTrack;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.OpenUDID;
+
+import org.android.agoo.huawei.HuaWeiRegister;
+import org.android.agoo.xiaomi.MiPushRegistar;
 
 import java.util.concurrent.Callable;
 
@@ -33,6 +45,8 @@ public class BookApplication extends BaseBookApplication {
         return sRefWatcher;
     }
 
+    private static final String TAG = "BookApplication";
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -42,6 +56,59 @@ public class BookApplication extends BaseBookApplication {
         if (LeakCanary.isInAnalyzerProcess(this)) {
             return;
         }
+
+        // 友盟推送初始化
+        try {
+            ApplicationInfo appInfo = getPackageManager()
+                    .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+            String pushSecret = appInfo.metaData.getString("UMENG_PUSH_SECRET");
+            if (pushSecret != null) {
+                UMConfigure.init(this, 1, pushSecret);
+                AppLog.e(TAG, "pushSecret: " + pushSecret);
+            }
+
+            String xiaomiId = appInfo.metaData.getString("UMENG_PUSH_XIAOMI_ID");
+            AppLog.e(TAG, "xiaomiId: " + xiaomiId);
+
+            String xiaomiKey = appInfo.metaData.getString("UMENG_PUSH_XIAOMI_KEY");
+            AppLog.e(TAG, "xiaomiKey: " + xiaomiKey);
+
+            // 小米通道
+            if (xiaomiId != null && xiaomiKey != null) {
+                MiPushRegistar.register(this, xiaomiId.replace("String", ""),
+                        xiaomiKey.replace("String", ""));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        final PushAgent pushAgent = PushAgent.getInstance(this);
+        pushAgent.setResourcePackageName("net.lzbook.kit");
+        //注册推送服务，每次调用register方法都会回调该接口
+        pushAgent.register(new IUmengRegisterCallback() {
+            @Override
+            public void onSuccess(String deviceToken) {
+                //注册成功会返回device token
+                AppLog.e(TAG, "deviceToken: " + deviceToken);
+                String udid = OpenUDID.getOpenUDIDInContext(BookApplication.this);
+                AppLog.e(TAG, "udid: " + udid);
+                pushAgent.setAlias(udid, "UDID", new UTrack.ICallBack() {
+                    @Override
+                    public void onMessage(boolean isSuccess, String message) {
+                        AppLog.e(TAG, "setAlias：" + isSuccess + "  message: " + message);
+                    }
+                });
+            }
+            @Override
+            public void onFailure(String s, String s1) {
+                AppLog.e(TAG, "s: " + s + " --- s1: " + s1);
+            }
+        });
+        pushAgent.setMessageHandler(new PushMessageHandler());
+        pushAgent.setNotificationClickHandler(new PushNotificationHandler());
+
+        // 华为通道
+        HuaWeiRegister.register(this);
 
         if (!AppUtils.isMainProcess(this)) {
             return;

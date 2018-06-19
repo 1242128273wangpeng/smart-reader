@@ -27,7 +27,6 @@ import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
-import kotlin.concurrent.thread
 
 class RequestRepositoryFactory private constructor(private val context: Context) : RequestRepository {
 
@@ -553,8 +552,6 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                             it.checkPrivateKeyExpire() -> requestAuthAccess({
                                 if (it) {
                                     requestCoverBatch(checkBody)
-                                } else {
-                                    throw Throwable("鉴权请求异常！")
                                 }
                             })
                             it.checkResultAvailable() -> {
@@ -565,6 +562,8 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
                                             if (localBook != null) {
                                                 book.last_chapter = localBook.last_chapter
+                                                book.id = localBook.id
+                                                book.chapter_count = localBook.chapter_count
                                                 RequestRepositoryFactory.loadRequestRepositoryFactory(context).updateBook(book)
                                             }
                                         }
@@ -737,6 +736,29 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 .subscribeWith(object : ResourceSubscriber<CoverRecommendBean>() {
                     override fun onNext(result: CoverRecommendBean?) {
                         requestSubscriber.onNext(result)
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        requestSubscriber.onError(throwable)
+                    }
+
+                    override fun onComplete() {
+                        requestSubscriber.onComplete()
+                    }
+                })
+    }
+
+
+    override fun requestBookRecommend(book_id: String, shelfBooks: String, requestSubscriber: RequestSubscriber<RecommendBooks>) {
+        InternetRequestRepository.loadInternetRequestRepository(context).requestBookRecommend(book_id, shelfBooks)!!
+                .compose(SchedulerHelper.schedulerHelper())
+                .subscribeWith(object : ResourceSubscriber<CommonResult<RecommendBooks>>() {
+                    override fun onNext(result: CommonResult<RecommendBooks>?) {
+                        if (result != null && result.checkResultAvailable()) {
+                            requestSubscriber.onNext(result.data)
+                        } else {
+                            requestSubscriber.onError(Throwable("推荐接口请求异常！"))
+                        }
                     }
 
                     override fun onError(throwable: Throwable) {

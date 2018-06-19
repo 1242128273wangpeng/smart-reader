@@ -37,6 +37,7 @@ import java.util.List;
 
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import me.eugeniomarletti.kotlin.metadata.shadow.load.java.Constant;
 
 public class DynamicParamter {
 
@@ -114,6 +115,11 @@ public class DynamicParamter {
     public String novel_host;
     public String webView_host;
     public String download_limit;
+
+    public String union_host;
+    public String content_host;
+
+
     //    public String nonet_readhour;
     public String noNetReadNumber;
     private ArrayList<String> channelLimit = new ArrayList<>();
@@ -128,29 +134,6 @@ public class DynamicParamter {
 
     public void setDynamicParamter() {
 
-        AppLog.d("startRequestCDNDynamic", "/v3/dynamic/dynamicParameter");
-        mDynamicUrl = RequestService.DYNAMIC_PARAMETERS;
-
-        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestDynamicParameters(new RequestSubscriber<JsonObject>() {
-            @Override
-            public void requestResult(@Nullable JsonObject result) {
-                if (result != null) {
-                    checkResult(result.toString());
-                }
-            }
-
-            @Override
-            public void requestError(@NotNull String message) {
-                Logger.e("请求动态参数异常！");
-                startRequestCDNDynamic();
-            }
-
-            @Override
-            public void requestComplete() {
-
-            }
-        });
-
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
 
         UrlUtils.setBookNovelDeployHost(sp.getString(Constants.NOVEL_HOST, ""));
@@ -158,6 +141,8 @@ public class DynamicParamter {
 
         Config.INSTANCE.insertRequestAPIHost(sp.getString(Constants.NOVEL_HOST, ""));
         Config.INSTANCE.insertWebViewHost(sp.getString(Constants.WEBVIEW_HOST, ""));
+        Config.INSTANCE.insertMicroAPIHost(sp.getString(Constants.UNION_HOST, ""));
+        Config.INSTANCE.insertContentAPIHost(sp.getString(Constants.CONTENT_HOST, ""));
 
         baidu_stat_id = getConfigParams("baidu_stat_id");
         push_key = getConfigParams("push_key");
@@ -235,6 +220,9 @@ public class DynamicParamter {
         //webView的host
         webView_host = getConfigParams(Constants.WEBVIEW_HOST);
 
+        union_host = getConfigParams(Constants.UNION_HOST);
+        content_host = getConfigParams(Constants.CONTENT_HOST);
+
         //每天下载书籍量限制
         download_limit = getConfigParams(Constants.DOWNLOAD_LIMIT);
 
@@ -247,6 +235,29 @@ public class DynamicParamter {
 
 
         installParam();
+
+        AppLog.d("startRequestCDNDynamic", "/v3/dynamic/dynamicParameter");
+        mDynamicUrl = RequestService.DYNAMIC_PARAMETERS;
+
+        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestDynamicParameters(new RequestSubscriber<JsonObject>() {
+            @Override
+            public void requestResult(@Nullable JsonObject result) {
+                if (result != null) {
+                    checkResult(result.toString());
+                }
+            }
+
+            @Override
+            public void requestError(@NotNull String message) {
+                Logger.e("请求动态参数异常！");
+                startRequestCDNDynamic();
+            }
+
+            @Override
+            public void requestComplete() {
+
+            }
+        });
 
     }
 
@@ -654,6 +665,21 @@ public class DynamicParamter {
                     putConfigParams(Constants.NEW_APP_AD_SWITCH, new_app_ad_switch);
                 }
             }
+
+            if (!data.isNull(Constants.UNION_HOST)) {
+                union_host = data.getString(Constants.UNION_HOST);
+                if (isOwn) {
+                    putConfigParams(Constants.UNION_HOST, union_host);
+                }
+            }
+
+            if (!data.isNull(Constants.CONTENT_HOST)) {
+                content_host = data.getString(Constants.CONTENT_HOST);
+                if (isOwn) {
+                    putConfigParams(Constants.CONTENT_HOST, content_host);
+                }
+            }
+
             installParam();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -719,6 +745,13 @@ public class DynamicParamter {
         }
         if (!TextUtils.isEmpty(webView_host)) {
             editor.putString(Constants.WEBVIEW_HOST, webView_host);
+        }
+
+        if (!TextUtils.isEmpty(union_host)) {
+            editor.putString(Constants.UNION_HOST, union_host);
+        }
+        if (!TextUtils.isEmpty(content_host)) {
+            editor.putString(Constants.CONTENT_HOST, content_host);
         }
         editor.apply();
     }

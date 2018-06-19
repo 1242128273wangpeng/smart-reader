@@ -478,7 +478,6 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
                         activity.get()?.applicationContext?.showToastMessage("已发送")
                     }, { e -> e.printStackTrace() })
             disposable.add(time)
-//            handler.postDelayed({ readReference?.get()?.showToastShort("已发送") }, 1000)
             return
         }
         chapterErrorBean.bookSourceId = if (TextUtils.isEmpty(currChapter.book_source_id)) book.book_source_id else currChapter.book_source_id

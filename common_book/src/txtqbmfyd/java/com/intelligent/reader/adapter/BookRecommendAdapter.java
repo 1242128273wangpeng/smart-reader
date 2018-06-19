@@ -3,6 +3,7 @@ package com.intelligent.reader.adapter;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ding.basic.bean.Book;
+import com.ding.basic.bean.RecommendBean;
 import com.intelligent.reader.R;
 
 import android.text.TextUtils;
@@ -24,7 +25,7 @@ import java.util.List;
 
 public class BookRecommendAdapter extends BaseAdapter {
 
-    private List<Book> mList;
+    private List<RecommendBean> mList;
 
     @Override
     public int getCount() {
@@ -57,22 +58,22 @@ public class BookRecommendAdapter extends BaseAdapter {
         } else {
             hodler = (ViewHolder) convertView.getTag();
         }
-        Book book = mList.get(position);
-        Glide.with(parent.getContext().getApplicationContext()).load(book.getImg_url())
+        RecommendBean recommend = mList.get(position);
+        Glide.with(parent.getContext().getApplicationContext()).load(recommend.getSourceImageUrl())
                 .placeholder(R.drawable.common_book_cover_default_icon)
                 .error(R.drawable.common_book_cover_default_icon)
                 .diskCacheStrategy(DiskCacheStrategy.ALL).into(hodler.book_img_iv);
-        hodler.book_name_tv.setText(book.getName());
-        hodler.book_info_tv.setText(book.getDesc());
-        hodler.book_author_tv.setText(book.getAuthor());
+        hodler.book_name_tv.setText(recommend.getBookName());
+        hodler.book_info_tv.setText(recommend.getDescription());
+        hodler.book_author_tv.setText(recommend.getAuthorName());
 
-        if (!TextUtils.isEmpty(book.getLabel())) {
-            hodler.book_cover_category.setText(book.getLabel());
+        if (!TextUtils.isEmpty(recommend.getLabel())) {
+            hodler.book_cover_category.setText(recommend.getLabel());
         } else {
             hodler.book_cover_category.setText("未分类");
         }
 
-        if ("FINISH".equals(book.getStatus())) {
+        if ("FINISH".equals(recommend.getSerialStatus())) {
             hodler.book_cover_status.setText(parent.getContext().getString(R.string.book_cover_state_written));
         } else {
             hodler.book_cover_status.setText(parent.getContext().getString(R.string.book_cover_state_writing));
@@ -81,7 +82,7 @@ public class BookRecommendAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void setData(List<Book> data) {
+    public void setData(List<RecommendBean> data) {
         this.mList = data;
         notifyDataSetChanged();
     }

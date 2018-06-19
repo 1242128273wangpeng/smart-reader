@@ -289,6 +289,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     override fun onDestroy() {
         super.onDestroy()
+        recyclerView.removeAllViews()
         dl_reader_content.removeDrawerListener(mDrawerListener)
         EventBus.getDefault().unregister(this)
         ReaderStatus.clear()
