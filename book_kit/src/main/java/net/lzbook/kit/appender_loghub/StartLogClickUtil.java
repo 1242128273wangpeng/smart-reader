@@ -316,6 +316,9 @@ public class StartLogClickUtil {
     public static final String BOOKMARKEDIT = "BOOKMARKEDIT";//添加书签
     public static final String BOOKDETAIL = "BOOKDETAIL";//书籍详情
 
+    //阅读完结页
+    public static final String REPLACE = "REPLACE";   //完结页点击换一换
+
 
     //搜索结果页
     public static final String SEARCHRESULT = "SEARCHRESULT";//某本书点击

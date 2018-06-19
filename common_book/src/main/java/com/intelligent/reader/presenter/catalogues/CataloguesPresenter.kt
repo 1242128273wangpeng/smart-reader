@@ -24,37 +24,49 @@ import com.dingyue.contract.router.RouterUtil
 import com.orhanobut.logger.Logger
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.qbmfkdxs.act_catalog.*
 import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.utils.BaseBookHelper
 import net.lzbook.kit.utils.BookCoverUtil
 import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.StatServiceUtils
 import java.util.HashMap
 
-class CataloguesPresenter(var activity: Activity, var book: Book, var cataloguesContract: CataloguesContract,
-                          onClickListener: View.OnClickListener, private val fromCover: Boolean)
-    : BookCoverUtil.OnDownloadState, BookCoverViewModel.BookChapterViewCallback {
+class CataloguesPresenter(private val activity: Activity, private val book: Book,
+                          private val cataloguesContract: CataloguesContract,
+                          private val onClickListener: View.OnClickListener?,
+                          private val fromCover: Boolean) {
 
     var chapterList: ArrayList<Chapter> = ArrayList()
-    var bookmarkList: ArrayList<Bookmark> = ArrayList()
-    val MESSAGE_FETCH_CATALOG = 0
-    val MESSAGE_FETCH_BOOKMARK = MESSAGE_FETCH_CATALOG + 1
-    val MESSAGE_FETCH_ERROR = MESSAGE_FETCH_BOOKMARK + 1
-    private val DELAY_OVERLAY = MESSAGE_FETCH_ERROR + 1
+    private var bookmarkList: ArrayList<Bookmark> = ArrayList()
+    private val DELAY_OVERLAY = 3
 
-    private var bookCoverUtil: BookCoverUtil? = null
-    private var bookCoverViewModel: BookCoverViewModel? = null
+    private val bookCoverUtil: BookCoverUtil by lazy {
+        val util = BookCoverUtil(activity, onClickListener)
+        util.registReceiver()
+        util.setOnDownloadState {
+            cataloguesContract.changeDownloadButtonStatus()
+        }
+        util.setOnDownLoadService {
+            cataloguesContract.changeDownloadButtonStatus()
+        }
+        util
+    }
 
-    init {
-        bookCoverViewModel = BookCoverViewModel()
-        bookCoverViewModel?.setBookChapterViewCallback(this)
-
-        bookCoverUtil = BookCoverUtil(activity, onClickListener)
-        bookCoverUtil?.registReceiver()
-        bookCoverUtil?.setOnDownloadState(this)
+    private val bookCoverViewModel: BookCoverViewModel by lazy {
+        val viewModel = BookCoverViewModel()
+        viewModel.setBookChapterViewCallback { bookmarks ->
+            if (bookmarks != null) {
+                bookmarkList = bookmarks
+                cataloguesContract.notifyDataChange(false, bookmarkList)
+            }
+        }
+        viewModel
     }
 
     fun requestCatalogList(changeSource: Boolean) {
 
-        val requestSubscriber = object: RequestSubscriber<List<Chapter>>() {
+        val requestSubscriber = object : RequestSubscriber<List<Chapter>>() {
             override fun requestResult(result: List<Chapter>?) {
                 if (result != null) {
                     chapterList.clear()
@@ -86,11 +98,28 @@ class CataloguesPresenter(var activity: Activity, var book: Book, var catalogues
     }
 
     fun loadBookMark() {
-        bookCoverViewModel?.getBookMarkList(book.book_id)
+        bookCoverViewModel.getBookMarkList(book.book_id)
     }
 
-    override fun changeState() {
-        cataloguesContract.changeDownloadButtonStatus()
+    fun addToBookShelf() {
+        val data = HashMap<String, String>()
+        val requestFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+        val subscribedBook = requestFactory.checkBookSubscribe(book.book_id)
+        if (subscribedBook != null) {
+            cataloguesContract.successAddIntoShelf(false)
+        } else {
+            val insert = requestFactory.insertBook(book)
+            if (insert >= 0) {
+                data.put("type", "1")
+                //添加书架打点
+                StatServiceUtils.statAppBtnClick(activity,
+                        StatServiceUtils.b_details_click_book_add)
+                cataloguesContract.successAddIntoShelf(true)
+            }
+        }
+
+        StartLogClickUtil.upLoadEventLog(activity,
+                StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.CATALOG_CASHEALL, data)
     }
 
     /**
@@ -98,7 +127,6 @@ class CataloguesPresenter(var activity: Activity, var book: Book, var catalogues
      * isCatalog true 目录点击  false 书签点击
      */
     fun catalogToReading(position: Int, isCatalog: Boolean) {
-        val intent = Intent()
         val bundle = Bundle()
         val flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         book.fromType = 1
@@ -131,14 +159,47 @@ class CataloguesPresenter(var activity: Activity, var book: Book, var catalogues
         }
         bundle.putSerializable("book", book)
         bundle.putInt("sequence", book.sequence)
-        intent.putExtras(bundle)
+
+        navigateToReading(bundle, flags)
+
+    }
+
+    fun continueReading() {
+
+        val requestFactory = RequestRepositoryFactory
+                .loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+        val bundle = Bundle()
+        val subscribedBook = requestFactory.checkBookSubscribe(book.book_id)
+        if (subscribedBook != null && book.sequence != -2) {
+            bundle.putInt("sequence", book.sequence ?: -2)
+            bundle.putInt("offset", book.offset ?: -1)
+        } else {
+            bundle.putInt("sequence", -1)
+        }
+
+        book.fromType = 1// 打点统计 当前页面来源，所有可能来源的映射唯一字符串。书架(0)/目录页(1)/上一页翻页(2)/书籍封面(3)
+
+        if (book.host == Constants.QG_SOURCE) {
+            book.channel_code = 1
+        } else {
+            book.channel_code = 2
+        }
+        bundle.putSerializable("book", book)
+
+        val flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+
+        navigateToReading(bundle, flags)
+    }
+
+    private fun navigateToReading(bundle: Bundle, flags: Int) {
         if (fromCover) {
             RouterUtil.navigation(activity, RouterConfig.READER_ACTIVITY, bundle, flags)
         } else {
+            val intent = Intent()
+            intent.putExtras(bundle)
             activity.setResult(Activity.RESULT_OK, intent)
         }
         activity.finish()
-
     }
 
     fun activityResult(sequence: Int) {
@@ -148,6 +209,29 @@ class CataloguesPresenter(var activity: Activity, var book: Book, var catalogues
         bundle.putSerializable("book", book)
         intent.putExtras(bundle)
         activity.setResult(Activity.RESULT_OK, intent)
+    }
+
+    fun startDownload() {
+        //全本缓存的点击统计
+        StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.b_details_click_all_load)
+
+        val data = HashMap<String, String>()
+        data.put("bookid", book.book_id)
+        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOKCATALOG,
+                StartLogClickUtil.CATALOG_CASHEALL, data)
+
+        val requestFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+        val subscribedBook = requestFactory.checkBookSubscribe(book.book_id)
+        if (subscribedBook != null) {
+            BaseBookHelper.startDownBookTask(activity, book, 0)
+        } else {
+            val insert = requestFactory.insertBook(book)
+            if (insert >= 0) {
+                cataloguesContract.successAddIntoShelf(true)
+                BaseBookHelper.startDownBookTask(activity, book, 0)
+            }
+        }
+        cataloguesContract.changeDownloadButtonStatus()
     }
 
 //    fun doDeleteBookmarks(list: ArrayList<Int>) {
@@ -171,10 +255,7 @@ class CataloguesPresenter(var activity: Activity, var book: Book, var catalogues
     }
 
     fun unRegisterRec() {
-        if (bookCoverUtil != null) {
-            bookCoverUtil!!.unRegisterReceiver()
-            bookCoverUtil = null
-        }
+        bookCoverUtil.unRegisterReceiver()
     }
 
     fun delayOverLayHandler() {
@@ -188,20 +269,16 @@ class CataloguesPresenter(var activity: Activity, var book: Book, var catalogues
 
     }
 
-
     //删除标签
 
     fun doDeleteBookmarks(list: ArrayList<Int>) {
 
         val bookHelper = BookDataProviderHelper.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext())
         bookHelper.deleteBookMark(list)
-        val marks = bookHelper.getBookMarks(book.book_id!!)
-        if (bookmarkList != null)
-            bookmarkList.clear()
-        if (marks != null && bookmarkList != null) {
-            for (bookmark in marks) {
-                bookmarkList.add(bookmark)
-            }
+        val marks = bookHelper.getBookMarks(book.book_id)
+        bookmarkList.clear()
+        for (bookmark in marks) {
+            bookmarkList.add(bookmark)
         }
         cataloguesContract.notifyDataChange(true, bookmarkList)
 
@@ -229,11 +306,4 @@ class CataloguesPresenter(var activity: Activity, var book: Book, var catalogues
         }
     }
 
-
-    override fun requestBookmarkList(bookmarks: ArrayList<Bookmark>?) {
-        if (bookmarks != null) {
-            bookmarkList = bookmarks
-            cataloguesContract.notifyDataChange(false, bookmarkList)
-        }
-    }
 }
