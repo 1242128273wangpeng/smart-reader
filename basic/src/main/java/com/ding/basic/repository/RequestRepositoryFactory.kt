@@ -561,10 +561,24 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                             val localBook = RequestRepositoryFactory.loadRequestRepositoryFactory(context).loadBook(book.book_id)
 
                                             if (localBook != null) {
-                                                book.last_chapter = localBook.last_chapter
-                                                book.id = localBook.id
-                                                book.chapter_count = localBook.chapter_count
-                                                RequestRepositoryFactory.loadRequestRepositoryFactory(context).updateBook(book)
+
+                                                localBook.status = book!!.status   //更新书籍状态
+                                                localBook.book_chapter_id = book!!.book_chapter_id
+                                                localBook.name = book.name
+                                                localBook.desc = book.desc
+                                                localBook.book_type = book.book_type
+                                                localBook.book_id = book.book_id
+                                                localBook.host = book.host
+                                                localBook.author = book.author
+                                                localBook.book_source_id = book.book_source_id
+                                                localBook.img_url = book.img_url
+                                                localBook.label = book.label
+                                                localBook.sub_genre = book.sub_genre
+                                                localBook.chapters_update_index = book.chapters_update_index
+                                                localBook.genre = book.genre
+                                                localBook.score = book.score
+
+                                                RequestRepositoryFactory.loadRequestRepositoryFactory(context).updateBook(localBook)
                                             }
                                         }
                                     }

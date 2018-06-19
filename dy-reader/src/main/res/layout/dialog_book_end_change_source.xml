@@ -46,7 +46,6 @@
             android:scrollbarFadeDuration="0"
             android:scrollbarSize="5dp"
             android:scrollbarStyle="insideInset"
-            android:scrollbarThumbVertical="#00000000"
             android:scrollbars="vertical"
             android:verticalScrollbarPosition="right"/>
 
