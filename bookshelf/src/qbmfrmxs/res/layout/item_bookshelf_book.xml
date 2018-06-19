@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_book_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="92dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <ImageView
+            android:layout_width="92dp"
+            android:layout_height="140dp"
+            android:contentDescription="@string/module_name"
+            android:src="@drawable/common_book_cover_shadow_icon"/>
+
+        <com.dingyue.bookshelf.view.BorderImageView
+            android:id="@+id/img_book_cover"
+            android:layout_width="80dp"
+            android:layout_height="113dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="6dp"
+            android:scaleType="fitXY"
+            tools:src="@drawable/common_book_cover_default_icon"/>
+
+        <ImageView
+            android:id="@+id/img_book_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:contentDescription="@string/module_name"
+            android:src="@drawable/bookshelf_item_book_finish_icon"
+            android:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/txt_book_name"
+            style="@style/style_text_small_plain"
+            android:layout_width="wrap_content"
+            android:layout_height="34dp"
+            android:layout_below="@+id/img_book_cover"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            tools:text="@string/default_title"/>
+
+        <ImageView
+            android:id="@+id/img_book_select_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="10dp"
+            android:background="@drawable/bookshelf_item_check_icon"
+            android:visibility="visible"
+            tools:ignore="RtlHardcoded"/>
+
+        <View
+            android:layout_width="80dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bookshelf_item_book_sel"
+            android:layout_height="113dp"/>
+    </RelativeLayout>
+</RelativeLayout>

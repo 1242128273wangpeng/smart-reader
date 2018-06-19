@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+          android:id="@+id/listitem_searchbooks_itemtext"
+          style="@style/style_text_normal_plain"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:drawableLeft="@drawable/icon_search_history"
+          android:gravity="center_vertical"
+          android:drawablePadding="8dp"
+          android:background="@drawable/bookshelf__item_press_bg"
+          android:singleLine="true"
+          android:ellipsize="end"
+          android:padding="16dp">
+</TextView>

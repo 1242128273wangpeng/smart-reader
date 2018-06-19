@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bookshelf_empty_find">去找书</string>
+
+    <string name="bookshelf_empty_prompt">还没有添加书籍哦~</string>
+
+    <string name="bookshelf_delete_dialog_loading_prompt">正在清理缓存中...</string>
+
+    <string name="bookshelf_delete_dialog_content">删除后，缓存内容将被清空，你确定要继续吗？</string>
+</resources>

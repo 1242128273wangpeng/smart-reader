@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/novel_read_background_layout"
+    android:layout_width="match_parent"
+    android:layout_height="140dp"
+    android:background="#E6191C1F"
+    android:orientation="vertical"
+    tools:ignore="RtlHardcoded, RtlSymmetry">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="96dp">
+
+        <ImageView
+            android:id="@+id/img_reader_brightness_reduce"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="19dp"
+            android:layout_marginTop="35dp"
+            android:contentDescription="@string/module_name"
+            android:src="@drawable/reader_option_brightness_reduce_icon"/>
+
+        <SeekBar
+            android:id="@+id/skbar_reader_brightness_change"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="32dp"
+            android:layout_toLeftOf="@+id/img_reader_brightness_increase"
+            android:layout_toRightOf="@+id/img_reader_brightness_reduce"
+            android:background="@drawable/reader_option_seek_bar_bg"
+            android:maxHeight="3dp"
+            android:minHeight="3dp"
+            android:progressDrawable="@drawable/reader_option_seek_bar_drawable_bg"
+            android:splitTrack="false"
+            android:thumb="@drawable/reader_option_seek_bar_thumb_icon"/>
+
+        <ImageView
+            android:id="@+id/img_reader_brightness_increase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="35dp"
+            android:contentDescription="@string/module_name"
+            android:layout_toLeftOf="@+id/ll_reader_brightness_system"
+            android:src="@drawable/reader_option_brightness_increase_icon"/>
+
+        <LinearLayout
+            android:id="@+id/ll_reader_brightness_system"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+            android:visibility="visible">
+
+            <CheckBox
+                android:id="@+id/read_setting_auto_power"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/reader_option_group_border_sel"
+                android:button="@null"
+                android:checked="false"
+                android:paddingBottom="3dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="3dp"
+                android:text="@string/system"
+                android:textColor="@drawable/reader_option_group_txt_sel"
+                android:textSize="12sp"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:orientation="horizontal">
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:scrollbars="none">
+
+            <RadioGroup
+                android:id="@+id/read_setting_backdrop_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/rbtn_reader_backdrop_first"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="0dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:button="@null"
+                    android:checked="false"
+                    android:drawableLeft="@drawable/reader_option_backdrop_first_sel" />
+
+                <RadioButton
+                    android:id="@+id/rbtn_reader_backdrop_second"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="21dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:button="@null"
+                    android:drawableLeft="@drawable/reader_option_backdrop_second_sel"/>
+
+                <RadioButton
+                    android:id="@+id/rbtn_reader_backdrop_third"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="21dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:button="@null"
+                    android:drawableLeft="@drawable/reader_option_backdrop_third_sel"/>
+
+                <RadioButton
+                    android:id="@+id/rbtn_reader_backdrop_fourth"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="21dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:button="@null"
+                    android:drawableLeft="@drawable/reader_option_backdrop_fourth_sel"/>
+
+
+                <RadioButton
+                    android:id="@+id/rbtn_reader_backdrop_fifth"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="21dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:button="@null"
+                    android:drawableLeft="@drawable/reader_option_backdrop_fifth_sel"/>
+
+                <RadioButton
+                    android:id="@+id/rbtn_reader_backdrop_sixth"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="21dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:button="@null"
+                    android:drawableLeft="@drawable/reader_option_backdrop_sixth_sel"/>
+            </RadioGroup>
+        </HorizontalScrollView>
+    </LinearLayout>
+</LinearLayout>

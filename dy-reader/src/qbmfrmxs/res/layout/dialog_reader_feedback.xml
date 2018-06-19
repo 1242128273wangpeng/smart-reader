@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fl_feedback_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:background="#E6191C1F"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_dialog_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="18dp"
+            android:text="@string/feedback"
+            android:textColor="#FFF4F5F7"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+
+        <ScrollView
+            android:id="@+id/sv_feedback_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="19dp"
+                    android:paddingTop="19dp">
+
+                    <TextView
+                        style="@style/reader_feedback_txt_style"
+                        android:text="@string/feedback_chapter_empty"/>
+
+                    <CheckBox
+                        android:id="@+id/cb_feedback_chapter_empty"
+                        style="@style/reader_feedback_check_style"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="19dp"
+                    android:paddingTop="19dp">
+
+                    <TextView
+                        style="@style/reader_feedback_txt_style"
+                        android:text="@string/feedback_reading_cache_error"/>
+
+                    <CheckBox
+                        android:id="@+id/cb_feedback_reading_cache_error"
+                        style="@style/reader_feedback_check_style"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="19dp"
+                    android:paddingTop="19dp">
+
+                    <TextView
+                        style="@style/reader_feedback_txt_style"
+                        android:text="@string/feedback_chapter_content_repeat"/>
+
+                    <CheckBox
+                        android:id="@+id/cb_feedback_chapter_content_repeat"
+                        style="@style/reader_feedback_check_style"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="19dp"
+                    android:paddingTop="19dp">
+
+                    <TextView
+                        style="@style/reader_feedback_txt_style"
+                        android:text="@string/feedback_chapter_sequence_error"/>
+
+                    <CheckBox
+                        android:id="@+id/cb_feedback_chapter_sequence_error"
+                        style="@style/reader_feedback_check_style"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="19dp"
+                    android:paddingTop="19dp">
+
+                    <TextView
+                        style="@style/reader_feedback_txt_style"
+                        android:text="@string/feedback_chapter_content_error"/>
+
+                    <CheckBox
+                        android:id="@+id/cb_feedback_chapter_content_error"
+                        style="@style/reader_feedback_check_style"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="19dp"
+                    android:paddingTop="19dp">
+
+                    <TextView
+                        style="@style/reader_feedback_txt_style"
+                        android:text="@string/feedback_typesetting_error"/>
+
+                    <CheckBox
+                        android:id="@+id/cb_feedback_typesetting_error"
+                        style="@style/reader_feedback_check_style"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="19dp"
+                    android:paddingTop="19dp">
+
+                    <TextView
+                        style="@style/reader_feedback_txt_style"
+                        android:text="@string/feedback_cache_fail"/>
+
+                    <CheckBox
+                        android:id="@+id/cb_feedback_cache_fail"
+                        style="@style/reader_feedback_check_style"/>
+                </RelativeLayout>
+            </LinearLayout>
+        </ScrollView>
+
+        <View
+            android:id="@+id/view_divider"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_above="@+id/ll_feedback_option"
+            android:background="#FFEAEAEA"/>
+
+        <LinearLayout
+            android:id="@+id/ll_feedback_option"
+            android:layout_width="match_parent"
+            android:layout_height="60dp">
+
+            <TextView
+                android:id="@+id/txt_feedback_cancel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/reader_option_header_popup_item_sel"
+                android:gravity="center"
+                android:text="@string/cancel"
+                android:textColor="#FFF4F5F7"
+                android:textSize="14sp"/>
+
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="13dp"
+                android:layout_marginTop="13dp"
+                android:background="#FF5D646E"/>
+
+            <TextView
+                android:id="@+id/txt_feedback_submit"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/reader_option_header_popup_item_sel"
+                android:gravity="center"
+                android:text="@string/submit"
+                android:textColor="#FF1CA66E"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <net.lzbook.kit.book.view.NightShadowView
+        android:id="@+id/nsv_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"/>
+</FrameLayout>

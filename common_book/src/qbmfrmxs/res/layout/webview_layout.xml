@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/web_content_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/top_bar_height"
+        android:layout_alignParentTop="true"
+        android:background="@color/top_navigation_bg_color">
+
+        <RelativeLayout
+            android:id="@+id/rl_recommend_head"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/top_bar_height"
+            android:background="@color/top_navigation_bg_color"
+            android:visibility="gone">
+
+            <RelativeLayout
+                android:id="@+id/rl_recommend_search"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="7dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="7dp"
+                android:background="@drawable/recommend_title_search_bg"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:paddingLeft="10dp">
+
+                <ImageView
+                    android:id="@+id/img_recommend"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/recommend_title_search_icon"
+                    app:onPressChangeAlpha="true"/>
+
+                <TextView
+                    style="@style/style_text_normal_weak"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="6dp"
+                    android:layout_toRightOf="@+id/img_recommend"
+                    android:text="搜小说"/>
+
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_head_ranking"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/top_bar_height"
+            android:background="@color/top_navigation_bg_color"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/style_text_huge_dark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:text="@string/ranking"/>
+
+
+            <ImageView
+                android:id="@+id/img_ranking_search"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="16dp"
+                android:scaleType="fitXY"
+                android:src="@mipmap/nbar_search_nor_icon"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+    <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
+        android:id="@+id/bookshelf_refresh_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/title_layout">
+
+        <com.intelligent.reader.widget.topshadow.TopShadowWebView
+            android:id="@+id/web_content_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"/>
+    </net.lzbook.kit.pulllist.SuperSwipeRefreshLayout>
+
+    <ImageView
+        android:id="@+id/img_head_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        android:src="@drawable/top_shadow_bg"/>
+
+</RelativeLayout>
