@@ -29,6 +29,7 @@ object BookRouter {
     const val NAVIGATE_TYPE_DOWNLOAD = 1
     const val NAVIGATE_TYPE_RECOMMEND = 2
     const val NAVIGATE_TYPE_READING = 3
+    const val NAVIGATE_TYPE_BOOKEND = 5
 
     private val shake = AntiShake()
 
@@ -87,6 +88,7 @@ object BookRouter {
                 NAVIGATE_TYPE_DOWNLOAD -> data["source"] = "CACHEMANAGE"
                 NAVIGATE_TYPE_RECOMMEND -> data["source"] = "BOOOKDETAIL"
                 NAVIGATE_TYPE_READING -> data["source"] = "READPAGE"
+                NAVIGATE_TYPE_BOOKEND -> data["source"] = "BOOKENDPAGE"
             }
 
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data)

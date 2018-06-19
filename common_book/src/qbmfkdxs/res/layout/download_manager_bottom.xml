@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <View
+            android:id="@+id/divi"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_view_height_0.5"
+            android:background="@color/color_divider"/>
+
+
+    <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/remove_delete_layout"
+            android:orientation="horizontal"
+            android:layout_below="@+id/divi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/home_title_background"
+            android:padding="15dp">
+
+        <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent">
+
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:orientation="horizontal">
+
+                <Button
+                        android:id="@+id/btn_left"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:drawableLeft="@mipmap/download_icon_checkall"
+                        android:drawablePadding="3dp"
+                        android:layout_centerVertical="true"
+                        android:textColor="#303135"
+                        android:textSize="17sp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="15dp"
+                        android:layout_centerInParent="true"
+                        android:text="全选"/>
+
+
+            </LinearLayout>
+        </RelativeLayout>
+
+        <View
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:background="@color/color_gray_e6e6e6"/>
+
+        <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent">
+
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:orientation="horizontal">
+
+                <Button
+                        android:id="@+id/btn_right"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:drawableLeft="@mipmap/download_icon_del"
+                        android:drawablePadding="3dp"
+                        android:textColor="#303135"
+                        android:textSize="17sp"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:layout_centerInParent="true"
+                        android:text="删除"/>
+            </LinearLayout>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <net.lzbook.kit.book.view.NightShadowView
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/remove_delete_layout"
+            android:layout_alignRight="@+id/remove_delete_layout"
+            android:layout_alignBottom="@+id/remove_delete_layout"
+            android:layout_alignLeft="@+id/remove_delete_layout"
+            />
+</RelativeLayout>
