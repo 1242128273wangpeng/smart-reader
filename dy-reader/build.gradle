@@ -51,6 +51,7 @@ android {
         txtqbmfxs {}
         txtqbmfyd {}
         zsmfqbxs {}
+        qbmfrmxs {}
     }
 
 }

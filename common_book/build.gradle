@@ -44,6 +44,7 @@ android {
     def UMENG_APPKEY_TXTMFQBDZS = "539e59d856240b0520057ce7"
     def UMENG_APPKEY_TXTQBMFYD = "539e59d856240b0520057ce7"
     def UMENG_APPKEY_QBMFKDXS = "5881cc3582b63548be0001af"
+    def UMENG_APPKEY_QBMFRMXS = ""
 
     def UMENG_PUSH_SECRET_TXTQBDZS = "c270ce04fcbd0321eb4898d0369ba8ce"
     def UMENG_XIAOMI_ID_TXTQBDZS = "String2882303761517544305"
@@ -52,6 +53,10 @@ android {
     def UMENG_PUSH_SECRET_TXTQBMFYD = ""
     def UMENG_XIAOMI_ID_TXTQBMFYD = ""
     def UMENG_XIAOMI_KEY_TXTQBMFYD = ""
+
+    def UMENG_PUSH_SECRET_QBMFRMXS = ""
+    def UMENG_XIAOMI_ID_QBMFRMXS = ""
+    def UMENG_XIAOMI_KEY_QBMFRMXS = ""
 
     def UMENG_PUSH_SECRET_QBZSYDQ = ""
     def UMENG_XIAOMI_ID_QBZSYDQ = ""
@@ -80,6 +85,7 @@ android {
     def AMAP_APIKEY_TXTMFQBDZS = "bbae57edf34620794d87545b18798e0e"
     def AMAP_APIKEY_TXTQBMFYD = "2baf3d5d4f949e5189afbe37a8e1302e"
     def AMAP_APIKEY_QBMFKDXS = "7d78055ba72ccf291729432091f50eea"
+    def AMAP_APIKEY_QBMFRMXS = "7d78055ba72ccf291729432091f50eea"
 
 
     def BAIDU_STAT_ID_KDZSYDQ = "542233ee41"
@@ -101,6 +107,7 @@ android {
     def BAIDU_STAT_ID_TXTMFQBDZS = "04fe041fcd"
     def BAIDU_STAT_ID_TXTQBMFYD = "0b1405d1df"
     def BAIDU_STAT_ID_QBMFKDXS = "d936085832"
+    def BAIDU_STAT_ID_QBMFRMXS = "d936085832"
 
 
     def IFLYTEK_APPID_QBZSYDQ = "5982c10f"
@@ -129,7 +136,8 @@ android {
             kdqbdzs   : "快读全本电子书",
             txtqbxsydq: "TXT全本小说阅读器",
             txtqbmfyd : "TXT全本免费阅读",
-            qbmfkdxs  : "全本免费快读小说"
+            qbmfkdxs  : "全本免费快读小说",
+            qbmfrmxs  : "全本免费热门小说"
     ]
 
     def appPackageIDConfig = [
@@ -143,7 +151,8 @@ android {
             kdqbdzs   : "cn.kkqbtxtxs.reader",
             txtqbxsydq: "cn.zsqbydq.reader",
             txtqbmfyd : "cn.txtqbmfyd.reader",
-            qbmfkdxs  : "cc.quanbennovel"
+            qbmfkdxs  : "cc.quanbennovel",
+            qbmfrmxs  : "cn.qbmfremxs.reader"
     ]
 
     def channel = "dev_channel"
@@ -729,6 +738,42 @@ N多网	        blf1298_10885_001
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://zhuishu.lsread.cn"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://ctbookcity.lsread.cn:443"
         }
+
+
+
+
+        qbmfrmxs {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+
+
+            manifestPlaceholders = [
+                    UMENG_APP_KEY: "${UMENG_APPKEY_QBMFRMXS}",
+                    UMENG_PUSH_SECRET:"${UMENG_PUSH_SECRET_QBMFRMXS}",
+                    UMENG_PUSH_XIAOMI_ID:"${UMENG_XIAOMI_ID_QBMFRMXS}",
+                    UMENG_PUSH_XIAOMI_KEY:"${UMENG_XIAOMI_KEY_QBMFRMXS}",
+                    APP_NAME     : 'TXT全本免费阅读',
+                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_QBMFRMXS}",
+                    AMAP_APIKEY  : "${AMAP_APIKEY_QBMFRMXS}",
+                    WECHAT_APPID : "",
+                    QQ_APPID     : "",
+                    IFLYTEK_APPID: "",
+                    PACKAGE_NAME : defaultConfig.applicationId
+
+            ]
+
+            notOverrideResValue getOwner(), "string", "app_path", "/qbmfrmxs_book"
+            // notOverrideResValue getOwner(), "string", "app_name", "TXT全本免费阅读"
+            notOverrideResValue getOwner(), "string", "database_name", "qbmfrmxsBook.db"
+            notOverrideResValue getOwner(), "string", "baidu_stat_id", "0b1405d1df"
+            notOverrideResValue getOwner(), "string", "push_key", "DOGRj3vpV9F6KamswYShmdHM"
+            notOverrideResValue getOwner(), "string", "alifeedback_key", "24812888"
+            notOverrideResValue getOwner(), "string", "alifeedback_secret", "2baf3d5d4f949e5189afbe37a8e1302e"
+
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://news.youshiit.com"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://show.youshiit.com:443"
+        }
+
     }
 
 
@@ -908,6 +953,8 @@ N多网	        blf1298_10885_001
                 outputFileName = "txtqbmfyd_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
             } else if (variant.flavorName == "qbmfkdxs") {
                 outputFileName = "qbmfkdxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
+            } else if (variant.flavorName == "qbmfrmxs") {
+                outputFileName = "qbmfrmxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
             } else {
                 outputFileName = "remennovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
             }

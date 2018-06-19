@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="183dp"
+        android:background="#FFFFFF">
+
+        <TextView
+            android:id="@+id/txt_delete_title"
+            style="@style/style_text_large_plain"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:text="@string/prompt"/>
+
+        <TextView
+            android:id="@+id/txt_delete_prompt"
+            style="@style/style_text_normal_dark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_delete_title"
+            android:layout_marginTop="15dp"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="6dp"
+            android:text="@string/bookshelf_delete_dialog_content"/>
+
+        <CheckBox
+            android:id="@+id/ckb_delete_cache"
+            style="@style/style_text_small_plain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_delete_prompt"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="12dp"
+            android:button="@drawable/bookshelf_delete_check_box_sel"
+            android:checked="false"
+            android:paddingEnd="0dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="0dp"
+            android:paddingStart="8dp"
+            android:text="@string/bookshelf_delete_dialog_check"/>
+
+        <ProgressBar
+            android:id="@+id/pgbar_delete_loading"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_below="@id/txt_delete_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:indeterminateDrawable="@drawable/bookshelf_delete_loading_bg"
+            android:indeterminateDuration="1000"
+            android:visibility="visible"/>
+
+        <LinearLayout
+            android:id="@+id/ll_delete_option"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_delete_cancel"
+                style="@style/style_text_normal_plain"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/bookshelf_item_sel"
+                android:gravity="center"
+                android:minWidth="24dp"
+                android:singleLine="true"
+                android:text="@string/cancel"/>
+
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:background="#FFF4F5F7"/>
+
+            <Button
+                android:id="@+id/btn_delete_confirm"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/bookshelf_item_sel"
+                android:gravity="center"
+                android:minWidth="24dp"
+                android:singleLine="true"
+                android:text="@string/confirm"
+                android:textColor="#FF19DD8B"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/view_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_above="@id/ll_delete_option"
+            android:background="#FFEDEEF0"/>
+
+    </RelativeLayout>
+
+    <net.lzbook.kit.book.view.NightShadowView
+        android:layout_width="match_parent"
+        android:layout_height="183dp"
+        android:visibility="gone"/>
+
+</RelativeLayout>

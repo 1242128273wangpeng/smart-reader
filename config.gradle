@@ -12,8 +12,8 @@ ext {
     minSdkVersion = 14
     targetSdkVersion = 22
 
-    applicationId = "cn.qbzsydsq.reader"
-    defaultPublishConfig = 'qbzsydqDebug'
+    applicationId = "cn.txtqbmfyd.reader"
+    defaultPublishConfig = 'qbmfrmxsDebug'
 
     minifyEnable = false
     shrinkResEnable = minifyEnable
@@ -28,7 +28,7 @@ ext {
 
     hasad = true
 
-    noadList = ['cn.txtqbmfyd.reader']
+    noadList = ['cn.txtqbmfyd.reader', 'cn.txtqbmfyd.reader']
 
 
     def appPackageIDConfig = [
@@ -42,7 +42,8 @@ ext {
             kdqbdzs   : "cn.kkqbtxtxs.reader",
             txtqbxsydq: "cn.zsqbydq.reader",
             txtqbmfyd : "cn.txtqbmfyd.reader",
-            qbmfkdxs  : "cc.quanbennovel"
+            qbmfkdxs  : "cc.quanbennovel",
+            qbmfrmxs  : "cn.txtqbmfyd.reader"
     ]
 
     def startParameter = project.getGradle().getStartParameter()
