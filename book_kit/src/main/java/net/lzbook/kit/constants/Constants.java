@@ -260,6 +260,10 @@ public class Constants {
     public static String STYLE_CHANGE = "style1";
     public static String NOVEL_HOST = "novel_host";
     public static String WEBVIEW_HOST = "httpsWebView_host";
+    public static String UNION_HOST = "union_host";
+    public static String CONTENT_HOST = "content_host";
+
+
     public static long startReadTime = 0;
     public static long endReadTime = 0;
     public static String FILE_PATH = "";
