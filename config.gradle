@@ -12,7 +12,7 @@ ext {
     minSdkVersion = 14
     targetSdkVersion = 22
 
-    applicationId = "cn.txtqbmfyd.reader"
+    applicationId = "cn.qbmfremxs.reader"
     defaultPublishConfig = 'qbmfrmxsDebug'
 
     minifyEnable = false
