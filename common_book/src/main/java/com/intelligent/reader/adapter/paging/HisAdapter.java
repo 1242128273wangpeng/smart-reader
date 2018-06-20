@@ -2,8 +2,9 @@ package com.intelligent.reader.adapter.paging;
 
 import com.ding.basic.bean.HistoryInfo;
 import com.intelligent.reader.R;
+import com.intelligent.reader.adapter.HistoryHolder;
+
 import net.lzbook.kit.utils.AbsRecyclerViewHolder;
-import com.intelligent.reader.adapter.holder.HistoryHolder;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

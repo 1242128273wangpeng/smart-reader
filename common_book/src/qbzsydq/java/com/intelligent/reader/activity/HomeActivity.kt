@@ -19,6 +19,7 @@ import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
+import android.webkit.WebViewFragment
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.bumptech.glide.Glide

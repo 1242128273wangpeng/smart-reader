@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:ignore="RtlHardcoded">
+
+    <LinearLayout
+        android:id="@+id/ll_catalog_mark_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/catalog_mark_delete_bg"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_delete_mark"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:paddingLeft="72dp"
+            android:paddingRight="72dp"
+            android:text="@string/delete_bookmark"
+            android:textColor="#CC000000"
+            android:textSize="14sp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#19000000"/>
+
+        <TextView
+            android:id="@+id/txt_clear_mark"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:paddingLeft="72dp"
+            android:paddingRight="72dp"
+            android:text="@string/empty_bookmark"
+            android:textColor="#CC000000"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
+    <net.lzbook.kit.book.view.NightShadowView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/ll_catalog_mark_content"
+        android:layout_alignLeft="@id/ll_catalog_mark_content"
+        android:layout_alignRight="@id/ll_catalog_mark_content"
+        android:layout_alignTop="@id/ll_catalog_mark_content"
+        android:visibility="gone"
+        app:cornerRadius="10dp"/>
+</RelativeLayout>
