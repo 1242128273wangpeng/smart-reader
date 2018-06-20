@@ -12,7 +12,7 @@ ext {
     minSdkVersion = 14
     targetSdkVersion = 22
 
-    applicationId = "cn.txtqbmfyd.reader"
+    applicationId = "cn.qbmfrmxs.reader"
     defaultPublishConfig = 'qbmfrmxsDebug'
 
     minifyEnable = false
@@ -43,7 +43,7 @@ ext {
             txtqbxsydq: "cn.zsqbydq.reader",
             txtqbmfyd : "cn.txtqbmfyd.reader",
             qbmfkdxs  : "cc.quanbennovel",
-            qbmfrmxs  : "cn.txtqbmfyd.reader"
+            qbmfrmxs  : "cn.qbmfrmxs.reader"
     ]
 
     def startParameter = project.getGradle().getStartParameter()
