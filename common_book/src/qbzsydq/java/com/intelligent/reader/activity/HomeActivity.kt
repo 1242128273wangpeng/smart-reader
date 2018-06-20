@@ -18,7 +18,6 @@ import android.support.v4.view.ViewPager
 import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
@@ -49,7 +48,6 @@ import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
 import net.lzbook.kit.utils.download.DownloadAPKService
 import net.lzbook.kit.utils.update.ApkUpdateUtils
 import java.io.File
-import java.lang.reflect.Field
 import java.util.*
 
 @Route(path = RouterConfig.HOME_ACTIVITY)
