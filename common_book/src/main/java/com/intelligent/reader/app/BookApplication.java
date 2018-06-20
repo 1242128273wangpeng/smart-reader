@@ -59,56 +59,62 @@ public class BookApplication extends BaseBookApplication {
 
         // 友盟推送初始化
         try {
-            ApplicationInfo appInfo = getPackageManager()
-                    .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
-            String pushSecret = appInfo.metaData.getString("UMENG_PUSH_SECRET");
-            if (pushSecret != null) {
-                UMConfigure.init(this, 1, pushSecret);
-                AppLog.e(TAG, "pushSecret: " + pushSecret);
-            }
+            String packageName = AppUtils.getPackageName();
+            if("cc.remennovel".equals(packageName) ||"cc.kdqbxs.reader".equals(packageName) ){
+                ApplicationInfo appInfo = getPackageManager()
+                        .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+                String pushSecret = appInfo.metaData.getString("UMENG_PUSH_SECRET");
+                if (pushSecret != null) {
+                    UMConfigure.init(this, 1, pushSecret);
+                    AppLog.e(TAG, "pushSecret: " + pushSecret);
+                }
 
-            String xiaomiId = appInfo.metaData.getString("UMENG_PUSH_XIAOMI_ID");
-            AppLog.e(TAG, "xiaomiId: " + xiaomiId);
+                String xiaomiId = appInfo.metaData.getString("UMENG_PUSH_XIAOMI_ID");
+                AppLog.e(TAG, "xiaomiId: " + xiaomiId);
 
-            String xiaomiKey = appInfo.metaData.getString("UMENG_PUSH_XIAOMI_KEY");
-            AppLog.e(TAG, "xiaomiKey: " + xiaomiKey);
+                String xiaomiKey = appInfo.metaData.getString("UMENG_PUSH_XIAOMI_KEY");
+                AppLog.e(TAG, "xiaomiKey: " + xiaomiKey);
 
-            // 小米通道
-            if (xiaomiId != null && xiaomiKey != null) {
-                MiPushRegistar.register(this, xiaomiId.replace("String", ""),
-                        xiaomiKey.replace("String", ""));
+                // 小米通道
+                if (xiaomiId != null && xiaomiKey != null) {
+                    MiPushRegistar.register(this, xiaomiId.replace("String", ""),
+                            xiaomiKey.replace("String", ""));
+                }
+
+                final PushAgent pushAgent = PushAgent.getInstance(this);
+                pushAgent.setResourcePackageName("net.lzbook.kit");
+                //注册推送服务，每次调用register方法都会回调该接口
+                pushAgent.register(new IUmengRegisterCallback() {
+                    @Override
+                    public void onSuccess(String deviceToken) {
+                        //注册成功会返回device token
+                        AppLog.e(TAG, "deviceToken: " + deviceToken);
+                        String udid = OpenUDID.getOpenUDIDInContext(BookApplication.this);
+                        AppLog.e(TAG, "udid: " + udid);
+                        pushAgent.setAlias(udid, "UDID", new UTrack.ICallBack() {
+                            @Override
+                            public void onMessage(boolean isSuccess, String message) {
+                                AppLog.e(TAG, "setAlias：" + isSuccess + "  message: " + message);
+                            }
+                        });
+                    }
+                    @Override
+                    public void onFailure(String s, String s1) {
+                        AppLog.e(TAG, "s: " + s + " --- s1: " + s1);
+                    }
+                });
+                pushAgent.setMessageHandler(new PushMessageHandler());
+                pushAgent.setNotificationClickHandler(new PushNotificationHandler());
+
+                // 华为通道
+                HuaWeiRegister.register(this);
+
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        final PushAgent pushAgent = PushAgent.getInstance(this);
-        pushAgent.setResourcePackageName("net.lzbook.kit");
-        //注册推送服务，每次调用register方法都会回调该接口
-        pushAgent.register(new IUmengRegisterCallback() {
-            @Override
-            public void onSuccess(String deviceToken) {
-                //注册成功会返回device token
-                AppLog.e(TAG, "deviceToken: " + deviceToken);
-                String udid = OpenUDID.getOpenUDIDInContext(BookApplication.this);
-                AppLog.e(TAG, "udid: " + udid);
-                pushAgent.setAlias(udid, "UDID", new UTrack.ICallBack() {
-                    @Override
-                    public void onMessage(boolean isSuccess, String message) {
-                        AppLog.e(TAG, "setAlias：" + isSuccess + "  message: " + message);
-                    }
-                });
-            }
-            @Override
-            public void onFailure(String s, String s1) {
-                AppLog.e(TAG, "s: " + s + " --- s1: " + s1);
-            }
-        });
-        pushAgent.setMessageHandler(new PushMessageHandler());
-        pushAgent.setNotificationClickHandler(new PushNotificationHandler());
 
-        // 华为通道
-        HuaWeiRegister.register(this);
 
         if (!AppUtils.isMainProcess(this)) {
             return;

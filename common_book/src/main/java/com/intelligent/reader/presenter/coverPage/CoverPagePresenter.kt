@@ -334,11 +334,26 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
             val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(coverDetail!!.book_id)
 
             if (book != null) {
-                coverDetail?.last_chapter = book.last_chapter
-                coverDetail?.id = book.id
-                coverDetail?.chapter_count = book.chapter_count
 
-               var result =  RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(coverDetail!!)
+
+                //从H5页面直接添加书籍时部分字段补全
+                book.status = coverDetail!!.status   //更新书籍状态
+                book.book_chapter_id = coverDetail!!.book_chapter_id
+                book.name = coverDetail!!.name
+                book.desc = coverDetail!!.desc
+                book.book_type = coverDetail!!.book_type
+                book.book_id = coverDetail!!.book_id
+                book.host = coverDetail!!.host
+                book.author = coverDetail!!.author
+                book.book_source_id = coverDetail!!.book_source_id
+                book.img_url = coverDetail!!.img_url
+                book.label = coverDetail!!.label
+                book.sub_genre = coverDetail!!.sub_genre
+                book.chapters_update_index = coverDetail!!.chapters_update_index
+                book.genre = coverDetail!!.genre
+                book.score = coverDetail!!.score
+
+               var result =  RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book)
                 AppLog.e("result",result.toString())
             }
         }

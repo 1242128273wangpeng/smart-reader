@@ -5,6 +5,7 @@ import com.ding.basic.bean.Chapter
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.ding.basic.rx.SchedulerHelper
+import com.ding.basic.util.DataCache
 import com.dy.reader.ReadMediaManager
 import com.dy.reader.Reader
 import com.dy.reader.page.Position
@@ -22,7 +23,9 @@ import com.intelligent.reader.read.mode.NovelChapter
 import com.intelligent.reader.read.mode.NovelPageBean
 import com.orhanobut.logger.Logger
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Function
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
@@ -167,7 +170,7 @@ object DataProvider {
                     ReaderStatus.chapterList.clear()
                     ReaderStatus.chapterList.addAll(result)
 
-                    loadPre(ReaderStatus.position.group + 2, ReaderStatus.position.group + 6)
+//                    loadPre(ReaderStatus.position.group + 2, ReaderStatus.position.group + 6)
                     val sourceArr = mutableListOf<Flowable<Chapter>>()
                     for (i in index until Math.min(index + 3, ReaderStatus.chapterList.size)) {
                         sourceArr.add(readerRepository.requestSingleChapter(ReaderStatus.chapterList[i]))
@@ -357,7 +360,7 @@ object DataProvider {
     fun getPage(position: Position): NovelPageBean {
         val curPosition = PageManager.currentPage.position
 
-        if (position.index == 0) {
+        if (position.index == 0 && position.group >= 0) {
             loadPre(position.group + 2, position.group + 6)
         }
 
