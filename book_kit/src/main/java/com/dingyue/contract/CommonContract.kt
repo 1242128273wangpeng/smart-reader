@@ -85,6 +85,20 @@ object CommonContract {
     }
 
     /***
+     * 防止阅读页音量键按钮两次点击
+     * **/
+    fun isVolumDoubleClick(time: Long): Boolean {
+        val interval = time - lastClickTime
+        return if (interval > 500) {
+            lastClickTime = time
+            false
+        } else {
+            true
+        }
+    }
+
+
+    /***
      * 书架排序
      * **/
     fun insertShelfSortType(type: Int) {
