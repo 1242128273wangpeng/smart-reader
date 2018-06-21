@@ -89,7 +89,7 @@ object CommonContract {
      * **/
     fun isVolumDoubleClick(time: Long): Boolean {
         val interval = time - lastClickTime
-        return if (interval > 500) {
+        return if (interval > 300) {
             lastClickTime = time
             false
         } else {
