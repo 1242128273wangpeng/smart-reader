@@ -6,14 +6,13 @@ import android.text.TextUtils
 import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.ding.basic.bean.Book
 import com.dingyue.downloadmanager.contract.BookHelperContract
 import com.dingyue.downloadmanager.recl.DownloadManagerAdapter
 import kotlinx.android.synthetic.txtqbdzs.item_download_manager_task.view.*
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.constants.ReplaceConstants
-import net.lzbook.kit.data.bean.Book
-import net.lzbook.kit.utils.loge
 import java.text.MessageFormat
 
 class DownloadManagerTaskHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

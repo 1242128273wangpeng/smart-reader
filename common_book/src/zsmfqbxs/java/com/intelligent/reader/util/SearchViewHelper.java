@@ -119,6 +119,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
     private int count = 0;//用于标识换一换次数
     private List<Book> books = new ArrayList<>();
     private LoadingPage loadingPage;
+    private TextView tv_search_title;
 
     public SearchViewHelper(Activity activity, ViewGroup rootLayout, EditText
             searchEditText, SearchHelper searchHelper) {
@@ -317,7 +318,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
 
     private View initHotTagView() {
         searchHotTitleLayout = View.inflate(mContext, R.layout.search_hot_title_layout, null);
-
+        tv_search_title = (TextView) searchHotTitleLayout.findViewById(R.id.tv_search_title);
         linear_root = (LinearLayout) searchHotTitleLayout.findViewById(R.id.linear_root);
         mGridView = (ScrollForGridView) searchHotTitleLayout.findViewById(R.id.grid);
 
@@ -543,6 +544,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
                 linear_root.setVisibility(View.VISIBLE);
                 parseResult(searchResult);
             } else {
+                tv_search_title.setVisibility(View.GONE);
                 linear_root.setVisibility(View.GONE);
             }
 
@@ -550,6 +552,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
             if (!hasNet) {
                 CommonUtil.showToastMessage("网络不给力哦");
             }
+            tv_search_title.setVisibility(View.GONE);
             linear_root.setVisibility(View.GONE);
         }
     }

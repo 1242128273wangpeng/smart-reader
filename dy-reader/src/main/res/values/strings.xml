@@ -106,6 +106,7 @@
 
     <string name="change_source">换源</string>
     <string name="insert_bookmark">添加书签</string>
+    <string name="remove_bookmark">删除书签</string>
     <string name="book_detail">书籍详情</string>
 
 

@@ -113,6 +113,11 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
 
     }
 
+    fun shouldLightStatusBase(): Boolean {
+        return true
+    }
+
+
     private fun initUI() {
 
         catalog_novel_close.antiShakeClick(this)
@@ -568,7 +573,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     }
 
     override fun changeDownloadButtonStatus() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 }
