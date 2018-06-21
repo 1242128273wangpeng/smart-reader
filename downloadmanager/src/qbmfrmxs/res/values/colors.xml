@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="theme_primary">#42BE54</color>
+
+    <color name="tab_unchecked">#989898</color>
+</resources>

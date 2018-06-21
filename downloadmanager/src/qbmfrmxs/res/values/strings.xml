@@ -6,7 +6,7 @@
     <string name="status_no_cache">未缓存</string>
     <string name="status_finish">已缓存</string>
     <string name="clear_loading_title">正在清理缓存中...</string>
-
+    <string name="go_to_book_store">立即去书城</string>
 
     <string name="application_cache_size">0B</string>
 </resources>

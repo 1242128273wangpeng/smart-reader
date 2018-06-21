@@ -1,7 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="BottomPopupDialog">
         <item name="android:windowEnterAnimation">@anim/bottom_dialog_enter_anim</item>
         <item name="android:windowExitAnimation">@anim/bottom_dialog_exit_anim</item>
     </style>
+
+
+    <!--公用对话框按钮-->
+
+    <style name="Style_Dialog_Button">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:minWidth">@dimen/dimen_view_width_24</item>
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:textColor">@color/text_color_plain</item>
+    </style>
+
+    <!--设置页-文字-右侧按钮-->
+
+    <style name="Style_Setting_Icon_Text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginLeft">@dimen/dimen_margin_16</item>
+        <item name="android:layout_marginRight">@dimen/dimen_margin_24</item>
+        <item name="android:layout_marginTop">@dimen/dimen_setting_item_top</item>
+        <item name="android:drawableRight">@mipmap/board_more_nor_icon</item>
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:textColor">@color/text_color_dark</item>
+    </style>
+
+    <style name="Style_Setting_Text_Font">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:layout_marginLeft">@dimen/dimen_margin_16</item>
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:textColor">@color/text_color_dark</item>
+    </style>
+
+    <style name="Style_Setting_Switch_Button">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_centerVertical">true</item>
+
+    </style>
+
+    <!--设置页分割线-->
+
+    <style name="Style_Setting_Line_View">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0.5dp</item>
+        <item name="android:background">@color/color_divider</item>
+    </style>
+
+
+    <!--设置页（结束）-->
+
+
+    <!--底部导航栏样式-->
+
+    <style name="Style_Tab_LinearLayout">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="Style_Tab_ImageView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:focusable">false</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="Style_Tab_TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@drawable/home_tab_text_color_selector</item>
+    </style>
+
+    <!--底部导航栏样式（结束）-->
+
+
 </resources>

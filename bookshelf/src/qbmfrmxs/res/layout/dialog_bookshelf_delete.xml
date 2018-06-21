@@ -5,9 +5,10 @@
     android:layout_height="wrap_content">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="183dp"
-        android:background="#FFFFFF">
+        android:layout_width="301dp"
+        android:layout_height="198dp"
+        android:layout_centerInParent="true"
+        android:background="@color/color_white">
 
         <TextView
             android:id="@+id/txt_delete_title"
@@ -76,9 +77,10 @@
 
             <View
                 android:layout_width="0.5dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center_vertical"
-                android:background="#FFF4F5F7"/>
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/dimen_margin_16"
+                android:layout_marginTop="@dimen/dimen_margin_16"
+                android:background="@color/color_white_f1f1f1"/>
 
             <Button
                 android:id="@+id/btn_delete_confirm"
@@ -90,22 +92,22 @@
                 android:minWidth="24dp"
                 android:singleLine="true"
                 android:text="@string/confirm"
-                android:textColor="#FF19DD8B"
+                android:textColor="@color/theme_primary"
                 android:textSize="14sp"/>
         </LinearLayout>
 
         <View
             android:id="@+id/view_divider"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="0.5dp"
             android:layout_above="@id/ll_delete_option"
-            android:background="#FFEDEEF0"/>
+            android:background="@color/color_white_f1f1f1"/>
 
     </RelativeLayout>
 
     <net.lzbook.kit.book.view.NightShadowView
-        android:layout_width="match_parent"
-        android:layout_height="183dp"
+        android:layout_width="301dp"
+        android:layout_height="198dp"
         android:visibility="gone"/>
 
 </RelativeLayout>

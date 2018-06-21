@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="bookshelf_empty_find">去找书</string>
 
-    <string name="bookshelf_empty_prompt">还没有添加书籍哦~</string>
-
+    <string name="bookshelf_empty_find">立即去书城</string>
+    <string name="bookshelf_foot_prompt">我们是有底线的（=@__@=）</string>
+    <string name="bookshelf_empty_prompt">快去看看别的小伙伴喜欢什么书吧</string>
     <string name="bookshelf_delete_dialog_loading_prompt">正在清理缓存中...</string>
+    <string name="bookshelf_delete_dialog_content">确定要将所有书籍移出书架吗？</string>
 
-    <string name="bookshelf_delete_dialog_content">删除后，缓存内容将被清空，你确定要继续吗？</string>
 </resources>

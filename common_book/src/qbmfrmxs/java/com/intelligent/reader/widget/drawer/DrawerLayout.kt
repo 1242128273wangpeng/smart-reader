@@ -228,15 +228,13 @@ class DrawerLayout @JvmOverloads constructor(context: Context, attrs: AttributeS
 
     companion object {
 
-        private val TAG = "DrawerLayout"
-
         private val LEFT_TO_RIGHT = 3
         private val RIGHT_TO_LEFT = 4
 
         private val SPRING_BACK_VELOCITY = 1500f
         private val SPRING_BACK_DISTANCE = 80
 
-        private val MENU_MARGIN_RIGHT = 100
+        private val MENU_MARGIN_RIGHT = 70
 
         private val SHADOW_WIDTH = 20
 

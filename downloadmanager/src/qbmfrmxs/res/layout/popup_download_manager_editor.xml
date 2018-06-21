@@ -31,13 +31,15 @@
             android:gravity="center"
             android:minWidth="24dp"
             android:singleLine="true"
-            android:text="@string/cancel"/>
+            android:text="@string/cancel"
+            android:visibility="gone"/>
 
         <View
             android:layout_width="0.5dp"
             android:layout_height="30dp"
             android:layout_gravity="center_vertical"
-            android:background="#FFE8E9EC"/>
+            android:background="#FFE8E9EC"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/btn_delete"

@@ -19,7 +19,7 @@
 
     <style name="download_manager_empty_find">
         <item name="android:textSize">17sp</item>
-        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textColor">@color/theme_primary</item>
     </style>
 
     <style name="download_manager_clear_title">

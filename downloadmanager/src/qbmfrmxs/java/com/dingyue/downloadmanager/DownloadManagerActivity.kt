@@ -3,6 +3,11 @@ package com.dingyue.downloadmanager
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.view.PagerAdapter
+import android.support.v4.view.ViewPager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SimpleItemAnimator
 import android.view.Menu
@@ -10,6 +15,9 @@ import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
 import com.dingyue.contract.CommonContract
+import com.dingyue.contract.router.BookRouter
+import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
 import com.dingyue.downloadmanager.contract.BookHelperContract
 import com.dingyue.downloadmanager.contract.CacheManagerContract
 import com.dingyue.downloadmanager.recl.DownloadItemDecoration
@@ -20,17 +28,28 @@ import kotlinx.android.synthetic.qbmfrmxs.item_download_manager_task_header.view
 import net.lzbook.kit.book.download.CallBackDownload
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.constants.Constants
-import com.dingyue.contract.router.BookRouter
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
 import net.lzbook.kit.utils.uiThread
 
 /**
- * Created by qiantao on 2017/11/22 0022
+ * Function：缓存管理类带选项卡
+ *
+ * Created by JoannChen on 2018/6/20 0020 14:57
+ * E-mail:yongzuo_chen@dingyuegroup.cn
  */
 @Route(path = RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
 class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         DownloadManagerAdapter.DownloadManagerItemListener, MenuManager {
+
+    private val titles = arrayOf("已缓存", "未缓存")
+
+    private val unCacheFragment: DownloadFragment by lazy {
+        val fragment = DownloadFragment()
+        fragment
+    }
+    private val cachedFragment: DownloadFragment by lazy {
+        val fragment = DownloadFragment()
+        fragment
+    }
 
     private val firstHeaderHeight by lazy {
         resources.getDimensionPixelSize(R.dimen.download_manager_item_first_header)
@@ -128,6 +147,8 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
     }
 
     private fun initView() {
+
+
         img_head_back.setOnClickListener {
             DownloadManagerLogger.uploadCacheManagerBack()
             finish()
@@ -203,7 +224,41 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         (recl_content.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
         recl_content.topShadow = img_head_shadow
+
+
+        category_view_page.adapter = DownloadPageAdapter(supportFragmentManager)
+        category_view_page.setCurrentItem(0, false)
+        tabstrip.setViewPager(category_view_page)
+        category_view_page.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {}
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+            override fun onPageSelected(position: Int) {
+            }
+
+        })
+
     }
+
+
+    inner class DownloadPageAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
+
+        override fun getCount(): Int = titles.size
+
+        override fun getItem(position: Int): Fragment? {
+            return when (position) {
+                0 -> unCacheFragment
+                1 -> cachedFragment
+                else -> unCacheFragment
+            }
+        }
+
+        override fun getItemPosition(`object`: Any): Int = PagerAdapter.POSITION_NONE
+
+        override fun getPageTitle(position: Int): CharSequence = titles[position]
+    }
+
 
     private fun onDownloadBookQuery() {
         if (downloadBooks.size == 0) {

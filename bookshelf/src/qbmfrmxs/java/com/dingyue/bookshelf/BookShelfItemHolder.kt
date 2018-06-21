@@ -12,6 +12,10 @@ import com.ding.basic.bean.Book
 import kotlinx.android.synthetic.qbmfrmxs.item_bookshelf_book.view.*
 
 import net.lzbook.kit.constants.ReplaceConstants
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.Tools
+import java.math.BigDecimal
+
 
 /**
  * Desc 书架页Item
@@ -33,17 +37,35 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             book.sequence = book.chapter_count - 1
         }
 
-        when {
-            book.update_status == 1 -> { //更新
-                img_book_status.visibility = View.VISIBLE
-                img_book_status.setImageResource(R.drawable.bookshelf_item_book_update_icon)
-            }
+        // 更新时间+更新章节
+        val updateTime = "${Tools.compareTime(AppUtils.formatter, book.last_chapter!!.update_time)}更新"
+        val updateChapter = book.last_chapter?.name
+        txt_book_update.text = (updateTime + "：" + updateChapter)
 
+        // 阅读进度
+        if (book.last_chapter != null) {
+            val count: Int = if (book.sequence <= 0) {
+                0
+            } else {
+                val readChapter = BigDecimal(book.sequence + 1)
+                val chapterCount = BigDecimal(book.chapter_count)
+                (readChapter.divide(chapterCount, 2, BigDecimal.ROUND_HALF_UP).toDouble() * 100).toInt()
+            }
+            txt_read_status.text = ("已读$count%")
+        }
+
+
+        //更新
+        img_book_status_update.visibility = if (book.update_status == 1) View.VISIBLE else View.GONE
+
+        when {
             book.status == "FINISH" -> { //完结
                 img_book_status.visibility = View.VISIBLE
                 img_book_status.setImageResource(R.drawable.bookshelf_item_book_finish_icon)
             }
-            else -> img_book_status.visibility = View.GONE
+            else -> {
+                img_book_status.visibility = View.GONE
+            }
         }
 
         if (!TextUtils.isEmpty(book.img_url) && book.img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL) {

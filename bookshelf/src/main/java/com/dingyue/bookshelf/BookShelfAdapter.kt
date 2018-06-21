@@ -11,6 +11,7 @@ import com.dingyue.contract.HolderType.Type_AD
 import com.dingyue.contract.HolderType.Type_Add
 import com.dingyue.contract.HolderType.Type_Book
 import com.dingyue.contract.HolderType.Type_Header_AD
+import net.lzbook.kit.utils.AppUtils
 import java.util.*
 
 class BookShelfAdapter(private val context: Context,
@@ -22,6 +23,7 @@ class BookShelfAdapter(private val context: Context,
     var selectedBooks: ArrayList<Book> = ArrayList()
 
     var isRemove = false
+    var isShowBottomLine = false //列表底部分割线
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -29,7 +31,12 @@ class BookShelfAdapter(private val context: Context,
                 BookShelfADHolder(parent, false)
             }
             Type_Add -> {
-                BookShelfADDHolder(LayoutInflater.from(context).inflate(R.layout.item_bookshelf_add, parent, false))
+//            qbmfrmxs  : "cn.qbmfrmxs.reader")
+                if ("cn.txtqbmfyd.reader".equals(AppUtils.getPackageName())) {//全本免费热门小说
+                    BookShelfFooterHolder(LayoutInflater.from(context).inflate(R.layout.item_bookshelf_bottom_line, parent, false))
+                } else {
+                    BookShelfADDHolder(LayoutInflater.from(context).inflate(R.layout.item_bookshelf_add, parent, false))
+                }
             }
             Type_Header_AD -> {
                 BookShelfADHolder(parent, true)
@@ -44,6 +51,8 @@ class BookShelfAdapter(private val context: Context,
         if (position >= books.size) {
             if (viewHolder is BookShelfADDHolder) {
                 viewHolder.bind(null, isRemove, bookShelfItemListener)
+            }else if (viewHolder is BookShelfFooterHolder) {
+                viewHolder.bind(isShowBottomLine)
             }
             return
         }
@@ -77,6 +86,8 @@ class BookShelfAdapter(private val context: Context,
     }
 
     override fun getItemCount(): Int {
+        isShowBottomLine = books.size > 4
+
         if (hasAddView) {
             if (books.size > 0) {
                 if (books.size >= 50) {

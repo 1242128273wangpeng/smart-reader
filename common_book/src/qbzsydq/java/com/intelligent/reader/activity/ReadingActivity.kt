@@ -396,7 +396,7 @@
 //        option_header.presenter = optionPresenter
 //    }
 //
-////    override fun showSetMenu(isShow: Boolean) {
+////    override fun showSetMenu(isShowBottomLine: Boolean) {
 ////
 ////    }
 //
@@ -424,7 +424,7 @@
 //
 //    override fun setMode() = readSettingView.setMode()
 //
-//    override fun showAutoMenu(isShow: Boolean) = if (isShow) auto_menu?.visibility = View.VISIBLE else auto_menu?.visibility = View.GONE
+//    override fun showAutoMenu(isShowBottomLine: Boolean) = if (isShowBottomLine) auto_menu?.visibility = View.VISIBLE else auto_menu?.visibility = View.GONE
 //
 //    override fun initShowCacheState() = readSettingView.initShowCacheState()
 //
@@ -454,11 +454,11 @@
 //
 //    private val immersiveRunable = Runnable { setUIOptions() }
 //
-//    override fun showMenu(isShow: Boolean) {
-//        if (ReadState.isMenuShow != isShow) {
-//            ReadState.isMenuShow = isShow
+//    override fun showMenu(isShowBottomLine: Boolean) {
+//        if (ReadState.isMenuShow != isShowBottomLine) {
+//            ReadState.isMenuShow = isShowBottomLine
 ////            if (ReadConfig.animation != ReadViewEnums.Animation.list) {
-//            if (isShow) {
+//            if (isShowBottomLine) {
 //                window.decorView.handler.removeCallbacks(immersiveRunable)
 //                window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_NORMAL
 //            } else {
@@ -469,9 +469,9 @@
 ////            }
 //
 //
-//            readSettingView.showMenu(isShow)
+//            readSettingView.showMenu(isShowBottomLine)
 //
-//            mReadPresenter.showMenu(isShow)
+//            mReadPresenter.showMenu(isShowBottomLine)
 //        }
 //    }
 //
