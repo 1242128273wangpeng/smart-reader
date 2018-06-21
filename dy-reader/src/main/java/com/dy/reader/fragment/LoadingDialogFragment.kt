@@ -88,7 +88,7 @@ class LoadingDialogFragment : DialogFragment() {
     @Volatile
     var isShowing = false
 
-    lateinit var fm: FragmentManager
+    var fm: FragmentManager ?= null
 
     fun show(type: DialogType, retry: (() -> Unit)? = null) {
         try {
