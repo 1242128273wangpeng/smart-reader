@@ -9,10 +9,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import kotlinx.android.synthetic.txtqbdzs.item_bookshelf_book.view.*
 import net.lzbook.kit.constants.ReplaceConstants
-import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.Tools
 import android.view.ViewGroup
+import com.ding.basic.bean.Book
 import java.text.MessageFormat
 
 /**
@@ -46,7 +46,7 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         }
 
         // 是否连载
-        if (book.status == 2) {
+        if (book.status == "FINISH") {
             txt_book_states_finish.visibility = View.VISIBLE
         } else {
             txt_book_states_finish.visibility = View.GONE
@@ -59,8 +59,7 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             txt_book_states_finish.visibility = View.GONE
         }
         if (txt_book_last_update_time != null) {
-            txt_book_last_update_time.text = Tools.compareTime(AppUtils.formatter, book
-                    .last_updatetime_native) + "更新: "
+            txt_book_last_update_time.text = Tools.compareTime(AppUtils.formatter, book.last_chapter!!.update_time) + "更新: "
         }
 
         if (!TextUtils.isEmpty(book.img_url) && book.img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL) {
@@ -76,7 +75,7 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
                     .into(img_book_cover)
         }
 
-        txt_book_last_chapter.text = book.last_chapter_name
+        txt_book_last_chapter.text = book.last_chapter?.name
 
         if (remove) {
             img_item_select_state.visibility = View.VISIBLE

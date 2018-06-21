@@ -96,6 +96,22 @@ object HomeLogger {
                 StartLogClickUtil.PAGE_HOME, StartLogClickUtil.ACTION_HOME_SEARCH)
     }
 
+    fun uploadHomeSearch(currPageType: Int) {
+        if (currPageType == 2) {
+            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                    StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH)
+        } else if (currPageType == 3) {
+            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                    StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH)
+        } else if (currPageType == 4) {
+            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                    StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.QG_FL_SEARCH)
+        } else {
+            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                    StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.SEARCH)
+        }
+    }
+
     /***
      * HomeActivity点击 下载管理
      * **/

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/linear_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/tv_search_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="13dp"
+            android:visibility="gone"
+            android:text="大家都在搜"
+            android:textColor="@color/color_search_recommend_title"
+            android:textSize="17sp" />
+
+        <com.intelligent.reader.view.TagContainerLayout
+            android:id="@+id/tag_container_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="14dp" />
+
+        <View
+            android:id="@+id/search_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/color_search_divider"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:id="@+id/relative_hot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/search_recommend_top"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="13dp"
+                android:text="热门阅读"
+                android:textColor="@color/color_search_recommend_title"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/tv_change"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="13dp"
+                android:padding="4dp"
+                android:text="换一换"
+                android:textColor="@color/color_primary"
+                android:textSize="14sp" />
+        </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list_recommed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:clipToPadding="false" />
+    </LinearLayout>
+
+
+</LinearLayout>

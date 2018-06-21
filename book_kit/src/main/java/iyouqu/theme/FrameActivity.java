@@ -148,7 +148,11 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         initTheme();
 
         //友盟推送
-        PushAgent.getInstance(this).onAppStart();
+        String packageName = AppUtils.getPackageName();
+        if("cc.remennovel".equals(packageName) ||"cc.kdqbxs.reader".equals(packageName) ){
+            PushAgent.getInstance(this).onAppStart();
+        }
+
     }
 
     public SwipeBackHelper getSwipeBackHelper() {

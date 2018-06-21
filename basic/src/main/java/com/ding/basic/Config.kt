@@ -25,9 +25,9 @@ object Config {
     //智能API接口
     private var requestAPIHost: String? = ""
     //微服务API接口
-    private var microAPIHost: String = "http://union2.zn.bookapi.cn"
+    private var microAPIHost: String = "https://unionapi.bookapi.cn"
     //微服务内容接口
-    private var contentAPIHost: String = "http://content2.zn.bookapi.cn"
+    private var contentAPIHost: String = "https://unioncontent.bookapi.cn"
 
     //设置页福利中心地址
     const val WelfareHost: String = "https://st.quanbennovel.com/static/welfareCenter/welfareCenter.html"
@@ -60,8 +60,8 @@ object Config {
     fun beginInit(context: Context){
         Config.context = context
 
-        webViewHost = "http://8053.zn.bookapi.cn"
-        requestAPIHost = "http://8053.zn.bookapi.cn"
+        webViewHost = "http://8068.zn.bookapi.cn"
+        requestAPIHost = "http://8068.zn.bookapi.cn"
 
 
 //        webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST

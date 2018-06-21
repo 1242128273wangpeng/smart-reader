@@ -7,6 +7,7 @@ import android.support.annotation.StringRes
 import android.view.View
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import net.lzbook.kit.utils.msDebuggAble
 import java.util.concurrent.TimeUnit
 
 /**
@@ -44,6 +45,19 @@ fun Context.showToastMessage(message: String) {
     runOnMain {
         android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_SHORT).show()
     }
+}
+
+/**
+ * 登录页面 debug
+ */
+fun Context.debugToastShort(msg: String?) {
+    if (!msDebuggAble) {
+        return
+    }
+    runOnMain {
+        android.widget.Toast.makeText(this, "$msg", android.widget.Toast.LENGTH_SHORT).show()
+    }
+
 }
 
 /***
