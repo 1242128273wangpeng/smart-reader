@@ -8,4 +8,5 @@
     <string name="bookmark_empty_prompt">还没有添加书签哦~</string>
 
     <string name="cached">已缓存</string>
+    <string name="add_bookshelf_success">已加入书架</string>
 </resources>
