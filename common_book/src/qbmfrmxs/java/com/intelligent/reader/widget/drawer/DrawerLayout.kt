@@ -35,7 +35,6 @@ class DrawerLayout @JvmOverloads constructor(context: Context, attrs: AttributeS
     private var dragOrientation: Int = 0
     private val springBackDistance: Int
     private val menuWidth: Int
-    private val shadowWidth: Int
 
     private var mainLeft: Int = 0
 
@@ -60,7 +59,6 @@ class DrawerLayout @JvmOverloads constructor(context: Context, attrs: AttributeS
         menuWidth = screenWidth - (MENU_MARGIN_RIGHT * density + 0.5f).toInt()
 
         shadowView = ShadowView(context)
-        shadowWidth = (SHADOW_WIDTH * density + 0.5f).toInt()
 
         viewDragHelper = ViewDragHelper.create(this, TOUCH_SLOP_SENSITIVITY, CoordinatorCallback())
         viewDragHelper.setEdgeTrackingEnabled(ViewDragHelper.EDGE_LEFT)
@@ -81,7 +79,7 @@ class DrawerLayout @JvmOverloads constructor(context: Context, attrs: AttributeS
         }
 
         override fun onViewCaptured(capturedChild: View, activePointerId: Int) {
-            if (capturedChild === menuView) {
+            if (capturedChild == menuView) {
                 viewDragHelper.captureChildView(mainView ?: return, activePointerId)
             }
         }
@@ -146,7 +144,8 @@ class DrawerLayout @JvmOverloads constructor(context: Context, attrs: AttributeS
         mainView = getChildAt(1) as DrawerMain
         mainView?.setParent(this)
 
-        val shadowParams = FrameLayout.LayoutParams(shadowWidth, FrameLayout.LayoutParams.MATCH_PARENT)
+        val shadowParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT)
         addView(shadowView, shadowParams)
     }
 
@@ -222,8 +221,8 @@ class DrawerLayout @JvmOverloads constructor(context: Context, attrs: AttributeS
     private fun moveView(bottom: Int) {
         mainView?.layout(mainLeft, 0, mainLeft + screenWidth, bottom)
 
-        val shadowLeft = mainLeft - shadowWidth
-        shadowView.layout(shadowLeft, 0, mainLeft, bottom)
+        val showing = (screenWidth - mainLeft).toFloat() / screenWidth.toFloat()
+        shadowView.move(mainLeft, screenWidth, showing)
     }
 
     companion object {

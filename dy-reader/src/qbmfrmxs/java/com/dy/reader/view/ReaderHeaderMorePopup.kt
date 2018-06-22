@@ -1,10 +1,14 @@
 package com.dy.reader.view
 
 import android.content.Context
+import android.view.View
 import android.view.WindowManager
+import com.ding.basic.database.helper.BookDataProviderHelper
 import com.dingyue.contract.BasePopup
 import com.dy.reader.R
+import com.dy.reader.setting.ReaderStatus
 import kotlinx.android.synthetic.qbmfrmxs.popup_reader_option_header_more.view.*
+import net.lzbook.kit.app.BaseBookApplication
 
 /**
  * Desc 请描述这个文件
@@ -19,28 +23,48 @@ class ReaderHeaderMorePopup(context: Context, layout: Int = R.layout.popup_reade
 
     var changeSourceListener: (() -> Unit)? = null
 
-    var startFeedbackListener: (() -> Unit)? = null
+    var addBookMarkListener: (() -> Unit)? = null
 
-    var startBookDetailListener: (() -> Unit)? = null
+    var feedbackListener: (() -> Unit)? = null
+
+    var bookDetailListener: (() -> Unit)? = null
 
     init {
 
         contentView.ll_header_more_content.requestFocus()
 
-        contentView.txt_reader_change_source.setOnClickListener {
+        contentView.ll_change_source.setOnClickListener {
+            dismiss()
             changeSourceListener?.invoke()
         }
 
-        contentView.txt_reader_feedback.setOnClickListener {
-            startFeedbackListener?.invoke()
+        contentView.ll_add_book_mark.setOnClickListener {
+            dismiss()
+            addBookMarkListener?.invoke()
         }
 
-        contentView.txt_reader_book_detail.setOnClickListener {
-            startBookDetailListener?.invoke()
+        contentView.ll_feedback.setOnClickListener {
+            dismiss()
+            feedbackListener?.invoke()
+        }
+
+        contentView.ll_book_detail.setOnClickListener {
+            dismiss()
+            bookDetailListener?.invoke()
         }
     }
 
-    fun insertBookmarkContent(string: String) {
-        contentView.txt_reader_feedback.text = string
+    fun show(view: View) {
+        val isMarkPage = BookDataProviderHelper
+                .loadBookDataProviderHelper(BaseBookApplication.getGlobalContext())
+                .isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group,
+                        ReaderStatus.position.offset)
+
+        val text = if (isMarkPage) context.getString(R.string.remove_bookmark) else
+            context.getString(R.string.insert_bookmark)
+        contentView.txt_add_book_mark.text = text
+        contentView.img_add_book_mark.isSelected = isMarkPage
+
+        showAsDropDown(view)
     }
 }
