@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull
 @SuppressLint("StaticFieldLeak")
 object Config {
 
-    const val Develop: Boolean = true
+    const val Develop: Boolean = false
 
     //WebView地址
     private var webViewHost: String? = ""

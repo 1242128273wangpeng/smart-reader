@@ -391,8 +391,9 @@ public class SplashActivity extends FrameActivity {
         complete_count = 0;
         initialization_count = 0;
 
-        initializeDataFusion();
+        updateBookLastChapter();
 
+        initializeDataFusion();
 
         // 安装快捷方式
         new InstallShotCutTask().execute();
@@ -476,18 +477,25 @@ public class SplashActivity extends FrameActivity {
                 SharedPreUtil.Companion.getDATABASE_REMARK(), false);
 
         if (!isDataBaseRemark) {
-            for (Book book : books) {
-                ChapterDaoHelper chapterDaoHelper =
-                        ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
-                                BaseBookApplication.getGlobalContext(), book.getBook_id());
 
-                Chapter lastChapter = chapterDaoHelper.queryLastChapter();
+            List<Book> bookList = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                    BaseBookApplication.getGlobalContext()).loadBooks();
 
-                if (lastChapter != null && !TextUtils.isEmpty(lastChapter.getChapter_id())) {
-                    book.setLast_chapter(lastChapter);
+            if (bookList != null && bookList.size() > 0) {
 
-                    RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                            BaseBookApplication.getGlobalContext()).updateBook(book);
+                for (Book book : bookList) {
+                    ChapterDaoHelper chapterDaoHelper =
+                            ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
+                                    BaseBookApplication.getGlobalContext(), book.getBook_id());
+
+                    Chapter lastChapter = chapterDaoHelper.queryLastChapter();
+
+                    if (lastChapter != null && !TextUtils.isEmpty(lastChapter.getChapter_id())) {
+                        book.setLast_chapter(lastChapter);
+
+                        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                                BaseBookApplication.getGlobalContext()).updateBook(book);
+                    }
                 }
             }
             sharedPreUtil.putBoolean(SharedPreUtil.Companion.getDATABASE_REMARK(), true);
@@ -688,8 +696,6 @@ public class SplashActivity extends FrameActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            updateBookLastChapter();
 
             if (sharedPreUtil == null) {
                 sharedPreUtil = new SharedPreUtil(SharedPreUtil.Companion.getSHARE_DEFAULT());

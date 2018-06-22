@@ -104,12 +104,12 @@ class ReadSettingFragment : DialogFragment() {
 
     override fun onResume() {
         super.onResume()
-        dialog.rsbd_option_bottom_detail.readPresenter = (activity as ReaderActivity).mReadPresenter
-        dialog.rsh_option_header.presenter = readSettingPresenter
-        dialog.rsbd_option_bottom_detail.presenter = readSettingPresenter
-        dialog.rsbd_option_bottom_detail.currentThemeMode = themeMode
-        dialog.rsbd_option_bottom_detail.setNovelMode(ReaderSettings.instance.readThemeMode)
-        dialog.rl_read_setting_content.setOnClickListener {
+        dialog?.rsbd_option_bottom_detail?.readPresenter = (activity as ReaderActivity).mReadPresenter
+        dialog?.rsh_option_header?.presenter = readSettingPresenter
+        dialog?.rsbd_option_bottom_detail?.presenter = readSettingPresenter
+        dialog?.rsbd_option_bottom_detail?.currentThemeMode = themeMode
+        dialog?.rsbd_option_bottom_detail?.setNovelMode(ReaderSettings.instance.readThemeMode)
+        dialog?.rl_read_setting_content?.setOnClickListener {
             dismiss()
         }
         if (!EventBus.getDefault().isRegistered(this)) {
