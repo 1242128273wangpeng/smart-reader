@@ -1,81 +1,71 @@
 package com.dingyue.downloadmanager
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.SimpleItemAnimator
-import android.view.Menu
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v4.view.PagerAdapter
+import android.support.v4.view.ViewPager
+import android.text.TextUtils
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
 import com.dingyue.contract.CommonContract
-import com.dingyue.downloadmanager.contract.BookHelperContract
 import com.dingyue.downloadmanager.contract.CacheManagerContract
-import com.dingyue.downloadmanager.recl.DownloadItemDecoration
-import com.dingyue.downloadmanager.recl.DownloadManagerAdapter
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.qbmfrmxs.act_download_manager.*
-import kotlinx.android.synthetic.qbmfrmxs.item_download_manager_task_header.view.*
 import net.lzbook.kit.book.download.CallBackDownload
-import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.constants.Constants
-import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
+import com.dingyue.contract.util.showToastMessage
+import com.dingyue.downloadmanager.contract.BookHelperContract
 import net.lzbook.kit.utils.uiThread
+import java.util.ArrayList
 
 /**
  * Created by qiantao on 2017/11/22 0022
  */
 @Route(path = RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
-class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
-        DownloadManagerAdapter.DownloadManagerItemListener, MenuManager {
+class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, DownloadManagerListener {
 
-    private val firstHeaderHeight by lazy {
-        resources.getDimensionPixelSize(R.dimen.download_manager_item_first_header)
-    }
-
-    private val headerHeight by lazy {
-        resources.getDimensionPixelSize(R.dimen.download_manager_item_header)
-    }
-
-    private val popupHeight by lazy {
-        resources.getDimensionPixelSize(R.dimen.download_manager_popup_height)
-    }
-
-    private var downloadBooks: ArrayList<Book> = ArrayList()
-
-    private val downloadManagerAdapter: DownloadManagerAdapter by lazy {
-        DownloadManagerAdapter(this, this, downloadBooks)
-    }
+    private var downloadManagerAdapter: DownloadManagerAdapter? = null
 
     private var time = System.currentTimeMillis()
 
     private var lastShowTime = 0L
 
-
-    private lateinit var downloadManagerViewModel: DownloadManagerViewModel
-
-    private val managerDeleteDialog: DownloadManagerDeleteDialog by lazy {
-        DownloadManagerDeleteDialog(this)
+    private val titles = object : ArrayList<String>() {
+        init {
+            add("未缓存")
+            add("已缓存")
+        }
     }
 
-    private val removeMenuPopup: RemoveMenuPopup by lazy {
-        val popup = RemoveMenuPopup(this)
-        popup.setOnDeletedClickListener {
-            deleteCache(downloadManagerAdapter.checkedBooks)
-        }
-        popup.setOnCancelClickListener {
-            dismissMenu()
-        }
-        popup
+    private val cacheFragment: DownloadManagerFragment by lazy {
+        val fragment = DownloadManagerFragment()
+        val bundle = Bundle()
+        bundle.putString("title", titles[0])
+        fragment.arguments = bundle
+        fragment
+    }
+
+    private val cachedFragment: DownloadManagerFragment by lazy {
+        val fragment = DownloadManagerFragment()
+        val bundle = Bundle()
+        bundle.putString("title", titles[1])
+        fragment.arguments = bundle
+        fragment
     }
 
     private val topMenuPopup: DownloadManagerMenuPopup by lazy {
         val popup = DownloadManagerMenuPopup(this)
         popup.setOnEditClickListener {
-            showMenu()
+            if (nbs_navigation.checkScrollState()) {
+                showToastMessage("当前页面位置不正确！")
+            } else {
+                showMenu()
+            }
         }
         popup.setOnTimeSortingClickListener {
             sortBooks(1)
@@ -94,31 +84,6 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         CacheManagerContract.insertDownloadCallBack(this)
 
         Constants.isDownloadManagerActivity = true
-
-        downloadManagerViewModel = ViewModelProviders.of(this).get(DownloadManagerViewModel::class.java)
-
-        observeViewModel(downloadManagerViewModel)
-
-        downloadManagerViewModel.refreshBooks()
-    }
-
-    private fun observeViewModel(viewModel: DownloadManagerViewModel) {
-        viewModel.loadBookListLiveData().observe(this, Observer<List<Book>> { books ->
-            if (books != null) {
-                downloadBooks.clear()
-                downloadBooks.addAll(books)
-            }
-            onDownloadBookQuery()
-        })
-
-        viewModel.loadDeleteCacheLiveData().observe(this, Observer {
-            onDownloadDelete()
-        })
-    }
-
-    override fun onResume() {
-        super.onResume()
-        downloadManagerViewModel.refreshBooks()
     }
 
     override fun onDestroy() {
@@ -132,6 +97,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
             DownloadManagerLogger.uploadCacheManagerBack()
             finish()
         }
+
         txt_head_select_all.setOnClickListener {
             if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
                 return@setOnClickListener
@@ -144,6 +110,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
                 checkAll(false)
             }
         }
+
         txt_head_title.setOnClickListener {
             finish()
         }
@@ -153,83 +120,19 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
             DownloadManagerLogger.uploadCacheManagerMore()
         }
 
-        txt_empty_find.setOnClickListener {
-
-            DownloadManagerLogger.uploadCacheManagerBookCity()
-
-            val bundle = Bundle()
-            bundle.putInt("position", 1)
-            RouterUtil.navigation(this, RouterConfig.HOME_ACTIVITY, bundle)
-
-            finish()
+        txt_head_complete.setOnClickListener {
+            dismissMenu()
         }
 
-        recl_content.addItemDecoration(DownloadItemDecoration(object : DownloadItemDecoration.DownloadHeaderInterface {
-            override fun requestItemCacheState(position: Int): Boolean? {
-                return if (position > -1 && downloadBooks.size > position) {
-                    CacheManagerContract.loadBookDownloadState(downloadBooks[position]) != DownloadState.FINISH
-                } else {
-                    null
-                }
-            }
+        downloadManagerAdapter = DownloadManagerAdapter(supportFragmentManager, nbs_navigation, vp_result)
 
-            override fun requestItemHeaderView(position: Int): View? {
-                return if (position > -1 && downloadBooks.size > position) {
-                    val view = layoutInflater.inflate(R.layout.item_download_manager_task_header, null, false)
+        downloadManagerAdapter?.insertNavigationTable(titles[0])
 
-                    val finish = CacheManagerContract.loadBookDownloadState(downloadBooks[position]) == DownloadState.FINISH
-
-                    if (finish) {
-                        view.txt_state.text = getString(R.string.cached)
-                    } else {
-                        view.txt_state.text = getString(R.string.not_cache)
-                    }
-
-                    if (position == 0) {
-                        view.view_divider.visibility = View.GONE
-                    }
-
-                    view
-                } else {
-                    null
-                }
-            }
-        }, firstHeaderHeight, headerHeight))
-
-        recl_content.adapter = downloadManagerAdapter
-        recl_content.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-
-        //解决RecyclerView刷新列表时，图片的抖动问题
-        (recl_content.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
-
-        recl_content.topShadow = img_head_shadow
-    }
-
-    private fun onDownloadBookQuery() {
-        if (downloadBooks.size == 0) {
-            recl_content.visibility = View.GONE
-            ll_empty.visibility = View.VISIBLE
-            img_head_more.visibility = View.GONE
-        } else {
-            ll_empty.visibility = View.GONE
-            recl_content.visibility = View.VISIBLE
-            downloadManagerAdapter.notifyDataSetChanged()
-        }
-    }
-
-    private fun onDownloadDelete() {
-        downloadManagerViewModel.refreshBooks()
-        dismissMenu()
-        managerDeleteDialog.dismiss()
-    }
-
-    override fun onMenuOpened(featureId: Int, menu: Menu): Boolean {
-        showMenu()
-        return false
+        downloadManagerAdapter?.insertNavigationTable(titles[1])
     }
 
     override fun onBackPressed() {
-        if (downloadManagerAdapter.remove) {
+        if (checkRemoveState()) {
             dismissMenu()
         } else {
             //如果是从通知栏过来, 且已经退出到home了, 要回到应用中
@@ -244,22 +147,13 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         val book = BookHelperContract.loadLocalBook(book_id)
 
         if (book != null) {
-            if (CacheManagerContract.loadBookDownloadState(book) == DownloadState.FINISH) {
-                val data = downloadBooks
-                for (b in data) {
-                    if (b.book_id.isNotEmpty() && book.book_id.isNotEmpty() && b.book_id == book.book_id) {
-                        data.remove(b)
-                        break
-                    }
-                }
-            }
-            downloadManagerViewModel.refreshBooks()
+            refreshBookState(book)
         }
     }
 
 
     override fun onTaskStatusChange(book_id: String?) {
-        downloadManagerAdapter.notifyDataSetChanged()
+        refreshData()
     }
 
     override fun onTaskFailed(book_id: String?, t: Throwable?) {
@@ -267,92 +161,179 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         if (currentTime - lastShowTime > 4000) {
             lastShowTime = currentTime
         }
-        downloadManagerAdapter.notifyDataSetChanged()
+        refreshData()
     }
 
     override fun onTaskProgressUpdate(book_id: String?) {
         if (System.currentTimeMillis() - time > 500) {
             time = System.currentTimeMillis()
-            uiThread { downloadManagerAdapter.notifyDataSetChanged() }
+            uiThread { refreshData() }
         }
     }
 
     override fun supportSlideBack(): Boolean {
-        return !isTaskRoot && !downloadManagerAdapter.remove
-    }
-
-    override fun clickedDownloadItem(book: Book?, position: Int) {
-        if (position < 0) {
-            return
-        }
-
-        if (!downloadManagerAdapter.remove) {
-            if (book != null) {
-                DownloadManagerLogger.uploadCacheManagerBookClick(book)
-                BookRouter.navigateCoverOrRead(this, book, BookRouter.NAVIGATE_TYPE_DOWNLOAD)
-            }
-        } else {
-            downloadManagerAdapter.insertCheckedPosition(position)
-            removeMenuPopup.setSelectedNum(downloadManagerAdapter.checkedBooks.size)
-            txt_head_select_all.text = if (downloadManagerAdapter.isCheckAll()) getString(R.string.select_all_cancel) else getString(R.string.select_all)
-        }
-    }
-
-    override fun longClickedDownloadItem(): Boolean {
-        if (!downloadManagerAdapter.remove) {
-            showMenu()
-        }
         return false
     }
 
-    override fun showMenu() {
-        downloadManagerAdapter.insertRemoveState(true)
-        removeMenuPopup.show(rl_root)
+    override fun navigationBookStore() {
+        DownloadManagerLogger.uploadCacheManagerBookCity()
 
-        recl_content.setPadding(0, recl_content.paddingTop, 0, popupHeight)
+        val bundle = Bundle()
+        bundle.putInt("position", 1)
+        RouterUtil.navigation(this, RouterConfig.HOME_ACTIVITY, bundle)
+        finish()
+    }
 
-        img_head_more.visibility = View.GONE
-        img_head_back.visibility = View.GONE
-        txt_head_title.text = getString(R.string.edit_cache)
+    override fun changeRemoveViewState(show: Boolean) {
+        img_head_more.visibility = if (show) View.GONE else View.VISIBLE
+        img_head_back.visibility = if (show) View.GONE else View.VISIBLE
+
+        txt_head_title.text = if (show) getString(R.string.edit_cache) else getString(R.string.download_manager)
+
+        txt_head_complete.visibility = if (show) View.VISIBLE else View.GONE
+
         txt_head_select_all.text = getString(R.string.select_all)
-        txt_head_select_all.visibility = View.VISIBLE
+        txt_head_select_all.visibility = if (show) View.VISIBLE else View.GONE
 
-        DownloadManagerLogger.uploadCacheManagerEdit()
+        //允许、禁止ViewPager滑动
+        vp_result.insertRemoveAble(!show)
+
+        nbs_navigation.insertClickAble(!show)
     }
 
-    override fun dismissMenu() {
-        downloadManagerAdapter.insertRemoveState(false)
-        removeMenuPopup.dismiss()
-
-        recl_content.setPadding(0, recl_content.paddingTop, 0, 0)
-
-        img_head_more.visibility = View.VISIBLE
-        img_head_back.visibility = View.VISIBLE
-        txt_head_title.text = getString(R.string.download_manager)
-        txt_head_select_all.text = getString(R.string.select_all)
-        txt_head_select_all.visibility = View.GONE
-
-        DownloadManagerLogger.uploadCacheMangerEditCancel()
+    override fun changeSelectAllContent(content: String) {
+        txt_head_select_all.text = content
     }
 
-    override fun checkAll(isAll: Boolean) {
-        downloadManagerAdapter.insertSelectAllState(isAll)
-        removeMenuPopup.setSelectedNum(downloadManagerAdapter.checkedBooks.size)
-        DownloadManagerLogger.uploadCacheManagerEditSelectAll(isAll)
+    private fun showMenu() {
+        val position = vp_result.currentItem
+
+        if (position == 0) {
+            cacheFragment.showMenu()
+        } else if (position == 1) {
+            cacheFragment.showMenu()
+        }
     }
 
-    override fun sortBooks(type: Int) {
-        CommonContract.insertShelfSortType(type)
-        downloadManagerViewModel.refreshBooks()
-        DownloadManagerLogger.uploadCacheManagerSort(type)
+    private fun dismissMenu() {
+        val position = vp_result.currentItem
+
+        if (position == 0) {
+            cacheFragment.dismissMenu()
+        } else if (position == 1) {
+            cacheFragment.dismissMenu()
+        }
     }
 
-    override fun deleteCache(books: ArrayList<Book>) {
-        DownloadManagerLogger.uploadCacheManagerEditDeleteLog()
-        if (books.isNotEmpty()) {
-            managerDeleteDialog.show()
-            downloadManagerViewModel.deleteCache(books)
-            DownloadManagerLogger.uploadCacheManagerEditDelete(books)
+    private fun checkAll(isAll: Boolean) {
+        val position = vp_result.currentItem
+
+        if (position == 0) {
+            cacheFragment.checkAll(isAll)
+        } else if (position == 1) {
+            cacheFragment.checkAll(isAll)
+        }
+    }
+
+    private fun sortBooks(type: Int) {
+        val position = vp_result.currentItem
+
+        if (position == 0) {
+            cacheFragment.sortBooks(type)
+        } else if (position == 1) {
+            cacheFragment.sortBooks(type)
+        }
+    }
+
+    private fun refreshData() {
+        val position = vp_result.currentItem
+
+        if (position == 0) {
+            cacheFragment.refreshData()
+        } else if (position == 1) {
+            cacheFragment.refreshData()
+        }
+    }
+
+    private fun refreshBookState(book: Book) {
+        val position = vp_result.currentItem
+
+        if (position == 0) {
+            cacheFragment.refreshBookState(book)
+        } else if (position == 1) {
+            cacheFragment.refreshBookState(book)
+        }
+    }
+
+    private fun checkRemoveState(): Boolean {
+        val position = vp_result.currentItem
+
+        return when (position) {
+            0 -> cacheFragment.loadRemoveState()
+            1 -> cacheFragment.loadRemoveState()
+            else -> false
+        }
+    }
+
+    inner class DownloadManagerAdapter(fragmentManager: FragmentManager, private var navigationBarStrip: NavigationBarStrip, private var viewPager: ViewPager) : FragmentStatePagerAdapter(fragmentManager) {
+
+        init {
+            this.viewPager.adapter = this
+            navigationBarStrip.insertViewPager(viewPager)
+        }
+
+        @JvmOverloads
+        fun remove(index: Int = 0) {
+            var removeIndex = index
+
+            if (title.isEmpty()) {
+                return
+            }
+
+            if (index < 0) {
+                removeIndex = 0
+            }
+
+            if (index >= titles.size) {
+                removeIndex = titles.size - 1
+            }
+
+            titles.removeAt(removeIndex)
+            notifyDataSetChanged()
+        }
+
+        override fun getCount(): Int {
+            return titles.size
+        }
+
+        override fun getItemPosition(any: Any): Int {
+            return PagerAdapter.POSITION_NONE
+        }
+
+        override fun getItem(position: Int): Fragment? {
+            return when (position) {
+                0 -> cacheFragment
+                1 -> cachedFragment
+                else -> null
+            }
+        }
+
+        override fun getPageTitle(position: Int): CharSequence? {
+            return titles[position]
+        }
+
+        fun insertNavigationTable(title: String) {
+            if (TextUtils.isEmpty(title)) {
+                return
+            }
+
+            navigationBarStrip.insertTitle(title)
+
+            notifyDataSetChanged()
+        }
+
+        fun recycle() {
+            viewPager.removeAllViews()
         }
     }
 }

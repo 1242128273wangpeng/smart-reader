@@ -1,6 +1,7 @@
 package com.dingyue.downloadmanager
 
 import android.content.Context
+import android.graphics.Color
 import android.view.View
 import android.view.WindowManager
 import com.dingyue.contract.BasePopup
@@ -19,17 +20,11 @@ class RemoveMenuPopup(context: Context, layout: Int = R.layout.popup_download_ma
 
     private var onDeleteClickListener: (() -> Unit)? = null
 
-    private var onCancelClickListener: (() -> Unit)? = null
-
     init {
 
         contentView.rl_remove.isFocusable = true
         contentView.rl_remove.isFocusableInTouchMode = true
         contentView.rl_remove.requestFocus()
-
-        contentView.btn_cancel.setOnClickListener {
-            onCancelClickListener?.invoke()
-        }
 
         contentView.btn_delete.setOnClickListener {
             onDeleteClickListener?.invoke()
@@ -40,18 +35,16 @@ class RemoveMenuPopup(context: Context, layout: Int = R.layout.popup_download_ma
         this.onDeleteClickListener = onConfirmClickListener
     }
 
-    fun setOnCancelClickListener(onConfirmClickListener: () -> Unit) {
-        this.onCancelClickListener = onConfirmClickListener
-    }
-
     fun setSelectedNum(num: Int) {
         if (num == 0) {
-            contentView.btn_delete.text = context.getString(R.string.delete)
+            contentView.btn_delete.text = context.getString(R.string.delete_cache)
             contentView.btn_delete.isEnabled = false
+            contentView.btn_delete.setTextColor(Color.parseColor("#989898"))
         } else {
-            val text = context.getString(R.string.delete) + "(" + num + ")"
+            val text = context.getString(R.string.delete_cache) + "(" + num + ")"
             contentView.btn_delete.text = text
             contentView.btn_delete.isEnabled = true
+            contentView.btn_delete.setTextColor(Color.parseColor("#42BE54"))
         }
     }
 

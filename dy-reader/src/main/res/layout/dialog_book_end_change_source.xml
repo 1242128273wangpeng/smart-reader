@@ -36,18 +36,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recl_change_source"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:cacheColorHint="#00000000"
-            android:divider="#D9D9D9"
-            android:dividerHeight="0.5dp"
-            android:fadeScrollbars="false"
-            android:fadingEdge="none"
-            android:listSelector="@android:color/transparent"
-            android:scrollbarFadeDuration="0"
-            android:scrollbarSize="5dp"
-            android:scrollbarStyle="insideInset"
-            android:scrollbars="vertical"
-            android:verticalScrollbarPosition="right"/>
+            android:layout_height="wrap_content"/>
 
         <RelativeLayout
             android:layout_width="match_parent"

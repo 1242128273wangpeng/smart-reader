@@ -28,7 +28,7 @@ ext {
 
     hasad = true
 
-    noadList = ['cn.txtqbmfyd.reader', 'cn.txtqbmfyd.reader']
+    noadList = ['cn.txtqbmfyd.reader', 'cn.qbmfrmxs.reader']
 
 
     def appPackageIDConfig = [

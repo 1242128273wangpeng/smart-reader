@@ -2,16 +2,17 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/rl_root"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:fitsSystemWindows="true">
+    android:background="#FFFFFFFF"
+    android:fitsSystemWindows="true"
+    tools:ignore="MissingPrefix, RtlHardcoded, RtlSymmetry">
 
     <RelativeLayout
         android:id="@+id/rl_head"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="44dp"
         android:focusableInTouchMode="true">
 
         <ImageView
@@ -19,34 +20,42 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
-            android:paddingEnd="0dp"
+            android:contentDescription="@string/module_name"
             android:paddingLeft="16dp"
-            android:paddingRight="0dp"
-            android:paddingStart="16dp"
             android:src="@drawable/download_manager_head_back_icon"
             app:onPressChangeAlpha="true"/>
 
         <TextView
+            android:id="@+id/txt_head_complete"
+            style="@style/style_text_great_light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:gravity="center_vertical"
+            android:text="@string/complete"
+            android:visibility="gone"
+            app:onPressChangeAlpha="true"/>
+
+        <TextView
             android:id="@+id/txt_head_title"
-            style="@style/download_manager_title"
+            style="@style/style_text_huge_dark"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="@string/download_manager"/>
+            android:text="@string/download_manager"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/txt_head_select_all"
-            style="@style/download_manager_select_all"
+            style="@style/style_text_great_light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="16dp"
-            android:layout_marginLeft="0dp"
             android:layout_marginRight="16dp"
-            android:layout_marginStart="0dp"
             android:gravity="center_vertical"
             android:text="@string/select_all"
             android:visibility="gone"
@@ -59,6 +68,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:contentDescription="@string/module_name"
             android:paddingEnd="16dp"
             android:paddingLeft="0dp"
             android:paddingRight="16dp"
@@ -68,57 +78,37 @@
             app:onPressChangeAlpha="true"/>
     </RelativeLayout>
 
-    <com.dingyue.downloadmanager.TopShadowRecyclerView
-        android:id="@+id/recl_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <com.dingyue.downloadmanager.NavigationBarStrip
+        android:id="@+id/nbs_navigation"
+        android:layout_width="300dp"
+        android:layout_height="43dp"
         android:layout_below="@id/rl_head"
-        android:cacheColorHint="#00000000"
-        android:dividerHeight="0dp"
-        android:fadingEdge="none"
-        android:listSelector="#00000000"
-        android:scrollbars="none"/>
+        android:layout_centerHorizontal="true"
+        app:indicatorActiveColor="#42BE54"
+        app:indicatorAnimationDuration="350"
+        app:indicatorColor="#42BE54"
+        app:indicatorFactor="2.0"
+        app:indicatorGravity="bottom"
+        app:indicatorHeight="3dp"
+        app:indicatorInactiveColor="#989898"
+        app:indicatorMarginBottom="0dp"
+        app:indicatorPadding="65dp"
+        app:indicatorRadius="100dp"
+        app:indicatorTextSize="15sp"
+        app:indicatorType="line"/>
 
-    <LinearLayout
-        android:id="@+id/ll_empty"
+    <com.dingyue.downloadmanager.CustomViewPager
+        android:id="@+id/vp_result"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/rl_head"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="visible">
+        android:layout_below="@id/nbs_navigation"
+        android:background="#FFFFFFFF"
+        android:overScrollMode="never"/>
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/download_manager_empty_icon"/>
-
-        <TextView
-            android:id="@+id/txt_empty_desc"
-            style="@style/download_manager_empty_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/download_manager_no_book_desc"/>
-
-        <TextView
-            android:id="@+id/txt_empty_find"
-            style="@style/download_manager_empty_find"
-            android:layout_width="120dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="60dp"
-            android:background="@drawable/download_manager_empty_bg"
-            android:gravity="center"
-            android:text="@string/go_to_book_store"
-            app:onPressChangeAlpha="true"/>
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/img_head_shadow"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/rl_head"
-        android:scaleType="fitXY"
-        android:src="@drawable/download_manager_top_shadow_bg"
-        android:visibility="gone"/>
+        android:layout_height="10dp"
+        android:layout_below="@id/nbs_navigation"
+        android:contentDescription="@string/module_name"
+        android:background="@drawable/download_manager_head_shadow_bg"/>
 </RelativeLayout>
