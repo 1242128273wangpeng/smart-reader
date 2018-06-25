@@ -9,6 +9,29 @@ interface CataloguesContract {
     fun notifyDataChange(isCatalog: Boolean, bookmarkList: ArrayList<Bookmark>) //更新标签状态
     fun deleteBookmarks(deleteList: ArrayList<Int>) //删除标签
     fun handOverLay()
-    fun changeDownloadButtonStatus() //改变缓存按钮的文字
     fun successAddIntoShelf(isAddIntoShelf: Boolean) //是否成功加入书架
+
+
+
+
+    /***
+     * 更改下载按钮状态
+     * **/
+    fun changeDownloadButtonStatus()
+
+    /***
+     * 添加、移除书架状态
+     * **/
+    fun insertBookShelfResult(result: Boolean)
+
+    /***
+     * 更改添加书架按钮状态
+     * **/
+    fun changeShelfButtonClickable(clickable: Boolean)
+
+    /***
+     * 书籍订阅状态改变
+     * **/
+    fun bookSubscribeState(subscribe: Boolean)
+
 }

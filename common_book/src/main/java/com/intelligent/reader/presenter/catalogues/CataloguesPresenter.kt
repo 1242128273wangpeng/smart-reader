@@ -5,7 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
+import android.text.TextUtils
 import android.view.View
+import android.widget.TextView
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
@@ -21,11 +23,15 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.repair_books.RepairHelp
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
+import com.intelligent.reader.R
 import com.orhanobut.logger.Logger
 import io.reactivex.Observable
+import io.reactivex.ObservableOnSubscribe
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.qbmfkdxs.act_catalog.*
 import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.book.download.DownloadState
+import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.utils.BaseBookHelper
 import net.lzbook.kit.utils.BookCoverUtil
 import net.lzbook.kit.utils.NetWorkUtils
@@ -105,21 +111,18 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
         val data = HashMap<String, String>()
         val requestFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
         val subscribedBook = requestFactory.checkBookSubscribe(book.book_id)
+
         if (subscribedBook != null) {
             cataloguesContract.successAddIntoShelf(false)
         } else {
             val insert = requestFactory.insertBook(book)
             if (insert >= 0) {
-                data.put("type", "1")
-                //添加书架打点
-                StatServiceUtils.statAppBtnClick(activity,
-                        StatServiceUtils.b_details_click_book_add)
+                data["type"] = "1"
                 cataloguesContract.successAddIntoShelf(true)
             }
         }
 
-        StartLogClickUtil.upLoadEventLog(activity,
-                StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.CATALOG_CASHEALL, data)
+        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.CATALOG_CASHEALL, data)
     }
 
     /**
@@ -250,6 +253,10 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
 //
 //    }
 
+    fun registerRec() {
+        bookCoverUtil.registReceiver()
+    }
+
     fun removeHandler() {
         myHandler.removeCallbacksAndMessages(null)
     }
@@ -296,6 +303,182 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
             }
         })
     }
+
+
+    fun handleReadingAction() {
+        if (activity.isFinishing) {
+            return
+        }
+
+        if (!activity.isFinishing) {
+            intoReadingActivity()
+        }
+    }
+
+    /***
+     * 进入阅读页
+     * **/
+    private fun intoReadingActivity() {
+        if (TextUtils.isEmpty(book.book_id)) {
+            return
+        }
+
+        val bundle = Bundle()
+
+        val flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+
+        val localBook = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(book.book_id)
+
+        if (localBook != null) {
+            if (book.sequence != -2) {
+                bundle.putInt("sequence", localBook.sequence)
+                bundle.putInt("offset", localBook.offset)
+            } else {
+                bundle.putInt("sequence", -1)
+                bundle.putInt("offset", 0)
+            }
+
+            bundle.putSerializable("book", localBook)
+        } else {
+            bundle.putSerializable("book", book)
+        }
+
+        RouterUtil.navigation(activity, RouterConfig.READER_ACTIVITY, bundle, flags)
+    }
+
+    /***
+     * 处理添加、移除书架操作
+     * **/
+    fun handleBookShelfAction(removeAble: Boolean) {
+        if (TextUtils.isEmpty(book.book_id)) {
+            return
+        }
+
+        val localBook = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(book.book_id)
+
+        if (localBook != null) {
+            Logger.v("书籍已订阅！")
+
+            if (removeAble) {
+                cataloguesContract.insertBookShelfResult(false)
+
+                activity.applicationContext.showToastMessage("成功从书架移除！")
+
+                val data = HashMap<String, String>()
+                data["type"] = "2"
+                data["bookid"] = localBook.book_id
+
+                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.CATALOG, StartLogClickUtil.SHELFEDIT, data)
+
+                cataloguesContract.changeDownloadButtonStatus()
+
+                cataloguesContract.changeShelfButtonClickable(false)
+
+                val cleanDialog = MyDialog(activity, R.layout.dialog_download_clean)
+                cleanDialog.setCanceledOnTouchOutside(false)
+                cleanDialog.setCancelable(false)
+                cleanDialog.findViewById<TextView>(R.id.dialog_msg).setText(R.string.tip_cleaning_cache)
+                cleanDialog.show()
+
+                Observable.create(ObservableOnSubscribe<Boolean> { emitter ->
+                    CacheManager.remove(localBook.book_id)
+
+                    RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBook(localBook.book_id)
+
+                    BaseBookHelper.removeChapterCacheFile(localBook)
+
+                    emitter.onNext(true)
+                    emitter.onComplete()
+                }).subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe {
+                            Logger.v("移除书架成功！")
+                            cleanDialog.dismiss()
+                            cataloguesContract.changeShelfButtonClickable(true)
+                            cataloguesContract.changeDownloadButtonStatus()
+                        }
+
+            } else {
+                activity.applicationContext.showToastMessage("已在书架中！")
+            }
+        } else {
+            Logger.v("书籍未订阅！")
+
+            book.last_update_success_time = System.currentTimeMillis()
+
+            val result = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(book)
+
+            if (result <= 0) {
+                Logger.v("加入书架失败！")
+                activity.applicationContext.showToastMessage("加入书架失败！")
+            } else {
+                Logger.v("加入书架成功！")
+
+                val data = HashMap<String, String>()
+                data["type"] = "1"
+                data["bookid"] = book.book_id
+
+                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.CATALOG, StartLogClickUtil.SHELFEDIT, data)
+
+                activity.applicationContext.showToastMessage("成功添加到书架！")
+
+                cataloguesContract.insertBookShelfResult(true)
+            }
+        }
+    }
+
+    /***
+     * 缓存书籍内容
+     * **/
+    fun handleDownloadAction() {
+        if (TextUtils.isEmpty(book.book_id)) {
+            return
+        }
+        val downloadState = CacheManager.getBookStatus(book)
+        if (downloadState != DownloadState.FINISH && downloadState != DownloadState.WAITTING && downloadState != DownloadState.DOWNLOADING) {
+            activity.applicationContext.showToastMessage("正在缓存中...")
+        }
+
+        val localBook = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(book.book_id)
+
+        if (localBook != null) {
+            BaseBookHelper.startDownBookTask(activity, book, 0)
+        } else {
+            val result = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(book)
+
+            if (result > 0) {
+                cataloguesContract.insertBookShelfResult(true)
+                activity.applicationContext.showToastMessage("成功添加到书架！")
+
+                BaseBookHelper.startDownBookTask(activity, book, 0)
+            }
+        }
+        cataloguesContract.changeDownloadButtonStatus()
+    }
+
+
+    /***
+     * 刷新底部按钮状态
+     * **/
+    fun refreshNavigationState() {
+        if (TextUtils.isEmpty(book.book_id)) {
+            return
+        }
+
+        cataloguesContract.changeDownloadButtonStatus()
+
+        val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(book.book_id)
+        if (book != null) {
+            cataloguesContract.bookSubscribeState(true)
+        } else {
+            cataloguesContract.bookSubscribeState(false)
+        }
+    }
+
+    /***
+     * 判断是否存在书架
+     * **/
+    fun checkBookSubscribe(): Boolean = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(book.book_id) != null
 
 
     private val myHandler = object : Handler() {

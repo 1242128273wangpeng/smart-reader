@@ -2,6 +2,7 @@ package com.intelligent.reader.activity
 
 import android.content.Intent
 import android.content.res.Resources
+import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -180,7 +181,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             }
 
             R.id.txt_book_detail_shelf -> if (coverPagePresenter != null) {
-                coverPagePresenter?.handleBookShelfAction(true)
+                coverPagePresenter?.handleBookShelfAction(false)
             }
 
             R.id.txt_book_detail_read -> {
@@ -256,7 +257,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                         DownloadState.FINISH -> txt_book_detail_cache.text = "缓存完成"
                         DownloadState.PAUSEED -> txt_book_detail_cache.text = "缓存已暂停"
                         DownloadState.NOSTART -> txt_book_detail_cache.text = "全本缓存"
-                        DownloadState.DOWNLOADING -> txt_book_detail_cache.text = "正在缓存"
+                        DownloadState.DOWNLOADING -> txt_book_detail_cache.text = "缓存中"
                         else -> {
 
                         }
@@ -385,7 +386,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 DownloadState.FINISH -> txt_book_detail_cache.text = "缓存完成"
                 DownloadState.PAUSEED -> txt_book_detail_cache.text = "缓存已暂停"
                 DownloadState.NOSTART -> txt_book_detail_cache.text = "全本缓存"
-                DownloadState.DOWNLOADING -> txt_book_detail_cache.text = "正在缓存"
+                DownloadState.DOWNLOADING -> txt_book_detail_cache.text = "缓存中"
                 else -> {
 
                 }
@@ -399,9 +400,11 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun insertBookShelfResult(result: Boolean) {
         if (result) {
-            txt_book_detail_shelf?.setText(R.string.book_cover_remove_bookshelf)
+            txt_book_detail_shelf?.text = "已在书架"
+            txt_book_detail_shelf.setTextColor(Color.parseColor("#B9B9B9"))
         } else {
-            txt_book_detail_shelf?.setText(R.string.book_cover_add_bookshelf)
+            txt_book_detail_shelf.setTextColor(Color.parseColor("#42BE54"))
+            txt_book_detail_shelf?.text = "加入书架"
         }
     }
 
@@ -414,6 +417,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     override fun bookSubscribeState(subscribe: Boolean) {
         if (subscribe) {
             txt_book_detail_shelf?.setText(R.string.book_cover_remove_bookshelf)
+            txt_book_detail_shelf.setTextColor(Color.parseColor("#B9B9B9"))
         }
     }
 
