@@ -5,6 +5,12 @@
     <color name="color_primary">#FF19DD8B</color>
     <color name="theme_primary">#FF19DD8B</color>
 
+    <color name="switch_button_checked_btn">#ffffff</color>
+    <color name="switch_button_checked_bg">#FF19DD8B</color>
+    <color name="switch_button_unchecked_btn">#ffffff</color>
+    <color name="switch_button_unchecked_bg">#E5E5E5</color>
+
+
     <color name="base_bg">#ffffff</color>
     <color name="base_bg1">#ffffff</color>
     <color name="color_divider">#e8e8e8</color>
@@ -16,13 +22,12 @@
     <color name="color_red_point_1">#ff0000</color>
     <color name="color_statusBar">#ce3d3e</color>
     <color name="color_statusBar_read">#1d1d1c</color>
-    <color name="switchbutton_checked_color">#FF19DD8B</color>
-    <color name="switchbutton_unchecked_color">#ffffff</color>
-    <color name="switchbutton_bg_checked_color">#f0c5c5</color>
-    <color name="switchbutton_bg_unchecked_color">#e3e1e1</color>
+
+
     <color name="top_navigation_text_color">#ffffff</color>
     <color name="top_navigation_bg_color">#ffffff</color>
     <color name="top_navigation_divider_color">#ffffff</color>
+
     <color name="cover_bg">#ffffff</color>
     <color name="cover_profile_title_color">#323232</color>
     <color name="cover_profile_des_color">#777777</color>
@@ -34,6 +39,7 @@
     <color name="cover_bottom_btn_add_text_color">#ce3d3e</color>
     <color name="cover_bottom_directory_text_color">#1c1c1c</color>
     <color name="cover_profile_bg2_pic">#2d2d2d</color>
+
     <color name="bookshelf_book_name_text_color">#323232</color>
     <color name="bookshelf_book_name_text_color_1">#2E2E2E</color>
     <color name="bookshelf_last_chapter_text_color">#777777</color>
@@ -45,6 +51,7 @@
     <color name="bookshelf_author_text_color">#949494</color>
     <color name="bookshelf_status_update_text_color">#FF19DD8B</color>
     <color name="bookshelf_status_finish_text_color">#1f83ff</color>
+
     <color name="home_bottom_tab_bg">#fafafa</color>
     <color name="home_bottom_tab_divider">#e8e8e8</color>
     <color name="search_input_text_color">#323232</color>
@@ -58,8 +65,10 @@
     <color name="search_history_clear_text_color">#ce3d3e</color>
     <color name="search_suggest_item_text_color_1">#ce3d3e</color>
     <color name="search_suggest_item_text_color_2">#FF5D646E</color>
+
     <color name="bookshelf_grid_book_name_text_color">#212121</color>
     <color name="bookshelf_update_time_grid_text_color">#949494</color>
+
     <color name="dialog_title_color">#323232</color>
     <color name="dialog_content_color">#323232</color>
     <color name="dialog_checkbox_text_color">#777777</color>
@@ -70,6 +79,7 @@
     <color name="directory_chapter_text_color">#323232</color>
     <color name="directory_current_chapter_text_color">#ce3d3e</color>
     <color name="directory_uncached_chapter_text_color">#838181</color>
+
     <color name="my_bg_color">#ffffff</color>
     <color name="my_top_login_text">#fffefe</color>
     <color name="my_item_small_text_color">#747373</color>

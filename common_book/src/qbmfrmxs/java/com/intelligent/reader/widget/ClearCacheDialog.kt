@@ -4,7 +4,7 @@ import android.app.Activity
 import android.view.Gravity
 import android.view.View
 import com.intelligent.reader.R
-import kotlinx.android.synthetic.txtqbmfyd.dialog_clear_cache.*
+import kotlinx.android.synthetic.qbmfrmxs.dialog_common.*
 import net.lzbook.kit.book.view.MyDialog
 
 
@@ -16,15 +16,12 @@ import net.lzbook.kit.book.view.MyDialog
  */
 class ClearCacheDialog(val activity: Activity) {
 
-    private val dialog = MyDialog(activity, R.layout.dialog_clear_cache, Gravity.BOTTOM)
+    private val dialog = MyDialog(activity, R.layout.dialog_common, Gravity.CENTER)
 
     private var confirmListener: (() -> Unit)? = null
     private var cancelListener: (() -> Unit)? = null
 
     init {
-
-        val window = dialog.window
-        window.setWindowAnimations(R.style.BottomPopupDialog)
 
         dialog.setCanceledOnTouchOutside(true)
         dialog.setCancelable(true)
@@ -57,6 +54,7 @@ class ClearCacheDialog(val activity: Activity) {
 
     fun show() {
         dialog.txt_dialog_title.text = activity.getString(R.string.prompt)
+        dialog.txt_dialog_information.text = activity.getString(R.string.determine_clear_all_file_cache)
         dialog.txt_dialog_information.visibility = View.VISIBLE
         dialog.view_divider.visibility = View.VISIBLE
         dialog.ll_btn.visibility = View.VISIBLE

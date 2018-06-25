@@ -3,14 +3,14 @@
        android:shape="rectangle"
        android:useLevel="false">
 
-    <gradient
-        android:angle="45"
-        android:endColor="#FF1EE07E"
-        android:startColor="#FF17DC92"
-        android:type="linear"
-        android:useLevel="false"/>
+    <solid
+        android:color="@color/color_white"/>
+
+    <stroke
+        android:width="0.5dp"
+        android:color="@color/theme_primary"/>
 
     <corners
-        android:radius="90dp"/>
+        android:radius="4dp"/>
 
 </shape>

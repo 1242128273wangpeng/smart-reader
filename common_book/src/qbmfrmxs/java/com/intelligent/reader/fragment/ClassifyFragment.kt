@@ -12,26 +12,27 @@ import android.view.View
 import android.view.ViewGroup
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.SearchBookActivity
-import kotlinx.android.synthetic.qbmfrmxs.category_fragment_layout.*
+import kotlinx.android.synthetic.qbmfrmxs.frag_classify.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.AppUtils
 
+
 /**
- * @desc 书城-分类
- * @author lijun Lee
- * @mail jun_li@dingyuegroup.cn
- * @data 2018/3/7 16:36
+ * Function：书城分类Fragment
+ *
+ * Created by JoannChen on 2018/6/20 0020 14:57
+ * E-mail:yongzuo_chen@dingyuegroup.cn
  */
-class CategoryFragment : Fragment() {
+class ClassifyFragment : Fragment() {
 
     private lateinit var mCategoryPageAdapter: CategoryPageAdapter
 
     private val titles = arrayOf("男频", "女频")
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
-            inflater.inflate(R.layout.category_fragment_layout, container, false)
+            inflater.inflate(R.layout.frag_classify, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -105,4 +106,5 @@ class CategoryFragment : Fragment() {
 
         override fun getPageTitle(position: Int): CharSequence = titles[position]
     }
+
 }

@@ -34,110 +34,85 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:id="@+id/ll_bottom_tab_bookshelf"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:id="@+id/ll_tab_bookshelf"
+            style="@style/Style_Tab_LinearLayout">
 
             <ImageView
-                android:id="@+id/img_tab_bookshelf"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/Style_Tab_ImageView"
                 android:contentDescription="@string/app_name"
-                android:focusable="false"
-                android:padding="1dp"
                 android:src="@drawable/home_tab_select_bookshelf"/>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/bookshelf"
-                android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                android:textSize="10sp"/>
+                style="@style/Style_Tab_TextView"
+                android:text="@string/bookshelf"/>
+
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_bottom_tab_recommend"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:id="@+id/ll_tab_recommend"
+            style="@style/Style_Tab_LinearLayout">
 
             <ImageView
-                android:id="@+id/img_tab_recommend"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/Style_Tab_ImageView"
                 android:contentDescription="@string/app_name"
-                android:focusable="false"
-                android:padding="1dp"
                 android:src="@drawable/home_tab_select_recommend"/>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/recommend"
-                android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                android:textSize="10sp"/>
+                style="@style/Style_Tab_TextView"
+                android:text="@string/recommend"/>
+
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_bottom_tab_ranking"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:id="@+id/ll_tab_search"
+            style="@style/Style_Tab_LinearLayout">
 
             <ImageView
-                android:id="@+id/img_tab_ranking"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/Style_Tab_ImageView"
                 android:contentDescription="@string/app_name"
-                android:focusable="false"
-                android:padding="1dp"
-                android:src="@drawable/home_tab_select_ranking"/>
+                android:src="@drawable/home_tab_select_search"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/ranking"
-                android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                android:textSize="10sp"/>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_bottom_tab_category"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:id="@+id/ll_tab_classify"
+            style="@style/Style_Tab_LinearLayout">
 
             <ImageView
-                android:id="@+id/img_tab_category"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/Style_Tab_ImageView"
                 android:contentDescription="@string/app_name"
-                android:focusable="false"
-                android:padding="1dp"
                 android:src="@drawable/home_tab_select_category"/>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/category"
-                android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                android:textSize="10sp"/>
+                style="@style/Style_Tab_TextView"
+                android:text="@string/category"/>
+
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_tab_ranking"
+            style="@style/Style_Tab_LinearLayout">
+
+            <ImageView
+                style="@style/Style_Tab_ImageView"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/home_tab_select_ranking"/>
+
+            <TextView
+                style="@style/Style_Tab_TextView"
+                android:text="@string/ranking"/>
+
+        </LinearLayout>
+
+
     </LinearLayout>
 
     <FrameLayout
         android:id="@+id/fl_guide_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:alpha="0.3"
+        android:background="@color/color_black"
         android:orientation="vertical"
         android:visibility="gone">
 
@@ -149,7 +124,7 @@
             android:layout_marginTop="37dp"
             android:contentDescription="@string/app_name"
             android:scaleType="fitXY"
-            android:src="@drawable/icon_bookshelf_guide_download"
+            android:src="@mipmap/bookshelf_guide_cache"
             android:visibility="gone"/>
 
         <ImageView
@@ -161,7 +136,7 @@
             android:layout_marginLeft="9dp"
             android:contentDescription="@string/app_name"
             android:scaleType="fitXY"
-            android:src="@drawable/bookshelf_guide_remove"
+            android:src="@mipmap/bookshelf_guide_remove"
             android:visibility="gone"/>
     </FrameLayout>
 </com.intelligent.reader.widget.drawer.DrawerMain>

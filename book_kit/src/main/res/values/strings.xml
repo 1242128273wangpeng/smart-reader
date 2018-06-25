@@ -313,7 +313,7 @@
     <!-- dialog -->
     <string name="prompt">提示</string>
     <string name="determine_clear_cache">确定清除缓存吗？</string>
-    <string name="determine_clear_all_file_cache">确定清除包括下载书籍在内的所有缓存吗？</string>
+    <string name="determine_clear_all_file_cache">确定清除包括下载书籍在内的所有 \n 缓存吗？</string>
     <string name="determine_remove_bookmark">你确定要清除该书签吗？</string>
     <string name="determine_leave">离开将丢失已输入的内容,您是否确定要离开?</string>
     <string name="determine_delete_book_cache">当前选中内容已缓存，删除后内容将被清空，你确定要删除吗？</string>
@@ -506,7 +506,6 @@
           type="id"></item>
     <item name="Tag_BOOK"
           type="id"></item>
-
 
 
     <string name="dialog_cache_sure">确定</string>

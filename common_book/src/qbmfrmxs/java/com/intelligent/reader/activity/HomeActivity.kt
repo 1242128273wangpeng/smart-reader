@@ -32,17 +32,16 @@ import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
-import com.dy.reader.event.EventSetting
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
-import com.intelligent.reader.fragment.CategoryFragment
+import com.intelligent.reader.fragment.ClassifyFragment
+import com.intelligent.reader.fragment.SearchBookFragment
 import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.util.EventBookStore
 import com.intelligent.reader.widget.ClearCacheDialog
 import com.intelligent.reader.widget.drawer.DrawerLayout
-import de.greenrobot.event.EventBus
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import iyouqu.theme.BaseCacheableActivity
@@ -56,8 +55,6 @@ import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.cache.DataCleanManager
-import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
@@ -70,13 +67,22 @@ import java.util.concurrent.TimeUnit
 class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         CheckNovelUpdateService.OnBookUpdateListener, HomeView, BookShelfInterface {
 
+
+    private val fragmentTypeBookShelf = 0 //书架
+    private val fragmentTypeRecommend = 1 //精选
+    private val fragmentTypeSearchBook = 2 //搜索
+    private val fragmentTypeClassify = 3 //分类
+    private val fragmentTypeRanking = 4 //榜单
+
+
     private val homePresenter by lazy { HomePresenter(this, this.packageManager) }
+    private var homeAdapter: HomeAdapter? = null
+
 
     private var homeBroadcastReceiver: HomeBroadcastReceiver? = null
 
     private lateinit var intentFilter: IntentFilter
 
-    private var homeAdapter: HomeAdapter? = null
 
     private var closed = false
 
@@ -86,10 +92,10 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     private var guideDownload: Boolean = true
 
     private lateinit var sharedPreUtil: SharedPreUtil
-
     private lateinit var apkUpdateUtils: ApkUpdateUtils
 
     private var bookShelfFragment: BookShelfFragment? = null
+//    private var searchBookFragment: SearchBookFragment? = null
 
     private val recommendFragment: WebViewFragment by lazy {
         val fragment = WebViewFragment()
@@ -111,8 +117,13 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         fragment
     }
 
-    private val categoryFragment: CategoryFragment by lazy {
-        val fragment = CategoryFragment()
+    private val classifyFragment: ClassifyFragment by lazy {
+        val fragment = ClassifyFragment()
+        fragment
+    }
+
+    private val searchBookFragment: SearchBookFragment by lazy {
+        val fragment = SearchBookFragment()
         fragment
     }
 
@@ -145,6 +156,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
 
         initView()
+        initListener()
         initGuide()
 
         homePresenter.initParameters()
@@ -222,36 +234,10 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
     }
 
-    /***
-     * 初始化View
-     * **/
+
     private fun initView() {
-        dl_home_content.setOnMenuStateChangeListener { state ->
-            if (state == DrawerLayout.MenuState.MENU_OPENED) {
-                showCacheMessage()
 
-                if (bookShelfFragment?.isRemoveMenuShow() == true) {
-                    bookShelfFragment?.dismissRemoveMenu()
-                }
-            }
-        }
-
-        view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {
-
-            }
-
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-
-            }
-
-            override fun onPageSelected(position: Int) {
-                onChangeNavigation(position)
-            }
-        })
-
-        view_pager.offscreenPageLimit = 3
-
+        view_pager.offscreenPageLimit = 4
         view_pager.isScrollable = false
 
         homeAdapter = HomeAdapter(supportFragmentManager)
@@ -262,28 +248,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         onChangeNavigation(currentIndex)
 
-        ll_bottom_tab_bookshelf.setOnClickListener {
-            this.changeHomePagerIndex(0)
-            HomeLogger.uploadHomeBookShelfSelected()
-        }
-
-        ll_bottom_tab_recommend.setOnClickListener {
-            this.changeHomePagerIndex(1)
-            sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "recommend")
-            HomeLogger.uploadHomeRecommendSelected()
-        }
-
-        ll_bottom_tab_ranking.setOnClickListener {
-            this.changeHomePagerIndex(2)
-            sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "top")
-            HomeLogger.uploadHomeRankSelected()
-        }
-
-        ll_bottom_tab_category.setOnClickListener {
-            this.changeHomePagerIndex(3)
-            sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "class")
-            HomeLogger.uploadHomeCategorySelected()
-        }
 
         setMenuTitleMargin()
 
@@ -307,7 +271,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             nightShift(isChecked, true)
         }
 
-        val isAutoDownload = sharedPreUtil.getBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE,true)
+        val isAutoDownload = sharedPreUtil.getBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE, true)
 
         btn_auto_download.isChecked = isAutoDownload
 
@@ -345,7 +309,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         txt_disclaimer_statement.setOnClickListener {
             PersonalLogger.uploadPersonalDisclaimer()
-            RouterUtil.navigation(this,RouterConfig.DISCLAIMER_ACTIVITY)
+            RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY)
         }
 
         val versionName = "V${AppUtils.getVersionName()}"
@@ -372,6 +336,72 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         txt_clear_cache_message.text = applicationContext.getString(R.string.application_cache_size)
     }
+
+
+    private fun initListener() {
+
+
+        // 书架
+        ll_tab_bookshelf.setOnClickListener {
+            this.changeHomePagerIndex(fragmentTypeBookShelf)
+            HomeLogger.uploadHomeBookShelfSelected()
+        }
+
+        // 精选
+        ll_tab_recommend.setOnClickListener {
+            this.changeHomePagerIndex(fragmentTypeRecommend)
+            sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "recommend")
+            HomeLogger.uploadHomeRecommendSelected()
+        }
+
+        // 搜索
+        ll_tab_search.setOnClickListener {
+            this.changeHomePagerIndex(fragmentTypeSearchBook)
+            sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "search")
+//            HomeLogger.uploadHomeRankSelected()
+        }
+
+        // 分类
+        ll_tab_classify.setOnClickListener {
+            this.changeHomePagerIndex(fragmentTypeClassify)
+            sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "class")
+            HomeLogger.uploadHomeCategorySelected()
+        }
+
+        // 榜单
+        ll_tab_ranking.setOnClickListener {
+            this.changeHomePagerIndex(fragmentTypeRanking)
+            sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "top")
+            HomeLogger.uploadHomeRankSelected()
+        }
+
+        dl_home_content.setOnMenuStateChangeListener { state ->
+            if (state == DrawerLayout.MenuState.MENU_OPENED) {
+                showCacheMessage()
+
+                if (bookShelfFragment?.isRemoveMenuShow() == true) {
+                    bookShelfFragment?.dismissRemoveMenu()
+                }
+            }
+        }
+
+        view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {
+
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+
+            }
+
+            override fun onPageSelected(position: Int) {
+                onChangeNavigation(position)
+            }
+        })
+
+
+    }
+
 
     private fun initGuide() {
         val key = SharedPreUtil.BOOKSHELF_GUIDE_TAG
@@ -402,10 +432,11 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             bookShelfFragment?.dismissRemoveMenu()
         }
 
-        ll_bottom_tab_bookshelf.isSelected = position == 0
-        ll_bottom_tab_recommend.isSelected = position == 1
-        ll_bottom_tab_ranking.isSelected = position == 2
-        ll_bottom_tab_category.isSelected = position == 3
+        ll_tab_bookshelf.isSelected = position == fragmentTypeBookShelf
+        ll_tab_recommend.isSelected = position == fragmentTypeRecommend
+        ll_tab_search.isSelected = position == fragmentTypeSearchBook
+        ll_tab_classify.isSelected = position == fragmentTypeClassify
+        ll_tab_ranking.isSelected = position == fragmentTypeRanking
     }
 
     /***
@@ -607,7 +638,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     }
 
 
-
     /***
      * 是否夜间模式
      * **/
@@ -624,24 +654,25 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     }
 
 
-    /***
+    /**
      * HomeActivity子页面的Adapter
-     * **/
+     */
     inner class HomeAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 
-        override fun getCount(): Int = 4
+        override fun getCount(): Int = 5
 
         override fun getItem(position: Int): Fragment? {
             return when (position) {
-                0 -> {
+                fragmentTypeBookShelf -> {
                     if (bookShelfFragment == null) {
                         bookShelfFragment = BookShelfFragment()
                     }
                     bookShelfFragment
                 }
-                1 -> recommendFragment
-                2 -> rankingFragment
-                3 -> categoryFragment
+                fragmentTypeRecommend -> recommendFragment
+                fragmentTypeSearchBook -> searchBookFragment
+                fragmentTypeClassify -> classifyFragment
+                fragmentTypeRanking -> rankingFragment
                 else -> null
             }
         }
@@ -650,7 +681,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             return if (position == 0) {
                 val bookShelfFragment = super.instantiateItem(container, position) as BookShelfFragment
                 bookShelfFragment.doUpdateBook()
-
                 bookShelfFragment
             } else {
                 super.instantiateItem(container, position)

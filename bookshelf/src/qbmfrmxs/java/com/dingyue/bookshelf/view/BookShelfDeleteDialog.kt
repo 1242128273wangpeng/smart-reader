@@ -13,16 +13,13 @@ import net.lzbook.kit.book.view.MyDialog
  */
 class BookShelfDeleteDialog(private val activity: Activity) {
 
-    private val dialog = MyDialog(activity, R.layout.dialog_bookshelf_delete, Gravity.BOTTOM)
+    private val dialog = MyDialog(activity, R.layout.dialog_bookshelf_delete, Gravity.CENTER)
 
     private var confirmListener: ((books: ArrayList<Book>?, isOnlyDeleteCache: Boolean) -> Unit)? = null
     private var abrogateListener: (() -> Unit)? = null
     private var books: ArrayList<Book>? = null
 
     init {
-
-        val window = dialog.window
-        window.setWindowAnimations(R.style.BottomPopupDialog)
 
         dialog.setCanceledOnTouchOutside(true)
         dialog.setCancelable(true)
