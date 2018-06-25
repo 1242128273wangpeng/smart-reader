@@ -4,4 +4,8 @@
         <item name="android:windowEnterAnimation">@anim/bottom_dialog_enter_anim</item>
         <item name="android:windowExitAnimation">@anim/bottom_dialog_exit_anim</item>
     </style>
+
+    <style name="rating_bar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/cover_rating_bar_bg</item>
+    </style>
 </resources>

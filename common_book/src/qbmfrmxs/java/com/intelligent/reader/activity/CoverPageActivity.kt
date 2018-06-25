@@ -12,7 +12,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.repository.RequestRepositoryFactory
-import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.BookRecommendAdapter
@@ -28,8 +27,10 @@ import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.ReplaceConstants
 import com.dingyue.contract.router.RouterConfig
 import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.Tools
 import java.text.MessageFormat
 import java.util.*
 import java.util.concurrent.Callable
@@ -56,23 +57,18 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         initListener()
     }
 
-
     override fun onNewIntent(intent: Intent) {
         initializeIntent(intent)
     }
 
     private fun initListener() {
-        book_cover_back?.setOnClickListener(this)
-        book_cover_author.setOnClickListener(this)
-//        book_cover_source_view.setOnClickListener(this)
-        book_catalog_tv.setOnClickListener(this)
-        book_cover_last_chapter_tv.setOnClickListener(this)
+        img_book_detail_back?.setOnClickListener(this)
+        txt_book_detail_author.setOnClickListener(this)
+        rl_book_detail_catalog.setOnClickListener(this)
 
-        book_cover_bookshelf.setOnClickListener(this)
-        book_cover_reading.setOnClickListener(this)
-        book_cover_download_iv.setOnClickListener(this)
-//        book_cover_catalog_view_nobg.setOnClickListener(this)
-        book_cover_content.topShadow = img_head_shadow
+        txt_book_detail_shelf.setOnClickListener(this)
+        txt_book_detail_read.setOnClickListener(this)
+        txt_book_detail_cache.setOnClickListener(this)
     }
 
     private fun initializeIntent(intent: Intent?) {
@@ -96,8 +92,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
             bookRecommendAdapter = BookRecommendAdapter()
 
-            book_recommend_lv.adapter = bookRecommendAdapter
-            book_recommend_lv.setOnItemClickListener { _, _, position, _ ->
+            sfgv_book_detail_recommend.adapter = bookRecommendAdapter
+            sfgv_book_detail_recommend.setOnItemClickListener { _, _, position, _ ->
                 recommendList?.let {
                     val recommendBean = it[position]
                     val data = HashMap<String, String>()
@@ -123,7 +119,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             loadingPage!!.onSuccess()
         }
 
-        loadingPage = LoadingPage(this, findViewById(R.id.book_cover_main),
+        loadingPage = LoadingPage(this, findViewById(R.id.rl_book_detail_content),
                 LoadingPage.setting_result)
 
         if (coverPagePresenter != null) {
@@ -176,18 +172,18 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             coverPagePresenter?.checkStartSearchActivity(view)
         }
         when (view.id) {
-            R.id.book_cover_back -> {
+            R.id.img_book_detail_back -> {
                 val data = HashMap<String, String>()
                 data["type"] = "1"
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.BACK, data)
                 finish()
             }
 
-            R.id.book_cover_bookshelf -> if (coverPagePresenter != null) {
+            R.id.txt_book_detail_shelf -> if (coverPagePresenter != null) {
                 coverPagePresenter?.handleBookShelfAction(true)
             }
 
-            R.id.book_cover_reading -> {
+            R.id.txt_book_detail_read -> {
                 //转码阅读点击的统计
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_trans_read)
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEREAD)
@@ -196,7 +192,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 }
             }
 
-            R.id.book_cover_download_iv -> {
+            R.id.txt_book_detail_cache -> {
                 bookId?.let {
                     StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_all_load)
                     val dataDownload = HashMap<String, String>()
@@ -214,19 +210,13 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                     }
                 }
             }
-            R.id.book_catalog_tv -> {
+            R.id.rl_book_detail_catalog -> {
                 //书籍详情页查看目录点击
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_to_catalogue)
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CATALOG)
                 if (coverPagePresenter != null) {
                     coverPagePresenter?.startCatalogActivity(true)
                 }
-            }
-            R.id.book_cover_last_chapter_tv -> {
-                if (coverPagePresenter != null) {
-                    coverPagePresenter?.startCatalogActivity(false)
-                }
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.LATESTCHAPTER)
             }
         }
     }
@@ -251,7 +241,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private fun requestBookDownloadState(book_id: String?) {
         if (!TextUtils.isEmpty(book_id)) {
 
-            book_cover_download_iv.visibility = View.VISIBLE
+            txt_book_detail_cache.visibility = View.VISIBLE
 
             book_id?.let {
                 val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(it)
@@ -263,20 +253,20 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                     bookDownloadState = downloadState
 
                     when (downloadState) {
-                        DownloadState.FINISH -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_finish)
-                        DownloadState.PAUSEED -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_pause)
-                        DownloadState.NOSTART -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_normal)
-                        DownloadState.DOWNLOADING -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_running)
+                        DownloadState.FINISH -> txt_book_detail_cache.text = "缓存完成"
+                        DownloadState.PAUSEED -> txt_book_detail_cache.text = "缓存已暂停"
+                        DownloadState.NOSTART -> txt_book_detail_cache.text = "全本缓存"
+                        DownloadState.DOWNLOADING -> txt_book_detail_cache.text = "正在缓存"
                         else -> {
 
                         }
                     }
                 } else {
-                    book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_normal)
+                    txt_book_detail_cache.text = "全本缓存"
                 }
             }
         } else {
-            book_cover_download_iv.visibility = View.GONE
+            txt_book_detail_cache.visibility = View.GONE
         }
     }
 
@@ -303,84 +293,79 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
         if (book != null) {
 
-            if (book_cover_image != null && !TextUtils.isEmpty(book.img_url) &&
+            if (img_book_detail_cover != null && !TextUtils.isEmpty(book.img_url) &&
                     book.img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL) {
-                Glide.with(applicationContext).load(book.img_url).placeholder(R.drawable.common_book_cover_default_icon).error(R.drawable.common_book_cover_default_icon).diskCacheStrategy(DiskCacheStrategy.ALL).into(book_cover_image)
+                Glide.with(applicationContext)
+                        .load(book.img_url)
+                        .placeholder(R.drawable.common_book_cover_default_icon)
+                        .error(R.drawable.common_book_cover_default_icon)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(img_book_detail_cover)
             } else {
-                Glide.with(applicationContext).load(R.drawable.common_book_cover_default_icon).into(book_cover_image)
-            }
-
-            if (book_cover_title != null && !TextUtils.isEmpty(book.name)) {
-                book_cover_title.text = book.name
-            }
-
-            if (book_cover_author != null && !TextUtils.isEmpty(book.author)) {
-                book_cover_author.text = book.author
-            }
-
-            if (book_cover_category2 != null) {
-                if (!TextUtils.isEmpty(book.sub_genre)) {
-                    book_cover_category2!!.text = book.sub_genre
-                    book_cover_category2!!.visibility = View.VISIBLE
-                } else {
-                    book_cover_category2!!.visibility = View.GONE
-                }
+                Glide.with(applicationContext)
+                        .load(R.drawable.common_book_cover_default_icon)
+                        .into(img_book_detail_cover)
             }
 
             if (book.status == "SERIALIZE") {
-                if (book_cover_category2.visibility != View.VISIBLE) {
-                    book_cover_status.text = MessageFormat.format("—{0}", resources.getString(R.string.book_cover_state_writing))
-                } else {
-                    book_cover_status.text = resources.getString(R.string.book_cover_state_writing)
-                }
+                img_book_detail_state.setImageResource(R.drawable.book_serialize_icon)
             } else {
-                if (book_cover_category2.visibility != View.VISIBLE) {
-                    book_cover_status.text = MessageFormat.format("—{0}", resources.getString(R.string.book_cover_state_writing))
+                img_book_detail_state.setImageResource(R.drawable.book_finish_icon)
+            }
+
+            if (txt_book_detail_name != null && !TextUtils.isEmpty(book.name)) {
+                txt_book_detail_name.text = book.name
+            }
+
+            if (txt_book_detail_word_count != null) {
+                txt_book_detail_word_count.text = if (TextUtils.isEmpty(book.word_count)) "暂无" else book.word_count
+            }
+
+            if (txt_book_detail_author != null && !TextUtils.isEmpty(book.author)) {
+                txt_book_detail_author.text = book.author
+            }
+
+            if (txt_book_detail_source != null && !TextUtils.isEmpty(book.book_type)) {
+                if (book.book_type == "qg") {
+                    txt_book_detail_source.text = "青果阅读"
                 } else {
-                    book_cover_status.text = resources.getString(R.string.book_cover_state_written)
+                    txt_book_detail_source.text = book.host
                 }
             }
 
-            if (!TextUtils.isEmpty(book.last_chapter?.name)) {
-                book_cover_last_chapter_tv.text = MessageFormat.format("更新至：{0}", book.last_chapter?.name)
+            rb_book_detail_score.rating = book.score / 2.0F
+
+            if (book.score == 0.0F) {
+                txt_book_detail_score.text = "暂无评分"
+            } else {
+                txt_book_detail_score.text = MessageFormat.format("{0}分", book.score)
+            }
+
+
+            if (book.uv == 0L) {
+                txt_book_detail_popularity.visibility = View.GONE
+            } else {
+                txt_book_detail_popularity.visibility = View.VISIBLE
+                txt_book_detail_popularity.text = MessageFormat.format("{0}人气", book.uv)
             }
 
             if (book.desc != null && !TextUtils.isEmpty(book.desc)) {
-                book_cover_description.text = book.desc
+                txt_book_detail_desc.text = book.desc
             } else {
-                book_cover_description.text = resources.getString(R.string
-                        .book_cover_no_description)
+                txt_book_detail_desc.text = "暂无简介"
             }
 
-//            if (book.wordCountDescp != null) {
-//                if (Constants.QG_SOURCE != book.host) {
-//                    word_count_tv.text = book.wordCountDescp + "字"
-//                } else {
-//                    word_count_tv.text = AppUtils.getWordNums(java.lang.Long.valueOf(book.wordCountDescp)!!)
-//                }
-//            } else {
-//                word_count_tv.text = "暂无"
-//            }
-//
-//            if (book.readerCountDescp != null) {
-//                if (Constants.QG_SOURCE == book.host) {
-//                    reading_tv.text = AppUtils.getReadNums(java.lang.Long.valueOf(book.readerCountDescp)!!)
-//                } else {
-//                    reading_tv.text = book.readerCountDescp + "人在读"
-//                }
-//
-//            } else {
-//                reading_tv!!.text = "暂无"
-//            }
-//            if (book.score == 0.0) {
-//                start_tv.text = "暂无评分"
-//            } else {
-//                if (Constants.QG_SOURCE != book.host) {
-//                    book.score = java.lang.Double.valueOf(DecimalFormat("0.0").format(book.score))!!
-//                }
-//                start_tv.text = book.score.toString() + "分"
-//
-//            }
+            if (book.last_chapter != null) {
+
+                if (!TextUtils.isEmpty(book.last_chapter?.name)) {
+                    txt_book_detail_last_chapter.text = MessageFormat.format("最新章节：{0}", book.last_chapter?.name)
+                }
+
+                if (book.last_chapter?.update_time != 0L) {
+                    val updateTime = "${Tools.compareTime(AppUtils.formatter, book.last_chapter!!.update_time)}更新"
+                    txt_book_detail_update_time.text = updateTime
+                }
+            }
         } else {
             this.showToastMessage(R.string.book_cover_no_resource)
 
@@ -397,10 +382,10 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
         coverPagePresenter?.let {
             when (status) {
-                DownloadState.FINISH -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_finish)
-                DownloadState.PAUSEED -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_pause)
-                DownloadState.NOSTART -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_normal)
-                DownloadState.DOWNLOADING -> book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_running)
+                DownloadState.FINISH -> txt_book_detail_cache.text = "缓存完成"
+                DownloadState.PAUSEED -> txt_book_detail_cache.text = "缓存已暂停"
+                DownloadState.NOSTART -> txt_book_detail_cache.text = "全本缓存"
+                DownloadState.DOWNLOADING -> txt_book_detail_cache.text = "正在缓存"
                 else -> {
 
                 }
@@ -408,33 +393,41 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         }
 
         if (!coverPagePresenter!!.checkBookSubscribe()) {
-            book_cover_download_iv.setImageResource(R.drawable.icon_cover_down_normal)
+            txt_book_detail_cache.text = "全本缓存"
         }
     }
 
     override fun insertBookShelfResult(result: Boolean) {
         if (result) {
-            book_cover_bookshelf!!.setText(R.string.book_cover_remove_bookshelf)
+            txt_book_detail_shelf?.setText(R.string.book_cover_remove_bookshelf)
         } else {
-            book_cover_bookshelf!!.setText(R.string.book_cover_add_bookshelf)
+            txt_book_detail_shelf?.setText(R.string.book_cover_add_bookshelf)
         }
     }
 
     override fun changeShelfButtonClickable(clickable: Boolean) {
-        if (book_cover_bookshelf != null) {
-            book_cover_bookshelf.isClickable = clickable
+        if (txt_book_detail_shelf != null) {
+            txt_book_detail_shelf.isClickable = clickable
         }
     }
 
     override fun bookSubscribeState(subscribe: Boolean) {
         if (subscribe) {
-            book_cover_bookshelf!!.setText(R.string.book_cover_remove_bookshelf)
+            txt_book_detail_shelf?.setText(R.string.book_cover_remove_bookshelf)
         }
     }
 
     override fun showRecommendSuccess(recommends: ArrayList<RecommendBean>) {
-        recommendList = recommends
-        bookRecommendAdapter.setData(recommends)
+        if (recommends.size == 0) {
+            rl_book_detail_recommend.visibility = View.GONE
+            sfgv_book_detail_recommend.visibility = View.GONE
+        } else {
+            rl_book_detail_recommend.visibility = View.VISIBLE
+            sfgv_book_detail_recommend.visibility = View.VISIBLE
+
+            recommendList = recommends
+            bookRecommendAdapter.setData(recommends)
+        }
     }
 
     override fun showRecommendFail() {

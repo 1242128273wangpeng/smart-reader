@@ -49,6 +49,8 @@ class RecommendBean : Serializable {
     //字数
     var wordCountDescp: String? = null
 
+    var uv: Long = 0
+
     //多少人在读
     var readerCount: Int? = null
 
