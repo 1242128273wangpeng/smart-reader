@@ -467,7 +467,7 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
                 override fun requestResult(result: RecommendBooks?) {
                     if (result != null) {
                         if (sharePreUtil != null) {
-                            val scale = sharePreUtil!!.getString(SharedPreUtil.RECOMMEND_BOOKCOVER, "2,2,0").split(",")
+                            val scale = sharePreUtil!!.getString(SharedPreUtil.RECOMMEND_BOOKCOVER, "3,3,0").split(",")
 
                             if (scale.size >= 2) {
                                 if (!TextUtils.isEmpty(scale[0])) {

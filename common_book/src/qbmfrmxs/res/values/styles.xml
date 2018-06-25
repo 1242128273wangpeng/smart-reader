@@ -92,4 +92,8 @@
     <!--底部导航栏样式（结束）-->
 
 
+
+    <style name="rating_bar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/cover_rating_bar_bg</item>
+    </style>
 </resources>
