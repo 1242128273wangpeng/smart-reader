@@ -416,7 +416,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun bookSubscribeState(subscribe: Boolean) {
         if (subscribe) {
-            txt_book_detail_shelf?.setText(R.string.book_cover_remove_bookshelf)
+            txt_book_detail_shelf?.text = "已在书架"
             txt_book_detail_shelf.setTextColor(Color.parseColor("#B9B9B9"))
         }
     }
