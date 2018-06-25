@@ -69,15 +69,8 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     private TextView txt_head_prompt;
     private ImageView img_head_arrow;
 
-    private ImageView topShadowView;
-
     private boolean hasRefreshHead = false;
 
-
-    private RelativeLayout rl_recommend_head;
-    private RelativeLayout rl_recommend_search;
-    private RelativeLayout rl_head_ranking;
-    private ImageView img_ranking_search;
 
     @Override
     public void onAttach(Activity activity) {
@@ -91,11 +84,9 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         handler = new Handler();
-        AppLog.e(TAG, "----------->start");
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             this.url = bundle.getString("url");
-            AppLog.e(TAG, "url---->" + url);
             type = bundle.getString("type");
         }
 
@@ -121,29 +112,37 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     @SuppressLint("JavascriptInterface")
     private void initView() {
         if (rootView != null) {
-            contentLayout = (RelativeLayout) rootView.findViewById(R.id.web_content_layout);
-            topShadowView = (ImageView) rootView.findViewById(R.id.img_head_shadow);
-            rl_recommend_head = (RelativeLayout) rootView.findViewById(R.id.rl_recommend_head);
-            rl_recommend_search = (RelativeLayout) rootView.findViewById(R.id.rl_recommend_search);
-            rl_head_ranking = (RelativeLayout) rootView.findViewById(R.id.rl_head_ranking);
-            img_ranking_search = (ImageView) rootView.findViewById(R.id.img_ranking_search);
+            contentLayout = rootView.findViewById(R.id.web_content_layout);
+
+            ImageView topShadowView = rootView.findViewById(R.id.img_head_shadow);
+
+            RelativeLayout rl_recommend_head = rootView.findViewById(R.id.rl_recommend_head);
+            RelativeLayout rl_recommend_search = rootView.findViewById(R.id.rl_recommend_search);
+            RelativeLayout rl_head_ranking = rootView.findViewById(R.id.rl_head_ranking);
+
+            ImageView img_ranking_search = rootView.findViewById(R.id.img_ranking_search);
+
             View title_layout = rootView.findViewById(R.id.title_layout);
-            contentView = (TopShadowWebView) rootView.findViewById(R.id.web_content_view);
+            contentView =  rootView.findViewById(R.id.web_content_view);
             contentView.setTopShadow(topShadowView);
-            if (Build.VERSION.SDK_INT >= 11) {
+            if (Build.VERSION.SDK_INT >= 14) {
                 contentView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             }
 
-            if (type.equals("recommend")) {
-                rl_recommend_head.setVisibility(View.VISIBLE);
-                rl_head_ranking.setVisibility(View.GONE);
-                title_layout.setVisibility(View.VISIBLE);
-            } else if (type.equals("rank")) {
-                rl_recommend_head.setVisibility(View.GONE);
-                rl_head_ranking.setVisibility(View.VISIBLE);
-                title_layout.setVisibility(View.VISIBLE);
-            } else {
-                title_layout.setVisibility(View.GONE);
+            switch (type) {
+                case "recommend":
+                    rl_recommend_head.setVisibility(View.VISIBLE);
+                    rl_head_ranking.setVisibility(View.GONE);
+                    title_layout.setVisibility(View.VISIBLE);
+                    break;
+                case "rank":
+                    rl_recommend_head.setVisibility(View.GONE);
+                    rl_head_ranking.setVisibility(View.VISIBLE);
+                    title_layout.setVisibility(View.VISIBLE);
+                    break;
+                default:
+                    title_layout.setVisibility(View.GONE);
+                    break;
             }
 
             rl_recommend_search.setOnClickListener(new View.OnClickListener() {

@@ -101,7 +101,7 @@ public class UrlUtils {
         String latitude = Constants.latitude + "";
         String cityCode = Constants.cityCode;
 
-        params.put("packageName", packageName);
+        params.put("packageName", "cn.txtqbmfyd.reader");
         params.put("version", version);
         params.put("channelId", channelId);
         params.put("os", os);

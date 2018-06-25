@@ -1,5 +1,6 @@
 package com.dingyue.downloadmanager
 
+import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
@@ -47,6 +48,7 @@ class DownloadManagerTaskHolder(itemView: View) : RecyclerView.ViewHolder(itemVi
                     .into(img_cover)
         }
         val task = CacheManager.getBookTask(book)
+        val state = task.state
 
         if (!(txt_book_name == null || TextUtils.isEmpty(book.name))) {
             txt_book_name.text = book.name
@@ -63,37 +65,52 @@ class DownloadManagerTaskHolder(itemView: View) : RecyclerView.ViewHolder(itemVi
         pgbar_download.max = 100
         pgbar_download.progress = task.progress
 
-        val state = task.state
         pgbar_download.progressDrawable = resources.getDrawable(R.drawable.download_manager_item_pgbar_second_bg)
         img_download.setImageResource(R.drawable.download_manager_item_download_icon)
 
         if (state == DownloadState.DOWNLOADING) {
             txt_download_state.text = context.getString(R.string.status_downloading)
+            txt_download_state.setTextColor(Color.parseColor("#42BE54"))
+            txt_download_num.setTextColor(Color.parseColor("#42BE54"))
             img_download.setImageResource(R.drawable.download_manager_item_pause_icon)
             pgbar_download.progressDrawable = resources.getDrawable(R.drawable.download_manager_item_pgbar_main_bg)
         } else if (state == DownloadState.WAITTING) {
             txt_download_state.text = context.getString(R.string.status_wait)
+            txt_download_state.setTextColor(Color.parseColor("#B9B9B9"))
+            txt_download_num.setTextColor(Color.parseColor("#B9B9B9"))
             img_download.setImageResource(R.drawable.download_manager_item_wait_icon)
             txt_download_num.visibility = View.GONE
         } else if (state == DownloadState.PAUSEED) {
             txt_download_state.text = context.getString(R.string.status_pause)
+            txt_download_state.setTextColor(Color.parseColor("#B9B9B9"))
+            txt_download_num.setTextColor(Color.parseColor("#B9B9B9"))
         } else if (state == DownloadState.NONE_NETWORK) {
             txt_download_state.text = context.getString(R.string.status_pause)
+            txt_download_state.setTextColor(Color.parseColor("#B9B9B9"))
+            txt_download_num.setTextColor(Color.parseColor("#B9B9B9"))
         } else if (state == null || state == DownloadState.NOSTART) {
             txt_download_state.text = context.getString(R.string.status_no_cache)
+            txt_download_state.setTextColor(Color.parseColor("#B9B9B9"))
+            txt_download_num.setTextColor(Color.parseColor("#B9B9B9"))
             pgbar_download.progress = 0
         } else if (state == DownloadState.FINISH) {
             txt_download_state.text = context.getString(R.string.status_finish)
+            txt_download_state.setTextColor(Color.parseColor("#B9B9B9"))
             img_download.setImageResource(R.drawable.download_manager_item_finish_icon)
             pgbar_download.progress = 100
             txt_download_num.visibility = View.GONE
+            txt_download_num.setTextColor(Color.parseColor("#B9B9B9"))
             pgbar_download.progressDrawable = resources.getDrawable(R.drawable.download_manager_item_pgbar_third_bg)
         } else if (state == DownloadState.WAITTING_WIFI) {
             txt_download_state.text = context.getString(R.string.status_wifi_require)
+            txt_download_state.setTextColor(Color.parseColor("#B9B9B9"))
+            txt_download_num.setTextColor(Color.parseColor("#B9B9B9"))
             txt_download_num.visibility = View.GONE
         } else {
             task.state = DownloadState.NOSTART
             txt_download_state.text = context.getString(R.string.status_no_cache)
+            txt_download_state.setTextColor(Color.parseColor("#B9B9B9"))
+            txt_download_num.setTextColor(Color.parseColor("#B9B9B9"))
             pgbar_download.progress = 0
         }
 

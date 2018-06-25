@@ -339,21 +339,6 @@ public class SwitchButton extends View implements Checkable {
         public void onAnimationRepeat(Animator animation) {
         }
     };
-
-    /**
-     * 按钮线的高度
-     */
-    private static final int LINE_HEIGHT = 2;
-
-    private int lineHeight = 0;
-
-    /**
-     * 按钮左右偏移量
-     */
-    private static final int BUTTON_OFFSET = 8;
-
-    private int buttonOffset = 0;
-
     public SwitchButton(Context context) {
         super(context);
         init(context, null);
@@ -435,12 +420,6 @@ public class SwitchButton extends View implements Checkable {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void init(Context context, AttributeSet attrs) {
-
-        float density = getResources().getDisplayMetrics().density;
-
-        lineHeight = (int) (LINE_HEIGHT * density + 0.5f);
-
-        buttonOffset = (int) (BUTTON_OFFSET * density + 0.5f);
 
         TypedArray typedArray = null;
         if (attrs != null) {
@@ -595,7 +574,7 @@ public class SwitchButton extends View implements Checkable {
         height = h - viewPadding - viewPadding;
         width = w - viewPadding - viewPadding;
 
-        viewRadius = height * 0.35f;
+        viewRadius = height * .6f;
         buttonRadius = viewRadius - borderWidth;
 
         left = viewPadding;
@@ -606,8 +585,8 @@ public class SwitchButton extends View implements Checkable {
         centerX = (left + right) * .5f;
         centerY = (top + bottom) * .5f;
 
-        buttonMinX = left + viewRadius - 10 + buttonOffset;
-        buttonMaxX = right - viewRadius + 10 - buttonOffset;
+        buttonMinX = left + viewRadius - 10;
+        buttonMaxX = right - viewRadius + 10;
 
         if (isChecked()) {
             buttonPaint.setColor(checkedBtnColor);
@@ -653,12 +632,12 @@ public class SwitchButton extends View implements Checkable {
         drawRoundRect(canvas,
                 left, top, right, bottom,
                 viewRadius, paint);
-//        //绘制关闭状态的边框
+        //绘制关闭状态的边框
 //        paint.setStyle(Paint.Style.STROKE);
-//        paint.setColor(uncheckedColor);
-//        drawRoundRect(canvas,
-//                left, top, right, bottom,
-//                viewRadius, paint);
+        paint.setColor(uncheckedColor);
+        drawRoundRect(canvas,
+                left, top, right, bottom,
+                viewRadius, paint);
 
         //绘制小圆圈
         if (showIndicator) {
@@ -666,14 +645,12 @@ public class SwitchButton extends View implements Checkable {
         }
 
         //绘制开启背景色
-        float des = 0;//[0-backgroundRadius*0.5f]
-        paint.setStyle(Paint.Style.FILL);
+        float des = viewState.radius * .5f;//[0-backgroundRadius*0.5f]
+        paint.setStyle(Paint.Style.STROKE);
         paint.setColor(viewState.checkStateColor);
-//        paint.setStrokeWidth(borderWidth + des * 2f);
-        int btnHalfHeightY = (int) ((bottom - top) / 2 + top);
+        paint.setStrokeWidth(borderWidth + des * 2f);
         drawRoundRect(canvas,
-                left, btnHalfHeightY - (lineHeight / 2),
-                right, btnHalfHeightY + (lineHeight / 2),
+                left + des, top + des, right - des, bottom - des,
                 viewRadius, paint);
 
         //绘制按钮左边绿色长条遮挡

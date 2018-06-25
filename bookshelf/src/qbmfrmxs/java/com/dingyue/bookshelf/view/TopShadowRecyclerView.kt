@@ -16,6 +16,7 @@ class TopShadowRecyclerView @JvmOverloads constructor(context: Context, attrs: A
     : RecyclerView(context, attrs, defStyleAttr) {
 
     var topShadow: View? = null
+    var footerPrompt: View? = null
 
     private var distance = 10
 
@@ -32,8 +33,10 @@ class TopShadowRecyclerView @JvmOverloads constructor(context: Context, attrs: A
                 val distance = getScrollDistance(layoutManager)
                 if (distance > this.distance) {
                     it.visibility = View.VISIBLE
+                    footerPrompt?.visibility = View.VISIBLE
                 } else {
                     it.visibility = View.GONE
+                    footerPrompt?.visibility = View.GONE
                 }
             }
         }

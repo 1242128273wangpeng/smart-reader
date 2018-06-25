@@ -22,7 +22,7 @@
 
     <string name="bookshelf_delete_dialog_title">提示</string>
 
-    <string name="bookshelf_delete_dialog_content">删除书籍，确定要继续吗？</string>
+    <!--<string name="bookshelf_delete_dialog_content">删除书籍，确定要继续吗？</string>-->
 
     <string name="bookshelf_delete_dialog_check">保留书籍仅清除缓存</string>
 
