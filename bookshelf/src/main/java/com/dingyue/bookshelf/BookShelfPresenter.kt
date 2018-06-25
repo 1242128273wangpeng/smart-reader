@@ -132,7 +132,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
 
                     while (iterator.hasNext()) {
                         val entry = iterator.next()
-                        if (entry.value.item_view != null) {
+                        if (entry.key < iBookList.size && entry.value.item_view != null) {
                             iBookList.add(entry.key, entry.value)
                         }
                     }

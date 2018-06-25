@@ -199,7 +199,10 @@ class GLReaderView : GLSurfaceView, GLSurfaceView.Renderer {
         getTracker().addMovement(event)
 
         queueEvent {
-            glAnimation?.move(event.x, event.y)
+            try {
+                glAnimation?.move(event.x, event.y)
+            } catch (e: Exception) {
+            }
         }
     }
 

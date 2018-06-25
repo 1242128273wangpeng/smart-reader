@@ -645,19 +645,19 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
         if (DataProvider.isCacheExistBySequence(sequence)) {
             return
         }
-        recl_reader_content.visibility = GONE
+        recl_reader_content?.visibility = GONE
 //        view_reader_error.visibility = GONE
-        view_reader_loading.visibility = View.VISIBLE
+        view_reader_loading?.visibility = View.VISIBLE
     }
 
     private fun showErrorPage() {
-        recl_reader_content.visibility = GONE
+        recl_reader_content?.visibility = GONE
 //        view_reader_error.visibility = View.VISIBLE
     }
 
     private fun dismissLoadPage() {
-        recl_reader_content.visibility = VISIBLE
-        view_reader_loading.visibility = GONE
+        recl_reader_content?.visibility = VISIBLE
+        view_reader_loading?.visibility = GONE
 //        view_reader_error.visibility = GONE
     }
 

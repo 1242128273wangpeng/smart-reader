@@ -129,9 +129,9 @@ class ReadSettingFragment : DialogFragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onRecieveEvent(event: EventSetting) {
         if (event.type == EventSetting.Type.REFRESH_MODE) {
-            dialog.rsbd_option_bottom_detail.setMode()
+            dialog?.rsbd_option_bottom_detail?.setMode()
         } else if (event.type == EventSetting.Type.DISMISS_TOP_MENU) {
-            dialog.rsh_option_header.showMenu(false)
+            dialog?.rsh_option_header?.showMenu(false)
         }
     }
 
