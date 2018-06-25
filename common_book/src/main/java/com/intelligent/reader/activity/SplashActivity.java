@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -169,16 +170,34 @@ public class SplashActivity extends FrameActivity {
     }
 
     private void gotoActivity(int versionCode, boolean firstGuide) {
-        Intent intent = new Intent();
-        intent.setClass(SplashActivity.this, HomeActivity.class);
-        try {
-            startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            e.printStackTrace();
+        if (firstGuide) {
+            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(
+                    getApplicationContext()).edit();
+            editor.putBoolean(versionCode + "first_guide", false);
+            editor.apply();
+            try {
+                Intent intent = new Intent();
+                intent.setClass(SplashActivity.this, GuideActivity.class);
+                intent.putExtra("fromA", "Loading");
+                startActivity(intent);
+                finish();
+            } catch (ActivityNotFoundException e) {
+                e.printStackTrace();
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Intent intent = new Intent();
+            intent.setClass(SplashActivity.this, HomeActivity.class);
+            try {
+                startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                e.printStackTrace();
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+            finish();
         }
-        finish();
     }
 
     private void initShield() {
