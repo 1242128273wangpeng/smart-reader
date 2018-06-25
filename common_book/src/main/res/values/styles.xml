@@ -631,5 +631,4 @@
         <item name="android:textColor">@color/text_color_weak</item>
     </style>
     <!--tiny-->
-
 </resources>

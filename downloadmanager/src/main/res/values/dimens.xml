@@ -10,5 +10,5 @@
 
     <dimen name="download_manager_item_header">48dp</dimen>
     <dimen name="download_manager_item_first_header">33dp</dimen>
-    <dimen name="download_manager_popup_height">50dp</dimen>
+    <dimen name="download_manager_popup_height">52dp</dimen>
 </resources>

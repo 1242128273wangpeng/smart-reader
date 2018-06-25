@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- TXT全本免费阅读 -->
-
     <style name="download_manager_title">
         <item name="android:textSize">17sp</item>
         <item name="android:textColor">#212832</item>
@@ -31,4 +30,32 @@
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">#5D646E</item>
     </style>
+
+
+    <!-- 导航栏 -->
+    <declare-styleable name="NavigationBarStrip">
+        <attr name="indicatorMarginBottom" format="dimension" />
+
+        <attr name="indicatorColor" format="color" />
+        <attr name="indicatorFactor" format="float" />
+        <attr name="indicatorHeight" format="dimension" />
+        <attr name="indicatorPadding" format="dimension" />
+        <attr name="indicatorTextSize" format="dimension" />
+
+        <attr name="indicatorType" format="enum">
+            <enum name="line" value="0" />
+            <enum name="point" value="1" />
+        </attr>
+
+        <attr name="indicatorGravity" format="enum">
+            <enum name="top" value="0" />
+            <enum name="bottom" value="1" />
+        </attr>
+
+        <attr name="indicatorRadius" format="dimension" />
+        <attr name="indicatorAnimationDuration" format="integer" />
+
+        <attr name="indicatorInactiveColor" format="color" />
+        <attr name="indicatorActiveColor" format="color" />
+    </declare-styleable>
 </resources>
