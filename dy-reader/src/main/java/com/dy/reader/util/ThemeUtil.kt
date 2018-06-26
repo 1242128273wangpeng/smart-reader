@@ -94,9 +94,9 @@ object ThemeUtil {
         }
 
 
-    fun getModePrimaryBackground(resources: Resources, view: View) {
+    fun getModePrimaryBackground(resources: Resources, view: View?) {
         if (readerSettings.readThemeMode == 51) {// 牛皮纸
-            view.setBackgroundDrawable(BitmapDrawable(ReaderSettings.instance.backgroundBitmap))
+            view?.setBackgroundDrawable(BitmapDrawable(ReaderSettings.instance.backgroundBitmap))
         } else {
             // 通过新的画布，将矩形画新的bitmap上去
             var color_int = R.color.reading_backdrop_first
@@ -114,7 +114,7 @@ object ThemeUtil {
                 readerSettings.readThemeMode == 61 -> //night3
                     color_int = R.color.reading_backdrop_night
             }
-            view.setBackgroundColor(resources.getColor(color_int))
+            view?.setBackgroundColor(resources.getColor(color_int))
         }
     }
 

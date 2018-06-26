@@ -190,7 +190,10 @@ class GLReaderView : GLSurfaceView, GLSurfaceView.Renderer {
         queueEvent {
             println("ACTION_DOWN")
 
-            glAnimation?.down(event.x, event.y)
+            try {
+                glAnimation?.down(event.x, event.y)
+            } catch (e: Exception) {
+            }
         }
     }
 
@@ -215,7 +218,10 @@ class GLReaderView : GLSurfaceView, GLSurfaceView.Renderer {
         queueEvent {
             println("ACTION_UP")
 
-            glAnimation?.up(event.x, event.y, xVelocity)
+            try {
+                glAnimation?.up(event.x, event.y, xVelocity)
+            } catch (e: Exception) {
+            }
         }
 
         velocityTracker?.recycle()
