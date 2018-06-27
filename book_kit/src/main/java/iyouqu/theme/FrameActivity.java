@@ -238,7 +238,9 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         packageName = AppUtils.getPackageName();
         isFirst = false;
         if (!TextUtils.isEmpty(packageName) &&
-                (packageName.equals("cc.kdqbxs.reader") || packageName.equals("cn.txtqbmfyd.reader"))) {
+                (packageName.equals("cc.kdqbxs.reader")
+                        || packageName.equals("cn.txtqbmfyd.reader")
+                        || packageName.equals("cn.qbmfrmxs.reader"))) {
             isDarkStatusBarText = true;
         } else {
             isDarkStatusBarText = false;
