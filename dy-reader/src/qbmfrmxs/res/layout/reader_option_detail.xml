@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_reader_setting_detail"
     android:layout_width="match_parent"
@@ -23,7 +24,7 @@
             android:layout_alignParentLeft="true"
             android:gravity="center"
             android:text="@string/brightness"
-            android:textColor="#65FFFFFF"
+            android:textColor="#999999"
             android:textSize="@dimen/text_size_small"/>
 
         <SeekBar
@@ -81,46 +82,49 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="@string/text_size"
-            android:textColor="#65FFFFFF"
-            android:textSize="10sp"/>
+            android:textColor="#999999"
+            android:textSize="@dimen/text_size_small"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:background="@drawable/reader_option_group_border_bg"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            tools:ignore="MissingPrefix">
 
             <ImageView
                 android:id="@+id/img_reader_font_reduce"
                 android:layout_width="0dp"
-                android:layout_height="30dp"
+                android:layout_height="36dp"
                 android:layout_weight="1"
+                android:background="@drawable/reader_option_group_bg"
                 android:contentDescription="@string/module_name"
                 android:scaleType="center"
-                android:src="@drawable/reader_option_font_reduce_sel"/>
+                android:src="@drawable/reader_option_font_reduce_icon"
+                app:onPressChangeAlpha="true"/>
 
             <TextView
                 android:id="@+id/txt_reader_font_size"
-                android:layout_width="50dp"
-                android:layout_height="30dp"
+                android:layout_width="70dp"
+                android:layout_height="36dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:background="@drawable/reader_option_font_size_bg"
                 android:gravity="center"
-                android:textColor="#65FFFFFF"
-                android:textSize="12sp"
+                android:textColor="#989898"
+                android:textSize="@dimen/text_size_large"
                 tools:text="16"/>
 
             <ImageView
                 android:id="@+id/img_reader_font_increase"
                 android:layout_width="0dp"
-                android:layout_height="30dp"
+                android:layout_height="36dp"
                 android:layout_weight="1"
+                android:background="@drawable/reader_option_group_bg"
                 android:contentDescription="@string/module_name"
                 android:scaleType="center"
-                android:src="@drawable/reader_option_font_increase_sel"/>
+                android:src="@drawable/reader_option_font_increase_icon"
+                app:onPressChangeAlpha="true"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -135,86 +139,63 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="@string/background"
-            android:textColor="#65FFFFFF"
-            android:textSize="10sp"/>
+            android:textColor="#999999"
+            android:textSize="@dimen/text_size_small"/>
 
-        <HorizontalScrollView
+        <com.dy.reader.view.LRadioGroup
+            android:id="@+id/rg_reader_backdrop_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:scrollbars="none">
+            android:orientation="horizontal">
 
-            <RadioGroup
-                android:id="@+id/rg_reader_backdrop_group"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/rbtn_reader_backdrop_first"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:background="@drawable/reader_option_backdrop_first_sel"
+                android:button="@null"/>
 
-                <RadioButton
-                    android:id="@+id/rbtn_reader_backdrop_first"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="0dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:button="@null"
-                    android:checked="false"
-                    android:drawableLeft="@drawable/reader_option_backdrop_first_sel"/>
+            <RadioButton
+                android:id="@+id/rbtn_reader_backdrop_second"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:background="@drawable/reader_option_backdrop_second_sel"
+                android:button="@null"/>
 
-                <RadioButton
-                    android:id="@+id/rbtn_reader_backdrop_second"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="21dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:button="@null"
-                    android:drawableLeft="@drawable/reader_option_backdrop_second_sel"/>
-
-                <RadioButton
-                    android:id="@+id/rbtn_reader_backdrop_third"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="21dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:button="@null"
-                    android:drawableLeft="@drawable/reader_option_backdrop_third_sel"/>
-
-                <RadioButton
-                    android:id="@+id/rbtn_reader_backdrop_fourth"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="21dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:button="@null"
-                    android:drawableLeft="@drawable/reader_option_backdrop_fourth_sel"/>
+            <RadioButton
+                android:id="@+id/rbtn_reader_backdrop_third"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:background="@drawable/reader_option_backdrop_third_sel"
+                android:button="@null"/>
 
 
-                <RadioButton
-                    android:id="@+id/rbtn_reader_backdrop_fifth"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="21dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:button="@null"
-                    android:drawableLeft="@drawable/reader_option_backdrop_fifth_sel"/>
+            <RadioButton
+                android:id="@+id/rbtn_reader_backdrop_fourth"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:background="@drawable/reader_option_backdrop_fourth_sel"
+                android:button="@null"/>
 
-                <RadioButton
-                    android:id="@+id/rbtn_reader_backdrop_sixth"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="21dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:button="@null"
-                    android:drawableLeft="@drawable/reader_option_backdrop_sixth_sel"/>
-            </RadioGroup>
-        </HorizontalScrollView>
+
+            <RadioButton
+                android:id="@+id/rbtn_reader_backdrop_fifth"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:background="@drawable/reader_option_backdrop_fifth_sel"
+                android:button="@null"/>
+
+            <RadioButton
+                android:id="@+id/rbtn_reader_backdrop_sixth"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:background="@drawable/reader_option_backdrop_sixth_sel"
+                android:button="@null"/>
+
+        </com.dy.reader.view.LRadioGroup>
     </LinearLayout>
 
     <LinearLayout
@@ -228,17 +209,17 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="@string/spacing"
-            android:textColor="#65FFFFFF"
-            android:textSize="10sp"/>
+            android:textColor="#999999"
+            android:textSize="@dimen/text_size_small"/>
 
         <com.dy.reader.view.LRadioGroup
             android:id="@+id/rg_reader_spacing_group"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="36dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:background="@drawable/reader_option_group_border_bg"
+            android:background="@drawable/reader_option_group_bg"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -256,13 +237,6 @@
                     android:button="@drawable/reader_option_spacing_1_5_sel"
                     android:gravity="center"/>
 
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginBottom="6dp"
-                    android:layout_marginTop="6dp"
-                    android:background="#373737"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -278,13 +252,6 @@
                     android:background="@null"
                     android:button="@drawable/reader_option_spacing_1_0_sel"/>
 
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginBottom="6dp"
-                    android:layout_marginTop="6dp"
-                    android:background="#373737"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -300,13 +267,6 @@
                     android:background="@null"
                     android:button="@drawable/reader_option_spacing_0_5_sel"/>
 
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginBottom="6dp"
-                    android:layout_marginTop="6dp"
-                    android:background="#373737"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -336,17 +296,17 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="@string/paging"
-            android:textColor="#65FFFFFF"
-            android:textSize="10sp"/>
+            android:textColor="#999999"
+            android:textSize="@dimen/text_size_small"/>
 
         <RadioGroup
             android:id="@+id/rg_reader_animation_group"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="36dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:background="@drawable/reader_option_group_border_bg"
+            android:background="@drawable/reader_option_group_bg"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -360,15 +320,9 @@
                 android:drawablePadding="4dp"
                 android:gravity="center"
                 android:text="@string/animation_slide"
-                android:textColor="@drawable/reader_option_detail_txt_sel"
-                android:textSize="12sp"/>
+                android:textColor="@drawable/reader_option_txt_sel"
+                android:textSize="@dimen/text_size_small"/>
 
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="6dp"
-                android:layout_marginTop="6dp"
-                android:background="#373737"/>
 
             <RadioButton
                 android:id="@+id/rbtn_reader_animation_simulation"
@@ -380,15 +334,8 @@
                 android:drawablePadding="4dp"
                 android:gravity="center"
                 android:text="@string/animation_simulation"
-                android:textColor="@drawable/reader_option_detail_txt_sel"
-                android:textSize="12sp"/>
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="6dp"
-                android:layout_marginTop="6dp"
-                android:background="#373737"/>
+                android:textColor="@drawable/reader_option_txt_sel"
+                android:textSize="@dimen/text_size_small"/>
 
             <RadioButton
                 android:id="@+id/rbtn_reader_animation_translation"
@@ -400,15 +347,9 @@
                 android:drawablePadding="4dp"
                 android:gravity="center"
                 android:text="@string/animation_translation"
-                android:textColor="@drawable/reader_option_detail_txt_sel"
-                android:textSize="12sp"/>
+                android:textColor="@drawable/reader_option_txt_sel"
+                android:textSize="@dimen/text_size_small"/>
 
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="6dp"
-                android:layout_marginTop="6dp"
-                android:background="#373737"/>
 
             <RadioButton
                 android:id="@+id/rbtn_reader_animation_up_down"
@@ -420,8 +361,8 @@
                 android:drawablePadding="4dp"
                 android:gravity="center"
                 android:text="@string/animation_up_down"
-                android:textColor="@drawable/reader_option_detail_txt_sel"
-                android:textSize="12sp"
+                android:textColor="@drawable/reader_option_txt_sel"
+                android:textSize="@dimen/text_size_small"
                 android:visibility="visible"/>
         </RadioGroup>
     </LinearLayout>
@@ -437,8 +378,8 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="@string/pattern"
-            android:textColor="#65FFFFFF"
-            android:textSize="10sp"/>
+            android:textColor="#999999"
+            android:textSize="@dimen/text_size_small"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -446,59 +387,54 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:background="@drawable/reader_option_group_border_bg"
             android:gravity="center_vertical"
             android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/ckb_reader_landscape"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:button="@null"
-                android:drawablePadding="4dp"
-                android:gravity="center"
-                android:text="@string/landscape_portrait"
-                android:textColor="@drawable/reader_option_detail_txt_sel"
-                android:textSize="12sp"/>
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="6dp"
-                android:layout_marginTop="6dp"
-                android:background="#373737"/>
 
             <CheckBox
                 android:id="@+id/ckb_reader_auto_read"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginRight="17dp"
                 android:layout_weight="1"
+                android:background="@drawable/reader_option_group_bg"
                 android:button="@null"
-                android:drawablePadding="4dp"
+                android:drawableLeft="@drawable/reader_option_auto_read"
                 android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 android:text="@string/auto_read"
-                android:textColor="#65FFFFFF"
-                android:textSize="12sp"/>
+                android:textColor="#989898"
+                android:textSize="@dimen/text_size_small"/>
 
-            <View
-                android:layout_width="1dp"
+            <CheckBox
+                android:id="@+id/ckb_reader_landscape"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="6dp"
-                android:layout_marginTop="6dp"
-                android:background="#373737"/>
+                android:layout_marginRight="17dp"
+                android:layout_weight="1"
+                android:background="@drawable/reader_option_group_bg"
+                android:button="@null"
+                android:drawableLeft="@drawable/reader_option_landscape_sel"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="@string/landscape_portrait"
+                android:textColor="@drawable/reader_option_txt_sel"
+                android:textSize="@dimen/text_size_small"/>
 
             <CheckBox
                 android:id="@+id/ckb_reader_full_screen"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:background="@drawable/reader_option_group_bg"
                 android:button="@null"
-                android:drawablePadding="4dp"
+                android:drawableLeft="@drawable/reader_option_fullscreen_sel"
                 android:gravity="center"
+                android:paddingLeft="10dp"
                 android:text="@string/full_screen"
-                android:textColor="@drawable/reader_option_detail_txt_sel"
-                android:textSize="12sp"/>
+                android:textColor="@drawable/reader_option_txt_sel"
+                android:textSize="@dimen/text_size_small"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

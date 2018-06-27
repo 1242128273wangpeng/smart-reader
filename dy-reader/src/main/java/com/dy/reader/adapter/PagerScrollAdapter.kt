@@ -16,6 +16,7 @@ import com.dy.media.MediaConfig
 import com.dy.reader.R
 import com.dy.reader.ReadMediaManager
 import com.dy.reader.helper.ReadSeparateHelper
+import com.dy.reader.holder.HomePagerHolder
 import com.dy.reader.mode.NovelLineBean
 import com.dy.reader.page.PageContentView
 import com.dy.reader.page.SpacingTextView
@@ -89,7 +90,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
             when (viewType) {
                 HEADER_ITEM_TYPE -> LoadViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_reader_loading, parent, false), HEADER_ITEM_TYPE)
                 FOOTER_ITEM_TYPE -> LoadViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_reader_loading, parent, false), FOOTER_ITEM_TYPE)
-                BOOK_HOME_ITEM_TYPE -> HomePagerHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_reader_cover, parent, false))
+                BOOK_HOME_ITEM_TYPE -> HomePagerHolder(parent, textColor)
                 AD_ITEM_TYPE -> AdViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_reader_ad, parent, false))
                 else -> PagerHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_reader_content, parent, false))
             }
@@ -226,8 +227,8 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
      */
     internal inner class PagerHolder(itemView: View) : PagerScrollAdapter.ReaderPagerHolder(itemView) {
         init {
-            text = itemView.findViewById(R.id.pcv_reader_content) as PageContentView
-            fl_reader_content_ad = itemView.findViewById(R.id.fl_reader_content_ad) as FrameLayout
+            text = itemView.findViewById(R.id.pcv_reader_content)
+            fl_reader_content_ad = itemView.findViewById(R.id.fl_reader_content_ad)
         }
 
         override fun bindHolder(pageLines: NovelPageBean) {
@@ -250,7 +251,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
 
                     val map = HashMap<String, String>()
                     map.put("book_id", ReaderStatus.book.book_id)
-                    map.put("book_source_id",ReaderStatus.book.book_source_id)
+                    map.put("book_source_id", ReaderStatus.book.book_source_id)
                     map.put("chapter_id", ReaderStatus.chapterId)
 
                     if ("api.qingoo.cn".equals(ReaderStatus.book.host, true)
@@ -297,27 +298,27 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
     /**
      * 书籍封面Holder
      */
-    internal inner class HomePagerHolder(itemView: View) : PagerScrollAdapter.ReaderPagerHolder(itemView) {
-
-        init {
-            book_name_tv = itemView.findViewById(R.id.txt_reader_book) as TextView
-            book_auth_tv = itemView.findViewById(R.id.txt_reader_author) as TextView
-            slogan_tv = itemView.findViewById(R.id.txt_reader_slogan) as SpacingTextView
-            product_name_tv = itemView.findViewById(R.id.txt_reader_product) as SpacingTextView
-        }
-
-        override fun bindHolder(pageLines: NovelPageBean) {
-            book_name_tv.text = ReaderStatus.book.name
-            book_auth_tv.text = ReaderStatus.book.author
-            slogan_tv.setTextView(2f, context.resources.getString(R.string.reader_slogan))
-            product_name_tv.setTextView(1f, context.resources.getString(R.string.application_name))
-
-            book_name_tv.setTextColor(textColor)
-            book_auth_tv.setTextColor(textColor)
-            slogan_tv.setTextColor(textColor)
-            product_name_tv.setTextColor(textColor)
-        }
-    }
+//    internal inner class HomePagerHolder(itemView: View) : PagerScrollAdapter.ReaderPagerHolder(itemView) {
+//
+//        init {
+//            book_name_tv = itemView.findViewById(R.id.txt_reader_book) as TextView
+//            book_auth_tv = itemView.findViewById(R.id.txt_reader_author) as TextView
+//            slogan_tv = itemView.findViewById(R.id.txt_reader_slogan) as SpacingTextView
+//            product_name_tv = itemView.findViewById(R.id.txt_reader_product) as SpacingTextView
+//        }
+//
+//        override fun bindHolder(pageLines: NovelPageBean) {
+//            book_name_tv.text = ReaderStatus.book.name
+//            book_auth_tv.text = ReaderStatus.book.author
+//            slogan_tv.setTextView(2f, context.resources.getString(R.string.reader_slogan))
+//            product_name_tv.setTextView(1f, context.resources.getString(R.string.application_name))
+//
+//            book_name_tv.setTextColor(textColor)
+//            book_auth_tv.setTextColor(textColor)
+//            slogan_tv.setTextColor(textColor)
+//            product_name_tv.setTextColor(textColor)
+//        }
+//    }
 
     /**
      * Load View
@@ -325,11 +326,11 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
     @Suppress("VARIABLE_WITH_REDUNDANT_INITIALIZER")
     internal inner class LoadViewHolder(itemView: View, val type: Int) : PagerScrollAdapter.ReaderPagerHolder(itemView) {
         init {
-            txt_reader_loading_sequence = itemView.findViewById(R.id.txt_reader_loading_sequence) as TextView
-            txt_reader_loading_chapter = itemView.findViewById(R.id.txt_reader_loading_chapter) as TextView
-            txt_reader_loading_prompt = itemView.findViewById(R.id.txt_reader_loading_prompt) as TextView
-            btn_reader_loading_refresh = itemView.findViewById(R.id.btn_reader_loading_refresh) as Button
-            pgbar_reader_loading_progress = itemView.findViewById(R.id.pgbar_reader_loading_progress) as ProgressBar
+            txt_reader_loading_sequence = itemView.findViewById(R.id.txt_reader_loading_sequence)
+            txt_reader_loading_chapter = itemView.findViewById(R.id.txt_reader_loading_chapter)
+            txt_reader_loading_prompt = itemView.findViewById(R.id.txt_reader_loading_prompt)
+            btn_reader_loading_refresh = itemView.findViewById(R.id.btn_reader_loading_refresh)
+            pgbar_reader_loading_progress = itemView.findViewById(R.id.pgbar_reader_loading_progress)
         }
 
         override fun bindHolder(pageLines: NovelPageBean) {
@@ -390,7 +391,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
     internal inner class AdViewHolder(itemView: View) : PagerScrollAdapter.ReaderPagerHolder(itemView) {
 
         init {
-            fl_reader_content_ad = itemView.findViewById(R.id.fl_reader_content_ad) as FrameLayout
+            fl_reader_content_ad = itemView.findViewById(R.id.fl_reader_content_ad)
         }
 
         override fun bindHolder(page: NovelPageBean) {
@@ -399,7 +400,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
 
                 val map = HashMap<String, String>()
                 map.put("book_id", ReaderStatus.book.book_id)
-                map.put("book_source_id",ReaderStatus.book.book_source_id)
+                map.put("book_source_id", ReaderStatus.book.book_source_id)
                 map.put("chapter_id", ReaderStatus.chapterId)
 
                 if ("api.qingoo.cn".equals(ReaderStatus.book.host, true)
@@ -444,7 +445,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
 
         lateinit var fl_reader_content_ad: FrameLayout
 
-//        init {
+        //        init {
 //            itemView.layoutParams = RecyclerView.LayoutParams(AppHelper.screenWidth, AppHelper.screenHeight)
 //        }
         abstract fun bindHolder(pageLines: NovelPageBean)

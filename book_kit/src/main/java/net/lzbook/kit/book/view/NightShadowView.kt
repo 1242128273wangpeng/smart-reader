@@ -4,9 +4,11 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.CornerPathEffect
 import android.graphics.Paint
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RectShape
+import android.support.annotation.IdRes
 import android.util.AttributeSet
 import android.view.View
 import de.greenrobot.event.EventBus
@@ -20,7 +22,7 @@ import net.lzbook.kit.utils.safeUnregist
 
 
 /**
- * Created by xian on 2017/9/11.
+ * Created by xian on 2017/9/11
  */
 class NightShadowView : View {
     constructor(context: Context?) : super(context)
@@ -29,6 +31,7 @@ class NightShadowView : View {
     private var topRightRadius: Float = 0F
     private var bottomRightRadius: Float = 0F
     private var bottomLeftRadius: Float = 0F
+    private var resDrawable: Drawable? = null
 
     var isEnable = true
 
@@ -70,6 +73,9 @@ class NightShadowView : View {
                 bottomLeftRadius = a.getDimension(attr, 0F)
                 break
             }
+            if (attr == R.styleable.NightShadowView_drawable) {
+                resDrawable = a.getDrawable(attr)
+            }
         }
         a.recycle()
     }
@@ -77,20 +83,24 @@ class NightShadowView : View {
     private fun setMode(flag: Boolean) {
         if (flag) {
             visibility = VISIBLE
-            if (topLeftRadius == 0F && topRightRadius == 0F
-                    && bottomRightRadius == 0F && bottomLeftRadius == 0F) {
-                setBackgroundColor(Color.BLACK)
+            if (resDrawable != null) {
+                setBackgroundDrawable(resDrawable)
             } else {
-                val shapeDrawable = GradientDrawable()
-                shapeDrawable.cornerRadii = floatArrayOf(
-                        topLeftRadius, topLeftRadius,
-                        topRightRadius, topRightRadius,
-                        bottomRightRadius, bottomRightRadius,
-                        bottomLeftRadius, bottomLeftRadius
-                )
-                shapeDrawable.shape = GradientDrawable.RECTANGLE
-                shapeDrawable.setColor(Color.BLACK)
-                setBackgroundDrawable(shapeDrawable)
+                if (topLeftRadius == 0F && topRightRadius == 0F
+                        && bottomRightRadius == 0F && bottomLeftRadius == 0F) {
+                    setBackgroundColor(Color.BLACK)
+                } else {
+                    val shapeDrawable = GradientDrawable()
+                    shapeDrawable.cornerRadii = floatArrayOf(
+                            topLeftRadius, topLeftRadius,
+                            topRightRadius, topRightRadius,
+                            bottomRightRadius, bottomRightRadius,
+                            bottomLeftRadius, bottomLeftRadius
+                    )
+                    shapeDrawable.shape = GradientDrawable.RECTANGLE
+                    shapeDrawable.setColor(Color.BLACK)
+                    setBackgroundDrawable(shapeDrawable)
+                }
             }
             alpha = Constants.NIGHT_SHADOW_ALPHA
         } else {

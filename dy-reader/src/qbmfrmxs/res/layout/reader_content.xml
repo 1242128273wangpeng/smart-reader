@@ -94,8 +94,8 @@
         android:layout_height="26dp"
         android:layout_alignParentBottom="true"
         android:background="@android:color/transparent"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp">
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
 
         <com.dy.reader.page.BatteryView
             android:id="@+id/novel_content_battery_view"

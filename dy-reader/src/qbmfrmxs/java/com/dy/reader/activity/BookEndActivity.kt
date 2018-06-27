@@ -2,18 +2,19 @@ package com.dy.reader.activity
 
 import android.content.res.Resources
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.text.Html
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
-import com.ding.basic.bean.RecommendBooksEndResp
+import com.ding.basic.bean.RecommendBean
 import com.ding.basic.bean.Source
+import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.RouterConfig
-import com.dy.media.MediaControl
 import com.dy.media.MediaLifecycle
 import com.dy.reader.R
+import com.dy.reader.adapter.BookRecommendAdapter
 import com.dy.reader.adapter.SourceAdapter
+import com.dy.reader.dialog.BookEndChangeSourceDialog
+import com.dy.reader.dialog.ReaderChangeSourceDialog
 import com.dy.reader.listener.SourceClickListener
 import com.dy.reader.presenter.BookEndContract
 import com.dy.reader.presenter.BookEndPresenter
@@ -25,6 +26,7 @@ import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
 import java.util.*
 import java.util.concurrent.Callable
+import kotlin.collections.ArrayList
 
 @Route(path = RouterConfig.BOOK_END_ACTIVITY)
 class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickListener {
@@ -37,28 +39,38 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
 
     private var loadingPage: LoadingPage? = null
 
-    private var sourceAdapter: SourceAdapter? = null
+    private val bookEndPresenter: BookEndPresenter by lazy {
+        BookEndPresenter(this, this)
+    }
 
-    private var bookEndPresenter: BookEndPresenter? = null
+    private val recommends: ArrayList<RecommendBean> = ArrayList()
+
+    private val bookRecommendAdapter: BookRecommendAdapter by lazy {
+        BookRecommendAdapter(recommends)
+    }
+
+    private val sourceList: ArrayList<Source> = ArrayList()
+
+    private val changeSourceDialog: BookEndChangeSourceDialog by lazy {
+        BookEndChangeSourceDialog(this, this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.act_book_end)
 
-        initListener()
+        initView()
 
         initIntent()
 
-        bookEndPresenter = BookEndPresenter(this, this)
-
-        loadBookSource()
+        initData()
 
         if (!Constants.isHideAD) {
             initBookEndAD()
         }
     }
 
-    private fun initListener() {
+    private fun initView() {
         iv_back.setOnClickListener {
             val data = HashMap<String, String>()
             data["type"] = "1"
@@ -66,21 +78,43 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
             finish()
         }
 
-        txt_prompt.text = Html.fromHtml(resources.getString(R.string.book_end_prompt))
+//        txt_prompt.text = Html.fromHtml(resources.getString(R.string.book_end_prompt))
 
         txt_bookshelf.setOnClickListener {
-            if (bookEndPresenter != null) {
-                bookEndPresenter!!.startBookShelf()
-            }
+            bookEndPresenter.startBookShelf()
             finish()
         }
 
         txt_bookstore.setOnClickListener {
-            if (bookEndPresenter != null) {
-                bookEndPresenter!!.startBookStore()
-            }
+            bookEndPresenter.startBookStore()
             finish()
         }
+
+        sfgv_recommend.adapter = bookRecommendAdapter
+        sfgv_recommend.setOnItemClickListener { _, _, position, _ ->
+            val recommendBean = recommends[position]
+            val data = HashMap<String, String>()
+
+            if (book_id != null && book_id?.isNotEmpty() == true) {
+                data["bookid"] = book_id!!
+            }
+
+            if (recommendBean.bookId?.isNotEmpty() == true) {
+                data["Tbookid"] = recommendBean.bookId!!
+            }
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE,
+                    StartLogClickUtil.RECOMMENDEDBOOK, data)
+            val book = Book()
+            book.book_id = recommendBean.bookId ?: return@setOnItemClickListener
+            book.book_source_id = recommendBean.id ?: return@setOnItemClickListener
+            book.book_chapter_id = recommendBean.bookChapterId ?: return@setOnItemClickListener
+            BookRouter.navigateCover(this, book)
+        }
+
+        txt_change_source.setOnClickListener {
+            changeSourceDialog.show(sourceList)
+        }
+
     }
 
     private fun initIntent() {
@@ -103,49 +137,43 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
     }
 
 
-    private fun loadBookSource() {
+    private fun initData() {
         loadingPage = LoadingPage(this, LoadingPage.setting_result)
 
-        if (book != null && bookEndPresenter != null) {
-            bookEndPresenter?.requestBookSource(book!!)
+        book?.let {
+            bookEndPresenter.requestBookSource(it)
+            loadingPage?.setReloadAction(Callable<Void> {
+                bookEndPresenter.requestBookSource(it)
+                null
+            })
+            bookEndPresenter.requestRecommend(it.book_id)
         }
 
-        loadingPage?.setReloadAction(Callable<Void> {
-            if (bookEndPresenter != null && book != null) {
-                bookEndPresenter!!.requestBookSource(book!!)
-            }
-            null
-        })
     }
 
 
     private fun initBookEndAD() {
-        MediaControl.loadBookEndMedia(this) { view, isSuccess ->
-            if (isSuccess) {
-                rl_book_end_ad.visibility = View.VISIBLE
-                rl_book_end_ad.addView(view)
-            } else {
-                rl_book_end_ad.visibility = View.GONE
-            }
-        }
+//        MediaControl.loadBookEndMedia(this) { view, isSuccess ->
+//            if (isSuccess) {
+//                rl_book_end_ad.visibility = View.VISIBLE
+//                rl_book_end_ad.addView(view)
+//            } else {
+//                rl_book_end_ad.visibility = View.GONE
+//            }
+//        }
     }
 
     /***
      * 隐藏LoadingPage
      * **/
     private fun dismissLoading() {
-        if (loadingPage != null) {
-            loadingPage?.onSuccess()
-        }
+        loadingPage?.onSuccess()
     }
 
     override fun onDestroy() {
 
         if (loadingPage != null) {
             loadingPage = null
-        }
-        if (bookEndPresenter != null) {
-            bookEndPresenter = null
         }
         try {
             setContentView(R.layout.common_empty_view)
@@ -161,32 +189,28 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
      * 展示来源信息
      * **/
     override fun showSourceList(sourceList: ArrayList<Source>) {
-        if (sourceList.isNotEmpty()) {
-            rl_source.visibility = View.VISIBLE
-
-            sourceAdapter = SourceAdapter(sourceList, this)
-
-            val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-
-            rl_source.adapter = sourceAdapter
-
-            rl_source.layoutManager = linearLayoutManager
-
-            rl_source.layoutParams.height = sourceList.size * resources.getDimensionPixelOffset(R.dimen.source_item_height)
-        } else {
-            rl_source.visibility = View.GONE
-        }
-
+        this.sourceList.clear()
+        this.sourceList.addAll(sourceList)
         dismissLoading()
     }
 
-    override fun showRecommend(one: Boolean, two: Boolean, recommendRes: RecommendBooksEndResp) {
+    override fun showRecommend(recommends: ArrayList<RecommendBean>?) {
+        if (recommends == null) return
 
+        if (recommends.size == 0) {
+            rl_recommend.visibility = View.GONE
+            sfgv_recommend.visibility = View.GONE
+        } else {
+            rl_recommend.visibility = View.VISIBLE
+            sfgv_recommend.visibility = View.VISIBLE
+
+            recommends.clear()
+            recommends.addAll(recommends)
+            bookRecommendAdapter.notifyDataSetChanged()
+        }
     }
 
     override fun clickedSource(source: Source) {
-        if (bookEndPresenter != null) {
-            bookEndPresenter?.clickedBookSource(source)
-        }
+        bookEndPresenter.clickedBookSource(source)
     }
 }

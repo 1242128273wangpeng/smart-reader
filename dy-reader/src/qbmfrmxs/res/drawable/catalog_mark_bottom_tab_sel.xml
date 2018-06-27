@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/catalog_mark_bottom_tab_checked_bg"
+          android:state_checked="true"/>
+
+</selector>

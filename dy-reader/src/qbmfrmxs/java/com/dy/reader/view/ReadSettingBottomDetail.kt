@@ -4,7 +4,6 @@ import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
 import android.os.Build
-import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -24,15 +23,11 @@ import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import iyouqu.theme.ThemeHelper
-import kotlinx.android.synthetic.qbmfrmxs.dialog_reader_add_shelf.view.*
 import kotlinx.android.synthetic.qbmfrmxs.reader_option_bottom.view.*
 import kotlinx.android.synthetic.qbmfrmxs.reader_option_detail.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.utils.AppLog
-import net.lzbook.kit.utils.ResourceUtil
-import net.lzbook.kit.utils.StatServiceUtils
-import net.lzbook.kit.utils.onEnd
+import net.lzbook.kit.utils.*
 import org.greenrobot.eventbus.EventBus
 import java.text.NumberFormat
 
@@ -49,7 +44,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
     private var popUpInAnimation: Animation? = null
     private var popDownOutAnimation: Animation? = null
-    private var lastIndex: Int? = null
+    private var lastIndex: Int = -1
     var currentThemeMode: String? = null
 
     var readPresenter: ReadPresenter? = null
@@ -140,7 +135,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 ll_reader_setting_detail?.visibility = View.VISIBLE
                 rl_reader_option_bottom?.visibility = View.GONE
 
-                rg_reader_backdrop_group.setOnCheckedChangeListener(null)
+//                rg_reader_backdrop_group.setOnCheckedChangeListener(null)
 
                 resetBtn(Constants.isSlideUp)
 
@@ -149,7 +144,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 } else {
                     setNovelMode(readerSettings.readThemeMode)
                 }
-                rg_reader_backdrop_group.setOnCheckedChangeListener(this)
+//                rg_reader_backdrop_group.setOnCheckedChangeListener(this)
             }
 
             else -> {
@@ -286,7 +281,67 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
         rl_reader_night?.preventClickShake(this)
 
-        rg_reader_backdrop_group?.setOnCheckedChangeListener(this)
+        rg_reader_backdrop_group?.setOnCheckedChangeListener { id ->
+            when (id) {
+                R.id.rbtn_reader_backdrop_first -> {
+                    changePageBackgroundWrapper(51)
+                    if (id != lastIndex) {
+                        val data = java.util.HashMap<String, String>()
+                        data.put("type", "1")
+                        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                    }
+                    lastIndex = id
+                }
+                R.id.rbtn_reader_backdrop_second -> {
+                    changePageBackgroundWrapper(52)
+                    if (id != lastIndex) {
+                        val data = java.util.HashMap<String, String>()
+                        data.put("type", "2")
+                        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                    }
+                    lastIndex = id
+                }
+                R.id.rbtn_reader_backdrop_third -> {
+                    changePageBackgroundWrapper(53)
+                    if (id != lastIndex) {
+                        val data = java.util.HashMap<String, String>()
+                        data.put("type", "3")
+                        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                    }
+                    lastIndex = id
+                }
+                R.id.rbtn_reader_backdrop_fourth -> {
+                    changePageBackgroundWrapper(54)
+                    if (id != lastIndex) {
+                        val data = java.util.HashMap<String, String>()
+                        data.put("type", "4")
+                        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                    }
+                    lastIndex = id
+                }
+                R.id.rbtn_reader_backdrop_fifth -> {
+                    changePageBackgroundWrapper(55)
+                    if (id != lastIndex) {
+
+                        val data = java.util.HashMap<String, String>()
+                        data.put("type", "6")
+                        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                    }
+                    lastIndex = id
+                }
+                R.id.rbtn_reader_backdrop_sixth -> {
+                    changePageBackgroundWrapper(56)
+                    if (id != lastIndex) {
+
+                        val data = java.util.HashMap<String, String>()
+                        data.put("type", "5")
+                        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                    }
+                    lastIndex = id
+                }
+            }
+
+        }
 
         rg_reader_spacing_group?.setOnCheckedChangeListener { id ->
             when (id) {
@@ -662,68 +717,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     }
 
     override fun onCheckedChanged(group: RadioGroup, checkedId: Int) {
-
-        var current: Int = group.indexOfChild(group.findViewById(checkedId))
         when (checkedId) {
-            R.id.rbtn_reader_backdrop_first -> {
-                changePageBackgroundWrapper(51)
-                if (current != lastIndex) {
-                    val data = java.util.HashMap<String, String>()
-                    data.put("type", "1")
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
-                }
-                lastIndex = current
-
-            }
-            R.id.rbtn_reader_backdrop_second -> {
-
-                changePageBackgroundWrapper(52)
-                if (current != lastIndex) {
-                    val data = java.util.HashMap<String, String>()
-                    data.put("type", "2")
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
-                }
-                lastIndex = current
-            }
-            R.id.rbtn_reader_backdrop_third -> {
-                changePageBackgroundWrapper(53)
-                if (current != lastIndex) {
-                    val data = java.util.HashMap<String, String>()
-                    data.put("type", "3")
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
-                }
-                lastIndex = current
-            }
-            R.id.rbtn_reader_backdrop_fourth -> {
-                changePageBackgroundWrapper(54)
-                if (current != lastIndex) {
-                    val data = java.util.HashMap<String, String>()
-                    data.put("type", "4")
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
-                }
-                lastIndex = current
-            }
-            R.id.rbtn_reader_backdrop_fifth -> {
-                changePageBackgroundWrapper(55)
-                if (current != lastIndex) {
-
-                    val data = java.util.HashMap<String, String>()
-                    data.put("type", "6")
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
-                }
-                lastIndex = current
-            }
-            R.id.rbtn_reader_backdrop_sixth -> {
-                changePageBackgroundWrapper(56)
-                if (current != lastIndex) {
-
-                    val data = java.util.HashMap<String, String>()
-                    data.put("type", "5")
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
-                }
-                lastIndex = current
-            }
-
             R.id.rbtn_reader_animation_slide -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_flip_page_01)
                 val data = java.util.HashMap<String, String>()
@@ -907,6 +901,28 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         }
 
         System.gc()
+    }
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+        val totalWidth = rg_reader_backdrop_group.width
+        val width = rbtn_reader_backdrop_first.width
+        loge("totalWidth: $totalWidth  width:$width")
+        val margin = (totalWidth - (width * 6)) / 5
+        rbtn_reader_backdrop_first.setMarginRight(margin)
+        rbtn_reader_backdrop_second.setMarginRight(margin)
+        rbtn_reader_backdrop_third.setMarginRight(margin)
+        rbtn_reader_backdrop_fourth.setMarginRight(margin)
+        rbtn_reader_backdrop_fifth.setMarginRight(margin)
+        rbtn_reader_backdrop_sixth.setMarginRight(margin)
+    }
+
+    private fun View.setMarginRight(rightMargin: Int) {
+        val params = layoutParams
+        if (params is MarginLayoutParams) {
+            params.rightMargin = rightMargin
+            requestLayout()
+        }
     }
 
     companion object {

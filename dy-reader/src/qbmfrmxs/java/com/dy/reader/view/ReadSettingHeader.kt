@@ -38,6 +38,7 @@ class ReadSettingHeader : FrameLayout {
             isBookSubscribed()
         } else {
             if (this.visibility == View.VISIBLE && !isOutAnimationRun) {
+                readerHeaderMorePopup.dismiss()
                 isOutAnimationRun = true
                 menuUpOutAnimation.onEnd {
                     this.visibility = View.GONE
@@ -167,7 +168,7 @@ class ReadSettingHeader : FrameLayout {
         }
     }
 
-    private fun isBookSubscribed() {
+    fun isBookSubscribed() {
         val subscribedBook = requestFactory.checkBookSubscribe(ReaderStatus.book.book_id)
         if (subscribedBook != null) {
             ll_add_bookshelf.visibility = View.GONE

@@ -2,16 +2,14 @@ package com.dy.reader.dialog
 
 import android.app.Activity
 import android.support.v7.widget.LinearLayoutManager
-import android.view.Gravity
 import android.view.View
 import com.ding.basic.bean.Source
 import com.dy.reader.R
 import com.dy.reader.adapter.SourceAdapter
 import com.dy.reader.listener.SourceClickListener
-import com.dy.reader.setting.ReaderSettings
 import kotlinx.android.synthetic.qbmfrmxs.dialog_reader_chang_source.*
 import net.lzbook.kit.book.view.MyDialog
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Desc 请描述这个文件
@@ -22,7 +20,7 @@ import java.util.ArrayList
 
 class ReaderChangeSourceDialog(activity: Activity) {
 
-    private val dialog = MyDialog(activity, R.layout.dialog_reader_chang_source, Gravity.BOTTOM)
+    private val dialog = MyDialog(activity, R.layout.dialog_reader_chang_source)
 
     private var continueListener: (() -> Unit)? = null
     private var cancelListener: (() -> Unit)? = null
@@ -34,10 +32,10 @@ class ReaderChangeSourceDialog(activity: Activity) {
         dialog.setCanceledOnTouchOutside(true)
         dialog.setCancelable(true)
 
-        dialog.mhv_change_source.post {
-            dialog.nsv_change_source.layoutParams.height = dialog.mhv_change_source.height
-            dialog.mhv_change_source.requestLayout()
-        }
+//        dialog.mhv_change_source.post {
+//            dialog.nsv_change_source.layoutParams.height = dialog.mhv_change_source.height
+//            dialog.mhv_change_source.requestLayout()
+//        }
 
         dialog.txt_change_source_continue.setOnClickListener {
             continueListener?.invoke()

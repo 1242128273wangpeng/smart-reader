@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.qbmfrmxs.read_option_reading_info.*
 import kotlinx.android.synthetic.qbmfrmxs.frag_read_setting.*
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.CallBackDownload
+import net.lzbook.kit.utils.loge
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -145,11 +146,13 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
 
     override fun onResume() {
         super.onResume()
+        loge("onResume() dialog")
         dialog.rsbd_option_bottom_detail.readPresenter = (activity as ReaderActivity).mReadPresenter
         dialog.rsh_option_header.presenter = mPresenter
         dialog.rsbd_option_bottom_detail.presenter = mPresenter
         dialog.rsbd_option_bottom_detail.currentThemeMode = themeMode
         dialog.rsbd_option_bottom_detail.setNovelMode(ReaderSettings.instance.readThemeMode)
+        dialog?.rsh_option_header?.isBookSubscribed()
         dialog.rl_read_setting_content.setOnClickListener {
             dismiss()
         }
