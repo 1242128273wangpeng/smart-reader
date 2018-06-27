@@ -8,9 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.RelativeLayout
-import com.ding.basic.bean.Book
-import com.ding.basic.bean.SearchHotBean
-import com.ding.basic.bean.SearchRecommendBook
+import com.ding.basic.bean.*
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.dingyue.bookshelf.ShelfGridLayoutManager
@@ -41,7 +39,7 @@ class SearchBookFragment : Fragment(), RecommendBooksAdapter.RecommendItemClickL
 
 
     private var shareUtil: SharedPreUtil? = null
-    private var hotWords: MutableList<SearchHotBean.DataBean>? = ArrayList()
+    private var hotWords: MutableList<HotWordBean>? = ArrayList()
     private var gson: Gson? = null
     private var books: MutableList<Book>? = ArrayList()
     private var recommendBooks: MutableList<SearchRecommendBook.DataBean> = ArrayList()
@@ -67,13 +65,19 @@ class SearchBookFragment : Fragment(), RecommendBooksAdapter.RecommendItemClickL
             val hotWord = hotWords?.get(position)
             if (hotWord != null) {
                 val data = HashMap<String, String>()
-                data.put("topicword", hotWord.word!!)
+                data.put("topicword", hotWord.keyword!!)
                 data.put("rank", position.toString())
-                data.put("type", hotWord.wordType.toString())
+                data.put("type", hotWord.keywordType.toString())
                 StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE,
                         StartLogClickUtil.TOPIC, data)
                 var budle = Bundle()
-                budle.putString("word", hotWord.word)
+                budle.putString("word", hotWord.keyword)
+                budle.putString("from_class", "search")
+                budle.putString("search_type", "0")
+                budle.putString("filter_type", "0")
+                budle.putString("filter_word", "ALL")
+                budle.putString("sort_type", "0")
+
                 RouterUtil.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY, budle)
             }
 
@@ -102,8 +106,8 @@ class SearchBookFragment : Fragment(), RecommendBooksAdapter.RecommendItemClickL
 
     fun resetHotWordList() {
 
-        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestHotWords(object : RequestSubscriber<SearchHotBean>() {
-            override fun requestResult(result: SearchHotBean?) {
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestSearchOperationV4(object : RequestSubscriber<Result<SearchResult>>() {
+            override fun requestResult(result: Result<SearchResult>?) {
                 parseResult(result, true)
                 loadingpage?.onSuccess()
             }
@@ -124,17 +128,12 @@ class SearchBookFragment : Fragment(), RecommendBooksAdapter.RecommendItemClickL
     /**
      * parse result data
      */
-    fun parseResult(value: SearchHotBean?, hasNet: Boolean) {
+    fun parseResult(value: Result<SearchResult>?, hasNet: Boolean) {
         hotWords!!.clear()
         if (value != null && value.data != null) {
-            hotWords = value.data as MutableList<SearchHotBean.DataBean>?
+            hotWords = value.data.hotWords
             if (hotWords != null && hotWords!!.size >= 0) {
-                if (hasNet) {
-                    shareUtil!!.putString(Constants.SERARCH_HOT_WORD, gson!!.toJson(value, SearchHotBean::class.java))
-                }
                 sfgv_hot_word?.adapter = SearchHotWordAdapter(requireActivity(), hotWords)
-            } else {
-                shareUtil!!.putString(Constants.SERARCH_HOT_WORD, "")
             }
         }
     }
@@ -171,11 +170,13 @@ class SearchBookFragment : Fragment(), RecommendBooksAdapter.RecommendItemClickL
 
         rcv_recommend.getRecycledViewPool().setMaxRecycledViews(0, 12)
         val layoutManager = ShelfGridLayoutManager(requireContext(), 1)
-        rcv_recommend.setLayoutManager(layoutManager)
-        rcv_recommend.getItemAnimator().setAddDuration(0)
-        rcv_recommend.getItemAnimator().setChangeDuration(0)
-        rcv_recommend.getItemAnimator().setMoveDuration(0)
-        rcv_recommend.getItemAnimator().setRemoveDuration(0)
+
+        rcv_recommend!!.layoutManager = layoutManager
+        rcv_recommend!!.isNestedScrollingEnabled = false
+        rcv_recommend!!.itemAnimator.addDuration = 0
+        rcv_recommend!!.itemAnimator.changeDuration = 0
+        rcv_recommend!!.itemAnimator.moveDuration = 0
+        rcv_recommend!!.itemAnimator.removeDuration = 0
         (rcv_recommend.getItemAnimator() as SimpleItemAnimator).supportsChangeAnimations = false
 
         rcv_recommend.adapter = RecommendBooksAdapter(requireContext(), this, books)

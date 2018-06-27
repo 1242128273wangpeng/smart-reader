@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ding.basic.bean.HotWordBean;
 import com.ding.basic.bean.SearchHotBean;
 import com.intelligent.reader.R;
 
@@ -21,14 +22,13 @@ import java.util.Random;
  */
 
 public class SearchHotWordAdapter extends BaseAdapter {
-    private List<SearchHotBean.DataBean> hotData;
     private Activity mContext;
     private int layoutResourceId;
     private Random random;
     private int oldType = -1;
-    private List<SearchHotBean.DataBean> datas;
+    private List<HotWordBean> datas;
 
-    public SearchHotWordAdapter(Activity context, List<SearchHotBean.DataBean> datas) {
+    public SearchHotWordAdapter(Activity context, List<HotWordBean> datas) {
         this.mContext = context;
         this.datas = datas;
         random = new Random();
@@ -70,8 +70,8 @@ public class SearchHotWordAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        SearchHotBean.DataBean dataBean = datas.get(position);
-        holder.txt_hotword.setText(dataBean.getWord());
+        HotWordBean dataBean = datas.get(position);
+        holder.txt_hotword.setText(dataBean.getKeyword());
         setHotShowType(holder.img_hot_rank, position);
         return convertView;
 
@@ -84,7 +84,7 @@ public class SearchHotWordAdapter extends BaseAdapter {
     }
 
 
-    public void setDatas(List<SearchHotBean.DataBean> datas) {
+    public void setDatas(List<HotWordBean> datas) {
         this.datas = datas;
     }
 
