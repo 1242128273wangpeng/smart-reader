@@ -23,13 +23,13 @@ class ShadowView(context: Context) : View(context) {
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         logd("alpha: $alpha")
-        paint.color = Color.parseColor("#${alpha}777777")
+        paint.color = Color.parseColor("#${alpha}000000")
         paint.style = Paint.Style.FILL
         canvas.drawRect(0f, top.toFloat(), width.toFloat(), bottom.toFloat(), paint)
     }
 
     fun move(left: Int, right: Int, showing: Float) {
-        val hex = 255 - Math.round(showing * 255)
+        val hex = 102 - Math.round(showing * 102) // 最大值为 40% 的透明度
         alpha = if (hex < 16) {
             "0" + Integer.toHexString(hex)
         } else {

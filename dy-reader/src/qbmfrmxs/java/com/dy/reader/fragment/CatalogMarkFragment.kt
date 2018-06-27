@@ -74,12 +74,12 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
                 val firstVisibleItemPosition = findFirstVisibleItemPosition()
                 if (firstVisibleItemPosition != 0) {
                     if (firstVisibleItemPosition == -1)
-                        rfs_catalog_scroller.visibility = View.GONE
+                        img_catalog_order.visibility = View.GONE
                     return
                 }
                 val lastVisibleItemPosition = findLastVisibleItemPosition()
                 val itemsShown = lastVisibleItemPosition - firstVisibleItemPosition + 1
-                rfs_catalog_scroller.visibility = if (catalogAdapter.itemCount > itemsShown) View.VISIBLE else View.GONE
+                img_catalog_order.visibility = if (catalogAdapter.itemCount > itemsShown) View.VISIBLE else View.GONE
             }
         }
         rfs_catalog_scroller.setRecyclerView(recl_catalog_content)
@@ -136,11 +136,11 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
         rg_catalog_mark.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.rbtn_catalog -> {
-                    ckb_catalog_order.visibility = View.VISIBLE
+                    rl_book_content.visibility = View.VISIBLE
                     presenter.loadCatalog(reverse)
                 }
                 R.id.rbtn_bookmark -> {
-                    ckb_catalog_order.visibility = View.GONE
+                    rl_book_content.visibility = View.GONE
                     presenter.loadBookMark(requireActivity(), 1)//用于标识只有为1的时候才打点书签
                 }
                 else -> {
@@ -149,14 +149,14 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
             }
         }
 
-        ckb_catalog_order.setOnClickListener {
+        img_catalog_order.setOnClickListener {
             reverse = !reverse
             if (reverse) {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_catalog_click_dx_btn)
             } else {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_catalog_click_zx_btn)
             }
-            ckb_catalog_order.setText(if (!reverse) R.string.reverse_order else R.string.positive_order)
+            img_catalog_order.isSelected = reverse
             presenter.loadCatalog(reverse)
         }
     }
@@ -251,19 +251,17 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
                 itemView.setOnClickListener { v ->
                     onItemClick?.onClick(v)
                 }
-                
+
                 val chapterExist = DataCache.isChapterCached(data)
 
                 val color = if (data.name?.equals(ReaderStatus.chapterName) == true) {
-                    Color.parseColor("#FF1CA66E")
+                    Color.parseColor("#42BE54")
                 } else {
-                    Color.parseColor("#FFF4F5F7")
-                }
-
-                if (chapterExist) {
-                    itemView.txt_chapter_cache_state.visibility = View.VISIBLE
-                } else {
-                    itemView.txt_chapter_cache_state.visibility = View.GONE
+                    if (chapterExist) {
+                        Color.parseColor("#616161")
+                    } else {
+                        Color.parseColor("#B9B9B9")
+                    }
                 }
 
                 (itemView.txt_chapter_name as TextView).text = data.name

@@ -1,6 +1,7 @@
 package com.dingyue.bookshelf.view
 
 import android.content.Context
+import android.graphics.Color
 import android.view.View
 import android.view.WindowManager
 import com.dingyue.bookshelf.R
@@ -28,10 +29,6 @@ class RemoveMenuPopup(context: Context, layout: Int = R.layout.popup_remove_menu
         contentView.rl_remove_content.isFocusableInTouchMode = true
         contentView.rl_remove_content.requestFocus()
 
-        contentView.btn_remove_cancel.setOnClickListener {
-            onCancelClickListener?.invoke()
-        }
-
         contentView.btn_remove_delete.setOnClickListener {
             onDeleteClickListener?.invoke()
         }
@@ -41,18 +38,17 @@ class RemoveMenuPopup(context: Context, layout: Int = R.layout.popup_remove_menu
         this.onDeleteClickListener = onConfirmClickListener
     }
 
-    fun setOnCancelClickListener(onConfirmClickListener: () -> Unit) {
-        this.onCancelClickListener = onConfirmClickListener
-    }
 
     fun setSelectedNum(num: Int) {
         if (num == 0) {
             contentView.btn_remove_delete.text = context.getString(R.string.delete)
             contentView.btn_remove_delete.isEnabled = false
+            contentView.btn_remove_delete.setTextColor(Color.parseColor("#989898"))
         } else {
             val text = context.getString(R.string.delete) + "(" + num + ")"
             contentView.btn_remove_delete.text = text
             contentView.btn_remove_delete.isEnabled = true
+            contentView.btn_remove_delete.setTextColor(Color.parseColor("#42BE54"))
         }
     }
 

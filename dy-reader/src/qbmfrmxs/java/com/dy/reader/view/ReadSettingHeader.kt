@@ -9,6 +9,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import com.ding.basic.database.helper.BookDataProviderHelper
+import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.R
 import com.dy.reader.event.EventSetting
@@ -34,8 +35,10 @@ class ReadSettingHeader : FrameLayout {
             this.visibility = View.VISIBLE
             isOutAnimationRun = false
             this.startAnimation(menuDownInAnimation)
+            isBookSubscribed()
         } else {
             if (this.visibility == View.VISIBLE && !isOutAnimationRun) {
+                readerHeaderMorePopup.dismiss()
                 isOutAnimationRun = true
                 menuUpOutAnimation.onEnd {
                     this.visibility = View.GONE
@@ -55,6 +58,11 @@ class ReadSettingHeader : FrameLayout {
     private var menuDownInAnimation: Animation
 
     private var menuUpOutAnimation: Animation
+
+    private val requestFactory: RequestRepositoryFactory by lazy {
+        RequestRepositoryFactory
+                .loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+    }
 
     private val readerHeaderMorePopup: ReaderHeaderMorePopup by lazy {
         val popup = ReaderHeaderMorePopup(context)
@@ -129,6 +137,16 @@ class ReadSettingHeader : FrameLayout {
             readerHeaderMorePopup.show(ibtn_reader_more)
         }
 
+        ll_add_bookshelf.setOnClickListener {
+            val result = requestFactory.insertBook(ReaderStatus.book)
+            if (result >= 0) {
+                ll_add_bookshelf.visibility = View.GONE
+                night_shadow_add_bookshelf.visibility = View.GONE
+                night_shadow_add_bookshelf.isEnable = false
+                context.showToastMessage(R.string.add_bookshelf_success)
+            }
+        }
+
         // 初始化动画
         menuDownInAnimation = AnimationUtils.loadAnimation(context.applicationContext, R.anim.menu_push_down_in)
         menuUpOutAnimation = AnimationUtils.loadAnimation(context.applicationContext, R.anim.menu_push_up_out)
@@ -147,6 +165,17 @@ class ReadSettingHeader : FrameLayout {
                 else -> {
                 }
             }
+        }
+    }
+
+    fun isBookSubscribed() {
+        val subscribedBook = requestFactory.checkBookSubscribe(ReaderStatus.book.book_id)
+        if (subscribedBook != null) {
+            ll_add_bookshelf.visibility = View.GONE
+            night_shadow_add_bookshelf.visibility = View.GONE
+            night_shadow_add_bookshelf.isEnable = false
+        } else {
+            ll_add_bookshelf.visibility = View.VISIBLE
         }
     }
 }

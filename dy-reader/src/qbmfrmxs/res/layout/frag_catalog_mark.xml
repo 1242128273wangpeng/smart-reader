@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E6191C1F"
+    android:background="#FFFFFF"
     tools:ignore="RtlHardcoded, UnusedAttribute">
 
     <RelativeLayout
@@ -21,8 +21,8 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:paddingLeft="16dp"
-            android:paddingRight="20dp"
-            android:paddingTop="20dp">
+            android:paddingRight="16dp"
+            android:paddingTop="24dp">
 
             <TextView
                 android:id="@+id/txt_book_name"
@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:singleLine="true"
-                android:textColor="#FFF4F5F7"
+                android:textColor="#282828 "
                 android:textSize="20sp"
                 android:textStyle="bold"
                 tools:text="@string/default_title"/>
@@ -41,34 +41,32 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@id/txt_book_name"
-                android:layout_marginBottom="15dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
                 android:maxLines="1"
-                android:text="@string/module_name"
-                android:textColor="#858C96"
-                android:textSize="12sp"/>
+                android:textColor="#989898"
+                android:textSize="@dimen/text_size_normal"
+                tools:text="共217章"/>
 
-            <CheckBox
-                android:id="@+id/ckb_catalog_order"
+            <ImageView
+                android:id="@+id/img_catalog_order"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignTop="@id/txt_chapter_count"
-                android:background="@drawable/catalog_mark_order_bg_sel"
-                android:button="@null"
-                android:paddingBottom="2dp"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
-                android:paddingTop="2dp"
-                android:text="@string/reverse_order"
-                android:textColor="@drawable/catalog_mark_order_txt_sel"
-                android:textSize="12sp"/>
+                android:src="@drawable/catalog_mark_order_sel"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_below="@+id/txt_chapter_count"
+                android:background="#F1F1F1"/>
         </RelativeLayout>
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/rg_catalog_mark"
+            android:layout_above="@+id/ll_catalog_mark"
             android:layout_below="@+id/rl_book_content">
 
             <android.support.v7.widget.RecyclerView
@@ -91,6 +89,7 @@
                 android:id="@+id/recl_mark_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="3.5dp"
                 android:cacheColorHint="#00000000"
                 android:layerType="software"
                 android:listSelector="@android:color/transparent"
@@ -131,54 +130,60 @@
             </LinearLayout>
         </FrameLayout>
 
-        <RadioGroup
-            android:id="@+id/rg_catalog_mark"
+        <LinearLayout
+            android:id="@+id/ll_catalog_mark"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_alignParentBottom="true"
             android:gravity="center"
-            android:orientation="horizontal"
             android:translationZ="2dp">
-
-            <RadioButton
-                android:id="@+id/rbtn_catalog"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#191C1F"
-                android:button="@null"
-                android:checked="true"
+            <RadioGroup
+                android:id="@+id/rg_catalog_mark"
+                android:layout_width="136dp"
+                android:layout_height="32dp"
+                android:background="@drawable/catalog_mark_bottom_tab_bg"
                 android:gravity="center"
-                android:text="@string/catalog"
-                android:textColor="@drawable/catalog_mark_option_txt_sel"
-                android:textSize="16sp"/>
+                android:orientation="horizontal">
 
-            <View
-                android:layout_width="0.5dp"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="13dp"
-                android:layout_marginTop="13dp"
-                android:background="#FF5D646E"/>
+                <RadioButton
+                    android:id="@+id/rbtn_catalog"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/catalog_mark_bottom_tab_sel"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:text="@string/catalog"
+                    android:textColor="@drawable/catalog_mark_option_txt_sel"
+                    android:textSize="16sp"/>
 
-            <RadioButton
-                android:id="@+id/rbtn_bookmark"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#191C1F"
-                android:button="@null"
-                android:checked="false"
-                android:gravity="center"
-                android:text="@string/bookmark"
-                android:textColor="@drawable/catalog_mark_option_txt_sel"
-                android:textSize="16sp"/>
-        </RadioGroup>
+                <RadioButton
+                    android:id="@+id/rbtn_bookmark"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/catalog_mark_bottom_tab_sel"
+                    android:button="@null"
+                    android:checked="false"
+                    android:gravity="center"
+                    android:text="@string/bookmark"
+                    android:textColor="@drawable/catalog_mark_option_txt_sel"
+                    android:textSize="16sp"/>
+            </RadioGroup>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_above="@+id/ll_catalog_mark"
+            android:background="@drawable/common_footer_shadow_bg"/>
 
         <ImageView
             android:id="@+id/img_fix_book"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@id/rg_catalog_mark"
+            android:layout_above="@id/ll_catalog_mark"
             android:layout_alignParentRight="true"
             android:layout_marginBottom="27dp"
             android:layout_marginRight="15dp"

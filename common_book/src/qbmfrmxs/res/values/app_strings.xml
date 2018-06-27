@@ -37,6 +37,9 @@
     <string name="download_manager_editor_title">编辑缓存</string>
 
     <string name="application_cache_size">0B</string>
+    <string name="search_hot">热门搜索</string>
+    <string name="search_hot_book">热门书籍</string>
+    <string name="read_network_error">哇哦！服务器消失了</string>
 
     <string name="disclaimer_statement_description">
         "

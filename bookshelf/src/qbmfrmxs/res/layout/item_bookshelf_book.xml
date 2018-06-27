@@ -5,7 +5,7 @@
     android:id="@+id/rl_book_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/color_white">
+    android:background="@drawable/bookshelf_item_sel">
 
     <ImageView
         android:id="@+id/img_book_select_state"

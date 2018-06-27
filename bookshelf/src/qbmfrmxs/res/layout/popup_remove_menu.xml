@@ -20,23 +20,6 @@
         android:background="#FFFFFF"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btn_remove_cancel"
-            style="@style/style_text_normal_plain"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/bookshelf_remove_sel"
-            android:gravity="center"
-            android:minWidth="24dp"
-            android:singleLine="true"
-            android:text="@string/cancel"/>
-
-        <View
-            android:layout_width="0.5dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
-            android:background="#FFE8E9EC"/>
 
         <Button
             android:id="@+id/btn_remove_delete"

@@ -14,7 +14,7 @@ import net.lzbook.kit.book.view.MyDialog
  * Date 2018/3/1 0002 15:09
  */
 class TransformReadDialog(val activity: Activity) {
-    private val dialog = MyDialog(activity, R.layout.dialog_transform_read, Gravity.BOTTOM)
+    private val dialog = MyDialog(activity, R.layout.dialog_read_source, Gravity.CENTER)
 
     private var cancelListener: (() -> Unit)? = null
     private var continueListener: (() -> Unit)? = null
@@ -29,7 +29,7 @@ class TransformReadDialog(val activity: Activity) {
 
         window.attributes = layoutParams
 
-        window.setWindowAnimations(R.style.BottomPopupDialog)
+//        window.setWindowAnimations(R.style.BottomPopupDialog)
 
         dialog.rootLayout.viewTreeObserver.addOnGlobalLayoutListener {
             dialog.nightShadowView.layoutParams.height = dialog.rootLayout.height

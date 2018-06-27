@@ -35,7 +35,7 @@ class BookRecommendAdapter : BaseAdapter() {
         val viewHolder: ViewHolder
 
         if (contentView == null) {
-            contentView = LayoutInflater.from(parent?.context).inflate(R.layout.item_book_detail_recommend, parent, false)
+            contentView = LayoutInflater.from(parent?.context).inflate(R.layout.item_book_end_recommend, parent, false)
             viewHolder = ViewHolder()
             viewHolder.img_recommend_cover = contentView?.findViewById(R.id.img_recommend_cover)
             viewHolder.txt_recommend_name = contentView?.findViewById(R.id.txt_recommend_name)

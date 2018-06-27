@@ -1,4 +1,4 @@
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_view"
@@ -9,9 +9,10 @@
     tools:ignore="RtlHardcoded">
 
     <RelativeLayout
+        android:id="@+id/rl_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FF19DD8B"
+        android:background="#FFFFFF"
         android:fitsSystemWindows="true">
 
         <RelativeLayout
@@ -27,7 +28,7 @@
                 android:gravity="center"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:src="@drawable/common_back_icon"/>
+                android:src="@drawable/book_end_back_icon"/>
 
             <TextView
                 android:id="@+id/txt_title"
@@ -36,114 +37,112 @@
                 android:layout_centerInParent="true"
                 android:gravity="center"
                 android:singleLine="true"
-                android:textColor="#FFFFFFFF"
-                android:textSize="18sp"
+                android:textColor="#333333"
+                android:textSize="@dimen/text_size_huge"
                 tools:text="@string/default_title"/>
+
+            <TextView
+                android:id="@+id/txt_change_source"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:text="@string/change_source"
+                android:textColor="#999999"
+                android:textSize="@dimen/text_size_great"/>
+
         </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_recommend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_header"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:visibility="gone">
+
+        <TextView
+            style="@style/style_text_large_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:drawableLeft="@drawable/book_recommend_icon"
+            android:drawablePadding="8dp"
+            android:text="喜欢这本书的人还喜欢"/>
+
+        <TextView
+            android:id="@+id/txt_book_detail_recommend_change"
+            style="@style/style_text_small_light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:drawableLeft="@drawable/book_recommend_change_icon"
+            android:drawablePadding="8dp"
+            android:text="换一换"/>
+
+    </RelativeLayout>
+
+    <com.dy.reader.view.ScrollForGridView
+        android:id="@+id/sfgv_recommend"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/rl_footer"
+        android:layout_below="@+id/rl_recommend"
+        android:listSelector="@android:color/transparent"
+        android:numColumns="3"
+        android:verticalSpacing="24dp"
+        android:visibility="gone"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_below="@+id/rl_header"
+        android:background="@drawable/common_header_shadow_bg"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_footer"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/txt_bookshelf"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/view_divider"
+            android:gravity="center"
+            android:text="@string/book_end_bookshelf"
+            android:textColor="#555555"
+            android:textSize="@dimen/text_size_great"/>
+
+        <View
+            android:id="@+id/view_divider"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="12dp"
+            android:layout_marginTop="12dp"
+            android:background="#F1F1F1"/>
+
+        <TextView
+            android:id="@+id/txt_bookstore"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/view_divider"
+            android:gravity="center"
+            android:text="@string/book_end_bookstore"
+            android:textColor="#42BE54"
+            android:textSize="@dimen/text_size_great"/>
     </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="#E8E8E8"/>
+        android:layout_height="10dp"
+        android:layout_above="@+id/rl_footer"
+        android:background="@drawable/common_footer_shadow_bg"/>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <RelativeLayout
-                android:id="@+id/rl_book_end_ad"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="5dp"
-                android:visibility="gone">
-            </RelativeLayout>
-
-            <TextView
-                android:id="@+id/txt_prompt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="10dp"
-                android:gravity="left"
-                android:textColor="#FF323232"
-                android:textSize="16sp"
-                tools:text="@string/default_message"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="#FFE8E8E8"/>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rl_source"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#FFFFFFFF"/>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="5dp"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center">
-
-                        <TextView
-                            android:id="@+id/txt_bookshelf"
-                            android:layout_width="130dp"
-                            android:layout_height="40dp"
-                            android:background="@drawable/book_end_bookshelf_bg_sel"
-                            android:gravity="center"
-                            android:text="@string/book_end_bookshelf"
-                            android:textColor="@drawable/book_end_bookshelf_txt_sel"
-                            android:textSize="14sp"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center">
-
-                        <TextView
-                            android:id="@+id/txt_bookstore"
-                            android:layout_width="130sp"
-                            android:layout_height="40dp"
-                            android:background="@drawable/book_end_bookstore_bg_sel"
-                            android:gravity="center"
-                            android:text="@string/book_end_bookstore"
-                            android:textColor="@drawable/book_end_bookstore_txt_sel"
-                            android:textSize="14sp"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="12dp"
-                android:background="#FFF5F5F5"/>
-        </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+</RelativeLayout>

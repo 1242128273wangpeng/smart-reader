@@ -3,9 +3,10 @@
     <string name="book_end_prompt"><Data><![CDATA[当前章节已全部看完，去看看其它是否有<font color="#ed5b47"><b>更新</b></font>吧!]]></Data></string>
 
     <string name="book_end_bookshelf">我的书架</string>
-    <string name="book_end_bookstore">去书城看看</string>
+    <string name="book_end_bookstore">去书城逛逛</string>
 
-    <string name="bookmark_empty_prompt">还没有添加书签哦~</string>
+    <string name="bookmark_empty_prompt">还没有添加书签</string>
 
     <string name="cached">已缓存</string>
+    <string name="add_bookshelf_success">已加入书架</string>
 </resources>

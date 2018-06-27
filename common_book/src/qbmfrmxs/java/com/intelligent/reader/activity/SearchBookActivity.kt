@@ -21,7 +21,6 @@ import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.intelligent.reader.R
-import com.intelligent.reader.presenter.search.SearchPresenter
 import com.intelligent.reader.presenter.search.SearchView
 import com.intelligent.reader.util.SearchViewHelper
 import iyouqu.theme.FrameActivity
@@ -32,6 +31,7 @@ import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.*
 import com.github.lzyzsd.jsbridge.DefaultHandler
 import com.orhanobut.logger.Logger
+import com.intelligent.reader.util.SearchPresenter
 import net.lzbook.kit.utils.*
 import java.util.*
 
@@ -77,6 +77,8 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         initView()
         if (mSearchPresenter != null && !TextUtils.isEmpty(mSearchPresenter!!.word)) {
             loadDataFromNet()
+        }else{
+            search_result_input.requestFocus()
         }
     }
 
@@ -136,8 +138,8 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             search_result_back!!.setOnClickListener(this)
         }
 
-        if (search_result_button != null) {
-            search_result_button!!.setOnClickListener(this)
+        if (txt_search != null) {
+            txt_search!!.setOnClickListener(this)
         }
 
         if (search_result_outcome != null) {
@@ -508,7 +510,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
             R.id.search_result_default, R.id.search_result_input -> showSearchViews()
 
-            R.id.search_result_button -> {
+            R.id.txt_search -> {
                 var keyword: String? = null
                 if (search_result_input != null) {
                     keyword = search_result_input!!.text.toString()

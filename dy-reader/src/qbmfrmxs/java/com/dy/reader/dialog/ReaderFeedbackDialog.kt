@@ -17,7 +17,7 @@ import net.lzbook.kit.book.view.MyDialog
 
 class ReaderFeedbackDialog(readerActivity: ReaderActivity) {
 
-    private val dialog = MyDialog(readerActivity, R.layout.dialog_reader_feedback, Gravity.BOTTOM)
+    private val dialog = MyDialog(readerActivity, R.layout.dialog_reader_feedback)
 
     private var submitListener: ((type: Int) -> Unit)? = null
     private var cancelListener: (() -> Unit)? = null
@@ -28,11 +28,6 @@ class ReaderFeedbackDialog(readerActivity: ReaderActivity) {
     init {
         dialog.setCanceledOnTouchOutside(true)
         dialog.setCancelable(true)
-
-        dialog.fl_feedback_content.post {
-            dialog.nsv_feedback.layoutParams.height = dialog.fl_feedback_content.height
-            dialog.fl_feedback_content.requestLayout()
-        }
 
         dialog.cb_feedback_chapter_empty.setOnClickListener {
             checkedPosition = 1

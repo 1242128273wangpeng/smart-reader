@@ -6,7 +6,6 @@ import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.res.Resources
 import android.text.TextUtils
 import android.view.InflateException
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -15,18 +14,20 @@ import android.widget.AdapterView.OnItemClickListener
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.bean.SearchHotBean
 import com.intelligent.reader.R
+import com.intelligent.reader.adapter.SearchHistoryAdapter
 import com.intelligent.reader.adapter.SearchHotWordAdapter
 import com.intelligent.reader.adapter.SearchSuggestAdapter
-import com.intelligent.reader.presenter.search.SearchHelpYouHuaPresenter
-import com.intelligent.reader.presenter.search.SearchPresenter
 import com.intelligent.reader.presenter.search.SearchView
 import com.intelligent.reader.view.ScrollForGridView
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.data.search.SearchCommonBean
+import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.Tools
 
-class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText: EditText, private val mSearchPresenter: SearchPresenter?) : SearchPresenter.SearchSuggestCallBack, SearchView.HelpView {
+class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText: EditText, private val mSearchPresenter: SearchPresenter?) : SearchPresenter.SearchSuggestCallBack, SearchView.HelpView,SearchHistoryAdapter.onPositionClickListener {
+
 
 
     private var mContext: Context? = null
@@ -52,7 +53,8 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
     private var searchHotWordAdapter: SearchHotWordAdapter? = null
     private var mSearchHelpPresenter: SearchHelpYouHuaPresenter? = null
     private var loadingPage: LoadingPage? = null
-
+    private var mHistoryAdapter: SearchHistoryAdapter? = null
+    private var mHistoryHeadersTitle: RelativeLayout? = null
     init {
         init(activity, activity, rootLayout, searchEditText)
     }
@@ -76,14 +78,14 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         mShouldShowHint = showHint
     }
 
-    override fun showLoading(){
+    override fun showLoading() {
         if (loadingPage == null && this.activity != null) {
             loadingPage = LoadingPage(this.activity, mRootLayout, LoadingPage.setting_result)
         }
     }
 
     override fun dimissLoading() {
-        if(loadingPage != null){
+        if (loadingPage != null) {
             loadingPage!!.onSuccess()
         }
 
@@ -145,21 +147,12 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
 
     private fun initHistoryMain(context: Context) {
         mHistoryListView = ListView(context)
-        if (mHistoryListView != null && mResources != null) {
-            mHistoryListView!!.cacheColorHint = mResources!!.getColor(R.color.transparent)
-            val typeColor = R.color.color_gray_e8e8e8
-//            mHistoryListView!!.divider = mResources!!.getDrawable(typeColor)typeColor
-//            mHistoryListView!!.dividerHeight = AppUtils.dip2px(mContext, 0.5f)
-            mHistoryListView!!.divider = null
-            mHistoryListView!!.dividerHeight = 0
-            mHistoryListView!!.setHeaderDividersEnabled(false)
-            mHistoryListView!!.setSelector(R.drawable.item_selector_white)
-        }
 
         mHistoryDataListView = ListView(context)
         mHistoryDataListView!!.cacheColorHint = mResources!!.getColor(R.color.transparent)
-        mHistoryDataListView!!.divider = null
-        mHistoryDataListView!!.dividerHeight = 0
+        val typeColor = R.color.search_history_divider
+        mHistoryListView!!.divider = mResources!!.getDrawable(typeColor)
+        mHistoryListView!!.dividerHeight = AppUtils.dip2px(mContext, 0.5f)
         mHistoryDataListView!!.setHeaderDividersEnabled(false)
         mHistoryDataListView!!.setSelector(R.drawable.item_selector_white)
         if (mRootLayout != null) {
@@ -168,13 +161,15 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         }
 
         mHistoryDeleteView = View.inflate(context, R.layout.search_history_delete_layout, null)
-        mHistoryDeleteView.setOnClickListener {
+
+        mHistoryHeadersTitle = mHistoryDeleteView.findViewById<RelativeLayout>(R.id.rl_contain) as RelativeLayout
+        mHistoryDeleteView.findViewById<TextView>(R.id.txt_delete_his).setOnClickListener {
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.b_search_click_his_clear)
             StartLogClickUtil.upLoadEventLog(context,
                     StartLogClickUtil.SEARCH, StartLogClickUtil.BARCLEAR)
             mSearchHelpPresenter?.showDialog(activity)
         }
-        mHistoryDataListView!!.addFooterView(mHistoryDeleteView)
+        mHistoryDataListView!!.addHeaderView(mHistoryDeleteView)
 
     }
 
@@ -182,25 +177,16 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
 
         initHistoryMain(mContext!!)
 
-        setHistoryHeaderHotWord()
-        initHistoryHeadersTitleView()
 
         mSearchHelpPresenter?.initHistoryData(mContext)
-        mHistoryAdapter = ArrayAdapter(activity!!, R.layout.item_history_search_view,
-                mSearchHelpPresenter?.getHistoryData()!!)
-
+        mHistoryAdapter = SearchHistoryAdapter(activity!!, mSearchHelpPresenter?.getHistoryData()!!)
+        mHistoryAdapter?.setPositionClickListener(this)
         if (mSearchHelpPresenter?.getHistoryData() != null && mSearchHelpPresenter?.getHistoryData()!!.size == 0) {
             mHistoryDeleteView.visibility = View.GONE
         } else {
             mHistoryDeleteView.visibility = View.VISIBLE
         }
 
-//        if (mHistoryListView != null) {
-//            mHistoryListView!!.adapter = mHistoryAdapter
-//            mHistoryListView!!.onItemClickListener = OnItemClickListener { arg0, arg1, arg2, position ->
-//                mSearchHelpPresenter?.onHistoryItemClick(mContext, arg0, arg1, arg2, position)
-//            }
-//        }
 
         if (mHistoryListView != null) {
             mHistoryListView!!.adapter = null
@@ -219,33 +205,6 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         }
     }
 
-    private fun setHistoryHeaderHotWord() {
-        val hotword_view = initHotWordView()
-        if (mHistoryListView != null)
-            mHistoryListView!!.addHeaderView(hotword_view)
-        resetHotWordList()
-    }
-
-    private fun initHotWordView(): View? {
-        var listHeader: View? = null
-        try {
-
-            listHeader = LayoutInflater.from(activity).inflate(R.layout
-                    .layout_hotword_search_view, null)
-        } catch (e: InflateException) {
-            e.printStackTrace()
-        }
-
-        if (listHeader != null) {
-            mGridView = listHeader.findViewById(R.id.grid) as ScrollForGridView
-            linear_parent = listHeader.findViewById(R.id.linear_parent) as LinearLayout
-            mGridView!!.onItemClickListener = OnItemClickListener { parent, view, position, id ->
-                mSearchHelpPresenter?.onHotItemClick(mContext, parent, view, position, id)
-            }
-
-        }
-        return listHeader
-    }
 
     private fun initSuggestListView() {
         mSearchPresenter?.setSearchSuggestCallBack(this)
@@ -318,32 +277,6 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
             mHistoryAdapter!!.notifyDataSetChanged()
     }
 
-    private fun initHistoryHeadersTitleView() {
-        if (activity == null)
-            return
-        try {
-            mHistoryHeadersTitle = activity!!.layoutInflater.inflate(R.layout
-                    .header_view_history_search_view, null) as RelativeLayout
-        } catch (e: InflateException) {
-            e.printStackTrace()
-        }
-
-        if (mHistoryHeadersTitle != null)
-            tv_clear_history_search_view = mHistoryHeadersTitle!!.findViewById(R.id
-                    .tv_clear_history_search_view) as TextView
-
-//        if (mHistoryListView != null) {
-//            mHistoryListView!!.addHeaderView(mHistoryHeadersTitle)
-//        }
-
-        if (tv_clear_history_search_view == null)
-            return
-        tv_clear_history_search_view!!.setOnClickListener {
-            StatServiceUtils.statAppBtnClick(context, StatServiceUtils.b_search_click_his_clear)
-
-            mSearchHelpPresenter?.showDialog(activity)
-        }
-    }
 
     fun setSearchWord(word: String?) {
         mShouldShowHint = false
@@ -359,14 +292,8 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         mSearchHelpPresenter?.addHistoryWord(keyword)
     }
 
-    private fun resetHotWordList() {
-        if (activity == null)
-            return
 
-        mSearchHelpPresenter?.resetHotWordList(mContext!!)
-    }
-
-    override fun onSearchResult(suggestList: List<SearchCommonBean>, transmitBean: SearchAutoCompleteBeanYouHua) {
+    override fun onSearchResult(suggestList: List<Any>, transmitBean: SearchAutoCompleteBeanYouHua) {
         mSearchHelpPresenter?.onSearchResult(suggestList, transmitBean)
     }
 
@@ -377,6 +304,16 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
 
     interface OnHistoryClickListener {
         fun OnHistoryClick(history: String?, searchType: String?)
+    }
+
+    override fun onItemClickListener(index: Int) {
+        if (mSearchHelpPresenter != null && index < mSearchHelpPresenter?.getHistoryData()!!.size){
+            mSearchHelpPresenter?.getHistoryData()!!.removeAt(index)
+        }
+        if (mHistoryAdapter != null)
+            mHistoryAdapter!!.notifyDataSetChanged()
+        setHistoryHeadersTitleView()
+        Tools.saveHistoryWord(mContext, mSearchHelpPresenter?.getHistoryData())
     }
 
     fun clear() {
@@ -421,7 +358,6 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         }
 
         if (mHistoryAdapter != null) {
-            mHistoryAdapter!!.clear()
             mHistoryAdapter = null
         }
 
@@ -450,8 +386,8 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
 
 
     override fun notifyHisData() {
-        if (SearchViewHelper.mHistoryAdapter != null) {
-            SearchViewHelper.mHistoryAdapter!!.notifyDataSetChanged()
+        if (mHistoryAdapter != null) {
+            mHistoryAdapter!!.notifyDataSetChanged()
         }
         showHistoryList()
     }
@@ -463,7 +399,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         if (mSearchHelpPresenter!!.getHistoryData() != null && mSearchHelpPresenter!!.getHistoryData()!!.size != 0) {
             mHistoryHeadersTitle!!.visibility = View.VISIBLE
         } else {
-            mHistoryHeadersTitle!!.visibility = View.INVISIBLE
+            mHistoryHeadersTitle!!.visibility = View.GONE
         }
     }
 
@@ -525,11 +461,10 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
     }
 
     companion object {
-        private val TAG = SearchViewHelper::class.java.simpleName
 
-        private var mHistoryHeadersTitle: RelativeLayout? = null
 
-        private var mHistoryAdapter: ArrayAdapter<String>? = null
+
+
 
     }
 }

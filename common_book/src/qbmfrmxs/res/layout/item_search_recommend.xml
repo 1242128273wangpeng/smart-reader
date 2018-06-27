@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bookshelf__item_press_bg">
+
+    <RelativeLayout
+        android:id="@+id/relative_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="16dp">
+
+        <FrameLayout
+            android:id="@+id/fl_cover"
+            android:layout_width="70dp"
+            android:layout_height="98dp">
+
+            <ImageView
+                android:id="@+id/img_book_cover"
+                android:layout_width="70dp"
+                android:layout_height="98dp"
+                android:scaleType="fitXY"
+                tools:src="@drawable/book_cover_default_icon"/>
+            <ImageView
+                android:id="@+id/img_book_status"
+                android:layout_width="32dp"
+                android:layout_height="18dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/search_book_lianzai"
+                />
+
+            <ImageView
+                android:layout_width="68dp"
+                android:layout_gravity="center"
+                android:layout_height="98dp"
+                android:scaleType="fitXY"
+                android:background="@drawable/search_recommend_shadow"
+                />
+            <TextView
+                android:id="@+id/txt_book_score"
+                android:layout_width="wrap_content"
+                android:layout_height="18dp"
+                android:layout_gravity="bottom|right"
+                android:layout_marginRight="5dp"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:text="9.5分"
+                android:textColor="#ffffff"
+                />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="98dp"
+            android:layout_alignTop="@+id/fl_cover"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="-3dp"
+            android:layout_toRightOf="@+id/fl_cover"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txt_book_name"
+                style="@style/style_text_great_dark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/img_book_cover"
+                android:ellipsize="end"
+                android:singleLine="true"
+                tools:text="青果作家招募青果作家招募青果作家招募青果作家招募青果作家招募青果作家招募青果作家招募"/>
+
+            <TextView
+                android:id="@+id/txt_book_content"
+                style="@style/style_text_small_light"
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_toRightOf="@+id/img_book_cover"
+                android:ellipsize="end"
+                android:maxLines="2"
+                tools:text="青果作家招募青果作家招募青果作家青果作家招募青果作家招募青果作家招募青果作家招募青果作家招募青果作家招募招募青果作家招募青果作家招募青果作家招募"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:gravity="bottom"
+                android:layout_marginTop="17dp">
+
+                <TextView
+                    android:id="@+id/txt_book_author"
+                    style="@style/style_text_small_light"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:paddingBottom="1dp"
+
+                    android:paddingRight="4dp"
+                    android:paddingTop="1dp"
+                    android:singleLine="true"
+                    tools:text="唐家三少"/>
+
+                <TextView
+                    android:id="@+id/txt_book_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/search_recommend_color_bg"
+                    android:gravity="center"
+                    android:paddingBottom="1dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingTop="1dp"
+                    android:textColor="#B2C4D3"
+                    android:textSize="10sp"
+                    tools:text="玄幻奇幻"/>
+
+                <TextView
+                    android:id="@+id/txt_read_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="8dp"
+                    android:layout_toLeftOf="@+id/txt_book_type"
+                    android:background="@drawable/search_recommend_color_bg"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:paddingBottom="1dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingTop="1dp"
+                    android:singleLine="true"
+                    android:textColor="#9AC6A0"
+                    android:textSize="10sp"
+                    tools:text="277.2万人气"/>
+
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>
+

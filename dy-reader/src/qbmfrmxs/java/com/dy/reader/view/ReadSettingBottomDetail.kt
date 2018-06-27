@@ -4,7 +4,6 @@ import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
 import android.os.Build
-import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -24,12 +23,8 @@ import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import iyouqu.theme.ThemeHelper
-import kotlinx.android.synthetic.qbmfrmxs.reader_option_detail.view.*
-import kotlinx.android.synthetic.qbmfrmxs.reader_option_mode.view.*
-import kotlinx.android.synthetic.qbmfrmxs.reader_option_background.view.*
 import kotlinx.android.synthetic.qbmfrmxs.reader_option_bottom.view.*
-import kotlinx.android.synthetic.qbmfrmxs.reader_option_chapter_change.view.*
-import kotlinx.android.synthetic.qbmfrmxs.reader_option_font.view.*
+import kotlinx.android.synthetic.qbmfrmxs.reader_option_detail.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.*
@@ -42,19 +37,21 @@ import java.text.NumberFormat
 class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener {
 
     val readerSettings = ReaderSettings.instance
-    
+
     var presenter: ReadSettingPresenter? = null
 
     internal var isCustomReadingSpace: Boolean = false
 
     private var popUpInAnimation: Animation? = null
     private var popDownOutAnimation: Animation? = null
-    private var lastIndex: Int? = null
+    private var lastIndex: Int = -1
     var currentThemeMode: String? = null
 
-    var readPresenter:ReadPresenter? = null
+    var readPresenter: ReadPresenter? = null
 
     private var time: Long = 0
+
+    private var lastProgress = ReaderStatus.position.group
 
     constructor(context: Context) : super(context) {
         initView()
@@ -84,10 +81,11 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
         skbar_reader_brightness_change?.max = 235
 
-        if(!readerSettings.isAutoBrightness) {
+        if (!readerSettings.isAutoBrightness) {
             setScreenBrightProgress()
         }
         setBrightnessBackground(readerSettings.isAutoBrightness)
+
 
         isCustomSpaceSet()
         initPageMode()
@@ -97,19 +95,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         ckb_reader_full_screen.isChecked = readerSettings.isFullScreenRead
 
         resetBtn(Constants.isSlideUp)
-        fl_reader_change_chapter.viewTreeObserver.addOnGlobalLayoutListener {
-            fl_reader_change_chapter_shadowView.layoutParams.height = fl_reader_change_chapter.height
-            fl_reader_change_chapter.requestLayout()
-        }
-        
-        skbar_reader_font_size.configBuilder
-                .min(10f)
-                .max(30f)
-                .sectionCount(10)
-                .sectionTextSize(16)
-                .setUnit("字号: ")
-                .build()
-        setFontSize()
+
     }
 
     private fun resetBtn(isSlideUp: Boolean) {
@@ -149,16 +135,16 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 ll_reader_setting_detail?.visibility = View.VISIBLE
                 rl_reader_option_bottom?.visibility = View.GONE
 
-                read_setting_backdrop_group.setOnCheckedChangeListener(null)
+//                rg_reader_backdrop_group.setOnCheckedChangeListener(null)
 
                 resetBtn(Constants.isSlideUp)
 
                 if (readerSettings.readThemeMode == 61) {
-                    read_setting_backdrop_group.clearCheck()
+                    rg_reader_backdrop_group.clearCheck()
                 } else {
                     setNovelMode(readerSettings.readThemeMode)
                 }
-                read_setting_backdrop_group.setOnCheckedChangeListener(this)
+//                rg_reader_backdrop_group.setOnCheckedChangeListener(this)
             }
 
             else -> {
@@ -187,6 +173,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
      */
     private fun closeSystemLight() {
         setBrightnessBackground(false)
+
         readerSettings.isAutoBrightness = false
 
         setScreenBright()
@@ -196,21 +183,15 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     private fun openSystemLight() {
         setBrightnessBackground(true)
 
-//        val edit = sharedPreferences?.edit()
-//        edit.putBoolean("auto_brightness", true)
-//        edit.apply()
-
         readerSettings.isAutoBrightness = true
         readPresenter?.startAutoBrightness()
 
-        val screenBrightness =  readerSettings.screenBrightness
+        val screenBrightness = readerSettings.screenBrightness
         if (screenBrightness > 0) {
             skbar_reader_brightness_change?.progress = screenBrightness
         }
         skbar_reader_brightness_change?.progress = 0
     }
-
-
 
 
     private fun initPageMode() {
@@ -220,7 +201,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             rg_reader_animation_group?.check(R.id.rbtn_reader_animation_translation)
         } else if (readerSettings.animation_mode == 3) {
             rg_reader_animation_group?.check(R.id.rbtn_reader_animation_up_down)
-        }else{
+        } else {
             rg_reader_animation_group?.check(R.id.rbtn_reader_animation_slide)
         }
     }
@@ -245,7 +226,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
             refreshJumpPreBtnState(ReaderStatus.position.group)
             skbar_reader_chapter_change.max = ReaderStatus.chapterList.size - 1
-            if (ll_reader_change_chapter != null) {
+            if (rl_reader_change_chapter != null) {
                 if (ReaderStatus.chapterList.size < 1 || ReaderStatus.position.group < 1) {
                     skbar_reader_chapter_change?.progress = 0
                 } else {
@@ -254,9 +235,15 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 showChapterProgress()
             }
 
+            if (ThemeHelper.getInstance(context).isNight) {
+                txt_reader_night.text = "白天"
+                img_reader_night.isSelected = true
+            } else {
+                txt_reader_night.text = "夜间"
+                img_reader_night.isSelected = false
+            }
             setFontSize()
         } else {
-            resetOptionLayout()
             if (rl_reader_option_bottom != null && rl_reader_option_bottom!!.isShown) {
                 rl_reader_option_bottom?.startAnimation(popDownOutAnimation)
             }
@@ -269,38 +256,92 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
     private fun showChapterProgress() {
         if (ReaderStatus.position.group == -1) {
-            if (txt_current_chapter_name != null) {
-                txt_current_chapter_name?.text = "封面"
-            }
         } else {
-            if (txt_current_chapter_name != null) {
-                txt_current_chapter_name?.text = if (TextUtils.isEmpty(ReaderStatus.chapterName)) "" else ReaderStatus.chapterName
-            }
+            txt_cur_chapter_name.text = ReaderStatus.chapterName
+            var value = (ReaderStatus.position.group * 100 / ReaderStatus.chapterCount * 100) / 100
+            if (value <= 0) value = 1
+            val percent = value.toString() + "%"
+            txt_chapter_percent.text = percent
+            lastProgress = ReaderStatus.position.group
         }
 
-    }
-    private fun resetOptionLayout() {
-
-        fl_reader_change_chapter_shadowView.layoutParams.height = 0
     }
 
     private fun initListener() {
 
         img_reader_chapter_previous?.preventClickShake(this)
-        rl_reader_mode?.preventClickShake(this)
-        rl_reader_background?.preventClickShake(this)
+
         img_reader_chapter_next?.preventClickShake(this)
-        rl_reader_font?.preventClickShake(this)
-        ibtn_reader_font?.preventClickShake(this)
+
         skbar_reader_chapter_change?.setOnSeekBarChangeListener(this)
 
         rl_reader_catalog?.preventClickShake(this)
 
-        ibtn_reader_font?.preventClickShake(this)
+        rl_reader_setting?.preventClickShake(this)
 
-        img_reader_night?.preventClickShake(this)
+        rl_reader_night?.preventClickShake(this)
 
-        read_setting_backdrop_group?.setOnCheckedChangeListener(this)
+        rg_reader_backdrop_group?.setOnCheckedChangeListener { id ->
+            when (id) {
+                R.id.rbtn_reader_backdrop_first -> {
+                    changePageBackgroundWrapper(51)
+                    if (id != lastIndex) {
+                        val data = java.util.HashMap<String, String>()
+                        data.put("type", "1")
+                        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                    }
+                    lastIndex = id
+                }
+                R.id.rbtn_reader_backdrop_second -> {
+                    changePageBackgroundWrapper(52)
+                    if (id != lastIndex) {
+                        val data = java.util.HashMap<String, String>()
+                        data.put("type", "2")
+                        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                    }
+                    lastIndex = id
+                }
+                R.id.rbtn_reader_backdrop_third -> {
+                    changePageBackgroundWrapper(53)
+                    if (id != lastIndex) {
+                        val data = java.util.HashMap<String, String>()
+                        data.put("type", "3")
+                        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                    }
+                    lastIndex = id
+                }
+                R.id.rbtn_reader_backdrop_fourth -> {
+                    changePageBackgroundWrapper(54)
+                    if (id != lastIndex) {
+                        val data = java.util.HashMap<String, String>()
+                        data.put("type", "4")
+                        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                    }
+                    lastIndex = id
+                }
+                R.id.rbtn_reader_backdrop_fifth -> {
+                    changePageBackgroundWrapper(55)
+                    if (id != lastIndex) {
+
+                        val data = java.util.HashMap<String, String>()
+                        data.put("type", "6")
+                        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                    }
+                    lastIndex = id
+                }
+                R.id.rbtn_reader_backdrop_sixth -> {
+                    changePageBackgroundWrapper(56)
+                    if (id != lastIndex) {
+
+                        val data = java.util.HashMap<String, String>()
+                        data.put("type", "5")
+                        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                    }
+                    lastIndex = id
+                }
+            }
+
+        }
 
         rg_reader_spacing_group?.setOnCheckedChangeListener { id ->
             when (id) {
@@ -356,46 +397,19 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
         skbar_reader_brightness_change?.setOnSeekBarChangeListener(this)
 
-        read_setting_auto_power?.preventClickShake(this)
+        ckb_reader_brightness_system?.preventClickShake(this)
 
         ckb_reader_landscape?.preventClickShake(this)
 
         ckb_reader_auto_read?.preventClickShake(this)
         ckb_reader_full_screen?.preventClickShake(this)
 
-        skbar_reader_font_size.setOnProgressChangedListener(object : SignSeekBar.OnProgressChangedListener {
-            override fun onProgressChanged(signSeekBar: SignSeekBar?, progress: Int, progressFloat: Float, fromUser: Boolean) {
-//                ReadConfig.FONT_SIZE = progressFloat.toInt()
-//                readSettingHelper?.saveFontSize()
-                setFontValue(progressFloat.toInt())
-            }
-
-            override fun getProgressOnActionUp(signSeekBar: SignSeekBar?, progress: Int, progressFloat: Float) {
-//                ReadConfig.FONT_SIZE = progressFloat.toInt()
-//                readSettingHelper?.saveFontSize()
-                setFontValue(progressFloat.toInt())
-            }
-
-            override fun getProgressOnFinally(signSeekBar: SignSeekBar?, progress: Int, progressFloat: Float, fromUser: Boolean) {
-//                ReadConfig.FONT_SIZE = progressFloat.toInt()
-//                readSettingHelper?.saveFontSize()
-
-                setFontValue(progressFloat.toInt())
-            }
-        })
+        img_jump_back.preventClickShake(this)
 
     }
-
-    private fun setFontValue(value: Int) {
-        if (value % 2 == 0) {
-            readerSettings.fontSize = value
-//            readSettingHelper?.saveFontSize()
-        }
-    }
-
 
     override fun onClick(v: View) {
-        if(!ReaderStatus.isMenuShow) {
+        if (!ReaderStatus.isMenuShow) {
             return
         }
         when (v.id) {
@@ -421,26 +435,19 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 EventBus.getDefault().post(EventSetting(EventSetting.Type.OPEN_CATALOG))
                 presenter?.readCatalogLog()
             }
-
-            R.id.rl_reader_mode -> {
-                checkOptionLayout(R.id.rl_reader_mode)
+            R.id.rl_reader_setting -> {
+                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_setting_btn)
+                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.SET)
+                changeBottomSettingView(SETTING_DETAIL)
             }
-
-            R.id.rl_reader_background -> {
-                checkOptionLayout(R.id.rl_reader_background)
-            }
-
-            R.id.rl_reader_font , R.id.ibtn_reader_font-> {
-                checkOptionLayout(R.id.rl_reader_font)
-            }
-
-            R.id.img_reader_night//夜间模式
+            R.id.rl_reader_night//夜间模式
             -> {
                 if (ThemeHelper.getInstance(context).isNight) {
-                    img_reader_night.setImageResource(R.drawable.reader_option_day_icon)
+                    txt_reader_night.text = "夜间"
+                    img_reader_night.isSelected = false
                 } else {
-                    img_reader_night.setImageResource(R.drawable.reader_option_night_icon)
-
+                    txt_reader_night.text = "白天"
+                    img_reader_night.isSelected = true
                 }
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_night_mode)
                 presenter?.chageNightMode()
@@ -461,8 +468,12 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_font_size_bigger)
                 increaseFont()
             }
-            
-            R.id.ll_reader_brightness_system, R.id.read_setting_auto_power// 跟随系统 更改按钮背景
+        /*case R.id.ll_reader_brightness_system:// 省电模式
+            case R.id.read_setting_save_power:
+
+                changeSavePowerMode();
+                break;*/
+            R.id.ll_reader_brightness_system, R.id.ckb_reader_brightness_system// 跟随系统 更改按钮背景
             -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_ld_with_system)
                 StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.SYSFOLLOW)
@@ -482,7 +493,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.AUTOREAD, data)
 
                 readerSettings.isAutoReading = true
-                EventBus.getDefault().post(EventSetting(EventSetting.Type.MENU_STATE_CHANGE,false))
+                EventBus.getDefault().post(EventSetting(EventSetting.Type.MENU_STATE_CHANGE, false))
             }
             R.id.ckb_reader_full_screen -> {
 
@@ -498,47 +509,25 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 }
                 StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.FULLSCREENPAGEREAD, data)
             }
+            R.id.img_jump_back -> {
+
+                anim?.cancel()
+                rl_jump_back.alpha = 0F
+
+                jumpChapter(lastProgress)
+                if (lastProgress < 1 || lastProgress < 1) {
+                    skbar_reader_chapter_change?.progress = 0
+                } else {
+                    skbar_reader_chapter_change?.progress = lastProgress
+                }
+                txt_cur_chapter_name.text = ReaderStatus.chapterList[lastProgress].name
+                var value = (lastProgress * 100 / ReaderStatus.chapterCount * 100) / 100
+                if (value <= 0) value = 1
+                val percent = value.toString() + "%"
+                txt_chapter_percent.text = percent
+            }
             else -> {
             }
-        }
-    }
-
-    private fun checkOptionLayout(id: Int) {
-        when (id) {
-            R.id.rl_reader_mode -> {
-                ll_reader_change_chapter.visibility = View.GONE
-                ll_reader_mode.visibility = View.VISIBLE
-                novel_read_font_layout.visibility = View.GONE
-                novel_read_background_layout.visibility = View.GONE
-
-                ibtn_reader_mode.setImageResource(R.drawable.reader_option_mode_checked_icon)
-                ibtn_reader_background.setImageResource(R.drawable.reader_option_background_check_icon)
-                ibtn_reader_font.setImageResource(R.drawable.reader_option_font_check_icon)
-            }
-
-            R.id.rl_reader_background -> {
-                ll_reader_change_chapter.visibility = View.GONE
-                ll_reader_mode.visibility = View.GONE
-                novel_read_font_layout.visibility = View.GONE
-                novel_read_background_layout.visibility = View.VISIBLE
-
-                ibtn_reader_mode.setImageResource(R.drawable.reader_option_mode_check_icon)
-                ibtn_reader_background.setImageResource(R.drawable.reader_option_background_checked_icon)
-                ibtn_reader_font.setImageResource(R.drawable.reader_option_font_check_icon)
-            }
-
-            R.id.rl_reader_font -> {
-                ll_reader_change_chapter.visibility = View.GONE
-                ll_reader_mode.visibility = View.GONE
-                novel_read_background_layout.visibility = View.GONE
-                novel_read_font_layout.visibility = View.VISIBLE
-
-                ibtn_reader_mode.setImageResource(R.drawable.reader_option_mode_check_icon)
-                ibtn_reader_background.setImageResource(R.drawable.reader_option_background_check_icon)
-                ibtn_reader_font.setImageResource(R.drawable.reader_option_font_checked_icon)
-            }
-
-
         }
     }
 
@@ -571,8 +560,6 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             openSystemLight()
         }
     }
-
-
 
 
     /**
@@ -617,7 +604,9 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     }
 
     fun setFontSize() {
-        skbar_reader_font_size.setProgress(readerSettings.fontSize.toFloat())
+        if (txt_reader_font_size != null) {
+            txt_reader_font_size?.text = readerSettings.fontSize.toString()
+        }
     }
 
     fun changeChapter(sequence: Int) {
@@ -625,6 +614,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             val index = Math.max(ReaderStatus.position.group, 0)
             skbar_reader_chapter_change?.progress = index
         }
+        showChapterProgress()
         refreshJumpPreBtnState(sequence)
     }
 
@@ -671,12 +661,12 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
     fun setNovelMode(index: Int) {
         when (index) {
-            51 -> read_setting_backdrop_group?.check(R.id.rbtn_reader_backdrop_first)
-            52 -> read_setting_backdrop_group?.check(R.id.rbtn_reader_backdrop_second)
-            53 -> read_setting_backdrop_group?.check(R.id.rbtn_reader_backdrop_third)
-            54 -> read_setting_backdrop_group?.check(R.id.rbtn_reader_backdrop_fourth)
-            55 -> read_setting_backdrop_group?.check(R.id.rbtn_reader_backdrop_fifth)
-            56 -> read_setting_backdrop_group?.check(R.id.rbtn_reader_backdrop_sixth)
+            51 -> rg_reader_backdrop_group?.check(R.id.rbtn_reader_backdrop_first)
+            52 -> rg_reader_backdrop_group?.check(R.id.rbtn_reader_backdrop_second)
+            53 -> rg_reader_backdrop_group?.check(R.id.rbtn_reader_backdrop_third)
+            54 -> rg_reader_backdrop_group?.check(R.id.rbtn_reader_backdrop_fourth)
+            55 -> rg_reader_backdrop_group?.check(R.id.rbtn_reader_backdrop_fifth)
+            56 -> rg_reader_backdrop_group?.check(R.id.rbtn_reader_backdrop_sixth)
             61 -> {
                 restoreBright()
                 readerSettings.readThemeMode = index
@@ -723,72 +713,11 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     }
 
     private fun setBrightBtn() {
-        read_setting_auto_power?.isChecked = readerSettings.isAutoBrightness
+        ckb_reader_brightness_system?.isChecked = readerSettings.isAutoBrightness
     }
 
     override fun onCheckedChanged(group: RadioGroup, checkedId: Int) {
-
-        var current: Int = group.indexOfChild(group.findViewById(checkedId))
         when (checkedId) {
-            R.id.rbtn_reader_backdrop_first -> {
-                changePageBackgroundWrapper(51)
-                if (current != lastIndex) {
-                    val data = java.util.HashMap<String, String>()
-                    data.put("type", "1")
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
-                }
-                lastIndex = current
-
-            }
-            R.id.rbtn_reader_backdrop_second -> {
-
-                changePageBackgroundWrapper(52)
-                if (current != lastIndex) {
-                    val data = java.util.HashMap<String, String>()
-                    data.put("type", "2")
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
-                }
-                lastIndex = current
-            }
-            R.id.rbtn_reader_backdrop_third -> {
-                changePageBackgroundWrapper(53)
-                if (current != lastIndex) {
-                    val data = java.util.HashMap<String, String>()
-                    data.put("type", "3")
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
-                }
-                lastIndex = current
-            }
-            R.id.rbtn_reader_backdrop_fourth -> {
-                changePageBackgroundWrapper(54)
-                if (current != lastIndex) {
-                    val data = java.util.HashMap<String, String>()
-                    data.put("type", "4")
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
-                }
-                lastIndex = current
-            }
-            R.id.rbtn_reader_backdrop_fifth -> {
-                changePageBackgroundWrapper(55)
-                if (current != lastIndex) {
-
-                    val data = java.util.HashMap<String, String>()
-                    data.put("type", "6")
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
-                }
-                lastIndex = current
-            }
-            R.id.rbtn_reader_backdrop_sixth -> {
-                changePageBackgroundWrapper(56)
-                if (current != lastIndex) {
-
-                    val data = java.util.HashMap<String, String>()
-                    data.put("type", "5")
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
-                }
-                lastIndex = current
-            }
-
             R.id.rbtn_reader_animation_slide -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_flip_page_01)
                 val data = java.util.HashMap<String, String>()
@@ -879,13 +808,13 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
         if (fromUser && seekBar.id == R.id.skbar_reader_chapter_change) {
-//            novel_hint_layout.visibility = View.VISIBLE
-//            novel_hint_layout.alpha = 1F
+            rl_jump_back.visibility = View.VISIBLE
+            rl_jump_back.alpha = 1F
             anim?.cancel()
-//            anim = novel_hint_layout.animate()
+            anim = rl_jump_back.animate()
             anim?.alpha(0F)
-            anim?.duration = 1000
-            anim?.startDelay = 1000
+            anim?.duration = 2000
+            anim?.startDelay = 2000
             anim?.start()
 //            val resizeProgress = progress.times(ReaderStatus.chapterList.size).div(100)
             if (!ReaderStatus.chapterList.isEmpty()
@@ -896,14 +825,16 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 //                ReaderStatus.novel_progress = resizeProgress
                 changeBottomSettingView(SETTING_OPTION)
                 if (progress == 0) {
-                    txt_current_chapter_name.text = ReaderStatus.chapterList[progress].name
-//                    novel_hint_sequence.text = progress.plus(1).toString() + "/" + ReaderStatus.chapterList.size
+                    txt_cur_chapter_name.text = ReaderStatus.chapterList[progress].name
+                    txt_chapter_percent.text = "1%"
                 } else if (progress == ReaderStatus.chapterList.size - 1) {
-                    txt_current_chapter_name.text = ReaderStatus.chapterList[ReaderStatus.chapterList.size - 1].name
-//                    novel_hint_sequence.text = ReaderStatus.chapterList.size.toString() + "/" + ReaderStatus.chapterList.size
+                    txt_cur_chapter_name.text = ReaderStatus.chapterList[ReaderStatus.chapterList.size - 1].name
+                    val percent = "100%"
+                    txt_chapter_percent.text = percent
                 } else {
-                    txt_current_chapter_name.text = ReaderStatus.chapterList[progress - 1].name
-//                    novel_hint_sequence.text = progress.toString() + "/" + ReaderStatus.chapterList.size
+                    txt_cur_chapter_name.text = ReaderStatus.chapterList[progress - 1].name
+                    val percent = ((progress * 100 / ReaderStatus.chapterList.size * 100) / 100).toString() + "%"
+                    txt_chapter_percent.text = percent
                 }
             }
 //            ReaderStatus.position.group = progress
@@ -923,25 +854,16 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         }
     }
 
-    override fun onStartTrackingTouch(seekBar: SeekBar) {}
+    override fun onStartTrackingTouch(seekBar: SeekBar) {
+        lastProgress = seekBar.progress
+    }
 
 
     override fun onStopTrackingTouch(seekBar: SeekBar) {
         val numFormat = NumberFormat.getNumberInstance()
         numFormat.maximumFractionDigits = 2
         if (seekBar.id == R.id.skbar_reader_chapter_change) {
-            if (seekBar.progress == ReaderStatus.position.group) {// 本章不跳
-                return
-            }
-            var resizeProgress = when (seekBar.progress) {
-                0 -> 0
-                ReaderStatus.chapterList.size - 1 -> ReaderStatus.chapterList.size - 1
-                else -> seekBar.progress - 1
-            }
-            AppLog.e("progress2", resizeProgress.toString())
-            val position = Position(ReaderStatus.book.book_id, resizeProgress, 0)
-            EventBus.getDefault().post(EventReaderConfig(ReaderSettings.ConfigType.CHAPTER_REFRESH, position))
-            refreshJumpPreBtnState(position.group)
+            jumpChapter(seekBar.progress)
         } else if (seekBar.id == R.id.skbar_reader_brightness_change) {
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_ld_progress)
 
@@ -954,16 +876,53 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         }
     }
 
+    private fun jumpChapter(progress: Int) {
+        if (progress == ReaderStatus.position.group) {// 本章不跳
+            return
+        }
+        val resizeProgress = when (progress) {
+            0 -> 0
+            ReaderStatus.chapterList.size - 1 -> ReaderStatus.chapterList.size - 1
+            else -> progress - 1
+        }
+        AppLog.e("progress2", resizeProgress.toString())
+        val position = Position(ReaderStatus.book.book_id, resizeProgress, 0)
+        EventBus.getDefault().post(EventReaderConfig(ReaderSettings.ConfigType.CHAPTER_REFRESH, position))
+        refreshJumpPreBtnState(position.group)
+    }
+
 
     fun recycleResource() {
 
         this.detachAllViewsFromParent()
 
-        if (read_setting_backdrop_group != null) {
-            read_setting_backdrop_group?.removeAllViews()
+        if (rg_reader_backdrop_group != null) {
+            rg_reader_backdrop_group?.removeAllViews()
         }
 
         System.gc()
+    }
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+        val totalWidth = rg_reader_backdrop_group.width
+        val width = rbtn_reader_backdrop_first.width
+        loge("totalWidth: $totalWidth  width:$width")
+        val margin = (totalWidth - (width * 6)) / 5
+        rbtn_reader_backdrop_first.setMarginRight(margin)
+        rbtn_reader_backdrop_second.setMarginRight(margin)
+        rbtn_reader_backdrop_third.setMarginRight(margin)
+        rbtn_reader_backdrop_fourth.setMarginRight(margin)
+        rbtn_reader_backdrop_fifth.setMarginRight(margin)
+        rbtn_reader_backdrop_sixth.setMarginRight(margin)
+    }
+
+    private fun View.setMarginRight(rightMargin: Int) {
+        val params = layoutParams
+        if (params is MarginLayoutParams) {
+            params.rightMargin = rightMargin
+            requestLayout()
+        }
     }
 
     companion object {

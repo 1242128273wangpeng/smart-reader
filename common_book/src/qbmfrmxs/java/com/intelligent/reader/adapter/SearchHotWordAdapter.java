@@ -1,10 +1,6 @@
 package com.intelligent.reader.adapter;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.res.ColorStateList;
-import android.content.res.Resources;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,8 +37,8 @@ public class SearchHotWordAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         if (datas != null && datas.size() != 0) {
-            if (datas.size() >= 9) {
-                return 9;
+            if (datas.size() >= 6) {
+                return 6;
             } else {
                 return datas.size();
             }
@@ -66,25 +62,25 @@ public class SearchHotWordAdapter extends BaseAdapter {
         ViewHolder holder;
         if (convertView == null) {
             LayoutInflater inflater = mContext.getLayoutInflater();
-            convertView = inflater.inflate(R.layout.search_item_hotword, parent, false);
+            convertView = inflater.inflate(R.layout.item_search_hotword, parent, false);
             holder = new ViewHolder();
-            holder.tvHotWord = (TextView) convertView.findViewById(R.id.tv_hotword);
-            holder.bubbleIv = (ImageView) convertView.findViewById(R.id.bubble_iv);
+            holder.txt_hotword = (TextView) convertView.findViewById(R.id.txt_hotword);
+            holder.img_hot_rank = (ImageView) convertView.findViewById(R.id.img_hot_rank);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
         SearchHotBean.DataBean dataBean = datas.get(position);
-        holder.tvHotWord.setText(dataBean.getWord());
-        setHotShowType(holder.bubbleIv, position);
+        holder.txt_hotword.setText(dataBean.getWord());
+        setHotShowType(holder.img_hot_rank, position);
         return convertView;
 
 
     }
 
     private class ViewHolder {
-        TextView tvHotWord;
-        ImageView bubbleIv;
+        TextView txt_hotword;
+        ImageView img_hot_rank;
     }
 
 
@@ -104,9 +100,16 @@ public class SearchHotWordAdapter extends BaseAdapter {
             case 2:
                 bubbleIv.setImageResource(R.drawable.search_img_hot_3);
                 break;
-            default:
+            case 3:
                 bubbleIv.setImageResource(R.drawable.search_img_hot_4);
                 break;
+            case 4:
+                bubbleIv.setImageResource(R.drawable.search_img_hot_5);
+                break;
+            case 5:
+                bubbleIv.setImageResource(R.drawable.search_img_hot_6);
+                break;
+
         }
     }
 }

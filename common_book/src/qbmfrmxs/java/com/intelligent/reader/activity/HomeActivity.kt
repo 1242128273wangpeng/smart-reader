@@ -240,7 +240,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         onChangeNavigation(currentIndex)
 
 
-        setMenuTitleMargin()
+//        setMenuTitleMargin()
 
         setNightMode(false)
 
