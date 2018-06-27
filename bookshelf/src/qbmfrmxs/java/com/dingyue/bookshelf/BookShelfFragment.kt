@@ -67,10 +67,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         popup.setOnDeletedClickListener {
             bookShelfDeleteDialog.show(bookShelfAdapter.selectedBooks)
         }
-        popup.setOnCancelClickListener {
-            dismissRemoveMenu()
-            BookShelfLogger.uploadBookShelfEditCancel()
-        }
+
         popup
     }
 
@@ -216,6 +213,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             }
         }
 
+        txt_editor_finish.setOnClickListener {
+            dismissRemoveMenu()
+        }
+
         txt_empty_add_book.setOnClickListener {
             bookShelfInterface?.changeHomePagerIndex(1)
             BookShelfLogger.uploadBookShelfToBookCity()
@@ -284,7 +285,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         recl_content.adapter = bookShelfAdapter
 
-        recl_content.topShadow = img_head_shadow
+//        recl_content.topShadow = img_head_shadow
 
     }
 

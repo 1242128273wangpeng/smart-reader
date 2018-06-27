@@ -45,23 +45,18 @@ class BookShelfDeleteDialog(private val activity: Activity) {
     fun show(books: ArrayList<Book>?) {
         if (books == null) return
         this.books = books
-        dialog.txt_delete_title.text = activity.getString(R.string.bookshelf_delete_dialog_title)
-        dialog.txt_delete_prompt.visibility = View.VISIBLE
-        dialog.ckb_delete_cache.visibility = View.VISIBLE
-        dialog.view_divider.visibility = View.VISIBLE
-        dialog.ll_delete_option.visibility = View.VISIBLE
-        dialog.pgbar_delete_loading.visibility = View.GONE
-        dialog.ckb_delete_cache.isChecked = false
+        dialog.rl_container.visibility = View.VISIBLE
+        dialog.ll_loading_content.visibility = View.GONE
         dialog.show()
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.setCancelable(true)
     }
 
     fun showLoading() {
-        dialog.txt_delete_title.text = activity.getString(R.string.bookshelf_delete_dialog_loading_prompt)
-        dialog.txt_delete_prompt.visibility = View.INVISIBLE
-        dialog.ckb_delete_cache.visibility = View.INVISIBLE
-        dialog.view_divider.visibility = View.INVISIBLE
-        dialog.ll_delete_option.visibility = View.INVISIBLE
-        dialog.pgbar_delete_loading.visibility = View.VISIBLE
+        dialog.rl_container.visibility = View.GONE
+        dialog.ll_loading_content.visibility = View.VISIBLE
+        dialog.setCanceledOnTouchOutside(true)
+        dialog.setCancelable(true)
     }
 
     fun dismiss() {

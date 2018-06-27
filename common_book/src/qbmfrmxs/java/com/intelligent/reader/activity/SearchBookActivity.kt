@@ -22,7 +22,6 @@ import android.widget.TextView.OnEditorActionListener
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
-import com.intelligent.reader.presenter.search.SearchPresenter
 import com.intelligent.reader.presenter.search.SearchView
 import com.intelligent.reader.util.SearchViewHelper
 import iyouqu.theme.FrameActivity
@@ -30,23 +29,13 @@ import kotlinx.android.synthetic.qbmfrmxs.activity_search_book.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import com.dingyue.contract.router.RouterConfig
+import com.intelligent.reader.util.SearchPresenter
 import net.lzbook.kit.utils.*
 import java.util.*
 
 @Route(path = RouterConfig.SEARCH_BOOK_ACTIVITY)
 class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListener, SearchViewHelper.OnHistoryClickListener, TextWatcher, OnEditorActionListener, SearchView.AvtView {
 
-//    private var search_result_back: ImageView? = null
-//    private var search_result_button: ImageView? = null
-//    private var search_result_outcome: RelativeLayout? = null
-//    private var search_result_count: TextView? = null
-//    private var search_result_keyword: TextView? = null
-//    private var search_result_default: RelativeLayout? = null
-//    private var search_result_clear: ImageView? = null
-//    private var search_result_input: HWEditText? = null
-//    private var search_result_main: RelativeLayout? = null
-//    private var search_result_content: WebView? = null
-//    private var search_result_hint: FrameLayout? = null
 
     private var searchViewHelper: SearchViewHelper? = null
     private var handler: Handler? = Handler()
@@ -90,12 +79,14 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         initView()
         if (mSearchPresenter != null && !TextUtils.isEmpty(mSearchPresenter!!.word)) {
             loadDataFromNet()
+        }else{
+            search_result_input.requestFocus()
         }
     }
 
     @SuppressLint("JavascriptInterface")
     private fun initView() {
-        search_result_content.topShadow = img_head_shadow
+//        search_result_content.topShadow = img_head_shadow
         search_result_outcome.visibility = View.VISIBLE
         search_result_clear.visibility = View.GONE
         if (mSearchPresenter == null) {
@@ -142,8 +133,8 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             search_result_back!!.setOnClickListener(this)
         }
 
-        if (search_result_button != null) {
-            search_result_button!!.setOnClickListener(this)
+        if (txt_search != null) {
+            txt_search!!.setOnClickListener(this)
         }
 
         if (search_result_outcome != null) {
@@ -521,7 +512,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
             R.id.search_result_default, R.id.search_result_input -> showSearchViews()
 
-            R.id.search_result_button -> {
+            R.id.txt_search -> {
                 var keyword: String? = null
                 if (search_result_input != null) {
                     keyword = search_result_input!!.text.toString()

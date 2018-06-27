@@ -249,7 +249,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         onChangeNavigation(currentIndex)
 
 
-        setMenuTitleMargin()
+//        setMenuTitleMargin()
 
         setNightMode(false)
 

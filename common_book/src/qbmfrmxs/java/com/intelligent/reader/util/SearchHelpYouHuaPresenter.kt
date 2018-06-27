@@ -1,4 +1,4 @@
-package com.intelligent.reader.presenter.search
+package com.intelligent.reader.util
 
 import android.app.Activity
 import android.content.Context
@@ -6,35 +6,33 @@ import android.os.Handler
 import android.os.Message
 import android.preference.PreferenceManager
 import android.text.TextUtils
+import android.view.Gravity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
+import android.widget.TextView
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
+import com.ding.basic.bean.SearchCommonBeanYouHua
 import com.ding.basic.bean.SearchHotBean
-import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestSubscriber
 import com.dingyue.contract.IPresenter
-import com.dingyue.contract.util.showToastMessage
 import com.google.gson.Gson
 import com.intelligent.reader.R
-import com.intelligent.reader.app.BookApplication
-import com.intelligent.reader.widget.ConfirmDialog
-import com.orhanobut.logger.Logger
+import com.intelligent.reader.presenter.search.SearchView
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.data.search.SearchCommonBean
-import net.lzbook.kit.request.UrlUtils
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.SharedPreferencesUtils
+import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.Tools
 import java.lang.ref.WeakReference
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 /**
  * Created by yuchao on 2017/12/1 0001.
  */
 class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPresenter<SearchView.HelpView> {
-    private var mSuggestList: MutableList<SearchCommonBean>? = ArrayList()
+    private var mSuggestList: MutableList<Any>? = ArrayList()
     private var hotWords: MutableList<SearchHotBean.DataBean>? = ArrayList()
     private var suggest: String? = null
     private var searchType: String? = null
@@ -110,24 +108,26 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
 
     fun showDialog(activity: Activity?) {
         if (activity != null && !activity!!.isFinishing) {
-            val dialog = ConfirmDialog(activity)
-            dialog.setTitle(activity.getString(R.string.prompt))
-            dialog.setContent(activity.getString(R.string.determine_clear_serach_history))
-            dialog.setOnConfirmListener {
+            val dialog = MyDialog(activity, R.layout.dialog_delete_history, Gravity.CENTER)
+            dialog.findViewById<TextView>(R.id.txt_cancel).setOnClickListener(View.OnClickListener {
+                val data = HashMap<String, String>()
+                data.put("type", "0")
+                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.HISTORYCLEAR, data)
+                dialog.dismiss()
+            })
+
+            dialog.findViewById<TextView>(R.id.txt_continue).setOnClickListener(View.OnClickListener {
                 val data = HashMap<String, String>()
                 data.put("type", "1")
                 StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH, StartLogClickUtil.HISTORYCLEAR, data)
                 mSearchHandler?.sendEmptyMessage(10)
                 view?.onHistoryClear()
                 dialog.dismiss()
+            })
+
+            if(!dialog.isShowing){
+                dialog.show()
             }
-            dialog.setOnCancelListener {
-                val data = HashMap<String, String>()
-                data.put("type", "0")
-                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.HISTORYCLEAR, data)
-                dialog.dismiss()
-            }
-            dialog.show()
         }
     }
 
@@ -156,7 +156,7 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
 
     }
 
-    fun onSearchResult(suggestList: List<SearchCommonBean>, transmitBean: SearchAutoCompleteBeanYouHua) {
+    fun onSearchResult(suggestList: List<Any>, transmitBean: SearchAutoCompleteBeanYouHua) {
         if (mSuggestList == null) {
             return
         }
@@ -240,7 +240,6 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
     }
 
 
-
     fun setSearchType(type: String) {
         searchType = type
     }
@@ -249,7 +248,7 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
         return searchType
     }
 
-    fun getSuggestData(): MutableList<SearchCommonBean>? {
+    fun getSuggestData(): MutableList<Any>? {
         return mSuggestList
     }
 
@@ -258,39 +257,45 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
     }
 
     fun onSuggestItemClick(context: Context?, text: String, arg2: Int) {
-        suggest = mSuggestList!![arg2].suggest
-        searchType = "0"
-        if (mSuggestList!![arg2].wordtype == "label") {
-            searchType = "1"
-        } else if (mSuggestList!![arg2].wordtype == "author") {
-            searchType = "2"
-        } else if (mSuggestList!![arg2].wordtype == "name") {
-            searchType = "3"
-        } else {
+        val obj = mSuggestList!!.get(arg2)
+        if (obj is SearchCommonBeanYouHua) {
+            suggest = obj.suggest
             searchType = "0"
-        }
-
-        if (!TextUtils.isEmpty(suggest)) {
-            val data = HashMap<String, String>()
-            data.put("keyword", suggest!!)
-            data.put("enterword", text)
-            data.put("rank", (arg2 + 1).toString())
-            data.put("type", searchType ?: "")
-            if (arg2 + 1 <= authorsBean.size) {
-                data.put("typerank", (arg2 + 1).toString() + "")
-            } else if (arg2 + 1 <= authorsBean.size + labelBean.size) {
-                data.put("typerank", (arg2 + 1 - authorsBean.size).toString() + "")
-            } else if (arg2 + 1 <= authorsBean.size + labelBean.size + bookNameBean.size) {
-                data.put("typerank", (arg2 + 1 - authorsBean.size - labelBean.size).toString() + "")
+            if (obj == "label") {
+                searchType = "1"
+            } else if (obj == "author") {
+                searchType = "2"
+            } else if (obj == "name") {
+                searchType = "3"
             } else {
-                data.put("typerank", (arg2 + 1).toString() + "")
+                searchType = "0"
             }
-            StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TIPLISTCLICK, data)
-            StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SEARCHRESULT_PAGE, StartLogClickUtil.SEARCHRESULT_BOOK, data)
 
-            //                    mSearchEditText.setSelection(suggest.length());
-            startSearch(suggest, searchType ?: "")
+            if (!TextUtils.isEmpty(suggest)) {
+                val data = HashMap<String, String>()
+                data.put("keyword", suggest!!)
+                data.put("enterword", text)
+                data.put("rank", (arg2 + 1).toString())
+                data.put("type", searchType ?: "")
+                if (arg2 + 1 <= authorsBean.size) {
+                    data.put("typerank", (arg2 + 1).toString() + "")
+                } else if (arg2 + 1 <= authorsBean.size + labelBean.size) {
+                    data.put("typerank", (arg2 + 1 - authorsBean.size).toString() + "")
+                } else if (arg2 + 1 <= authorsBean.size + labelBean.size + bookNameBean.size) {
+                    data.put("typerank", (arg2 + 1 - authorsBean.size - labelBean.size).toString() + "")
+                } else {
+                    data.put("typerank", (arg2 + 1).toString() + "")
+                }
+                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TIPLISTCLICK, data)
+                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SEARCHRESULT_PAGE, StartLogClickUtil.SEARCHRESULT_BOOK, data)
+
+                //                    mSearchEditText.setSelection(suggest.length());
+                startSearch(suggest, searchType ?: "")
+            }
+        } else {
+            return
         }
+
 
     }
 

@@ -8,126 +8,135 @@
     android:background="@color/base_bg"
     android:orientation="vertical"
     tools:ignore="RtlHardcoded">
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/txt_menu_title"
-        android:layout_width="305dp"
-        android:layout_height="120dp"
-        android:scaleType="fitXY"
-        android:background="@color/theme_primary"/>
 
-    <RelativeLayout
-        android:id="@+id/rl_night_shift"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_view_height_35">
+            <ImageView
+                android:id="@+id/txt_menu_title"
+                android:layout_width="305dp"
+                android:layout_height="120dp"
+                android:background="@drawable/setting_bg_icon"
+                android:scaleType="fitXY"/>
 
-        <TextView
-            android:id="@+id/tv_night_shift"
-            style="@style/Style_Setting_Text_Font"
-            android:layout_marginTop="0dp"
-            android:text="@string/night_shift"/>
+            <RelativeLayout
+                android:id="@+id/rl_night_shift"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_view_height_35">
 
-        <com.intelligent.reader.widget.SwitchButton
-            android:id="@+id/bt_night_shift"
-            style="@style/Style_Setting_Switch_Button"
-            android:layout_marginRight="18dp"
-            app:sb_checked_color="@color/switch_button_checked_bg"
-            app:sb_checkedbtn_color="@color/switch_button_checked_btn"
-            app:sb_show_indicator="false"
-            app:sb_uncheck_color="@color/switch_button_unchecked_bg"
-            app:sb_uncheckedbtn_color="@color/switch_button_unchecked_btn"/>
+                <TextView
+                    android:id="@+id/tv_night_shift"
+                    style="@style/Style_Setting_Text_Font"
+                    android:layout_marginTop="0dp"
+                    android:text="@string/night_shift"/>
 
-    </RelativeLayout>
+                <com.intelligent.reader.widget.SwitchButton
+                    android:id="@+id/bt_night_shift"
+                    style="@style/Style_Setting_Switch_Button"
+                    android:layout_marginRight="18dp"
+                    app:sb_checked_color="@color/switch_button_checked_bg"
+                    app:sb_checkedbtn_color="@color/switch_button_checked_btn"
+                    app:sb_show_indicator="false"
+                    app:sb_uncheck_color="@color/switch_button_unchecked_bg"
+                    app:sb_uncheckedbtn_color="@color/switch_button_unchecked_btn"/>
 
-    <RelativeLayout
-        android:id="@+id/rl_auto_download"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_view_height_32">
+            </RelativeLayout>
 
-        <TextView
-            android:id="@+id/txt_auto_download"
-            style="@style/Style_Setting_Text_Font"
-            android:text="@string/auto_download"/>
+            <RelativeLayout
+                android:id="@+id/rl_auto_download"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_view_height_32">
 
-        <com.intelligent.reader.widget.SwitchButton
-            android:id="@+id/btn_auto_download"
-            style="@style/Style_Setting_Switch_Button"
-            android:layout_marginRight="18dp"
-            app:sb_checked_color="@color/switch_button_checked_bg"
-            app:sb_checkedbtn_color="@color/switch_button_checked_btn"
-            app:sb_show_indicator="false"
-            app:sb_uncheck_color="@color/switch_button_unchecked_bg"
-            app:sb_uncheckedbtn_color="@color/switch_button_unchecked_btn"/>
+                <TextView
+                    android:id="@+id/txt_auto_download"
+                    style="@style/Style_Setting_Text_Font"
+                    android:text="@string/auto_download"/>
 
-    </RelativeLayout>
+                <com.intelligent.reader.widget.SwitchButton
+                    android:id="@+id/btn_auto_download"
+                    style="@style/Style_Setting_Switch_Button"
+                    android:layout_marginRight="18dp"
+                    app:sb_checked_color="@color/switch_button_checked_bg"
+                    app:sb_checkedbtn_color="@color/switch_button_checked_btn"
+                    app:sb_show_indicator="false"
+                    app:sb_uncheck_color="@color/switch_button_unchecked_bg"
+                    app:sb_uncheckedbtn_color="@color/switch_button_unchecked_btn"/>
 
-    <TextView
-        android:id="@+id/txt_push_setting"
-        style="@style/Style_Setting_Icon_Text"
-        android:text="@string/push_setting"
-        tools:ignore="RtlSymmetry"/>
+            </RelativeLayout>
 
-    <TextView
-        android:id="@+id/txt_feedback"
-        style="@style/Style_Setting_Icon_Text"
-        android:text="@string/menu_feedback"/>
+            <TextView
+                android:id="@+id/txt_push_setting"
+                style="@style/Style_Setting_Icon_Text"
+                android:text="@string/push_setting"
+                tools:ignore="RtlSymmetry"/>
 
-    <TextView
-        android:id="@+id/txt_mark"
-        style="@style/Style_Setting_Icon_Text"
-        android:text="@string/market_go"/>
+            <TextView
+                android:id="@+id/txt_feedback"
+                style="@style/Style_Setting_Icon_Text"
+                android:text="@string/menu_feedback"/>
 
-    <TextView
-        android:id="@+id/txt_disclaimer_statement"
-        style="@style/Style_Setting_Icon_Text"
-        android:text="@string/disclaimer_statement"/>
+            <TextView
+                android:id="@+id/txt_mark"
+                style="@style/Style_Setting_Icon_Text"
+                android:text="@string/market_go"/>
 
-    <RelativeLayout
-        android:id="@+id/rl_check_update"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_setting_item_top">
+            <TextView
+                android:id="@+id/txt_disclaimer_statement"
+                style="@style/Style_Setting_Icon_Text"
+                android:text="@string/disclaimer_statement"/>
 
-        <TextView
-            android:id="@+id/txt_market"
-            style="@style/Style_Setting_Text_Font"
-            android:text="@string/check_update"/>
+            <RelativeLayout
+                android:id="@+id/rl_check_update"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_setting_item_top">
 
-        <TextView
-            android:id="@+id/txt_version_name"
-            style="@style/style_text_small_weak"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:gravity="center_vertical"
-            tools:text="V1.2.9"/>
-    </RelativeLayout>
+                <TextView
+                    android:id="@+id/txt_market"
+                    style="@style/Style_Setting_Text_Font"
+                    android:text="@string/check_update"/>
 
-    <RelativeLayout
-        android:id="@+id/rl_clear_cache"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_setting_item_top">
+                <TextView
+                    android:id="@+id/txt_version_name"
+                    style="@style/style_text_small_weak"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center_vertical"
+                    tools:text="V1.2.9"/>
+            </RelativeLayout>
 
-        <TextView
-            android:id="@+id/txt_clear_cache"
-            style="@style/Style_Setting_Text_Font"
-            android:text="@string/clear_cache"/>
+            <RelativeLayout
+                android:id="@+id/rl_clear_cache"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_setting_item_top">
 
-        <TextView
-            android:id="@+id/txt_clear_cache_message"
-            style="@style/style_text_small_weak"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:gravity="center_vertical"
-            tools:text="23.56MB"/>
-    </RelativeLayout>
+                <TextView
+                    android:id="@+id/txt_clear_cache"
+                    style="@style/Style_Setting_Text_Font"
+                    android:text="@string/clear_cache"/>
 
+                <TextView
+                    android:id="@+id/txt_clear_cache_message"
+                    style="@style/style_text_small_weak"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center_vertical"
+                    tools:text="23.56MB"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
