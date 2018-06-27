@@ -1,87 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fl_add_shelf_content"
-    android:layout_width="match_parent"
+    android:layout_width="300dp"
     android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:scrollbars="vertical"
     tools:ignore="RtlHardcoded">
 
     <LinearLayout
+        android:id="@+id/ll_add_shelf_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/reader_dialog_bg"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/txt_dialog_title"
-            style="@style/style_text_large_plain"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="match_parent"
             android:gravity="center"
-            android:text="@string/prompt"/>
-
-        <TextView
-            android:id="@+id/txt_dialog_information"
-            style="@style/style_text_normal_dark"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:lineSpacingExtra="6dp"
-            android:paddingBottom="20dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="15dp"
-            android:text="@string/determine_clear_all_file_cache"/>
+            android:padding="12dp"
+            android:text="@string/prompt"
+            android:textColor="#323232"
+            android:textSize="18sp"/>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#FFEDEEF0"/>
+            android:layout_height="0.5dp"
+            android:background="#E8E8E8"/>
 
-        <LinearLayout
-            android:id="@+id/ll_btn"
+        <TextView
+            android:id="@+id/txt_dialog_information"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_view_height_50"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:lineSpacingExtra="6dp"
+            android:padding="30dp"
+            android:text="@string/add_shelf_prompt"
+            android:textColor="#323232"
+            android:textSize="16sp"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#E8E8E8"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <View
+                android:id="@+id/view_divider"
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
+                android:background="#E8E8E8"/>
 
             <Button
                 android:id="@+id/btn_cancel"
-                style="@style/style_text_normal_plain"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#FAFAFA"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@id/view_divider"
+                android:background="@drawable/reader_dialog_cancel_sel"
                 android:gravity="center"
-                android:minWidth="24dp"
-                android:singleLine="true"
-                android:text="@string/cancel"/>
-
-            <View
-                android:layout_width="0.5dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center_vertical"
-                android:background="#FFF4F5F7"/>
+                android:text="@string/cancel"
+                android:textColor="@drawable/reader_dialog_cancel_txt_sel"
+                android:textSize="16sp"/>
 
             <Button
                 android:id="@+id/btn_confirm"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#FAFAFA"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@id/view_divider"
+                android:background="@drawable/reader_dialog_confirm_sel"
                 android:gravity="center"
-                android:minWidth="24dp"
-                android:singleLine="true"
                 android:text="@string/confirm"
-                android:textColor="#FF19DD8B"
-                android:textSize="14sp"/>
-        </LinearLayout>
+                android:textColor="@drawable/reader_dialog_confirm_txt_sel"
+                android:textSize="16sp"/>
 
+        </RelativeLayout>
     </LinearLayout>
 
     <net.lzbook.kit.book.view.NightShadowView
-        android:id="@+id/nsv_add_shelf"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:visibility="gone"/>
-</FrameLayout>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/ll_add_shelf_content"
+        android:layout_alignLeft="@id/ll_add_shelf_content"
+        android:layout_alignRight="@id/ll_add_shelf_content"
+        android:layout_alignTop="@id/ll_add_shelf_content"
+        android:visibility="gone"
+        app:cornerRadius="4dp"/>
+</RelativeLayout>

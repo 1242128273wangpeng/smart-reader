@@ -420,13 +420,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
     }
 
     override fun setHotWordAdapter(hotWords: MutableList<SearchHotBean.DataBean>?) {
-        if (searchHotWordAdapter == null) {
-            searchHotWordAdapter = SearchHotWordAdapter(activity, hotWords)
-            mGridView!!.adapter = searchHotWordAdapter
-        } else {
-            searchHotWordAdapter!!.setDatas(hotWords)
-            searchHotWordAdapter!!.notifyDataSetChanged()
-        }
+
     }
 
     override fun showLinearParent(show: Boolean) {

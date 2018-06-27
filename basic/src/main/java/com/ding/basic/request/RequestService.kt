@@ -42,12 +42,14 @@ interface RequestService {
         //搜索热词
         const val HOT_WORDS = "/v3/search/hotWords"
 
+        // V5搜索
+        const val SEARCH_V5 = "/v5/search/page"
 
         //新版搜索热词
         const val HOT_WORDS_V4 = "/v4/search/hotWords"
 
         //新版搜索推荐
-        const val SEARCH_RECOMMEND_V4 = "/v4/search/autoOperations"
+        const val SEARCH_RECOMMEND_V5 = "/v5/search/autoOperations"
 
         //完结页推荐
         const val RECOMMEND_FINISH = "/v4/recommend/{book_id}/readPage"
@@ -134,7 +136,7 @@ interface RequestService {
     @GET(HOT_WORDS_V4)
     fun requestHotWordV4(): Flowable<Result<SearchResult>>
 
-    @GET(SEARCH_RECOMMEND_V4)
+    @GET(SEARCH_RECOMMEND_V5)
     fun requestSearchRecommend(@Query("shelfBooks") shelfBooks: String): Flowable<SearchRecommendBook>
 
     @GET(HOT_WORDS)

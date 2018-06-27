@@ -31,12 +31,7 @@ class BookShelfAdapter(private val context: Context,
                 BookShelfADHolder(parent, false)
             }
             Type_Add -> {
-//            qbmfrmxs  : "cn.qbmfrmxs.reader")
-                if ("cn.txtqbmfyd.reader".equals(AppUtils.getPackageName())) {//全本免费热门小说
-                    BookShelfFooterHolder(LayoutInflater.from(context).inflate(R.layout.item_bookshelf_bottom_line, parent, false))
-                } else {
-                    BookShelfADDHolder(LayoutInflater.from(context).inflate(R.layout.item_bookshelf_add, parent, false))
-                }
+                BookShelfADDHolder(LayoutInflater.from(context).inflate(R.layout.item_bookshelf_add, parent, false))
             }
             Type_Header_AD -> {
                 BookShelfADHolder(parent, true)

@@ -412,14 +412,15 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
             }
 
             val params = HashMap<String, String>()
-            params.put("word", searchWord)
+            params.put("keyword", searchWord)
             params.put("search_type", searchType ?: "")
             params.put("filter_type", filterType ?: "")
             params.put("filter_word", filterWord ?: "")
             params.put("sort_type", sortType ?: "")
             params.put("searchEmpty", "1")
             AppLog.e("kk", "$searchWord==$searchType==$filterType==$filterWord===$sortType")
-            mUrl = UrlUtils.buildWebUrl(URLBuilderIntterface.SEARCH, params)
+            val uri = URLBuilderIntterface.SEARCH_VUE.replace("{packageName}", AppUtils.getPackageName())
+            mUrl = UrlUtils.buildWebUrl(uri, params)
         }
 
         view?.onStartLoad(mUrl!!)

@@ -70,6 +70,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         txt_book_detail_shelf.setOnClickListener(this)
         txt_book_detail_read.setOnClickListener(this)
         txt_book_detail_cache.setOnClickListener(this)
+        txt_book_detail_recommend_change.setOnClickListener(this)
     }
 
     private fun initializeIntent(intent: Intent?) {
@@ -95,6 +96,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             bookRecommendAdapter = BookRecommendAdapter()
 
             sfgv_book_detail_recommend.adapter = bookRecommendAdapter
+
             sfgv_book_detail_recommend.setOnItemClickListener { _, _, position, _ ->
                 recommendList?.let {
                     val recommendBean = it[position]
@@ -218,6 +220,12 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CATALOG)
                 if (coverPagePresenter != null) {
                     coverPagePresenter?.startCatalogActivity(true)
+                }
+            }
+
+            R.id.txt_book_detail_recommend_change -> {
+                if (coverPagePresenter != null) {
+                    coverPagePresenter?.changeRecommendBooks()
                 }
             }
         }

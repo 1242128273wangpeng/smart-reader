@@ -1,10 +1,11 @@
 package com.ding.basic.bean
 
 import java.io.Serializable
+import java.util.*
 
 class RecommendBooks : Serializable {
 
-    var znList: List<RecommendBean>? = null
-    var qgList: List<RecommendBean>? = null
-    var feeList: List<RecommendBean>? = null
+    var znList: ArrayList<RecommendBean>? = null
+    var qgList: ArrayList<RecommendBean>? = null
+    var feeList: ArrayList<RecommendBean>? = null
 }

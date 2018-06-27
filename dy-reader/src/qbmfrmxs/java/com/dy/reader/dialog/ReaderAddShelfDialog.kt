@@ -15,7 +15,7 @@ import net.lzbook.kit.book.view.MyDialog
  */
 class ReaderAddShelfDialog (activity: Activity) {
 
-    private val dialog = MyDialog(activity, R.layout.dialog_reader_add_shelf, Gravity.BOTTOM)
+    private val dialog = MyDialog(activity, R.layout.dialog_reader_add_shelf, Gravity.CENTER)
 
     var cancelListener: (() -> Unit)? = null
     var confirmListener: (() -> Unit)? = null
@@ -32,12 +32,12 @@ class ReaderAddShelfDialog (activity: Activity) {
         layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
 
         window.attributes = layoutParams
-        window.setWindowAnimations(R.style.bottom_popup_dialog)
-
-        dialog.fl_add_shelf_content.viewTreeObserver.addOnGlobalLayoutListener {
-            dialog.nsv_add_shelf.layoutParams.height = dialog.fl_add_shelf_content.height
-            dialog.fl_add_shelf_content.requestLayout()
-        }
+//        window.setWindowAnimations(R.style.bottom_popup_dialog)
+//
+//        dialog.fl_add_shelf_content.viewTreeObserver.addOnGlobalLayoutListener {
+//            dialog.nsv_add_shelf.layoutParams.height = dialog.fl_add_shelf_content.height
+//            dialog.fl_add_shelf_content.requestLayout()
+//        }
 
         dialog.btn_cancel.setOnClickListener {
             cancelListener?.invoke()
