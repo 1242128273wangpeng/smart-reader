@@ -119,7 +119,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                 return false
             }
 
-        }, bookShelfPresenter.iBookList, true)
+        }, bookShelfPresenter.iBookList, false)
     }
 
     private val bookShelfDeleteDialog: BookShelfDeleteDialog by lazy {
