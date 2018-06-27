@@ -19,6 +19,7 @@ import com.dy.reader.listener.SourceClickListener
 import com.dy.reader.presenter.BookEndContract
 import com.dy.reader.presenter.BookEndPresenter
 import com.dy.reader.setting.ReaderStatus
+import com.orhanobut.logger.Logger
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.qbmfrmxs.act_book_end.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -90,8 +91,8 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
             finish()
         }
 
-        sfgv_recommend.adapter = bookRecommendAdapter
-        sfgv_recommend.setOnItemClickListener { _, _, position, _ ->
+        gv_recommend.adapter = bookRecommendAdapter
+        gv_recommend.setOnItemClickListener { _, _, position, _ ->
             val recommendBean = recommends[position]
             val data = HashMap<String, String>()
 
@@ -195,17 +196,18 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
     }
 
     override fun showRecommend(recommends: ArrayList<RecommendBean>?) {
+        Logger.e("recommends: $recommends")
         if (recommends == null) return
 
         if (recommends.size == 0) {
             rl_recommend.visibility = View.GONE
-            sfgv_recommend.visibility = View.GONE
+            gv_recommend.visibility = View.GONE
         } else {
             rl_recommend.visibility = View.VISIBLE
-            sfgv_recommend.visibility = View.VISIBLE
+            gv_recommend.visibility = View.VISIBLE
 
-            recommends.clear()
-            recommends.addAll(recommends)
+            this.recommends.clear()
+            this.recommends.addAll(recommends)
             bookRecommendAdapter.notifyDataSetChanged()
         }
     }
