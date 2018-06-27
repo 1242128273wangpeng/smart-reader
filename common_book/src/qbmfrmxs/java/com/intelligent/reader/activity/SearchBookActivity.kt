@@ -215,8 +215,8 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             }
 
             if (searchViewHelper != null) {
-                searchViewHelper!!.addHistoryWord(mSearchPresenter!!.word)
-                searchViewHelper!!.setShowHintEnabled(false)
+                searchViewHelper?.addHistoryWord(mSearchPresenter!!.word)
+                searchViewHelper?.setShowHintEnabled(false)
             }
 
             hideSearchView(false)
@@ -224,7 +224,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             if (loadingPage == null) {
                 loadingPage = LoadingPage(this, search_result_main, LoadingPage.setting_result)
             }
-            mSearchPresenter!!.startLoadData()
+            mSearchPresenter?.startLoadData()
 
         } else {
             showSearchViews()
@@ -346,17 +346,17 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             search_result_content!!.clearCache(true) //清空缓存
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 if (search_result_main != null) {
-                    search_result_main!!.removeView(search_result_content)
+                    search_result_main?.removeView(search_result_content)
                 }
-                search_result_content!!.stopLoading()
-                search_result_content!!.removeAllViews()
+                search_result_content?.stopLoading()
+                search_result_content?.removeAllViews()
                 search_result_content.destroy();
             } else {
-                search_result_content!!.stopLoading()
-                search_result_content!!.removeAllViews()
+                search_result_content?.stopLoading()
+                search_result_content?.removeAllViews()
                 search_result_content.destroy();
                 if (search_result_main != null) {
-                    search_result_main!!.removeView(search_result_content)
+                    search_result_main?.removeView(search_result_content)
                 }
             }
         }
@@ -399,31 +399,31 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         }
 
         if (search_result_content != null && search_result_content!!.visibility != View.GONE) {
-            search_result_content!!.visibility = View.GONE
+            search_result_content?.visibility = View.GONE
         }
 
         if (mSearchPresenter == null) {
             mSearchPresenter = SearchPresenter(this, this)
         }
-        mSearchPresenter!!.word = search_result_input!!.text.toString()
+        mSearchPresenter?.word = search_result_input!!.text.toString()
 
         if (!TextUtils.isEmpty(mSearchPresenter!!.word)) {
             search_result_hint.visibility = View.VISIBLE
 
             if (searchViewHelper != null) {
-                searchViewHelper!!.setShowHintEnabled(true)
+                searchViewHelper?.setShowHintEnabled(true)
             }
 
             if (searchViewHelper != null) {
-                searchViewHelper!!.showHintList(mSearchPresenter!!.word)
+                searchViewHelper?.showHintList(mSearchPresenter!!.word)
             }
 
         } else {
-            search_result_input!!.text = null
-            search_result_input!!.editableText.clear()
-            search_result_input!!.text.clear()
+            search_result_input?.text = null
+            search_result_input?.editableText?.clear()
+            search_result_input?.text?.clear()
         }
-        search_result_input!!.requestFocus()
+        search_result_input?.requestFocus()
         dealSoftKeyboard(search_result_input)
     }
 

@@ -338,6 +338,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_below="@id/txt_book_detail_catalog"
+                        android:layout_marginRight="8dp"
                         android:layout_marginTop="16dp"
                         android:layout_toLeftOf="@id/txt_book_detail_update_time"
                         android:ellipsize="end"
@@ -394,8 +395,8 @@
                     style="@style/style_text_tiny_weak"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:gravity="center"
                     android:background="#FAFAFA"
+                    android:gravity="center"
                     android:text="我们是有底线的！(=@__@=)"/>
             </LinearLayout>
         </ScrollView>
