@@ -20,7 +20,6 @@ import android.webkit.WebSettings
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.presenter.search.SearchPresenter
 import com.intelligent.reader.presenter.search.SearchView
@@ -30,29 +29,19 @@ import kotlinx.android.synthetic.qbmfrmxs.activity_search_book.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.util.*
+import com.github.lzyzsd.jsbridge.DefaultHandler
+import com.orhanobut.logger.Logger
 import net.lzbook.kit.utils.*
 import java.util.*
 
 @Route(path = RouterConfig.SEARCH_BOOK_ACTIVITY)
 class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListener, SearchViewHelper.OnHistoryClickListener, TextWatcher, OnEditorActionListener, SearchView.AvtView {
 
-//    private var search_result_back: ImageView? = null
-//    private var search_result_button: ImageView? = null
-//    private var search_result_outcome: RelativeLayout? = null
-//    private var search_result_count: TextView? = null
-//    private var search_result_keyword: TextView? = null
-//    private var search_result_default: RelativeLayout? = null
-//    private var search_result_clear: ImageView? = null
-//    private var search_result_input: HWEditText? = null
-//    private var search_result_main: RelativeLayout? = null
-//    private var search_result_content: WebView? = null
-//    private var search_result_hint: FrameLayout? = null
-
     private var searchViewHelper: SearchViewHelper? = null
     private var handler: Handler? = Handler()
 
-    private var customWebClient: CustomWebClient? = null
-    private var jsInterfaceHelper: JSInterfaceHelper? = null
+    private var customWebViewClient: CustomWebViewClient? = null
 
     internal var isSearch = false
     //记录是否退出当前界面,for:修复退出界面时出现闪影
@@ -63,12 +52,10 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
     private var mSearchPresenter: SearchPresenter? = null
 
     override fun onJsSearch() {
-//        if (search_result_content != null) {
         search_result_content.clearView()
         if (loadingPage == null) {
             loadingPage = LoadingPage(this, search_result_main, LoadingPage.setting_result)
         }
-//        }
     }
 
     override fun onStartLoad(url: String) {
@@ -95,7 +82,6 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     @SuppressLint("JavascriptInterface")
     private fun initView() {
-        search_result_content.topShadow = img_head_shadow
         search_result_outcome.visibility = View.VISIBLE
         search_result_clear.visibility = View.GONE
         if (mSearchPresenter == null) {
@@ -108,30 +94,38 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
         initListener()
 
-        if (Build.VERSION.SDK_INT >= 11) {
-            search_result_content!!.setLayerType(View.LAYER_TYPE_NONE, null)
-        }
+        search_result_content?.setLayerType(View.LAYER_TYPE_NONE, null)
 
         if (search_result_content != null) {
-            customWebClient = CustomWebClient(this, search_result_content)
+            customWebViewClient = CustomWebViewClient(this, search_result_content)
         }
 
-        if (search_result_content != null && customWebClient != null) {
-            customWebClient!!.setWebSettings()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                search_result_content!!.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-            }
-            search_result_content!!.setWebViewClient(customWebClient)
-        }
+        customWebViewClient?.setWebSettings()
 
-        if (search_result_content != null) {
-            jsInterfaceHelper = JSInterfaceHelper(this, search_result_content)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            search_result_content?.settings?.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
+        search_result_content?.webViewClient = customWebViewClient
 
-        if (jsInterfaceHelper != null && search_result_content != null) {
-            search_result_content.addJavascriptInterface(jsInterfaceHelper, "J_search")
-            mSearchPresenter!!.initJSHelp(jsInterfaceHelper)
-        }
+        search_result_content?.webViewClient = customWebViewClient
+
+        search_result_content?.setDefaultHandler(DefaultHandler())
+
+        search_result_content?.registerHandler("buildRequestUrl", BuildRequestUrlHandler())
+
+        search_result_content?.registerHandler("loadBookShelfInfo", LoadBookShelfInfo())
+
+        search_result_content?.registerHandler("insertBookShelf", InsertBookShelfHandler(this@SearchBookActivity))
+
+        search_result_content?.registerHandler("removeBookShelf", RemoveBookShelfHandler(this@SearchBookActivity))
+
+        search_result_content?.registerHandler("startCoverActivity", StartCoverHandler(this@SearchBookActivity))
+
+        search_result_content?.registerHandler("startCoverActivity", StartCoverHandler(this@SearchBookActivity))
+
+        search_result_content?.send("Hello", { data ->
+            Logger.e("来自JS的消息: " + data.toString())
+        })
 
     }
 
@@ -187,7 +181,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     private fun initData() {
         if (mSearchPresenter == null) {
-            mSearchPresenter = SearchPresenter( this, this)
+            mSearchPresenter = SearchPresenter(this, this)
         }
         val intent = intent
         if (intent != null) {
@@ -245,8 +239,8 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
     }
 
     private fun loadingData(url: String) {
-        if (customWebClient != null) {
-            customWebClient!!.doClear()
+        if (customWebViewClient != null) {
+            customWebViewClient!!.doClear()
         }
         AppLog.e(TAG, "LoadingData ==> " + url)
         if (!TextUtils.isEmpty(url) && search_result_content != null) {
@@ -266,8 +260,8 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             return
         }
 
-        if (customWebClient != null) {
-            customWebClient!!.setStartedAction { url ->
+        if (customWebViewClient != null) {
+            customWebViewClient!!.setStartedAction { url ->
                 AppLog.e(TAG, "onLoadStarted: " + url)
                 if (mSearchPresenter == null) {
                     mSearchPresenter = SearchPresenter(this@SearchBookActivity, this@SearchBookActivity)
@@ -275,7 +269,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                 mSearchPresenter!!.setStartedAction()
             }
 
-            customWebClient!!.setErrorAction {
+            customWebViewClient!!.setErrorAction {
                 AppLog.e(TAG, "onErrorReceived")
                 if (loadingPage != null) {
                     AppLog.e(TAG, "loadingPage != Null")
@@ -283,7 +277,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                 }
             }
 
-            customWebClient!!.setFinishedAction {
+            customWebViewClient!!.setFinishedAction {
                 AppLog.e(TAG, "onLoadFinished")
                 if (mSearchPresenter == null) {
                     mSearchPresenter = SearchPresenter(this@SearchBookActivity, this@SearchBookActivity)
@@ -301,8 +295,8 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         if (loadingPage != null) {
             loadingPage!!.setReloadAction(LoadingPage.reloadCallback {
                 AppLog.e(TAG, "doReload")
-                if (customWebClient != null) {
-                    customWebClient!!.doClear()
+                if (customWebViewClient != null) {
+                    customWebViewClient!!.doClear()
                 }
                 search_result_content!!.reload()
             })
@@ -363,7 +357,6 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                     search_result_main!!.removeView(search_result_content)
                 }
             }
-//            search_result_content = null
         }
 
         if (loadingPage != null) {
@@ -413,13 +406,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         mSearchPresenter!!.word = search_result_input!!.text.toString()
 
         if (!TextUtils.isEmpty(mSearchPresenter!!.word)) {
-
-            //            search_result_input.setText(word);
-            //            search_result_input.setSelection(word.length());
-
-//            if (search_result_hint != null) {
             search_result_hint.visibility = View.VISIBLE
-//            }
 
             if (searchViewHelper != null) {
                 searchViewHelper!!.setShowHintEnabled(true)

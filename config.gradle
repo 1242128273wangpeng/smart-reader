@@ -12,8 +12,8 @@ ext {
     minSdkVersion = 14
     targetSdkVersion = 22
 
-    applicationId = "cn.qbzsydsq.reader"
-    defaultPublishConfig = 'qbzsydqDebug'
+    applicationId = "cn.qbmfrmxs.reader"
+    defaultPublishConfig = 'qbmfrmxsDebug'
 
     minifyEnable = false
     shrinkResEnable = minifyEnable
@@ -29,7 +29,7 @@ ext {
     // 广告默认开启
     hasad = true
     // 无广告列表
-    noadList = ['cn.txtqbmfyd.reader', 'cn.txtqbmfyd.reader']
+    noadList = ['cn.txtqbmfyd.reader', 'cn.qbmfrmxs.reader']
 
 
     def appPackageIDConfig = [
@@ -44,8 +44,7 @@ ext {
             txtqbxsydq: "cn.zsqbydq.reader",
             txtqbmfyd : "cn.txtqbmfyd.reader",
             qbmfkdxs  : "cc.quanbennovel", //今日多看
-            qbmfrmxs  : "cn.txtqbmfyd.reader" //全本免费热门小说
-//            qbmfrmxs  : "cn.qbmfrmxs.reader" //全本免费热门小说
+            qbmfrmxs  : "cn.qbmfrmxs.reader" //全本免费热门小说
     ]
 
     def startParameter = project.getGradle().getStartParameter()

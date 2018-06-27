@@ -71,7 +71,7 @@ class ClassifyFragment : Fragment() {
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "category_male")
-        val uri = URLBuilderIntterface.WEB_CATEGORY.replace("{packageName}", AppUtils.getPackageName())
+        val uri = URLBuilderIntterface.WEB_CATEGORY_MAN.replace("{packageName}", AppUtils.getPackageName())
         val map = HashMap<String, String>()
         map["type"] = "0"
         bundle.putString("url", UrlUtils.buildWebUrl(uri, map))
@@ -84,7 +84,7 @@ class ClassifyFragment : Fragment() {
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "category_female")
-        val uri = URLBuilderIntterface.WEB_CATEGORY.replace("{packageName}", AppUtils.getPackageName())
+        val uri = URLBuilderIntterface.WEB_CATEGORY_WOMAN.replace("{packageName}", AppUtils.getPackageName())
         val map = HashMap<String, String>()
         map["type"] = "1"
         bundle.putString("url", UrlUtils.buildWebUrl(uri, map))

@@ -152,8 +152,7 @@ android {
             txtqbxsydq: "cn.zsqbydq.reader",
             txtqbmfyd : "cn.txtqbmfyd.reader",
             qbmfkdxs  : "cc.quanbennovel",
-            qbmfrmxs  : "cn.txtqbmfyd.reader"
-//            qbmfrmxs  : "cn.qbmfremxs.reader"
+            qbmfrmxs  : "cn.qbmfrmxs.reader"
     ]
 
     def channel = "dev_channel"
@@ -1011,4 +1010,6 @@ dependencies {
     implementation project(':bookshelf')
     implementation project(':downloadmanager')
     implementation project(':dy-reader')
+
+    compile 'com.github.lzyzsd:jsbridge:1.0.4'
 }

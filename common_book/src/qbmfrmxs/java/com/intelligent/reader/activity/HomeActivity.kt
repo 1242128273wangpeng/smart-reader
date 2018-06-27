@@ -18,14 +18,12 @@ import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
 import android.widget.LinearLayout
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.baidu.mobstat.StatService
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
-import com.dingyue.contract.CommonContract
 import com.dingyue.contract.logger.HomeLogger
 import com.dingyue.contract.logger.PersonalLogger
 import com.dingyue.contract.router.RouterConfig
@@ -34,9 +32,7 @@ import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
-import com.intelligent.reader.fragment.ClassifyFragment
-import com.intelligent.reader.fragment.SearchBookFragment
-import com.intelligent.reader.fragment.WebViewFragment
+import com.intelligent.reader.fragment.*
 import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.util.EventBookStore
@@ -50,7 +46,6 @@ import kotlinx.android.synthetic.qbmfrmxs.act_home.*
 import kotlinx.android.synthetic.qbmfrmxs.home_drawer_layout_main.*
 import kotlinx.android.synthetic.qbmfrmxs.home_drawer_layout_menu.*
 import net.lzbook.kit.app.ActionConstants
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.download.CacheManager
@@ -64,9 +59,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 @Route(path = RouterConfig.HOME_ACTIVITY)
-class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
-        CheckNovelUpdateService.OnBookUpdateListener, HomeView, BookShelfInterface {
-
+class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpdateListener, HomeView, BookShelfInterface {
 
     private val fragmentTypeBookShelf = 0 //书架
     private val fragmentTypeRecommend = 1 //精选
@@ -95,13 +88,12 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     private lateinit var apkUpdateUtils: ApkUpdateUtils
 
     private var bookShelfFragment: BookShelfFragment? = null
-//    private var searchBookFragment: SearchBookFragment? = null
 
     private val recommendFragment: WebViewFragment by lazy {
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "recommend")
-        val uri = URLBuilderIntterface.WEB_RECOMMEND.replace("{packageName}", "cn.txtqbmfyd.reader")
+        val uri = URLBuilderIntterface.WEB_RECOMMEND.replace("{packageName}", AppUtils.getPackageName())
         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
         fragment.arguments = bundle
         fragment
@@ -111,7 +103,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "rank")
-        val uri = URLBuilderIntterface.WEB_RANK.replace("{packageName}", "cn.txtqbmfyd.reader")
+        val uri = URLBuilderIntterface.WEB_RANK.replace("{packageName}", AppUtils.getPackageName())
         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
         fragment.arguments = bundle
         fragment
@@ -234,7 +226,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
     }
 
-
     private fun initView() {
 
         view_pager.offscreenPageLimit = 4
@@ -339,8 +330,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
 
     private fun initListener() {
-
-
         // 书架
         ll_tab_bookshelf.setOnClickListener {
             this.changeHomePagerIndex(fragmentTypeBookShelf)
@@ -358,7 +347,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         ll_tab_search.setOnClickListener {
             this.changeHomePagerIndex(fragmentTypeSearchBook)
             sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "search")
-//            HomeLogger.uploadHomeRankSelected()
         }
 
         // 分类
@@ -548,70 +536,66 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         handler.sendMessageDelayed(message, 2000)
     }
 
-    override fun webJsCallback(jsInterfaceHelper: JSInterfaceHelper) {
-        jsInterfaceHelper.setOnEnterAppClick { AppLog.e(TAG, "doEnterApp") }
-        jsInterfaceHelper.setOnSearchClick { keyWord, search_type, filter_type, filter_word, sort_type ->
-            try {
-                val data = HashMap<String, String>()
-                data["keyword"] = keyWord
-                data["type"] = "0"//0 代表从分类过来
-                StartLogClickUtil.upLoadEventLog(this@HomeActivity, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT, data)
-
-                val intent = Intent()
-                intent.setClass(this@HomeActivity, SearchBookActivity::class.java)
-                intent.putExtra("word", keyWord)
-                intent.putExtra("search_type", search_type)
-                intent.putExtra("filter_type", filter_type)
-                intent.putExtra("filter_word", filter_word)
-                intent.putExtra("sort_type", sort_type)
-                intent.putExtra("from_class", "fromClass")//是否从分类来
-                startActivity(intent)
-                AppLog.e("kkk", "$search_type===")
-
-            } catch (e: Exception) {
-                AppLog.e(TAG, "Search failed")
-                e.printStackTrace()
-            }
-        }
-        jsInterfaceHelper.setOnAnotherWebClick(JSInterfaceHelper.onAnotherWebClick { url, name ->
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
-                return@onAnotherWebClick
-            }
-            AppLog.e(TAG, "doAnotherWeb")
-            try {
-                val intent = Intent()
-                intent.setClass(this@HomeActivity, FindBookDetail::class.java)
-                intent.putExtra("url", url)
-                intent.putExtra("title", name)
-                startActivity(intent)
-                AppLog.e(TAG, "EnterAnotherWeb")
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        })
-
-        jsInterfaceHelper.setOnOpenAd { AppLog.e(TAG, "doOpenAd") }
-
-        jsInterfaceHelper.setOnEnterCover(JSInterfaceHelper.onEnterCover { host, book_id, book_source_id, name, author, parameter, extra_parameter ->
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
-                return@onEnterCover
-            }
-
-            if (!isFinishing) {
-                val intent = Intent()
-                intent.putExtra("book_id", book_id)
-                intent.putExtra("book_source_id", book_source_id)
-                intent.setClass(applicationContext, CoverPageActivity::class.java)
-                startActivity(intent)
-            }
-        })
-
-        jsInterfaceHelper.setOnEnterCategory { _, _, _, _ -> AppLog.e(TAG, "doCategory") }
-    }
-
-    override fun startLoad(webView: WebView, url: String): String {
-        return url
-    }
+//    override fun webJsCallback(jsInterfaceHelper: JSInterfaceHelper) {
+//        jsInterfaceHelper.setOnEnterAppClick { AppLog.e(TAG, "doEnterApp") }
+//        jsInterfaceHelper.setOnSearchClick { keyWord, search_type, filter_type, filter_word, sort_type ->
+//            try {
+//                val data = HashMap<String, String>()
+//                data["keyword"] = keyWord
+//                data["type"] = "0"//0 代表从分类过来
+//                StartLogClickUtil.upLoadEventLog(this@HomeActivity, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT, data)
+//
+//                val intent = Intent()
+//                intent.setClass(this@HomeActivity, SearchBookActivity::class.java)
+//                intent.putExtra("word", keyWord)
+//                intent.putExtra("search_type", search_type)
+//                intent.putExtra("filter_type", filter_type)
+//                intent.putExtra("filter_word", filter_word)
+//                intent.putExtra("sort_type", sort_type)
+//                intent.putExtra("from_class", "fromClass")//是否从分类来
+//                startActivity(intent)
+//                AppLog.e("kkk", "$search_type===")
+//
+//            } catch (e: Exception) {
+//                AppLog.e(TAG, "Search failed")
+//                e.printStackTrace()
+//            }
+//        }
+//        jsInterfaceHelper.setOnAnotherWebClick(JSInterfaceHelper.onAnotherWebClick { url, name ->
+//            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+//                return@onAnotherWebClick
+//            }
+//            AppLog.e(TAG, "doAnotherWeb")
+//            try {
+//                val intent = Intent()
+//                intent.setClass(this@HomeActivity, FindBookDetail::class.java)
+//                intent.putExtra("url", url)
+//                intent.putExtra("title", name)
+//                startActivity(intent)
+//                AppLog.e(TAG, "EnterAnotherWeb")
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
+//        })
+//
+//        jsInterfaceHelper.setOnOpenAd { AppLog.e(TAG, "doOpenAd") }
+//
+//        jsInterfaceHelper.setOnEnterCover(JSInterfaceHelper.onEnterCover { host, book_id, book_source_id, name, author, parameter, extra_parameter ->
+//            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+//                return@onEnterCover
+//            }
+//
+//            if (!isFinishing) {
+//                val intent = Intent()
+//                intent.putExtra("book_id", book_id)
+//                intent.putExtra("book_source_id", book_source_id)
+//                intent.setClass(applicationContext, CoverPageActivity::class.java)
+//                startActivity(intent)
+//            }
+//        })
+//
+//        jsInterfaceHelper.setOnEnterCategory { _, _, _, _ -> AppLog.e(TAG, "doCategory") }
+//    }
 
     override fun supportSlideBack(): Boolean {
         return false

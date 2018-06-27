@@ -126,7 +126,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-            <com.intelligent.reader.widget.topshadow.TopShadowWebView
+            <com.github.lzyzsd.jsbridge.BridgeWebView
                     android:id="@+id/search_result_content"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>

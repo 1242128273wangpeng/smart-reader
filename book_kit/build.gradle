@@ -55,6 +55,8 @@ dependencies {
     //华为Push通道
     compile 'com.umeng.sdk:push-huawei:1.0.0'
 
+    compile 'com.github.lzyzsd:jsbridge:1.0.4'
+
     api project(':basic')
 
 }

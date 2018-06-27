@@ -26,4 +26,7 @@ object RouterConfig {
 
     const val BOOK_END_ACTIVITY = "/dy_reader/BookEndActivity"
 
+
+    const val TABULATION_ACTIVITY = "/common_book/TabulationActivity"
+
 }

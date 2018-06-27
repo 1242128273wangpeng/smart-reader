@@ -406,6 +406,13 @@
                 android:launchMode="singleTop"
                 android:screenOrientation="portrait"
                 android:theme="@style/AppThemeTranslucent"/>
+
+        <activity
+                android:name=".activity.TabulationActivity"
+                android:configChanges="keyboard"
+                android:launchMode="singleTop"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppThemeTranslucent"/>
         <activity
                 android:name=".activity.SwitchModeActivity"
                 android:launchMode="singleTop"

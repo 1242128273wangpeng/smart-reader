@@ -81,6 +81,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             if (intent.hasExtra("book_source_id")) {
                 bookSourceId = intent.getStringExtra("book_source_id")
             }
+
             if (intent.hasExtra("book_chapter_id")) {
                 bookChapterId = intent.getStringExtra("book_chapter_id")
             }
