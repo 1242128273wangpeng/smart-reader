@@ -261,12 +261,12 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
 
             if (ReaderSettings.instance.readThemeMode == 51) {
                 ReaderSettings.instance.backgroundBitmap?.let {
-                    canvas!!.drawBitmap(it, Rect(0, 0, it.width, it.height),
+                    canvas?.drawBitmap(it, Rect(0, 0, it.width, it.height),
                             Rect(0, 0, canvas!!.width, canvas!!.height),
                             null)
                 }
             } else {
-                canvas!!.drawColor(ReaderSettings.instance.backgroundColor)
+                canvas?.drawColor(ReaderSettings.instance.backgroundColor)
             }
             if (DataProvider.isGroupExist(posi.group)) {
                 DrawTextHelper.drawText(canvas, DataProvider.getPage(posi))

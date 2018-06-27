@@ -132,7 +132,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
 
                     while (iterator.hasNext()) {
                         val entry = iterator.next()
-                        if (entry.value.item_view != null) {
+                        if (entry.key < iBookList.size && entry.value.item_view != null) {
                             iBookList.add(entry.key, entry.value)
                         }
                     }
@@ -208,9 +208,11 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
 
         val iterator = adBookMap.entries.iterator()
 
+        val size = iBookList.size
+
         while (iterator.hasNext()) {
             val entry = iterator.next()
-            if (entry.value.item_view == null) {
+            if (entry.key < size && entry.value.item_view == null) {
                 if (index < views.size) {
                     entry.value.item_view = views[index]
 

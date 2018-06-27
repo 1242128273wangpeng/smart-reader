@@ -104,13 +104,15 @@ class ReadSettingFragment : DialogFragment() {
 
     override fun onResume() {
         super.onResume()
-        dialog.rsbd_option_bottom_detail.readPresenter = (activity as ReaderActivity).mReadPresenter
-        dialog.rsh_option_header.presenter = readSettingPresenter
-        dialog.rsbd_option_bottom_detail.presenter = readSettingPresenter
-        dialog.rsbd_option_bottom_detail.currentThemeMode = themeMode
-        dialog.rsbd_option_bottom_detail.setNovelMode(ReaderSettings.instance.readThemeMode)
-        dialog.rl_read_setting_content.setOnClickListener {
-            dismiss()
+        dialog?.rsbd_option_bottom_detail?.readPresenter = (activity as ReaderActivity).mReadPresenter
+        dialog?.rsh_option_header?.presenter = readSettingPresenter
+        dialog?.rsbd_option_bottom_detail?.presenter = readSettingPresenter
+        dialog?.rsbd_option_bottom_detail?.currentThemeMode = themeMode
+        dialog?.rsbd_option_bottom_detail?.setNovelMode(ReaderSettings.instance.readThemeMode)
+        dialog?.rl_read_setting_content?.setOnClickListener {
+            if(dialog.isShowing){
+                dismiss()
+            }
         }
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this)
@@ -129,9 +131,9 @@ class ReadSettingFragment : DialogFragment() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onRecieveEvent(event: EventSetting) {
         if (event.type == EventSetting.Type.REFRESH_MODE) {
-            dialog.rsbd_option_bottom_detail.setMode()
+            dialog?.rsbd_option_bottom_detail?.setMode()
         } else if (event.type == EventSetting.Type.DISMISS_TOP_MENU) {
-            dialog.rsh_option_header.showMenu(false)
+            dialog?.rsh_option_header?.showMenu(false)
         }
     }
 
