@@ -116,6 +116,10 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
             changeSourceDialog.show(sourceList)
         }
 
+        txt_recommend_change.setOnClickListener {
+            bookEndPresenter.changeRecommendBooks()
+        }
+
     }
 
     private fun initIntent() {
