@@ -30,6 +30,7 @@ import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.doAsync
 import net.lzbook.kit.utils.uiThread
 
 class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager {
