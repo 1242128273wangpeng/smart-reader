@@ -32,7 +32,6 @@ import java.util.HashMap
 class BuildRequestUrlHandler : BridgeHandler {
 
     override fun handler(data: String?, function: CallBackFunction?) {
-        Logger.e("BuildRequestUrl")
         if (data != null && data.isNotEmpty()) {
 
             var url = data
@@ -51,7 +50,7 @@ class BuildRequestUrlHandler : BridgeHandler {
 
             url = UrlUtils.buildWebUrl(url, parameters)
 
-            Logger.e("BuildRequestUrl结果: $url")
+            Logger.e("BuildRequestUrl: $data")
 
             function?.onCallBack(url)
         }
