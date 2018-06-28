@@ -5,7 +5,6 @@
     android:id="@+id/rl_web_view_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
     tools:ignore="RtlHardcoded,RtlSymmetry, MissingPrefix, HardcodedText">
 
     <RelativeLayout

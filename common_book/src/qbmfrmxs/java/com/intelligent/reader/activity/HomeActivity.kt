@@ -148,8 +148,8 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
 
         initView()
+
         initListener()
-        initGuide()
 
         homePresenter.initParameters()
 
@@ -190,7 +190,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
 
         if (intent != null && intent.hasExtra("position")) {
             position = intent.getIntExtra("position", 0)
-            view_pager!!.currentItem = position
+            view_pager?.currentItem = position
         } else {
             if (intent != null) {
                 val intExtra = intent.getIntExtra(EventBookStore.BOOKSTORE, EventBookStore.TYPE_ERROR)
@@ -228,19 +228,16 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
 
     private fun initView() {
 
-        view_pager.offscreenPageLimit = 4
-        view_pager.isScrollable = false
+        view_pager?.offscreenPageLimit = 4
+        view_pager?.isScrollable = false
 
         homeAdapter = HomeAdapter(supportFragmentManager)
 
-        view_pager.adapter = homeAdapter
+        view_pager?.adapter = homeAdapter
 
         this.changeHomePagerIndex(currentIndex)
 
         onChangeNavigation(currentIndex)
-
-
-//        setMenuTitleMargin()
 
         setNightMode(false)
 
@@ -257,7 +254,6 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
                 ReaderSettings.instance.readThemeMode = ReaderSettings.instance.readLightThemeMode
                 mThemeHelper.setMode(ThemeMode.THEME1)
             }
-//            sharedPreUtil.putInt(SharedPreUtil.CONTENT_MODE, ReadConfig.MODE)
             ReaderSettings.instance.save()
             nightShift(isChecked, true)
         }
@@ -373,7 +369,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
             }
         }
 
-        view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        view_pager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
 
             }
@@ -384,18 +380,17 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
 
             override fun onPageSelected(position: Int) {
                 onChangeNavigation(position)
+                checkShowShelfGuide()
             }
         })
-
-
     }
-
 
     private fun initGuide() {
         val key = SharedPreUtil.BOOKSHELF_GUIDE_TAG
         if (!sharedPreUtil.getBoolean(key)) {
             fl_guide_layout.visibility = View.VISIBLE
             img_guide_remove.visibility = View.VISIBLE
+            dl_home_content.lock()
             fl_guide_layout.setOnClickListener {
                 if (guideDownload) {
                     img_guide_download.visibility = View.VISIBLE
@@ -405,6 +400,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
                     sharedPreUtil.putBoolean(key, true)
                     img_guide_download.visibility = View.GONE
                     fl_guide_layout.visibility = View.GONE
+                    dl_home_content.unlock()
                 }
             }
         }
@@ -602,27 +598,6 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
     }
 
     /***
-     * 设置抽屉布局中标题的Margin
-     * **/
-    private fun setMenuTitleMargin() {
-        val density = resources.displayMetrics.density
-        val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        val left = (12 * density + 0.5f).toInt()
-        var top = 20
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M || isMIUISupport || isFlymeSupport) {
-            top += 20
-        }
-        top = (top * density + 0.5f).toInt()
-
-        params.topMargin = top
-        params.leftMargin = left
-
-        txt_menu_title.layoutParams = params
-    }
-
-
-    /***
      * 是否夜间模式
      * **/
     private fun setNightMode(isEvent: Boolean) {
@@ -636,7 +611,6 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
             bt_night_shift.isChecked = false
         }
     }
-
 
     /**
      * HomeActivity子页面的Adapter
@@ -737,7 +711,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
      * **/
     override fun changeHomePagerIndex(index: Int) {
         if (currentIndex != index) {
-            view_pager.setCurrentItem(index, false)
+            view_pager?.setCurrentItem(index, false)
         }
     }
 
@@ -749,6 +723,15 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
             dl_home_content.closeMenu()
         } else {
             dl_home_content.openMenu()
+        }
+    }
+
+    /***
+     * 检查是否展示书架引导
+     * **/
+    override fun checkShowShelfGuide() {
+        if (currentIndex == 0) {
+            initGuide()
         }
     }
 

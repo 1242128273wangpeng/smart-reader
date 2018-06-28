@@ -14,4 +14,5 @@ interface BookShelfInterface {
 
     fun changeDrawerLayoutState()
 
+    fun checkShowShelfGuide()
 }

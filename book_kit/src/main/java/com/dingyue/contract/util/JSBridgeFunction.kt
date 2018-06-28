@@ -3,6 +3,7 @@ package com.dingyue.contract.util
 import android.app.Activity
 import android.os.Bundle
 import com.ding.basic.bean.Book
+import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.contract.router.RouterConfig
@@ -12,8 +13,10 @@ import com.github.lzyzsd.jsbridge.CallBackFunction
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
 import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.request.UrlUtils
 import java.io.Serializable
+import java.util.HashMap
 
 /**
  * Desc 请描述这个文件
@@ -34,12 +37,19 @@ class BuildRequestUrlHandler : BridgeHandler {
 
             var url = data
 
+            var parameters: Map<String, String>? = null
+
             val array = url.split("\\?".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
+            url = array[0]
+
             if (array.size == 2) {
-                url = array[0]
+                parameters = UrlUtils.getUrlParams(array[1])
+            } else if (array.size == 1) {
+                parameters = HashMap()
             }
-            url = UrlUtils.buildWebUrl(url, UrlUtils.getUrlParams(array[1]))
+
+            url = UrlUtils.buildWebUrl(url, parameters)
 
             Logger.e("BuildRequestUrl结果: $url")
 
@@ -79,14 +89,43 @@ class StartTabulationHandler(val activity: Activity) : BridgeHandler {
  * 添加书架
  * action : insertBookShelf
  * **/
-class InsertBookShelfHandler(activity: Activity) : BridgeHandler {
+class InsertBookShelfHandler(val activity: Activity) : BridgeHandler {
 
     override fun handler(data: String?, function: CallBackFunction?) {
         if (data != null && data.isNotEmpty()) {
-            var recommend = Gson().fromJson(data, RecommendBean::class.java)
-            Logger.e("Recommend: " + recommend.toString())
+            val recommend = Gson().fromJson(data, RecommendBean::class.java)
 
-            function?.onCallBack("false")
+            val book = Book()
+            book.book_id = recommend.bookId
+            book.book_source_id = recommend.id
+            book.book_chapter_id = recommend.bookChapterId
+            book.name = recommend.bookName
+            book.author = recommend.authorName
+            book.desc = recommend.description
+            book.label = recommend.label
+            book.genre = recommend.genre
+            book.sub_genre = recommend.subGenre
+            book.img_url = recommend.sourceImageUrl
+            book.status = recommend.serialStatus
+            book.host = recommend.host
+            book.book_type = recommend.bookType
+            book.word_count = recommend.wordCountDescp
+            book.score = recommend.score
+            book.uv = recommend.uv
+
+            val chapter = Chapter()
+            chapter.name = recommend.lastChapterName
+
+            book.last_chapter = chapter
+
+            val succeed = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(book)
+
+            if (succeed > 0) {
+                activity.applicationContext.showToastMessage("成功添加到书架！")
+                function?.onCallBack("true")
+            } else {
+                function?.onCallBack("false")
+            }
         }
     }
 }
@@ -95,12 +134,20 @@ class InsertBookShelfHandler(activity: Activity) : BridgeHandler {
  * 移除书架
  * action : removeBookShelf
  * **/
-class RemoveBookShelfHandler(activity: Activity) : BridgeHandler {
+class RemoveBookShelfHandler(val activity: Activity) : BridgeHandler {
 
     override fun handler(data: String?, function: CallBackFunction?) {
         if (data != null && data.isNotEmpty()) {
 
-            function?.onCallBack("true")
+            val result = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBook(data)
+            if (result) {
+                CacheManager.stop(data)
+                CacheManager.resetTask(data)
+                activity.applicationContext.showToastMessage("成功从书架中移除！")
+                function?.onCallBack("true")
+            } else {
+                function?.onCallBack("false")
+            }
         }
     }
 }
@@ -165,28 +212,23 @@ class StartCoverHandler(val activity: Activity) : BridgeHandler {
  * 跳转进入搜索
  * action : startSearchActivity
  * **/
-class StartSearchHandler : BridgeHandler {
+class StartSearchHandler(val activity: Activity) : BridgeHandler {
 
     override fun handler(data: String?, function: CallBackFunction?) {
-//            try {
-//                val data = HashMap<String, String>()
-//                data["keyword"] = keyWord
-//                data["type"] = "0"//0 代表从分类过来
-//                StartLogClickUtil.upLoadEventLog(this@HomeActivity, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT, data)
-//
-//                val intent = Intent()
-//                intent.setClass(this@HomeActivity, SearchBookActivity::class.java)
-//                intent.putExtra("word", keyWord)
-//                intent.putExtra("search_type", search_type)
-//                intent.putExtra("filter_type", filter_type)
-//                intent.putExtra("filter_word", filter_word)
-//                intent.putExtra("sort_type", sort_type)
-//                intent.putExtra("from_class", "fromClass")
-//                startActivity(intent)
-//            } catch (e: Exception) {
-//                AppLog.e(TAG, "Search failed")
-//                e.printStackTrace()
-//            }
+        if (data != null && data.isNotEmpty()) {
+            try {
+                val bundle = Bundle()
+                bundle.putString("word", data)
+                bundle.putString("from_class", "search")
+                bundle.putString("search_type", "0")
+                bundle.putString("filter_type", "0")
+                bundle.putString("filter_word", "ALL")
+                bundle.putString("sort_type", "0")
+                RouterUtil.navigation(activity, RouterConfig.SEARCH_BOOK_ACTIVITY, bundle)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 }
 
