@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:fitsSystemWindows="true"
     tools:ignore="RtlHardcoded, RtlSymmetry,MissingPrefix">
 
     <net.lzbook.kit.book.view.NonSwipeViewPager
@@ -13,6 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/ll_home_tab"
+        android:background="#FFFFFF"
+        android:fitsSystemWindows="true"
         android:flipInterval="30"
         android:persistentDrawingCache="animation"/>
 
@@ -108,12 +108,12 @@
 
     </LinearLayout>
 
-    <FrameLayout
+    <RelativeLayout
         android:id="@+id/fl_guide_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.3"
-        android:background="@color/color_black"
+        android:background="#4D000000"
+        android:fitsSystemWindows="false"
         android:orientation="vertical"
         android:visibility="gone">
 
@@ -121,8 +121,9 @@
             android:id="@+id/img_guide_download"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginTop="37dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="51dp"
             android:contentDescription="@string/app_name"
             android:scaleType="fitXY"
             android:src="@mipmap/bookshelf_guide_cache"
@@ -132,12 +133,13 @@
             android:id="@+id/img_guide_remove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/img_guide_download"
             android:layout_gravity="bottom"
-            android:layout_marginBottom="200dp"
-            android:layout_marginLeft="9dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="106dp"
             android:contentDescription="@string/app_name"
             android:scaleType="fitXY"
             android:src="@mipmap/bookshelf_guide_remove"
             android:visibility="gone"/>
-    </FrameLayout>
+    </RelativeLayout>
 </com.intelligent.reader.widget.drawer.DrawerMain>
