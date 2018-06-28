@@ -22,6 +22,7 @@ import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.utils.BaseBookHelper
 import net.lzbook.kit.utils.doAsync
+import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.uiThread
 import java.util.*
 import kotlin.collections.ArrayList
@@ -186,18 +187,24 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
                 adBookMap[key] = adBook
             }
         }
+        doAsync {
+            MediaControl.loadBookShelMedia(activity, count, object : IMediaControl.MediaCallback {
+                override fun requestMediaSuccess(views: List<ViewGroup>) {
+                    runOnMain {
+                        handleADResult(views)
+                        view?.onAdRefresh()
+                    }
+                }
+                override fun requestMediaRepairSuccess(views: List<ViewGroup>) {
+                    runOnMain {
+                        handleADResult(views)
+                        view?.onAdRefresh()
+                    }
 
-        MediaControl.loadBookShelMedia(activity, count, object : IMediaControl.MediaCallback {
-            override fun requestMediaSuccess(views: List<ViewGroup>) {
-                handleADResult(views)
-                view?.onAdRefresh()
-            }
+                }
+            })
+        }
 
-            override fun requestMediaRepairSuccess(views: List<ViewGroup>) {
-                handleADResult(views)
-                view?.onAdRefresh()
-            }
-        })
     }
 
     /***

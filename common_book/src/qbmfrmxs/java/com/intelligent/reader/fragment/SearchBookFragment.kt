@@ -12,6 +12,7 @@ import com.ding.basic.bean.*
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.dingyue.bookshelf.ShelfGridLayoutManager
+import com.dingyue.contract.CommonContract
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.SharedPreUtil
@@ -186,6 +187,9 @@ class SearchBookFragment : Fragment(), RecommendBooksAdapter.RecommendItemClickL
 
     override fun onItemClick(view: View, position: Int) {
 
+        if(CommonContract.isDoubleClick(System.currentTimeMillis())){
+            return
+        }
         val book = recommendBooks[position]
         val data = HashMap<String, String>()
         data.put("rank", (position + 1).toString() + "")

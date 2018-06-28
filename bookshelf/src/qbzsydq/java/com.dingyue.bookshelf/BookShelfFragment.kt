@@ -241,11 +241,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
      */
     fun updateUI() {
         val isShowAD = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD
-        doAsync {
-            bookShelfPresenter.queryBookListAndAd(requireActivity(), isShowAD, true)
-            uiThread {
-                bookShelfAdapter.notifyDataSetChanged()
-            }
+        bookShelfPresenter.queryBookListAndAd(requireActivity(), isShowAD, true)
+        uiThread {
+            bookShelfAdapter.notifyDataSetChanged()
         }
     }
 
@@ -285,7 +283,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
      * 处理被点击或更新通知的book
      */
     private fun handleBook(book: Book?) {
-        if (book != null && isAdded &&  !requireActivity().isFinishing) {
+        if (book != null && isAdded && !requireActivity().isFinishing) {
             BookRouter.navigateCoverOrRead(requireActivity(), book, BookRouter.NAVIGATE_TYPE_BOOKSHELF)
         }
     }

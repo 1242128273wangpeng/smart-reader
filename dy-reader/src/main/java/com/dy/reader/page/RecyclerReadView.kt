@@ -665,7 +665,7 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
         ThemeUtil.getModePrimaryBackground(resources, this)
         mAdapter.setTextColor(resources.getColor(ThemeUtil.modeLoadTextColor))
         ThemeUtil.getModePrimaryBackground(resources, view_reader_loading)
-        txt_reader_loading_message.setTextColor(resources.getColor(ThemeUtil.modeLoadTextColor))
+        txt_reader_loading_message?.setTextColor(resources.getColor(ThemeUtil.modeLoadTextColor))
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
